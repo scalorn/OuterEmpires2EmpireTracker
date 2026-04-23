@@ -28,36 +28,36 @@ namespace OE2EmpireTracker.Services
         private static EmpireContext Instance;
         public static string FilePath { get; set; } = "BaselineData.json";
 
-        public static PlayerContext PlayerContext;
+        public static PlayerContext PlayerContext { get; set; }
 
         // Task 6.1: Private backing fields with IReadOnlyList<T> properties
         private List<BlueprintType> _blueprintTypeList;
         public IReadOnlyList<BlueprintType> BlueprintTypeList => _blueprintTypeList;
-        public BindingSource BindingSourceBlueprintType;
+        public BindingSource BindingSourceBlueprintType { get; set; }
 
         private List<ShipClass> _shipClassList;
         public IReadOnlyList<ShipClass> ShipClassList => _shipClassList;
-        public BindingSource BindingSourceShipClass;
+        public BindingSource BindingSourceShipClass { get; set; }
 
         private List<TechLevel> _techLevelList;
         public IReadOnlyList<TechLevel> TechLevelList => _techLevelList;
-        public BindingSource BindingSourceTechLevel;
+        public BindingSource BindingSourceTechLevel { get; set; }
 
         private List<string> _evolutionList;
         public IReadOnlyList<string> EvolutionList => _evolutionList;
-        public BindingSource BindingSourceEvolution;
+        public BindingSource BindingSourceEvolution { get; set; }
 
         private List<Resource> _resourceList;
         public IReadOnlyList<Resource> ResourceList => _resourceList;
-        public BindingSource BindingSourceResource;
+        public BindingSource BindingSourceResource { get; set; }
 
         private List<ResourceGroup> _resourceGroupList;
         public IReadOnlyList<ResourceGroup> ResourceGroupList => _resourceGroupList;
-        public BindingSource BindingSourceResourceGroup;
+        public BindingSource BindingSourceResourceGroup { get; set; }
 
         private List<ResourcePurity> _resourcePurityList;
         public IReadOnlyList<ResourcePurity> ResourcePurityList => _resourcePurityList;
-        public BindingSource BindingSourceResourcePurity;
+        public BindingSource BindingSourceResourcePurity { get; set; }
 
         public int DataVersion { get; set; } = 0;
         public BaselineGameConstants GameConstants { get; set; }

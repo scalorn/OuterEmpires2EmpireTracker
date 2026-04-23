@@ -35,7 +35,7 @@ namespace OE2EmpireTracker.Controls
             _hasLocked = true;
         }
 
-        public void release()
+        public void Release()
         {
             if (_hasLocked)
             {
@@ -46,12 +46,12 @@ namespace OE2EmpireTracker.Controls
 
         public void Dispose()
         {
-            release();
+            Release();
         }
 
         ~ProgrammaticUpdateGuard()
         {
-            release();
+            Release();
         }
     }
 }

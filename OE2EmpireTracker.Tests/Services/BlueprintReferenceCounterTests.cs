@@ -12,8 +12,6 @@ namespace OE2EmpireTracker.Tests.Services
     {
         private const string TargetUUID = "bp-target-uuid";
 
-        #region Helpers
-
         private static Colony MakeColony(params ColonyStructure[] structures)
         {
             var colony = new Colony();
@@ -35,8 +33,6 @@ namespace OE2EmpireTracker.Tests.Services
             survey.ScannerBlueprintUUID = scannerBlueprintUUID;
             return survey;
         }
-
-        #endregion
 
         // Requirement 1.5 -- empty data returns zero counts
         [Test]

@@ -66,7 +66,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void ComputeManufactoryRuns_EmptyMfgTimeString_ReturnsMinusOne()
         {
             var bp = new Blueprint("Test") { Properties = new PropertyBag() };
-            bp.Properties.setProperty("Manufacture Run Time", string.Empty);
+            bp.Properties.SetProperty("Manufacture Run Time", string.Empty);
             Assert.That(QueueCalculator.ComputeManufactoryRuns(bp, 3600), Is.EqualTo(-1));
         }
 
@@ -133,7 +133,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void ManufactoryRunsToItems_WithAmountManufactured_Multiplies()
         {
             var bp = new Blueprint("Munitions") { Properties = new PropertyBag() };
-            bp.Properties.setProperty("Amount Manufactured", 50m);
+            bp.Properties.SetProperty("Amount Manufactured", 50m);
             Assert.That(QueueCalculator.ManufactoryRunsToItems(bp, 3), Is.EqualTo(150));
         }
 
@@ -184,7 +184,7 @@ namespace OE2EmpireTracker.Tests.Services
         private Blueprint CreateBlueprintWithMfgTime(string timeStr)
         {
             var bp = new Blueprint("TestBP") { Properties = new PropertyBag() };
-            bp.Properties.setProperty("Manufacture Run Time", timeStr);
+            bp.Properties.SetProperty("Manufacture Run Time", timeStr);
             return bp;
         }
     }

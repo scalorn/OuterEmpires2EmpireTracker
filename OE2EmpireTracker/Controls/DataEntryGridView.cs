@@ -5,7 +5,7 @@ using NLog;
 public class DataEntryGridView : System.Windows.Forms.DataGridView
 {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-    public Control previousControl { get; set; }
+    public Control PreviousControl { get; set; }
     private bool changingSelection = false;
     public DataEntryGridView()
     {
@@ -18,7 +18,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
 
         if (key == Keys.Tab)
         {
-            bool handled = handleForward(this.Focused);
+            bool handled = HandleForward(this.Focused);
             if (handled)
             {
                 return true;
@@ -27,7 +27,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
 
         if (key == (Keys.Tab | Keys.Shift))
         {
-            bool handled = handleBackwards(this.Focused);
+            bool handled = HandleBackwards(this.Focused);
             if (handled)
             {
                 return true;
@@ -42,7 +42,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         Log.Debug("ProcessDataGridViewKey Key = " + e);
         if (e.KeyData == Keys.Tab)
         {
-            bool handled = handleForward(this.Focused);
+            bool handled = HandleForward(this.Focused);
             if (handled)
             {
                 return true;
@@ -51,7 +51,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
 
         if (e.KeyData == (Keys.Tab | Keys.Shift))
         {
-            bool handled = handleBackwards(this.Focused);
+            bool handled = HandleBackwards(this.Focused);
             if (handled)
             {
                 return true;
@@ -71,18 +71,18 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
             // We are on a read only cell. move forward.
             if (col >=0 && col < this.Columns.Count && this.Columns[col].ReadOnly)
             {
-                handleForward(this.Focused);
+                HandleForward(this.Focused);
             }
         }
     }
 
-    private bool handleBackwards(bool enableEdit)
+    private bool HandleBackwards(bool enableEdit)
     {
         int col = this.CurrentCell.ColumnIndex - 1;
         col = FindPreviousCell(col);
         if (col >= 0)
         {
-            handleEditCell(this.CurrentCell.RowIndex, col, enableEdit);
+            HandleEditCell(this.CurrentCell.RowIndex, col, enableEdit);
             return true;
         }
         else
@@ -93,16 +93,16 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                 Log.Debug("Backwards col = " + col);
                 if (col >= 0)
                 {
-                    handleEditCell(this.CurrentCell.RowIndex - 1, col, enableEdit);
+                    HandleEditCell(this.CurrentCell.RowIndex - 1, col, enableEdit);
                     return true;
                 }
             }
             else
             {
-                Log.Debug("Need to reverse jump control! " + previousControl);
-                if (previousControl != null)
+                Log.Debug("Need to reverse jump control! " + PreviousControl);
+                if (PreviousControl != null)
                 {
-                    this.previousControl.Focus();
+                    this.PreviousControl.Focus();
                     // This does not work.
                     // this.SelectNextControl(this, false, true, true, true);
                     return true;
@@ -113,13 +113,13 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         return false;
     }
 
-    private bool handleForward(bool enableEdit)
+    private bool HandleForward(bool enableEdit)
     {
         int col = this.CurrentCell.ColumnIndex + 1;
         col = FindNextCell(col);
         if (col < this.Columns.Count)
         {
-            handleEditCell(this.CurrentCell.RowIndex, col, enableEdit);
+            HandleEditCell(this.CurrentCell.RowIndex, col, enableEdit);
             return true;
         }
         else
@@ -129,10 +129,9 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                 col = FindNextCell(0);
                 if (col <= this.CurrentCell.ColumnIndex)
                 {
-                    handleEditCell(this.CurrentCell.RowIndex + 1, col, enableEdit);
+                    HandleEditCell(this.CurrentCell.RowIndex + 1, col, enableEdit);
                     return true;
                 }
-
             } else
             {
                 // This doesn't work.
@@ -172,7 +171,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         return col;
     }
 
-    private void handleEditCell(int rowIndex, int col, bool enableEdit)
+    private void HandleEditCell(int rowIndex, int col, bool enableEdit)
     {
         changingSelection = true;
         this.CurrentCell =

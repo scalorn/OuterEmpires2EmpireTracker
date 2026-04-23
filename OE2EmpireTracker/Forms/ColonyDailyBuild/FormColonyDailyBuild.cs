@@ -31,14 +31,14 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
 
             cmbRoute.DisplayMember = "Display";
             cmbRoute.ValueMember = "UUID";
-            cmbRoute.SelectedIndexChanged += cmbRoute_SelectedIndexChanged;
+            cmbRoute.SelectedIndexChanged += CmbRoute_SelectedIndexChanged;
 
-            txtRouteFilter.TextChanged += txtRouteFilter_TextChanged;
+            txtRouteFilter.TextChanged += TxtRouteFilter_TextChanged;
 
             PopulateRouteDropdown();
 
-            flpBase.Layout += flpBase_Layout;
-            flpSelectors.Layout += flpSelectors_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSelectors.Layout += FlpSelectors_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged += OnColonyDataChanged;
@@ -48,7 +48,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
         // Layout
         // -----------------------------------------------------------------------
 
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             pnlContent.Size = new Size(
                 flpBase.Size.Width - flpSelectors.Size.Width - flpSelectors.Margin.Right - flpSelectors.Margin.Left - pnlContent.Margin.Left - pnlContent.Margin.Right,
@@ -58,7 +58,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                 flpBase.Size.Height - flpSelectors.Margin.Top - flpSelectors.Margin.Bottom);
         }
 
-        private void flpSelectors_Layout(object sender, LayoutEventArgs e)
+        private void FlpSelectors_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpSelectors.Size.Width - 6;
             txtRouteFilter.Size = new Size(w, txtRouteFilter.Size.Height);
@@ -69,19 +69,19 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
         // Route Selection
         // -----------------------------------------------------------------------
 
-        private void txtRouteFilter_TextChanged(object sender, EventArgs e)
+        private void TxtRouteFilter_TextChanged(object sender, EventArgs e)
         {
             PopulateRouteDropdown();
         }
 
         private void PopulateRouteDropdown()
         {
-            _lastRouteUUID = RouteDropdownHelper.Populate(cmbRoute, playerContext.GetCurrentPlayerRoutes(), txtRouteFilter.Text ?? string.Empty, cmbRoute.SelectedValue as string, cmbRoute_SelectedIndexChanged);
+            _lastRouteUUID = RouteDropdownHelper.Populate(cmbRoute, playerContext.GetCurrentPlayerRoutes(), txtRouteFilter.Text ?? string.Empty, cmbRoute.SelectedValue as string, CmbRoute_SelectedIndexChanged);
         }
 
         private string _lastRouteUUID = string.Empty;
 
-        private void cmbRoute_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbRoute_SelectedIndexChanged(object sender, EventArgs e)
         {
             string routeUUID = cmbRoute.SelectedValue as string ?? string.Empty;
             if (routeUUID == _lastRouteUUID) return;
@@ -183,7 +183,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                     Tag = new BuildTag { ColonyUUID = colony.UUID, StructureUUID = staged.UUID }
                 };
 
-                btnBuild.Click += btnBuild_Click;
+                btnBuild.Click += BtnBuild_Click;
                 flpRow.Controls.Add(btnBuild);
 
                 pnlColony.Controls.Add(flpRow);
@@ -207,7 +207,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
         // Build Click
         // -----------------------------------------------------------------------
 
-        private void btnBuild_Click(object sender, EventArgs e)
+        private void BtnBuild_Click(object sender, EventArgs e)
         {
             var btn = sender as Button;
             if (btn == null) return;

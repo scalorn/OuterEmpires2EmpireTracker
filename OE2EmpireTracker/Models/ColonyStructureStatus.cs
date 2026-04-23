@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Models
         public decimal HabitationProvision { get; set; }
 
         /// <summary>
-        /// Total Habitation capacity required. 
+        /// Total Habitation capacity required.
         /// This is typically calculated based on the number of workers assigned to the colony.
         /// Note: In the current implementation, this value is derived from worker counts.
         /// </summary>
@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Models
         public decimal FoodProvision { get; set; }
 
         /// <summary>
-        /// Total Food consumption required. 
+        /// Total Food consumption required.
         /// Currently calculated based on the total number of colony workers.
         /// </summary>
         public decimal FoodRequired { get; set; }
@@ -94,7 +94,7 @@ namespace OE2EmpireTracker.Models
 
         public ColonyStructureStatus()
         {
-            // Default values are set explicitly in CalculateBuilt, but setting properties here is good practice 
+            // Default values are set explicitly in CalculateBuilt, but setting properties here is good practice
             // for clear intent in this context.
             PowerProvided = 0m;
             PowerRequired = 0m;

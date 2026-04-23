@@ -21,8 +21,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class PricingPlanSerializationPropertyTests
     {
-        #region Generators
-
         private static readonly string[] SampleResourceNames = new[]
         {
             "Alkali Metals", "Noble Gases", "Halogens", "Metallics",
@@ -70,10 +68,6 @@ namespace OE2EmpireTracker.Tests.Services
             return plan;
         }
 
-        #endregion
-
-        #region Property 8: Serialization round-trip
-
         [FsCheck.NUnit.Property(MaxTest = 100)]
         public Property SerializationRoundTrip_ProducesEquivalentObject()
         {
@@ -102,7 +96,5 @@ namespace OE2EmpireTracker.Tests.Services
                            $"fixed={fixedMatch}, hourly={hourlyMatch}, prices={pricesMatch}");
             });
         }
-
-        #endregion
     }
 }

@@ -31,7 +31,7 @@ namespace OE2EmpireTracker.Models
         public string ID { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         [JsonIgnore]
-        public string ExtendedName { 
+        public string ExtendedName {
             get {
                 if (string.IsNullOrEmpty(Name))
                 {
@@ -60,15 +60,13 @@ namespace OE2EmpireTracker.Models
 
         public Dictionary<string, string> ConstructionResources { get; set; } = new Dictionary<string, string>();
 
-
-        private static List<Commodity> _commodities = getCommodities();
+        private static List<Commodity> _commodities = GetCommodities();
         private static Dictionary<string, Commodity> _commodityMapByEnum;
         private static Dictionary<string, Commodity> _commodityMapByString;
 
         public static IReadOnlyList<Commodity> Commodities => _commodities.AsReadOnly();
         public static IReadOnlyDictionary<string, Commodity> ResourceMapByEnum => _commodityMapByEnum;
         public static IReadOnlyDictionary<string, Commodity> ResourceMapByString => _commodityMapByString;
-
 
         public Commodity()
         {
@@ -95,10 +93,10 @@ namespace OE2EmpireTracker.Models
         /// </summary>
         public static List<Commodity> GetFallbackCommodities()
         {
-            return getCommodities();
+            return GetCommodities();
         }
 
-        private static List<Commodity> getCommodities()
+        private static List<Commodity> GetCommodities()
         {
             List<Commodity> instance = new List<Commodity>();
             instance.Add(new Commodity()
@@ -112,7 +110,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Strong Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -125,7 +122,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Acidic Inorganics", "2" },
                     { "Heavy Alkaline Earth Metals", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -138,7 +134,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -151,7 +146,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -164,7 +158,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -177,7 +170,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -190,7 +182,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -203,7 +194,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -216,7 +206,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -229,7 +218,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -242,7 +230,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Acidic Inorganics", "2" },
                     { "Heavy Alkaline Earth Metals", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -255,7 +242,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -268,7 +254,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -281,7 +266,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -294,7 +278,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Trans-Metals", "2" },
                     { "Complex Metallics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -307,7 +290,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -320,7 +302,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -333,7 +314,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -346,7 +326,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -359,7 +338,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Trans-Metals", "2" },
                     { "Complex Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -372,7 +350,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -385,7 +362,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -398,7 +374,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -411,7 +386,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -424,7 +398,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Acidic Inorganics", "2" },
                     { "Heavy Alkaline Earth Metals", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -437,7 +410,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -450,7 +422,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -463,7 +434,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -476,7 +446,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -489,7 +458,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Alkali Metals", "2" },
                     { "Lanthanides", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -502,7 +470,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -515,7 +482,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -528,7 +494,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Organics", "2" },
                     { "Lanthanide Volatiles", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -541,7 +506,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -554,7 +518,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Alkali Metals", "2" },
                     { "Lanthanides", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -567,7 +530,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -580,7 +542,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -593,7 +554,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -606,7 +566,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -619,7 +578,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -632,7 +590,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -645,7 +602,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -658,7 +614,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Acidic Inorganics", "2" },
                     { "Heavy Alkaline Earth Metals", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -671,7 +626,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -684,7 +638,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -697,7 +650,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Trans-Metals", "2" },
                     { "Complex Metallics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -710,7 +662,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Alkali Metals", "2" },
                     { "Lanthanides", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -723,7 +674,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -736,7 +686,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -749,7 +698,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -762,7 +710,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -775,7 +722,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -788,7 +734,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -801,7 +746,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -814,7 +758,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -827,7 +770,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -840,7 +782,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -853,7 +794,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Organics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -866,7 +806,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -879,7 +818,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -892,7 +830,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -905,7 +842,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -918,7 +854,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -931,7 +866,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -944,7 +878,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -957,7 +890,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -970,7 +902,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -983,7 +914,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -996,7 +926,6 @@ namespace OE2EmpireTracker.Models
                     { "Transuranic Volatiles", "2" },
                     { "Superheavy Exotics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1009,7 +938,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1022,7 +950,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1035,7 +962,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1048,7 +974,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1061,7 +986,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1074,7 +998,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1087,7 +1010,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Alkali Metals", "2" },
                     { "Lanthanides", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1100,7 +1022,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Organics", "2" },
                     { "Lanthanide Volatiles", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1113,7 +1034,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1126,7 +1046,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1139,7 +1058,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1152,7 +1070,6 @@ namespace OE2EmpireTracker.Models
                     { "Transuranic Volatiles", "2" },
                     { "Superheavy Exotics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1165,7 +1082,6 @@ namespace OE2EmpireTracker.Models
                     { "Transuranic Volatiles", "2" },
                     { "Superheavy Exotics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1178,7 +1094,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Organics", "2" },
                     { "Lanthanide Volatiles", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1191,7 +1106,6 @@ namespace OE2EmpireTracker.Models
                     { "Transuranic Volatiles", "2" },
                     { "Superheavy Exotics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1204,7 +1118,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1217,7 +1130,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1230,7 +1142,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Alkali Metals", "2" },
                     { "Lanthanides", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1243,7 +1154,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1256,7 +1166,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1269,7 +1178,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1282,7 +1190,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1295,7 +1202,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1308,7 +1214,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1321,7 +1226,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1334,7 +1238,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1347,7 +1250,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1360,7 +1262,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1373,7 +1274,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1386,7 +1286,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1399,7 +1298,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1412,7 +1310,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1425,7 +1322,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1438,7 +1334,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1451,7 +1346,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1464,7 +1358,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1477,7 +1370,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1490,7 +1382,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1503,7 +1394,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1516,7 +1406,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Acidic Inorganics", "2" },
                     { "Heavy Alkaline Earth Metals", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1529,7 +1418,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1542,7 +1430,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1555,7 +1442,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1568,7 +1454,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Trans-Metals", "2" },
                     { "Complex Metallics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1581,7 +1466,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Acidic Inorganics", "2" },
                     { "Heavy Alkaline Earth Metals", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1594,7 +1478,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1607,7 +1490,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Acidic Inorganics", "2" },
                     { "Heavy Alkaline Earth Metals", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1620,7 +1502,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1633,7 +1514,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1646,7 +1526,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1659,7 +1538,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1672,7 +1550,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1685,7 +1562,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1698,7 +1574,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Organics", "2" },
                     { "Lanthanide Volatiles", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1711,7 +1586,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1724,7 +1598,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1737,7 +1610,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Alkali Metals", "2" },
                     { "Lanthanides", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1750,7 +1622,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1763,7 +1634,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1776,7 +1646,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Alkali Metals", "2" },
                     { "Lanthanides", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1789,7 +1658,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1802,7 +1670,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1815,7 +1682,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1828,7 +1694,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Alkali Metals", "2" },
                     { "Lanthanides", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1841,7 +1706,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Trans-Metals", "2" },
                     { "Complex Metallics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1854,7 +1718,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1867,7 +1730,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1880,7 +1742,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1893,7 +1754,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Trans-Metals", "2" },
                     { "Complex Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1906,7 +1766,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1919,7 +1778,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Trans-Metals", "2" },
                     { "Complex Metallics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1932,7 +1790,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1945,7 +1802,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Organics", "2" },
                     { "Lanthanide Volatiles", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1958,7 +1814,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1971,7 +1826,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1984,7 +1838,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -1997,7 +1850,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2010,7 +1862,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Organics", "2" },
                     { "Lanthanide Volatiles", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2023,7 +1874,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2036,7 +1886,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2049,7 +1898,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2062,7 +1910,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2075,7 +1922,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2088,7 +1934,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Acidic Inorganics", "2" },
                     { "Heavy Alkaline Earth Metals", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2101,7 +1946,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2114,7 +1958,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Organics", "2" },
                     { "Lanthanide Volatiles", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2127,7 +1970,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2140,7 +1982,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2153,7 +1994,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2166,7 +2006,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2179,7 +2018,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2192,7 +2030,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Organics", "2" },
                     { "Lanthanide Volatiles", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2205,7 +2042,6 @@ namespace OE2EmpireTracker.Models
                     { "Transuranic Volatiles", "2" },
                     { "Superheavy Exotics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2218,7 +2054,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2231,7 +2066,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2244,7 +2078,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2257,7 +2090,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2270,7 +2102,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2283,7 +2114,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2296,7 +2126,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2309,7 +2138,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2322,7 +2150,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Organics", "2" },
                     { "Lanthanide Volatiles", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2335,7 +2162,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2348,7 +2174,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2361,7 +2186,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2374,7 +2198,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2387,7 +2210,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Acidic Inorganics", "2" },
                     { "Heavy Alkaline Earth Metals", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2400,7 +2222,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2413,7 +2234,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Trans-Metals", "2" },
                     { "Complex Metallics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2426,7 +2246,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2439,7 +2258,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2452,7 +2270,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2465,7 +2282,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2478,7 +2294,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2491,7 +2306,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2504,7 +2318,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2517,7 +2330,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Metals", "2" },
                     { "Heavy Noble Gases", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2530,7 +2342,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2543,7 +2354,6 @@ namespace OE2EmpireTracker.Models
                     { "Noble Gases", "2" },
                     { "Halogens", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2556,7 +2366,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Alkali Metals", "2" },
                     { "Lanthanides", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2569,7 +2378,6 @@ namespace OE2EmpireTracker.Models
                     { "Non-Metallics", "2" },
                     { "Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2582,7 +2390,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2595,7 +2402,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Alkali Metals", "2" },
                     { "Lanthanides", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2608,7 +2414,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Trans-Metals", "2" },
                     { "Complex Metallics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2621,7 +2426,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2634,7 +2438,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2647,7 +2450,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2660,7 +2462,6 @@ namespace OE2EmpireTracker.Models
                     { "Metaloids", "2" },
                     { "Complex Non-Metallics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2673,7 +2474,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2686,7 +2486,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Alkali Inorganics", "2" },
                     { "Heavy Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2699,7 +2498,6 @@ namespace OE2EmpireTracker.Models
                     { "Strong Acidic Inorganics", "2" },
                     { "Heavy Alkaline Earth Metals", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2712,7 +2510,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2725,7 +2522,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2738,7 +2534,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2751,7 +2546,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Organics", "2" },
                     { "Acidic Organics", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2764,7 +2558,6 @@ namespace OE2EmpireTracker.Models
                     { "Light Halogens", "2" },
                     { "Alkaline Earth Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2777,7 +2570,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2790,7 +2582,6 @@ namespace OE2EmpireTracker.Models
                     { "Trans-Metals", "2" },
                     { "Post-Trans Metals", "2" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2803,7 +2594,6 @@ namespace OE2EmpireTracker.Models
                     { "Heavy Trans-Metals", "2" },
                     { "Complex Metallics", "1" }
                 }
-
             });
             instance.Add(new Commodity()
             {
@@ -2816,7 +2606,6 @@ namespace OE2EmpireTracker.Models
                     { "Alkali Inorganics", "2" },
                     { "Acidic Inorganics", "2" }
                 }
-
             });
 
             instance.Sort((x, y) => x.Name.CompareTo(y.Name));

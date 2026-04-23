@@ -30,7 +30,7 @@ namespace OE2EmpireTracker.Models
         public ItemTypeEnum ID { get; set; }
         public string Name { get; set; }
 
-        private static List<ItemType> _itemTypes = getItemTypes();
+        private static List<ItemType> _itemTypes = GetItemTypes();
         private static Dictionary<ItemTypeEnum, ItemType> _itemTypeMapByEnum;
         private static Dictionary<string, ItemType> _itemTypeMapByString;
 
@@ -38,8 +38,7 @@ namespace OE2EmpireTracker.Models
         public static IReadOnlyDictionary<ItemTypeEnum, ItemType> ItemTypeMapByEnum => _itemTypeMapByEnum;
         public static IReadOnlyDictionary<string, ItemType> ItemTypeMapByString => _itemTypeMapByString;
 
-
-        private static List<ItemType> getItemTypes()
+        private static List<ItemType> GetItemTypes()
         {
             List<ItemType> instance = new List<ItemType>();
             instance.Add(new ItemType() { ID = ItemTypeEnum.Commodity, Name = "Commodity" });

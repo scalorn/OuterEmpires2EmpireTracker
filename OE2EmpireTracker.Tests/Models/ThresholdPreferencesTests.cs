@@ -8,8 +8,6 @@ namespace OE2EmpireTracker.Tests.Models
     [TestFixture]
     public class ThresholdPreferencesTests
     {
-        #region Default Value Tests (Requirements 1.1--1.9)
-
         [Test]
         public void Default_StructureCountYellow_Is60()
         {
@@ -72,10 +70,6 @@ namespace OE2EmpireTracker.Tests.Models
             var prefs = new ThresholdPreferences();
             Assert.That(prefs.CountdownRefreshRateSeconds, Is.EqualTo(1L));
         }
-
-        #endregion
-
-        #region Validation Tests (Requirements 7.1--7.6)
 
         [Test]
         public void Validate_DefaultPreferences_ReturnsTrue()
@@ -168,10 +162,6 @@ namespace OE2EmpireTracker.Tests.Models
             Assert.That(error, Is.Not.Null);
         }
 
-        #endregion
-
-        #region Property Test: Validation Correctness (Property 6, Requirements 7.1--7.6)
-
         /// <summary>
         /// Generates a random ThresholdPreferences with a mix of valid and invalid values.
         /// Values are drawn from a range that includes negatives, zero, and positives to
@@ -263,7 +253,5 @@ namespace OE2EmpireTracker.Tests.Models
                            $"CR={prefs.CountdownRefreshRateSeconds}");
             });
         }
-
-        #endregion
     }
 }

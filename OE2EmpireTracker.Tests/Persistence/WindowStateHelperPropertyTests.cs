@@ -18,8 +18,6 @@ namespace OE2EmpireTracker.Tests.Persistence
     [Apartment(ApartmentState.STA)]
     public class WindowStateHelperPropertyTests
     {
-        #region Helpers
-
         private static Gen<string> NonEmptyControlNameGen()
         {
             return Gen.Elements(
@@ -37,10 +35,6 @@ namespace OE2EmpireTracker.Tests.Persistence
                 "Class 1", "Class 2", "Class 3", "Evo 0", "Evo 1"
            );
         }
-
-        #endregion
-
-        #region Property 3: ComboBox/CheckBox save-restore round trip
 
         /// <summary>
         /// Property 3: WindowStateHelper ComboBox/CheckBox save-restore round trip.
@@ -127,13 +121,8 @@ namespace OE2EmpireTracker.Tests.Persistence
                         return comboMatch.And(checkMatch);
                     }
                 }
-
             });
         }
-
-        #endregion
-
-        #region Edge case: saved value no longer in items list
 
         /// <summary>
         /// When the saved combo value no longer exists in the ComboBox's items
@@ -191,10 +180,7 @@ namespace OE2EmpireTracker.Tests.Persistence
                             .Label($"Expected default index -1, got {combo2.SelectedIndex}");
                     }
                 }
-
             });
         }
-
-        #endregion
     }
 }

@@ -30,8 +30,8 @@ namespace OE2EmpireTracker.Forms
                     selectNode = node;
             }
 
-            treeViewTopics.AfterSelect += treeViewTopics_AfterSelect;
-            webBrowser.Navigating += webBrowser_Navigating;
+            treeViewTopics.AfterSelect += TreeViewTopics_AfterSelect;
+            webBrowser.Navigating += WebBrowser_Navigating;
 
             if (selectNode != null)
                 treeViewTopics.SelectedNode = selectNode;
@@ -39,7 +39,7 @@ namespace OE2EmpireTracker.Forms
                 treeViewTopics.SelectedNode = treeViewTopics.Nodes[0];
         }
 
-        private void treeViewTopics_AfterSelect(object sender, TreeViewEventArgs e)
+        private void TreeViewTopics_AfterSelect(object sender, TreeViewEventArgs e)
         {
             string fileName = e.Node.Tag as string;
             if (fileName == null) return;
@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Forms
                 webBrowser.DocumentText = HelpRenderer.RenderMarkdown("# Topic Not Available\n\nThe requested help topic could not be found.");
         }
 
-        private void webBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+        private void WebBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
             string url = e.Url.ToString();
 

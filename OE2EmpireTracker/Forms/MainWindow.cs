@@ -90,7 +90,7 @@ namespace OE2EmpireTracker
             }
         }
 
-        private void cmbCurrentPlayer_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbCurrentPlayer_SelectedIndexChanged(object sender, EventArgs e)
         {
             int idx = cmbCurrentPlayer.SelectedIndex;
             if (idx >= 0 && idx < playerContext.PlayerProfileList.Count)
@@ -128,92 +128,92 @@ namespace OE2EmpireTracker
             return form;
         }
 
-        private void addBlueprintV2ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AddBlueprintV2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormBlueprintV2>();
         }
 
-        private void addColonyV2ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AddColonyV2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormColonyV2>();
         }
 
-        private void addSurveyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AddSurveyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormSurvey>();
         }
 
-        private void managePlayerProfiles_Click(object sender, EventArgs e)
+        private void ManagePlayerProfiles_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormPlayerProfile>();
         }
 
-        private void deliveryRoutesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DeliveryRoutesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.DeliveryRoute.FormDeliveryRoute>();
         }
 
-        private void pricingPlansToolStripMenuItem_Click(object sender, EventArgs e)
+        private void PricingPlansToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.PricingPlan.FormPricingPlan>();
         }
 
-        private void buildPlannerToolStripMenuItem_Click(object sender, EventArgs e)
+        private void BuildPlannerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormBuildPlanner>();
         }
 
-        private void contactsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ContactsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormContacts>();
         }
 
-        private void shipTemplatesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ShipTemplatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.ShipTemplate.FormShipTemplate>();
         }
 
-        private void shipsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ShipsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.ShipInstance.FormShipInstance>();
         }
 
-        private void stationsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void StationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.Station.FormStation>();
         }
 
-        private void marketToolStripMenuItem_Click(object sender, EventArgs e)
+        private void MarketToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.Market.FormMarket>();
         }
 
-        private void asteroidsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AsteroidsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.Asteroid.FormAsteroid>();
         }
 
-        private void supplyChainsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SupplyChainsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.SupplyChain.FormSupplyChain>();
         }
 
-        private void stockTargetsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void StockTargetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.StockTargets.FormStockTargets>();
         }
 
-        private void deliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DeliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.DeliveryExecution.FormDeliveryExecution>();
         }
 
-        private void colonyDailyBuildToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ColonyDailyBuildToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormColonyDailyBuild>();
         }
 
-        private void colonyActivityToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ColonyActivityToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormColonyActivity>();
         }
@@ -328,7 +328,7 @@ namespace OE2EmpireTracker
             base.OnFormClosed(e);
         }
 
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
@@ -364,7 +364,7 @@ namespace OE2EmpireTracker
             }
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (var dlg = new OpenFileDialog())
             {
@@ -389,7 +389,7 @@ namespace OE2EmpireTracker
             }
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(_lastOpenedPath))
             {
@@ -412,12 +412,12 @@ namespace OE2EmpireTracker
             }
         }
 
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             PerformSaveAs();
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to exit?",
                 "Confirm Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -427,7 +427,7 @@ namespace OE2EmpireTracker
             }
         }
 
-        private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void PreferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (var form = new FormPreferences())
             {
@@ -435,12 +435,12 @@ namespace OE2EmpireTracker
             }
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FormAbout().ShowDialog(this);
         }
 
-        private void contentsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ContentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FormHelp().ShowDialog(this);
         }
@@ -471,17 +471,17 @@ namespace OE2EmpireTracker
             }
         }
 
-        private void cascadeToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CascadeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LayoutMdi(MdiLayout.Cascade);
         }
 
-        private void tileHorizontalToolStripMenuItem_Click(object sender, EventArgs e)
+        private void TileHorizontalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LayoutMdi(MdiLayout.TileHorizontal);
         }
 
-        private void tileVerticalToolStripMenuItem_Click(object sender, EventArgs e)
+        private void TileVerticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LayoutMdi(MdiLayout.TileVertical);
         }

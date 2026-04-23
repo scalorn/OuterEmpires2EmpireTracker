@@ -10,11 +10,11 @@ using OE2EmpireTracker.Models;
 namespace OE2EmpireTracker.Services
 {
     /// <summary>
-    /// Calculates the resource status (Power, Habitation, Food, Entertainment, Warehouse) 
+    /// Calculates the resource status (Power, Habitation, Food, Entertainment, Warehouse)
     /// for a specific colony based on its structures and assigned workers.
     /// </summary>
     /// <remarks>
-    /// <para>This class aggregates resource provisioning from built/online structures against 
+    /// <para>This class aggregates resource provisioning from built/online structures against
     /// the requirements imposed by colony workers and structure demands.</para>
     /// <para>It relies on <see cref="EmpireContext"/> to retrieve blueprint definitions and player data.</para>
     /// </remarks>
@@ -37,8 +37,8 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private Colony colony;
 
-        public ColonyStructureStatus finalActualStatus;
-        public ColonyStructureStatus finalIdealStatus;
+        public ColonyStructureStatus FinalActualStatus { get; set; }
+        public ColonyStructureStatus FinalIdealStatus { get; set; }
 
         /// <summary>
         /// Collection of workers assigned to structures within this colony.
@@ -74,7 +74,7 @@ namespace OE2EmpireTracker.Services
         /// <item><description>Checks if a Blueprint exists for the structure.</description></item>
         /// <item><description>Evaluates properties to determine if a structure is 'Online' and 'Built'.</description></item>
         /// <item><description>Sums up Power, Habitation, Food, Entertainment, and Warehouse stats based on online status.</description></item>
-        /// <item><description>Parses worker assignment details (Blue/White Collar, Specialists) from blueprint properties 
+        /// <item><description>Parses worker assignment details (Blue/White Collar, Specialists) from blueprint properties
         /// and validates them against the structure's assigned workers list.</description></item>
         /// </list>
         /// <para>At the end of the loop:</para>
@@ -102,7 +102,7 @@ namespace OE2EmpireTracker.Services
                     StructureCounts.TryGetValue(FlatpackBlueprint.BluePrintType, out count);
                     count++;
                     StructureCounts[FlatpackBlueprint.BluePrintType] = count;
-                    structure.displaySequence = count;
+                    structure.DisplaySequence = count;
 
                     // Lock assigned workers for this structure
                     LockAssignedWorkers(structure, FlatpackBlueprint);
@@ -127,10 +127,10 @@ namespace OE2EmpireTracker.Services
                 previousStatus = currentStatus;
             }
 
-            finalActualStatus = previousStatus;
-            finalActualStatus.WarehouseRequired = CalculateWarehouseRequired();
+            FinalActualStatus = previousStatus;
+            FinalActualStatus.WarehouseRequired = CalculateWarehouseRequired();
 
-            // Cross-check: sum all deltas into finalActualStatus
+            // Cross-check: sum all deltas into FinalActualStatus
             SumAllDeltas();
 
             // Lock unallocated workers against the colony
@@ -139,11 +139,11 @@ namespace OE2EmpireTracker.Services
             Log.Info("CalculateBuilt ACTUAL: colony={0} structures={1} Power={2}/{3} Hab={4}/{5} Food={6}/{7} Ent={8}/{9} WH={10}/{11}",
                 colony.ColonyName ?? colony.PlanetName ?? colony.UUID,
                 colony.Structures.Count,
-                finalActualStatus.PowerProvided, finalActualStatus.PowerRequired,
-                finalActualStatus.HabitationProvision, finalActualStatus.HabitationRequired,
-                finalActualStatus.FoodProvision, finalActualStatus.FoodRequired,
-                finalActualStatus.EntertainmentProvided, finalActualStatus.EntertainmentRequired,
-                finalActualStatus.WarehouseCapacity, finalActualStatus.WarehouseRequired);
+                FinalActualStatus.PowerProvided, FinalActualStatus.PowerRequired,
+                FinalActualStatus.HabitationProvision, FinalActualStatus.HabitationRequired,
+                FinalActualStatus.FoodProvision, FinalActualStatus.FoodRequired,
+                FinalActualStatus.EntertainmentProvided, FinalActualStatus.EntertainmentRequired,
+                FinalActualStatus.WarehouseCapacity, FinalActualStatus.WarehouseRequired);
         }
 
         public void CalculateIdeal()
@@ -160,17 +160,17 @@ namespace OE2EmpireTracker.Services
                 previousStatus = currentStatus;
             }
 
-            finalIdealStatus = previousStatus;
-            finalIdealStatus.WarehouseRequired = CalculateWarehouseRequired();
+            FinalIdealStatus = previousStatus;
+            FinalIdealStatus.WarehouseRequired = CalculateWarehouseRequired();
 
             Log.Info("CalculateIdeal IDEAL: colony={0} structures={1} Power={2}/{3} Hab={4}/{5} Food={6}/{7} Ent={8}/{9} WH={10}/{11}",
                 colony.ColonyName ?? colony.PlanetName ?? colony.UUID,
                 colony.Structures.Count,
-                finalIdealStatus.PowerProvided, finalIdealStatus.PowerRequired,
-                finalIdealStatus.HabitationProvision, finalIdealStatus.HabitationRequired,
-                finalIdealStatus.FoodProvision, finalIdealStatus.FoodRequired,
-                finalIdealStatus.EntertainmentProvided, finalIdealStatus.EntertainmentRequired,
-                finalIdealStatus.WarehouseCapacity, finalIdealStatus.WarehouseRequired);
+                FinalIdealStatus.PowerProvided, FinalIdealStatus.PowerRequired,
+                FinalIdealStatus.HabitationProvision, FinalIdealStatus.HabitationRequired,
+                FinalIdealStatus.FoodProvision, FinalIdealStatus.FoodRequired,
+                FinalIdealStatus.EntertainmentProvided, FinalIdealStatus.EntertainmentRequired,
+                FinalIdealStatus.WarehouseCapacity, FinalIdealStatus.WarehouseRequired);
         }
 
         private decimal CalculateWarehouseRequired()
@@ -220,9 +220,9 @@ namespace OE2EmpireTracker.Services
             if (bp == null) return delta;
 
             bool built = false, staged = false, online = false;
-            structure.Properties.getBoolean(GameConstants.PropBuilt, false, out built);
-            structure.Properties.getBoolean(GameConstants.PropStaged, false, out staged);
-            structure.Properties.getBoolean(GameConstants.PropOnline, false, out online);
+            structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out built);
+            structure.Properties.GetBoolean(GameConstants.PropStaged, false, out staged);
+            structure.Properties.GetBoolean(GameConstants.PropOnline, false, out online);
 
             if (online)
             {
@@ -245,12 +245,12 @@ namespace OE2EmpireTracker.Services
                 if (bp.Properties.ContainsKey(wt.PropertyKey))
                 {
                     long count = 0;
-                    bp.Properties.getLong(wt.PropertyKey, 0, out count);
+                    bp.Properties.GetLong(wt.PropertyKey, 0, out count);
                     for (int i = 1; i <= count; i++)
                     {
                         string key = wt.WorkerPrefix + i;
                         bool assigned = false;
-                        structure.AssignedWorkers.getBoolean(key, false, out assigned);
+                        structure.AssignedWorkers.GetBoolean(key, false, out assigned);
                         if (assigned)
                             assignedCount++;
                     }
@@ -271,7 +271,7 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Sums all per-structure StatusDelta values into finalActualStatus.
+        /// Sums all per-structure StatusDelta values into FinalActualStatus.
         /// Called after CalculateBuilt() has computed deltas for every structure.
         /// Also sets Habitation/Food/Entertainment Required from worker counts.
         /// </summary>
@@ -297,18 +297,18 @@ namespace OE2EmpireTracker.Services
                 totalUnallocated += d.UnallocatedCount;
             }
 
-            finalActualStatus.PowerProvided = powerProvided;
-            finalActualStatus.PowerRequired = powerRequired;
-            finalActualStatus.HabitationProvision = habitationProvision;
-            finalActualStatus.FoodProvision = foodProvision;
-            finalActualStatus.EntertainmentProvided = entertainmentProvided;
-            finalActualStatus.WarehouseCapacity = warehouseCapacity;
+            FinalActualStatus.PowerProvided = powerProvided;
+            FinalActualStatus.PowerRequired = powerRequired;
+            FinalActualStatus.HabitationProvision = habitationProvision;
+            FinalActualStatus.FoodProvision = foodProvision;
+            FinalActualStatus.EntertainmentProvided = entertainmentProvided;
+            FinalActualStatus.WarehouseCapacity = warehouseCapacity;
 
             int totalPeople = totalWorkers + totalUnallocated;
-            finalActualStatus.HabitationRequired = totalPeople;
-            finalActualStatus.FoodRequired = totalPeople;
-            finalActualStatus.EntertainmentRequired = totalPeople * 2;
-            finalActualStatus.WarehouseRequired = CalculateWarehouseRequired();
+            FinalActualStatus.HabitationRequired = totalPeople;
+            FinalActualStatus.FoodRequired = totalPeople;
+            FinalActualStatus.EntertainmentRequired = totalPeople * 2;
+            FinalActualStatus.WarehouseRequired = CalculateWarehouseRequired();
         }
 
         /// <summary>
@@ -318,7 +318,7 @@ namespace OE2EmpireTracker.Services
         public void RecalculateStructure(ColonyStructure structure)
         {
             // If no full calculation has been done yet, do one now
-            if (finalActualStatus == null)
+            if (FinalActualStatus == null)
             {
                 CalculateBuilt();
                 CalculateIdeal();
@@ -332,30 +332,30 @@ namespace OE2EmpireTracker.Services
             structure.StatusDelta = newDelta;
 
             // Subtract old delta from totals
-            finalActualStatus.PowerProvided -= oldDelta.PowerProvided;
-            finalActualStatus.PowerRequired -= oldDelta.PowerRequired;
-            finalActualStatus.HabitationProvision -= oldDelta.HabitationProvision;
-            finalActualStatus.FoodProvision -= oldDelta.FoodProvision;
-            finalActualStatus.EntertainmentProvided -= oldDelta.EntertainmentProvided;
-            finalActualStatus.WarehouseCapacity -= oldDelta.WarehouseCapacity;
+            FinalActualStatus.PowerProvided -= oldDelta.PowerProvided;
+            FinalActualStatus.PowerRequired -= oldDelta.PowerRequired;
+            FinalActualStatus.HabitationProvision -= oldDelta.HabitationProvision;
+            FinalActualStatus.FoodProvision -= oldDelta.FoodProvision;
+            FinalActualStatus.EntertainmentProvided -= oldDelta.EntertainmentProvided;
+            FinalActualStatus.WarehouseCapacity -= oldDelta.WarehouseCapacity;
 
             int oldPeople = oldDelta.WorkerCount + oldDelta.UnallocatedCount;
-            finalActualStatus.HabitationRequired -= oldPeople;
-            finalActualStatus.FoodRequired -= oldPeople;
-            finalActualStatus.EntertainmentRequired -= oldPeople * 2;
+            FinalActualStatus.HabitationRequired -= oldPeople;
+            FinalActualStatus.FoodRequired -= oldPeople;
+            FinalActualStatus.EntertainmentRequired -= oldPeople * 2;
 
             // Add new delta to totals
-            finalActualStatus.PowerProvided += newDelta.PowerProvided;
-            finalActualStatus.PowerRequired += newDelta.PowerRequired;
-            finalActualStatus.HabitationProvision += newDelta.HabitationProvision;
-            finalActualStatus.FoodProvision += newDelta.FoodProvision;
-            finalActualStatus.EntertainmentProvided += newDelta.EntertainmentProvided;
-            finalActualStatus.WarehouseCapacity += newDelta.WarehouseCapacity;
+            FinalActualStatus.PowerProvided += newDelta.PowerProvided;
+            FinalActualStatus.PowerRequired += newDelta.PowerRequired;
+            FinalActualStatus.HabitationProvision += newDelta.HabitationProvision;
+            FinalActualStatus.FoodProvision += newDelta.FoodProvision;
+            FinalActualStatus.EntertainmentProvided += newDelta.EntertainmentProvided;
+            FinalActualStatus.WarehouseCapacity += newDelta.WarehouseCapacity;
 
             int newPeople = newDelta.WorkerCount + newDelta.UnallocatedCount;
-            finalActualStatus.HabitationRequired += newPeople;
-            finalActualStatus.FoodRequired += newPeople;
-            finalActualStatus.EntertainmentRequired += newPeople * 2;
+            FinalActualStatus.HabitationRequired += newPeople;
+            FinalActualStatus.FoodRequired += newPeople;
+            FinalActualStatus.EntertainmentRequired += newPeople * 2;
 
             // Re-lock resources for this structure only
             if (colony.Locks != null && !string.IsNullOrEmpty(structure.UUID))
@@ -407,13 +407,13 @@ namespace OE2EmpireTracker.Services
             if (!flatpackBlueprint.Properties.ContainsKey(wt.PropertyKey)) return;
 
             long count = 0;
-            flatpackBlueprint.Properties.getLong(wt.PropertyKey, 0, out count);
+            flatpackBlueprint.Properties.GetLong(wt.PropertyKey, 0, out count);
 
             for (int i = 1; i <= count; i++)
             {
                 string key = wt.WorkerPrefix + i;
                 bool assigned = false;
-                structure.AssignedWorkers.getBoolean(key, false, out assigned);
+                structure.AssignedWorkers.GetBoolean(key, false, out assigned);
                 if (assigned)
                 {
                     EnsureWorkerItemExists(wt.DetailKey);
@@ -551,7 +551,7 @@ namespace OE2EmpireTracker.Services
             if (string.IsNullOrEmpty(structure.FlatpackBlueprintUUID)) return;
 
             bool isStaged = false;
-            structure.Properties.getBoolean(GameConstants.PropStaged, false, out isStaged);
+            structure.Properties.GetBoolean(GameConstants.PropStaged, false, out isStaged);
             if (!isStaged) return;
 
             // Ensure a flatpack item exists in the warehouse
@@ -625,7 +625,7 @@ namespace OE2EmpireTracker.Services
                     if (flatpackBlueprint.Properties.ContainsKey(wt.PropertyKey))
                     {
                         long count = 0;
-                        flatpackBlueprint.Properties.getLong(wt.PropertyKey, 0, out count);
+                        flatpackBlueprint.Properties.GetLong(wt.PropertyKey, 0, out count);
                         for (int i = 1; i <= count; i++)
                         {
                             string key = wt.WorkerPrefix + i;
@@ -639,16 +639,14 @@ namespace OE2EmpireTracker.Services
                     }
 
                     long unassignedCount = 0;
-                    flatpackBlueprint.Properties.getLong(wt.UnassignedPropertyKey, 0, out unassignedCount);
+                    flatpackBlueprint.Properties.GetLong(wt.UnassignedPropertyKey, 0, out unassignedCount);
                     if (unassignedCount > 0)
                     {
                         needUnallocated[wt.DetailKey] = true;
                     }
                 }
-
                 } // end if (built)
             }
-
 
             int unallocatedWorkersAdded = 0;
             foreach (var wt in Models.WorkerDetail.WorkerTypes)
@@ -666,7 +664,7 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            // Assign aggregated values to public properties. 
+            // Assign aggregated values to public properties.
             // Note: 'Required' stats are currently derived from the worker count, not direct blueprint sums.
             status.PowerProvided = builtPowerProvided;
             status.PowerRequired = builtPowerRequired;
@@ -699,7 +697,7 @@ namespace OE2EmpireTracker.Services
         private static decimal GetBlueprintDecimal(Models.Blueprint blueprint, string propertyName)
         {
             decimal value = 0m;
-            blueprint.Properties.getDecimal(propertyName, 0m, out value);
+            blueprint.Properties.GetDecimal(propertyName, 0m, out value);
             return value;
         }
 

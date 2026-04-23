@@ -75,7 +75,7 @@ namespace OE2EmpireTracker.Tests.Services
                 foreach (var mb in parsed)
                 {
                     string iconPos = null;
-                    mb.Blueprint.Properties.getString("_IconPosition", null, out iconPos);
+                    mb.Blueprint.Properties.GetString("_IconPosition", null, out iconPos);
                     if (string.IsNullOrEmpty(iconPos))
                         continue;
 

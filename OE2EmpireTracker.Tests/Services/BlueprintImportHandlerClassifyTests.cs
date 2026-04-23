@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Tests.Services
             bp.TechLevel = "MilSpec";
             bp.Evolution = 2;
             bp.Properties = new PropertyBag();
-            bp.Properties.setProperty("Power Output", "1200");
+            bp.Properties.SetProperty("Power Output", "1200");
             bp.Resources = new Dictionary<string, string> { { "Iron", "100" } };
 
             var result = BlueprintImportHandler.ClassifyImport(bp);
@@ -72,7 +72,7 @@ namespace OE2EmpireTracker.Tests.Services
             bp.Class = 1;
             bp.TechLevel = "Standard";
             bp.Properties = new PropertyBag();
-            bp.Properties.setProperty("Health", "500");
+            bp.Properties.SetProperty("Health", "500");
             bp.Resources = new Dictionary<string, string>();
 
             var result = BlueprintImportHandler.ClassifyImport(bp);

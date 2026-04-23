@@ -89,80 +89,80 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             lvwColonies.Columns.Add("Planet", 80);
             lvwColonies.Columns.Add("Name", 80);
             lvwColonies.Columns.Add("Refs", 40);
-            lvwColonies.ColumnClick += lvwColonies_ColumnClick;
+            lvwColonies.ColumnClick += LvwColonies_ColumnClick;
             lvwColonies.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
             PopulateListView(playerContext.GetCurrentPlayerColonies());
 
             // Wire filter handler
-            txtColonyFilter.TextChanged += txtColonyFilter_TextChanged;
+            txtColonyFilter.TextChanged += TxtColonyFilter_TextChanged;
 
             // Wire colony selection handler
-            lvwColonies.ItemSelectionChanged += lvwColonies_ItemSelectionChanged;
+            lvwColonies.ItemSelectionChanged += LvwColonies_ItemSelectionChanged;
 
             // Wire write-through handlers
-            txtPlanetName.TextChanged += txtPlanetName_TextChanged;
-            txtColonyName.TextChanged += txtColonyName_TextChanged;
-            txtSystemName.TextChanged += txtSystemName_TextChanged;
+            txtPlanetName.TextChanged += TxtPlanetName_TextChanged;
+            txtColonyName.TextChanged += TxtColonyName_TextChanged;
+            txtSystemName.TextChanged += TxtSystemName_TextChanged;
 
             // Wire tab change for deferred population
-            tabDetailedData.SelectedIndexChanged += tabDetailedData_SelectedIndexChanged;
+            tabDetailedData.SelectedIndexChanged += TabDetailedData_SelectedIndexChanged;
 
             // Wire flatpack filter and add button (8.3)
-            txtFilterFlatpack.TextChanged += txtFilterFlatpack_TextChanged;
-            cmdAddFlatpack.Click += cmdAddFlatpack_Click;
+            txtFilterFlatpack.TextChanged += TxtFilterFlatpack_TextChanged;
+            cmdAddFlatpack.Click += CmdAddFlatpack_Click;
             PopulateFlatpackCombo();
 
             // Structure type filter (9.1, 9.3)
             SeedUncheckedStructureTypes();
 
             // Wire commodity request handlers (19.1-19.8)
-            txtCommodityRequestFilter.TextChanged += txtCommodityRequestFilter_TextChanged;
-            cmdAddCommodityRequest.Click += cmdAddCommodityRequest_Click;
-            dgvCommodityRequests.CurrentCellDirtyStateChanged += dgvCommodityRequests_CurrentCellDirtyStateChanged;
-            dgvCommodityRequests.CellValueChanged += dgvCommodityRequests_CellValueChanged;
-            dgvCommodityRequests.CellValidating += dgvCommodityRequests_CellValidating;
-            dgvCommodityRequests.SelectionChanged += dgvCommodityRequests_SelectionChanged;
-            dgvCommodityRequests.KeyDown += dgvCommodityRequests_KeyDown;
+            txtCommodityRequestFilter.TextChanged += TxtCommodityRequestFilter_TextChanged;
+            cmdAddCommodityRequest.Click += CmdAddCommodityRequest_Click;
+            dgvCommodityRequests.CurrentCellDirtyStateChanged += DgvCommodityRequests_CurrentCellDirtyStateChanged;
+            dgvCommodityRequests.CellValueChanged += DgvCommodityRequests_CellValueChanged;
+            dgvCommodityRequests.CellValidating += DgvCommodityRequests_CellValidating;
+            dgvCommodityRequests.SelectionChanged += DgvCommodityRequests_SelectionChanged;
+            dgvCommodityRequests.KeyDown += DgvCommodityRequests_KeyDown;
             UpdateCommodityRequestList();
 
             // Enable owner-draw so tab BackColor renders with visual styles (11.4)
             tabDetailedData.DrawMode = TabDrawMode.OwnerDrawFixed;
-            tabDetailedData.DrawItem += tabDetailedData_DrawItem;
+            tabDetailedData.DrawItem += TabDetailedData_DrawItem;
 
             // Wire warehouse handlers (20.1-20.6)
             cmbItemType.DataSource = Models.ItemType.ItemTypes;
             cmbItemType.DisplayMember = "Name";
-            cmbItemType.SelectedIndexChanged += cmbItemType_SelectedIndexChanged;
-            txtItemFilter.TextChanged += txtItemFilter_TextChanged;
-            cmbItem.SelectedIndexChanged += cmbItem_SelectedIndexChanged;
+            cmbItemType.SelectedIndexChanged += CmbItemType_SelectedIndexChanged;
+            txtItemFilter.TextChanged += TxtItemFilter_TextChanged;
+            cmbItem.SelectedIndexChanged += CmbItem_SelectedIndexChanged;
             cmbPurity.DataSource = Models.ResourcePurity.Purities;
             cmbPurity.DisplayMember = "Name";
-            cmdAddItem.Click += cmdAddItem_Click;
-            dgvItems.CellValidating += dgvItems_CellValidating;
-            dgvItems.CellValueChanged += dgvItems_CellValueChanged;
-            dgvItems.SelectionChanged += dgvItems_SelectionChanged;
-            dgvItems.KeyDown += dgvItems_KeyDown;
+            cmdAddItem.Click += CmdAddItem_Click;
+            dgvItems.CellValidating += DgvItems_CellValidating;
+            dgvItems.CellValueChanged += DgvItems_CellValueChanged;
+            dgvItems.SelectionChanged += DgvItems_SelectionChanged;
+            dgvItems.KeyDown += DgvItems_KeyDown;
 
             // Wire admin refresh timer (11.1)
-            timerAdminRefresh.Tick += timerAdminRefresh_Tick;
+            timerAdminRefresh.Tick += TimerAdminRefresh_Tick;
             timerAdminRefresh.Start();
 
             // Wire overflow tab handlers (task 38)
             cmbOverflowDestType.Items.Add(DestinationType.Colony);
             cmbOverflowDestType.Items.Add(DestinationType.Station);
             if (cmbOverflowDestType.Items.Count > 0) cmbOverflowDestType.SelectedIndex = 0;
-            cmbOverflowDestType.SelectedIndexChanged += cmbOverflowDestType_SelectedIndexChanged;
+            cmbOverflowDestType.SelectedIndexChanged += CmbOverflowDestType_SelectedIndexChanged;
             txtOverflowResourceFilter.TextChanged += (s, ev) => { if (_isProgrammaticUpdate == 0) PopulateOverflowResourceCombo(); };
             txtOverflowDestFilter.TextChanged += (s, ev) => { if (_isProgrammaticUpdate == 0) PopulateOverflowDestCombo(); };
             txtOverflowRouteFilter.TextChanged += (s, ev) => { if (_isProgrammaticUpdate == 0) PopulateOverflowRouteCombo(); };
-            cmdAddOverflowRule.Click += cmdAddOverflowRule_Click;
-            cmdRemoveOverflowRule.Click += cmdRemoveOverflowRule_Click;
-            dgvOverflowRules.CurrentCellDirtyStateChanged += dgvOverflowRules_CurrentCellDirtyStateChanged;
-            dgvOverflowRules.CellValueChanged += dgvOverflowRules_CellValueChanged;
+            cmdAddOverflowRule.Click += CmdAddOverflowRule_Click;
+            cmdRemoveOverflowRule.Click += CmdRemoveOverflowRule_Click;
+            dgvOverflowRules.CurrentCellDirtyStateChanged += DgvOverflowRules_CurrentCellDirtyStateChanged;
+            dgvOverflowRules.CellValueChanged += DgvOverflowRules_CellValueChanged;
 
             // Wire import handlers (21.1, 21.5)
-            cmdImportColony.Click += cmdImportColony_Click;
-            cmdImportClipboard.Click += cmdImportClipboard_Click;
+            cmdImportColony.Click += CmdImportColony_Click;
+            cmdImportClipboard.Click += CmdImportClipboard_Click;
 
             // Subscribe to context events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
@@ -252,19 +252,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Write-through handlers
         // -------------------------------------------------------------------
 
-        private void txtPlanetName_TextChanged(object sender, EventArgs e)
+        private void TxtPlanetName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             colonyViewModel.PlanetName = txtPlanetName.Text;
         }
 
-        private void txtColonyName_TextChanged(object sender, EventArgs e)
+        private void TxtColonyName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             colonyViewModel.ColonyName = txtColonyName.Text;
         }
 
-        private void txtSystemName_TextChanged(object sender, EventArgs e)
+        private void TxtSystemName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             colonyViewModel.Data.SystemName = txtSystemName.Text;
@@ -337,7 +337,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Filter (6.5)
         // -------------------------------------------------------------------
 
-        private void txtColonyFilter_TextChanged(object sender, EventArgs e)
+        private void TxtColonyFilter_TextChanged(object sender, EventArgs e)
         {
             string filter = txtColonyFilter.Text;
             var colonies = playerContext.GetCurrentPlayerColonies();
@@ -371,7 +371,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Column sort (6.6)
         // -------------------------------------------------------------------
 
-        private void lvwColonies_ColumnClick(object sender, ColumnClickEventArgs e)
+        private void LvwColonies_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             if (e.Column == _sortColumn)
                 _sortOrder = _sortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
@@ -401,7 +401,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Colony selection (6.8)
         // -------------------------------------------------------------------
 
-        private void lvwColonies_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwColonies_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (lvwColonies.SelectedItems.Count == 1)
             {
@@ -412,7 +412,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 int generation = Interlocked.Increment(ref _calcGeneration);
 
                 selectedColony = lvwColonies.SelectedItems[0].Tag as Models.Colony;
-                Log.Debug("V2.lvwColonies_ItemSelectionChanged: colony={0} uuid={1}",
+                Log.Debug("V2.LvwColonies_ItemSelectionChanged: colony={0} uuid={1}",
                     selectedColony?.ColonyName ?? selectedColony?.PlanetName ?? "(null)",
                     selectedColony?.UUID ?? "(null)");
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
@@ -559,7 +559,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             sw.Stop(); Log.Info("PERF PopulateActiveTab: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void tabDetailedData_SelectedIndexChanged(object sender, EventArgs e)
+        private void TabDetailedData_SelectedIndexChanged(object sender, EventArgs e)
         {
             var tab = tabDetailedData.SelectedTab;
             if (tab == tabPStructures && _structuresDirty)
@@ -593,7 +593,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // CRUD operations (6.9)
         // -------------------------------------------------------------------
 
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             using var guard = new ProgrammaticUpdateGuard(this);
             selectedColony = new Models.Colony();
@@ -606,13 +606,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             UpdateDeleteButtonState();
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void CmdSave_Click(object sender, EventArgs e)
         {
             using var guard = new ProgrammaticUpdateGuard(this);
 
             if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
-                Log.Warn("cmdSave_Click: write lock timeout on colony {0}", selectedColony.UUID);
+                Log.Warn("CmdSave_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
 
@@ -634,11 +634,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             playerContext.OnColonyDataChanged(selectedColony.UUID);
             playerContext.WriteContext();
             // Refresh list with current filter
-            txtColonyFilter_TextChanged(sender, e);
+            TxtColonyFilter_TextChanged(sender, e);
             UpdateTitle();
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID)) return;
 
@@ -661,7 +661,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
-                Log.Warn("cmdDelete_Click: write lock timeout on colony {0}", selectedColony.UUID);
+                Log.Warn("CmdDelete_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
 
@@ -686,7 +686,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             MarkAllTabsDirty();
 
             // Refresh list
-            txtColonyFilter_TextChanged(sender, e);
+            TxtColonyFilter_TextChanged(sender, e);
             UpdateTitle();
             UpdateDeleteButtonState();
         }
@@ -777,7 +777,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             while (_pool.Count < needed)
             {
                 var newCtrl = new ColonyStructureV2();
-                newCtrl.ColonyStructureDataChanged += structures_ColonyStructureDataChanged;
+                newCtrl.ColonyStructureDataChanged += Structures_ColonyStructureDataChanged;
                 newCtrl.Visible = false;
                 _pool.Add(newCtrl);
                 flpStructures.Controls.Add(newCtrl);
@@ -885,23 +885,23 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             sw.Stop(); Log.Info("PERF PopulateFlatpackCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void txtFilterFlatpack_TextChanged(object sender, EventArgs e)
+        private void TxtFilterFlatpack_TextChanged(object sender, EventArgs e)
         {
             PopulateFlatpackCombo();
             cmbFlatpacks.DroppedDown = true;
         }
 
-        private void cmdAddFlatpack_Click(object sender, EventArgs e)
+        private void CmdAddFlatpack_Click(object sender, EventArgs e)
         {
             if (cmbFlatpacks.SelectedValue == null || string.IsNullOrEmpty(cmbFlatpacks.SelectedValue.ToString()))
                 return;
 
             string uuid = cmbFlatpacks.SelectedValue.ToString();
-            Log.Debug("V2.cmdAddFlatpack_Click: blueprintUUID={0}", uuid);
+            Log.Debug("V2.CmdAddFlatpack_Click: blueprintUUID={0}", uuid);
 
             if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
-                Log.Warn("cmdAddFlatpack_Click: write lock timeout on colony {0}", selectedColony.UUID);
+                Log.Warn("CmdAddFlatpack_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
 
@@ -929,17 +929,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Structure change handlers (8.4, 8.5)
         // -------------------------------------------------------------------
 
-        private void structures_ColonyStructureDataChanged(object sender, ColonyStructureDataChangedEventArgs e)
+        private void Structures_ColonyStructureDataChanged(object sender, ColonyStructureDataChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
 
             var ctrl = sender as ColonyStructureV2;
-            Log.Debug("V2.structures_ColonyStructureDataChanged: structural={0} sender={1}",
+            Log.Debug("V2.Structures_ColonyStructureDataChanged: structural={0} sender={1}",
                 e.IsStructural, ctrl?.ViewModel?.Data?.UUID ?? "(unknown)");
 
             if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
-                Log.Warn("structures_ColonyStructureDataChanged: write lock timeout on colony {0}", selectedColony.UUID);
+                Log.Warn("Structures_ColonyStructureDataChanged: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
 
@@ -992,7 +992,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void RefreshStatusSummary()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            var status = colonyViewModel.Calculator.finalActualStatus;
+            var status = colonyViewModel.Calculator.FinalActualStatus;
             if (status == null)
             {
                 rtbStatusSummary.Text = string.Empty;
@@ -1009,7 +1009,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Structures tab layout handler
         // -------------------------------------------------------------------
 
-        private void tabPStructures_Layout(object sender, LayoutEventArgs e)
+        private void TabPStructures_Layout(object sender, LayoutEventArgs e)
         {
             // Size pooled controls to match the structure panel width (inside splitStructures.Panel2)
             int w = flpStructures.ClientSize.Width;
@@ -1041,7 +1041,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     txtColonyFilter.Text = string.Empty;
                 }
 
-                txtColonyFilter_TextChanged(this, EventArgs.Empty);
+                TxtColonyFilter_TextChanged(this, EventArgs.Empty);
             }
 
             if (lvwColonies.SelectedItems.Count == 0 && lvwColonies.Items.Count > 0)
@@ -1051,11 +1051,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void splitMain_Paint(object sender, PaintEventArgs e)
+        private void SplitMain_Paint(object sender, PaintEventArgs e)
         {
             // Draw a visible bar on the splitter area so the user can find it
             var rect = splitMain.SplitterRectangle;
-            Log.Info("splitMain_Paint fired: SplitterRect={0}, ClipRect={1}", rect, e.ClipRectangle);
+            Log.Info("SplitMain_Paint fired: SplitterRect={0}, ClipRect={1}", rect, e.ClipRectangle);
             using (var brush = new System.Drawing.SolidBrush(System.Drawing.SystemColors.ControlDark))
             {
                 e.Graphics.FillRectangle(brush, rect);
@@ -1077,7 +1077,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Layout handler
         // -------------------------------------------------------------------
 
-        private void flpColonyData_Layout(object sender, LayoutEventArgs e)
+        private void FlpColonyData_Layout(object sender, LayoutEventArgs e)
         {
             int totalHeight = flpColonyData.ClientSize.Height;
 
@@ -1140,7 +1140,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             sw.Stop(); Log.Info("PERF RefreshAdminReport: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void timerAdminRefresh_Tick(object sender, EventArgs e)
+        private void TimerAdminRefresh_Tick(object sender, EventArgs e)
         {
             if (IsDisposed) return;
             int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.AdminRefreshIntervalSeconds * 1000);
@@ -1153,7 +1153,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Administration tab — Bootstrap / Optimize (11.2, 11.3)
         // -------------------------------------------------------------------
 
-        private void cmdBootstrap_Click(object sender, EventArgs e)
+        private void CmdBootstrap_Click(object sender, EventArgs e)
         {
             if (selectedColony == null) return;
             if (string.IsNullOrEmpty(selectedColony.PlanetName))
@@ -1168,7 +1168,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
-                Log.Warn("cmdBootstrap_Click: write lock timeout on colony {0}", selectedColony.UUID);
+                Log.Warn("CmdBootstrap_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
 
@@ -1197,18 +1197,18 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void cmdOptimize_Click(object sender, EventArgs e)
+        private void CmdOptimize_Click(object sender, EventArgs e)
         {
             if (selectedColony == null) return;
 
-            Log.Info("cmdOptimize_Click: colony={0} structureCount={1} filterActive={2}",
+            Log.Info("CmdOptimize_Click: colony={0} structureCount={1} filterActive={2}",
                 selectedColony.ColonyName ?? selectedColony.PlanetName,
                 selectedColony.Structures?.Count ?? 0,
                 lvwStructureTypes.CheckedItems.Count > 0);
 
             if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
-                Log.Warn("cmdOptimize_Click: write lock timeout on colony {0}", selectedColony.UUID);
+                Log.Warn("CmdOptimize_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
 
@@ -1217,13 +1217,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 var optimizer = new BuildOrderOptimizer(playerContext);
                 var optimized = optimizer.Optimize(selectedColony);
 
-                Log.Info("cmdOptimize_Click: optimizer returned {0} structures (input was {1})",
+                Log.Info("CmdOptimize_Click: optimizer returned {0} structures (input was {1})",
                     optimized.Count, selectedColony.Structures.Count);
 
                 selectedColony.Structures.Clear();
                 selectedColony.Structures.AddRange(optimized);
 
-                Log.Info("cmdOptimize_Click: colony now has {0} structures after replace",
+                Log.Info("CmdOptimize_Click: colony now has {0} structures after replace",
                     selectedColony.Structures.Count);
 
                 // Refresh via structural change pattern
@@ -1250,7 +1250,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Generate Build Plan (11.1, 11.2, 11.3)
         // -------------------------------------------------------------------
 
-        private void cmdGenerateBuildPlan_Click(object sender, EventArgs e)
+        private void CmdGenerateBuildPlan_Click(object sender, EventArgs e)
         {
             if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
             {
@@ -1259,7 +1259,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 return;
             }
 
-            Log.Info("cmdGenerateBuildPlan_Click: colony={0} uuid={1}",
+            Log.Info("CmdGenerateBuildPlan_Click: colony={0} uuid={1}",
                 selectedColony.ColonyName ?? selectedColony.PlanetName, selectedColony.UUID);
 
             // Show plan picker dialog
@@ -1269,7 +1269,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             int added = BuildPlanService.GenerateColonyBuildItems(
                 selectedColony, targetPlan, playerContext.FindBlueprint);
 
-            Log.Info("cmdGenerateBuildPlan_Click: {0} items added to plan '{1}'",
+            Log.Info("CmdGenerateBuildPlan_Click: {0} items added to plan '{1}'",
                 added, targetPlan.Name);
 
             // Persist new/updated plan
@@ -1398,7 +1398,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             tabDetailedData.Invalidate();
         }
 
-        private void tabDetailedData_DrawItem(object sender, DrawItemEventArgs e)
+        private void TabDetailedData_DrawItem(object sender, DrawItemEventArgs e)
         {
             TabPage page = tabDetailedData.TabPages[e.Index];
             Color backColor = page.UseVisualStyleBackColor ? SystemColors.Control : page.BackColor;
@@ -1435,7 +1435,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Workers Tab — Commodity Requests (19.1-19.8)
         // -------------------------------------------------------------------
 
-        private void cmdAddCommodityRequest_Click(object sender, EventArgs e)
+        private void CmdAddCommodityRequest_Click(object sender, EventArgs e)
         {
             Models.Commodity commodity = cmbCommodityRequest.SelectedItem as Models.Commodity;
             if (commodity == null || string.IsNullOrEmpty(commodity.ID)) return;
@@ -1458,7 +1458,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 playerContext.WriteContext();
         }
 
-        private void txtCommodityRequestFilter_TextChanged(object sender, EventArgs e)
+        private void TxtCommodityRequestFilter_TextChanged(object sender, EventArgs e)
         {
             UpdateCommodityRequestList();
             cmbCommodityRequest.DroppedDown = true;
@@ -1492,7 +1492,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            dgvCommodityRequests.CellValidating -= dgvCommodityRequests_CellValidating;
+            dgvCommodityRequests.CellValidating -= DgvCommodityRequests_CellValidating;
             try { dgvCommodityRequests.EndEdit(); } catch { }
 
             // Auto-cleanup expired fulfilled requests (19.6)
@@ -1571,13 +1571,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     dgvCommodityRequests.Rows.RemoveAt(i);
             }
 
-            dgvCommodityRequests.CellValidating += dgvCommodityRequests_CellValidating;
+            dgvCommodityRequests.CellValidating += DgvCommodityRequests_CellValidating;
 
             UpdateWorkerTabTitle();
             sw.Stop(); Log.Info("PERF PopulateCommodityRequestGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void dgvCommodityRequests_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void DgvCommodityRequests_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (dgvCommodityRequests.IsCurrentCellDirty)
@@ -1586,7 +1586,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void dgvCommodityRequests_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DgvCommodityRequests_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.RowIndex < 0) return;
@@ -1632,7 +1632,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             UpdateTabWarnings();
         }
 
-        private void dgvCommodityRequests_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void DgvCommodityRequests_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
@@ -1686,7 +1686,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void dgvCommodityRequests_SelectionChanged(object sender, EventArgs e)
+        private void DgvCommodityRequests_SelectionChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (dgvCommodityRequests.CurrentCell == null) return;
@@ -1701,7 +1701,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void dgvCommodityRequests_KeyDown(object sender, KeyEventArgs e)
+        private void DgvCommodityRequests_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode != Keys.Delete) return;
             if (dgvCommodityRequests.SelectedRows.Count == 0) return;
@@ -1796,7 +1796,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            dgvItems.CellValidating -= dgvItems_CellValidating;
+            dgvItems.CellValidating -= DgvItems_CellValidating;
             try { dgvItems.EndEdit(); } catch { }
 
             // Snapshot items under read lock
@@ -1865,7 +1865,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     dgvItems.Rows.RemoveAt(i);
             }
 
-            dgvItems.CellValidating += dgvItems_CellValidating;
+            dgvItems.CellValidating += DgvItems_CellValidating;
             sw.Stop(); Log.Info("PERF PopulateItemGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -1892,7 +1892,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Warehousing — Item Type Combo (20.2)
         // -------------------------------------------------------------------
 
-        private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbItemType_SelectedIndexChanged(object sender, EventArgs e)
         {
             Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
             cmbPurity.Visible = false;
@@ -1930,7 +1930,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void cmbItem_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbItem_SelectedIndexChanged(object sender, EventArgs e)
         {
             Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
             cmbPurity.Visible = false;
@@ -1948,7 +1948,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void txtItemFilter_TextChanged(object sender, EventArgs e)
+        private void TxtItemFilter_TextChanged(object sender, EventArgs e)
         {
             Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
             if (itemType == null) return;
@@ -2136,7 +2136,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Warehousing — Add Item (20.3)
         // -------------------------------------------------------------------
 
-        private void cmdAddItem_Click(object sender, EventArgs e)
+        private void CmdAddItem_Click(object sender, EventArgs e)
         {
             Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
             if (itemType == null || itemType.ID == Models.ItemType.ItemTypeEnum.None) return;
@@ -2222,7 +2222,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
-                Log.Warn("cmdAddItem_Click: write lock timeout on colony {0}", selectedColony.UUID);
+                Log.Warn("CmdAddItem_Click: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
 
@@ -2265,7 +2265,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                         if (bp != null)
                         {
                             decimal vol = 0;
-                            bp.Properties.getDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out vol);
+                            bp.Properties.GetDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out vol);
                             return vol;
                         }
                     }
@@ -2278,14 +2278,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Warehousing — Delete Item (20.4)
         // -------------------------------------------------------------------
 
-        private void dgvItems_KeyDown(object sender, KeyEventArgs e)
+        private void DgvItems_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode != Keys.Delete) return;
             if (dgvItems.SelectedRows.Count == 0) return;
 
             if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
-                Log.Warn("dgvItems_KeyDown: write lock timeout on colony {0}", selectedColony.UUID);
+                Log.Warn("DgvItems_KeyDown: write lock timeout on colony {0}", selectedColony.UUID);
                 return;
             }
 
@@ -2333,7 +2333,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Warehousing — Editable Amount Column (20.5)
         // -------------------------------------------------------------------
 
-        private void dgvItems_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DgvItems_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.RowIndex < 0) return;
@@ -2358,7 +2358,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void dgvItems_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void DgvItems_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             // Only validate the Amount column (index 3)
             if (e.ColumnIndex != 3) return;
@@ -2387,7 +2387,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void dgvItems_SelectionChanged(object sender, EventArgs e)
+        private void DgvItems_SelectionChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (dgvItems.CurrentCell == null) return;
@@ -2405,9 +2405,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Colony Import (21.1-21.5)
         // -------------------------------------------------------------------
 
-        private void cmdImportColony_Click(object sender, EventArgs e)
+        private void CmdImportColony_Click(object sender, EventArgs e)
         {
-            Log.Debug("V2.cmdImportColony_Click: starting import");
+            Log.Debug("V2.CmdImportColony_Click: starting import");
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
                 MessageBox.Show("No HTML content found on the clipboard.\n\nCopy colony data from the game browser first.",
@@ -2499,7 +2499,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 playerContext.OnColonyDataChanged(selectedColony.UUID);
 
                 // Refresh list view
-                txtColonyFilter_TextChanged(sender, e);
+                TxtColonyFilter_TextChanged(sender, e);
 
                 // Select the imported colony in the list view
                 foreach (ListViewItem item in lvwColonies.Items)
@@ -2524,7 +2524,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void cmdImportClipboard_Click(object sender, EventArgs e)
+        private void CmdImportClipboard_Click(object sender, EventArgs e)
         {
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
@@ -2608,7 +2608,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         private void BuildStructureTypeList()
         {
-            lvwStructureTypes.ItemChecked -= lvwStructureTypes_ItemChecked;
+            lvwStructureTypes.ItemChecked -= LvwStructureTypes_ItemChecked;
             lvwStructureTypes.Items.Clear();
 
             var flatpackTypes = empireContext.BlueprintTypeList
@@ -2624,14 +2624,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 lvwStructureTypes.Items.Add(item);
             }
 
-            lvwStructureTypes.ItemChecked += lvwStructureTypes_ItemChecked;
+            lvwStructureTypes.ItemChecked += LvwStructureTypes_ItemChecked;
         }
 
         /// <summary>
         /// Handler for structure type checkbox changes — updates the unchecked set
         /// and re-applies the filter.
         /// </summary>
-        private void lvwStructureTypes_ItemChecked(object sender, ItemCheckedEventArgs e)
+        private void LvwStructureTypes_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (selectedColony == null) return;
@@ -2846,13 +2846,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             sw.Stop(); Log.Info("PERF PopulateOverflowRouteCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmbOverflowDestType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbOverflowDestType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateOverflowDestCombo();
         }
 
-        private void cmdAddOverflowRule_Click(object sender, EventArgs e)
+        private void CmdAddOverflowRule_Click(object sender, EventArgs e)
         {
             if (selectedColony == null) return;
             string resource = cmbOverflowResource.SelectedItem?.ToString() ?? string.Empty;
@@ -2899,7 +2899,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             Log.Info("Added overflow rule: {0} ({1}) threshold={2}", resource, purity, threshold);
         }
 
-        private void cmdRemoveOverflowRule_Click(object sender, EventArgs e)
+        private void CmdRemoveOverflowRule_Click(object sender, EventArgs e)
         {
             if (selectedColony == null || dgvOverflowRules.SelectedRows.Count == 0) return;
             var rule = dgvOverflowRules.SelectedRows[0].Tag as WarehouseOverflowRule;
@@ -2910,14 +2910,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             Log.Info("Removed overflow rule: {0} ({1})", rule.ResourceName, rule.ResourcePurity);
         }
 
-        private void dgvOverflowRules_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void DgvOverflowRules_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (dgvOverflowRules.IsCurrentCellDirty)
                 dgvOverflowRules.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-        private void dgvOverflowRules_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DgvOverflowRules_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || e.RowIndex < 0) return;
             if (e.ColumnIndex != colOverflowActive.Index) return;

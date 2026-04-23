@@ -52,13 +52,13 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 UUID = "str-1",
                 FlatpackBlueprintUUID = "bp-pp-1",
-                displaySequence = 1
+                DisplaySequence = 1
             });
             colony.Structures.Add(new ColonyStructure
             {
                 UUID = "str-2",
                 FlatpackBlueprintUUID = "bp-pp-1",
-                displaySequence = 2
+                DisplaySequence = 2
             });
 
             var vm = new ColonyViewModel(colony, _playerContext);
@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ColonyName = "TestColony"
             };
 
-            colony.Structures.Add(new ColonyStructure { UUID = "str-a", displaySequence = 1 });
+            colony.Structures.Add(new ColonyStructure { UUID = "str-a", DisplaySequence = 1 });
 
             var vm = new ColonyViewModel(colony, _playerContext);
             var first = vm.StructureViewModels;
@@ -125,7 +125,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ColonyName = "TestColony"
             };
 
-            colony.Structures.Add(new ColonyStructure { UUID = "str-x", displaySequence = 1 });
+            colony.Structures.Add(new ColonyStructure { UUID = "str-x", DisplaySequence = 1 });
 
             var vm = new ColonyViewModel(colony, _playerContext);
 

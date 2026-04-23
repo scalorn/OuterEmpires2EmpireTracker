@@ -186,11 +186,11 @@ namespace OE2EmpireTracker.Services
         private static bool IsUnstagedUnbuilt(ColonyStructure structure)
         {
             bool staged;
-            structure.Properties.getBoolean(GameConstants.PropStaged, false, out staged);
+            structure.Properties.GetBoolean(GameConstants.PropStaged, false, out staged);
             if (staged) return false;
 
             bool built;
-            structure.Properties.getBoolean(GameConstants.PropBuilt, false, out built);
+            structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out built);
             if (built) return false;
 
             return true;

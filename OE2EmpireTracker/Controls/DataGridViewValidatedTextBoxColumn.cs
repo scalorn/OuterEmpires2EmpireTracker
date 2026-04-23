@@ -83,8 +83,6 @@ namespace OE2EmpireTracker.Controls
             BorderStyle = BorderStyle.None;
         }
 
-        #region IDataGridViewEditingControl
-
         public DataGridView EditingControlDataGridView
         {
             get => _dataGridView;
@@ -148,8 +146,6 @@ namespace OE2EmpireTracker.Controls
             else
                 SelectionStart = Text.Length;
         }
-
-        #endregion
 
         protected override void OnTextChanged(EventArgs e)
         {

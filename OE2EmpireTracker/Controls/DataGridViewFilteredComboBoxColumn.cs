@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -117,10 +117,10 @@ namespace OE2EmpireTracker.Controls
         {
             // Strip borders for inline grid editing — the cell provides the border
             BorderStyle = BorderStyle.None;
-            txtFilter.BorderStyle = BorderStyle.None;
+            TxtFilter.BorderStyle = BorderStyle.None;
             // Always show filter in grid mode — the grid handles focus
-            _isEditing = true;
-            txtFilter.Visible = true;
+            IsEditing = true;
+            TxtFilter.Visible = true;
         }
 
         protected override void OnSelectedItemChanged()
@@ -130,8 +130,6 @@ namespace OE2EmpireTracker.Controls
             _dataGridView?.NotifyCurrentCellDirty(true);
         }
 
-        #region IDataGridViewEditingControl
-
         public DataGridView EditingControlDataGridView
         {
             get => _dataGridView;
@@ -140,12 +138,12 @@ namespace OE2EmpireTracker.Controls
 
         public object EditingControlFormattedValue
         {
-            get => cmbItems.SelectedItem?.ToString() ?? string.Empty;
+            get => CmbItems.SelectedItem?.ToString() ?? string.Empty;
             set
             {
                 string val = value?.ToString() ?? string.Empty;
-                int idx = cmbItems.Items.IndexOf(val);
-                if (idx >= 0) cmbItems.SelectedIndex = idx;
+                int idx = CmbItems.Items.IndexOf(val);
+                if (idx >= 0) CmbItems.SelectedIndex = idx;
             }
         }
 
@@ -195,15 +193,13 @@ namespace OE2EmpireTracker.Controls
 
         public object GetEditingControlFormattedValue(DataGridViewDataErrorContexts context)
         {
-            return cmbItems.SelectedItem?.ToString() ?? string.Empty;
+            return CmbItems.SelectedItem?.ToString() ?? string.Empty;
         }
 
         public void PrepareEditingControlForEdit(bool selectAll)
         {
             ResetFilter();
-            txtFilter.Focus();
+            TxtFilter.Focus();
         }
-
-        #endregion
     }
 }

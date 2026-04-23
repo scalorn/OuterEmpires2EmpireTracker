@@ -13,8 +13,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     [TestFixture]
     public class ColonyDeterministicUUIDPropertyTests
     {
-        #region Generators
-
         private static Gen<string> SafeStringGen()
         {
             return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
@@ -30,10 +28,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                    from systemName in SafeStringGen()
                    select Tuple.Create(ownerUUID, planetName, systemName);
         }
-
-        #endregion
-
-        #region Property 1: Deterministic colony UUID round-trip -- same inputs produce same UUID
 
         /// <summary>
         /// For any (ownerUUID, planetName, systemName) triple, Generate shall produce
@@ -52,10 +46,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     .Label($"Expected same UUID for same inputs, got '{uuid1}' and '{uuid2}'");
             });
         }
-
-        #endregion
-
-        #region Property 1 (cont): Different inputs produce different UUIDs
 
         /// <summary>
         /// Two different (ownerUUID, planetName, systemName) triples shall produce different UUIDs.
@@ -83,10 +73,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             });
         }
 
-        #endregion
-
-        #region UUID format validation
-
         /// <summary>
         /// Generated colony UUIDs should be valid GUID strings.
         /// </summary>
@@ -102,7 +88,5 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 return canParse.Label($"UUID '{uuidStr}' is not a valid GUID");
             });
         }
-
-        #endregion
     }
 }

@@ -49,8 +49,8 @@ namespace OE2EmpireTracker.Tests.Models
             structure.ManufacturingCommodityName = commodityName;
             structure.ManufacturingQuantity = manufacturingQuantity;
             structure.ManufacturingCompleted = manufacturingCompleted;
-            structure.Properties.setProperty("Built", true);
-            structure.Properties.setProperty("Online", true);
+            structure.Properties.SetProperty("Built", true);
+            structure.Properties.SetProperty("Online", true);
 
             // Set up a repeating timer with the specified intervals already passed
             var timer = new CountDownTime();
@@ -314,8 +314,8 @@ namespace OE2EmpireTracker.Tests.Models
             structure.ManufacturingCommodityName = "Advanced Biolubricants";
             structure.ManufacturingQuantity = 5;
             structure.ManufacturingCompleted = 2; // 3 remaining
-            structure.Properties.setProperty("Built", true);
-            structure.Properties.setProperty("Online", true);
+            structure.Properties.SetProperty("Built", true);
+            structure.Properties.SetProperty("Online", true);
 
             var timer = new CountDownTime();
             timer.StartRepeating(GameConstants.CommodityCycleSeconds);
@@ -370,8 +370,8 @@ namespace OE2EmpireTracker.Tests.Models
             structure.ManufacturingCommodityName = "Advanced Biolubricants";
             structure.ManufacturingQuantity = 1;
             structure.ManufacturingCompleted = 0;
-            structure.Properties.setProperty("Built", true);
-            structure.Properties.setProperty("Online", true);
+            structure.Properties.SetProperty("Built", true);
+            structure.Properties.SetProperty("Online", true);
 
             var timer = new CountDownTime();
             timer.StartRepeating(GameConstants.CommodityCycleSeconds);
@@ -407,8 +407,8 @@ namespace OE2EmpireTracker.Tests.Models
             structure.ManufacturingCommodityName = string.Empty;
             structure.ManufacturingQuantity = 5;
             structure.ManufacturingCompleted = 0;
-            structure.Properties.setProperty("Built", true);
-            structure.Properties.setProperty("Online", true);
+            structure.Properties.SetProperty("Built", true);
+            structure.Properties.SetProperty("Online", true);
 
             var timer = new CountDownTime();
             timer.StartRepeating(GameConstants.CommodityCycleSeconds);
@@ -440,8 +440,8 @@ namespace OE2EmpireTracker.Tests.Models
             structure.ManufacturingCommodityName = "Advanced Biolubricants";
             structure.ManufacturingQuantity = 3;
             structure.ManufacturingCompleted = 3; // All done
-            structure.Properties.setProperty("Built", true);
-            structure.Properties.setProperty("Online", true);
+            structure.Properties.SetProperty("Built", true);
+            structure.Properties.SetProperty("Online", true);
 
             var timer = new CountDownTime();
             timer.StartRepeating(GameConstants.CommodityCycleSeconds);
@@ -510,8 +510,8 @@ namespace OE2EmpireTracker.Tests.Models
             structure.FlatpackBlueprintUUID = bp.UUID;
             structure.MiningSurvey = survey.UUID;
             structure.MiningSurveyResource = "TestOre";
-            structure.Properties.setProperty("Built", true);
-            structure.Properties.setProperty("Online", true);
+            structure.Properties.SetProperty("Built", true);
+            structure.Properties.SetProperty("Online", true);
 
             var timer = new CountDownTime();
             timer.StartRepeating(3600);
@@ -563,8 +563,8 @@ namespace OE2EmpireTracker.Tests.Models
             structure.FlatpackBlueprintUUID = bp.UUID;
             structure.RefiningResource = "TestMineral";
             structure.RefiningResourcePurity = "Low";
-            structure.Properties.setProperty("Built", true);
-            structure.Properties.setProperty("Online", true);
+            structure.Properties.SetProperty("Built", true);
+            structure.Properties.SetProperty("Online", true);
 
             var timer = new CountDownTime();
             timer.StartRepeating(3600);
@@ -614,8 +614,8 @@ namespace OE2EmpireTracker.Tests.Models
             structure.FlatpackBlueprintUUID = bp.UUID;
             structure.RefiningResource = "TestMineral2";
             structure.RefiningResourcePurity = "Low";
-            structure.Properties.setProperty("Built", true);
-            structure.Properties.setProperty("Online", true);
+            structure.Properties.SetProperty("Built", true);
+            structure.Properties.SetProperty("Online", true);
 
             var timer = new CountDownTime();
             timer.StartRepeating(3600);
@@ -660,8 +660,8 @@ namespace OE2EmpireTracker.Tests.Models
             structure.FlatpackBlueprintUUID = bp.UUID;
             structure.RefiningResource = "TestMineral3";
             structure.RefiningResourcePurity = "Low";
-            structure.Properties.setProperty("Built", true);
-            structure.Properties.setProperty("Online", true);
+            structure.Properties.SetProperty("Built", true);
+            structure.Properties.SetProperty("Online", true);
 
             var timer = new CountDownTime();
             timer.StartRepeating(3600);

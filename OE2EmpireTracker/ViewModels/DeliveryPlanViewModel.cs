@@ -338,8 +338,8 @@ namespace OE2EmpireTracker.ViewModels
                 calc.CalculateBuilt();
                 calc.CalculateIdeal();
 
-                if (calc.finalIdealStatus == null || calc.finalActualStatus == null) continue;
-                if (calc.finalIdealStatus.HabitationRequired <= calc.finalActualStatus.HabitationRequired)
+                if (calc.FinalIdealStatus == null || calc.FinalActualStatus == null) continue;
+                if (calc.FinalIdealStatus.HabitationRequired <= calc.FinalActualStatus.HabitationRequired)
                     continue;
 
                 var stop = GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
@@ -357,7 +357,7 @@ namespace OE2EmpireTracker.ViewModels
                         if (!blueprint.Properties.ContainsKey(wt.PropertyKey)) continue;
 
                         long slotCount = 0;
-                        blueprint.Properties.getLong(wt.PropertyKey, 0, out slotCount);
+                        blueprint.Properties.GetLong(wt.PropertyKey, 0, out slotCount);
                         idealCount += (int)slotCount;
 
                         // Count actual assigned workers
@@ -365,7 +365,7 @@ namespace OE2EmpireTracker.ViewModels
                         {
                             string key = wt.WorkerPrefix + i;
                             bool assigned = false;
-                            structure.AssignedWorkers.getBoolean(key, false, out assigned);
+                            structure.AssignedWorkers.GetBoolean(key, false, out assigned);
                             if (assigned) actualCount++;
                         }
                     }

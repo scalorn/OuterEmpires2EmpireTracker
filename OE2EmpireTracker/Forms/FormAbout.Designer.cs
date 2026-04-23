@@ -68,7 +68,7 @@ namespace OE2EmpireTracker.Forms
             this.lnkGame.Name = "lnkGame";
             this.lnkGame.Size = new System.Drawing.Size(150, 13);
             this.lnkGame.Text = "https://outerempires.net/";
-            this.lnkGame.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkGame_LinkClicked);
+            this.lnkGame.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LnkGame_LinkClicked);
             // 
             // lblDesigner
             // 
@@ -93,7 +93,7 @@ namespace OE2EmpireTracker.Forms
             this.lnkKiro.Name = "lnkKiro";
             this.lnkKiro.Size = new System.Drawing.Size(100, 13);
             this.lnkKiro.Text = "https://kiro.dev/";
-            this.lnkKiro.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkKiro_LinkClicked);
+            this.lnkKiro.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LnkKiro_LinkClicked);
             // 
             // lblGitHub
             // 
@@ -110,7 +110,7 @@ namespace OE2EmpireTracker.Forms
             this.lnkGitHub.Name = "lnkGitHub";
             this.lnkGitHub.Size = new System.Drawing.Size(350, 13);
             this.lnkGitHub.Text = "https://github.com/scalorn/OuterEmpires2EmpireTracker";
-            this.lnkGitHub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkGitHub_LinkClicked);
+            this.lnkGitHub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LnkGitHub_LinkClicked);
             // 
             // btnOK
             // 
@@ -121,7 +121,7 @@ namespace OE2EmpireTracker.Forms
             this.btnOK.TabIndex = 0;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.btnOK.Click += new System.EventHandler(this.BtnOK_Click);
             // 
             // FormAbout
             // 

@@ -170,7 +170,6 @@ namespace OE2EmpireTracker.Tests.Services
             }
         }
 
-
         // P8: Market sale decrements listing
         [Test]
         public void P8_SaleDecrementsListing()

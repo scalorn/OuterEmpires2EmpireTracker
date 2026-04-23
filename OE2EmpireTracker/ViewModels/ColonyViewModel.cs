@@ -83,7 +83,7 @@ namespace OE2EmpireTracker.ViewModels
             {
                 UUID = Guid.NewGuid().ToString(),
                 FlatpackBlueprintUUID = flatpackBlueprintUUID,
-                displaySequence = existingCount + 1
+                DisplaySequence = existingCount + 1
             };
 
             _colony.Structures.Add(structure);

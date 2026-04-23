@@ -32,7 +32,7 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void ContainsKey_AfterSet_ReturnsTrue()
         {
-            _bag.setProperty("Key", "Value");
+            _bag.SetProperty("Key", "Value");
             Assert.That(_bag.ContainsKey("Key"), Is.True);
         }
 
@@ -43,58 +43,58 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // setProperty -- string overload
+        // SetProperty -- string overload
         // -----------------------------------------------------------------------
 
         [Test]
         public void SetProperty_String_StoresValue()
         {
-            _bag.setProperty("Name", "Iron");
+            _bag.SetProperty("Name", "Iron");
             string val;
-            _bag.getString("Name", null, out val);
+            _bag.GetString("Name", null, out val);
             Assert.That(val, Is.EqualTo("Iron"));
         }
 
         [Test]
         public void SetProperty_String_OverwritesExistingValue()
         {
-            _bag.setProperty("Name", "Iron");
-            _bag.setProperty("Name", "Gold");
+            _bag.SetProperty("Name", "Iron");
+            _bag.SetProperty("Name", "Gold");
             string val;
-            _bag.getString("Name", null, out val);
+            _bag.GetString("Name", null, out val);
             Assert.That(val, Is.EqualTo("Gold"));
         }
 
         [Test]
         public void SetProperty_String_ReturnsTrue()
         {
-            Assert.That(_bag.setProperty("Key", "Value"), Is.True);
+            Assert.That(_bag.SetProperty("Key", "Value"), Is.True);
         }
 
         // -----------------------------------------------------------------------
-        // setProperty -- decimal overload
+        // SetProperty -- decimal overload
         // -----------------------------------------------------------------------
 
         [Test]
         public void SetProperty_Double_StoresAndRetrievesValue()
         {
-            _bag.setProperty("Power", 42.5m);
+            _bag.SetProperty("Power", 42.5m);
             decimal val;
-            bool found = _bag.getDecimal("Power", 0, out val);
+            bool found = _bag.GetDecimal("Power", 0, out val);
             Assert.That(found, Is.True);
             Assert.That(val, Is.EqualTo(42.5m));
         }
 
         // -----------------------------------------------------------------------
-        // setProperty -- bool overload
+        // SetProperty -- bool overload
         // -----------------------------------------------------------------------
 
         [Test]
         public void SetProperty_Bool_True_StoresAndRetrievesTrue()
         {
-            _bag.setProperty("Online", true);
+            _bag.SetProperty("Online", true);
             bool val;
-            bool found = _bag.getBoolean("Online", false, out val);
+            bool found = _bag.GetBoolean("Online", false, out val);
             Assert.That(found, Is.True);
             Assert.That(val, Is.True);
         }
@@ -102,21 +102,21 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void SetProperty_Bool_False_StoresAndRetrievesFalse()
         {
-            _bag.setProperty("Built", false);
+            _bag.SetProperty("Built", false);
             bool val;
-            _bag.getBoolean("Built", true, out val);
+            _bag.GetBoolean("Built", true, out val);
             Assert.That(val, Is.False);
         }
 
         // -----------------------------------------------------------------------
-        // getDecimal
+        // GetDecimal
         // -----------------------------------------------------------------------
 
         [Test]
         public void GetDecimal_MissingKey_ReturnsFalseAndDefault()
         {
             decimal val;
-            bool found = _bag.getDecimal("Missing", 99.0m, out val);
+            bool found = _bag.GetDecimal("Missing", 99.0m, out val);
             Assert.That(found, Is.False);
             Assert.That(val, Is.EqualTo(99.0m));
         }
@@ -124,22 +124,22 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void GetDecimal_NonNumericValue_ReturnsFalse()
         {
-            _bag.setProperty("Bad", "notanumber");
+            _bag.SetProperty("Bad", "notanumber");
             decimal val;
-            bool found = _bag.getDecimal("Bad", 0, out val);
+            bool found = _bag.GetDecimal("Bad", 0, out val);
             Assert.That(found, Is.False);
         }
 
         // -----------------------------------------------------------------------
-        // getLong
+        // GetLong
         // -----------------------------------------------------------------------
 
         [Test]
         public void GetLong_StoredValue_ReturnsCorrectValue()
         {
-            _bag.setProperty("Count", "12345");
+            _bag.SetProperty("Count", "12345");
             long val;
-            bool found = _bag.getLong("Count", 0, out val);
+            bool found = _bag.GetLong("Count", 0, out val);
             Assert.That(found, Is.True);
             Assert.That(val, Is.EqualTo(12345L));
         }
@@ -148,7 +148,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void GetLong_MissingKey_ReturnsFalseAndDefault()
         {
             long val;
-            bool found = _bag.getLong("Missing", 7L, out val);
+            bool found = _bag.GetLong("Missing", 7L, out val);
             Assert.That(found, Is.False);
             Assert.That(val, Is.EqualTo(7L));
         }
@@ -156,21 +156,21 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void GetLong_NonNumericValue_ReturnsFalse()
         {
-            _bag.setProperty("Bad", "notanumber");
+            _bag.SetProperty("Bad", "notanumber");
             long val;
-            bool found = _bag.getLong("Bad", 0, out val);
+            bool found = _bag.GetLong("Bad", 0, out val);
             Assert.That(found, Is.False);
         }
 
         // -----------------------------------------------------------------------
-        // getBoolean
+        // GetBoolean
         // -----------------------------------------------------------------------
 
         [Test]
         public void GetBoolean_MissingKey_ReturnsFalseAndDefault()
         {
             bool val;
-            bool found = _bag.getBoolean("Missing", true, out val);
+            bool found = _bag.GetBoolean("Missing", true, out val);
             Assert.That(found, Is.False);
             Assert.That(val, Is.True); // default returned
         }
@@ -178,22 +178,22 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void GetBoolean_NonBoolValue_ReturnsFalse()
         {
-            _bag.setProperty("Bad", "notabool");
+            _bag.SetProperty("Bad", "notabool");
             bool val;
-            bool found = _bag.getBoolean("Bad", false, out val);
+            bool found = _bag.GetBoolean("Bad", false, out val);
             Assert.That(found, Is.False);
         }
 
         // -----------------------------------------------------------------------
-        // getString
+        // GetString
         // -----------------------------------------------------------------------
 
         [Test]
         public void GetString_StoredValue_ReturnsCorrectValue()
         {
-            _bag.setProperty("Label", "Hello");
+            _bag.SetProperty("Label", "Hello");
             string val;
-            bool found = _bag.getString("Label", null, out val);
+            bool found = _bag.GetString("Label", null, out val);
             Assert.That(found, Is.True);
             Assert.That(val, Is.EqualTo("Hello"));
         }
@@ -202,7 +202,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void GetString_MissingKey_ReturnsFalseAndDefault()
         {
             string val;
-            bool found = _bag.getString("Missing", "default", out val);
+            bool found = _bag.GetString("Missing", "default", out val);
             Assert.That(found, Is.False);
             Assert.That(val, Is.EqualTo("default"));
         }
@@ -214,7 +214,7 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void Remove_ExistingKey_ReturnsTrueAndRemoves()
         {
-            _bag.setProperty("Key", "Value");
+            _bag.SetProperty("Key", "Value");
             bool result = _bag.Remove("Key");
             Assert.That(result, Is.True);
             Assert.That(_bag.ContainsKey("Key"), Is.False);
@@ -234,8 +234,8 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void Clear_RemovesAllProperties()
         {
-            _bag.setProperty("A", "1");
-            _bag.setProperty("B", "2");
+            _bag.SetProperty("A", "1");
+            _bag.SetProperty("B", "2");
             _bag.Clear();
             Assert.That(_bag.Properties.Count, Is.EqualTo(0));
         }
@@ -247,15 +247,15 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void JsonRoundTrip_StringValues_Preserved()
         {
-            _bag.setProperty("Name", "Iron");
-            _bag.setProperty("Type", "Resource");
+            _bag.SetProperty("Name", "Iron");
+            _bag.SetProperty("Type", "Resource");
 
             string json = JsonConvert.SerializeObject(_bag);
             var restored = JsonConvert.DeserializeObject<PropertyBag>(json);
 
             string name, type;
-            restored.getString("Name", null, out name);
-            restored.getString("Type", null, out type);
+            restored.GetString("Name", null, out name);
+            restored.GetString("Type", null, out type);
             Assert.That(name, Is.EqualTo("Iron"));
             Assert.That(type, Is.EqualTo("Resource"));
         }
@@ -263,16 +263,16 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void JsonRoundTrip_NumericAndBoolValues_Preserved()
         {
-            _bag.setProperty("Power", 100.5m);
-            _bag.setProperty("Online", true);
+            _bag.SetProperty("Power", 100.5m);
+            _bag.SetProperty("Online", true);
 
             string json = JsonConvert.SerializeObject(_bag);
             var restored = JsonConvert.DeserializeObject<PropertyBag>(json);
 
             decimal power;
             bool online;
-            restored.getDecimal("Power", 0, out power);
-            restored.getBoolean("Online", false, out online);
+            restored.GetDecimal("Power", 0, out power);
+            restored.GetBoolean("Online", false, out online);
             Assert.That(power, Is.EqualTo(100.5m));
             Assert.That(online, Is.True);
         }

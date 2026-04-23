@@ -163,9 +163,9 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 UUID = uuid,
                 FlatpackBlueprintUUID = fpUuid,
-                displaySequence = seq,
-                buildingID = bldId,
-                buildQueueSequence = bqSeq,
+                DisplaySequence = seq,
+                BuildingID = bldId,
+                BuildQueueSequence = bqSeq,
                 Properties = props,
                 AssignedWorkers = workers,
                 BuildCompletionTime = hasBuild ? buildTime : null,

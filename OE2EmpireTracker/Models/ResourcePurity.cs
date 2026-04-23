@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Models
         public string Name { get; set; }
         public bool Refined { get; set; } = false;
 
-        private static List<ResourcePurity> _purities = getPurities();
+        private static List<ResourcePurity> _purities = GetPurities();
         private static Dictionary<PurityEnum, ResourcePurity> _purityMapByEnum;
         private static Dictionary<string, ResourcePurity> _purityMapByString;
 
@@ -30,8 +30,7 @@ namespace OE2EmpireTracker.Models
         public static IReadOnlyDictionary<PurityEnum, ResourcePurity> ItemTypeMapByEnum => _purityMapByEnum;
         public static IReadOnlyDictionary<string, ResourcePurity> ItemTypeMapByString => _purityMapByString;
 
-
-        private static List<ResourcePurity> getPurities()
+        private static List<ResourcePurity> GetPurities()
         {
             List<ResourcePurity> instance = new List<ResourcePurity>();
             instance.Add(new ResourcePurity() { ID = PurityEnum.Refined, Name = GameConstants.PurityRefined, Refined = true });

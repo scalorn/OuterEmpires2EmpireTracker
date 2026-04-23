@@ -11,8 +11,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ResourceCheckServiceTests
     {
-        #region Helpers
-
         private Blueprint CreateBlueprint(string uuid, string name,
             Dictionary<string, string> resources)
         {
@@ -83,10 +81,6 @@ namespace OE2EmpireTracker.Tests.Services
             };
         }
 
-        #endregion
-
-        #region ComputeShortfalls ? Null Arguments
-
         [Test]
         public void ComputeShortfalls_NullItem_Throws()
         {
@@ -109,10 +103,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.Throws<ArgumentNullException>(() =>
                 ResourceCheckService.ComputeShortfalls(item, new ItemBag(), null));
         }
-
-        #endregion
-
-        #region ComputeShortfalls ? Manufactory
 
         [Test]
         public void ComputeShortfalls_Manufactory_AllAvailable_ReturnsEmpty()
@@ -236,10 +226,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result["S1. Translanthanic Exotics"], Is.EqualTo(5)); // 10 - 5
         }
 
-        #endregion
-
-        #region ComputeShortfalls ? Commodity
-
         [Test]
         public void ComputeShortfalls_Commodity_AllAvailable_ReturnsEmpty()
         {
@@ -283,10 +269,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result, Is.Empty);
         }
 
-        #endregion
-
-        #region ComputeShortfalls ? Research
-
         [Test]
         public void ComputeShortfalls_Research_AlwaysEmpty()
         {
@@ -303,10 +285,6 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(result, Is.Empty);
         }
-
-        #endregion
-
-        #region ComputePlanShortfalls
 
         [Test]
         public void ComputePlanShortfalls_NullPlan_Throws()
@@ -480,7 +458,5 @@ namespace OE2EmpireTracker.Tests.Services
                 ResourceCheckService.ComputePlanShortfalls(
                     plan, id => null, id => null, id => null, "p1", id => null));
         }
-
-        #endregion
     }
 }

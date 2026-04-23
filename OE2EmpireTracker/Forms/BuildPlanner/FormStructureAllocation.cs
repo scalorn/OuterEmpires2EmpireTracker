@@ -41,8 +41,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             txtFilter.TextChanged += (s, e) => PopulateGrid();
             chkIdleOnly.CheckedChanged += (s, e) => PopulateGrid();
-            cmdAllocate.Click += cmdAllocate_Click;
-            dgvStructures.CellDoubleClick += dgvStructures_CellDoubleClick;
+            cmdAllocate.Click += CmdAllocate_Click;
+            dgvStructures.CellDoubleClick += DgvStructures_CellDoubleClick;
 
             PopulateGrid();
         }
@@ -175,12 +175,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 rows.Count, _buildItem.ItemType, _buildItem.ItemName);
         }
 
-        private void cmdAllocate_Click(object sender, EventArgs e)
+        private void CmdAllocate_Click(object sender, EventArgs e)
         {
             ApplySelection();
         }
 
-        private void dgvStructures_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void DgvStructures_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
             ApplySelection();

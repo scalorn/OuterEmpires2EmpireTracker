@@ -12,8 +12,8 @@ namespace OE2EmpireTracker.Forms
         {
             InitializeComponent();
 
-            btnOK.Click += btnOK_Click;
-            btnResetDefaults.Click += btnResetDefaults_Click;
+            btnOK.Click += BtnOK_Click;
+            btnResetDefaults.Click += BtnResetDefaults_Click;
 
             LoadPreferences();
         }
@@ -40,7 +40,7 @@ namespace OE2EmpireTracker.Forms
             txtCountdownRefresh.Text = ActivityRow.FormatSeconds(thresholds.CountdownRefreshRateSeconds);
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        private void BtnOK_Click(object sender, EventArgs e)
         {
             // Parse structure count fields as integers
             if (!int.TryParse(txtStructureYellow.Text.Trim(), out int structureYellow) || structureYellow <= 0)
@@ -136,7 +136,7 @@ namespace OE2EmpireTracker.Forms
             Close();
         }
 
-        private void btnResetDefaults_Click(object sender, EventArgs e)
+        private void BtnResetDefaults_Click(object sender, EventArgs e)
         {
             PopulateFields(new ThresholdPreferences());
         }

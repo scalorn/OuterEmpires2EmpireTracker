@@ -32,8 +32,8 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             pc.DataVersion = 6;
 
             var bp = new BpModel("TestBP") { UUID = Guid.NewGuid().ToString(), Class = 3 };
-            bp.Properties.setProperty("Class", "3");
-            bp.Properties.setProperty("Health", "500");
+            bp.Properties.SetProperty("Class", "3");
+            bp.Properties.SetProperty("Health", "500");
             pc.AddBlueprint(bp);
 
             MigrationRunner.Run(ec, pc);
@@ -55,7 +55,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             pc.DataVersion = 6;
 
             var bp = new BpModel("TestBP") { UUID = Guid.NewGuid().ToString(), Class = 0 };
-            bp.Properties.setProperty("Class", "7");
+            bp.Properties.SetProperty("Class", "7");
             pc.AddBlueprint(bp);
 
             MigrationRunner.Run(ec, pc);
@@ -74,7 +74,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             pc.DataVersion = 6;
 
             var bp = new BpModel("TestBP") { UUID = Guid.NewGuid().ToString(), Class = 5 };
-            bp.Properties.setProperty("Health", "500");
+            bp.Properties.SetProperty("Health", "500");
             pc.AddBlueprint(bp);
 
             MigrationRunner.Run(ec, pc);

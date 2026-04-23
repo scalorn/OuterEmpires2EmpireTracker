@@ -42,8 +42,6 @@ namespace OE2EmpireTracker.Tests.ViewModels
             PlayerContext.FilePath = _originalPlayerFilePath;
         }
 
-        #region Helpers
-
         private static readonly string[] TypePool = { "Reactor", "Hull", "Weapon", "Shield", "MainDrive" };
         private static readonly string[] TechPool = { "LL", "Milspec", "Hi-Tech", "Junker" };
 
@@ -103,10 +101,6 @@ namespace OE2EmpireTracker.Tests.ViewModels
             return true;
         }
 
-        #endregion
-
-        #region Property 1: Title bar format correctness
-
         /// <summary>
         /// Feature: blueprint-form-filters, Property 1: Title bar format correctness
         ///
@@ -132,10 +126,6 @@ namespace OE2EmpireTracker.Tests.ViewModels
                     .Label($"Expected: \"{expected}\" but got: \"{result}\"");
             });
         }
-
-        #endregion
-
-        #region Property 2: Combined filter AND semantics
 
         /// <summary>
         /// Feature: blueprint-form-filters, Property 2: Combined filter AND semantics
@@ -257,7 +247,5 @@ namespace OE2EmpireTracker.Tests.ViewModels
                     .Label($"Completeness: expected {expectedUUIDs.Count} blueprints, got {resultUUIDs.Count}");
             });
         }
-
-        #endregion
     }
 }

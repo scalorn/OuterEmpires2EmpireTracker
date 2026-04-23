@@ -16,7 +16,7 @@ namespace OE2EmpireTracker.Tests.Services
             var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, Properties = new PropertyBag() };
             if (props != null)
                 foreach (var kv in props)
-                    bp.Properties.setProperty(kv.Key, kv.Value);
+                    bp.Properties.SetProperty(kv.Key, kv.Value);
             return bp;
         }
 

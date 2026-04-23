@@ -90,12 +90,12 @@ namespace OE2EmpireTracker.Tests.Services
             if (props != null)
             {
                 foreach (var kvp in props)
-                    bp.Properties.setProperty(kvp.Key, kvp.Value);
+                    bp.Properties.SetProperty(kvp.Key, kvp.Value);
             }
             else
             {
                 // Default: at least one property so it's not treated as unexpanded
-                bp.Properties.setProperty("Health", "100");
+                bp.Properties.SetProperty("Health", "100");
             }
 
             if (resources != null)
@@ -232,7 +232,7 @@ namespace OE2EmpireTracker.Tests.Services
             existing.Evolution = 0;
             existing.Class = 1;
             existing.TechLevel = null;
-            existing.Properties.setProperty("Health", "50");
+            existing.Properties.SetProperty("Health", "50");
             empireContext.AddGlobalBlueprint(existing);
 
             // Import one with matching dedup key but different property value
@@ -249,7 +249,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(empireContext.GlobalBlueprintList.Count, Is.EqualTo(1));
             // Property should be updated
             string healthVal;
-            empireContext.GlobalBlueprintList[0].Properties.getString("Health", null, out healthVal);
+            empireContext.GlobalBlueprintList[0].Properties.GetString("Health", null, out healthVal);
             Assert.That(healthVal, Is.EqualTo("200"));
             // UUID preserved
             Assert.That(empireContext.GlobalBlueprintList[0].UUID, Is.EqualTo(existing.UUID));
@@ -273,9 +273,9 @@ namespace OE2EmpireTracker.Tests.Services
             existing.Evolution = 0;
             existing.Class = 1;
             existing.TechLevel = null;
-            existing.Properties.setProperty("Health", "50");
-            existing.Properties.setProperty("Manufacture Run Time", "3600");
-            existing.Properties.setProperty("Power Required", "100");
+            existing.Properties.SetProperty("Health", "50");
+            existing.Properties.SetProperty("Manufacture Run Time", "3600");
+            existing.Properties.SetProperty("Power Required", "100");
             empireContext.AddGlobalBlueprint(existing);
 
             // Import with matching dedup key -- incoming does NOT have protected properties
@@ -297,14 +297,14 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(updated.Description, Is.EqualTo("A fine reactor"));
             // Protected property-bag fields restored
             string mrt;
-            updated.Properties.getString("Manufacture Run Time", null, out mrt);
+            updated.Properties.GetString("Manufacture Run Time", null, out mrt);
             Assert.That(mrt, Is.EqualTo("3600"));
             string pr;
-            updated.Properties.getString("Power Required", null, out pr);
+            updated.Properties.GetString("Power Required", null, out pr);
             Assert.That(pr, Is.EqualTo("100"));
             // Non-protected property updated
             string health;
-            updated.Properties.getString("Health", null, out health);
+            updated.Properties.GetString("Health", null, out health);
             Assert.That(health, Is.EqualTo("200"));
         }
 
@@ -321,7 +321,7 @@ namespace OE2EmpireTracker.Tests.Services
             existing.BluePrintType = "Reactor";
             existing.Evolution = 0;
             existing.Class = 1;
-            existing.Properties.setProperty("Health", "50");
+            existing.Properties.SetProperty("Health", "50");
             empireContext.AddGlobalBlueprint(existing);
 
             var list = new List<MarketBlueprint>
@@ -533,9 +533,9 @@ namespace OE2EmpireTracker.Tests.Services
                 existing.Evolution = evolution;
                 existing.Class = cls;
                 existing.TechLevel = techLevel;
-                existing.Properties.setProperty("Health", "50");
-                existing.Properties.setProperty("Manufacture Run Time", "MRT_" + trial);
-                existing.Properties.setProperty("Power Required", "PR_" + trial);
+                existing.Properties.SetProperty("Health", "50");
+                existing.Properties.SetProperty("Manufacture Run Time", "MRT_" + trial);
+                existing.Properties.SetProperty("Power Required", "PR_" + trial);
                 empireContext.AddGlobalBlueprint(existing);
 
                 // Import with matching dedup key -- incoming has different non-protected props
@@ -559,12 +559,12 @@ namespace OE2EmpireTracker.Tests.Services
                     $"Trial {trial}: Description must be preserved");
 
                 string mrt;
-                updated.Properties.getString("Manufacture Run Time", null, out mrt);
+                updated.Properties.GetString("Manufacture Run Time", null, out mrt);
                 Assert.That(mrt, Is.EqualTo("MRT_" + trial),
                     $"Trial {trial}: Manufacture Run Time must be preserved");
 
                 string pr;
-                updated.Properties.getString("Power Required", null, out pr);
+                updated.Properties.GetString("Power Required", null, out pr);
                 Assert.That(pr, Is.EqualTo("PR_" + trial),
                     $"Trial {trial}: Power Required must be preserved");
             }

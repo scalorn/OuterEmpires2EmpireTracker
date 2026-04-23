@@ -44,8 +44,6 @@ namespace OE2EmpireTracker.Tests.Services
             PlayerContext.FilePath = _originalPlayerFilePath;
         }
 
-        #region Generators
-
         /// <summary>
         /// Generates valid UTC DateTime values constrained to years 2000-2099.
         /// </summary>
@@ -118,10 +116,6 @@ namespace OE2EmpireTracker.Tests.Services
             var colonyGen = Gen.OneOf(StaleColonyGen(), FreshColonyGen(), NullTimestampColonyGen());
             return Gen.ListOf(colonyGen).Select(cs => cs.ToList());
         }
-
-        #endregion
-
-        #region Property 4: Inactivity collector produces correct ColonyImportStaleness rows
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 4: Inactivity collector produces correct ColonyImportStaleness rows.
@@ -201,7 +195,5 @@ namespace OE2EmpireTracker.Tests.Services
                 return true.Label("All staleness rows correct");
             });
         }
-
-        #endregion
     }
 }

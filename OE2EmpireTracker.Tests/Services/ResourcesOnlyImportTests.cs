@@ -57,32 +57,32 @@ namespace OE2EmpireTracker.Tests.Services
             target.TechLevel = "MilSpec";
             target.Evolution = 2;
             target.Properties = new PropertyBag();
-            target.Properties.setProperty("Manufacture Run Time", "7200");
-            target.Properties.setProperty("Power Required", "250");
-            target.Properties.setProperty("Health", "100");
+            target.Properties.SetProperty("Manufacture Run Time", "7200");
+            target.Properties.SetProperty("Power Required", "250");
+            target.Properties.SetProperty("Health", "100");
             target.Resources = new Dictionary<string, string> { { "OldRes", "1" } };
 
             var incoming = new BpModel();
             incoming.Resources = new Dictionary<string, string> { { "Iron", "500" } };
             incoming.Properties = new PropertyBag();
-            incoming.Properties.setProperty("Manufacture Run Time", "9999");
-            incoming.Properties.setProperty("Power Required", "9999");
-            incoming.Properties.setProperty("Damage", "50");
+            incoming.Properties.SetProperty("Manufacture Run Time", "9999");
+            incoming.Properties.SetProperty("Power Required", "9999");
+            incoming.Properties.SetProperty("Damage", "50");
 
             MarketBlueprintImporter.MergeResourcesOnly(target, incoming);
 
             // Protected properties must retain original values
             string mrt;
-            target.Properties.getString("Manufacture Run Time", null, out mrt);
+            target.Properties.GetString("Manufacture Run Time", null, out mrt);
             Assert.That(mrt, Is.EqualTo("7200"), "Manufacture Run Time must be preserved");
 
             string pwr;
-            target.Properties.getString("Power Required", null, out pwr);
+            target.Properties.GetString("Power Required", null, out pwr);
             Assert.That(pwr, Is.EqualTo("250"), "Power Required must be preserved");
 
             // Non-protected incoming property should be merged
             string dmg;
-            target.Properties.getString("Damage", null, out dmg);
+            target.Properties.GetString("Damage", null, out dmg);
             Assert.That(dmg, Is.EqualTo("50"), "Non-protected incoming property should be present");
         }
 

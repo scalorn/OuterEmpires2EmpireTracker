@@ -52,8 +52,6 @@ namespace OE2EmpireTracker.Tests.Services
             return PlayerContext.GetInstance();
         }
 
-        #region Property 1: Add-then-Find round trip
-
         // Feature: readonly-list-encapsulation, Property 1: Add-then-Find round trip
         /// <summary>
         /// For Blueprint, Survey, Colony, Station â€” add entity via mutation method,
@@ -119,10 +117,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"FindStation('{id}') returned same instance: {found == station}");
             });
         }
-
-        #endregion
-
-        #region Property 2: Remove-then-Find returns null
 
         // Feature: readonly-list-encapsulation, Property 2: Remove-then-Find returns null
         /// <summary>
@@ -193,10 +187,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        #endregion
-
-        #region Property 4: Invalidate-then-Find rebuilds correctly
-
         // Feature: readonly-list-encapsulation, Property 4: Invalidate-then-Find rebuilds correctly
         /// <summary>
         /// Add entities, call Invalidate, call Find, assert correct entity returned.
@@ -250,10 +240,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        #endregion
-
-        #region Property 5: Snapshot independence
-
         // Feature: readonly-list-encapsulation, Property 5: Snapshot independence
         /// <summary>
         /// Get snapshot, mutate backing list via Add/Remove, assert snapshot unchanged.
@@ -297,10 +283,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"Snapshot count {snapshot.Count} == {snapshotCount}, contains colony: {snapshot.Contains(colony1)}");
             });
         }
-
-        #endregion
-
-        #region Property 6: Blueprint mutation invalidates derived caches
 
         // Feature: readonly-list-encapsulation, Property 6: Blueprint mutation invalidates derived caches
         /// <summary>
@@ -367,10 +349,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"CountBlueprintsByType('{bpType}'): afterAdd={countAfterAdd}, afterRemove={countAfterRemove}");
             });
         }
-
-        #endregion
-
-        #region Property 7: BuildPlan mutation invalidates build item indexes
 
         // Feature: readonly-list-encapsulation, Property 7: BuildPlan mutation invalidates build item indexes
         /// <summary>
@@ -439,7 +417,5 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"GetBuildItemsByBlueprint after remove returned {items.Count} items, expected 0");
             });
         }
-
-        #endregion
     }
 }

@@ -9,8 +9,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class DeliveryFulfillmentTests
     {
-        #region FulfillCommodity
-
         [Test]
         public void FulfillCommodity_Delivered_SetsFulfilledAndDelivered()
         {
@@ -76,10 +74,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(colony.Commodities[1].Fulfilled, Is.False);
         }
 
-        #endregion
-
-        #region StageFlatpack
-
         [Test]
         public void StageFlatpack_Delivered_SetsStagedTrue()
         {
@@ -91,7 +85,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(result, Is.True);
             bool staged;
-            structure.Properties.getBoolean("Staged", false, out staged);
+            structure.Properties.GetBoolean("Staged", false, out staged);
             Assert.That(staged, Is.True);
         }
 
@@ -100,14 +94,14 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var colony = new Colony();
             var structure = new ColonyStructure { FlatpackBlueprintUUID = "bp-123" };
-            structure.Properties.setProperty("Staged", "True");
+            structure.Properties.SetProperty("Staged", "True");
             colony.Structures.Add(structure);
 
             var result = DeliveryFulfillment.StageFlatpack(colony, "bp-123", false);
 
             Assert.That(result, Is.True);
             bool staged;
-            structure.Properties.getBoolean("Staged", true, out staged);
+            structure.Properties.GetBoolean("Staged", true, out staged);
             Assert.That(staged, Is.False);
         }
 
@@ -128,10 +122,6 @@ namespace OE2EmpireTracker.Tests.Services
             var result = DeliveryFulfillment.StageFlatpack(null, "bp-123", true);
             Assert.That(result, Is.False);
         }
-
-        #endregion
-
-        #region DeliverWorkers
 
         [Test]
         public void DeliverWorkers_NewWorker_CreatesItemInWarehouse()
@@ -216,7 +206,5 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(items.Count, Is.EqualTo(1));
             Assert.That(items[0].Volume, Is.EqualTo(OE2EmpireTracker.Constants.GameConstants.WorkerVolume));
         }
-
-        #endregion
     }
 }

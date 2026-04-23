@@ -362,7 +362,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.txtPlayerName.Name = "txtPlayerName";
             this.txtPlayerName.Size = new System.Drawing.Size(200, 20);
             this.txtPlayerName.TabIndex = 0;
-            this.txtPlayerName.TextChanged += new System.EventHandler(this.txtPlayerName_TextChanged);
+            this.txtPlayerName.TextChanged += new System.EventHandler(this.TxtPlayerName_TextChanged);
             // 
             // flpTotalCredits
             // 
@@ -824,7 +824,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.chkColonyDirector.TabIndex = 3;
             this.chkColonyDirector.Text = "Unlocked";
             this.chkColonyDirector.UseVisualStyleBackColor = true;
-            this.chkColonyDirector.Click += new System.EventHandler(this.chkColonyDirector_Click);
+            this.chkColonyDirector.Click += new System.EventHandler(this.ChkColonyDirector_Click);
             // 
             // pskHumanResources
             // 
@@ -900,7 +900,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.chkColonyFounder.TabIndex = 3;
             this.chkColonyFounder.Text = "Unlocked";
             this.chkColonyFounder.UseVisualStyleBackColor = true;
-            this.chkColonyFounder.Click += new System.EventHandler(this.chkColonyFounder_Click);
+            this.chkColonyFounder.Click += new System.EventHandler(this.ChkColonyFounder_Click);
             // 
             // pskFounder
             // 
@@ -1077,7 +1077,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.chkCommander.TabIndex = 3;
             this.chkCommander.Text = "Unlocked";
             this.chkCommander.UseVisualStyleBackColor = true;
-            this.chkCommander.Click += new System.EventHandler(this.chkCommander_Click);
+            this.chkCommander.Click += new System.EventHandler(this.ChkCommander_Click);
             // 
             // pskDamageControl
             // 
@@ -1137,7 +1137,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.chkEngineer.TabIndex = 3;
             this.chkEngineer.Text = "Unlocked";
             this.chkEngineer.UseVisualStyleBackColor = true;
-            this.chkEngineer.Click += new System.EventHandler(this.chkEngineer_Click);
+            this.chkEngineer.Click += new System.EventHandler(this.ChkEngineer_Click);
             // 
             // pskEngineeringCapacity
             // 
@@ -1199,7 +1199,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.chkEntrepeneur.TabIndex = 3;
             this.chkEntrepeneur.Text = "Unlocked";
             this.chkEntrepeneur.UseVisualStyleBackColor = true;
-            this.chkEntrepeneur.Click += new System.EventHandler(this.chkEntrepeneur_Click);
+            this.chkEntrepeneur.Click += new System.EventHandler(this.ChkEntrepeneur_Click);
             // 
             // pskSoundAsAPound
             // 
@@ -1288,7 +1288,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.chkJobManagement.TabIndex = 3;
             this.chkJobManagement.Text = "Unlocked";
             this.chkJobManagement.UseVisualStyleBackColor = true;
-            this.chkJobManagement.Click += new System.EventHandler(this.chkJobManagement_Click);
+            this.chkJobManagement.Click += new System.EventHandler(this.ChkJobManagement_Click);
             // 
             // pskJobOpportunities
             // 
@@ -1364,7 +1364,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.chkResearcher.TabIndex = 3;
             this.chkResearcher.Text = "Unlocked";
             this.chkResearcher.UseVisualStyleBackColor = true;
-            this.chkResearcher.Click += new System.EventHandler(this.chkResearcher_Click);
+            this.chkResearcher.Click += new System.EventHandler(this.ChkResearcher_Click);
             // 
             // pskResearchReview
             // 
@@ -1454,7 +1454,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.chkSurveyor.TabIndex = 3;
             this.chkSurveyor.Text = "Unlocked";
             this.chkSurveyor.UseVisualStyleBackColor = true;
-            this.chkSurveyor.Click += new System.EventHandler(this.chkSurveyor_Click);
+            this.chkSurveyor.Click += new System.EventHandler(this.ChkSurveyor_Click);
             // 
             // pskSurveyingMethods
             // 
@@ -1542,7 +1542,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.chkTrader.TabIndex = 3;
             this.chkTrader.Text = "Unlocked";
             this.chkTrader.UseVisualStyleBackColor = true;
-            this.chkTrader.Click += new System.EventHandler(this.chkTrader_Click);
+            this.chkTrader.Click += new System.EventHandler(this.ChkTrader_Click);
             // 
             // pskBroker
             // 
@@ -1581,7 +1581,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.cmdImport.TabIndex = 4;
             this.cmdImport.Text = "Import";
             this.cmdImport.UseVisualStyleBackColor = true;
-            this.cmdImport.Click += new System.EventHandler(this.cmdImport_Click);
+            this.cmdImport.Click += new System.EventHandler(this.CmdImport_Click);
             // 
             // cmdNew
             // 
@@ -1591,7 +1591,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.cmdNew.TabIndex = 3;
             this.cmdNew.Text = "New";
             this.cmdNew.UseVisualStyleBackColor = true;
-            this.cmdNew.Click += new System.EventHandler(this.cmdNew_Click);
+            this.cmdNew.Click += new System.EventHandler(this.CmdNew_Click);
             // 
             // cmdSave
             // 
@@ -1601,7 +1601,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.cmdSave.TabIndex = 0;
             this.cmdSave.Text = "Save";
             this.cmdSave.UseVisualStyleBackColor = true;
-            this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
+            this.cmdSave.Click += new System.EventHandler(this.CmdSave_Click);
             // 
             // cmdDelete
             // 
@@ -1611,7 +1611,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.cmdDelete.TabIndex = 1;
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            this.cmdDelete.Click += new System.EventHandler(this.CmdDelete_Click);
             // 
             // FormPlayerProfile
             // 

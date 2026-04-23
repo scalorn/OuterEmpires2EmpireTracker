@@ -38,10 +38,10 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             lvwRoutes.Columns.Add("Refs", 45, HorizontalAlignment.Right);
             lvwRoutes.FullRowSelect = true;
             lvwRoutes.MultiSelect = false;
-            lvwRoutes.ItemSelectionChanged += lvwRoutes_ItemSelectionChanged;
+            lvwRoutes.ItemSelectionChanged += LvwRoutes_ItemSelectionChanged;
 
-            txtRouteFilter.TextChanged += txtRouteFilter_TextChanged;
-            txtRouteName.TextChanged += txtRouteName_TextChanged;
+            txtRouteFilter.TextChanged += TxtRouteFilter_TextChanged;
+            txtRouteName.TextChanged += TxtRouteName_TextChanged;
 
             cmbColony.DisplayMember = "Display";
             cmbColony.ValueMember = "UUID";
@@ -50,14 +50,14 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulateColonyPicker();
             cmbDestType.SelectedIndexChanged += (s, ev) => PopulateColonyPicker();
 
-            cmdAddStop.Click += cmdAddStop_Click;
-            cmdUp.Click += cmdUp_Click;
-            cmdDown.Click += cmdDown_Click;
-            cmdRemoveStop.Click += cmdRemoveStop_Click;
+            cmdAddStop.Click += CmdAddStop_Click;
+            cmdUp.Click += CmdUp_Click;
+            cmdDown.Click += CmdDown_Click;
+            cmdRemoveStop.Click += CmdRemoveStop_Click;
             chkPreventDuplicates.CheckedChanged += (s, ev) => PopulateColonyPicker();
-            cmdNew.Click += cmdNew_Click;
-            cmdSave.Click += cmdSave_Click;
-            cmdDelete.Click += cmdDelete_Click;
+            cmdNew.Click += CmdNew_Click;
+            cmdSave.Click += CmdSave_Click;
+            cmdDelete.Click += CmdDelete_Click;
 
             // Plan tab wiring
             PopulateItemTypeCombos();
@@ -65,33 +65,33 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbPickItemType.SelectedIndexChanged += (s, ev) => { PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem); UpdatePurityVisibility(cmbPickItemType, cmbPickPurity); };
             txtDropFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
             txtPickFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);
-            cmdAddDropOff.Click += cmdAddDropOff_Click;
-            cmdAddPickUp.Click += cmdAddPickUp_Click;
-            cmdRemoveDropOff.Click += cmdRemoveDropOff_Click;
-            cmdRemovePickUp.Click += cmdRemovePickUp_Click;
-            dgvStops.SelectionChanged += dgvStops_SelectionChanged;
+            cmdAddDropOff.Click += CmdAddDropOff_Click;
+            cmdAddPickUp.Click += CmdAddPickUp_Click;
+            cmdRemoveDropOff.Click += CmdRemoveDropOff_Click;
+            cmdRemovePickUp.Click += CmdRemovePickUp_Click;
+            dgvStops.SelectionChanged += DgvStops_SelectionChanged;
 
             // Plan selector wiring
             PopulatePurityCombos();
             cmbPlan.DisplayMember = "Display";
             cmbPlan.ValueMember = "UUID";
-            cmbPlan.SelectedIndexChanged += cmbPlan_SelectedIndexChanged;
+            cmbPlan.SelectedIndexChanged += CmbPlan_SelectedIndexChanged;
             txtPlanFilter.TextChanged += (s, ev) => PopulatePlanDropdown();
             chkShowCompleted.CheckedChanged += (s, ev) => PopulatePlanDropdown();
-            cmdNewPlan.Click += cmdNewPlan_Click;
-            cmdDeletePlan.Click += cmdDeletePlan_Click;
-            txtPlanName.TextChanged += txtPlanName_TextChanged;
-            cmdExecutePlan.Click += cmdExecutePlan_Click;
-            cmdAutoFill.Click += cmdAutoFill_Click;
+            cmdNewPlan.Click += CmdNewPlan_Click;
+            cmdDeletePlan.Click += CmdDeletePlan_Click;
+            txtPlanName.TextChanged += TxtPlanName_TextChanged;
+            cmdExecutePlan.Click += CmdExecutePlan_Click;
+            cmdAutoFill.Click += CmdAutoFill_Click;
             cmdAutoFill.Visible = false;
 
             PopulateRouteList();
 
-            flpBase.Layout += flpBase_Layout;
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpRouteData.Layout += flpRouteData_Layout;
-            tabStops.Layout += tabStops_Layout;
-            flpPlanContent.Layout += flpPlanContent_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpRouteData.Layout += FlpRouteData_Layout;
+            tabStops.Layout += TabStops_Layout;
+            flpPlanContent.Layout += FlpPlanContent_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.DeliveryDataChanged += OnDeliveryDataChanged;
@@ -101,7 +101,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         // Layout
         // -----------------------------------------------------------------------
 
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             flpRouteData.Size = new Size(
                 flpBase.Size.Width - flpSearchList.Size.Width - flpSearchList.Margin.Right - flpSearchList.Margin.Left - flpRouteData.Margin.Left - flpRouteData.Margin.Right,
@@ -111,14 +111,14 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 flpBase.Size.Height - flpSearchList.Margin.Top - flpSearchList.Margin.Bottom);
         }
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             lvwRoutes.Size = new Size(
                 lvwRoutes.Size.Width,
                 flpSearchList.Size.Height - flpRouteFilter.Size.Height - flpRouteFilter.Margin.Top - flpRouteFilter.Margin.Bottom - lvwRoutes.Margin.Top - lvwRoutes.Margin.Bottom);
         }
 
-        private void flpRouteData_Layout(object sender, LayoutEventArgs e)
+        private void FlpRouteData_Layout(object sender, LayoutEventArgs e)
         {
             int tabHeight = flpRouteData.Size.Height
                 - flpRouteName.Size.Height - flpRouteName.Margin.Top - flpRouteName.Margin.Bottom
@@ -130,13 +130,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 tabHeight);
         }
 
-        private void tabStops_Layout(object sender, LayoutEventArgs e)
+        private void TabStops_Layout(object sender, LayoutEventArgs e)
         {
             flpAddStop.Dock = System.Windows.Forms.DockStyle.Bottom;
             dgvStops.Dock = System.Windows.Forms.DockStyle.Fill;
         }
 
-        private void flpPlanContent_Layout(object sender, LayoutEventArgs e)
+        private void FlpPlanContent_Layout(object sender, LayoutEventArgs e)
         {
             int availWidth = flpPlanContent.ClientSize.Width;
             int availHeight = flpPlanContent.ClientSize.Height;
@@ -184,12 +184,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             sw.Stop(); Log.Info("PERF PopulateRouteList: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void txtRouteFilter_TextChanged(object sender, EventArgs e)
+        private void TxtRouteFilter_TextChanged(object sender, EventArgs e)
         {
             PopulateRouteList();
         }
 
-        private void lvwRoutes_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwRoutes_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (lvwRoutes.SelectedItems.Count == 1)
             {
@@ -214,7 +214,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 }
 
                 // Trigger plan tab update for the currently selected stop
-                dgvStops_SelectionChanged(sender, e);
+                DgvStops_SelectionChanged(sender, e);
             }
         }
 
@@ -443,10 +443,10 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             txtPlanFilter.Text = string.Empty;
             txtPlanName.Text = string.Empty;
             txtPlanName.SetError("Plan name is required");
-            cmbPlan.SelectedIndexChanged -= cmbPlan_SelectedIndexChanged;
+            cmbPlan.SelectedIndexChanged -= CmbPlan_SelectedIndexChanged;
             cmbPlan.DataSource = null;
             cmbPlan.Items.Clear();
-            cmbPlan.SelectedIndexChanged += cmbPlan_SelectedIndexChanged;
+            cmbPlan.SelectedIndexChanged += CmbPlan_SelectedIndexChanged;
             cmdAutoFill.Visible = false;
             ClearPlanGrids();
         }
@@ -455,7 +455,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         // Stop Management
         // -----------------------------------------------------------------------
 
-        private void cmdAddStop_Click(object sender, EventArgs e)
+        private void CmdAddStop_Click(object sender, EventArgs e)
         {
             string destUUID = cmbColony.SelectedValue as string;
             if (string.IsNullOrEmpty(destUUID)) return;
@@ -475,7 +475,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             if (chkPreventDuplicates.Checked) PopulateColonyPicker();
         }
 
-        private void cmdUp_Click(object sender, EventArgs e)
+        private void CmdUp_Click(object sender, EventArgs e)
         {
             if (dgvStops.SelectedRows.Count == 0) return;
             var indices = new List<int>();
@@ -491,7 +491,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 dgvStops.FirstDisplayedScrollingRowIndex = newIndices[0];
         }
 
-        private void cmdDown_Click(object sender, EventArgs e)
+        private void CmdDown_Click(object sender, EventArgs e)
         {
             if (dgvStops.SelectedRows.Count == 0) return;
             var indices = new List<int>();
@@ -507,7 +507,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 dgvStops.FirstDisplayedScrollingRowIndex = newIndices[0];
         }
 
-        private void cmdRemoveStop_Click(object sender, EventArgs e)
+        private void CmdRemoveStop_Click(object sender, EventArgs e)
         {
             if (dgvStops.SelectedRows.Count == 0) return;
             var indices = new List<int>();
@@ -531,7 +531,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         // Commands
         // -----------------------------------------------------------------------
 
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             ClearForm();
             lvwRoutes.SelectedItems.Clear();
@@ -539,7 +539,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmdDelete.Text = "Delete";
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void CmdSave_Click(object sender, EventArgs e)
         {
             viewModel.Save();
 
@@ -559,7 +559,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             }
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(viewModel.UUID)) return;
 
@@ -671,7 +671,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             sw.Stop(); Log.Info("PERF PopulatePlanDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmbPlan_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbPlan_SelectedIndexChanged(object sender, EventArgs e)
         {
             string planUUID = cmbPlan.SelectedValue as string;
             if (string.IsNullOrEmpty(planUUID))
@@ -707,13 +707,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             }
         }
 
-        private void txtRouteName_TextChanged(object sender, EventArgs e)
+        private void TxtRouteName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.Name = txtRouteName.Text;
         }
 
-        private void txtPlanName_TextChanged(object sender, EventArgs e)
+        private void TxtPlanName_TextChanged(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtPlanName.Text))
             {
@@ -728,7 +728,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             if (planViewModel != null) planViewModel.Data.Name = txtPlanName.Text;
         }
 
-        private void cmdExecutePlan_Click(object sender, EventArgs e)
+        private void CmdExecutePlan_Click(object sender, EventArgs e)
         {
             if (planViewModel == null || string.IsNullOrEmpty(planViewModel.UUID) || string.IsNullOrEmpty(viewModel.UUID))
             {
@@ -744,7 +744,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             execution.ApplyPreSelection();
         }
 
-        private void cmdAutoFill_Click(object sender, EventArgs e)
+        private void CmdAutoFill_Click(object sender, EventArgs e)
         {
             if (planViewModel == null || string.IsNullOrEmpty(planViewModel.UUID)) return;
 
@@ -784,7 +784,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             }
         }
 
-        private void cmdNewPlan_Click(object sender, EventArgs e)
+        private void CmdNewPlan_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(viewModel.UUID))
             {
@@ -809,7 +809,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbPlan.SelectedValue = plan.UUID;
         }
 
-        private void cmdDeletePlan_Click(object sender, EventArgs e)
+        private void CmdDeletePlan_Click(object sender, EventArgs e)
         {
             if (planViewModel == null || string.IsNullOrEmpty(planViewModel.UUID)) return;
 
@@ -859,7 +859,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 return false;
 
             // Auto-create a plan
-            cmdNewPlan_Click(this, EventArgs.Empty);
+            CmdNewPlan_Click(this, EventArgs.Empty);
             return planViewModel != null && !string.IsNullOrEmpty(planViewModel.UUID);
         }
 
@@ -867,7 +867,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         // Plan Tab -- Stop Items
         // -----------------------------------------------------------------------
 
-        private void dgvStops_SelectionChanged(object sender, EventArgs e)
+        private void DgvStops_SelectionChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
 
@@ -1016,13 +1016,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             sw.Stop(); Log.Info("PERF PopulatePlanGrids: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmdAddDropOff_Click(object sender, EventArgs e)
+        private void CmdAddDropOff_Click(object sender, EventArgs e)
         {
             if (!EnsurePlanExists()) return;
             if (selectedPlanStop == null)
             {
                 // Try to get the stop from the grid selection
-                dgvStops_SelectionChanged(sender, e);
+                DgvStops_SelectionChanged(sender, e);
                 if (selectedPlanStop == null) return;
             }
 
@@ -1038,12 +1038,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulatePlanGrids();
         }
 
-        private void cmdAddPickUp_Click(object sender, EventArgs e)
+        private void CmdAddPickUp_Click(object sender, EventArgs e)
         {
             if (!EnsurePlanExists()) return;
             if (selectedPlanStop == null)
             {
-                dgvStops_SelectionChanged(sender, e);
+                DgvStops_SelectionChanged(sender, e);
                 if (selectedPlanStop == null) return;
             }
 
@@ -1059,7 +1059,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulatePlanGrids();
         }
 
-        private void cmdRemoveDropOff_Click(object sender, EventArgs e)
+        private void CmdRemoveDropOff_Click(object sender, EventArgs e)
         {
             if (selectedPlanStop == null || planViewModel == null) return;
             var indices = new List<int>();
@@ -1069,7 +1069,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulatePlanGrids();
         }
 
-        private void cmdRemovePickUp_Click(object sender, EventArgs e)
+        private void CmdRemovePickUp_Click(object sender, EventArgs e)
         {
             if (selectedPlanStop == null || planViewModel == null) return;
             var indices = new List<int>();

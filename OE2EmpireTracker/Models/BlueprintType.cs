@@ -10,7 +10,7 @@ namespace OE2EmpireTracker.Models
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public Boolean Universal { get; set; }
+        public bool Universal { get; set; }
         public string[] Properties { get; set; }
         public string[] ResearchableProperties { get; set; }
 

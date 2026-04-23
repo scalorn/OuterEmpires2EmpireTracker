@@ -9,8 +9,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class MarketServiceTests
     {
-        #region RecordSale
-
         private MarketListing CreateListing(int quantity, string itemName = "Laser Mk2")
         {
             return new MarketListing
@@ -146,10 +144,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(DateTime.TryParse(tx.Timestamp, out _), Is.True);
         }
 
-        #endregion
-
-        #region RecordPurchase
-
         [Test]
         public void RecordPurchase_CreatesTransactionAndAddsToHold()
         {
@@ -266,10 +260,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(tx.Timestamp, Is.Not.Empty);
             Assert.That(DateTime.TryParse(tx.Timestamp, out _), Is.True);
         }
-
-        #endregion
-
-        #region ComputeProfitLoss
 
         private MarketTransaction CreateTx(TransactionType type, string itemName, int qty, decimal pricePerUnit, string stationUUID = "s1", string timestamp = null)
         {
@@ -414,7 +404,5 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(summary.NetProfitLoss, Is.EqualTo(-900m));
         }
-
-        #endregion
     }
 }

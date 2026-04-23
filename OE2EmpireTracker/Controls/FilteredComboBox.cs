@@ -12,26 +12,26 @@ namespace OE2EmpireTracker.Controls
 {
     public class FilteredComboBox : System.Windows.Forms.ComboBox
     {
-        public BindingSource unfilteredList;
+        public BindingSource UnfilteredList { get; set; }
         private bool changingText = false;
 
         protected override void OnTextChanged(EventArgs e)
         {
-            if (unfilteredList == null || changingText == true)
+            if (UnfilteredList == null || changingText == true)
             {
                 return;
             }
 
             string searchText = this.Text;
-            BindingSource filteredSource = unfilteredList;
+            BindingSource filteredSource = UnfilteredList;
 
             if (string.IsNullOrEmpty(searchText))
             {
-                filteredSource = unfilteredList;
+                filteredSource = UnfilteredList;
             }
             else
             {
-                List<BlueprintType> blueprintTypes = (List<BlueprintType>) unfilteredList.DataSource;
+                List<BlueprintType> blueprintTypes = (List<BlueprintType>) UnfilteredList.DataSource;
                 var filteredList = blueprintTypes
                     .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();

@@ -162,7 +162,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.splitMain.SplitterWidth = 8;
             this.splitMain.Panel1MinSize = 150;
             this.splitMain.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.splitMain.Paint += new System.Windows.Forms.PaintEventHandler(this.splitMain_Paint);
+            this.splitMain.Paint += new System.Windows.Forms.PaintEventHandler(this.SplitMain_Paint);
             this.splitMain.Size = new System.Drawing.Size(1225, 500);
             this.splitMain.TabIndex = 0;
             // 
@@ -212,7 +212,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpColonyData.Size = new System.Drawing.Size(981, 500);
             this.flpColonyData.TabIndex = 0;
             this.flpColonyData.WrapContents = false;
-            this.flpColonyData.Layout += new System.Windows.Forms.LayoutEventHandler(this.flpColonyData_Layout);
+            this.flpColonyData.Layout += new System.Windows.Forms.LayoutEventHandler(this.FlpColonyData_Layout);
             // 
             // flpIdentity
             // 
@@ -355,7 +355,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.tabPStructures.TabIndex = 1;
             this.tabPStructures.Text = "Structures";
             this.tabPStructures.UseVisualStyleBackColor = true;
-            this.tabPStructures.Layout += new System.Windows.Forms.LayoutEventHandler(this.tabPStructures_Layout);
+            this.tabPStructures.Layout += new System.Windows.Forms.LayoutEventHandler(this.TabPStructures_Layout);
             // 
             // splitStructures
             // 
@@ -485,7 +485,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdBootstrap.TabIndex = 0;
             this.cmdBootstrap.Text = "Bootstrap From Surveys";
             this.cmdBootstrap.UseVisualStyleBackColor = true;
-            this.cmdBootstrap.Click += new System.EventHandler(this.cmdBootstrap_Click);
+            this.cmdBootstrap.Click += new System.EventHandler(this.CmdBootstrap_Click);
             // 
             // cmdOptimize
             // 
@@ -496,7 +496,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdOptimize.TabIndex = 1;
             this.cmdOptimize.Text = "Optimize Build Order";
             this.cmdOptimize.UseVisualStyleBackColor = true;
-            this.cmdOptimize.Click += new System.EventHandler(this.cmdOptimize_Click);
+            this.cmdOptimize.Click += new System.EventHandler(this.CmdOptimize_Click);
             // 
             // cmdGenerateBuildPlan
             // 
@@ -507,7 +507,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdGenerateBuildPlan.TabIndex = 2;
             this.cmdGenerateBuildPlan.Text = "Generate Build Plan";
             this.cmdGenerateBuildPlan.UseVisualStyleBackColor = true;
-            this.cmdGenerateBuildPlan.Click += new System.EventHandler(this.cmdGenerateBuildPlan_Click);
+            this.cmdGenerateBuildPlan.Click += new System.EventHandler(this.CmdGenerateBuildPlan_Click);
             // 
             // timerAdminRefresh
             // 
@@ -916,7 +916,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdNew.TabIndex = 0;
             this.cmdNew.Text = "New";
             this.cmdNew.UseVisualStyleBackColor = true;
-            this.cmdNew.Click += new System.EventHandler(this.cmdNew_Click);
+            this.cmdNew.Click += new System.EventHandler(this.CmdNew_Click);
             // 
             // cmdSave
             // 
@@ -926,7 +926,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdSave.TabIndex = 1;
             this.cmdSave.Text = "Save";
             this.cmdSave.UseVisualStyleBackColor = true;
-            this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
+            this.cmdSave.Click += new System.EventHandler(this.CmdSave_Click);
             // 
             // cmdDelete
             // 
@@ -936,7 +936,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdDelete.TabIndex = 2;
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            this.cmdDelete.Click += new System.EventHandler(this.CmdDelete_Click);
             // 
             // cmdImportColony
             // 

@@ -31,25 +31,25 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             lvwChains.Columns.Add("Active", 50);
             lvwChains.FullRowSelect = true;
             lvwChains.MultiSelect = false;
-            lvwChains.ItemSelectionChanged += lvwChains_ItemSelectionChanged;
+            lvwChains.ItemSelectionChanged += LvwChains_ItemSelectionChanged;
 
-            txtFilter.TextChanged += txtFilter_TextChanged;
-            txtChainName.TextChanged += txtChainName_TextChanged;
-            chkActive.CheckedChanged += chkActive_CheckedChanged;
+            txtFilter.TextChanged += TxtFilter_TextChanged;
+            txtChainName.TextChanged += TxtChainName_TextChanged;
+            chkActive.CheckedChanged += ChkActive_CheckedChanged;
 
-            cmdNew.Click += cmdNew_Click;
-            cmdDelete.Click += cmdDelete_Click;
-            cmdSave.Click += cmdSave_Click;
+            cmdNew.Click += CmdNew_Click;
+            cmdDelete.Click += CmdDelete_Click;
+            cmdSave.Click += CmdSave_Click;
 
-            cmdAddStage.Click += cmdAddStage_Click;
-            cmdUpdateStage.Click += cmdUpdateStage_Click;
-            cmdRemoveStage.Click += cmdRemoveStage_Click;
-            cmdMoveUp.Click += cmdMoveUp_Click;
-            cmdMoveDown.Click += cmdMoveDown_Click;
+            cmdAddStage.Click += CmdAddStage_Click;
+            cmdUpdateStage.Click += CmdUpdateStage_Click;
+            cmdRemoveStage.Click += CmdRemoveStage_Click;
+            cmdMoveUp.Click += CmdMoveUp_Click;
+            cmdMoveDown.Click += CmdMoveDown_Click;
 
-            dgvStages.SelectionChanged += dgvStages_SelectionChanged;
+            dgvStages.SelectionChanged += DgvStages_SelectionChanged;
 
-            cmbLocationType.SelectedIndexChanged += cmbLocationType_SelectedIndexChanged;
+            cmbLocationType.SelectedIndexChanged += CmbLocationType_SelectedIndexChanged;
 
             PopulateStageTypeCombos();
             PopulateResourceCombo();
@@ -57,15 +57,15 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             PopulateChainList();
             ClearForm();
 
-            flpBase.Layout += flpBase_Layout;
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpDetail.Layout += flpDetail_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
 
         // Layout
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpBase.ClientSize.Width;
             int h = flpBase.ClientSize.Height;
@@ -73,7 +73,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             flpDetail.Size = new Size(w - 232, h - 6);
         }
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpSearchList.ClientSize.Width;
             int h = flpSearchList.ClientSize.Height;
@@ -82,7 +82,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             lvwChains.Size = new Size(w - 6, listHeight);
         }
 
-        private void flpDetail_Layout(object sender, LayoutEventArgs e)
+        private void FlpDetail_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpDetail.ClientSize.Width;
             dgvStages.Width = w - 6;
@@ -121,9 +121,9 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             Log.Info("PERF PopulateChainList: {0}ms items={1}", sw.ElapsedMilliseconds, chains.Count);
         }
 
-        private void txtFilter_TextChanged(object sender, EventArgs e) { PopulateChainList(); }
+        private void TxtFilter_TextChanged(object sender, EventArgs e) { PopulateChainList(); }
 
-        private void lvwChains_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwChains_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Models.SupplyChain chain)
@@ -304,7 +304,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             sw.Stop(); Log.Info("PERF PopulateRouteCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmbLocationType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbLocationType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateLocationCombo();
@@ -371,7 +371,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             return route?.Name ?? routeUUID;
         }
 
-        private void dgvStages_SelectionChanged(object sender, EventArgs e)
+        private void DgvStages_SelectionChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (dgvStages.SelectedRows.Count == 0) return;
@@ -442,7 +442,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             };
         }
 
-        private void cmdAddStage_Click(object sender, EventArgs e)
+        private void CmdAddStage_Click(object sender, EventArgs e)
         {
             if (_selectedChain == null) return;
             var stage = BuildStageFromPanel();
@@ -457,7 +457,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             Log.Info("Added stage seq={0} type={1}", stage.Sequence, stage.StageType);
         }
 
-        private void cmdUpdateStage_Click(object sender, EventArgs e)
+        private void CmdUpdateStage_Click(object sender, EventArgs e)
         {
             if (_selectedChain == null || dgvStages.SelectedRows.Count == 0) return;
             var existing = dgvStages.SelectedRows[0].Tag as SupplyChainStage;
@@ -479,7 +479,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             Log.Info("Updated stage seq={0} type={1}", existing.Sequence, existing.StageType);
         }
 
-        private void cmdRemoveStage_Click(object sender, EventArgs e)
+        private void CmdRemoveStage_Click(object sender, EventArgs e)
         {
             if (_selectedChain == null || dgvStages.SelectedRows.Count == 0) return;
             var stage = dgvStages.SelectedRows[0].Tag as SupplyChainStage;
@@ -490,7 +490,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             Log.Info("Removed stage seq={0} type={1}", stage.Sequence, stage.StageType);
         }
 
-        private void cmdMoveUp_Click(object sender, EventArgs e)
+        private void CmdMoveUp_Click(object sender, EventArgs e)
         {
             if (_selectedChain == null || dgvStages.SelectedRows.Count == 0) return;
             var stage = dgvStages.SelectedRows[0].Tag as SupplyChainStage;
@@ -505,7 +505,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             UpdateFlowSummary();
         }
 
-        private void cmdMoveDown_Click(object sender, EventArgs e)
+        private void CmdMoveDown_Click(object sender, EventArgs e)
         {
             if (_selectedChain == null || dgvStages.SelectedRows.Count == 0) return;
             var stage = dgvStages.SelectedRows[0].Tag as SupplyChainStage;
@@ -543,7 +543,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         }
 
         // CRUD
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             var chain = new Models.SupplyChain
             {
@@ -561,7 +561,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             Log.Info("Created new supply chain");
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (_selectedChain == null) return;
             var result = MessageBox.Show(
@@ -576,7 +576,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             Log.Info("Deleted supply chain");
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void CmdSave_Click(object sender, EventArgs e)
         {
             if (_selectedChain == null) return;
             string name = txtChainName.Text.Trim();
@@ -611,13 +611,13 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             Log.Info("Saved supply chain \"{0}\"", _selectedChain.Name);
         }
 
-        private void txtChainName_TextChanged(object sender, EventArgs e)
+        private void TxtChainName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedChain == null) return;
             _selectedChain.Name = txtChainName.Text;
         }
 
-        private void chkActive_CheckedChanged(object sender, EventArgs e)
+        private void ChkActive_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedChain == null) return;
             _selectedChain.IsActive = chkActive.Checked;

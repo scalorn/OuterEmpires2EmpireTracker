@@ -64,7 +64,7 @@ namespace OE2EmpireTracker.Constants
         /// <returns>True if the type starts with "Flatpacks/", otherwise false.</returns>
         public static bool IsFlatpack(this string blueprintType)
         {
-            return !string.IsNullOrEmpty(blueprintType) && 
+            return !string.IsNullOrEmpty(blueprintType) &&
                    blueprintType.StartsWith(BlueprintTypePrefixes.Flatpacks, StringComparison.OrdinalIgnoreCase);
         }
 

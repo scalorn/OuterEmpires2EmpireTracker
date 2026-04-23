@@ -20,8 +20,6 @@ namespace OE2EmpireTracker.Tests.Models
     [TestFixture]
     public class CountDownTimeUtcPropertyTests
     {
-        #region Generators
-
         /// <summary>
         /// Generates positive interval seconds (1 to 86400 = 1 day).
         /// </summary>
@@ -48,10 +46,6 @@ namespace OE2EmpireTracker.Tests.Models
                    from remaining in Gen.Choose(1, interval)
                    select Tuple.Create((long)interval, (long)remaining);
         }
-
-        #endregion
-
-        #region Property 7: CountDownTime uses UTC consistently
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 7: CountDownTime uses UTC consistently
@@ -148,7 +142,5 @@ namespace OE2EmpireTracker.Tests.Models
             Assert.That(cdt.StartTime, Is.EqualTo(DateTime.MinValue));
             Assert.That(cdt.EndTime, Is.EqualTo(DateTime.MinValue));
         }
-
-        #endregion
     }
 }

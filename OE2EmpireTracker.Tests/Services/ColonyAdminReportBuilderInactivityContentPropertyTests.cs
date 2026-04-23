@@ -59,9 +59,9 @@ namespace OE2EmpireTracker.Tests.Services
             var s = new ColonyStructure();
             s.UUID = Guid.NewGuid().ToString();
             s.FlatpackBlueprintUUID = bp.UUID;
-            s.displaySequence = 5;
-            s.Properties.setProperty(GameConstants.PropBuilt, true);
-            s.Properties.setProperty(GameConstants.PropOnline, true);
+            s.DisplaySequence = 5;
+            s.Properties.SetProperty(GameConstants.PropBuilt, true);
+            s.Properties.SetProperty(GameConstants.PropOnline, true);
             colony.Structures.Add(s);
 
             string rtf = ColonyAdminReportBuilder.BuildReport(colony, pc);
@@ -70,7 +70,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(rtf.Contains("Idle Mining"), Is.True, "Missing 'Idle Mining' header");
 
             // Should contain the source name
-            string expectedSource = $"#{s.displaySequence} {bp.ExtendedName}";
+            string expectedSource = $"#{s.DisplaySequence} {bp.ExtendedName}";
             Assert.That(rtf.Contains(expectedSource), Is.True, $"Missing source name '{expectedSource}'");
 
             // Should contain process details

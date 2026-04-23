@@ -34,15 +34,15 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             cmbRoute.DisplayMember = "Display";
             cmbRoute.ValueMember = "UUID";
-            cmbRoute.SelectedIndexChanged += cmbRoute_SelectedIndexChanged;
+            cmbRoute.SelectedIndexChanged += CmbRoute_SelectedIndexChanged;
 
             cmbPlan.DisplayMember = "Display";
             cmbPlan.ValueMember = "UUID";
-            cmbPlan.SelectedIndexChanged += cmbPlan_SelectedIndexChanged;
+            cmbPlan.SelectedIndexChanged += CmbPlan_SelectedIndexChanged;
 
             cmbShip.DisplayMember = "Display";
             cmbShip.ValueMember = "UUID";
-            cmbShip.SelectedIndexChanged += cmbShip_SelectedIndexChanged;
+            cmbShip.SelectedIndexChanged += CmbShip_SelectedIndexChanged;
 
             txtRouteFilter.TextChanged += (s, ev) => PopulateRouteDropdown();
             txtPlanFilter.TextChanged += (s, ev) =>
@@ -51,18 +51,18 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 if (!string.IsNullOrEmpty(routeUUID)) PopulatePlanDropdown(routeUUID);
             };
 
-            cmdCompletePlan.Click += cmdCompletePlan_Click;
-            cmdDeletePlan.Click += cmdDeletePlan_Click;
-            cmdSplitTrips.Click += cmdSplitTrips_Click;
+            cmdCompletePlan.Click += CmdCompletePlan_Click;
+            cmdDeletePlan.Click += CmdDeletePlan_Click;
+            cmdSplitTrips.Click += CmdSplitTrips_Click;
             cmdCompletePlan.Visible = false;
             cmdDeletePlan.Visible = false;
             cmdSplitTrips.Visible = false;
 
             PopulateRouteDropdown();
 
-            flpBase.Layout += flpBase_Layout;
-            flpSelectors.Layout += flpSelectors_Layout;
-            pnlExecution.Layout += pnlExecution_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSelectors.Layout += FlpSelectors_Layout;
+            pnlExecution.Layout += PnlExecution_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.DeliveryDataChanged += OnDeliveryDataChanged;
@@ -97,7 +97,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         // Layout
         // -----------------------------------------------------------------------
 
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             pnlExecution.Size = new Size(
                 flpBase.Size.Width - flpSelectors.Size.Width - flpSelectors.Margin.Right - flpSelectors.Margin.Left - pnlExecution.Margin.Left - pnlExecution.Margin.Right,
@@ -107,14 +107,14 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 flpBase.Size.Height - flpSelectors.Margin.Top - flpSelectors.Margin.Bottom);
         }
 
-        private void pnlExecution_Layout(object sender, LayoutEventArgs e)
+        private void PnlExecution_Layout(object sender, LayoutEventArgs e)
         {
             int w = pnlExecution.ClientSize.Width - dgvLoadList.Margin.Left - dgvLoadList.Margin.Right;
             dgvLoadList.Width = w;
             flpStops.Width = w;
         }
 
-        private void flpSelectors_Layout(object sender, LayoutEventArgs e)
+        private void FlpSelectors_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpSelectors.Size.Width - 6;
             txtRouteFilter.Size = new Size(w, txtRouteFilter.Size.Height);
@@ -137,12 +137,12 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void PopulateRouteDropdown()
         {
-            _lastRouteUUID = RouteDropdownHelper.Populate(cmbRoute, playerContext.GetCurrentPlayerRoutes(), txtRouteFilter.Text ?? string.Empty, cmbRoute.SelectedValue as string, cmbRoute_SelectedIndexChanged);
+            _lastRouteUUID = RouteDropdownHelper.Populate(cmbRoute, playerContext.GetCurrentPlayerRoutes(), txtRouteFilter.Text ?? string.Empty, cmbRoute.SelectedValue as string, CmbRoute_SelectedIndexChanged);
         }
 
         private string _lastRouteUUID = string.Empty;
 
-        private void cmbRoute_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbRoute_SelectedIndexChanged(object sender, EventArgs e)
         {
             string routeUUID = cmbRoute.SelectedValue as string ?? string.Empty;
             if (routeUUID == _lastRouteUUID) return; // Route didn't change
@@ -185,7 +185,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             sw.Stop(); Log.Info("PERF PopulatePlanDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmbPlan_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbPlan_SelectedIndexChanged(object sender, EventArgs e)
         {
             string planUUID = cmbPlan.SelectedValue as string;
             if (string.IsNullOrEmpty(planUUID))
@@ -214,7 +214,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private void PopulateShipDropdown()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            cmbShip.SelectedIndexChanged -= cmbShip_SelectedIndexChanged;
+            cmbShip.SelectedIndexChanged -= CmbShip_SelectedIndexChanged;
 
             var ships = playerContext.GetCurrentPlayerShips();
             var items = new List<DropdownItem>();
@@ -236,12 +236,12 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 cmbShip.SelectedValue = selectedPlan.ShipUUID;
             }
 
-            cmbShip.SelectedIndexChanged += cmbShip_SelectedIndexChanged;
+            cmbShip.SelectedIndexChanged += CmbShip_SelectedIndexChanged;
             UpdateShipSelection();
             sw.Stop(); Log.Info("PERF PopulateShipDropdown: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmbShip_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbShip_SelectedIndexChanged(object sender, EventArgs e)
         {
             string shipUUID = cmbShip.SelectedValue as string ?? string.Empty;
 
@@ -799,7 +799,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             }
         }
 
-        private void cmdCompletePlan_Click(object sender, EventArgs e)
+        private void CmdCompletePlan_Click(object sender, EventArgs e)
         {
             if (selectedPlan == null) return;
 
@@ -813,7 +813,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 PopulatePlanDropdown(routeUUID);
         }
 
-        private void cmdDeletePlan_Click(object sender, EventArgs e)
+        private void CmdDeletePlan_Click(object sender, EventArgs e)
         {
             if (selectedPlan == null) return;
 
@@ -967,7 +967,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         // Trip Splitting
         // -----------------------------------------------------------------------
 
-        private void cmdSplitTrips_Click(object sender, EventArgs e)
+        private void CmdSplitTrips_Click(object sender, EventArgs e)
         {
             if (selectedPlan == null || currentCargoCapacity <= 0) return;
 

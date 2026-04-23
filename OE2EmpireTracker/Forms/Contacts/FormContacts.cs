@@ -32,7 +32,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             lvwFactions.Columns.Add("Refs", 40, HorizontalAlignment.Right);
             lvwFactions.FullRowSelect = true;
             lvwFactions.MultiSelect = false;
-            lvwFactions.ItemSelectionChanged += lvwFactions_ItemSelectionChanged;
+            lvwFactions.ItemSelectionChanged += LvwFactions_ItemSelectionChanged;
 
             // Characters ListView setup
             lvwCharacters.View = View.Details;
@@ -40,23 +40,23 @@ namespace OE2EmpireTracker.Forms.Contacts
             lvwCharacters.Columns.Add("Faction", 120);
             lvwCharacters.FullRowSelect = true;
             lvwCharacters.MultiSelect = false;
-            lvwCharacters.ItemSelectionChanged += lvwCharacters_ItemSelectionChanged;
+            lvwCharacters.ItemSelectionChanged += LvwCharacters_ItemSelectionChanged;
 
             // Factions tab events
-            txtFactionFilter.TextChanged += txtFactionFilter_TextChanged;
-            txtFactionName.TextChanged += txtFactionName_TextChanged;
-            txtFactionDescription.TextChanged += txtFactionDescription_TextChanged;
-            cmdNewFaction.Click += cmdNewFaction_Click;
-            cmdDeleteFaction.Click += cmdDeleteFaction_Click;
-            cmdSaveFaction.Click += cmdSaveFaction_Click;
+            txtFactionFilter.TextChanged += TxtFactionFilter_TextChanged;
+            txtFactionName.TextChanged += TxtFactionName_TextChanged;
+            txtFactionDescription.TextChanged += TxtFactionDescription_TextChanged;
+            cmdNewFaction.Click += CmdNewFaction_Click;
+            cmdDeleteFaction.Click += CmdDeleteFaction_Click;
+            cmdSaveFaction.Click += CmdSaveFaction_Click;
 
             // Characters tab events
-            txtCharFilter.TextChanged += txtCharFilter_TextChanged;
-            txtCharName.TextChanged += txtCharName_TextChanged;
-            cmbCharFaction.SelectedIndexChanged += cmbCharFaction_SelectedIndexChanged;
-            cmdNewChar.Click += cmdNewChar_Click;
-            cmdDeleteChar.Click += cmdDeleteChar_Click;
-            cmdSaveChar.Click += cmdSaveChar_Click;
+            txtCharFilter.TextChanged += TxtCharFilter_TextChanged;
+            txtCharName.TextChanged += TxtCharName_TextChanged;
+            cmbCharFaction.SelectedIndexChanged += CmbCharFaction_SelectedIndexChanged;
+            cmdNewChar.Click += CmdNewChar_Click;
+            cmdDeleteChar.Click += CmdDeleteChar_Click;
+            cmdSaveChar.Click += CmdSaveChar_Click;
 
             PopulateFactionList();
             ClearFactionForm();
@@ -64,10 +64,10 @@ namespace OE2EmpireTracker.Forms.Contacts
             ClearCharacterForm();
 
             // Layout handlers
-            flpFactionBase.Layout += flpFactionBase_Layout;
-            flpFactionSearchList.Layout += flpFactionSearchList_Layout;
-            flpCharBase.Layout += flpCharBase_Layout;
-            flpCharSearchList.Layout += flpCharSearchList_Layout;
+            flpFactionBase.Layout += FlpFactionBase_Layout;
+            flpFactionSearchList.Layout += FlpFactionSearchList_Layout;
+            flpCharBase.Layout += FlpCharBase_Layout;
+            flpCharSearchList.Layout += FlpCharSearchList_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
@@ -76,7 +76,7 @@ namespace OE2EmpireTracker.Forms.Contacts
         // Layout
         // -----------------------------------------------------------------------
 
-        private void flpFactionBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpFactionBase_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpFactionBase.ClientSize.Width;
             int h = flpFactionBase.ClientSize.Height;
@@ -84,7 +84,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             flpFactionDetail.Size = new System.Drawing.Size(w - 292, h - 6);
         }
 
-        private void flpFactionSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpFactionSearchList_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpFactionSearchList.ClientSize.Width;
             int h = flpFactionSearchList.ClientSize.Height;
@@ -93,7 +93,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             lvwFactions.Size = new System.Drawing.Size(w - 6, listHeight);
         }
 
-        private void flpCharBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpCharBase_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpCharBase.ClientSize.Width;
             int h = flpCharBase.ClientSize.Height;
@@ -101,7 +101,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             flpCharDetail.Size = new System.Drawing.Size(w - 292, h - 6);
         }
 
-        private void flpCharSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpCharSearchList_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpCharSearchList.ClientSize.Width;
             int h = flpCharSearchList.ClientSize.Height;
@@ -152,12 +152,12 @@ namespace OE2EmpireTracker.Forms.Contacts
             sw.Stop(); Log.Info("PERF PopulateFactionList: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void txtFactionFilter_TextChanged(object sender, EventArgs e)
+        private void TxtFactionFilter_TextChanged(object sender, EventArgs e)
         {
             PopulateFactionList();
         }
 
-        private void lvwFactions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwFactions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Faction faction)
@@ -209,7 +209,7 @@ namespace OE2EmpireTracker.Forms.Contacts
         // Faction CRUD
         // -----------------------------------------------------------------------
 
-        private void cmdNewFaction_Click(object sender, EventArgs e)
+        private void CmdNewFaction_Click(object sender, EventArgs e)
         {
             var faction = new Faction
             {
@@ -226,7 +226,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             PopulateCharFactionCombo();
         }
 
-        private void cmdDeleteFaction_Click(object sender, EventArgs e)
+        private void CmdDeleteFaction_Click(object sender, EventArgs e)
         {
             if (_selectedFaction == null) return;
 
@@ -261,7 +261,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             PopulateCharFactionCombo();
         }
 
-        private void cmdSaveFaction_Click(object sender, EventArgs e)
+        private void CmdSaveFaction_Click(object sender, EventArgs e)
         {
             if (_selectedFaction == null) return;
 
@@ -285,13 +285,13 @@ namespace OE2EmpireTracker.Forms.Contacts
         // Faction Data Model Write-Through
         // -----------------------------------------------------------------------
 
-        private void txtFactionName_TextChanged(object sender, EventArgs e)
+        private void TxtFactionName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedFaction == null) return;
             _selectedFaction.Name = txtFactionName.Text;
         }
 
-        private void txtFactionDescription_TextChanged(object sender, EventArgs e)
+        private void TxtFactionDescription_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedFaction == null) return;
             _selectedFaction.Description = txtFactionDescription.Text;
@@ -339,12 +339,12 @@ namespace OE2EmpireTracker.Forms.Contacts
             sw.Stop(); Log.Info("PERF PopulateCharacterList: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void txtCharFilter_TextChanged(object sender, EventArgs e)
+        private void TxtCharFilter_TextChanged(object sender, EventArgs e)
         {
             PopulateCharacterList();
         }
 
-        private void lvwCharacters_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwCharacters_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is ExternalCharacter character)
@@ -447,7 +447,7 @@ namespace OE2EmpireTracker.Forms.Contacts
         // Character CRUD
         // -----------------------------------------------------------------------
 
-        private void cmdNewChar_Click(object sender, EventArgs e)
+        private void CmdNewChar_Click(object sender, EventArgs e)
         {
             var character = new ExternalCharacter
             {
@@ -463,7 +463,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             PopulateCharacterForm();
         }
 
-        private void cmdDeleteChar_Click(object sender, EventArgs e)
+        private void CmdDeleteChar_Click(object sender, EventArgs e)
         {
             if (_selectedCharacter == null) return;
 
@@ -483,7 +483,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             PopulateFactionList();
         }
 
-        private void cmdSaveChar_Click(object sender, EventArgs e)
+        private void CmdSaveChar_Click(object sender, EventArgs e)
         {
             if (_selectedCharacter == null) return;
 
@@ -511,13 +511,13 @@ namespace OE2EmpireTracker.Forms.Contacts
         // Character Data Model Write-Through
         // -----------------------------------------------------------------------
 
-        private void txtCharName_TextChanged(object sender, EventArgs e)
+        private void TxtCharName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedCharacter == null) return;
             _selectedCharacter.Name = txtCharName.Text;
         }
 
-        private void cmbCharFaction_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbCharFaction_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedCharacter == null) return;
             if (cmbCharFaction.SelectedItem is FactionComboItem fci)

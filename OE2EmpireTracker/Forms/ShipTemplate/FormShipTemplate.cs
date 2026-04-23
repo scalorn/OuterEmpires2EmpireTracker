@@ -31,35 +31,35 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             lvwTemplates.Columns.Add("Refs", 40, HorizontalAlignment.Right);
             lvwTemplates.FullRowSelect = true;
             lvwTemplates.MultiSelect = false;
-            lvwTemplates.ItemSelectionChanged += lvwTemplates_ItemSelectionChanged;
+            lvwTemplates.ItemSelectionChanged += LvwTemplates_ItemSelectionChanged;
 
-            txtFilter.TextChanged += txtFilter_TextChanged;
-            txtName.TextChanged += txtName_TextChanged;
-            cmbHull.SelectedItemChanged += cmbHull_SelectedItemChanged;
+            txtFilter.TextChanged += TxtFilter_TextChanged;
+            txtName.TextChanged += TxtName_TextChanged;
+            cmbHull.SelectedItemChanged += CmbHull_SelectedItemChanged;
 
-            cmdNew.Click += cmdNew_Click;
-            cmdDelete.Click += cmdDelete_Click;
-            cmdSave.Click += cmdSave_Click;
-            cmdOrderBuild.Click += cmdOrderBuild_Click;
+            cmdNew.Click += CmdNew_Click;
+            cmdDelete.Click += CmdDelete_Click;
+            cmdSave.Click += CmdSave_Click;
+            cmdOrderBuild.Click += CmdOrderBuild_Click;
 
-            dgvSlots.CellValueChanged += dgvSlots_CellValueChanged;
-            dgvSlots.CurrentCellDirtyStateChanged += dgvSlots_CurrentCellDirtyStateChanged;
-            dgvSlots.DataError += dgvSlots_DataError;
-            dgvSlots.CellClick += dgvSlots_CellClick;
+            dgvSlots.CellValueChanged += DgvSlots_CellValueChanged;
+            dgvSlots.CurrentCellDirtyStateChanged += DgvSlots_CurrentCellDirtyStateChanged;
+            dgvSlots.DataError += DgvSlots_DataError;
+            dgvSlots.CellClick += DgvSlots_CellClick;
 
             PopulateHullCombo();
             PopulateTemplateList();
             ClearForm();
 
-            flpBase.Layout += flpBase_Layout;
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpDetail.Layout += flpDetail_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
 
         // Layout
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpBase.ClientSize.Width;
             int h = flpBase.ClientSize.Height;
@@ -67,7 +67,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             flpDetail.Size = new System.Drawing.Size(w - 232, h - 6);
         }
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpSearchList.ClientSize.Width;
             int h = flpSearchList.ClientSize.Height;
@@ -76,7 +76,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             lvwTemplates.Size = new System.Drawing.Size(w - 6, listHeight);
         }
 
-        private void flpDetail_Layout(object sender, LayoutEventArgs e)
+        private void FlpDetail_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpDetail.ClientSize.Width;
             int h = flpDetail.ClientSize.Height;
@@ -119,9 +119,9 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             Log.Info("PERF PopulateTemplateList: {0}ms items={1}", sw.ElapsedMilliseconds, templates.Count);
         }
 
-        private void txtFilter_TextChanged(object sender, EventArgs e) { PopulateTemplateList(); }
+        private void TxtFilter_TextChanged(object sender, EventArgs e) { PopulateTemplateList(); }
 
-        private void lvwTemplates_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwTemplates_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Models.ShipTemplate tmpl)
@@ -193,7 +193,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 cmbHull.SetItems(cmbHull.Items, null);
         }
 
-        private void cmbHull_SelectedItemChanged(object sender, EventArgs e)
+        private void CmbHull_SelectedItemChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedTemplate == null) return;
             int idx = cmbHull.SelectedFullIndex;
@@ -273,13 +273,13 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             sw.Stop(); Log.Info("PERF PopulateSlotGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void dgvSlots_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void DgvSlots_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (dgvSlots.IsCurrentCellDirty)
                 dgvSlots.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-        private void dgvSlots_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DgvSlots_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || e.RowIndex < 0) return;
             if (e.ColumnIndex != colComponent.Index) return;
@@ -316,13 +316,13 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             RefreshStats();
         }
 
-        private void dgvSlots_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        private void DgvSlots_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             Log.Warn("dgvSlots DataError at [{0}, {1}]: {2}", e.RowIndex, e.ColumnIndex, e.Exception?.Message);
             e.ThrowException = false;
         }
 
-        private void dgvSlots_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void DgvSlots_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
             if (e.ColumnIndex == colComponent.Index)
@@ -359,7 +359,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         }
 
         // CRUD
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             var tmpl = new Models.ShipTemplate
             {
@@ -375,7 +375,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             PopulateForm();
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (_selectedTemplate == null) return;
 
@@ -404,7 +404,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             Log.Info("Deleted template");
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void CmdSave_Click(object sender, EventArgs e)
         {
             if (_selectedTemplate == null) return;
             string name = txtName.Text.Trim();
@@ -416,7 +416,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             Log.Info("Saved template '{0}'", _selectedTemplate.Name);
         }
 
-        private void txtName_TextChanged(object sender, EventArgs e)
+        private void TxtName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedTemplate == null) return;
             _selectedTemplate.Name = txtName.Text;
@@ -426,7 +426,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         // Order Build (18.4)
         // -------------------------------------------------------------------
 
-        private void cmdOrderBuild_Click(object sender, EventArgs e)
+        private void CmdOrderBuild_Click(object sender, EventArgs e)
         {
             if (_selectedTemplate == null) return;
             if (string.IsNullOrEmpty(_selectedTemplate.HullBlueprintUUID))
@@ -436,7 +436,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 return;
             }
 
-            Log.Info("cmdOrderBuild_Click: template={0} uuid={1}",
+            Log.Info("CmdOrderBuild_Click: template={0} uuid={1}",
                 _selectedTemplate.Name, _selectedTemplate.UUID);
 
             // Prompt for quantity
@@ -452,7 +452,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             if (hullBp != null)
             {
                 decimal shipClassVal = 0m;
-                hullBp.Properties?.getDecimal("Class", 0m, out shipClassVal);
+                hullBp.Properties?.GetDecimal("Class", 0m, out shipClassVal);
                 int shipClass = (int)shipClassVal;
                 string validationError = ShipBuildService.ValidateAssemblyLocation(shipClass, station.StationType);
                 if (validationError != null)
@@ -494,7 +494,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             playerContext.WriteContext();
             playerContext.OnBuildPlanDataChanged(targetPlan.UUID);
 
-            Log.Info("cmdOrderBuild_Click: {0} items added to plan '{1}'",
+            Log.Info("CmdOrderBuild_Click: {0} items added to plan '{1}'",
                 items.Count, targetPlan.Name);
 
             MessageBox.Show(
@@ -710,7 +710,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             foreach (var kvp in Constants.SlotTypes.HullPropertyToSlotType)
             {
                 decimal maxVal;
-                if (hullBp.Properties.getDecimal(kvp.Key, 0m, out maxVal) && maxVal > 0)
+                if (hullBp.Properties.GetDecimal(kvp.Key, 0m, out maxVal) && maxVal > 0)
                 {
                     slotToBpTypes.TryGetValue(kvp.Value, out var bpTypes);
                     defs.Add(new SlotDefinition
@@ -725,7 +725,18 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             return defs;
         }
 
-        private class SlotInfo { public string SlotType; public int SlotIndex; public List<string> UUIDByIndex; }
-        private class SlotDefinition { public string SlotType; public int MaxCount; public List<string> BlueprintTypes; }
+        private class SlotInfo
+        {
+            public string SlotType { get; set; }
+            public int SlotIndex { get; set; }
+            public List<string> UUIDByIndex { get; set; }
+        }
+
+        private class SlotDefinition
+        {
+            public string SlotType { get; set; }
+            public int MaxCount { get; set; }
+            public List<string> BlueprintTypes { get; set; }
+        }
     }
 }

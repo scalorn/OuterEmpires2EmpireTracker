@@ -13,8 +13,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ColonyImportTimestampPropertyTests
     {
-        #region Generators
-
         private static Gen<string> NonEmptyStringGen()
         {
             return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
@@ -32,10 +30,6 @@ namespace OE2EmpireTracker.Tests.Services
                        SystemName = system
                    };
         }
-
-        #endregion
-
-        #region Property 2: Import operations produce valid ISO timestamps
 
         /// <summary>
         /// Property 2: Import operations produce valid ISO timestamps.
@@ -74,7 +68,5 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"MergeIdentity: LastImportDateTime '{data.Target.LastImportDateTime}' should parse via TryParseIso");
             });
         }
-
-        #endregion
     }
 }

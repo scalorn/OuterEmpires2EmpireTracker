@@ -32,8 +32,8 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var s = new ColonyStructure();
             s.UUID = Guid.NewGuid().ToString();
-            s.Properties.setProperty(GameConstants.PropStaged, staged);
-            s.Properties.setProperty(GameConstants.PropBuilt, built);
+            s.Properties.SetProperty(GameConstants.PropStaged, staged);
+            s.Properties.SetProperty(GameConstants.PropBuilt, built);
             s.BuildCompletionTime = buildCompletionTime;
             return s;
         }

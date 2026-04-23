@@ -42,23 +42,23 @@ namespace OE2EmpireTracker.Models
         public bool IsWorkerAssigned(ColonyStructure structure, string workerKey)
         {
             bool assigned = false;
-            structure.AssignedWorkers.getBoolean(workerKey, false, out assigned);
+            structure.AssignedWorkers.GetBoolean(workerKey, false, out assigned);
             return assigned;
         }
 
         public void SetWorkerAssigned(ColonyStructure structure, string workerKey, bool assigned)
         {
-            structure.AssignedWorkers.setProperty(workerKey, assigned);
+            structure.AssignedWorkers.SetProperty(workerKey, assigned);
         }
 
         public void GetStructureState(ColonyStructure structure, out bool built, out bool staged, out bool online)
         {
             built = false;
-            structure.Properties.getBoolean(GameConstants.PropBuilt, false, out built);
+            structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out built);
             staged = false;
-            structure.Properties.getBoolean(GameConstants.PropStaged, false, out staged);
+            structure.Properties.GetBoolean(GameConstants.PropStaged, false, out staged);
             online = false;
-            structure.Properties.getBoolean(GameConstants.PropOnline, false, out online);
+            structure.Properties.GetBoolean(GameConstants.PropOnline, false, out online);
         }
 
         public bool IsUnassignedWorkerAvailable(string workerKey)

@@ -116,7 +116,7 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void ResourceMapByString_EmptyKeyReturnsNone()
         {
-            Assert.That(Resource.ResourceMapByString[""].ID, Is.EqualTo(RE.None));
+            Assert.That(Resource.ResourceMapByString[string.Empty].ID, Is.EqualTo(RE.None));
         }
 
         // -----------------------------------------------------------------------

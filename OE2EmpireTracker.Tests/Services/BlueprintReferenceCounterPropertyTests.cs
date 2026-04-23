@@ -13,8 +13,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class BlueprintReferenceCounterPropertyTests
     {
-        #region Helpers
-
         private static Colony MakeColony(params ColonyStructure[] structures)
         {
             var colony = new Colony();
@@ -36,10 +34,6 @@ namespace OE2EmpireTracker.Tests.Services
             survey.ScannerBlueprintUUID = scannerBlueprintUUID;
             return survey;
         }
-
-        #endregion
-
-        #region Property 1: Counting accuracy across all source types
 
         /// <summary>
         /// Property 1: Counting accuracy across all source types.
@@ -88,7 +82,6 @@ namespace OE2EmpireTracker.Tests.Services
                            Blueprints = bps.ToList(),
                            Surveys = surveys.ToList()
                        };
-
             });
 
             return Prop.ForAll(uuidPoolGen.ToArbitrary(), data =>
@@ -116,10 +109,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"ScannerCount: expected={expectedScanner}, got={report.ScannerCount}");
             });
         }
-
-        #endregion
-
-        #region Property 2: TotalCount is the sum of per-source counts
 
         /// <summary>
         /// Property 2: TotalCount is the sum of per-source counts.
@@ -149,10 +138,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        #endregion
-
-        #region Property 3: Self-referencing blueprints are excluded
-
         /// <summary>
         /// Property 3: Self-referencing blueprints are excluded.
         /// Adding a blueprint whose UUID == baseBlueprintUUID == targetUUID
@@ -179,7 +164,6 @@ namespace OE2EmpireTracker.Tests.Services
                            TargetUUID = uuids[0],
                            OtherBlueprints = bps.ToList()
                        };
-
             });
 
             return Prop.ForAll(uuidPoolGen.ToArbitrary(), data =>
@@ -201,10 +185,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"With self-ref={reportWith.BaseBlueprintCount}, without={reportWithout.BaseBlueprintCount}");
             });
         }
-
-        #endregion
-
-        #region Property 4: Delete button state is determined by reference count
 
         /// <summary>
         /// Property 4: Delete button state is determined by reference count.
@@ -249,7 +229,5 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"text should be 'Delete' when TotalCount==0");
             });
         }
-
-        #endregion
     }
 }

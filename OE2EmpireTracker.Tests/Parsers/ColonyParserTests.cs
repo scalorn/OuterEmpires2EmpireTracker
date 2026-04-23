@@ -107,7 +107,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             var colony = ParseM1();
             foreach (var s in colony.Structures)
             {
-                s.Properties.getBoolean(GameConstants.PropBuilt, false, out bool built);
+                s.Properties.GetBoolean(GameConstants.PropBuilt, false, out bool built);
                 Assert.That(built, Is.True, "Structure should be marked as built");
             }
         }
@@ -157,8 +157,8 @@ namespace OE2EmpireTracker.Tests.Parsers
             var colony = ParseM1();
             foreach (var s in colony.Structures)
             {
-                Assert.That(s.displaySequence, Is.GreaterThan(0),
-                    "Each structure should have a non-zero game sequence (buildingID)");
+                Assert.That(s.DisplaySequence, Is.GreaterThan(0),
+                    "Each structure should have a non-zero game sequence (BuildingID)");
             }
         }
 

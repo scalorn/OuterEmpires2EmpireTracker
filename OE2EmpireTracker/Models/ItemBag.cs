@@ -160,7 +160,7 @@ namespace OE2EmpireTracker.Models
             foreach (KeyValuePair<string, Item> entry in value.Items)
             {
                 writer.WritePropertyName(entry.Key);
-                String text = JsonConvert.SerializeObject(entry.Value, JsonSettings.SerializerSettings);
+                string text = JsonConvert.SerializeObject(entry.Value, JsonSettings.SerializerSettings);
                 writer.WriteRawValue(text);
             }
 
@@ -198,7 +198,6 @@ namespace OE2EmpireTracker.Models
                             bag.Items[item.UUID] = item;
                         }
                     }
-
             } while (token != JsonToken.EndObject);
 
             return bag;

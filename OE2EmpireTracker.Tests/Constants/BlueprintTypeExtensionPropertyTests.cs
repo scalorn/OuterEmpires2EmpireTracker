@@ -12,8 +12,6 @@ namespace OE2EmpireTracker.Tests.Constants
     {
         private static readonly string Prefix = BlueprintTypes.CommodityFactoryPrefix;
 
-        #region Generators
-
         /// <summary>
         /// Generates a non-empty trailing string to append after the prefix.
         /// </summary>
@@ -50,10 +48,6 @@ namespace OE2EmpireTracker.Tests.Constants
            );
         }
 
-        #endregion
-
-        #region Property 2: IsCommodityFactory consistency
-
         /// <summary>
         /// Property 2: IsCommodityFactory consistency.
         /// For any string that starts with "Flatpacks/CommodityFactory/" and has content
@@ -88,7 +82,5 @@ namespace OE2EmpireTracker.Tests.Constants
                     .Label($"Expected false for \"{input ?? "(null)"}\"");
             });
         }
-
-        #endregion
     }
 }

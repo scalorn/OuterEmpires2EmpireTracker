@@ -14,8 +14,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class IndividualImportDedupPropertyTests
     {
-        #region Helpers
-
         private static Gen<string> NonEmptyAlphaStringGen()
         {
             return Gen.Elements(
@@ -55,10 +53,6 @@ namespace OE2EmpireTracker.Tests.Services
             bp.TechLevel = techLevel;
             return bp;
         }
-
-        #endregion
-
-        #region Property 1: UpdateExisting overwrites data while preserving protected fields
 
         /// <summary>
         /// Property 1: UpdateExisting overwrites data while preserving protected fields.
@@ -107,16 +101,16 @@ namespace OE2EmpireTracker.Tests.Services
                 existing.NickName = data.NickName;
                 existing.CopyCost = data.CopyCost;
                 existing.Properties = new PropertyBag();
-                existing.Properties.setProperty("Manufacture Run Time", data.MfgRunTime);
-                existing.Properties.setProperty("Power Required", data.PowerReq);
-                existing.Properties.setProperty("ExistingOnly", "should-be-replaced");
+                existing.Properties.SetProperty("Manufacture Run Time", data.MfgRunTime);
+                existing.Properties.SetProperty("Power Required", data.PowerReq);
+                existing.Properties.SetProperty("ExistingOnly", "should-be-replaced");
 
                 // Set up incoming blueprint with properties and resources
                 var incoming = data.Incoming;
                 incoming.Properties = new PropertyBag();
                 for (int i = 0; i < data.PropCount; i++)
                 {
-                    incoming.Properties.setProperty("IncomingProp" + i, "val" + i);
+                    incoming.Properties.SetProperty("IncomingProp" + i, "val" + i);
                 }
 
                 incoming.Resources = new Dictionary<string, string>();
@@ -162,12 +156,12 @@ namespace OE2EmpireTracker.Tests.Services
 
                 // Protected keys should be preserved (they were on original but not in incoming)
                 string mfgVal;
-                existing.Properties.getString("Manufacture Run Time", null, out mfgVal);
+                existing.Properties.GetString("Manufacture Run Time", null, out mfgVal);
                 var mfgPreserved = (mfgVal == data.MfgRunTime)
                     .Label($"Manufacture Run Time: expected '{data.MfgRunTime}', got '{mfgVal}'");
 
                 string pwrVal;
-                existing.Properties.getString("Power Required", null, out pwrVal);
+                existing.Properties.GetString("Power Required", null, out pwrVal);
                 var pwrPreserved = (pwrVal == data.PowerReq)
                     .Label($"Power Required: expected '{data.PowerReq}', got '{pwrVal}'");
 
@@ -181,10 +175,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(pwrPreserved);
             });
         }
-
-        #endregion
-
-        #region Property 2: Routing logic is determined by Evolution and player presence
 
         /// <summary>
         /// Property 2: Routing logic is determined by Evolution and player presence.
@@ -217,13 +207,8 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     return result.Label($"Evo {data.Evolution} without player should be global (true), got {result}");
                 }
-
             });
         }
-
-        #endregion
-
-        #region Property 3: FindByDedupKey returns the correct match or null
 
         /// <summary>
         /// Property 3: FindByDedupKey returns the correct match or null.
@@ -269,13 +254,8 @@ namespace OE2EmpireTracker.Tests.Services
                     return (!anyMatch)
                         .Label("FindByDedupKey returned null but a matching blueprint exists in the list");
                 }
-
             });
         }
-
-        #endregion
-
-        #region Property 4: Create path produces a valid blueprint with correct ownership
 
         /// <summary>
         /// Property 4: Create path produces a valid blueprint with correct ownership.
@@ -300,7 +280,7 @@ namespace OE2EmpireTracker.Tests.Services
                 // Add some properties and resources to the temp blueprint
                 for (int i = 0; i < data.PropCount; i++)
                 {
-                    temp.Properties.setProperty("Prop" + i, "val" + i);
+                    temp.Properties.SetProperty("Prop" + i, "val" + i);
                 }
 
                 for (int i = 0; i < data.ResCount; i++)
@@ -356,7 +336,5 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(resMatch);
             });
         }
-
-        #endregion
     }
 }

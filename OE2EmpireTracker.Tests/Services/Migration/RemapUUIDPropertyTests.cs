@@ -31,8 +31,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             EmpireContext.Reset();
         }
 
-        #region Helpers
-
         /// <summary>
         /// Collects all UUID-bearing fields from the data model into a flat list.
         /// </summary>
@@ -64,10 +62,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             return uuids;
         }
-
-        #endregion
-
-        #region Property 2: RemapUUID completeness
 
         /// <summary>
         /// For any data model state and any (oldUUID, newUUID) pair, after RemapUUID.Remap,
@@ -164,7 +158,5 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                            $"Remaining count: {remaining.Count(u => u == data.OldUuid)}");
             });
         }
-
-        #endregion
     }
 }

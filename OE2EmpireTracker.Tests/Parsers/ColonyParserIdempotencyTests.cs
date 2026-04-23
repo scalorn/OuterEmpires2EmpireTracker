@@ -94,16 +94,16 @@ namespace OE2EmpireTracker.Tests.Parsers
 
             // Snapshot values after first parse
             var snapshot = colony.Structures
-                .Select(s => new { s.FlatpackBlueprintUUID, s.displaySequence })
-                .OrderBy(s => s.displaySequence)
+                .Select(s => new { s.FlatpackBlueprintUUID, s.DisplaySequence })
+                .OrderBy(s => s.DisplaySequence)
                 .ToList();
 
             _parser.ProcessHtml(colony, html, _empireContext);
 
             // Verify values unchanged after second parse
             var afterSecond = colony.Structures
-                .Select(s => new { s.FlatpackBlueprintUUID, s.displaySequence })
-                .OrderBy(s => s.displaySequence)
+                .Select(s => new { s.FlatpackBlueprintUUID, s.DisplaySequence })
+                .OrderBy(s => s.DisplaySequence)
                 .ToList();
 
             Assert.That(afterSecond.Count, Is.EqualTo(snapshot.Count));
@@ -111,7 +111,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             {
                 Assert.That(afterSecond[i].FlatpackBlueprintUUID, Is.EqualTo(snapshot[i].FlatpackBlueprintUUID),
                     $"FlatpackBlueprintUUID mismatch at index {i}");
-                Assert.That(afterSecond[i].displaySequence, Is.EqualTo(snapshot[i].displaySequence),
+                Assert.That(afterSecond[i].DisplaySequence, Is.EqualTo(snapshot[i].DisplaySequence),
                     $"displaySequence mismatch at index {i}");
             }
         }
@@ -232,15 +232,15 @@ namespace OE2EmpireTracker.Tests.Parsers
 
                 // Snapshot structure values after first parse
                 var snapshot = colony.Structures
-                    .Select(s => new { s.FlatpackBlueprintUUID, s.displaySequence })
-                    .OrderBy(s => s.displaySequence)
+                    .Select(s => new { s.FlatpackBlueprintUUID, s.DisplaySequence })
+                    .OrderBy(s => s.DisplaySequence)
                     .ToList();
 
                 _parser.ProcessHtml(colony, html, _empireContext);
 
                 var afterSecond = colony.Structures
-                    .Select(s => new { s.FlatpackBlueprintUUID, s.displaySequence })
-                    .OrderBy(s => s.displaySequence)
+                    .Select(s => new { s.FlatpackBlueprintUUID, s.DisplaySequence })
+                    .OrderBy(s => s.DisplaySequence)
                     .ToList();
 
                 Assert.That(afterSecond.Count, Is.EqualTo(snapshot.Count),
@@ -250,7 +250,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 {
                     Assert.That(afterSecond[i].FlatpackBlueprintUUID, Is.EqualTo(snapshot[i].FlatpackBlueprintUUID),
                         $"FlatpackBlueprintUUID mismatch in {filename} at index {i}");
-                    Assert.That(afterSecond[i].displaySequence, Is.EqualTo(snapshot[i].displaySequence),
+                    Assert.That(afterSecond[i].DisplaySequence, Is.EqualTo(snapshot[i].DisplaySequence),
                         $"displaySequence mismatch in {filename} at index {i}");
                 }
             }

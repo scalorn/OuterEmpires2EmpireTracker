@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Models
         public ResourceClassEnum ID { get; set; }
         public string Name { get; set; }
 
-        private static List<ResourceClass> _classes = getClasses();
+        private static List<ResourceClass> _classes = GetClasses();
         private static Dictionary<ResourceClassEnum, ResourceClass> _classMapByEnum;
         private static Dictionary<string, ResourceClass> _classMapByString;
 
@@ -30,8 +30,7 @@ namespace OE2EmpireTracker.Models
         public static IReadOnlyDictionary<ResourceClassEnum, ResourceClass> ClassMapByEnum => _classMapByEnum;
         public static IReadOnlyDictionary<string, ResourceClass> ClassMapByString => _classMapByString;
 
-
-        private static List<ResourceClass> getClasses()
+        private static List<ResourceClass> GetClasses()
         {
             List < ResourceClass> instance = new List<ResourceClass>();
             instance.Add(new ResourceClass() { ID = ResourceClassEnum.CommonElements, Name = "Common Elements" });

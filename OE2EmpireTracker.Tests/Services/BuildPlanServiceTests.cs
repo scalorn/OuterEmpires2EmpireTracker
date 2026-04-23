@@ -10,8 +10,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class BuildPlanServiceTests
     {
-        #region ValidatePlanName
-
         [Test]
         public void ValidatePlanName_ValidName_ReturnsTrue()
         {
@@ -47,10 +45,6 @@ namespace OE2EmpireTracker.Tests.Services
         {
             Assert.That(BuildPlanService.ValidatePlanName("A"), Is.True);
         }
-
-        #endregion
-
-        #region ValidateBuildItem
 
         [Test]
         public void ValidateBuildItem_Null_ReturnsFalse()
@@ -248,10 +242,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.False);
         }
 
-        #endregion
-
-        #region GenerateColonyBuildItems
-
         private Colony CreateTestColony(string name, params ColonyStructure[] structures)
         {
             var colony = new Colony
@@ -272,8 +262,8 @@ namespace OE2EmpireTracker.Tests.Services
                 FlatpackBlueprintUUID = flatpackUUID
             };
 
-            if (staged) s.Properties.setProperty(GameConstants.PropStaged, true);
-            if (built) s.Properties.setProperty(GameConstants.PropBuilt, true);
+            if (staged) s.Properties.SetProperty(GameConstants.PropStaged, true);
+            if (built) s.Properties.SetProperty(GameConstants.PropBuilt, true);
             return s;
         }
 
@@ -448,7 +438,5 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(added, Is.EqualTo(0));
         }
-
-        #endregion
     }
 }

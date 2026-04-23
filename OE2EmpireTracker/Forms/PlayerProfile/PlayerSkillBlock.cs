@@ -40,7 +40,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         }
 
         private bool _canStartTraining;
-        public bool CanStartTraining 
+        public bool CanStartTraining
         {
             get
             {
@@ -114,7 +114,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
         }
 
-        private void cmdStart_Click(object sender, EventArgs e)
+        private void CmdStart_Click(object sender, EventArgs e)
         {
             PlayerSkill.TrainingStarted = true;
             PlayerSkill.CompletionTime.StartTime = SystemClock.UtcNow;
@@ -125,17 +125,17 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             TrainingStatusChanged?.Invoke(this, e);
         }
 
-        private void timerCountdown_Tick(object sender, EventArgs e)
+        private void TimerCountdown_Tick(object sender, EventArgs e)
         {
             UpdateCompletion();
         }
 
-        private void txtCompletion_Enter(object sender, EventArgs e)
+        private void TxtCompletion_Enter(object sender, EventArgs e)
         {
             completionModification = true;
         }
 
-        private void txtCompletion_Leave(object sender, EventArgs e)
+        private void TxtCompletion_Leave(object sender, EventArgs e)
         {
             completionModification = false;
 

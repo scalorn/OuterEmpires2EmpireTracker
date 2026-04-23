@@ -69,7 +69,7 @@ namespace OE2EmpireTracker.Parsers
             /// </remarks>
         public void ProcessClipboard(Models.Blueprint blueprint)
         {
-            String returnHtmlText = null;
+            string returnHtmlText = null;
             if (Clipboard.ContainsText(TextDataFormat.Html))
             {
                 returnHtmlText = Clipboard.GetText(TextDataFormat.Html);
@@ -193,7 +193,7 @@ namespace OE2EmpireTracker.Parsers
                         if (bgMatch.Success)
                         {
                             string iconPosition = bgMatch.Groups[2].Value + " " + bgMatch.Groups[3].Value;
-                            blueprint.Properties.setProperty("_IconPosition", iconPosition);
+                            blueprint.Properties.SetProperty("_IconPosition", iconPosition);
 
                             var ec = Services.EmpireContext.GetInstance();
                             var bpType = ec?.FindBlueprintTypeByIcon(iconPosition);
@@ -296,14 +296,14 @@ namespace OE2EmpireTracker.Parsers
                                     Log.Warn("No property remap defined for: '{0}'", key);
                                 }
 
-                                blueprint.Properties.setProperty(remapKey, NormalizePropertyValue(remapKey, rawValue));
+                                blueprint.Properties.SetProperty(remapKey, NormalizePropertyValue(remapKey, rawValue));
                                 Log.Info($"Extracted property: {remapKey} = {rawValue}");
                             }
                         }
 
                         // Remap properties.
                         string equipClass;
-                        blueprint.Properties.getString("Class", null, out equipClass);
+                        blueprint.Properties.GetString("Class", null, out equipClass);
                         if (equipClass != null)
                         {
                             blueprint.Class = int.Parse(equipClass);
@@ -464,11 +464,11 @@ namespace OE2EmpireTracker.Parsers
                                     remapKey = key;
                                 }
 
-                                bp.Properties.setProperty(remapKey, NormalizePropertyValue(remapKey, rawValue));
+                                bp.Properties.SetProperty(remapKey, NormalizePropertyValue(remapKey, rawValue));
                             }
 
                             string equipClass;
-                            bp.Properties.getString("Class", null, out equipClass);
+                            bp.Properties.GetString("Class", null, out equipClass);
                             if (equipClass != null && int.TryParse(equipClass, out int cls))
                             {
                                 bp.Class = cls;
@@ -498,7 +498,7 @@ namespace OE2EmpireTracker.Parsers
                             if (bgMatch.Success)
                             {
                                 string iconPosition = bgMatch.Groups[2].Value + " " + bgMatch.Groups[3].Value;
-                                bp.Properties.setProperty("_IconPosition", iconPosition);
+                                bp.Properties.SetProperty("_IconPosition", iconPosition);
 
                                 // Resolve icon to BlueprintType via BaselineData
                                 var ec = EmpireContext.GetInstance();
@@ -546,11 +546,11 @@ namespace OE2EmpireTracker.Parsers
         /// Uses Microsoft's standard clipboard HTML format which wraps fragments with:
         /// - <!--StartFragment--> marker followed by byte count to fragment start
         /// - <!--EndFragment--> marker followed by byte count to fragment end
-        /// 
+        ///
         /// The method extracts the content between these markers to isolate just the selected fragment.
-        /// 
+        ///
         /// Reference: https://msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx
-        /// 
+        ///
         /// TODO: Current implementation assumes 10-digit indices which may be brittle for non-standard cases.
         /// More flexible parsing should be implemented to handle edge cases.
         /// </remarks>
@@ -669,7 +669,7 @@ namespace OE2EmpireTracker.Parsers
                 Log.Info("T = " + item.InnerText);
                 if (item.HasChildNodes)
                 {
-                    children(0, item.ChildNodes);
+                    Children(0, item.ChildNodes);
                 }
             }
         }
@@ -683,14 +683,14 @@ namespace OE2EmpireTracker.Parsers
         /// Used by ProcessHTML() to traverse and debug HTML node structure.
         /// Increments depth parameter for recursive calls to show nesting level.
         /// </remarks>
-        private void children(int depth, XmlNodeList nodes)
+        private void Children(int depth, XmlNodeList nodes)
         {
             foreach (XmlNode item in nodes)
             {
                 Log.Info("C" + depth + " = " + item.InnerText);
                 if (item.HasChildNodes)
                 {
-                    children((depth + 1), item.ChildNodes);
+                    Children((depth + 1), item.ChildNodes);
                 }
             }
         }

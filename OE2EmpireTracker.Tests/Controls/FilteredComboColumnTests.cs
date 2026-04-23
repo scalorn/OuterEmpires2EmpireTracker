@@ -14,8 +14,6 @@ namespace OE2EmpireTracker.Tests.Controls
     [TestFixture]
     public class FilteredComboColumnTests
     {
-        #region Structural Tests (Task 4.1)
-
         [Test]
         public void Column_CellTemplate_IsFilteredComboBoxCell()
         {
@@ -81,10 +79,6 @@ namespace OE2EmpireTracker.Tests.Controls
             }
         }
 
-        #endregion
-
-        #region Edge Case Tests (Task 4.2)
-
         [Test]
         public void EditingControl_EmptyItems_ShowsEmptyCombo()
         {
@@ -137,7 +131,5 @@ namespace OE2EmpireTracker.Tests.Controls
                 Assert.That(combo.SelectedItem?.ToString(), Is.EqualTo("Beta"));
             }
         }
-
-        #endregion
     }
 }

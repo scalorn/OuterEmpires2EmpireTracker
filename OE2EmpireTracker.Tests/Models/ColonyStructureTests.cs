@@ -49,18 +49,18 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // displaySequence and buildQueueSequence
+        // DisplaySequence and BuildQueueSequence
         // -----------------------------------------------------------------------
 
         [Test]
         public void Set_DisplaySequenceAndBuildQueueSequence_CanBeSetAndRead()
         {
             var structure = new ColonyStructure();
-            structure.displaySequence = 5;
-            structure.buildQueueSequence = 3;
+            structure.DisplaySequence = 5;
+            structure.BuildQueueSequence = 3;
 
-            Assert.That(structure.displaySequence, Is.EqualTo(5));
-            Assert.That(structure.buildQueueSequence, Is.EqualTo(3));
+            Assert.That(structure.DisplaySequence, Is.EqualTo(5));
+            Assert.That(structure.BuildQueueSequence, Is.EqualTo(3));
         }
 
         // -----------------------------------------------------------------------
@@ -71,11 +71,11 @@ namespace OE2EmpireTracker.Tests.Models
         public void SetProperty_AddingToPropertiesDictionary_Succeeds()
         {
             var structure = new ColonyStructure();
-            structure.Properties.setProperty("CustomProp1", "Value1");
+            structure.Properties.SetProperty("CustomProp1", "Value1");
 
             Assert.That(structure.Properties.ContainsKey("CustomProp1"), Is.True);
 
-            structure.Properties.getString("CustomProp1", null, out string value);
+            structure.Properties.GetString("CustomProp1", null, out string value);
             Assert.That(value, Is.EqualTo("Value1"));
         }
 
@@ -83,7 +83,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void SetProperty_RemovalFromPropertiesDictionary_RemovesKey()
         {
             var structure = new ColonyStructure();
-            structure.Properties.setProperty("ToRemove", "OldValue");
+            structure.Properties.SetProperty("ToRemove", "OldValue");
 
             Assert.That(structure.Properties.ContainsKey("ToRemove"), Is.True);
             bool result = structure.Properties.Remove("ToRemove");
@@ -95,8 +95,8 @@ namespace OE2EmpireTracker.Tests.Models
         public void SetProperty_ClearRemovesAllProperties()
         {
             var structure = new ColonyStructure();
-            structure.Properties.setProperty("Prop1", "Value1");
-            structure.Properties.setProperty("Prop2", "Value2");
+            structure.Properties.SetProperty("Prop1", "Value1");
+            structure.Properties.SetProperty("Prop2", "Value2");
 
             Assert.That(structure.Properties.Count, Is.EqualTo(2));
             structure.Properties.Clear();
@@ -107,9 +107,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void Properties_gdoubleMethod_ParsesValidDouble()
         {
             var structure = new ColonyStructure();
-            structure.Properties.setProperty("Value", "123.45");
+            structure.Properties.SetProperty("Value", "123.45");
 
-            bool success = structure.Properties.getDecimal("Value", -1.0m, out decimal result);
+            bool success = structure.Properties.GetDecimal("Value", -1.0m, out decimal result);
             Assert.That(success, Is.True);
             Assert.That(result, Is.EqualTo(123.45m));
         }
@@ -118,9 +118,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void Properties_gdoubleMethod_ReturnsFalseForInvalidDouble()
         {
             var structure = new ColonyStructure();
-            structure.Properties.setProperty("Value", "not-a-number");
+            structure.Properties.SetProperty("Value", "not-a-number");
 
-            bool success = structure.Properties.getDecimal("Value", -1.0m, out decimal result);
+            bool success = structure.Properties.GetDecimal("Value", -1.0m, out decimal result);
             Assert.That(success, Is.False);
             Assert.That(result, Is.EqualTo(-1.0m));
         }
@@ -129,7 +129,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void Properties_gdoubleMethod_ReturnsDefaultValueOnMissingKey()
         {
             var structure = new ColonyStructure();
-            bool success = structure.Properties.getDecimal("Missing", -1.0m, out decimal result);
+            bool success = structure.Properties.GetDecimal("Missing", -1.0m, out decimal result);
             Assert.That(success, Is.False);
             Assert.That(result, Is.EqualTo(-1.0m));
         }
@@ -138,9 +138,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void Properties_glongMethod_ParsesValidLong()
         {
             var structure = new ColonyStructure();
-            structure.Properties.setProperty("Value", "999");
+            structure.Properties.SetProperty("Value", "999");
 
-            bool success = structure.Properties.getLong("Value", -1, out long result);
+            bool success = structure.Properties.GetLong("Value", -1, out long result);
             Assert.That(success, Is.True);
             Assert.That(result, Is.EqualTo(999));
         }
@@ -149,9 +149,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void Properties_gbooleanMethod_ParsesValidBoolean()
         {
             var structure = new ColonyStructure();
-            structure.Properties.setProperty("Value", "true");
+            structure.Properties.SetProperty("Value", "true");
 
-            bool success = structure.Properties.getBoolean("Value", false, out bool result);
+            bool success = structure.Properties.GetBoolean("Value", false, out bool result);
             Assert.That(success, Is.True);
             Assert.That(result, Is.EqualTo(true));
         }
@@ -160,9 +160,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void Properties_gbooleanMethod_ReturnsFalseForInvalidBoolean()
         {
             var structure = new ColonyStructure();
-            structure.Properties.setProperty("Value", "not-a-boolean");
+            structure.Properties.SetProperty("Value", "not-a-boolean");
 
-            bool success = structure.Properties.getBoolean("Value", false, out bool result);
+            bool success = structure.Properties.GetBoolean("Value", false, out bool result);
             Assert.That(success, Is.False);
             Assert.That(result, Is.EqualTo(false));
         }
@@ -171,9 +171,9 @@ namespace OE2EmpireTracker.Tests.Models
         public void Properties_gstringMethod_ReturnsExistingString()
         {
             var structure = new ColonyStructure();
-            structure.Properties.setProperty("Name", "MyValue");
+            structure.Properties.SetProperty("Name", "MyValue");
 
-            bool success = structure.Properties.getString("Name", string.Empty, out string result);
+            bool success = structure.Properties.GetString("Name", string.Empty, out string result);
             Assert.That(success, Is.True);
             Assert.That(result, Is.EqualTo("MyValue"));
         }
@@ -182,7 +182,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void Properties_gstringMethod_ReturnsDefaultValueOnMissingKey()
         {
             var structure = new ColonyStructure();
-            bool success = structure.Properties.getString("Missing", string.Empty, out string result);
+            bool success = structure.Properties.GetString("Missing", string.Empty, out string result);
             Assert.That(success, Is.False);
             Assert.That(result, Is.EqualTo(string.Empty));
         }
@@ -195,10 +195,10 @@ namespace OE2EmpireTracker.Tests.Models
         public void SetProperty_AddingToAssignedWorkersDictionary_Succeeds()
         {
             var structure = new ColonyStructure();
-            structure.AssignedWorkers.setProperty("Worker1", "Engineer");
+            structure.AssignedWorkers.SetProperty("Worker1", "Engineer");
 
             Assert.That(structure.AssignedWorkers.ContainsKey("Worker1"), Is.True);
-            structure.AssignedWorkers.getString("Worker1", null, out string value);
+            structure.AssignedWorkers.GetString("Worker1", null, out string value);
             Assert.That(value, Is.EqualTo("Engineer"));
         }
 
@@ -206,8 +206,8 @@ namespace OE2EmpireTracker.Tests.Models
         public void AssignedWorkers_ClearRemovesAllEntries()
         {
             var structure = new ColonyStructure();
-            structure.AssignedWorkers.setProperty("W1", "A");
-            structure.AssignedWorkers.setProperty("W2", "B");
+            structure.AssignedWorkers.SetProperty("W1", "A");
+            structure.AssignedWorkers.SetProperty("W2", "B");
 
             Assert.That(structure.AssignedWorkers.Count, Is.EqualTo(2));
             structure.AssignedWorkers.Clear();
@@ -290,8 +290,8 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 UUID = "test-uuid",
                 FlatpackBlueprintUUID = "blueprint-uuid",
-                displaySequence = 5,
-                buildQueueSequence = 3,
+                DisplaySequence = 5,
+                BuildQueueSequence = 3,
                 CurrentAttitude = "Happy",
                 ContentmentIndex = 80,
                 WageLevel = 2
@@ -302,8 +302,8 @@ namespace OE2EmpireTracker.Tests.Models
 
             Assert.That(restored.UUID, Is.EqualTo(structure.UUID));
             Assert.That(restored.FlatpackBlueprintUUID, Is.EqualTo(structure.FlatpackBlueprintUUID));
-            Assert.That(restored.displaySequence, Is.EqualTo(structure.displaySequence));
-            Assert.That(restored.buildQueueSequence, Is.EqualTo(structure.buildQueueSequence));
+            Assert.That(restored.DisplaySequence, Is.EqualTo(structure.DisplaySequence));
+            Assert.That(restored.BuildQueueSequence, Is.EqualTo(structure.BuildQueueSequence));
             Assert.That(restored.CurrentAttitude, Is.EqualTo(structure.CurrentAttitude));
             Assert.That(restored.ContentmentIndex, Is.EqualTo(structure.ContentmentIndex));
             Assert.That(restored.WageLevel, Is.EqualTo(structure.WageLevel));
@@ -313,17 +313,17 @@ namespace OE2EmpireTracker.Tests.Models
         public void JsonRoundTrip_WithPropertiesDictionary_Preserved()
         {
             var structure = new ColonyStructure();
-            structure.Properties.setProperty("CustomProp1", "Value1");
-            structure.Properties.setProperty("CustomProp2", "Value2");
+            structure.Properties.SetProperty("CustomProp1", "Value1");
+            structure.Properties.SetProperty("CustomProp2", "Value2");
 
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(structure);
             var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<ColonyStructure>(json);
 
             Assert.That(restored.Properties.ContainsKey("CustomProp1"), Is.True);
-            restored.Properties.getString("CustomProp1", null, out string value1);
+            restored.Properties.GetString("CustomProp1", null, out string value1);
             Assert.That(value1, Is.EqualTo("Value1"));
             Assert.That(restored.Properties.ContainsKey("CustomProp2"), Is.True);
-            restored.Properties.getString("CustomProp2", null, out string value2);
+            restored.Properties.GetString("CustomProp2", null, out string value2);
             Assert.That(value2, Is.EqualTo("Value2"));
         }
 
@@ -331,17 +331,17 @@ namespace OE2EmpireTracker.Tests.Models
         public void JsonRoundTrip_WithAssignedWorkersDictionary_Preserved()
         {
             var structure = new ColonyStructure();
-            structure.AssignedWorkers.setProperty("Worker1", "Engineer");
-            structure.AssignedWorkers.setProperty("Worker2", "Scout");
+            structure.AssignedWorkers.SetProperty("Worker1", "Engineer");
+            structure.AssignedWorkers.SetProperty("Worker2", "Scout");
 
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(structure);
             var restored = Newtonsoft.Json.JsonConvert.DeserializeObject<ColonyStructure>(json);
 
             Assert.That(restored.AssignedWorkers.ContainsKey("Worker1"), Is.True);
-            restored.AssignedWorkers.getString("Worker1", null, out string value1);
+            restored.AssignedWorkers.GetString("Worker1", null, out string value1);
             Assert.That(value1, Is.EqualTo("Engineer"));
             Assert.That(restored.AssignedWorkers.ContainsKey("Worker2"), Is.True);
-            restored.AssignedWorkers.getString("Worker2", null, out string value2);
+            restored.AssignedWorkers.GetString("Worker2", null, out string value2);
             Assert.That(value2, Is.EqualTo("Scout"));
         }
 
@@ -352,8 +352,8 @@ namespace OE2EmpireTracker.Tests.Models
             {
                 UUID = "full-uuid-test",
                 FlatpackBlueprintUUID = "bp-full-test",
-                displaySequence = 10,
-                buildQueueSequence = 2,
+                DisplaySequence = 10,
+                BuildQueueSequence = 2,
                 CurrentAttitude = "Satisfied",
                 ContentmentIndex = 75,
                 WageLevel = 3,
@@ -367,8 +367,8 @@ namespace OE2EmpireTracker.Tests.Models
 
             Assert.That(restored.UUID, Is.EqualTo(structure.UUID));
             Assert.That(restored.FlatpackBlueprintUUID, Is.EqualTo(structure.FlatpackBlueprintUUID));
-            Assert.That(restored.displaySequence, Is.EqualTo(structure.displaySequence));
-            Assert.That(restored.buildQueueSequence, Is.EqualTo(structure.buildQueueSequence));
+            Assert.That(restored.DisplaySequence, Is.EqualTo(structure.DisplaySequence));
+            Assert.That(restored.BuildQueueSequence, Is.EqualTo(structure.BuildQueueSequence));
             Assert.That(restored.CurrentAttitude, Is.EqualTo(structure.CurrentAttitude));
             Assert.That(restored.ContentmentIndex, Is.EqualTo(structure.ContentmentIndex));
             Assert.That(restored.WageLevel, Is.EqualTo(structure.WageLevel));
@@ -399,7 +399,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void NewStructure_HasZeroMiningLeftOvers()
         {
             var structure = new ColonyStructure();
-            Assert.That(structure.MiningLeftOvers, Is.EqualTo(Decimal.Zero));
+            Assert.That(structure.MiningLeftOvers, Is.EqualTo(decimal.Zero));
         }
 
         [Test]

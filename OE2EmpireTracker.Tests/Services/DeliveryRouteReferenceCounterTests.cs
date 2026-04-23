@@ -11,8 +11,6 @@ namespace OE2EmpireTracker.Tests.Services
     {
         private const string TargetUUID = "route-target-uuid";
 
-        #region Helpers
-
         private static DeliveryPlan MakePlan(string routeUUID)
         {
             return new DeliveryPlan
@@ -21,8 +19,6 @@ namespace OE2EmpireTracker.Tests.Services
                 RouteUUID = routeUUID
             };
         }
-
-        #endregion
 
         [Test]
         public void CountReferences_EmptyData_ReturnsZeroCounts()

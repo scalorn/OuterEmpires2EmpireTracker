@@ -17,8 +17,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     [TestFixture]
     public class Migration004PropertyTests
     {
-        #region Generators
-
         /// <summary>
         /// Generates valid UTC DateTime values constrained to years 2000-2099.
         /// </summary>
@@ -90,10 +88,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                    };
         }
 
-        #endregion
-
-        #region Property 3: Migration backfills empty and preserves existing
-
         /// <summary>
         /// Feature: colony-import-timestamp, Property 3: Migration backfills empty and preserves existing.
         /// For any list of colonies where some have null/empty LastImportDateTime and others have
@@ -147,10 +141,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 return true.Label("All colonies have valid ISO timestamps, existing preserved");
             });
         }
-
-        #endregion
-
-        #region Property 8: Migration converts local times to UTC correctly
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 8: Migration converts local times to UTC correctly.
@@ -219,7 +209,5 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             Assert.That(timer.StartTime, Is.EqualTo(DateTime.MinValue));
             Assert.That(timer.EndTime, Is.EqualTo(DateTime.MinValue));
         }
-
-        #endregion
     }
 }

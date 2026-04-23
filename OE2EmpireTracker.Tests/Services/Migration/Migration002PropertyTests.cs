@@ -34,8 +34,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             PlayerContext.Reset();
         }
 
-        #region Property 4: Stale FlatpackBlueprintUUID cleanup
-
         /// <summary>
         /// For any colony structure whose FlatpackBlueprintUUID matches a
         /// global blueprint's LegacyUUID, after Migration002 runs the
@@ -116,7 +114,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                             expectedMappings[$"{c}_{s}"] = blueprints[bpIdx].UUID;
                         }
 
-                        structure.displaySequence = s;
+                        structure.DisplaySequence = s;
                         colony.Structures.Add(structure);
                     }
 
@@ -156,10 +154,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     .Label(failMsg.Length > 0 ? failMsg : "Legacy UUID still found in structures");
             });
         }
-
-        #endregion
-
-        #region Property 2: Colony UUID migration preserves LegacyUUID
 
         /// <summary>
         /// For any colony with a random UUID, after migration the colony's
@@ -252,10 +246,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 return secondRunOk.Label(failMsg);
             });
         }
-
-        #endregion
-
-        #region Property 5: Migration idempotency
 
         /// <summary>
         /// Running Migration002 twice on the same data should produce
@@ -375,7 +365,5 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                            $"RouteStops={routeStopsMatch}, PlanStops={planStopsMatch}");
             });
         }
-
-        #endregion
     }
 }

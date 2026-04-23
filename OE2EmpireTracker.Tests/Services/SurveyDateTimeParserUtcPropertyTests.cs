@@ -20,8 +20,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class SurveyDateTimeParserUtcPropertyTests
     {
-        #region Generators
-
         /// <summary>
         /// Generates valid UTC DateTime values with minute precision (seconds=0).
         /// Constrained to years 2000-2099 to match two-digit year range.
@@ -35,10 +33,6 @@ namespace OE2EmpireTracker.Tests.Services
                    from minute in Gen.Choose(0, 59)
                    select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
         }
-
-        #endregion
-
-        #region Property 6: SurveyDateTimeParser stores UTC and displays local
 
         /// <summary>
         /// Feature: colony-import-timestamp, Property 6: SurveyDateTimeParser stores UTC and displays local
@@ -107,7 +101,5 @@ namespace OE2EmpireTracker.Tests.Services
                            $"utc={utcDt:O}, local={localDt:O}, iso='{iso}'");
             });
         }
-
-        #endregion
     }
 }

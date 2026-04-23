@@ -156,8 +156,6 @@ namespace OE2EmpireTracker.Services
             return plan;
         }
 
-        #region Private Helpers
-
         /// <summary>
         /// Groups shortfalls by build location UUID from a single build plan.
         /// Returns a dictionary of locationUUID -> (resourceName -> totalShortfall).
@@ -496,7 +494,5 @@ namespace OE2EmpireTracker.Services
             public string BlueprintUUID { get; set; }
             public int Quantity { get; set; }
         }
-
-        #endregion
     }
 }

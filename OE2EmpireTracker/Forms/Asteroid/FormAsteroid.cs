@@ -31,19 +31,19 @@ namespace OE2EmpireTracker.Forms.Asteroid
             lvwAsteroids.Columns.Add("Refs", 40, HorizontalAlignment.Right);
             lvwAsteroids.FullRowSelect = true;
             lvwAsteroids.MultiSelect = false;
-            lvwAsteroids.ItemSelectionChanged += lvwAsteroids_ItemSelectionChanged;
+            lvwAsteroids.ItemSelectionChanged += LvwAsteroids_ItemSelectionChanged;
 
-            txtFilter.TextChanged += txtFilter_TextChanged;
-            txtAsteroidName.TextChanged += txtAsteroidName_TextChanged;
-            txtSystemName.TextChanged += txtSystemName_TextChanged;
+            txtFilter.TextChanged += TxtFilter_TextChanged;
+            txtAsteroidName.TextChanged += TxtAsteroidName_TextChanged;
+            txtSystemName.TextChanged += TxtSystemName_TextChanged;
 
-            cmdNew.Click += cmdNew_Click;
-            cmdDelete.Click += cmdDelete_Click;
-            cmdSave.Click += cmdSave_Click;
+            cmdNew.Click += CmdNew_Click;
+            cmdDelete.Click += CmdDelete_Click;
+            cmdSave.Click += CmdSave_Click;
 
-            cmdAddReserve.Click += cmdAddReserve_Click;
-            cmdRemoveReserve.Click += cmdRemoveReserve_Click;
-            dgvReserves.CellEndEdit += dgvReserves_CellEndEdit;
+            cmdAddReserve.Click += CmdAddReserve_Click;
+            cmdRemoveReserve.Click += CmdRemoveReserve_Click;
+            dgvReserves.CellEndEdit += DgvReserves_CellEndEdit;
 
             PopulateResourceCombo();
             txtReserveResourceFilter.TextChanged += (s, ev) => PopulateResourceCombo();
@@ -51,16 +51,16 @@ namespace OE2EmpireTracker.Forms.Asteroid
             PopulateAsteroidList();
             ClearForm();
 
-            flpBase.Layout += flpBase_Layout;
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpDetail.Layout += flpDetail_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.AsteroidDataChanged += OnAsteroidDataChanged;
         }
 
         // Layout
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpBase.ClientSize.Width;
             int h = flpBase.ClientSize.Height;
@@ -68,7 +68,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             flpDetail.Size = new System.Drawing.Size(w - 232, h - 6);
         }
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpSearchList.ClientSize.Width;
             int h = flpSearchList.ClientSize.Height;
@@ -77,7 +77,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             lvwAsteroids.Size = new System.Drawing.Size(w - 6, listHeight);
         }
 
-        private void flpDetail_Layout(object sender, LayoutEventArgs e)
+        private void FlpDetail_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpDetail.ClientSize.Width;
             int h = flpDetail.ClientSize.Height;
@@ -121,9 +121,9 @@ namespace OE2EmpireTracker.Forms.Asteroid
             Log.Info("PERF PopulateAsteroidList: {0}ms items={1}", sw.ElapsedMilliseconds, asteroids.Count);
         }
 
-        private void txtFilter_TextChanged(object sender, EventArgs e) { PopulateAsteroidList(); }
+        private void TxtFilter_TextChanged(object sender, EventArgs e) { PopulateAsteroidList(); }
 
-        private void lvwAsteroids_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwAsteroids_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Models.Asteroid asteroid)
@@ -226,7 +226,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             sw.Stop(); Log.Info("PERF PopulateReservesGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void dgvReserves_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private void DgvReserves_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedAsteroid == null || e.RowIndex < 0) return;
             var row = dgvReserves.Rows[e.RowIndex];
@@ -243,7 +243,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             }
         }
 
-        private void cmdAddReserve_Click(object sender, EventArgs e)
+        private void CmdAddReserve_Click(object sender, EventArgs e)
         {
             if (_selectedAsteroid == null) return;
             string resourceName = cmbReserveResource.SelectedItem?.ToString() ?? string.Empty;
@@ -271,7 +271,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             Log.Info("Added reserve: {0} ({1}) max={2}", resourceName, purity, maxReserve);
         }
 
-        private void cmdRemoveReserve_Click(object sender, EventArgs e)
+        private void CmdRemoveReserve_Click(object sender, EventArgs e)
         {
             if (_selectedAsteroid == null || dgvReserves.SelectedRows.Count == 0) return;
             var reserve = dgvReserves.SelectedRows[0].Tag as AsteroidReserve;
@@ -313,7 +313,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
         }
 
         // CRUD
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             var asteroid = new Models.Asteroid
             {
@@ -329,7 +329,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             Log.Info("Created new asteroid");
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (_selectedAsteroid == null) return;
 
@@ -359,7 +359,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
             Log.Info("Deleted asteroid");
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void CmdSave_Click(object sender, EventArgs e)
         {
             if (_selectedAsteroid == null) return;
             string name = txtAsteroidName.Text.Trim();
@@ -372,13 +372,13 @@ namespace OE2EmpireTracker.Forms.Asteroid
             Log.Info("Saved asteroid \"{0}\"", _selectedAsteroid.Name);
         }
 
-        private void txtAsteroidName_TextChanged(object sender, EventArgs e)
+        private void TxtAsteroidName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedAsteroid == null) return;
             _selectedAsteroid.Name = txtAsteroidName.Text;
         }
 
-        private void txtSystemName_TextChanged(object sender, EventArgs e)
+        private void TxtSystemName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedAsteroid == null) return;
             _selectedAsteroid.SystemName = txtSystemName.Text;

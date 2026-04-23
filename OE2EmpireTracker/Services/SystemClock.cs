@@ -12,7 +12,7 @@ namespace OE2EmpireTracker.Services
         /// Replaceable function that returns the current UTC time.
         /// Default: DateTime.UtcNow. Tests override this to freeze or control time.
         /// </summary>
-        public static Func<DateTime> UtcNowFunc = () => DateTime.UtcNow;
+        public static Func<DateTime> UtcNowFunc { get; set; } = () => DateTime.UtcNow;
 
         /// <summary>
         /// Returns the current UTC time via UtcNowFunc.

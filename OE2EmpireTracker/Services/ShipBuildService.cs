@@ -130,10 +130,10 @@ namespace OE2EmpireTracker.Services
 
             // Read hull identity
             string career = string.Empty;
-            hullBlueprint.Properties?.getString(BlueprintPropertyKeys.LicenseCareer, string.Empty, out career);
+            hullBlueprint.Properties?.GetString(BlueprintPropertyKeys.LicenseCareer, string.Empty, out career);
             stats.LicenseCareer = career ?? string.Empty;
             decimal licLevel = 0m;
-            hullBlueprint.Properties?.getDecimal(BlueprintPropertyKeys.LicenseLevel, 0m, out licLevel);
+            hullBlueprint.Properties?.GetDecimal(BlueprintPropertyKeys.LicenseLevel, 0m, out licLevel);
             stats.LicenseLevel = (int)licLevel;
 
             // Component stats
@@ -188,40 +188,40 @@ namespace OE2EmpireTracker.Services
         {
             if (bp?.Properties == null) return;
             decimal v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.Mass, 0m, out v)) stats.TotalMass += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.PowerGenerated, 0m, out v)) stats.PowerGenerated += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.PowerConsumed, 0m, out v)) stats.PowerConsumed += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.CargoCapacity, 0m, out v)) stats.CargoCapacity += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.FuelCapacity, 0m, out v)) stats.FuelCapacity += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.RawMaterialCapacity, 0m, out v)) stats.HopperCapacity += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.Health, 0m, out v)) stats.TotalHealth += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.EnergyDefence, 0m, out v)) stats.EnergyDefence += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.KineticDefence, 0m, out v)) stats.KineticDefence += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.MissileDefence, 0m, out v)) stats.MissileDefence += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.ShieldHitpoints, 0m, out v)) stats.ShieldHitpoints += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.ShieldRegen, 0m, out v)) stats.ShieldRegen += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.Acceleration, 0m, out v)) stats.Acceleration += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.RotationalThrust, 0m, out v)) stats.RotationalThrust += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.JumpDistance, 0m, out v)) stats.MaxJumpDistance += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.FuelPerJump, 0m, out v)) stats.FuelPerJump += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.MiningYield, 0m, out v)) stats.MiningYield += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.MiningCycleTime, 0m, out v)) stats.MiningCycleTime += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.ScanLevel, 0m, out v)) stats.ScanLevel = Math.Max(stats.ScanLevel, (int)v);
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.Mass, 0m, out v)) stats.TotalMass += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.PowerGenerated, 0m, out v)) stats.PowerGenerated += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.PowerConsumed, 0m, out v)) stats.PowerConsumed += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.CargoCapacity, 0m, out v)) stats.CargoCapacity += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.FuelCapacity, 0m, out v)) stats.FuelCapacity += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.RawMaterialCapacity, 0m, out v)) stats.HopperCapacity += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.Health, 0m, out v)) stats.TotalHealth += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.EnergyDefence, 0m, out v)) stats.EnergyDefence += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.KineticDefence, 0m, out v)) stats.KineticDefence += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.MissileDefence, 0m, out v)) stats.MissileDefence += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.ShieldHitpoints, 0m, out v)) stats.ShieldHitpoints += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.ShieldRegen, 0m, out v)) stats.ShieldRegen += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.Acceleration, 0m, out v)) stats.Acceleration += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.RotationalThrust, 0m, out v)) stats.RotationalThrust += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.JumpDistance, 0m, out v)) stats.MaxJumpDistance += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.FuelPerJump, 0m, out v)) stats.FuelPerJump += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.MiningYield, 0m, out v)) stats.MiningYield += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.MiningCycleTime, 0m, out v)) stats.MiningCycleTime += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.ScanLevel, 0m, out v)) stats.ScanLevel = Math.Max(stats.ScanLevel, (int)v);
         }
 
         private static void AddStationBlueprintStats(StationStats stats, Blueprint bp)
         {
             if (bp?.Properties == null) return;
             decimal v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.Mass, 0m, out v)) stats.TotalMass += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.PowerGenerated, 0m, out v)) stats.PowerGenerated += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.PowerConsumed, 0m, out v)) stats.PowerConsumed += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.Health, 0m, out v)) stats.TotalHealth += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.EnergyDefence, 0m, out v)) stats.EnergyDefence += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.KineticDefence, 0m, out v)) stats.KineticDefence += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.MissileDefence, 0m, out v)) stats.MissileDefence += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.ShieldHitpoints, 0m, out v)) stats.ShieldHitpoints += v;
-            if (bp.Properties.getDecimal(BlueprintPropertyKeys.ShieldRegen, 0m, out v)) stats.ShieldRegen += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.Mass, 0m, out v)) stats.TotalMass += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.PowerGenerated, 0m, out v)) stats.PowerGenerated += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.PowerConsumed, 0m, out v)) stats.PowerConsumed += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.Health, 0m, out v)) stats.TotalHealth += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.EnergyDefence, 0m, out v)) stats.EnergyDefence += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.KineticDefence, 0m, out v)) stats.KineticDefence += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.MissileDefence, 0m, out v)) stats.MissileDefence += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.ShieldHitpoints, 0m, out v)) stats.ShieldHitpoints += v;
+            if (bp.Properties.GetDecimal(BlueprintPropertyKeys.ShieldRegen, 0m, out v)) stats.ShieldRegen += v;
         }
     }
 }

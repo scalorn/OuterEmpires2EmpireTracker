@@ -65,18 +65,18 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             };
 
             // Wire event handlers for survey/selection/sub-selection combos and filters
-            txtSurveyFilter.TextChanged += txtSurveyFilter_TextChanged;
-            cmbSurvey.SelectedIndexChanged += cmbSurvey_SelectedIndexChanged;
-            cmbSurvey.DropDown += cmbSurvey_DropDown;
-            txtSelectionFilter.TextChanged += txtSelectionFilter_TextChanged;
-            cmbSelection.SelectedIndexChanged += cmbSelection_SelectedIndexChanged;
-            cmbSelection.DropDown += cmbSelection_DropDown;
-            cmdStart.Click += cmdStart_Click;
-            cmdDone.Click += cmdDone_Click;
-            txtCompletionTime.Enter += txtCompletionTime_Enter;
-            txtCompletionTime.Leave += txtCompletionTime_Leave;
-            chkStageResources.CheckedChanged += chkStageResources_CheckedChanged;
-            txtQuantity.TextChanged += txtQuantity_TextChanged;
+            txtSurveyFilter.TextChanged += TxtSurveyFilter_TextChanged;
+            cmbSurvey.SelectedIndexChanged += CmbSurvey_SelectedIndexChanged;
+            cmbSurvey.DropDown += CmbSurvey_DropDown;
+            txtSelectionFilter.TextChanged += TxtSelectionFilter_TextChanged;
+            cmbSelection.SelectedIndexChanged += CmbSelection_SelectedIndexChanged;
+            cmbSelection.DropDown += CmbSelection_DropDown;
+            cmdStart.Click += CmdStart_Click;
+            cmdDone.Click += CmdDone_Click;
+            txtCompletionTime.Enter += TxtCompletionTime_Enter;
+            txtCompletionTime.Leave += TxtCompletionTime_Leave;
+            chkStageResources.CheckedChanged += ChkStageResources_CheckedChanged;
+            txtQuantity.TextChanged += TxtQuantity_TextChanged;
         }
 
         // -----------------------------------------------------------------------
@@ -182,7 +182,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             flpSelection.Visible = false;
             flpManufacturing.Visible = false;
 
-
             // Reset manufacturing sub-controls
             txtQuantity.Visible = false;
             txtQuantity.Text = string.Empty;
@@ -222,8 +221,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // --- Header ---
             string bpName = bp != null ? bp.ExtendedName : "(Unknown)";
-            lblName.Text = $"{bpName} #{structureData.displaySequence}";
-            Log.Debug("V2.UpdateData: blueprint={0} uuid={1} seq={2}", bpName, structureData.UUID, structureData.displaySequence);
+            lblName.Text = $"{bpName} #{structureData.DisplaySequence}";
+            Log.Debug("V2.UpdateData: blueprint={0} uuid={1} seq={2}", bpName, structureData.UUID, structureData.DisplaySequence);
 
             // --- State checkboxes ---
             chkStaged.Checked = ViewModel.IsStaged;
@@ -419,7 +418,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             txtQuantity.Visible = false;
             chkStageResources.Visible = false;
             chkBuilt.Enabled = false;
-
 
             txtCompletionTime.Text = structureData.BuildCompletionTime.TimeRemainingString;
             rtbProgressStatus.Text = "Building...";
@@ -1082,7 +1080,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (!ResearchTimeLookup.CanResearchEvolution(bp.Evolution)) continue;
 
                 bool canResearch = true;
-                bp.Properties.getBoolean("Can Research", true, out canResearch);
+                bp.Properties.GetBoolean("Can Research", true, out canResearch);
                 if (!canResearch) continue;
 
                 string display = bp.ExtendedName;
@@ -1261,7 +1259,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (bp.UUID == null) continue;
 
                 bool canManufacture = true;
-                bp.Properties.getBoolean("Can Manufacture", true, out canManufacture);
+                bp.Properties.GetBoolean("Can Manufacture", true, out canManufacture);
                 if (!canManufacture) continue;
 
                 string display = bp.ExtendedName;
@@ -1442,7 +1440,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             string industryFilter = string.Empty;
             if (_blueprint != null)
             {
-                _blueprint.Properties.getString("Commodity Industry", string.Empty, out industryFilter);
+                _blueprint.Properties.GetString("Commodity Industry", string.Empty, out industryFilter);
             }
 
             var items = new List<CommoditySelectionItem>();
@@ -1499,10 +1497,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // 7.5: State checkboxes â€” Built, Online, Staged with mutual exclusion
         // -----------------------------------------------------------------------
 
-        private void chkBuilt_CheckedChanged(object sender, EventArgs e)
+        private void ChkBuilt_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            Log.Debug("V2.chkBuilt_CheckedChanged: new={0}", chkBuilt.Checked);
+            Log.Debug("V2.ChkBuilt_CheckedChanged: new={0}", chkBuilt.Checked);
             ViewModel.IsBuilt = chkBuilt.Checked;
             if (chkBuilt.Checked)
             {
@@ -1513,10 +1511,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             OnColonyStructureDataChanged(structural: false);
         }
 
-        private void chkOnline_CheckedChanged(object sender, EventArgs e)
+        private void ChkOnline_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            Log.Debug("V2.chkOnline_CheckedChanged: new={0}", chkOnline.Checked);
+            Log.Debug("V2.ChkOnline_CheckedChanged: new={0}", chkOnline.Checked);
             ViewModel.IsOnline = chkOnline.Checked;
             if (chkOnline.Checked)
             {
@@ -1528,10 +1526,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             OnColonyStructureDataChanged(structural: false);
         }
 
-        private void chkStaged_CheckedChanged(object sender, EventArgs e)
+        private void ChkStaged_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            Log.Debug("V2.chkStaged_CheckedChanged: new={0}", chkStaged.Checked);
+            Log.Debug("V2.ChkStaged_CheckedChanged: new={0}", chkStaged.Checked);
             ViewModel.IsStaged = chkStaged.Checked;
             if (chkStaged.Checked)
             {
@@ -1617,7 +1615,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             return false;
         }
 
-        private void chkWorker_CheckedChanged(object sender, EventArgs e)
+        private void ChkWorker_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             var chk = (CheckBox)sender;
@@ -1637,21 +1635,21 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // 7.8: Up/Down/Delete structure command buttons + Delete key
         // -----------------------------------------------------------------------
 
-        private void cmdUp_Click(object sender, EventArgs e)
+        private void CmdUp_Click(object sender, EventArgs e)
         {
             if (ViewModel == null || Colony == null) return;
             ViewModel.MoveUp(Colony);
             OnColonyStructureDataChanged(structural: true);
         }
 
-        private void cmdDown_Click(object sender, EventArgs e)
+        private void CmdDown_Click(object sender, EventArgs e)
         {
             if (ViewModel == null || Colony == null) return;
             ViewModel.MoveDown(Colony);
             OnColonyStructureDataChanged(structural: true);
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (ViewModel == null || Colony == null) return;
             ViewModel.Delete(Colony);
@@ -1692,7 +1690,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // -----------------------------------------------------------------------
 
         /// <summary>Populate survey combo on first dropdown if it was deferred during colony switch.</summary>
-        private void cmbSurvey_DropDown(object sender, EventArgs e)
+        private void CmbSurvey_DropDown(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (cmbSurvey.DataSource == null || cmbSurvey.Items.Count <= 1)
@@ -1702,7 +1700,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         /// <summary>Populate selection combo on first dropdown if it was deferred during colony switch.</summary>
-        private void cmbSelection_DropDown(object sender, EventArgs e)
+        private void CmbSelection_DropDown(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (cmbSelection.DataSource == null || cmbSelection.Items.Count <= 1)
@@ -1721,7 +1719,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void txtSurveyFilter_TextChanged(object sender, EventArgs e)
+        private void TxtSurveyFilter_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (_blueprint == null || _blueprint.BluePrintType != BlueprintTypes.MiningRig) return;
@@ -1733,17 +1731,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbSurvey.DroppedDown = true;
         }
 
-        private void cmbSurvey_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbSurvey_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (ViewModel == null) return;
 
             var structureData = ViewModel.Data;
             string survey = cmbSurvey.SelectedValue as string;
-            Log.Debug("V2.cmbSurvey_SelectedIndexChanged: old={0} new={1}", structureData.MiningSurvey ?? "(none)", survey ?? "(none)");
+            Log.Debug("V2.CmbSurvey_SelectedIndexChanged: old={0} new={1}", structureData.MiningSurvey ?? "(none)", survey ?? "(none)");
             if (survey != structureData.MiningSurvey)
             {
-                structureData.MiningLeftOvers = Decimal.Zero;
+                structureData.MiningLeftOvers = decimal.Zero;
                 structureData.MiningSurveyResource = null;
             }
 
@@ -1757,7 +1755,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Selection filter and combo handlers (shared across types)
         // -----------------------------------------------------------------------
 
-        private void txtSelectionFilter_TextChanged(object sender, EventArgs e)
+        private void TxtSelectionFilter_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (_blueprint == null) return;
@@ -1781,7 +1779,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbSelection.DroppedDown = true;
         }
 
-        private void cmbSelection_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbSelection_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (ViewModel == null || _blueprint == null) return;
@@ -1791,10 +1789,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
             {
                 string surveyResource = cmbSelection.SelectedValue as string;
-                Log.Debug("V2.cmbSelection_SelectedIndexChanged: type=MiningRig old={0} new={1}", structureData.MiningSurveyResource ?? "(none)", surveyResource ?? "(none)");
+                Log.Debug("V2.CmbSelection_SelectedIndexChanged: type=MiningRig old={0} new={1}", structureData.MiningSurveyResource ?? "(none)", surveyResource ?? "(none)");
                 if (surveyResource != structureData.MiningSurveyResource)
                 {
-                    structureData.MiningLeftOvers = Decimal.Zero;
+                    structureData.MiningLeftOvers = decimal.Zero;
                 }
 
                 structureData.MiningSurveyResource = surveyResource;
@@ -1805,7 +1803,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
             {
                 string key = cmbSelection.SelectedValue as string;
-                Log.Debug("V2.cmbSelection_SelectedIndexChanged: type=Refinery old={0}|{1} new={2}",
+                Log.Debug("V2.CmbSelection_SelectedIndexChanged: type=Refinery old={0}|{1} new={2}",
                     structureData.RefiningResource ?? "(none)", structureData.RefiningResourcePurity ?? "(none)", key ?? "(none)");
                 if (!string.IsNullOrEmpty(key) && key.Contains("|"))
                 {
@@ -1822,14 +1820,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
             {
                 string uuid = cmbSelection.SelectedValue as string;
-                Log.Debug("V2.cmbSelection_SelectedIndexChanged: type=ResearchLab old={0} new={1}",
+                Log.Debug("V2.CmbSelection_SelectedIndexChanged: type=ResearchLab old={0} new={1}",
                     structureData.ResearchingBlueprintUUID ?? "(none)", uuid ?? "(none)");
                 structureData.ResearchingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
             {
                 string uuid = cmbSelection.SelectedValue as string;
-                Log.Debug("V2.cmbSelection_SelectedIndexChanged: type=Manufactory old={0} new={1}",
+                Log.Debug("V2.CmbSelection_SelectedIndexChanged: type=Manufactory old={0} new={1}",
                     structureData.ManufacturingBlueprintUUID ?? "(none)", uuid ?? "(none)");
                 structureData.ManufacturingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
                 structureData.ManufacturingCompleted = 0;
@@ -1837,7 +1835,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             else if (_blueprint.BluePrintType.IsCommodityFactory())
             {
                 string name = cmbSelection.SelectedValue as string;
-                Log.Debug("V2.cmbSelection_SelectedIndexChanged: type=CommodityFactory old={0} new={1}",
+                Log.Debug("V2.CmbSelection_SelectedIndexChanged: type=CommodityFactory old={0} new={1}",
                     structureData.ManufacturingCommodityName ?? "(none)", name ?? "(none)");
                 structureData.ManufacturingCommodityName = string.IsNullOrEmpty(name) ? null : name;
                 structureData.ManufacturingCompleted = 0;
@@ -1848,7 +1846,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Start button handler
         // -----------------------------------------------------------------------
 
-        private void cmdStart_Click(object sender, EventArgs e)
+        private void CmdStart_Click(object sender, EventArgs e)
         {
             if (ViewModel == null) return;
             var structureData = ViewModel.Data;
@@ -1856,7 +1854,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Handle Build button for staged structures
             if (ViewModel.IsStaged && !ViewModel.IsBuilt && cmdStart.Text == "Build")
             {
-                Log.Debug("V2.cmdStart_Click: type=Build structure={0}", structureData.UUID);
+                Log.Debug("V2.CmdStart_Click: type=Build structure={0}", structureData.UUID);
                 HandleBuildStart();
                 return;
             }
@@ -1865,27 +1863,27 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
             {
-                Log.Debug("V2.cmdStart_Click: type=MiningRig structure={0}", structureData.UUID);
+                Log.Debug("V2.CmdStart_Click: type=MiningRig structure={0}", structureData.UUID);
                 HandleMiningStart();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
             {
-                Log.Debug("V2.cmdStart_Click: type=Refinery structure={0}", structureData.UUID);
+                Log.Debug("V2.CmdStart_Click: type=Refinery structure={0}", structureData.UUID);
                 HandleRefineryStart();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
             {
-                Log.Debug("V2.cmdStart_Click: type=ResearchLab structure={0}", structureData.UUID);
+                Log.Debug("V2.CmdStart_Click: type=ResearchLab structure={0}", structureData.UUID);
                 HandleResearchStart();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
             {
-                Log.Debug("V2.cmdStart_Click: type=Manufactory structure={0}", structureData.UUID);
+                Log.Debug("V2.CmdStart_Click: type=Manufactory structure={0}", structureData.UUID);
                 HandleManufactoryStart();
             }
             else if (_blueprint.BluePrintType.IsCommodityFactory())
             {
-                Log.Debug("V2.cmdStart_Click: type=CommodityFactory structure={0}", structureData.UUID);
+                Log.Debug("V2.CmdStart_Click: type=CommodityFactory structure={0}", structureData.UUID);
                 HandleCommodityStart();
             }
         }
@@ -1989,7 +1987,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Parse manufacture time from blueprint properties (default 1s if absent)
             string mfgTimeStr;
-            bp.Properties.getString(BlueprintPropertyKeys.ManufactureRunTime, "1s", out mfgTimeStr);
+            bp.Properties.GetString(BlueprintPropertyKeys.ManufactureRunTime, "1s", out mfgTimeStr);
             if (string.IsNullOrEmpty(mfgTimeStr)) mfgTimeStr = "1s";
 
             // Normalize time format: "9 hours" -> "9h", "30 minutes" -> "30m", etc.
@@ -2066,7 +2064,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Done button handler
         // -----------------------------------------------------------------------
 
-        private void cmdDone_Click(object sender, EventArgs e)
+        private void CmdDone_Click(object sender, EventArgs e)
         {
             if (ViewModel == null || Colony == null) return;
             var structureData = ViewModel.Data;
@@ -2074,7 +2072,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Handle Build completion (BuildCompletionTime)
             if (structureData.BuildCompletionTime != null)
             {
-                Log.Debug("V2.cmdDone_Click: type=Build structure={0}", structureData.UUID);
+                Log.Debug("V2.CmdDone_Click: type=Build structure={0}", structureData.UUID);
                 if (!Colony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
                 {
                     Log.Warn("ColonyStructureV2: write lock timeout on colony {0}", Colony.UUID);
@@ -2112,7 +2110,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             try
             {
-                Log.Debug("V2.cmdDone_Click: type=Process structure={0} bpType={1}",
+                Log.Debug("V2.CmdDone_Click: type=Process structure={0} bpType={1}",
                     structureData.UUID, _blueprint?.BluePrintType ?? "(none)");
                 if (structureData.ProcessCompletionTime != null)
                 {
@@ -2182,7 +2180,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Timer tick handler
         // -----------------------------------------------------------------------
 
-        private void timerCountdown_Tick(object sender, EventArgs e)
+        private void TimerCountdown_Tick(object sender, EventArgs e)
         {
             if (ViewModel == null) return;
             var structureData = ViewModel.Data;
@@ -2201,12 +2199,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Countdown manual edit support
         // -----------------------------------------------------------------------
 
-        private void txtCompletionTime_Enter(object sender, EventArgs e)
+        private void TxtCompletionTime_Enter(object sender, EventArgs e)
         {
             _completionModification = true;
         }
 
-        private void txtCompletionTime_Leave(object sender, EventArgs e)
+        private void TxtCompletionTime_Leave(object sender, EventArgs e)
         {
             _completionModification = false;
             if (ViewModel == null) return;
@@ -2228,7 +2226,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Stage Resources and Quantity handlers
         // -----------------------------------------------------------------------
 
-        private void chkStageResources_CheckedChanged(object sender, EventArgs e)
+        private void ChkStageResources_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (ViewModel == null) return;
@@ -2246,7 +2244,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             OnColonyStructureDataChanged(structural: false);
         }
 
-        private void txtQuantity_TextChanged(object sender, EventArgs e)
+        private void TxtQuantity_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (ViewModel == null) return;
@@ -2261,7 +2259,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // RtbStatus auto-resize
         // -----------------------------------------------------------------------
 
-        private void rtbStatus_ContentsResized(object sender, ContentsResizedEventArgs e)
+        private void RtbStatus_ContentsResized(object sender, ContentsResizedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             rtbStatus.Height = e.NewRectangle.Height + 10;

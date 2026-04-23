@@ -29,7 +29,7 @@ namespace OE2EmpireTracker.Services.Migration
         public static string Generate(string name, int evolution,
             string blueprintType, int cls, string techLevel)
         {
-            string input = $"{name ?? ""}|{evolution}|{blueprintType ?? ""}|{cls}|{techLevel ?? ""}";
+            string input = $"{name ?? string.Empty}|{evolution}|{blueprintType ?? string.Empty}|{cls}|{techLevel ?? string.Empty}";
             return GenerateV5(Namespace, input).ToString();
         }
 
@@ -56,7 +56,7 @@ namespace OE2EmpireTracker.Services.Migration
         /// </summary>
         public static string Generate(string ownerUUID, string planetName, string systemName)
         {
-            string input = $"{ownerUUID ?? ""}|{planetName ?? ""}|{systemName ?? ""}";
+            string input = $"{ownerUUID ?? string.Empty}|{planetName ?? string.Empty}|{systemName ?? string.Empty}";
             return GenerateV5(ColonyNamespace, input).ToString();
         }
 
@@ -66,7 +66,7 @@ namespace OE2EmpireTracker.Services.Migration
         /// </summary>
         public static string GenerateDefaultSurvey(string ownerUUID, string planetName, string systemName)
         {
-            string input = $"{ownerUUID ?? ""}|{planetName ?? ""}|{systemName ?? ""}";
+            string input = $"{ownerUUID ?? string.Empty}|{planetName ?? string.Empty}|{systemName ?? string.Empty}";
             return GenerateV5(DefaultSurveyNamespace, input).ToString();
         }
 
@@ -76,7 +76,7 @@ namespace OE2EmpireTracker.Services.Migration
         /// </summary>
         public static string GenerateAsteroid(string systemName, string asteroidName)
         {
-            string input = $"{systemName ?? ""}:{asteroidName ?? ""}";
+            string input = $"{systemName ?? string.Empty}:{asteroidName ?? string.Empty}";
             return GenerateV5(AsteroidNamespace, input).ToString();
         }
 

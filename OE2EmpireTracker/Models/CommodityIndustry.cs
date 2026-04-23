@@ -30,7 +30,7 @@ namespace OE2EmpireTracker.Models
         public CommodityIndustryEnum ID { get; set; } = CommodityIndustryEnum.None;
         public string Name { get; set; } =  string.Empty;
 
-        private static List<CommodityIndustry> _commodityIndustries = getCommodityIndustries();
+        private static List<CommodityIndustry> _commodityIndustries = GetCommodityIndustries();
         private static Dictionary<CommodityIndustryEnum, CommodityIndustry> _commodityIndustryMapByEnum;
         private static Dictionary<string, CommodityIndustry> _commodityIndustryMapByString;
 
@@ -38,8 +38,7 @@ namespace OE2EmpireTracker.Models
         public static IReadOnlyDictionary<CommodityIndustryEnum, CommodityIndustry> CommodityIndustryMapByEnum => _commodityIndustryMapByEnum;
         public static IReadOnlyDictionary<string, CommodityIndustry> CommodityIndustryMapByString => _commodityIndustryMapByString;
 
-
-        private static List<CommodityIndustry> getCommodityIndustries()
+        private static List<CommodityIndustry> GetCommodityIndustries()
         {
             List<CommodityIndustry> instance = new List<CommodityIndustry>();
             instance.Add(new CommodityIndustry() { ID = CommodityIndustryEnum.AdministrationBlock, Name = "Administration Block" });

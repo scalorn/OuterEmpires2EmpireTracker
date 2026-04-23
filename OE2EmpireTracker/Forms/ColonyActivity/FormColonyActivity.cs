@@ -28,27 +28,27 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             playerContext = EmpireContext.PlayerContext;
 
             // Wire checkbox handlers
-            chkBuilding.CheckedChanged += chkFilter_CheckedChanged;
-            chkManufacturing.CheckedChanged += chkFilter_CheckedChanged;
-            chkCommodityManufacturing.CheckedChanged += chkFilter_CheckedChanged;
-            chkCommodityRequest.CheckedChanged += chkFilter_CheckedChanged;
-            chkResearch.CheckedChanged += chkFilter_CheckedChanged;
-            chkMining.CheckedChanged += chkFilter_CheckedChanged;
-            chkRefining.CheckedChanged += chkFilter_CheckedChanged;
-            chkColonyImportStaleness.CheckedChanged += chkFilter_CheckedChanged;
-            chkShowInactive.CheckedChanged += chkShowInactive_CheckedChanged;
+            chkBuilding.CheckedChanged += ChkFilter_CheckedChanged;
+            chkManufacturing.CheckedChanged += ChkFilter_CheckedChanged;
+            chkCommodityManufacturing.CheckedChanged += ChkFilter_CheckedChanged;
+            chkCommodityRequest.CheckedChanged += ChkFilter_CheckedChanged;
+            chkResearch.CheckedChanged += ChkFilter_CheckedChanged;
+            chkMining.CheckedChanged += ChkFilter_CheckedChanged;
+            chkRefining.CheckedChanged += ChkFilter_CheckedChanged;
+            chkColonyImportStaleness.CheckedChanged += ChkFilter_CheckedChanged;
+            chkShowInactive.CheckedChanged += ChkShowInactive_CheckedChanged;
 
             // Wire text filter
-            txtFilter.TextChanged += txtFilter_TextChanged;
+            txtFilter.TextChanged += TxtFilter_TextChanged;
 
             // Wire grid sort
-            dgvActivities.SortCompare += dgvActivities_SortCompare;
+            dgvActivities.SortCompare += DgvActivities_SortCompare;
 
             // Wire layout
-            flpBase.Layout += flpBase_Layout;
+            flpBase.Layout += FlpBase_Layout;
 
             // Wire timer
-            timerRefresh.Tick += timerRefresh_Tick;
+            timerRefresh.Tick += TimerRefresh_Tick;
 
             // Subscribe to player context events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
@@ -67,7 +67,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
         // Layout
         // -----------------------------------------------------------------------
 
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             int gridWidth = flpBase.ClientSize.Width - dgvActivities.Margin.Left - dgvActivities.Margin.Right;
             int gridHeight = flpBase.ClientSize.Height - flpFilters.Height - flpFilters.Margin.Top - flpFilters.Margin.Bottom - dgvActivities.Margin.Top - dgvActivities.Margin.Bottom;
@@ -174,25 +174,25 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
         // Event Handlers
         // -----------------------------------------------------------------------
 
-        private void chkFilter_CheckedChanged(object sender, EventArgs e)
+        private void ChkFilter_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             ApplyFiltersAndPopulate();
         }
 
-        private void chkShowInactive_CheckedChanged(object sender, EventArgs e)
+        private void ChkShowInactive_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             RefreshData();
         }
 
-        private void txtFilter_TextChanged(object sender, EventArgs e)
+        private void TxtFilter_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             ApplyFiltersAndPopulate();
         }
 
-        private void timerRefresh_Tick(object sender, EventArgs e)
+        private void TimerRefresh_Tick(object sender, EventArgs e)
         {
             if (chkShowInactive.Checked) return;
 
@@ -208,7 +208,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             }
         }
 
-        private void dgvActivities_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        private void DgvActivities_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
         {
             if (e.Column == colCountDown)
             {

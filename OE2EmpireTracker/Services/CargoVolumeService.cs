@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Services
                             }
 
                             decimal vol = 0m;
-                            bp.Properties.getDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out vol);
+                            bp.Properties.GetDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out vol);
                             return vol;
                         }
                     }
@@ -107,7 +107,7 @@ namespace OE2EmpireTracker.Services
                         if (bp != null)
                         {
                             decimal mass = 0m;
-                            bp.Properties.getDecimal(BlueprintPropertyKeys.Mass, 0, out mass);
+                            bp.Properties.GetDecimal(BlueprintPropertyKeys.Mass, 0, out mass);
                             return mass;
                         }
                     }
@@ -135,7 +135,7 @@ namespace OE2EmpireTracker.Services
         {
             // A crate's volume is its own Cargo Volume Size property
             decimal crateVol = 0m;
-            crateBp.Properties.getDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out crateVol);
+            crateBp.Properties.GetDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out crateVol);
             return crateVol;
         }
 

@@ -12,8 +12,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class SurveyImportHelperPropertyTests
     {
-        #region Helpers
-
         private static Survey MakeSurvey(string uuid, string planetName, string surveyId,
             string systemName = "System", string scannedBy = "Scanner", string dateTime = "2025-01-01",
             string nickName = "")
@@ -73,10 +71,6 @@ namespace OE2EmpireTracker.Tests.Services
                    select SetSurveyType(survey, isAsteroid);
         }
 
-        #endregion
-
-        #region Property 1: FindByKey returns correct match by PlanetName+SurveyID (case-insensitive)
-
         /// <summary>
         /// Property 1: Case-insensitive PlanetName+SurveyID search.
         /// For any list of surveys and for any PlanetName+SurveyID pair that exists in the list
@@ -120,10 +114,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"Expected null for non-existent key '{uniquePlanet}/{uniqueId}' but got a survey");
             });
         }
-
-        #endregion
-
-        #region Property 2: CreateFromTemp produces a valid survey with all parsed data
 
         /// <summary>
         /// Property 2: CreateFromTemp produces a valid survey with all parsed data.
@@ -186,10 +176,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(surveyTypeMatch);
             });
         }
-
-        #endregion
-
-        #region Property 3: MergeData updates data while preserving UUID, OwnerUUID, NickName
 
         /// <summary>
         /// Property 3: MergeData updates data while preserving UUID, OwnerUUID, NickName.
@@ -259,7 +245,5 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(nickNamePreserved);
             });
         }
-
-        #endregion
     }
 }

@@ -87,7 +87,6 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-
         public Blueprint(string name /*, int quantity*/) : base(Models.ItemType.ItemTypeEnum.Blueprint, name /* , quantity */)
         {
             Properties = new PropertyBag();

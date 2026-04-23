@@ -30,8 +30,6 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.Reset();
         }
 
-        #region Helpers
-
         private DeliveryRoute CreateRoute(string ownerUUID, params string[] colonyUUIDs)
         {
             var route = new DeliveryRoute
@@ -84,10 +82,6 @@ namespace OE2EmpireTracker.Tests.Services
             };
         }
 
-        #endregion
-
-        #region GenerateDeliveryPlan - Null Arguments
-
         [Test]
         public void GenerateDeliveryPlan_NullBuildPlan_Throws()
         {
@@ -116,10 +110,6 @@ namespace OE2EmpireTracker.Tests.Services
                     new BuildPlan(), new DeliveryRoute(), null,
                     id => null, _playerContext));
         }
-
-        #endregion
-
-        #region GenerateDeliveryPlan - Basic Behavior
 
         [Test]
         public void GenerateDeliveryPlan_CreatesNewPlan_WithCorrectName()
@@ -241,10 +231,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result.Stops.Count, Is.EqualTo(2));
         }
 
-        #endregion
-
-        #region GenerateConsolidatedDeliveryPlan
-
         [Test]
         public void GenerateConsolidatedDeliveryPlan_NullPlans_Throws()
         {
@@ -303,10 +289,6 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(result.Stops.Count, Is.EqualTo(0));
         }
-
-        #endregion
-
-        #region GenerateFlatpackDeliveryPlan
 
         [Test]
         public void GenerateFlatpackDeliveryPlan_NullPlans_Throws()
@@ -397,7 +379,5 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(result.Stops.Count, Is.EqualTo(0));
         }
-
-        #endregion
     }
 }

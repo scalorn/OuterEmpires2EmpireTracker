@@ -46,8 +46,6 @@ namespace OE2EmpireTracker.Tests.Services
             try { Directory.Delete(_tempDir, true); } catch { }
         }
 
-        #region Null UUID handling
-
         [Test]
         public void AddBlueprint_NullUUID_AddedToList_FindReturnsNullForNull()
         {
@@ -77,10 +75,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(_ctx.ColonyList.Count, Is.EqualTo(1));
             Assert.That(_ctx.FindColony(null), Is.Null);
         }
-
-        #endregion
-
-        #region Remove non-existent item
 
         [Test]
         public void RemoveBlueprint_NonExistent_NoException_ListUnchanged()
@@ -117,10 +111,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(_ctx.ColonyList.Count, Is.EqualTo(1));
             Assert.That(_ctx.FindColony("col-1"), Is.SameAs(existing));
         }
-
-        #endregion
-
-        #region BindingSource count reflects mutations
 
         [Test]
         public void BindingSourceBlueprint_CountReflectsAddAndRemove()
@@ -163,7 +153,5 @@ namespace OE2EmpireTracker.Tests.Services
             _ctx.RemoveColony(colony);
             Assert.That(bs.Count, Is.EqualTo(0));
         }
-
-        #endregion
     }
 }

@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Tests.Models
             if (properties != null)
             {
                 foreach (var kv in properties)
-                    bp.Properties.setProperty(kv.Key, kv.Value);
+                    bp.Properties.SetProperty(kv.Key, kv.Value);
             }
 
             return bp;
@@ -49,9 +49,9 @@ namespace OE2EmpireTracker.Tests.Models
             var s = new ColonyStructure();
             s.UUID = Guid.NewGuid().ToString();
             s.FlatpackBlueprintUUID = blueprintUUID;
-            s.Properties.setProperty(GameConstants.PropBuilt, built);
-            s.Properties.setProperty(GameConstants.PropOnline, online);
-            s.Properties.setProperty(GameConstants.PropStaged, false);
+            s.Properties.SetProperty(GameConstants.PropBuilt, built);
+            s.Properties.SetProperty(GameConstants.PropOnline, online);
+            s.Properties.SetProperty(GameConstants.PropStaged, false);
             return s;
         }
 
@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Tests.Models
             colony.ColonyName = "TestColony";
 
             var reactor = MakeStructure(reactorBp.UUID, built: true, online: true);
-            reactor.AssignedWorkers.setProperty("BlueCollar1", true);
+            reactor.AssignedWorkers.SetProperty("BlueCollar1", true);
             colony.Structures.Add(reactor);
 
             // Structure with an expired build timer so HasExpiredTimers() returns true
@@ -207,7 +207,6 @@ namespace OE2EmpireTracker.Tests.Models
                     {
                         lock (exLock) { exceptions.Add(ex); }
                     }
-
                 });
             }
 
@@ -278,17 +277,16 @@ namespace OE2EmpireTracker.Tests.Models
                         for (int i = 0; i < opsPerThread; i++)
                         {
                             string propName = "prop" + (threadIndex * opsPerThread + i);
-                            bag.setProperty(propName, true);
+                            bag.SetProperty(propName, true);
 
                             bool value;
-                            bag.getBoolean(propName, false, out value);
+                            bag.GetBoolean(propName, false, out value);
                         }
                     }
                     catch (Exception ex)
                     {
                         lock (exLock) { exceptions.Add(ex); }
                     }
-
                 });
             }
 
@@ -337,7 +335,6 @@ namespace OE2EmpireTracker.Tests.Models
                     {
                         lock (exLock) { exceptions.Add(ex); }
                     }
-
                 });
             }
 
@@ -460,7 +457,6 @@ namespace OE2EmpireTracker.Tests.Models
                     {
                         colony.ColonyLock.ExitReadLock();
                     }
-
                 });
 
                 readThread.Start();
@@ -513,7 +509,6 @@ namespace OE2EmpireTracker.Tests.Models
                     {
                         colony.ColonyLock.ExitWriteLock();
                     }
-
                 });
 
                 writeThread.Start();
@@ -590,12 +585,12 @@ namespace OE2EmpireTracker.Tests.Models
 
             // Colony A should NOT have been processed (structure still not built)
             bool colonyABuilt;
-            structA.Properties.getBoolean(GameConstants.PropBuilt, false, out colonyABuilt);
+            structA.Properties.GetBoolean(GameConstants.PropBuilt, false, out colonyABuilt);
             Assert.That(colonyABuilt, Is.False, "Locked colony A should be skipped");
 
             // Colony B SHOULD have been processed (structure now built)
             bool colonyBBuilt;
-            structB.Properties.getBoolean(GameConstants.PropBuilt, false, out colonyBBuilt);
+            structB.Properties.GetBoolean(GameConstants.PropBuilt, false, out colonyBBuilt);
             Assert.That(colonyBBuilt, Is.True, "Unlocked colony B should be processed");
         }
     }

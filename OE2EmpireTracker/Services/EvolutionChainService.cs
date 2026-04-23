@@ -167,13 +167,13 @@ namespace OE2EmpireTracker.Services
             if (propType == PropertyValueType.Time)
             {
                 string strVal;
-                bp.Properties.getString(propName, string.Empty, out strVal);
+                bp.Properties.GetString(propName, string.Empty, out strVal);
                 return ParseTimeToSeconds(strVal);
             }
             else
             {
                 decimal val;
-                bp.Properties.getDecimal(propName, 0.0m, out val);
+                bp.Properties.GetDecimal(propName, 0.0m, out val);
                 return val;
             }
         }

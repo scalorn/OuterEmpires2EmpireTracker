@@ -185,8 +185,8 @@ namespace OE2EmpireTracker.Models
                 if (structure.BuildCompletionTime != null &&
                     structure.BuildCompletionTime.TimeRemaining <= 0)
                 {
-                    structure.Properties.setProperty(GameConstants.PropBuilt, true);
-                    structure.Properties.setProperty(GameConstants.PropStaged, false);
+                    structure.Properties.SetProperty(GameConstants.PropBuilt, true);
+                    structure.Properties.SetProperty(GameConstants.PropStaged, false);
                     structure.BuildCompletionTime = null;
                 }
             }
@@ -257,7 +257,7 @@ namespace OE2EmpireTracker.Models
 
             List<Item> items = Items.FindResource(surveyResource.Resource, surveyResource.Purity);
             int quantityInt = 0;
-            Decimal leftOver = structure.MiningLeftOvers;
+            decimal leftOver = structure.MiningLeftOvers;
             Item item = null;
             if (items.Count > 0)
             {
@@ -280,7 +280,7 @@ namespace OE2EmpireTracker.Models
 
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {
-                Decimal quantity = (Decimal.Parse(surveyResource.Amount) * extractionMultiplier) + leftOver;
+                decimal quantity = (decimal.Parse(surveyResource.Amount) * extractionMultiplier) + leftOver;
 
                 quantityInt += (int)quantity;
 
@@ -471,7 +471,7 @@ namespace OE2EmpireTracker.Models
             // Properties copied, resources left empty for user to import
             foreach (var prop in sourceBp.Properties.Properties)
             {
-                newBp.Properties.setProperty(prop.Key, prop.Value);
+                newBp.Properties.SetProperty(prop.Key, prop.Value);
             }
 
             // Resources intentionally empty / user imports via Blueprint Form
@@ -529,7 +529,7 @@ namespace OE2EmpireTracker.Models
                     mfgItem.Quantity = 1;
 
                     decimal vol = 0m;
-                    sourceBp.Properties.getDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0m, out vol);
+                    sourceBp.Properties.GetDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0m, out vol);
                     mfgItem.Volume = vol;
 
                     Items.AddItem(mfgItem);

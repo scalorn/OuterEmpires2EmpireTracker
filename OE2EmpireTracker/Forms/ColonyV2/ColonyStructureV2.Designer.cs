@@ -124,7 +124,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkStaged.TabIndex = 1;
             this.chkStaged.Text = "Staged";
             this.chkStaged.UseVisualStyleBackColor = true;
-            this.chkStaged.CheckedChanged += new System.EventHandler(this.chkStaged_CheckedChanged);
+            this.chkStaged.CheckedChanged += new System.EventHandler(this.ChkStaged_CheckedChanged);
             // 
             // chkBuilt
             // 
@@ -135,7 +135,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkBuilt.TabIndex = 2;
             this.chkBuilt.Text = "Built";
             this.chkBuilt.UseVisualStyleBackColor = true;
-            this.chkBuilt.CheckedChanged += new System.EventHandler(this.chkBuilt_CheckedChanged);
+            this.chkBuilt.CheckedChanged += new System.EventHandler(this.ChkBuilt_CheckedChanged);
             // 
             // chkOnline
             // 
@@ -146,7 +146,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkOnline.TabIndex = 3;
             this.chkOnline.Text = "Online";
             this.chkOnline.UseVisualStyleBackColor = true;
-            this.chkOnline.CheckedChanged += new System.EventHandler(this.chkOnline_CheckedChanged);
+            this.chkOnline.CheckedChanged += new System.EventHandler(this.ChkOnline_CheckedChanged);
             // 
             // rtbStatus
             // 
@@ -162,7 +162,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.rtbStatus.Enabled = false;
             this.rtbStatus.Text = "";
             this.rtbStatus.WordWrap = false;
-            this.rtbStatus.ContentsResized += new System.Windows.Forms.ContentsResizedEventHandler(this.rtbStatus_ContentsResized);
+            this.rtbStatus.ContentsResized += new System.Windows.Forms.ContentsResizedEventHandler(this.RtbStatus_ContentsResized);
             // 
             // flpWorkers
             // 
@@ -190,7 +190,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker1.Text = "Worker 1";
             this.chkWorker1.Visible = false;
             this.chkWorker1.UseVisualStyleBackColor = true;
-            this.chkWorker1.CheckedChanged += new System.EventHandler(this.chkWorker_CheckedChanged);
+            this.chkWorker1.CheckedChanged += new System.EventHandler(this.ChkWorker_CheckedChanged);
             this.chkWorker2.AutoSize = true;
             this.chkWorker2.Location = new System.Drawing.Point(89, 3);
             this.chkWorker2.Name = "chkWorker2";
@@ -199,7 +199,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker2.Text = "Worker 2";
             this.chkWorker2.Visible = false;
             this.chkWorker2.UseVisualStyleBackColor = true;
-            this.chkWorker2.CheckedChanged += new System.EventHandler(this.chkWorker_CheckedChanged);
+            this.chkWorker2.CheckedChanged += new System.EventHandler(this.ChkWorker_CheckedChanged);
             this.chkWorker3.AutoSize = true;
             this.chkWorker3.Location = new System.Drawing.Point(175, 3);
             this.chkWorker3.Name = "chkWorker3";
@@ -208,7 +208,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker3.Text = "Worker 3";
             this.chkWorker3.Visible = false;
             this.chkWorker3.UseVisualStyleBackColor = true;
-            this.chkWorker3.CheckedChanged += new System.EventHandler(this.chkWorker_CheckedChanged);
+            this.chkWorker3.CheckedChanged += new System.EventHandler(this.ChkWorker_CheckedChanged);
             this.chkWorker4.AutoSize = true;
             this.chkWorker4.Location = new System.Drawing.Point(261, 3);
             this.chkWorker4.Name = "chkWorker4";
@@ -217,7 +217,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker4.Text = "Worker 4";
             this.chkWorker4.Visible = false;
             this.chkWorker4.UseVisualStyleBackColor = true;
-            this.chkWorker4.CheckedChanged += new System.EventHandler(this.chkWorker_CheckedChanged);
+            this.chkWorker4.CheckedChanged += new System.EventHandler(this.ChkWorker_CheckedChanged);
             this.chkWorker5.AutoSize = true;
             this.chkWorker5.Location = new System.Drawing.Point(347, 3);
             this.chkWorker5.Name = "chkWorker5";
@@ -226,7 +226,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker5.Text = "Worker 5";
             this.chkWorker5.Visible = false;
             this.chkWorker5.UseVisualStyleBackColor = true;
-            this.chkWorker5.CheckedChanged += new System.EventHandler(this.chkWorker_CheckedChanged);
+            this.chkWorker5.CheckedChanged += new System.EventHandler(this.ChkWorker_CheckedChanged);
             this.chkWorker6.AutoSize = true;
             this.chkWorker6.Location = new System.Drawing.Point(433, 3);
             this.chkWorker6.Name = "chkWorker6";
@@ -235,7 +235,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker6.Text = "Worker 6";
             this.chkWorker6.Visible = false;
             this.chkWorker6.UseVisualStyleBackColor = true;
-            this.chkWorker6.CheckedChanged += new System.EventHandler(this.chkWorker_CheckedChanged);
+            this.chkWorker6.CheckedChanged += new System.EventHandler(this.ChkWorker_CheckedChanged);
             // 
             // flpSurveySelection
             // 
@@ -388,25 +388,25 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdUp.TabIndex = 0;
             this.cmdUp.Text = "Up";
             this.cmdUp.UseVisualStyleBackColor = true;
-            this.cmdUp.Click += new System.EventHandler(this.cmdUp_Click);
+            this.cmdUp.Click += new System.EventHandler(this.CmdUp_Click);
             this.cmdDown.Location = new System.Drawing.Point(59, 3);
             this.cmdDown.Name = "cmdDown";
             this.cmdDown.Size = new System.Drawing.Size(50, 23);
             this.cmdDown.TabIndex = 1;
             this.cmdDown.Text = "Down";
             this.cmdDown.UseVisualStyleBackColor = true;
-            this.cmdDown.Click += new System.EventHandler(this.cmdDown_Click);
+            this.cmdDown.Click += new System.EventHandler(this.CmdDown_Click);
             this.cmdDelete.Location = new System.Drawing.Point(115, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(50, 23);
             this.cmdDelete.TabIndex = 2;
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            this.cmdDelete.Click += new System.EventHandler(this.CmdDelete_Click);
             // 
             // timerCountdown
             // 
-            this.timerCountdown.Tick += new System.EventHandler(this.timerCountdown_Tick);
+            this.timerCountdown.Tick += new System.EventHandler(this.TimerCountdown_Tick);
             // 
             // ColonyStructureV2
             // 

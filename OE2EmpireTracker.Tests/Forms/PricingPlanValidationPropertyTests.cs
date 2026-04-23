@@ -16,8 +16,6 @@ namespace OE2EmpireTracker.Tests.Forms
     [TestFixture]
     public class PricingPlanValidationPropertyTests
     {
-        #region Generators
-
         /// <summary>
         /// Generates strings composed entirely of whitespace characters.
         /// </summary>
@@ -36,10 +34,6 @@ namespace OE2EmpireTracker.Tests.Forms
            );
         }
 
-        #endregion
-
-        #region Property 1: Whitespace plan names are rejected
-
         /// <summary>
         /// Feature: pricing-plans, Property 1: Whitespace plan names are rejected
         ///
@@ -52,7 +46,7 @@ namespace OE2EmpireTracker.Tests.Forms
         {
             return Prop.ForAll(WhitespaceStringGen().ToArbitrary(), name =>
             {
-                // The validation logic from FormPricingPlan.cmdSave_Click:
+                // The validation logic from FormPricingPlan.CmdSave_Click:
                 // string name = txtPlanName.Text.Trim();
                 // if (string.IsNullOrWhiteSpace(name)) -> reject
                 bool isRejected = string.IsNullOrWhiteSpace(name);
@@ -79,7 +73,5 @@ namespace OE2EmpireTracker.Tests.Forms
                     .Label($"Name '{name}': hasContent={hasContent}, isAccepted={isAccepted}");
             });
         }
-
-        #endregion
     }
 }

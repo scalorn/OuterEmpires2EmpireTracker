@@ -12,8 +12,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class IconPositionExtractorPropertyTests
     {
-        #region Property 3: FindBlueprintTypeByIcon uniqueness
-
         /// <summary>
         /// Property 3: FindBlueprintTypeByIcon uniqueness.
         /// For any BaselineData where all BlueprintType entries have distinct non-null
@@ -96,10 +94,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(ctx.FindBlueprintTypeByIcon(null), Is.Null, "null input should return null");
             Assert.That(ctx.FindBlueprintTypeByIcon(string.Empty), Is.Null, "empty input should return null");
         }
-
-        #endregion
-
-        #region Property 4: Coverage gap detection completeness
 
         /// <summary>
         /// Computes the coverage gap: BlueprintType Ids present in baselineTypeIds
@@ -186,7 +180,5 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label("No gap Id should be in extracted set");
             });
         }
-
-        #endregion
     }
 }

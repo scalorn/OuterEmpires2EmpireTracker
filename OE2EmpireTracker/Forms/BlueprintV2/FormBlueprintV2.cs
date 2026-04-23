@@ -81,7 +81,7 @@ namespace OE2EmpireTracker
             InitDetailCombos();
 
             // ListView sorting
-            lvwBlueprints.ColumnClick += lvwBlueprints_ColumnClick;
+            lvwBlueprints.ColumnClick += LvwBlueprints_ColumnClick;
             lvwBlueprints.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
 
             // Wire filter events
@@ -91,35 +91,35 @@ namespace OE2EmpireTracker
             cmbFilterTechLevel.SelectedIndexChanged += (s, e) => { if (_isProgrammaticUpdate == 0) RefreshBlueprintList(); };
             cmbFilterEvolution.SelectedIndexChanged += (s, e) => { if (_isProgrammaticUpdate == 0) RefreshBlueprintList(); };
             chkFilterEvoAndAbove.CheckedChanged += (s, e) => { if (_isProgrammaticUpdate == 0) RefreshBlueprintList(); };
-            btnClearFilters.Click += btnClearFilters_Click;
+            btnClearFilters.Click += BtnClearFilters_Click;
 
             // Wire list selection
-            lvwBlueprints.SelectedIndexChanged += lvwBlueprints_SelectedIndexChanged;
+            lvwBlueprints.SelectedIndexChanged += LvwBlueprints_SelectedIndexChanged;
 
             // Wire identity field write-through
-            txtName.TextChanged += txtName_TextChanged;
-            txtNickName.TextChanged += txtNickName_TextChanged;
-            txtDescription.TextChanged += txtDescription_TextChanged;
-            txtCopyCost.TextChanged += txtCopyCost_TextChanged;
-            cmbBlueprintType.SelectedIndexChanged += cmbBlueprintType_SelectedIndexChanged;
-            cmbShipClass.SelectedIndexChanged += cmbShipClass_SelectedIndexChanged;
-            cmbTechLevel.SelectedIndexChanged += cmbTechLevel_SelectedIndexChanged;
-            cmbEvolution.SelectedIndexChanged += cmbEvolution_SelectedIndexChanged;
-            cmbBaseBlueprint.SelectedIndexChanged += cmbBaseBlueprint_SelectedIndexChanged;
-            txtFilterBaseBlueprint.TextChanged += txtFilterBaseBlueprint_TextChanged;
-            chkGlobalBlueprint.CheckedChanged += chkGlobalBlueprint_CheckedChanged;
+            txtName.TextChanged += TxtName_TextChanged;
+            txtNickName.TextChanged += TxtNickName_TextChanged;
+            txtDescription.TextChanged += TxtDescription_TextChanged;
+            txtCopyCost.TextChanged += TxtCopyCost_TextChanged;
+            cmbBlueprintType.SelectedIndexChanged += CmbBlueprintType_SelectedIndexChanged;
+            cmbShipClass.SelectedIndexChanged += CmbShipClass_SelectedIndexChanged;
+            cmbTechLevel.SelectedIndexChanged += CmbTechLevel_SelectedIndexChanged;
+            cmbEvolution.SelectedIndexChanged += CmbEvolution_SelectedIndexChanged;
+            cmbBaseBlueprint.SelectedIndexChanged += CmbBaseBlueprint_SelectedIndexChanged;
+            txtFilterBaseBlueprint.TextChanged += TxtFilterBaseBlueprint_TextChanged;
+            chkGlobalBlueprint.CheckedChanged += ChkGlobalBlueprint_CheckedChanged;
 
             // Wire command buttons
-            btnNew.Click += btnNew_Click;
-            btnSave.Click += btnSave_Click;
-            btnDelete.Click += btnDelete_Click;
-            btnImport.Click += btnImport_Click;
-            btnImportMarket.Click += btnImportMarket_Click;
+            btnNew.Click += BtnNew_Click;
+            btnSave.Click += BtnSave_Click;
+            btnDelete.Click += BtnDelete_Click;
+            btnImport.Click += BtnImport_Click;
+            btnImportMarket.Click += BtnImportMarket_Click;
 
             // Wire statistics grid events
-            dgvStatistics.CellValueChanged += dgvStatistics_CellValueChanged;
-            dgvStatistics.CellValidating += dgvStatistics_CellValidating;
-            dgvStatistics.CurrentCellDirtyStateChanged += dgvStatistics_CurrentCellDirtyStateChanged;
+            dgvStatistics.CellValueChanged += DgvStatistics_CellValueChanged;
+            dgvStatistics.CellValidating += DgvStatistics_CellValidating;
+            dgvStatistics.CurrentCellDirtyStateChanged += DgvStatistics_CurrentCellDirtyStateChanged;
 
             // Configure resources grid combo
             colResource.DisplayMember = "Name";
@@ -130,16 +130,16 @@ namespace OE2EmpireTracker
             dgvStatistics.DataError += (s, ev) => { Log.Warn("dgvStatistics DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message); ev.ThrowException = false; };
 
             // Wire resources grid events
-            dgvResources.CellValueChanged += dgvResources_CellValueChanged;
-            dgvResources.CellValidating += dgvResources_CellValidating;
-            btnAddResource.Click += btnAddResource_Click;
-            btnDeleteResource.Click += btnDeleteResource_Click;
+            dgvResources.CellValueChanged += DgvResources_CellValueChanged;
+            dgvResources.CellValidating += DgvResources_CellValidating;
+            btnAddResource.Click += BtnAddResource_Click;
+            btnDeleteResource.Click += BtnDeleteResource_Click;
 
             // Configure pricing plan combo
             cmbPricingPlan.DisplayMember = "Name";
             cmbPricingPlan.ValueMember = "UUID";
             PopulatePricingPlanCombo();
-            cmbPricingPlan.SelectedIndexChanged += cmbPricingPlan_SelectedIndexChanged;
+            cmbPricingPlan.SelectedIndexChanged += CmbPricingPlan_SelectedIndexChanged;
 
             // Subscribe to data events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
@@ -147,8 +147,8 @@ namespace OE2EmpireTracker
             playerContext.PricingDataChanged += OnPricingDataChanged;
 
             // Layout handlers
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpBlueprintData.Layout += flpBlueprintData_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpBlueprintData.Layout += FlpBlueprintData_Layout;
 
             // Initial population
             RefreshBlueprintList();
@@ -348,7 +348,7 @@ namespace OE2EmpireTracker
             }
         }
 
-        private void lvwBlueprints_ColumnClick(object sender, ColumnClickEventArgs e)
+        private void LvwBlueprints_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             if (e.Column == _sortColumn)
                 _sortOrder = _sortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
@@ -361,7 +361,7 @@ namespace OE2EmpireTracker
             lvwBlueprints.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
         }
 
-        private void btnClearFilters_Click(object sender, EventArgs e)
+        private void BtnClearFilters_Click(object sender, EventArgs e)
         {
             using (var guard = new ProgrammaticUpdateGuard(this))
             {
@@ -379,7 +379,7 @@ namespace OE2EmpireTracker
         // List Selection -> Populate Form
         // -----------------------------------------------------------------------
 
-        private void lvwBlueprints_SelectedIndexChanged(object sender, EventArgs e)
+        private void LvwBlueprints_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lvwBlueprints.SelectedItems.Count == 1)
             {
@@ -408,13 +408,13 @@ namespace OE2EmpireTracker
         // New / Save / Delete (Task 2.6)
         // -----------------------------------------------------------------------
 
-        private void btnNew_Click(object sender, EventArgs e)
+        private void BtnNew_Click(object sender, EventArgs e)
         {
             ClearForm();
             lvwBlueprints.SelectedItems.Clear();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void BtnSave_Click(object sender, EventArgs e)
         {
             // Validate name
             if (string.IsNullOrWhiteSpace(viewModel.Name))
@@ -432,7 +432,7 @@ namespace OE2EmpireTracker
             SelectBlueprintInList(viewModel.Data.UUID);
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void BtnDelete_Click(object sender, EventArgs e)
         {
             if (!btnDelete.Enabled) return;
             if (viewModel.Data.UUID == null) return;
@@ -455,7 +455,7 @@ namespace OE2EmpireTracker
         // Individual Import (Task 4.1)
         // -----------------------------------------------------------------------
 
-        private void btnImport_Click(object sender, EventArgs e)
+        private void BtnImport_Click(object sender, EventArgs e)
         {
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
@@ -577,7 +577,7 @@ namespace OE2EmpireTracker
         // Market Import (Task 4.2)
         // -----------------------------------------------------------------------
 
-        private void btnImportMarket_Click(object sender, EventArgs e)
+        private void BtnImportMarket_Click(object sender, EventArgs e)
         {
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
@@ -694,32 +694,32 @@ namespace OE2EmpireTracker
         // Identity Field Write-Through (Task 2.7)
         // -----------------------------------------------------------------------
 
-        private void txtName_TextChanged(object sender, EventArgs e)
+        private void TxtName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.Name = txtName.Text;
         }
 
-        private void txtNickName_TextChanged(object sender, EventArgs e)
+        private void TxtNickName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.NickName = txtNickName.Text;
         }
 
-        private void txtDescription_TextChanged(object sender, EventArgs e)
+        private void TxtDescription_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.Description = txtDescription.Text;
         }
 
-        private void txtCopyCost_TextChanged(object sender, EventArgs e)
+        private void TxtCopyCost_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             int.TryParse(txtCopyCost.Text, out int copyCost);
             viewModel.CopyCost = copyCost;
         }
 
-        private void cmbBlueprintType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbBlueprintType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             var bt = cmbBlueprintType.SelectedItem as BlueprintType;
@@ -732,21 +732,21 @@ namespace OE2EmpireTracker
             RefreshStatisticsGrid();
         }
 
-        private void cmbShipClass_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbShipClass_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             var sc = cmbShipClass.SelectedItem as ShipClass;
             viewModel.Class = sc != null ? sc.Id : 0;
         }
 
-        private void cmbTechLevel_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbTechLevel_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             var tl = cmbTechLevel.SelectedItem as TechLevel;
             viewModel.TechLevel = tl?.Name;
         }
 
-        private void cmbEvolution_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbEvolution_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             string evo = cmbEvolution.SelectedItem as string ?? cmbEvolution.Text ?? "0";
@@ -754,20 +754,20 @@ namespace OE2EmpireTracker
             viewModel.Evolution = ev;
         }
 
-        private void cmbBaseBlueprint_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbBaseBlueprint_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             var bp = cmbBaseBlueprint.SelectedItem as Blueprint;
             viewModel.BaseBlueprintUUID = bp?.UUID ?? string.Empty;
         }
 
-        private void txtFilterBaseBlueprint_TextChanged(object sender, EventArgs e)
+        private void TxtFilterBaseBlueprint_TextChanged(object sender, EventArgs e)
         {
             UpdateBaseBlueprintList();
             cmbBaseBlueprint.DroppedDown = true;
         }
 
-        private void chkGlobalBlueprint_CheckedChanged(object sender, EventArgs e)
+        private void ChkGlobalBlueprint_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             // Global flag is read at save time — no viewModel field to write.
@@ -908,7 +908,7 @@ namespace OE2EmpireTracker
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
-            dgvStatistics.CellValidating -= dgvStatistics_CellValidating;
+            dgvStatistics.CellValidating -= DgvStatistics_CellValidating;
             try { dgvStatistics.EndEdit(); } catch { }
             dgvStatistics.Rows.Clear();
             dgvStatistics.Columns.Clear();
@@ -944,12 +944,12 @@ namespace OE2EmpireTracker
             foreach (string property in extraProps)
             {
                 Log.Warn("Extra property '{0}' on '{1}' (not in {2} type definition)",
-                    property, viewModel.Data.Name ?? "(new)", 
+                    property, viewModel.Data.Name ?? "(new)",
                     (cmbBlueprintType.SelectedItem as BlueprintType)?.Id ?? "unknown");
                 AddStatisticsRow(property);
             }
 
-            dgvStatistics.CellValidating += dgvStatistics_CellValidating;
+            dgvStatistics.CellValidating += DgvStatistics_CellValidating;
             sw.Stop(); Log.Info("PERF RebuildStatisticsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
@@ -1030,7 +1030,7 @@ namespace OE2EmpireTracker
         /// <summary>
         /// Write-through: non-empty values written to PropertyBag, empty clears the key.
         /// </summary>
-        private void dgvStatistics_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DgvStatistics_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.RowIndex < 0) return;
@@ -1054,7 +1054,7 @@ namespace OE2EmpireTracker
         /// <summary>
         /// Validates cell input using BlueprintPropertyValidation patterns.
         /// </summary>
-        private void dgvStatistics_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void DgvStatistics_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             var col = dgvStatistics.Columns[e.ColumnIndex];
@@ -1087,7 +1087,7 @@ namespace OE2EmpireTracker
         /// <summary>
         /// Commits CheckBox and ComboBox edits immediately so CellValueChanged fires.
         /// </summary>
-        private void dgvStatistics_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void DgvStatistics_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (dgvStatistics.IsCurrentCellDirty)
                 dgvStatistics.CommitEdit(DataGridViewDataErrorContexts.Commit);
@@ -1105,10 +1105,10 @@ namespace OE2EmpireTracker
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
-            dgvResources.CellValidating -= dgvResources_CellValidating;
+            dgvResources.CellValidating -= DgvResources_CellValidating;
             try { dgvResources.EndEdit(); } catch { }
             dgvResources.Rows.Clear();
-            dgvResources.CellValidating += dgvResources_CellValidating;
+            dgvResources.CellValidating += DgvResources_CellValidating;
 
             foreach (var resource in viewModel.GetResources())
             {
@@ -1124,7 +1124,7 @@ namespace OE2EmpireTracker
         /// <summary>
         /// Write-through: resource edits written to Blueprint.Resources immediately.
         /// </summary>
-        private void dgvResources_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DgvResources_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.RowIndex < 0) return;
@@ -1139,7 +1139,7 @@ namespace OE2EmpireTracker
         /// <summary>
         /// Validates the Amount column as integer.
         /// </summary>
-        private void dgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void DgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             var col = dgvResources.Columns[e.ColumnIndex];
@@ -1171,7 +1171,7 @@ namespace OE2EmpireTracker
         /// <summary>
         /// Adds an empty row and a placeholder entry in Blueprint.Resources.
         /// </summary>
-        private void btnAddResource_Click(object sender, EventArgs e)
+        private void BtnAddResource_Click(object sender, EventArgs e)
         {
             int rowIndex = dgvResources.Rows.Add();
             dgvResources.Rows[rowIndex].Cells["Amount"].Value = "0";
@@ -1180,7 +1180,7 @@ namespace OE2EmpireTracker
         /// <summary>
         /// Removes the selected row and its entry from Blueprint.Resources.
         /// </summary>
-        private void btnDeleteResource_Click(object sender, EventArgs e)
+        private void BtnDeleteResource_Click(object sender, EventArgs e)
         {
             if (dgvResources.CurrentRow == null) return;
             int rowIndex = dgvResources.CurrentRow.Index;
@@ -1197,10 +1197,10 @@ namespace OE2EmpireTracker
         /// </summary>
         private void ClearResourcesGrid()
         {
-            dgvResources.CellValidating -= dgvResources_CellValidating;
+            dgvResources.CellValidating -= DgvResources_CellValidating;
             try { dgvResources.EndEdit(); } catch { }
             dgvResources.Rows.Clear();
-            dgvResources.CellValidating += dgvResources_CellValidating;
+            dgvResources.CellValidating += DgvResources_CellValidating;
         }
 
         // -----------------------------------------------------------------------
@@ -1403,7 +1403,7 @@ namespace OE2EmpireTracker
         /// <summary>
         /// Handles pricing plan selection changes — recomputes the displayed price.
         /// </summary>
-        private void cmbPricingPlan_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbPricingPlan_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             UpdateCalculatedPrice();
@@ -1439,7 +1439,7 @@ namespace OE2EmpireTracker
             decimal mfgHours = 0m;
             if (viewModel.Data.Properties != null)
             {
-                viewModel.Data.Properties.getString(BlueprintPropertyKeys.ManufactureRunTime, null, out string mfgTimeStr);
+                viewModel.Data.Properties.GetString(BlueprintPropertyKeys.ManufactureRunTime, null, out string mfgTimeStr);
                 if (!string.IsNullOrEmpty(mfgTimeStr))
                 {
                     decimal seconds = EvolutionChainService.ParseTimeToSeconds(mfgTimeStr);
@@ -1548,11 +1548,11 @@ namespace OE2EmpireTracker
             chkGlobalBlueprint.Checked = false;
 
             // Clear grids
-            dgvStatistics.CellValidating -= dgvStatistics_CellValidating;
+            dgvStatistics.CellValidating -= DgvStatistics_CellValidating;
             try { dgvStatistics.EndEdit(); } catch { }
             dgvStatistics.Rows.Clear();
             dgvStatistics.Columns.Clear();
-            dgvStatistics.CellValidating += dgvStatistics_CellValidating;
+            dgvStatistics.CellValidating += DgvStatistics_CellValidating;
             _cachedGridKey = null;
 
             ClearResourcesGrid();
@@ -1628,7 +1628,7 @@ namespace OE2EmpireTracker
         // Layout
         // -----------------------------------------------------------------------
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             // ListView fills remaining height after the text filter and filter panel
             int usedHeight = txtFilter.Height + txtFilter.Margin.Top + txtFilter.Margin.Bottom
@@ -1644,7 +1644,7 @@ namespace OE2EmpireTracker
                 Math.Max(100, availableHeight));
         }
 
-        private void flpBlueprintData_Layout(object sender, LayoutEventArgs e)
+        private void FlpBlueprintData_Layout(object sender, LayoutEventArgs e)
         {
             // TabControl fills remaining height after identity and commands
             int usedHeight = flpIdentity.Height + flpIdentity.Margin.Top + flpIdentity.Margin.Bottom

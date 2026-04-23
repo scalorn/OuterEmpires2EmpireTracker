@@ -57,11 +57,11 @@ namespace OE2EmpireTracker.Tests.Services
             var structure = new ColonyStructure();
             structure.UUID = Guid.NewGuid().ToString();
             structure.FlatpackBlueprintUUID = blueprintUUID;
-            structure.displaySequence = gameSeq;
+            structure.DisplaySequence = gameSeq;
             if (built)
-                structure.Properties.setProperty(GameConstants.PropBuilt, true);
+                structure.Properties.SetProperty(GameConstants.PropBuilt, true);
             if (online)
-                structure.Properties.setProperty(GameConstants.PropOnline, true);
+                structure.Properties.SetProperty(GameConstants.PropOnline, true);
             return structure;
         }
 
@@ -280,7 +280,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Assert.That(row.ColonyName, Is.EqualTo(colonyName),
                     $"Iteration {iteration}: ColonyName mismatch");
 
-                // SourceName must follow "#{displaySequence} {blueprint.ExtendedName}" format
+                // SourceName must follow "#{DisplaySequence} {blueprint.ExtendedName}" format
                 Assert.That(row.SourceName, Is.EqualTo($"#{gameSeq} {bp.ExtendedName}"),
                     $"Iteration {iteration}: SourceName mismatch");
 

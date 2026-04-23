@@ -253,7 +253,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lvwSurveys.Size = new System.Drawing.Size(412, 566);
             this.lvwSurveys.TabIndex = 6;
             this.lvwSurveys.UseCompatibleStateImageBehavior = false;
-            this.lvwSurveys.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lvwSurveys_ItemSelectionChanged);
+            this.lvwSurveys.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.LvwSurveys_ItemSelectionChanged);
             // 
             // flpSurveyData
             // 
@@ -483,7 +483,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.txtFilterScannerBlueprint.TabIndex = 0;
             this.txtFilterScannerBlueprint.ValidationPattern = null;
             this.txtFilterScannerBlueprint.ValidColor = System.Drawing.Color.White;
-            this.txtFilterScannerBlueprint.TextChanged += new System.EventHandler(this.txtFilterScannerBlueprint_TextChanged);
+            this.txtFilterScannerBlueprint.TextChanged += new System.EventHandler(this.TxtFilterScannerBlueprint_TextChanged);
             // 
             // cmbScannerBlueprint
             // 
@@ -715,7 +715,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.dgvResources.Name = "dgvResources";
             this.dgvResources.Size = new System.Drawing.Size(825, 303);
             this.dgvResources.TabIndex = 9;
-            this.dgvResources.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvResources_CellValidating);
+            this.dgvResources.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.DgvResources_CellValidating);
             // 
             // Resource
             // 
@@ -763,7 +763,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.cmdNew.TabIndex = 4;
             this.cmdNew.Text = "New";
             this.cmdNew.UseVisualStyleBackColor = true;
-            this.cmdNew.Click += new System.EventHandler(this.cmdNew_Click);
+            this.cmdNew.Click += new System.EventHandler(this.CmdNew_Click);
             // 
             // btnSave
             // 
@@ -773,7 +773,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.btnSave.TabIndex = 0;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
             // 
             // cmdDelete
             // 
@@ -783,7 +783,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.cmdDelete.TabIndex = 1;
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
+            this.cmdDelete.Click += new System.EventHandler(this.CmdDelete_Click);
             // 
             // cmdImport
             // 
@@ -793,7 +793,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.cmdImport.TabIndex = 3;
             this.cmdImport.Text = "Import";
             this.cmdImport.UseVisualStyleBackColor = true;
-            this.cmdImport.Click += new System.EventHandler(this.cmdImport_Click);
+            this.cmdImport.Click += new System.EventHandler(this.CmdImport_Click);
             // 
             // FormSurvey
             // 

@@ -57,10 +57,10 @@ namespace OE2EmpireTracker.ViewModels
 
         public void ClearProperties() => _blueprint.Properties.Clear();
 
-        public void SetProperty(string key, string value) => _blueprint.Properties.setProperty(key, value);
+        public void SetProperty(string key, string value) => _blueprint.Properties.SetProperty(key, value);
 
         public bool GetProperty(string key, string defaultValue, out string value) =>
-            _blueprint.Properties.getString(key, defaultValue, out value);
+            _blueprint.Properties.GetString(key, defaultValue, out value);
 
         // -----------------------------------------------------------------------
         // Resources

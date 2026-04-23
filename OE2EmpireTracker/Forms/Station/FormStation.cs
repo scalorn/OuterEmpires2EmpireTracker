@@ -31,28 +31,28 @@ namespace OE2EmpireTracker.Forms.Station
             lvwStations.Columns.Add("Refs", 40, HorizontalAlignment.Right);
             lvwStations.FullRowSelect = true;
             lvwStations.MultiSelect = false;
-            lvwStations.ItemSelectionChanged += lvwStations_ItemSelectionChanged;
+            lvwStations.ItemSelectionChanged += LvwStations_ItemSelectionChanged;
 
-            txtFilter.TextChanged += txtFilter_TextChanged;
-            txtName.TextChanged += txtName_TextChanged;
-            cmbStationType.SelectedIndexChanged += cmbStationType_SelectedIndexChanged;
-            cmbOwnership.SelectedIndexChanged += cmbOwnership_SelectedIndexChanged;
+            txtFilter.TextChanged += TxtFilter_TextChanged;
+            txtName.TextChanged += TxtName_TextChanged;
+            cmbStationType.SelectedIndexChanged += CmbStationType_SelectedIndexChanged;
+            cmbOwnership.SelectedIndexChanged += CmbOwnership_SelectedIndexChanged;
 
-            cmdNew.Click += cmdNew_Click;
-            cmdDelete.Click += cmdDelete_Click;
-            cmdSave.Click += cmdSave_Click;
+            cmdNew.Click += CmdNew_Click;
+            cmdDelete.Click += CmdDelete_Click;
+            cmdSave.Click += CmdSave_Click;
 
-            cmdHoldAdd.Click += cmdHoldAdd_Click;
-            cmdHoldRemove.Click += cmdHoldRemove_Click;
-            cmbHoldType.SelectedIndexChanged += cmbHoldType_SelectedIndexChanged;
-            dgvHold.CellEndEdit += dgvHold_CellEndEdit;
-            dgvHold.SelectionChanged += dgvHold_SelectionChanged;
+            cmdHoldAdd.Click += CmdHoldAdd_Click;
+            cmdHoldRemove.Click += CmdHoldRemove_Click;
+            cmbHoldType.SelectedIndexChanged += CmbHoldType_SelectedIndexChanged;
+            dgvHold.CellEndEdit += DgvHold_CellEndEdit;
+            dgvHold.SelectionChanged += DgvHold_SelectionChanged;
 
-            dgvComponents.CellEndEdit += dgvComponents_CellEndEdit;
-            cmbStationBlueprint.SelectedIndexChanged += cmbStationBlueprint_SelectedIndexChanged;
+            dgvComponents.CellEndEdit += DgvComponents_CellEndEdit;
+            cmbStationBlueprint.SelectedIndexChanged += CmbStationBlueprint_SelectedIndexChanged;
 
-            cmdMunAdd.Click += cmdMunAdd_Click;
-            cmdMunRemove.Click += cmdMunRemove_Click;
+            cmdMunAdd.Click += CmdMunAdd_Click;
+            cmdMunRemove.Click += CmdMunRemove_Click;
 
             PopulateStationTypeCombo();
             PopulateOwnershipCombo();
@@ -60,15 +60,15 @@ namespace OE2EmpireTracker.Forms.Station
             PopulateStationList();
             ClearForm();
 
-            flpBase.Layout += flpBase_Layout;
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpDetail.Layout += flpDetail_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
 
         // Layout
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             int w2 = flpBase.ClientSize.Width;
             int h = flpBase.ClientSize.Height;
@@ -76,7 +76,7 @@ namespace OE2EmpireTracker.Forms.Station
             flpDetail.Size = new System.Drawing.Size(w2 - 232, h - 6);
         }
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             int w2 = flpSearchList.ClientSize.Width;
             int h = flpSearchList.ClientSize.Height;
@@ -85,7 +85,7 @@ namespace OE2EmpireTracker.Forms.Station
             lvwStations.Size = new System.Drawing.Size(w2 - 6, listHeight);
         }
 
-        private void flpDetail_Layout(object sender, LayoutEventArgs e)
+        private void FlpDetail_Layout(object sender, LayoutEventArgs e)
         {
             int w2 = flpDetail.ClientSize.Width;
             int h = flpDetail.ClientSize.Height;
@@ -127,9 +127,9 @@ namespace OE2EmpireTracker.Forms.Station
             Log.Info("PERF PopulateStationList: {0}ms items={1}", sw.ElapsedMilliseconds, stations.Count);
         }
 
-        private void txtFilter_TextChanged(object sender, EventArgs e) { PopulateStationList(); }
+        private void TxtFilter_TextChanged(object sender, EventArgs e) { PopulateStationList(); }
 
-        private void lvwStations_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwStations_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Models.Station station)
@@ -216,14 +216,14 @@ namespace OE2EmpireTracker.Forms.Station
             cmb.SelectedIndex = -1;
         }
 
-        private void cmbStationType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbStationType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedStation == null) return;
             if (cmbStationType.SelectedItem is StationType st)
                 _selectedStation.StationType = st;
         }
 
-        private void cmbOwnership_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbOwnership_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedStation == null) return;
             if (cmbOwnership.SelectedItem is StationOwnership so)
@@ -290,7 +290,7 @@ namespace OE2EmpireTracker.Forms.Station
             sw.Stop(); Log.Info("PERF PopulateHoldGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void dgvHold_SelectionChanged(object sender, EventArgs e)
+        private void DgvHold_SelectionChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (dgvHold.SelectedRows.Count == 0) { ClearHoldCrateContents(); return; }
@@ -327,7 +327,7 @@ namespace OE2EmpireTracker.Forms.Station
             dgvHoldCrateContents.Visible = false;
         }
 
-        private void dgvHold_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private void DgvHold_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedStation == null || e.RowIndex < 0) return;
             var row = dgvHold.Rows[e.RowIndex];
@@ -357,7 +357,7 @@ namespace OE2EmpireTracker.Forms.Station
             sw.Stop(); Log.Info("PERF PopulateHoldTypeCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmbHoldType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbHoldType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateHoldItemCombo();
@@ -411,7 +411,7 @@ namespace OE2EmpireTracker.Forms.Station
             }
         }
 
-        private void cmdHoldAdd_Click(object sender, EventArgs e)
+        private void CmdHoldAdd_Click(object sender, EventArgs e)
         {
             var bag = GetStationHold();
             if (bag == null || _selectedStation == null) return;
@@ -439,7 +439,7 @@ namespace OE2EmpireTracker.Forms.Station
             Log.Info("Added hold item: {0} x{1}", itemName, qty);
         }
 
-        private void cmdHoldRemove_Click(object sender, EventArgs e)
+        private void CmdHoldRemove_Click(object sender, EventArgs e)
         {
             var bag = GetStationHold();
             if (bag == null || dgvHold.SelectedRows.Count == 0) return;
@@ -512,7 +512,7 @@ namespace OE2EmpireTracker.Forms.Station
             sw.Stop(); Log.Info("PERF PopulateStationBlueprintCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmbStationBlueprint_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbStationBlueprint_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedStation == null) return;
             string uuid = cmbStationBlueprint.SelectedValue?.ToString() ?? string.Empty;
@@ -543,7 +543,7 @@ namespace OE2EmpireTracker.Forms.Station
             sw.Stop(); Log.Info("PERF RefreshStationStats: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void dgvComponents_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private void DgvComponents_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedStation == null || e.RowIndex < 0) return;
             var row = dgvComponents.Rows[e.RowIndex];
@@ -603,7 +603,7 @@ namespace OE2EmpireTracker.Forms.Station
             sw.Stop(); Log.Info("PERF PopulateMunitionsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmdMunAdd_Click(object sender, EventArgs e)
+        private void CmdMunAdd_Click(object sender, EventArgs e)
         {
             if (_selectedStation == null) return;
             string itemName = cmbMunItem.SelectedItem?.ToString() ?? string.Empty;
@@ -627,7 +627,7 @@ namespace OE2EmpireTracker.Forms.Station
             Log.Info("Added munition: {0} x{1}", itemName, qty);
         }
 
-        private void cmdMunRemove_Click(object sender, EventArgs e)
+        private void CmdMunRemove_Click(object sender, EventArgs e)
         {
             if (_selectedStation == null || dgvMunitions.SelectedRows.Count == 0) return;
             var item = dgvMunitions.SelectedRows[0].Tag as Item;
@@ -638,7 +638,7 @@ namespace OE2EmpireTracker.Forms.Station
         }
 
         // CRUD
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             var station = new Models.Station
             {
@@ -655,7 +655,7 @@ namespace OE2EmpireTracker.Forms.Station
             Log.Info("Created new station");
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (_selectedStation == null) return;
 
@@ -685,7 +685,7 @@ namespace OE2EmpireTracker.Forms.Station
             Log.Info("Deleted station");
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void CmdSave_Click(object sender, EventArgs e)
         {
             if (_selectedStation == null) return;
             string name = txtName.Text.Trim();
@@ -697,7 +697,7 @@ namespace OE2EmpireTracker.Forms.Station
             Log.Info("Saved station \"{0}\"", _selectedStation.Name);
         }
 
-        private void txtName_TextChanged(object sender, EventArgs e)
+        private void TxtName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedStation == null) return;
             _selectedStation.Name = txtName.Text;

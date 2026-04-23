@@ -14,8 +14,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class EvolutionChainServiceTests
     {
-        #region Helpers
-
         private static Bp MakeBlueprint(string uuid, string baseBlueprintUUID, int evolution)
         {
             var bp = new Bp("TestBP");
@@ -24,10 +22,6 @@ namespace OE2EmpireTracker.Tests.Services
             bp.Evolution = evolution;
             return bp;
         }
-
-        #endregion
-
-        #region Property 1: Chain resolution produces a complete, ordered ancestor list
 
         /// <summary>
         /// // Feature: evolution-graph, Property 1: Chain resolution produces a complete, ordered ancestor list
@@ -69,10 +63,10 @@ namespace OE2EmpireTracker.Tests.Services
 
                 // Build a lookup for the resolver
                 var lookup = chain.ToDictionary(bp => bp.UUID);
-                Bp resolver(string uuid) =>
+                Bp Resolver(string uuid) =>
                     lookup.TryGetValue(uuid, out var bp) ? bp : null;
 
-                var result = EvolutionChainService.ResolveChain(start, resolver);
+                var result = EvolutionChainService.ResolveChain(start, Resolver);
 
                 // Verify: result contains all chain members
                 bool containsAll = chain.All(bp =>
@@ -105,10 +99,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label("Result contains the start blueprint");
             });
         }
-
-        #endregion
-
-        #region Property 2: Graph data contains only numeric properties from the BlueprintType
 
         // Known numeric property names (Integer, Decimal, Time) from BlueprintPropertyValidation
         private static readonly string[] KnownNumericProperties = new[]
@@ -180,27 +170,27 @@ namespace OE2EmpireTracker.Tests.Services
                                     propType == PropertyValueType.Decimal)
                                 {
                                     // Use different values per evolution to ensure change
-                                    bp.Properties.setProperty(propName, (decimal)(values[i].Value + i * 10));
+                                    bp.Properties.SetProperty(propName, (decimal)(values[i].Value + i * 10));
                                 }
                                 else if (propType == PropertyValueType.Time)
                                 {
                                     int secs = values[i].Value + i * 60;
-                                    bp.Properties.setProperty(propName, $"{secs}s");
+                                    bp.Properties.SetProperty(propName, $"{secs}s");
                                 }
 
                                 // Non-numeric properties: set string values (should be filtered out)
                                 else if (propType == PropertyValueType.CheckBox ||
                                          propType == PropertyValueType.Boolean)
                                 {
-                                    bp.Properties.setProperty(propName, "true");
+                                    bp.Properties.SetProperty(propName, "true");
                                 }
                                 else if (propType == PropertyValueType.ComboBox)
                                 {
-                                    bp.Properties.setProperty(propName, "SomeValue");
+                                    bp.Properties.SetProperty(propName, "SomeValue");
                                 }
                                 else
                                 {
-                                    bp.Properties.setProperty(propName, "FreeFormText");
+                                    bp.Properties.SetProperty(propName, "FreeFormText");
                                 }
                             }
 
@@ -248,10 +238,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label("No non-numeric properties appear in Series");
             });
         }
-
-        #endregion
-
-        #region Property 3: Unchanged properties are excluded and NoChanges flag is correct
 
         // A small set of known numeric property names for controlled generation
         private static readonly string[] IntegerProps = new[] { "Accuracy", "Mass", "Health", "Shield Hitpoints" };
@@ -302,9 +288,9 @@ namespace OE2EmpireTracker.Tests.Services
                                         {
                                             var propType = BlueprintPropertyValidation.GetPropertyType(propName);
                                             if (propType == PropertyValueType.Time)
-                                                bp.Properties.setProperty(propName, $"{baseVal}s");
+                                                bp.Properties.SetProperty(propName, $"{baseVal}s");
                                             else
-                                                bp.Properties.setProperty(propName, (decimal)baseVal);
+                                                bp.Properties.SetProperty(propName, (decimal)baseVal);
                                         }
 
                                         foreach (var propName in changedProps)
@@ -313,9 +299,9 @@ namespace OE2EmpireTracker.Tests.Services
                                             int val = baseVal + delta * i;
                                             var propType = BlueprintPropertyValidation.GetPropertyType(propName);
                                             if (propType == PropertyValueType.Time)
-                                                bp.Properties.setProperty(propName, $"{val}s");
+                                                bp.Properties.SetProperty(propName, $"{val}s");
                                             else
-                                                bp.Properties.setProperty(propName, (decimal)val);
+                                                bp.Properties.SetProperty(propName, (decimal)val);
                                         }
 
                                         chain.Add(bp);
@@ -328,7 +314,6 @@ namespace OE2EmpireTracker.Tests.Services
                                         UnchangedProps = unchangedProps,
                                         ChangedProps = changedProps
                                     };
-
                                 })
                            );
                         });
@@ -367,10 +352,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"Changed properties present in Series (changed={string.Join(", ", testData.ChangedProps)})");
             });
         }
-
-        #endregion
-
-        #region Property 4: Percentage normalization formula
 
         /// <summary>
         /// // Feature: evolution-graph, Property 4: Percentage normalization formula
@@ -413,7 +394,7 @@ namespace OE2EmpireTracker.Tests.Services
                                 // Ev0 gets ev0Val, subsequent evolutions get ev0Val + delta * i
                                 // This ensures non-zero Ev0 and values that change
                                 decimal val = ev0Val + delta * i;
-                                bp.Properties.setProperty(propName, val);
+                                bp.Properties.SetProperty(propName, val);
                                 rawValues[propName][i] = val;
                             }
 
@@ -427,7 +408,6 @@ namespace OE2EmpireTracker.Tests.Services
                             RawValues = rawValues,
                             ChainLen = chainLen
                         };
-
                     })
                );
             });
@@ -505,10 +485,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        #endregion
-
-        #region Unit Tests: Edge Cases
-
         /// <summary>
         /// Ev0 blueprint with no base -- ResolveChain returns a single-element list.
         /// **Validates: Requirements 1.3**
@@ -517,9 +493,9 @@ namespace OE2EmpireTracker.Tests.Services
         public void ResolveChain_Ev0WithNoBase_ReturnsSingleElement()
         {
             var bp = MakeBlueprint("bp-0", null, 0);
-            Bp resolver(string uuid) => null;
+            Bp Resolver(string uuid) => null;
 
-            var result = EvolutionChainService.ResolveChain(bp, resolver);
+            var result = EvolutionChainService.ResolveChain(bp, Resolver);
 
             Assert.That(result, Has.Count.EqualTo(1));
             Assert.That(result[0].UUID, Is.EqualTo("bp-0"));
@@ -544,11 +520,11 @@ namespace OE2EmpireTracker.Tests.Services
                 { "bp-2", ev2 }
             };
 
-            Bp resolver(string uuid) =>
+            Bp Resolver(string uuid) =>
                 lookup.TryGetValue(uuid, out var bp) ? bp : null;
 
             // Start from Ev2 -- walks to Ev1, then tries bp-0 which is missing
-            var result = EvolutionChainService.ResolveChain(ev2, resolver);
+            var result = EvolutionChainService.ResolveChain(ev2, Resolver);
 
             Assert.That(result, Has.Count.EqualTo(2));
             Assert.That(result[0].UUID, Is.EqualTo("bp-1"));
@@ -572,10 +548,10 @@ namespace OE2EmpireTracker.Tests.Services
                 { "bp-B", bpB }
             };
 
-            Bp resolver(string uuid) =>
+            Bp Resolver(string uuid) =>
                 lookup.TryGetValue(uuid, out var bp) ? bp : null;
 
-            var result = EvolutionChainService.ResolveChain(bpA, resolver);
+            var result = EvolutionChainService.ResolveChain(bpA, Resolver);
 
             Assert.That(result, Has.Count.LessThanOrEqualTo(2));
         }
@@ -588,10 +564,10 @@ namespace OE2EmpireTracker.Tests.Services
         public void BuildGraphData_ZeroEv0Value_ExcludesProperty()
         {
             var ev0 = MakeBlueprint("bp-0", null, 0);
-            ev0.Properties.setProperty("Accuracy", 0.0m);
+            ev0.Properties.SetProperty("Accuracy", 0.0m);
 
             var ev1 = MakeBlueprint("bp-1", "bp-0", 1);
-            ev1.Properties.setProperty("Accuracy", 100.0m);
+            ev1.Properties.SetProperty("Accuracy", 100.0m);
 
             var chain = new List<Bp> { ev0, ev1 };
             var props = new[] { "Accuracy" };
@@ -621,13 +597,13 @@ namespace OE2EmpireTracker.Tests.Services
         public void BuildGraphData_AllUnchanged_NoChangesTrue_SeriesEmpty()
         {
             var ev0 = MakeBlueprint("bp-0", null, 0);
-            ev0.Properties.setProperty("Accuracy", 50.0m);
+            ev0.Properties.SetProperty("Accuracy", 50.0m);
 
             var ev1 = MakeBlueprint("bp-1", "bp-0", 1);
-            ev1.Properties.setProperty("Accuracy", 50.0m);
+            ev1.Properties.SetProperty("Accuracy", 50.0m);
 
             var ev2 = MakeBlueprint("bp-2", "bp-1", 2);
-            ev2.Properties.setProperty("Accuracy", 50.0m);
+            ev2.Properties.SetProperty("Accuracy", 50.0m);
 
             var chain = new List<Bp> { ev0, ev1, ev2 };
             var props = new[] { "Accuracy" };
@@ -637,7 +613,5 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result.NoChanges, Is.True);
             Assert.That(result.Series, Is.Empty);
         }
-
-        #endregion
     }
 }

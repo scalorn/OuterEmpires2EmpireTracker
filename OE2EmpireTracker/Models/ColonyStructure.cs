@@ -9,16 +9,19 @@ namespace OE2EmpireTracker.Models
     {
         public string UUID { get; set; } = null;
         public string FlatpackBlueprintUUID { get; set; } = null;
-        public int displaySequence { get; set; } = 0;
+        [JsonProperty("displaySequence")]
+        public int DisplaySequence { get; set; } = 0;
 
         /// <summary>
-        /// Backward-compat: reads old "gameSequence" JSON key into displaySequence.
+        /// Backward-compat: reads old "gameSequence" JSON key into DisplaySequence.
         /// Write-only; new saves serialize as "displaySequence".
         /// </summary>
         [JsonProperty("gameSequence")]
-        private int gameSequenceLegacy { set { displaySequence = value; } }
-        public int buildingID { get; set; } = 0;
-        public int buildQueueSequence { get; set; } = 0;
+        private int GameSequenceLegacy { set { DisplaySequence = value; } }
+        [JsonProperty("buildingID")]
+        public int BuildingID { get; set; } = 0;
+        [JsonProperty("buildQueueSequence")]
+        public int BuildQueueSequence { get; set; } = 0;
         public PropertyBag Properties { get; set; }
         public PropertyBag AssignedWorkers { get; set; }
         public CountDownTime BuildCompletionTime { get; set; } = null;
@@ -26,7 +29,7 @@ namespace OE2EmpireTracker.Models
 
         public string MiningSurvey { get; set; } = null;
         public string MiningSurveyResource { get; set; } = null;
-        public Decimal MiningLeftOvers { get; set; } = Decimal.Zero;
+        public decimal MiningLeftOvers { get; set; } = decimal.Zero;
 
         public string RefiningResource { get; set; } = null;
         public string RefiningResourcePurity { get; set; } = null;
@@ -49,7 +52,7 @@ namespace OE2EmpireTracker.Models
         [JsonIgnore]
         public StructureStatusDelta StatusDelta { get; set; }
 
-        DateTime completion { get; set; }
+        DateTime Completion { get; set; }
         public string CurrentAttitude { get; set; } = string.Empty;
         public int ContentmentIndex { get; set; }
 
@@ -71,10 +74,10 @@ namespace OE2EmpireTracker.Models
             get
             {
                 bool built;
-                Properties.getBoolean(GameConstants.PropBuilt, false, out built);
+                Properties.GetBoolean(GameConstants.PropBuilt, false, out built);
                 if (!built) return false;
                 bool online;
-                Properties.getBoolean(GameConstants.PropOnline, false, out online);
+                Properties.GetBoolean(GameConstants.PropOnline, false, out online);
                 return online;
             }
         }

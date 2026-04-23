@@ -13,13 +13,13 @@ namespace OE2EmpireTracker.Controls
     /// </summary>
     public class FilteredTextComboSet : UserControl
     {
-        protected TextBox txtFilter;
-        protected ComboBox cmbItems;
+        protected TextBox TxtFilter { get; set; }
+        protected ComboBox CmbItems { get; set; }
         private List<string> _fullItems = new List<string>();
         private List<int> _filteredIndexMap = new List<int>();
         private bool _suppressFilterEvent;
-        protected bool _suppressSelectionEvent;
-        protected bool _isEditing;
+        protected bool SuppressSelectionEvent { get; set; }
+        protected bool IsEditing { get; set; }
 
         /// <summary>
         /// Fires when the user selects an item in the combo box.
@@ -29,7 +29,7 @@ namespace OE2EmpireTracker.Controls
         /// <summary>
         /// Gets the currently selected item string, or null if nothing is selected.
         /// </summary>
-        public string SelectedItem => cmbItems.SelectedItem?.ToString();
+        public string SelectedItem => CmbItems.SelectedItem?.ToString();
 
         /// <summary>
         /// Gets the index of the selected item in the full (unfiltered) item list,
@@ -39,9 +39,9 @@ namespace OE2EmpireTracker.Controls
         {
             get
             {
-                if (cmbItems.SelectedIndex < 0 || cmbItems.SelectedIndex >= _filteredIndexMap.Count)
+                if (CmbItems.SelectedIndex < 0 || CmbItems.SelectedIndex >= _filteredIndexMap.Count)
                     return -1;
-                return _filteredIndexMap[cmbItems.SelectedIndex];
+                return _filteredIndexMap[CmbItems.SelectedIndex];
             }
         }
 
@@ -52,56 +52,56 @@ namespace OE2EmpireTracker.Controls
 
         public FilteredTextComboSet()
         {
-            txtFilter = new TextBox { Dock = DockStyle.None, BorderStyle = BorderStyle.FixedSingle };
-            cmbItems = new ComboBox { Dock = DockStyle.None, DropDownStyle = ComboBoxStyle.DropDownList, FlatStyle = FlatStyle.Flat };
+            TxtFilter = new TextBox { Dock = DockStyle.None, BorderStyle = BorderStyle.FixedSingle };
+            CmbItems = new ComboBox { Dock = DockStyle.None, DropDownStyle = ComboBoxStyle.DropDownList, FlatStyle = FlatStyle.Flat };
             BorderStyle = BorderStyle.FixedSingle;
 
-            Controls.Add(txtFilter);
-            Controls.Add(cmbItems);
+            Controls.Add(TxtFilter);
+            Controls.Add(CmbItems);
 
-            txtFilter.TextChanged += TxtFilter_TextChanged;
-            cmbItems.SelectedIndexChanged += CmbItems_SelectedIndexChanged;
+            TxtFilter.TextChanged += TxtFilter_TextChanged;
+            CmbItems.SelectedIndexChanged += CmbItems_SelectedIndexChanged;
 
-            txtFilter.Enter += (s, ev) => EnterEditMode();
-            cmbItems.Enter += (s, ev) => EnterEditMode();
-            txtFilter.Leave += (s, ev) => BeginInvoke(new Action(CheckLeaveEditMode));
-            cmbItems.Leave += (s, ev) => BeginInvoke(new Action(CheckLeaveEditMode));
+            TxtFilter.Enter += (s, ev) => EnterEditMode();
+            CmbItems.Enter += (s, ev) => EnterEditMode();
+            TxtFilter.Leave += (s, ev) => BeginInvoke(new Action(CheckLeaveEditMode));
+            CmbItems.Leave += (s, ev) => BeginInvoke(new Action(CheckLeaveEditMode));
 
             // Start in display mode — combo full-width, filter hidden
-            txtFilter.Visible = false;
+            TxtFilter.Visible = false;
         }
 
         private void EnterEditMode()
         {
-            if (_isEditing) return;
-            _isEditing = true;
-            txtFilter.Visible = true;
+            if (IsEditing) return;
+            IsEditing = true;
+            TxtFilter.Visible = true;
             PerformLayout();
             ResetFilter();
-            txtFilter.Focus();
+            TxtFilter.Focus();
         }
 
         private void CheckLeaveEditMode()
         {
             if (IsDisposed) return;
-            if (txtFilter.Focused || cmbItems.Focused) return;
-            _isEditing = false;
-            txtFilter.Visible = false;
+            if (TxtFilter.Focused || CmbItems.Focused) return;
+            IsEditing = false;
+            TxtFilter.Visible = false;
             PerformLayout();
         }
 
         protected override void OnLayout(LayoutEventArgs e)
         {
             base.OnLayout(e);
-            if (_isEditing)
+            if (IsEditing)
             {
                 int filterWidth = (int)(Width * 0.35);
-                txtFilter.SetBounds(0, 0, filterWidth, Height);
-                cmbItems.SetBounds(filterWidth, 0, Width - filterWidth, Height);
+                TxtFilter.SetBounds(0, 0, filterWidth, Height);
+                CmbItems.SetBounds(filterWidth, 0, Width - filterWidth, Height);
             }
             else
             {
-                cmbItems.SetBounds(0, 0, Width, Height);
+                CmbItems.SetBounds(0, 0, Width, Height);
             }
         }
 
@@ -112,17 +112,17 @@ namespace OE2EmpireTracker.Controls
         {
             _fullItems = items ?? new List<string>();
             _suppressFilterEvent = true;
-            _suppressSelectionEvent = true;
-            txtFilter.Text = string.Empty;
+            SuppressSelectionEvent = true;
+            TxtFilter.Text = string.Empty;
             _suppressFilterEvent = false;
             RebuildFilteredList();
             if (!string.IsNullOrEmpty(currentValue))
             {
-                int idx = cmbItems.Items.IndexOf(currentValue);
-                if (idx >= 0) cmbItems.SelectedIndex = idx;
+                int idx = CmbItems.Items.IndexOf(currentValue);
+                if (idx >= 0) CmbItems.SelectedIndex = idx;
             }
 
-            _suppressSelectionEvent = false;
+            SuppressSelectionEvent = false;
         }
 
         /// <summary>
@@ -150,16 +150,16 @@ namespace OE2EmpireTracker.Controls
 
         protected void RebuildFilteredList()
         {
-            var (filtered, indexMap) = ApplyFilter(_fullItems, txtFilter.Text);
+            var (filtered, indexMap) = ApplyFilter(_fullItems, TxtFilter.Text);
             _filteredIndexMap = indexMap;
-            _suppressSelectionEvent = true;
-            cmbItems.Items.Clear();
+            SuppressSelectionEvent = true;
+            CmbItems.Items.Clear();
             foreach (var item in filtered)
-                cmbItems.Items.Add(item);
-            _suppressSelectionEvent = false;
-            if (filtered.Count > 0 && !string.IsNullOrEmpty(txtFilter.Text))
+                CmbItems.Items.Add(item);
+            SuppressSelectionEvent = false;
+            if (filtered.Count > 0 && !string.IsNullOrEmpty(TxtFilter.Text))
             {
-                try { cmbItems.DroppedDown = true; } catch { }
+                try { CmbItems.DroppedDown = true; } catch { }
             }
         }
 
@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Controls
 
         private void CmbItems_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_suppressSelectionEvent) return;
+            if (SuppressSelectionEvent) return;
             OnSelectedItemChanged();
         }
 
@@ -185,19 +185,19 @@ namespace OE2EmpireTracker.Controls
         /// </summary>
         public void ResetFilter()
         {
-            string currentValue = cmbItems.SelectedItem?.ToString();
+            string currentValue = CmbItems.SelectedItem?.ToString();
             _suppressFilterEvent = true;
-            _suppressSelectionEvent = true;
-            txtFilter.Text = string.Empty;
+            SuppressSelectionEvent = true;
+            TxtFilter.Text = string.Empty;
             _suppressFilterEvent = false;
             RebuildFilteredList();
             if (!string.IsNullOrEmpty(currentValue))
             {
-                int idx = cmbItems.Items.IndexOf(currentValue);
-                if (idx >= 0) cmbItems.SelectedIndex = idx;
+                int idx = CmbItems.Items.IndexOf(currentValue);
+                if (idx >= 0) CmbItems.SelectedIndex = idx;
             }
 
-            _suppressSelectionEvent = false;
+            SuppressSelectionEvent = false;
         }
 
         /// <summary>
@@ -205,10 +205,10 @@ namespace OE2EmpireTracker.Controls
         /// </summary>
         public void ApplyStyle(Font font, Color foreColor)
         {
-            txtFilter.Font = font;
-            txtFilter.ForeColor = foreColor;
-            cmbItems.Font = font;
-            cmbItems.ForeColor = foreColor;
+            TxtFilter.Font = font;
+            TxtFilter.ForeColor = foreColor;
+            CmbItems.Font = font;
+            CmbItems.ForeColor = foreColor;
         }
     }
 }

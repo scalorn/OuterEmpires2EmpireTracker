@@ -23,7 +23,7 @@ namespace OE2EmpireTracker.Models
                 GameConstants.PropSpecialistDetail, GameConstants.PropUnassignedSpecialistDetail),
         };
 
-        private static readonly List<WorkerDetail> _workerDetails = getWorkerDetails();
+        private static readonly List<WorkerDetail> _workerDetails = GetWorkerDetails();
         private static readonly Dictionary<string, WorkerDetail> _workerDetailMapByID;
         private static readonly Dictionary<string, WorkerDetail> _workerDetailMapByName;
 
@@ -46,7 +46,7 @@ namespace OE2EmpireTracker.Models
         {
         }
 
-        private static List<WorkerDetail> getWorkerDetails()
+        private static List<WorkerDetail> GetWorkerDetails()
         {
             return new List<WorkerDetail>
             {

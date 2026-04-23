@@ -65,8 +65,6 @@ namespace OE2EmpireTracker.Tests.Forms
             return path;
         }
 
-        #region Helpers -- Random Data Generation
-
         private static string RandomString(Random rng, int maxLen = 12)
         {
             int len = rng.Next(1, maxLen + 1);
@@ -222,10 +220,6 @@ namespace OE2EmpireTracker.Tests.Forms
             return filePath;
         }
 
-        #endregion
-
-        #region Task 8.1 -- Property 1: New resets all state
-
         // Feature: main-menu-overhaul, Property 1: New resets all state
         // **Validates: Requirements 1.1, 1.3**
         [Test]
@@ -271,10 +265,6 @@ namespace OE2EmpireTracker.Tests.Forms
                 EmpireContext.Reset();
             }
         }
-
-        #endregion
-
-        #region Task 8.2 -- Property 2: Save/load round-trip
 
         // Feature: main-menu-overhaul, Property 2: Save/load round-trip
         // **Validates: Requirements 2.2, 3.1, 4.2**
@@ -343,10 +333,6 @@ namespace OE2EmpireTracker.Tests.Forms
                 EmpireContext.Reset();
             }
         }
-
-        #endregion
-
-        #region Task 8.3 -- Property 3: Invalid file preserves state
 
         // Feature: main-menu-overhaul, Property 3: Invalid file preserves state
         // **Validates: Requirements 2.5**
@@ -428,10 +414,6 @@ namespace OE2EmpireTracker.Tests.Forms
             }
         }
 
-        #endregion
-
-        #region Task 8.4 -- Property 4: Auto-open round-trip
-
         // Feature: main-menu-overhaul, Property 4: Auto-open round-trip
         // **Validates: Requirements 6.1, 6.2**
         [Test]
@@ -484,10 +466,6 @@ namespace OE2EmpireTracker.Tests.Forms
             }
         }
 
-        #endregion
-
-        #region Task 8.5 -- Property 5: Manage menu alphabetical ordering
-
         // Feature: main-menu-overhaul, Property 5: Manage menu alphabetical ordering
         // **Validates: Requirements 7.5**
         [Test]
@@ -529,10 +507,6 @@ namespace OE2EmpireTracker.Tests.Forms
                     $"Iteration {iteration}: sorted labels should match expected alphabetical order");
             }
         }
-
-        #endregion
-
-        #region Task 8.6 -- Unit tests for menu structure and UI behavior
 
         // --- File menu item order: New, Open, Save, Save As, separator, Exit (Req 9.1) ---
         [Test]
@@ -708,7 +682,5 @@ namespace OE2EmpireTracker.Tests.Forms
             Assert.That(clearedPath, Is.EqualTo(string.Empty),
                 "When stored file doesn't exist, LastOpenedPath should be cleared to empty");
         }
-
-        #endregion
     }
 }

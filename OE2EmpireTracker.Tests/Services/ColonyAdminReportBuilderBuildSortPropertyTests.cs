@@ -74,9 +74,9 @@ namespace OE2EmpireTracker.Tests.Services
                     var s = new ColonyStructure();
                     s.UUID = Guid.NewGuid().ToString();
                     s.FlatpackBlueprintUUID = bp.UUID;
-                    s.displaySequence = i + 1;
-                    s.Properties.setProperty(GameConstants.PropBuilt, true);
-                    s.Properties.setProperty(GameConstants.PropOnline, true);
+                    s.DisplaySequence = i + 1;
+                    s.Properties.SetProperty(GameConstants.PropBuilt, true);
+                    s.Properties.SetProperty(GameConstants.PropOnline, true);
                     s.BuildCompletionTime = new CountDownTime();
                     s.BuildCompletionTime.TimeRemaining = data.Seconds[i];
                     colony.Structures.Add(s);

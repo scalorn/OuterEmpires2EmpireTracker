@@ -20,8 +20,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     [TestFixture]
     public class Migration003PropertyTests
     {
-        #region Migration conversion logic (inline replica)
-
         /// <summary>
         /// Replicates the conversion logic from Migration003 without requiring singletons.
         /// </summary>
@@ -42,10 +40,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             // Unparseable or null/empty -- replace with now
             return SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
         }
-
-        #endregion
-
-        #region Generators
 
         private static readonly string[] Months =
             { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
@@ -105,10 +99,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                    select dt.ToString(fmt, CultureInfo.InvariantCulture);
         }
 
-        #endregion
-
-        #region Property 7: Migration is idempotent on ISO values
-
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 7: Migration is idempotent on ISO values.
         /// For any valid ISO-format string, running the migration conversion logic
@@ -126,10 +116,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     .Label($"ISO value changed: input='{isoStr}', output='{result}'");
             });
         }
-
-        #endregion
-
-        #region Property 8: Migration produces valid ISO for unparseable input
 
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 8: Migration produces valid ISO for unparseable input.
@@ -160,10 +146,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             });
         }
 
-        #endregion
-
-        #region Property 9: Migration common-format fallback produces valid ISO
-
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 9: Migration common-format fallback produces valid ISO.
         /// For any DateTime value formatted using a standard .NET format string (e.g. "G", "s", "u", "o"),
@@ -188,7 +170,5 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     .Label($"Migration did not produce valid ISO from common format: input='{formatted}', output='{result}'");
             });
         }
-
-        #endregion
     }
 }

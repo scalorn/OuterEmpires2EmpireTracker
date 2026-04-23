@@ -209,7 +209,7 @@ namespace OE2EmpireTracker.Services
                 {
                     string existingValue;
                     if (target.Properties != null
-                        && target.Properties.getString(protectedKey, null, out existingValue)
+                        && target.Properties.GetString(protectedKey, null, out existingValue)
                         && existingValue != null)
                     {
                         preservedProps[protectedKey] = existingValue;
@@ -227,14 +227,14 @@ namespace OE2EmpireTracker.Services
                     if (!ProtectedProperties.Contains(kvp.Key)
                         || !preservedProps.ContainsKey(kvp.Key))
                     {
-                        target.Properties.setProperty(kvp.Key, kvp.Value);
+                        target.Properties.SetProperty(kvp.Key, kvp.Value);
                     }
                 }
 
                 // Restore protected properties that existed before
                 foreach (var kvp in preservedProps)
                 {
-                    target.Properties.setProperty(kvp.Key, kvp.Value);
+                    target.Properties.SetProperty(kvp.Key, kvp.Value);
                 }
             }
 
@@ -261,12 +261,12 @@ namespace OE2EmpireTracker.Services
                 {
                     if (!ProtectedProperties.Contains(kvp.Key))
                     {
-                        existing.Properties.setProperty(kvp.Key, kvp.Value);
+                        existing.Properties.SetProperty(kvp.Key, kvp.Value);
                     }
                     else if (!existing.Properties.ContainsKey(kvp.Key))
                     {
                         // Protected property, but existing doesn't have it yet — write it
-                        existing.Properties.setProperty(kvp.Key, kvp.Value);
+                        existing.Properties.SetProperty(kvp.Key, kvp.Value);
                     }
                 }
             }

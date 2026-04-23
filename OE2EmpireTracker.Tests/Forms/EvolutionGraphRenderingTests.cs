@@ -13,8 +13,6 @@ namespace OE2EmpireTracker.Tests.Forms
     [TestFixture]
     public class EvolutionGraphRenderingTests
     {
-        #region Property 5: Segment dash style matches evolution gap classification
-
         /// <summary>
         /// // Feature: evolution-graph, Property 5: Segment dash style matches evolution gap classification
         /// Generate chains with gaps (non-consecutive evolution levels); build segments
@@ -95,10 +93,6 @@ namespace OE2EmpireTracker.Tests.Forms
             });
         }
 
-        #endregion
-
-        #region Property 6: Distinct color assignment per property
-
         /// <summary>
         /// // Feature: evolution-graph, Property 6: Distinct color assignment per property
         /// Generate random property name lists of size 1--16; verify all assigned colors
@@ -139,7 +133,5 @@ namespace OE2EmpireTracker.Tests.Forms
                     .Label($"All colors distinct: expected {propertyNames.Length} distinct, got {assignedColors.Distinct().Count()}");
             });
         }
-
-        #endregion
     }
 }

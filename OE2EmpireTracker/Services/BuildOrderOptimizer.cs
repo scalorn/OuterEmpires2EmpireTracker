@@ -25,10 +25,10 @@ namespace OE2EmpireTracker.Services
         {
             if (blueprint == null) return false;
             decimal val;
-            if (blueprint.Properties.getDecimal(GameConstants.PropPowerProvided, 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDecimal(GameConstants.PropHabitationProvision, 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDecimal(GameConstants.PropFoodProvision, 0, out val) && val > 0) return true;
-            if (blueprint.Properties.getDecimal(GameConstants.PropEntertainmentProvided, 0, out val) && val > 0) return true;
+            if (blueprint.Properties.GetDecimal(GameConstants.PropPowerProvided, 0, out val) && val > 0) return true;
+            if (blueprint.Properties.GetDecimal(GameConstants.PropHabitationProvision, 0, out val) && val > 0) return true;
+            if (blueprint.Properties.GetDecimal(GameConstants.PropFoodProvision, 0, out val) && val > 0) return true;
+            if (blueprint.Properties.GetDecimal(GameConstants.PropEntertainmentProvided, 0, out val) && val > 0) return true;
             return false;
         }
 
@@ -290,7 +290,7 @@ namespace OE2EmpireTracker.Services
                 Blueprint bp = _playerContext.FindBlueprint(candidate.FlatpackBlueprintUUID);
                 if (bp == null) continue;
                 decimal val;
-                if (bp.Properties.getDecimal(provisionProperty, 0, out val) && val > 0)
+                if (bp.Properties.GetDecimal(provisionProperty, 0, out val) && val > 0)
                 {
                     pool.Remove(candidate);
                     return candidate;
@@ -327,7 +327,7 @@ namespace OE2EmpireTracker.Services
 
                 // Respect MaxPerColony limit
                 long maxPerColony = 0;
-                bp.Properties.getLong(GameConstants.PropMaxPerColony, 0, out maxPerColony);
+                bp.Properties.GetLong(GameConstants.PropMaxPerColony, 0, out maxPerColony);
                 if (maxPerColony > 0)
                 {
                     int currentCount = currentResult.Count(s => s.FlatpackBlueprintUUID == bp.UUID);
@@ -335,7 +335,7 @@ namespace OE2EmpireTracker.Services
                 }
 
                 decimal val;
-                if (bp.Properties.getDecimal(provisionProperty, 0, out val) && val > 0)
+                if (bp.Properties.GetDecimal(provisionProperty, 0, out val) && val > 0)
                 {
                     Log.Info("  Created support: {0} (provides {1}={2})", bp.ExtendedName, provisionProperty, val);
                     return new ColonyStructure

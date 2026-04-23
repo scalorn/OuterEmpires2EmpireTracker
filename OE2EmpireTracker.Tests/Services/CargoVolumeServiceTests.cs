@@ -20,9 +20,9 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             if (cargoVolumeSize > 0)
-                bp.Properties.setProperty("Cargo Volume Size", cargoVolumeSize);
+                bp.Properties.SetProperty("Cargo Volume Size", cargoVolumeSize);
             if (mass > 0)
-                bp.Properties.setProperty("Mass", mass);
+                bp.Properties.SetProperty("Mass", mass);
             return bp;
         }
 

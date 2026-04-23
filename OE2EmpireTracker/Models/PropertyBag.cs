@@ -27,7 +27,7 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public bool getDecimal(string name, decimal defaultValue, out decimal value)
+        public bool GetDecimal(string name, decimal defaultValue, out decimal value)
         {
             lock (_syncRoot)
             {
@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Models
                 bool ret = Properties.TryGetValue(name, out valueStr);
                 if (ret)
                 {
-                    ret = Decimal.TryParse(valueStr, out value);
+                    ret = decimal.TryParse(valueStr, out value);
                 }
 
                 if (!ret)
@@ -48,7 +48,7 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public bool getLong(string name, long defaultValue, out long value)
+        public bool GetLong(string name, long defaultValue, out long value)
         {
             lock (_syncRoot)
             {
@@ -64,7 +64,7 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public bool getBoolean(string name, bool defaultValue, out bool value)
+        public bool GetBoolean(string name, bool defaultValue, out bool value)
         {
             lock (_syncRoot)
             {
@@ -80,7 +80,7 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public bool getString(string name, string defaultValue, out string value)
+        public bool GetString(string name, string defaultValue, out string value)
         {
             lock (_syncRoot)
             {
@@ -95,23 +95,23 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public bool setProperty(string name, decimal value)
+        public bool SetProperty(string name, decimal value)
         {
             lock (_syncRoot)
             {
-                return setProperty_Internal(name, string.Empty + value);
+                return SetProperty_Internal(name, string.Empty + value);
             }
         }
 
-        public bool setProperty(string name, bool value)
+        public bool SetProperty(string name, bool value)
         {
             lock (_syncRoot)
             {
-                return setProperty_Internal(name, string.Empty + value);
+                return SetProperty_Internal(name, string.Empty + value);
             }
         }
 
-        public bool setProperty(string name, string value)
+        public bool SetProperty(string name, string value)
         {
             lock (_syncRoot)
             {
@@ -120,7 +120,7 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        private bool setProperty_Internal(string name, string value)
+        private bool SetProperty_Internal(string name, string value)
         {
             Properties[name] = value;
             return true;
@@ -142,7 +142,7 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public int Count 
+        public int Count
         {
             get
             {
@@ -203,7 +203,6 @@ namespace OE2EmpireTracker.Models
                     value = reader.Value as string;
                     bag.Properties.Add(name, value);
                 }
-
             } while (token != JsonToken.EndObject);
 
             return bag;

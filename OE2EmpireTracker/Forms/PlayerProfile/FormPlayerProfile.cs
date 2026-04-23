@@ -50,31 +50,31 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             SkillGroups[SkillGroupName.Surveyor]         = chkSurveyor;
             SkillGroups[SkillGroupName.Trader]           = chkTrader;
 
-            configureSkillBlockOnce(chkColonyDirector, pskHumanResources, SkillName.HumanResources);
-            configureSkillBlockOnce(chkColonyDirector, pskForeman, SkillName.Foreman);
-            configureSkillBlockOnce(chkColonyFounder, pskFounder, SkillName.Founder);
-            configureSkillBlockOnce(chkColonyFounder, pskEnergyEfficiency, SkillName.EnergyEfficiency);
-            configureSkillBlockOnce(chkColonyFounder, pskBuilder, SkillName.Builder);
-            configureSkillBlockOnce(chkColonyOperations, pskRefiningFocus, SkillName.RefiningFocus);
-            configureSkillBlockOnce(chkColonyOperations, pskProductionFocus, SkillName.ProductionFocus);
-            configureSkillBlockOnce(chkColonyOperations, pskExtractionFocus, SkillName.ExtractionFocus);
-            configureSkillBlockOnce(chkCommander, pskDamageControl, SkillName.DamageControl);
-            configureSkillBlockOnce(chkEngineer, pskEngineeringCapacity, SkillName.EngineeringCapacity);
-            configureSkillBlockOnce(chkEntrepeneur, pskSoundAsAPound, SkillName.SoundsAsAPound);
-            configureSkillBlockOnce(chkEntrepeneur, pskSelfMadeMillionaire, SkillName.SelfMadeMillionaire);
-            configureSkillBlockOnce(chkEntrepeneur, pskAAAHealthcare, SkillName.AAAHealthcare);
-            configureSkillBlockOnce(chkJobManagement, pskJobOpportunities, SkillName.JobOpportunities);
-            configureSkillBlockOnce(chkJobManagement, pskContractManagement, SkillName.ContractManagement);
-            configureSkillBlockOnce(chkResearcher, pskResearchReview, SkillName.ResearchReview);
-            configureSkillBlockOnce(chkResearcher, pskResearchMethods, SkillName.ResearchMethods);
-            configureSkillBlockOnce(chkResearcher, pskResearchFocus, SkillName.ResearchFocus);
-            configureSkillBlockOnce(chkSurveyor, pskSurveyingMethods, SkillName.SurveyingMethods);
-            configureSkillBlockOnce(chkSurveyor, pskScanningMethods, SkillName.ScanningMethods);
-            configureSkillBlockOnce(chkSurveyor, pskQuartermaster, SkillName.Quartermaster);
-            configureSkillBlockOnce(chkTrader, pskBroker, SkillName.Broker);
+            ConfigureSkillBlockOnce(chkColonyDirector, pskHumanResources, SkillName.HumanResources);
+            ConfigureSkillBlockOnce(chkColonyDirector, pskForeman, SkillName.Foreman);
+            ConfigureSkillBlockOnce(chkColonyFounder, pskFounder, SkillName.Founder);
+            ConfigureSkillBlockOnce(chkColonyFounder, pskEnergyEfficiency, SkillName.EnergyEfficiency);
+            ConfigureSkillBlockOnce(chkColonyFounder, pskBuilder, SkillName.Builder);
+            ConfigureSkillBlockOnce(chkColonyOperations, pskRefiningFocus, SkillName.RefiningFocus);
+            ConfigureSkillBlockOnce(chkColonyOperations, pskProductionFocus, SkillName.ProductionFocus);
+            ConfigureSkillBlockOnce(chkColonyOperations, pskExtractionFocus, SkillName.ExtractionFocus);
+            ConfigureSkillBlockOnce(chkCommander, pskDamageControl, SkillName.DamageControl);
+            ConfigureSkillBlockOnce(chkEngineer, pskEngineeringCapacity, SkillName.EngineeringCapacity);
+            ConfigureSkillBlockOnce(chkEntrepeneur, pskSoundAsAPound, SkillName.SoundsAsAPound);
+            ConfigureSkillBlockOnce(chkEntrepeneur, pskSelfMadeMillionaire, SkillName.SelfMadeMillionaire);
+            ConfigureSkillBlockOnce(chkEntrepeneur, pskAAAHealthcare, SkillName.AAAHealthcare);
+            ConfigureSkillBlockOnce(chkJobManagement, pskJobOpportunities, SkillName.JobOpportunities);
+            ConfigureSkillBlockOnce(chkJobManagement, pskContractManagement, SkillName.ContractManagement);
+            ConfigureSkillBlockOnce(chkResearcher, pskResearchReview, SkillName.ResearchReview);
+            ConfigureSkillBlockOnce(chkResearcher, pskResearchMethods, SkillName.ResearchMethods);
+            ConfigureSkillBlockOnce(chkResearcher, pskResearchFocus, SkillName.ResearchFocus);
+            ConfigureSkillBlockOnce(chkSurveyor, pskSurveyingMethods, SkillName.SurveyingMethods);
+            ConfigureSkillBlockOnce(chkSurveyor, pskScanningMethods, SkillName.ScanningMethods);
+            ConfigureSkillBlockOnce(chkSurveyor, pskQuartermaster, SkillName.Quartermaster);
+            ConfigureSkillBlockOnce(chkTrader, pskBroker, SkillName.Broker);
 
-            txtNameFilter.TextChanged += txtNameFilter_TextChanged;
-            lvwPlayerProfiles.ItemSelectionChanged += lvwPlayerProfiles_ItemSelectionChanged;
+            txtNameFilter.TextChanged += TxtNameFilter_TextChanged;
+            lvwPlayerProfiles.ItemSelectionChanged += LvwPlayerProfiles_ItemSelectionChanged;
 
             lvwPlayerProfiles.View = View.Details;
             lvwPlayerProfiles.Columns.Clear();
@@ -85,22 +85,22 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateForm();
 
             // Wire write-through handlers
-            txtTotalCredits.TextChanged += txtTotalCredits_TextChanged;
-            txtSkillPoints.TextChanged += txtSkillPoints_TextChanged;
-            txtPublicRank.TextChanged += txtPublicRank_TextChanged;
-            txtPublicRankCurXP.TextChanged += txtPublicRankCurXP_TextChanged;
-            txtPublicRankNextXP.TextChanged += txtPublicRankNextXP_TextChanged;
-            txtPrivateRank.TextChanged += txtPrivateRank_TextChanged;
-            txtPrivateRankCurXP.TextChanged += txtPrivateRankCurXP_TextChanged;
-            txtPrivateRankNextXP.TextChanged += txtPrivateRankNextXP_TextChanged;
-            txtMilitaryRank.TextChanged += txtMilitaryRank_TextChanged;
-            txtMilitaryRankCurXP.TextChanged += txtMilitaryRankCurXP_TextChanged;
-            txtMilitaryRankNextXP.TextChanged += txtMilitaryRankNextXP_TextChanged;
-            cmbFaction.TextChanged += cmbFaction_TextChanged;
+            txtTotalCredits.TextChanged += TxtTotalCredits_TextChanged;
+            txtSkillPoints.TextChanged += TxtSkillPoints_TextChanged;
+            txtPublicRank.TextChanged += TxtPublicRank_TextChanged;
+            txtPublicRankCurXP.TextChanged += TxtPublicRankCurXP_TextChanged;
+            txtPublicRankNextXP.TextChanged += TxtPublicRankNextXP_TextChanged;
+            txtPrivateRank.TextChanged += TxtPrivateRank_TextChanged;
+            txtPrivateRankCurXP.TextChanged += TxtPrivateRankCurXP_TextChanged;
+            txtPrivateRankNextXP.TextChanged += TxtPrivateRankNextXP_TextChanged;
+            txtMilitaryRank.TextChanged += TxtMilitaryRank_TextChanged;
+            txtMilitaryRankCurXP.TextChanged += TxtMilitaryRankCurXP_TextChanged;
+            txtMilitaryRankNextXP.TextChanged += TxtMilitaryRankNextXP_TextChanged;
+            cmbFaction.TextChanged += CmbFaction_TextChanged;
 
-            flpBase.Layout += flpBase_Layout;
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpPlayerData.Layout += flpPlayerData_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpPlayerData.Layout += FlpPlayerData_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.PlayerProfileDataChanged += OnPlayerProfileDataChanged;
@@ -140,7 +140,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateForm();
         }
 
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             flpPlayerData.Size = new System.Drawing.Size(
                 flpBase.Size.Width - flpSearchList.Size.Width - flpSearchList.Margin.Right - flpSearchList.Margin.Left - flpPlayerData.Margin.Left - flpPlayerData.Margin.Right,
@@ -150,14 +150,14 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 flpBase.Size.Height - flpSearchList.Margin.Top - flpSearchList.Margin.Bottom);
         }
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             lvwPlayerProfiles.Size = new System.Drawing.Size(
                 lvwPlayerProfiles.Size.Width,
                 flpSearchList.Size.Height - flpBlueprintSearch.Size.Height - flpBlueprintSearch.Margin.Top - flpBlueprintSearch.Margin.Bottom - flpResource.Size.Height - flpResource.Margin.Top - flpResource.Margin.Bottom - lvwPlayerProfiles.Margin.Top - lvwPlayerProfiles.Margin.Bottom);
         }
 
-        private void flpPlayerData_Layout(object sender, LayoutEventArgs e)
+        private void FlpPlayerData_Layout(object sender, LayoutEventArgs e)
         {
             flpPlayerDetails.Size = new System.Drawing.Size(
                 flpPlayerData.Size.Width - flpPlayerDetails.Margin.Left - flpPlayerDetails.Margin.Right,
@@ -223,7 +223,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             sw.Stop(); Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void configureSkillBlockOnce(CheckBox skillGroup, PlayerSkillBlock skillBlock, SkillName skill)
+        private void ConfigureSkillBlockOnce(CheckBox skillGroup, PlayerSkillBlock skillBlock, SkillName skill)
         {
             skillBlock.SkillGroupCheckbox = skillGroup;
             skillBlock.SkillName = skill.ToDisplayName();
@@ -242,55 +242,55 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateForm();
         }
 
-        private void chkColonyDirector_Click(object sender, EventArgs e)
+        private void ChkColonyDirector_Click(object sender, EventArgs e)
         {
             viewModel.SetSkillGroup(SkillGroupName.ColonyDirector, chkColonyDirector.Checked);
             PopulateForm();
         }
 
-        private void chkColonyFounder_Click(object sender, EventArgs e)
+        private void ChkColonyFounder_Click(object sender, EventArgs e)
         {
             viewModel.SetSkillGroup(SkillGroupName.ColonyFounder, chkColonyFounder.Checked);
             PopulateForm();
         }
 
-        private void chkCommander_Click(object sender, EventArgs e)
+        private void ChkCommander_Click(object sender, EventArgs e)
         {
             viewModel.SetSkillGroup(SkillGroupName.Commander, chkCommander.Checked);
             PopulateForm();
         }
 
-        private void chkEngineer_Click(object sender, EventArgs e)
+        private void ChkEngineer_Click(object sender, EventArgs e)
         {
             viewModel.SetSkillGroup(SkillGroupName.Engineer, chkEngineer.Checked);
             PopulateForm();
         }
 
-        private void chkEntrepeneur_Click(object sender, EventArgs e)
+        private void ChkEntrepeneur_Click(object sender, EventArgs e)
         {
             viewModel.SetSkillGroup(SkillGroupName.Entrepeneur, chkEntrepeneur.Checked);
             PopulateForm();
         }
 
-        private void chkJobManagement_Click(object sender, EventArgs e)
+        private void ChkJobManagement_Click(object sender, EventArgs e)
         {
             viewModel.SetSkillGroup(SkillGroupName.JobManagement, chkJobManagement.Checked);
             PopulateForm();
         }
 
-        private void chkResearcher_Click(object sender, EventArgs e)
+        private void ChkResearcher_Click(object sender, EventArgs e)
         {
             viewModel.SetSkillGroup(SkillGroupName.Researcher, chkResearcher.Checked);
             PopulateForm();
         }
 
-        private void chkSurveyor_Click(object sender, EventArgs e)
+        private void ChkSurveyor_Click(object sender, EventArgs e)
         {
             viewModel.SetSkillGroup(SkillGroupName.Surveyor, chkSurveyor.Checked);
             PopulateForm();
         }
 
-        private void chkTrader_Click(object sender, EventArgs e)
+        private void ChkTrader_Click(object sender, EventArgs e)
         {
             viewModel.SetSkillGroup(SkillGroupName.Trader, chkTrader.Checked);
             PopulateForm();
@@ -322,12 +322,12 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             sw.Stop(); Log.Info("PERF PopulateListView: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void txtNameFilter_TextChanged(object sender, EventArgs e)
+        private void TxtNameFilter_TextChanged(object sender, EventArgs e)
         {
             PopulateListView();
         }
 
-        private void lvwPlayerProfiles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwPlayerProfiles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (e.IsSelected && lvwPlayerProfiles.SelectedItems.Count == 1)
             {
@@ -336,7 +336,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
         }
 
-        private void txtPlayerName_TextChanged(object sender, EventArgs e)
+        private void TxtPlayerName_TextChanged(object sender, EventArgs e)
         {
             string name = txtPlayerName.Text?.Trim();
             if (string.IsNullOrEmpty(name))
@@ -361,79 +361,79 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             viewModel.Name = txtPlayerName.Text?.Trim() ?? string.Empty;
         }
 
-        private void txtTotalCredits_TextChanged(object sender, EventArgs e)
+        private void TxtTotalCredits_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.TotalCredits = decimal.TryParse(txtTotalCredits.Text, out var c) ? c : 0;
         }
 
-        private void txtSkillPoints_TextChanged(object sender, EventArgs e)
+        private void TxtSkillPoints_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.SkillPoints = int.TryParse(txtSkillPoints.Text, out var sp) ? sp : 0;
         }
 
-        private void txtPublicRank_TextChanged(object sender, EventArgs e)
+        private void TxtPublicRank_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.PublicRank.Rank = int.TryParse(txtPublicRank.Text, out var r) ? r : 0;
         }
 
-        private void txtPublicRankCurXP_TextChanged(object sender, EventArgs e)
+        private void TxtPublicRankCurXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.PublicRank.CurrentXP = long.TryParse(txtPublicRankCurXP.Text, out var x) ? x : 0;
         }
 
-        private void txtPublicRankNextXP_TextChanged(object sender, EventArgs e)
+        private void TxtPublicRankNextXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.PublicRank.NextXP = long.TryParse(txtPublicRankNextXP.Text, out var x) ? x : 0;
         }
 
-        private void txtPrivateRank_TextChanged(object sender, EventArgs e)
+        private void TxtPrivateRank_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.PrivateRank.Rank = int.TryParse(txtPrivateRank.Text, out var r) ? r : 0;
         }
 
-        private void txtPrivateRankCurXP_TextChanged(object sender, EventArgs e)
+        private void TxtPrivateRankCurXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.PrivateRank.CurrentXP = long.TryParse(txtPrivateRankCurXP.Text, out var x) ? x : 0;
         }
 
-        private void txtPrivateRankNextXP_TextChanged(object sender, EventArgs e)
+        private void TxtPrivateRankNextXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.PrivateRank.NextXP = long.TryParse(txtPrivateRankNextXP.Text, out var x) ? x : 0;
         }
 
-        private void txtMilitaryRank_TextChanged(object sender, EventArgs e)
+        private void TxtMilitaryRank_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.MilitaryRank.Rank = int.TryParse(txtMilitaryRank.Text, out var r) ? r : 0;
         }
 
-        private void txtMilitaryRankCurXP_TextChanged(object sender, EventArgs e)
+        private void TxtMilitaryRankCurXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.MilitaryRank.CurrentXP = long.TryParse(txtMilitaryRankCurXP.Text, out var x) ? x : 0;
         }
 
-        private void txtMilitaryRankNextXP_TextChanged(object sender, EventArgs e)
+        private void TxtMilitaryRankNextXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.MilitaryRank.NextXP = long.TryParse(txtMilitaryRankNextXP.Text, out var x) ? x : 0;
         }
 
-        private void cmbFaction_TextChanged(object sender, EventArgs e)
+        private void CmbFaction_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.Faction = cmbFaction.Text;
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void CmdSave_Click(object sender, EventArgs e)
         {
             string newName = txtPlayerName.Text?.Trim();
             if (string.IsNullOrEmpty(newName) || !txtPlayerName.IsValid)
@@ -445,7 +445,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateListView(viewModel.Data);
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(viewModel.Data.UUID)) return;
 
@@ -464,14 +464,14 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateForm();
         }
 
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             viewModel.Reset();
             PopulateForm();
             lvwPlayerProfiles.SelectedItems.Clear();
         }
 
-        private void cmdImport_Click(object sender, EventArgs e)
+        private void CmdImport_Click(object sender, EventArgs e)
         {
             try
             {

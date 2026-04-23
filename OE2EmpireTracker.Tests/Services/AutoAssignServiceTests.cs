@@ -11,8 +11,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class AutoAssignServiceTests
     {
-        #region Helpers
-
         private Colony CreateColony(string uuid, string name,
             params ColonyStructure[] structures)
         {
@@ -30,8 +28,8 @@ namespace OE2EmpireTracker.Tests.Services
             bool idle = true)
         {
             var s = new ColonyStructure { UUID = uuid, FlatpackBlueprintUUID = flatpackBpUUID };
-            s.Properties.setProperty(GameConstants.PropBuilt, true);
-            s.Properties.setProperty(GameConstants.PropOnline, true);
+            s.Properties.SetProperty(GameConstants.PropBuilt, true);
+            s.Properties.SetProperty(GameConstants.PropOnline, true);
             if (!idle)
                 s.ManufacturingBlueprintUUID = "some-bp";
             return s;
@@ -41,8 +39,8 @@ namespace OE2EmpireTracker.Tests.Services
             bool idle = true)
         {
             var s = new ColonyStructure { UUID = uuid, FlatpackBlueprintUUID = flatpackBpUUID };
-            s.Properties.setProperty(GameConstants.PropBuilt, true);
-            s.Properties.setProperty(GameConstants.PropOnline, true);
+            s.Properties.SetProperty(GameConstants.PropBuilt, true);
+            s.Properties.SetProperty(GameConstants.PropOnline, true);
             if (!idle)
                 s.ManufacturingCommodityName = "some-commodity";
             return s;
@@ -125,10 +123,6 @@ namespace OE2EmpireTracker.Tests.Services
             };
         }
 
-        #endregion
-
-        #region Null Arguments
-
         [Test]
         public void ProposeAssignments_NullPlan_Throws()
         {
@@ -161,10 +155,6 @@ namespace OE2EmpireTracker.Tests.Services
                     new BuildPlan(), new DeliveryRoute(), id => null, id => null, id => null, null));
         }
 
-        #endregion
-
-        #region Empty / No Items
-
         [Test]
         public void ProposeAssignments_EmptyPlan_ReturnsEmpty()
         {
@@ -190,10 +180,6 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(result, Is.Empty);
         }
-
-        #endregion
-
-        #region Manufactory Assignment
 
         [Test]
         public void ProposeAssignments_SingleMfgItem_SingleStructure_AssignsCorrectly()
@@ -342,10 +328,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result, Is.Empty);
         }
 
-        #endregion
-
-        #region Commodity Assignment
-
         [Test]
         public void ProposeAssignments_CommodityItem_AssignsToFactory()
         {
@@ -397,10 +379,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(structureUUIDs.Count, Is.EqualTo(2));
         }
 
-        #endregion
-
-        #region Mixed Items
-
         [Test]
         public void ProposeAssignments_MixedItems_AssignsBothTypes()
         {
@@ -437,10 +415,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(mfgProposal, Is.Not.Null);
             Assert.That(cfProposal, Is.Not.Null);
         }
-
-        #endregion
-
-        #region Multi-Colony Route
 
         [Test]
         public void ProposeAssignments_MultiColonyRoute_CollectsFromAllStops()
@@ -481,10 +455,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(colonyUUIDs.Count, Is.EqualTo(2));
         }
 
-        #endregion
-
-        #region Edge Cases
-
         [Test]
         public void ProposeAssignments_UnbuiltStructure_Skipped()
         {
@@ -498,8 +468,8 @@ namespace OE2EmpireTracker.Tests.Services
                 FlatpackBlueprintUUID = "mfg-bp"
             };
 
-            structure.Properties.setProperty(GameConstants.PropBuilt, false);
-            structure.Properties.setProperty(GameConstants.PropOnline, false);
+            structure.Properties.SetProperty(GameConstants.PropBuilt, false);
+            structure.Properties.SetProperty(GameConstants.PropOnline, false);
 
             var colony = CreateColony("col-1", "Alpha", structure);
             var route = CreateRoute("col-1");
@@ -606,7 +576,5 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result[0].BuildLocationType, Is.EqualTo(DestinationType.Colony));
         }
-
-        #endregion
     }
 }

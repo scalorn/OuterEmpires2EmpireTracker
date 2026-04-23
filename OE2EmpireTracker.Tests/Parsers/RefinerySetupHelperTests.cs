@@ -44,8 +44,8 @@ namespace OE2EmpireTracker.Tests.Parsers
                 RefiningResourcePurity = purity
             };
 
-            structure.Properties.setProperty(GameConstants.PropBuilt, built);
-            structure.Properties.setProperty(GameConstants.PropOnline, online);
+            structure.Properties.SetProperty(GameConstants.PropBuilt, built);
+            structure.Properties.SetProperty(GameConstants.PropOnline, online);
             return structure;
         }
 
@@ -260,8 +260,8 @@ namespace OE2EmpireTracker.Tests.Parsers
                 RefiningResourcePurity = null
             };
 
-            structure.Properties.setProperty(GameConstants.PropBuilt, true);
-            structure.Properties.setProperty(GameConstants.PropOnline, true);
+            structure.Properties.SetProperty(GameConstants.PropBuilt, true);
+            structure.Properties.SetProperty(GameConstants.PropOnline, true);
             colony.Structures.Add(structure);
 
             // Act

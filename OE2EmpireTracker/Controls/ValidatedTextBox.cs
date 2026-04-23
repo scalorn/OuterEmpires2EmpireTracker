@@ -15,8 +15,6 @@ namespace OE2EmpireTracker.Controls
     [DefaultEvent("TextChanged")]
     public class ValidatedTextBox : TextBox
     {
-        #region Properties
-
         private bool _allowSpaces = true;
         private bool _autoFormat = true;
         private Regex _validationRegex;
@@ -71,16 +69,9 @@ namespace OE2EmpireTracker.Controls
             set => _isValid = value;
         }
 
-        #endregion
-
-        #region Constants
-        public static string EMAIL_VALIDATION = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-        public static string DECIMAL_VALIDATION = @"^[+-]?\d+\.\d{2}$";
-        public static string NUMBER_VALIDATION = @"^[+-]?\d+$";
-        #endregion
-
-
-        #region Constructor & Initialization
+        public static readonly string EMAIL_VALIDATION = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+        public static readonly string DECIMAL_VALIDATION = @"^[+-]?\d+\.\d{2}$";
+        public static readonly string NUMBER_VALIDATION = @"^[+-]?\d+$";
 
         public ValidatedTextBox()
         {
@@ -140,10 +131,6 @@ namespace OE2EmpireTracker.Controls
             }
         }
 
-        #endregion
-
-        #region Methods
-
         public bool ValidateInput()
         {
             var currentText = Text;
@@ -179,8 +166,6 @@ namespace OE2EmpireTracker.Controls
             ValidateInput();
             _debounceTimer.Stop();
         }
-
-        #endregion
 
         public new void Clear()
         {

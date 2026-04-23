@@ -13,8 +13,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ResourcesOnlyImportPropertyTests
     {
-        #region Helpers
-
         private static Gen<string> NonEmptyAlphaStringGen()
         {
             return Gen.Elements(
@@ -58,10 +56,6 @@ namespace OE2EmpireTracker.Tests.Services
                               .GroupBy(x => x.k)
                               .ToDictionary(g => g.Key, g => g.First().v);
         }
-
-        #endregion
-
-        #region Property 1: IsResourcesOnlyImport classification
 
         /// <summary>
         /// Feature: blueprint-form-fixes, Property 1: IsResourcesOnlyImport classification
@@ -112,10 +106,6 @@ namespace OE2EmpireTracker.Tests.Services
                            $"Class={data.Class}, TechLevel='{data.TechLevel}'");
             });
         }
-
-        #endregion
-
-        #region Property 2: MergeResourcesOnly replaces resources and preserves all other fields
 
         /// <summary>
         /// Feature: blueprint-form-fixes, Property 2: MergeResourcesOnly replaces resources and preserves all other fields
@@ -189,11 +179,11 @@ namespace OE2EmpireTracker.Tests.Services
                 target.Evolution = data.Evolution;
                 target.CopyCost = data.CopyCost;
                 target.Properties = new PropertyBag();
-                target.Properties.setProperty("Manufacture Run Time", data.MfgRunTime);
-                target.Properties.setProperty("Power Required", data.PowerReq);
+                target.Properties.SetProperty("Manufacture Run Time", data.MfgRunTime);
+                target.Properties.SetProperty("Power Required", data.PowerReq);
                 for (int i = 0; i < data.TargetPropCount; i++)
                 {
-                    target.Properties.setProperty("TargetProp" + i, "tval" + i);
+                    target.Properties.SetProperty("TargetProp" + i, "tval" + i);
                 }
 
                 // Build incoming blueprint with resources and properties
@@ -202,17 +192,17 @@ namespace OE2EmpireTracker.Tests.Services
                 incoming.Properties = new PropertyBag();
                 for (int i = 0; i < data.IncomingPropCount; i++)
                 {
-                    incoming.Properties.setProperty("IncomingProp" + i, "ival" + i);
+                    incoming.Properties.SetProperty("IncomingProp" + i, "ival" + i);
                 }
 
                 if (data.IncomingHasMfg)
                 {
-                    incoming.Properties.setProperty("Manufacture Run Time", "incoming_mfg");
+                    incoming.Properties.SetProperty("Manufacture Run Time", "incoming_mfg");
                 }
 
                 if (data.IncomingHasPwr)
                 {
-                    incoming.Properties.setProperty("Power Required", "incoming_pwr");
+                    incoming.Properties.SetProperty("Power Required", "incoming_pwr");
                 }
 
                 // Snapshot expected resource content
@@ -242,12 +232,12 @@ namespace OE2EmpireTracker.Tests.Services
 
                 // Assert: protected properties preserved (original values, not incoming)
                 string mfgVal;
-                target.Properties.getString("Manufacture Run Time", null, out mfgVal);
+                target.Properties.GetString("Manufacture Run Time", null, out mfgVal);
                 var mfgOk = (mfgVal == data.MfgRunTime)
                     .Label($"Manufacture Run Time: expected '{data.MfgRunTime}', got '{mfgVal}'");
 
                 string pwrVal;
-                target.Properties.getString("Power Required", null, out pwrVal);
+                target.Properties.GetString("Power Required", null, out pwrVal);
                 var pwrOk = (pwrVal == data.PowerReq)
                     .Label($"Power Required: expected '{data.PowerReq}', got '{pwrVal}'");
 
@@ -271,7 +261,5 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(mfgOk).And(pwrOk).And(propsPresent);
             });
         }
-
-        #endregion
     }
 }

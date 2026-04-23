@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Parsers
         /// <summary>
         /// Sniffs an HTML fragment for distinctive game UI markers and returns
         /// the detected content type.
-        /// 
+        ///
         /// Content-specific markers (Colony, Survey, Market, Blueprint) are checked
         /// before page-chrome markers (PlayerProfile) because the game UI may include
         /// ui_character_detail in the page chrome of non-profile pages.

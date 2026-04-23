@@ -96,8 +96,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(totalSeconds, Is.EqualTo(0L));
         }
 
-        #region Property Tests
-
         /// <summary>
         /// Feature: preferences-form, Property 1: Countdown format round-trip
         ///
@@ -173,7 +171,5 @@ namespace OE2EmpireTracker.Tests.Parsers
                     .Label($"input=\"{input}\" should be rejected but TryParse returned true with totalSeconds={totalSeconds}");
             });
         }
-
-        #endregion
     }
 }

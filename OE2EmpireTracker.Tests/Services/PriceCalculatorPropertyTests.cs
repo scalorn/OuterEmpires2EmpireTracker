@@ -16,8 +16,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class PriceCalculatorPropertyTests
     {
-        #region Generators
-
         private static readonly string[] SampleResourceNames = new[]
         {
             "Alkali Metals", "Noble Gases", "Halogens", "Metallics",
@@ -78,10 +76,6 @@ namespace OE2EmpireTracker.Tests.Services
                               .ToDictionary(x => x.n, x => x.q.ToString());
         }
 
-        #endregion
-
-        #region Property 7: Purity determination produces only Refined, S1, or S2
-
         /// <summary>
         /// Feature: pricing-plans, Property 7: Purity determination produces only Refined, S1, or S2
         ///
@@ -116,10 +110,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        #endregion
-
-        #region Property 2: Non-negative decimal validation
-
         /// <summary>
         /// Feature: pricing-plans, Property 2: Non-negative decimal validation
         ///
@@ -137,10 +127,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"Value {value}: isNonNegative={isNonNegative}");
             });
         }
-
-        #endregion
-
-        #region Property 6: Zero price is valid, absent entry is incomplete
 
         /// <summary>
         /// Feature: pricing-plans, Property 6: Zero price is valid, absent entry is incomplete
@@ -174,10 +160,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"Resource '{resourceName}|{purity}': foundZero={foundZero}, priceZero={priceZero}, foundAbsent={foundAbsent}");
             });
         }
-
-        #endregion
-
-        #region Property 3: Commodity price is sum of input quantities times Refined prices
 
         /// <summary>
         /// Feature: pricing-plans, Property 3: Commodity price is sum of input quantities times Refined prices
@@ -216,10 +198,6 @@ namespace OE2EmpireTracker.Tests.Services
                 });
         }
 
-        #endregion
-
-        #region Property 4: Completeness flag matches input coverage
-
         /// <summary>
         /// Feature: pricing-plans, Property 4: Completeness flag matches input coverage
         ///
@@ -249,10 +227,6 @@ namespace OE2EmpireTracker.Tests.Services
                         .Label($"IsComplete={result.IsComplete}, allCovered={allCovered}");
                 });
         }
-
-        #endregion
-
-        #region Property 5: Blueprint price equals resource cost plus time costs
 
         /// <summary>
         /// Feature: pricing-plans, Property 5: Blueprint price equals resource cost plus time costs
@@ -293,7 +267,5 @@ namespace OE2EmpireTracker.Tests.Services
                         .Label($"Expected {expectedPrice}, got {result.Price}");
                 });
         }
-
-        #endregion
     }
 }

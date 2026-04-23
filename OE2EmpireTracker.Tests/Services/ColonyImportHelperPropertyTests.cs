@@ -12,8 +12,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ColonyImportHelperPropertyTests
     {
-        #region Helpers
-
         private static Colony MakeColony(string uuid, string colonyName, string planetName = "Planet", string systemName = "System")
         {
             var colony = new Colony();
@@ -51,10 +49,6 @@ namespace OE2EmpireTracker.Tests.Services
                    from system in NonEmptyStringGen()
                    select MakeColony(uuid, name, planet, system);
         }
-
-        #endregion
-
-        #region Property 1: Case-insensitive colony name search
 
         /// <summary>
         /// Property 1: Case-insensitive colony name search.
@@ -97,10 +91,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        #endregion
-
-        #region Property 2: No-match import grows colony list by one
-
         /// <summary>
         /// Property 2: No-match import grows colony list by one.
         /// For any list of colonies and for any temporary colony whose ColonyName does not
@@ -134,10 +124,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label("New colony should be present in the list");
             });
         }
-
-        #endregion
-
-        #region Property 3: MergeIdentity updates identity while preserving local state
 
         /// <summary>
         /// Property 3: MergeIdentity updates identity while preserving local state.
@@ -206,10 +192,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        #endregion
-
-        #region Property 4: CreateFromTemp produces a valid colony with all parsed data
-
         /// <summary>
         /// Property 4: CreateFromTemp produces a valid colony with all parsed data.
         /// For any temporary colony with non-empty fields and for any owner UUID string,
@@ -268,10 +250,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        #endregion
-
-        #region Property 5: Duplicate name detection is case-insensitive and excludes self
-
         /// <summary>
         /// Property 5: Duplicate name detection is case-insensitive and excludes self.
         /// For any list of colonies, for any colony name, and for any exclude UUID,
@@ -321,10 +299,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        #endregion
-
-        #region Property 6: Case-insensitive planet+system search
-
         /// <summary>
         /// Property 6: Case-insensitive planet+system search.
         /// For any list of colonies and for any PlanetName+SystemName that exists in the list
@@ -366,7 +340,5 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"Expected null for non-existent planet '{uniquePlanet}' but got colony");
             });
         }
-
-        #endregion
     }
 }

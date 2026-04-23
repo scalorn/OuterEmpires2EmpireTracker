@@ -97,17 +97,17 @@ namespace OE2EmpireTracker.Tests.Services
         public void MergeAndPersist_ExistingTarget_AdditivePropertyMerge()
         {
             var existing = MakeBlueprint("AMX-SS Reactor Core", "existing-uuid-1", "Reactor", 0);
-            existing.Properties.setProperty("Power Output", "1200");
-            existing.Properties.setProperty("Efficiency", "85");
-            existing.Properties.setProperty("Weight", "50");
+            existing.Properties.SetProperty("Power Output", "1200");
+            existing.Properties.SetProperty("Efficiency", "85");
+            existing.Properties.SetProperty("Weight", "50");
             empireContext.AddGlobalBlueprint(existing);
 
             var incoming = new BpModel("AMX-SS Reactor Core");
             incoming.BluePrintType = "Reactor";
             incoming.Evolution = 0;
             incoming.Properties = new PropertyBag();
-            incoming.Properties.setProperty("Power Output", "1500"); // overwrite
-            incoming.Properties.setProperty("Durability", "200");    // new key
+            incoming.Properties.SetProperty("Power Output", "1500"); // overwrite
+            incoming.Properties.SetProperty("Durability", "200");    // new key
             // "Efficiency" and "Weight" not in incoming Ã¢â‚¬â€ should be preserved
 
             var findResult = new BlueprintImportHandler.FindTargetResult
@@ -139,8 +139,8 @@ namespace OE2EmpireTracker.Tests.Services
         public void MergeAndPersist_ExistingTarget_EmptyIncomingProps_PreservesExisting()
         {
             var existing = MakeBlueprint("Fighter Hull", "existing-uuid-2", "Hull", 3);
-            existing.Properties.setProperty("Health", "500");
-            existing.Properties.setProperty("Armor", "300");
+            existing.Properties.SetProperty("Health", "500");
+            existing.Properties.SetProperty("Armor", "300");
             playerContext.AddBlueprint(existing);
 
             var incoming = new BpModel("Fighter Hull");
@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void MergeAndPersist_ExistingTarget_NullIncomingProps_PreservesExisting()
         {
             var existing = MakeBlueprint("Shield Gen", "existing-uuid-3", "Shield", 0);
-            existing.Properties.setProperty("Shield Strength", "800");
+            existing.Properties.SetProperty("Shield Strength", "800");
             empireContext.AddGlobalBlueprint(existing);
 
             var incoming = new BpModel("Shield Gen");
@@ -208,7 +208,7 @@ namespace OE2EmpireTracker.Tests.Services
             incoming.Evolution = 0;
             incoming.Class = 1;
             incoming.Properties = new PropertyBag();
-            incoming.Properties.setProperty("Power Output", "1000");
+            incoming.Properties.SetProperty("Power Output", "1000");
             incoming.Resources = new Dictionary<string, string> { { "Iron", "100" } };
 
             var findResult = new BlueprintImportHandler.FindTargetResult
@@ -241,7 +241,7 @@ namespace OE2EmpireTracker.Tests.Services
             incoming.Evolution = 3;
             incoming.Class = 2;
             incoming.Properties = new PropertyBag();
-            incoming.Properties.setProperty("Shield Strength", "600");
+            incoming.Properties.SetProperty("Shield Strength", "600");
             incoming.Resources = new Dictionary<string, string> { { "Copper", "50" } };
 
             var findResult = new BlueprintImportHandler.FindTargetResult
@@ -328,7 +328,7 @@ namespace OE2EmpireTracker.Tests.Services
             var incoming = new BpModel("Mining Laser");
             incoming.BluePrintType = "MiningLaser";
             incoming.Properties = new PropertyBag();
-            incoming.Properties.setProperty("Mining Rate", "10");
+            incoming.Properties.SetProperty("Mining Rate", "10");
             incoming.Resources = new Dictionary<string, string>(); // empty
 
             var findResult = new BlueprintImportHandler.FindTargetResult

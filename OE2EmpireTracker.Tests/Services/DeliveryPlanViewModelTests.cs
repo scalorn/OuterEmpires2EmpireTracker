@@ -423,8 +423,8 @@ namespace OE2EmpireTracker.Tests.Services
         private ColonyStructure MakeStructure(string bpUUID, bool built, bool staged)
         {
             var s = new ColonyStructure { UUID = System.Guid.NewGuid().ToString(), FlatpackBlueprintUUID = bpUUID };
-            if (built) s.Properties.setProperty("Built", true);
-            if (staged) s.Properties.setProperty("Staged", true);
+            if (built) s.Properties.SetProperty("Built", true);
+            if (staged) s.Properties.SetProperty("Staged", true);
             return s;
         }
 
@@ -581,8 +581,8 @@ namespace OE2EmpireTracker.Tests.Services
         private OE2EmpireTracker.Models.Blueprint CreateManufactoryBlueprint(string uuid, string name, Dictionary<string, string> resources)
         {
             var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = "Flatpacks/Manufactory", Resources = resources };
-            bp.Properties.setProperty("Manufacture Run Time", "1h");
-            bp.Properties.setProperty("Can Manufacture", true);
+            bp.Properties.SetProperty("Manufacture Run Time", "1h");
+            bp.Properties.SetProperty("Can Manufacture", true);
             playerContext.AddBlueprint(bp);
             return bp;
         }
@@ -598,8 +598,8 @@ namespace OE2EmpireTracker.Tests.Services
                 StagingResources = true
             };
 
-            s.Properties.setProperty("Built", true);
-            s.Properties.setProperty("Online", true);
+            s.Properties.SetProperty("Built", true);
+            s.Properties.SetProperty("Online", true);
             return s;
         }
 
@@ -614,8 +614,8 @@ namespace OE2EmpireTracker.Tests.Services
                 StagingResources = true
             };
 
-            s.Properties.setProperty("Built", true);
-            s.Properties.setProperty("Online", true);
+            s.Properties.SetProperty("Built", true);
+            s.Properties.SetProperty("Online", true);
             return s;
         }
 
@@ -889,9 +889,9 @@ namespace OE2EmpireTracker.Tests.Services
             int blueCollar = 0, int whiteCollar = 0, int specialist = 0)
         {
             var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
-            if (blueCollar > 0) bp.Properties.setProperty(GameConstants.PropBlueCollarDetail, blueCollar.ToString());
-            if (whiteCollar > 0) bp.Properties.setProperty(GameConstants.PropWhiteCollarDetail, whiteCollar.ToString());
-            if (specialist > 0) bp.Properties.setProperty(GameConstants.PropSpecialistDetail, specialist.ToString());
+            if (blueCollar > 0) bp.Properties.SetProperty(GameConstants.PropBlueCollarDetail, blueCollar.ToString());
+            if (whiteCollar > 0) bp.Properties.SetProperty(GameConstants.PropWhiteCollarDetail, whiteCollar.ToString());
+            if (specialist > 0) bp.Properties.SetProperty(GameConstants.PropSpecialistDetail, specialist.ToString());
             playerContext.AddBlueprint(bp);
             return bp;
         }
@@ -904,14 +904,14 @@ namespace OE2EmpireTracker.Tests.Services
                 FlatpackBlueprintUUID = bpUUID
             };
 
-            s.Properties.setProperty("Built", true);
-            s.Properties.setProperty("Online", true);
+            s.Properties.SetProperty("Built", true);
+            s.Properties.SetProperty("Online", true);
             for (int i = 1; i <= blueAssigned; i++)
-                s.AssignedWorkers.setProperty("BlueCollar" + i, true);
+                s.AssignedWorkers.SetProperty("BlueCollar" + i, true);
             for (int i = 1; i <= whiteAssigned; i++)
-                s.AssignedWorkers.setProperty("WhiteCollar" + i, true);
+                s.AssignedWorkers.SetProperty("WhiteCollar" + i, true);
             for (int i = 1; i <= specAssigned; i++)
-                s.AssignedWorkers.setProperty("Specialist" + i, true);
+                s.AssignedWorkers.SetProperty("Specialist" + i, true);
             return s;
         }
 

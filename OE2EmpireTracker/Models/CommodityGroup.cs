@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +30,7 @@ namespace OE2EmpireTracker.Models
         public CommodityGroupEnum ID { get; set; } = CommodityGroupEnum.None;
         public string Name { get; set; } =  string.Empty;
 
-        private static List<CommodityGroup> _commodityGroups = getCommodityGroups();
+        private static List<CommodityGroup> _commodityGroups = GetCommodityGroups();
         private static Dictionary<CommodityGroupEnum, CommodityGroup> _commodityGroupMapByEnum;
         private static Dictionary<string, CommodityGroup> _commodityGroupMapByString;
 
@@ -38,8 +38,7 @@ namespace OE2EmpireTracker.Models
         public static IReadOnlyDictionary<CommodityGroupEnum, CommodityGroup> CommodityGroupMapByEnum => _commodityGroupMapByEnum;
         public static IReadOnlyDictionary<string, CommodityGroup> CommodityGroupMapByString => _commodityGroupMapByString;
 
-
-        private static List<CommodityGroup> getCommodityGroups()
+        private static List<CommodityGroup> GetCommodityGroups()
         {
             List<CommodityGroup> instance = new List<CommodityGroup>();
             instance.Add(new CommodityGroup() { ID = CommodityGroupEnum.Administration, Name = "Administration" });

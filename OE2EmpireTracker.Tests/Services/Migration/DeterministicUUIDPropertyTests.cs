@@ -14,8 +14,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     [TestFixture]
     public class DeterministicUUIDPropertyTests
     {
-        #region Generators
-
         private static Gen<string> SafeStringGen()
         {
             return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
@@ -39,10 +37,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                    select Tuple.Create(name, evolution, blueprintType, cls, techLevel);
         }
 
-        #endregion
-
-        #region Property 1: UUID v5 determinism -- same inputs produce same UUID
-
         /// <summary>
         /// For any Dedup_Key, DeterministicUUID.Generate shall produce the same UUID on every call.
         /// **Validates: Requirements 1.1, 1.3**
@@ -59,10 +53,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     .Label($"Expected same UUID for same inputs, got '{uuid1}' and '{uuid2}'");
             });
         }
-
-        #endregion
-
-        #region Property 1 (cont): Different inputs produce different UUIDs
 
         /// <summary>
         /// Two different Dedup_Keys shall produce different UUIDs.
@@ -94,10 +84,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             });
         }
 
-        #endregion
-
-        #region UUID format validation
-
         /// <summary>
         /// Generated UUIDs should be valid GUID strings and have version 5 bits set.
         /// </summary>
@@ -113,7 +99,5 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 return canParse.Label($"UUID '{uuidStr}' is not a valid GUID");
             });
         }
-
-        #endregion
     }
 }

@@ -55,7 +55,6 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-
         public Survey(string name /*, int quantity*/) : base(Models.ItemType.ItemTypeEnum.Survey, name /* , quantity */)
         {
             Properties = new Dictionary<string, string>();
@@ -81,7 +80,7 @@ namespace OE2EmpireTracker.Models
         {
             get
             {
-                string extendedName = Resource + (!string.IsNullOrEmpty(Purity) ? $" ({Purity})" : "") + (!string.IsNullOrEmpty(Amount) ? $" ({Amount})/h" : "");
+                string extendedName = Resource + (!string.IsNullOrEmpty(Purity) ? $" ({Purity})" : string.Empty) + (!string.IsNullOrEmpty(Amount) ? $" ({Amount})/h" : string.Empty);
                 return extendedName;
             }
         }

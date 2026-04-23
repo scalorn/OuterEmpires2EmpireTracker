@@ -10,8 +10,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class SurveyDateTimeParserPropertyTests
     {
-        #region Generators
-
         private static readonly string[] Months =
             { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
 
@@ -98,10 +96,6 @@ namespace OE2EmpireTracker.Tests.Services
             return Gen.OneOf(randomString, gameFormat, plainText);
         }
 
-        #endregion
-
-        #region Property 1: Game format round-trip
-
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 1: Game format round-trip.
         /// For any valid game-format date/time string, parsing it to DateTime via TryParseGameFormat,
@@ -128,10 +122,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"Round-trip mismatch: dt1={dt1:O}, dt2={dt2:O}, gameStr='{gameStr}', iso='{iso}'");
             });
         }
-
-        #endregion
-
-        #region Property 2: ISO round-trip through display format
 
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 2: ISO round-trip through display format.
@@ -160,10 +150,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        #endregion
-
-        #region Property 3: DateTime format path consistency
-
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 3: DateTime format path consistency.
         /// For any valid DateTime value (with minute-level precision), formatting to game display
@@ -190,10 +176,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"Path mismatch: direct='{directIso}', roundTripped='{roundTrippedIso}', gameFormat='{gameFormat}'");
             });
         }
-
-        #endregion
-
-        #region Property 4: Invalid game format returns false without throwing
 
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 4: Invalid game format returns false without throwing.
@@ -224,10 +206,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        #endregion
-
-        #region Property 5: Unparseable ISO passthrough in display
-
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 5: Unparseable ISO passthrough in display.
         /// For any string that cannot be parsed as ISO 8601 by TryParseIso, FormatForDisplay
@@ -249,10 +227,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"FormatForDisplay changed non-ISO input: input='{input}', result='{result}'");
             });
         }
-
-        #endregion
-
-        #region Property 6: ISO strings sort chronologically via string comparison
 
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 6: ISO strings sort chronologically via string comparison.
@@ -281,7 +255,5 @@ namespace OE2EmpireTracker.Tests.Services
                            $"dateTimeCompare={dateTimeComparison}, stringCompare={stringComparison}");
             });
         }
-
-        #endregion
     }
 }

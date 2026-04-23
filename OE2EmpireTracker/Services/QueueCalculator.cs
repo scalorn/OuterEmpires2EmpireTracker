@@ -49,7 +49,7 @@ namespace OE2EmpireTracker.Services
 
             string mfgTimeStr;
             if (blueprint.Properties == null ||
-                !blueprint.Properties.getString(BlueprintPropertyKeys.ManufactureRunTime, string.Empty, out mfgTimeStr) ||
+                !blueprint.Properties.GetString(BlueprintPropertyKeys.ManufactureRunTime, string.Empty, out mfgTimeStr) ||
                 string.IsNullOrWhiteSpace(mfgTimeStr))
             {
                 Log.Info("ComputeManufactoryRuns: blueprint '{0}' has no Manufacture Run Time",
@@ -129,7 +129,7 @@ namespace OE2EmpireTracker.Services
             if (blueprint?.Properties != null)
             {
                 decimal amountVal;
-                if (blueprint.Properties.getDecimal(BlueprintPropertyKeys.AmountManufactured, 0m, out amountVal)
+                if (blueprint.Properties.GetDecimal(BlueprintPropertyKeys.AmountManufactured, 0m, out amountVal)
                     && amountVal > 0m)
                 {
                     itemsPerRun = (int)amountVal;

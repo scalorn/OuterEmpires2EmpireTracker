@@ -28,20 +28,20 @@ namespace OE2EmpireTracker.ViewModels
 
         public bool IsBuilt
         {
-            get { bool v; _structure.Properties.getBoolean(GameConstants.PropBuilt, false, out v); return v; }
-            set { _structure.Properties.setProperty(GameConstants.PropBuilt, value); }
+            get { bool v; _structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out v); return v; }
+            set { _structure.Properties.SetProperty(GameConstants.PropBuilt, value); }
         }
 
         public bool IsStaged
         {
-            get { bool v; _structure.Properties.getBoolean(GameConstants.PropStaged, false, out v); return v; }
-            set { _structure.Properties.setProperty(GameConstants.PropStaged, value); }
+            get { bool v; _structure.Properties.GetBoolean(GameConstants.PropStaged, false, out v); return v; }
+            set { _structure.Properties.SetProperty(GameConstants.PropStaged, value); }
         }
 
         public bool IsOnline
         {
-            get { bool v; _structure.Properties.getBoolean(GameConstants.PropOnline, false, out v); return v; }
-            set { _structure.Properties.setProperty(GameConstants.PropOnline, value); }
+            get { bool v; _structure.Properties.GetBoolean(GameConstants.PropOnline, false, out v); return v; }
+            set { _structure.Properties.SetProperty(GameConstants.PropOnline, value); }
         }
 
         // -----------------------------------------------------------------------
@@ -51,13 +51,13 @@ namespace OE2EmpireTracker.ViewModels
         public bool GetWorkerAssigned(string key)
         {
             bool v;
-            _structure.AssignedWorkers.getBoolean(key, false, out v);
+            _structure.AssignedWorkers.GetBoolean(key, false, out v);
             return v;
         }
 
         public void SetWorkerAssigned(string key, bool assigned)
         {
-            _structure.AssignedWorkers.setProperty(key, assigned);
+            _structure.AssignedWorkers.SetProperty(key, assigned);
         }
 
         public bool WorkerKeyExists(string key) => _structure.AssignedWorkers.ContainsKey(key);
@@ -106,7 +106,7 @@ namespace OE2EmpireTracker.ViewModels
 
         public string BlueprintType => Blueprint?.BluePrintType ?? string.Empty;
 
-        public int DisplaySequence => _structure.displaySequence;
+        public int DisplaySequence => _structure.DisplaySequence;
 
         // -----------------------------------------------------------------------
         // Structure list commands -- operate on the parent colony's list

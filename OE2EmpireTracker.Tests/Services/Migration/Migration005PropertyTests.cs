@@ -38,8 +38,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             EmpireContext.Reset();
         }
 
-        #region Generators
-
         private static Gen<string> PropertyValueGen()
         {
             return Gen.Choose(1, 9999).Select(n => n.ToString());
@@ -75,10 +73,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             return bp;
         }
-
-        #endregion
-
-        #region Property: Old keys are renamed, values preserved, unrelated keys untouched
 
         [FsCheck.NUnit.Property(MaxTest = 100)]
         public Property OldKeysRenamedAndValuesPreserved()
@@ -129,10 +123,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             });
         }
 
-        #endregion
-
-        #region Property: Blueprint with no old keys is unchanged
-
         [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property BlueprintWithNoOldKeysIsUnchanged()
         {
@@ -170,10 +160,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     .Label("Properties changed on a blueprint with no old keys");
             });
         }
-
-        #endregion
-
-        #region Integration: Full migration via MigrationRunner
 
         [Test]
         public void FullMigrationRenamesOldKeysInPlayerAndGlobalBlueprints()
@@ -217,7 +203,5 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             Assert.That(ec.DataVersion, Is.EqualTo(MigrationRunner.CurrentVersion));
             Assert.That(pc.DataVersion, Is.EqualTo(MigrationRunner.CurrentVersion));
         }
-
-        #endregion
     }
 }

@@ -63,45 +63,45 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             lvwPlans.Columns.Add("Refs", 40, HorizontalAlignment.Right);
             lvwPlans.FullRowSelect = true;
             lvwPlans.MultiSelect = false;
-            lvwPlans.ItemSelectionChanged += lvwPlans_ItemSelectionChanged;
+            lvwPlans.ItemSelectionChanged += LvwPlans_ItemSelectionChanged;
 
-            txtPlanFilter.TextChanged += txtPlanFilter_TextChanged;
-            txtPlanName.TextChanged += txtPlanName_TextChanged;
-            txtDescription.TextChanged += txtDescription_TextChanged;
-            chkIsActive.CheckedChanged += chkIsActive_CheckedChanged;
+            txtPlanFilter.TextChanged += TxtPlanFilter_TextChanged;
+            txtPlanName.TextChanged += TxtPlanName_TextChanged;
+            txtDescription.TextChanged += TxtDescription_TextChanged;
+            chkIsActive.CheckedChanged += ChkIsActive_CheckedChanged;
 
-            cmdNew.Click += cmdNew_Click;
-            cmdDelete.Click += cmdDelete_Click;
-            cmdSave.Click += cmdSave_Click;
+            cmdNew.Click += CmdNew_Click;
+            cmdDelete.Click += CmdDelete_Click;
+            cmdSave.Click += CmdSave_Click;
 
             // Add Item panel wiring
             cmbItemType.Items.AddRange(new object[] { "Manufactory", "Commodity", "Mining", "Refining", "Research" });
             cmbItemType.SelectedIndex = 0;
-            cmbItemType.SelectedIndexChanged += cmbItemType_SelectedIndexChanged;
-            txtItemFilter.TextChanged += txtItemFilter_TextChanged;
-            cmdAddItem.Click += cmdAddItem_Click;
-            cmdQueueCalc.Click += cmdQueueCalc_Click;
-            cmdAllocate.Click += cmdAllocate_Click;
-            cmdAutoAssign.Click += cmdAutoAssign_Click;
-            dgvBuildItems.CellDoubleClick += dgvBuildItems_CellDoubleClick;
-            dgvBuildItems.SelectionChanged += dgvBuildItems_SelectionChanged;
+            cmbItemType.SelectedIndexChanged += CmbItemType_SelectedIndexChanged;
+            txtItemFilter.TextChanged += TxtItemFilter_TextChanged;
+            cmdAddItem.Click += CmdAddItem_Click;
+            cmdQueueCalc.Click += CmdQueueCalc_Click;
+            cmdAllocate.Click += CmdAllocate_Click;
+            cmdAutoAssign.Click += CmdAutoAssign_Click;
+            dgvBuildItems.CellDoubleClick += DgvBuildItems_CellDoubleClick;
+            dgvBuildItems.SelectionChanged += DgvBuildItems_SelectionChanged;
 
             // Dependency context menu wiring
-            tsmiSetDependency.Click += tsmiSetDependency_Click;
-            tsmiClearDependency.Click += tsmiClearDependency_Click;
+            tsmiSetDependency.Click += TsmiSetDependency_Click;
+            tsmiClearDependency.Click += TsmiClearDependency_Click;
 
             // Generate Delivery dropdown wiring
-            cmdGenerateDelivery.Click += cmdGenerateDelivery_Click;
-            tsmiResourceDelivery.Click += tsmiResourceDelivery_Click;
-            tsmiConsolidatedDelivery.Click += tsmiConsolidatedDelivery_Click;
-            tsmiFlatpackDelivery.Click += tsmiFlatpackDelivery_Click;
+            cmdGenerateDelivery.Click += CmdGenerateDelivery_Click;
+            tsmiResourceDelivery.Click += TsmiResourceDelivery_Click;
+            tsmiConsolidatedDelivery.Click += TsmiConsolidatedDelivery_Click;
+            tsmiFlatpackDelivery.Click += TsmiFlatpackDelivery_Click;
 
             PopulatePlanList();
             ClearForm();
 
-            flpBase.Layout += flpBase_Layout;
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpDetail.Layout += flpDetail_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.BuildPlanDataChanged += OnBuildPlanDataChanged;
@@ -112,7 +112,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         // Layout
         // -----------------------------------------------------------------------
 
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpBase.ClientSize.Width;
             int h = flpBase.ClientSize.Height;
@@ -120,7 +120,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             flpDetail.Size = new System.Drawing.Size(w - 232, h - 6);
         }
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpSearchList.ClientSize.Width;
             int h = flpSearchList.ClientSize.Height;
@@ -129,7 +129,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             lvwPlans.Size = new System.Drawing.Size(w - 6, listHeight);
         }
 
-        private void flpDetail_Layout(object sender, LayoutEventArgs e)
+        private void FlpDetail_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpDetail.ClientSize.Width;
             int h = flpDetail.ClientSize.Height;
@@ -188,12 +188,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 sw.ElapsedMilliseconds, plans.Count);
         }
 
-        private void txtPlanFilter_TextChanged(object sender, EventArgs e)
+        private void TxtPlanFilter_TextChanged(object sender, EventArgs e)
         {
             PopulatePlanList();
         }
 
-        private void lvwPlans_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwPlans_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is BuildPlan plan)
@@ -337,7 +337,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         // Shortfall Display
         // -----------------------------------------------------------------------
 
-        private void dgvBuildItems_SelectionChanged(object sender, EventArgs e)
+        private void DgvBuildItems_SelectionChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateShortfallGrid();
@@ -508,7 +508,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         // CRUD Operations
         // -----------------------------------------------------------------------
 
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             var plan = new BuildPlan
             {
@@ -526,7 +526,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             PopulateForm();
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null) return;
 
@@ -555,7 +555,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             ClearForm();
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void CmdSave_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null) return;
 
@@ -581,19 +581,19 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         // Data Model Write-Through
         // -----------------------------------------------------------------------
 
-        private void txtPlanName_TextChanged(object sender, EventArgs e)
+        private void TxtPlanName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             _selectedPlan.Name = txtPlanName.Text;
         }
 
-        private void txtDescription_TextChanged(object sender, EventArgs e)
+        private void TxtDescription_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             _selectedPlan.Description = txtDescription.Text;
         }
 
-        private void chkIsActive_CheckedChanged(object sender, EventArgs e)
+        private void ChkIsActive_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             _selectedPlan.IsActive = chkIsActive.Checked;
@@ -604,13 +604,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         // Add Item Panel
         // -----------------------------------------------------------------------
 
-        private void cmbItemType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbItemType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateItemCombo();
         }
 
-        private void txtItemFilter_TextChanged(object sender, EventArgs e)
+        private void TxtItemFilter_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateItemCombo();
@@ -632,7 +632,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     .Where(bp =>
                     {
                         bool canMfg = true;
-                        bp.Properties?.getBoolean("Can Manufacture", true, out canMfg);
+                        bp.Properties?.GetBoolean("Can Manufacture", true, out canMfg);
                         return canMfg;
                     });
 
@@ -702,7 +702,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             sw.Stop(); Log.Info("PERF PopulateItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmdAddItem_Click(object sender, EventArgs e)
+        private void CmdAddItem_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null)
             {
@@ -795,7 +795,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 buildItem.ItemType, buildItem.ItemName, buildItem.Quantity, _selectedPlan.Name);
         }
 
-        private void cmdQueueCalc_Click(object sender, EventArgs e)
+        private void CmdQueueCalc_Click(object sender, EventArgs e)
         {
             string itemType = cmbItemType.SelectedItem as string ?? string.Empty;
             var selectedEntry = cmbItem.SelectedItem as ItemEntry;
@@ -855,12 +855,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         // Structure Allocation
         // -----------------------------------------------------------------------
 
-        private void cmdAllocate_Click(object sender, EventArgs e)
+        private void CmdAllocate_Click(object sender, EventArgs e)
         {
             OpenAllocationDialog();
         }
 
-        private void dgvBuildItems_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void DgvBuildItems_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
             OpenAllocationDialog();
@@ -920,7 +920,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         // Auto-Assign
         // -----------------------------------------------------------------------
 
-        private void cmdAutoAssign_Click(object sender, EventArgs e)
+        private void CmdAutoAssign_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null)
             {
@@ -1071,7 +1071,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         // Generate Delivery
         // -----------------------------------------------------------------------
 
-        private void cmdGenerateDelivery_Click(object sender, EventArgs e)
+        private void CmdGenerateDelivery_Click(object sender, EventArgs e)
         {
             cmsGenerateDelivery.Show(cmdGenerateDelivery,
                 new System.Drawing.Point(0, cmdGenerateDelivery.Height));
@@ -1203,7 +1203,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
         }
 
-        private void tsmiResourceDelivery_Click(object sender, EventArgs e)
+        private void TsmiResourceDelivery_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null)
             {
@@ -1259,7 +1259,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
         }
 
-        private void tsmiConsolidatedDelivery_Click(object sender, EventArgs e)
+        private void TsmiConsolidatedDelivery_Click(object sender, EventArgs e)
         {
             var route = PickDeliveryRoute();
             if (route == null) return;
@@ -1309,7 +1309,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
         }
 
-        private void tsmiFlatpackDelivery_Click(object sender, EventArgs e)
+        private void TsmiFlatpackDelivery_Click(object sender, EventArgs e)
         {
             var route = PickDeliveryRoute();
             if (route == null) return;
@@ -1390,7 +1390,6 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 PopulatePurityCombo();
         }
 
-
         private void PopulateSurveyCombo()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
@@ -1418,12 +1417,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             sw.Stop(); Log.Info("PERF PopulatePurityCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-
         // -----------------------------------------------------------------------
         // Dependency Tracking
         // -----------------------------------------------------------------------
 
-        private void tsmiSetDependency_Click(object sender, EventArgs e)
+        private void TsmiSetDependency_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null || dgvBuildItems.CurrentRow == null) return;
 
@@ -1490,7 +1488,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
         }
 
-        private void tsmiClearDependency_Click(object sender, EventArgs e)
+        private void TsmiClearDependency_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null || dgvBuildItems.CurrentRow == null) return;
 

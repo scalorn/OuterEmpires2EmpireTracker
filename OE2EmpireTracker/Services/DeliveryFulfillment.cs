@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Services
                 return false;
             }
 
-            structure.Properties.setProperty(Constants.GameConstants.PropStaged, staged ? "True" : "False");
+            structure.Properties.SetProperty(Constants.GameConstants.PropStaged, staged ? "True" : "False");
             return true;
         }
 

@@ -118,8 +118,6 @@ namespace OE2EmpireTracker.Persistence
             mainWindow.Height = validated.Height;
         }
 
-        #region Private Helpers
-
         internal static void SaveControlStates(Control parent, FormControlState formState)
         {
             foreach (Control control in parent.Controls)
@@ -384,7 +382,5 @@ namespace OE2EmpireTracker.Persistence
 
             // Neither valid -- skip, leave at default
         }
-
-        #endregion
     }
 }

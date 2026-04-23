@@ -37,7 +37,7 @@ namespace OE2EmpireTracker.Services.Migration
 
             // Ensure Blueprint.Class has the value before removing
             string classStr;
-            bp.Properties.getString("Class", null, out classStr);
+            bp.Properties.GetString("Class", null, out classStr);
             if (classStr != null)
             {
                 int cls;

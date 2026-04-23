@@ -13,8 +13,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     [TestFixture]
     public class DefaultSurveyDeterministicUUIDPropertyTests
     {
-        #region Generators
-
         private static Gen<string> SafeStringGen()
         {
             return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
@@ -30,10 +28,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                    from systemName in SafeStringGen()
                    select Tuple.Create(ownerUUID, planetName, systemName);
         }
-
-        #endregion
-
-        #region Property 1: Same inputs produce same UUID
 
         /// <summary>
         /// For any (ownerUUID, planetName, systemName) triple, GenerateDefaultSurvey
@@ -52,10 +46,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     .Label($"Expected same UUID for same inputs, got '{uuid1}' and '{uuid2}'");
             });
         }
-
-        #endregion
-
-        #region Property 2: Different inputs produce different UUIDs
 
         /// <summary>
         /// Two different (ownerUUID, planetName, systemName) triples shall produce different UUIDs.
@@ -83,10 +73,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             });
         }
 
-        #endregion
-
-        #region Property 3: Default survey UUID differs from colony UUID
-
         /// <summary>
         /// GenerateDefaultSurvey and Generate (colony) with the same inputs shall
         /// produce different UUIDs, confirming namespace isolation.
@@ -107,10 +93,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             });
         }
 
-        #endregion
-
-        #region Property 4: Generated UUID is a valid GUID
-
         /// <summary>
         /// Generated default survey UUIDs should be valid GUID strings.
         /// **Validates: Requirements 6.1**
@@ -128,7 +110,5 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 return canParse.Label($"UUID '{uuidStr}' is not a valid GUID");
             });
         }
-
-        #endregion
     }
 }

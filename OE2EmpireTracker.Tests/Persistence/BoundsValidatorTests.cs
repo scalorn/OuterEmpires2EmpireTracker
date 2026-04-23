@@ -10,8 +10,6 @@ namespace OE2EmpireTracker.Tests.Persistence
         // A standard parent client area for MDI child tests
         private static readonly Rectangle ParentArea = new Rectangle(0, 0, 1200, 800);
 
-        #region MDI Child -- Entirely off-screen resets to default cascade (Req 5.1)
-
         [Test]
         public void MdiChild_EntirelyOutsideParent_ResetsToDefaultCascade()
         {
@@ -36,10 +34,6 @@ namespace OE2EmpireTracker.Tests.Persistence
             Assert.That(result.Y, Is.EqualTo(ParentArea.Y + 10));
         }
 
-        #endregion
-
-        #region MDI Child -- Right edge within margin shifts left (Req 5.2)
-
         [Test]
         public void MdiChild_RightEdgeWithinMargin_ShiftsLeft()
         {
@@ -56,10 +50,6 @@ namespace OE2EmpireTracker.Tests.Persistence
             Assert.That(result.Width, Is.EqualTo(500));
         }
 
-        #endregion
-
-        #region MDI Child -- Bottom edge within margin shifts up (Req 5.3)
-
         [Test]
         public void MdiChild_BottomEdgeWithinMargin_ShiftsUp()
         {
@@ -74,10 +64,6 @@ namespace OE2EmpireTracker.Tests.Persistence
             Assert.That(result.Y, Is.EqualTo(ParentArea.Bottom - BoundsValidator.ScreenEdgeMargin - 400));
             Assert.That(result.Height, Is.EqualTo(400));
         }
-
-        #endregion
-
-        #region MDI Child -- Width/height below minimum clamped to 320x200 (Req 5.4)
 
         [Test]
         public void MdiChild_WidthBelowMinimum_ClampedTo320()
@@ -110,10 +96,6 @@ namespace OE2EmpireTracker.Tests.Persistence
             Assert.That(result.Height, Is.EqualTo(BoundsValidator.MinHeight));
         }
 
-        #endregion
-
-        #region MDI Child -- Valid bounds pass through unchanged
-
         [Test]
         public void MdiChild_ValidBounds_PassThroughUnchanged()
         {
@@ -140,10 +122,6 @@ namespace OE2EmpireTracker.Tests.Persistence
             Assert.That(result.Height, Is.EqualTo(300));
         }
 
-        #endregion
-
-        #region MDI Child -- Combined edge shifts and size clamping
-
         [Test]
         public void MdiChild_BothEdgesWithinMargin_ShiftsBothAxes()
         {
@@ -168,10 +146,6 @@ namespace OE2EmpireTracker.Tests.Persistence
             Assert.That(result.Width, Is.EqualTo(BoundsValidator.MinWidth));
             Assert.That(result.Height, Is.EqualTo(BoundsValidator.MinHeight));
         }
-
-        #endregion
-
-        #region MDI Child -- Non-zero origin parent client area
 
         [Test]
         public void MdiChild_NonZeroOriginParent_EntirelyOutside_ResetsToParentCascade()
@@ -216,10 +190,6 @@ namespace OE2EmpireTracker.Tests.Persistence
             Assert.That(result.X, Is.EqualTo(parent.Right - BoundsValidator.ScreenEdgeMargin - 400));
         }
 
-        #endregion
-
-        #region Constants verification
-
         [Test]
         public void Constants_HaveExpectedValues()
         {
@@ -227,7 +197,5 @@ namespace OE2EmpireTracker.Tests.Persistence
             Assert.That(BoundsValidator.MinHeight, Is.EqualTo(200));
             Assert.That(BoundsValidator.ScreenEdgeMargin, Is.EqualTo(100));
         }
-
-        #endregion
     }
 }

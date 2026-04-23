@@ -32,29 +32,29 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             lvwShips.Columns.Add("Refs", 40, HorizontalAlignment.Right);
             lvwShips.FullRowSelect = true;
             lvwShips.MultiSelect = false;
-            lvwShips.ItemSelectionChanged += lvwShips_ItemSelectionChanged;
+            lvwShips.ItemSelectionChanged += LvwShips_ItemSelectionChanged;
 
-            txtFilter.TextChanged += txtFilter_TextChanged;
-            txtName.TextChanged += txtName_TextChanged;
-            cmbLocationType.SelectedIndexChanged += cmbLocationType_SelectedIndexChanged;
+            txtFilter.TextChanged += TxtFilter_TextChanged;
+            txtName.TextChanged += TxtName_TextChanged;
+            cmbLocationType.SelectedIndexChanged += CmbLocationType_SelectedIndexChanged;
 
-            cmdNew.Click += cmdNew_Click;
-            cmdDelete.Click += cmdDelete_Click;
-            cmdSave.Click += cmdSave_Click;
-            cmdFromTemplate.Click += cmdFromTemplate_Click;
-            cmbHull.SelectedItemChanged += cmbHull_SelectedItemChanged;
-            rbCargoHold.CheckedChanged += rbCargo_CheckedChanged;
-            rbHopper.CheckedChanged += rbCargo_CheckedChanged;
-            cmdAddItem.Click += cmdAddItem_Click;
-            cmdRemoveItem.Click += cmdRemoveItem_Click;
-            dgvCargo.SelectionChanged += dgvCargo_SelectionChanged;
-            cmbAddType.SelectedIndexChanged += cmbAddType_SelectedIndexChanged;
+            cmdNew.Click += CmdNew_Click;
+            cmdDelete.Click += CmdDelete_Click;
+            cmdSave.Click += CmdSave_Click;
+            cmdFromTemplate.Click += CmdFromTemplate_Click;
+            cmbHull.SelectedItemChanged += CmbHull_SelectedItemChanged;
+            rbCargoHold.CheckedChanged += RbCargo_CheckedChanged;
+            rbHopper.CheckedChanged += RbCargo_CheckedChanged;
+            cmdAddItem.Click += CmdAddItem_Click;
+            cmdRemoveItem.Click += CmdRemoveItem_Click;
+            dgvCargo.SelectionChanged += DgvCargo_SelectionChanged;
+            cmbAddType.SelectedIndexChanged += CmbAddType_SelectedIndexChanged;
 
-            dgvComponents.CellEndEdit += dgvComponents_CellEndEdit;
-            dgvComponents.CellValueChanged += dgvComponents_CellValueChanged;
-            dgvComponents.CurrentCellDirtyStateChanged += dgvComponents_CurrentCellDirtyStateChanged;
-            dgvComponents.DataError += dgvComponents_DataError;
-            dgvComponents.CellClick += dgvComponents_CellClick;
+            dgvComponents.CellEndEdit += DgvComponents_CellEndEdit;
+            dgvComponents.CellValueChanged += DgvComponents_CellValueChanged;
+            dgvComponents.CurrentCellDirtyStateChanged += DgvComponents_CurrentCellDirtyStateChanged;
+            dgvComponents.DataError += DgvComponents_DataError;
+            dgvComponents.CellClick += DgvComponents_CellClick;
 
             PopulateLocationTypeCombo();
             PopulateHullCombo();
@@ -62,15 +62,15 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             PopulateShipList();
             ClearForm();
 
-            flpBase.Layout += flpBase_Layout;
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpDetail.Layout += flpDetail_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
 
         // Layout
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             int w2 = flpBase.ClientSize.Width;
             int h = flpBase.ClientSize.Height;
@@ -78,7 +78,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             flpDetail.Size = new System.Drawing.Size(w2 - 232, h - 6);
         }
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             int w2 = flpSearchList.ClientSize.Width;
             int h = flpSearchList.ClientSize.Height;
@@ -87,7 +87,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             lvwShips.Size = new System.Drawing.Size(w2 - 6, listHeight);
         }
 
-        private void flpDetail_Layout(object sender, LayoutEventArgs e)
+        private void FlpDetail_Layout(object sender, LayoutEventArgs e)
         {
             int w2 = flpDetail.ClientSize.Width;
             int h = flpDetail.ClientSize.Height;
@@ -127,9 +127,9 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             Log.Info("PERF PopulateShipList: {0}ms items={1}", sw.ElapsedMilliseconds, ships.Count);
         }
 
-        private void txtFilter_TextChanged(object sender, EventArgs e) { PopulateShipList(); }
+        private void TxtFilter_TextChanged(object sender, EventArgs e) { PopulateShipList(); }
 
-        private void lvwShips_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwShips_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Ship ship)
@@ -202,7 +202,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             cmbLocationType.SelectedIndex = -1;
         }
 
-        private void cmbLocationType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbLocationType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedShip == null) return;
             if (cmbLocationType.SelectedItem is DestinationType dt)
@@ -274,7 +274,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 cmbHull.SetItems(cmbHull.Items, null);
         }
 
-        private void cmbHull_SelectedItemChanged(object sender, EventArgs e)
+        private void CmbHull_SelectedItemChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedShip == null) return;
             int idx = cmbHull.SelectedFullIndex;
@@ -300,7 +300,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             foreach (var kvp in SlotTypes.HullPropertyToSlotType)
             {
                 decimal maxVal;
-                if (hullBp.Properties.getDecimal(kvp.Key, 0m, out maxVal) && maxVal > 0)
+                if (hullBp.Properties.GetDecimal(kvp.Key, 0m, out maxVal) && maxVal > 0)
                 {
                     slotToBpTypes.TryGetValue(kvp.Value, out var bpTypes);
                     defs.Add(new SlotDefinition
@@ -399,7 +399,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             sw.Stop(); Log.Info("PERF PopulateOverviewGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void dgvComponents_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private void DgvComponents_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedShip == null || e.RowIndex < 0) return;
             var row = dgvComponents.Rows[e.RowIndex];
@@ -434,7 +434,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             }
         }
 
-        private void dgvComponents_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DgvComponents_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || e.RowIndex < 0) return;
             if (e.ColumnIndex != colComponent.Index) return;
@@ -473,19 +473,19 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             RefreshStats();
         }
 
-        private void dgvComponents_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void DgvComponents_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (dgvComponents.IsCurrentCellDirty)
                 dgvComponents.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-        private void dgvComponents_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        private void DgvComponents_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             Log.Error("dgvComponents DataError at [{0}, {1}]: {2}", e.RowIndex, e.ColumnIndex, e.Exception?.Message);
             e.ThrowException = false;
         }
 
-        private void dgvComponents_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void DgvComponents_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && e.ColumnIndex == colComponent.Index)
                 dgvComponents.BeginEdit(true);
@@ -524,7 +524,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             return rbHopper.Checked ? _selectedShip.Hopper : _selectedShip.Cargo;
         }
 
-        private void rbCargo_CheckedChanged(object sender, EventArgs e)
+        private void RbCargo_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateCargoGrid();
@@ -562,7 +562,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             sw.Stop(); Log.Info("PERF PopulateCargoGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void dgvCargo_SelectionChanged(object sender, EventArgs e)
+        private void DgvCargo_SelectionChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (dgvCargo.SelectedRows.Count == 0) { ClearCrateContents(); return; }
@@ -612,7 +612,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             sw.Stop(); Log.Info("PERF PopulateAddTypeCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmbAddType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbAddType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateAddItemCombo();
@@ -678,7 +678,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             }
         }
 
-        private void cmdAddItem_Click(object sender, EventArgs e)
+        private void CmdAddItem_Click(object sender, EventArgs e)
         {
             var bag = GetSelectedBag();
             if (bag == null || _selectedShip == null) return;
@@ -709,7 +709,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 itemName, qty, rbHopper.Checked ? "Hopper" : "Cargo");
         }
 
-        private void cmdRemoveItem_Click(object sender, EventArgs e)
+        private void CmdRemoveItem_Click(object sender, EventArgs e)
         {
             var bag = GetSelectedBag();
             if (bag == null || dgvCargo.SelectedRows.Count == 0) return;
@@ -721,7 +721,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         }
 
         // Create from Template (19.4)
-        private void cmdFromTemplate_Click(object sender, EventArgs e)
+        private void CmdFromTemplate_Click(object sender, EventArgs e)
         {
             var templates = playerContext.GetCurrentPlayerShipTemplates();
             if (templates.Count == 0)
@@ -790,7 +790,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         }
 
         // CRUD
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             var ship = new Ship
             {
@@ -807,7 +807,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             Log.Info("Created blank ship \"{0}\"", ship.Name);
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (_selectedShip == null) return;
 
@@ -836,7 +836,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             Log.Info("Deleted ship");
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void CmdSave_Click(object sender, EventArgs e)
         {
             if (_selectedShip == null) return;
             string name = txtName.Text.Trim();
@@ -850,7 +850,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             Log.Info("Saved ship \"{0}\"", _selectedShip.Name);
         }
 
-        private void txtName_TextChanged(object sender, EventArgs e)
+        private void TxtName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedShip == null) return;
             _selectedShip.Name = txtName.Text;
@@ -875,10 +875,26 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         }
 
         // Inner classes for component grid
-        private class SlotInfo { public string SlotType; public int SlotIndex; public List<string> UUIDByIndex; }
-        private class SlotDefinition { public string SlotType; public int MaxCount; public List<string> BlueprintTypes; }
+        private class SlotInfo
+        {
+            public string SlotType { get; set; }
+            public int SlotIndex { get; set; }
+            public List<string> UUIDByIndex { get; set; }
+        }
+
+        private class SlotDefinition
+        {
+            public string SlotType { get; set; }
+            public int MaxCount { get; set; }
+            public List<string> BlueprintTypes { get; set; }
+        }
 
         // Helpers
-        private class LocationEntry { public string Display; public string UUID; public override string ToString() => Display; }
+        private class LocationEntry
+        {
+            public string Display { get; set; }
+            public string UUID { get; set; }
+            public override string ToString() => Display;
+        }
     }
 }

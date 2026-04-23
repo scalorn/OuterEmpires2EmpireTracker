@@ -7,8 +7,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class SurveyDateTimeParserTests
     {
-        #region 12a -> midnight, 12p -> noon
-
         [Test]
         public void TryParseGameFormat_12a_IsMidnight()
         {
@@ -28,10 +26,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(dt.Hour, Is.EqualTo(12), "12p should be noon (hour 12)");
             Assert.That(dt.Minute, Is.EqualTo(0));
         }
-
-        #endregion
-
-        #region All 12 months JAN--DEC
 
         [TestCase("JAN", 1)]
         [TestCase("FEB", 2)]
@@ -54,10 +48,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(dt.Month, Is.EqualTo(expectedMonth));
         }
 
-        #endregion
-
-        #region Known game strings -> expected ISO output
-
         [Test]
         public void KnownGameString_27JUL24_1144p()
         {
@@ -76,10 +66,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(SurveyDateTimeParser.ToIsoString(dt), Is.EqualTo("2026-02-19T20:41:00Z"));
         }
 
-        #endregion
-
-        #region FormatForDisplay passthrough for non-ISO strings
-
         [TestCase("27JUL24-11:44p")]
         [TestCase("not-a-date")]
         [TestCase("hello world")]
@@ -90,10 +76,6 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(result, Is.EqualTo(input));
         }
-
-        #endregion
-
-        #region TryParseGameFormat returns false for null, empty, malformed
 
         [Test]
         public void TryParseGameFormat_Null_ReturnsFalse()
@@ -120,7 +102,5 @@ namespace OE2EmpireTracker.Tests.Services
             bool ok = SurveyDateTimeParser.TryParseGameFormat(input, out _);
             Assert.That(ok, Is.False);
         }
-
-        #endregion
     }
 }

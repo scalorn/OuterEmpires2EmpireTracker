@@ -32,24 +32,24 @@ namespace OE2EmpireTracker.Forms.StockTargets
             lvwPlans.Columns.Add("Active", 50);
             lvwPlans.FullRowSelect = true;
             lvwPlans.MultiSelect = false;
-            lvwPlans.ItemSelectionChanged += lvwPlans_ItemSelectionChanged;
+            lvwPlans.ItemSelectionChanged += LvwPlans_ItemSelectionChanged;
 
-            txtFilter.TextChanged += txtFilter_TextChanged;
-            txtPlanName.TextChanged += txtPlanName_TextChanged;
-            chkActive.CheckedChanged += chkActive_CheckedChanged;
-            cmbReplenishmentPlan.SelectedIndexChanged += cmbReplenishmentPlan_SelectedIndexChanged;
+            txtFilter.TextChanged += TxtFilter_TextChanged;
+            txtPlanName.TextChanged += TxtPlanName_TextChanged;
+            chkActive.CheckedChanged += ChkActive_CheckedChanged;
+            cmbReplenishmentPlan.SelectedIndexChanged += CmbReplenishmentPlan_SelectedIndexChanged;
 
-            cmdNew.Click += cmdNew_Click;
-            cmdDelete.Click += cmdDelete_Click;
-            cmdSave.Click += cmdSave_Click;
-            cmdAddTarget.Click += cmdAddTarget_Click;
-            cmdRemoveTarget.Click += cmdRemoveTarget_Click;
-            cmdQuickAdd.Click += cmdQuickAdd_Click;
-            cmdCheckGenerate.Click += cmdCheckGenerate_Click;
+            cmdNew.Click += CmdNew_Click;
+            cmdDelete.Click += CmdDelete_Click;
+            cmdSave.Click += CmdSave_Click;
+            cmdAddTarget.Click += CmdAddTarget_Click;
+            cmdRemoveTarget.Click += CmdRemoveTarget_Click;
+            cmdQuickAdd.Click += CmdQuickAdd_Click;
+            cmdCheckGenerate.Click += CmdCheckGenerate_Click;
 
-            cmbScope.SelectedIndexChanged += cmbScope_SelectedIndexChanged;
-            cmbTargetType.SelectedIndexChanged += cmbTargetType_SelectedIndexChanged;
-            dgvTargets.SelectionChanged += dgvTargets_SelectionChanged;
+            cmbScope.SelectedIndexChanged += CmbScope_SelectedIndexChanged;
+            cmbTargetType.SelectedIndexChanged += CmbTargetType_SelectedIndexChanged;
+            dgvTargets.SelectionChanged += DgvTargets_SelectionChanged;
 
             PopulateTargetTypeCombos();
             PopulatePlanList();
@@ -61,29 +61,29 @@ namespace OE2EmpireTracker.Forms.StockTargets
             lvwProfiles.Columns.Add("Active", 50);
             lvwProfiles.FullRowSelect = true;
             lvwProfiles.MultiSelect = false;
-            lvwProfiles.ItemSelectionChanged += lvwProfiles_ItemSelectionChanged;
-            txtProfileFilter.TextChanged += txtProfileFilter_TextChanged;
-            txtProfileName.TextChanged += txtProfileName_TextChanged;
-            chkProfileActive.CheckedChanged += chkProfileActive_CheckedChanged;
-            cmdNewProfile.Click += cmdNewProfile_Click;
-            cmdDeleteProfile.Click += cmdDeleteProfile_Click;
-            cmdSaveProfile.Click += cmdSaveProfile_Click;
-            cmdAddEntry.Click += cmdAddEntry_Click;
-            cmdRemoveEntry.Click += cmdRemoveEntry_Click;
-            txtEntryFilter.TextChanged += txtEntryFilter_TextChanged;
+            lvwProfiles.ItemSelectionChanged += LvwProfiles_ItemSelectionChanged;
+            txtProfileFilter.TextChanged += TxtProfileFilter_TextChanged;
+            txtProfileName.TextChanged += TxtProfileName_TextChanged;
+            chkProfileActive.CheckedChanged += ChkProfileActive_CheckedChanged;
+            cmdNewProfile.Click += CmdNewProfile_Click;
+            cmdDeleteProfile.Click += CmdDeleteProfile_Click;
+            cmdSaveProfile.Click += CmdSaveProfile_Click;
+            cmdAddEntry.Click += CmdAddEntry_Click;
+            cmdRemoveEntry.Click += CmdRemoveEntry_Click;
+            txtEntryFilter.TextChanged += TxtEntryFilter_TextChanged;
             PopulateProfileList();
             ClearProfileForm();
 
-            flpBase.Layout += flpBase_Layout;
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpDetail.Layout += flpDetail_Layout;
-            tabProfiles.Layout += tabProfiles_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpDetail.Layout += FlpDetail_Layout;
+            tabProfiles.Layout += TabProfiles_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
 
         // Layout
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpBase.ClientSize.Width;
             int h = flpBase.ClientSize.Height;
@@ -91,7 +91,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             tabMain.Size = new Size(w - 232, h - 6);
         }
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpSearchList.ClientSize.Width;
             int h = flpSearchList.ClientSize.Height;
@@ -100,7 +100,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             lvwPlans.Size = new Size(w - 6, listHeight);
         }
 
-        private void flpDetail_Layout(object sender, LayoutEventArgs e)
+        private void FlpDetail_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpDetail.ClientSize.Width;
             dgvTargets.Width = w - 6;
@@ -139,9 +139,9 @@ namespace OE2EmpireTracker.Forms.StockTargets
             Log.Info("PERF PopulatePlanList: {0}ms items={1}", sw.ElapsedMilliseconds, plans.Count);
         }
 
-        private void txtFilter_TextChanged(object sender, EventArgs e) { PopulatePlanList(); }
+        private void TxtFilter_TextChanged(object sender, EventArgs e) { PopulatePlanList(); }
 
-        private void lvwPlans_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwPlans_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is StockPlan plan)
@@ -314,13 +314,13 @@ namespace OE2EmpireTracker.Forms.StockTargets
             sw.Stop(); Log.Info("PERF PopulateLocationCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmbScope_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbScope_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateLocationCombo();
         }
 
-        private void cmbTargetType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbTargetType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateTargetItemCombo();
@@ -368,7 +368,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
         }
 
         // CRUD
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             var plan = new StockPlan
             {
@@ -386,7 +386,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             Log.Info("Created new stock plan");
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null) return;
             var result = MessageBox.Show(
@@ -401,7 +401,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             Log.Info("Deleted stock plan");
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void CmdSave_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null) return;
             string name = txtPlanName.Text.Trim();
@@ -418,25 +418,25 @@ namespace OE2EmpireTracker.Forms.StockTargets
             Log.Info("Saved stock plan \"{0}\"", _selectedPlan.Name);
         }
 
-        private void txtPlanName_TextChanged(object sender, EventArgs e)
+        private void TxtPlanName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             _selectedPlan.Name = txtPlanName.Text;
         }
 
-        private void chkActive_CheckedChanged(object sender, EventArgs e)
+        private void ChkActive_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             _selectedPlan.IsActive = chkActive.Checked;
         }
 
-        private void cmbReplenishmentPlan_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbReplenishmentPlan_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             _selectedPlan.ReplenishmentBuildPlanUUID = cmbReplenishmentPlan.SelectedValue?.ToString() ?? string.Empty;
         }
 
-        private void cmdAddTarget_Click(object sender, EventArgs e)
+        private void CmdAddTarget_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null) return;
             string typeStr = cmbTargetType.SelectedItem?.ToString() ?? string.Empty;
@@ -488,7 +488,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             }
         }
 
-        private void cmdRemoveTarget_Click(object sender, EventArgs e)
+        private void CmdRemoveTarget_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null || dgvTargets.SelectedRows.Count == 0) return;
             var target = dgvTargets.SelectedRows[0].Tag as StockTarget;
@@ -498,7 +498,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             Log.Info("Removed target: {0}", target.ItemName);
         }
 
-        private void cmdQuickAdd_Click(object sender, EventArgs e)
+        private void CmdQuickAdd_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null) return;
 
@@ -537,7 +537,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void dgvTargets_SelectionChanged(object sender, EventArgs e)
+        private void DgvTargets_SelectionChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (dgvTargets.SelectedRows.Count == 0) { ClearExpandedComponents(); return; }
@@ -586,7 +586,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             dgvExpandedComponents.Visible = false;
         }
 
-        private void cmdCheckGenerate_Click(object sender, EventArgs e)
+        private void CmdCheckGenerate_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null) return;
 
@@ -668,7 +668,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
         // === Profiles Tab ===
 
-        private void tabProfiles_Layout(object sender, LayoutEventArgs e)
+        private void TabProfiles_Layout(object sender, LayoutEventArgs e)
         {
             int w = tabProfiles.ClientSize.Width;
             int h = tabProfiles.ClientSize.Height;
@@ -713,9 +713,9 @@ namespace OE2EmpireTracker.Forms.StockTargets
             Log.Info("PERF PopulateProfileList: {0}ms items={1}", sw.ElapsedMilliseconds, profiles.Count);
         }
 
-        private void txtProfileFilter_TextChanged(object sender, EventArgs e) { PopulateProfileList(); }
+        private void TxtProfileFilter_TextChanged(object sender, EventArgs e) { PopulateProfileList(); }
 
-        private void lvwProfiles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwProfiles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is StockProfile profile)
@@ -815,7 +815,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             sw.Stop(); Log.Info("PERF PopulateEntryCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void txtEntryFilter_TextChanged(object sender, EventArgs e)
+        private void TxtEntryFilter_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateEntryCombo();
@@ -846,7 +846,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 lblLogicSummary.Text = "Logic: " + string.Join(" + ", parts.Select(p => p));
         }
 
-        private void cmdNewProfile_Click(object sender, EventArgs e)
+        private void CmdNewProfile_Click(object sender, EventArgs e)
         {
             var profile = new StockProfile
             {
@@ -864,7 +864,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             Log.Info("Created new stock profile");
         }
 
-        private void cmdDeleteProfile_Click(object sender, EventArgs e)
+        private void CmdDeleteProfile_Click(object sender, EventArgs e)
         {
             if (_selectedProfile == null) return;
             var result = MessageBox.Show(
@@ -879,7 +879,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             Log.Info("Deleted stock profile");
         }
 
-        private void cmdSaveProfile_Click(object sender, EventArgs e)
+        private void CmdSaveProfile_Click(object sender, EventArgs e)
         {
             if (_selectedProfile == null) return;
             string name = txtProfileName.Text.Trim();
@@ -896,19 +896,19 @@ namespace OE2EmpireTracker.Forms.StockTargets
             Log.Info("Saved stock profile \"{0}\"", _selectedProfile.Name);
         }
 
-        private void txtProfileName_TextChanged(object sender, EventArgs e)
+        private void TxtProfileName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedProfile == null) return;
             _selectedProfile.Name = txtProfileName.Text;
         }
 
-        private void chkProfileActive_CheckedChanged(object sender, EventArgs e)
+        private void ChkProfileActive_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedProfile == null) return;
             _selectedProfile.IsActive = chkProfileActive.Checked;
         }
 
-        private void cmdAddEntry_Click(object sender, EventArgs e)
+        private void CmdAddEntry_Click(object sender, EventArgs e)
         {
             if (_selectedProfile == null) return;
             string planUUID = cmbEntry.SelectedValue?.ToString() ?? string.Empty;
@@ -928,7 +928,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             Log.Info("Added profile entry: group={0} plan={1}", groupID, ResolvePlanName(planUUID));
         }
 
-        private void cmdRemoveEntry_Click(object sender, EventArgs e)
+        private void CmdRemoveEntry_Click(object sender, EventArgs e)
         {
             if (_selectedProfile == null || dgvEntries.SelectedRows.Count == 0) return;
             var entry = dgvEntries.SelectedRows[0].Tag as StockProfileEntry;

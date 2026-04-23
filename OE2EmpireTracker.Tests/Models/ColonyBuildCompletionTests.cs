@@ -34,8 +34,8 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var s = new ColonyStructure();
             s.UUID = Guid.NewGuid().ToString();
-            s.Properties.setProperty(GameConstants.PropStaged, staged);
-            s.Properties.setProperty(GameConstants.PropBuilt, built);
+            s.Properties.SetProperty(GameConstants.PropStaged, staged);
+            s.Properties.SetProperty(GameConstants.PropBuilt, built);
             s.BuildCompletionTime = buildCompletionTime;
             return s;
         }
@@ -196,8 +196,8 @@ namespace OE2EmpireTracker.Tests.Models
             structure.MiningSurvey = survey.UUID;
             structure.MiningSurveyResource = "TestOre";
             // Start as building with expired timer
-            structure.Properties.setProperty(GameConstants.PropBuilt, false);
-            structure.Properties.setProperty(GameConstants.PropStaged, false);
+            structure.Properties.SetProperty(GameConstants.PropBuilt, false);
+            structure.Properties.SetProperty(GameConstants.PropStaged, false);
             structure.BuildCompletionTime = MakeExpiredTimer();
 
             // Also set up a process timer with 1 interval passed

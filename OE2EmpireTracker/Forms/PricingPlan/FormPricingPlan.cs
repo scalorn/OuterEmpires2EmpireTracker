@@ -28,27 +28,27 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             lvwPlans.Columns.Add("Name", 200);
             lvwPlans.FullRowSelect = true;
             lvwPlans.MultiSelect = false;
-            lvwPlans.ItemSelectionChanged += lvwPlans_ItemSelectionChanged;
+            lvwPlans.ItemSelectionChanged += LvwPlans_ItemSelectionChanged;
 
-            txtPlanFilter.TextChanged += txtPlanFilter_TextChanged;
-            txtPlanName.TextChanged += txtPlanName_TextChanged;
-            txtDescription.TextChanged += txtDescription_TextChanged;
-            txtFixedCost.TextChanged += txtFixedCost_TextChanged;
-            txtHourlyCost.TextChanged += txtHourlyCost_TextChanged;
+            txtPlanFilter.TextChanged += TxtPlanFilter_TextChanged;
+            txtPlanName.TextChanged += TxtPlanName_TextChanged;
+            txtDescription.TextChanged += TxtDescription_TextChanged;
+            txtFixedCost.TextChanged += TxtFixedCost_TextChanged;
+            txtHourlyCost.TextChanged += TxtHourlyCost_TextChanged;
 
-            cmdNew.Click += cmdNew_Click;
-            cmdDelete.Click += cmdDelete_Click;
-            cmdSave.Click += cmdSave_Click;
+            cmdNew.Click += CmdNew_Click;
+            cmdDelete.Click += CmdDelete_Click;
+            cmdSave.Click += CmdSave_Click;
 
-            dgvResourcePrices.CellValueChanged += dgvResourcePrices_CellValueChanged;
-            dgvResourcePrices.CellValidating += dgvResourcePrices_CellValidating;
+            dgvResourcePrices.CellValueChanged += DgvResourcePrices_CellValueChanged;
+            dgvResourcePrices.CellValidating += DgvResourcePrices_CellValidating;
 
             PopulatePlanList();
             ClearForm();
 
-            flpBase.Layout += flpBase_Layout;
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpDetail.Layout += flpDetail_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
@@ -57,7 +57,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         // Layout
         // -----------------------------------------------------------------------
 
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpBase.ClientSize.Width;
             int h = flpBase.ClientSize.Height;
@@ -65,7 +65,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             flpDetail.Size = new System.Drawing.Size(w - 232, h - 6);
         }
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpSearchList.ClientSize.Width;
             int h = flpSearchList.ClientSize.Height;
@@ -74,7 +74,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             lvwPlans.Size = new System.Drawing.Size(w - 6, listHeight);
         }
 
-        private void flpDetail_Layout(object sender, LayoutEventArgs e)
+        private void FlpDetail_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpDetail.ClientSize.Width;
             int h = flpDetail.ClientSize.Height;
@@ -117,12 +117,12 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             sw.Stop(); Log.Info("PERF PopulatePlanList: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void txtPlanFilter_TextChanged(object sender, EventArgs e)
+        private void TxtPlanFilter_TextChanged(object sender, EventArgs e)
         {
             PopulatePlanList();
         }
 
-        private void lvwPlans_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwPlans_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.IsSelected && e.Item.Tag is Models.PricingPlan plan)
@@ -184,10 +184,10 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            dgvResourcePrices.CellValidating -= dgvResourcePrices_CellValidating;
+            dgvResourcePrices.CellValidating -= DgvResourcePrices_CellValidating;
             dgvResourcePrices.EndEdit();
             dgvResourcePrices.Rows.Clear();
-            dgvResourcePrices.CellValidating += dgvResourcePrices_CellValidating;
+            dgvResourcePrices.CellValidating += DgvResourcePrices_CellValidating;
 
             if (_selectedPlan == null) { sw.Stop(); return; }
 
@@ -213,7 +213,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         // CRUD Operations
         // -----------------------------------------------------------------------
 
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             var plan = new Models.PricingPlan
             {
@@ -230,7 +230,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             PopulateForm();
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null) return;
             var result = MessageBox.Show(
@@ -248,7 +248,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             ClearForm();
         }
 
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void CmdSave_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null) return;
 
@@ -316,19 +316,19 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         // Data Model Write-Through
         // -----------------------------------------------------------------------
 
-        private void txtPlanName_TextChanged(object sender, EventArgs e)
+        private void TxtPlanName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             _selectedPlan.Name = txtPlanName.Text;
         }
 
-        private void txtDescription_TextChanged(object sender, EventArgs e)
+        private void TxtDescription_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             _selectedPlan.Description = txtDescription.Text;
         }
 
-        private void txtFixedCost_TextChanged(object sender, EventArgs e)
+        private void TxtFixedCost_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             decimal val;
@@ -336,7 +336,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 _selectedPlan.FixedCostPerItem = val;
         }
 
-        private void txtHourlyCost_TextChanged(object sender, EventArgs e)
+        private void TxtHourlyCost_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
             decimal val;
@@ -348,7 +348,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         // Resource Price Grid
         // -----------------------------------------------------------------------
 
-        private void dgvResourcePrices_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void DgvResourcePrices_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.ColumnIndex != colPrice.Index) return;
@@ -374,7 +374,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             dgvResourcePrices.Rows[e.RowIndex].ErrorText = string.Empty;
         }
 
-        private void dgvResourcePrices_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DgvResourcePrices_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (e.RowIndex < 0 || e.ColumnIndex != colPrice.Index) return;

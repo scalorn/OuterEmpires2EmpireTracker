@@ -192,10 +192,10 @@ namespace OE2EmpireTracker.Parsers
 
         /// <summary>
         /// Parses the full colony-buildings JSON into structures.
-        /// Uses a two-pass approach: first parse all buildings and assign displaySequence
+        /// Uses a two-pass approach: first parse all buildings and assign DisplaySequence
         /// per type, then merge into existing structures using compound key
-        /// FlatpackBlueprintUUID + displaySequence. Commodity factory types use positional
-        /// matching within each sub-type instead of displaySequence.
+        /// FlatpackBlueprintUUID + DisplaySequence. Commodity factory types use positional
+        /// matching within each sub-type instead of DisplaySequence.
         /// </summary>
         internal static void ParseColonyBuildingsFromJson(Colony colony, string jsonEncoded, EmpireContext empireContext)
         {
@@ -242,7 +242,7 @@ namespace OE2EmpireTracker.Parsers
                     parsedIndex++;
                 }
 
-                // Assign displaySequence per FlatpackBlueprintUUID type
+                // Assign DisplaySequence per FlatpackBlueprintUUID type
                 // (first Mining Rig = 1, second Mining Rig = 2, etc.)
                 var typeCounters = new Dictionary<string, int>(StringComparer.Ordinal);
                 foreach (var parsed in parsedBuildings)
@@ -251,7 +251,7 @@ namespace OE2EmpireTracker.Parsers
                     if (!typeCounters.ContainsKey(key))
                         typeCounters[key] = 0;
                     typeCounters[key]++;
-                    parsed.displaySequence = typeCounters[key];
+                    parsed.DisplaySequence = typeCounters[key];
                 }
 
                 // === Build merge lookups from existing colony structures ===
@@ -277,7 +277,7 @@ namespace OE2EmpireTracker.Parsers
                         commodityFactoryUUIDs.Add(p.FlatpackBlueprintUUID);
                 }
 
-                // Assign displaySequence to existing structures that have displaySequence=0
+                // Assign DisplaySequence to existing structures that have DisplaySequence=0
                 // (manually-added structures). This ensures they get a meaningful compound key
                 // that can match parsed buildings.
                 var existingTypeCounters = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -288,8 +288,8 @@ namespace OE2EmpireTracker.Parsers
                         existingTypeCounters[bpUUID] = 0;
                     existingTypeCounters[bpUUID]++;
 
-                    if (s.displaySequence == 0)
-                        s.displaySequence = existingTypeCounters[bpUUID];
+                    if (s.DisplaySequence == 0)
+                        s.DisplaySequence = existingTypeCounters[bpUUID];
                 }
 
                 // For non-commodity-factory types: compound key lookup
@@ -310,8 +310,8 @@ namespace OE2EmpireTracker.Parsers
                     }
                     else
                     {
-                        // Non-commodity: compound key = FlatpackBlueprintUUID + ":" + displaySequence
-                        string compoundKey = s.FlatpackBlueprintUUID + ":" + s.displaySequence;
+                        // Non-commodity: compound key = FlatpackBlueprintUUID + ":" + DisplaySequence
+                        string compoundKey = s.FlatpackBlueprintUUID + ":" + s.DisplaySequence;
                         if (!existingByCompoundKey.ContainsKey(compoundKey))
                             existingByCompoundKey[compoundKey] = s;
                     }
@@ -347,7 +347,7 @@ namespace OE2EmpireTracker.Parsers
                     else
                     {
                         // Non-commodity: compound key lookup
-                        string compoundKey = (parsed.FlatpackBlueprintUUID ?? string.Empty) + ":" + parsed.displaySequence;
+                        string compoundKey = (parsed.FlatpackBlueprintUUID ?? string.Empty) + ":" + parsed.DisplaySequence;
                         existingByCompoundKey.TryGetValue(compoundKey, out existing);
                     }
 
@@ -400,20 +400,20 @@ namespace OE2EmpireTracker.Parsers
         internal static void MergeStructure(ColonyStructure existing, ColonyStructure parsed)
         {
             existing.FlatpackBlueprintUUID = parsed.FlatpackBlueprintUUID ?? existing.FlatpackBlueprintUUID;
-            existing.buildingID = parsed.buildingID;
-            existing.displaySequence = parsed.displaySequence;
+            existing.BuildingID = parsed.BuildingID;
+            existing.DisplaySequence = parsed.DisplaySequence;
 
             // Update online/built status from game
             if (parsed.Properties.ContainsKey(GameConstants.PropBuilt))
             {
-                parsed.Properties.getBoolean(GameConstants.PropBuilt, false, out bool built);
-                existing.Properties.setProperty(GameConstants.PropBuilt, built);
+                parsed.Properties.GetBoolean(GameConstants.PropBuilt, false, out bool built);
+                existing.Properties.SetProperty(GameConstants.PropBuilt, built);
             }
 
             if (parsed.Properties.ContainsKey(GameConstants.PropOnline))
             {
-                parsed.Properties.getBoolean(GameConstants.PropOnline, false, out bool online);
-                existing.Properties.setProperty(GameConstants.PropOnline, online);
+                parsed.Properties.GetBoolean(GameConstants.PropOnline, false, out bool online);
+                existing.Properties.SetProperty(GameConstants.PropOnline, online);
             }
 
             // Merge building attributes (overwrite with game values)
@@ -423,7 +423,7 @@ namespace OE2EmpireTracker.Parsers
                     kvp.Key != GameConstants.PropOnline &&
                     kvp.Key != GameConstants.PropStaged)
                 {
-                    existing.Properties.setProperty(kvp.Key, kvp.Value);
+                    existing.Properties.SetProperty(kvp.Key, kvp.Value);
                 }
             }
 
@@ -453,7 +453,7 @@ namespace OE2EmpireTracker.Parsers
             {
                 foreach (var kvp in parsed.AssignedWorkers.Properties)
                 {
-                    existing.AssignedWorkers.setProperty(kvp.Key, kvp.Value);
+                    existing.AssignedWorkers.SetProperty(kvp.Key, kvp.Value);
                 }
             }
         }
@@ -518,15 +518,15 @@ namespace OE2EmpireTracker.Parsers
             }
 
             // Store the game's unique building identifier
-            int buildingID = building["buildingID"]?.Value<int>() ?? 0;
-            structure.buildingID = buildingID;
-            // displaySequence is NOT set here -- it will be calculated per-type
+            int BuildingID = building["buildingID"]?.Value<int>() ?? 0;
+            structure.BuildingID = BuildingID;
+            // DisplaySequence is NOT set here -- it will be calculated per-type
             // in ParseColonyBuildingsFromJson after all buildings are parsed
 
             // Online/Built status
             bool online = building["buildingOnline"]?.Value<bool>() ?? false;
-            structure.Properties.setProperty(GameConstants.PropBuilt, true);
-            structure.Properties.setProperty(GameConstants.PropOnline, online);
+            structure.Properties.SetProperty(GameConstants.PropBuilt, true);
+            structure.Properties.SetProperty(GameConstants.PropOnline, online);
 
             // Building attributes -> Properties
             var attributes = building["buildingAttributes"] as JArray;
@@ -538,7 +538,7 @@ namespace OE2EmpireTracker.Parsers
                     var propValue = attr["propertyValue"];
                     if (!string.IsNullOrEmpty(propName) && propValue != null)
                     {
-                        structure.Properties.setProperty(propName, propValue.ToString());
+                        structure.Properties.SetProperty(propName, propValue.ToString());
                     }
                 }
             }
@@ -580,14 +580,14 @@ namespace OE2EmpireTracker.Parsers
                         if (!workerCounts.ContainsKey(prefix)) workerCounts[prefix] = 0;
                         workerCounts[prefix]++;
                         string key = prefix + workerCounts[prefix];
-                        structure.AssignedWorkers.setProperty(key, workerID > 0);
+                        structure.AssignedWorkers.SetProperty(key, workerID > 0);
                     }
                 }
             }
 
-            Log.Debug("ParseBuilding: designName='{0}', buildingID={1}, online={2}, maxRate={3}, " +
+            Log.Debug("ParseBuilding: designName='{0}', BuildingID={1}, online={2}, maxRate={3}, " +
                 "MiningSurveyResource='{4}', RefiningResourcePurity='{5}', RefiningResource='{6}', FlatpackBP='{7}'",
-                designName, structure.buildingID,
+                designName, structure.BuildingID,
                 structure.Properties.ContainsKey(GameConstants.PropOnline) ? structure.Properties.Properties[GameConstants.PropOnline] : "?",
                 maxRate,
                 structure.MiningSurveyResource ?? "(null)",
@@ -661,7 +661,7 @@ namespace OE2EmpireTracker.Parsers
                 var flatpackLookup = BuildFlatpackLookup(empireContext);
 
                 // Index existing structures by FlatpackBlueprintUUID for merge
-                // Workers fallback doesn't have displaySequence, so we match by blueprint
+                // Workers fallback doesn't have DisplaySequence, so we match by blueprint
                 var existingByBlueprint = new Dictionary<string, List<ColonyStructure>>();
                 foreach (var s in colony.Structures)
                 {
@@ -719,8 +719,8 @@ namespace OE2EmpireTracker.Parsers
                         var structure = new ColonyStructure();
                         structure.UUID = Guid.NewGuid().ToString();
                         structure.FlatpackBlueprintUUID = key.Contains("-") ? key : null; // UUID has dashes
-                        structure.Properties.setProperty(GameConstants.PropBuilt, true);
-                        structure.Properties.setProperty(GameConstants.PropOnline, true);
+                        structure.Properties.SetProperty(GameConstants.PropBuilt, true);
+                        structure.Properties.SetProperty(GameConstants.PropOnline, true);
                         colony.Structures.Add(structure);
                         added++;
                     }

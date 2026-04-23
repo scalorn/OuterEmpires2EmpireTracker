@@ -25,19 +25,19 @@ namespace OE2EmpireTracker.Forms.Market
             playerContext = EmpireContext.PlayerContext;
 
             // Listings tab
-            cmdListingAdd.Click += cmdListingAdd_Click;
-            cmdListingEdit.Click += cmdListingEdit_Click;
-            cmdListingDelete.Click += cmdListingDelete_Click;
-            cmdRecordSale.Click += cmdRecordSale_Click;
+            cmdListingAdd.Click += CmdListingAdd_Click;
+            cmdListingEdit.Click += CmdListingEdit_Click;
+            cmdListingDelete.Click += CmdListingDelete_Click;
+            cmdRecordSale.Click += CmdRecordSale_Click;
 
             // Transactions tab
             cmbTxType.Items.AddRange(new object[] { "All", "Buy", "Sell" });
             cmbTxType.SelectedIndex = 0;
             PopulateStationCombos();
-            cmdTxApply.Click += cmdTxApply_Click;
+            cmdTxApply.Click += CmdTxApply_Click;
 
             // Summary tab
-            cmdCompute.Click += cmdCompute_Click;
+            cmdCompute.Click += CmdCompute_Click;
             PopulatePricingPlanCombo();
 
             // Events
@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Forms.Market
             Log.Info("PERF PopulateListingsGrid: {0}ms items={1}", sw.ElapsedMilliseconds, listings.Count);
         }
 
-        private void cmdListingAdd_Click(object sender, EventArgs e)
+        private void CmdListingAdd_Click(object sender, EventArgs e)
         {
             var listing = new MarketListing
             {
@@ -97,7 +97,7 @@ namespace OE2EmpireTracker.Forms.Market
             Log.Info("Added new market listing");
         }
 
-        private void cmdListingEdit_Click(object sender, EventArgs e)
+        private void CmdListingEdit_Click(object sender, EventArgs e)
         {
             if (dgvListings.SelectedRows.Count == 0) return;
             var listing = dgvListings.SelectedRows[0].Tag as MarketListing;
@@ -115,7 +115,7 @@ namespace OE2EmpireTracker.Forms.Market
             }
         }
 
-        private void cmdListingDelete_Click(object sender, EventArgs e)
+        private void CmdListingDelete_Click(object sender, EventArgs e)
         {
             if (dgvListings.SelectedRows.Count == 0) return;
             var listing = dgvListings.SelectedRows[0].Tag as MarketListing;
@@ -147,7 +147,7 @@ namespace OE2EmpireTracker.Forms.Market
         // -----------------------------------------------------------------------
         // Record Sale Dialog (30.5)
         // -----------------------------------------------------------------------
-        private void cmdRecordSale_Click(object sender, EventArgs e)
+        private void CmdRecordSale_Click(object sender, EventArgs e)
         {
             if (dgvListings.SelectedRows.Count == 0) return;
             var listing = dgvListings.SelectedRows[0].Tag as MarketListing;
@@ -236,7 +236,7 @@ namespace OE2EmpireTracker.Forms.Market
             Log.Info("PERF PopulateTransactionsGrid: {0}ms rows={1}", sw.ElapsedMilliseconds, dgvTransactions.Rows.Count);
         }
 
-        private void cmdTxApply_Click(object sender, EventArgs e)
+        private void CmdTxApply_Click(object sender, EventArgs e)
         {
             PopulateTransactionsGrid();
         }
@@ -244,7 +244,7 @@ namespace OE2EmpireTracker.Forms.Market
         // -----------------------------------------------------------------------
         // Summary Tab (30.4)
         // -----------------------------------------------------------------------
-        private void cmdCompute_Click(object sender, EventArgs e)
+        private void CmdCompute_Click(object sender, EventArgs e)
         {
             var sw = Stopwatch.StartNew();
             var transactions = playerContext.GetCurrentPlayerTransactions();
@@ -315,7 +315,7 @@ namespace OE2EmpireTracker.Forms.Market
             }
 
             sw.Stop();
-            Log.Info("PERF cmdCompute_Click: {0}ms items={1}", sw.ElapsedMilliseconds, summary.ItemBreakdown.Count);
+            Log.Info("PERF CmdCompute_Click: {0}ms items={1}", sw.ElapsedMilliseconds, summary.ItemBreakdown.Count);
         }
 
         private void PopulatePricingPlanCombo()

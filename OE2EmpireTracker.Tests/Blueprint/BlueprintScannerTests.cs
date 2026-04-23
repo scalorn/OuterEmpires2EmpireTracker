@@ -194,7 +194,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             _scanner.ProcessHtml(bp, Html(PropRow("Mass", "450")));
 
             string val;
-            bp.Properties.getString("Mass", null, out val);
+            bp.Properties.GetString("Mass", null, out val);
             Assert.That(val, Is.EqualTo("450"));
         }
 
@@ -205,7 +205,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             _scanner.ProcessHtml(bp, Html(PropRow("Power", "1200 (^ 435)")));
 
             string val;
-            bp.Properties.getString("Power", null, out val);
+            bp.Properties.GetString("Power", null, out val);
             Assert.That(val, Is.EqualTo("1200"));
         }
 
@@ -219,9 +219,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 PropRow("Power Required", "150")));
 
             string mass, health, power;
-            bp.Properties.getString("Mass", null, out mass);
-            bp.Properties.getString("Health", null, out health);
-            bp.Properties.getString("Power Required", null, out power);
+            bp.Properties.GetString("Mass", null, out mass);
+            bp.Properties.GetString("Health", null, out health);
+            bp.Properties.GetString("Power Required", null, out power);
 
             Assert.That(mass, Is.EqualTo("450"));
             Assert.That(health, Is.EqualTo("2000"));
@@ -266,35 +266,35 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 "Class should be extracted to Blueprint.Class and removed from PropertyBag");
 
             string manuTime;
-            bp.Properties.getString("Manufacture Run Time", null, out manuTime);
+            bp.Properties.GetString("Manufacture Run Time", null, out manuTime);
             Assert.That(manuTime, Is.EqualTo("9h"));
 
             string mass;
-            bp.Properties.getString("Mass", null, out mass);
+            bp.Properties.GetString("Mass", null, out mass);
             Assert.That(mass, Is.EqualTo("861"));
 
             string cargoVolumeSize;
-            bp.Properties.getString("Cargo Volume Size", null, out cargoVolumeSize);
+            bp.Properties.GetString("Cargo Volume Size", null, out cargoVolumeSize);
             Assert.That(cargoVolumeSize, Is.EqualTo("360"));
 
             string health;
-            bp.Properties.getString("Health", null, out health);
+            bp.Properties.GetString("Health", null, out health);
             Assert.That(health, Is.EqualTo("4824"));
 
             string engCap;
-            bp.Properties.getString("Eng Capacity Required", null, out engCap);
+            bp.Properties.GetString("Eng Capacity Required", null, out engCap);
             Assert.That(engCap, Is.EqualTo("1080"));
 
             string powerRegenRate;
-            bp.Properties.getString("Power Regeneration Rate", null, out powerRegenRate);
+            bp.Properties.GetString("Power Regeneration Rate", null, out powerRegenRate);
             Assert.That(powerRegenRate, Is.EqualTo("31.5"));
 
             string wearRate;
-            bp.Properties.getString("Wear and Tear Rate", null, out wearRate);
+            bp.Properties.GetString("Wear and Tear Rate", null, out wearRate);
             Assert.That(wearRate, Is.EqualTo("2.959"));
 
             string dmgRate;
-            bp.Properties.getString("Maximum Damage Repair", null, out dmgRate);
+            bp.Properties.GetString("Maximum Damage Repair", null, out dmgRate);
             Assert.That(dmgRate, Is.EqualTo("86.57"));
 
             Assert.That(bp.Resources["Alkaline Earth Metals"], Is.EqualTo("9366"));
@@ -331,7 +331,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             Assert.That(bp.Class, Is.EqualTo(3));
 
             string manuTime;
-            bp.Properties.getString("Manufacture Run Time", null, out manuTime);
+            bp.Properties.GetString("Manufacture Run Time", null, out manuTime);
             Assert.That(manuTime, Is.EqualTo("13h"));
         }
 
@@ -343,22 +343,22 @@ namespace OE2EmpireTracker.Tests.Blueprint
             _scanner.ProcessHtml(bp, html);
 
             string val;
-            bp.Properties.getString("Mass", null, out val);
+            bp.Properties.GetString("Mass", null, out val);
             Assert.That(val, Is.EqualTo("3200"));
 
-            bp.Properties.getString("Cargo Volume Size", null, out val);
+            bp.Properties.GetString("Cargo Volume Size", null, out val);
             Assert.That(val, Is.EqualTo("2000"));
 
-            bp.Properties.getString("Health", null, out val);
+            bp.Properties.GetString("Health", null, out val);
             Assert.That(val, Is.EqualTo("1100"));
 
-            bp.Properties.getString("Power Required", null, out val);
+            bp.Properties.GetString("Power Required", null, out val);
             Assert.That(val, Is.EqualTo("0"));
 
-            bp.Properties.getString("Cargo Capacity", null, out val);
+            bp.Properties.GetString("Cargo Capacity", null, out val);
             Assert.That(val, Is.EqualTo("450"));
 
-            bp.Properties.getString("Fuel Capacity", null, out val);
+            bp.Properties.GetString("Fuel Capacity", null, out val);
             Assert.That(val, Is.EqualTo("850"));
         }
 
@@ -370,25 +370,25 @@ namespace OE2EmpireTracker.Tests.Blueprint
             _scanner.ProcessHtml(bp, html);
 
             string val;
-            bp.Properties.getString("License Level", null, out val);
+            bp.Properties.GetString("License Level", null, out val);
             Assert.That(val, Is.EqualTo("8"));
 
-            bp.Properties.getString("License Career", null, out val);
+            bp.Properties.GetString("License Career", null, out val);
             Assert.That(val, Is.EqualTo("Military"));
 
-            bp.Properties.getString("Eng Capacity Available", null, out val);
+            bp.Properties.GetString("Eng Capacity Available", null, out val);
             Assert.That(val, Is.EqualTo("3000"));
 
-            bp.Properties.getString("Max Hull Plating", null, out val);
+            bp.Properties.GetString("Max Hull Plating", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Max Hull Reinforcement", null, out val);
+            bp.Properties.GetString("Max Hull Reinforcement", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Max Hull Sealant Units", null, out val);
+            bp.Properties.GetString("Max Hull Sealant Units", null, out val);
             Assert.That(val, Is.EqualTo("2"));
 
-            bp.Properties.getString("Crew Supported", null, out val);
+            bp.Properties.GetString("Crew Supported", null, out val);
             Assert.That(val, Is.EqualTo("2"));
         }
 
@@ -400,13 +400,13 @@ namespace OE2EmpireTracker.Tests.Blueprint
             _scanner.ProcessHtml(bp, html);
 
             string val;
-            bp.Properties.getString("Large Weapon Mounts", null, out val);
+            bp.Properties.GetString("Large Weapon Mounts", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Medium Weapon Mounts", null, out val);
+            bp.Properties.GetString("Medium Weapon Mounts", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Small Weapon Mounts", null, out val);
+            bp.Properties.GetString("Small Weapon Mounts", null, out val);
             Assert.That(val, Is.EqualTo("0"));
         }
 
@@ -418,16 +418,16 @@ namespace OE2EmpireTracker.Tests.Blueprint
             _scanner.ProcessHtml(bp, html);
 
             string val;
-            bp.Properties.getString("Wear and Tear Rate", null, out val);
+            bp.Properties.GetString("Wear and Tear Rate", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Maximum Damage Repair", null, out val);
+            bp.Properties.GetString("Maximum Damage Repair", null, out val);
             Assert.That(val, Is.EqualTo("80"));
 
-            bp.Properties.getString("Kinetic Damage Defence", null, out val);
+            bp.Properties.GetString("Kinetic Damage Defence", null, out val);
             Assert.That(val, Is.EqualTo("16"));
 
-            bp.Properties.getString("Missile Damage Defence", null, out val);
+            bp.Properties.GetString("Missile Damage Defence", null, out val);
             Assert.That(val, Is.EqualTo("33"));
         }
 
@@ -439,37 +439,37 @@ namespace OE2EmpireTracker.Tests.Blueprint
             _scanner.ProcessHtml(bp, html);
 
             string val;
-            bp.Properties.getString("Reactor Slots", null, out val);
+            bp.Properties.GetString("Reactor Slots", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Main Drive Slots", null, out val);
+            bp.Properties.GetString("Main Drive Slots", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Thruster Slots", null, out val);
+            bp.Properties.GetString("Thruster Slots", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Jump Drive Slots", null, out val);
+            bp.Properties.GetString("Jump Drive Slots", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Nav Comp Slots", null, out val);
+            bp.Properties.GetString("Nav Comp Slots", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Scanner Slots", null, out val);
+            bp.Properties.GetString("Scanner Slots", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Shield Slots", null, out val);
+            bp.Properties.GetString("Shield Slots", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Cargo Pod Slots", null, out val);
+            bp.Properties.GetString("Cargo Pod Slots", null, out val);
             Assert.That(val, Is.EqualTo("3"));
 
-            bp.Properties.getString("Fuel Tank Slots", null, out val);
+            bp.Properties.GetString("Fuel Tank Slots", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("Coupler Slots", null, out val);
+            bp.Properties.GetString("Coupler Slots", null, out val);
             Assert.That(val, Is.EqualTo("1"));
 
-            bp.Properties.getString("GERTY Slots", null, out val);
+            bp.Properties.GetString("GERTY Slots", null, out val);
             Assert.That(val, Is.EqualTo("3"));
         }
 
@@ -517,7 +517,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             // Properties from statistics page
             string manuTime;
-            bp.Properties.getString("Manufacture Run Time", null, out manuTime);
+            bp.Properties.GetString("Manufacture Run Time", null, out manuTime);
             Assert.That(manuTime, Is.EqualTo("13h"));
 
             // Resources from resources page
@@ -612,13 +612,13 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             // Wear and Tear Rate should be stripped of % (decimal normalization)
             string wearRate;
-            first.Properties.getString("Wear and Tear Rate", null, out wearRate);
+            first.Properties.GetString("Wear and Tear Rate", null, out wearRate);
             Assert.That(wearRate, Does.Not.Contain("%"),
                 "Wear and Tear Rate should have % stripped by decimal normalization");
 
             // Maximum Damage Repair should be stripped of %
             string dmgRepair;
-            first.Properties.getString("Maximum Damage Repair", null, out dmgRepair);
+            first.Properties.GetString("Maximum Damage Repair", null, out dmgRepair);
             Assert.That(dmgRepair, Does.Not.Contain("%"),
                 "Maximum Damage Repair should have % stripped by decimal normalization");
         }
@@ -652,7 +652,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             {
                 var bp = results[i].Blueprint;
                 string iconPos;
-                bp.Properties.getString("_IconPosition", null, out iconPos);
+                bp.Properties.GetString("_IconPosition", null, out iconPos);
                 TestContext.WriteLine($"\n=== Blueprint {i + 1}: {bp.Name} (Ev{bp.Evolution}, Class {bp.Class}, Icon: {iconPos ?? "none"}, TechLevel: {bp.TechLevel ?? "null"}, Seller: {results[i].SellerName}) ===");
 
                 TestContext.WriteLine("Properties:");
@@ -668,7 +668,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 foreach (var prop in knownProps)
                 {
                     string val;
-                    bp.Properties.getString(prop, null, out val);
+                    bp.Properties.GetString(prop, null, out val);
                     if (val != null) TestContext.WriteLine($"  {prop} = {val}");
                 }
 
@@ -739,7 +739,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             foreach (var bp in allBlueprints)
             {
                 string iconPos;
-                bp.Properties.getString("_IconPosition", null, out iconPos);
+                bp.Properties.GetString("_IconPosition", null, out iconPos);
                 string key = iconPos ?? "no-icon";
                 if (!iconGroups.ContainsKey(key))
                     iconGroups[key] = new List<OE2EmpireTracker.Models.Blueprint>();

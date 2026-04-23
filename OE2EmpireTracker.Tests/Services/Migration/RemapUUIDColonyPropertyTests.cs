@@ -32,8 +32,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             PlayerContext.Reset();
         }
 
-        #region Property 3: RemapUUID walks all colony references
-
         /// <summary>
         /// For any set of colonies, delivery routes, and delivery plans whose
         /// ColonyUUID fields match oldUUID, after RemapUUID.Remap all those
@@ -150,7 +148,5 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                            $"planStops={planStopUuids.Count(u => u == data.OldUuid)}");
             });
         }
-
-        #endregion
     }
 }

@@ -27,8 +27,6 @@ namespace OE2EmpireTracker.Tests.Forms
             return n;
         }
 
-        #region Property 1: Lowest Unused Number Assignment
-
         /// <summary>
         /// Property 1: Bug Condition - Lowest Unused Number Assignment.
         /// For any random set of used positive integers, FindLowestUnused returns a value
@@ -61,10 +59,6 @@ namespace OE2EmpireTracker.Tests.Forms
                 return atLeastOne.And(notInUsed).And(allBelowProp);
             });
         }
-
-        #endregion
-
-        #region Property 2: Unique Numbering Across Sequences
 
         /// <summary>
         /// Property 2: Preservation - Unique Numbering and Form Setup.
@@ -120,10 +114,6 @@ namespace OE2EmpireTracker.Tests.Forms
                 return true.Label("All open/close operations maintained unique numbering");
             });
         }
-
-        #endregion
-
-        #region Edge Case Unit Tests
 
         /// <summary>
         /// No open windows -> assigns 1.
@@ -191,7 +181,5 @@ namespace OE2EmpireTracker.Tests.Forms
             used.Remove(1);
             Assert.That(FindLowestUnused(used), Is.EqualTo(1));
         }
-
-        #endregion
     }
 }

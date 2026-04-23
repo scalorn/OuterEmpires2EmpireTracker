@@ -13,8 +13,6 @@ namespace OE2EmpireTracker.Tests.Models
     [TestFixture]
     public class ColonyLastImportDateTimePropertyTests
     {
-        #region Generators
-
         private static Gen<DateTime> ValidUtcDateTimeGen()
         {
             return from year in Gen.Choose(2020, 2035)
@@ -31,10 +29,6 @@ namespace OE2EmpireTracker.Tests.Models
             return ValidUtcDateTimeGen().Select(dt =>
                 dt.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture));
         }
-
-        #endregion
-
-        #region Property 1: Colony LastImportDateTime JSON round-trip
 
         /// <summary>
         /// Property 1: Colony LastImportDateTime JSON round-trip.
@@ -57,7 +51,5 @@ namespace OE2EmpireTracker.Tests.Models
                     .Label($"Expected '{isoTimestamp}', got '{deserialized.LastImportDateTime}'");
             });
         }
-
-        #endregion
     }
 }

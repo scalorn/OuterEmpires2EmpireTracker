@@ -59,9 +59,9 @@ namespace OE2EmpireTracker.Tests.Services
             var buildStruct = new ColonyStructure();
             buildStruct.UUID = Guid.NewGuid().ToString();
             buildStruct.FlatpackBlueprintUUID = buildBp.UUID;
-            buildStruct.displaySequence = 1;
-            buildStruct.Properties.setProperty(GameConstants.PropBuilt, true);
-            buildStruct.Properties.setProperty(GameConstants.PropOnline, true);
+            buildStruct.DisplaySequence = 1;
+            buildStruct.Properties.SetProperty(GameConstants.PropBuilt, true);
+            buildStruct.Properties.SetProperty(GameConstants.PropOnline, true);
             buildStruct.BuildCompletionTime = new CountDownTime();
             buildStruct.BuildCompletionTime.TimeRemaining = 3600;
             colony.Structures.Add(buildStruct);
@@ -87,9 +87,9 @@ namespace OE2EmpireTracker.Tests.Services
             var resStruct = new ColonyStructure();
             resStruct.UUID = Guid.NewGuid().ToString();
             resStruct.FlatpackBlueprintUUID = resBp.UUID;
-            resStruct.displaySequence = 2;
-            resStruct.Properties.setProperty(GameConstants.PropBuilt, true);
-            resStruct.Properties.setProperty(GameConstants.PropOnline, true);
+            resStruct.DisplaySequence = 2;
+            resStruct.Properties.SetProperty(GameConstants.PropBuilt, true);
+            resStruct.Properties.SetProperty(GameConstants.PropOnline, true);
             resStruct.ResearchingBlueprintUUID = researchBp.UUID;
             resStruct.ProcessCompletionTime = new CountDownTime();
             resStruct.ProcessCompletionTime.TimeRemaining = 7200;

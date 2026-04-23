@@ -118,8 +118,8 @@
             this.txtCompletion.ValidationPattern = "^\\s*(?:\\d+d\\s*)?(?:(?:[01]?\\d|2[0-3])h\\s*)?(?:(?:[0-5]?\\d)m\\s*)?(?:(?:[0-5]?\\d)s)" +
     "?\\s*$";
             this.txtCompletion.ValidColor = System.Drawing.Color.White;
-            this.txtCompletion.Enter += new System.EventHandler(this.txtCompletion_Enter);
-            this.txtCompletion.Leave += new System.EventHandler(this.txtCompletion_Leave);
+            this.txtCompletion.Enter += new System.EventHandler(this.TxtCompletion_Enter);
+            this.txtCompletion.Leave += new System.EventHandler(this.TxtCompletion_Leave);
             // 
             // cmdStart
             // 
@@ -129,11 +129,11 @@
             this.cmdStart.TabIndex = 13;
             this.cmdStart.Text = "Start";
             this.cmdStart.UseVisualStyleBackColor = true;
-            this.cmdStart.Click += new System.EventHandler(this.cmdStart_Click);
+            this.cmdStart.Click += new System.EventHandler(this.CmdStart_Click);
             // 
             // timerCountdown
             // 
-            this.timerCountdown.Tick += new System.EventHandler(this.timerCountdown_Tick);
+            this.timerCountdown.Tick += new System.EventHandler(this.TimerCountdown_Tick);
             // 
             // PlayerSkillBlock
             // 

@@ -32,7 +32,7 @@ namespace OE2EmpireTracker.Tests.Services
             if (properties != null)
             {
                 foreach (var kv in properties)
-                    bp.Properties.setProperty(kv.Key, kv.Value);
+                    bp.Properties.SetProperty(kv.Key, kv.Value);
             }
 
             return bp;
@@ -45,9 +45,9 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var s = new ColonyStructure();
             s.UUID = Guid.NewGuid().ToString();
-            s.Properties.setProperty("Built", built);
-            s.Properties.setProperty("Staged", staged);
-            s.Properties.setProperty("Online", online);
+            s.Properties.SetProperty("Built", built);
+            s.Properties.SetProperty("Staged", staged);
+            s.Properties.SetProperty("Online", online);
             return s;
         }
 
@@ -284,7 +284,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { GameConstants.PropBlueCollarDetail, "1" }
             });
             // Mark the worker as assigned
-            structure.AssignedWorkers.setProperty("BlueCollar1", true);
+            structure.AssignedWorkers.SetProperty("BlueCollar1", true);
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
@@ -321,9 +321,9 @@ namespace OE2EmpireTracker.Tests.Services
                 { GameConstants.PropWhiteCollarDetail, "1" },
                 { GameConstants.PropSpecialistDetail, "1" }
             });
-            structure.AssignedWorkers.setProperty("BlueCollar1", true);
-            structure.AssignedWorkers.setProperty("WhiteCollar1", true);
-            structure.AssignedWorkers.setProperty("Specialist1", true);
+            structure.AssignedWorkers.SetProperty("BlueCollar1", true);
+            structure.AssignedWorkers.SetProperty("WhiteCollar1", true);
+            structure.AssignedWorkers.SetProperty("Specialist1", true);
 
             var status = Calculate(structure, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), bp);
 
@@ -526,7 +526,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "Power Provided", "500" },
                 { GameConstants.PropBlueCollarDetail, "1" }
             });
-            reactor.AssignedWorkers.setProperty("BlueCollar1", true);
+            reactor.AssignedWorkers.SetProperty("BlueCollar1", true);
 
             var status1 = Calculate(reactor, new ColonyStructureStatus(), new ActualColonyStructureWorkers(), reactorBp);
 
@@ -542,7 +542,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "Habitation Provision", "100" },
                 { GameConstants.PropWhiteCollarDetail, "1" }
             });
-            hab.AssignedWorkers.setProperty("WhiteCollar1", true);
+            hab.AssignedWorkers.SetProperty("WhiteCollar1", true);
 
             var colony = new Colony();
             colony.Structures.Add(hab);
@@ -566,7 +566,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void ActualWorkers_IsWorkerAssigned_ReadFromPropertyBag()
         {
             var structure = new ColonyStructure();
-            structure.AssignedWorkers.setProperty("BlueCollar1", true);
+            structure.AssignedWorkers.SetProperty("BlueCollar1", true);
 
             var workers = new ActualColonyStructureWorkers();
             Assert.That(workers.IsWorkerAssigned(structure, "BlueCollar1"), Is.True);
@@ -582,7 +582,7 @@ namespace OE2EmpireTracker.Tests.Services
             workers.SetWorkerAssigned(structure, "WhiteCollar1", true);
 
             bool value;
-            structure.AssignedWorkers.getBoolean("WhiteCollar1", false, out value);
+            structure.AssignedWorkers.GetBoolean("WhiteCollar1", false, out value);
             Assert.That(value, Is.True);
         }
 
@@ -590,9 +590,9 @@ namespace OE2EmpireTracker.Tests.Services
         public void ActualWorkers_GetStructureState_ReadsFromProperties()
         {
             var structure = new ColonyStructure();
-            structure.Properties.setProperty("Built", true);
-            structure.Properties.setProperty("Staged", false);
-            structure.Properties.setProperty("Online", true);
+            structure.Properties.SetProperty("Built", true);
+            structure.Properties.SetProperty("Staged", false);
+            structure.Properties.SetProperty("Online", true);
 
             var workers = new ActualColonyStructureWorkers();
             bool built, staged, online;
@@ -717,7 +717,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             // WarehouseRequired = 100*1 + 5*10 = 150
             // We can't call CalculateBuilt() without PlayerContext, but we can
-            // test the private method indirectly by checking finalActualStatus
+            // test the private method indirectly by checking FinalActualStatus
             // after a full calculate. Since we can't mock PlayerContext easily,
             // we test the formula via the public CalculateBuilt per-structure method
             // and verify the warehouse required is carried through.

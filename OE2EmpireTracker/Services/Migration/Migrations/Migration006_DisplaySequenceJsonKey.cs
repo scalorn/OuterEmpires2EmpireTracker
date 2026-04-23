@@ -4,9 +4,9 @@ using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Services.Migration
 {
     /// <summary>
-    /// Migration006: Completes the gameSequence -> displaySequence JSON key rename.
+    /// Migration006: Completes the gameSequence -> DisplaySequence JSON key rename.
     ///
-    /// ColonyStructure.displaySequence previously serialized as "gameSequence" via
+    /// ColonyStructure.DisplaySequence previously serialized as "gameSequence" via
     /// [JsonProperty("gameSequence")]. That attribute has been replaced with a
     /// write-only legacy shim so old files still deserialize correctly, while new
     /// saves write the field as "displaySequence".
@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Services.Migration
             foreach (var colony in pc.ColonyList)
                 structureCount += colony.Structures.Count;
 
-            Log.Info("Migration006: displaySequence JSON key rename applied to {0} structure(s) on next save",
+            Log.Info("Migration006: DisplaySequence JSON key rename applied to {0} structure(s) on next save",
                 structureCount);
         }
     }

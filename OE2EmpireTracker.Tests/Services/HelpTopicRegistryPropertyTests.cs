@@ -60,7 +60,6 @@ namespace OE2EmpireTracker.Tests.Services
                     return (result == "README.md")
                         .Label($"Unmapped type '{input}' should return 'README.md' but got '{result}'");
                 }
-
             });
         }
     }

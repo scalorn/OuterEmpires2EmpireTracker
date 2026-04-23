@@ -12,7 +12,7 @@ namespace OE2EmpireTracker.Tests.Parsers
 {
     /// <summary>
     /// Bug condition exploration tests for colony structure deduplication.
-    /// These tests verify that manually-added structures (displaySequence=0) are
+    /// These tests verify that manually-added structures (DisplaySequence=0) are
     /// merged with parsed buildings rather than duplicated on import.
     ///
     /// **Validates: Requirements 1.1, 1.2, 1.3, 1.4**
@@ -89,7 +89,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 .GroupBy(s => s.FlatpackBlueprintUUID)
                 .ToDictionary(g => g.Key, g => g.Count());
 
-            // Create a new colony with manually-added structures (displaySequence=0)
+            // Create a new colony with manually-added structures (DisplaySequence=0)
             // matching the exact counts from M1
             var colony = new Colony();
             foreach (var kvp in countsByBlueprint)
@@ -100,7 +100,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                     {
                         UUID = Guid.NewGuid().ToString(),
                         FlatpackBlueprintUUID = kvp.Key,
-                        displaySequence = 0  // Manual structures have displaySequence=0
+                        DisplaySequence = 0  // Manual structures have DisplaySequence=0
                     });
                 }
             }
@@ -109,15 +109,15 @@ namespace OE2EmpireTracker.Tests.Parsers
                 "Pre-import: manual structures should match M1 count");
 
             // Now import M1 HTML -- on fixed code, structures should merge (count stays 43)
-            // On UNFIXED code, this will FAIL because manual structures (displaySequence=0)
-            // never match parsed buildings (buildingID > 0), so all 43 are appended as duplicates
+            // On UNFIXED code, this will FAIL because manual structures (DisplaySequence=0)
+            // never match parsed buildings (BuildingID > 0), so all 43 are appended as duplicates
             string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
             string html = ExtractFragment(clipboardData);
             _parser.ProcessHtml(colony, html, _empireContext);
 
             Assert.That(colony.Structures.Count, Is.EqualTo(43),
                 $"After import: expected 43 structures (merged), but got {colony.Structures.Count}. " +
-                "Bug: manual structures (displaySequence=0) were not matched to parsed buildings.");
+                "Bug: manual structures (DisplaySequence=0) were not matched to parsed buildings.");
         }
 
         // -------------------------------------------------------------------
@@ -142,20 +142,20 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(miningRigCountInM1, Is.GreaterThan(0),
                 "M1 should have at least one Mining Rig");
 
-            // Create a colony with 1 manually-added Mining Rig (displaySequence=0)
+            // Create a colony with 1 manually-added Mining Rig (DisplaySequence=0)
             var colony = new Colony();
             colony.Structures.Add(new ColonyStructure
             {
                 UUID = Guid.NewGuid().ToString(),
                 FlatpackBlueprintUUID = miningRigUUID,
-                displaySequence = 0  // Manual structure
+                DisplaySequence = 0  // Manual structure
             });
 
             // Import M1 HTML
             // On fixed code: the manual Mining Rig merges with the first parsed one,
             // total Mining Rig count = miningRigCountInM1
-            // On UNFIXED code: manual Mining Rig (displaySequence=0) doesn't match any
-            // parsed Mining Rig (buildingID > 0), so total = miningRigCountInM1 + 1
+            // On UNFIXED code: manual Mining Rig (DisplaySequence=0) doesn't match any
+            // parsed Mining Rig (BuildingID > 0), so total = miningRigCountInM1 + 1
             string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
             string html = ExtractFragment(clipboardData);
             _parser.ProcessHtml(colony, html, _empireContext);
@@ -166,7 +166,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(miningRigCountAfterImport, Is.EqualTo(miningRigCountInM1),
                 $"After import: expected {miningRigCountInM1} Mining Rigs (merged), " +
                 $"but got {miningRigCountAfterImport}. " +
-                "Bug: manual Mining Rig (displaySequence=0) was not matched to parsed Mining Rig.");
+                "Bug: manual Mining Rig (DisplaySequence=0) was not matched to parsed Mining Rig.");
         }
 
         // -------------------------------------------------------------------
@@ -196,7 +196,7 @@ namespace OE2EmpireTracker.Tests.Parsers
 
         // -------------------------------------------------------------------
         // Preservation: M1 empty colony import produces 43 structures with
-        // correct FlatpackBlueprintUUIDs, displaySequence > 0, properties,
+        // correct FlatpackBlueprintUUIDs, DisplaySequence > 0, properties,
         // mining resources, and worker assignments
         // Validates: Requirements 3.1, 3.5
         // -------------------------------------------------------------------
@@ -216,7 +216,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             foreach (var s in colony.Structures)
             {
                 Assert.That(s.FlatpackBlueprintUUID, Is.Not.Null.And.Not.Empty,
-                    $"Structure with displaySequence={s.displaySequence} should have a FlatpackBlueprintUUID");
+                    $"Structure with DisplaySequence={s.DisplaySequence} should have a FlatpackBlueprintUUID");
             }
         }
 
@@ -226,8 +226,8 @@ namespace OE2EmpireTracker.Tests.Parsers
             var colony = ParseM1Fresh();
             foreach (var s in colony.Structures)
             {
-                Assert.That(s.displaySequence, Is.GreaterThan(0),
-                    $"Structure with UUID={s.UUID} should have displaySequence > 0");
+                Assert.That(s.DisplaySequence, Is.GreaterThan(0),
+                    $"Structure with UUID={s.UUID} should have DisplaySequence > 0");
             }
         }
 
@@ -238,7 +238,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             foreach (var s in colony.Structures)
             {
                 Assert.That(s.Properties.Count, Is.GreaterThan(0),
-                    $"Structure displaySequence={s.displaySequence} should have at least one property");
+                    $"Structure DisplaySequence={s.DisplaySequence} should have at least one property");
             }
         }
 
@@ -256,7 +256,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             foreach (var rig in miningRigs)
             {
                 Assert.That(rig.MiningSurveyResource, Is.Not.Null.And.Not.Empty,
-                    $"Mining rig displaySequence={rig.displaySequence} should have MiningSurveyResource");
+                    $"Mining rig DisplaySequence={rig.DisplaySequence} should have MiningSurveyResource");
             }
         }
 
@@ -380,18 +380,18 @@ namespace OE2EmpireTracker.Tests.Parsers
 
             _parser.ProcessHtml(colony, html, _empireContext);
             var snapshotSeqs = colony.Structures
-                .Select(s => s.displaySequence)
+                .Select(s => s.DisplaySequence)
                 .OrderBy(g => g)
                 .ToList();
 
             _parser.ProcessHtml(colony, html, _empireContext);
             var afterSeqs = colony.Structures
-                .Select(s => s.displaySequence)
+                .Select(s => s.DisplaySequence)
                 .OrderBy(g => g)
                 .ToList();
 
             Assert.That(afterSeqs, Is.EqualTo(snapshotSeqs),
-                "M1 idempotency: displaySequence values should be identical after second import");
+                "M1 idempotency: DisplaySequence values should be identical after second import");
         }
 
         // -------------------------------------------------------------------
@@ -551,7 +551,7 @@ namespace OE2EmpireTracker.Tests.Parsers
 
                 // Snapshot: for each structure, capture sorted property key-value pairs
                 var snapshot = colony.Structures
-                    .OrderBy(s => s.displaySequence)
+                    .OrderBy(s => s.DisplaySequence)
                     .ThenBy(s => s.FlatpackBlueprintUUID)
                     .Select(s => s.Properties.Properties
                         .OrderBy(p => p.Key)
@@ -562,7 +562,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                 _parser.ProcessHtml(colony, html, _empireContext);
 
                 var afterProps = colony.Structures
-                    .OrderBy(s => s.displaySequence)
+                    .OrderBy(s => s.DisplaySequence)
                     .ThenBy(s => s.FlatpackBlueprintUUID)
                     .Select(s => s.Properties.Properties
                         .OrderBy(p => p.Key)

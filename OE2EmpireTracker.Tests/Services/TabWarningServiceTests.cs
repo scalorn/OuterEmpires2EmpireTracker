@@ -83,7 +83,6 @@ namespace OE2EmpireTracker.Tests.Services
                         NeedBy = needBy,
                         Fulfilled = t.fulfilled
                     };
-
                 });
 
             // We fix 'now' to a known value so offsets are meaningful

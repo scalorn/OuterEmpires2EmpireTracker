@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,7 +26,7 @@ namespace OE2EmpireTracker.Models
         public string Name { get; set; }
         public bool Synthetic { get; set; } = false;
 
-        private static List<ResourceGroup> _groups = getGroups();
+        private static List<ResourceGroup> _groups = GetGroups();
         private static Dictionary<ResourceGroupEnum, ResourceGroup> _groupMapByEnum;
         private static Dictionary<string, ResourceGroup> _groupMapByString;
 
@@ -34,8 +34,7 @@ namespace OE2EmpireTracker.Models
         public static IReadOnlyDictionary<ResourceGroupEnum, ResourceGroup> ResourceGroupMapByEnum => _groupMapByEnum;
         public static IReadOnlyDictionary<string, ResourceGroup> ResourceGroupMapByString => _groupMapByString;
 
-
-        private static List<ResourceGroup> getGroups()
+        private static List<ResourceGroup> GetGroups()
         {
             List<ResourceGroup> instance = new List<ResourceGroup>();
             instance.Add(new ResourceGroup() { ID = ResourceGroupEnum.Crystalline, Name = "Crystalline" });

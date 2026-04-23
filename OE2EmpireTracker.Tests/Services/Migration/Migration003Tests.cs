@@ -16,8 +16,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     [TestFixture]
     public class Migration003Tests
     {
-        #region Migration conversion logic (inline replica)
-
         /// <summary>
         /// Replicates the conversion logic from Migration003 without requiring singletons.
         /// </summary>
@@ -38,10 +36,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             // Unparseable or null/empty -- replace with now
             return SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
         }
-
-        #endregion
-
-        #region Already-ISO data (no change) -- Requirements 2.2, 5.6
 
         [Test]
         public void MigrateDateTime_AlreadyIso_ReturnsUnchanged()
@@ -66,10 +60,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             string result = MigrateDateTime(iso);
             Assert.That(result, Is.EqualTo(iso));
         }
-
-        #endregion
-
-        #region Game-format data (converts to ISO) -- Requirements 5.1
 
         [Test]
         public void MigrateDateTime_GameFormat_ConvertsToIso()
@@ -99,10 +89,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             Assert.That(result, Is.EqualTo("2025-06-15T12:30:00Z"));
         }
 
-        #endregion
-
-        #region Garbage string (replaces with valid ISO) -- Requirements 5.4
-
         [Test]
         public void MigrateDateTime_GarbageString_ProducesValidIso()
         {
@@ -128,10 +114,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 $"Expected valid ISO output, got: '{result}'");
         }
 
-        #endregion
-
-        #region Null/empty DateTime (replaces with valid ISO) -- Requirements 5.5
-
         [Test]
         public void MigrateDateTime_Null_ProducesValidIso()
         {
@@ -148,10 +130,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 $"Expected valid ISO output, got: '{result}'");
         }
 
-        #endregion
-
-        #region Common .NET format fallback -- Requirements 5.2
-
         [Test]
         public void MigrateDateTime_CommonNetFormat_ProducesValidIso()
         {
@@ -163,7 +141,5 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             Assert.That(SurveyDateTimeParser.TryParseIso(result, out _), Is.True,
                 $"Expected valid ISO output from common format '{formatted}', got: '{result}'");
         }
-
-        #endregion
     }
 }

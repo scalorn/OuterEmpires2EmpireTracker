@@ -70,7 +70,6 @@ namespace OE2EmpireTracker.Models
         public static IReadOnlyDictionary<ResourceEnum, Resource> ResourceMapByEnum => _resourceMapByEnum;
         public static IReadOnlyDictionary<string, Resource> ResourceMapByString => _resourceMapByString;
 
-
         private static List<Resource> GetResources()
         {
             List<Resource> instance = new List<Resource>();

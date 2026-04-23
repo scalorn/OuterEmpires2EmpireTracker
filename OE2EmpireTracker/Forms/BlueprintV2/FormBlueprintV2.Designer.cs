@@ -653,7 +653,7 @@ namespace OE2EmpireTracker
             this.dgvStatistics.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvStatistics.Location = new System.Drawing.Point(2, 2);
             this.dgvStatistics.Name = "dgvStatistics";
-            this.dgvStatistics.previousControl = null;
+            this.dgvStatistics.PreviousControl = null;
             this.dgvStatistics.Size = new System.Drawing.Size(788, 290);
             this.dgvStatistics.TabIndex = 0;
             this.colProperty.HeaderText = "Property";

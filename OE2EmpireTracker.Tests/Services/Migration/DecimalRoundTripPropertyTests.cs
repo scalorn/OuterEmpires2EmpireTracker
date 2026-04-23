@@ -13,8 +13,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     [TestFixture]
     public class DecimalRoundTripPropertyTests
     {
-        #region Generators
-
         /// <summary>
         /// Generates decimal values representative of game data: volumes, rates,
         /// percentages, and power/habitation values. Range covers 0 to 999999.99
@@ -28,10 +26,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                    let divisor = (decimal)Math.Pow(10, scale)
                    select mantissa / divisor;
         }
-
-        #endregion
-
-        #region Property 6: decimal round-trip
 
         /// <summary>
         /// For any decimal value serialized to JSON with Newtonsoft.Json and
@@ -52,15 +46,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             });
         }
 
-        #endregion
-
-        #region Helper
-
         private class DecimalWrapper
         {
             public decimal Value { get; set; }
         }
-
-        #endregion
     }
 }

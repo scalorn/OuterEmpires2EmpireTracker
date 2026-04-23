@@ -122,7 +122,6 @@ namespace OE2EmpireTracker.Tests.Controls
                         return (emptyWhenNone && matchesSelected)
                             .Label($"Empty when none: {emptyWhenNone}, matches selected[{idx}]: {matchesSelected} (got '{selected}', expected '{items[idx]}')");
                     }
-
                 });
         }
 
@@ -190,7 +189,6 @@ namespace OE2EmpireTracker.Tests.Controls
                     bool wants = editor.EditingControlWantsInputKey(key, true);
                     return wants.Label($"Key {key}: wants={wants}");
                 }
-
             });
         }
 
@@ -226,7 +224,6 @@ namespace OE2EmpireTracker.Tests.Controls
                     return (fontMatch && colorMatch)
                         .Label($"Font match: {fontMatch}, color match: {colorMatch}");
                 }
-
             });
         }
     }

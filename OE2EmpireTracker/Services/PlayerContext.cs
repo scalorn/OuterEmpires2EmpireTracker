@@ -312,16 +312,16 @@ namespace OE2EmpireTracker.Services
         public int DataVersion { get; set; } = 0;
         private List<PlayerProfile> _playerProfileList;
         public IReadOnlyList<PlayerProfile> PlayerProfileList => _playerProfileList;
-        public BindingSource BindingSourcePlayerProfile;
+        public BindingSource BindingSourcePlayerProfile { get; set; }
         private List<Blueprint> _blueprintList;
         public IReadOnlyList<Blueprint> BlueprintList => _blueprintList;
-        public BindingSource BindingSourceBlueprint;
+        public BindingSource BindingSourceBlueprint { get; set; }
         private List<Survey> _surveyList;
         public IReadOnlyList<Survey> SurveyList => _surveyList;
-        public BindingSource BindingSourceSurvey;
+        public BindingSource BindingSourceSurvey { get; set; }
         private List<Colony> _colonyList;
         public IReadOnlyList<Colony> ColonyList => _colonyList;
-        public BindingSource BindingSourceColony;
+        public BindingSource BindingSourceColony { get; set; }
         private List<DeliveryRoute> _deliveryRouteList;
         public IReadOnlyList<DeliveryRoute> DeliveryRouteList => _deliveryRouteList;
         private List<DeliveryPlan> _deliveryPlanList;
@@ -357,8 +357,8 @@ namespace OE2EmpireTracker.Services
         public IReadOnlyList<Asteroid> AsteroidList => _asteroidList;
 
         public IEnumerable<CountDownTimeReference> ActiveCountdowns => AllCountdownSources()
-            .Where(c => c.countDownTime.TimeRemaining > 0)
-            .OrderBy(c => c.countDownTime.TimeRemaining);
+            .Where(c => c.CountDownTime.TimeRemaining > 0)
+            .OrderBy(c => c.CountDownTime.TimeRemaining);
 
         public static PlayerContext GetInstance()
         {
@@ -395,10 +395,10 @@ namespace OE2EmpireTracker.Services
                 playerRoot = new PlayerRoot();
             }
 
-            initPlayerProfiles(playerRoot);
+            InitPlayerProfiles(playerRoot);
             InitBlueprints(playerRoot);
             InitSurveys(playerRoot);
-            initColonies(playerRoot);
+            InitColonies(playerRoot);
             InitDeliveryRoutes(playerRoot);
             InitDeliveryPlans(playerRoot);
             InitPricingPlans(playerRoot);
@@ -470,7 +470,7 @@ namespace OE2EmpireTracker.Services
             Log.Info("Player data saved to {0}", FilePath);
         }
 
-        public void initPlayerProfiles(PlayerRoot playerRoot)
+        public void InitPlayerProfiles(PlayerRoot playerRoot)
         {
             List<PlayerProfile> list = new List<PlayerProfile>(playerRoot.PlayerProfile);
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
@@ -614,7 +614,7 @@ namespace OE2EmpireTracker.Services
             BindingSourceSurvey?.ResetBindings(false);
         }
 
-        public void initColonies(PlayerRoot playerRoot)
+        public void InitColonies(PlayerRoot playerRoot)
         {
             List<Colony> list = new List<Colony>(playerRoot.Colony);
             list = list.OrderBy(p => p.PlanetName).ToList();
@@ -2010,7 +2010,6 @@ namespace OE2EmpireTracker.Services
             lock (_listLock) { return _warehouseOverflowRuleList.Where(x => x.OwnerUUID == CurrentPlayerUUID).ToList(); }
         }
 
-
         public List<CountDownTimeReference> AllCountdownSources()
         {
             List<CountDownTimeReference> countdowns = new List<CountDownTimeReference>();
@@ -2023,10 +2022,10 @@ namespace OE2EmpireTracker.Services
                         if (skill.Value.CompletionTime != null && skill.Value.CompletionTime.TimeRemaining > 0)
                         {
                             CountDownTimeReference reference = new CountDownTimeReference();
-                            reference.source = CountDownTimeReference.SourceType.Player;
-                            reference.sourceUUID = player.UUID;
-                            reference.internalUUID = skill.Key;
-                            reference.countDownTime = skill.Value.CompletionTime;
+                            reference.Source = CountDownTimeReference.SourceType.Player;
+                            reference.SourceUUID = player.UUID;
+                            reference.InternalUUID = skill.Key;
+                            reference.CountDownTime = skill.Value.CompletionTime;
                             countdowns.Add(reference);
                         }
                     }
@@ -2042,10 +2041,10 @@ namespace OE2EmpireTracker.Services
                         if (structure.ProcessCompletionTime != null && structure.ProcessCompletionTime.TimeRemaining > 0)
                         {
                             CountDownTimeReference reference = new CountDownTimeReference();
-                            reference.source = CountDownTimeReference.SourceType.Colony;
-                            reference.sourceUUID = colony.UUID;
-                            reference.internalUUID = structure.UUID;
-                            reference.countDownTime = structure.ProcessCompletionTime;
+                            reference.Source = CountDownTimeReference.SourceType.Colony;
+                            reference.SourceUUID = colony.UUID;
+                            reference.InternalUUID = structure.UUID;
+                            reference.CountDownTime = structure.ProcessCompletionTime;
                             countdowns.Add(reference);
                         }
                     }
@@ -2116,10 +2115,10 @@ namespace OE2EmpireTracker.Services
             Colony
         }
 
-        public SourceType source { get; set; }
-        public string sourceUUID { get; set; }
-        public string internalUUID { get; set; }
-        public CountDownTime countDownTime { get; set; }
+        public SourceType Source { get; set; }
+        public string SourceUUID { get; set; }
+        public string InternalUUID { get; set; }
+        public CountDownTime CountDownTime { get; set; }
     }
 
     public class ColonyDataChangedEventArgs : EventArgs

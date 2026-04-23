@@ -55,13 +55,13 @@ namespace OE2EmpireTracker.Forms.Survey
             lvwSurveys.Columns.Add("NickName", 100);
             lvwSurveys.Columns.Add("DateTime", 100);
             lvwSurveys.Columns.Add("Refs", 35);
-            lvwSurveys.ColumnClick += lvwSurveys_ColumnClick;
+            lvwSurveys.ColumnClick += LvwSurveys_ColumnClick;
             lvwSurveys.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
             RefreshSurveyList();
             UpdateTitle();
 
             // Wire survey list filter
-            txtSurveyFilter.TextChanged += txtSurveyFilter_TextChanged;
+            txtSurveyFilter.TextChanged += TxtSurveyFilter_TextChanged;
 
             // Populate resource filter combo
             cmbResource.DisplayMember = "Name";
@@ -69,14 +69,14 @@ namespace OE2EmpireTracker.Forms.Survey
             foreach (var r in empireContext.ResourceList)
                 cmbResource.Items.Add(r);
             cmbResource.SelectedIndex = 0;
-            cmbResource.SelectedIndexChanged += cmbResource_SelectedIndexChanged;
+            cmbResource.SelectedIndexChanged += CmbResource_SelectedIndexChanged;
 
             // Wire additional filters (task 40.2)
             cmbSurveyType.Items.Add("All");
             cmbSurveyType.Items.Add("Planet");
             cmbSurveyType.Items.Add("Asteroid");
             cmbSurveyType.SelectedIndex = 0;
-            cmbSurveyType.SelectedIndexChanged += cmbSurveyType_SelectedIndexChanged;
+            cmbSurveyType.SelectedIndexChanged += CmbSurveyType_SelectedIndexChanged;
 
             cmbPurityFilter.Items.Add("(any)");
             foreach (var p in Models.ResourcePurity.Purities)
@@ -86,9 +86,9 @@ namespace OE2EmpireTracker.Forms.Survey
             }
 
             cmbPurityFilter.SelectedIndex = 0;
-            cmbPurityFilter.SelectedIndexChanged += cmbPurityFilter_SelectedIndexChanged;
+            cmbPurityFilter.SelectedIndexChanged += CmbPurityFilter_SelectedIndexChanged;
 
-            txtMinAmount.TextChanged += txtMinAmount_TextChanged;
+            txtMinAmount.TextChanged += TxtMinAmount_TextChanged;
 
             // Configure resource data grid
             DataGridViewComboBoxColumn colResource = (DataGridViewComboBoxColumn)dgvResources.Columns["Resource"];
@@ -112,31 +112,31 @@ namespace OE2EmpireTracker.Forms.Survey
             dgvResources.Columns.Add(colMaxReserve);
 
             // Wire write-through handlers
-            txtPlanetName.TextChanged += txtPlanetName_TextChanged;
-            txtSystemName.TextChanged += txtSystemName_TextChanged;
+            txtPlanetName.TextChanged += TxtPlanetName_TextChanged;
+            txtSystemName.TextChanged += TxtSystemName_TextChanged;
             cmbSurveyTypeEdit.Items.Add(SurveyType.Planet);
             cmbSurveyTypeEdit.Items.Add(SurveyType.Asteroid);
             cmbSurveyTypeEdit.SelectedIndex = 0;
-            cmbSurveyTypeEdit.SelectedIndexChanged += cmbSurveyTypeEdit_SelectedIndexChanged;
-            txtSurveyID.TextChanged += txtSurveyID_TextChanged;
-            txtNickName.TextChanged += txtNickName_TextChanged;
-            txtScannedBy.TextChanged += txtScannedBy_TextChanged;
-            dtpScanDateTime.ValueChanged += dtpScanDateTime_ValueChanged;
-            txtSensorAbundance.TextChanged += txtSensorAbundance_TextChanged;
-            txtPurityModifier.TextChanged += txtPurityModifier_TextChanged;
-            txtScanLevel.TextChanged += txtScanLevel_TextChanged;
-            cmbScannerBlueprint.SelectedIndexChanged += cmbScannerBlueprint_SelectedIndexChanged;
+            cmbSurveyTypeEdit.SelectedIndexChanged += CmbSurveyTypeEdit_SelectedIndexChanged;
+            txtSurveyID.TextChanged += TxtSurveyID_TextChanged;
+            txtNickName.TextChanged += TxtNickName_TextChanged;
+            txtScannedBy.TextChanged += TxtScannedBy_TextChanged;
+            dtpScanDateTime.ValueChanged += DtpScanDateTime_ValueChanged;
+            txtSensorAbundance.TextChanged += TxtSensorAbundance_TextChanged;
+            txtPurityModifier.TextChanged += TxtPurityModifier_TextChanged;
+            txtScanLevel.TextChanged += TxtScanLevel_TextChanged;
+            cmbScannerBlueprint.SelectedIndexChanged += CmbScannerBlueprint_SelectedIndexChanged;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.SurveyDataChanged += OnSurveyDataChanged;
             playerContext.ColonyDataChanged += OnColonyDataChanged;
 
-            flpBase.Layout += flpBase_Layout;
-            flpSearchList.Layout += flpSearchList_Layout;
-            flpSurveyData.Layout += flpSurveyData_Layout;
+            flpBase.Layout += FlpBase_Layout;
+            flpSearchList.Layout += FlpSearchList_Layout;
+            flpSurveyData.Layout += FlpSurveyData_Layout;
         }
 
-        private void flpBase_Layout(object sender, LayoutEventArgs e)
+        private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
             flpSurveyData.Size = new System.Drawing.Size(
                 flpBase.Size.Width - flpSearchList.Size.Width - flpSearchList.Margin.Right - flpSearchList.Margin.Left - flpSurveyData.Margin.Left - flpSurveyData.Margin.Right,
@@ -146,14 +146,14 @@ namespace OE2EmpireTracker.Forms.Survey
                 flpBase.Size.Height - flpSearchList.Margin.Top - flpSearchList.Margin.Bottom);
         }
 
-        private void flpSearchList_Layout(object sender, LayoutEventArgs e)
+        private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
             lvwSurveys.Size = new System.Drawing.Size(
                 lvwSurveys.Size.Width,
                 flpSearchList.Size.Height - flpSurveyFilter.Size.Height - flpSurveyFilter.Margin.Top - flpSurveyFilter.Margin.Bottom - flpResource.Size.Height - flpResource.Margin.Top - flpResource.Margin.Bottom - lvwSurveys.Margin.Top - lvwSurveys.Margin.Bottom);
         }
 
-        private void flpSurveyData_Layout(object sender, LayoutEventArgs e)
+        private void FlpSurveyData_Layout(object sender, LayoutEventArgs e)
         {
             flpSurveyDetails.Size = new System.Drawing.Size(
                 flpSurveyData.Size.Width - flpSurveyDetails.Margin.Left - flpSurveyDetails.Margin.Right,
@@ -303,14 +303,14 @@ namespace OE2EmpireTracker.Forms.Survey
                 sw.ElapsedMilliseconds, surveys.Count);
         }
 
-        private void txtSurveyFilter_TextChanged(object sender, EventArgs e)
+        private void TxtSurveyFilter_TextChanged(object sender, EventArgs e)
         {
             lvwSurveys.Items.Clear();
             PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName(),
                 GetSelectedSurveyType(), GetSelectedPurityFilter(), GetMinAmount()));
         }
 
-        private void cmbResource_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbResource_SelectedIndexChanged(object sender, EventArgs e)
         {
             lvwSurveys.Items.Clear();
             PopulateListView(viewModel.GetFilteredSurveys(txtSurveyFilter.Text, GetSelectedResourceName(),
@@ -356,37 +356,37 @@ namespace OE2EmpireTracker.Forms.Survey
             sw.Stop(); Log.Info("PERF RefreshSurveyList: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void cmbSurveyType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbSurveyType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             RefreshSurveyList();
         }
 
-        private void cmbPurityFilter_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbPurityFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             RefreshSurveyList();
         }
 
-        private void txtMinAmount_TextChanged(object sender, EventArgs e)
+        private void TxtMinAmount_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             RefreshSurveyList();
         }
 
-        private void txtPlanetName_TextChanged(object sender, EventArgs e)
+        private void TxtPlanetName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.PlanetName = txtPlanetName.Text;
         }
 
-        private void txtSystemName_TextChanged(object sender, EventArgs e)
+        private void TxtSystemName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.SystemName = txtSystemName.Text;
         }
 
-        private void cmbSurveyTypeEdit_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbSurveyTypeEdit_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (cmbSurveyTypeEdit.SelectedItem is SurveyType st)
@@ -401,25 +401,25 @@ namespace OE2EmpireTracker.Forms.Survey
             lblPlanetName.Text = surveyType == SurveyType.Asteroid ? "Asteroid Name" : "Planet Name";
         }
 
-        private void txtSurveyID_TextChanged(object sender, EventArgs e)
+        private void TxtSurveyID_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.SurveyID = txtSurveyID.Text;
         }
 
-        private void txtNickName_TextChanged(object sender, EventArgs e)
+        private void TxtNickName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.NickName = txtNickName.Text;
         }
 
-        private void txtScannedBy_TextChanged(object sender, EventArgs e)
+        private void TxtScannedBy_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.ScannedBy = txtScannedBy.Text;
         }
 
-        private void dtpScanDateTime_ValueChanged(object sender, EventArgs e)
+        private void DtpScanDateTime_ValueChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.DateTime = SurveyDateTimeParser.ToIsoString(dtpScanDateTime.Value.ToUniversalTime());
@@ -427,36 +427,36 @@ namespace OE2EmpireTracker.Forms.Survey
             txtScanDateTime.Text = SurveyDateTimeParser.ToGameFormat(dtpScanDateTime.Value);
         }
 
-        private void txtSensorAbundance_TextChanged(object sender, EventArgs e)
+        private void TxtSensorAbundance_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.SensorAbundance = txtSensorAbundance.Text;
         }
 
-        private void txtPurityModifier_TextChanged(object sender, EventArgs e)
+        private void TxtPurityModifier_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.PurityModifier = txtPurityModifier.Text;
         }
 
-        private void txtScanLevel_TextChanged(object sender, EventArgs e)
+        private void TxtScanLevel_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.ScanLevel = txtScanLevel.Text;
         }
 
-        private void cmbScannerBlueprint_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbScannerBlueprint_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             var bp = cmbScannerBlueprint.SelectedItem as Models.Blueprint;
             viewModel.ScannerBlueprintUUID = bp?.UUID ?? string.Empty;
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void BtnSave_Click(object sender, EventArgs e)
         {
-            dgvResources.CellValidating -= dgvResources_CellValidating;
+            dgvResources.CellValidating -= DgvResources_CellValidating;
             try { dgvResources.EndEdit(); } catch { }
-            dgvResources.CellValidating += dgvResources_CellValidating;
+            dgvResources.CellValidating += DgvResources_CellValidating;
 
             // Map resources from grid
             viewModel.ClearResources();
@@ -497,13 +497,13 @@ namespace OE2EmpireTracker.Forms.Survey
             txtScanLevel.Text = string.Empty;
 
             cmbScannerBlueprint.SelectedItem = null;
-            dgvResources.CellValidating -= dgvResources_CellValidating;
+            dgvResources.CellValidating -= DgvResources_CellValidating;
             try { dgvResources.EndEdit(); } catch { }
             dgvResources.Rows.Clear();
-            dgvResources.CellValidating += dgvResources_CellValidating;
+            dgvResources.CellValidating += DgvResources_CellValidating;
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(viewModel.UUID)) return;
 
@@ -530,13 +530,13 @@ namespace OE2EmpireTracker.Forms.Survey
             UpdateTitle();
         }
 
-        private void cmdNew_Click(object sender, EventArgs e)
+        private void CmdNew_Click(object sender, EventArgs e)
         {
             ClearForm();
             lvwSurveys.SelectedItems.Clear();
         }
 
-        private void lvwSurveys_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void LvwSurveys_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             Log.Debug("lvwSurveys.SelectedItems.Count = " + lvwSurveys.SelectedItems.Count);
 
@@ -555,13 +555,13 @@ namespace OE2EmpireTracker.Forms.Survey
             PopulateFormFromViewModel();
         }
 
-        private void txtFilterScannerBlueprint_TextChanged(object sender, EventArgs e)
+        private void TxtFilterScannerBlueprint_TextChanged(object sender, EventArgs e)
         {
             UpdateScannerBlueprintList();
             cmbScannerBlueprint.DroppedDown = true;
         }
 
-        private void dgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void DgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             // Only validate the Amount column (index 2)
@@ -592,7 +592,7 @@ namespace OE2EmpireTracker.Forms.Survey
             }
         }
 
-        private void cmdImport_Click(object sender, EventArgs e)
+        private void CmdImport_Click(object sender, EventArgs e)
         {
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
@@ -730,10 +730,10 @@ namespace OE2EmpireTracker.Forms.Survey
             txtFilterScannerBlueprint.Text = string.Empty;
             cmbScannerBlueprint.SelectedItem = viewModel.FindScannerBlueprint();
 
-            dgvResources.CellValidating -= dgvResources_CellValidating;
+            dgvResources.CellValidating -= DgvResources_CellValidating;
             try { dgvResources.EndEdit(); } catch { }
             dgvResources.Rows.Clear();
-            dgvResources.CellValidating += dgvResources_CellValidating;
+            dgvResources.CellValidating += DgvResources_CellValidating;
             foreach (KeyValuePair<string, SurveyResource> resource in viewModel.GetResources())
             {
                 dgvResources.Rows.Add();
@@ -802,7 +802,7 @@ namespace OE2EmpireTracker.Forms.Survey
             }
         }
 
-        private void lvwSurveys_ColumnClick(object sender, ColumnClickEventArgs e)
+        private void LvwSurveys_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             if (e.Column == _sortColumn)
                 _sortOrder = _sortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
