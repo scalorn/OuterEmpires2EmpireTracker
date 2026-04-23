@@ -53,6 +53,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>OE2EmpireTracker.Program</StartupObject>
+    <RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Markdig">
