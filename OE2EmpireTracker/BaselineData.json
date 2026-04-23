@@ -5064,7 +5064,7 @@
       "CopyCost": 2590,
       "Properties": {
         "Structural Integrity": "2500",
-        "Manufacturing Time Reduction": "0%",
+        "Manufacturing Time Reduction": "0",
         "Mining Yield Modification": "0",
         "Refining Time Modification": "0",
         "Research Time Modification": "0",
@@ -17129,9 +17129,11 @@
         "Cargo Volume Size": "",
         "Structural Integrity": "250",
         "Power Provided": "6",
-        "Can Research": "False",
-        "Unassigned Specialist Detail": "",
-        "Max Per Colony": "999"
+        "Can Research": "0",
+        "Unassigned Specialist Detail": "1",
+        "Max Per Colony": "999",
+        "Power Required": "6",
+        "_IconPosition": "-62px -594px"
       },
       "Resources": {
         "Alkaline Earth Metals": "703",
@@ -24464,6 +24466,1049 @@
       "UUID": "9839b5fa-206a-5a90-9377-5aaa1bee3e1c",
       "ItemType": "Blueprint",
       "Name": "Zeus Rudimentary Plating"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "FuelTank",
+      "Class": 8,
+      "Properties": {
+        "_IconPosition": "-138px -442px",
+        "Mass": "2560",
+        "Cargo Volume Size": "3840",
+        "Health": "20480",
+        "Eng Capacity Required": "7680",
+        "Fuel Capacity": "5000",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "80"
+      },
+      "Resources": {
+        "Heavy Noble Gases": "45357",
+        "Alkali Inorganics": "6207",
+        "Metaloids": "10143"
+      },
+      "UUID": "677d1e2f-79f3-5b3d-ab60-facdcba09397",
+      "ItemType": "Blueprint",
+      "Name": "Capital Fuel Tank"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Hull",
+      "Class": 3,
+      "Properties": {
+        "_IconPosition": "-328px -62px",
+        "Mass": "2700",
+        "Cargo Volume Size": "2000",
+        "License Level": "6",
+        "License Career": "Private",
+        "Health": "800",
+        "Eng Capacity Required": "2600",
+        "Max Hull Plating": "1",
+        "Max Hull Reinforcement": "1",
+        "Max Hull Sealant Units": "2",
+        "Cargo Capacity": "1000",
+        "Fuel Capacity": "800",
+        "Large Weapon Mounts": "1",
+        "Medium Weapon Mounts": "0",
+        "Small Weapon Mounts": "0",
+        "Wear and Tear Rate": "1",
+        "Maximum Damage Repair": "70",
+        "Energy Defence": "8",
+        "Kinetic Damage Defence": "12",
+        "Missile Damage Defence": "25",
+        "Max Mining Lasers": "1",
+        "Max Mining Grapples": "1",
+        "Crew Supported": "1",
+        "Reactor Slots": "1",
+        "Main Drive Slots": "1",
+        "Thruster Slots": "1",
+        "Jump Drive Slots": "1",
+        "Nav Comp Slots": "1",
+        "Scanner Slots": "1",
+        "Shield Slots": "1",
+        "Cargo Pod Slots": "3",
+        "Fuel Tank Slots": "1",
+        "Coupler Slots": "1",
+        "GERTY Slots": "3"
+      },
+      "Resources": {
+        "Halogens": "377",
+        "Metallics": "49",
+        "Heavy Trans-Metals": "143"
+      },
+      "UUID": "10585dd2-c974-5796-9208-e19e56e5debf",
+      "ItemType": "Blueprint",
+      "Name": "Heavy Shuttle"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Hull",
+      "Class": 5,
+      "Properties": {
+        "_IconPosition": "-328px -62px",
+        "Mass": "14500",
+        "Cargo Volume Size": "9334",
+        "License Level": "24",
+        "License Career": "Private",
+        "Health": "7250",
+        "Eng Capacity Required": "12500",
+        "Max Hull Plating": "1",
+        "Max Hull Reinforcement": "2",
+        "Max Hull Sealant Units": "3",
+        "Cargo Capacity": "7500",
+        "Fuel Capacity": "7000",
+        "Large Weapon Mounts": "0",
+        "Medium Weapon Mounts": "0",
+        "Small Weapon Mounts": "2",
+        "Wear and Tear Rate": "1",
+        "Maximum Damage Repair": "70",
+        "Energy Defence": "65",
+        "Kinetic Damage Defence": "47",
+        "Missile Damage Defence": "107",
+        "Crew Supported": "2",
+        "Reactor Slots": "1",
+        "Main Drive Slots": "1",
+        "Thruster Slots": "1",
+        "Jump Drive Slots": "1",
+        "Nav Comp Slots": "1",
+        "Scanner Slots": "1",
+        "Shield Slots": "1",
+        "Cargo Pod Slots": "4",
+        "Fuel Tank Slots": "6",
+        "Coupler Slots": "1",
+        "GERTY Slots": "5"
+      },
+      "Resources": {
+        "Noble Gases": "12407",
+        "Acidic Inorganics": "1406",
+        "Heavy Post-Trans Metals": "3849"
+      },
+      "UUID": "25ec0595-8f06-587b-b423-632cfa49449b",
+      "ItemType": "Blueprint",
+      "Name": "Salvage Rig"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Hull",
+      "Class": 6,
+      "Properties": {
+        "_IconPosition": "-328px -62px",
+        "Mass": "25500",
+        "Cargo Volume Size": "26667",
+        "License Level": "32",
+        "License Career": "Private",
+        "Health": "5500",
+        "Eng Capacity Required": "21500",
+        "Max Hull Plating": "1",
+        "Max Hull Reinforcement": "3",
+        "Max Hull Sealant Units": "3",
+        "Cargo Capacity": "2000",
+        "Fuel Capacity": "14500",
+        "Large Weapon Mounts": "0",
+        "Medium Weapon Mounts": "0",
+        "Small Weapon Mounts": "2",
+        "Raw Material Capacity": "25000",
+        "Wear and Tear Rate": "1",
+        "Maximum Damage Repair": "70",
+        "Energy Defence": "68",
+        "Kinetic Damage Defence": "64",
+        "Missile Damage Defence": "227",
+        "Max Mining Lasers": "4",
+        "Max Mining Grapples": "1",
+        "Crew Supported": "3",
+        "Reactor Slots": "1",
+        "Main Drive Slots": "1",
+        "Thruster Slots": "1",
+        "Jump Drive Slots": "1",
+        "Nav Comp Slots": "1",
+        "Scanner Slots": "1",
+        "Shield Slots": "1",
+        "Cargo Pod Slots": "5",
+        "Fuel Tank Slots": "3",
+        "Coupler Slots": "1",
+        "GERTY Slots": "6",
+        "Max Ore Hoppers": "4"
+      },
+      "Resources": {
+        "Trans-Metals": "70882",
+        "Acidic Inorganics": "11550",
+        "Heavy Post-Trans Metals": "18243"
+      },
+      "UUID": "e4167225-7a47-5fd3-bae4-de42bdb35d98",
+      "ItemType": "Blueprint",
+      "Name": "Heavy Mining Rig"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Hull",
+      "Class": 6,
+      "Properties": {
+        "_IconPosition": "-328px -62px",
+        "Mass": "25500",
+        "Cargo Volume Size": "28334",
+        "License Level": "36",
+        "License Career": "Public",
+        "Health": "4250",
+        "Eng Capacity Required": "20000",
+        "Max Hull Plating": "1",
+        "Max Hull Reinforcement": "3",
+        "Max Hull Sealant Units": "3",
+        "Cargo Capacity": "70000",
+        "Fuel Capacity": "14500",
+        "Large Weapon Mounts": "0",
+        "Medium Weapon Mounts": "0",
+        "Small Weapon Mounts": "3",
+        "Wear and Tear Rate": "1",
+        "Maximum Damage Repair": "70",
+        "Energy Defence": "68",
+        "Kinetic Damage Defence": "64",
+        "Missile Damage Defence": "227",
+        "Crew Supported": "3",
+        "Reactor Slots": "1",
+        "Main Drive Slots": "1",
+        "Thruster Slots": "1",
+        "Jump Drive Slots": "1",
+        "Nav Comp Slots": "1",
+        "Scanner Slots": "1",
+        "Shield Slots": "1",
+        "Cargo Pod Slots": "5",
+        "Fuel Tank Slots": "3",
+        "Coupler Slots": "1",
+        "GERTY Slots": "6"
+      },
+      "Resources": {
+        "Halogens": "70977",
+        "Non-Metallics": "11489",
+        "Heavy Post-Trans Metals": "18705"
+      },
+      "UUID": "784e9693-ce43-5b23-baed-87d96f304c34",
+      "ItemType": "Blueprint",
+      "Name": "Support Ops Rig"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "HullSealantInjectionUnit",
+      "Class": 5,
+      "Properties": {
+        "_IconPosition": "-214px -480px",
+        "Mass": "320",
+        "Cargo Volume Size": "160",
+        "Power Required": "14",
+        "Eng Capacity Required": "630",
+        "Consumable": "On use",
+        "Maximum Damage Repair": "80",
+        "Hull HP Percent Restored": "20",
+        "Cooldown Time": "50",
+        "Deploy Time": "50"
+      },
+      "Resources": {
+        "Heavy Noble Gases": "279",
+        "Non-Metallics": "46",
+        "Heavy Post-Trans Metals": "82"
+      },
+      "UUID": "4d8d804e-60dc-5de8-a485-be78e819d291",
+      "ItemType": "Blueprint",
+      "Name": "Class 5 Hull Sealant Injection Unit"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "JumpDrive",
+      "TechLevel": "Rugged",
+      "Class": 8,
+      "Properties": {
+        "_IconPosition": "-24px -442px",
+        "Mass": "3840",
+        "Cargo Volume Size": "1440",
+        "Power Required": "2406",
+        "Health": "23040",
+        "Eng Capacity Required": "5760",
+        "Wear and Tear Rate": "3",
+        "Maximum Damage Repair": "90",
+        "Fuel Used / JAS / Mass": "0.0025",
+        "Max Jump Distance": "15"
+      },
+      "Resources": {
+        "Trans-Metals": "54359",
+        "Acidic Inorganics": "7554",
+        "Metaloids": "12441"
+      },
+      "UUID": "17457d64-be78-5542-b76c-3e054784de45",
+      "ItemType": "Blueprint",
+      "Name": "Star-Hop Jump Drive"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "NavComp",
+      "TechLevel": "Junker",
+      "Class": 5,
+      "Properties": {
+        "_IconPosition": "-480px -480px",
+        "Mass": "140",
+        "Cargo Volume Size": "105",
+        "Power Required": "27",
+        "Health": "175",
+        "Eng Capacity Required": "410",
+        "Wear and Tear Rate": "9",
+        "Maximum Damage Repair": "90",
+        "Jump Charge Time": "41"
+      },
+      "Resources": {
+        "Alkali Metals": "253",
+        "Non-Metallics": "32",
+        "Heavy Post-Trans Metals": "69",
+        "Complex Metallics": "35"
+      },
+      "UUID": "b2a6c2ec-ab20-5323-85c2-0177fbb170a1",
+      "ItemType": "Blueprint",
+      "Name": "'Burnt Map' Nav-Computer"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "NavComp",
+      "TechLevel": "Junker",
+      "Class": 8,
+      "Properties": {
+        "_IconPosition": "-480px -480px",
+        "Mass": "360",
+        "Cargo Volume Size": "265",
+        "Power Required": "146",
+        "Health": "720",
+        "Eng Capacity Required": "1060",
+        "Wear and Tear Rate": "9",
+        "Maximum Damage Repair": "90",
+        "Jump Charge Time": "70"
+      },
+      "Resources": {
+        "Noble Gases": "811",
+        "Non-Metallics": "180",
+        "Heavy Post-Trans Metals": "345",
+        "Strong Alkali Organics": "122"
+      },
+      "UUID": "65e1761c-270b-541f-858e-c5b350e9476c",
+      "ItemType": "Blueprint",
+      "Name": "'Outrider' Nav-Computer"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "NavComp",
+      "TechLevel": "Junker",
+      "Class": 3,
+      "Properties": {
+        "_IconPosition": "-480px -480px",
+        "Mass": "50",
+        "Cargo Volume Size": "40",
+        "Power Required": "7",
+        "Health": "37",
+        "Eng Capacity Required": "22",
+        "Wear and Tear Rate": "9",
+        "Maximum Damage Repair": "90",
+        "Jump Charge Time": "22"
+      },
+      "Resources": {
+        "Noble Gases": "51",
+        "Metallics": "7",
+        "Heavy Trans-Metals": "16",
+        "Strong Alkali Organics": "8"
+      },
+      "UUID": "7fa7e046-90e4-5cac-be41-1d22817465af",
+      "ItemType": "Blueprint",
+      "Name": "'Bent Compass' Nav-Computer"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Shield",
+      "TechLevel": "Rugged",
+      "Class": 6,
+      "Properties": {
+        "_IconPosition": "-214px -252px",
+        "Mass": "5190",
+        "Cargo Volume Size": "1560",
+        "Health": "583",
+        "Eng Capacity Required": "3890",
+        "Power Draw Per Second": "29",
+        "Wear and Tear Rate": "3",
+        "Maximum Damage Repair": "90",
+        "Energy Defence": "65",
+        "Shield Hitpoints": "1229",
+        "Shield regen": "15"
+      },
+      "Resources": {
+        "Post-Trans Metals": "10844",
+        "Metallics": "1769",
+        "Metaloids": "3667",
+        "Strong Alkali Organics": "1804"
+      },
+      "UUID": "55df8661-34bf-5343-8d30-79d43bc34f80",
+      "ItemType": "Blueprint",
+      "Name": "Multi-Bubble Field Generator"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Shield",
+      "TechLevel": "Junker",
+      "Class": 2,
+      "Properties": {
+        "_IconPosition": "-214px -252px",
+        "Mass": "180",
+        "Cargo Volume Size": "55",
+        "Health": "40",
+        "Eng Capacity Required": "130",
+        "Power Draw Per Second": "3",
+        "Wear and Tear Rate": "9",
+        "Maximum Damage Repair": "90",
+        "Energy Defence": "26",
+        "Shield Hitpoints": "70",
+        "Shield regen": "1"
+      },
+      "Resources": {
+        "Halogens": "103",
+        "Non-Metallics": "17",
+        "Heavy Post-Trans Metals": "35",
+        "Strong Acidic Inorganics": "14"
+      },
+      "UUID": "bcef87a3-b48c-50e6-863a-66fce764c693",
+      "ItemType": "Blueprint",
+      "Name": "'Buckler' Shield Module"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "AsteroidGrapple",
+      "TechLevel": "Hi-Tech",
+      "Class": 6,
+      "Properties": {
+        "_IconPosition": "-214px -442px",
+        "Mass": "585",
+        "Cargo Volume Size": "330",
+        "Power Required": "78",
+        "Health": "750",
+        "Eng Capacity Required": "585",
+        "Wear and Tear Rate": "7",
+        "Maximum Damage Repair": "70",
+        "Mining Cycle Time": "-18"
+      },
+      "Resources": {
+        "Halogens": "1721",
+        "Acidic Inorganics": "263",
+        "Heavy Post-Trans Metals": "543"
+      },
+      "UUID": "c000780a-4155-5221-93a4-9d2d325edbdb",
+      "ItemType": "Blueprint",
+      "Name": "Prism-6 Speed Grapple"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "AsteroidGrapple",
+      "TechLevel": "Standard",
+      "Class": 8,
+      "Properties": {
+        "_IconPosition": "-214px -442px",
+        "Mass": "2370",
+        "Cargo Volume Size": "1335",
+        "Power Required": "194",
+        "Health": "2490",
+        "Eng Capacity Required": "2370",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "70",
+        "Mining Yield Increase": "+15"
+      },
+      "Resources": {
+        "Alkaline Earth Metals": "5380",
+        "Acidic Inorganics": "682",
+        "Heavy Post-Trans Metals": "1518"
+      },
+      "UUID": "879d42a5-43d4-5134-8b38-a143da7a9f06",
+      "ItemType": "Blueprint",
+      "Name": "GAP-8 Yield Grapple"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "AsteroidGrapple",
+      "TechLevel": "Hi-Tech",
+      "Class": 3,
+      "Properties": {
+        "_IconPosition": "-214px -442px",
+        "Mass": "73",
+        "Cargo Volume Size": "41",
+        "Power Required": "9",
+        "Health": "95",
+        "Eng Capacity Required": "72",
+        "Wear and Tear Rate": "7",
+        "Maximum Damage Repair": "70",
+        "Mining Cycle Time": "-18"
+      },
+      "Resources": {
+        "Heavy Noble Gases": "187",
+        "Metallics": "27",
+        "Metaloids": "59"
+      },
+      "UUID": "d1cb6f18-0375-5ab3-b060-2acd6dbaf1f1",
+      "ItemType": "Blueprint",
+      "Name": "Prism-3 Speed Grapple"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "MiningLaser",
+      "TechLevel": "Standard",
+      "Class": 2,
+      "Properties": {
+        "_IconPosition": "-252px -442px",
+        "Mass": "55",
+        "Cargo Volume Size": "32",
+        "Health": "12",
+        "Eng Capacity Required": "45",
+        "Power Draw Per Second": "1.4",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "70",
+        "Mining Yield": "52",
+        "Mining Cycle Time": "28",
+        "Mining Capable": "1"
+      },
+      "Resources": {
+        "Alkali Metals": "22",
+        "Acidic Inorganics": "4",
+        "Heavy Post-Trans Metals": "6"
+      },
+      "UUID": "80f1f238-097f-5ae2-9166-c19e7b1350ce",
+      "ItemType": "Blueprint",
+      "Name": "SML-2 Mining Laser"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "MiningLaser",
+      "TechLevel": "Standard",
+      "Class": 4,
+      "Properties": {
+        "_IconPosition": "-252px -442px",
+        "Mass": "315",
+        "Cargo Volume Size": "178",
+        "Health": "170",
+        "Eng Capacity Required": "265",
+        "Power Draw Per Second": "6.5",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "70",
+        "Mining Yield": "54",
+        "Mining Cycle Time": "28",
+        "Mining Capable": "1"
+      },
+      "Resources": {
+        "Halogens": "308",
+        "Acidic Inorganics": "50",
+        "Heavy Post-Trans Metals": "101"
+      },
+      "UUID": "d3f53ba7-b7a1-5626-b399-61a0deda91d3",
+      "ItemType": "Blueprint",
+      "Name": "SML-4 Mining Laser"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Standard",
+      "Class": 7,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "130",
+        "Cargo Volume Size": "165",
+        "Power Required": "213",
+        "Health": "455",
+        "Eng Capacity Required": "490",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "70",
+        "Sensor Abundance Factor": "2.25",
+        "Purity Modifier": "20",
+        "Scan Level": "60",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Alkaline Earth Metals": "773",
+        "Metallics": "141",
+        "Metaloids": "241",
+        "Strong Alkali Organics": "112"
+      },
+      "UUID": "e6e61306-5763-5d40-987e-2c76f1830b02",
+      "ItemType": "Blueprint",
+      "Name": "SMS05 Crystalline Material Scanner"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Standard",
+      "Class": 6,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "110",
+        "Cargo Volume Size": "145",
+        "Power Required": "122",
+        "Health": "330",
+        "Eng Capacity Required": "430",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "70",
+        "Sensor Abundance Factor": "2",
+        "Purity Modifier": "15",
+        "Scan Level": "50",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Alkaline Earth Metals": "700",
+        "Metallics": "102",
+        "Heavy Trans-Metals": "212",
+        "Complex Metallics": "107"
+      },
+      "UUID": "8f21ce6b-922d-5f24-afaf-af319cd9f7be",
+      "ItemType": "Blueprint",
+      "Name": "SMS04 Inert Material Scanner"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Standard",
+      "Class": 4,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "70",
+        "Cargo Volume Size": "90",
+        "Power Required": "36",
+        "Health": "140",
+        "Eng Capacity Required": "260",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "70",
+        "Sensor Abundance Factor": "1.5",
+        "Purity Modifier": "5",
+        "Scan Level": "30",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Heavy Noble Gases": "269",
+        "Non-Metallics": "47",
+        "Metaloids": "95",
+        "Strong Alkali Organics": "40"
+      },
+      "UUID": "26963aa0-3413-5409-9cd2-96447ae4ce74",
+      "ItemType": "Blueprint",
+      "Name": "SMS02 Reactives Material Scanner"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Junker",
+      "Class": 3,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "40",
+        "Cargo Volume Size": "50",
+        "Power Required": "14",
+        "Health": "30",
+        "Eng Capacity Required": "150",
+        "Wear and Tear Rate": "9",
+        "Maximum Damage Repair": "90",
+        "Sensor Abundance Factor": "1",
+        "Purity Modifier": "-4",
+        "Scan Level": "16",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Alkaline Earth Metals": "37",
+        "Metallics": "7",
+        "Heavy Post-Trans Metals": "13",
+        "Complex Metallics": "7"
+      },
+      "UUID": "75acf701-ba16-57b1-9c4c-5edcc94f2e94",
+      "ItemType": "Blueprint",
+      "Name": "'Swollen Finger' Volatiles Material Scanner"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Standard",
+      "Class": 6,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "110",
+        "Cargo Volume Size": "145",
+        "Power Required": "122",
+        "Health": "330",
+        "Eng Capacity Required": "430",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "70",
+        "Sensor Abundance Factor": "2",
+        "Purity Modifier": "15",
+        "Scan Level": "50"
+      },
+      "Resources": {
+        "Trans-Metals": "486",
+        "Metallics": "115",
+        "Heavy Post-Trans Metals": "193",
+        "Strong Acidic Inorganics": "84"
+      },
+      "UUID": "ea204156-1d38-5ff4-b620-c94952b9593c",
+      "ItemType": "Blueprint",
+      "Name": "SMS04 Material Scanner"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Rugged",
+      "Class": 4,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "80",
+        "Cargo Volume Size": "105",
+        "Power Required": "36",
+        "Health": "240",
+        "Eng Capacity Required": "310",
+        "Wear and Tear Rate": "3",
+        "Maximum Damage Repair": "90",
+        "Sensor Abundance Factor": "1.5",
+        "Purity Modifier": "5",
+        "Scan Level": "30",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Alkaline Earth Metals": "498",
+        "Acidic Inorganics": "77",
+        "Heavy Trans-Metals": "119",
+        "Strong Alkali Organics": "70"
+      },
+      "UUID": "f910559b-84e4-5215-8bd7-1a4b79b37ef3",
+      "ItemType": "Blueprint",
+      "Name": "Volatiles Material Scanner Gamma"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Rugged",
+      "Class": 8,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "290",
+        "Cargo Volume Size": "385",
+        "Power Required": "365",
+        "Health": "1740",
+        "Eng Capacity Required": "1150",
+        "Wear and Tear Rate": "3",
+        "Maximum Damage Repair": "90",
+        "Sensor Abundance Factor": "2.5",
+        "Purity Modifier": "25",
+        "Scan Level": "70",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Alkali Metals": "3250",
+        "Alkali Inorganics": "544",
+        "Heavy Post-Trans Metals": "1117",
+        "Strong Acidic Inorganics": "421"
+      },
+      "UUID": "7b3d6e4f-b3fb-5b76-89aa-38f9215f9179",
+      "ItemType": "Blueprint",
+      "Name": "Metallics Material Scanner Theta"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Junker",
+      "Class": 7,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "140",
+        "Cargo Volume Size": "180",
+        "Power Required": "170",
+        "Health": "245",
+        "Eng Capacity Required": "540",
+        "Wear and Tear Rate": "9",
+        "Maximum Damage Repair": "90",
+        "Sensor Abundance Factor": "1.8",
+        "Purity Modifier": "16",
+        "Scan Level": "48",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Trans-Metals": "326",
+        "Alkali Inorganics": "50",
+        "Heavy Post-Trans Metals": "110",
+        "Complex Metallics": "49"
+      },
+      "UUID": "0fecb2c6-5eba-5f6b-b23f-120d1114180c",
+      "ItemType": "Blueprint",
+      "Name": "'Bloody Wound' Organics Material Scanner"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Standard",
+      "Class": 2,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "20",
+        "Cargo Volume Size": "20",
+        "Power Required": "8",
+        "Health": "20",
+        "Eng Capacity Required": "50",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "70",
+        "Sensor Abundance Factor": "1",
+        "Purity Modifier": "-10",
+        "Scan Level": "10",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Post-Trans Metals": "34",
+        "Non-Metallics": "7",
+        "Heavy Post-Trans Metals": "12",
+        "Strong Acidic Inorganics": "7"
+      },
+      "UUID": "38ff559f-b067-5b1f-85ae-9a9cbbf619ee",
+      "ItemType": "Blueprint",
+      "Name": "SMS01 Material Scanner"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Standard",
+      "Class": 6,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "110",
+        "Cargo Volume Size": "145",
+        "Power Required": "122",
+        "Health": "330",
+        "Eng Capacity Required": "430",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "70",
+        "Sensor Abundance Factor": "2",
+        "Purity Modifier": "15",
+        "Scan Level": "50",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Post-Trans Metals": "596",
+        "Alkali Inorganics": "99",
+        "Heavy Post-Trans Metals": "163",
+        "Complex Metallics": "96"
+      },
+      "UUID": "d3c28205-76e3-5d85-8c4b-b96cd9ecce52",
+      "ItemType": "Blueprint",
+      "Name": "SMS04 Reactives Material Scanner"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Rugged",
+      "Class": 5,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "120",
+        "Cargo Volume Size": "150",
+        "Power Required": "68",
+        "Health": "450",
+        "Eng Capacity Required": "450",
+        "Wear and Tear Rate": "3",
+        "Maximum Damage Repair": "90",
+        "Sensor Abundance Factor": "1.75",
+        "Purity Modifier": "10",
+        "Scan Level": "40",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Noble Gases": "913",
+        "Acidic Inorganics": "111",
+        "Metaloids": "283",
+        "Complex Metallics": "157"
+      },
+      "UUID": "7ff83b3b-d5ae-5c4b-a654-3bad0c6f1fa0",
+      "ItemType": "Blueprint",
+      "Name": "Non-Carbon Material Scanner Delta"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Hi-Tech",
+      "Class": 8,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "320",
+        "Cargo Volume Size": "420",
+        "Power Required": "437",
+        "Health": "1280",
+        "Eng Capacity Required": "1250",
+        "Wear and Tear Rate": "7",
+        "Maximum Damage Repair": "70",
+        "Sensor Abundance Factor": "3",
+        "Purity Modifier": "30",
+        "Scan Level": "84",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Heavy Noble Gases": "2954",
+        "Non-Metallics": "485",
+        "Heavy Post-Trans Metals": "1010",
+        "Strong Alkali Organics": "386"
+      },
+      "UUID": "10ba8e01-1256-52eb-ad0f-c3f8723129bb",
+      "ItemType": "Blueprint",
+      "Name": "Onyx-Cyclops Non-Carbon Material Scanner"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "MilSpec",
+      "Class": 5,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "100",
+        "Cargo Volume Size": "130",
+        "Power Required": "101",
+        "Health": "500",
+        "Eng Capacity Required": "380",
+        "Wear and Tear Rate": "3",
+        "Maximum Damage Repair": "80",
+        "Sensor Abundance Factor": "2.625",
+        "Purity Modifier": "15",
+        "Scan Level": "60",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Heavy Noble Gases": "1113",
+        "Alkali Inorganics": "219",
+        "Heavy Post-Trans Metals": "405",
+        "Complex Metallics": "172"
+      },
+      "UUID": "a8d44373-4468-52b0-bb07-fb6cdd64a276",
+      "ItemType": "Blueprint",
+      "Name": "RAK-M Exotics Material Scanner"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "SystemObjectScanner",
+      "TechLevel": "Standard",
+      "Class": 5,
+      "Properties": {
+        "_IconPosition": "-100px -252px",
+        "Mass": "100",
+        "Cargo Volume Size": "130",
+        "Power Required": "68",
+        "Health": "250",
+        "Eng Capacity Required": "380",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "70",
+        "Sensor Abundance Factor": "1.75",
+        "Purity Modifier": "10",
+        "Scan Level": "40",
+        "Material Focus": "0",
+        "Material Focus Bonus": "0"
+      },
+      "Resources": {
+        "Heavy Noble Gases": "486",
+        "Non-Metallics": "64",
+        "Heavy Post-Trans Metals": "154",
+        "Complex Metallics": "62"
+      },
+      "UUID": "1112141d-72f0-5fab-8d99-d330233bff05",
+      "ItemType": "Blueprint",
+      "Name": "SMS03 Volatiles Material Scanner"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Thruster",
+      "TechLevel": "Hi-Tech",
+      "Class": 7,
+      "Properties": {
+        "_IconPosition": "-290px -62px",
+        "Mass": "220",
+        "Cargo Volume Size": "160",
+        "Power Required": "255",
+        "Health": "770",
+        "Eng Capacity Required": "640",
+        "Wear and Tear Rate": "7",
+        "Maximum Damage Repair": "70",
+        "Rotational Thrust": "6.72"
+      },
+      "Resources": {
+        "Heavy Noble Gases": "1807",
+        "Non-Metallics": "223",
+        "Metaloids": "459"
+      },
+      "UUID": "3476dfff-8c42-5cd9-b7a1-d5a060dedb23",
+      "ItemType": "Blueprint",
+      "Name": "Golden Eagle Thrusters"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Thruster",
+      "TechLevel": "Hi-Tech",
+      "Class": 4,
+      "Properties": {
+        "_IconPosition": "-290px -62px",
+        "Mass": "110",
+        "Cargo Volume Size": "85",
+        "Power Required": "43",
+        "Health": "220",
+        "Eng Capacity Required": "330",
+        "Wear and Tear Rate": "7",
+        "Maximum Damage Repair": "70",
+        "Rotational Thrust": "1.344"
+      },
+      "Resources": {
+        "Noble Gases": "523",
+        "Acidic Inorganics": "61",
+        "Heavy Post-Trans Metals": "122"
+      },
+      "UUID": "8bb1f6a0-2872-58f5-b85b-247e39695804",
+      "ItemType": "Blueprint",
+      "Name": "Jackdaw Thrusters"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "UniversalCoupler",
+      "Class": 8,
+      "Properties": {
+        "_IconPosition": "-480px -442px",
+        "Mass": "1920",
+        "Cargo Volume Size": "640",
+        "Power Required": "56",
+        "Health": "7680",
+        "Eng Capacity Required": "3840",
+        "Wear and Tear Rate": "5",
+        "Maximum Damage Repair": "80",
+        "Fuel Transfer Rate": "30"
+      },
+      "Resources": {
+        "Noble Gases": "14086",
+        "Metallics": "2542",
+        "Metaloids": "5227"
+      },
+      "UUID": "e2527ca1-33b6-5df1-86e8-a5e60794f4c9",
+      "ItemType": "Blueprint",
+      "Name": "S8 Fractal Docking Coupler"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Munitions/RailgunMunitions",
+      "Properties": {
+        "Amount Manufactured": "100",
+        "Mass": "24",
+        "Cargo Volume Size": "11",
+        "Kinetic Damage Rating": "172",
+        "Ammo Type": "",
+        "_IconPosition": "-252px -784px"
+      },
+      "Resources": {
+        "Trans-Metals": "143",
+        "Acidic Inorganics": "19",
+        "Heavy Trans-Metals": "29"
+      },
+      "UUID": "6f04b40b-251a-58ea-9e12-12afb99143d0",
+      "ItemType": "Blueprint",
+      "Name": "70cm Railgun Munitions"
     }
   ],
   "TechLevel": [
