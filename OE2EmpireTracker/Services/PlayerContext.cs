@@ -16,7 +16,7 @@ namespace OE2EmpireTracker.Services
     public class PlayerContext
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private static PlayerContext Instance;
+        private static PlayerContext _instance;
         public static string FilePath { get; set; } = "PlayerData.json";
 
         private string _currentPlayerUUID = string.Empty;
@@ -362,22 +362,22 @@ namespace OE2EmpireTracker.Services
 
         public static PlayerContext GetInstance()
         {
-            if (Instance == null)
+            if (_instance == null)
             {
-                Instance = new PlayerContext();
+                _instance = new PlayerContext();
             }
 
-            return Instance;
+            return _instance;
         }
 
         public static void Reset()
         {
-            Instance = null;
+            _instance = null;
         }
 
         private PlayerContext() : base()
         {
-            Instance = this;
+            _instance = this;
 
             PlayerRoot playerRoot = null;
             if (File.Exists(FilePath))

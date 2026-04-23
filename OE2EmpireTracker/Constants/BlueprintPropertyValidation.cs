@@ -148,10 +148,10 @@ namespace OE2EmpireTracker.Constants
             { "Wear and Tear Rate", PropertyValueType.Decimal },
         };
 
-        public static readonly string INTEGER_PATTERN = @"^[+-]?\d+$";
-        public static readonly string DECIMAL_PATTERN = @"^[+-]?\d+(\.\d+)?$";
-        public static readonly string BOOLEAN_PATTERN = @"^(true|false|True|False)$";
-        public static readonly string TIME_PATTERN = @"^(\d+d\s*)?(\d+h\s*)?(\d+m\s*)?(\d+s\s*)?$";
+        public static readonly string IntegerPattern = @"^[+-]?\d+$";
+        public static readonly string DecimalPattern = @"^[+-]?\d+(\.\d+)?$";
+        public static readonly string BooleanPattern = @"^(true|false|True|False)$";
+        public static readonly string TimePattern = @"^(\d+d\s*)?(\d+h\s*)?(\d+m\s*)?(\d+s\s*)?$";
 
         public static PropertyValueType GetPropertyType(string propertyName)
         {
@@ -165,10 +165,10 @@ namespace OE2EmpireTracker.Constants
         {
             switch (GetPropertyType(propertyName))
             {
-                case PropertyValueType.Integer: return INTEGER_PATTERN;
-                case PropertyValueType.Decimal: return DECIMAL_PATTERN;
-                case PropertyValueType.Boolean: return BOOLEAN_PATTERN;
-                case PropertyValueType.Time: return TIME_PATTERN;
+                case PropertyValueType.Integer: return IntegerPattern;
+                case PropertyValueType.Decimal: return DecimalPattern;
+                case PropertyValueType.Boolean: return BooleanPattern;
+                case PropertyValueType.Time: return TimePattern;
                 default: return null; // Unknown -- no validation
             }
         }

@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Parsers
 
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private static Dictionary<string, string> PropertyRemap = new Dictionary<string, string>()
+        private static Dictionary<string, string> _propertyRemap = new Dictionary<string, string>()
         {
             // Meaningful remaps -- clean up game labels
             { "Health (Hitpoints)", BlueprintPropertyKeys.Health },
@@ -52,7 +52,7 @@ namespace OE2EmpireTracker.Parsers
             { "Warehousing Capacity", GameConstants.PropWarehouseCapacity },
         };
 
-        private static Dictionary<string, string> BPTypeImageRemap = new Dictionary<string, string>()
+        private static Dictionary<string, string> _bpTypeImageRemap = new Dictionary<string, string>()
         {
             { "0f3e805217c98030f0c5.png", SlotTypes.Reactor }
         };
@@ -290,7 +290,7 @@ namespace OE2EmpireTracker.Parsers
                                 rawValue = Regex.Replace(rawValue, "\\(.*?\\)", string.Empty).Trim();
 
                                 string remapKey = key;
-                                if (!PropertyRemap.TryGetValue(key, out remapKey)) {
+                                if (!_propertyRemap.TryGetValue(key, out remapKey)) {
                                     // If no remap defined, use original key with whitespace removed for consistency
                                     remapKey = key;
                                     Log.Warn("No property remap defined for: '{0}'", key);
@@ -459,7 +459,7 @@ namespace OE2EmpireTracker.Parsers
                                 rawValue = Regex.Replace(rawValue, "\\(.*?\\)", string.Empty).Trim();
 
                                 string remapKey;
-                                if (!PropertyRemap.TryGetValue(key, out remapKey))
+                                if (!_propertyRemap.TryGetValue(key, out remapKey))
                                 {
                                     remapKey = key;
                                 }

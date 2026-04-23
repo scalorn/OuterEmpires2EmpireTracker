@@ -80,13 +80,13 @@ namespace OE2EmpireTracker.Tests.Constants
         [Test]
         public void GetValidationPattern_IntegerProperty_ReturnsIntegerPattern()
         {
-            Assert.That(BlueprintPropertyValidation.GetValidationPattern("Blue Collar Detail"), Is.EqualTo(BlueprintPropertyValidation.INTEGER_PATTERN));
+            Assert.That(BlueprintPropertyValidation.GetValidationPattern("Blue Collar Detail"), Is.EqualTo(BlueprintPropertyValidation.IntegerPattern));
         }
 
         [Test]
         public void GetValidationPattern_DecimalProperty_ReturnsDecimalPattern()
         {
-            Assert.That(BlueprintPropertyValidation.GetValidationPattern("Cooldown Time"), Is.EqualTo(BlueprintPropertyValidation.DECIMAL_PATTERN));
+            Assert.That(BlueprintPropertyValidation.GetValidationPattern("Cooldown Time"), Is.EqualTo(BlueprintPropertyValidation.DecimalPattern));
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace OE2EmpireTracker.Tests.Constants
         [Test]
         public void GetValidationPattern_TimeProperty_ReturnsTimePattern()
         {
-            Assert.That(BlueprintPropertyValidation.GetValidationPattern("Manufacture Run Time"), Is.EqualTo(BlueprintPropertyValidation.TIME_PATTERN));
+            Assert.That(BlueprintPropertyValidation.GetValidationPattern("Manufacture Run Time"), Is.EqualTo(BlueprintPropertyValidation.TimePattern));
         }
 
         [Test]

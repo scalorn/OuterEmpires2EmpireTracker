@@ -579,7 +579,7 @@ namespace OE2EmpireTracker.Forms.Survey
             }
 
             if (!System.Text.RegularExpressions.Regex.IsMatch(value,
-                OE2EmpireTracker.Constants.BlueprintPropertyValidation.DECIMAL_PATTERN))
+                OE2EmpireTracker.Constants.BlueprintPropertyValidation.DecimalPattern))
             {
                 e.Cancel = true;
                 dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = System.Drawing.Color.LightCoral;

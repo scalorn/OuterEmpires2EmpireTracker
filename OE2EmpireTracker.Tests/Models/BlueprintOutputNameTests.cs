@@ -289,8 +289,8 @@ namespace OE2EmpireTracker.Tests.Models
                     string nickBefore = bp.NickName;
                     string uuidBefore = bp.UUID;
 
-                    var _ = bp.OutputItemName;
-                    var __ = bp.ExtendedName;
+                    _ = bp.OutputItemName;
+                    _ = bp.ExtendedName;
 
                     bool nameOk = bp.Name == nameBefore;
                     bool typeOk = bp.BluePrintType == typeBefore;

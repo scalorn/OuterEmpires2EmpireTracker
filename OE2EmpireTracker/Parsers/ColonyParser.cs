@@ -518,8 +518,8 @@ namespace OE2EmpireTracker.Parsers
             }
 
             // Store the game's unique building identifier
-            int BuildingID = building["buildingID"]?.Value<int>() ?? 0;
-            structure.BuildingID = BuildingID;
+            int buildingId = building["buildingID"]?.Value<int>() ?? 0;
+            structure.BuildingID = buildingId;
             // DisplaySequence is NOT set here -- it will be calculated per-type
             // in ParseColonyBuildingsFromJson after all buildings are parsed
 

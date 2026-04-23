@@ -56,19 +56,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
-        // WM_SETREDRAW: suppress all painting until re-enabled
+        // WmSetRedraw: suppress all painting until re-enabled
         [DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, int lParam);
-        private const int WM_SETREDRAW = 0x000B;
+        private const int WmSetRedraw = 0x000B;
 
         private static void SuspendDrawing(Control control)
         {
-            SendMessage(control.Handle, WM_SETREDRAW, false, 0);
+            SendMessage(control.Handle, WmSetRedraw, false, 0);
         }
 
         private static void ResumeDrawing(Control control)
         {
-            SendMessage(control.Handle, WM_SETREDRAW, true, 0);
+            SendMessage(control.Handle, WmSetRedraw, true, 0);
             control.Refresh();
         }
 

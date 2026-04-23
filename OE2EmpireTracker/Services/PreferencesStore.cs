@@ -10,24 +10,24 @@ namespace OE2EmpireTracker.Services
     public class PreferencesStore
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private static PreferencesStore Instance;
+        private static PreferencesStore _instance;
 
         private UIPreferences _preferences;
         private readonly string _filePath;
 
         public static PreferencesStore GetInstance()
         {
-            if (Instance == null)
+            if (_instance == null)
             {
-                Instance = new PreferencesStore();
+                _instance = new PreferencesStore();
             }
 
-            return Instance;
+            return _instance;
         }
 
         public static void Reset()
         {
-            Instance = null;
+            _instance = null;
         }
 
         private PreferencesStore()

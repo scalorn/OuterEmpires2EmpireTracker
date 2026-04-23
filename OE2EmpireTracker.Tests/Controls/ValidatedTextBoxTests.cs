@@ -227,7 +227,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ValidateInput_WithPattern_MatchesValidation_ReturnsTrue()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.EMAIL_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.EmailValidation;
             textBox.Text = "test@example.com";
 
             bool result = textBox.ValidateInput();
@@ -240,7 +240,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ValidateInput_WithPattern_NoMatch_ReturnsFalse()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.EMAIL_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.EmailValidation;
             textBox.Text = "not-an-email";
 
             bool result = textBox.ValidateInput();
@@ -254,7 +254,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ValidateInput_WithNumberPattern_ValidNumber_ReturnsTrue()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.NUMBER_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.NumberValidation;
             textBox.Text = "12345";
 
             bool result = textBox.ValidateInput();
@@ -265,7 +265,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ValidateInput_WithNumberPattern_InvalidNumber_ReturnsFalse()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.NUMBER_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.NumberValidation;
             textBox.Text = "abc";
 
             bool result = textBox.ValidateInput();
@@ -280,7 +280,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ValidationPattern_ValidatesEmailFormat()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.EMAIL_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.EmailValidation;
             textBox.Text = "user@domain.com";
 
             bool result = textBox.ValidateInput();
@@ -291,7 +291,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ValidationPattern_ValidatesEmailFormat_IgnoreCase()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.EMAIL_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.EmailValidation;
             textBox.Text = "USER@DOMAIN.COM";
 
             bool result = textBox.ValidateInput();
@@ -302,7 +302,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ValidationPattern_ValidatesNumberFormat()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.NUMBER_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.NumberValidation;
             textBox.Text = "1234567890";
 
             bool result = textBox.ValidateInput();
@@ -313,7 +313,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ValidationPattern_InvalidEmail_ReturnsFalse()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.EMAIL_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.EmailValidation;
             textBox.Text = "invalid-email@";
 
             bool result = textBox.ValidateInput();
@@ -324,7 +324,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void ValidationPattern_InvalidNumber_ReturnsFalse()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.NUMBER_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.NumberValidation;
             textBox.Text = "abc123";
 
             bool result = textBox.ValidateInput();
@@ -350,7 +350,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void AllowSpaces_WithPattern_MatchAllowsSpaces()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.EMAIL_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.EmailValidation;
             textBox.AllowSpaces = true;
             textBox.Text = "test @example.com";
 
@@ -399,7 +399,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void HasInvalidCharacter_WithValidationPattern_DetectsInvalidChars()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.EMAIL_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.EmailValidation;
 
             bool hasSpace = textBox.HasInvalidCharacter(' ');
             Assert.That(hasSpace, Is.True); // Space is invalid for email pattern
@@ -409,7 +409,7 @@ namespace OE2EmpireTracker.Tests.Controls
         public void HasInvalidCharacter_WithNumberPattern_DetectsLetters()
         {
             var textBox = new ValidatedTextBox();
-            textBox.ValidationPattern = ValidatedTextBox.NUMBER_VALIDATION;
+            textBox.ValidationPattern = ValidatedTextBox.NumberValidation;
 
             bool hasLetter = textBox.HasInvalidCharacter('a');
             Assert.That(hasLetter, Is.True); // Letters are invalid for number pattern

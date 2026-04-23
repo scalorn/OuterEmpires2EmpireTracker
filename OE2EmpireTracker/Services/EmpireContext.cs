@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Services
     public class EmpireContext
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private static EmpireContext Instance;
+        private static EmpireContext _instance;
         public static string FilePath { get; set; } = "BaselineData.json";
 
         public static PlayerContext PlayerContext { get; set; }
@@ -73,12 +73,12 @@ namespace OE2EmpireTracker.Services
 
         public static EmpireContext GetInstance()
         {
-            if (Instance == null)
+            if (_instance == null)
             {
-                Instance = new EmpireContext();
+                _instance = new EmpireContext();
             }
 
-            return Instance;
+            return _instance;
         }
 
         /// <summary>
@@ -87,19 +87,19 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public static EmpireContext GetInstanceIfLoaded()
         {
-            return Instance;
+            return _instance;
         }
 
         public static void Reset()
         {
-            Instance = null;
+            _instance = null;
             PlayerContext = null;
             OE2EmpireTracker.Services.PlayerContext.Reset();
         }
 
         private EmpireContext() : base()
         {
-            Instance = this;
+            _instance = this;
             PlayerContext = PlayerContext.GetInstance();
 
             Log.Info("Loading baseline data from {0}", FilePath);

@@ -69,9 +69,9 @@ namespace OE2EmpireTracker.Controls
             set => _isValid = value;
         }
 
-        public static readonly string EMAIL_VALIDATION = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-        public static readonly string DECIMAL_VALIDATION = @"^[+-]?\d+\.\d{2}$";
-        public static readonly string NUMBER_VALIDATION = @"^[+-]?\d+$";
+        public static readonly string EmailValidation = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+        public static readonly string DecimalValidation = @"^[+-]?\d+\.\d{2}$";
+        public static readonly string NumberValidation = @"^[+-]?\d+$";
 
         public ValidatedTextBox()
         {

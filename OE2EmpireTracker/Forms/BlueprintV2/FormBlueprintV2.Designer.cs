@@ -710,7 +710,7 @@ namespace OE2EmpireTracker
             this.colResource.Width = 200;
             this.colAmount.HeaderText = "Amount";
             this.colAmount.Name = "Amount";
-            this.colAmount.ValidationPattern = OE2EmpireTracker.Controls.ValidatedTextBox.NUMBER_VALIDATION;
+            this.colAmount.ValidationPattern = OE2EmpireTracker.Controls.ValidatedTextBox.NumberValidation;
             this.colAmount.Width = 100;
             // tabPEvolutionGraph
             this.tabPEvolutionGraph.Controls.Add(this.chartEvolution);

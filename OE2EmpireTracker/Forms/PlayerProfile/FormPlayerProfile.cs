@@ -28,7 +28,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private PlayerContext playerContext;
         private PlayerProfileViewModel viewModel;
 
-        private Dictionary<SkillGroupName, CheckBox> SkillGroups = new Dictionary<SkillGroupName, CheckBox>();
+        private Dictionary<SkillGroupName, CheckBox> _skillGroups = new Dictionary<SkillGroupName, CheckBox>();
         private Dictionary<string, PlayerSkillBlock> skillBlocks = new Dictionary<string, PlayerSkillBlock>();
 
         public FormPlayerProfile()
@@ -39,16 +39,16 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             playerContext = EmpireContext.PlayerContext;
             viewModel = new PlayerProfileViewModel(new Models.PlayerProfile(), playerContext);
 
-            SkillGroups[SkillGroupName.ColonyDirector]   = chkColonyDirector;
-            SkillGroups[SkillGroupName.ColonyFounder]    = chkColonyFounder;
-            SkillGroups[SkillGroupName.ColonyOperations] = chkColonyOperations;
-            SkillGroups[SkillGroupName.Commander]        = chkCommander;
-            SkillGroups[SkillGroupName.Engineer]         = chkEngineer;
-            SkillGroups[SkillGroupName.Entrepeneur]      = chkEntrepeneur;
-            SkillGroups[SkillGroupName.JobManagement]    = chkJobManagement;
-            SkillGroups[SkillGroupName.Researcher]       = chkResearcher;
-            SkillGroups[SkillGroupName.Surveyor]         = chkSurveyor;
-            SkillGroups[SkillGroupName.Trader]           = chkTrader;
+            _skillGroups[SkillGroupName.ColonyDirector]   = chkColonyDirector;
+            _skillGroups[SkillGroupName.ColonyFounder]    = chkColonyFounder;
+            _skillGroups[SkillGroupName.ColonyOperations] = chkColonyOperations;
+            _skillGroups[SkillGroupName.Commander]        = chkCommander;
+            _skillGroups[SkillGroupName.Engineer]         = chkEngineer;
+            _skillGroups[SkillGroupName.Entrepeneur]      = chkEntrepeneur;
+            _skillGroups[SkillGroupName.JobManagement]    = chkJobManagement;
+            _skillGroups[SkillGroupName.Researcher]       = chkResearcher;
+            _skillGroups[SkillGroupName.Surveyor]         = chkSurveyor;
+            _skillGroups[SkillGroupName.Trader]           = chkTrader;
 
             ConfigureSkillBlockOnce(chkColonyDirector, pskHumanResources, SkillName.HumanResources);
             ConfigureSkillBlockOnce(chkColonyDirector, pskForeman, SkillName.Foreman);
@@ -184,7 +184,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             txtMilitaryRankCurXP.Text = viewModel.MilitaryRank.CurrentXP.ToString();
             txtMilitaryRankNextXP.Text = viewModel.MilitaryRank.NextXP.ToString();
 
-            foreach (var entry in SkillGroups)
+            foreach (var entry in _skillGroups)
             {
                 entry.Value.Checked = viewModel.GetSkillGroup(entry.Key);
             }
