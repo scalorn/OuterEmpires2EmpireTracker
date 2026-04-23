@@ -1,0 +1,8 @@
+<Project>
+  <!-- StyleCop Analyzers: CLI builds only (not loaded in VS editor to prevent Roslyn host crash) -->
+  <ItemGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
+    <Analyzer Include="$(MSBuildThisFileDirectory)packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+    <Analyzer Include="$(MSBuildThisFileDirectory)packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" />
+  </ItemGroup>
+</Project>
