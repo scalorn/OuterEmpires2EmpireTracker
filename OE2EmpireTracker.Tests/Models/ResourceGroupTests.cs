@@ -31,10 +31,12 @@ namespace OE2EmpireTracker.Tests.Models
         public void Groups_AllNonNoneEntriesHaveNonEmptyName()
         {
             foreach (var g in ResourceGroup.Groups.Where(g => g.ID != RGE.None))
+            {
                 Assert.That(
                     string.IsNullOrEmpty(g.Name),
                     Is.False,
                     $"ResourceGroup with ID '{g.ID}' has empty Name");
+            }
         }
 
         [Test]
@@ -63,10 +65,12 @@ namespace OE2EmpireTracker.Tests.Models
             var allEnums = Enum.GetValues(typeof(RGE)).Cast<RGE>();
             var listIDs = ResourceGroup.Groups.Select(g => g.ID).ToList();
             foreach (var e in allEnums)
+            {
                 Assert.That(
                     listIDs.Contains(e),
                     Is.True,
                     $"Groups list missing enum value {e}");
+            }
         }
 
         [Test]
@@ -74,10 +78,12 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var nonNone = ResourceGroup.Groups.Where(g => g.ID != RGE.None).ToList();
             for (int i = 1; i < nonNone.Count; i++)
+            {
                 Assert.That(
                     string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal),
                     Is.LessThanOrEqualTo(0),
                     $"Groups not sorted: '{nonNone[i - 1].Name}' before '{nonNone[i].Name}'");
+            }
         }
 
         // -----------------------------------------------------------------------
@@ -96,10 +102,12 @@ namespace OE2EmpireTracker.Tests.Models
             var nonSynthetic = ResourceGroup.Groups
                 .Where(g => g.ID != RGE.None && g.ID != RGE.Synthetic);
             foreach (var g in nonSynthetic)
+            {
                 Assert.That(
                     g.Synthetic,
                     Is.False,
                     $"ResourceGroup '{g.Name}' should not be Synthetic");
+            }
         }
 
         // -----------------------------------------------------------------------
@@ -111,10 +119,12 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var allEnums = Enum.GetValues(typeof(RGE)).Cast<RGE>();
             foreach (var e in allEnums)
+            {
                 Assert.That(
                     ResourceGroup.ResourceGroupMapByEnum.ContainsKey(e),
                     Is.True,
                     $"ResourceGroupMapByEnum missing key {e}");
+            }
         }
 
         [Test]
@@ -139,10 +149,12 @@ namespace OE2EmpireTracker.Tests.Models
         public void ResourceGroupMapByString_ContainsAllGroupNames()
         {
             foreach (var g in ResourceGroup.Groups)
+            {
                 Assert.That(
                     ResourceGroup.ResourceGroupMapByString.ContainsKey(g.Name),
                     Is.True,
                     $"ResourceGroupMapByString missing key '{g.Name}'");
+            }
         }
 
         [Test]

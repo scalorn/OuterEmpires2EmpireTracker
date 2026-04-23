@@ -423,10 +423,12 @@ namespace OE2EmpireTracker.Services
                     if (_commodityList != null)
                     {
                         foreach (var c in _commodityList)
+                        {
                             if (!string.IsNullOrEmpty(c.Name) && !_commodityNameCache.ContainsKey(c.Name))
                             {
                                 _commodityNameCache[c.Name] = c;
                             }
+                        }
                     }
                 }
 

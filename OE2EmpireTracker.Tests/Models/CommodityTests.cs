@@ -23,40 +23,48 @@ namespace OE2EmpireTracker.Tests.Models
         public void Commodities_AllEntriesHaveNonEmptyID()
         {
             foreach (var c in Commodity.Commodities)
+            {
                 Assert.That(
                     string.IsNullOrEmpty(c.ID),
                     Is.False,
                     $"Commodity with Name '{c.Name}' has empty ID");
+            }
         }
 
         [Test]
         public void Commodities_AllEntriesHaveNonEmptyName()
         {
             foreach (var c in Commodity.Commodities)
+            {
                 Assert.That(
                     string.IsNullOrEmpty(c.Name),
                     Is.False,
                     $"Commodity with ID '{c.ID}' has empty Name");
+            }
         }
 
         [Test]
         public void Commodities_AllEntriesHaveKnownIndustry()
         {
             foreach (var c in Commodity.Commodities)
+            {
                 Assert.That(
                     c.CommodityIndustry,
                     Is.Not.EqualTo(CI.CommodityIndustryEnum.None),
                     $"Commodity '{c.Name}' has no industry assigned");
+            }
         }
 
         [Test]
         public void Commodities_AllEntriesHaveKnownGroup()
         {
             foreach (var c in Commodity.Commodities)
+            {
                 Assert.That(
                     c.CommodityGroup,
                     Is.Not.EqualTo(CG.CommodityGroupEnum.None),
                     $"Commodity '{c.Name}' has no group assigned");
+            }
         }
 
         [Test]
@@ -188,10 +196,12 @@ namespace OE2EmpireTracker.Tests.Models
             var allEnums = System.Enum.GetValues(typeof(CG.CommodityGroupEnum))
                 .Cast<CG.CommodityGroupEnum>();
             foreach (var e in allEnums)
+            {
                 Assert.That(
                     CG.CommodityGroupMapByEnum.ContainsKey(e),
                     Is.True,
                     $"CommodityGroupMapByEnum missing {e}");
+            }
         }
 
         [Test]
@@ -224,10 +234,12 @@ namespace OE2EmpireTracker.Tests.Models
             var allEnums = System.Enum.GetValues(typeof(CI.CommodityIndustryEnum))
                 .Cast<CI.CommodityIndustryEnum>();
             foreach (var e in allEnums)
+            {
                 Assert.That(
                     CI.CommodityIndustryMapByEnum.ContainsKey(e),
                     Is.True,
                     $"CommodityIndustryMapByEnum missing {e}");
+            }
         }
 
         [Test]

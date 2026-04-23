@@ -128,8 +128,10 @@ namespace OE2EmpireTracker.Forms.StockTargets
             var plans = playerContext.GetCurrentPlayerStockPlans();
             string filter = txtFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
+            {
                 plans = plans.Where(p =>
                     p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
             plans = plans.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
             foreach (var plan in plans)
@@ -278,28 +280,34 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 case "Commodity":
                     var commodities = EmpireContext.GetInstance()?.CommodityList;
                     if (commodities != null)
+                    {
                         foreach (var c in commodities.OrderBy(c => c.Name))
                         {
                             items.Add(new KeyValuePair<string, string>(c.Name, c.Name));
                         }
+                    }
 
                     break;
                 case "Resource":
                     var resources = EmpireContext.GetInstance()?.ResourceList;
                     if (resources != null)
+                    {
                         foreach (var r in resources.OrderBy(r => r.Name))
                         {
                             items.Add(new KeyValuePair<string, string>(r.Name, r.Name));
                         }
+                    }
 
                     break;
                 default: // ShipPart, ShipHull
                     var blueprints = playerContext.GetAllBlueprints();
                     if (blueprints != null)
+                    {
                         foreach (var bp in blueprints.Where(b => !string.IsNullOrEmpty(b.Name)).OrderBy(b => b.ExtendedName))
                         {
                             items.Add(new KeyValuePair<string, string>(bp.UUID, bp.ExtendedName));
                         }
+                    }
 
                     break;
             }
@@ -765,8 +773,10 @@ namespace OE2EmpireTracker.Forms.StockTargets
             var profiles = playerContext.GetCurrentPlayerStockProfiles();
             string filter = txtProfileFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
+            {
                 profiles = profiles.Where(p =>
                     p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
             profiles = profiles.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
             foreach (var profile in profiles)
@@ -884,8 +894,10 @@ namespace OE2EmpireTracker.Forms.StockTargets
             var plans = playerContext.GetCurrentPlayerStockPlans();
             string filter = txtEntryFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
+            {
                 plans = plans.Where(p =>
                     p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
 
             var items = new List<KeyValuePair<string, string>>();
             foreach (var plan in plans.OrderBy(p => p.Name))

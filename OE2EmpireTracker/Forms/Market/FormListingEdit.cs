@@ -69,6 +69,7 @@ namespace OE2EmpireTracker.Forms.Market
             // Populate
             txtItemName.Text = listing.ItemName;
             for (int i = 0; i < cmbItemType.Items.Count; i++)
+            {
                 if (cmbItemType.Items[i] is ItemType.ItemTypeEnum t2 && t2 == listing.ItemType)
                 {
                 {
@@ -77,8 +78,10 @@ namespace OE2EmpireTracker.Forms.Market
 
                     break;
                 }
+            }
 
             for (int i = 0; i < cmbStation.Items.Count; i++)
+            {
                 if (cmbStation.Items[i] is StationItem si && si.UUID == listing.StationUUID)
                 {
                 {
@@ -87,6 +90,7 @@ namespace OE2EmpireTracker.Forms.Market
 
                     break;
                 }
+            }
 
             if (cmbStation.SelectedIndex < 0) cmbStation.SelectedIndex = 0;
             txtQuantity.Text = listing.Quantity.ToString();

@@ -47,10 +47,12 @@ namespace OE2EmpireTracker.Tests.Models
         public void WorkerDetails_AllNamedEntriesHaveNonEmptyName()
         {
             foreach (var w in WorkerDetail.WorkerDetails.Where(w => !string.IsNullOrEmpty(w.ID)))
+            {
                 Assert.That(
                     string.IsNullOrEmpty(w.Name),
                     Is.False,
                     $"WorkerDetail with ID '{w.ID}' has empty Name");
+            }
         }
 
         [Test]
@@ -81,10 +83,12 @@ namespace OE2EmpireTracker.Tests.Models
         public void WorkerDetailMapByID_ContainsAllIDs()
         {
             foreach (var w in WorkerDetail.WorkerDetails)
+            {
                 Assert.That(
                     WorkerDetail.WorkerDetailMapByID.ContainsKey(w.ID),
                     Is.True,
                     $"WorkerDetailMapByID missing key '{w.ID}'");
+            }
         }
 
         [Test]
@@ -109,10 +113,12 @@ namespace OE2EmpireTracker.Tests.Models
         public void WorkerDetailMapByName_ContainsAllNames()
         {
             foreach (var w in WorkerDetail.WorkerDetails)
+            {
                 Assert.That(
                     WorkerDetail.WorkerDetailMapByName.ContainsKey(w.Name),
                     Is.True,
                     $"WorkerDetailMapByName missing key '{w.Name}'");
+            }
         }
 
         [Test]

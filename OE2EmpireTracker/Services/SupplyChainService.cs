@@ -91,8 +91,10 @@ namespace OE2EmpireTracker.Services
                     var station = stationFinder(stage.LocationUUID);
                     if (station == null) return 0;
                     if (station.Holds.TryGetValue(currentPlayerUUID, out var hold) && hold != null)
+                    {
                         return hold.FindResource(stage.ResourceName, stage.ResourcePurity)
                             .Sum(i => i.Quantity);
+                    }
                     return 0;
 
                 case DestinationType.Ship:

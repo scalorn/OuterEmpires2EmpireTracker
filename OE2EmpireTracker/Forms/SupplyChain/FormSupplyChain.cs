@@ -109,8 +109,10 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             var chains = playerContext.SupplyChainList.ToList();
             string filter = txtFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
+            {
                 chains = chains.Where(c =>
                     c.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
             chains = chains.OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
             foreach (var chain in chains)

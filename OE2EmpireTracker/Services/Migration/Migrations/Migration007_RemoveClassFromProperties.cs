@@ -24,10 +24,12 @@ namespace OE2EmpireTracker.Services.Migration
                 if (RemoveClass(bp)) removed++;
 
             if (ec.GlobalBlueprintList != null)
+            {
                 foreach (var bp in ec.GlobalBlueprintList)
                 {
                     if (RemoveClass(bp)) removed++;
                 }
+            }
 
             Log.Info("Migration007: removed 'Class' from {0} blueprint PropertyBag(s)", removed);
         }

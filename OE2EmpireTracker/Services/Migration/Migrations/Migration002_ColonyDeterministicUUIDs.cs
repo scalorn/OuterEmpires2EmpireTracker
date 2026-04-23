@@ -12,6 +12,7 @@ namespace OE2EmpireTracker.Services.Migration
                 .ToDictionary(bp => bp.LegacyUUID, bp => bp.UUID);
 
             foreach (var colony in pc.ColonyList)
+            {
                 foreach (var s in colony.Structures)
                 {
                 {
@@ -22,6 +23,7 @@ namespace OE2EmpireTracker.Services.Migration
                 }
                     }
                 }
+            }
 
             // Phase 2: Deterministic colony UUIDs
             foreach (var colony in pc.ColonyList.ToList())

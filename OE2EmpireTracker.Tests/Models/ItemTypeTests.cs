@@ -31,10 +31,12 @@ namespace OE2EmpireTracker.Tests.Models
         public void ItemTypes_AllNonNoneEntriesHaveNonEmptyName()
         {
             foreach (var it in ItemType.ItemTypes.Where(t => t.ID != ITE.None))
+            {
                 Assert.That(
                     string.IsNullOrEmpty(it.Name),
                     Is.False,
                     $"ItemType with ID '{it.ID}' has empty Name");
+            }
         }
 
         [Test]
@@ -63,10 +65,12 @@ namespace OE2EmpireTracker.Tests.Models
             var allEnums = Enum.GetValues(typeof(ITE)).Cast<ITE>();
             var listIDs = ItemType.ItemTypes.Select(t => t.ID).ToList();
             foreach (var e in allEnums)
+            {
                 Assert.That(
                     listIDs.Contains(e),
                     Is.True,
                     $"ItemTypes list missing enum value {e}");
+            }
         }
 
         [Test]
@@ -74,10 +78,12 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var nonNone = ItemType.ItemTypes.Where(t => t.ID != ITE.None).ToList();
             for (int i = 1; i < nonNone.Count; i++)
+            {
                 Assert.That(
                     string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal),
                     Is.LessThanOrEqualTo(0),
                     $"ItemTypes not sorted: '{nonNone[i - 1].Name}' should come before '{nonNone[i].Name}'");
+            }
         }
 
         // -----------------------------------------------------------------------
@@ -89,10 +95,12 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var allEnums = Enum.GetValues(typeof(ITE)).Cast<ITE>();
             foreach (var e in allEnums)
+            {
                 Assert.That(
                     ItemType.ItemTypeMapByEnum.ContainsKey(e),
                     Is.True,
                     $"ItemTypeMapByEnum missing key {e}");
+            }
         }
 
         [Test]
@@ -119,10 +127,12 @@ namespace OE2EmpireTracker.Tests.Models
         public void ItemTypeMapByString_ContainsAllItemTypeNames()
         {
             foreach (var it in ItemType.ItemTypes)
+            {
                 Assert.That(
                     ItemType.ItemTypeMapByString.ContainsKey(it.Name),
                     Is.True,
                     $"ItemTypeMapByString missing key '{it.Name}'");
+            }
         }
 
         [Test]

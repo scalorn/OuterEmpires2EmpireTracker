@@ -1209,10 +1209,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _stationCache = new Dictionary<string, Station>();
                     foreach (var s in _stationList)
+                    {
                         if (s.UUID != null && !_stationCache.ContainsKey(s.UUID))
                         {
                             _stationCache[s.UUID] = s;
                         }
+                    }
                 }
 
                 _stationCache.TryGetValue(id, out var match);
@@ -1240,10 +1242,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _shipTemplateCache = new Dictionary<string, ShipTemplate>();
                     foreach (var st in _shipTemplateList)
+                    {
                         if (st.UUID != null && !_shipTemplateCache.ContainsKey(st.UUID))
                         {
                             _shipTemplateCache[st.UUID] = st;
                         }
+                    }
                 }
 
                 _shipTemplateCache.TryGetValue(id, out var match);
@@ -1271,10 +1275,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _shipCache = new Dictionary<string, Ship>();
                     foreach (var s in _shipList)
+                    {
                         if (s.UUID != null && !_shipCache.ContainsKey(s.UUID))
                         {
                             _shipCache[s.UUID] = s;
                         }
+                    }
                 }
 
                 _shipCache.TryGetValue(id, out var match);
@@ -1296,20 +1302,24 @@ namespace OE2EmpireTracker.Services
         public BuildPlan FindBuildPlan(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
+            {
             lock (_listLock)
             {
                 if (_buildPlanCache == null)
                 {
                     _buildPlanCache = new Dictionary<string, BuildPlan>();
                     foreach (var bp in _buildPlanList)
+                    {
                         if (bp.UUID != null && !_buildPlanCache.ContainsKey(bp.UUID))
                         {
                             _buildPlanCache[bp.UUID] = bp;
                         }
+                    }
                 }
 
                 _buildPlanCache.TryGetValue(id, out var match);
                 return match;
+            }
             }
         }
 
@@ -1333,10 +1343,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _asteroidCache = new Dictionary<string, Asteroid>();
                     foreach (var a in _asteroidList)
+                    {
                         if (a.UUID != null && !_asteroidCache.ContainsKey(a.UUID))
                         {
                             _asteroidCache[a.UUID] = a;
                         }
+                    }
                 }
 
                 _asteroidCache.TryGetValue(id, out var match);
@@ -1364,10 +1376,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _factionCache = new Dictionary<string, Faction>();
                     foreach (var f in _factionList)
+                    {
                         if (f.UUID != null && !_factionCache.ContainsKey(f.UUID))
                         {
                             _factionCache[f.UUID] = f;
                         }
+                    }
                 }
 
                 _factionCache.TryGetValue(id, out var match);
@@ -1395,10 +1409,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _marketListingCache = new Dictionary<string, MarketListing>();
                     foreach (var ml in _marketListingList)
+                    {
                         if (ml.UUID != null && !_marketListingCache.ContainsKey(ml.UUID))
                         {
                             _marketListingCache[ml.UUID] = ml;
                         }
+                    }
                 }
 
                 _marketListingCache.TryGetValue(id, out var match);
@@ -1423,10 +1439,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _playerProfileCache = new Dictionary<string, PlayerProfile>();
                     foreach (var r in _playerProfileList)
+                    {
                         if (r.UUID != null && !_playerProfileCache.ContainsKey(r.UUID))
                         {
                             _playerProfileCache[r.UUID] = r;
                         }
+                    }
                 }
 
                 _playerProfileCache.TryGetValue(id, out var match);
@@ -1451,10 +1469,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _deliveryRouteCache = new Dictionary<string, DeliveryRoute>();
                     foreach (var r in _deliveryRouteList)
+                    {
                         if (r.UUID != null && !_deliveryRouteCache.ContainsKey(r.UUID))
                         {
                             _deliveryRouteCache[r.UUID] = r;
                         }
+                    }
                 }
 
                 _deliveryRouteCache.TryGetValue(id, out var match);
@@ -1479,10 +1499,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _deliveryPlanCache = new Dictionary<string, DeliveryPlan>();
                     foreach (var r in _deliveryPlanList)
+                    {
                         if (r.UUID != null && !_deliveryPlanCache.ContainsKey(r.UUID))
                         {
                             _deliveryPlanCache[r.UUID] = r;
                         }
+                    }
                 }
 
                 _deliveryPlanCache.TryGetValue(id, out var match);
@@ -1507,10 +1529,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _pricingPlanCache = new Dictionary<string, PricingPlan>();
                     foreach (var r in _pricingPlanList)
+                    {
                         if (r.UUID != null && !_pricingPlanCache.ContainsKey(r.UUID))
                         {
                             _pricingPlanCache[r.UUID] = r;
                         }
+                    }
                 }
 
                 _pricingPlanCache.TryGetValue(id, out var match);
@@ -1535,10 +1559,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _marketTransactionCache = new Dictionary<string, MarketTransaction>();
                     foreach (var r in _marketTransactionList)
+                    {
                         if (r.UUID != null && !_marketTransactionCache.ContainsKey(r.UUID))
                         {
                             _marketTransactionCache[r.UUID] = r;
                         }
+                    }
                 }
 
                 _marketTransactionCache.TryGetValue(id, out var match);
@@ -1563,10 +1589,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _stockPlanCache = new Dictionary<string, StockPlan>();
                     foreach (var r in _stockPlanList)
+                    {
                         if (r.UUID != null && !_stockPlanCache.ContainsKey(r.UUID))
                         {
                             _stockPlanCache[r.UUID] = r;
                         }
+                    }
                 }
 
                 _stockPlanCache.TryGetValue(id, out var match);
@@ -1591,10 +1619,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _stockProfileCache = new Dictionary<string, StockProfile>();
                     foreach (var r in _stockProfileList)
+                    {
                         if (r.UUID != null && !_stockProfileCache.ContainsKey(r.UUID))
                         {
                             _stockProfileCache[r.UUID] = r;
                         }
+                    }
                 }
 
                 _stockProfileCache.TryGetValue(id, out var match);
@@ -1619,10 +1649,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _supplyChainCache = new Dictionary<string, SupplyChain>();
                     foreach (var r in _supplyChainList)
+                    {
                         if (r.UUID != null && !_supplyChainCache.ContainsKey(r.UUID))
                         {
                             _supplyChainCache[r.UUID] = r;
                         }
+                    }
                 }
 
                 _supplyChainCache.TryGetValue(id, out var match);
@@ -1647,10 +1679,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _warehouseOverflowRuleCache = new Dictionary<string, WarehouseOverflowRule>();
                     foreach (var r in _warehouseOverflowRuleList)
+                    {
                         if (r.UUID != null && !_warehouseOverflowRuleCache.ContainsKey(r.UUID))
                         {
                             _warehouseOverflowRuleCache[r.UUID] = r;
                         }
+                    }
                 }
 
                 _warehouseOverflowRuleCache.TryGetValue(id, out var match);
@@ -1675,10 +1709,12 @@ namespace OE2EmpireTracker.Services
                 {
                     _externalCharacterCache = new Dictionary<string, ExternalCharacter>();
                     foreach (var r in _externalCharacterList)
+                    {
                         if (r.UUID != null && !_externalCharacterCache.ContainsKey(r.UUID))
                         {
                             _externalCharacterCache[r.UUID] = r;
                         }
+                    }
                 }
 
                 _externalCharacterCache.TryGetValue(id, out var match);

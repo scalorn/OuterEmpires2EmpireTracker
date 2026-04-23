@@ -116,19 +116,23 @@ namespace OE2EmpireTracker.ViewModels
         public void RemoveDropOffItems(DeliveryPlanStop stop, IEnumerable<int> indices)
         {
             foreach (int i in indices.OrderByDescending(x => x))
+            {
                 if (i >= 0 && i < stop.DropOff.Count)
                 {
                     stop.DropOff.RemoveAt(i);
                 }
+            }
         }
 
         public void RemovePickUpItems(DeliveryPlanStop stop, IEnumerable<int> indices)
         {
             foreach (int i in indices.OrderByDescending(x => x))
+            {
                 if (i >= 0 && i < stop.PickUp.Count)
                 {
                     stop.PickUp.RemoveAt(i);
                 }
+            }
         }
 
         public void Save()

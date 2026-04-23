@@ -31,10 +31,12 @@ namespace OE2EmpireTracker.Tests.Models
         public void Classes_AllNonNoneEntriesHaveNonEmptyName()
         {
             foreach (var c in ResourceClass.Classes.Where(c => c.ID != RCE.None))
+            {
                 Assert.That(
                     string.IsNullOrEmpty(c.Name),
                     Is.False,
                     $"ResourceClass with ID '{c.ID}' has empty Name");
+            }
         }
 
         [Test]
@@ -63,10 +65,12 @@ namespace OE2EmpireTracker.Tests.Models
             var allEnums = Enum.GetValues(typeof(RCE)).Cast<RCE>();
             var listIDs = ResourceClass.Classes.Select(c => c.ID).ToList();
             foreach (var e in allEnums)
+            {
                 Assert.That(
                     listIDs.Contains(e),
                     Is.True,
                     $"Classes list missing enum value {e}");
+            }
         }
 
         [Test]
@@ -74,10 +78,12 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var nonNone = ResourceClass.Classes.Where(c => c.ID != RCE.None).ToList();
             for (int i = 1; i < nonNone.Count; i++)
+            {
                 Assert.That(
                     string.Compare(nonNone[i - 1].Name, nonNone[i].Name, StringComparison.Ordinal),
                     Is.LessThanOrEqualTo(0),
                     $"Classes not sorted: '{nonNone[i - 1].Name}' before '{nonNone[i].Name}'");
+            }
         }
 
         // -----------------------------------------------------------------------
@@ -89,10 +95,12 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var allEnums = Enum.GetValues(typeof(RCE)).Cast<RCE>();
             foreach (var e in allEnums)
+            {
                 Assert.That(
                     ResourceClass.ClassMapByEnum.ContainsKey(e),
                     Is.True,
                     $"ClassMapByEnum missing key {e}");
+            }
         }
 
         [Test]
@@ -119,10 +127,12 @@ namespace OE2EmpireTracker.Tests.Models
         public void ClassMapByString_ContainsAllClassNames()
         {
             foreach (var c in ResourceClass.Classes)
+            {
                 Assert.That(
                     ResourceClass.ClassMapByString.ContainsKey(c.Name),
                     Is.True,
                     $"ClassMapByString missing key '{c.Name}'");
+            }
         }
 
         [Test]

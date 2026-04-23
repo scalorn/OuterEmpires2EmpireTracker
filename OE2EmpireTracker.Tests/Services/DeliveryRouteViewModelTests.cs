@@ -241,10 +241,12 @@ namespace OE2EmpireTracker.Tests.Services
             vm.MoveStopUp(3);
             vm.RemoveStop(0);
             for (int i = 0; i < vm.Stops.Count; i++)
+            {
                 Assert.That(
                     vm.Stops[i].Sequence,
                     Is.EqualTo(i),
                     $"Stop at index {i} has wrong sequence");
+            }
         }
 
         private DeliveryRouteViewModel CreateViewModel()

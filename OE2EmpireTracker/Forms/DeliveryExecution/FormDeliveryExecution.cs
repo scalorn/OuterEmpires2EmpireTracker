@@ -1030,8 +1030,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     currentCargoCapacity,
                     tripResult.TotalMass));
                 foreach (var item in trips[i])
+                {
                     sb.AppendLine(string.Format(
                         "  {0} x{1}", item.ExtendedName, item.Quantity));
+                }
                 sb.AppendLine();
             }
 
@@ -1120,8 +1122,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             }
 
             if (!selectedPlan.Name.Contains("(Trip"))
+            {
                 selectedPlan.Name = string.Format(
                     "{0} (Trip 1)", selectedPlan.Name);
+            }
 
             playerContext.WriteContext();
             playerContext.OnDeliveryDataChanged();
