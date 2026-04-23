@@ -432,6 +432,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 

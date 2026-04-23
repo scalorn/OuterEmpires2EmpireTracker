@@ -28,7 +28,8 @@ namespace OE2EmpireTracker.Models
         /// </summary>
         public string OutputItemType { get; set; } = string.Empty;
 
-        public BlueprintType() {
+        public BlueprintType()
+        {
             Properties = new string[0];
             ResearchableProperties = new string[0];
         }

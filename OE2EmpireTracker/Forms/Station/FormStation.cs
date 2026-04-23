@@ -493,6 +493,7 @@ namespace OE2EmpireTracker.Forms.Station
                 sw.Stop();
                 return;
             }
+
             if (_selectedStation.Ownership != StationOwnership.PlayerOwned)
             {
                 sw.Stop();
@@ -576,6 +577,7 @@ namespace OE2EmpireTracker.Forms.Station
                 sw.Stop();
                 return;
             }
+
             var hullBp = playerContext.FindBlueprint(_selectedStation.StationBlueprintUUID);
             if (hullBp == null)
             {
@@ -640,6 +642,7 @@ namespace OE2EmpireTracker.Forms.Station
                 tabMunitions.Enabled = false;
                 return;
             }
+
             bool isPlayerOwned = _selectedStation.Ownership == StationOwnership.PlayerOwned;
             bool hasWeapons = _selectedStation.Components.Any(c =>
                 c.SlotType == OE2EmpireTracker.Constants.SlotTypes.WeaponSmall ||
@@ -765,6 +768,7 @@ namespace OE2EmpireTracker.Forms.Station
                 MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
             _selectedStation.Name = name;
             playerContext.WriteContext();
             PopulateStationList();
@@ -783,12 +787,17 @@ namespace OE2EmpireTracker.Forms.Station
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
-                } catch (ObjectDisposedException)
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
+
             _selectedStation = null;
             PopulateStationList();
             ClearForm();

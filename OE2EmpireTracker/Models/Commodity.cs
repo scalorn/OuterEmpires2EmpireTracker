@@ -31,8 +31,10 @@ namespace OE2EmpireTracker.Models
         public string ID { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         [JsonIgnore]
-        public string ExtendedName {
-            get {
+        public string ExtendedName
+        {
+            get
+            {
                 if (string.IsNullOrEmpty(Name))
                 {
                     return string.Empty;

@@ -28,7 +28,8 @@ namespace OE2EmpireTracker.Models
         public virtual string Name { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public virtual string ExtendedName {
+        public virtual string ExtendedName
+        {
             get
             {
                 string extendedName = Name;

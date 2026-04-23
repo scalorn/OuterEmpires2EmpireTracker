@@ -203,7 +203,8 @@ namespace OE2EmpireTracker.Models
                     value = reader.Value as string;
                     bag.Properties.Add(name, value);
                 }
-            } while (token != JsonToken.EndObject);
+            }
+            while (token != JsonToken.EndObject);
 
             return bag;
         }

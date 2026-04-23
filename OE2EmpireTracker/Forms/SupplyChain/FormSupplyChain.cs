@@ -664,12 +664,17 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
-                } catch (ObjectDisposedException)
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
+
             _selectedChain = null;
             PopulateChainList();
             ClearForm();

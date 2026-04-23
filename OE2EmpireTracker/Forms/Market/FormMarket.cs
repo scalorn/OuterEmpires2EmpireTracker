@@ -416,12 +416,17 @@ namespace OE2EmpireTracker.Forms.Market
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
-                } catch (ObjectDisposedException)
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
+
             PopulateStationCombos();
             PopulatePricingPlanCombo();
             PopulateListingsGrid();
@@ -433,12 +438,17 @@ namespace OE2EmpireTracker.Forms.Market
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnMarketDataChanged(sender, e)));
-                } catch (ObjectDisposedException)
+                try
+                {
+                    BeginInvoke(new Action(() => OnMarketDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
+
             PopulateListingsGrid();
             PopulateTransactionsGrid();
         }

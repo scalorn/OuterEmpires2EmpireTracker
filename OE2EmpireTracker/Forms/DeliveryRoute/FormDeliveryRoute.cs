@@ -501,7 +501,10 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             dgvStops.ClearSelection();
             foreach (int i in newIndices)
                 if (i >= 0 && i < dgvStops.Rows.Count)
+                {
                     dgvStops.Rows[i].Selected = true;
+                }
+
             if (newIndices.Count > 0 && newIndices[0] >= 0 && newIndices[0] < dgvStops.Rows.Count)
                 dgvStops.FirstDisplayedScrollingRowIndex = newIndices[0];
         }
@@ -517,7 +520,10 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             dgvStops.ClearSelection();
             foreach (int i in newIndices)
                 if (i >= 0 && i < dgvStops.Rows.Count)
+                {
                     dgvStops.Rows[i].Selected = true;
+                }
+
             if (newIndices.Count > 0 && newIndices[0] >= 0 && newIndices[0] < dgvStops.Rows.Count)
                 dgvStops.FirstDisplayedScrollingRowIndex = newIndices[0];
         }
@@ -995,23 +1001,35 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 case ItemType.ItemTypeEnum.Resource:
                     foreach (var r in Models.Resource.Resources)
                         if (!string.IsNullOrEmpty(r.Name))
+                        {
                             result.Add(new ItemPickerEntry { ID = r.Name, Display = r.Name });
+                        }
+
                     break;
                 case ItemType.ItemTypeEnum.Commodity:
                     foreach (var c in Models.Commodity.Commodities)
                         if (!string.IsNullOrEmpty(c.Name))
+                        {
                             result.Add(new ItemPickerEntry { ID = c.Name, Display = c.ExtendedName });
+                        }
+
                     break;
                 case ItemType.ItemTypeEnum.WorkDetail:
                     foreach (var w in Models.WorkerDetail.WorkerDetails)
                         if (!string.IsNullOrEmpty(w.ID))
+                        {
                             result.Add(new ItemPickerEntry { ID = w.ID, Display = w.Name });
+                        }
+
                     break;
                 default:
                     // Blueprint-based types
                     foreach (var bp in playerContext.GetAllBlueprints())
                         if (bp.UUID != null)
+                        {
                             result.Add(new ItemPickerEntry { ID = bp.UUID, Display = bp.ExtendedName });
+                        }
+
                     break;
             }
 
@@ -1147,6 +1165,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 
@@ -1167,6 +1186,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 

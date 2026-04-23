@@ -557,6 +557,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 

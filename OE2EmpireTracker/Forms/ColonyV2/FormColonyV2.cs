@@ -219,6 +219,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 
@@ -251,6 +252,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 
@@ -2837,9 +2839,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
 
                 int rowIdx = dgvOverflowRules.Rows.Add(
-                    rule.ResourceName, rule.ResourcePurity,
-                    rule.TriggerThreshold.ToString(), currentQty.ToString(),
-                    destName, routeName, rule.IsActive);
+                    rule.ResourceName,
+                    rule.ResourcePurity,
+                    rule.TriggerThreshold.ToString(),
+                    currentQty.ToString(),
+                    destName,
+                    routeName,
+                    rule.IsActive);
                 dgvOverflowRules.Rows[rowIdx].Tag = rule;
 
                 var currentCell = dgvOverflowRules.Rows[rowIdx].Cells[colOverflowCurrent.Index];
@@ -2932,12 +2938,18 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 case DestinationType.Colony:
                     foreach (var c in playerContext.ColonyList.OrderBy(c => c.ColonyName))
                         if (string.IsNullOrEmpty(filter) || c.ColonyName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
                             items.Add(new KeyValuePair<string, string>(c.UUID, c.ColonyName));
+                        }
+
                     break;
                 case DestinationType.Station:
                     foreach (var s in playerContext.StationList.OrderBy(s => s.Name))
                         if (string.IsNullOrEmpty(filter) || s.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
                             items.Add(new KeyValuePair<string, string>(s.UUID, s.Name));
+                        }
+
                     break;
             }
 
@@ -2964,7 +2976,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
             foreach (var r in routes)
                 if (string.IsNullOrEmpty(filter) || r.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
                     items.Add(new KeyValuePair<string, string>(r.UUID, r.Name));
+                }
+
             cmbOverflowRoute.DataSource = items;
             cmbOverflowRoute.DisplayMember = "Value";
             cmbOverflowRoute.ValueMember = "Key";

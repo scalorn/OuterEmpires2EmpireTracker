@@ -52,7 +52,8 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             // Add idle structures of each type
-            var types = new[] {
+            var types = new[]
+            {
                 BlueprintTypes.MiningRig,
                 BlueprintTypes.Refinery,
                 BlueprintTypes.Manufactory,

@@ -236,6 +236,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 
@@ -254,6 +255,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 

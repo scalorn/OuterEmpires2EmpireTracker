@@ -275,6 +275,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 
@@ -294,6 +295,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 

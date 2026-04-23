@@ -2,17 +2,8 @@
 /**
  * fix-sa1519.js — Fix SA1519 (braces should not be omitted from multi-line child statement)
  * 
- * Adds braces to if/else/foreach/while/for statements that span multiple lines
- * but don't have braces.
- * 
- * Pattern:
- *   if (condition)
- *       DoSomething();
- * becomes:
- *   if (condition)
- *   {
- *       DoSomething();
- *   }
+ * Only adds braces after: if, else, foreach, while, for
+ * Does NOT add braces after lambda arrows or other constructs.
  */
 const fs = require('fs');
 const path = require('path');
@@ -33,13 +24,13 @@ for (const line of log.split('\n')) {
 
 console.log(`Files to process: ${Object.keys(fileWarnings).length}`);
 let totalFixed = 0;
+let totalSkipped = 0;
 
 for (const [filePath, warnLines] of Object.entries(fileWarnings)) {
     const content = fs.readFileSync(filePath, 'utf8');
     const lines = content.split('\n');
     let changed = false;
     
-    // Process in reverse order
     const sorted = [...warnLines].sort((a, b) => b - a);
     
     for (const warnLine of sorted) {
@@ -48,51 +39,53 @@ for (const [filePath, warnLines] of Object.entries(fileWarnings)) {
         
         const line = lines[idx];
         const trimmed = line.trim();
-        
-        // The warning is on the line with the keyword (if/else/foreach/while/for)
-        // We need to find the statement body that follows and wrap it in braces
-        
-        // Check if this line already has an opening brace
-        if (trimmed.endsWith('{')) continue;
-        
-        // Find the statement body - it's the next non-empty line(s)
-        // For SA1519, the body spans multiple lines (that's why braces are needed)
         const indent = line.match(/^(\s*)/)[1];
         
-        // Find the end of the body statement
+        // Only handle known control flow keywords
+        const isControlFlow = /^\s*(if\s*\(|else\s+if\s*\(|else\s*$|foreach\s*\(|while\s*\(|for\s*\()/.test(line);
+        if (!isControlFlow) {
+            totalSkipped++;
+            continue;
+        }
+        
+        // Already has opening brace
+        if (trimmed.endsWith('{')) {
+            totalSkipped++;
+            continue;
+        }
+        
+        // Find the body: next non-empty line(s) until we hit a semicolon
         let bodyStart = idx + 1;
-        let bodyEnd = bodyStart;
-        
-        // Skip to first non-empty line
         while (bodyStart < lines.length && !lines[bodyStart].trim()) bodyStart++;
-        if (bodyStart >= lines.length) continue;
+        if (bodyStart >= lines.length) { totalSkipped++; continue; }
         
-        bodyEnd = bodyStart;
+        // Find end of statement - track parens and look for semicolon
+        let bodyEnd = bodyStart;
+        let parenDepth = 0;
+        let foundEnd = false;
         
-        // The body might be a single statement spanning multiple lines
-        // or a chain of statements. Find where it ends by tracking
-        // semicolons and indentation.
-        const bodyIndent = lines[bodyStart].match(/^(\s*)/)[1];
-        
-        // Find the end of the statement
-        let foundSemicolon = false;
-        for (let i = bodyStart; i < lines.length; i++) {
+        for (let i = bodyStart; i < Math.min(lines.length, bodyStart + 20); i++) {
             const bodyLine = lines[i].trim();
             if (!bodyLine) continue;
             
+            for (const ch of bodyLine) {
+                if (ch === '(') parenDepth++;
+                if (ch === ')') parenDepth--;
+            }
+            
             bodyEnd = i;
-            if (bodyLine.endsWith(';') || bodyLine.endsWith(';)')) {
-                foundSemicolon = true;
+            
+            if (parenDepth <= 0 && bodyLine.endsWith(';')) {
+                foundEnd = true;
                 break;
             }
         }
         
-        if (!foundSemicolon) continue;
+        if (!foundEnd) { totalSkipped++; continue; }
         
-        // Insert braces
-        // Add closing brace after bodyEnd
+        // Insert closing brace after bodyEnd
         lines.splice(bodyEnd + 1, 0, indent + '}');
-        // Add opening brace after the keyword line
+        // Insert opening brace after the keyword line
         lines.splice(idx + 1, 0, indent + '{');
         
         changed = true;
@@ -105,4 +98,4 @@ for (const [filePath, warnLines] of Object.entries(fileWarnings)) {
     }
 }
 
-console.log(`\nTotal fixed: ${totalFixed}`);
+console.log(`\nTotal fixed: ${totalFixed}, Skipped: ${totalSkipped}`);

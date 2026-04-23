@@ -23,7 +23,9 @@ namespace OE2EmpireTracker.Services.Migration
             // Blueprint.BaseBlueprintUUID (evolution chains)
             foreach (var bp in ec.GlobalBlueprintList.Concat(pc.BlueprintList))
                 if (bp.BaseBlueprintUUID == oldUUID)
+                {
                     bp.BaseBlueprintUUID = newUUID;
+                }
 
             // Colony.UUID
             foreach (var colony in pc.ColonyList)
@@ -33,8 +35,11 @@ namespace OE2EmpireTracker.Services.Migration
             foreach (var colony in pc.ColonyList)
                 foreach (var s in colony.Structures)
                 {
+                {
                     if (s.FlatpackBlueprintUUID == oldUUID)
                         s.FlatpackBlueprintUUID = newUUID;
+                }
+
                     if (s.ResearchingBlueprintUUID == oldUUID)
                         s.ResearchingBlueprintUUID = newUUID;
                     if (s.ManufacturingBlueprintUUID == oldUUID)
@@ -44,14 +49,22 @@ namespace OE2EmpireTracker.Services.Migration
             // RouteStop.ColonyUUID
             foreach (var route in pc.DeliveryRouteList)
                 foreach (var stop in route.Stops)
+                {
                     if (stop.ColonyUUID == oldUUID)
+                    {
                         stop.ColonyUUID = newUUID;
+                }
+                    }
 
             // DeliveryPlanStop.ColonyUUID
             foreach (var plan in pc.DeliveryPlanList)
                 foreach (var stop in plan.Stops)
+                {
                     if (stop.ColonyUUID == oldUUID)
+                    {
                         stop.ColonyUUID = newUUID;
+                }
+                    }
         }
     }
 }

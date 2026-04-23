@@ -1655,6 +1655,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 
@@ -1675,6 +1676,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 
@@ -1697,6 +1699,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 

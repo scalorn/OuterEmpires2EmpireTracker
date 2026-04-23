@@ -966,6 +966,7 @@ namespace OE2EmpireTracker
             catch
             {
             }
+
             dgvStatistics.Rows.Clear();
             dgvStatistics.Columns.Clear();
 
@@ -1181,6 +1182,7 @@ namespace OE2EmpireTracker
             catch
             {
             }
+
             dgvResources.Rows.Clear();
             dgvResources.CellValidating += DgvResources_CellValidating;
 
@@ -1280,6 +1282,7 @@ namespace OE2EmpireTracker
             catch
             {
             }
+
             dgvResources.Rows.Clear();
             dgvResources.CellValidating += DgvResources_CellValidating;
         }
@@ -1644,6 +1647,7 @@ namespace OE2EmpireTracker
             catch
             {
             }
+
             dgvStatistics.Rows.Clear();
             dgvStatistics.Columns.Clear();
             dgvStatistics.CellValidating += DgvStatistics_CellValidating;
@@ -1672,6 +1676,7 @@ namespace OE2EmpireTracker
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 
@@ -1696,6 +1701,7 @@ namespace OE2EmpireTracker
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 
@@ -1718,6 +1724,7 @@ namespace OE2EmpireTracker
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 

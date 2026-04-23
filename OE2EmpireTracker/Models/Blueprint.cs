@@ -54,8 +54,10 @@ namespace OE2EmpireTracker.Models
         }
 
         [JsonIgnore]
-        public override string ExtendedName {
-            get {
+        public override string ExtendedName
+        {
+            get
+            {
                 if (UUID == null)
                 {
                     return string.Empty;
@@ -67,7 +69,8 @@ namespace OE2EmpireTracker.Models
                     extendedName += $"C{Class} ";
                 }
 
-                if (Evolution > 0) {
+                if (Evolution > 0)
+                {
                     extendedName += "Ev(" + Evolution + ") ";
                 }
 

@@ -198,7 +198,8 @@ namespace OE2EmpireTracker.Models
                             bag.Items[item.UUID] = item;
                         }
                     }
-            } while (token != JsonToken.EndObject);
+            }
+            while (token != JsonToken.EndObject);
 
             return bag;
         }

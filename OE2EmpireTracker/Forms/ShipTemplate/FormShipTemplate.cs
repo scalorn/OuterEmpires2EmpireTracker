@@ -453,6 +453,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
             _selectedTemplate.Name = name;
             playerContext.WriteContext();
             PopulateTemplateList();
@@ -516,8 +517,10 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
             // Generate build items
             var items = ShipBuildService.GenerateShipBuildItems(
-                _selectedTemplate, quantity,
-                DestinationType.Station, station.UUID,
+                _selectedTemplate,
+                quantity,
+                DestinationType.Station,
+                station.UUID,
                 uuid => playerContext.FindBlueprint(uuid),
                 uuid => 0);
 
@@ -745,12 +748,17 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
-                } catch (ObjectDisposedException)
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
+
             _selectedTemplate = null;
             PopulateHullCombo();
             PopulateTemplateList();

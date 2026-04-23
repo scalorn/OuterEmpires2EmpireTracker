@@ -872,6 +872,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 
@@ -891,6 +892,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
 
@@ -953,14 +955,18 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 {
                     lblCargoVolume.Text = string.Format(
                         "Volume: {0:N0} / {1:N0} ({2:N0}%) -- OVER CAPACITY",
-                        cargoResult.TotalVolume, currentCargoCapacity, pct);
+                        cargoResult.TotalVolume,
+                        currentCargoCapacity,
+                        pct);
                     lblCargoVolume.ForeColor = Color.Red;
                 }
                 else
                 {
                     lblCargoVolume.Text = string.Format(
                         "Volume: {0:N0} / {1:N0} ({2:N0}%)",
-                        cargoResult.TotalVolume, currentCargoCapacity, pct);
+                        cargoResult.TotalVolume,
+                        currentCargoCapacity,
+                        pct);
                     lblCargoVolume.ForeColor = SystemColors.ControlText;
                 }
 
@@ -1018,8 +1024,11 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     trips[i], bpFinder);
                 sb.AppendLine(string.Format(
                     "Trip {0}: {1} items, Vol: {2:N0}/{3:N0}, Mass: {4:N0}",
-                    i + 1, trips[i].Count, tripResult.TotalVolume,
-                    currentCargoCapacity, tripResult.TotalMass));
+                    i + 1,
+                    trips[i].Count,
+                    tripResult.TotalVolume,
+                    currentCargoCapacity,
+                    tripResult.TotalMass));
                 foreach (var item in trips[i])
                     sb.AppendLine(string.Format(
                         "  {0} x{1}", item.ExtendedName, item.Quantity));

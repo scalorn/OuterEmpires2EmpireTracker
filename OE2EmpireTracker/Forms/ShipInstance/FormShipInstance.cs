@@ -543,6 +543,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 sw.Stop();
                 return;
             }
+
             var hullBp = playerContext.FindBlueprint(_selectedShip.HullBlueprintUUID);
             if (hullBp == null)
             {
@@ -631,6 +632,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 ClearCrateContents();
                 return;
             }
+
             var item = dgvCargo.SelectedRows[0].Tag as Item;
             if (item != null && item.ItemType == ItemType.ItemTypeEnum.Crate && item.Contents != null)
                 PopulateCrateContents(item);
@@ -926,6 +928,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
             _selectedShip.Name = name;
             if (cmbLocationUUID.SelectedItem is LocationEntry le)
                 _selectedShip.LocationUUID = le.UUID;
@@ -946,12 +949,17 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
-                } catch (ObjectDisposedException)
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
+
             _selectedShip = null;
             PopulateHullCombo();
             PopulateShipList();

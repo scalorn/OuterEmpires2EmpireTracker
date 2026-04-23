@@ -290,7 +290,8 @@ namespace OE2EmpireTracker.Parsers
                                 rawValue = Regex.Replace(rawValue, "\\(.*?\\)", string.Empty).Trim();
 
                                 string remapKey = key;
-                                if (!_propertyRemap.TryGetValue(key, out remapKey)) {
+                                if (!_propertyRemap.TryGetValue(key, out remapKey))
+                                {
                                     // If no remap defined, use original key with whitespace removed for consistency
                                     remapKey = key;
                                     Log.Warn("No property remap defined for: '{0}'", key);

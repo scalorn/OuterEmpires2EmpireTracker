@@ -132,7 +132,8 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
                     HandleEditCell(this.CurrentCell.RowIndex + 1, col, enableEdit);
                     return true;
                 }
-            } else
+            }
+            else
             {
                 // This doesn't work.
                 // this.SelectNextControl(this, true, true, true, true);

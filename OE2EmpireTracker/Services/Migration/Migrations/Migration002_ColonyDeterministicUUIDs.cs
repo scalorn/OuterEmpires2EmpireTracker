@@ -14,10 +14,12 @@ namespace OE2EmpireTracker.Services.Migration
             foreach (var colony in pc.ColonyList)
                 foreach (var s in colony.Structures)
                 {
+                {
                     if (!string.IsNullOrEmpty(s.FlatpackBlueprintUUID) &&
                         legacyLookup.TryGetValue(s.FlatpackBlueprintUUID, out string currentUUID))
                     {
                         s.FlatpackBlueprintUUID = currentUUID;
+                }
                     }
                 }
 

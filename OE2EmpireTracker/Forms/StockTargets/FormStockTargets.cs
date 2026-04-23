@@ -268,19 +268,28 @@ namespace OE2EmpireTracker.Forms.StockTargets
                     var commodities = EmpireContext.GetInstance()?.CommodityList;
                     if (commodities != null)
                         foreach (var c in commodities.OrderBy(c => c.Name))
+                        {
                             items.Add(new KeyValuePair<string, string>(c.Name, c.Name));
+                        }
+
                     break;
                 case "Resource":
                     var resources = EmpireContext.GetInstance()?.ResourceList;
                     if (resources != null)
                         foreach (var r in resources.OrderBy(r => r.Name))
+                        {
                             items.Add(new KeyValuePair<string, string>(r.Name, r.Name));
+                        }
+
                     break;
                 default: // ShipPart, ShipHull
                     var blueprints = playerContext.GetAllBlueprints();
                     if (blueprints != null)
                         foreach (var bp in blueprints.Where(b => !string.IsNullOrEmpty(b.Name)).OrderBy(b => b.ExtendedName))
+                        {
                             items.Add(new KeyValuePair<string, string>(bp.UUID, bp.ExtendedName));
+                        }
+
                     break;
             }
 
@@ -575,6 +584,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 ClearExpandedComponents();
                 return;
             }
+
             var target = dgvTargets.SelectedRows[0].Tag as StockTarget;
             if (target != null && !string.IsNullOrEmpty(target.ShipTemplateUUID))
                 PopulateExpandedComponents(target);
@@ -634,12 +644,14 @@ namespace OE2EmpireTracker.Forms.StockTargets
             string playerUUID = playerContext.CurrentPlayerUUID ?? string.Empty;
 
             var shortfalls = StockTargetService.CheckTargets(
-                new[] { _selectedPlan }, playerUUID,
+                new[] { _selectedPlan },
+                playerUUID,
                 uuid => playerContext.FindColony(uuid),
                 uuid => playerContext.StationList.FirstOrDefault(st => st.UUID == uuid),
                 uuid => playerContext.ShipTemplateList.FirstOrDefault(t => t.UUID == uuid),
                 uuid => playerContext.FindBlueprint(uuid),
-                colonies, stations);
+                colonies,
+                stations);
 
             // Update grid with current quantities
             using (var guard = new ProgrammaticUpdateGuard(this))
@@ -790,6 +802,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 ClearProfileForm();
                 return;
             }
+
             txtProfileName.Text = _selectedProfile.Name;
             chkProfileActive.Checked = _selectedProfile.IsActive;
             PopulateEntriesGrid();
@@ -1020,8 +1033,10 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 } catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
+
             _selectedPlan = null;
             PopulatePlanList();
             ClearForm();

@@ -71,14 +71,20 @@ namespace OE2EmpireTracker.Forms.Market
             for (int i = 0; i < cmbItemType.Items.Count; i++)
                 if (cmbItemType.Items[i] is ItemType.ItemTypeEnum t2 && t2 == listing.ItemType)
                 {
+                {
                     cmbItemType.SelectedIndex = i;
+                }
+
                     break;
                 }
 
             for (int i = 0; i < cmbStation.Items.Count; i++)
                 if (cmbStation.Items[i] is StationItem si && si.UUID == listing.StationUUID)
                 {
+                {
                     cmbStation.SelectedIndex = i;
+                }
+
                     break;
                 }
 

@@ -56,10 +56,15 @@ namespace OE2EmpireTracker.Services
                 tempBP.Resources?.Count ?? 0);
             if (tempBP.Properties != null)
                 foreach (var prop in tempBP.Properties.Properties)
+                {
                     Log.Info("    prop: {0} = {1}", prop.Key, prop.Value);
+                }
+
             if (tempBP.Resources != null)
                 foreach (var res in tempBP.Resources)
+                {
                     Log.Info("    resource: {0} = {1}", res.Key, res.Value);
+                }
         }
 
         /// <summary>

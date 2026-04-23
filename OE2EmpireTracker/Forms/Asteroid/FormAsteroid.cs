@@ -390,6 +390,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
             _selectedAsteroid.Name = name;
             _selectedAsteroid.SystemName = txtSystemName.Text.Trim();
             playerContext.WriteContext();
@@ -415,12 +416,17 @@ namespace OE2EmpireTracker.Forms.Asteroid
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
-                } catch (ObjectDisposedException)
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
+
             _selectedAsteroid = null;
             PopulateAsteroidList();
             ClearForm();
@@ -431,12 +437,17 @@ namespace OE2EmpireTracker.Forms.Asteroid
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnAsteroidDataChanged(sender, e)));
-                } catch (ObjectDisposedException)
+                try
+                {
+                    BeginInvoke(new Action(() => OnAsteroidDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
                 {
                 }
+
                 return;
             }
+
             PopulateAsteroidList();
             if (_selectedAsteroid != null && _selectedAsteroid.UUID == e.AsteroidUUID)
                 PopulateForm();

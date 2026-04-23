@@ -497,6 +497,7 @@ namespace OE2EmpireTracker.Forms.Survey
             catch
             {
             }
+
             dgvResources.CellValidating += DgvResources_CellValidating;
 
             // Map resources from grid
@@ -546,6 +547,7 @@ namespace OE2EmpireTracker.Forms.Survey
             catch
             {
             }
+
             dgvResources.Rows.Clear();
             dgvResources.CellValidating += DgvResources_CellValidating;
         }
@@ -806,6 +808,7 @@ namespace OE2EmpireTracker.Forms.Survey
             catch
             {
             }
+
             dgvResources.Rows.Clear();
             dgvResources.CellValidating += DgvResources_CellValidating;
             foreach (KeyValuePair<string, SurveyResource> resource in viewModel.GetResources())

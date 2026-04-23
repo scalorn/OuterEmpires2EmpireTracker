@@ -526,6 +526,7 @@ namespace OE2EmpireTracker.Services
             {
                 _blueprintCache = null;
             }
+
             InvalidateAllBlueprintsCache();
         }
 
@@ -1144,7 +1145,9 @@ namespace OE2EmpireTracker.Services
                     _stationCache = new Dictionary<string, Station>();
                     foreach (var s in _stationList)
                         if (s.UUID != null && !_stationCache.ContainsKey(s.UUID))
+                        {
                             _stationCache[s.UUID] = s;
+                        }
                 }
 
                 _stationCache.TryGetValue(id, out var match);
@@ -1154,7 +1157,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateStationCache()
         {
-            lock (_listLock) { _stationCache = null; }
+            lock (_listLock)
+            {
+                _stationCache = null;
+            }
         }
 
         /// <summary>
@@ -1170,7 +1176,9 @@ namespace OE2EmpireTracker.Services
                     _shipTemplateCache = new Dictionary<string, ShipTemplate>();
                     foreach (var st in _shipTemplateList)
                         if (st.UUID != null && !_shipTemplateCache.ContainsKey(st.UUID))
+                        {
                             _shipTemplateCache[st.UUID] = st;
+                        }
                 }
 
                 _shipTemplateCache.TryGetValue(id, out var match);
@@ -1180,7 +1188,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateShipTemplateCache()
         {
-            lock (_listLock) { _shipTemplateCache = null; }
+            lock (_listLock)
+            {
+                _shipTemplateCache = null;
+            }
         }
 
         /// <summary>
@@ -1196,7 +1207,9 @@ namespace OE2EmpireTracker.Services
                     _shipCache = new Dictionary<string, Ship>();
                     foreach (var s in _shipList)
                         if (s.UUID != null && !_shipCache.ContainsKey(s.UUID))
+                        {
                             _shipCache[s.UUID] = s;
+                        }
                 }
 
                 _shipCache.TryGetValue(id, out var match);
@@ -1206,7 +1219,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateShipCache()
         {
-            lock (_listLock) { _shipCache = null; }
+            lock (_listLock)
+            {
+                _shipCache = null;
+            }
         }
 
         /// <summary>
@@ -1222,7 +1238,9 @@ namespace OE2EmpireTracker.Services
                     _buildPlanCache = new Dictionary<string, BuildPlan>();
                     foreach (var bp in _buildPlanList)
                         if (bp.UUID != null && !_buildPlanCache.ContainsKey(bp.UUID))
+                        {
                             _buildPlanCache[bp.UUID] = bp;
+                        }
                 }
 
                 _buildPlanCache.TryGetValue(id, out var match);
@@ -1232,7 +1250,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateBuildPlanCache()
         {
-            lock (_listLock) { _buildPlanCache = null; }
+            lock (_listLock)
+            {
+                _buildPlanCache = null;
+            }
         }
 
         /// <summary>
@@ -1248,7 +1269,9 @@ namespace OE2EmpireTracker.Services
                     _asteroidCache = new Dictionary<string, Asteroid>();
                     foreach (var a in _asteroidList)
                         if (a.UUID != null && !_asteroidCache.ContainsKey(a.UUID))
+                        {
                             _asteroidCache[a.UUID] = a;
+                        }
                 }
 
                 _asteroidCache.TryGetValue(id, out var match);
@@ -1258,7 +1281,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateAsteroidCache()
         {
-            lock (_listLock) { _asteroidCache = null; }
+            lock (_listLock)
+            {
+                _asteroidCache = null;
+            }
         }
 
         /// <summary>
@@ -1274,7 +1300,9 @@ namespace OE2EmpireTracker.Services
                     _factionCache = new Dictionary<string, Faction>();
                     foreach (var f in _factionList)
                         if (f.UUID != null && !_factionCache.ContainsKey(f.UUID))
+                        {
                             _factionCache[f.UUID] = f;
+                        }
                 }
 
                 _factionCache.TryGetValue(id, out var match);
@@ -1284,7 +1312,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateFactionCache()
         {
-            lock (_listLock) { _factionCache = null; }
+            lock (_listLock)
+            {
+                _factionCache = null;
+            }
         }
 
         /// <summary>
@@ -1300,7 +1331,9 @@ namespace OE2EmpireTracker.Services
                     _marketListingCache = new Dictionary<string, MarketListing>();
                     foreach (var ml in _marketListingList)
                         if (ml.UUID != null && !_marketListingCache.ContainsKey(ml.UUID))
+                        {
                             _marketListingCache[ml.UUID] = ml;
+                        }
                 }
 
                 _marketListingCache.TryGetValue(id, out var match);
@@ -1310,7 +1343,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateMarketListingCache()
         {
-            lock (_listLock) { _marketListingCache = null; }
+            lock (_listLock)
+            {
+                _marketListingCache = null;
+            }
         }
 
         public PlayerProfile FindPlayerProfile(string id)
@@ -1323,7 +1359,9 @@ namespace OE2EmpireTracker.Services
                     _playerProfileCache = new Dictionary<string, PlayerProfile>();
                     foreach (var r in _playerProfileList)
                         if (r.UUID != null && !_playerProfileCache.ContainsKey(r.UUID))
+                        {
                             _playerProfileCache[r.UUID] = r;
+                        }
                 }
 
                 _playerProfileCache.TryGetValue(id, out var match);
@@ -1333,7 +1371,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidatePlayerProfileCache()
         {
-            lock (_listLock) { _playerProfileCache = null; }
+            lock (_listLock)
+            {
+                _playerProfileCache = null;
+            }
         }
 
         public DeliveryRoute FindDeliveryRoute(string id)
@@ -1346,7 +1387,9 @@ namespace OE2EmpireTracker.Services
                     _deliveryRouteCache = new Dictionary<string, DeliveryRoute>();
                     foreach (var r in _deliveryRouteList)
                         if (r.UUID != null && !_deliveryRouteCache.ContainsKey(r.UUID))
+                        {
                             _deliveryRouteCache[r.UUID] = r;
+                        }
                 }
 
                 _deliveryRouteCache.TryGetValue(id, out var match);
@@ -1356,7 +1399,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateDeliveryRouteCache()
         {
-            lock (_listLock) { _deliveryRouteCache = null; }
+            lock (_listLock)
+            {
+                _deliveryRouteCache = null;
+            }
         }
 
         public DeliveryPlan FindDeliveryPlan(string id)
@@ -1369,7 +1415,9 @@ namespace OE2EmpireTracker.Services
                     _deliveryPlanCache = new Dictionary<string, DeliveryPlan>();
                     foreach (var r in _deliveryPlanList)
                         if (r.UUID != null && !_deliveryPlanCache.ContainsKey(r.UUID))
+                        {
                             _deliveryPlanCache[r.UUID] = r;
+                        }
                 }
 
                 _deliveryPlanCache.TryGetValue(id, out var match);
@@ -1379,7 +1427,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateDeliveryPlanCache()
         {
-            lock (_listLock) { _deliveryPlanCache = null; }
+            lock (_listLock)
+            {
+                _deliveryPlanCache = null;
+            }
         }
 
         public PricingPlan FindPricingPlan(string id)
@@ -1392,7 +1443,9 @@ namespace OE2EmpireTracker.Services
                     _pricingPlanCache = new Dictionary<string, PricingPlan>();
                     foreach (var r in _pricingPlanList)
                         if (r.UUID != null && !_pricingPlanCache.ContainsKey(r.UUID))
+                        {
                             _pricingPlanCache[r.UUID] = r;
+                        }
                 }
 
                 _pricingPlanCache.TryGetValue(id, out var match);
@@ -1402,7 +1455,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidatePricingPlanCache()
         {
-            lock (_listLock) { _pricingPlanCache = null; }
+            lock (_listLock)
+            {
+                _pricingPlanCache = null;
+            }
         }
 
         public MarketTransaction FindMarketTransaction(string id)
@@ -1415,7 +1471,9 @@ namespace OE2EmpireTracker.Services
                     _marketTransactionCache = new Dictionary<string, MarketTransaction>();
                     foreach (var r in _marketTransactionList)
                         if (r.UUID != null && !_marketTransactionCache.ContainsKey(r.UUID))
+                        {
                             _marketTransactionCache[r.UUID] = r;
+                        }
                 }
 
                 _marketTransactionCache.TryGetValue(id, out var match);
@@ -1425,7 +1483,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateMarketTransactionCache()
         {
-            lock (_listLock) { _marketTransactionCache = null; }
+            lock (_listLock)
+            {
+                _marketTransactionCache = null;
+            }
         }
 
         public StockPlan FindStockPlan(string id)
@@ -1438,7 +1499,9 @@ namespace OE2EmpireTracker.Services
                     _stockPlanCache = new Dictionary<string, StockPlan>();
                     foreach (var r in _stockPlanList)
                         if (r.UUID != null && !_stockPlanCache.ContainsKey(r.UUID))
+                        {
                             _stockPlanCache[r.UUID] = r;
+                        }
                 }
 
                 _stockPlanCache.TryGetValue(id, out var match);
@@ -1448,7 +1511,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateStockPlanCache()
         {
-            lock (_listLock) { _stockPlanCache = null; }
+            lock (_listLock)
+            {
+                _stockPlanCache = null;
+            }
         }
 
         public StockProfile FindStockProfile(string id)
@@ -1461,7 +1527,9 @@ namespace OE2EmpireTracker.Services
                     _stockProfileCache = new Dictionary<string, StockProfile>();
                     foreach (var r in _stockProfileList)
                         if (r.UUID != null && !_stockProfileCache.ContainsKey(r.UUID))
+                        {
                             _stockProfileCache[r.UUID] = r;
+                        }
                 }
 
                 _stockProfileCache.TryGetValue(id, out var match);
@@ -1471,7 +1539,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateStockProfileCache()
         {
-            lock (_listLock) { _stockProfileCache = null; }
+            lock (_listLock)
+            {
+                _stockProfileCache = null;
+            }
         }
 
         public SupplyChain FindSupplyChain(string id)
@@ -1484,7 +1555,9 @@ namespace OE2EmpireTracker.Services
                     _supplyChainCache = new Dictionary<string, SupplyChain>();
                     foreach (var r in _supplyChainList)
                         if (r.UUID != null && !_supplyChainCache.ContainsKey(r.UUID))
+                        {
                             _supplyChainCache[r.UUID] = r;
+                        }
                 }
 
                 _supplyChainCache.TryGetValue(id, out var match);
@@ -1494,7 +1567,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateSupplyChainCache()
         {
-            lock (_listLock) { _supplyChainCache = null; }
+            lock (_listLock)
+            {
+                _supplyChainCache = null;
+            }
         }
 
         public WarehouseOverflowRule FindWarehouseOverflowRule(string id)
@@ -1507,7 +1583,9 @@ namespace OE2EmpireTracker.Services
                     _warehouseOverflowRuleCache = new Dictionary<string, WarehouseOverflowRule>();
                     foreach (var r in _warehouseOverflowRuleList)
                         if (r.UUID != null && !_warehouseOverflowRuleCache.ContainsKey(r.UUID))
+                        {
                             _warehouseOverflowRuleCache[r.UUID] = r;
+                        }
                 }
 
                 _warehouseOverflowRuleCache.TryGetValue(id, out var match);
@@ -1517,7 +1595,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateWarehouseOverflowRuleCache()
         {
-            lock (_listLock) { _warehouseOverflowRuleCache = null; }
+            lock (_listLock)
+            {
+                _warehouseOverflowRuleCache = null;
+            }
         }
 
         public ExternalCharacter FindExternalCharacter(string id)
@@ -1530,7 +1611,9 @@ namespace OE2EmpireTracker.Services
                     _externalCharacterCache = new Dictionary<string, ExternalCharacter>();
                     foreach (var r in _externalCharacterList)
                         if (r.UUID != null && !_externalCharacterCache.ContainsKey(r.UUID))
+                        {
                             _externalCharacterCache[r.UUID] = r;
+                        }
                 }
 
                 _externalCharacterCache.TryGetValue(id, out var match);
@@ -1540,7 +1623,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateExternalCharacterCache()
         {
-            lock (_listLock) { _externalCharacterCache = null; }
+            lock (_listLock)
+            {
+                _externalCharacterCache = null;
+            }
         }
 
         /// <summary>
@@ -1570,7 +1656,10 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateBlueprintTypeCountCache()
         {
-            lock (_listLock) { _blueprintTypeCountCache = null; }
+            lock (_listLock)
+            {
+                _blueprintTypeCountCache = null;
+            }
         }
 
         /// <summary>
@@ -1605,7 +1694,9 @@ namespace OE2EmpireTracker.Services
 
         public void InvalidateBuildItemIndexes()
         {
-            lock (_listLock) { _blueprintBuildItemIndex = null;
+            lock (_listLock)
+            {
+                _blueprintBuildItemIndex = null;
             _buildLocationBuildItemIndex = null;
             }
         }
@@ -1854,76 +1945,91 @@ namespace OE2EmpireTracker.Services
                 _colonyList.Remove(colony);
                 removed++;
             }
+
             foreach (var bp in _blueprintList.Where(b => b.OwnerUUID == playerUUID).ToList())
             {
                 _blueprintList.Remove(bp);
                 removed++;
             }
+
             foreach (var survey in _surveyList.Where(s => s.OwnerUUID == playerUUID).ToList())
             {
                 _surveyList.Remove(survey);
                 removed++;
             }
+
             foreach (var route in _deliveryRouteList.Where(r => r.OwnerUUID == playerUUID).ToList())
             {
                 _deliveryRouteList.Remove(route);
                 removed++;
             }
+
             foreach (var plan in _deliveryPlanList.Where(p => p.OwnerUUID == playerUUID).ToList())
             {
                 _deliveryPlanList.Remove(plan);
                 removed++;
             }
+
             foreach (var pp in _pricingPlanList.Where(p => p.OwnerUUID == playerUUID).ToList())
             {
                 _pricingPlanList.Remove(pp);
                 removed++;
             }
+
             foreach (var bp2 in _buildPlanList.Where(b => b.OwnerUUID == playerUUID).ToList())
             {
                 _buildPlanList.Remove(bp2);
                 removed++;
             }
+
             foreach (var st in _shipTemplateList.Where(s => s.OwnerUUID == playerUUID).ToList())
             {
                 _shipTemplateList.Remove(st);
                 removed++;
             }
+
             foreach (var ship in _shipList.Where(s => s.OwnerUUID == playerUUID).ToList())
             {
                 _shipList.Remove(ship);
                 removed++;
             }
+
             foreach (var station in _stationList.Where(s => s.OwnerUUID == playerUUID).ToList())
             {
                 _stationList.Remove(station);
                 removed++;
             }
+
             foreach (var ml in _marketListingList.Where(m => m.OwnerUUID == playerUUID).ToList())
             {
                 _marketListingList.Remove(ml);
                 removed++;
             }
+
             foreach (var mt in _marketTransactionList.Where(m => m.OwnerUUID == playerUUID).ToList())
             {
                 _marketTransactionList.Remove(mt);
                 removed++;
             }
+
             foreach (var sp in _stockPlanList.Where(s => s.OwnerUUID == playerUUID).ToList())
             {
                 _stockPlanList.Remove(sp);
                 removed++;
             }
+
             foreach (var spf in _stockProfileList.Where(s => s.OwnerUUID == playerUUID).ToList())
             {
                 _stockProfileList.Remove(spf);
                 removed++;
             }
+
             foreach (var sc in _supplyChainList.Where(s => s.OwnerUUID == playerUUID).ToList())
             {
                 _supplyChainList.Remove(sc);
                 removed++;
             }
+
             foreach (var wor in _warehouseOverflowRuleList.Where(w => w.OwnerUUID == playerUUID).ToList())
             {
                 _warehouseOverflowRuleList.Remove(wor);
@@ -1954,6 +2060,7 @@ namespace OE2EmpireTracker.Services
                 _colonyList.Remove(colony);
                 removed++;
             }
+
             foreach (var bp in _blueprintList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned blueprint: {0} owner={1}", bp.ExtendedName, bp.OwnerUUID);
@@ -1961,6 +2068,7 @@ namespace OE2EmpireTracker.Services
                 _blueprintList.Remove(bp);
                 removed++;
             }
+
             foreach (var survey in _surveyList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned survey: {0} owner={1}", survey.ExtendedName, survey.OwnerUUID);
@@ -1968,6 +2076,7 @@ namespace OE2EmpireTracker.Services
                 _surveyList.Remove(survey);
                 removed++;
             }
+
             foreach (var route in _deliveryRouteList.Where(r => !string.IsNullOrEmpty(r.OwnerUUID) && !validUUIDs.Contains(r.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned route: {0} owner={1}", route.Name, route.OwnerUUID);
@@ -1975,6 +2084,7 @@ namespace OE2EmpireTracker.Services
                 _deliveryRouteList.Remove(route);
                 removed++;
             }
+
             foreach (var plan in _deliveryPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned delivery plan: {0} owner={1}", plan.Name, plan.OwnerUUID);
@@ -1982,6 +2092,7 @@ namespace OE2EmpireTracker.Services
                 _deliveryPlanList.Remove(plan);
                 removed++;
             }
+
             foreach (var pp in _pricingPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned pricing plan: {0} owner={1}", pp.Name, pp.OwnerUUID);
@@ -1989,6 +2100,7 @@ namespace OE2EmpireTracker.Services
                 _pricingPlanList.Remove(pp);
                 removed++;
             }
+
             foreach (var bp2 in _buildPlanList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned build plan: {0} owner={1}", bp2.Name, bp2.OwnerUUID);
@@ -1996,6 +2108,7 @@ namespace OE2EmpireTracker.Services
                 _buildPlanList.Remove(bp2);
                 removed++;
             }
+
             foreach (var st in _shipTemplateList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned ship template: {0} owner={1}", st.Name, st.OwnerUUID);
@@ -2003,6 +2116,7 @@ namespace OE2EmpireTracker.Services
                 _shipTemplateList.Remove(st);
                 removed++;
             }
+
             foreach (var ship in _shipList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned ship: {0} owner={1}", ship.Name, ship.OwnerUUID);
@@ -2010,6 +2124,7 @@ namespace OE2EmpireTracker.Services
                 _shipList.Remove(ship);
                 removed++;
             }
+
             foreach (var station in _stationList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned station: {0} owner={1}", station.Name, station.OwnerUUID);
@@ -2017,6 +2132,7 @@ namespace OE2EmpireTracker.Services
                 _stationList.Remove(station);
                 removed++;
             }
+
             foreach (var ml in _marketListingList.Where(m => !string.IsNullOrEmpty(m.OwnerUUID) && !validUUIDs.Contains(m.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned market listing: {0} owner={1}", ml.UUID, ml.OwnerUUID);
@@ -2024,6 +2140,7 @@ namespace OE2EmpireTracker.Services
                 _marketListingList.Remove(ml);
                 removed++;
             }
+
             foreach (var mt in _marketTransactionList.Where(m => !string.IsNullOrEmpty(m.OwnerUUID) && !validUUIDs.Contains(m.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned market transaction: {0} owner={1}", mt.UUID, mt.OwnerUUID);
@@ -2031,6 +2148,7 @@ namespace OE2EmpireTracker.Services
                 _marketTransactionList.Remove(mt);
                 removed++;
             }
+
             foreach (var sp in _stockPlanList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned stock plan: {0} owner={1}", sp.Name, sp.OwnerUUID);
@@ -2038,6 +2156,7 @@ namespace OE2EmpireTracker.Services
                 _stockPlanList.Remove(sp);
                 removed++;
             }
+
             foreach (var spf in _stockProfileList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned stock profile: {0} owner={1}", spf.Name, spf.OwnerUUID);
@@ -2045,6 +2164,7 @@ namespace OE2EmpireTracker.Services
                 _stockProfileList.Remove(spf);
                 removed++;
             }
+
             foreach (var sc in _supplyChainList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned supply chain: {0} owner={1}", sc.Name, sc.OwnerUUID);
@@ -2052,6 +2172,7 @@ namespace OE2EmpireTracker.Services
                 _supplyChainList.Remove(sc);
                 removed++;
             }
+
             foreach (var wor in _warehouseOverflowRuleList.Where(w => !string.IsNullOrEmpty(w.OwnerUUID) && !validUUIDs.Contains(w.OwnerUUID)).ToList())
             {
                 Log.Warn("Removing orphaned overflow rule: {0} owner={1}", wor.UUID, wor.OwnerUUID);
