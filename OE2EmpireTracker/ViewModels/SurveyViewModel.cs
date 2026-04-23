@@ -16,6 +16,15 @@ namespace OE2EmpireTracker.ViewModels
 
         private readonly EmpireContext _empireContext;
 
+        private Survey _survey;
+
+        public SurveyViewModel(Survey survey, PlayerContext playerContext, EmpireContext empireContext)
+        {
+            _survey = survey ?? throw new ArgumentNullException(nameof(survey));
+            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+            _empireContext = empireContext ?? throw new ArgumentNullException(nameof(empireContext));
+        }
+
         // -----------------------------------------------------------------------
         // Properties (sensor readings)
         // -----------------------------------------------------------------------
@@ -36,15 +45,6 @@ namespace OE2EmpireTracker.ViewModels
         {
             get => _survey.Properties.ContainsKey("ScanLevel") ? _survey.Properties["ScanLevel"] : string.Empty;
             set => _survey.Properties["ScanLevel"] = value;
-        }
-
-        private Survey _survey;
-
-        public SurveyViewModel(Survey survey, PlayerContext playerContext, EmpireContext empireContext)
-        {
-            _survey = survey ?? throw new ArgumentNullException(nameof(survey));
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
-            _empireContext = empireContext ?? throw new ArgumentNullException(nameof(empireContext));
         }
 
         public Survey Data => _survey;

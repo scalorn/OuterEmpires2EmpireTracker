@@ -60,6 +60,16 @@ namespace OE2EmpireTracker.Controls
         }
 
         /// <summary>
+        /// Gets the currently selected item string, or null if nothing is selected.
+        /// </summary>
+        public string SelectedItem => CmbItems.SelectedItem?.ToString();
+
+        /// <summary>
+        /// Gets the full (unfiltered) item list.
+        /// </summary>
+        public List<string> Items => _fullItems;
+
+        /// <summary>
         /// Filters the full item list using case-insensitive contains-match.
         /// Returns the filtered items and an index map back to the full list.
         /// </summary>
@@ -81,16 +91,6 @@ namespace OE2EmpireTracker.Controls
 
             return (filtered, indexMap);
         }
-
-        /// <summary>
-        /// Gets the currently selected item string, or null if nothing is selected.
-        /// </summary>
-        public string SelectedItem => CmbItems.SelectedItem?.ToString();
-
-        /// <summary>
-        /// Gets the full (unfiltered) item list.
-        /// </summary>
-        public List<string> Items => _fullItems;
 
         protected TextBox TxtFilter { get; set; }
 

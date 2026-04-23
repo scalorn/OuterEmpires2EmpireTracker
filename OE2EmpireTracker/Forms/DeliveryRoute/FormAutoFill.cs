@@ -8,6 +8,14 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
+        public FormAutoFill()
+        {
+            InitializeComponent();
+            // Load saved time horizon from preferences
+            var prefs = PreferencesStore.GetInstance().Preferences;
+            txtTimeHorizon.Text = prefs.FlatpackTimeHorizonHours.ToString();
+        }
+
         public int TimeHorizonHours
         {
             get
@@ -15,14 +23,6 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 int.TryParse(txtTimeHorizon.Text.Trim(), out int val);
                 return val;
             }
-        }
-
-        public FormAutoFill()
-        {
-            InitializeComponent();
-            // Load saved time horizon from preferences
-            var prefs = PreferencesStore.GetInstance().Preferences;
-            txtTimeHorizon.Text = prefs.FlatpackTimeHorizonHours.ToString();
         }
 
         public bool IncludeCommodities => chkCommodities.Checked;

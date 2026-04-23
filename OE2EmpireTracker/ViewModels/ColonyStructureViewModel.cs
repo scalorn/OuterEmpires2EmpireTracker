@@ -15,6 +15,12 @@ namespace OE2EmpireTracker.ViewModels
 
         private readonly PlayerContext _playerContext;
 
+        public ColonyStructureViewModel(ColonyStructure structure, PlayerContext playerContext)
+        {
+            _structure = structure ?? throw new ArgumentNullException(nameof(structure));
+            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        }
+
         // -----------------------------------------------------------------------
         // Structure state -- typed wrappers over PropertyBag
         // -----------------------------------------------------------------------
@@ -100,12 +106,6 @@ namespace OE2EmpireTracker.ViewModels
         {
             get => _structure.StagingResources;
             set => _structure.StagingResources = value;
-        }
-
-        public ColonyStructureViewModel(ColonyStructure structure, PlayerContext playerContext)
-        {
-            _structure = structure ?? throw new ArgumentNullException(nameof(structure));
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
         }
 
         public ColonyStructure Data => _structure;

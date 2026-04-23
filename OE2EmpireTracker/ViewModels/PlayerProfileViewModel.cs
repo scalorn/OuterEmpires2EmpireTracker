@@ -14,6 +14,14 @@ namespace OE2EmpireTracker.ViewModels
     {
         private readonly PlayerContext _playerContext;
 
+        private PlayerProfile _profile;
+
+        public PlayerProfileViewModel(PlayerProfile profile, PlayerContext playerContext)
+        {
+            _profile = profile ?? throw new ArgumentNullException(nameof(profile));
+            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        }
+
         // -----------------------------------------------------------------------
         // Identity
         // -----------------------------------------------------------------------
@@ -40,14 +48,6 @@ namespace OE2EmpireTracker.ViewModels
         {
             get => _profile.SkillPoints;
             set => _profile.SkillPoints = value;
-        }
-
-        private PlayerProfile _profile;
-
-        public PlayerProfileViewModel(PlayerProfile profile, PlayerContext playerContext)
-        {
-            _profile = profile ?? throw new ArgumentNullException(nameof(profile));
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
         }
 
         public PlayerProfile Data => _profile;
