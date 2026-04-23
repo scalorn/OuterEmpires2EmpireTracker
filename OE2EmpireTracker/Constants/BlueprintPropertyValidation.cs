@@ -21,6 +21,14 @@ namespace OE2EmpireTracker.Constants
     /// </summary>
     public static class BlueprintPropertyValidation
     {
+        public static readonly string IntegerPattern = @"^[+-]?\d+$";
+
+        public static readonly string DecimalPattern = @"^[+-]?\d+(\.\d+)?$";
+
+        public static readonly string BooleanPattern = @"^(true|false|True|False)$";
+
+        public static readonly string TimePattern = @"^(\d+d\s*)?(\d+h\s*)?(\d+m\s*)?(\d+s\s*)?$";
+
         private static readonly Dictionary<string, PropertyValueType> _propertyTypes = new Dictionary<string, PropertyValueType>
         {
             // Integer properties (game names with spaces)
@@ -147,11 +155,6 @@ namespace OE2EmpireTracker.Constants
             { "Shield regen", PropertyValueType.Decimal },
             { "Wear and Tear Rate", PropertyValueType.Decimal },
         };
-
-        public static readonly string IntegerPattern = @"^[+-]?\d+$";
-        public static readonly string DecimalPattern = @"^[+-]?\d+(\.\d+)?$";
-        public static readonly string BooleanPattern = @"^(true|false|True|False)$";
-        public static readonly string TimePattern = @"^(\d+d\s*)?(\d+h\s*)?(\d+m\s*)?(\d+s\s*)?$";
 
         public static PropertyValueType GetPropertyType(string propertyName)
         {

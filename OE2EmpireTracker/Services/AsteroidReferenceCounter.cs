@@ -7,13 +7,17 @@ namespace OE2EmpireTracker.Services
 {
     public class AsteroidReferenceReport
     {
-        public int SurveyCount { get; set; }
-        public int BuildItemCount { get; set; }
-        public int RouteStopCount { get; set; }
-        public int SupplyChainStageCount { get; set; }
-        public int TotalCount => SurveyCount + BuildItemCount + RouteStopCount + SupplyChainStageCount;
-
         public static readonly AsteroidReferenceReport Empty = new AsteroidReferenceReport();
+
+        public int SurveyCount { get; set; }
+
+        public int BuildItemCount { get; set; }
+
+        public int RouteStopCount { get; set; }
+
+        public int SupplyChainStageCount { get; set; }
+
+        public int TotalCount => SurveyCount + BuildItemCount + RouteStopCount + SupplyChainStageCount;
     }
 
     /// <summary>

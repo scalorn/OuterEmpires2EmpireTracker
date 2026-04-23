@@ -10,42 +10,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class IncrementalDeltaTests
     {
-        [OneTimeSetUp]
-        public void FixtureSetUp()
-        {
-            TestHelper.SetEmpireFilePath();
-            EmpireContext.Reset();
-        }
-
-        // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private static OE2EmpireTracker.Models.Blueprint MakeBlueprint(string type, Dictionary<string, string> properties)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint("Test " + type);
-            bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = type;
-            if (properties != null)
-            {
-                foreach (var kv in properties)
-                    bp.Properties.SetProperty(kv.Key, kv.Value);
-            }
-
-            return bp;
-        }
-
-        private static ColonyStructure MakeStructure(string blueprintUUID, bool built, bool online, bool staged = false)
-        {
-            var s = new ColonyStructure();
-            s.UUID = Guid.NewGuid().ToString();
-            s.FlatpackBlueprintUUID = blueprintUUID;
-            s.Properties.SetProperty(GameConstants.PropBuilt, built);
-            s.Properties.SetProperty(GameConstants.PropOnline, online);
-            s.Properties.SetProperty(GameConstants.PropStaged, staged);
-            return s;
-        }
-
         /// <summary>
         /// Builds a colony with a reactor, habitation, and mining rig, adds blueprints to PlayerContext,
         /// and returns (colony, blueprints dictionary keyed by structure UUID).
@@ -108,6 +72,13 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             return (colony, blueprints);
+        }
+
+        [OneTimeSetUp]
+        public void FixtureSetUp()
+        {
+            TestHelper.SetEmpireFilePath();
+            EmpireContext.Reset();
         }
 
         [TearDown]
@@ -377,6 +348,35 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(delta.EntertainmentProvided, Is.EqualTo(0m), "Offline should not provide entertainment");
             Assert.That(delta.WarehouseCapacity, Is.EqualTo(0m), "Offline should not provide warehouse");
             Assert.That(delta.FoodProvision, Is.EqualTo(50m), "Food should accumulate regardless of online state");
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private static OE2EmpireTracker.Models.Blueprint MakeBlueprint(string type, Dictionary<string, string> properties)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint("Test " + type);
+            bp.UUID = Guid.NewGuid().ToString();
+            bp.BluePrintType = type;
+            if (properties != null)
+            {
+                foreach (var kv in properties)
+                    bp.Properties.SetProperty(kv.Key, kv.Value);
+            }
+
+            return bp;
+        }
+
+        private static ColonyStructure MakeStructure(string blueprintUUID, bool built, bool online, bool staged = false)
+        {
+            var s = new ColonyStructure();
+            s.UUID = Guid.NewGuid().ToString();
+            s.FlatpackBlueprintUUID = blueprintUUID;
+            s.Properties.SetProperty(GameConstants.PropBuilt, built);
+            s.Properties.SetProperty(GameConstants.PropOnline, online);
+            s.Properties.SetProperty(GameConstants.PropStaged, staged);
+            return s;
         }
     }
 }

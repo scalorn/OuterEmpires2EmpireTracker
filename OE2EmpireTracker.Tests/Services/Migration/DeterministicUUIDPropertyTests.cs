@@ -14,29 +14,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     [TestFixture]
     public class DeterministicUUIDPropertyTests
     {
-        private static Gen<string> SafeStringGen()
-        {
-            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
-        }
-
-        private static Gen<int> SmallIntGen()
-        {
-            return Gen.Choose(0, 15);
-        }
-
-        /// <summary>
-        /// Generates a tuple of dedup key fields: (name, evolution, blueprintType, cls, techLevel)
-        /// </summary>
-        private static Gen<Tuple<string, int, string, int, string>> DedupKeyGen()
-        {
-            return from name in SafeStringGen()
-                   from evolution in SmallIntGen()
-                   from blueprintType in SafeStringGen()
-                   from cls in SmallIntGen()
-                   from techLevel in SafeStringGen()
-                   select Tuple.Create(name, evolution, blueprintType, cls, techLevel);
-        }
-
         /// <summary>
         /// For any Dedup_Key, DeterministicUUID.Generate shall produce the same UUID on every call.
         /// **Validates: Requirements 1.1, 1.3**
@@ -98,6 +75,29 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
                 return canParse.Label($"UUID '{uuidStr}' is not a valid GUID");
             });
+        }
+
+        private static Gen<string> SafeStringGen()
+        {
+            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
+        }
+
+        private static Gen<int> SmallIntGen()
+        {
+            return Gen.Choose(0, 15);
+        }
+
+        /// <summary>
+        /// Generates a tuple of dedup key fields: (name, evolution, blueprintType, cls, techLevel)
+        /// </summary>
+        private static Gen<Tuple<string, int, string, int, string>> DedupKeyGen()
+        {
+            return from name in SafeStringGen()
+                   from evolution in SmallIntGen()
+                   from blueprintType in SafeStringGen()
+                   from cls in SmallIntGen()
+                   from techLevel in SafeStringGen()
+                   select Tuple.Create(name, evolution, blueprintType, cls, techLevel);
         }
     }
 }

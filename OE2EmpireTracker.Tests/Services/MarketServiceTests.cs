@@ -9,24 +9,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class MarketServiceTests
     {
-        private MarketListing CreateListing(int quantity, string itemName = "Laser Mk2")
-        {
-            return new MarketListing
-            {
-                UUID = Guid.NewGuid().ToString(),
-                OwnerUUID = "player-1",
-                StationUUID = "station-1",
-                ItemType = ItemType.ItemTypeEnum.ShipPart,
-                ItemReferenceID = "bp-laser",
-                ItemName = itemName,
-                Quantity = quantity,
-                PricePerUnit = 100m,
-                CurrentHP = 80,
-                MaxHP = 100,
-                MaxRepairPercent = 0.95m
-            };
-        }
-
         [Test]
         public void RecordSale_ValidQuantity_DecrementsListingAndReturnsTransaction()
         {
@@ -261,21 +243,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(DateTime.TryParse(tx.Timestamp, out _), Is.True);
         }
 
-        private MarketTransaction CreateTx(TransactionType type, string itemName, int qty, decimal pricePerUnit, string stationUUID = "s1", string timestamp = null)
-        {
-            return new MarketTransaction
-            {
-                UUID = Guid.NewGuid().ToString(),
-                TransactionType = type,
-                ItemName = itemName,
-                Quantity = qty,
-                PricePerUnit = pricePerUnit,
-                TotalPrice = pricePerUnit * qty,
-                StationUUID = stationUUID,
-                Timestamp = timestamp ?? DateTime.UtcNow.ToString("o")
-            };
-        }
-
         [Test]
         public void ComputeProfitLoss_MixedTransactions_ComputesCorrectTotals()
         {
@@ -403,6 +370,39 @@ namespace OE2EmpireTracker.Tests.Services
             var summary = MarketService.ComputeProfitLoss(transactions);
 
             Assert.That(summary.NetProfitLoss, Is.EqualTo(-900m));
+        }
+
+        private MarketListing CreateListing(int quantity, string itemName = "Laser Mk2")
+        {
+            return new MarketListing
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "player-1",
+                StationUUID = "station-1",
+                ItemType = ItemType.ItemTypeEnum.ShipPart,
+                ItemReferenceID = "bp-laser",
+                ItemName = itemName,
+                Quantity = quantity,
+                PricePerUnit = 100m,
+                CurrentHP = 80,
+                MaxHP = 100,
+                MaxRepairPercent = 0.95m
+            };
+        }
+
+        private MarketTransaction CreateTx(TransactionType type, string itemName, int qty, decimal pricePerUnit, string stationUUID = "s1", string timestamp = null)
+        {
+            return new MarketTransaction
+            {
+                UUID = Guid.NewGuid().ToString(),
+                TransactionType = type,
+                ItemName = itemName,
+                Quantity = qty,
+                PricePerUnit = pricePerUnit,
+                TotalPrice = pricePerUnit * qty,
+                StationUUID = stationUUID,
+                Timestamp = timestamp ?? DateTime.UtcNow.ToString("o")
+            };
         }
     }
 }

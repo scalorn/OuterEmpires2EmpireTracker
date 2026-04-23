@@ -18,77 +18,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     public class Migration004PropertyTests
     {
         /// <summary>
-        /// Generates valid UTC DateTime values constrained to years 2000-2099.
-        /// </summary>
-        private static Gen<DateTime> ValidUtcDateTimeGen()
-        {
-            return from year in Gen.Choose(2000, 2099)
-                   from month in Gen.Choose(1, 12)
-                   from day in Gen.Choose(1, 28)
-                   from hour in Gen.Choose(0, 23)
-                   from minute in Gen.Choose(0, 59)
-                   select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
-        }
-
-        /// <summary>
-        /// Generates valid ISO 8601 strings from random UTC DateTimes.
-        /// </summary>
-        private static Gen<string> ValidIsoStringGen()
-        {
-            return ValidUtcDateTimeGen().Select(dt => SurveyDateTimeParser.ToIsoString(dt));
-        }
-
-        /// <summary>
-        /// Generates a null or empty string to represent missing LastImportDateTime.
-        /// </summary>
-        private static Gen<string> NullOrEmptyGen()
-        {
-            return Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty));
-        }
-
-        /// <summary>
-        /// Generates a Colony with either a valid ISO LastImportDateTime or null/empty.
-        /// </summary>
-        private static Gen<Colony> ColonyWithMixedTimestampGen()
-        {
-            var withValid = from iso in ValidIsoStringGen()
-                            select new Colony { LastImportDateTime = iso, ColonyName = "TestColony" };
-            var withEmpty = from empty in NullOrEmptyGen()
-                            select new Colony { LastImportDateTime = empty, ColonyName = "TestColony" };
-            return Gen.OneOf(withValid, withEmpty);
-        }
-
-        /// <summary>
-        /// Generates a local DateTime (not MinValue) for CountDownTime testing.
-        /// Uses DateTimeKind.Local to simulate pre-migration local times.
-        /// </summary>
-        private static Gen<DateTime> LocalDateTimeGen()
-        {
-            return from year in Gen.Choose(2020, 2030)
-                   from month in Gen.Choose(1, 12)
-                   from day in Gen.Choose(1, 28)
-                   from hour in Gen.Choose(0, 23)
-                   from minute in Gen.Choose(0, 59)
-                   from second in Gen.Choose(0, 59)
-                   select new DateTime(year, month, day, hour, minute, second, DateTimeKind.Local);
-        }
-
-        /// <summary>
-        /// Generates a CountDownTime with local StartTime and EndTime (not MinValue).
-        /// EndTime is always after StartTime.
-        /// </summary>
-        private static Gen<CountDownTime> LocalCountDownTimeGen()
-        {
-            return from start in LocalDateTimeGen()
-                   from durationSeconds in Gen.Choose(60, 86400)
-                   select new CountDownTime
-                   {
-                       StartTime = start,
-                       EndTime = start.AddSeconds(durationSeconds)
-                   };
-        }
-
-        /// <summary>
         /// Feature: colony-import-timestamp, Property 3: Migration backfills empty and preserves existing.
         /// For any list of colonies where some have null/empty LastImportDateTime and others have
         /// valid ISO 8601 strings, after running the backfill logic, every colony should have a
@@ -208,6 +137,77 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             Assert.That(timer.StartTime, Is.EqualTo(DateTime.MinValue));
             Assert.That(timer.EndTime, Is.EqualTo(DateTime.MinValue));
+        }
+
+        /// <summary>
+        /// Generates valid UTC DateTime values constrained to years 2000-2099.
+        /// </summary>
+        private static Gen<DateTime> ValidUtcDateTimeGen()
+        {
+            return from year in Gen.Choose(2000, 2099)
+                   from month in Gen.Choose(1, 12)
+                   from day in Gen.Choose(1, 28)
+                   from hour in Gen.Choose(0, 23)
+                   from minute in Gen.Choose(0, 59)
+                   select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
+        }
+
+        /// <summary>
+        /// Generates valid ISO 8601 strings from random UTC DateTimes.
+        /// </summary>
+        private static Gen<string> ValidIsoStringGen()
+        {
+            return ValidUtcDateTimeGen().Select(dt => SurveyDateTimeParser.ToIsoString(dt));
+        }
+
+        /// <summary>
+        /// Generates a null or empty string to represent missing LastImportDateTime.
+        /// </summary>
+        private static Gen<string> NullOrEmptyGen()
+        {
+            return Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty));
+        }
+
+        /// <summary>
+        /// Generates a Colony with either a valid ISO LastImportDateTime or null/empty.
+        /// </summary>
+        private static Gen<Colony> ColonyWithMixedTimestampGen()
+        {
+            var withValid = from iso in ValidIsoStringGen()
+                            select new Colony { LastImportDateTime = iso, ColonyName = "TestColony" };
+            var withEmpty = from empty in NullOrEmptyGen()
+                            select new Colony { LastImportDateTime = empty, ColonyName = "TestColony" };
+            return Gen.OneOf(withValid, withEmpty);
+        }
+
+        /// <summary>
+        /// Generates a local DateTime (not MinValue) for CountDownTime testing.
+        /// Uses DateTimeKind.Local to simulate pre-migration local times.
+        /// </summary>
+        private static Gen<DateTime> LocalDateTimeGen()
+        {
+            return from year in Gen.Choose(2020, 2030)
+                   from month in Gen.Choose(1, 12)
+                   from day in Gen.Choose(1, 28)
+                   from hour in Gen.Choose(0, 23)
+                   from minute in Gen.Choose(0, 59)
+                   from second in Gen.Choose(0, 59)
+                   select new DateTime(year, month, day, hour, minute, second, DateTimeKind.Local);
+        }
+
+        /// <summary>
+        /// Generates a CountDownTime with local StartTime and EndTime (not MinValue).
+        /// EndTime is always after StartTime.
+        /// </summary>
+        private static Gen<CountDownTime> LocalCountDownTimeGen()
+        {
+            return from start in LocalDateTimeGen()
+                   from durationSeconds in Gen.Choose(60, 86400)
+                   select new CountDownTime
+                   {
+                       StartTime = start,
+                       EndTime = start.AddSeconds(durationSeconds)
+                   };
         }
     }
 }

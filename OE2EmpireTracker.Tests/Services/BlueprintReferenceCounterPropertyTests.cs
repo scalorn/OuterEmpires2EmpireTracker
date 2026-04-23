@@ -13,28 +13,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class BlueprintReferenceCounterPropertyTests
     {
-        private static Colony MakeColony(params ColonyStructure[] structures)
-        {
-            var colony = new Colony();
-            colony.Structures = structures.ToList();
-            return colony;
-        }
-
-        private static Bp MakeBlueprint(string uuid, string baseBlueprintUUID = null)
-        {
-            var bp = new Bp("TestBP");
-            bp.UUID = uuid;
-            bp.BaseBlueprintUUID = baseBlueprintUUID;
-            return bp;
-        }
-
-        private static Survey MakeSurvey(string scannerBlueprintUUID)
-        {
-            var survey = new Survey();
-            survey.ScannerBlueprintUUID = scannerBlueprintUUID;
-            return survey;
-        }
-
         /// <summary>
         /// Property 1: Counting accuracy across all source types.
         /// For any set of colonies, blueprints, surveys, and target UUID,
@@ -228,6 +206,28 @@ namespace OE2EmpireTracker.Tests.Services
                     .And((report.TotalCount == 0) == (expectedText == "Delete"))
                     .Label($"text should be 'Delete' when TotalCount==0");
             });
+        }
+
+        private static Colony MakeColony(params ColonyStructure[] structures)
+        {
+            var colony = new Colony();
+            colony.Structures = structures.ToList();
+            return colony;
+        }
+
+        private static Bp MakeBlueprint(string uuid, string baseBlueprintUUID = null)
+        {
+            var bp = new Bp("TestBP");
+            bp.UUID = uuid;
+            bp.BaseBlueprintUUID = baseBlueprintUUID;
+            return bp;
+        }
+
+        private static Survey MakeSurvey(string scannerBlueprintUUID)
+        {
+            var survey = new Survey();
+            survey.ScannerBlueprintUUID = scannerBlueprintUUID;
+            return survey;
         }
     }
 }

@@ -12,6 +12,7 @@ namespace OE2EmpireTracker.Tests.Services
     public class BuildOrderOptimizerTests
     {
         private EmpireContext empireContext;
+
         private PlayerContext playerContext;
 
         [OneTimeSetUp]
@@ -27,83 +28,6 @@ namespace OE2EmpireTracker.Tests.Services
         public void TearDown()
         {
             // Don't reset singletons -- reuse across tests
-        }
-
-        // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private string FindGlobalBlueprintUUID(string blueprintType)
-        {
-            var bp = empireContext.GlobalBlueprintList
-                .FirstOrDefault(b => b.BluePrintType == blueprintType);
-            Assert.That(bp, Is.Not.Null, $"No global blueprint for {blueprintType}");
-            return bp.UUID;
-        }
-
-        private ColonyStructure MakeStructure(string blueprintType)
-        {
-            return new ColonyStructure
-            {
-                UUID = Guid.NewGuid().ToString(),
-                FlatpackBlueprintUUID = FindGlobalBlueprintUUID(blueprintType)
-            };
-        }
-
-        /// <summary>
-        /// Walks the optimized list and returns the first position where any
-        /// resource is in deficit, or -1 if no deficits exist.
-        /// </summary>
-        private int FindFirstDeficit(List<ColonyStructure> structures)
-        {
-            var idealWorkers = new IdealColonyStructureWorkers();
-            var calculator = new ColonyStatusCalculator(new Colony());
-            ColonyStructureStatus prev = new ColonyStructureStatus();
-
-            for (int i = 0; i < structures.Count; i++)
-            {
-                var s = structures[i];
-                OE2EmpireTracker.Models.Blueprint bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
-                var current = new ColonyStructureStatus();
-                calculator.CalculateBuilt(s, prev, current, idealWorkers, bp);
-
-                bool deficit = current.PowerRequired > current.PowerProvided ||
-                               current.HabitationRequired > current.HabitationProvision ||
-                               current.FoodRequired > current.FoodProvision ||
-                               current.EntertainmentRequired > current.EntertainmentProvided;
-
-                if (deficit)
-                {
-                    TestContext.WriteLine(
-                        $"Deficit at [{i}] {bp?.ExtendedName}: " +
-                        $"Pwr={current.PowerRequired}/{current.PowerProvided} " +
-                        $"Hab={current.HabitationRequired}/{current.HabitationProvision} " +
-                        $"Food={current.FoodRequired}/{current.FoodProvision} " +
-                        $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}");
-                    return i;
-                }
-
-                prev = current;
-            }
-
-            return -1;
-        }
-
-        private void LogOrder(List<ColonyStructure> structures)
-        {
-            for (int i = 0; i < structures.Count; i++)
-            {
-                var bp = playerContext.FindBlueprint(structures[i].FlatpackBlueprintUUID);
-                TestContext.WriteLine($"  [{i}] {bp?.ExtendedName ?? structures[i].FlatpackBlueprintUUID}");
-            }
-        }
-
-        private bool IsSupportType(string blueprintType)
-        {
-            return blueprintType == "Flatpacks/ReactorCore" ||
-                   blueprintType == "Flatpacks/HabitationBlock" ||
-                   blueprintType == "Flatpacks/HydroponicsBay" ||
-                   blueprintType == "Flatpacks/EntertainmentCentreFlatpack";
         }
 
         // -----------------------------------------------------------------------
@@ -237,6 +161,83 @@ namespace OE2EmpireTracker.Tests.Services
                 deficitPos,
                 Is.EqualTo(-1).Or.EqualTo(0),
                 $"Unexpected deficit at position {deficitPos}");
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private string FindGlobalBlueprintUUID(string blueprintType)
+        {
+            var bp = empireContext.GlobalBlueprintList
+                .FirstOrDefault(b => b.BluePrintType == blueprintType);
+            Assert.That(bp, Is.Not.Null, $"No global blueprint for {blueprintType}");
+            return bp.UUID;
+        }
+
+        private ColonyStructure MakeStructure(string blueprintType)
+        {
+            return new ColonyStructure
+            {
+                UUID = Guid.NewGuid().ToString(),
+                FlatpackBlueprintUUID = FindGlobalBlueprintUUID(blueprintType)
+            };
+        }
+
+        /// <summary>
+        /// Walks the optimized list and returns the first position where any
+        /// resource is in deficit, or -1 if no deficits exist.
+        /// </summary>
+        private int FindFirstDeficit(List<ColonyStructure> structures)
+        {
+            var idealWorkers = new IdealColonyStructureWorkers();
+            var calculator = new ColonyStatusCalculator(new Colony());
+            ColonyStructureStatus prev = new ColonyStructureStatus();
+
+            for (int i = 0; i < structures.Count; i++)
+            {
+                var s = structures[i];
+                OE2EmpireTracker.Models.Blueprint bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                var current = new ColonyStructureStatus();
+                calculator.CalculateBuilt(s, prev, current, idealWorkers, bp);
+
+                bool deficit = current.PowerRequired > current.PowerProvided ||
+                               current.HabitationRequired > current.HabitationProvision ||
+                               current.FoodRequired > current.FoodProvision ||
+                               current.EntertainmentRequired > current.EntertainmentProvided;
+
+                if (deficit)
+                {
+                    TestContext.WriteLine(
+                        $"Deficit at [{i}] {bp?.ExtendedName}: " +
+                        $"Pwr={current.PowerRequired}/{current.PowerProvided} " +
+                        $"Hab={current.HabitationRequired}/{current.HabitationProvision} " +
+                        $"Food={current.FoodRequired}/{current.FoodProvision} " +
+                        $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}");
+                    return i;
+                }
+
+                prev = current;
+            }
+
+            return -1;
+        }
+
+        private void LogOrder(List<ColonyStructure> structures)
+        {
+            for (int i = 0; i < structures.Count; i++)
+            {
+                var bp = playerContext.FindBlueprint(structures[i].FlatpackBlueprintUUID);
+                TestContext.WriteLine($"  [{i}] {bp?.ExtendedName ?? structures[i].FlatpackBlueprintUUID}");
+            }
+        }
+
+        private bool IsSupportType(string blueprintType)
+        {
+            return blueprintType == "Flatpacks/ReactorCore" ||
+                   blueprintType == "Flatpacks/HabitationBlock" ||
+                   blueprintType == "Flatpacks/HydroponicsBay" ||
+                   blueprintType == "Flatpacks/EntertainmentCentreFlatpack";
         }
     }
 }

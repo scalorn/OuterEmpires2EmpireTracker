@@ -5,11 +5,14 @@ using NLog;
 public class DataEntryGridView : System.Windows.Forms.DataGridView
 {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-    public Control PreviousControl { get; set; }
+
     private bool changingSelection = false;
+
     public DataEntryGridView()
     {
     }
+
+    public Control PreviousControl { get; set; }
 
     protected override bool ProcessDialogKey(Keys keyData)
     {

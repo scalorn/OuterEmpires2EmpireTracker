@@ -21,9 +21,29 @@ namespace OE2EmpireTracker.Tests.Parsers
     [TestFixture]
     public class ColonyParserDedupeTests
     {
+        // -------------------------------------------------------------------
+        // Property-based preservation: for ALL colony HTML test files,
+        // importing into an empty colony and then re-importing produces
+        // identical structure counts, FlatpackBlueprintUUIDs, and property
+        // values
+        // Validates: Requirements 3.1, 3.2, 3.5
+        // -------------------------------------------------------------------
+
+        private static readonly string[] AllColonyFiles = new[]
+        {
+            "ClnyHexAdministrationTabZehVazoranIIM1.html",
+            "ClnyHexAdministrationTabZehVazoranIIM2.html",
+            "ClnyHexAdministrationTabZehVazoranIIM2-2.html",
+            "ClnyHexAdministrationTabZehVazoranIIM2-3.html",
+            "ClnyHexAdministrationTabZehVazoranVI-1.html"
+        };
+
         private ColonyParser _parser;
+
         private EmpireContext _empireContext;
+
         private string _originalEmpireFilePath;
+
         private string _originalPlayerFilePath;
 
         [SetUp]
@@ -45,30 +65,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             EmpireContext.Reset();
             EmpireContext.FilePath = _originalEmpireFilePath;
             PlayerContext.FilePath = _originalPlayerFilePath;
-        }
-
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
-        }
-
-        private static string ExtractFragment(string clipboardData)
-        {
-            return OE2EmpireTracker.Parsers.BlueprintScanner
-                .ExtractHtmlFragmentFromClipboardData(clipboardData);
-        }
-
-        /// <summary>
-        /// Parses M1 HTML into a fresh colony to discover the baseline structure set.
-        /// </summary>
-        private Colony ParseM1Fresh()
-        {
-            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
-            string html = ExtractFragment(clipboardData);
-            var colony = new Colony();
-            _parser.ProcessHtml(colony, html, _empireContext);
-            return colony;
         }
 
         // -------------------------------------------------------------------
@@ -512,23 +508,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             }
         }
 
-        // -------------------------------------------------------------------
-        // Property-based preservation: for ALL colony HTML test files,
-        // importing into an empty colony and then re-importing produces
-        // identical structure counts, FlatpackBlueprintUUIDs, and property
-        // values
-        // Validates: Requirements 3.1, 3.2, 3.5
-        // -------------------------------------------------------------------
-
-        private static readonly string[] AllColonyFiles = new[]
-        {
-            "ClnyHexAdministrationTabZehVazoranIIM1.html",
-            "ClnyHexAdministrationTabZehVazoranIIM2.html",
-            "ClnyHexAdministrationTabZehVazoranIIM2-2.html",
-            "ClnyHexAdministrationTabZehVazoranIIM2-3.html",
-            "ClnyHexAdministrationTabZehVazoranVI-1.html"
-        };
-
         [Test]
         public void Preservation_AllFiles_ReimportPreservesStructureCounts()
         {
@@ -701,6 +680,30 @@ namespace OE2EmpireTracker.Tests.Parsers
                 filesWithCommodities,
                 Is.GreaterThan(0),
                 "At least one colony file should have commodity demands for this test to be meaningful");
+        }
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
+        }
+
+        private static string ExtractFragment(string clipboardData)
+        {
+            return OE2EmpireTracker.Parsers.BlueprintScanner
+                .ExtractHtmlFragmentFromClipboardData(clipboardData);
+        }
+
+        /// <summary>
+        /// Parses M1 HTML into a fresh colony to discover the baseline structure set.
+        /// </summary>
+        private Colony ParseM1Fresh()
+        {
+            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
+            string html = ExtractFragment(clipboardData);
+            var colony = new Colony();
+            _parser.ProcessHtml(colony, html, _empireContext);
+            return colony;
         }
     }
 }

@@ -25,77 +25,33 @@ namespace OE2EmpireTracker.Services
     public class EmpireContext
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private static EmpireContext _instance;
-        public static string FilePath { get; set; } = "BaselineData.json";
 
-        public static PlayerContext PlayerContext { get; set; }
+        private readonly object _commodityLock = new object();
+
+        private static EmpireContext _instance;
 
         // Task 6.1: Private backing fields with IReadOnlyList<T> properties
         private List<BlueprintType> _blueprintTypeList;
-        public IReadOnlyList<BlueprintType> BlueprintTypeList => _blueprintTypeList;
-        public BindingSource BindingSourceBlueprintType { get; set; }
 
         private List<ShipClass> _shipClassList;
-        public IReadOnlyList<ShipClass> ShipClassList => _shipClassList;
-        public BindingSource BindingSourceShipClass { get; set; }
 
         private List<TechLevel> _techLevelList;
-        public IReadOnlyList<TechLevel> TechLevelList => _techLevelList;
-        public BindingSource BindingSourceTechLevel { get; set; }
 
         private List<string> _evolutionList;
-        public IReadOnlyList<string> EvolutionList => _evolutionList;
-        public BindingSource BindingSourceEvolution { get; set; }
 
         private List<Resource> _resourceList;
-        public IReadOnlyList<Resource> ResourceList => _resourceList;
-        public BindingSource BindingSourceResource { get; set; }
 
         private List<ResourceGroup> _resourceGroupList;
-        public IReadOnlyList<ResourceGroup> ResourceGroupList => _resourceGroupList;
-        public BindingSource BindingSourceResourceGroup { get; set; }
 
         private List<ResourcePurity> _resourcePurityList;
-        public IReadOnlyList<ResourcePurity> ResourcePurityList => _resourcePurityList;
-        public BindingSource BindingSourceResourcePurity { get; set; }
-
-        public int DataVersion { get; set; } = 0;
-        public BaselineGameConstants GameConstants { get; set; }
 
         private List<Blueprint> _globalBlueprintList;
-        public IReadOnlyList<Blueprint> GlobalBlueprintList => _globalBlueprintList;
+
         private Dictionary<string, Blueprint> _globalBlueprintCache;
 
         private List<Commodity> _commodityList;
-        public IReadOnlyList<Commodity> CommodityList => _commodityList;
+
         private Dictionary<string, Commodity> _commodityNameCache;
-        private readonly object _commodityLock = new object();
-
-        public static EmpireContext GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new EmpireContext();
-            }
-
-            return _instance;
-        }
-
-        /// <summary>
-        /// Returns the current instance without creating one if it doesn't exist.
-        /// Used by GameConstants to avoid triggering file I/O during early access.
-        /// </summary>
-        public static EmpireContext GetInstanceIfLoaded()
-        {
-            return _instance;
-        }
-
-        public static void Reset()
-        {
-            _instance = null;
-            PlayerContext = null;
-            OE2EmpireTracker.Services.PlayerContext.Reset();
-        }
 
         private EmpireContext() : base()
         {
@@ -139,6 +95,72 @@ namespace OE2EmpireTracker.Services
             {
                 PlayerContext.WriteContext();
             }
+        }
+
+        public static string FilePath { get; set; } = "BaselineData.json";
+
+        public static PlayerContext PlayerContext { get; set; }
+
+        public IReadOnlyList<BlueprintType> BlueprintTypeList => _blueprintTypeList;
+
+        public BindingSource BindingSourceBlueprintType { get; set; }
+
+        public IReadOnlyList<ShipClass> ShipClassList => _shipClassList;
+
+        public BindingSource BindingSourceShipClass { get; set; }
+
+        public IReadOnlyList<TechLevel> TechLevelList => _techLevelList;
+
+        public BindingSource BindingSourceTechLevel { get; set; }
+
+        public IReadOnlyList<string> EvolutionList => _evolutionList;
+
+        public BindingSource BindingSourceEvolution { get; set; }
+
+        public IReadOnlyList<Resource> ResourceList => _resourceList;
+
+        public BindingSource BindingSourceResource { get; set; }
+
+        public IReadOnlyList<ResourceGroup> ResourceGroupList => _resourceGroupList;
+
+        public BindingSource BindingSourceResourceGroup { get; set; }
+
+        public IReadOnlyList<ResourcePurity> ResourcePurityList => _resourcePurityList;
+
+        public BindingSource BindingSourceResourcePurity { get; set; }
+
+        public int DataVersion { get; set; } = 0;
+
+        public BaselineGameConstants GameConstants { get; set; }
+
+        public IReadOnlyList<Blueprint> GlobalBlueprintList => _globalBlueprintList;
+
+        public IReadOnlyList<Commodity> CommodityList => _commodityList;
+
+        public static EmpireContext GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new EmpireContext();
+            }
+
+            return _instance;
+        }
+
+        /// <summary>
+        /// Returns the current instance without creating one if it doesn't exist.
+        /// Used by GameConstants to avoid triggering file I/O during early access.
+        /// </summary>
+        public static EmpireContext GetInstanceIfLoaded()
+        {
+            return _instance;
+        }
+
+        public static void Reset()
+        {
+            _instance = null;
+            PlayerContext = null;
+            OE2EmpireTracker.Services.PlayerContext.Reset();
         }
 
         public void WriteContext()

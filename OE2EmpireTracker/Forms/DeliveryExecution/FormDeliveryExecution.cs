@@ -15,16 +15,24 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
     public partial class FormDeliveryExecution : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
         private EmpireContext empireContext;
+
         private PlayerContext playerContext;
+
         private DeliveryPlan selectedPlan;
+
         private Ship selectedShip;
+
         private decimal currentCargoCapacity;
+
         private Dictionary<DeliveryPlanStop, Button> _stopCompleteButtons = new Dictionary<DeliveryPlanStop, Button>();
+
         private Dictionary<DeliveryPlanStop, CheckBox> _refuelCheckboxes = new Dictionary<DeliveryPlanStop, CheckBox>();
+
+        private string _lastRouteUUID = string.Empty;
 
         public FormDeliveryExecution()
         {
@@ -69,7 +77,12 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         }
 
         public string PreSelectRouteUUID { get; set; }
+
         public string PreSelectPlanUUID { get; set; }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         /// <summary>
         /// Apply pre-selected route and plan after the form is already shown.
@@ -91,6 +104,14 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         {
             base.OnShown(e);
             ApplyPreSelection();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.DeliveryDataChanged -= OnDeliveryDataChanged;
+            base.OnFormClosed(e);
         }
 
         // -----------------------------------------------------------------------
@@ -124,23 +145,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             cmbShip.Size = new Size(w, cmbShip.Size.Height);
         }
 
-        // -----------------------------------------------------------------------
-        // Route / Plan Selection
-        // -----------------------------------------------------------------------
-
-        private class DropdownItem
-        {
-            public string UUID { get; set; }
-            public string Display { get; set; }
-            public override string ToString() => Display ?? string.Empty;
-        }
-
         private void PopulateRouteDropdown()
         {
             _lastRouteUUID = RouteDropdownHelper.Populate(cmbRoute, playerContext.GetCurrentPlayerRoutes(), txtRouteFilter.Text ?? string.Empty, cmbRoute.SelectedValue as string, CmbRoute_SelectedIndexChanged);
         }
-
-        private string _lastRouteUUID = string.Empty;
 
         private void CmbRoute_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -916,14 +924,6 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 BuildExecution();
         }
 
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            playerContext.DeliveryDataChanged -= OnDeliveryDataChanged;
-            base.OnFormClosed(e);
-        }
-
         // -----------------------------------------------------------------------
         // Cargo Volume / Mass Display
         // -----------------------------------------------------------------------
@@ -1130,6 +1130,17 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             if (!string.IsNullOrEmpty(routeUUID))
                 PopulatePlanDropdown(routeUUID);
             BuildExecution();
+        }
+
+        // -----------------------------------------------------------------------
+        // Route / Plan Selection
+        // -----------------------------------------------------------------------
+
+        private class DropdownItem
+        {
+            public string UUID { get; set; }
+            public string Display { get; set; }
+            public override string ToString() => Display ?? string.Empty;
         }
     }
 }

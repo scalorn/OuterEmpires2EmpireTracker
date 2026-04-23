@@ -13,23 +13,6 @@ namespace OE2EmpireTracker.Tests.Models
     [TestFixture]
     public class ColonyLastImportDateTimePropertyTests
     {
-        private static Gen<DateTime> ValidUtcDateTimeGen()
-        {
-            return from year in Gen.Choose(2020, 2035)
-                   from month in Gen.Choose(1, 12)
-                   from day in Gen.Choose(1, 28)
-                   from hour in Gen.Choose(0, 23)
-                   from minute in Gen.Choose(0, 59)
-                   from second in Gen.Choose(0, 59)
-                   select new DateTime(year, month, day, hour, minute, second, DateTimeKind.Utc);
-        }
-
-        private static Gen<string> ValidIsoTimestampGen()
-        {
-            return ValidUtcDateTimeGen().Select(dt =>
-                dt.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture));
-        }
-
         /// <summary>
         /// Property 1: Colony LastImportDateTime JSON round-trip.
         /// For any Colony with a non-null LastImportDateTime string in ISO 8601 format,
@@ -50,6 +33,23 @@ namespace OE2EmpireTracker.Tests.Models
                 return (deserialized.LastImportDateTime == isoTimestamp)
                     .Label($"Expected '{isoTimestamp}', got '{deserialized.LastImportDateTime}'");
             });
+        }
+
+        private static Gen<DateTime> ValidUtcDateTimeGen()
+        {
+            return from year in Gen.Choose(2020, 2035)
+                   from month in Gen.Choose(1, 12)
+                   from day in Gen.Choose(1, 28)
+                   from hour in Gen.Choose(0, 23)
+                   from minute in Gen.Choose(0, 59)
+                   from second in Gen.Choose(0, 59)
+                   select new DateTime(year, month, day, hour, minute, second, DateTimeKind.Utc);
+        }
+
+        private static Gen<string> ValidIsoTimestampGen()
+        {
+            return ValidUtcDateTimeGen().Select(dt =>
+                dt.ToString("yyyy-MM-ddTHH:mm:ssZ", System.Globalization.CultureInfo.InvariantCulture));
         }
     }
 }

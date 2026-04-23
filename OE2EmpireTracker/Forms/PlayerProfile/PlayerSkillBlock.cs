@@ -24,7 +24,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             set => lblSkillName.Text = value;
         }
 
-        private Models.PlayerSkill _playerSkill;
         public Models.PlayerSkill PlayerSkill
         {
             get
@@ -39,7 +38,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
         }
 
-        private bool _canStartTraining;
         public bool CanStartTraining
         {
             get
@@ -54,19 +52,23 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
         }
 
-        [Browsable(true)]
-        [Category("Action")]
-        [Description("Invoked when skill training starts or ends")]
-        public event EventHandler TrainingStatusChanged;
+        private Models.PlayerSkill _playerSkill;
+
+        private bool _canStartTraining;
 
         private bool completionModification = false;
-
-        public CheckBox SkillGroupCheckbox { get; set; }
 
         public PlayerSkillBlock()
         {
             InitializeComponent();
         }
+
+        [Browsable(true)]
+        [Category("Action")]
+        [Description("Invoked when skill training starts or ends")]
+        public event EventHandler TrainingStatusChanged;
+
+        public CheckBox SkillGroupCheckbox { get; set; }
 
         public void PopulateForm()
         {

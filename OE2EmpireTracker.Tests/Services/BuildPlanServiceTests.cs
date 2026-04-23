@@ -242,36 +242,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(BuildPlanService.ValidateBuildItem(item), Is.False);
         }
 
-        private Colony CreateTestColony(string name, params ColonyStructure[] structures)
-        {
-            var colony = new Colony
-            {
-                UUID = Guid.NewGuid().ToString(),
-                ColonyName = name
-            };
-
-            colony.Structures.AddRange(structures);
-            return colony;
-        }
-
-        private ColonyStructure CreateStructure(string flatpackUUID, bool staged, bool built)
-        {
-            var s = new ColonyStructure
-            {
-                UUID = Guid.NewGuid().ToString(),
-                FlatpackBlueprintUUID = flatpackUUID
-            };
-
-            if (staged) s.Properties.SetProperty(GameConstants.PropStaged, true);
-            if (built) s.Properties.SetProperty(GameConstants.PropBuilt, true);
-            return s;
-        }
-
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string uuid, string name)
-        {
-            return new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid };
-        }
-
         [Test]
         public void GenerateColonyBuildItems_NullColony_Throws()
         {
@@ -443,6 +413,36 @@ namespace OE2EmpireTracker.Tests.Services
                 colony, plan, id => null);
 
             Assert.That(added, Is.EqualTo(0));
+        }
+
+        private Colony CreateTestColony(string name, params ColonyStructure[] structures)
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ColonyName = name
+            };
+
+            colony.Structures.AddRange(structures);
+            return colony;
+        }
+
+        private ColonyStructure CreateStructure(string flatpackUUID, bool staged, bool built)
+        {
+            var s = new ColonyStructure
+            {
+                UUID = Guid.NewGuid().ToString(),
+                FlatpackBlueprintUUID = flatpackUUID
+            };
+
+            if (staged) s.Properties.SetProperty(GameConstants.PropStaged, true);
+            if (built) s.Properties.SetProperty(GameConstants.PropBuilt, true);
+            return s;
+        }
+
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string uuid, string name)
+        {
+            return new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid };
         }
     }
 }

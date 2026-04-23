@@ -17,13 +17,17 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
     public partial class FormDeliveryRoute : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
         private EmpireContext empireContext;
+
         private PlayerContext playerContext;
+
         private DeliveryRouteViewModel viewModel;
+
         private DeliveryPlanViewModel planViewModel;
+
         private DeliveryPlanStop selectedPlanStop;
 
         public FormDeliveryRoute()
@@ -99,6 +103,18 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.DeliveryDataChanged += OnDeliveryDataChanged;
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.DeliveryDataChanged -= OnDeliveryDataChanged;
+            base.OnFormClosed(e);
         }
 
         // -----------------------------------------------------------------------
@@ -354,12 +370,6 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmbColony.DataSource = items;
             sw.Stop();
             Log.Info("PERF PopulateColonyPicker: {0}ms", sw.ElapsedMilliseconds);
-        }
-
-        private class ColonyPickerItem
-        {
-            public string UUID { get; set; }
-            public string Display { get; set; }
         }
 
         /// <summary>
@@ -630,20 +640,6 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 cmdDelete.Enabled = true;
                 cmdDelete.Text = "Delete";
             }
-        }
-
-        // -----------------------------------------------------------------------
-        // Plan Tab
-        // -----------------------------------------------------------------------
-
-        // -----------------------------------------------------------------------
-        // Plan Selector
-        // -----------------------------------------------------------------------
-
-        private class PlanDropdownItem
-        {
-            public string UUID { get; set; }
-            public string Display { get; set; }
         }
 
         private void PopulatePlanDropdown()
@@ -1036,12 +1032,6 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             return result;
         }
 
-        private class ItemPickerEntry
-        {
-            public string ID { get; set; }
-            public string Display { get; set; }
-        }
-
         private void PopulatePlanGrids()
         {
             var sw = Stopwatch.StartNew();
@@ -1194,12 +1184,30 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulatePlanDropdown();
         }
 
-        protected override void OnFormClosed(FormClosedEventArgs e)
+        private class ColonyPickerItem
         {
-            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            playerContext.DeliveryDataChanged -= OnDeliveryDataChanged;
-            base.OnFormClosed(e);
+            public string UUID { get; set; }
+            public string Display { get; set; }
+        }
+
+        // -----------------------------------------------------------------------
+        // Plan Tab
+        // -----------------------------------------------------------------------
+
+        // -----------------------------------------------------------------------
+        // Plan Selector
+        // -----------------------------------------------------------------------
+
+        private class PlanDropdownItem
+        {
+            public string UUID { get; set; }
+            public string Display { get; set; }
+        }
+
+        private class ItemPickerEntry
+        {
+            public string ID { get; set; }
+            public string Display { get; set; }
         }
     }
 }

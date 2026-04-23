@@ -15,12 +15,6 @@ namespace OE2EmpireTracker.Controls
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public class DropdownItem
-        {
-            public string UUID { get; set; }
-            public string Display { get; set; }
-        }
-
         /// <summary>
         /// Populates a route ComboBox from the given routes, applying an optional text filter.
         /// Preserves the previous selection if it still exists in the filtered list.
@@ -66,6 +60,12 @@ namespace OE2EmpireTracker.Controls
             sw.Stop();
             Log.Info("PERF PopulateRouteDropdown: {0}ms items={1}", sw.ElapsedMilliseconds, items.Count);
             return resultUUID;
+        }
+
+        public class DropdownItem
+        {
+            public string UUID { get; set; }
+            public string Display { get; set; }
         }
     }
 }

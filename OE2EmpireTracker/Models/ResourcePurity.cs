@@ -9,6 +9,12 @@ namespace OE2EmpireTracker.Models
 {
     public class ResourcePurity
     {
+        private static List<ResourcePurity> _purities = GetPurities();
+
+        private static Dictionary<PurityEnum, ResourcePurity> _purityMapByEnum;
+
+        private static Dictionary<string, ResourcePurity> _purityMapByString;
+
         public enum PurityEnum
         {
             None = 0,
@@ -18,17 +24,17 @@ namespace OE2EmpireTracker.Models
             UnrefinedLow
         }
 
-        public PurityEnum ID { get; set; }
-        public string Name { get; set; }
-        public bool Refined { get; set; } = false;
-
-        private static List<ResourcePurity> _purities = GetPurities();
-        private static Dictionary<PurityEnum, ResourcePurity> _purityMapByEnum;
-        private static Dictionary<string, ResourcePurity> _purityMapByString;
-
         public static IReadOnlyList<ResourcePurity> Purities => _purities.AsReadOnly();
+
         public static IReadOnlyDictionary<PurityEnum, ResourcePurity> ItemTypeMapByEnum => _purityMapByEnum;
+
         public static IReadOnlyDictionary<string, ResourcePurity> ItemTypeMapByString => _purityMapByString;
+
+        public PurityEnum ID { get; set; }
+
+        public string Name { get; set; }
+
+        public bool Refined { get; set; } = false;
 
         private static List<ResourcePurity> GetPurities()
         {

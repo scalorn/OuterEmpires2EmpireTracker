@@ -16,27 +16,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     [TestFixture]
     public class Migration003Tests
     {
-        /// <summary>
-        /// Replicates the conversion logic from Migration003 without requiring singletons.
-        /// </summary>
-        private static string MigrateDateTime(string original)
-        {
-            // Already ISO?
-            if (SurveyDateTimeParser.TryParseIso(original, out _))
-                return original;
-
-            // Try game format
-            if (SurveyDateTimeParser.TryParseGameFormat(original, out DateTime parsed))
-                return SurveyDateTimeParser.ToIsoString(parsed);
-
-            // Try common .NET formats
-            if (DateTime.TryParse(original, out DateTime fallback))
-                return SurveyDateTimeParser.ToIsoString(fallback);
-
-            // Unparseable or null/empty -- replace with now
-            return SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
-        }
-
         [Test]
         public void MigrateDateTime_AlreadyIso_ReturnsUnchanged()
         {
@@ -152,6 +131,27 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 SurveyDateTimeParser.TryParseIso(result, out _),
                 Is.True,
                 $"Expected valid ISO output from common format '{formatted}', got: '{result}'");
+        }
+
+        /// <summary>
+        /// Replicates the conversion logic from Migration003 without requiring singletons.
+        /// </summary>
+        private static string MigrateDateTime(string original)
+        {
+            // Already ISO?
+            if (SurveyDateTimeParser.TryParseIso(original, out _))
+                return original;
+
+            // Try game format
+            if (SurveyDateTimeParser.TryParseGameFormat(original, out DateTime parsed))
+                return SurveyDateTimeParser.ToIsoString(parsed);
+
+            // Try common .NET formats
+            if (DateTime.TryParse(original, out DateTime fallback))
+                return SurveyDateTimeParser.ToIsoString(fallback);
+
+            // Unparseable or null/empty -- replace with now
+            return SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
         }
     }
 }

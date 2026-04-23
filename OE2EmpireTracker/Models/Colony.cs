@@ -12,29 +12,45 @@ namespace OE2EmpireTracker.Models
 {
     public class Colony
     {
+        public const int ReadLockTimeoutMs = 1000;
+
+        public const int WriteLockTimeoutMs = 5000;
+
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        public Colony() : base()
+        {
+            Items = new ItemBag();
+            Structures = new List<ColonyStructure>();
+            Commodities = new List<CommodityRequested>();
+            Locks = new OE2EmpireTracker.Models.LockTracking();
+        }
+
         public string UUID { get; set; }
+
         public string OwnerUUID { get; set; } = string.Empty;
 
         [DefaultValue(null)]
         public string LegacyUUID { get; set; }
 
         public string PlanetName { get; set; }
+
         public string SystemName { get; set; } = string.Empty;
+
         public string ColonyName { get; set; }
+
         public ItemBag Items { get; set; }
 
         public List<ColonyStructure> Structures { get; set; }
 
         public List<CommodityRequested> Commodities { get; set; }
+
         public string LastImportDateTime { get; set; }
+
         public OE2EmpireTracker.Models.LockTracking Locks { get; set; }
 
         [JsonIgnore]
         public ReaderWriterLockSlim ColonyLock { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
-
-        public const int ReadLockTimeoutMs = 1000;
-        public const int WriteLockTimeoutMs = 5000;
 
         public bool HasExpiredTimers()
         {
@@ -55,26 +71,6 @@ namespace OE2EmpireTracker.Models
             }
 
             return false;
-        }
-
-        public Colony() : base()
-        {
-            Items = new ItemBag();
-            Structures = new List<ColonyStructure>();
-            Commodities = new List<CommodityRequested>();
-            Locks = new OE2EmpireTracker.Models.LockTracking();
-        }
-
-        /// <summary>
-        /// Returns the owner's skill level for the given skill, or 0 if no owner.
-        /// </summary>
-        private int GetOwnerSkillLevel(SkillName skill)
-        {
-            if (string.IsNullOrEmpty(OwnerUUID)) return 0;
-            PlayerContext pc = PlayerContext.GetInstance();
-            var owner = pc.PlayerProfileList.FirstOrDefault(p => p.UUID == OwnerUUID);
-            if (owner == null) return 0;
-            return owner.GetSkill(skill).Level;
         }
 
         public void ProcessColony()
@@ -246,6 +242,18 @@ namespace OE2EmpireTracker.Models
             foreach (var (structure, bp) in ready)
                 if (bp.BluePrintType == BlueprintTypes.ResearchLaboratory)
                     ProcessResearchLab(structure);
+        }
+
+        /// <summary>
+        /// Returns the owner's skill level for the given skill, or 0 if no owner.
+        /// </summary>
+        private int GetOwnerSkillLevel(SkillName skill)
+        {
+            if (string.IsNullOrEmpty(OwnerUUID)) return 0;
+            PlayerContext pc = PlayerContext.GetInstance();
+            var owner = pc.PlayerProfileList.FirstOrDefault(p => p.UUID == OwnerUUID);
+            if (owner == null) return 0;
+            return owner.GetSkill(skill).Level;
         }
 
         private void ProcessMiningRig(ColonyStructure structure)

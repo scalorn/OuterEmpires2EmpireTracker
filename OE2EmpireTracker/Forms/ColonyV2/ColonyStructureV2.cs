@@ -22,37 +22,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private int _isProgrammaticUpdate = 0;
-
         /// <summary>Player context for looking up surveys, blueprints, profiles.</summary>
         private readonly PlayerContext _playerContext;
-
-        /// <summary>True while the user is manually editing txtCompletionTime.</summary>
-        private bool _completionModification = false;
-
-        /// <summary>The ViewModel wrapping the current ColonyStructure data.</summary>
-        public ColonyStructureViewModel ViewModel { get; set; }
-
-        /// <summary>The parent colony that owns this structure.</summary>
-        public Models.Colony Colony { get; set; }
-
-        /// <summary>Whether the countdown timer is currently running.</summary>
-        public bool TimerRunning => timerCountdown.Enabled;
-
-        /// <summary>Stops the countdown timer without a full Reset.</summary>
-        public void StopTimer() { if (timerCountdown.Enabled) timerCountdown.Stop(); }
-
-        /// <summary>Cached blueprint reference, set during UpdateData.</summary>
-        private Models.Blueprint _blueprint;
 
         /// <summary>Pre-created worker checkboxes: 0-2 assigned, 3-5 unallocated.</summary>
         private readonly CheckBox[] _workerCheckboxes;
 
-        /// <summary>
-        /// Fired when structure data changes. IsStructural=true for add/reorder/delete,
-        /// false for worker toggle or state change.
-        /// </summary>
-        public event EventHandler<ColonyStructureDataChangedEventArgs> ColonyStructureDataChanged;
+        private int _isProgrammaticUpdate = 0;
+
+        /// <summary>True while the user is manually editing txtCompletionTime.</summary>
+        private bool _completionModification = false;
+
+        /// <summary>Cached blueprint reference, set during UpdateData.</summary>
+        private Models.Blueprint _blueprint;
 
         public ColonyStructureV2()
         {
@@ -79,60 +61,31 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             txtQuantity.TextChanged += TxtQuantity_TextChanged;
         }
 
+        /// <summary>
+        /// Fired when structure data changes. IsStructural=true for add/reorder/delete,
+        /// false for worker toggle or state change.
+        /// </summary>
+        public event EventHandler<ColonyStructureDataChangedEventArgs> ColonyStructureDataChanged;
+
+        /// <summary>The ViewModel wrapping the current ColonyStructure data.</summary>
+        public ColonyStructureViewModel ViewModel { get; set; }
+
+        /// <summary>The parent colony that owns this structure.</summary>
+        public Models.Colony Colony { get; set; }
+
+        /// <summary>Whether the countdown timer is currently running.</summary>
+        public bool TimerRunning => timerCountdown.Enabled;
+
+        /// <summary>Stops the countdown timer without a full Reset.</summary>
+        public void StopTimer() { if (timerCountdown.Enabled) timerCountdown.Stop(); }
+
         // -----------------------------------------------------------------------
         // IProgrammaticUpdateSource
         // -----------------------------------------------------------------------
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
-
-        // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private int GetCountdownIntervalMs()
-        {
-            int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.CountdownRefreshRateSeconds * 1000);
-            return Math.Max(intervalMs, 1000);
-        }
-
-        /// <summary>
-        /// Normalizes time strings from blueprint properties to the format expected by
-        /// CountDownTime.TimeRemainingString (e.g. "9 hours" -> "9h", "30 minutes" -> "30m").
-        /// </summary>
-        private static string NormalizeTimeString(string timeStr)
-        {
-            if (string.IsNullOrEmpty(timeStr)) return timeStr;
-            timeStr = Regex.Replace(timeStr, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
-            timeStr = Regex.Replace(timeStr, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
-            timeStr = Regex.Replace(timeStr, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
-            timeStr = Regex.Replace(timeStr, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
-            return timeStr.Trim();
-        }
-
-        // -----------------------------------------------------------------------
-        // Helper classes for combo box data binding
-        // -----------------------------------------------------------------------
-
-        private class RefinerySelectionItem
-        {
-            public string Key { get; set; }
-            public string DisplayName { get; set; }
-            public string ResourceName { get; set; }
-            public string Purity { get; set; }
-        }
-
-        private class ResearchSelectionItem
-        {
-            public string UUID { get; set; }
-            public string DisplayName { get; set; }
-        }
-
-        private class CommoditySelectionItem
-        {
-            public string Name { get; set; }
-            public string DisplayName { get; set; }
-        }
 
         // -----------------------------------------------------------------------
         // 7.2: Reset() â€” pool reuse
@@ -341,13 +294,79 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpColonyStructure.Size);
         }
 
+        // -----------------------------------------------------------------------
+        // 7.4: UpdateBackgroundColor() â€” lightweight path
+        // -----------------------------------------------------------------------
+
         /// <summary>
-        /// Populates the rtbStatus RichTextBox with Actual and Ideal status lines.
+        /// Lightweight update that only recalculates background color based on
+        /// current state and worker assignments. No full repaint.
         /// </summary>
-        private void PopulateStatusRtf()
+        public void UpdateBackgroundColor()
         {
-            var structureData = ViewModel.Data;
-            rtbStatus.Text = BuildStatusPlainText(structureData);
+            if (ViewModel == null)
+            {
+                flpColonyStructure.BackColor = Color.White;
+                return;
+            }
+
+            if (ViewModel.IsStaged)
+            {
+                flpColonyStructure.BackColor = Color.Yellow;
+            }
+            else if (ViewModel.IsBuilt && !ViewModel.IsOnline)
+            {
+                flpColonyStructure.BackColor = Color.PaleVioletRed;
+            }
+            else if (ViewModel.IsOnline)
+            {
+                bool hasAllWorkers = true;
+                for (int i = 0; i < _workerCheckboxes.Length; i++)
+                {
+                    if (_workerCheckboxes[i].Visible && !_workerCheckboxes[i].Checked)
+                    {
+                        hasAllWorkers = false;
+                        break;
+                    }
+                }
+
+                flpColonyStructure.BackColor = hasAllWorkers ? Color.Green : Color.LightGreen;
+            }
+            else
+            {
+                flpColonyStructure.BackColor = Color.White;
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Delete && ViewModel != null && Colony != null)
+            {
+                // Don't intercept Delete when a text input or combo has focus
+                var focused = FindFocusedControl(this);
+                if (focused is TextBox || focused is ComboBox || focused is RichTextBox)
+                    return base.ProcessCmdKey(ref msg, keyData);
+
+                ViewModel.Delete(Colony);
+                OnColonyStructureDataChanged(structural: true);
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        /// <summary>
+        /// Normalizes time strings from blueprint properties to the format expected by
+        /// CountDownTime.TimeRemainingString (e.g. "9 hours" -> "9h", "30 minutes" -> "30m").
+        /// </summary>
+        private static string NormalizeTimeString(string timeStr)
+        {
+            if (string.IsNullOrEmpty(timeStr)) return timeStr;
+            timeStr = Regex.Replace(timeStr, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
+            return timeStr.Trim();
         }
 
         private static string BuildStatusPlainText(ColonyStructure structureData)
@@ -389,6 +408,37 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             return sb.ToString();
+        }
+
+        private static Control FindFocusedControl(Control parent)
+        {
+            if (parent == null || !parent.ContainsFocus) return null;
+            foreach (Control child in parent.Controls)
+            {
+                if (child.Focused) return child;
+                if (child.ContainsFocus) return FindFocusedControl(child);
+            }
+
+            return null;
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private int GetCountdownIntervalMs()
+        {
+            int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.CountdownRefreshRateSeconds * 1000);
+            return Math.Max(intervalMs, 1000);
+        }
+
+        /// <summary>
+        /// Populates the rtbStatus RichTextBox with Actual and Ideal status lines.
+        /// </summary>
+        private void PopulateStatusRtf()
+        {
+            var structureData = ViewModel.Data;
+            rtbStatus.Text = BuildStatusPlainText(structureData);
         }
 
         /// <summary>
@@ -480,50 +530,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 flpManufacturing.Visible = true;
                 txtQuantity.Visible = false;
                 chkStageResources.Visible = false;
-            }
-        }
-
-        // -----------------------------------------------------------------------
-        // 7.4: UpdateBackgroundColor() â€” lightweight path
-        // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Lightweight update that only recalculates background color based on
-        /// current state and worker assignments. No full repaint.
-        /// </summary>
-        public void UpdateBackgroundColor()
-        {
-            if (ViewModel == null)
-            {
-                flpColonyStructure.BackColor = Color.White;
-                return;
-            }
-
-            if (ViewModel.IsStaged)
-            {
-                flpColonyStructure.BackColor = Color.Yellow;
-            }
-            else if (ViewModel.IsBuilt && !ViewModel.IsOnline)
-            {
-                flpColonyStructure.BackColor = Color.PaleVioletRed;
-            }
-            else if (ViewModel.IsOnline)
-            {
-                bool hasAllWorkers = true;
-                for (int i = 0; i < _workerCheckboxes.Length; i++)
-                {
-                    if (_workerCheckboxes[i].Visible && !_workerCheckboxes[i].Checked)
-                    {
-                        hasAllWorkers = false;
-                        break;
-                    }
-                }
-
-                flpColonyStructure.BackColor = hasAllWorkers ? Color.Green : Color.LightGreen;
-            }
-            else
-            {
-                flpColonyStructure.BackColor = Color.White;
             }
         }
 
@@ -1699,35 +1705,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             OnColonyStructureDataChanged(structural: true);
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Delete && ViewModel != null && Colony != null)
-            {
-                // Don't intercept Delete when a text input or combo has focus
-                var focused = FindFocusedControl(this);
-                if (focused is TextBox || focused is ComboBox || focused is RichTextBox)
-                    return base.ProcessCmdKey(ref msg, keyData);
-
-                ViewModel.Delete(Colony);
-                OnColonyStructureDataChanged(structural: true);
-                return true;
-            }
-
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        private static Control FindFocusedControl(Control parent)
-        {
-            if (parent == null || !parent.ContainsFocus) return null;
-            foreach (Control child in parent.Controls)
-            {
-                if (child.Focused) return child;
-                if (child.ContainsFocus) return FindFocusedControl(child);
-            }
-
-            return null;
-        }
-
         // -----------------------------------------------------------------------
         // Survey filter and selection handlers (Mining Rig)
         // -----------------------------------------------------------------------
@@ -2327,6 +2304,30 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void OnColonyStructureDataChanged(bool structural)
         {
             ColonyStructureDataChanged?.Invoke(this, new ColonyStructureDataChangedEventArgs(structural));
+        }
+
+        // -----------------------------------------------------------------------
+        // Helper classes for combo box data binding
+        // -----------------------------------------------------------------------
+
+        private class RefinerySelectionItem
+        {
+            public string Key { get; set; }
+            public string DisplayName { get; set; }
+            public string ResourceName { get; set; }
+            public string Purity { get; set; }
+        }
+
+        private class ResearchSelectionItem
+        {
+            public string UUID { get; set; }
+            public string DisplayName { get; set; }
+        }
+
+        private class CommoditySelectionItem
+        {
+            public string Name { get; set; }
+            public string DisplayName { get; set; }
         }
     }
 }

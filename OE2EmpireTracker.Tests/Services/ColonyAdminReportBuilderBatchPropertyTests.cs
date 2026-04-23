@@ -34,37 +34,6 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.Reset();
         }
 
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name);
-            bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = bpType;
-            PlayerContext.GetInstance().AddBlueprint(bp);
-            return bp;
-        }
-
-        private static ColonyStructure MakeStructure(string blueprintUUID, int gameSeq)
-        {
-            var structure = new ColonyStructure();
-            structure.UUID = Guid.NewGuid().ToString();
-            structure.FlatpackBlueprintUUID = blueprintUUID;
-            structure.DisplaySequence = gameSeq;
-            structure.Properties.SetProperty(GameConstants.PropBuilt, true);
-            structure.Properties.SetProperty(GameConstants.PropOnline, true);
-            return structure;
-        }
-
-        private static Colony MakeColony()
-        {
-            return new Colony
-            {
-                UUID = Guid.NewGuid().ToString(),
-                SystemName = "TestSystem",
-                ColonyName = "TestColony",
-                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
-            };
-        }
-
         /// <summary>
         /// Feature: colony-admin-summary, Property 8: Multi-quantity manufacturing shows next-item and batch completion.
         /// For any Manufacturing or CommodityManufacturing structure with ManufacturingQuantity > 1
@@ -182,6 +151,37 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(rtf.Contains("Next:"), Is.True, "Should have Next: line");
             Assert.That(rtf.Contains("Batch:"), Is.False, "Should NOT have Batch: line on last cycle");
+        }
+
+        private static ColonyStructure MakeStructure(string blueprintUUID, int gameSeq)
+        {
+            var structure = new ColonyStructure();
+            structure.UUID = Guid.NewGuid().ToString();
+            structure.FlatpackBlueprintUUID = blueprintUUID;
+            structure.DisplaySequence = gameSeq;
+            structure.Properties.SetProperty(GameConstants.PropBuilt, true);
+            structure.Properties.SetProperty(GameConstants.PropOnline, true);
+            return structure;
+        }
+
+        private static Colony MakeColony()
+        {
+            return new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                SystemName = "TestSystem",
+                ColonyName = "TestColony",
+                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
+            };
+        }
+
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name);
+            bp.UUID = Guid.NewGuid().ToString();
+            bp.BluePrintType = bpType;
+            PlayerContext.GetInstance().AddBlueprint(bp);
+            return bp;
         }
     }
 }

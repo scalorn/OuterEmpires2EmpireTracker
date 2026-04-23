@@ -16,6 +16,11 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class TabWarningServiceTests
     {
+        // -- Unit Tests: Structure Warning Edge Cases --
+        // **Validates: Requirements 7.1, 7.2, 8.1, 8.2, 9.1**
+
+        private static readonly DateTime Now = new DateTime(2025, 6, 15, 12, 0, 0);
+
         /// <summary>
         /// Feature: worker-tab-due-warning, Property 1: Structure warning level is determined by count thresholds
         /// **Validates: Requirements 7.1, 7.2, 8.1, 8.2, 9.1**
@@ -237,11 +242,6 @@ namespace OE2EmpireTracker.Tests.Services
                         .Label($"input={input ?? "null"}, expected=Red, got={result}");
                 });
         }
-
-        // -- Unit Tests: Structure Warning Edge Cases --
-        // **Validates: Requirements 7.1, 7.2, 8.1, 8.2, 9.1**
-
-        private static readonly DateTime Now = new DateTime(2025, 6, 15, 12, 0, 0);
 
         [Test]
         public void StructureWarning_0Structures_ReturnsNone()

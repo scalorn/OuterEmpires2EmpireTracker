@@ -24,12 +24,15 @@ namespace OE2EmpireTracker.Forms.Survey
     public partial class FormSurvey : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
         private EmpireContext empireContext;
+
         private PlayerContext playerContext;
+
         private SurveyViewModel viewModel;
+
         private int _sortColumn = 2; // PlanetName
         private SortOrder _sortOrder = SortOrder.Ascending;
 
@@ -136,6 +139,19 @@ namespace OE2EmpireTracker.Forms.Survey
             flpBase.Layout += FlpBase_Layout;
             flpSearchList.Layout += FlpSearchList_Layout;
             flpSurveyData.Layout += FlpSurveyData_Layout;
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.SurveyDataChanged -= OnSurveyDataChanged;
+            playerContext.ColonyDataChanged -= OnColonyDataChanged;
+            base.OnFormClosed(e);
         }
 
         private void FlpBase_Layout(object sender, LayoutEventArgs e)
@@ -895,15 +911,6 @@ namespace OE2EmpireTracker.Forms.Survey
 
             lvwSurveys.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
             lvwSurveys.Sort();
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            playerContext.SurveyDataChanged -= OnSurveyDataChanged;
-            playerContext.ColonyDataChanged -= OnColonyDataChanged;
-            base.OnFormClosed(e);
         }
     }
 }

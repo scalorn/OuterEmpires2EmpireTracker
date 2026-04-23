@@ -585,172 +585,6 @@ namespace OE2EmpireTracker.Tests.Services
             }
         }
 
-        /// <summary>
-        /// Creates an expired one-shot CountDownTime (TimeRemaining &lt;= 0, not repeating).
-        /// Used by Property 6 to create structures that trigger processing.
-        /// </summary>
-        private static CountDownTime CreateExpiredOneShot()
-        {
-            var timer = new CountDownTime();
-            timer.StartTime = DateTime.UtcNow.AddSeconds(-120);
-            timer.EndTime = DateTime.UtcNow.AddSeconds(-60);
-            timer.RepeatIntervalSeconds = 0;
-            return timer;
-        }
-
-        /// <summary>
-        /// Removes the temp file and its associated .tmp and .bak files
-        /// created by SafeFileWriter.
-        /// </summary>
-        private static void CleanupTempFiles(string basePath)
-        {
-            string[] paths = new[]
-            {
-                basePath,
-                basePath + ".tmp",
-                basePath + ".bak"
-            };
-
-            foreach (string path in paths)
-            {
-                if (System.IO.File.Exists(path))
-                {
-                    System.IO.File.Delete(path);
-                }
-            }
-        }
-
-        // -----------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------
-
-        /// <summary>
-        /// Manual implementation of the HasExpiredTimers check, used as the
-        /// oracle to verify the Colony.HasExpiredTimers() method.
-        /// </summary>
-        private static bool ManualHasExpiredTimers(Colony colony)
-        {
-            foreach (var structure in colony.Structures)
-            {
-                if (structure.BuildCompletionTime != null &&
-                    structure.BuildCompletionTime.TimeRemaining <= 0)
-                {
-                    return true;
-                }
-
-                if (structure.ProcessCompletionTime != null)
-                {
-                    if (structure.ProcessCompletionTime.IntervalsPassed > 0)
-                    {
-                        return true;
-                    }
-
-                    if (!structure.ProcessCompletionTime.IsRepeating &&
-                        structure.ProcessCompletionTime.TimeRemaining <= 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Generates a random CountDownTime in one of several states:
-        ///   - null
-        ///   - expired (TimeRemaining &lt;= 0)
-        ///   - active (TimeRemaining &gt; 0)
-        ///   - repeating with intervals passed
-        ///   - repeating with no intervals passed
-        /// </summary>
-        private static CountDownTime GenerateRandomCountDownTime(Random rng, bool allowNull, bool allowRepeating)
-        {
-            // Decide the timer state
-            // States: 0=null, 1=expired-oneshot, 2=active-oneshot,
-            //         3=repeating-with-intervals, 4=repeating-no-intervals
-            int maxState = allowRepeating ? 5 : 3;
-            if (!allowNull) maxState = allowRepeating ? 4 : 2;
-
-            int state = rng.Next(0, maxState);
-            if (!allowNull) state++; // shift past the null state
-
-            switch (state)
-            {
-                case 0: // null
-                    return null;
-
-                case 1: // expired one-shot (TimeRemaining <= 0)
-                {
-                    var timer = new CountDownTime();
-                    // Set EndTime in the past so TimeRemaining is negative
-                    int secondsAgo = rng.Next(1, 3600);
-                    timer.StartTime = DateTime.UtcNow.AddSeconds(-secondsAgo - 10);
-                    timer.EndTime = DateTime.UtcNow.AddSeconds(-secondsAgo);
-                    timer.RepeatIntervalSeconds = 0;
-                    return timer;
-                }
-
-                case 2: // active one-shot (TimeRemaining > 0)
-                {
-                    var timer = new CountDownTime();
-                    int secondsLeft = rng.Next(1, 7200);
-                    timer.StartTime = DateTime.UtcNow;
-                    timer.EndTime = DateTime.UtcNow.AddSeconds(secondsLeft);
-                    timer.RepeatIntervalSeconds = 0;
-                    return timer;
-                }
-
-                case 3: // repeating with intervals passed (IntervalsPassed > 0)
-                {
-                    var timer = new CountDownTime();
-                    long intervalSeconds = rng.Next(60, 3600);
-                    int passedIntervals = rng.Next(1, 10);
-                    timer.RepeatIntervalSeconds = intervalSeconds;
-                    // Move StartTime far enough back that passedIntervals have elapsed
-                    timer.StartTime = DateTime.UtcNow.AddSeconds(-(passedIntervals * intervalSeconds) - rng.Next(1, (int)intervalSeconds));
-                    timer.EndTime = timer.StartTime.AddSeconds(intervalSeconds);
-                    return timer;
-                }
-
-                case 4: // repeating with no intervals passed (IntervalsPassed == 0)
-                {
-                    var timer = new CountDownTime();
-                    long intervalSeconds = rng.Next(60, 3600);
-                    timer.RepeatIntervalSeconds = intervalSeconds;
-                    // StartTime is recent enough that no full interval has elapsed
-                    int partialSeconds = rng.Next(1, (int)intervalSeconds - 1);
-                    timer.StartTime = DateTime.UtcNow.AddSeconds(-partialSeconds);
-                    timer.EndTime = timer.StartTime.AddSeconds(intervalSeconds);
-                    return timer;
-                }
-
-                default:
-                    return null;
-            }
-        }
-
-        /// <summary>
-        /// Formats colony structure state for diagnostic output on failure.
-        /// </summary>
-        private static string FormatColonyState(Colony colony)
-        {
-            var parts = new List<string>();
-            for (int s = 0; s < colony.Structures.Count; s++)
-            {
-                var st = colony.Structures[s];
-                string buildInfo = st.BuildCompletionTime == null
-                    ? "Build=null"
-                    : $"Build(TR={st.BuildCompletionTime.TimeRemaining})";
-                string processInfo = st.ProcessCompletionTime == null
-                    ? "Process=null"
-                    : $"Process(TR={st.ProcessCompletionTime.TimeRemaining}, IP={st.ProcessCompletionTime.IntervalsPassed}, Repeating={st.ProcessCompletionTime.IsRepeating})";
-                parts.Add($"[S{s}: {buildInfo}, {processInfo}]");
-            }
-
-            return string.Join(", ", parts);
-        }
-
         // -----------------------------------------------------------------
         // Cascade Processing Tests (Tasks 12.1 - 12.4)
         // -----------------------------------------------------------------
@@ -1127,6 +961,172 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 CleanupTempFiles(tempPath);
             }
+        }
+
+        /// <summary>
+        /// Creates an expired one-shot CountDownTime (TimeRemaining &lt;= 0, not repeating).
+        /// Used by Property 6 to create structures that trigger processing.
+        /// </summary>
+        private static CountDownTime CreateExpiredOneShot()
+        {
+            var timer = new CountDownTime();
+            timer.StartTime = DateTime.UtcNow.AddSeconds(-120);
+            timer.EndTime = DateTime.UtcNow.AddSeconds(-60);
+            timer.RepeatIntervalSeconds = 0;
+            return timer;
+        }
+
+        /// <summary>
+        /// Removes the temp file and its associated .tmp and .bak files
+        /// created by SafeFileWriter.
+        /// </summary>
+        private static void CleanupTempFiles(string basePath)
+        {
+            string[] paths = new[]
+            {
+                basePath,
+                basePath + ".tmp",
+                basePath + ".bak"
+            };
+
+            foreach (string path in paths)
+            {
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                }
+            }
+        }
+
+        // -----------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------
+
+        /// <summary>
+        /// Manual implementation of the HasExpiredTimers check, used as the
+        /// oracle to verify the Colony.HasExpiredTimers() method.
+        /// </summary>
+        private static bool ManualHasExpiredTimers(Colony colony)
+        {
+            foreach (var structure in colony.Structures)
+            {
+                if (structure.BuildCompletionTime != null &&
+                    structure.BuildCompletionTime.TimeRemaining <= 0)
+                {
+                    return true;
+                }
+
+                if (structure.ProcessCompletionTime != null)
+                {
+                    if (structure.ProcessCompletionTime.IntervalsPassed > 0)
+                    {
+                        return true;
+                    }
+
+                    if (!structure.ProcessCompletionTime.IsRepeating &&
+                        structure.ProcessCompletionTime.TimeRemaining <= 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Generates a random CountDownTime in one of several states:
+        ///   - null
+        ///   - expired (TimeRemaining &lt;= 0)
+        ///   - active (TimeRemaining &gt; 0)
+        ///   - repeating with intervals passed
+        ///   - repeating with no intervals passed
+        /// </summary>
+        private static CountDownTime GenerateRandomCountDownTime(Random rng, bool allowNull, bool allowRepeating)
+        {
+            // Decide the timer state
+            // States: 0=null, 1=expired-oneshot, 2=active-oneshot,
+            //         3=repeating-with-intervals, 4=repeating-no-intervals
+            int maxState = allowRepeating ? 5 : 3;
+            if (!allowNull) maxState = allowRepeating ? 4 : 2;
+
+            int state = rng.Next(0, maxState);
+            if (!allowNull) state++; // shift past the null state
+
+            switch (state)
+            {
+                case 0: // null
+                    return null;
+
+                case 1: // expired one-shot (TimeRemaining <= 0)
+                {
+                    var timer = new CountDownTime();
+                    // Set EndTime in the past so TimeRemaining is negative
+                    int secondsAgo = rng.Next(1, 3600);
+                    timer.StartTime = DateTime.UtcNow.AddSeconds(-secondsAgo - 10);
+                    timer.EndTime = DateTime.UtcNow.AddSeconds(-secondsAgo);
+                    timer.RepeatIntervalSeconds = 0;
+                    return timer;
+                }
+
+                case 2: // active one-shot (TimeRemaining > 0)
+                {
+                    var timer = new CountDownTime();
+                    int secondsLeft = rng.Next(1, 7200);
+                    timer.StartTime = DateTime.UtcNow;
+                    timer.EndTime = DateTime.UtcNow.AddSeconds(secondsLeft);
+                    timer.RepeatIntervalSeconds = 0;
+                    return timer;
+                }
+
+                case 3: // repeating with intervals passed (IntervalsPassed > 0)
+                {
+                    var timer = new CountDownTime();
+                    long intervalSeconds = rng.Next(60, 3600);
+                    int passedIntervals = rng.Next(1, 10);
+                    timer.RepeatIntervalSeconds = intervalSeconds;
+                    // Move StartTime far enough back that passedIntervals have elapsed
+                    timer.StartTime = DateTime.UtcNow.AddSeconds(-(passedIntervals * intervalSeconds) - rng.Next(1, (int)intervalSeconds));
+                    timer.EndTime = timer.StartTime.AddSeconds(intervalSeconds);
+                    return timer;
+                }
+
+                case 4: // repeating with no intervals passed (IntervalsPassed == 0)
+                {
+                    var timer = new CountDownTime();
+                    long intervalSeconds = rng.Next(60, 3600);
+                    timer.RepeatIntervalSeconds = intervalSeconds;
+                    // StartTime is recent enough that no full interval has elapsed
+                    int partialSeconds = rng.Next(1, (int)intervalSeconds - 1);
+                    timer.StartTime = DateTime.UtcNow.AddSeconds(-partialSeconds);
+                    timer.EndTime = timer.StartTime.AddSeconds(intervalSeconds);
+                    return timer;
+                }
+
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Formats colony structure state for diagnostic output on failure.
+        /// </summary>
+        private static string FormatColonyState(Colony colony)
+        {
+            var parts = new List<string>();
+            for (int s = 0; s < colony.Structures.Count; s++)
+            {
+                var st = colony.Structures[s];
+                string buildInfo = st.BuildCompletionTime == null
+                    ? "Build=null"
+                    : $"Build(TR={st.BuildCompletionTime.TimeRemaining})";
+                string processInfo = st.ProcessCompletionTime == null
+                    ? "Process=null"
+                    : $"Process(TR={st.ProcessCompletionTime.TimeRemaining}, IP={st.ProcessCompletionTime.IntervalsPassed}, Repeating={st.ProcessCompletionTime.IsRepeating})";
+                parts.Add($"[S{s}: {buildInfo}, {processInfo}]");
+            }
+
+            return string.Join(", ", parts);
         }
 
         /// <summary>

@@ -19,6 +19,71 @@ namespace OE2EmpireTracker.Parsers
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
+        /// Builds a dictionary mapping building design names (e.g. "Mining Rig")
+        /// to their flatpack blueprint UUIDs from the global blueprint list.
+        /// </summary>
+        public static Dictionary<string, string> BuildFlatpackLookup(EmpireContext empireContext)
+        {
+            var lookup = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (empireContext?.GlobalBlueprintList == null) return lookup;
+
+            foreach (var bp in empireContext.GlobalBlueprintList)
+            {
+                if (bp.BluePrintType != null && bp.BluePrintType.IsFlatpack())
+                {
+                    // Use OutputItemName: "Mining Rig Flatpack" -> "Mining Rig"
+                    string designName = bp.OutputItemName;
+
+                    // Commodity factory flatpacks use the building name directly
+                    // (e.g. "Administration Block" -> "Administration Block")
+                    if (!lookup.ContainsKey(designName))
+                    {
+                        lookup[designName] = bp.UUID;
+                    }
+
+                    // Also register the full name with " Flatpack" suffix removed
+                    // so both "Mining Rig" and "Mining Rig Flatpack" resolve
+                    if (!lookup.ContainsKey(bp.Name))
+                    {
+                        lookup[bp.Name] = bp.UUID;
+                    }
+                }
+            }
+
+            return lookup;
+        }
+
+        /// <summary>
+        /// Parses a resource name like "Post-Trans Metals (Unrefined, High Purity)"
+        /// into MiningSurveyResource and RefiningResourcePurity on the structure.
+        /// </summary>
+        public static void ParseMiningResource(ColonyStructure structure, string resourceName)
+        {
+            // Format: "ResourceName (Qualifier, Purity)"
+            // e.g. "Post-Trans Metals (Unrefined, High Purity)"
+            var match = Regex.Match(resourceName, @"^(.+?)\s*\((.+)\)\s*$");
+            if (match.Success)
+            {
+                structure.MiningSurveyResource = match.Groups[1].Value.Trim();
+                string qualifier = match.Groups[2].Value.Trim();
+
+                var purityMatch = Regex.Match(
+                    qualifier,
+                    @"(Low|Medium|High|Med|Hi|Lo)\s*Purity",
+                    RegexOptions.IgnoreCase);
+                if (purityMatch.Success)
+                {
+                    structure.RefiningResourcePurity = SurveyParser.NormalizePurity(
+                        purityMatch.Groups[1].Value.Trim());
+                }
+            }
+            else
+            {
+                structure.MiningSurveyResource = resourceName.Trim();
+            }
+        }
+
+        /// <summary>
         /// Parses an HTML fragment from the game's colony Administration tab clipboard data
         /// and populates the given Colony object with extracted data.
         /// </summary>
@@ -469,41 +534,6 @@ namespace OE2EmpireTracker.Parsers
         }
 
         /// <summary>
-        /// Builds a dictionary mapping building design names (e.g. "Mining Rig")
-        /// to their flatpack blueprint UUIDs from the global blueprint list.
-        /// </summary>
-        public static Dictionary<string, string> BuildFlatpackLookup(EmpireContext empireContext)
-        {
-            var lookup = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            if (empireContext?.GlobalBlueprintList == null) return lookup;
-
-            foreach (var bp in empireContext.GlobalBlueprintList)
-            {
-                if (bp.BluePrintType != null && bp.BluePrintType.IsFlatpack())
-                {
-                    // Use OutputItemName: "Mining Rig Flatpack" -> "Mining Rig"
-                    string designName = bp.OutputItemName;
-
-                    // Commodity factory flatpacks use the building name directly
-                    // (e.g. "Administration Block" -> "Administration Block")
-                    if (!lookup.ContainsKey(designName))
-                    {
-                        lookup[designName] = bp.UUID;
-                    }
-
-                    // Also register the full name with " Flatpack" suffix removed
-                    // so both "Mining Rig" and "Mining Rig Flatpack" resolve
-                    if (!lookup.ContainsKey(bp.Name))
-                    {
-                        lookup[bp.Name] = bp.UUID;
-                    }
-                }
-            }
-
-            return lookup;
-        }
-
-        /// <summary>
         /// Parses a single building JSON object into a ColonyStructure.
         /// The out parameter maxRate receives the building's maxRate from the game JSON (0 if absent).
         /// </summary>
@@ -619,36 +649,6 @@ namespace OE2EmpireTracker.Parsers
             if (detailName.IndexOf("White Collar", StringComparison.OrdinalIgnoreCase) >= 0) return "WhiteCollar";
             if (detailName.IndexOf("Specialist", StringComparison.OrdinalIgnoreCase) >= 0) return "Specialist";
             return null;
-        }
-
-        /// <summary>
-        /// Parses a resource name like "Post-Trans Metals (Unrefined, High Purity)"
-        /// into MiningSurveyResource and RefiningResourcePurity on the structure.
-        /// </summary>
-        public static void ParseMiningResource(ColonyStructure structure, string resourceName)
-        {
-            // Format: "ResourceName (Qualifier, Purity)"
-            // e.g. "Post-Trans Metals (Unrefined, High Purity)"
-            var match = Regex.Match(resourceName, @"^(.+?)\s*\((.+)\)\s*$");
-            if (match.Success)
-            {
-                structure.MiningSurveyResource = match.Groups[1].Value.Trim();
-                string qualifier = match.Groups[2].Value.Trim();
-
-                var purityMatch = Regex.Match(
-                    qualifier,
-                    @"(Low|Medium|High|Med|Hi|Lo)\s*Purity",
-                    RegexOptions.IgnoreCase);
-                if (purityMatch.Success)
-                {
-                    structure.RefiningResourcePurity = SurveyParser.NormalizePurity(
-                        purityMatch.Groups[1].Value.Trim());
-                }
-            }
-            else
-            {
-                structure.MiningSurveyResource = resourceName.Trim();
-            }
         }
 
         /// <summary>

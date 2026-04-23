@@ -12,36 +12,6 @@ namespace OE2EmpireTracker.Tests.Services
     {
         private const string PlayerUUID = "player-1";
 
-        private Colony MakeColonyWithResource(string uuid, string resource, string purity, int qty)
-        {
-            var colony = new Colony { UUID = uuid, Items = new ItemBag() };
-            colony.Items.AddItem(new Item
-            {
-                UUID = Guid.NewGuid().ToString(),
-                ItemType = ItemType.ItemTypeEnum.Resource,
-                BaseItemTypeID = resource,
-                ResourcePurity = purity,
-                Quantity = qty
-            });
-            return colony;
-        }
-
-        private Station MakeStationWithResource(string uuid, string playerUUID, string resource, string purity, int qty)
-        {
-            var station = new Station { UUID = uuid };
-            var hold = new ItemBag();
-            hold.AddItem(new Item
-            {
-                UUID = Guid.NewGuid().ToString(),
-                ItemType = ItemType.ItemTypeEnum.Resource,
-                BaseItemTypeID = resource,
-                ResourcePurity = purity,
-                Quantity = qty
-            });
-            station.Holds[playerUUID] = hold;
-            return station;
-        }
-
         [Test]
         public void CheckThresholds_EmptyChains_ReturnsEmptyRequests()
         {
@@ -265,6 +235,36 @@ namespace OE2EmpireTracker.Tests.Services
                 _ => null, _ => null, _ => null, PlayerUUID);
 
             Assert.That(result, Is.Empty);
+        }
+
+        private Colony MakeColonyWithResource(string uuid, string resource, string purity, int qty)
+        {
+            var colony = new Colony { UUID = uuid, Items = new ItemBag() };
+            colony.Items.AddItem(new Item
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ItemType = ItemType.ItemTypeEnum.Resource,
+                BaseItemTypeID = resource,
+                ResourcePurity = purity,
+                Quantity = qty
+            });
+            return colony;
+        }
+
+        private Station MakeStationWithResource(string uuid, string playerUUID, string resource, string purity, int qty)
+        {
+            var station = new Station { UUID = uuid };
+            var hold = new ItemBag();
+            hold.AddItem(new Item
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ItemType = ItemType.ItemTypeEnum.Resource,
+                BaseItemTypeID = resource,
+                ResourcePurity = purity,
+                Quantity = qty
+            });
+            station.Holds[playerUUID] = hold;
+            return station;
         }
     }
 }

@@ -32,37 +32,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             EmpireContext.Reset();
         }
 
-        private string FindRefineryFlatpackUUID()
-        {
-            return _empireContext.GlobalBlueprintList
-                .First(bp => bp.BluePrintType == BlueprintTypes.Refinery)
-                .UUID;
-        }
-
-        private string FindRefineryDesignName()
-        {
-            var bp = _empireContext.GlobalBlueprintList
-                .First(b => b.BluePrintType == BlueprintTypes.Refinery);
-            return bp.OutputItemName;
-        }
-
-        private string FindMiningRigDesignName()
-        {
-            var bp = _empireContext.GlobalBlueprintList
-                .First(b => b.BluePrintType == BlueprintTypes.MiningRig);
-            return bp.OutputItemName;
-        }
-
-        private string BuildJson(params JObject[] buildings)
-        {
-            var root = new JObject
-            {
-                ["buildings"] = new JArray(buildings)
-            };
-
-            return root.ToString();
-        }
-
         [Test]
         public void ParseColonyBuildingsFromJson_SetsRefiningResource_ForRefineryWithResource()
         {
@@ -137,6 +106,37 @@ namespace OE2EmpireTracker.Tests.Parsers
             ColonyParser.ParseColonyBuildingsFromJson(colony, json, _empireContext);
             Assert.That(colony.Structures.Count, Is.EqualTo(1));
             Assert.That(colony.Structures[0].RefiningResource, Is.EqualTo("Copper"));
+        }
+
+        private string FindRefineryFlatpackUUID()
+        {
+            return _empireContext.GlobalBlueprintList
+                .First(bp => bp.BluePrintType == BlueprintTypes.Refinery)
+                .UUID;
+        }
+
+        private string FindRefineryDesignName()
+        {
+            var bp = _empireContext.GlobalBlueprintList
+                .First(b => b.BluePrintType == BlueprintTypes.Refinery);
+            return bp.OutputItemName;
+        }
+
+        private string FindMiningRigDesignName()
+        {
+            var bp = _empireContext.GlobalBlueprintList
+                .First(b => b.BluePrintType == BlueprintTypes.MiningRig);
+            return bp.OutputItemName;
+        }
+
+        private string BuildJson(params JObject[] buildings)
+        {
+            var root = new JObject
+            {
+                ["buildings"] = new JArray(buildings)
+            };
+
+            return root.ToString();
         }
     }
 }

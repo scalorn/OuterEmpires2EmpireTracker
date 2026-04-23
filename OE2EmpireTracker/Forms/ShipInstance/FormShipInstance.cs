@@ -14,12 +14,13 @@ namespace OE2EmpireTracker.Forms.ShipInstance
     public partial class FormShipInstance : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         private PlayerContext playerContext;
+
         private Ship _selectedShip;
+
         private List<string> _hullUUIDs = new List<string>();
 
         public FormShipInstance()
@@ -67,6 +68,16 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            base.OnFormClosed(e);
         }
 
         // Layout
@@ -964,12 +975,6 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             PopulateHullCombo();
             PopulateShipList();
             ClearForm();
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            base.OnFormClosed(e);
         }
 
         // Inner classes for component grid

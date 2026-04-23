@@ -10,45 +10,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ShipBuildServiceTests
     {
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(
-            string uuid,
-            string name,
-            Dictionary<string,
-            decimal> props = null)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, Properties = new PropertyBag() };
-            if (props != null)
-                foreach (var kv in props)
-                {
-                    bp.Properties.SetProperty(kv.Key, kv.Value);
-                }
-
-            return bp;
-        }
-
-        private ShipTemplate CreateTemplate(string hullUUID, params string[] componentUUIDs)
-        {
-            var t = new ShipTemplate
-            {
-                UUID = Guid.NewGuid().ToString(),
-                Name = "TestTemplate",
-                HullBlueprintUUID = hullUUID
-            };
-
-            int idx = 0;
-            foreach (var uuid in componentUUIDs)
-            {
-                t.Components.Add(new ShipComponentSlot
-                {
-                    SlotType = "Reactor",
-                    SlotIndex = idx++,
-                    BlueprintUUID = uuid
-                });
-            }
-
-            return t;
-        }
-
         // --- GenerateShipBuildItems ---
 
         [Test]
@@ -213,6 +174,45 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(stats.TotalHealth, Is.EqualTo(1000m));
             Assert.That(stats.EnergyDefence, Is.EqualTo(50m));
+        }
+
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(
+            string uuid,
+            string name,
+            Dictionary<string,
+            decimal> props = null)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, Properties = new PropertyBag() };
+            if (props != null)
+                foreach (var kv in props)
+                {
+                    bp.Properties.SetProperty(kv.Key, kv.Value);
+                }
+
+            return bp;
+        }
+
+        private ShipTemplate CreateTemplate(string hullUUID, params string[] componentUUIDs)
+        {
+            var t = new ShipTemplate
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Name = "TestTemplate",
+                HullBlueprintUUID = hullUUID
+            };
+
+            int idx = 0;
+            foreach (var uuid in componentUUIDs)
+            {
+                t.Components.Add(new ShipComponentSlot
+                {
+                    SlotType = "Reactor",
+                    SlotIndex = idx++,
+                    BlueprintUUID = uuid
+                });
+            }
+
+            return t;
         }
     }
 }

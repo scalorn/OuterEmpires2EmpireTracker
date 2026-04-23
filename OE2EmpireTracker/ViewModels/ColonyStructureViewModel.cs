@@ -12,15 +12,8 @@ namespace OE2EmpireTracker.ViewModels
     public class ColonyStructureViewModel
     {
         private readonly ColonyStructure _structure;
+
         private readonly PlayerContext _playerContext;
-
-        public ColonyStructure Data => _structure;
-
-        public ColonyStructureViewModel(ColonyStructure structure, PlayerContext playerContext)
-        {
-            _structure = structure ?? throw new ArgumentNullException(nameof(structure));
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
-        }
 
         // -----------------------------------------------------------------------
         // Structure state -- typed wrappers over PropertyBag
@@ -60,24 +53,6 @@ namespace OE2EmpireTracker.ViewModels
         }
 
         // -----------------------------------------------------------------------
-        // Worker assignment -- typed wrappers over AssignedWorkers PropertyBag
-        // -----------------------------------------------------------------------
-
-        public bool GetWorkerAssigned(string key)
-        {
-            bool v;
-            _structure.AssignedWorkers.GetBoolean(key, false, out v);
-            return v;
-        }
-
-        public void SetWorkerAssigned(string key, bool assigned)
-        {
-            _structure.AssignedWorkers.SetProperty(key, assigned);
-        }
-
-        public bool WorkerKeyExists(string key) => _structure.AssignedWorkers.ContainsKey(key);
-
-        // -----------------------------------------------------------------------
         // Mining / process properties -- typed pass-throughs
         // -----------------------------------------------------------------------
 
@@ -115,6 +90,14 @@ namespace OE2EmpireTracker.ViewModels
             set => _structure.StagingResources = value;
         }
 
+        public ColonyStructureViewModel(ColonyStructure structure, PlayerContext playerContext)
+        {
+            _structure = structure ?? throw new ArgumentNullException(nameof(structure));
+            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        }
+
+        public ColonyStructure Data => _structure;
+
         public string FlatpackBlueprintUUID => _structure.FlatpackBlueprintUUID;
 
         public Blueprint Blueprint => _playerContext.FindBlueprint(_structure.FlatpackBlueprintUUID);
@@ -122,6 +105,24 @@ namespace OE2EmpireTracker.ViewModels
         public string BlueprintType => Blueprint?.BluePrintType ?? string.Empty;
 
         public int DisplaySequence => _structure.DisplaySequence;
+
+        // -----------------------------------------------------------------------
+        // Worker assignment -- typed wrappers over AssignedWorkers PropertyBag
+        // -----------------------------------------------------------------------
+
+        public bool GetWorkerAssigned(string key)
+        {
+            bool v;
+            _structure.AssignedWorkers.GetBoolean(key, false, out v);
+            return v;
+        }
+
+        public void SetWorkerAssigned(string key, bool assigned)
+        {
+            _structure.AssignedWorkers.SetProperty(key, assigned);
+        }
+
+        public bool WorkerKeyExists(string key) => _structure.AssignedWorkers.ContainsKey(key);
 
         // -----------------------------------------------------------------------
         // Structure list commands -- operate on the parent colony's list

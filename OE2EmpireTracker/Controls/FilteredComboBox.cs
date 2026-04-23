@@ -12,8 +12,9 @@ namespace OE2EmpireTracker.Controls
 {
     public class FilteredComboBox : System.Windows.Forms.ComboBox
     {
-        public BindingSource UnfilteredList { get; set; }
         private bool changingText = false;
+
+        public BindingSource UnfilteredList { get; set; }
 
         protected override void OnTextChanged(EventArgs e)
         {

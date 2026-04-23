@@ -15,13 +15,30 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class MarketBlueprintImporterTests
     {
-        private PlayerContext playerContext;
-        private EmpireContext empireContext;
         private static readonly string TestPlayerUUID = "test-player-uuid-001";
 
+        // -----------------------------------------------------------------------
+        // Property-Based Tests
+        // -----------------------------------------------------------------------
+
+        private static readonly Random Rng = new Random(42);
+
+        private static readonly string[] BpTypes = { "Reactor", "Weapon", "Shield", "Hull", "MainDrive" };
+
+        private static readonly string[] TechLevels = { null, "Hi-Tech", "Junker", "MilSpec", "Rugged", "Service", "Standard" };
+
+        private static readonly string[] Sellers = { "Government", "TraderJoe", "SpacePirate", "MerchantGuild" };
+
+        private PlayerContext playerContext;
+
+        private EmpireContext empireContext;
+
         private string _originalEmpireFilePath;
+
         private string _originalPlayerFilePath;
+
         private string _tempBaselineDataPath;
+
         private string _tempPlayerDataPath;
 
         [OneTimeSetUp]
@@ -70,46 +87,6 @@ namespace OE2EmpireTracker.Tests.Services
 
             // Set a current player for player blueprint tests
             playerContext.CurrentPlayerUUID = TestPlayerUUID;
-        }
-
-        // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private static MarketBlueprint MakeMarketBlueprint(
-            string name, string seller, string bpType = "Reactor",
-            int evolution = 0, int cls = 1, string techLevel = null,
-            Dictionary<string, string> props = null,
-            Dictionary<string, string> resources = null)
-        {
-            var bp = new BpModel(name);
-            bp.BluePrintType = bpType;
-            bp.Evolution = evolution;
-            bp.Class = cls;
-            bp.TechLevel = techLevel;
-            if (props != null)
-            {
-                foreach (var kvp in props)
-                    bp.Properties.SetProperty(kvp.Key, kvp.Value);
-            }
-            else
-            {
-                // Default: at least one property so it's not treated as unexpanded
-                bp.Properties.SetProperty("Health", "100");
-            }
-
-            if (resources != null)
-                bp.Resources = resources;
-            return new MarketBlueprint { Blueprint = bp, SellerName = seller };
-        }
-
-        private static MarketBlueprint MakeUnexpandedBlueprint(string name, string seller)
-        {
-            var bp = new BpModel(name);
-            // Zero properties, no BluePrintType -> unexpanded
-            bp.BluePrintType = null;
-            bp.Properties = new PropertyBag();
-            return new MarketBlueprint { Blueprint = bp, SellerName = seller };
         }
 
         // -----------------------------------------------------------------------
@@ -380,34 +357,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result.Entries[1].Storage, Is.EqualTo("Player"));
         }
 
-        // -----------------------------------------------------------------------
-        // Property-Based Tests
-        // -----------------------------------------------------------------------
-
-        private static readonly Random Rng = new Random(42);
-
-        private static readonly string[] BpTypes = { "Reactor", "Weapon", "Shield", "Hull", "MainDrive" };
-        private static readonly string[] TechLevels = { null, "Hi-Tech", "Junker", "MilSpec", "Rugged", "Service", "Standard" };
-        private static readonly string[] Sellers = { "Government", "TraderJoe", "SpacePirate", "MerchantGuild" };
-
-        private MarketBlueprint MakeRandomMarketBlueprint(int seed)
-        {
-            var rng = new Random(seed);
-            string name = "BP_" + rng.Next(1, 20);
-            string seller = Sellers[rng.Next(Sellers.Length)];
-            string bpType = BpTypes[rng.Next(BpTypes.Length)];
-            int evolution = rng.Next(0, 4);
-            int cls = rng.Next(1, 6);
-            string techLevel = TechLevels[rng.Next(TechLevels.Length)];
-
-            var props = new Dictionary<string, string>();
-            int propCount = rng.Next(1, 5);
-            for (int i = 0; i < propCount; i++)
-                props["Prop" + i] = string.Empty + rng.Next(1, 1000);
-
-            return MakeMarketBlueprint(name, seller, bpType, evolution, cls, techLevel, props);
-        }
-
         /// <summary>
         /// **Validates: Requirements 5, 6**
         /// Property 1: Dedup key uniqueness
@@ -451,16 +400,6 @@ namespace OE2EmpireTracker.Tests.Services
                 AssertNoDuplicateKeys(empireContext.GlobalBlueprintList, "global", trial);
                 AssertNoDuplicateKeys(playerContext.BlueprintList, "player", trial);
             }
-        }
-
-        private void AssertNoDuplicateKeys(IEnumerable<BpModel> list, string storageName, int trial)
-        {
-            var keys = list.Select(bp => $"{bp.Name}|{bp.Evolution}|{bp.BluePrintType}|{bp.Class}|{bp.TechLevel}").ToList();
-            var distinct = keys.Distinct().ToList();
-            Assert.That(
-                keys.Count,
-                Is.EqualTo(distinct.Count),
-                $"Duplicate dedup keys found in {storageName} storage on trial {trial}: " + string.Join(", ", keys.GroupBy(k => k).Where(g => g.Count() > 1).Select(g => g.Key)));
         }
 
         /// <summary>
@@ -655,22 +594,6 @@ namespace OE2EmpireTracker.Tests.Services
                     Is.EqualTo(blueprints.Count),
                     $"Trial {trial}: Entries count should match input count");
             }
-        }
-
-        // -----------------------------------------------------------------------
-        // Integration Tests -- Idempotency with real MarketSample HTML files
-        // -----------------------------------------------------------------------
-
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
-        }
-
-        private List<MarketBlueprint> ParseHtml(string html)
-        {
-            var scanner = new BlueprintScanner();
-            return scanner.ProcessMarketHtml(html);
         }
 
         /// <summary>
@@ -1293,6 +1216,90 @@ namespace OE2EmpireTracker.Tests.Services
             // Verify no duplicate dedup keys
             AssertNoDuplicateKeys(empireContext.GlobalBlueprintList, "global (AllFlatpacks)", 0);
             AssertNoDuplicateKeys(playerContext.BlueprintList, "player (AllFlatpacks)", 0);
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private static MarketBlueprint MakeMarketBlueprint(
+            string name, string seller, string bpType = "Reactor",
+            int evolution = 0, int cls = 1, string techLevel = null,
+            Dictionary<string, string> props = null,
+            Dictionary<string, string> resources = null)
+        {
+            var bp = new BpModel(name);
+            bp.BluePrintType = bpType;
+            bp.Evolution = evolution;
+            bp.Class = cls;
+            bp.TechLevel = techLevel;
+            if (props != null)
+            {
+                foreach (var kvp in props)
+                    bp.Properties.SetProperty(kvp.Key, kvp.Value);
+            }
+            else
+            {
+                // Default: at least one property so it's not treated as unexpanded
+                bp.Properties.SetProperty("Health", "100");
+            }
+
+            if (resources != null)
+                bp.Resources = resources;
+            return new MarketBlueprint { Blueprint = bp, SellerName = seller };
+        }
+
+        private static MarketBlueprint MakeUnexpandedBlueprint(string name, string seller)
+        {
+            var bp = new BpModel(name);
+            // Zero properties, no BluePrintType -> unexpanded
+            bp.BluePrintType = null;
+            bp.Properties = new PropertyBag();
+            return new MarketBlueprint { Blueprint = bp, SellerName = seller };
+        }
+
+        // -----------------------------------------------------------------------
+        // Integration Tests -- Idempotency with real MarketSample HTML files
+        // -----------------------------------------------------------------------
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
+        }
+
+        private MarketBlueprint MakeRandomMarketBlueprint(int seed)
+        {
+            var rng = new Random(seed);
+            string name = "BP_" + rng.Next(1, 20);
+            string seller = Sellers[rng.Next(Sellers.Length)];
+            string bpType = BpTypes[rng.Next(BpTypes.Length)];
+            int evolution = rng.Next(0, 4);
+            int cls = rng.Next(1, 6);
+            string techLevel = TechLevels[rng.Next(TechLevels.Length)];
+
+            var props = new Dictionary<string, string>();
+            int propCount = rng.Next(1, 5);
+            for (int i = 0; i < propCount; i++)
+                props["Prop" + i] = string.Empty + rng.Next(1, 1000);
+
+            return MakeMarketBlueprint(name, seller, bpType, evolution, cls, techLevel, props);
+        }
+
+        private void AssertNoDuplicateKeys(IEnumerable<BpModel> list, string storageName, int trial)
+        {
+            var keys = list.Select(bp => $"{bp.Name}|{bp.Evolution}|{bp.BluePrintType}|{bp.Class}|{bp.TechLevel}").ToList();
+            var distinct = keys.Distinct().ToList();
+            Assert.That(
+                keys.Count,
+                Is.EqualTo(distinct.Count),
+                $"Duplicate dedup keys found in {storageName} storage on trial {trial}: " + string.Join(", ", keys.GroupBy(k => k).Where(g => g.Count() > 1).Select(g => g.Key)));
+        }
+
+        private List<MarketBlueprint> ParseHtml(string html)
+        {
+            var scanner = new BlueprintScanner();
+            return scanner.ProcessMarketHtml(html);
         }
     }
 }

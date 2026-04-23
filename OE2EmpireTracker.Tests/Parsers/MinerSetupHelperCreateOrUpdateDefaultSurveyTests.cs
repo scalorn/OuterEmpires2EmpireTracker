@@ -33,18 +33,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             EmpireContext.Reset();
         }
 
-        private Colony CreateColony(string ownerUUID, string planetName, string systemName)
-        {
-            return new Colony
-            {
-                UUID = System.Guid.NewGuid().ToString(),
-                OwnerUUID = ownerUUID,
-                PlanetName = planetName,
-                SystemName = systemName,
-                ColonyName = "Test Colony"
-            };
-        }
-
         [Test]
         public void CreateOrUpdateDefaultSurvey_CreatesNewSurvey_WhenNoneExists()
         {
@@ -168,6 +156,18 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Assert
             Assert.That(_playerContext.SurveyList, Has.Count.EqualTo(1));
             Assert.That(_playerContext.SurveyList[0].SurveyID, Is.EqualTo("DEFAULT"));
+        }
+
+        private Colony CreateColony(string ownerUUID, string planetName, string systemName)
+        {
+            return new Colony
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                OwnerUUID = ownerUUID,
+                PlanetName = planetName,
+                SystemName = systemName,
+                ColonyName = "Test Colony"
+            };
         }
     }
 }

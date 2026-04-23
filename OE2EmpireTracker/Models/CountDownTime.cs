@@ -10,30 +10,6 @@ namespace OE2EmpireTracker.Models
     public class CountDownTime
     {
         /// <summary>
-        /// The point in time the countdown was last started or updated.
-        /// For repeating timers this is the baseline used to calculate how many intervals have elapsed.
-        /// </summary>
-        public DateTime StartTime { get; set; }
-
-        /// <summary>
-        /// The current target time for the countdown.
-        /// For non-repeating timers this is the final expiration time.
-        /// For repeating timers this is the anchor used to calculate the current interval end.
-        /// </summary>
-        public DateTime EndTime { get; set; }
-
-        /// <summary>
-        /// The repeating interval length in seconds. If this value is greater than zero,
-        /// the countdown functions as a repeating timer.
-        /// </summary>
-        public long RepeatIntervalSeconds { get; set; }
-
-        /// <summary>
-        /// Returns true when the countdown is configured to repeat.
-        /// </summary>
-        public bool IsRepeating => RepeatIntervalSeconds > 0;
-
-        /// <summary>
         /// Gets or sets the number of seconds remaining until the next expiration.
         /// For repeating timers this returns the remaining seconds until the next interval boundary.
         /// </summary>
@@ -162,6 +138,39 @@ namespace OE2EmpireTracker.Models
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="CountDownTime"/> class.
+        /// </summary>
+        public CountDownTime()
+        {
+            StartTime = DateTime.MinValue;
+            EndTime = StartTime;
+        }
+
+        /// <summary>
+        /// The point in time the countdown was last started or updated.
+        /// For repeating timers this is the baseline used to calculate how many intervals have elapsed.
+        /// </summary>
+        public DateTime StartTime { get; set; }
+
+        /// <summary>
+        /// The current target time for the countdown.
+        /// For non-repeating timers this is the final expiration time.
+        /// For repeating timers this is the anchor used to calculate the current interval end.
+        /// </summary>
+        public DateTime EndTime { get; set; }
+
+        /// <summary>
+        /// The repeating interval length in seconds. If this value is greater than zero,
+        /// the countdown functions as a repeating timer.
+        /// </summary>
+        public long RepeatIntervalSeconds { get; set; }
+
+        /// <summary>
+        /// Returns true when the countdown is configured to repeat.
+        /// </summary>
+        public bool IsRepeating => RepeatIntervalSeconds > 0;
+
+        /// <summary>
         /// Advances the countdown by the specified number of intervals.
         /// For repeating timers, this updates StartTime so that the remaining passed
         /// intervals are reduced by the consumed amount.
@@ -227,15 +236,6 @@ namespace OE2EmpireTracker.Models
 
             StartTime = SystemClock.UtcNow.AddSeconds(remaining - RepeatIntervalSeconds);
             EndTime = SystemClock.UtcNow.AddSeconds(remaining);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CountDownTime"/> class.
-        /// </summary>
-        public CountDownTime()
-        {
-            StartTime = DateTime.MinValue;
-            EndTime = StartTime;
         }
 
         private DateTime GetNextIntervalBoundary(DateTime now)

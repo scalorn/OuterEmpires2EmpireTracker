@@ -32,38 +32,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         }
 
         /// <summary>
-        /// Collects all UUID-bearing fields from the data model into a flat list.
-        /// </summary>
-        private static List<string> CollectAllUUIDs(EmpireContext ec, PlayerContext pc)
-        {
-            var uuids = new List<string>();
-
-            foreach (var bp in ec.GlobalBlueprintList)
-            {
-                if (bp.UUID != null) uuids.Add(bp.UUID);
-                if (bp.BaseBlueprintUUID != null) uuids.Add(bp.BaseBlueprintUUID);
-            }
-
-            foreach (var bp in pc.BlueprintList)
-            {
-                if (bp.UUID != null) uuids.Add(bp.UUID);
-                if (bp.BaseBlueprintUUID != null) uuids.Add(bp.BaseBlueprintUUID);
-            }
-
-            foreach (var colony in pc.ColonyList)
-            {
-                foreach (var s in colony.Structures)
-                {
-                    if (s.FlatpackBlueprintUUID != null) uuids.Add(s.FlatpackBlueprintUUID);
-                    if (s.ResearchingBlueprintUUID != null) uuids.Add(s.ResearchingBlueprintUUID);
-                    if (s.ManufacturingBlueprintUUID != null) uuids.Add(s.ManufacturingBlueprintUUID);
-                }
-            }
-
-            return uuids;
-        }
-
-        /// <summary>
         /// For any data model state and any (oldUUID, newUUID) pair, after RemapUUID.Remap,
         /// no reference to oldUUID shall remain in any Blueprint.UUID, Blueprint.BaseBlueprintUUID,
         /// or ColonyStructure UUID fields.
@@ -157,6 +125,38 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                     .Label($"Old UUID '{data.OldUuid}' still found after Remap. " +
                            $"Remaining count: {remaining.Count(u => u == data.OldUuid)}");
             });
+        }
+
+        /// <summary>
+        /// Collects all UUID-bearing fields from the data model into a flat list.
+        /// </summary>
+        private static List<string> CollectAllUUIDs(EmpireContext ec, PlayerContext pc)
+        {
+            var uuids = new List<string>();
+
+            foreach (var bp in ec.GlobalBlueprintList)
+            {
+                if (bp.UUID != null) uuids.Add(bp.UUID);
+                if (bp.BaseBlueprintUUID != null) uuids.Add(bp.BaseBlueprintUUID);
+            }
+
+            foreach (var bp in pc.BlueprintList)
+            {
+                if (bp.UUID != null) uuids.Add(bp.UUID);
+                if (bp.BaseBlueprintUUID != null) uuids.Add(bp.BaseBlueprintUUID);
+            }
+
+            foreach (var colony in pc.ColonyList)
+            {
+                foreach (var s in colony.Structures)
+                {
+                    if (s.FlatpackBlueprintUUID != null) uuids.Add(s.FlatpackBlueprintUUID);
+                    if (s.ResearchingBlueprintUUID != null) uuids.Add(s.ResearchingBlueprintUUID);
+                    if (s.ManufacturingBlueprintUUID != null) uuids.Add(s.ManufacturingBlueprintUUID);
+                }
+            }
+
+            return uuids;
         }
     }
 }

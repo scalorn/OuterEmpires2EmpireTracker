@@ -163,60 +163,6 @@ namespace OE2EmpireTracker.Persistence
             }
         }
 
-        private static void SaveGridState(DataGridView grid, FormControlState formState)
-        {
-            var gridState = new GridState();
-
-            foreach (DataGridViewColumn column in grid.Columns)
-            {
-                if (string.IsNullOrEmpty(column.Name)) continue;
-
-                gridState.Columns[column.Name] = new GridColumnState
-                {
-                    Width = column.Width,
-                    DisplayIndex = column.DisplayIndex
-                };
-            }
-
-            if (grid.SortedColumn != null)
-            {
-                gridState.SortColumnName = grid.SortedColumn.Name;
-                gridState.SortDirection = grid.SortOrder == SortOrder.Descending
-                    ? "Descending"
-                    : "Ascending";
-            }
-
-            formState.Grids[grid.Name] = gridState;
-        }
-
-        private static void SaveListViewState(ListView listView, FormControlState formState)
-        {
-            var state = new ListViewState();
-            for (int i = 0; i < listView.Columns.Count; i++)
-            {
-                state.ColumnWidths[i] = listView.Columns[i].Width;
-            }
-
-            // Save sort state if using ListViewItemComparer
-            if (listView.ListViewItemSorter is OE2EmpireTracker.Controls.ListViewItemComparer comparer)
-            {
-                state.SortColumn = comparer.Column;
-                state.SortDirection = comparer.Order == SortOrder.Descending ? "Descending" : "Ascending";
-            }
-
-            // Save unchecked items for CheckBoxes ListViews
-            if (listView.CheckBoxes)
-            {
-                foreach (ListViewItem item in listView.Items)
-                {
-                    if (!item.Checked && item.Tag is string tag)
-                        state.UncheckedItems.Add(tag);
-                }
-            }
-
-            formState.ListViews[listView.Name] = state;
-        }
-
         internal static void RestoreControlStates(Control parent, FormControlState formState)
         {
             foreach (Control control in parent.Controls)
@@ -279,6 +225,60 @@ namespace OE2EmpireTracker.Persistence
                     RestoreControlStates(control, formState);
                 }
             }
+        }
+
+        private static void SaveGridState(DataGridView grid, FormControlState formState)
+        {
+            var gridState = new GridState();
+
+            foreach (DataGridViewColumn column in grid.Columns)
+            {
+                if (string.IsNullOrEmpty(column.Name)) continue;
+
+                gridState.Columns[column.Name] = new GridColumnState
+                {
+                    Width = column.Width,
+                    DisplayIndex = column.DisplayIndex
+                };
+            }
+
+            if (grid.SortedColumn != null)
+            {
+                gridState.SortColumnName = grid.SortedColumn.Name;
+                gridState.SortDirection = grid.SortOrder == SortOrder.Descending
+                    ? "Descending"
+                    : "Ascending";
+            }
+
+            formState.Grids[grid.Name] = gridState;
+        }
+
+        private static void SaveListViewState(ListView listView, FormControlState formState)
+        {
+            var state = new ListViewState();
+            for (int i = 0; i < listView.Columns.Count; i++)
+            {
+                state.ColumnWidths[i] = listView.Columns[i].Width;
+            }
+
+            // Save sort state if using ListViewItemComparer
+            if (listView.ListViewItemSorter is OE2EmpireTracker.Controls.ListViewItemComparer comparer)
+            {
+                state.SortColumn = comparer.Column;
+                state.SortDirection = comparer.Order == SortOrder.Descending ? "Descending" : "Ascending";
+            }
+
+            // Save unchecked items for CheckBoxes ListViews
+            if (listView.CheckBoxes)
+            {
+                foreach (ListViewItem item in listView.Items)
+                {
+                    if (!item.Checked && item.Tag is string tag)
+                        state.UncheckedItems.Add(tag);
+                }
+            }
+
+            formState.ListViews[listView.Name] = state;
         }
 
         private static void RestoreGridState(DataGridView grid, FormControlState formState)

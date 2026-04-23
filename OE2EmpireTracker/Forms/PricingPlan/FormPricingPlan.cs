@@ -12,11 +12,11 @@ namespace OE2EmpireTracker.Forms.PricingPlan
     public partial class FormPricingPlan : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         private PlayerContext playerContext;
+
         private Models.PricingPlan _selectedPlan;
 
         public FormPricingPlan()
@@ -51,6 +51,16 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            base.OnFormClosed(e);
         }
 
         // -----------------------------------------------------------------------
@@ -439,12 +449,6 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             _selectedPlan = null;
             PopulatePlanList();
             ClearForm();
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            base.OnFormClosed(e);
         }
     }
 }

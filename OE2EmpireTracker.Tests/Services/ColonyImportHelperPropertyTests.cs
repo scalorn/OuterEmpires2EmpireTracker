@@ -12,44 +12,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ColonyImportHelperPropertyTests
     {
-        private static Colony MakeColony(string uuid, string colonyName, string planetName = "Planet", string systemName = "System")
-        {
-            var colony = new Colony();
-            colony.UUID = uuid;
-            colony.ColonyName = colonyName;
-            colony.PlanetName = planetName;
-            colony.SystemName = systemName;
-            colony.OwnerUUID = "owner-" + uuid;
-            return colony;
-        }
-
-        private static string ShuffleCase(string input, int seed)
-        {
-            if (string.IsNullOrEmpty(input)) return input;
-            var rng = new System.Random(seed);
-            var chars = input.ToCharArray();
-            for (int i = 0; i < chars.Length; i++)
-            {
-                chars[i] = rng.Next(2) == 0 ? char.ToUpper(chars[i]) : char.ToLower(chars[i]);
-            }
-
-            return new string(chars);
-        }
-
-        private static Gen<string> NonEmptyStringGen()
-        {
-            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
-        }
-
-        private static Gen<Colony> ColonyGen()
-        {
-            return from uuid in NonEmptyStringGen()
-                   from name in NonEmptyStringGen()
-                   from planet in NonEmptyStringGen()
-                   from system in NonEmptyStringGen()
-                   select MakeColony(uuid, name, planet, system);
-        }
-
         /// <summary>
         /// Property 1: Case-insensitive colony name search.
         /// For any list of colonies and for any colony name that exists in the list
@@ -339,6 +301,44 @@ namespace OE2EmpireTracker.Tests.Services
                 return (noMatch == null)
                     .Label($"Expected null for non-existent planet '{uniquePlanet}' but got colony");
             });
+        }
+
+        private static Colony MakeColony(string uuid, string colonyName, string planetName = "Planet", string systemName = "System")
+        {
+            var colony = new Colony();
+            colony.UUID = uuid;
+            colony.ColonyName = colonyName;
+            colony.PlanetName = planetName;
+            colony.SystemName = systemName;
+            colony.OwnerUUID = "owner-" + uuid;
+            return colony;
+        }
+
+        private static string ShuffleCase(string input, int seed)
+        {
+            if (string.IsNullOrEmpty(input)) return input;
+            var rng = new System.Random(seed);
+            var chars = input.ToCharArray();
+            for (int i = 0; i < chars.Length; i++)
+            {
+                chars[i] = rng.Next(2) == 0 ? char.ToUpper(chars[i]) : char.ToLower(chars[i]);
+            }
+
+            return new string(chars);
+        }
+
+        private static Gen<string> NonEmptyStringGen()
+        {
+            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
+        }
+
+        private static Gen<Colony> ColonyGen()
+        {
+            return from uuid in NonEmptyStringGen()
+                   from name in NonEmptyStringGen()
+                   from planet in NonEmptyStringGen()
+                   from system in NonEmptyStringGen()
+                   select MakeColony(uuid, name, planet, system);
         }
     }
 }

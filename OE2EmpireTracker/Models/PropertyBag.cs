@@ -12,12 +12,23 @@ namespace OE2EmpireTracker.Models
     {
         private readonly object _syncRoot = new object();
 
-        public Dictionary<string, string> Properties { get; set; }
+        public int Count
+        {
+            get
+            {
+                lock (_syncRoot)
+                {
+                    return Properties.Count;
+                }
+            }
+        }
 
         public PropertyBag()
         {
             Properties = new Dictionary<string, string>();
         }
+
+        public Dictionary<string, string> Properties { get; set; }
 
         public bool ContainsKey(string name)
         {
@@ -120,12 +131,6 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        private bool SetProperty_Internal(string name, string value)
-        {
-            Properties[name] = value;
-            return true;
-        }
-
         public bool Remove(string name)
         {
             lock (_syncRoot)
@@ -142,23 +147,18 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public int Count
-        {
-            get
-            {
-                lock (_syncRoot)
-                {
-                    return Properties.Count;
-                }
-            }
-        }
-
         public void Clear()
         {
             lock (_syncRoot)
             {
                 Properties.Clear();
             }
+        }
+
+        private bool SetProperty_Internal(string name, string value)
+        {
+            Properties[name] = value;
+            return true;
         }
     }
 

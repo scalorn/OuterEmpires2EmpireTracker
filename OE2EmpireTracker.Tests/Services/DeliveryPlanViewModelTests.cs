@@ -14,7 +14,9 @@ namespace OE2EmpireTracker.Tests.Services
     public class DeliveryPlanViewModelTests
     {
         private PlayerContext playerContext;
+
         private string _originalEmpireFilePath;
+
         private string _originalPlayerFilePath;
 
         [SetUp]
@@ -44,12 +46,6 @@ namespace OE2EmpireTracker.Tests.Services
             // Restore original file paths so other test fixtures aren't affected
             EmpireContext.FilePath = _originalEmpireFilePath;
             PlayerContext.FilePath = _originalPlayerFilePath;
-        }
-
-        private DeliveryPlanViewModel CreateViewModel()
-        {
-            var plan = new DeliveryPlan { UUID = "plan-1", Name = "Test Plan", RouteUUID = "r1" };
-            return new DeliveryPlanViewModel(plan, playerContext);
         }
 
         // -----------------------------------------------------------------------
@@ -231,17 +227,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(vm.UUID, Is.EqualTo("plan-1"));
         }
 
-        // -----------------------------------------------------------------------
-        // AutoFillCommodities
-        // -----------------------------------------------------------------------
-
-        private Colony CreateColonyWithCommodities(string uuid, params CommodityRequested[] commodities)
-        {
-            var colony = new Colony { UUID = uuid };
-            colony.Commodities.AddRange(commodities);
-            return colony;
-        }
-
         [Test]
         public void AutoFillCommodities_UnfulfilledCommodity_AddsDropOffItem()
         {
@@ -410,33 +395,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(stop2.DropOff[0].Quantity, Is.EqualTo(15));
         }
 
-        // -----------------------------------------------------------------------
-        // AutoFillFlatpacks -- Property 1
-        // Validates: Requirements 2.1, 2.2, 2.3
-        // -----------------------------------------------------------------------
-
-        private OE2EmpireTracker.Models.Blueprint CreateTestBlueprint(string uuid, string name, string bpType = "Flatpacks/Habitat")
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
-            playerContext.AddBlueprint(bp);
-            return bp;
-        }
-
-        private Colony CreateColonyWithStructures(string uuid, params ColonyStructure[] structures)
-        {
-            var colony = new Colony { UUID = uuid };
-            colony.Structures.AddRange(structures);
-            return colony;
-        }
-
-        private ColonyStructure MakeStructure(string bpUUID, bool built, bool staged)
-        {
-            var s = new ColonyStructure { UUID = System.Guid.NewGuid().ToString(), FlatpackBlueprintUUID = bpUUID };
-            if (built) s.Properties.SetProperty("Built", true);
-            if (staged) s.Properties.SetProperty("Staged", true);
-            return s;
-        }
-
         [Test]
         public void AutoFillFlatpacks_NoStructures_ReturnsZero()
         {
@@ -587,52 +545,6 @@ namespace OE2EmpireTracker.Tests.Services
             int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
 
             Assert.That(added, Is.EqualTo(0));
-        }
-
-        // -----------------------------------------------------------------------
-        // AutoFillManufacturingResources -- Property 3
-        // Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 8.1, 8.2, 8.3, 8.4
-        // -----------------------------------------------------------------------
-
-        private OE2EmpireTracker.Models.Blueprint CreateManufactoryBlueprint(string uuid, string name, Dictionary<string, string> resources)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = "Flatpacks/Manufactory", Resources = resources };
-            bp.Properties.SetProperty("Manufacture Run Time", "1h");
-            bp.Properties.SetProperty("Can Manufacture", true);
-            playerContext.AddBlueprint(bp);
-            return bp;
-        }
-
-        private ColonyStructure MakeStagingManufactory(string flatpackBpUUID, string mfgBpUUID, int qty)
-        {
-            var s = new ColonyStructure
-            {
-                UUID = System.Guid.NewGuid().ToString(),
-                FlatpackBlueprintUUID = flatpackBpUUID,
-                ManufacturingBlueprintUUID = mfgBpUUID,
-                ManufacturingQuantity = qty,
-                StagingResources = true
-            };
-
-            s.Properties.SetProperty("Built", true);
-            s.Properties.SetProperty("Online", true);
-            return s;
-        }
-
-        private ColonyStructure MakeStagingCommodityFactory(string flatpackBpUUID, string commodityName, int qty)
-        {
-            var s = new ColonyStructure
-            {
-                UUID = System.Guid.NewGuid().ToString(),
-                FlatpackBlueprintUUID = flatpackBpUUID,
-                ManufacturingCommodityName = commodityName,
-                ManufacturingQuantity = qty,
-                StagingResources = true
-            };
-
-            s.Properties.SetProperty("Built", true);
-            s.Properties.SetProperty("Online", true);
-            return s;
         }
 
         [Test]
@@ -928,46 +840,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Steel"));
         }
 
-        // -----------------------------------------------------------------------
-        // AutoFillWorkers -- Property 4
-        // Validates: Requirements 10.1, 10.2, 10.3, 10.4
-        // -----------------------------------------------------------------------
-
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprintWithWorkers(
-            string uuid,
-            string name,
-            string bpType,
-            int blueCollar = 0,
-            int whiteCollar = 0,
-            int specialist = 0)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
-            if (blueCollar > 0) bp.Properties.SetProperty(GameConstants.PropBlueCollarDetail, blueCollar.ToString());
-            if (whiteCollar > 0) bp.Properties.SetProperty(GameConstants.PropWhiteCollarDetail, whiteCollar.ToString());
-            if (specialist > 0) bp.Properties.SetProperty(GameConstants.PropSpecialistDetail, specialist.ToString());
-            playerContext.AddBlueprint(bp);
-            return bp;
-        }
-
-        private ColonyStructure MakeBuiltOnlineStructure(string bpUUID, int blueAssigned = 0, int whiteAssigned = 0, int specAssigned = 0)
-        {
-            var s = new ColonyStructure
-            {
-                UUID = System.Guid.NewGuid().ToString(),
-                FlatpackBlueprintUUID = bpUUID
-            };
-
-            s.Properties.SetProperty("Built", true);
-            s.Properties.SetProperty("Online", true);
-            for (int i = 1; i <= blueAssigned; i++)
-                s.AssignedWorkers.SetProperty("BlueCollar" + i, true);
-            for (int i = 1; i <= whiteAssigned; i++)
-                s.AssignedWorkers.SetProperty("WhiteCollar" + i, true);
-            for (int i = 1; i <= specAssigned; i++)
-                s.AssignedWorkers.SetProperty("Specialist" + i, true);
-            return s;
-        }
-
         [Test]
         public void AutoFillWorkers_FullyStaffed_ReturnsZero()
         {
@@ -1054,6 +926,136 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Iron"));
             Assert.That(stop.DropOff.Count >= 2, Is.True);
+        }
+
+        private DeliveryPlanViewModel CreateViewModel()
+        {
+            var plan = new DeliveryPlan { UUID = "plan-1", Name = "Test Plan", RouteUUID = "r1" };
+            return new DeliveryPlanViewModel(plan, playerContext);
+        }
+
+        // -----------------------------------------------------------------------
+        // AutoFillCommodities
+        // -----------------------------------------------------------------------
+
+        private Colony CreateColonyWithCommodities(string uuid, params CommodityRequested[] commodities)
+        {
+            var colony = new Colony { UUID = uuid };
+            colony.Commodities.AddRange(commodities);
+            return colony;
+        }
+
+        // -----------------------------------------------------------------------
+        // AutoFillFlatpacks -- Property 1
+        // Validates: Requirements 2.1, 2.2, 2.3
+        // -----------------------------------------------------------------------
+
+        private OE2EmpireTracker.Models.Blueprint CreateTestBlueprint(string uuid, string name, string bpType = "Flatpacks/Habitat")
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
+            playerContext.AddBlueprint(bp);
+            return bp;
+        }
+
+        private Colony CreateColonyWithStructures(string uuid, params ColonyStructure[] structures)
+        {
+            var colony = new Colony { UUID = uuid };
+            colony.Structures.AddRange(structures);
+            return colony;
+        }
+
+        private ColonyStructure MakeStructure(string bpUUID, bool built, bool staged)
+        {
+            var s = new ColonyStructure { UUID = System.Guid.NewGuid().ToString(), FlatpackBlueprintUUID = bpUUID };
+            if (built) s.Properties.SetProperty("Built", true);
+            if (staged) s.Properties.SetProperty("Staged", true);
+            return s;
+        }
+
+        // -----------------------------------------------------------------------
+        // AutoFillManufacturingResources -- Property 3
+        // Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 8.1, 8.2, 8.3, 8.4
+        // -----------------------------------------------------------------------
+
+        private OE2EmpireTracker.Models.Blueprint CreateManufactoryBlueprint(string uuid, string name, Dictionary<string, string> resources)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = "Flatpacks/Manufactory", Resources = resources };
+            bp.Properties.SetProperty("Manufacture Run Time", "1h");
+            bp.Properties.SetProperty("Can Manufacture", true);
+            playerContext.AddBlueprint(bp);
+            return bp;
+        }
+
+        private ColonyStructure MakeStagingManufactory(string flatpackBpUUID, string mfgBpUUID, int qty)
+        {
+            var s = new ColonyStructure
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                FlatpackBlueprintUUID = flatpackBpUUID,
+                ManufacturingBlueprintUUID = mfgBpUUID,
+                ManufacturingQuantity = qty,
+                StagingResources = true
+            };
+
+            s.Properties.SetProperty("Built", true);
+            s.Properties.SetProperty("Online", true);
+            return s;
+        }
+
+        private ColonyStructure MakeStagingCommodityFactory(string flatpackBpUUID, string commodityName, int qty)
+        {
+            var s = new ColonyStructure
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                FlatpackBlueprintUUID = flatpackBpUUID,
+                ManufacturingCommodityName = commodityName,
+                ManufacturingQuantity = qty,
+                StagingResources = true
+            };
+
+            s.Properties.SetProperty("Built", true);
+            s.Properties.SetProperty("Online", true);
+            return s;
+        }
+
+        // -----------------------------------------------------------------------
+        // AutoFillWorkers -- Property 4
+        // Validates: Requirements 10.1, 10.2, 10.3, 10.4
+        // -----------------------------------------------------------------------
+
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprintWithWorkers(
+            string uuid,
+            string name,
+            string bpType,
+            int blueCollar = 0,
+            int whiteCollar = 0,
+            int specialist = 0)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid, BluePrintType = bpType };
+            if (blueCollar > 0) bp.Properties.SetProperty(GameConstants.PropBlueCollarDetail, blueCollar.ToString());
+            if (whiteCollar > 0) bp.Properties.SetProperty(GameConstants.PropWhiteCollarDetail, whiteCollar.ToString());
+            if (specialist > 0) bp.Properties.SetProperty(GameConstants.PropSpecialistDetail, specialist.ToString());
+            playerContext.AddBlueprint(bp);
+            return bp;
+        }
+
+        private ColonyStructure MakeBuiltOnlineStructure(string bpUUID, int blueAssigned = 0, int whiteAssigned = 0, int specAssigned = 0)
+        {
+            var s = new ColonyStructure
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                FlatpackBlueprintUUID = bpUUID
+            };
+
+            s.Properties.SetProperty("Built", true);
+            s.Properties.SetProperty("Online", true);
+            for (int i = 1; i <= blueAssigned; i++)
+                s.AssignedWorkers.SetProperty("BlueCollar" + i, true);
+            for (int i = 1; i <= whiteAssigned; i++)
+                s.AssignedWorkers.SetProperty("WhiteCollar" + i, true);
+            for (int i = 1; i <= specAssigned; i++)
+                s.AssignedWorkers.SetProperty("Specialist" + i, true);
+            return s;
         }
     }
 }

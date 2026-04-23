@@ -21,7 +21,9 @@ namespace OE2EmpireTracker.Tests.Parsers
     public class SurveyParserMaxReserveTests
     {
         private SurveyParser _parser;
+
         private PlayerContext _playerContext;
+
         private string _originalPlayerFilePath;
 
         [SetUp]
@@ -39,27 +41,6 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             PlayerContext.Reset();
             PlayerContext.FilePath = _originalPlayerFilePath;
-        }
-
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            string path = Path.Combine(baseDir, "TestData", filename);
-            return File.ReadAllText(path);
-        }
-
-        private static string ExtractFragment(string clipboardData)
-        {
-            return BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboardData);
-        }
-
-        private Survey ParseAsteroidSurvey()
-        {
-            string clipboardData = LoadTestData("AsteroidSurveySample.html");
-            string html = ExtractFragment(clipboardData);
-            var survey = new Survey();
-            _parser.ProcessHtml(survey, html);
-            return survey;
         }
 
         // -----------------------------------------------------------------
@@ -196,6 +177,27 @@ namespace OE2EmpireTracker.Tests.Parsers
             var heavyNobleReserve = asteroid.Reserves.FirstOrDefault(r => r.ResourceName == "Heavy Noble Gases");
             Assert.That(heavyNobleReserve, Is.Not.Null, "Should have a reserve for Heavy Noble Gases");
             Assert.That(heavyNobleReserve.MaxReserve, Is.EqualTo(8500));
+        }
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            string path = Path.Combine(baseDir, "TestData", filename);
+            return File.ReadAllText(path);
+        }
+
+        private static string ExtractFragment(string clipboardData)
+        {
+            return BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboardData);
+        }
+
+        private Survey ParseAsteroidSurvey()
+        {
+            string clipboardData = LoadTestData("AsteroidSurveySample.html");
+            string html = ExtractFragment(clipboardData);
+            var survey = new Survey();
+            _parser.ProcessHtml(survey, html);
+            return survey;
         }
     }
 }

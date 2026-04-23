@@ -16,18 +16,6 @@ namespace OE2EmpireTracker.Tests.Forms
     public class MdiWindowNumberPropertyTests
     {
         /// <summary>
-        /// Replicates the gap-scanning algorithm from MainWindow.OpenMdiChild&lt;T&gt;().
-        /// Given a set of currently used window numbers, returns the lowest positive
-        /// integer not in the set.
-        /// </summary>
-        private static int FindLowestUnused(HashSet<int> used)
-        {
-            int n = 1;
-            while (used.Contains(n)) n++;
-            return n;
-        }
-
-        /// <summary>
         /// Property 1: Bug Condition - Lowest Unused Number Assignment.
         /// For any random set of used positive integers, FindLowestUnused returns a value
         /// that is >= 1, not in the used set, and all integers from 1 to result-1 are in
@@ -180,6 +168,18 @@ namespace OE2EmpireTracker.Tests.Forms
             var used = new HashSet<int> { 1 };
             used.Remove(1);
             Assert.That(FindLowestUnused(used), Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// Replicates the gap-scanning algorithm from MainWindow.OpenMdiChild&lt;T&gt;().
+        /// Given a set of currently used window numbers, returns the lowest positive
+        /// integer not in the set.
+        /// </summary>
+        private static int FindLowestUnused(HashSet<int> used)
+        {
+            int n = 1;
+            while (used.Contains(n)) n++;
+            return n;
         }
     }
 }

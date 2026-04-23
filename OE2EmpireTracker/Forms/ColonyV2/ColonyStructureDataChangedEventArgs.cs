@@ -9,11 +9,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
     /// </summary>
     public class ColonyStructureDataChangedEventArgs : EventArgs
     {
-        public bool IsStructural { get; }
-
         public ColonyStructureDataChangedEventArgs(bool isStructural)
         {
             IsStructural = isStructural;
         }
+
+        public bool IsStructural { get; }
     }
 }

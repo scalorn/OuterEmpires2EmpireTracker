@@ -11,7 +11,9 @@ namespace OE2EmpireTracker.Tests.ViewModels
     public class BaseBlueprintCandidatesTests
     {
         private PlayerContext playerContext;
+
         private string _originalEmpireFilePath;
+
         private string _originalPlayerFilePath;
 
         [SetUp]
@@ -35,25 +37,6 @@ namespace OE2EmpireTracker.Tests.ViewModels
             EmpireContext.Reset();
             EmpireContext.FilePath = _originalEmpireFilePath;
             PlayerContext.FilePath = _originalPlayerFilePath;
-        }
-
-        private BP MakeBlueprint(string name, string type, int cls, string techLevel, int evolution, string uuid = null)
-        {
-            return new BP
-            {
-                UUID = uuid ?? System.Guid.NewGuid().ToString(),
-                Name = name,
-                BluePrintType = type,
-                Class = cls,
-                TechLevel = techLevel,
-                Evolution = evolution,
-                OwnerUUID = playerContext.CurrentPlayerUUID ?? "test-owner"
-            };
-        }
-
-        private BlueprintViewModel CreateViewModel(BP current)
-        {
-            return new BlueprintViewModel(current, playerContext);
         }
 
         // -----------------------------------------------------------------------
@@ -257,6 +240,25 @@ namespace OE2EmpireTracker.Tests.ViewModels
             var result = vm.GetBaseBlueprintCandidates();
 
             Assert.That(result, Has.Count.EqualTo(2));
+        }
+
+        private BP MakeBlueprint(string name, string type, int cls, string techLevel, int evolution, string uuid = null)
+        {
+            return new BP
+            {
+                UUID = uuid ?? System.Guid.NewGuid().ToString(),
+                Name = name,
+                BluePrintType = type,
+                Class = cls,
+                TechLevel = techLevel,
+                Evolution = evolution,
+                OwnerUUID = playerContext.CurrentPlayerUUID ?? "test-owner"
+            };
+        }
+
+        private BlueprintViewModel CreateViewModel(BP current)
+        {
+            return new BlueprintViewModel(current, playerContext);
         }
     }
 }

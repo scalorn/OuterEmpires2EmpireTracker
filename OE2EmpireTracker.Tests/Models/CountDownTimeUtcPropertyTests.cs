@@ -21,33 +21,6 @@ namespace OE2EmpireTracker.Tests.Models
     public class CountDownTimeUtcPropertyTests
     {
         /// <summary>
-        /// Generates positive interval seconds (1 to 86400 = 1 day).
-        /// </summary>
-        private static Gen<long> IntervalSecondsGen()
-        {
-            return Gen.Choose(1, 86400).Select(i => (long)i);
-        }
-
-        /// <summary>
-        /// Generates positive remaining seconds (1 to 86400).
-        /// </summary>
-        private static Gen<long> RemainingSecondsGen()
-        {
-            return Gen.Choose(1, 86400).Select(i => (long)i);
-        }
-
-        /// <summary>
-        /// Generates a pair of (intervalSeconds, secondsUntilNextInterval) where
-        /// secondsUntilNextInterval is in [1, intervalSeconds].
-        /// </summary>
-        private static Gen<Tuple<long, long>> IntervalAndRemainingGen()
-        {
-            return from interval in Gen.Choose(2, 3600)
-                   from remaining in Gen.Choose(1, interval)
-                   select Tuple.Create((long)interval, (long)remaining);
-        }
-
-        /// <summary>
         /// Feature: colony-import-timestamp, Property 7: CountDownTime uses UTC consistently
         ///
         /// Sub-property 7a: StartRepeating(intervalSeconds) sets StartTime and EndTime with UTC kind,
@@ -141,6 +114,33 @@ namespace OE2EmpireTracker.Tests.Models
             var cdt = new CountDownTime();
             Assert.That(cdt.StartTime, Is.EqualTo(DateTime.MinValue));
             Assert.That(cdt.EndTime, Is.EqualTo(DateTime.MinValue));
+        }
+
+        /// <summary>
+        /// Generates positive interval seconds (1 to 86400 = 1 day).
+        /// </summary>
+        private static Gen<long> IntervalSecondsGen()
+        {
+            return Gen.Choose(1, 86400).Select(i => (long)i);
+        }
+
+        /// <summary>
+        /// Generates positive remaining seconds (1 to 86400).
+        /// </summary>
+        private static Gen<long> RemainingSecondsGen()
+        {
+            return Gen.Choose(1, 86400).Select(i => (long)i);
+        }
+
+        /// <summary>
+        /// Generates a pair of (intervalSeconds, secondsUntilNextInterval) where
+        /// secondsUntilNextInterval is in [1, intervalSeconds].
+        /// </summary>
+        private static Gen<Tuple<long, long>> IntervalAndRemainingGen()
+        {
+            return from interval in Gen.Choose(2, 3600)
+                   from remaining in Gen.Choose(1, interval)
+                   select Tuple.Create((long)interval, (long)remaining);
         }
     }
 }

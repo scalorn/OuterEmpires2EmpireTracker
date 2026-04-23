@@ -13,47 +13,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ResourcesOnlyImportPropertyTests
     {
-        private static Gen<string> NonEmptyAlphaStringGen()
-        {
-            return Gen.Elements(
-                "Alpha", "Beta", "Gamma", "Delta", "Hull", "Shield", "Reactor",
-                "Drive", "Weapon", "Cargo", "Nav", "Fuel", "Thruster", "Laser");
-        }
-
-        /// <summary>
-        /// Generates null, empty string, or a non-empty string.
-        /// </summary>
-        private static Gen<string> NullableStringGen()
-        {
-            return Gen.OneOf(
-                Gen.Constant((string)null),
-                Gen.Constant(string.Empty),
-                NonEmptyAlphaStringGen());
-        }
-
-        /// <summary>
-        /// Generates 0 or a positive int (1--10).
-        /// </summary>
-        private static Gen<int> ZeroOrPositiveGen()
-        {
-            return Gen.OneOf(
-                Gen.Constant(0),
-                Gen.Choose(1, 10));
-        }
-
-        /// <summary>
-        /// Generates a Resources dictionary with 0--5 entries.
-        /// </summary>
-        private static Gen<Dictionary<string, string>> ResourcesDictGen()
-        {
-            return from count in Gen.Choose(0, 5)
-                   from keys in Gen.ListOf(count, NonEmptyAlphaStringGen())
-                   from vals in Gen.ListOf(count, Gen.Choose(1, 9999).Select(v => v.ToString()))
-                   select keys.Zip(vals, (k, v) => new { k, v })
-                              .GroupBy(x => x.k)
-                              .ToDictionary(g => g.Key, g => g.First().v);
-        }
-
         /// <summary>
         /// Feature: blueprint-form-fixes, Property 1: IsResourcesOnlyImport classification
         ///
@@ -257,6 +216,47 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(baseOk).And(typeOk).And(classOk).And(tlOk).And(evoOk).And(costOk)
                     .And(mfgOk).And(pwrOk).And(propsPresent);
             });
+        }
+
+        private static Gen<string> NonEmptyAlphaStringGen()
+        {
+            return Gen.Elements(
+                "Alpha", "Beta", "Gamma", "Delta", "Hull", "Shield", "Reactor",
+                "Drive", "Weapon", "Cargo", "Nav", "Fuel", "Thruster", "Laser");
+        }
+
+        /// <summary>
+        /// Generates null, empty string, or a non-empty string.
+        /// </summary>
+        private static Gen<string> NullableStringGen()
+        {
+            return Gen.OneOf(
+                Gen.Constant((string)null),
+                Gen.Constant(string.Empty),
+                NonEmptyAlphaStringGen());
+        }
+
+        /// <summary>
+        /// Generates 0 or a positive int (1--10).
+        /// </summary>
+        private static Gen<int> ZeroOrPositiveGen()
+        {
+            return Gen.OneOf(
+                Gen.Constant(0),
+                Gen.Choose(1, 10));
+        }
+
+        /// <summary>
+        /// Generates a Resources dictionary with 0--5 entries.
+        /// </summary>
+        private static Gen<Dictionary<string, string>> ResourcesDictGen()
+        {
+            return from count in Gen.Choose(0, 5)
+                   from keys in Gen.ListOf(count, NonEmptyAlphaStringGen())
+                   from vals in Gen.ListOf(count, Gen.Choose(1, 9999).Select(v => v.ToString()))
+                   select keys.Zip(vals, (k, v) => new { k, v })
+                              .GroupBy(x => x.k)
+                              .ToDictionary(g => g.Key, g => g.First().v);
         }
     }
 }

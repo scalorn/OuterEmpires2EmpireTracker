@@ -13,6 +13,12 @@ namespace OE2EmpireTracker.Models
 {
     public class Resource
     {
+        private static List<Resource> _resources = GetResources();
+
+        private static Dictionary<ResourceEnum, Resource> _resourceMapByEnum;
+
+        private static Dictionary<string, Resource> _resourceMapByString;
+
         public enum ResourceEnum
         {
             None = 0,
@@ -52,23 +58,23 @@ namespace OE2EmpireTracker.Models
             TransuranicVolatiles
         }
 
+        public static IReadOnlyList<Resource> Resources => _resources.AsReadOnly();
+
+        public static IReadOnlyDictionary<ResourceEnum, Resource> ResourceMapByEnum => _resourceMapByEnum;
+
+        public static IReadOnlyDictionary<string, Resource> ResourceMapByString => _resourceMapByString;
+
         [Required]
         public Models.ResourceGroup.ResourceGroupEnum ResourceGroup { get; set; }
+
         public Models.ResourceClass.ResourceClassEnum ResourceClass { get; set; }
 
         [Required]
         public ResourceEnum ID { get; set; }
+
         public string Name { get; set; }
 
         public override string ToString() => Name ?? string.Empty;
-
-        private static List<Resource> _resources = GetResources();
-        private static Dictionary<ResourceEnum, Resource> _resourceMapByEnum;
-        private static Dictionary<string, Resource> _resourceMapByString;
-
-        public static IReadOnlyList<Resource> Resources => _resources.AsReadOnly();
-        public static IReadOnlyDictionary<ResourceEnum, Resource> ResourceMapByEnum => _resourceMapByEnum;
-        public static IReadOnlyDictionary<string, Resource> ResourceMapByString => _resourceMapByString;
 
         private static List<Resource> GetResources()
         {

@@ -11,15 +11,6 @@ namespace OE2EmpireTracker.Tests.Services
     {
         private const string TargetUUID = "route-target-uuid";
 
-        private static DeliveryPlan MakePlan(string routeUUID)
-        {
-            return new DeliveryPlan
-            {
-                UUID = System.Guid.NewGuid().ToString(),
-                RouteUUID = routeUUID
-            };
-        }
-
         [Test]
         public void CountReferences_EmptyData_ReturnsZeroCounts()
         {
@@ -156,6 +147,15 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(report.SupplyChainStageCount, Is.EqualTo(1));
             Assert.That(report.TotalCount, Is.GreaterThan(0));
+        }
+
+        private static DeliveryPlan MakePlan(string routeUUID)
+        {
+            return new DeliveryPlan
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                RouteUUID = routeUUID
+            };
         }
     }
 }

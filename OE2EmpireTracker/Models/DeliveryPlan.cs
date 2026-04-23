@@ -13,18 +13,24 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class DeliveryPlan
     {
-        public string UUID { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string OwnerUUID { get; set; } = string.Empty;
-        public string RouteUUID { get; set; } = string.Empty;
-        public string ShipUUID { get; set; } = string.Empty;
-        public bool Completed { get; set; } = false;
-        public List<DeliveryPlanStop> Stops { get; set; }
-
         public DeliveryPlan()
         {
             Stops = new List<DeliveryPlanStop>();
         }
+
+        public string UUID { get; set; }
+
+        public string Name { get; set; } = string.Empty;
+
+        public string OwnerUUID { get; set; } = string.Empty;
+
+        public string RouteUUID { get; set; } = string.Empty;
+
+        public string ShipUUID { get; set; } = string.Empty;
+
+        public bool Completed { get; set; } = false;
+
+        public List<DeliveryPlanStop> Stops { get; set; }
 
         /// <summary>
         /// Calculates what needs to be loaded before departure.
@@ -90,11 +96,21 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class DeliveryPlanStop
     {
+        public DeliveryPlanStop()
+        {
+            DropOff = new List<DeliveryItem>();
+            PickUp = new List<DeliveryItem>();
+        }
+
         [DefaultValue("")]
         public string ColonyUUID { get; set; } = string.Empty;
+
         public int Sequence { get; set; }
+
         public bool StopCompleted { get; set; } = false;
+
         public List<DeliveryItem> DropOff { get; set; }
+
         public List<DeliveryItem> PickUp { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
@@ -102,12 +118,6 @@ namespace OE2EmpireTracker.Models
         public DestinationType DestinationType { get; set; } = DestinationType.Colony;
 
         public string DestinationUUID { get; set; } = string.Empty;
-
-        public DeliveryPlanStop()
-        {
-            DropOff = new List<DeliveryItem>();
-            PickUp = new List<DeliveryItem>();
-        }
     }
 
     /// <summary>
@@ -115,14 +125,6 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class DeliveryItem
     {
-        [JsonConverter(typeof(StringEnumConverter))]
-        public ItemType.ItemTypeEnum ItemType { get; set; } = Models.ItemType.ItemTypeEnum.None;
-        public string BaseItemTypeID { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string ResourcePurity { get; set; } = string.Empty;
-        public int Quantity { get; set; } = 0;
-        public bool Delivered { get; set; } = false;
-
         /// <summary>
         /// Display name including purity for resources (e.g. "Iron (High)").
         /// </summary>
@@ -136,5 +138,18 @@ namespace OE2EmpireTracker.Models
                 return Name;
             }
         }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ItemType.ItemTypeEnum ItemType { get; set; } = Models.ItemType.ItemTypeEnum.None;
+
+        public string BaseItemTypeID { get; set; } = string.Empty;
+
+        public string Name { get; set; } = string.Empty;
+
+        public string ResourcePurity { get; set; } = string.Empty;
+
+        public int Quantity { get; set; } = 0;
+
+        public bool Delivered { get; set; } = false;
     }
 }

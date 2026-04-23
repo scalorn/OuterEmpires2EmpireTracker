@@ -12,9 +12,25 @@ namespace OE2EmpireTracker.Tests.Parsers
     [TestFixture]
     public class ColonyParserIdempotencyTests
     {
+        // -------------------------------------------------------------------
+        // AllColonyFiles sweep property tests (Requirements 2.1--2.4, 3.1--3.4)
+        // -------------------------------------------------------------------
+
+        private static readonly string[] ColonyFiles = new[]
+        {
+            "ClnyHexAdministrationTabZehVazoranIIM1.html",
+            "ClnyHexAdministrationTabZehVazoranIIM2.html",
+            "ClnyHexAdministrationTabZehVazoranIIM2-2.html",
+            "ClnyHexAdministrationTabZehVazoranIIM2-3.html",
+            "ClnyHexAdministrationTabZehVazoranVI-1.html"
+        };
+
         private ColonyParser _parser;
+
         private EmpireContext _empireContext;
+
         private string _originalEmpireFilePath;
+
         private string _originalPlayerFilePath;
 
         [SetUp]
@@ -36,18 +52,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             EmpireContext.Reset();
             EmpireContext.FilePath = _originalEmpireFilePath;
             PlayerContext.FilePath = _originalPlayerFilePath;
-        }
-
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
-        }
-
-        private static string ExtractFragment(string clipboardData)
-        {
-            return OE2EmpireTracker.Parsers.BlueprintScanner
-                .ExtractHtmlFragmentFromClipboardData(clipboardData);
         }
 
         // -------------------------------------------------------------------
@@ -193,19 +197,6 @@ namespace OE2EmpireTracker.Tests.Parsers
                     $"Fulfilled mismatch for {snapshot[i].Name}");
             }
         }
-
-        // -------------------------------------------------------------------
-        // AllColonyFiles sweep property tests (Requirements 2.1--2.4, 3.1--3.4)
-        // -------------------------------------------------------------------
-
-        private static readonly string[] ColonyFiles = new[]
-        {
-            "ClnyHexAdministrationTabZehVazoranIIM1.html",
-            "ClnyHexAdministrationTabZehVazoranIIM2.html",
-            "ClnyHexAdministrationTabZehVazoranIIM2-2.html",
-            "ClnyHexAdministrationTabZehVazoranIIM2-3.html",
-            "ClnyHexAdministrationTabZehVazoranVI-1.html"
-        };
 
         [Test]
         public void AllColonyFiles_ParseTwice_StructureCountUnchanged()
@@ -367,6 +358,18 @@ namespace OE2EmpireTracker.Tests.Parsers
                 filesWithCommodities,
                 Is.GreaterThan(0),
                 "At least one colony file should have commodity demands");
+        }
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
+        }
+
+        private static string ExtractFragment(string clipboardData)
+        {
+            return OE2EmpireTracker.Parsers.BlueprintScanner
+                .ExtractHtmlFragmentFromClipboardData(clipboardData);
         }
     }
 }

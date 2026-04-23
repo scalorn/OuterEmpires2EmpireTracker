@@ -21,56 +21,52 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 {
     public partial class FormColonyV2 : Form, IProgrammaticUpdateSource
     {
+        private const int WmSetRedraw = 0x000B;
+
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private readonly EmpireContext empireContext;
+
         private readonly PlayerContext playerContext;
+
+        // Structure_Pool (8.1)
+        private readonly List<ColonyStructureV2> _pool = new List<ColonyStructureV2>();
+
+        // Structure type filter (9.1)
+        private readonly HashSet<string> _uncheckedStructureTypes = new HashSet<string>(StringComparer.Ordinal);
+
         private int _isProgrammaticUpdate = 0;
 
         private Models.Colony selectedColony;
+
         private ColonyViewModel colonyViewModel;
+
         private ColonyReferenceCounter _referenceCounter;
 
         // ListView sorting state
         private int _sortColumn = 0;
+
         private SortOrder _sortOrder = SortOrder.Ascending;
 
         // Deferred tab update flags
         private bool _structuresDirty = false;
+
         private bool _warehouseDirty = false;
+
         private bool _workersDirty = false;
+
         private bool _adminDirty = false;
+
         private bool _overflowDirty = false;
 
-        // Structure_Pool (8.1)
-        private readonly List<ColonyStructureV2> _pool = new List<ColonyStructureV2>();
         private int _poolInUse = 0;
 
         // Background calculation cancellation (7.1)
         private CancellationTokenSource _calcCts;
+
         private int _calcGeneration = 0;
 
-        // Structure type filter (9.1)
-        private readonly HashSet<string> _uncheckedStructureTypes = new HashSet<string>(StringComparer.Ordinal);
         private bool _structureTypesPopulated = false;
-
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
-
-        // WmSetRedraw: suppress all painting until re-enabled
-        [DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, int lParam);
-        private const int WmSetRedraw = 0x000B;
-
-        private static void SuspendDrawing(Control control)
-        {
-            SendMessage(control.Handle, WmSetRedraw, false, 0);
-        }
-
-        private static void ResumeDrawing(Control control)
-        {
-            SendMessage(control.Handle, WmSetRedraw, true, 0);
-            control.Refresh();
-        }
 
         public FormColonyV2()
         {
@@ -188,6 +184,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             UpdateTitle();
         }
 
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
         // -------------------------------------------------------------------
         // Event lifecycle
         // -------------------------------------------------------------------
@@ -205,6 +205,51 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged -= OnColonyDataChanged;
             base.OnFormClosed(e);
+        }
+
+        // WmSetRedraw: suppress all painting until re-enabled
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, int lParam);
+
+        private static void SuspendDrawing(Control control)
+        {
+            SendMessage(control.Handle, WmSetRedraw, false, 0);
+        }
+
+        private static void ResumeDrawing(Control control)
+        {
+            SendMessage(control.Handle, WmSetRedraw, true, 0);
+            control.Refresh();
+        }
+
+        private static decimal GetItemVolume(Models.Item item, PlayerContext playerContext)
+        {
+            switch (item.ItemType)
+            {
+                case Models.ItemType.ItemTypeEnum.Resource:
+                    return GameConstants.VolumeResource;
+                case Models.ItemType.ItemTypeEnum.Commodity:
+                    return GameConstants.VolumeCommodity;
+                case Models.ItemType.ItemTypeEnum.WorkDetail:
+                    return GameConstants.VolumeWorkDetail;
+                case Models.ItemType.ItemTypeEnum.Blueprint:
+                case Models.ItemType.ItemTypeEnum.Survey:
+                    return GameConstants.VolumeBlueprint;
+                default:
+                    // Manufactured items: read CargoVolumeSize from blueprint
+                    if (!string.IsNullOrEmpty(item.BaseItemTypeID) && playerContext != null)
+                    {
+                        Models.Blueprint bp = playerContext.FindBlueprint(item.BaseItemTypeID);
+                        if (bp != null)
+                        {
+                            decimal vol = 0;
+                            bp.Properties.GetDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out vol);
+                            return vol;
+                        }
+                    }
+
+                    return 0.0m;
+            }
         }
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
@@ -2330,36 +2375,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 playerContext.OnColonyDataChanged(selectedColony.UUID);
                 playerContext.WriteContext();
-            }
-        }
-
-        private static decimal GetItemVolume(Models.Item item, PlayerContext playerContext)
-        {
-            switch (item.ItemType)
-            {
-                case Models.ItemType.ItemTypeEnum.Resource:
-                    return GameConstants.VolumeResource;
-                case Models.ItemType.ItemTypeEnum.Commodity:
-                    return GameConstants.VolumeCommodity;
-                case Models.ItemType.ItemTypeEnum.WorkDetail:
-                    return GameConstants.VolumeWorkDetail;
-                case Models.ItemType.ItemTypeEnum.Blueprint:
-                case Models.ItemType.ItemTypeEnum.Survey:
-                    return GameConstants.VolumeBlueprint;
-                default:
-                    // Manufactured items: read CargoVolumeSize from blueprint
-                    if (!string.IsNullOrEmpty(item.BaseItemTypeID) && playerContext != null)
-                    {
-                        Models.Blueprint bp = playerContext.FindBlueprint(item.BaseItemTypeID);
-                        if (bp != null)
-                        {
-                            decimal vol = 0;
-                            bp.Properties.GetDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out vol);
-                            return vol;
-                        }
-                    }
-
-                    return 0.0m;
             }
         }
 

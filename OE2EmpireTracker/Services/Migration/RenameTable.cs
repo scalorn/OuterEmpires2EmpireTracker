@@ -34,13 +34,6 @@ namespace OE2EmpireTracker.Services.Migration
 
     public class RenameEntry
     {
-        public string OldName { get; }
-        public string NewName { get; }
-        public int Evolution { get; }
-        public string BluePrintType { get; }
-        public int Class { get; }
-        public string TechLevel { get; }
-
         public RenameEntry(
             string oldName,
             string newName,
@@ -56,5 +49,17 @@ namespace OE2EmpireTracker.Services.Migration
             Class = cls;
             TechLevel = techLevel;
         }
+
+        public string OldName { get; }
+
+        public string NewName { get; }
+
+        public int Evolution { get; }
+
+        public string BluePrintType { get; }
+
+        public int Class { get; }
+
+        public string TechLevel { get; }
     }
 }

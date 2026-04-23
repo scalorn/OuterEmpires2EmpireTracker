@@ -163,6 +163,37 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         /// <summary>
+        /// Feature: preferences-form, Property 6: Preferences validation accepts valid and rejects invalid
+        ///
+        /// For any ThresholdPreferences instance, the validation logic shall accept the configuration
+        /// if and only if: all nine values are positive, StructureCountYellow &lt; StructureCountRed,
+        /// WorkerRequestYellowSeconds &gt; WorkerRequestRedSeconds,
+        /// ColonyImportStalenessYellowSeconds &lt; ColonyImportStalenessRedSeconds,
+        /// and CountdownRefreshRateSeconds &gt;= 1.
+        ///
+        /// **Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 7.6**
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property PreferencesValidationCorrectness()
+        {
+            return Prop.ForAll(ThresholdPreferencesGen().ToArbitrary(), prefs =>
+            {
+                bool expected = ExpectedValidation(prefs);
+                bool actual = ThresholdPreferences.Validate(prefs, out string error);
+
+                bool errorConsistent = actual ? (error == null) : (error != null);
+
+                return (actual == expected && errorConsistent)
+                    .Label($"expected={expected}, actual={actual}, error={error ?? "null"}, " +
+                           $"SY={prefs.StructureCountYellow}, SR={prefs.StructureCountRed}, " +
+                           $"WY={prefs.WorkerRequestYellowSeconds}, WR={prefs.WorkerRequestRedSeconds}, " +
+                           $"IY={prefs.ColonyImportStalenessYellowSeconds}, IR={prefs.ColonyImportStalenessRedSeconds}, " +
+                           $"BG={prefs.BackgroundProcessingIntervalSeconds}, AR={prefs.AdminRefreshIntervalSeconds}, " +
+                           $"CR={prefs.CountdownRefreshRateSeconds}");
+            });
+        }
+
+        /// <summary>
         /// Generates a random ThresholdPreferences with a mix of valid and invalid values.
         /// Values are drawn from a range that includes negatives, zero, and positives to
         /// exercise all validation branches.
@@ -221,37 +252,6 @@ namespace OE2EmpireTracker.Tests.Models
             bool countdownMinimum = p.CountdownRefreshRateSeconds >= 1;
 
             return allPositive && orderingCorrect && countdownMinimum;
-        }
-
-        /// <summary>
-        /// Feature: preferences-form, Property 6: Preferences validation accepts valid and rejects invalid
-        ///
-        /// For any ThresholdPreferences instance, the validation logic shall accept the configuration
-        /// if and only if: all nine values are positive, StructureCountYellow &lt; StructureCountRed,
-        /// WorkerRequestYellowSeconds &gt; WorkerRequestRedSeconds,
-        /// ColonyImportStalenessYellowSeconds &lt; ColonyImportStalenessRedSeconds,
-        /// and CountdownRefreshRateSeconds &gt;= 1.
-        ///
-        /// **Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 7.6**
-        /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
-        public Property PreferencesValidationCorrectness()
-        {
-            return Prop.ForAll(ThresholdPreferencesGen().ToArbitrary(), prefs =>
-            {
-                bool expected = ExpectedValidation(prefs);
-                bool actual = ThresholdPreferences.Validate(prefs, out string error);
-
-                bool errorConsistent = actual ? (error == null) : (error != null);
-
-                return (actual == expected && errorConsistent)
-                    .Label($"expected={expected}, actual={actual}, error={error ?? "null"}, " +
-                           $"SY={prefs.StructureCountYellow}, SR={prefs.StructureCountRed}, " +
-                           $"WY={prefs.WorkerRequestYellowSeconds}, WR={prefs.WorkerRequestRedSeconds}, " +
-                           $"IY={prefs.ColonyImportStalenessYellowSeconds}, IR={prefs.ColonyImportStalenessRedSeconds}, " +
-                           $"BG={prefs.BackgroundProcessingIntervalSeconds}, AR={prefs.AdminRefreshIntervalSeconds}, " +
-                           $"CR={prefs.CountdownRefreshRateSeconds}");
-            });
         }
     }
 }

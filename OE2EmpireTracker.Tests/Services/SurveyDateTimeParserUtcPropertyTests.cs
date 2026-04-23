@@ -21,20 +21,6 @@ namespace OE2EmpireTracker.Tests.Services
     public class SurveyDateTimeParserUtcPropertyTests
     {
         /// <summary>
-        /// Generates valid UTC DateTime values with minute precision (seconds=0).
-        /// Constrained to years 2000-2099 to match two-digit year range.
-        /// </summary>
-        private static Gen<DateTime> ValidUtcDateTimeGen()
-        {
-            return from year in Gen.Choose(2000, 2099)
-                   from month in Gen.Choose(1, 12)
-                   from day in Gen.Choose(1, 28)
-                   from hour in Gen.Choose(0, 23)
-                   from minute in Gen.Choose(0, 59)
-                   select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
-        }
-
-        /// <summary>
         /// Feature: colony-import-timestamp, Property 6: SurveyDateTimeParser stores UTC and displays local
         ///
         /// Sub-property 6a: ToIsoString produces a string ending with Z for any UTC DateTime.
@@ -100,6 +86,20 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"FormatForDisplay='{displayResult}', expected='{expectedDisplay}', " +
                            $"utc={utcDt:O}, local={localDt:O}, iso='{iso}'");
             });
+        }
+
+        /// <summary>
+        /// Generates valid UTC DateTime values with minute precision (seconds=0).
+        /// Constrained to years 2000-2099 to match two-digit year range.
+        /// </summary>
+        private static Gen<DateTime> ValidUtcDateTimeGen()
+        {
+            return from year in Gen.Choose(2000, 2099)
+                   from month in Gen.Choose(1, 12)
+                   from day in Gen.Choose(1, 28)
+                   from hour in Gen.Choose(0, 23)
+                   from minute in Gen.Choose(0, 59)
+                   select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
         }
     }
 }

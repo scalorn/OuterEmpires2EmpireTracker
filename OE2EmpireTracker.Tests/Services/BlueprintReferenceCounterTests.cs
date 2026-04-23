@@ -12,28 +12,6 @@ namespace OE2EmpireTracker.Tests.Services
     {
         private const string TargetUUID = "bp-target-uuid";
 
-        private static Colony MakeColony(params ColonyStructure[] structures)
-        {
-            var colony = new Colony();
-            colony.Structures = structures.ToList();
-            return colony;
-        }
-
-        private static Bp MakeBlueprint(string uuid, string baseBlueprintUUID = null)
-        {
-            var bp = new Bp("TestBP");
-            bp.UUID = uuid;
-            bp.BaseBlueprintUUID = baseBlueprintUUID;
-            return bp;
-        }
-
-        private static Survey MakeSurvey(string scannerBlueprintUUID)
-        {
-            var survey = new Survey();
-            survey.ScannerBlueprintUUID = scannerBlueprintUUID;
-            return survey;
-        }
-
         // Requirement 1.5 -- empty data returns zero counts
         [Test]
         public void CountReferences_EmptyData_ReturnsZeroCounts()
@@ -350,6 +328,28 @@ namespace OE2EmpireTracker.Tests.Services
             var report = counter.CountReferences(TargetUUID);
 
             Assert.That(report.TotalCount, Is.GreaterThan(0));
+        }
+
+        private static Colony MakeColony(params ColonyStructure[] structures)
+        {
+            var colony = new Colony();
+            colony.Structures = structures.ToList();
+            return colony;
+        }
+
+        private static Bp MakeBlueprint(string uuid, string baseBlueprintUUID = null)
+        {
+            var bp = new Bp("TestBP");
+            bp.UUID = uuid;
+            bp.BaseBlueprintUUID = baseBlueprintUUID;
+            return bp;
+        }
+
+        private static Survey MakeSurvey(string scannerBlueprintUUID)
+        {
+            var survey = new Survey();
+            survey.ScannerBlueprintUUID = scannerBlueprintUUID;
+            return survey;
         }
     }
 }

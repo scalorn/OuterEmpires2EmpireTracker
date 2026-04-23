@@ -27,6 +27,35 @@ namespace OE2EmpireTracker.Tests.Services
             "S1. Translanthanic Exotics", "S2. Element 126"
         };
 
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property SerializationRoundTrip_ProducesEquivalentObject()
+        {
+            return Prop.ForAll(ValidPricingPlanGen().ToArbitrary(), plan =>
+            {
+                string json = JsonConvert.SerializeObject(plan, JsonSettings.SerializerSettings);
+                var deserialized = JsonConvert.DeserializeObject<PricingPlan>(json);
+
+                bool uuidMatch = deserialized.UUID == plan.UUID;
+                bool nameMatch = deserialized.Name == plan.Name;
+                bool ownerMatch = deserialized.OwnerUUID == plan.OwnerUUID;
+                // Description may be null after round-trip if empty (DefaultValueHandling.Ignore)
+                bool descMatch = (deserialized.Description ?? string.Empty) == (plan.Description ?? string.Empty);
+                bool fixedMatch = deserialized.FixedCostPerItem == plan.FixedCostPerItem;
+                bool hourlyMatch = deserialized.HourlyCostRate == plan.HourlyCostRate;
+
+                // ResourcePrices: zero-valued entries ARE serialized (they're in a dictionary, not default-value properties)
+                bool pricesMatch = deserialized.ResourcePrices != null &&
+                    deserialized.ResourcePrices.Count == plan.ResourcePrices.Count &&
+                    plan.ResourcePrices.All(kv =>
+                        deserialized.ResourcePrices.ContainsKey(kv.Key) &&
+                        deserialized.ResourcePrices[kv.Key] == kv.Value);
+
+                return (uuidMatch && nameMatch && ownerMatch && descMatch && fixedMatch && hourlyMatch && pricesMatch)
+                    .Label($"uuid={uuidMatch}, name={nameMatch}, owner={ownerMatch}, desc={descMatch}, " +
+                           $"fixed={fixedMatch}, hourly={hourlyMatch}, prices={pricesMatch}");
+            });
+        }
+
         private static Gen<decimal> NonNegativeDecimalGen()
         {
             return Gen.Choose(0, 100000).Select(i => (decimal)i / 100m);
@@ -76,35 +105,6 @@ namespace OE2EmpireTracker.Tests.Services
             }
 
             return plan;
-        }
-
-        [FsCheck.NUnit.Property(MaxTest = 100)]
-        public Property SerializationRoundTrip_ProducesEquivalentObject()
-        {
-            return Prop.ForAll(ValidPricingPlanGen().ToArbitrary(), plan =>
-            {
-                string json = JsonConvert.SerializeObject(plan, JsonSettings.SerializerSettings);
-                var deserialized = JsonConvert.DeserializeObject<PricingPlan>(json);
-
-                bool uuidMatch = deserialized.UUID == plan.UUID;
-                bool nameMatch = deserialized.Name == plan.Name;
-                bool ownerMatch = deserialized.OwnerUUID == plan.OwnerUUID;
-                // Description may be null after round-trip if empty (DefaultValueHandling.Ignore)
-                bool descMatch = (deserialized.Description ?? string.Empty) == (plan.Description ?? string.Empty);
-                bool fixedMatch = deserialized.FixedCostPerItem == plan.FixedCostPerItem;
-                bool hourlyMatch = deserialized.HourlyCostRate == plan.HourlyCostRate;
-
-                // ResourcePrices: zero-valued entries ARE serialized (they're in a dictionary, not default-value properties)
-                bool pricesMatch = deserialized.ResourcePrices != null &&
-                    deserialized.ResourcePrices.Count == plan.ResourcePrices.Count &&
-                    plan.ResourcePrices.All(kv =>
-                        deserialized.ResourcePrices.ContainsKey(kv.Key) &&
-                        deserialized.ResourcePrices[kv.Key] == kv.Value);
-
-                return (uuidMatch && nameMatch && ownerMatch && descMatch && fixedMatch && hourlyMatch && pricesMatch)
-                    .Label($"uuid={uuidMatch}, name={nameMatch}, owner={ownerMatch}, desc={descMatch}, " +
-                           $"fixed={fixedMatch}, hourly={hourlyMatch}, prices={pricesMatch}");
-            });
         }
     }
 }

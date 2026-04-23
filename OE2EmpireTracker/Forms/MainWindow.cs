@@ -32,16 +32,42 @@ namespace OE2EmpireTracker
     {
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
+        private static readonly Dictionary<string, Action<MainWindow, int>> FormOpeners = new Dictionary<string, Action<MainWindow, int>>
+        {
+            { "FormBlueprint", (w, n) => w.OpenMdiChildWithNumber<FormBlueprintV2>(n) },
+            { "FormBlueprintV2", (w, n) => w.OpenMdiChildWithNumber<FormBlueprintV2>(n) },
+            { "FormColony", (w, n) => w.OpenMdiChildWithNumber<FormColonyV2>(n) },
+            { "FormColonyV2", (w, n) => w.OpenMdiChildWithNumber<FormColonyV2>(n) },
+            { "FormSurvey", (w, n) => w.OpenMdiChildWithNumber<FormSurvey>(n) },
+            { "FormPlayerProfile", (w, n) => w.OpenMdiChildWithNumber<FormPlayerProfile>(n) },
+            { "FormDeliveryRoute", (w, n) => w.OpenMdiChildWithNumber<Forms.DeliveryRoute.FormDeliveryRoute>(n) },
+            { "FormDeliveryExecution", (w, n) => w.OpenMdiChildWithNumber<Forms.DeliveryExecution.FormDeliveryExecution>(n) },
+            { "FormColonyDailyBuild", (w, n) => w.OpenMdiChildWithNumber<FormColonyDailyBuild>(n) },
+            { "FormColonyActivity", (w, n) => w.OpenMdiChildWithNumber<FormColonyActivity>(n) },
+            { "FormBuildPlanner", (w, n) => w.OpenMdiChildWithNumber<FormBuildPlanner>(n) },
+            { "FormContacts", (w, n) => w.OpenMdiChildWithNumber<FormContacts>(n) },
+            { "FormShipTemplate", (w, n) => w.OpenMdiChildWithNumber<Forms.ShipTemplate.FormShipTemplate>(n) },
+            { "FormShipInstance", (w, n) => w.OpenMdiChildWithNumber<Forms.ShipInstance.FormShipInstance>(n) },
+            { "FormStation", (w, n) => w.OpenMdiChildWithNumber<Forms.Station.FormStation>(n) },
+            { "FormMarket", (w, n) => w.OpenMdiChildWithNumber<Forms.Market.FormMarket>(n) },
+            { "FormAsteroid", (w, n) => w.OpenMdiChildWithNumber<Forms.Asteroid.FormAsteroid>(n) },
+            { "FormSupplyChain", (w, n) => w.OpenMdiChildWithNumber<Forms.SupplyChain.FormSupplyChain>(n) },
+            { "FormStockTargets", (w, n) => w.OpenMdiChildWithNumber<Forms.StockTargets.FormStockTargets>(n) },
+        };
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
         private EmpireContext context = null;
+
         private PlayerContext playerContext = null;
+
         private BackgroundProcessor _backgroundProcessor;
+
         private string _lastOpenedPath;
 
         // CPU utilization tracking
         private TimeSpan _lastCpuTime;
+
         private DateTime _lastCheckTime;
 
         public MainWindow()
@@ -67,6 +93,72 @@ namespace OE2EmpireTracker
 
             TryAutoOpenLastFile();
             RestoreOpenForms();
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        internal T OpenMdiChild<T>() where T : Form, new()
+        {
+            string formTypeKey = typeof(T).Name;
+            var usedNumbers = this.MdiChildren
+                .OfType<T>()
+                .Select(f => (int)f.Tag)
+                .ToHashSet();
+            int windowNumber = 1;
+            while (usedNumbers.Contains(windowNumber)) windowNumber++;
+
+            return OpenMdiChildWithNumber<T>(windowNumber);
+        }
+
+        internal T OpenMdiChildWithNumber<T>(int windowNumber) where T : Form, new()
+        {
+            string formTypeKey = typeof(T).Name;
+            T form = new T();
+            form.MdiParent = this;
+            form.Tag = windowNumber;
+            form.Text = "#" + windowNumber + " - " + form.Text;
+            WindowStateHelper.RestoreState(form, formTypeKey, windowNumber);
+            form.Show();
+            return form;
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            SaveOpenFormsList();
+            WindowStateHelper.SaveMainWindowState(this);
+            base.OnFormClosing(e);
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            timerNextProcess.Stop();
+            timerNextProcess.Tick -= OnTimerNextProcessTick;
+
+            if (_backgroundProcessor != null)
+            {
+                _backgroundProcessor.Stop();
+                _backgroundProcessor.Dispose();
+                _backgroundProcessor = null;
+            }
+
+            playerContext.PlayerProfilesChanged -= OnPlayerProfilesChanged;
+            base.OnFormClosed(e);
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.F1)
+            {
+                string topic = null;
+                if (ActiveMdiChild != null)
+                    topic = HelpTopicRegistry.GetTopicForForm(ActiveMdiChild.GetType().Name);
+                new FormHelp(topic).ShowDialog(this);
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void PopulatePlayerDropdown()
@@ -101,31 +193,6 @@ namespace OE2EmpireTracker
                     playerContext.CurrentPlayerUUID = selected.UUID;
                 }
             }
-        }
-
-        internal T OpenMdiChild<T>() where T : Form, new()
-        {
-            string formTypeKey = typeof(T).Name;
-            var usedNumbers = this.MdiChildren
-                .OfType<T>()
-                .Select(f => (int)f.Tag)
-                .ToHashSet();
-            int windowNumber = 1;
-            while (usedNumbers.Contains(windowNumber)) windowNumber++;
-
-            return OpenMdiChildWithNumber<T>(windowNumber);
-        }
-
-        internal T OpenMdiChildWithNumber<T>(int windowNumber) where T : Form, new()
-        {
-            string formTypeKey = typeof(T).Name;
-            T form = new T();
-            form.MdiParent = this;
-            form.Tag = windowNumber;
-            form.Text = "#" + windowNumber + " - " + form.Text;
-            WindowStateHelper.RestoreState(form, formTypeKey, windowNumber);
-            form.Show();
-            return form;
         }
 
         private void AddBlueprintV2ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -315,29 +382,6 @@ namespace OE2EmpireTracker
             toolStripPerformance.Text = string.Format("Mem: {0:F0} MB | CPU: {1:F1}%", memMB, cpuPercent);
         }
 
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            SaveOpenFormsList();
-            WindowStateHelper.SaveMainWindowState(this);
-            base.OnFormClosing(e);
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            timerNextProcess.Stop();
-            timerNextProcess.Tick -= OnTimerNextProcessTick;
-
-            if (_backgroundProcessor != null)
-            {
-                _backgroundProcessor.Stop();
-                _backgroundProcessor.Dispose();
-                _backgroundProcessor = null;
-            }
-
-            playerContext.PlayerProfilesChanged -= OnPlayerProfilesChanged;
-            base.OnFormClosed(e);
-        }
-
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -465,20 +509,6 @@ namespace OE2EmpireTracker
         private void ContentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FormHelp().ShowDialog(this);
-        }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.F1)
-            {
-                string topic = null;
-                if (ActiveMdiChild != null)
-                    topic = HelpTopicRegistry.GetTopicForForm(ActiveMdiChild.GetType().Name);
-                new FormHelp(topic).ShowDialog(this);
-                return true;
-            }
-
-            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         // -----------------------------------------------------------------------
@@ -634,29 +664,6 @@ namespace OE2EmpireTracker
             store.Preferences.OpenFormEntries = entries;
             store.Save();
         }
-
-        private static readonly Dictionary<string, Action<MainWindow, int>> FormOpeners = new Dictionary<string, Action<MainWindow, int>>
-        {
-            { "FormBlueprint", (w, n) => w.OpenMdiChildWithNumber<FormBlueprintV2>(n) },
-            { "FormBlueprintV2", (w, n) => w.OpenMdiChildWithNumber<FormBlueprintV2>(n) },
-            { "FormColony", (w, n) => w.OpenMdiChildWithNumber<FormColonyV2>(n) },
-            { "FormColonyV2", (w, n) => w.OpenMdiChildWithNumber<FormColonyV2>(n) },
-            { "FormSurvey", (w, n) => w.OpenMdiChildWithNumber<FormSurvey>(n) },
-            { "FormPlayerProfile", (w, n) => w.OpenMdiChildWithNumber<FormPlayerProfile>(n) },
-            { "FormDeliveryRoute", (w, n) => w.OpenMdiChildWithNumber<Forms.DeliveryRoute.FormDeliveryRoute>(n) },
-            { "FormDeliveryExecution", (w, n) => w.OpenMdiChildWithNumber<Forms.DeliveryExecution.FormDeliveryExecution>(n) },
-            { "FormColonyDailyBuild", (w, n) => w.OpenMdiChildWithNumber<FormColonyDailyBuild>(n) },
-            { "FormColonyActivity", (w, n) => w.OpenMdiChildWithNumber<FormColonyActivity>(n) },
-            { "FormBuildPlanner", (w, n) => w.OpenMdiChildWithNumber<FormBuildPlanner>(n) },
-            { "FormContacts", (w, n) => w.OpenMdiChildWithNumber<FormContacts>(n) },
-            { "FormShipTemplate", (w, n) => w.OpenMdiChildWithNumber<Forms.ShipTemplate.FormShipTemplate>(n) },
-            { "FormShipInstance", (w, n) => w.OpenMdiChildWithNumber<Forms.ShipInstance.FormShipInstance>(n) },
-            { "FormStation", (w, n) => w.OpenMdiChildWithNumber<Forms.Station.FormStation>(n) },
-            { "FormMarket", (w, n) => w.OpenMdiChildWithNumber<Forms.Market.FormMarket>(n) },
-            { "FormAsteroid", (w, n) => w.OpenMdiChildWithNumber<Forms.Asteroid.FormAsteroid>(n) },
-            { "FormSupplyChain", (w, n) => w.OpenMdiChildWithNumber<Forms.SupplyChain.FormSupplyChain>(n) },
-            { "FormStockTargets", (w, n) => w.OpenMdiChildWithNumber<Forms.StockTargets.FormStockTargets>(n) },
-        };
 
         private void RestoreOpenForms()
         {

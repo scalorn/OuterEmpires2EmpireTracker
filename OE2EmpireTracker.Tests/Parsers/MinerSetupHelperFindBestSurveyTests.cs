@@ -35,31 +35,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             EmpireContext.Reset();
         }
 
-        /// <summary>
-        /// Helper to create a survey with a single resource entry.
-        /// </summary>
-        private Survey CreateSurvey(
-            string uuid,
-            string planetName,
-            string surveyId,
-            string resourceName,
-            string purity,
-            string amount)
-        {
-            var survey = new Survey("Test Survey")
-            {
-                UUID = uuid,
-                PlanetName = planetName,
-                SurveyID = surveyId,
-                Resources = new Dictionary<string, SurveyResource>
-                {
-                    [resourceName] = new SurveyResource(resourceName, purity, amount)
-                }
-            };
-
-            return survey;
-        }
-
         [Test]
         public void FindBestSurvey_SelectsClosestMatch_WhenMaxRateGreaterThanZero()
         {
@@ -197,6 +172,31 @@ namespace OE2EmpireTracker.Tests.Parsers
 
             // Assert
             Assert.That(result, Is.Null);
+        }
+
+        /// <summary>
+        /// Helper to create a survey with a single resource entry.
+        /// </summary>
+        private Survey CreateSurvey(
+            string uuid,
+            string planetName,
+            string surveyId,
+            string resourceName,
+            string purity,
+            string amount)
+        {
+            var survey = new Survey("Test Survey")
+            {
+                UUID = uuid,
+                PlanetName = planetName,
+                SurveyID = surveyId,
+                Resources = new Dictionary<string, SurveyResource>
+                {
+                    [resourceName] = new SurveyResource(resourceName, purity, amount)
+                }
+            };
+
+            return survey;
         }
     }
 }

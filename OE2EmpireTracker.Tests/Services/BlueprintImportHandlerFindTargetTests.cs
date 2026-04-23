@@ -17,13 +17,18 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class BlueprintImportHandlerFindTargetTests
     {
-        private PlayerContext playerContext;
-        private EmpireContext empireContext;
         private static readonly string TestPlayerUUID = "test-player-uuid-001";
 
+        private PlayerContext playerContext;
+
+        private EmpireContext empireContext;
+
         private string _originalEmpireFilePath;
+
         private string _originalPlayerFilePath;
+
         private string _tempBaselineDataPath;
+
         private string _tempPlayerDataPath;
 
         [OneTimeSetUp]
@@ -64,23 +69,6 @@ namespace OE2EmpireTracker.Tests.Services
             foreach (var item in empireContext.GlobalBlueprintList.ToList()) empireContext.RemoveGlobalBlueprint(item);
             foreach (var item in playerContext.BlueprintList.ToList()) playerContext.RemoveBlueprint(item);
             playerContext.CurrentPlayerUUID = TestPlayerUUID;
-        }
-
-        // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private static BpModel MakeBlueprint(
-            string name, string uuid = null, string bpType = "Reactor",
-            int evolution = 0, int cls = 1, string techLevel = null)
-        {
-            var bp = new BpModel(name);
-            bp.UUID = uuid ?? Guid.NewGuid().ToString();
-            bp.BluePrintType = bpType;
-            bp.Evolution = evolution;
-            bp.Class = cls;
-            bp.TechLevel = techLevel;
-            return bp;
         }
 
         // -----------------------------------------------------------------------
@@ -328,6 +316,23 @@ namespace OE2EmpireTracker.Tests.Services
             // Evo 3 with player -> player route, no match in player list
             Assert.That(result.Target, Is.Null);
             Assert.That(result.IsNew, Is.True);
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private static BpModel MakeBlueprint(
+            string name, string uuid = null, string bpType = "Reactor",
+            int evolution = 0, int cls = 1, string techLevel = null)
+        {
+            var bp = new BpModel(name);
+            bp.UUID = uuid ?? Guid.NewGuid().ToString();
+            bp.BluePrintType = bpType;
+            bp.Evolution = evolution;
+            bp.Class = cls;
+            bp.TechLevel = techLevel;
+            return bp;
         }
     }
 }

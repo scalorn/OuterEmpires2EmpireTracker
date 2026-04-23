@@ -16,7 +16,9 @@ namespace OE2EmpireTracker.Tests.Services
     public class ColonyInactivityStalenessPropertyTests
     {
         private PlayerContext _playerContext;
+
         private string _originalEmpireFilePath;
+
         private string _originalPlayerFilePath;
 
         [SetUp]
@@ -42,79 +44,6 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.Reset();
             EmpireContext.FilePath = _originalEmpireFilePath;
             PlayerContext.FilePath = _originalPlayerFilePath;
-        }
-
-        /// <summary>
-        /// Generates valid UTC DateTime values constrained to years 2000-2099.
-        /// </summary>
-        private static Gen<DateTime> ValidUtcDateTimeGen()
-        {
-            return from year in Gen.Choose(2000, 2099)
-                   from month in Gen.Choose(1, 12)
-                   from day in Gen.Choose(1, 28)
-                   from hour in Gen.Choose(0, 23)
-                   from minute in Gen.Choose(0, 59)
-                   select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
-        }
-
-        /// <summary>
-        /// Generates a colony with a LastImportDateTime that is older than 1 day (stale).
-        /// </summary>
-        private static Gen<Colony> StaleColonyGen()
-        {
-            return from colonyName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
-                   from systemName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
-                   from daysOld in Gen.Choose(2, 365)
-                   select new Colony
-                   {
-                       ColonyName = colonyName,
-                       SystemName = systemName,
-                       LastImportDateTime = SurveyDateTimeParser.ToIsoString(
-                           DateTime.UtcNow.AddDays(-daysOld))
-                   };
-        }
-
-        /// <summary>
-        /// Generates a colony with a LastImportDateTime that is less than 1 day old (fresh).
-        /// </summary>
-        private static Gen<Colony> FreshColonyGen()
-        {
-            return from colonyName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
-                   from systemName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
-                   from secondsOld in Gen.Choose(0, 86000)
-                   select new Colony
-                   {
-                       ColonyName = colonyName,
-                       SystemName = systemName,
-                       LastImportDateTime = SurveyDateTimeParser.ToIsoString(
-                           DateTime.UtcNow.AddSeconds(-secondsOld))
-                   };
-        }
-
-        /// <summary>
-        /// Generates a colony with null or empty LastImportDateTime (should be treated as stale).
-        /// </summary>
-        private static Gen<Colony> NullTimestampColonyGen()
-        {
-            var nullOrEmpty = Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty));
-            return from colonyName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
-                   from systemName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
-                   from ts in nullOrEmpty
-                   select new Colony
-                   {
-                       ColonyName = colonyName,
-                       SystemName = systemName,
-                       LastImportDateTime = ts
-                   };
-        }
-
-        /// <summary>
-        /// Generates a mixed list of stale, fresh, and null-timestamp colonies.
-        /// </summary>
-        private static Gen<List<Colony>> MixedColonyListGen()
-        {
-            var colonyGen = Gen.OneOf(StaleColonyGen(), FreshColonyGen(), NullTimestampColonyGen());
-            return Gen.ListOf(colonyGen).Select(cs => cs.ToList());
         }
 
         /// <summary>
@@ -194,6 +123,79 @@ namespace OE2EmpireTracker.Tests.Services
 
                 return true.Label("All staleness rows correct");
             });
+        }
+
+        /// <summary>
+        /// Generates valid UTC DateTime values constrained to years 2000-2099.
+        /// </summary>
+        private static Gen<DateTime> ValidUtcDateTimeGen()
+        {
+            return from year in Gen.Choose(2000, 2099)
+                   from month in Gen.Choose(1, 12)
+                   from day in Gen.Choose(1, 28)
+                   from hour in Gen.Choose(0, 23)
+                   from minute in Gen.Choose(0, 59)
+                   select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
+        }
+
+        /// <summary>
+        /// Generates a colony with a LastImportDateTime that is older than 1 day (stale).
+        /// </summary>
+        private static Gen<Colony> StaleColonyGen()
+        {
+            return from colonyName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
+                   from systemName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
+                   from daysOld in Gen.Choose(2, 365)
+                   select new Colony
+                   {
+                       ColonyName = colonyName,
+                       SystemName = systemName,
+                       LastImportDateTime = SurveyDateTimeParser.ToIsoString(
+                           DateTime.UtcNow.AddDays(-daysOld))
+                   };
+        }
+
+        /// <summary>
+        /// Generates a colony with a LastImportDateTime that is less than 1 day old (fresh).
+        /// </summary>
+        private static Gen<Colony> FreshColonyGen()
+        {
+            return from colonyName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
+                   from systemName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
+                   from secondsOld in Gen.Choose(0, 86000)
+                   select new Colony
+                   {
+                       ColonyName = colonyName,
+                       SystemName = systemName,
+                       LastImportDateTime = SurveyDateTimeParser.ToIsoString(
+                           DateTime.UtcNow.AddSeconds(-secondsOld))
+                   };
+        }
+
+        /// <summary>
+        /// Generates a colony with null or empty LastImportDateTime (should be treated as stale).
+        /// </summary>
+        private static Gen<Colony> NullTimestampColonyGen()
+        {
+            var nullOrEmpty = Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty));
+            return from colonyName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
+                   from systemName in Arb.Default.NonEmptyString().Generator.Select(s => s.Get)
+                   from ts in nullOrEmpty
+                   select new Colony
+                   {
+                       ColonyName = colonyName,
+                       SystemName = systemName,
+                       LastImportDateTime = ts
+                   };
+        }
+
+        /// <summary>
+        /// Generates a mixed list of stale, fresh, and null-timestamp colonies.
+        /// </summary>
+        private static Gen<List<Colony>> MixedColonyListGen()
+        {
+            var colonyGen = Gen.OneOf(StaleColonyGen(), FreshColonyGen(), NullTimestampColonyGen());
+            return Gen.ListOf(colonyGen).Select(cs => cs.ToList());
         }
     }
 }

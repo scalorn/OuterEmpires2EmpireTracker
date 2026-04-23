@@ -20,66 +20,6 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Creates a colony with a CommodityFactory structure configured for the given commodity.
-        /// Adds required construction resources to the warehouse.
-        /// </summary>
-        private static Colony MakeCommodityFactoryColony(
-            string commodityName,
-            int manufacturingQuantity,
-            int manufacturingCompleted,
-            int intervalsPassed,
-            Dictionary<string, int> warehouseResources = null)
-        {
-            var colony = new Colony();
-            colony.UUID = Guid.NewGuid().ToString();
-
-            // Create a CommodityFactory blueprint in the player context
-            var bp = new OE2EmpireTracker.Models.Blueprint("TestCommodityFactory");
-            bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
-            PlayerContext.GetInstance().AddBlueprint(bp);
-
-            var structure = new ColonyStructure();
-            structure.UUID = Guid.NewGuid().ToString();
-            structure.FlatpackBlueprintUUID = bp.UUID;
-            structure.ManufacturingCommodityName = commodityName;
-            structure.ManufacturingQuantity = manufacturingQuantity;
-            structure.ManufacturingCompleted = manufacturingCompleted;
-            structure.Properties.SetProperty("Built", true);
-            structure.Properties.SetProperty("Online", true);
-
-            // Set up a repeating timer with the specified intervals already passed
-            var timer = new CountDownTime();
-            timer.StartRepeating(GameConstants.CommodityCycleSeconds);
-            // Move StartTime back so IntervalsPassed returns the desired count
-            timer.StartTime = DateTime.UtcNow.AddSeconds(-intervalsPassed * GameConstants.CommodityCycleSeconds);
-            structure.ProcessCompletionTime = timer;
-
-            colony.Structures.Add(structure);
-
-            // Add warehouse resources
-            if (warehouseResources != null)
-            {
-                foreach (var kvp in warehouseResources)
-                {
-                    var item = new Item(ItemType.ItemTypeEnum.Resource, kvp.Key);
-                    item.UUID = Guid.NewGuid().ToString();
-                    item.BaseItemTypeID = kvp.Key;
-                    item.ResourcePurity = GameConstants.PurityRefined;
-                    item.Quantity = kvp.Value;
-                    item.Volume = 1;
-                    colony.Items.AddItem(item);
-                }
-            }
-
-            return colony;
-        }
-
-        // -----------------------------------------------------------------------
         // ProcessCommodityFactory -- single cycle produces 10 commodities
         // -----------------------------------------------------------------------
 
@@ -463,24 +403,6 @@ namespace OE2EmpireTracker.Tests.Models
             Assert.That(lockedAlkali, Is.EqualTo(0));
         }
 
-        // -----------------------------------------------------------------------
-        // Skill multiplier tests -- ExtractionFocus (mining)
-        // -----------------------------------------------------------------------
-
-        private PlayerProfile CreatePlayerWithSkills(Dictionary<SkillName, int> skills)
-        {
-            var profile = new PlayerProfile();
-            profile.UUID = Guid.NewGuid().ToString();
-            profile.Name = "TestPlayer_" + Guid.NewGuid().ToString().Substring(0, 8);
-            foreach (var kvp in skills)
-            {
-                profile.GetSkill(kvp.Key).Level = kvp.Value;
-            }
-
-            PlayerContext.GetInstance().AddPlayerProfile(profile);
-            return profile;
-        }
-
         [Test]
         public void ExtractionFocus_Level10_IncreasesMiningOutputBy10Percent()
         {
@@ -681,6 +603,84 @@ namespace OE2EmpireTracker.Tests.Models
             var refined = colony.Items.FindResource("TestMineral3", GameConstants.PurityRefined);
             Assert.That(refined.Count, Is.EqualTo(1));
             Assert.That(refined[0].Quantity, Is.EqualTo(25));
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Creates a colony with a CommodityFactory structure configured for the given commodity.
+        /// Adds required construction resources to the warehouse.
+        /// </summary>
+        private static Colony MakeCommodityFactoryColony(
+            string commodityName,
+            int manufacturingQuantity,
+            int manufacturingCompleted,
+            int intervalsPassed,
+            Dictionary<string, int> warehouseResources = null)
+        {
+            var colony = new Colony();
+            colony.UUID = Guid.NewGuid().ToString();
+
+            // Create a CommodityFactory blueprint in the player context
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestCommodityFactory");
+            bp.UUID = Guid.NewGuid().ToString();
+            bp.BluePrintType = BlueprintTypes.CommodityFactoryPrefix + "Agridome";
+            PlayerContext.GetInstance().AddBlueprint(bp);
+
+            var structure = new ColonyStructure();
+            structure.UUID = Guid.NewGuid().ToString();
+            structure.FlatpackBlueprintUUID = bp.UUID;
+            structure.ManufacturingCommodityName = commodityName;
+            structure.ManufacturingQuantity = manufacturingQuantity;
+            structure.ManufacturingCompleted = manufacturingCompleted;
+            structure.Properties.SetProperty("Built", true);
+            structure.Properties.SetProperty("Online", true);
+
+            // Set up a repeating timer with the specified intervals already passed
+            var timer = new CountDownTime();
+            timer.StartRepeating(GameConstants.CommodityCycleSeconds);
+            // Move StartTime back so IntervalsPassed returns the desired count
+            timer.StartTime = DateTime.UtcNow.AddSeconds(-intervalsPassed * GameConstants.CommodityCycleSeconds);
+            structure.ProcessCompletionTime = timer;
+
+            colony.Structures.Add(structure);
+
+            // Add warehouse resources
+            if (warehouseResources != null)
+            {
+                foreach (var kvp in warehouseResources)
+                {
+                    var item = new Item(ItemType.ItemTypeEnum.Resource, kvp.Key);
+                    item.UUID = Guid.NewGuid().ToString();
+                    item.BaseItemTypeID = kvp.Key;
+                    item.ResourcePurity = GameConstants.PurityRefined;
+                    item.Quantity = kvp.Value;
+                    item.Volume = 1;
+                    colony.Items.AddItem(item);
+                }
+            }
+
+            return colony;
+        }
+
+        // -----------------------------------------------------------------------
+        // Skill multiplier tests -- ExtractionFocus (mining)
+        // -----------------------------------------------------------------------
+
+        private PlayerProfile CreatePlayerWithSkills(Dictionary<SkillName, int> skills)
+        {
+            var profile = new PlayerProfile();
+            profile.UUID = Guid.NewGuid().ToString();
+            profile.Name = "TestPlayer_" + Guid.NewGuid().ToString().Substring(0, 8);
+            foreach (var kvp in skills)
+            {
+                profile.GetSkill(kvp.Key).Level = kvp.Value;
+            }
+
+            PlayerContext.GetInstance().AddPlayerProfile(profile);
+            return profile;
         }
     }
 }

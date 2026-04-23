@@ -31,57 +31,6 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name = null, int evolution = 0)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name ?? "TestBP_" + Guid.NewGuid().ToString().Substring(0, 6));
-            bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = bpType;
-            bp.Evolution = evolution;
-            PlayerContext.GetInstance().AddBlueprint(bp);
-            return bp;
-        }
-
-        private Survey CreateSurvey(string resource, string purity, string amount)
-        {
-            var survey = new Survey();
-            survey.UUID = Guid.NewGuid().ToString();
-            survey.PlanetName = "TestPlanet";
-            survey.SurveyID = "S" + Rng.Next(1000);
-            survey.Resources = new Dictionary<string, SurveyResource>
-            {
-                { resource, new SurveyResource(resource, purity, amount) }
-            };
-
-            PlayerContext.GetInstance().AddSurvey(survey);
-            return survey;
-        }
-
-        private static CountDownTime MakeActiveTimer(long secondsRemaining)
-        {
-            var timer = new CountDownTime();
-            timer.TimeRemaining = secondsRemaining;
-            return timer;
-        }
-
-        private static CountDownTime MakeExpiredTimer()
-        {
-            var timer = new CountDownTime();
-            timer.StartTime = DateTime.UtcNow.AddHours(-2);
-            timer.EndTime = DateTime.UtcNow.AddHours(-1);
-            return timer;
-        }
-
-        private static CountDownTime MakeActiveRepeatingTimer(long intervalSeconds)
-        {
-            var timer = new CountDownTime();
-            timer.StartRepeating(intervalSeconds);
-            return timer;
-        }
-
-        // -----------------------------------------------------------------------
         // Property 1: Activity collection completeness and classification
         // Feature: colony-activity-form, Property 1: Activity collection completeness and classification
         // **Validates: Requirements 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 2.1, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 6.5, 6.6**
@@ -285,25 +234,6 @@ namespace OE2EmpireTracker.Tests.Services
                     Is.LessThanOrEqualTo(1),
                     $"Iteration {iteration}: FormatSeconds({seconds})='{formatted}' vs CDT='{cdtString}' differ by more than 1s");
             }
-        }
-
-        private static long ParseTimeString(string timeStr)
-        {
-            long total = 0;
-            var parts = timeStr.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var part in parts)
-            {
-                if (part.EndsWith("d"))
-                    total += long.Parse(part.TrimEnd('d')) * 86400;
-                else if (part.EndsWith("h"))
-                    total += long.Parse(part.TrimEnd('h')) * 3600;
-                else if (part.EndsWith("m"))
-                    total += long.Parse(part.TrimEnd('m')) * 60;
-                else if (part.EndsWith("s"))
-                    total += long.Parse(part.TrimEnd('s'));
-            }
-
-            return total;
         }
 
         // -----------------------------------------------------------------------
@@ -903,6 +833,76 @@ namespace OE2EmpireTracker.Tests.Services
                         $"Iteration {iteration}, index {i}: sort order violated ({prev} > {curr})");
                 }
             }
+        }
+
+        private static CountDownTime MakeActiveTimer(long secondsRemaining)
+        {
+            var timer = new CountDownTime();
+            timer.TimeRemaining = secondsRemaining;
+            return timer;
+        }
+
+        private static CountDownTime MakeExpiredTimer()
+        {
+            var timer = new CountDownTime();
+            timer.StartTime = DateTime.UtcNow.AddHours(-2);
+            timer.EndTime = DateTime.UtcNow.AddHours(-1);
+            return timer;
+        }
+
+        private static CountDownTime MakeActiveRepeatingTimer(long intervalSeconds)
+        {
+            var timer = new CountDownTime();
+            timer.StartRepeating(intervalSeconds);
+            return timer;
+        }
+
+        private static long ParseTimeString(string timeStr)
+        {
+            long total = 0;
+            var parts = timeStr.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var part in parts)
+            {
+                if (part.EndsWith("d"))
+                    total += long.Parse(part.TrimEnd('d')) * 86400;
+                else if (part.EndsWith("h"))
+                    total += long.Parse(part.TrimEnd('h')) * 3600;
+                else if (part.EndsWith("m"))
+                    total += long.Parse(part.TrimEnd('m')) * 60;
+                else if (part.EndsWith("s"))
+                    total += long.Parse(part.TrimEnd('s'));
+            }
+
+            return total;
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name = null, int evolution = 0)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name ?? "TestBP_" + Guid.NewGuid().ToString().Substring(0, 6));
+            bp.UUID = Guid.NewGuid().ToString();
+            bp.BluePrintType = bpType;
+            bp.Evolution = evolution;
+            PlayerContext.GetInstance().AddBlueprint(bp);
+            return bp;
+        }
+
+        private Survey CreateSurvey(string resource, string purity, string amount)
+        {
+            var survey = new Survey();
+            survey.UUID = Guid.NewGuid().ToString();
+            survey.PlanetName = "TestPlanet";
+            survey.SurveyID = "S" + Rng.Next(1000);
+            survey.Resources = new Dictionary<string, SurveyResource>
+            {
+                { resource, new SurveyResource(resource, purity, amount) }
+            };
+
+            PlayerContext.GetInstance().AddSurvey(survey);
+            return survey;
         }
     }
 }

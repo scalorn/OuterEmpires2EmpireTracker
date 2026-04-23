@@ -16,6 +16,7 @@ namespace OE2EmpireTracker.Tests.Parsers
     public class MinerSetupHelperCleanupDefaultSurveyTests
     {
         private PlayerContext _playerContext;
+
         private EmpireContext _empireContext;
 
         [SetUp]
@@ -32,51 +33,6 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void TearDown()
         {
             EmpireContext.Reset();
-        }
-
-        private Colony CreateColony(string ownerUUID, string planetName, string systemName)
-        {
-            return new Colony
-            {
-                UUID = System.Guid.NewGuid().ToString(),
-                OwnerUUID = ownerUUID,
-                PlanetName = planetName,
-                SystemName = systemName,
-                ColonyName = "Test Colony"
-            };
-        }
-
-        private Survey CreateDefaultSurvey(Colony colony, Dictionary<string, SurveyResource> resources)
-        {
-            string uuid = DeterministicUUID.GenerateDefaultSurvey(
-                colony.OwnerUUID, colony.PlanetName, colony.SystemName);
-            var survey = new Survey("Default Survey")
-            {
-                UUID = uuid,
-                SurveyID = "DEFAULT",
-                NickName = string.Empty,
-                PlanetName = colony.PlanetName,
-                SystemName = colony.SystemName,
-                OwnerUUID = colony.OwnerUUID
-            };
-
-            foreach (var kvp in resources)
-            {
-                survey.Resources[kvp.Key] = kvp.Value;
-            }
-
-            _playerContext.AddSurvey(survey);
-            return survey;
-        }
-
-        private ColonyStructure CreateMiningStructure(string miningSurvey, string miningSurveyResource)
-        {
-            return new ColonyStructure
-            {
-                UUID = System.Guid.NewGuid().ToString(),
-                MiningSurvey = miningSurvey,
-                MiningSurveyResource = miningSurveyResource
-            };
         }
 
         [Test]
@@ -175,6 +131,51 @@ namespace OE2EmpireTracker.Tests.Parsers
 
             // Assert: Iron removed because no miner points to the default survey for it
             Assert.That(_playerContext.SurveyList, Has.Count.EqualTo(0));
+        }
+
+        private Colony CreateColony(string ownerUUID, string planetName, string systemName)
+        {
+            return new Colony
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                OwnerUUID = ownerUUID,
+                PlanetName = planetName,
+                SystemName = systemName,
+                ColonyName = "Test Colony"
+            };
+        }
+
+        private Survey CreateDefaultSurvey(Colony colony, Dictionary<string, SurveyResource> resources)
+        {
+            string uuid = DeterministicUUID.GenerateDefaultSurvey(
+                colony.OwnerUUID, colony.PlanetName, colony.SystemName);
+            var survey = new Survey("Default Survey")
+            {
+                UUID = uuid,
+                SurveyID = "DEFAULT",
+                NickName = string.Empty,
+                PlanetName = colony.PlanetName,
+                SystemName = colony.SystemName,
+                OwnerUUID = colony.OwnerUUID
+            };
+
+            foreach (var kvp in resources)
+            {
+                survey.Resources[kvp.Key] = kvp.Value;
+            }
+
+            _playerContext.AddSurvey(survey);
+            return survey;
+        }
+
+        private ColonyStructure CreateMiningStructure(string miningSurvey, string miningSurveyResource)
+        {
+            return new ColonyStructure
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                MiningSurvey = miningSurvey,
+                MiningSurveyResource = miningSurveyResource
+            };
         }
     }
 }

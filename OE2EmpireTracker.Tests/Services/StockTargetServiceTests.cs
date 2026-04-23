@@ -12,42 +12,6 @@ namespace OE2EmpireTracker.Tests.Services
     {
         private const string PlayerUUID = "player-1";
 
-        private Colony MakeColony(string uuid, params (ItemType.ItemTypeEnum type, string refId, int qty)[] items)
-        {
-            var colony = new Colony { UUID = uuid, Items = new ItemBag() };
-            foreach (var (type, refId, qty) in items)
-            {
-                colony.Items.AddItem(new Item
-                {
-                    UUID = Guid.NewGuid().ToString(),
-                    ItemType = type,
-                    BaseItemTypeID = refId,
-                    Quantity = qty
-                });
-            }
-
-            return colony;
-        }
-
-        private Station MakeStation(string uuid, string playerUUID, params (ItemType.ItemTypeEnum type, string refId, int qty)[] items)
-        {
-            var station = new Station { UUID = uuid };
-            var hold = new ItemBag();
-            foreach (var (type, refId, qty) in items)
-            {
-                hold.AddItem(new Item
-                {
-                    UUID = Guid.NewGuid().ToString(),
-                    ItemType = type,
-                    BaseItemTypeID = refId,
-                    Quantity = qty
-                });
-            }
-
-            station.Holds[playerUUID] = hold;
-            return station;
-        }
-
         // --- CheckTargets ---
 
         [Test]
@@ -402,6 +366,42 @@ namespace OE2EmpireTracker.Tests.Services
                 null, Enumerable.Empty<BuildPlan>());
 
             Assert.That(result, Is.Empty);
+        }
+
+        private Colony MakeColony(string uuid, params (ItemType.ItemTypeEnum type, string refId, int qty)[] items)
+        {
+            var colony = new Colony { UUID = uuid, Items = new ItemBag() };
+            foreach (var (type, refId, qty) in items)
+            {
+                colony.Items.AddItem(new Item
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    ItemType = type,
+                    BaseItemTypeID = refId,
+                    Quantity = qty
+                });
+            }
+
+            return colony;
+        }
+
+        private Station MakeStation(string uuid, string playerUUID, params (ItemType.ItemTypeEnum type, string refId, int qty)[] items)
+        {
+            var station = new Station { UUID = uuid };
+            var hold = new ItemBag();
+            foreach (var (type, refId, qty) in items)
+            {
+                hold.AddItem(new Item
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    ItemType = type,
+                    BaseItemTypeID = refId,
+                    Quantity = qty
+                });
+            }
+
+            station.Holds[playerUUID] = hold;
+            return station;
         }
     }
 }

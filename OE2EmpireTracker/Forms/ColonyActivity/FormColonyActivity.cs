@@ -15,11 +15,11 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
     public partial class FormColonyActivity : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         private PlayerContext playerContext;
+
         private List<ActivityRow> allRows = new List<ActivityRow>();
 
         public FormColonyActivity()
@@ -61,6 +61,32 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.CountdownRefreshRateSeconds * 1000);
             timerRefresh.Interval = Math.Max(intervalMs, 1000);
             timerRefresh.Start();
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.ColonyDataChanged -= OnColonyDataChanged;
+            timerRefresh.Stop();
+            timerRefresh.Dispose();
+            base.OnFormClosed(e);
+        }
+
+        private static bool PassesTextFilter(ActivityRow row, string textFilter)
+        {
+            if (string.IsNullOrEmpty(textFilter)) return true;
+
+            return (row.GetTimeRemainingString() ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || (row.SystemName ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || (row.ColonyName ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || row.Type.ToString().IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || (row.SourceName ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
+                || (row.ProcessDetails ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         // -----------------------------------------------------------------------
@@ -163,18 +189,6 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             }
         }
 
-        private static bool PassesTextFilter(ActivityRow row, string textFilter)
-        {
-            if (string.IsNullOrEmpty(textFilter)) return true;
-
-            return (row.GetTimeRemainingString() ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
-                || (row.SystemName ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
-                || (row.ColonyName ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
-                || row.Type.ToString().IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
-                || (row.SourceName ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0
-                || (row.ProcessDetails ?? string.Empty).IndexOf(textFilter, StringComparison.OrdinalIgnoreCase) >= 0;
-        }
-
         // -----------------------------------------------------------------------
         // Event Handlers
         // -----------------------------------------------------------------------
@@ -269,16 +283,6 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             {
                 Log.Error(ex, "Error in OnColonyDataChanged RefreshData");
             }
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            playerContext.ColonyDataChanged -= OnColonyDataChanged;
-            timerRefresh.Stop();
-            timerRefresh.Dispose();
-            base.OnFormClosed(e);
         }
     }
 }

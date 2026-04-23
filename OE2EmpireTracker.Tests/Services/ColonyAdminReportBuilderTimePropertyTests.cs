@@ -32,37 +32,6 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.Reset();
         }
 
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name);
-            bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = bpType;
-            PlayerContext.GetInstance().AddBlueprint(bp);
-            return bp;
-        }
-
-        private static ColonyStructure MakeStructure(string blueprintUUID, int gameSeq)
-        {
-            var s = new ColonyStructure();
-            s.UUID = Guid.NewGuid().ToString();
-            s.FlatpackBlueprintUUID = blueprintUUID;
-            s.DisplaySequence = gameSeq;
-            s.Properties.SetProperty(GameConstants.PropBuilt, true);
-            s.Properties.SetProperty(GameConstants.PropOnline, true);
-            return s;
-        }
-
-        private static Colony MakeColony()
-        {
-            return new Colony
-            {
-                UUID = Guid.NewGuid().ToString(),
-                SystemName = "TestSystem",
-                ColonyName = "TestColony",
-                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
-            };
-        }
-
         /// <summary>
         /// Feature: colony-admin-summary, Property 2: Completion time dual display.
         /// For any non-repeating activity row with positive TimeRemaining, the output
@@ -101,6 +70,37 @@ namespace OE2EmpireTracker.Tests.Services
 
                 return true.Label("Both countdown and local time present");
             });
+        }
+
+        private static ColonyStructure MakeStructure(string blueprintUUID, int gameSeq)
+        {
+            var s = new ColonyStructure();
+            s.UUID = Guid.NewGuid().ToString();
+            s.FlatpackBlueprintUUID = blueprintUUID;
+            s.DisplaySequence = gameSeq;
+            s.Properties.SetProperty(GameConstants.PropBuilt, true);
+            s.Properties.SetProperty(GameConstants.PropOnline, true);
+            return s;
+        }
+
+        private static Colony MakeColony()
+        {
+            return new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                SystemName = "TestSystem",
+                ColonyName = "TestColony",
+                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
+            };
+        }
+
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name);
+            bp.UUID = Guid.NewGuid().ToString();
+            bp.BluePrintType = bpType;
+            PlayerContext.GetInstance().AddBlueprint(bp);
+            return bp;
         }
     }
 }

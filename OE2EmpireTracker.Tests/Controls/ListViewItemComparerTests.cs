@@ -9,23 +9,6 @@ namespace OE2EmpireTracker.Tests.Controls
     [Apartment(ApartmentState.STA)]
     public class ListViewItemComparerTests
     {
-        /// <summary>
-        /// Helper: creates a ListViewItem with a SubItem at the given column index,
-        /// optionally setting the SubItem's Tag and Text.
-        /// Column 0 is the item itself; columns 1+ are additional SubItems.
-        /// </summary>
-        private ListViewItem CreateItem(int columnIndex, string text, object tag = null)
-        {
-            var item = new ListViewItem("row");
-            // Pad SubItems up to the target column index
-            for (int i = 1; i <= columnIndex; i++)
-                item.SubItems.Add(string.Empty);
-
-            item.SubItems[columnIndex].Text = text;
-            item.SubItems[columnIndex].Tag = tag;
-            return item;
-        }
-
         // -------------------------------------------------------------------
         // Tag-based ISO string sorting (chronological)
         // Validates: Requirements 4.1, 4.2
@@ -182,6 +165,23 @@ namespace OE2EmpireTracker.Tests.Controls
             var comparer = new ListViewItemComparer(4, SortOrder.Descending);
             Assert.That(comparer.Column, Is.EqualTo(4));
             Assert.That(comparer.Order, Is.EqualTo(SortOrder.Descending));
+        }
+
+        /// <summary>
+        /// Helper: creates a ListViewItem with a SubItem at the given column index,
+        /// optionally setting the SubItem's Tag and Text.
+        /// Column 0 is the item itself; columns 1+ are additional SubItems.
+        /// </summary>
+        private ListViewItem CreateItem(int columnIndex, string text, object tag = null)
+        {
+            var item = new ListViewItem("row");
+            // Pad SubItems up to the target column index
+            for (int i = 1; i <= columnIndex; i++)
+                item.SubItems.Add(string.Empty);
+
+            item.SubItems[columnIndex].Text = text;
+            item.SubItems[columnIndex].Tag = tag;
+            return item;
         }
     }
 }

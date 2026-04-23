@@ -33,37 +33,6 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.Reset();
         }
 
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name);
-            bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = bpType;
-            PlayerContext.GetInstance().AddBlueprint(bp);
-            return bp;
-        }
-
-        private static ColonyStructure MakeStructure(string blueprintUUID, int gameSeq)
-        {
-            var s = new ColonyStructure();
-            s.UUID = Guid.NewGuid().ToString();
-            s.FlatpackBlueprintUUID = blueprintUUID;
-            s.DisplaySequence = gameSeq;
-            s.Properties.SetProperty(GameConstants.PropBuilt, true);
-            s.Properties.SetProperty(GameConstants.PropOnline, true);
-            return s;
-        }
-
-        private static Colony MakeColony()
-        {
-            return new Colony
-            {
-                UUID = Guid.NewGuid().ToString(),
-                SystemName = "TestSystem",
-                ColonyName = "TestColony",
-                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
-            };
-        }
-
         /// <summary>
         /// Feature: colony-admin-summary, Property 1: Report section ordering.
         /// Building appears before Commodity Requests, before Inactivity, before Activity.
@@ -123,6 +92,37 @@ namespace OE2EmpireTracker.Tests.Services
             // Find the Manufacturing header that comes after the idle section
             int mfgHeaderIdx = rtf.IndexOf("Manufacturing", idleIdx, StringComparison.Ordinal);
             Assert.That(mfgHeaderIdx, Is.GreaterThan(idleIdx), "Activity should come after Inactivity");
+        }
+
+        private static ColonyStructure MakeStructure(string blueprintUUID, int gameSeq)
+        {
+            var s = new ColonyStructure();
+            s.UUID = Guid.NewGuid().ToString();
+            s.FlatpackBlueprintUUID = blueprintUUID;
+            s.DisplaySequence = gameSeq;
+            s.Properties.SetProperty(GameConstants.PropBuilt, true);
+            s.Properties.SetProperty(GameConstants.PropOnline, true);
+            return s;
+        }
+
+        private static Colony MakeColony()
+        {
+            return new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                SystemName = "TestSystem",
+                ColonyName = "TestColony",
+                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
+            };
+        }
+
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name);
+            bp.UUID = Guid.NewGuid().ToString();
+            bp.BluePrintType = bpType;
+            PlayerContext.GetInstance().AddBlueprint(bp);
+            return bp;
         }
     }
 }

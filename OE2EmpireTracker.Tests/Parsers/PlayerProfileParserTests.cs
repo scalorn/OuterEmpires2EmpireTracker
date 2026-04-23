@@ -17,28 +17,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             _parser = new PlayerProfileParser();
         }
 
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            string path = Path.Combine(baseDir, "TestData", filename);
-            return File.ReadAllText(path);
-        }
-
-        private static string ExtractFragment(string clipboardData)
-        {
-            return OE2EmpireTracker.Parsers.BlueprintScanner
-                .ExtractHtmlFragmentFromClipboardData(clipboardData);
-        }
-
-        private PlayerProfile ParseScalorn()
-        {
-            string raw = LoadTestData("PlayerProfileScalorn.html");
-            string fragment = ExtractFragment(raw);
-            var profile = new PlayerProfile();
-            _parser.ProcessHtml(profile, fragment);
-            return profile;
-        }
-
         // -------------------------------------------------------------------
         // Integration tests against PlayerProfileScalorn.html
         // -------------------------------------------------------------------
@@ -482,6 +460,28 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             // 22 days, 9 hours = (22*24 + 9) * 3600 = 1933200
             Assert.That(PlayerProfileParser.ParseTrainingTime("22 days, 9 hours"), Is.EqualTo(1933200L));
+        }
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            string path = Path.Combine(baseDir, "TestData", filename);
+            return File.ReadAllText(path);
+        }
+
+        private static string ExtractFragment(string clipboardData)
+        {
+            return OE2EmpireTracker.Parsers.BlueprintScanner
+                .ExtractHtmlFragmentFromClipboardData(clipboardData);
+        }
+
+        private PlayerProfile ParseScalorn()
+        {
+            string raw = LoadTestData("PlayerProfileScalorn.html");
+            string fragment = ExtractFragment(raw);
+            var profile = new PlayerProfile();
+            _parser.ProcessHtml(profile, fragment);
+            return profile;
         }
     }
 }

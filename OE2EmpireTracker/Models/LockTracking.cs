@@ -11,19 +11,15 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public struct ItemKey : IEquatable<ItemKey>
     {
-        public Models.ItemType.ItemTypeEnum ItemType { get; set; }
-        public string BaseItemTypeID { get; set; }
-
         public ItemKey(Models.ItemType.ItemTypeEnum itemType, string baseItemTypeID)
         {
             ItemType = itemType;
             BaseItemTypeID = baseItemTypeID ?? string.Empty;
         }
 
-        /// <summary>
-        /// Serializes to "ItemType:BaseItemTypeID" for use as a JSON object key.
-        /// </summary>
-        public override string ToString() => $"{ItemType}:{BaseItemTypeID}";
+        public Models.ItemType.ItemTypeEnum ItemType { get; set; }
+
+        public string BaseItemTypeID { get; set; }
 
         /// <summary>
         /// Parses a key string produced by ToString().
@@ -45,6 +41,11 @@ namespace OE2EmpireTracker.Models
             return new ItemKey(itemType, idPart);
         }
 
+        /// <summary>
+        /// Serializes to "ItemType:BaseItemTypeID" for use as a JSON object key.
+        /// </summary>
+        public override string ToString() => $"{ItemType}:{BaseItemTypeID}";
+
         public bool Equals(ItemKey other) =>
             ItemType == other.ItemType &&
             string.Equals(BaseItemTypeID, other.BaseItemTypeID, StringComparison.Ordinal);
@@ -65,14 +66,15 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class ItemLock
     {
-        public ItemKey Key { get; set; }
-        public int Quantity { get; set; }
-
         public ItemLock(ItemKey key, int quantity)
         {
             Key = key;
             Quantity = quantity;
         }
+
+        public ItemKey Key { get; set; }
+
+        public int Quantity { get; set; }
     }
 
     /// <summary>
@@ -82,11 +84,18 @@ namespace OE2EmpireTracker.Models
     [JsonConverter(typeof(LockTrackingJsonConverter))]
     public class LockTracking
     {
+        private readonly object _syncRoot = new object();
+
         // Outer key: process UUID. Inner key: item key. Value: locked quantity.
         private Dictionary<string, Dictionary<ItemKey, int>> _locks =
             new Dictionary<string, Dictionary<ItemKey, int>>();
 
-        private readonly object _syncRoot = new object();
+        /// <summary>
+        /// Exposes the raw lock data for JSON serialization only.
+        /// Use the public API methods for all other access.
+        /// </summary>
+        [JsonIgnore]
+        internal Dictionary<string, Dictionary<ItemKey, int>> RawLocks => _locks;
 
         /// <summary>
         /// Locks a quantity of a single item for the given process.
@@ -170,13 +179,6 @@ namespace OE2EmpireTracker.Models
                 _locks.Remove(processUUID);
             }
         }
-
-        /// <summary>
-        /// Exposes the raw lock data for JSON serialization only.
-        /// Use the public API methods for all other access.
-        /// </summary>
-        [JsonIgnore]
-        internal Dictionary<string, Dictionary<ItemKey, int>> RawLocks => _locks;
     }
 
     public class LockTrackingJsonConverter : JsonConverter<LockTracking>

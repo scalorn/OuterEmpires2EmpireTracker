@@ -10,25 +10,22 @@ namespace OE2EmpireTracker.Tests.Parsers
     [TestFixture]
     public class SurveyParserIdempotencyTests
     {
+        // -------------------------------------------------------------------
+        // AllSurveyFiles sweep property tests (Requirements 1.1--1.4)
+        // -------------------------------------------------------------------
+
+        private static readonly string[] SurveyFiles = new[]
+        {
+            "ZehVazoranIIM2.html",
+            "QuogarV2249II.html"
+        };
+
         private SurveyParser _parser;
 
         [SetUp]
         public void SetUp()
         {
             _parser = new SurveyParser();
-        }
-
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            string path = Path.Combine(baseDir, "TestData", filename);
-            return File.ReadAllText(path);
-        }
-
-        private static string ExtractFragment(string clipboardData)
-        {
-            return OE2EmpireTracker.Parsers.BlueprintScanner
-                .ExtractHtmlFragmentFromClipboardData(clipboardData);
         }
 
         // -------------------------------------------------------------------
@@ -105,16 +102,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             }
         }
 
-        // -------------------------------------------------------------------
-        // AllSurveyFiles sweep property tests (Requirements 1.1--1.4)
-        // -------------------------------------------------------------------
-
-        private static readonly string[] SurveyFiles = new[]
-        {
-            "ZehVazoranIIM2.html",
-            "QuogarV2249II.html"
-        };
-
         [Test]
         public void AllSurveyFiles_ParseTwice_ResourceCountUnchanged()
         {
@@ -190,6 +177,19 @@ namespace OE2EmpireTracker.Tests.Parsers
                         $"Amount mismatch in {filename} for {snapshot[i].Resource}");
                 }
             }
+        }
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            string path = Path.Combine(baseDir, "TestData", filename);
+            return File.ReadAllText(path);
+        }
+
+        private static string ExtractFragment(string clipboardData)
+        {
+            return OE2EmpireTracker.Parsers.BlueprintScanner
+                .ExtractHtmlFragmentFromClipboardData(clipboardData);
         }
     }
 }

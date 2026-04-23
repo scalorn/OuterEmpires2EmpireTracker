@@ -27,23 +27,6 @@ namespace OE2EmpireTracker
     /// </summary>
     public partial class FormBlueprintV2 : Form, IProgrammaticUpdateSource
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-
-        private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
-
-        private EmpireContext empireContext;
-        private PlayerContext playerContext;
-        private BlueprintViewModel viewModel;
-
-        // ListView sorting state
-        private int _sortColumn = 0;
-        private SortOrder _sortOrder = SortOrder.Ascending;
-
-        // Statistics grid structure cache key: "{typeId}|{extraKeysHash}"
-        private string _cachedGridKey;
-
         /// <summary>
         /// Extended 16-color Wong palette (8 base + 8 lighter tints) for colorblind-friendly chart lines.
         /// </summary>
@@ -68,6 +51,24 @@ namespace OE2EmpireTracker
             ColorTranslator.FromHtml("#EAAF80"), // light vermillion
             ColorTranslator.FromHtml("#E5BCD3"), // light reddish purple
         };
+
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        private int _isProgrammaticUpdate = 0;
+
+        private EmpireContext empireContext;
+
+        private PlayerContext playerContext;
+
+        private BlueprintViewModel viewModel;
+
+        // ListView sorting state
+        private int _sortColumn = 0;
+
+        private SortOrder _sortOrder = SortOrder.Ascending;
+
+        // Statistics grid structure cache key: "{typeId}|{extraKeysHash}"
+        private string _cachedGridKey;
 
         public FormBlueprintV2()
         {
@@ -157,6 +158,72 @@ namespace OE2EmpireTracker
             // Initial population
             RefreshBlueprintList();
             UpdateTitleBarCounts();
+        }
+
+        // -----------------------------------------------------------------------
+        // Delete Protection (Task 2.8)
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Returns the enabled state and text for the delete button based on reference count.
+        /// </summary>
+        internal static (bool enabled, string text) GetDeleteButtonState(ReferenceReport report)
+        {
+            if (report == null)
+                return (false, "Delete");
+
+            if (report.TotalCount > 0)
+                return (false, $"In Use ({report.TotalCount})");
+
+            return (true, "Delete");
+        }
+
+        // -----------------------------------------------------------------------
+        // Dynamic Title Bar (Task 2.9)
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Formats the title bar text with global and player blueprint counts.
+        /// </summary>
+        public static string FormatTitleBar(int globalCount, int playerCount)
+        {
+            return $"Blueprints - Global: {globalCount} Player: {playerCount}";
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.BlueprintDataChanged -= OnBlueprintDataChanged;
+            playerContext.PricingDataChanged -= OnPricingDataChanged;
+            base.OnFormClosed(e);
+        }
+
+        /// <summary>
+        /// Creates a BlueprintReferenceCounter from the current context data.
+        /// </summary>
+        private static BlueprintReferenceCounter CreateReferenceCounter()
+        {
+            var pc = PlayerContext.GetInstance();
+            var ec = EmpireContext.GetInstance();
+
+            var colonies = pc?.ColonyList as IEnumerable<Colony> ?? Enumerable.Empty<Colony>();
+            var allBlueprints = new List<Blueprint>();
+            if (pc?.BlueprintList != null) allBlueprints.AddRange(pc.BlueprintList);
+            if (ec?.GlobalBlueprintList != null) allBlueprints.AddRange(ec.GlobalBlueprintList);
+            var surveys = pc?.SurveyList as IEnumerable<Survey> ?? Enumerable.Empty<Survey>();
+            var buildPlans = pc?.BuildPlanList as IEnumerable<BuildPlan> ?? Enumerable.Empty<BuildPlan>();
+            var shipTemplates = pc?.ShipTemplateList as IEnumerable<ShipTemplate> ?? Enumerable.Empty<ShipTemplate>();
+            var ships = pc?.ShipList as IEnumerable<Ship> ?? Enumerable.Empty<Ship>();
+            var stations = pc?.StationList as IEnumerable<Station> ?? Enumerable.Empty<Station>();
+
+            var marketListings = pc?.MarketListingList as IEnumerable<MarketListing> ?? Enumerable.Empty<MarketListing>();
+
+            return new BlueprintReferenceCounter(colonies, allBlueprints, surveys, buildPlans, shipTemplates, ships, stations, marketListings);
         }
 
         // -----------------------------------------------------------------------
@@ -284,29 +351,6 @@ namespace OE2EmpireTracker
                 results.Count);
             sw.Stop();
             Log.Info("PERF RefreshBlueprintList: {0}ms", sw.ElapsedMilliseconds);
-        }
-
-        /// <summary>
-        /// Creates a BlueprintReferenceCounter from the current context data.
-        /// </summary>
-        private static BlueprintReferenceCounter CreateReferenceCounter()
-        {
-            var pc = PlayerContext.GetInstance();
-            var ec = EmpireContext.GetInstance();
-
-            var colonies = pc?.ColonyList as IEnumerable<Colony> ?? Enumerable.Empty<Colony>();
-            var allBlueprints = new List<Blueprint>();
-            if (pc?.BlueprintList != null) allBlueprints.AddRange(pc.BlueprintList);
-            if (ec?.GlobalBlueprintList != null) allBlueprints.AddRange(ec.GlobalBlueprintList);
-            var surveys = pc?.SurveyList as IEnumerable<Survey> ?? Enumerable.Empty<Survey>();
-            var buildPlans = pc?.BuildPlanList as IEnumerable<BuildPlan> ?? Enumerable.Empty<BuildPlan>();
-            var shipTemplates = pc?.ShipTemplateList as IEnumerable<ShipTemplate> ?? Enumerable.Empty<ShipTemplate>();
-            var ships = pc?.ShipList as IEnumerable<Ship> ?? Enumerable.Empty<Ship>();
-            var stations = pc?.StationList as IEnumerable<Station> ?? Enumerable.Empty<Station>();
-
-            var marketListings = pc?.MarketListingList as IEnumerable<MarketListing> ?? Enumerable.Empty<MarketListing>();
-
-            return new BlueprintReferenceCounter(colonies, allBlueprints, surveys, buildPlans, shipTemplates, ships, stations, marketListings);
         }
 
         /// <summary>
@@ -851,36 +895,6 @@ namespace OE2EmpireTracker
             var bs = new BindingSource();
             bs.DataSource = candidates;
             cmbBaseBlueprint.DataSource = bs;
-        }
-
-        // -----------------------------------------------------------------------
-        // Delete Protection (Task 2.8)
-        // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Returns the enabled state and text for the delete button based on reference count.
-        /// </summary>
-        internal static (bool enabled, string text) GetDeleteButtonState(ReferenceReport report)
-        {
-            if (report == null)
-                return (false, "Delete");
-
-            if (report.TotalCount > 0)
-                return (false, $"In Use ({report.TotalCount})");
-
-            return (true, "Delete");
-        }
-
-        // -----------------------------------------------------------------------
-        // Dynamic Title Bar (Task 2.9)
-        // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Formats the title bar text with global and player blueprint counts.
-        /// </summary>
-        public static string FormatTitleBar(int globalCount, int playerCount)
-        {
-            return $"Blueprints - Global: {globalCount} Player: {playerCount}";
         }
 
         /// <summary>
@@ -1729,15 +1743,6 @@ namespace OE2EmpireTracker
             }
 
             RefreshPricing();
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            playerContext.BlueprintDataChanged -= OnBlueprintDataChanged;
-            playerContext.PricingDataChanged -= OnPricingDataChanged;
-            base.OnFormClosed(e);
         }
 
         // -----------------------------------------------------------------------

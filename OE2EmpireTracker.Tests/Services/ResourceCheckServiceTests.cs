@@ -11,83 +11,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ResourceCheckServiceTests
     {
-        private Blueprint CreateBlueprint(
-            string uuid,
-            string name,
-            Dictionary<string,
-            string> resources)
-        {
-            var bp = new Blueprint(name) { UUID = uuid };
-            if (resources != null)
-            {
-                foreach (var kvp in resources)
-                    bp.Resources[kvp.Key] = kvp.Value;
-            }
-
-            return bp;
-        }
-
-        private ItemBag CreateInventory(params (string name, string purity, int qty)[] items)
-        {
-            var bag = new ItemBag();
-            foreach (var (name, purity, qty) in items)
-            {
-                var item = new Item(ItemType.ItemTypeEnum.Resource, name)
-                {
-                    UUID = Guid.NewGuid().ToString(),
-                    BaseItemTypeID = name,
-                    ResourcePurity = purity,
-                    Quantity = qty
-                };
-
-                bag.AddItem(item);
-            }
-
-            return bag;
-        }
-
-        private BuildItem CreateManufactoryItem(
-            string bpUUID,
-            int quantity,
-            string locationUUID = "")
-        {
-            return new BuildItem
-            {
-                UUID = Guid.NewGuid().ToString(),
-                ItemType = BuildItemType.Manufactory,
-                BlueprintUUID = bpUUID,
-                Quantity = quantity,
-                BuildLocationType = DestinationType.Colony,
-                BuildLocationUUID = locationUUID
-            };
-        }
-
-        private BuildItem CreateCommodityItem(
-            string commodityName,
-            int quantity,
-            string locationUUID = "")
-        {
-            return new BuildItem
-            {
-                UUID = Guid.NewGuid().ToString(),
-                ItemType = BuildItemType.Commodity,
-                CommodityName = commodityName,
-                Quantity = quantity,
-                BuildLocationType = DestinationType.Colony,
-                BuildLocationUUID = locationUUID
-            };
-        }
-
-        private Colony CreateColony(string uuid, ItemBag inventory)
-        {
-            return new Colony
-            {
-                UUID = uuid,
-                ColonyName = "Test Colony",
-                Items = inventory
-            };
-        }
-
         [Test]
         public void ComputeShortfalls_NullItem_Throws()
         {
@@ -464,6 +387,83 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.Throws<NotSupportedException>(() =>
                 ResourceCheckService.ComputePlanShortfalls(
                     plan, id => null, id => null, id => null, "p1", id => null));
+        }
+
+        private Blueprint CreateBlueprint(
+            string uuid,
+            string name,
+            Dictionary<string,
+            string> resources)
+        {
+            var bp = new Blueprint(name) { UUID = uuid };
+            if (resources != null)
+            {
+                foreach (var kvp in resources)
+                    bp.Resources[kvp.Key] = kvp.Value;
+            }
+
+            return bp;
+        }
+
+        private ItemBag CreateInventory(params (string name, string purity, int qty)[] items)
+        {
+            var bag = new ItemBag();
+            foreach (var (name, purity, qty) in items)
+            {
+                var item = new Item(ItemType.ItemTypeEnum.Resource, name)
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    BaseItemTypeID = name,
+                    ResourcePurity = purity,
+                    Quantity = qty
+                };
+
+                bag.AddItem(item);
+            }
+
+            return bag;
+        }
+
+        private BuildItem CreateManufactoryItem(
+            string bpUUID,
+            int quantity,
+            string locationUUID = "")
+        {
+            return new BuildItem
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ItemType = BuildItemType.Manufactory,
+                BlueprintUUID = bpUUID,
+                Quantity = quantity,
+                BuildLocationType = DestinationType.Colony,
+                BuildLocationUUID = locationUUID
+            };
+        }
+
+        private BuildItem CreateCommodityItem(
+            string commodityName,
+            int quantity,
+            string locationUUID = "")
+        {
+            return new BuildItem
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ItemType = BuildItemType.Commodity,
+                CommodityName = commodityName,
+                Quantity = quantity,
+                BuildLocationType = DestinationType.Colony,
+                BuildLocationUUID = locationUUID
+            };
+        }
+
+        private Colony CreateColony(string uuid, ItemBag inventory)
+        {
+            return new Colony
+            {
+                UUID = uuid,
+                ColonyName = "Test Colony",
+                Items = inventory
+            };
         }
     }
 }

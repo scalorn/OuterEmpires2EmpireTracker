@@ -10,6 +10,12 @@ namespace OE2EmpireTracker.Models
 {
     public class ItemType
     {
+        private static List<ItemType> _itemTypes = GetItemTypes();
+
+        private static Dictionary<ItemTypeEnum, ItemType> _itemTypeMapByEnum;
+
+        private static Dictionary<string, ItemType> _itemTypeMapByString;
+
         public enum ItemTypeEnum
         {
             None = 0,
@@ -27,16 +33,15 @@ namespace OE2EmpireTracker.Models
             Crate
         }
 
-        public ItemTypeEnum ID { get; set; }
-        public string Name { get; set; }
-
-        private static List<ItemType> _itemTypes = GetItemTypes();
-        private static Dictionary<ItemTypeEnum, ItemType> _itemTypeMapByEnum;
-        private static Dictionary<string, ItemType> _itemTypeMapByString;
-
         public static IReadOnlyList<ItemType> ItemTypes => _itemTypes.AsReadOnly();
+
         public static IReadOnlyDictionary<ItemTypeEnum, ItemType> ItemTypeMapByEnum => _itemTypeMapByEnum;
+
         public static IReadOnlyDictionary<string, ItemType> ItemTypeMapByString => _itemTypeMapByString;
+
+        public ItemTypeEnum ID { get; set; }
+
+        public string Name { get; set; }
 
         private static List<ItemType> GetItemTypes()
         {

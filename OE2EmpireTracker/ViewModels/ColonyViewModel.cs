@@ -13,20 +13,10 @@ namespace OE2EmpireTracker.ViewModels
     public class ColonyViewModel
     {
         private readonly Colony _colony;
+
         private readonly PlayerContext _playerContext;
+
         private readonly ColonyStatusCalculator _calculator;
-        private List<ColonyStructureViewModel> _cachedStructureVMs;
-
-        public Colony Data => _colony;
-
-        public ColonyStatusCalculator Calculator => _calculator;
-
-        public ColonyViewModel(Colony colony, PlayerContext playerContext)
-        {
-            _colony = colony ?? throw new ArgumentNullException(nameof(colony));
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
-            _calculator = new ColonyStatusCalculator(_colony);
-        }
 
         // -----------------------------------------------------------------------
         // Colony identity
@@ -43,8 +33,6 @@ namespace OE2EmpireTracker.ViewModels
             get => _colony.ColonyName;
             set => _colony.ColonyName = value;
         }
-
-        public string UUID => _colony.UUID;
 
         // -----------------------------------------------------------------------
         // Structure management
@@ -64,6 +52,21 @@ namespace OE2EmpireTracker.ViewModels
                 return _cachedStructureVMs.AsReadOnly();
             }
         }
+
+        private List<ColonyStructureViewModel> _cachedStructureVMs;
+
+        public ColonyViewModel(Colony colony, PlayerContext playerContext)
+        {
+            _colony = colony ?? throw new ArgumentNullException(nameof(colony));
+            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+            _calculator = new ColonyStatusCalculator(_colony);
+        }
+
+        public Colony Data => _colony;
+
+        public ColonyStatusCalculator Calculator => _calculator;
+
+        public string UUID => _colony.UUID;
 
         /// <summary>
         /// Clears the cached StructureViewModels so the next access rebuilds from the colony's Structures list.

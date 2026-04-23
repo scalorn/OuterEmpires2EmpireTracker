@@ -9,39 +9,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class CargoVolumeServiceTests
     {
-        private OE2EmpireTracker.Models.Blueprint MakeBlueprint(
-            string uuid,
-            string name,
-            decimal cargoVolumeSize = 0m,
-            decimal mass = 0m,
-            string bpType = "Component")
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name)
-            {
-                UUID = uuid,
-                BluePrintType = bpType
-            };
-
-            if (cargoVolumeSize > 0)
-                bp.Properties.SetProperty("Cargo Volume Size", cargoVolumeSize);
-            if (mass > 0)
-                bp.Properties.SetProperty("Mass", mass);
-            return bp;
-        }
-
-        private Func<string, OE2EmpireTracker.Models.Blueprint> MakeFinder(
-            params OE2EmpireTracker.Models.Blueprint[] blueprints)
-        {
-            var dict = new Dictionary<string, OE2EmpireTracker.Models.Blueprint>();
-            foreach (var bp in blueprints)
-                dict[bp.UUID] = bp;
-            return uuid =>
-            {
-                dict.TryGetValue(uuid, out var found);
-                return found;
-            };
-        }
-
         [Test]
         public void ComputeLoadVolume_EmptyList_ReturnsZero()
         {
@@ -408,6 +375,39 @@ namespace OE2EmpireTracker.Tests.Services
 
             decimal vol = CargoVolumeService.GetItemVolume(item, finder);
             Assert.That(vol, Is.EqualTo(500m));
+        }
+
+        private OE2EmpireTracker.Models.Blueprint MakeBlueprint(
+            string uuid,
+            string name,
+            decimal cargoVolumeSize = 0m,
+            decimal mass = 0m,
+            string bpType = "Component")
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name)
+            {
+                UUID = uuid,
+                BluePrintType = bpType
+            };
+
+            if (cargoVolumeSize > 0)
+                bp.Properties.SetProperty("Cargo Volume Size", cargoVolumeSize);
+            if (mass > 0)
+                bp.Properties.SetProperty("Mass", mass);
+            return bp;
+        }
+
+        private Func<string, OE2EmpireTracker.Models.Blueprint> MakeFinder(
+            params OE2EmpireTracker.Models.Blueprint[] blueprints)
+        {
+            var dict = new Dictionary<string, OE2EmpireTracker.Models.Blueprint>();
+            foreach (var bp in blueprints)
+                dict[bp.UUID] = bp;
+            return uuid =>
+            {
+                dict.TryGetValue(uuid, out var found);
+                return found;
+            };
         }
     }
 }

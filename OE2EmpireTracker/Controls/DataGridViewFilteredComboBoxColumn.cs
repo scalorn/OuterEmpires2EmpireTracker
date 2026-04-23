@@ -12,12 +12,6 @@ namespace OE2EmpireTracker.Controls
     /// </summary>
     public class DataGridViewFilteredComboBoxColumn : DataGridViewColumn
     {
-        public List<string> Items { get; set; } = new List<string>();
-
-        public DataGridViewFilteredComboBoxColumn() : base(new DataGridViewFilteredComboBoxCell())
-        {
-        }
-
         public override DataGridViewCell CellTemplate
         {
             get => base.CellTemplate;
@@ -28,6 +22,12 @@ namespace OE2EmpireTracker.Controls
                 base.CellTemplate = value;
             }
         }
+
+        public DataGridViewFilteredComboBoxColumn() : base(new DataGridViewFilteredComboBoxCell())
+        {
+        }
+
+        public List<string> Items { get; set; } = new List<string>();
     }
 
     /// <summary>
@@ -36,15 +36,15 @@ namespace OE2EmpireTracker.Controls
     /// </summary>
     public class DataGridViewFilteredComboBoxCell : DataGridViewCell
     {
-        public List<string> Items { get; set; }
-
-        public override Type EditType => typeof(DataGridViewFilteredComboBoxEditingControl);
-
         public override Type ValueType
         {
             get => typeof(string);
             set { }
         }
+
+        public List<string> Items { get; set; }
+
+        public override Type EditType => typeof(DataGridViewFilteredComboBoxEditingControl);
 
         public override object DefaultNewRowValue => string.Empty;
 
@@ -123,27 +123,6 @@ namespace OE2EmpireTracker.Controls
     /// </summary>
     public class DataGridViewFilteredComboBoxEditingControl : FilteredTextComboSet, IDataGridViewEditingControl
     {
-        private DataGridView _dataGridView;
-        private bool _valueChanged;
-        private int _rowIndex;
-
-        public DataGridViewFilteredComboBoxEditingControl()
-        {
-            // Strip borders for inline grid editing — the cell provides the border
-            BorderStyle = BorderStyle.None;
-            TxtFilter.BorderStyle = BorderStyle.None;
-            // Always show filter in grid mode — the grid handles focus
-            IsEditing = true;
-            TxtFilter.Visible = true;
-        }
-
-        protected override void OnSelectedItemChanged()
-        {
-            base.OnSelectedItemChanged();
-            _valueChanged = true;
-            _dataGridView?.NotifyCurrentCellDirty(true);
-        }
-
         public DataGridView EditingControlDataGridView
         {
             get => _dataGridView;
@@ -171,6 +150,22 @@ namespace OE2EmpireTracker.Controls
         {
             get => _valueChanged;
             set => _valueChanged = value;
+        }
+
+        private DataGridView _dataGridView;
+
+        private bool _valueChanged;
+
+        private int _rowIndex;
+
+        public DataGridViewFilteredComboBoxEditingControl()
+        {
+            // Strip borders for inline grid editing — the cell provides the border
+            BorderStyle = BorderStyle.None;
+            TxtFilter.BorderStyle = BorderStyle.None;
+            // Always show filter in grid mode — the grid handles focus
+            IsEditing = true;
+            TxtFilter.Visible = true;
         }
 
         public Cursor EditingPanelCursor => Cursors.IBeam;
@@ -214,6 +209,13 @@ namespace OE2EmpireTracker.Controls
         {
             ResetFilter();
             TxtFilter.Focus();
+        }
+
+        protected override void OnSelectedItemChanged()
+        {
+            base.OnSelectedItemChanged();
+            _valueChanged = true;
+            _dataGridView?.NotifyCurrentCellDirty(true);
         }
     }
 }

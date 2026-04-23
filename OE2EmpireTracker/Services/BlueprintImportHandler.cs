@@ -68,17 +68,6 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Result of FindTarget — contains the matched blueprint (or null) and routing info.
-        /// </summary>
-        public class FindTargetResult
-        {
-            public Blueprint Target { get; set; }
-            public bool IsNew => Target == null;
-            public bool IsGlobal { get; set; }
-            public bool IsSelectedMatch { get; set; }
-        }
-
-        /// <summary>
         /// Finds the target blueprint for a full import. Checks selected match first,
         /// then dedup in the appropriate list.
         /// </summary>
@@ -212,6 +201,17 @@ namespace OE2EmpireTracker.Services
 
             pc.OnBlueprintDataChanged(importedBP.UUID);
             return importedBP;
+        }
+
+        /// <summary>
+        /// Result of FindTarget — contains the matched blueprint (or null) and routing info.
+        /// </summary>
+        public class FindTargetResult
+        {
+            public Blueprint Target { get; set; }
+            public bool IsNew => Target == null;
+            public bool IsGlobal { get; set; }
+            public bool IsSelectedMatch { get; set; }
         }
     }
 }

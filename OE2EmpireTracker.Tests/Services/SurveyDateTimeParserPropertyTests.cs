@@ -14,89 +14,6 @@ namespace OE2EmpireTracker.Tests.Services
             { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
 
         /// <summary>
-        /// Generates valid game-format strings like "27JUL24-11:44p".
-        /// Uses day 01-28 to avoid month-length issues.
-        /// </summary>
-        private static Gen<string> ValidGameFormatStringGen()
-        {
-            return from day in Gen.Choose(1, 28)
-                   from monthIdx in Gen.Choose(0, 11)
-                   from year in Gen.Choose(0, 99)
-                   from hour in Gen.Choose(1, 12)
-                   from minute in Gen.Choose(0, 59)
-                   from suffix in Gen.Elements('a', 'p')
-                   select $"{day:D2}{Months[monthIdx]}{year:D2}-{hour}:{minute:D2}{suffix}";
-        }
-
-        /// <summary>
-        /// Generates valid DateTime values with minute precision (seconds=0).
-        /// Constrained to years 2000-2099 to match two-digit year range.
-        /// Produces UTC DateTimes (DateTimeKind.Utc).
-        /// </summary>
-        private static Gen<DateTime> ValidDateTimeGen()
-        {
-            return from year in Gen.Choose(2000, 2099)
-                   from month in Gen.Choose(1, 12)
-                   from day in Gen.Choose(1, 28)
-                   from hour in Gen.Choose(0, 23)
-                   from minute in Gen.Choose(0, 59)
-                   select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
-        }
-
-        /// <summary>
-        /// Generates valid ISO strings from random DateTimes.
-        /// </summary>
-        private static Gen<string> ValidIsoStringGen()
-        {
-            return ValidDateTimeGen().Select(dt => SurveyDateTimeParser.ToIsoString(dt));
-        }
-
-        /// <summary>
-        /// Generates strings that do NOT match the game date/time regex.
-        /// Includes random strings, partial matches, wrong-case months, etc.
-        /// </summary>
-        private static Gen<string> InvalidGameFormatStringGen()
-        {
-            var randomString = Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
-            var wrongCaseMonth = from day in Gen.Choose(1, 28)
-                                 from month in Gen.Elements("jan", "Feb", "mAr", "apr")
-                                 from year in Gen.Choose(0, 99)
-                                 from hour in Gen.Choose(1, 12)
-                                 from minute in Gen.Choose(0, 59)
-                                 from suffix in Gen.Elements('a', 'p')
-                                 select $"{day:D2}{month}{year:D2}-{hour}:{minute:D2}{suffix}";
-            var missingDash = from day in Gen.Choose(1, 28)
-                              from monthIdx in Gen.Choose(0, 11)
-                              from year in Gen.Choose(0, 99)
-                              from hour in Gen.Choose(1, 12)
-                              from minute in Gen.Choose(0, 59)
-                              select $"{day:D2}{Months[monthIdx]}{year:D2}{hour}:{minute:D2}p";
-            var badSuffix = from day in Gen.Choose(1, 28)
-                            from monthIdx in Gen.Choose(0, 11)
-                            from year in Gen.Choose(0, 99)
-                            from hour in Gen.Choose(1, 12)
-                            from minute in Gen.Choose(0, 59)
-                            from suffix in Gen.Elements('x', 'A', 'P', 'z')
-                            select $"{day:D2}{Months[monthIdx]}{year:D2}-{hour}:{minute:D2}{suffix}";
-            var emptyString = Gen.Constant(string.Empty);
-            var isoString = ValidIsoStringGen();
-
-            return Gen.OneOf(randomString, wrongCaseMonth, missingDash, badSuffix, emptyString, isoString);
-        }
-
-        /// <summary>
-        /// Generates strings that are NOT valid ISO 8601 (for Property 5).
-        /// </summary>
-        private static Gen<string> NonIsoStringGen()
-        {
-            var randomString = Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
-            var gameFormat = ValidGameFormatStringGen();
-            var plainText = Gen.Elements("hello", "not-a-date", "2024/07/27", "27-07-2024", "abc123");
-
-            return Gen.OneOf(randomString, gameFormat, plainText);
-        }
-
-        /// <summary>
         /// Feature: survey-datetime-normalization, Property 1: Game format round-trip.
         /// For any valid game-format date/time string, parsing it to DateTime via TryParseGameFormat,
         /// formatting to ISO via ToIsoString, then parsing the ISO string back via TryParseIso
@@ -254,6 +171,89 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"Sort mismatch: A={pair.A:O} ('{isoA}'), B={pair.B:O} ('{isoB}'), " +
                            $"dateTimeCompare={dateTimeComparison}, stringCompare={stringComparison}");
             });
+        }
+
+        /// <summary>
+        /// Generates valid game-format strings like "27JUL24-11:44p".
+        /// Uses day 01-28 to avoid month-length issues.
+        /// </summary>
+        private static Gen<string> ValidGameFormatStringGen()
+        {
+            return from day in Gen.Choose(1, 28)
+                   from monthIdx in Gen.Choose(0, 11)
+                   from year in Gen.Choose(0, 99)
+                   from hour in Gen.Choose(1, 12)
+                   from minute in Gen.Choose(0, 59)
+                   from suffix in Gen.Elements('a', 'p')
+                   select $"{day:D2}{Months[monthIdx]}{year:D2}-{hour}:{minute:D2}{suffix}";
+        }
+
+        /// <summary>
+        /// Generates valid DateTime values with minute precision (seconds=0).
+        /// Constrained to years 2000-2099 to match two-digit year range.
+        /// Produces UTC DateTimes (DateTimeKind.Utc).
+        /// </summary>
+        private static Gen<DateTime> ValidDateTimeGen()
+        {
+            return from year in Gen.Choose(2000, 2099)
+                   from month in Gen.Choose(1, 12)
+                   from day in Gen.Choose(1, 28)
+                   from hour in Gen.Choose(0, 23)
+                   from minute in Gen.Choose(0, 59)
+                   select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
+        }
+
+        /// <summary>
+        /// Generates valid ISO strings from random DateTimes.
+        /// </summary>
+        private static Gen<string> ValidIsoStringGen()
+        {
+            return ValidDateTimeGen().Select(dt => SurveyDateTimeParser.ToIsoString(dt));
+        }
+
+        /// <summary>
+        /// Generates strings that do NOT match the game date/time regex.
+        /// Includes random strings, partial matches, wrong-case months, etc.
+        /// </summary>
+        private static Gen<string> InvalidGameFormatStringGen()
+        {
+            var randomString = Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
+            var wrongCaseMonth = from day in Gen.Choose(1, 28)
+                                 from month in Gen.Elements("jan", "Feb", "mAr", "apr")
+                                 from year in Gen.Choose(0, 99)
+                                 from hour in Gen.Choose(1, 12)
+                                 from minute in Gen.Choose(0, 59)
+                                 from suffix in Gen.Elements('a', 'p')
+                                 select $"{day:D2}{month}{year:D2}-{hour}:{minute:D2}{suffix}";
+            var missingDash = from day in Gen.Choose(1, 28)
+                              from monthIdx in Gen.Choose(0, 11)
+                              from year in Gen.Choose(0, 99)
+                              from hour in Gen.Choose(1, 12)
+                              from minute in Gen.Choose(0, 59)
+                              select $"{day:D2}{Months[monthIdx]}{year:D2}{hour}:{minute:D2}p";
+            var badSuffix = from day in Gen.Choose(1, 28)
+                            from monthIdx in Gen.Choose(0, 11)
+                            from year in Gen.Choose(0, 99)
+                            from hour in Gen.Choose(1, 12)
+                            from minute in Gen.Choose(0, 59)
+                            from suffix in Gen.Elements('x', 'A', 'P', 'z')
+                            select $"{day:D2}{Months[monthIdx]}{year:D2}-{hour}:{minute:D2}{suffix}";
+            var emptyString = Gen.Constant(string.Empty);
+            var isoString = ValidIsoStringGen();
+
+            return Gen.OneOf(randomString, wrongCaseMonth, missingDash, badSuffix, emptyString, isoString);
+        }
+
+        /// <summary>
+        /// Generates strings that are NOT valid ISO 8601 (for Property 5).
+        /// </summary>
+        private static Gen<string> NonIsoStringGen()
+        {
+            var randomString = Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
+            var gameFormat = ValidGameFormatStringGen();
+            var plainText = Gen.Elements("hello", "not-a-date", "2024/07/27", "27-07-2024", "abc123");
+
+            return Gen.OneOf(randomString, gameFormat, plainText);
         }
     }
 }

@@ -44,12 +44,82 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class IconPositionExtractorTests
     {
+        /// <summary>
+        /// Default Properties array for commodity factory BlueprintType entries.
+        /// Matches the properties defined in Task 4.1 for per-industry entries.
+        /// </summary>
+        private static readonly string[] DefaultCommodityFactoryProperties = new[]
+        {
+            "Commodity Industry",
+            "Manufacture Run Time",
+            "Mass",
+            "Cargo Volume Size",
+            "Structural Integrity",
+            "Power Required",
+            "Can Research",
+            "Can Manufacture",
+            "Max Per Colony",
+            "Blue Collar Detail",
+            "Unassigned White Collar Detail"
+        };
+
         [SetUp]
         public void SetUp()
         {
             EmpireContext.Reset();
             TestHelper.SetEmpireFilePath();
             EmpireContext.GetInstance();
+        }
+
+        [Test]
+        public void ExtractIconsFromAllSamples_FindsIcons()
+        {
+            var icons = ExtractIconsFromAllSamples();
+
+            TestContext.WriteLine($"Total extracted icons: {icons.Count}");
+            foreach (var icon in icons)
+            {
+                string typeLabel = icon.ResolvedTypeId ?? "UNKNOWN";
+                TestContext.WriteLine(
+                    $"  {icon.IconPosition} -> {typeLabel} ({icon.BlueprintName}) [{icon.SourceFile}]");
+            }
+
+            Assert.That(
+                icons,
+                Is.Not.Empty,
+                "Expected at least one icon extracted from MarketSample HTML files");
+        }
+
+        /// <summary>
+        /// Main "run on demand" test that the developer executes whenever the game
+        /// updates its sprite sheet. Calls all helpers in sequence:
+        /// extract -> compare &amp; update -> ensure commodity entries -> write files -> produce gap report.
+        /// </summary>
+        [Test]
+        public void ExtractAndUpdateIconPositions()
+        {
+            // 1. Extract all icons from every MarketSample*.html file
+            var extracted = ExtractIconsFromAllSamples();
+            Assert.That(
+                extracted,
+                Is.Not.Empty,
+                "Expected at least one icon extracted from MarketSample HTML files");
+
+            // 2. Compare extracted positions against BaselineData and apply updates
+            var baselineRoot = CompareAndUpdateBaselineData(extracted);
+            Assert.That(
+                baselineRoot,
+                Is.Not.Null,
+                "CompareAndUpdateBaselineData should return a non-null JObject");
+
+            // 3. Ensure all 14 per-industry CommodityFactory entries exist
+            EnsureCommodityFactoryEntries(baselineRoot);
+
+            // 4. Write updated BaselineData to both main and test directories
+            WriteBothBaselineFiles(baselineRoot);
+
+            // 5. Produce the coverage gap report
+            ProduceCoverageGapReport(baselineRoot, extracted);
         }
 
         /// <summary>
@@ -323,25 +393,6 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
-        /// Default Properties array for commodity factory BlueprintType entries.
-        /// Matches the properties defined in Task 4.1 for per-industry entries.
-        /// </summary>
-        private static readonly string[] DefaultCommodityFactoryProperties = new[]
-        {
-            "Commodity Industry",
-            "Manufacture Run Time",
-            "Mass",
-            "Cargo Volume Size",
-            "Structural Integrity",
-            "Power Required",
-            "Can Research",
-            "Can Manufacture",
-            "Max Per Colony",
-            "Blue Collar Detail",
-            "Unassigned White Collar Detail"
-        };
-
-        /// <summary>
         /// Ensures all 14 per-industry CommodityFactory BlueprintType entries exist
         /// in the BaselineData JObject. Iterates over all CommodityIndustryEnum values
         /// (excluding None), checks for existing entries by Id, and creates missing
@@ -527,57 +578,6 @@ namespace OE2EmpireTracker.Tests.Services
             }
 
             TestContext.WriteLine("========================================");
-        }
-
-        [Test]
-        public void ExtractIconsFromAllSamples_FindsIcons()
-        {
-            var icons = ExtractIconsFromAllSamples();
-
-            TestContext.WriteLine($"Total extracted icons: {icons.Count}");
-            foreach (var icon in icons)
-            {
-                string typeLabel = icon.ResolvedTypeId ?? "UNKNOWN";
-                TestContext.WriteLine(
-                    $"  {icon.IconPosition} -> {typeLabel} ({icon.BlueprintName}) [{icon.SourceFile}]");
-            }
-
-            Assert.That(
-                icons,
-                Is.Not.Empty,
-                "Expected at least one icon extracted from MarketSample HTML files");
-        }
-
-        /// <summary>
-        /// Main "run on demand" test that the developer executes whenever the game
-        /// updates its sprite sheet. Calls all helpers in sequence:
-        /// extract -> compare &amp; update -> ensure commodity entries -> write files -> produce gap report.
-        /// </summary>
-        [Test]
-        public void ExtractAndUpdateIconPositions()
-        {
-            // 1. Extract all icons from every MarketSample*.html file
-            var extracted = ExtractIconsFromAllSamples();
-            Assert.That(
-                extracted,
-                Is.Not.Empty,
-                "Expected at least one icon extracted from MarketSample HTML files");
-
-            // 2. Compare extracted positions against BaselineData and apply updates
-            var baselineRoot = CompareAndUpdateBaselineData(extracted);
-            Assert.That(
-                baselineRoot,
-                Is.Not.Null,
-                "CompareAndUpdateBaselineData should return a non-null JObject");
-
-            // 3. Ensure all 14 per-industry CommodityFactory entries exist
-            EnsureCommodityFactoryEntries(baselineRoot);
-
-            // 4. Write updated BaselineData to both main and test directories
-            WriteBothBaselineFiles(baselineRoot);
-
-            // 5. Produce the coverage gap report
-            ProduceCoverageGapReport(baselineRoot, extracted);
         }
     }
 }

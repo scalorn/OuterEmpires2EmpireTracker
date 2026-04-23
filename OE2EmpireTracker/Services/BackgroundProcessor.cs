@@ -10,27 +10,26 @@ namespace OE2EmpireTracker.Services
 {
     public class BackgroundProcessor : IDisposable
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-
         public const int TickIntervalMs = 60_000;
+
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly PlayerContext _playerContext;
 
-        /// <summary>
-        /// Reads the background processing interval from user preferences,
-        /// enforcing a minimum of 1000ms.
-        /// </summary>
-        private int GetTickIntervalMs()
-        {
-            var intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.BackgroundProcessingIntervalSeconds * 1000);
-            return Math.Max(intervalMs, 1000);
-        }
+        private readonly ManualResetEventSlim _stopping = new ManualResetEventSlim(false);
+
+        private readonly object _cycleLock = new object();
 
         private Timer _timer;
-        private readonly ManualResetEventSlim _stopping = new ManualResetEventSlim(false);
-        private readonly object _cycleLock = new object();
+
         private bool _disposed;
+
         private bool _running;
+
+        public BackgroundProcessor(PlayerContext playerContext)
+        {
+            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        }
 
         /// <summary>
         /// When the next processing cycle is scheduled to run.
@@ -42,9 +41,23 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public bool LastCycleHadError { get; private set; }
 
-        public BackgroundProcessor(PlayerContext playerContext)
+        /// <summary>
+        /// Attempts to advance a build item's status to the target status.
+        /// Status can only advance (never decrease) based on ordinal value:
+        /// Staged(0) -> Delivering(1) -> Ready(2) -> InProgress(3) -> Completed(4).
+        /// Returns true if the status was changed.
+        /// </summary>
+        public static bool TryAdvanceStatus(BuildItem item, BuildItemStatus targetStatus)
         {
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+            if (item == null) throw new ArgumentNullException(nameof(item));
+
+            if ((int)targetStatus > (int)item.Status)
+            {
+                item.Status = targetStatus;
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -116,6 +129,16 @@ namespace OE2EmpireTracker.Services
         public void RunCycleOnce()
         {
             ExecuteCycle();
+        }
+
+        /// <summary>
+        /// Reads the background processing interval from user preferences,
+        /// enforcing a minimum of 1000ms.
+        /// </summary>
+        private int GetTickIntervalMs()
+        {
+            var intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.BackgroundProcessingIntervalSeconds * 1000);
+            return Math.Max(intervalMs, 1000);
         }
 
         private void OnTimerTick(object state)
@@ -442,25 +465,6 @@ namespace OE2EmpireTracker.Services
                 sw.ElapsedMilliseconds);
 
             return modifiedPlanUUIDs;
-        }
-
-        /// <summary>
-        /// Attempts to advance a build item's status to the target status.
-        /// Status can only advance (never decrease) based on ordinal value:
-        /// Staged(0) -> Delivering(1) -> Ready(2) -> InProgress(3) -> Completed(4).
-        /// Returns true if the status was changed.
-        /// </summary>
-        public static bool TryAdvanceStatus(BuildItem item, BuildItemStatus targetStatus)
-        {
-            if (item == null) throw new ArgumentNullException(nameof(item));
-
-            if ((int)targetStatus > (int)item.Status)
-            {
-                item.Status = targetStatus;
-                return true;
-            }
-
-            return false;
         }
 
         /// <summary>

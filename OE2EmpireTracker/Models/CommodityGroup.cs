@@ -8,6 +8,12 @@ namespace OE2EmpireTracker.Models
 {
     public class CommodityGroup
     {
+        private static List<CommodityGroup> _commodityGroups = GetCommodityGroups();
+
+        private static Dictionary<CommodityGroupEnum, CommodityGroup> _commodityGroupMapByEnum;
+
+        private static Dictionary<string, CommodityGroup> _commodityGroupMapByString;
+
         public enum CommodityGroupEnum
         {
             None = 0,
@@ -27,16 +33,15 @@ namespace OE2EmpireTracker.Models
             HiTech
         }
 
-        public CommodityGroupEnum ID { get; set; } = CommodityGroupEnum.None;
-        public string Name { get; set; } =  string.Empty;
-
-        private static List<CommodityGroup> _commodityGroups = GetCommodityGroups();
-        private static Dictionary<CommodityGroupEnum, CommodityGroup> _commodityGroupMapByEnum;
-        private static Dictionary<string, CommodityGroup> _commodityGroupMapByString;
-
         public static IReadOnlyList<CommodityGroup> Groups => _commodityGroups.AsReadOnly();
+
         public static IReadOnlyDictionary<CommodityGroupEnum, CommodityGroup> CommodityGroupMapByEnum => _commodityGroupMapByEnum;
+
         public static IReadOnlyDictionary<string, CommodityGroup> CommodityGroupMapByString => _commodityGroupMapByString;
+
+        public CommodityGroupEnum ID { get; set; } = CommodityGroupEnum.None;
+
+        public string Name { get; set; } =  string.Empty;
 
         private static List<CommodityGroup> GetCommodityGroups()
         {

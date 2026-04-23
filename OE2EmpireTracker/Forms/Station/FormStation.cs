@@ -13,11 +13,11 @@ namespace OE2EmpireTracker.Forms.Station
     public partial class FormStation : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         private PlayerContext playerContext;
+
         private Models.Station _selectedStation;
 
         public FormStation()
@@ -65,6 +65,16 @@ namespace OE2EmpireTracker.Forms.Station
             flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            base.OnFormClosed(e);
         }
 
         // Layout
@@ -801,12 +811,6 @@ namespace OE2EmpireTracker.Forms.Station
             _selectedStation = null;
             PopulateStationList();
             ClearForm();
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            base.OnFormClosed(e);
         }
     }
 }

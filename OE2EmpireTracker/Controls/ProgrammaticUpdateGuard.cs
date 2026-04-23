@@ -26,6 +26,7 @@ namespace OE2EmpireTracker.Controls
     public class ProgrammaticUpdateGuard : System.IDisposable
     {
         private readonly IProgrammaticUpdateSource _source;
+
         private bool _hasLocked;
 
         public ProgrammaticUpdateGuard(IProgrammaticUpdateSource source)
@@ -33,6 +34,11 @@ namespace OE2EmpireTracker.Controls
             _source = source;
             _source.BeginProgrammaticUpdate();
             _hasLocked = true;
+        }
+
+        ~ProgrammaticUpdateGuard()
+        {
+            Release();
         }
 
         public void Release()
@@ -45,11 +51,6 @@ namespace OE2EmpireTracker.Controls
         }
 
         public void Dispose()
-        {
-            Release();
-        }
-
-        ~ProgrammaticUpdateGuard()
         {
             Release();
         }

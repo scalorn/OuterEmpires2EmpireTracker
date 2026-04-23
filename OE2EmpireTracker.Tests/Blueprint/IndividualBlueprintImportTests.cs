@@ -28,12 +28,6 @@ namespace OE2EmpireTracker.Tests.Blueprint
             _scanner = new BlueprintScanner();
         }
 
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
-        }
-
         // -------------------------------------------------------------------
         // Stats tab -- full-page HTML with clipboard header
         // -------------------------------------------------------------------
@@ -244,6 +238,12 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 bpClean.Name,
                 Is.EqualTo("WSMS-LL Jump Drive"),
                 "Extracted fragment should produce the correct name");
+        }
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
         }
     }
 }

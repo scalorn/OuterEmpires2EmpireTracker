@@ -14,8 +14,11 @@ namespace OE2EmpireTracker.Tests.Parsers
     public class ColonyParserTests
     {
         private ColonyParser _parser;
+
         private EmpireContext _empireContext;
+
         private string _originalEmpireFilePath;
+
         private string _originalPlayerFilePath;
 
         [SetUp]
@@ -37,31 +40,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             EmpireContext.Reset();
             EmpireContext.FilePath = _originalEmpireFilePath;
             PlayerContext.FilePath = _originalPlayerFilePath;
-        }
-
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
-        }
-
-        private static string ExtractFragment(string clipboardData)
-        {
-            return OE2EmpireTracker.Parsers.BlueprintScanner
-                .ExtractHtmlFragmentFromClipboardData(clipboardData);
-        }
-
-        // -------------------------------------------------------------------
-        // M1 (local colony) -- full planet overview + colony-buildings JSON
-        // -------------------------------------------------------------------
-
-        private Colony ParseM1()
-        {
-            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
-            string html = ExtractFragment(clipboardData);
-            var colony = new Colony();
-            _parser.ProcessHtml(colony, html, _empireContext);
-            return colony;
         }
 
         [Test]
@@ -183,19 +161,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             }
         }
 
-        // -------------------------------------------------------------------
-        // M2-2 (non-local colony with commodity demands)
-        // -------------------------------------------------------------------
-
-        private Colony ParseM2_2()
-        {
-            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM2-2.html");
-            string html = ExtractFragment(clipboardData);
-            var colony = new Colony();
-            _parser.ProcessHtml(colony, html, _empireContext);
-            return colony;
-        }
-
         [Test]
         public void M2_2_ParsesCommodityDemands()
         {
@@ -217,19 +182,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(drones.NeedBy, Is.GreaterThan(DateTime.MinValue));
         }
 
-        // -------------------------------------------------------------------
-        // M2 (non-local colony, no planet overview)
-        // -------------------------------------------------------------------
-
-        private Colony ParseM2()
-        {
-            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM2.html");
-            string html = ExtractFragment(clipboardData);
-            var colony = new Colony();
-            _parser.ProcessHtml(colony, html, _empireContext);
-            return colony;
-        }
-
         [Test]
         public void M2_SystemNameFromLocationBar()
         {
@@ -239,19 +191,6 @@ namespace OE2EmpireTracker.Tests.Parsers
                 colony.SystemName,
                 Is.Not.Null.And.Not.Empty,
                 "System name should be extracted from location bar for non-local colonies");
-        }
-
-        // -------------------------------------------------------------------
-        // VI-1 (non-local colony with commodity factory buildings)
-        // -------------------------------------------------------------------
-
-        private Colony ParseVI1()
-        {
-            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranVI-1.html");
-            string html = ExtractFragment(clipboardData);
-            var colony = new Colony();
-            _parser.ProcessHtml(colony, html, _empireContext);
-            return colony;
         }
 
         [Test]
@@ -344,6 +283,70 @@ namespace OE2EmpireTracker.Tests.Parsers
             ColonyParser.ParseMiningResource(structure, "Iron Ore");
             Assert.That(structure.MiningSurveyResource, Is.EqualTo("Iron Ore"));
             Assert.That(structure.RefiningResourcePurity, Is.Null);
+        }
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
+        }
+
+        private static string ExtractFragment(string clipboardData)
+        {
+            return OE2EmpireTracker.Parsers.BlueprintScanner
+                .ExtractHtmlFragmentFromClipboardData(clipboardData);
+        }
+
+        // -------------------------------------------------------------------
+        // M1 (local colony) -- full planet overview + colony-buildings JSON
+        // -------------------------------------------------------------------
+
+        private Colony ParseM1()
+        {
+            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM1.html");
+            string html = ExtractFragment(clipboardData);
+            var colony = new Colony();
+            _parser.ProcessHtml(colony, html, _empireContext);
+            return colony;
+        }
+
+        // -------------------------------------------------------------------
+        // M2-2 (non-local colony with commodity demands)
+        // -------------------------------------------------------------------
+
+        private Colony ParseM2_2()
+        {
+            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM2-2.html");
+            string html = ExtractFragment(clipboardData);
+            var colony = new Colony();
+            _parser.ProcessHtml(colony, html, _empireContext);
+            return colony;
+        }
+
+        // -------------------------------------------------------------------
+        // M2 (non-local colony, no planet overview)
+        // -------------------------------------------------------------------
+
+        private Colony ParseM2()
+        {
+            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranIIM2.html");
+            string html = ExtractFragment(clipboardData);
+            var colony = new Colony();
+            _parser.ProcessHtml(colony, html, _empireContext);
+            return colony;
+        }
+
+        // -------------------------------------------------------------------
+        // VI-1 (non-local colony with commodity factory buildings)
+        // -------------------------------------------------------------------
+
+        private Colony ParseVI1()
+        {
+            string clipboardData = LoadTestData("ClnyHexAdministrationTabZehVazoranVI-1.html");
+            string html = ExtractFragment(clipboardData);
+            var colony = new Colony();
+            _parser.ProcessHtml(colony, html, _empireContext);
+            return colony;
         }
     }
 }

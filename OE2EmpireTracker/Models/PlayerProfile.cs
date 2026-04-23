@@ -10,27 +10,37 @@ namespace OE2EmpireTracker.Models
 {
     public class PlayerProfile
     {
-        public string UUID { get; set; } = string.Empty;
-        public string Name { get; set; } =  string.Empty;
-        public string Faction { get; set; } = string.Empty;
-        public string FactionUUID { get; set; } = string.Empty;
-        public decimal TotalCredits { get; set; } = new decimal(0);
-
-        public PlayerRank Public { get; set; } = new PlayerRank();
-        public PlayerRank Private { get; set; } = new PlayerRank();
-        public PlayerRank Military { get; set; } = new PlayerRank();
-        public int SkillPoints { get; set; } = 0;
-
-        public string CitizenId { get; set; } = string.Empty;
-        public string RegistrationDate { get; set; } = string.Empty;
-        public string ActiveTime { get; set; } = string.Empty;
-
-        private Dictionary<string, bool> SkillGroups { get; set; } = new Dictionary<string, bool>();
-        public Dictionary<string, PlayerSkill> Skills { get; set; } = new Dictionary<string, PlayerSkill>();
-
         public PlayerProfile()
         {
         }
+
+        public string UUID { get; set; } = string.Empty;
+
+        public string Name { get; set; } =  string.Empty;
+
+        public string Faction { get; set; } = string.Empty;
+
+        public string FactionUUID { get; set; } = string.Empty;
+
+        public decimal TotalCredits { get; set; } = new decimal(0);
+
+        public PlayerRank Public { get; set; } = new PlayerRank();
+
+        public PlayerRank Private { get; set; } = new PlayerRank();
+
+        public PlayerRank Military { get; set; } = new PlayerRank();
+
+        public int SkillPoints { get; set; } = 0;
+
+        public string CitizenId { get; set; } = string.Empty;
+
+        public string RegistrationDate { get; set; } = string.Empty;
+
+        public string ActiveTime { get; set; } = string.Empty;
+
+        public Dictionary<string, PlayerSkill> Skills { get; set; } = new Dictionary<string, PlayerSkill>();
+
+        private Dictionary<string, bool> SkillGroups { get; set; } = new Dictionary<string, bool>();
 
         public PlayerSkill GetSkill(string skillName)
         {

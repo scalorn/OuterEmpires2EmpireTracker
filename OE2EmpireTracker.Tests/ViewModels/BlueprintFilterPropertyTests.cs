@@ -15,8 +15,14 @@ namespace OE2EmpireTracker.Tests.ViewModels
     [TestFixture]
     public class BlueprintFilterPropertyTests
     {
+        private static readonly string[] TypePool = { "Reactor", "Hull", "Weapon", "Shield", "MainDrive" };
+
+        private static readonly string[] TechPool = { "LL", "Milspec", "Hi-Tech", "Junker" };
+
         private PlayerContext _playerContext;
+
         private string _originalEmpireFilePath;
+
         private string _originalPlayerFilePath;
 
         [SetUp]
@@ -40,65 +46,6 @@ namespace OE2EmpireTracker.Tests.ViewModels
             EmpireContext.Reset();
             EmpireContext.FilePath = _originalEmpireFilePath;
             PlayerContext.FilePath = _originalPlayerFilePath;
-        }
-
-        private static readonly string[] TypePool = { "Reactor", "Hull", "Weapon", "Shield", "MainDrive" };
-        private static readonly string[] TechPool = { "LL", "Milspec", "Hi-Tech", "Junker" };
-
-        private static BP MakeBp(string name, string type, int cls, string techLevel, int evolution, string ownerUUID)
-        {
-            return new BP(name)
-            {
-                UUID = Guid.NewGuid().ToString(),
-                BluePrintType = type,
-                Class = cls,
-                TechLevel = techLevel,
-                Evolution = evolution,
-                OwnerUUID = ownerUUID
-            };
-        }
-
-        /// <summary>
-        /// Determines whether a blueprint satisfies all active filter constraints.
-        /// This is the oracle -- a simple, independent re-implementation of the expected logic.
-        /// </summary>
-        private static bool SatisfiesAll(BP bp, string nameFilter, BlueprintFilterCriteria criteria)
-        {
-            // Text filter: matches ExtendedName or BluePrintType (case-insensitive)
-            if (!string.IsNullOrEmpty(nameFilter))
-            {
-                bool matchesExtended = bp.ExtendedName != null
-                    && bp.ExtendedName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0;
-                bool matchesType = !string.IsNullOrEmpty(bp.BluePrintType)
-                    && bp.BluePrintType.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0;
-                if (!matchesExtended && !matchesType)
-                    return false;
-            }
-
-            if (criteria != null)
-            {
-                if (criteria.BlueprintTypeId != null && bp.BluePrintType != criteria.BlueprintTypeId)
-                    return false;
-                if (criteria.ShipClassId.HasValue && bp.Class != criteria.ShipClassId.Value)
-                    return false;
-                if (criteria.TechLevelName != null && bp.TechLevel != criteria.TechLevelName)
-                    return false;
-                if (criteria.Evolution.HasValue)
-                {
-                    if (criteria.EvolutionAndAbove)
-                    {
-                        if (bp.Evolution < criteria.Evolution.Value)
-                            return false;
-                    }
-                    else
-                    {
-                        if (bp.Evolution != criteria.Evolution.Value)
-                            return false;
-                    }
-                }
-            }
-
-            return true;
         }
 
         /// <summary>
@@ -246,6 +193,62 @@ namespace OE2EmpireTracker.Tests.ViewModels
                     .And(allExpectedPresent)
                     .Label($"Completeness: expected {expectedUUIDs.Count} blueprints, got {resultUUIDs.Count}");
             });
+        }
+
+        private static BP MakeBp(string name, string type, int cls, string techLevel, int evolution, string ownerUUID)
+        {
+            return new BP(name)
+            {
+                UUID = Guid.NewGuid().ToString(),
+                BluePrintType = type,
+                Class = cls,
+                TechLevel = techLevel,
+                Evolution = evolution,
+                OwnerUUID = ownerUUID
+            };
+        }
+
+        /// <summary>
+        /// Determines whether a blueprint satisfies all active filter constraints.
+        /// This is the oracle -- a simple, independent re-implementation of the expected logic.
+        /// </summary>
+        private static bool SatisfiesAll(BP bp, string nameFilter, BlueprintFilterCriteria criteria)
+        {
+            // Text filter: matches ExtendedName or BluePrintType (case-insensitive)
+            if (!string.IsNullOrEmpty(nameFilter))
+            {
+                bool matchesExtended = bp.ExtendedName != null
+                    && bp.ExtendedName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0;
+                bool matchesType = !string.IsNullOrEmpty(bp.BluePrintType)
+                    && bp.BluePrintType.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0;
+                if (!matchesExtended && !matchesType)
+                    return false;
+            }
+
+            if (criteria != null)
+            {
+                if (criteria.BlueprintTypeId != null && bp.BluePrintType != criteria.BlueprintTypeId)
+                    return false;
+                if (criteria.ShipClassId.HasValue && bp.Class != criteria.ShipClassId.Value)
+                    return false;
+                if (criteria.TechLevelName != null && bp.TechLevel != criteria.TechLevelName)
+                    return false;
+                if (criteria.Evolution.HasValue)
+                {
+                    if (criteria.EvolutionAndAbove)
+                    {
+                        if (bp.Evolution < criteria.Evolution.Value)
+                            return false;
+                    }
+                    else
+                    {
+                        if (bp.Evolution != criteria.Evolution.Value)
+                            return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

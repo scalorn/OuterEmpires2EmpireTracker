@@ -6,6 +6,13 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class ColonyWorker
     {
+        public ColonyWorker(ColonyStructure structure, string workerType, bool assigned)
+        {
+            Structure = structure;
+            WorkerType = workerType;
+            Assigned = assigned;
+        }
+
         /// <summary>
         /// The structure that this worker is currently assigned to.
         /// </summary>
@@ -20,12 +27,5 @@ namespace OE2EmpireTracker.Models
         /// Indicates if this worker slot is currently active/assigned to a task.
         /// </summary>
         public bool Assigned { get; set; }
-
-        public ColonyWorker(ColonyStructure structure, string workerType, bool assigned)
-        {
-            Structure = structure;
-            WorkerType = workerType;
-            Assigned = assigned;
-        }
     }
 }

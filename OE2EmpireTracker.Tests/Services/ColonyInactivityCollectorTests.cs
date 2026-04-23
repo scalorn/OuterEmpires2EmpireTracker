@@ -38,62 +38,6 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name = null, int evolution = 0)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name ?? "TestBP_" + Guid.NewGuid().ToString().Substring(0, 6));
-            bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = bpType;
-            bp.Evolution = evolution;
-            PlayerContext.GetInstance().AddBlueprint(bp);
-            return bp;
-        }
-
-        private static ColonyStructure MakeStructure(
-            string blueprintUUID,
-            int gameSeq,
-            bool built = true,
-            bool online = true)
-        {
-            var structure = new ColonyStructure();
-            structure.UUID = Guid.NewGuid().ToString();
-            structure.FlatpackBlueprintUUID = blueprintUUID;
-            structure.DisplaySequence = gameSeq;
-            if (built)
-                structure.Properties.SetProperty(GameConstants.PropBuilt, true);
-            if (online)
-                structure.Properties.SetProperty(GameConstants.PropOnline, true);
-            return structure;
-        }
-
-        private static Colony MakeColony(string systemName = "TestSystem", string colonyName = "TestColony")
-        {
-            return new Colony
-            {
-                UUID = Guid.NewGuid().ToString(),
-                SystemName = systemName,
-                ColonyName = colonyName,
-                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
-            };
-        }
-
-        private static CountDownTime MakeActiveTimer(long secondsRemaining)
-        {
-            var timer = new CountDownTime();
-            timer.TimeRemaining = secondsRemaining;
-            return timer;
-        }
-
-        private static CountDownTime MakeActiveRepeatingTimer(long intervalSeconds)
-        {
-            var timer = new CountDownTime();
-            timer.StartRepeating(intervalSeconds);
-            return timer;
-        }
-
-        // -----------------------------------------------------------------------
         // Property 1: Idle structure detection
         // Feature: activity-inactivity-mode, Property 1: Idle structure detection
         // **Validates: Requirements 3.1, 3.2, 4.1, 4.2, 6.1, 6.2, 7.1, 7.2, 8.1, 8.2**
@@ -168,20 +112,6 @@ namespace OE2EmpireTracker.Tests.Services
                         $"Iteration {iteration}: inactivity row should have null CountDown");
                 }
             }
-        }
-
-        private void AssignWorkItem(ColonyStructure structure, string bpType)
-        {
-            if (bpType == BlueprintTypes.MiningRig)
-                structure.MiningSurveyResource = "TestOre";
-            else if (bpType == BlueprintTypes.Refinery)
-                structure.RefiningResource = "TestMineral";
-            else if (bpType == BlueprintTypes.ResearchLaboratory)
-                structure.ResearchingBlueprintUUID = Guid.NewGuid().ToString();
-            else if (bpType == BlueprintTypes.Manufactory)
-                structure.ManufacturingBlueprintUUID = Guid.NewGuid().ToString();
-            else if (bpType.IsCommodityFactory())
-                structure.ManufacturingCommodityName = "TestCommodity";
         }
 
         // -----------------------------------------------------------------------
@@ -632,74 +562,6 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Helpers for underutilized refiner tests
-        // -----------------------------------------------------------------------
-
-        private PlayerProfile CreateOwnerProfile(string ownerUUID, int extractionFocusLevel = 0)
-        {
-            var pc = PlayerContext.GetInstance();
-            var profile = new PlayerProfile
-            {
-                UUID = ownerUUID,
-                Name = "TestOwner_" + ownerUUID.Substring(0, 6)
-            };
-
-            if (extractionFocusLevel > 0)
-            {
-                profile.GetSkill(SkillName.ExtractionFocus).Level = extractionFocusLevel;
-            }
-
-            pc.AddPlayerProfile(profile);
-            return profile;
-        }
-
-        private Survey CreateSurvey(string resource, string purity, string amount)
-        {
-            var pc = PlayerContext.GetInstance();
-            var survey = new Survey("TestSurvey_" + Guid.NewGuid().ToString().Substring(0, 6));
-            survey.UUID = Guid.NewGuid().ToString();
-            survey.Resources[resource] = new SurveyResource(resource, purity, amount);
-            pc.AddSurvey(survey);
-            return survey;
-        }
-
-        private ColonyStructure MakeActiveMiner(
-            string blueprintUUID,
-            int gameSeq,
-            string surveyUUID,
-            string surveyResource)
-        {
-            var structure = MakeStructure(blueprintUUID, gameSeq);
-            structure.ProcessCompletionTime = MakeActiveRepeatingTimer(3600);
-            structure.MiningSurvey = surveyUUID;
-            structure.MiningSurveyResource = surveyResource;
-            return structure;
-        }
-
-        private ColonyStructure MakeActiveRefiner(
-            string blueprintUUID,
-            int gameSeq,
-            string resource,
-            string purity)
-        {
-            var structure = MakeStructure(blueprintUUID, gameSeq);
-            structure.ProcessCompletionTime = MakeActiveRepeatingTimer(3600);
-            structure.RefiningResource = resource;
-            structure.RefiningResourcePurity = purity;
-            return structure;
-        }
-
-        private static void AddWarehouseResource(Colony colony, string resource, string purity, int quantity)
-        {
-            var item = new Item(ItemType.ItemTypeEnum.Resource, resource);
-            item.UUID = Guid.NewGuid().ToString();
-            item.BaseItemTypeID = resource;
-            item.ResourcePurity = purity;
-            item.Quantity = quantity;
-            colony.Items.AddItem(item);
-        }
-
-        // -----------------------------------------------------------------------
         // Property 4: Underutilized refiner detection
         // Feature: activity-inactivity-mode, Property 4: Underutilized refiner detection
         // **Validates: Requirements 5.1, 5.2, 5.3, 5.5**
@@ -1028,6 +890,144 @@ namespace OE2EmpireTracker.Tests.Services
                 underutilized.Count,
                 Is.EqualTo(1),
                 "Synthetic refiner should still be flagged with insufficient warehouse stockpile");
+        }
+
+        private static ColonyStructure MakeStructure(
+            string blueprintUUID,
+            int gameSeq,
+            bool built = true,
+            bool online = true)
+        {
+            var structure = new ColonyStructure();
+            structure.UUID = Guid.NewGuid().ToString();
+            structure.FlatpackBlueprintUUID = blueprintUUID;
+            structure.DisplaySequence = gameSeq;
+            if (built)
+                structure.Properties.SetProperty(GameConstants.PropBuilt, true);
+            if (online)
+                structure.Properties.SetProperty(GameConstants.PropOnline, true);
+            return structure;
+        }
+
+        private static Colony MakeColony(string systemName = "TestSystem", string colonyName = "TestColony")
+        {
+            return new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                SystemName = systemName,
+                ColonyName = colonyName,
+                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
+            };
+        }
+
+        private static CountDownTime MakeActiveTimer(long secondsRemaining)
+        {
+            var timer = new CountDownTime();
+            timer.TimeRemaining = secondsRemaining;
+            return timer;
+        }
+
+        private static CountDownTime MakeActiveRepeatingTimer(long intervalSeconds)
+        {
+            var timer = new CountDownTime();
+            timer.StartRepeating(intervalSeconds);
+            return timer;
+        }
+
+        private static void AddWarehouseResource(Colony colony, string resource, string purity, int quantity)
+        {
+            var item = new Item(ItemType.ItemTypeEnum.Resource, resource);
+            item.UUID = Guid.NewGuid().ToString();
+            item.BaseItemTypeID = resource;
+            item.ResourcePurity = purity;
+            item.Quantity = quantity;
+            colony.Items.AddItem(item);
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name = null, int evolution = 0)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name ?? "TestBP_" + Guid.NewGuid().ToString().Substring(0, 6));
+            bp.UUID = Guid.NewGuid().ToString();
+            bp.BluePrintType = bpType;
+            bp.Evolution = evolution;
+            PlayerContext.GetInstance().AddBlueprint(bp);
+            return bp;
+        }
+
+        private void AssignWorkItem(ColonyStructure structure, string bpType)
+        {
+            if (bpType == BlueprintTypes.MiningRig)
+                structure.MiningSurveyResource = "TestOre";
+            else if (bpType == BlueprintTypes.Refinery)
+                structure.RefiningResource = "TestMineral";
+            else if (bpType == BlueprintTypes.ResearchLaboratory)
+                structure.ResearchingBlueprintUUID = Guid.NewGuid().ToString();
+            else if (bpType == BlueprintTypes.Manufactory)
+                structure.ManufacturingBlueprintUUID = Guid.NewGuid().ToString();
+            else if (bpType.IsCommodityFactory())
+                structure.ManufacturingCommodityName = "TestCommodity";
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers for underutilized refiner tests
+        // -----------------------------------------------------------------------
+
+        private PlayerProfile CreateOwnerProfile(string ownerUUID, int extractionFocusLevel = 0)
+        {
+            var pc = PlayerContext.GetInstance();
+            var profile = new PlayerProfile
+            {
+                UUID = ownerUUID,
+                Name = "TestOwner_" + ownerUUID.Substring(0, 6)
+            };
+
+            if (extractionFocusLevel > 0)
+            {
+                profile.GetSkill(SkillName.ExtractionFocus).Level = extractionFocusLevel;
+            }
+
+            pc.AddPlayerProfile(profile);
+            return profile;
+        }
+
+        private Survey CreateSurvey(string resource, string purity, string amount)
+        {
+            var pc = PlayerContext.GetInstance();
+            var survey = new Survey("TestSurvey_" + Guid.NewGuid().ToString().Substring(0, 6));
+            survey.UUID = Guid.NewGuid().ToString();
+            survey.Resources[resource] = new SurveyResource(resource, purity, amount);
+            pc.AddSurvey(survey);
+            return survey;
+        }
+
+        private ColonyStructure MakeActiveMiner(
+            string blueprintUUID,
+            int gameSeq,
+            string surveyUUID,
+            string surveyResource)
+        {
+            var structure = MakeStructure(blueprintUUID, gameSeq);
+            structure.ProcessCompletionTime = MakeActiveRepeatingTimer(3600);
+            structure.MiningSurvey = surveyUUID;
+            structure.MiningSurveyResource = surveyResource;
+            return structure;
+        }
+
+        private ColonyStructure MakeActiveRefiner(
+            string blueprintUUID,
+            int gameSeq,
+            string resource,
+            string purity)
+        {
+            var structure = MakeStructure(blueprintUUID, gameSeq);
+            structure.ProcessCompletionTime = MakeActiveRepeatingTimer(3600);
+            structure.RefiningResource = resource;
+            structure.RefiningResourcePurity = purity;
+            return structure;
         }
     }
 }

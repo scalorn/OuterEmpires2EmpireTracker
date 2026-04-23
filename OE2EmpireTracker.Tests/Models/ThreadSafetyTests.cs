@@ -27,81 +27,6 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private static OE2EmpireTracker.Models.Blueprint MakeBlueprint(string type, Dictionary<string, string> properties)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint("Test " + type);
-            bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = type;
-            if (properties != null)
-            {
-                foreach (var kv in properties)
-                    bp.Properties.SetProperty(kv.Key, kv.Value);
-            }
-
-            return bp;
-        }
-
-        private static ColonyStructure MakeStructure(string blueprintUUID, bool built, bool online)
-        {
-            var s = new ColonyStructure();
-            s.UUID = Guid.NewGuid().ToString();
-            s.FlatpackBlueprintUUID = blueprintUUID;
-            s.Properties.SetProperty(GameConstants.PropBuilt, built);
-            s.Properties.SetProperty(GameConstants.PropOnline, online);
-            s.Properties.SetProperty(GameConstants.PropStaged, false);
-            return s;
-        }
-
-        private Colony BuildColonyWithExpiredTimer()
-        {
-            var pc = PlayerContext.GetInstance();
-
-            var reactorBp = MakeBlueprint("Power Plant", new Dictionary<string, string>
-            {
-                { GameConstants.PropPowerProvided, "500" },
-                { GameConstants.PropBlueCollarDetail, "1" }
-            });
-            pc.AddBlueprint(reactorBp);
-
-            var minerBp = MakeBlueprint("Mining Rig", new Dictionary<string, string>
-            {
-                { GameConstants.PropPowerRequired, "75" },
-                { GameConstants.PropBlueCollarDetail, "1" }
-            });
-            pc.AddBlueprint(minerBp);
-
-            var colony = new Colony();
-            colony.UUID = Guid.NewGuid().ToString();
-            colony.PlanetName = "TestPlanet";
-            colony.ColonyName = "TestColony";
-
-            var reactor = MakeStructure(reactorBp.UUID, built: true, online: true);
-            reactor.AssignedWorkers.SetProperty("BlueCollar1", true);
-            colony.Structures.Add(reactor);
-
-            // Structure with an expired build timer so HasExpiredTimers() returns true
-            var miner = MakeStructure(minerBp.UUID, built: false, online: false);
-            miner.BuildCompletionTime = new CountDownTime();
-            miner.BuildCompletionTime.StartTime = DateTime.UtcNow.AddMinutes(-10);
-            miner.BuildCompletionTime.EndTime = DateTime.UtcNow.AddMinutes(-5);
-            colony.Structures.Add(miner);
-
-            // Add an item so the colony has some data
-            var item = new Item(ItemType.ItemTypeEnum.Resource, "Iron");
-            item.UUID = Guid.NewGuid().ToString();
-            item.BaseItemTypeID = "Iron";
-            item.ResourcePurity = "Low";
-            item.Quantity = 100;
-            item.Volume = 1;
-            colony.Items.AddItem(item);
-
-            return colony;
-        }
-
-        // -----------------------------------------------------------------------
         // Feature: data-model-thread-safety, Property 1: Concurrent colony processing safety
         // -----------------------------------------------------------------------
 
@@ -620,6 +545,81 @@ namespace OE2EmpireTracker.Tests.Models
             bool colonyBBuilt;
             structB.Properties.GetBoolean(GameConstants.PropBuilt, false, out colonyBBuilt);
             Assert.That(colonyBBuilt, Is.True, "Unlocked colony B should be processed");
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private static OE2EmpireTracker.Models.Blueprint MakeBlueprint(string type, Dictionary<string, string> properties)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint("Test " + type);
+            bp.UUID = Guid.NewGuid().ToString();
+            bp.BluePrintType = type;
+            if (properties != null)
+            {
+                foreach (var kv in properties)
+                    bp.Properties.SetProperty(kv.Key, kv.Value);
+            }
+
+            return bp;
+        }
+
+        private static ColonyStructure MakeStructure(string blueprintUUID, bool built, bool online)
+        {
+            var s = new ColonyStructure();
+            s.UUID = Guid.NewGuid().ToString();
+            s.FlatpackBlueprintUUID = blueprintUUID;
+            s.Properties.SetProperty(GameConstants.PropBuilt, built);
+            s.Properties.SetProperty(GameConstants.PropOnline, online);
+            s.Properties.SetProperty(GameConstants.PropStaged, false);
+            return s;
+        }
+
+        private Colony BuildColonyWithExpiredTimer()
+        {
+            var pc = PlayerContext.GetInstance();
+
+            var reactorBp = MakeBlueprint("Power Plant", new Dictionary<string, string>
+            {
+                { GameConstants.PropPowerProvided, "500" },
+                { GameConstants.PropBlueCollarDetail, "1" }
+            });
+            pc.AddBlueprint(reactorBp);
+
+            var minerBp = MakeBlueprint("Mining Rig", new Dictionary<string, string>
+            {
+                { GameConstants.PropPowerRequired, "75" },
+                { GameConstants.PropBlueCollarDetail, "1" }
+            });
+            pc.AddBlueprint(minerBp);
+
+            var colony = new Colony();
+            colony.UUID = Guid.NewGuid().ToString();
+            colony.PlanetName = "TestPlanet";
+            colony.ColonyName = "TestColony";
+
+            var reactor = MakeStructure(reactorBp.UUID, built: true, online: true);
+            reactor.AssignedWorkers.SetProperty("BlueCollar1", true);
+            colony.Structures.Add(reactor);
+
+            // Structure with an expired build timer so HasExpiredTimers() returns true
+            var miner = MakeStructure(minerBp.UUID, built: false, online: false);
+            miner.BuildCompletionTime = new CountDownTime();
+            miner.BuildCompletionTime.StartTime = DateTime.UtcNow.AddMinutes(-10);
+            miner.BuildCompletionTime.EndTime = DateTime.UtcNow.AddMinutes(-5);
+            colony.Structures.Add(miner);
+
+            // Add an item so the colony has some data
+            var item = new Item(ItemType.ItemTypeEnum.Resource, "Iron");
+            item.UUID = Guid.NewGuid().ToString();
+            item.BaseItemTypeID = "Iron";
+            item.ResourcePurity = "Low";
+            item.Quantity = 100;
+            item.Volume = 1;
+            colony.Items.AddItem(item);
+
+            return colony;
         }
     }
 }

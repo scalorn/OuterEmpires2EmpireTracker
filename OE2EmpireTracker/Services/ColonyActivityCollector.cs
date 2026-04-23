@@ -21,9 +21,13 @@ namespace OE2EmpireTracker.Services
     public class ActivityRow
     {
         public ActivityType Type { get; set; }
+
         public string SystemName { get; set; }
+
         public string ColonyName { get; set; }
+
         public string SourceName { get; set; }
+
         public string ProcessDetails { get; set; }
 
         /// <summary>
@@ -37,41 +41,6 @@ namespace OE2EmpireTracker.Services
         /// For structure rows: DateTime.MinValue (unused).
         /// </summary>
         public DateTime NeedBy { get; set; }
-
-        /// <summary>
-        /// Returns the current seconds remaining for sorting and display.
-        /// </summary>
-        public long GetSecondsRemaining()
-        {
-            if (CountDown != null)
-            {
-                // Repeating timer with elapsed intervals: show 0 until background processor runs
-                if (CountDown.IsRepeating && CountDown.IntervalsPassed > 0)
-                    return 0;
-                return Math.Max(0, CountDown.TimeRemaining);
-            }
-
-            long seconds = (long)(NeedBy - SystemClock.UtcNow).TotalSeconds;
-            return Math.Max(0, seconds);
-        }
-
-        /// <summary>
-        /// Returns the formatted time remaining string in "Xd Yh Zm Ws" format.
-        /// </summary>
-        public string GetTimeRemainingString()
-        {
-            if (CountDown != null)
-            {
-                // Repeating timer with elapsed intervals: show 0s until background processor runs
-                if (CountDown.IsRepeating && CountDown.IntervalsPassed > 0)
-                    return "0s";
-                return CountDown.TimeRemainingString;
-            }
-
-            long seconds = GetSecondsRemaining();
-            if (seconds <= 0) return "0s";
-            return FormatSeconds(seconds);
-        }
 
         /// <summary>
         /// Formats seconds as "Xd Yh Zm Ws" matching CountDownTime.TimeRemainingString format.
@@ -110,6 +79,41 @@ namespace OE2EmpireTracker.Services
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Returns the current seconds remaining for sorting and display.
+        /// </summary>
+        public long GetSecondsRemaining()
+        {
+            if (CountDown != null)
+            {
+                // Repeating timer with elapsed intervals: show 0 until background processor runs
+                if (CountDown.IsRepeating && CountDown.IntervalsPassed > 0)
+                    return 0;
+                return Math.Max(0, CountDown.TimeRemaining);
+            }
+
+            long seconds = (long)(NeedBy - SystemClock.UtcNow).TotalSeconds;
+            return Math.Max(0, seconds);
+        }
+
+        /// <summary>
+        /// Returns the formatted time remaining string in "Xd Yh Zm Ws" format.
+        /// </summary>
+        public string GetTimeRemainingString()
+        {
+            if (CountDown != null)
+            {
+                // Repeating timer with elapsed intervals: show 0s until background processor runs
+                if (CountDown.IsRepeating && CountDown.IntervalsPassed > 0)
+                    return "0s";
+                return CountDown.TimeRemainingString;
+            }
+
+            long seconds = GetSecondsRemaining();
+            if (seconds <= 0) return "0s";
+            return FormatSeconds(seconds);
         }
     }
 

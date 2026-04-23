@@ -26,39 +26,6 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private static ColonyStructure MakeStructure(
-            bool staged,
-            bool built,
-            CountDownTime buildCompletionTime = null)
-        {
-            var s = new ColonyStructure();
-            s.UUID = Guid.NewGuid().ToString();
-            s.Properties.SetProperty(GameConstants.PropStaged, staged);
-            s.Properties.SetProperty(GameConstants.PropBuilt, built);
-            s.BuildCompletionTime = buildCompletionTime;
-            return s;
-        }
-
-        private static CountDownTime MakeExpiredTimer()
-        {
-            var t = new CountDownTime();
-            t.TimeRemaining = 0;
-            // Force it to be expired by setting EndTime in the past
-            t.EndTime = DateTime.UtcNow.AddSeconds(-10);
-            return t;
-        }
-
-        private static CountDownTime MakeActiveTimer(long secondsRemaining = 3600)
-        {
-            var t = new CountDownTime();
-            t.TimeRemaining = secondsRemaining;
-            return t;
-        }
-
-        // -----------------------------------------------------------------------
         // Property 6: Build completion in ProcessColony
         // Feature: colony-daily-build, Property 6
         // **Validates: Requirements 7.1, 7.2**
@@ -239,6 +206,39 @@ namespace OE2EmpireTracker.Tests.Models
                 items[0].Quantity,
                 Is.GreaterThan(0),
                 "Mined quantity should be > 0");
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private static ColonyStructure MakeStructure(
+            bool staged,
+            bool built,
+            CountDownTime buildCompletionTime = null)
+        {
+            var s = new ColonyStructure();
+            s.UUID = Guid.NewGuid().ToString();
+            s.Properties.SetProperty(GameConstants.PropStaged, staged);
+            s.Properties.SetProperty(GameConstants.PropBuilt, built);
+            s.BuildCompletionTime = buildCompletionTime;
+            return s;
+        }
+
+        private static CountDownTime MakeExpiredTimer()
+        {
+            var t = new CountDownTime();
+            t.TimeRemaining = 0;
+            // Force it to be expired by setting EndTime in the past
+            t.EndTime = DateTime.UtcNow.AddSeconds(-10);
+            return t;
+        }
+
+        private static CountDownTime MakeActiveTimer(long secondsRemaining = 3600)
+        {
+            var t = new CountDownTime();
+            t.TimeRemaining = secondsRemaining;
+            return t;
         }
     }
 }

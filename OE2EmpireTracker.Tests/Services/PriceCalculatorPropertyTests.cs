@@ -24,62 +24,6 @@ namespace OE2EmpireTracker.Tests.Services
             "S2. Element 126", "S2. Element 127", "S2. Superactinides"
         };
 
-        private static Gen<string> ResourceNameGen()
-        {
-            return Gen.Elements(SampleResourceNames);
-        }
-
-        private static Gen<decimal> NonNegativeDecimalGen()
-        {
-            return Gen.Choose(0, 100000).Select(i => (decimal)i / 100m);
-        }
-
-        private static Gen<PricingPlan> PricingPlanGen()
-        {
-            return from name in Arb.Generate<NonEmptyString>()
-                   from fixedCost in NonNegativeDecimalGen()
-                   from hourlyCost in NonNegativeDecimalGen()
-                   from resourceCount in Gen.Choose(0, SampleResourceNames.Length)
-                   from selectedResources in Gen.Shuffle(SampleResourceNames).Select(a => a.Take(resourceCount))
-                   from prices in Gen.ListOf(resourceCount, NonNegativeDecimalGen())
-                   select BuildPlan(name.Get, fixedCost, hourlyCost, selectedResources.ToArray(), prices.ToArray());
-        }
-
-        private static PricingPlan BuildPlan(
-            string name,
-            decimal fixedCost,
-            decimal hourlyCost,
-            string[] resources,
-            decimal[] prices)
-        {
-            var plan = new PricingPlan
-            {
-                UUID = Guid.NewGuid().ToString(),
-                Name = name,
-                OwnerUUID = Guid.NewGuid().ToString(),
-                FixedCostPerItem = fixedCost,
-                HourlyCostRate = hourlyCost
-            };
-
-            for (int i = 0; i < resources.Length && i < prices.Length; i++)
-            {
-                var purity = PriceCalculator.DeterminePurity(resources[i]);
-                var key = PriceCalculator.MakeResourceKey(resources[i], purity);
-                plan.ResourcePrices[key] = prices[i];
-            }
-
-            return plan;
-        }
-
-        private static Gen<Dictionary<string, string>> ConstructionResourcesGen()
-        {
-            return from count in Gen.Choose(1, 5)
-                   from names in Gen.Shuffle(SampleResourceNames).Select(a => a.Take(count))
-                   from quantities in Gen.ListOf(count, Gen.Choose(1, 100))
-                   select names.Zip(quantities, (n, q) => new { n, q })
-                              .ToDictionary(x => x.n, x => x.q.ToString());
-        }
-
         /// <summary>
         /// Feature: pricing-plans, Property 7: Purity determination produces only Refined, S1, or S2
         ///
@@ -269,6 +213,62 @@ namespace OE2EmpireTracker.Tests.Services
                     return (result.Price == expectedPrice)
                         .Label($"Expected {expectedPrice}, got {result.Price}");
                 });
+        }
+
+        private static Gen<string> ResourceNameGen()
+        {
+            return Gen.Elements(SampleResourceNames);
+        }
+
+        private static Gen<decimal> NonNegativeDecimalGen()
+        {
+            return Gen.Choose(0, 100000).Select(i => (decimal)i / 100m);
+        }
+
+        private static Gen<PricingPlan> PricingPlanGen()
+        {
+            return from name in Arb.Generate<NonEmptyString>()
+                   from fixedCost in NonNegativeDecimalGen()
+                   from hourlyCost in NonNegativeDecimalGen()
+                   from resourceCount in Gen.Choose(0, SampleResourceNames.Length)
+                   from selectedResources in Gen.Shuffle(SampleResourceNames).Select(a => a.Take(resourceCount))
+                   from prices in Gen.ListOf(resourceCount, NonNegativeDecimalGen())
+                   select BuildPlan(name.Get, fixedCost, hourlyCost, selectedResources.ToArray(), prices.ToArray());
+        }
+
+        private static PricingPlan BuildPlan(
+            string name,
+            decimal fixedCost,
+            decimal hourlyCost,
+            string[] resources,
+            decimal[] prices)
+        {
+            var plan = new PricingPlan
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Name = name,
+                OwnerUUID = Guid.NewGuid().ToString(),
+                FixedCostPerItem = fixedCost,
+                HourlyCostRate = hourlyCost
+            };
+
+            for (int i = 0; i < resources.Length && i < prices.Length; i++)
+            {
+                var purity = PriceCalculator.DeterminePurity(resources[i]);
+                var key = PriceCalculator.MakeResourceKey(resources[i], purity);
+                plan.ResourcePrices[key] = prices[i];
+            }
+
+            return plan;
+        }
+
+        private static Gen<Dictionary<string, string>> ConstructionResourcesGen()
+        {
+            return from count in Gen.Choose(1, 5)
+                   from names in Gen.Shuffle(SampleResourceNames).Select(a => a.Take(count))
+                   from quantities in Gen.ListOf(count, Gen.Choose(1, 100))
+                   select names.Zip(quantities, (n, q) => new { n, q })
+                              .ToDictionary(x => x.n, x => x.q.ToString());
         }
     }
 }

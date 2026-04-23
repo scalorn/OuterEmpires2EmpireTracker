@@ -11,16 +11,18 @@ namespace OE2EmpireTracker.Controls
     public class ListViewItemComparer : IComparer
     {
         private readonly int _column;
-        private readonly SortOrder _order;
 
-        public int Column => _column;
-        public SortOrder Order => _order;
+        private readonly SortOrder _order;
 
         public ListViewItemComparer(int column, SortOrder order)
         {
             _column = column;
             _order = order;
         }
+
+        public int Column => _column;
+
+        public SortOrder Order => _order;
 
         public int Compare(object x, object y)
         {

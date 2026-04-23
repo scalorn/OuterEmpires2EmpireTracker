@@ -8,6 +8,12 @@ namespace OE2EmpireTracker.Models
 {
     public class CommodityIndustry
     {
+        private static List<CommodityIndustry> _commodityIndustries = GetCommodityIndustries();
+
+        private static Dictionary<CommodityIndustryEnum, CommodityIndustry> _commodityIndustryMapByEnum;
+
+        private static Dictionary<string, CommodityIndustry> _commodityIndustryMapByString;
+
         public enum CommodityIndustryEnum
         {
             None = 0,
@@ -27,16 +33,15 @@ namespace OE2EmpireTracker.Models
             TechnologyInstitute
         }
 
-        public CommodityIndustryEnum ID { get; set; } = CommodityIndustryEnum.None;
-        public string Name { get; set; } =  string.Empty;
-
-        private static List<CommodityIndustry> _commodityIndustries = GetCommodityIndustries();
-        private static Dictionary<CommodityIndustryEnum, CommodityIndustry> _commodityIndustryMapByEnum;
-        private static Dictionary<string, CommodityIndustry> _commodityIndustryMapByString;
-
         public static IReadOnlyList<CommodityIndustry> Groups => _commodityIndustries.AsReadOnly();
+
         public static IReadOnlyDictionary<CommodityIndustryEnum, CommodityIndustry> CommodityIndustryMapByEnum => _commodityIndustryMapByEnum;
+
         public static IReadOnlyDictionary<string, CommodityIndustry> CommodityIndustryMapByString => _commodityIndustryMapByString;
+
+        public CommodityIndustryEnum ID { get; set; } = CommodityIndustryEnum.None;
+
+        public string Name { get; set; } =  string.Empty;
 
         private static List<CommodityIndustry> GetCommodityIndustries()
         {

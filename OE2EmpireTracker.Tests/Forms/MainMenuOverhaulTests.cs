@@ -16,8 +16,11 @@ namespace OE2EmpireTracker.Tests.Forms
     public class MainMenuOverhaulTests
     {
         private string _testDir;
+
         private string _originalFilePath;
+
         private string _originalEmpireFilePath;
+
         private List<string> _tempFiles = new List<string>();
 
         [SetUp]
@@ -82,168 +85,6 @@ namespace OE2EmpireTracker.Tests.Forms
                 {
                 }
             }
-        }
-
-        private string TempFile(string name = null)
-        {
-            var path = Path.Combine(_testDir, name ?? (Guid.NewGuid().ToString() + ".json"));
-            _tempFiles.Add(path);
-            return path;
-        }
-
-        private static string RandomString(Random rng, int maxLen = 12)
-        {
-            int len = rng.Next(1, maxLen + 1);
-            var chars = new char[len];
-            for (int i = 0; i < len; i++)
-                chars[i] = (char)('A' + rng.Next(0, 26));
-            return new string(chars);
-        }
-
-        private static string RandomUUID(Random rng)
-        {
-            var bytes = new byte[16];
-            rng.NextBytes(bytes);
-            return new Guid(bytes).ToString();
-        }
-
-        private static PlayerProfile RandomPlayerProfile(Random rng)
-        {
-            return new PlayerProfile
-            {
-                UUID = RandomUUID(rng),
-                Name = RandomString(rng),
-                Faction = RandomString(rng, 6),
-                TotalCredits = rng.Next(0, 100000),
-                SkillPoints = rng.Next(0, 100)
-            };
-        }
-
-        private static OE2EmpireTracker.Models.Blueprint RandomBlueprint(Random rng, string ownerUUID)
-        {
-            return new OE2EmpireTracker.Models.Blueprint(RandomString(rng))
-            {
-                UUID = RandomUUID(rng),
-                OwnerUUID = ownerUUID,
-                BluePrintType = RandomString(rng, 8),
-                Evolution = rng.Next(0, 5),
-                TechLevel = RandomString(rng, 4),
-                Class = rng.Next(0, 10)
-            };
-        }
-
-        private static Survey RandomSurvey(Random rng, string ownerUUID)
-        {
-            return new Survey(RandomString(rng))
-            {
-                UUID = RandomUUID(rng),
-                OwnerUUID = ownerUUID,
-                PlanetName = RandomString(rng),
-                SystemName = RandomString(rng),
-                SurveyID = RandomString(rng, 6),
-                DateTime = System.DateTime.UtcNow.ToString()
-            };
-        }
-
-        private static Colony RandomColony(Random rng, string ownerUUID)
-        {
-            return new Colony
-            {
-                UUID = RandomUUID(rng),
-                OwnerUUID = ownerUUID,
-                PlanetName = RandomString(rng),
-                SystemName = RandomString(rng),
-                ColonyName = RandomString(rng)
-            };
-        }
-
-        private static DeliveryRoute RandomDeliveryRoute(Random rng, string ownerUUID)
-        {
-            return new DeliveryRoute
-            {
-                UUID = RandomUUID(rng),
-                Name = RandomString(rng),
-                OwnerUUID = ownerUUID
-            };
-        }
-
-        private static DeliveryPlan RandomDeliveryPlan(Random rng, string ownerUUID)
-        {
-            return new DeliveryPlan
-            {
-                UUID = RandomUUID(rng),
-                Name = RandomString(rng),
-                OwnerUUID = ownerUUID,
-                RouteUUID = RandomUUID(rng)
-            };
-        }
-
-        /// <summary>
-        /// Generates a random PlayerRoot with 1-5 profiles and 0-3 items per list per profile.
-        /// </summary>
-        private static PlayerRoot RandomPlayerRoot(Random rng)
-        {
-            var root = new PlayerRoot();
-            int profileCount = rng.Next(1, 6);
-            var profiles = new List<PlayerProfile>();
-            var blueprints = new List<OE2EmpireTracker.Models.Blueprint>();
-            var surveys = new List<Survey>();
-            var colonies = new List<Colony>();
-            var routes = new List<DeliveryRoute>();
-            var plans = new List<DeliveryPlan>();
-
-            for (int i = 0; i < profileCount; i++)
-            {
-                var profile = RandomPlayerProfile(rng);
-                profiles.Add(profile);
-
-                int bpCount = rng.Next(0, 4);
-                for (int j = 0; j < bpCount; j++)
-                    blueprints.Add(RandomBlueprint(rng, profile.UUID));
-
-                int surveyCount = rng.Next(0, 4);
-                for (int j = 0; j < surveyCount; j++)
-                    surveys.Add(RandomSurvey(rng, profile.UUID));
-
-                int colonyCount = rng.Next(0, 4);
-                for (int j = 0; j < colonyCount; j++)
-                    colonies.Add(RandomColony(rng, profile.UUID));
-
-                int routeCount = rng.Next(0, 4);
-                for (int j = 0; j < routeCount; j++)
-                    routes.Add(RandomDeliveryRoute(rng, profile.UUID));
-
-                int planCount = rng.Next(0, 4);
-                for (int j = 0; j < planCount; j++)
-                    plans.Add(RandomDeliveryPlan(rng, profile.UUID));
-            }
-
-            root.PlayerProfile = profiles.ToArray();
-            root.Blueprint = blueprints.ToArray();
-            root.Survey = surveys.ToArray();
-            root.Colony = colonies.ToArray();
-            root.DeliveryRoute = routes.ToArray();
-            root.DeliveryPlan = plans.ToArray();
-            root.CurrentPlayerUUID = profiles[0].UUID;
-            root.DataVersion = MigrationRunner.CurrentVersion;
-
-            return root;
-        }
-
-        /// <summary>
-        /// Writes a PlayerRoot to a temp file and initializes PlayerContext from it.
-        /// Returns the file path used.
-        /// </summary>
-        private string LoadPlayerRootIntoContext(PlayerRoot root)
-        {
-            string filePath = TempFile();
-            string json = JsonConvert.SerializeObject(root, Formatting.Indented);
-            File.WriteAllText(filePath, json);
-            PlayerContext.FilePath = filePath;
-            TestHelper.SetEmpireFilePath();
-            // EmpireContext.GetInstance() also creates PlayerContext
-            EmpireContext.GetInstance();
-            return filePath;
         }
 
         // Feature: main-menu-overhaul, Property 1: New resets all state
@@ -801,6 +642,168 @@ namespace OE2EmpireTracker.Tests.Forms
                 clearedPath,
                 Is.EqualTo(string.Empty),
                 "When stored file doesn't exist, LastOpenedPath should be cleared to empty");
+        }
+
+        private static string RandomString(Random rng, int maxLen = 12)
+        {
+            int len = rng.Next(1, maxLen + 1);
+            var chars = new char[len];
+            for (int i = 0; i < len; i++)
+                chars[i] = (char)('A' + rng.Next(0, 26));
+            return new string(chars);
+        }
+
+        private static string RandomUUID(Random rng)
+        {
+            var bytes = new byte[16];
+            rng.NextBytes(bytes);
+            return new Guid(bytes).ToString();
+        }
+
+        private static PlayerProfile RandomPlayerProfile(Random rng)
+        {
+            return new PlayerProfile
+            {
+                UUID = RandomUUID(rng),
+                Name = RandomString(rng),
+                Faction = RandomString(rng, 6),
+                TotalCredits = rng.Next(0, 100000),
+                SkillPoints = rng.Next(0, 100)
+            };
+        }
+
+        private static OE2EmpireTracker.Models.Blueprint RandomBlueprint(Random rng, string ownerUUID)
+        {
+            return new OE2EmpireTracker.Models.Blueprint(RandomString(rng))
+            {
+                UUID = RandomUUID(rng),
+                OwnerUUID = ownerUUID,
+                BluePrintType = RandomString(rng, 8),
+                Evolution = rng.Next(0, 5),
+                TechLevel = RandomString(rng, 4),
+                Class = rng.Next(0, 10)
+            };
+        }
+
+        private static Survey RandomSurvey(Random rng, string ownerUUID)
+        {
+            return new Survey(RandomString(rng))
+            {
+                UUID = RandomUUID(rng),
+                OwnerUUID = ownerUUID,
+                PlanetName = RandomString(rng),
+                SystemName = RandomString(rng),
+                SurveyID = RandomString(rng, 6),
+                DateTime = System.DateTime.UtcNow.ToString()
+            };
+        }
+
+        private static Colony RandomColony(Random rng, string ownerUUID)
+        {
+            return new Colony
+            {
+                UUID = RandomUUID(rng),
+                OwnerUUID = ownerUUID,
+                PlanetName = RandomString(rng),
+                SystemName = RandomString(rng),
+                ColonyName = RandomString(rng)
+            };
+        }
+
+        private static DeliveryRoute RandomDeliveryRoute(Random rng, string ownerUUID)
+        {
+            return new DeliveryRoute
+            {
+                UUID = RandomUUID(rng),
+                Name = RandomString(rng),
+                OwnerUUID = ownerUUID
+            };
+        }
+
+        private static DeliveryPlan RandomDeliveryPlan(Random rng, string ownerUUID)
+        {
+            return new DeliveryPlan
+            {
+                UUID = RandomUUID(rng),
+                Name = RandomString(rng),
+                OwnerUUID = ownerUUID,
+                RouteUUID = RandomUUID(rng)
+            };
+        }
+
+        /// <summary>
+        /// Generates a random PlayerRoot with 1-5 profiles and 0-3 items per list per profile.
+        /// </summary>
+        private static PlayerRoot RandomPlayerRoot(Random rng)
+        {
+            var root = new PlayerRoot();
+            int profileCount = rng.Next(1, 6);
+            var profiles = new List<PlayerProfile>();
+            var blueprints = new List<OE2EmpireTracker.Models.Blueprint>();
+            var surveys = new List<Survey>();
+            var colonies = new List<Colony>();
+            var routes = new List<DeliveryRoute>();
+            var plans = new List<DeliveryPlan>();
+
+            for (int i = 0; i < profileCount; i++)
+            {
+                var profile = RandomPlayerProfile(rng);
+                profiles.Add(profile);
+
+                int bpCount = rng.Next(0, 4);
+                for (int j = 0; j < bpCount; j++)
+                    blueprints.Add(RandomBlueprint(rng, profile.UUID));
+
+                int surveyCount = rng.Next(0, 4);
+                for (int j = 0; j < surveyCount; j++)
+                    surveys.Add(RandomSurvey(rng, profile.UUID));
+
+                int colonyCount = rng.Next(0, 4);
+                for (int j = 0; j < colonyCount; j++)
+                    colonies.Add(RandomColony(rng, profile.UUID));
+
+                int routeCount = rng.Next(0, 4);
+                for (int j = 0; j < routeCount; j++)
+                    routes.Add(RandomDeliveryRoute(rng, profile.UUID));
+
+                int planCount = rng.Next(0, 4);
+                for (int j = 0; j < planCount; j++)
+                    plans.Add(RandomDeliveryPlan(rng, profile.UUID));
+            }
+
+            root.PlayerProfile = profiles.ToArray();
+            root.Blueprint = blueprints.ToArray();
+            root.Survey = surveys.ToArray();
+            root.Colony = colonies.ToArray();
+            root.DeliveryRoute = routes.ToArray();
+            root.DeliveryPlan = plans.ToArray();
+            root.CurrentPlayerUUID = profiles[0].UUID;
+            root.DataVersion = MigrationRunner.CurrentVersion;
+
+            return root;
+        }
+
+        private string TempFile(string name = null)
+        {
+            var path = Path.Combine(_testDir, name ?? (Guid.NewGuid().ToString() + ".json"));
+            _tempFiles.Add(path);
+            return path;
+        }
+
+        /// <summary>
+        /// Writes a PlayerRoot to a temp file and initializes PlayerContext from it.
+        /// Returns the file path used.
+        /// </summary>
+        private string LoadPlayerRootIntoContext(PlayerRoot root)
+        {
+            string filePath = TempFile();
+            string json = JsonConvert.SerializeObject(root, Formatting.Indented);
+            File.WriteAllText(filePath, json);
+            PlayerContext.FilePath = filePath;
+            TestHelper.SetEmpireFilePath();
+            // EmpireContext.GetInstance() also creates PlayerContext
+            EmpireContext.GetInstance();
+            return filePath;
         }
     }
 }

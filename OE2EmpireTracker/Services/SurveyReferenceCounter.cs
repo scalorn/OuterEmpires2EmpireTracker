@@ -48,9 +48,7 @@ namespace OE2EmpireTracker.Services
 
     public class SurveyReferenceReport
     {
-        public int TotalCount { get; }
-        public int MinerCount { get; }
-        public int BuildItemCount { get; }
+        public static readonly SurveyReferenceReport Empty = new SurveyReferenceReport(0, 0);
 
         public SurveyReferenceReport(int minerCount, int buildItemCount = 0)
         {
@@ -59,6 +57,10 @@ namespace OE2EmpireTracker.Services
             TotalCount = minerCount + buildItemCount;
         }
 
-        public static readonly SurveyReferenceReport Empty = new SurveyReferenceReport(0, 0);
+        public int TotalCount { get; }
+
+        public int MinerCount { get; }
+
+        public int BuildItemCount { get; }
     }
 }

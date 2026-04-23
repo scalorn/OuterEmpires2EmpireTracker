@@ -9,38 +9,10 @@ namespace OE2EmpireTracker.Constants
     /// </summary>
     public static class GameConstants
     {
-        // --- Refining ---
-
-        /// <summary>Base refining rate per cycle (units consumed from source).</summary>
-        public static int RefiningBaseRate =>
-            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.RefiningBaseRate ?? 25;
-
-        // --- Workers ---
-
-        /// <summary>Cargo volume per worker detail item.</summary>
-        public static decimal WorkerVolume =>
-            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.WorkerVolume ?? 50m;
-
         // --- Timers ---
 
         /// <summary>Seconds in one hour -- used for top-of-hour timer alignment.</summary>
         public const long SecondsPerHour = 3600;
-
-        // --- Commodity Manufacturing ---
-
-        /// <summary>Number of commodities produced per cycle.</summary>
-        public static int CommoditiesPerCycle =>
-            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.CommoditiesPerCycle ?? 10;
-
-        /// <summary>Commodity manufacturing cycle time in seconds (10 minutes).</summary>
-        public static long CommodityCycleSeconds =>
-            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.CommodityCycleSeconds ?? 600;
-
-        // --- Structures ---
-
-        /// <summary>Maximum structures per colony (game cap).</summary>
-        public static int StructureCap =>
-            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.StructureCap ?? 65;
 
         // --- Structure Property Keys ---
 
@@ -84,6 +56,101 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Refining output multiplier for high-purity resources.</summary>
         public const int PurityMultiplierHigh = 5;
 
+        // --- Blueprint Property Keys ---
+        // Canonical names with spaces, matching BaselineData.json type definitions
+        // and BlueprintPropertyValidation. All code should use these constants
+        // instead of hardcoded strings.
+
+        public const string PropPowerProvided = "Power Provided";
+
+        public const string PropPowerRequired = "Power Required";
+
+        public const string PropHabitationProvision = "Habitation Provision";
+
+        public const string PropFoodProvision = "Food Provision";
+
+        public const string PropEntertainmentProvided = "Entertainment Provided";
+
+        public const string PropWarehouseCapacity = "Warehouse Capacity";
+
+        public const string PropMaxPerColony = "Max Per Colony";
+
+        // Worker detail property keys (blueprint properties, with spaces)
+        public const string PropBlueCollarDetail = "Blue Collar Detail";
+
+        public const string PropWhiteCollarDetail = "White Collar Detail";
+
+        public const string PropSpecialistDetail = "Specialist Detail";
+
+        public const string PropUnassignedBlueCollarDetail = "Unassigned Blue Collar Detail";
+
+        public const string PropUnassignedWhiteCollarDetail = "Unassigned White Collar Detail";
+
+        public const string PropUnassignedSpecialistDetail = "Unassigned Specialist Detail";
+
+        // Worker detail item type IDs (no spaces, used as BaseItemTypeID for WorkDetail items)
+        public const string WorkerIdBlueCollar = "BlueCollarDetail";
+
+        public const string WorkerIdWhiteCollar = "WhiteCollarDetail";
+
+        public const string WorkerIdSpecialist = "SpecialistDetail";
+
+        // --- Item Volume by Type (REQ-DM-025) ---
+
+        public const decimal VolumeResource = 1.0m;
+
+        public const decimal VolumeCommodity = 10.0m;
+
+        public const decimal VolumeWorkDetail = 50.0m;
+
+        public const decimal VolumeBlueprint = 0.0m;
+
+        public const decimal VolumeSurvey = 0.0m;
+
+        // --- Item Mass by Type ---
+
+        public const decimal MassResource = 1.0m;
+
+        public const decimal MassCommodity = 5.0m;
+
+        public const decimal MassWorkDetail = 10.0m;
+
+        // --- Skill Multiplier Rates (per level) ---
+
+        /// <summary>ExtractionFocus: +1% per level.</summary>
+        public const decimal ExtractionFocusRatePerLevel = 0.01m;
+
+        /// <summary>RefiningFocus: +2% per level.</summary>
+        public const decimal RefiningFocusRatePerLevel = 0.02m;
+
+        // --- Refining ---
+
+        /// <summary>Base refining rate per cycle (units consumed from source).</summary>
+        public static int RefiningBaseRate =>
+            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.RefiningBaseRate ?? 25;
+
+        // --- Workers ---
+
+        /// <summary>Cargo volume per worker detail item.</summary>
+        public static decimal WorkerVolume =>
+            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.WorkerVolume ?? 50m;
+
+        // --- Commodity Manufacturing ---
+
+        /// <summary>Number of commodities produced per cycle.</summary>
+        public static int CommoditiesPerCycle =>
+            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.CommoditiesPerCycle ?? 10;
+
+        /// <summary>Commodity manufacturing cycle time in seconds (10 minutes).</summary>
+        public static long CommodityCycleSeconds =>
+            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.CommodityCycleSeconds ?? 600;
+
+        // --- Structures ---
+
+        /// <summary>Maximum structures per colony (game cap).</summary>
+        public static int StructureCap =>
+            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.StructureCap ?? 65;
+
         /// <summary>
         /// Computes the refining output rate for a given purity and base rate.
         /// </summary>
@@ -97,53 +164,5 @@ namespace OE2EmpireTracker.Constants
                 default: return baseRate * PurityMultiplierLow;
             }
         }
-
-        // --- Blueprint Property Keys ---
-        // Canonical names with spaces, matching BaselineData.json type definitions
-        // and BlueprintPropertyValidation. All code should use these constants
-        // instead of hardcoded strings.
-
-        public const string PropPowerProvided = "Power Provided";
-        public const string PropPowerRequired = "Power Required";
-        public const string PropHabitationProvision = "Habitation Provision";
-        public const string PropFoodProvision = "Food Provision";
-        public const string PropEntertainmentProvided = "Entertainment Provided";
-        public const string PropWarehouseCapacity = "Warehouse Capacity";
-        public const string PropMaxPerColony = "Max Per Colony";
-
-        // Worker detail property keys (blueprint properties, with spaces)
-        public const string PropBlueCollarDetail = "Blue Collar Detail";
-        public const string PropWhiteCollarDetail = "White Collar Detail";
-        public const string PropSpecialistDetail = "Specialist Detail";
-        public const string PropUnassignedBlueCollarDetail = "Unassigned Blue Collar Detail";
-        public const string PropUnassignedWhiteCollarDetail = "Unassigned White Collar Detail";
-        public const string PropUnassignedSpecialistDetail = "Unassigned Specialist Detail";
-
-        // Worker detail item type IDs (no spaces, used as BaseItemTypeID for WorkDetail items)
-        public const string WorkerIdBlueCollar = "BlueCollarDetail";
-        public const string WorkerIdWhiteCollar = "WhiteCollarDetail";
-        public const string WorkerIdSpecialist = "SpecialistDetail";
-
-        // --- Item Volume by Type (REQ-DM-025) ---
-
-        public const decimal VolumeResource = 1.0m;
-        public const decimal VolumeCommodity = 10.0m;
-        public const decimal VolumeWorkDetail = 50.0m;
-        public const decimal VolumeBlueprint = 0.0m;
-        public const decimal VolumeSurvey = 0.0m;
-
-        // --- Item Mass by Type ---
-
-        public const decimal MassResource = 1.0m;
-        public const decimal MassCommodity = 5.0m;
-        public const decimal MassWorkDetail = 10.0m;
-
-        // --- Skill Multiplier Rates (per level) ---
-
-        /// <summary>ExtractionFocus: +1% per level.</summary>
-        public const decimal ExtractionFocusRatePerLevel = 0.01m;
-
-        /// <summary>RefiningFocus: +2% per level.</summary>
-        public const decimal RefiningFocusRatePerLevel = 0.02m;
     }
 }

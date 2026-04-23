@@ -19,13 +19,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly BuildItem _buildItem;
+
         private readonly PlayerContext _playerContext;
-
-        /// <summary>Colony UUID of the selected structure after OK.</summary>
-        public string SelectedColonyUUID { get; private set; }
-
-        /// <summary>Structure UUID of the selected structure after OK.</summary>
-        public string SelectedStructureUUID { get; private set; }
 
         /// <summary>
         /// Initializes the allocation dialog for the given build item.
@@ -47,18 +42,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             PopulateGrid();
         }
 
-        /// <summary>
-        /// Represents a row in the structures grid.
-        /// </summary>
-        private class StructureRow
-        {
-            public string ColonyUUID { get; set; }
-            public string ColonyName { get; set; }
-            public string StructureUUID { get; set; }
-            public string StructureName { get; set; }
-            public string TypeLabel { get; set; }
-            public bool IsBusy { get; set; }
-        }
+        /// <summary>Colony UUID of the selected structure after OK.</summary>
+        public string SelectedColonyUUID { get; private set; }
+
+        /// <summary>Structure UUID of the selected structure after OK.</summary>
+        public string SelectedStructureUUID { get; private set; }
 
         private void PopulateGrid()
         {
@@ -213,6 +201,19 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        /// <summary>
+        /// Represents a row in the structures grid.
+        /// </summary>
+        private class StructureRow
+        {
+            public string ColonyUUID { get; set; }
+            public string ColonyName { get; set; }
+            public string StructureUUID { get; set; }
+            public string StructureName { get; set; }
+            public string TypeLabel { get; set; }
+            public bool IsBusy { get; set; }
         }
     }
 }

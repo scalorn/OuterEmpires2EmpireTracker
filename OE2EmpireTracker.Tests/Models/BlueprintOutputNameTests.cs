@@ -20,82 +20,14 @@ namespace OE2EmpireTracker.Tests.Models
         // -- Shared generators --
 
         private static readonly string[] FlatpackSuffixes = { " Flatpack", " FLATPACK", " flatpack", " FlatPack" };
+
         private static readonly string[] FlatpackTypes = { "Flatpacks/MiningRig", "Flatpacks/Refinery", "Flatpacks/ResearchLaboratory", "Flatpacks/Manufactory", "Flatpacks/CommodityFactory" };
+
         private static readonly string[] NonFlatpackTypes = { "Hulls/Corvette", "Weapons/Laser", "Components/Reactor", null };
+
         private static readonly string[] TechLevels = { null, "MilSpec", "CivSpec", "GovSpec" };
+
         private static readonly string[] BaseNames = { "Mining Rig", "Habitation Block", "Refinery", "Research Laboratory", "Administration Block", "Agridome", "X" };
-
-        private static Gen<OE2EmpireTracker.Models.Blueprint> GenFlatpackWithSuffix()
-        {
-            return Gen.Elements(BaseNames)
-                .SelectMany(baseName => Gen.Elements(FlatpackSuffixes), (baseName, suffix) => new { baseName, suffix })
-                .SelectMany(t => Gen.Elements(FlatpackTypes), (t, bpType) => new { t.baseName, t.suffix, bpType })
-                .SelectMany(t => Gen.Choose(0, 5), (t, cls) => new { t.baseName, t.suffix, t.bpType, cls })
-                .SelectMany(t => Gen.Choose(0, 5), (t, evo) => new { t.baseName, t.suffix, t.bpType, t.cls, evo })
-                .SelectMany(t => Gen.Elements(TechLevels), (t, tech) => new { t.baseName, t.suffix, t.bpType, t.cls, t.evo, tech })
-                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty), Gen.Constant("MyNick")), (t, nick) => new { t.baseName, t.suffix, t.bpType, t.cls, t.evo, t.tech, nick })
-                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(Guid.NewGuid().ToString())), (t, uuid) =>
-                {
-                    var bp = new OE2EmpireTracker.Models.Blueprint();
-                    bp.Name = t.baseName + t.suffix;
-                    bp.BluePrintType = t.bpType;
-                    bp.Class = t.cls;
-                    bp.Evolution = t.evo;
-                    bp.TechLevel = t.tech;
-                    bp.NickName = t.nick ?? string.Empty;
-                    bp.UUID = uuid;
-                    return bp;
-                });
-        }
-
-        private static Gen<OE2EmpireTracker.Models.Blueprint> GenNonFlatpackOrNoSuffix()
-        {
-            var genNonFlatpack = Gen.Elements(BaseNames)
-                .SelectMany(name => Gen.Elements(NonFlatpackTypes), (name, bpType) => new { name, bpType });
-
-            var genFlatpackNoSuffix = Gen.Elements(BaseNames)
-                .SelectMany(name => Gen.Elements(FlatpackTypes), (name, bpType) => new { name, bpType });
-
-            return Gen.OneOf(genNonFlatpack, genFlatpackNoSuffix)
-                .SelectMany(t => Gen.Choose(0, 5), (t, cls) => new { t.name, t.bpType, cls })
-                .SelectMany(t => Gen.Choose(0, 5), (t, evo) => new { t.name, t.bpType, t.cls, evo })
-                .SelectMany(t => Gen.Elements(TechLevels), (t, tech) => new { t.name, t.bpType, t.cls, t.evo, tech })
-                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty), Gen.Constant("MyNick")), (t, nick) => new { t.name, t.bpType, t.cls, t.evo, t.tech, nick })
-                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(Guid.NewGuid().ToString())), (t, uuid) =>
-                {
-                    var bp = new OE2EmpireTracker.Models.Blueprint();
-                    bp.Name = t.name;
-                    bp.BluePrintType = t.bpType;
-                    bp.Class = t.cls;
-                    bp.Evolution = t.evo;
-                    bp.TechLevel = t.tech;
-                    bp.NickName = t.nick ?? string.Empty;
-                    bp.UUID = uuid;
-                    return bp;
-                });
-        }
-
-        private static Gen<OE2EmpireTracker.Models.Blueprint> GenNullOrEmptyName()
-        {
-            return Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty))
-                .SelectMany(name => Gen.OneOf(Gen.Elements(FlatpackTypes), Gen.Elements(NonFlatpackTypes)), (name, bpType) => new { name, bpType })
-                .Select(t =>
-                {
-                    var bp = new OE2EmpireTracker.Models.Blueprint();
-                    bp.Name = t.name;
-                    bp.BluePrintType = t.bpType;
-                    bp.UUID = Guid.NewGuid().ToString();
-                    return bp;
-                });
-        }
-
-        private static Gen<OE2EmpireTracker.Models.Blueprint> GenAnyBlueprint()
-        {
-            return Gen.Frequency(
-                Tuple.Create(4, GenFlatpackWithSuffix()),
-                Tuple.Create(3, GenNonFlatpackOrNoSuffix()),
-                Tuple.Create(1, GenNullOrEmptyName()));
-        }
 
         // -- Property 1: Suffix stripping round-trip --
 
@@ -372,6 +304,78 @@ namespace OE2EmpireTracker.Tests.Models
             };
 
             Assert.That(bp.ExtendedName, Does.Contain("Mining Rig Flatpack"));
+        }
+
+        private static Gen<OE2EmpireTracker.Models.Blueprint> GenFlatpackWithSuffix()
+        {
+            return Gen.Elements(BaseNames)
+                .SelectMany(baseName => Gen.Elements(FlatpackSuffixes), (baseName, suffix) => new { baseName, suffix })
+                .SelectMany(t => Gen.Elements(FlatpackTypes), (t, bpType) => new { t.baseName, t.suffix, bpType })
+                .SelectMany(t => Gen.Choose(0, 5), (t, cls) => new { t.baseName, t.suffix, t.bpType, cls })
+                .SelectMany(t => Gen.Choose(0, 5), (t, evo) => new { t.baseName, t.suffix, t.bpType, t.cls, evo })
+                .SelectMany(t => Gen.Elements(TechLevels), (t, tech) => new { t.baseName, t.suffix, t.bpType, t.cls, t.evo, tech })
+                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty), Gen.Constant("MyNick")), (t, nick) => new { t.baseName, t.suffix, t.bpType, t.cls, t.evo, t.tech, nick })
+                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(Guid.NewGuid().ToString())), (t, uuid) =>
+                {
+                    var bp = new OE2EmpireTracker.Models.Blueprint();
+                    bp.Name = t.baseName + t.suffix;
+                    bp.BluePrintType = t.bpType;
+                    bp.Class = t.cls;
+                    bp.Evolution = t.evo;
+                    bp.TechLevel = t.tech;
+                    bp.NickName = t.nick ?? string.Empty;
+                    bp.UUID = uuid;
+                    return bp;
+                });
+        }
+
+        private static Gen<OE2EmpireTracker.Models.Blueprint> GenNonFlatpackOrNoSuffix()
+        {
+            var genNonFlatpack = Gen.Elements(BaseNames)
+                .SelectMany(name => Gen.Elements(NonFlatpackTypes), (name, bpType) => new { name, bpType });
+
+            var genFlatpackNoSuffix = Gen.Elements(BaseNames)
+                .SelectMany(name => Gen.Elements(FlatpackTypes), (name, bpType) => new { name, bpType });
+
+            return Gen.OneOf(genNonFlatpack, genFlatpackNoSuffix)
+                .SelectMany(t => Gen.Choose(0, 5), (t, cls) => new { t.name, t.bpType, cls })
+                .SelectMany(t => Gen.Choose(0, 5), (t, evo) => new { t.name, t.bpType, t.cls, evo })
+                .SelectMany(t => Gen.Elements(TechLevels), (t, tech) => new { t.name, t.bpType, t.cls, t.evo, tech })
+                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty), Gen.Constant("MyNick")), (t, nick) => new { t.name, t.bpType, t.cls, t.evo, t.tech, nick })
+                .SelectMany(t => Gen.OneOf(Gen.Constant((string)null), Gen.Constant(Guid.NewGuid().ToString())), (t, uuid) =>
+                {
+                    var bp = new OE2EmpireTracker.Models.Blueprint();
+                    bp.Name = t.name;
+                    bp.BluePrintType = t.bpType;
+                    bp.Class = t.cls;
+                    bp.Evolution = t.evo;
+                    bp.TechLevel = t.tech;
+                    bp.NickName = t.nick ?? string.Empty;
+                    bp.UUID = uuid;
+                    return bp;
+                });
+        }
+
+        private static Gen<OE2EmpireTracker.Models.Blueprint> GenNullOrEmptyName()
+        {
+            return Gen.OneOf(Gen.Constant((string)null), Gen.Constant(string.Empty))
+                .SelectMany(name => Gen.OneOf(Gen.Elements(FlatpackTypes), Gen.Elements(NonFlatpackTypes)), (name, bpType) => new { name, bpType })
+                .Select(t =>
+                {
+                    var bp = new OE2EmpireTracker.Models.Blueprint();
+                    bp.Name = t.name;
+                    bp.BluePrintType = t.bpType;
+                    bp.UUID = Guid.NewGuid().ToString();
+                    return bp;
+                });
+        }
+
+        private static Gen<OE2EmpireTracker.Models.Blueprint> GenAnyBlueprint()
+        {
+            return Gen.Frequency(
+                Tuple.Create(4, GenFlatpackWithSuffix()),
+                Tuple.Create(3, GenNonFlatpackOrNoSuffix()),
+                Tuple.Create(1, GenNullOrEmptyName()));
         }
     }
 }

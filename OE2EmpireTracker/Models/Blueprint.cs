@@ -14,26 +14,6 @@ namespace OE2EmpireTracker.Models
 {
     public class Blueprint : Item
     {
-        public string OwnerUUID { get; set; } = string.Empty;
-
-        public string BaseBlueprintUUID { get; set; }
-
-        [DefaultValue(null)]
-        public string LegacyUUID { get; set; }
-
-        public string BluePrintType { get; set; }
-
-        public int Evolution { get; set; }
-
-        public string TechLevel { get; set; }
-
-        public int Class { get; set; }
-
-        public int CopyCost { get; set; }
-
-        public PropertyBag Properties { get; set; }
-        public Dictionary<string, string> Resources { get; set; }
-
         [JsonIgnore]
         public string OutputItemName
         {
@@ -101,5 +81,26 @@ namespace OE2EmpireTracker.Models
             Properties = new PropertyBag();
             Resources = new Dictionary<string, string>();
         }
+
+        public string OwnerUUID { get; set; } = string.Empty;
+
+        public string BaseBlueprintUUID { get; set; }
+
+        [DefaultValue(null)]
+        public string LegacyUUID { get; set; }
+
+        public string BluePrintType { get; set; }
+
+        public int Evolution { get; set; }
+
+        public string TechLevel { get; set; }
+
+        public int Class { get; set; }
+
+        public int CopyCost { get; set; }
+
+        public PropertyBag Properties { get; set; }
+
+        public Dictionary<string, string> Resources { get; set; }
     }
 }

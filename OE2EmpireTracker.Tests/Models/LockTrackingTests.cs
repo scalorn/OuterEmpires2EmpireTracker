@@ -10,9 +10,11 @@ namespace OE2EmpireTracker.Tests.Models
     [TestFixture]
     public class LockTrackingTests
     {
-        private LockTracking _tracking;
         private const string ProcessA = "process-uuid-A";
+
         private const string ProcessB = "process-uuid-B";
+
+        private LockTracking _tracking;
 
         [SetUp]
         public void SetUp()

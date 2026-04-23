@@ -37,9 +37,6 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private Colony colony;
 
-        public ColonyStructureStatus FinalActualStatus { get; set; }
-        public ColonyStructureStatus FinalIdealStatus { get; set; }
-
         /// <summary>
         /// Collection of workers assigned to structures within this colony.
         /// Populated during <see cref="CalculateBuilt"/>.
@@ -58,6 +55,47 @@ namespace OE2EmpireTracker.Services
             empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
             // ColonyWorkers = new List<ColonyWorker>();
+        }
+
+        public ColonyStructureStatus FinalActualStatus { get; set; }
+
+        public ColonyStructureStatus FinalIdealStatus { get; set; }
+
+        /// <summary>
+        /// Populates a RichTextBox with the colony status summary in a single RTF assignment.
+        /// </summary>
+        public static void PopulateStatus(RtfBuilder builder, ColonyStructureStatus status)
+        {
+            AppendStatus(
+                builder,
+                "Power:",
+                status.PowerRequired > status.PowerProvided ? Color.Red : Color.Green,
+                status.PowerRequired,
+                status.PowerProvided);
+            AppendStatus(
+                builder,
+                " Habitation: ",
+                status.HabitationProvision < status.HabitationRequired ? Color.Red : Color.Green,
+                status.HabitationRequired,
+                status.HabitationProvision);
+            AppendStatus(
+                builder,
+                " Food: ",
+                status.FoodProvision < status.FoodRequired ? Color.Red : Color.Green,
+                status.FoodRequired,
+                status.FoodProvision);
+            AppendStatus(
+                builder,
+                " Entertainment: ",
+                status.EntertainmentProvided < status.EntertainmentRequired ? Color.Red : Color.Green,
+                status.EntertainmentRequired,
+                status.EntertainmentProvided);
+            AppendStatus(
+                builder,
+                " Warehouse: ",
+                status.WarehouseCapacity < status.WarehouseRequired ? Color.Red : Color.Green,
+                status.WarehouseRequired,
+                status.WarehouseCapacity);
         }
 
         /// <summary>
@@ -183,39 +221,6 @@ namespace OE2EmpireTracker.Services
                 FinalIdealStatus.EntertainmentRequired,
                 FinalIdealStatus.WarehouseCapacity,
                 FinalIdealStatus.WarehouseRequired);
-        }
-
-        private decimal CalculateWarehouseRequired()
-        {
-            decimal total = 0m;
-            foreach (var item in colony.Items.Items.Values)
-            {
-                total += item.Quantity * item.Volume;
-            }
-
-            return total;
-        }
-
-        // -----------------------------------------------------------------------
-        // Blueprint Cache
-        // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Looks up a blueprint from the per-pass cache, falling back to playerContext.FindBlueprint()
-        /// and caching the result for subsequent calls within the same calculation pass.
-        /// </summary>
-        private Blueprint GetCachedBlueprint(string uuid, Dictionary<string, Blueprint> cache)
-        {
-            if (string.IsNullOrEmpty(uuid)) return null;
-
-            Blueprint bp;
-            if (cache.TryGetValue(uuid, out bp))
-                return bp;
-
-            bp = playerContext.FindBlueprint(uuid);
-            if (bp != null)
-                cache[uuid] = bp;
-            return bp;
         }
 
         // -----------------------------------------------------------------------
@@ -381,6 +386,184 @@ namespace OE2EmpireTracker.Services
                     LockStagedFlatpack(structure);
                 }
             }
+        }
+
+        public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, Models.Blueprint flatpackBlueprint)
+        {
+            // Aggregators for resource stats
+            decimal builtPowerProvided = prevStatus.PowerProvided;
+            decimal builtPowerRequired = prevStatus.PowerRequired;
+            decimal builtHabitationProvision = prevStatus.HabitationProvision;
+            decimal builtHabitationRequired = prevStatus.HabitationRequired;
+            decimal builtFoodProvision = prevStatus.FoodProvision;
+            decimal builtFoodRequired = prevStatus.FoodRequired;
+            decimal builtEntertainmentProvided = prevStatus.EntertainmentProvided;
+            decimal builtEntertainmentRequired = prevStatus.EntertainmentRequired;
+            decimal builtWarehouseCapacity = prevStatus.WarehouseCapacity;
+            decimal builtWarehouseRequired = prevStatus.WarehouseRequired;
+            List<ColonyWorker> colonyWorkers = new List<ColonyWorker>();
+            var needUnallocated = new Dictionary<string, bool>();
+            foreach (var wt in Models.WorkerDetail.WorkerTypes)
+                needUnallocated[wt.DetailKey] = false;
+
+            // Ensure the structure has a unique identifier for lookups
+            if (structure.UUID == null || structure.UUID.Length == 0)
+            {
+                structure.UUID = Guid.NewGuid().ToString();
+            }
+
+            bool built = false;
+            bool staged = false;
+            bool online = false;
+            workerSource.GetStructureState(structure, out built, out staged, out online);
+
+            if (flatpackBlueprint != null)
+            {
+                // --- Resource Accumulation ---
+                if (online)
+                {
+                    builtPowerProvided += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropPowerProvided);
+                    builtPowerRequired += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropPowerRequired);
+                    builtHabitationProvision += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropHabitationProvision);
+                    builtEntertainmentProvided += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropEntertainmentProvided);
+                    builtWarehouseCapacity += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropWarehouseCapacity);
+                }
+
+                // Food accumulates regardless of online state
+                builtFoodProvision += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropFoodProvision);
+
+                // --- Worker Assignment Parsing ---
+                // Only count workers for built structures. Staged structures have no workers
+                // consuming hab/food/ent even if worker data exists in the property bag.
+                if (built)
+                {
+                foreach (var wt in Models.WorkerDetail.WorkerTypes)
+                {
+                    if (flatpackBlueprint.Properties.ContainsKey(wt.PropertyKey))
+                    {
+                        long count = 0;
+                        flatpackBlueprint.Properties.GetLong(wt.PropertyKey, 0, out count);
+                        for (int i = 1; i <= count; i++)
+                        {
+                            string key = wt.WorkerPrefix + i;
+                            bool assigned = workerSource.IsWorkerAssigned(structure, key);
+                            workerSource.SetWorkerAssigned(structure, key, assigned);
+                            if (assigned)
+                            {
+                                colonyWorkers.Add(new ColonyWorker(structure, key, assigned));
+                            }
+                        }
+                    }
+
+                    long unassignedCount = 0;
+                    flatpackBlueprint.Properties.GetLong(wt.UnassignedPropertyKey, 0, out unassignedCount);
+                    if (unassignedCount > 0)
+                    {
+                        needUnallocated[wt.DetailKey] = true;
+                    }
+                }
+                } // end if (built)
+            }
+
+            int unallocatedWorkersAdded = 0;
+            foreach (var wt in Models.WorkerDetail.WorkerTypes)
+            {
+                bool need = needUnallocated[wt.DetailKey];
+                bool alreadyPresent = prevStatus.GetUnallocatedPresent(wt.DetailKey);
+                if (need && !alreadyPresent && workerSource.IsUnassignedWorkerAvailable(wt.DetailKey))
+                {
+                    status.SetUnallocatedPresent(wt.DetailKey, true);
+                    unallocatedWorkersAdded++;
+                }
+                else
+                {
+                    status.SetUnallocatedPresent(wt.DetailKey, alreadyPresent);
+                }
+            }
+
+            // Assign aggregated values to public properties.
+            // Note: 'Required' stats are currently derived from the worker count, not direct blueprint sums.
+            status.PowerProvided = builtPowerProvided;
+            status.PowerRequired = builtPowerRequired;
+            status.HabitationProvision = builtHabitationProvision;
+            // Habitation required is calculated based on workers in current implementation
+            status.HabitationRequired = builtHabitationRequired + colonyWorkers.Count + unallocatedWorkersAdded;
+
+            status.FoodProvision = builtFoodProvision;
+            // Food required is calculated based on workers in current implementation
+            status.FoodRequired = builtFoodRequired + colonyWorkers.Count + unallocatedWorkersAdded;
+
+            status.EntertainmentProvided = builtEntertainmentProvided;
+            // Entertainment required is 2 per worker (game rule)
+            status.EntertainmentRequired = builtEntertainmentRequired + (colonyWorkers.Count + unallocatedWorkersAdded) * 2;
+
+            // Diagnostic: log per-structure worker accumulation
+            var bp = flatpackBlueprint;
+            string bpName = bp?.ExtendedName ?? structure.FlatpackBlueprintUUID ?? "?";
+            Log.Info(
+                "CalcBuilt structure [{0}] built={1} staged={2} online={3} workers={4} unalloc={5} " + "habProv={6} habReq={7} prevHabReq={8} bpType={9}",
+                bpName,
+                built,
+                staged,
+                online,
+                colonyWorkers.Count,
+                unallocatedWorkersAdded,
+                status.HabitationProvision,
+                status.HabitationRequired,
+                builtHabitationRequired,
+                bp?.BluePrintType ?? "null");
+
+            status.WarehouseCapacity = builtWarehouseCapacity;
+            // Warehouse required is calculated based on workers in current implementation
+            status.WarehouseRequired = builtWarehouseRequired;
+        }
+
+        private static decimal GetBlueprintDecimal(Models.Blueprint blueprint, string propertyName)
+        {
+            decimal value = 0m;
+            blueprint.Properties.GetDecimal(propertyName, 0m, out value);
+            return value;
+        }
+
+        private static void AppendStatus(RtfBuilder builder, string name, Color color, decimal required, decimal provided)
+        {
+            builder.Append(name, Color.Black);
+            builder.Append(string.Empty + required, required > provided ? Color.Red : Color.Green);
+            builder.Append("/", Color.Black);
+            builder.Append(string.Empty + provided, Color.Black);
+        }
+
+        private decimal CalculateWarehouseRequired()
+        {
+            decimal total = 0m;
+            foreach (var item in colony.Items.Items.Values)
+            {
+                total += item.Quantity * item.Volume;
+            }
+
+            return total;
+        }
+
+        // -----------------------------------------------------------------------
+        // Blueprint Cache
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Looks up a blueprint from the per-pass cache, falling back to playerContext.FindBlueprint()
+        /// and caching the result for subsequent calls within the same calculation pass.
+        /// </summary>
+        private Blueprint GetCachedBlueprint(string uuid, Dictionary<string, Blueprint> cache)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            Blueprint bp;
+            if (cache.TryGetValue(uuid, out bp))
+                return bp;
+
+            bp = playerContext.FindBlueprint(uuid);
+            if (bp != null)
+                cache[uuid] = bp;
+            return bp;
         }
 
         // -----------------------------------------------------------------------
@@ -604,188 +787,6 @@ namespace OE2EmpireTracker.Services
                 Models.ItemType.ItemTypeEnum.Flatpack,
                 structure.FlatpackBlueprintUUID,
                 1);
-        }
-
-        public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, Models.Blueprint flatpackBlueprint)
-        {
-            // Aggregators for resource stats
-            decimal builtPowerProvided = prevStatus.PowerProvided;
-            decimal builtPowerRequired = prevStatus.PowerRequired;
-            decimal builtHabitationProvision = prevStatus.HabitationProvision;
-            decimal builtHabitationRequired = prevStatus.HabitationRequired;
-            decimal builtFoodProvision = prevStatus.FoodProvision;
-            decimal builtFoodRequired = prevStatus.FoodRequired;
-            decimal builtEntertainmentProvided = prevStatus.EntertainmentProvided;
-            decimal builtEntertainmentRequired = prevStatus.EntertainmentRequired;
-            decimal builtWarehouseCapacity = prevStatus.WarehouseCapacity;
-            decimal builtWarehouseRequired = prevStatus.WarehouseRequired;
-            List<ColonyWorker> colonyWorkers = new List<ColonyWorker>();
-            var needUnallocated = new Dictionary<string, bool>();
-            foreach (var wt in Models.WorkerDetail.WorkerTypes)
-                needUnallocated[wt.DetailKey] = false;
-
-            // Ensure the structure has a unique identifier for lookups
-            if (structure.UUID == null || structure.UUID.Length == 0)
-            {
-                structure.UUID = Guid.NewGuid().ToString();
-            }
-
-            bool built = false;
-            bool staged = false;
-            bool online = false;
-            workerSource.GetStructureState(structure, out built, out staged, out online);
-
-            if (flatpackBlueprint != null)
-            {
-                // --- Resource Accumulation ---
-                if (online)
-                {
-                    builtPowerProvided += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropPowerProvided);
-                    builtPowerRequired += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropPowerRequired);
-                    builtHabitationProvision += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropHabitationProvision);
-                    builtEntertainmentProvided += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropEntertainmentProvided);
-                    builtWarehouseCapacity += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropWarehouseCapacity);
-                }
-
-                // Food accumulates regardless of online state
-                builtFoodProvision += GetBlueprintDecimal(flatpackBlueprint, GameConstants.PropFoodProvision);
-
-                // --- Worker Assignment Parsing ---
-                // Only count workers for built structures. Staged structures have no workers
-                // consuming hab/food/ent even if worker data exists in the property bag.
-                if (built)
-                {
-                foreach (var wt in Models.WorkerDetail.WorkerTypes)
-                {
-                    if (flatpackBlueprint.Properties.ContainsKey(wt.PropertyKey))
-                    {
-                        long count = 0;
-                        flatpackBlueprint.Properties.GetLong(wt.PropertyKey, 0, out count);
-                        for (int i = 1; i <= count; i++)
-                        {
-                            string key = wt.WorkerPrefix + i;
-                            bool assigned = workerSource.IsWorkerAssigned(structure, key);
-                            workerSource.SetWorkerAssigned(structure, key, assigned);
-                            if (assigned)
-                            {
-                                colonyWorkers.Add(new ColonyWorker(structure, key, assigned));
-                            }
-                        }
-                    }
-
-                    long unassignedCount = 0;
-                    flatpackBlueprint.Properties.GetLong(wt.UnassignedPropertyKey, 0, out unassignedCount);
-                    if (unassignedCount > 0)
-                    {
-                        needUnallocated[wt.DetailKey] = true;
-                    }
-                }
-                } // end if (built)
-            }
-
-            int unallocatedWorkersAdded = 0;
-            foreach (var wt in Models.WorkerDetail.WorkerTypes)
-            {
-                bool need = needUnallocated[wt.DetailKey];
-                bool alreadyPresent = prevStatus.GetUnallocatedPresent(wt.DetailKey);
-                if (need && !alreadyPresent && workerSource.IsUnassignedWorkerAvailable(wt.DetailKey))
-                {
-                    status.SetUnallocatedPresent(wt.DetailKey, true);
-                    unallocatedWorkersAdded++;
-                }
-                else
-                {
-                    status.SetUnallocatedPresent(wt.DetailKey, alreadyPresent);
-                }
-            }
-
-            // Assign aggregated values to public properties.
-            // Note: 'Required' stats are currently derived from the worker count, not direct blueprint sums.
-            status.PowerProvided = builtPowerProvided;
-            status.PowerRequired = builtPowerRequired;
-            status.HabitationProvision = builtHabitationProvision;
-            // Habitation required is calculated based on workers in current implementation
-            status.HabitationRequired = builtHabitationRequired + colonyWorkers.Count + unallocatedWorkersAdded;
-
-            status.FoodProvision = builtFoodProvision;
-            // Food required is calculated based on workers in current implementation
-            status.FoodRequired = builtFoodRequired + colonyWorkers.Count + unallocatedWorkersAdded;
-
-            status.EntertainmentProvided = builtEntertainmentProvided;
-            // Entertainment required is 2 per worker (game rule)
-            status.EntertainmentRequired = builtEntertainmentRequired + (colonyWorkers.Count + unallocatedWorkersAdded) * 2;
-
-            // Diagnostic: log per-structure worker accumulation
-            var bp = flatpackBlueprint;
-            string bpName = bp?.ExtendedName ?? structure.FlatpackBlueprintUUID ?? "?";
-            Log.Info(
-                "CalcBuilt structure [{0}] built={1} staged={2} online={3} workers={4} unalloc={5} " + "habProv={6} habReq={7} prevHabReq={8} bpType={9}",
-                bpName,
-                built,
-                staged,
-                online,
-                colonyWorkers.Count,
-                unallocatedWorkersAdded,
-                status.HabitationProvision,
-                status.HabitationRequired,
-                builtHabitationRequired,
-                bp?.BluePrintType ?? "null");
-
-            status.WarehouseCapacity = builtWarehouseCapacity;
-            // Warehouse required is calculated based on workers in current implementation
-            status.WarehouseRequired = builtWarehouseRequired;
-        }
-
-        private static decimal GetBlueprintDecimal(Models.Blueprint blueprint, string propertyName)
-        {
-            decimal value = 0m;
-            blueprint.Properties.GetDecimal(propertyName, 0m, out value);
-            return value;
-        }
-
-        /// <summary>
-        /// Populates a RichTextBox with the colony status summary in a single RTF assignment.
-        /// </summary>
-        public static void PopulateStatus(RtfBuilder builder, ColonyStructureStatus status)
-        {
-            AppendStatus(
-                builder,
-                "Power:",
-                status.PowerRequired > status.PowerProvided ? Color.Red : Color.Green,
-                status.PowerRequired,
-                status.PowerProvided);
-            AppendStatus(
-                builder,
-                " Habitation: ",
-                status.HabitationProvision < status.HabitationRequired ? Color.Red : Color.Green,
-                status.HabitationRequired,
-                status.HabitationProvision);
-            AppendStatus(
-                builder,
-                " Food: ",
-                status.FoodProvision < status.FoodRequired ? Color.Red : Color.Green,
-                status.FoodRequired,
-                status.FoodProvision);
-            AppendStatus(
-                builder,
-                " Entertainment: ",
-                status.EntertainmentProvided < status.EntertainmentRequired ? Color.Red : Color.Green,
-                status.EntertainmentRequired,
-                status.EntertainmentProvided);
-            AppendStatus(
-                builder,
-                " Warehouse: ",
-                status.WarehouseCapacity < status.WarehouseRequired ? Color.Red : Color.Green,
-                status.WarehouseRequired,
-                status.WarehouseCapacity);
-        }
-
-        private static void AppendStatus(RtfBuilder builder, string name, Color color, decimal required, decimal provided)
-        {
-            builder.Append(name, Color.Black);
-            builder.Append(string.Empty + required, required > provided ? Color.Red : Color.Green);
-            builder.Append("/", Color.Black);
-            builder.Append(string.Empty + provided, Color.Black);
         }
     }
 }

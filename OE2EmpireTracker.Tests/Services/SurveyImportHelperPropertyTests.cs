@@ -12,70 +12,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class SurveyImportHelperPropertyTests
     {
-        private static Survey MakeSurvey(
-            string uuid,
-            string planetName,
-            string surveyId,
-            string systemName = "System",
-            string scannedBy = "Scanner",
-            string dateTime = "2025-01-01",
-            string nickName = "")
-        {
-            var survey = new Survey();
-            survey.UUID = uuid;
-            survey.OwnerUUID = "owner-" + uuid;
-            survey.PlanetName = planetName;
-            survey.SurveyID = surveyId;
-            survey.SystemName = systemName;
-            survey.ScannedBy = scannedBy;
-            survey.DateTime = dateTime;
-            survey.NickName = nickName;
-            return survey;
-        }
-
-        private static string ShuffleCase(string input, int seed)
-        {
-            if (string.IsNullOrEmpty(input)) return input;
-            var rng = new System.Random(seed);
-            var chars = input.ToCharArray();
-            for (int i = 0; i < chars.Length; i++)
-            {
-                chars[i] = rng.Next(2) == 0 ? char.ToUpper(chars[i]) : char.ToLower(chars[i]);
-            }
-
-            return new string(chars);
-        }
-
-        private static Survey SetSurveyType(Survey survey, bool isAsteroid)
-        {
-            if (isAsteroid)
-            {
-                survey.SurveyType = SurveyType.Asteroid;
-                survey.AsteroidUUID = "ast-" + survey.UUID;
-            }
-
-            return survey;
-        }
-
-        private static Gen<string> NonEmptyStringGen()
-        {
-            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
-        }
-
-        private static Gen<Survey> SurveyGen()
-        {
-            return from uuid in NonEmptyStringGen()
-                   from planetName in NonEmptyStringGen()
-                   from surveyId in NonEmptyStringGen()
-                   from systemName in NonEmptyStringGen()
-                   from scannedBy in NonEmptyStringGen()
-                   from dateTime in NonEmptyStringGen()
-                   from nickName in NonEmptyStringGen()
-                   from isAsteroid in Arb.Default.Bool().Generator
-                   let survey = MakeSurvey(uuid, planetName, surveyId, systemName, scannedBy, dateTime, nickName)
-                   select SetSurveyType(survey, isAsteroid);
-        }
-
         /// <summary>
         /// Property 1: Case-insensitive PlanetName+SurveyID search.
         /// For any list of surveys and for any PlanetName+SurveyID pair that exists in the list
@@ -249,6 +185,70 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(ownerPreserved)
                     .And(nickNamePreserved);
             });
+        }
+
+        private static Survey MakeSurvey(
+            string uuid,
+            string planetName,
+            string surveyId,
+            string systemName = "System",
+            string scannedBy = "Scanner",
+            string dateTime = "2025-01-01",
+            string nickName = "")
+        {
+            var survey = new Survey();
+            survey.UUID = uuid;
+            survey.OwnerUUID = "owner-" + uuid;
+            survey.PlanetName = planetName;
+            survey.SurveyID = surveyId;
+            survey.SystemName = systemName;
+            survey.ScannedBy = scannedBy;
+            survey.DateTime = dateTime;
+            survey.NickName = nickName;
+            return survey;
+        }
+
+        private static string ShuffleCase(string input, int seed)
+        {
+            if (string.IsNullOrEmpty(input)) return input;
+            var rng = new System.Random(seed);
+            var chars = input.ToCharArray();
+            for (int i = 0; i < chars.Length; i++)
+            {
+                chars[i] = rng.Next(2) == 0 ? char.ToUpper(chars[i]) : char.ToLower(chars[i]);
+            }
+
+            return new string(chars);
+        }
+
+        private static Survey SetSurveyType(Survey survey, bool isAsteroid)
+        {
+            if (isAsteroid)
+            {
+                survey.SurveyType = SurveyType.Asteroid;
+                survey.AsteroidUUID = "ast-" + survey.UUID;
+            }
+
+            return survey;
+        }
+
+        private static Gen<string> NonEmptyStringGen()
+        {
+            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
+        }
+
+        private static Gen<Survey> SurveyGen()
+        {
+            return from uuid in NonEmptyStringGen()
+                   from planetName in NonEmptyStringGen()
+                   from surveyId in NonEmptyStringGen()
+                   from systemName in NonEmptyStringGen()
+                   from scannedBy in NonEmptyStringGen()
+                   from dateTime in NonEmptyStringGen()
+                   from nickName in NonEmptyStringGen()
+                   from isAsteroid in Arb.Default.Bool().Generator
+                   let survey = MakeSurvey(uuid, planetName, surveyId, systemName, scannedBy, dateTime, nickName)
+                   select SetSurveyType(survey, isAsteroid);
         }
     }
 }

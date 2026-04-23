@@ -29,71 +29,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             _parser = new SurveyParser();
         }
 
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            string path = Path.Combine(baseDir, "TestData", filename);
-            return File.ReadAllText(path);
-        }
-
-        private static string ExtractFragment(string clipboardData)
-        {
-            return BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboardData);
-        }
-
-        // -------------------------------------------------------------------
-        // Helpers for FsCheck generators
-        // -------------------------------------------------------------------
-
-        private static Gen<string> NonEmptyStringGen()
-        {
-            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
-        }
-
-        private static Gen<Survey> SurveyGen()
-        {
-            return from uuid in NonEmptyStringGen()
-                   from planetName in NonEmptyStringGen()
-                   from surveyId in NonEmptyStringGen()
-                   from systemName in NonEmptyStringGen()
-                   from scannedBy in NonEmptyStringGen()
-                   from dateTime in NonEmptyStringGen()
-                   from nickName in NonEmptyStringGen()
-                   from ownerUuid in NonEmptyStringGen()
-                   from isAsteroid in Arb.Default.Bool().Generator
-                   let survey = MakeSurvey(uuid, ownerUuid, planetName, surveyId, systemName, scannedBy, dateTime, nickName, isAsteroid)
-                   select survey;
-        }
-
-        private static Survey MakeSurvey(
-            string uuid,
-            string ownerUuid,
-            string planetName,
-            string surveyId,
-            string systemName,
-            string scannedBy,
-            string dateTime,
-            string nickName,
-            bool isAsteroid)
-        {
-            var survey = new Survey();
-            survey.UUID = uuid;
-            survey.OwnerUUID = ownerUuid;
-            survey.PlanetName = planetName;
-            survey.SurveyID = surveyId;
-            survey.SystemName = systemName;
-            survey.ScannedBy = scannedBy;
-            survey.DateTime = dateTime;
-            survey.NickName = nickName;
-            if (isAsteroid)
-            {
-                survey.SurveyType = SurveyType.Asteroid;
-                survey.AsteroidUUID = "ast-" + uuid;
-            }
-
-            return survey;
-        }
-
         // ===================================================================
         // Property: Planet survey HTML -> no asteroid type, resources parsed
         // Validates: Requirements 3.1, 3.3
@@ -285,6 +220,121 @@ namespace OE2EmpireTracker.Tests.Parsers
             });
         }
 
+        [FsCheck.NUnit.Property(MaxTest = 50)]
+        public Property PlanetSurveyHtml_NeverSetsAsteroidType()
+        {
+            // **Validates: Requirements 3.1**
+            var gen = from resourceCount in Gen.Choose(1, 6)
+                      from resources in Gen.ListOf(
+                          resourceCount,
+                          from name in ResourceNameGen() from purity in PurityGen() from amount in AmountGen() select Tuple.Create(name, purity, amount))
+                      from planetName in NonEmptyStringGen()
+                      from systemName in NonEmptyStringGen()
+                      from surveyId in NonEmptyStringGen()
+                      from scannedBy in NonEmptyStringGen()
+                      select BuildPlanetSurveyHtml(planetName, systemName, surveyId, scannedBy, resources.ToList());
+
+            return Prop.ForAll(gen.ToArbitrary(), html =>
+            {
+                var survey = new Survey();
+                _parser.ProcessHtml(survey, html);
+
+                return (survey.SurveyType == SurveyType.Planet)
+                    .Label(string.Format("Planet survey HTML should not set SurveyType to Asteroid, got {0}", survey.SurveyType));
+            });
+        }
+
+        [FsCheck.NUnit.Property(MaxTest = 50)]
+        public Property PlanetSurveyHtml_ResourcesParsedCorrectly()
+        {
+            // **Validates: Requirements 3.1, 3.3**
+            var gen = from name in ResourceNameGen()
+                      from purity in PurityGen()
+                      from amount in AmountGen()
+                      select new { Name = name, Purity = purity, Amount = amount };
+
+            return Prop.ForAll(gen.ToArbitrary(), data =>
+            {
+                var survey = new Survey();
+                SurveyParser.ParseResource(survey, string.Format("{0} ({1})", data.Name, data.Purity), string.Format("{0}/hour", data.Amount));
+
+                var hasResource = survey.Resources.ContainsKey(data.Name);
+                if (!hasResource)
+                    return false.Label(string.Format("Resource '{0}' not found in parsed survey", data.Name));
+
+                var r = survey.Resources[data.Name];
+                var amountMatch = (r.Amount == data.Amount)
+                    .Label(string.Format("Amount: expected '{0}', got '{1}'", data.Amount, r.Amount));
+
+                return amountMatch;
+            });
+        }
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            string path = Path.Combine(baseDir, "TestData", filename);
+            return File.ReadAllText(path);
+        }
+
+        private static string ExtractFragment(string clipboardData)
+        {
+            return BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboardData);
+        }
+
+        // -------------------------------------------------------------------
+        // Helpers for FsCheck generators
+        // -------------------------------------------------------------------
+
+        private static Gen<string> NonEmptyStringGen()
+        {
+            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
+        }
+
+        private static Gen<Survey> SurveyGen()
+        {
+            return from uuid in NonEmptyStringGen()
+                   from planetName in NonEmptyStringGen()
+                   from surveyId in NonEmptyStringGen()
+                   from systemName in NonEmptyStringGen()
+                   from scannedBy in NonEmptyStringGen()
+                   from dateTime in NonEmptyStringGen()
+                   from nickName in NonEmptyStringGen()
+                   from ownerUuid in NonEmptyStringGen()
+                   from isAsteroid in Arb.Default.Bool().Generator
+                   let survey = MakeSurvey(uuid, ownerUuid, planetName, surveyId, systemName, scannedBy, dateTime, nickName, isAsteroid)
+                   select survey;
+        }
+
+        private static Survey MakeSurvey(
+            string uuid,
+            string ownerUuid,
+            string planetName,
+            string surveyId,
+            string systemName,
+            string scannedBy,
+            string dateTime,
+            string nickName,
+            bool isAsteroid)
+        {
+            var survey = new Survey();
+            survey.UUID = uuid;
+            survey.OwnerUUID = ownerUuid;
+            survey.PlanetName = planetName;
+            survey.SurveyID = surveyId;
+            survey.SystemName = systemName;
+            survey.ScannedBy = scannedBy;
+            survey.DateTime = dateTime;
+            survey.NickName = nickName;
+            if (isAsteroid)
+            {
+                survey.SurveyType = SurveyType.Asteroid;
+                survey.AsteroidUUID = "ast-" + uuid;
+            }
+
+            return survey;
+        }
+
         // ===================================================================
         // Property: Planet survey with generated HTML (no MaxReserve nodes)
         // produces correct results regardless of resource content
@@ -341,56 +391,6 @@ namespace OE2EmpireTracker.Tests.Parsers
 
             sb.Append("</div></div></div>");
             return sb.ToString();
-        }
-
-        [FsCheck.NUnit.Property(MaxTest = 50)]
-        public Property PlanetSurveyHtml_NeverSetsAsteroidType()
-        {
-            // **Validates: Requirements 3.1**
-            var gen = from resourceCount in Gen.Choose(1, 6)
-                      from resources in Gen.ListOf(
-                          resourceCount,
-                          from name in ResourceNameGen() from purity in PurityGen() from amount in AmountGen() select Tuple.Create(name, purity, amount))
-                      from planetName in NonEmptyStringGen()
-                      from systemName in NonEmptyStringGen()
-                      from surveyId in NonEmptyStringGen()
-                      from scannedBy in NonEmptyStringGen()
-                      select BuildPlanetSurveyHtml(planetName, systemName, surveyId, scannedBy, resources.ToList());
-
-            return Prop.ForAll(gen.ToArbitrary(), html =>
-            {
-                var survey = new Survey();
-                _parser.ProcessHtml(survey, html);
-
-                return (survey.SurveyType == SurveyType.Planet)
-                    .Label(string.Format("Planet survey HTML should not set SurveyType to Asteroid, got {0}", survey.SurveyType));
-            });
-        }
-
-        [FsCheck.NUnit.Property(MaxTest = 50)]
-        public Property PlanetSurveyHtml_ResourcesParsedCorrectly()
-        {
-            // **Validates: Requirements 3.1, 3.3**
-            var gen = from name in ResourceNameGen()
-                      from purity in PurityGen()
-                      from amount in AmountGen()
-                      select new { Name = name, Purity = purity, Amount = amount };
-
-            return Prop.ForAll(gen.ToArbitrary(), data =>
-            {
-                var survey = new Survey();
-                SurveyParser.ParseResource(survey, string.Format("{0} ({1})", data.Name, data.Purity), string.Format("{0}/hour", data.Amount));
-
-                var hasResource = survey.Resources.ContainsKey(data.Name);
-                if (!hasResource)
-                    return false.Label(string.Format("Resource '{0}' not found in parsed survey", data.Name));
-
-                var r = survey.Resources[data.Name];
-                var amountMatch = (r.Amount == data.Amount)
-                    .Label(string.Format("Amount: expected '{0}', got '{1}'", data.Amount, r.Amount));
-
-                return amountMatch;
-            });
         }
     }
 }

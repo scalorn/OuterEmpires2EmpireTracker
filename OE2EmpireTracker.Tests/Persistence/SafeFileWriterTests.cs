@@ -23,8 +23,6 @@ namespace OE2EmpireTracker.Tests.Persistence
                 Directory.Delete(_testDir, true);
         }
 
-        private string TestFile(string name = "test.json") => Path.Combine(_testDir, name);
-
         [Test]
         public void WriteAllText_NewFile_CreatesFile()
         {
@@ -119,5 +117,7 @@ namespace OE2EmpireTracker.Tests.Persistence
 
             Assert.That(File.ReadAllText(path).Length, Is.EqualTo(content.Length));
         }
+
+        private string TestFile(string name = "test.json") => Path.Combine(_testDir, name);
     }
 }

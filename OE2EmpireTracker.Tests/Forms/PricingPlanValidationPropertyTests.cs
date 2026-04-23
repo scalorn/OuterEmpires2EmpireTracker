@@ -17,23 +17,6 @@ namespace OE2EmpireTracker.Tests.Forms
     public class PricingPlanValidationPropertyTests
     {
         /// <summary>
-        /// Generates strings composed entirely of whitespace characters.
-        /// </summary>
-        private static Gen<string> WhitespaceStringGen()
-        {
-            return Gen.OneOf(
-                Gen.Constant(string.Empty),
-                Gen.Constant(" "),
-                Gen.Constant("  "),
-                Gen.Constant("\t"),
-                Gen.Constant("\n"),
-                Gen.Constant(" \t\n "),
-                Gen.Choose(1, 10).SelectMany(len =>
-                    Gen.ListOf(len, Gen.Elements(' ', '\t', '\n', '\r'))
-                       .Select(chars => new string(chars.ToArray()))));
-        }
-
-        /// <summary>
         /// Feature: pricing-plans, Property 1: Whitespace plan names are rejected
         ///
         /// For any whitespace-only string, string.IsNullOrWhiteSpace returns true,
@@ -71,6 +54,23 @@ namespace OE2EmpireTracker.Tests.Forms
                 return (hasContent == isAccepted)
                     .Label($"Name '{name}': hasContent={hasContent}, isAccepted={isAccepted}");
             });
+        }
+
+        /// <summary>
+        /// Generates strings composed entirely of whitespace characters.
+        /// </summary>
+        private static Gen<string> WhitespaceStringGen()
+        {
+            return Gen.OneOf(
+                Gen.Constant(string.Empty),
+                Gen.Constant(" "),
+                Gen.Constant("  "),
+                Gen.Constant("\t"),
+                Gen.Constant("\n"),
+                Gen.Constant(" \t\n "),
+                Gen.Choose(1, 10).SelectMany(len =>
+                    Gen.ListOf(len, Gen.Elements(' ', '\t', '\n', '\r'))
+                       .Select(chars => new string(chars.ToArray()))));
         }
     }
 }

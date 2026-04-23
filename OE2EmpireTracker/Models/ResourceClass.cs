@@ -9,6 +9,12 @@ namespace OE2EmpireTracker.Models
 {
     public class ResourceClass
     {
+        private static List<ResourceClass> _classes = GetClasses();
+
+        private static Dictionary<ResourceClassEnum, ResourceClass> _classMapByEnum;
+
+        private static Dictionary<string, ResourceClass> _classMapByString;
+
         public enum ResourceClassEnum
         {
             None,
@@ -19,16 +25,15 @@ namespace OE2EmpireTracker.Models
             SyntheticElements,
         }
 
-        public ResourceClassEnum ID { get; set; }
-        public string Name { get; set; }
-
-        private static List<ResourceClass> _classes = GetClasses();
-        private static Dictionary<ResourceClassEnum, ResourceClass> _classMapByEnum;
-        private static Dictionary<string, ResourceClass> _classMapByString;
-
         public static IReadOnlyList<ResourceClass> Classes => _classes.AsReadOnly();
+
         public static IReadOnlyDictionary<ResourceClassEnum, ResourceClass> ClassMapByEnum => _classMapByEnum;
+
         public static IReadOnlyDictionary<string, ResourceClass> ClassMapByString => _classMapByString;
+
+        public ResourceClassEnum ID { get; set; }
+
+        public string Name { get; set; }
 
         private static List<ResourceClass> GetClasses()
         {

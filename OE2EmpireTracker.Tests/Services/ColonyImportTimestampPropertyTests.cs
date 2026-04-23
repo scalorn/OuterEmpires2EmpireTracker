@@ -13,24 +13,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ColonyImportTimestampPropertyTests
     {
-        private static Gen<string> NonEmptyStringGen()
-        {
-            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
-        }
-
-        private static Gen<Colony> TempColonyGen()
-        {
-            return from name in NonEmptyStringGen()
-                   from planet in NonEmptyStringGen()
-                   from system in NonEmptyStringGen()
-                   select new Colony
-                   {
-                       ColonyName = name,
-                       PlanetName = planet,
-                       SystemName = system
-                   };
-        }
-
         /// <summary>
         /// Property 2: Import operations produce valid ISO timestamps.
         /// For any valid temp colony and owner UUID, CreateFromTemp should produce a Colony
@@ -67,6 +49,24 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(mergedParses)
                     .Label($"MergeIdentity: LastImportDateTime '{data.Target.LastImportDateTime}' should parse via TryParseIso");
             });
+        }
+
+        private static Gen<string> NonEmptyStringGen()
+        {
+            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
+        }
+
+        private static Gen<Colony> TempColonyGen()
+        {
+            return from name in NonEmptyStringGen()
+                   from planet in NonEmptyStringGen()
+                   from system in NonEmptyStringGen()
+                   select new Colony
+                   {
+                       ColonyName = name,
+                       PlanetName = planet,
+                       SystemName = system
+                   };
         }
     }
 }

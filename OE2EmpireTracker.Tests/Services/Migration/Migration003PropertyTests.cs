@@ -20,84 +20,8 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     [TestFixture]
     public class Migration003PropertyTests
     {
-        /// <summary>
-        /// Replicates the conversion logic from Migration003 without requiring singletons.
-        /// </summary>
-        private static string MigrateDateTime(string original)
-        {
-            // Already ISO?
-            if (SurveyDateTimeParser.TryParseIso(original, out _))
-                return original;
-
-            // Try game format
-            if (SurveyDateTimeParser.TryParseGameFormat(original, out DateTime parsed))
-                return SurveyDateTimeParser.ToIsoString(parsed);
-
-            // Try common .NET formats
-            if (DateTime.TryParse(original, out DateTime fallback))
-                return SurveyDateTimeParser.ToIsoString(fallback);
-
-            // Unparseable or null/empty -- replace with now
-            return SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
-        }
-
         private static readonly string[] Months =
             { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
-
-        /// <summary>
-        /// Generates valid DateTime values with minute precision (seconds=0).
-        /// Constrained to years 2000-2099 to match two-digit year range.
-        /// Produces UTC DateTimes (DateTimeKind.Utc).
-        /// </summary>
-        private static Gen<DateTime> ValidDateTimeGen()
-        {
-            return from year in Gen.Choose(2000, 2099)
-                   from month in Gen.Choose(1, 12)
-                   from day in Gen.Choose(1, 28)
-                   from hour in Gen.Choose(0, 23)
-                   from minute in Gen.Choose(0, 59)
-                   select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
-        }
-
-        /// <summary>
-        /// Generates valid ISO strings from random DateTimes.
-        /// </summary>
-        private static Gen<string> ValidIsoStringGen()
-        {
-            return ValidDateTimeGen().Select(dt => SurveyDateTimeParser.ToIsoString(dt));
-        }
-
-        /// <summary>
-        /// Generates strings that fail all three parse methods:
-        /// TryParseIso, TryParseGameFormat, and DateTime.TryParse.
-        /// Includes null, empty, and garbage strings.
-        /// </summary>
-        private static Gen<string> UnparseableStringGen()
-        {
-            var nullGen = Gen.Constant((string)null);
-            var emptyGen = Gen.Constant(string.Empty);
-            var garbage = Gen.Elements(
-                "not-a-date", "ZZZZZ", "99ZZZ99-99:99x",
-                "abc123!@#", "2024-13-45T99:99:99",
-                "32JAN24-1:00p", "00XXX00-0:00z",
-                "random garbage here", "!!!",
-                "2024-02-30T12:00:00"); // invalid day for Feb
-
-            return Gen.OneOf(nullGen, emptyGen, garbage);
-        }
-
-        /// <summary>
-        /// Generates DateTime values formatted with standard .NET format strings
-        /// ("G", "s", "u", "o") that DateTime.TryParse can handle.
-        /// These are NOT valid ISO (our strict format) and NOT game format,
-        /// but ARE parseable by DateTime.TryParse.
-        /// </summary>
-        private static Gen<string> CommonFormatDateStringGen()
-        {
-            return from dt in ValidDateTimeGen()
-                   from fmt in Gen.Elements("G", "s", "u", "o")
-                   select dt.ToString(fmt, CultureInfo.InvariantCulture);
-        }
 
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 7: Migration is idempotent on ISO values.
@@ -169,6 +93,82 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 return isValidIso
                     .Label($"Migration did not produce valid ISO from common format: input='{formatted}', output='{result}'");
             });
+        }
+
+        /// <summary>
+        /// Replicates the conversion logic from Migration003 without requiring singletons.
+        /// </summary>
+        private static string MigrateDateTime(string original)
+        {
+            // Already ISO?
+            if (SurveyDateTimeParser.TryParseIso(original, out _))
+                return original;
+
+            // Try game format
+            if (SurveyDateTimeParser.TryParseGameFormat(original, out DateTime parsed))
+                return SurveyDateTimeParser.ToIsoString(parsed);
+
+            // Try common .NET formats
+            if (DateTime.TryParse(original, out DateTime fallback))
+                return SurveyDateTimeParser.ToIsoString(fallback);
+
+            // Unparseable or null/empty -- replace with now
+            return SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
+        }
+
+        /// <summary>
+        /// Generates valid DateTime values with minute precision (seconds=0).
+        /// Constrained to years 2000-2099 to match two-digit year range.
+        /// Produces UTC DateTimes (DateTimeKind.Utc).
+        /// </summary>
+        private static Gen<DateTime> ValidDateTimeGen()
+        {
+            return from year in Gen.Choose(2000, 2099)
+                   from month in Gen.Choose(1, 12)
+                   from day in Gen.Choose(1, 28)
+                   from hour in Gen.Choose(0, 23)
+                   from minute in Gen.Choose(0, 59)
+                   select new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
+        }
+
+        /// <summary>
+        /// Generates valid ISO strings from random DateTimes.
+        /// </summary>
+        private static Gen<string> ValidIsoStringGen()
+        {
+            return ValidDateTimeGen().Select(dt => SurveyDateTimeParser.ToIsoString(dt));
+        }
+
+        /// <summary>
+        /// Generates strings that fail all three parse methods:
+        /// TryParseIso, TryParseGameFormat, and DateTime.TryParse.
+        /// Includes null, empty, and garbage strings.
+        /// </summary>
+        private static Gen<string> UnparseableStringGen()
+        {
+            var nullGen = Gen.Constant((string)null);
+            var emptyGen = Gen.Constant(string.Empty);
+            var garbage = Gen.Elements(
+                "not-a-date", "ZZZZZ", "99ZZZ99-99:99x",
+                "abc123!@#", "2024-13-45T99:99:99",
+                "32JAN24-1:00p", "00XXX00-0:00z",
+                "random garbage here", "!!!",
+                "2024-02-30T12:00:00"); // invalid day for Feb
+
+            return Gen.OneOf(nullGen, emptyGen, garbage);
+        }
+
+        /// <summary>
+        /// Generates DateTime values formatted with standard .NET format strings
+        /// ("G", "s", "u", "o") that DateTime.TryParse can handle.
+        /// These are NOT valid ISO (our strict format) and NOT game format,
+        /// but ARE parseable by DateTime.TryParse.
+        /// </summary>
+        private static Gen<string> CommonFormatDateStringGen()
+        {
+            return from dt in ValidDateTimeGen()
+                   from fmt in Gen.Elements("G", "s", "u", "o")
+                   select dt.ToString(fmt, CultureInfo.InvariantCulture);
         }
     }
 }

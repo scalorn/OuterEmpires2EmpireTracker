@@ -16,12 +16,32 @@ namespace OE2EmpireTracker.Services
     public static class ColonyAdminReportBuilder
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         // Color palette for report sections
         private static readonly Color HeaderColor = Color.FromArgb(0, 120, 215);
+
         private static readonly Color CountdownColor = Color.FromArgb(200, 120, 0);
+
         private static readonly Color CompletionTimeColor = Color.FromArgb(0, 150, 80);
+
         private static readonly Color TextColor = Color.FromArgb(60, 60, 60);
+
         private static readonly Color DetailColor = Color.FromArgb(100, 100, 100);
+
+        // ----- Inactivity Section -----
+
+        /// <summary>
+        /// Fixed order for inactivity groups matching requirements 3.2.
+        /// </summary>
+        private static readonly (ActivityType type, string header)[] InactivityGroupOrder = new[]
+        {
+            (ActivityType.ColonyImportStaleness, "Colony Import Staleness"),
+            (ActivityType.Mining,                "Idle Mining"),
+            (ActivityType.Refining,              "Idle Refining"),
+            (ActivityType.Manufacturing,         "Idle Manufacturing"),
+            (ActivityType.CommodityManufacturing, "Idle Commodity Manufacturing"),
+            (ActivityType.Research,              "Idle Research"),
+        };
 
         /// <summary>
         /// Builds the full admin report RTF string for a single colony.
@@ -114,21 +134,6 @@ namespace OE2EmpireTracker.Services
 
             return true;
         }
-
-        // ----- Inactivity Section -----
-
-        /// <summary>
-        /// Fixed order for inactivity groups matching requirements 3.2.
-        /// </summary>
-        private static readonly (ActivityType type, string header)[] InactivityGroupOrder = new[]
-        {
-            (ActivityType.ColonyImportStaleness, "Colony Import Staleness"),
-            (ActivityType.Mining,                "Idle Mining"),
-            (ActivityType.Refining,              "Idle Refining"),
-            (ActivityType.Manufacturing,         "Idle Manufacturing"),
-            (ActivityType.CommodityManufacturing, "Idle Commodity Manufacturing"),
-            (ActivityType.Research,              "Idle Research"),
-        };
 
         private static bool RenderInactivitySection(RtfBuilder builder, List<ActivityRow> rows, bool needsLeadingNewline)
         {

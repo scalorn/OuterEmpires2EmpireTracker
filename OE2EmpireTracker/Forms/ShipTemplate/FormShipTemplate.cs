@@ -13,12 +13,13 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
     public partial class FormShipTemplate : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         private PlayerContext playerContext;
+
         private Models.ShipTemplate _selectedTemplate;
+
         private List<string> _hullUUIDs = new List<string>();
 
         public FormShipTemplate()
@@ -56,6 +57,16 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            base.OnFormClosed(e);
         }
 
         // Layout
@@ -763,12 +774,6 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             PopulateHullCombo();
             PopulateTemplateList();
             ClearForm();
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            base.OnFormClosed(e);
         }
 
         // Helpers

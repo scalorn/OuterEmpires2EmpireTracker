@@ -13,22 +13,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     [TestFixture]
     public class DefaultSurveyDeterministicUUIDPropertyTests
     {
-        private static Gen<string> SafeStringGen()
-        {
-            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
-        }
-
-        /// <summary>
-        /// Generates a tuple of colony identity fields: (ownerUUID, planetName, systemName)
-        /// </summary>
-        private static Gen<Tuple<string, string, string>> ColonyKeyGen()
-        {
-            return from ownerUUID in SafeStringGen()
-                   from planetName in SafeStringGen()
-                   from systemName in SafeStringGen()
-                   select Tuple.Create(ownerUUID, planetName, systemName);
-        }
-
         /// <summary>
         /// For any (ownerUUID, planetName, systemName) triple, GenerateDefaultSurvey
         /// shall produce the same UUID on every call.
@@ -109,6 +93,22 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
                 return canParse.Label($"UUID '{uuidStr}' is not a valid GUID");
             });
+        }
+
+        private static Gen<string> SafeStringGen()
+        {
+            return Arb.Default.NonEmptyString().Generator.Select(s => s.Get);
+        }
+
+        /// <summary>
+        /// Generates a tuple of colony identity fields: (ownerUUID, planetName, systemName)
+        /// </summary>
+        private static Gen<Tuple<string, string, string>> ColonyKeyGen()
+        {
+            return from ownerUUID in SafeStringGen()
+                   from planetName in SafeStringGen()
+                   from systemName in SafeStringGen()
+                   select Tuple.Create(ownerUUID, planetName, systemName);
         }
     }
 }

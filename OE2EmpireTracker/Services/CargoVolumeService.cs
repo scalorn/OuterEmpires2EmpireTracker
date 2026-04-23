@@ -16,15 +16,6 @@ namespace OE2EmpireTracker.Services
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// Result of a cargo volume computation.
-        /// </summary>
-        public class CargoLoadResult
-        {
-            public decimal TotalVolume { get; set; }
-            public decimal TotalMass { get; set; }
-        }
-
-        /// <summary>
         /// Computes total volume and mass for a delivery load list.
         /// For crates, recursively sums contents volume (one level only).
         /// </summary>
@@ -120,29 +111,6 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Checks if a blueprint represents a crate type.
-        /// </summary>
-        private static bool IsCrateType(Blueprint bp)
-        {
-            if (bp == null) return false;
-            return !string.IsNullOrEmpty(bp.BluePrintType) &&
-                   bp.BluePrintType.IndexOf("Crate", StringComparison.OrdinalIgnoreCase) >= 0;
-        }
-
-        /// <summary>
-        /// Computes the total volume of a crate's contents (one level only).
-        /// Looks at the crate blueprint's resource requirements as a proxy for contents.
-        /// Falls back to the crate's own Cargo Volume Size if no contents can be determined.
-        /// </summary>
-        private static decimal GetCrateContentsVolume(Blueprint crateBp, Func<string, Blueprint> blueprintFinder)
-        {
-            // A crate's volume is its own Cargo Volume Size property
-            decimal crateVol = 0m;
-            crateBp.Properties.GetDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out crateVol);
-            return crateVol;
-        }
-
-        /// <summary>
         /// Splits a load list into multiple trips, each within the given cargo capacity.
         /// Items are assigned to trips in order; an item that exceeds capacity goes alone.
         /// </summary>
@@ -227,6 +195,38 @@ namespace OE2EmpireTracker.Services
                 trips.Count,
                 cargoCapacity);
             return trips;
+        }
+
+        /// <summary>
+        /// Checks if a blueprint represents a crate type.
+        /// </summary>
+        private static bool IsCrateType(Blueprint bp)
+        {
+            if (bp == null) return false;
+            return !string.IsNullOrEmpty(bp.BluePrintType) &&
+                   bp.BluePrintType.IndexOf("Crate", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        /// <summary>
+        /// Computes the total volume of a crate's contents (one level only).
+        /// Looks at the crate blueprint's resource requirements as a proxy for contents.
+        /// Falls back to the crate's own Cargo Volume Size if no contents can be determined.
+        /// </summary>
+        private static decimal GetCrateContentsVolume(Blueprint crateBp, Func<string, Blueprint> blueprintFinder)
+        {
+            // A crate's volume is its own Cargo Volume Size property
+            decimal crateVol = 0m;
+            crateBp.Properties.GetDecimal(BlueprintPropertyKeys.CargoVolumeSize, 0, out crateVol);
+            return crateVol;
+        }
+
+        /// <summary>
+        /// Result of a cargo volume computation.
+        /// </summary>
+        public class CargoLoadResult
+        {
+            public decimal TotalVolume { get; set; }
+            public decimal TotalMass { get; set; }
         }
     }
 }

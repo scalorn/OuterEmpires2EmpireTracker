@@ -13,7 +13,7 @@ namespace OE2EmpireTracker.Models
     [JsonConverter(typeof(ItemBagJSONConverter))]
     public class ItemBag
     {
-        public Dictionary<string, Item> Items { get; set; }
+        private readonly object _syncRoot = new object();
 
         // Secondary index: (ItemType, BaseItemTypeID) -> list of items
         private Dictionary<(ItemType.ItemTypeEnum, string), List<Item>> _typeIndex;
@@ -21,12 +21,12 @@ namespace OE2EmpireTracker.Models
         // Secondary index: (ItemType, BaseItemTypeID, Purity) -> list of items (Resources only)
         private Dictionary<(ItemType.ItemTypeEnum, string, string), List<Item>> _resourceIndex;
 
-        private readonly object _syncRoot = new object();
-
         public ItemBag()
         {
             Items = new Dictionary<string, Item>();
         }
+
+        public Dictionary<string, Item> Items { get; set; }
 
         public bool ContainsKey(string uuid)
         {
@@ -51,41 +51,6 @@ namespace OE2EmpireTracker.Models
             lock (_syncRoot)
             {
                 return Items.Count;
-            }
-        }
-
-        private void EnsureTypeIndex()
-        {
-            if (_typeIndex != null) return;
-            _typeIndex = new Dictionary<(ItemType.ItemTypeEnum, string), List<Item>>();
-            foreach (var kvp in Items)
-            {
-                var key = (kvp.Value.ItemType, kvp.Value.BaseItemTypeID ?? string.Empty);
-                if (!_typeIndex.TryGetValue(key, out var list))
-                {
-                    list = new List<Item>();
-                    _typeIndex[key] = list;
-                }
-
-                list.Add(kvp.Value);
-            }
-        }
-
-        private void EnsureResourceIndex()
-        {
-            if (_resourceIndex != null) return;
-            _resourceIndex = new Dictionary<(ItemType.ItemTypeEnum, string, string), List<Item>>();
-            foreach (var kvp in Items)
-            {
-                if (kvp.Value.ItemType != ItemType.ItemTypeEnum.Resource) continue;
-                var key = (kvp.Value.ItemType, kvp.Value.BaseItemTypeID ?? string.Empty, kvp.Value.ResourcePurity ?? string.Empty);
-                if (!_resourceIndex.TryGetValue(key, out var list))
-                {
-                    list = new List<Item>();
-                    _resourceIndex[key] = list;
-                }
-
-                list.Add(kvp.Value);
             }
         }
 
@@ -148,6 +113,41 @@ namespace OE2EmpireTracker.Models
                 Items.Clear();
                 _typeIndex = null;
                 _resourceIndex = null;
+            }
+        }
+
+        private void EnsureTypeIndex()
+        {
+            if (_typeIndex != null) return;
+            _typeIndex = new Dictionary<(ItemType.ItemTypeEnum, string), List<Item>>();
+            foreach (var kvp in Items)
+            {
+                var key = (kvp.Value.ItemType, kvp.Value.BaseItemTypeID ?? string.Empty);
+                if (!_typeIndex.TryGetValue(key, out var list))
+                {
+                    list = new List<Item>();
+                    _typeIndex[key] = list;
+                }
+
+                list.Add(kvp.Value);
+            }
+        }
+
+        private void EnsureResourceIndex()
+        {
+            if (_resourceIndex != null) return;
+            _resourceIndex = new Dictionary<(ItemType.ItemTypeEnum, string, string), List<Item>>();
+            foreach (var kvp in Items)
+            {
+                if (kvp.Value.ItemType != ItemType.ItemTypeEnum.Resource) continue;
+                var key = (kvp.Value.ItemType, kvp.Value.BaseItemTypeID ?? string.Empty, kvp.Value.ResourcePurity ?? string.Empty);
+                if (!_resourceIndex.TryGetValue(key, out var list))
+                {
+                    list = new List<Item>();
+                    _resourceIndex[key] = list;
+                }
+
+                list.Add(kvp.Value);
             }
         }
     }

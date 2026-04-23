@@ -11,15 +11,18 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class DeliveryRoute
     {
-        public string UUID { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string OwnerUUID { get; set; } = string.Empty;
-        public List<RouteStop> Stops { get; set; }
-
         public DeliveryRoute()
         {
             Stops = new List<RouteStop>();
         }
+
+        public string UUID { get; set; }
+
+        public string Name { get; set; } = string.Empty;
+
+        public string OwnerUUID { get; set; } = string.Empty;
+
+        public List<RouteStop> Stops { get; set; }
     }
 
     /// <summary>

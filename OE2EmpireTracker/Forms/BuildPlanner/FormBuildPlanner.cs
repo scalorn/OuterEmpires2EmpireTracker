@@ -15,11 +15,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
     public partial class FormBuildPlanner : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         private PlayerContext playerContext;
+
         private BuildPlan _selectedPlan;
 
         /// <summary>
@@ -106,6 +106,18 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.BuildPlanDataChanged += OnBuildPlanDataChanged;
             playerContext.ColonyDataChanged += OnColonyDataChanged;
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.BuildPlanDataChanged -= OnBuildPlanDataChanged;
+            playerContext.ColonyDataChanged -= OnColonyDataChanged;
+            base.OnFormClosed(e);
         }
 
         // -----------------------------------------------------------------------
@@ -1471,20 +1483,6 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         }
 
         // -----------------------------------------------------------------------
-        // Utility Dialogs
-        // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Simple helper class for combo box items with a display name and ID.
-        /// </summary>
-        private class ItemEntry
-        {
-            public string Display { get; set; }
-            public string ID { get; set; }
-            public override string ToString() => Display;
-        }
-
-        // -----------------------------------------------------------------------
         // Mining/Refining Field Visibility
         // -----------------------------------------------------------------------
 
@@ -1710,12 +1708,18 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
         }
 
-        protected override void OnFormClosed(FormClosedEventArgs e)
+        // -----------------------------------------------------------------------
+        // Utility Dialogs
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Simple helper class for combo box items with a display name and ID.
+        /// </summary>
+        private class ItemEntry
         {
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            playerContext.BuildPlanDataChanged -= OnBuildPlanDataChanged;
-            playerContext.ColonyDataChanged -= OnColonyDataChanged;
-            base.OnFormClosed(e);
+            public string Display { get; set; }
+            public string ID { get; set; }
+            public override string ToString() => Display;
         }
     }
 }

@@ -11,16 +11,39 @@ namespace OE2EmpireTracker.ViewModels
     public class DeliveryPlanViewModel
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private readonly PlayerContext _playerContext;
-        private DeliveryPlan _plan;
 
-        public DeliveryPlan Data => _plan;
-        public string UUID => _plan.UUID;
+        private readonly PlayerContext _playerContext;
+
+        private DeliveryPlan _plan;
 
         public DeliveryPlanViewModel(DeliveryPlan plan, PlayerContext playerContext)
         {
             _plan = plan ?? throw new ArgumentNullException(nameof(plan));
             _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        }
+
+        public DeliveryPlan Data => _plan;
+
+        public string UUID => _plan.UUID;
+
+        /// <summary>
+        /// Finds or creates a DeliveryPlan for the given route.
+        /// </summary>
+        public static DeliveryPlanViewModel FindOrCreateForRoute(string routeUUID, PlayerContext playerContext)
+        {
+            var existing = playerContext.DeliveryPlanList
+                .FirstOrDefault(p => p.RouteUUID == routeUUID && p.OwnerUUID == playerContext.CurrentPlayerUUID);
+            if (existing != null)
+                return new DeliveryPlanViewModel(existing, playerContext);
+
+            var plan = new DeliveryPlan
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = playerContext.CurrentPlayerUUID,
+                RouteUUID = routeUUID
+            };
+
+            return new DeliveryPlanViewModel(plan, playerContext);
         }
 
         /// <summary>
@@ -106,26 +129,6 @@ namespace OE2EmpireTracker.ViewModels
                 {
                     stop.PickUp.RemoveAt(i);
                 }
-        }
-
-        /// <summary>
-        /// Finds or creates a DeliveryPlan for the given route.
-        /// </summary>
-        public static DeliveryPlanViewModel FindOrCreateForRoute(string routeUUID, PlayerContext playerContext)
-        {
-            var existing = playerContext.DeliveryPlanList
-                .FirstOrDefault(p => p.RouteUUID == routeUUID && p.OwnerUUID == playerContext.CurrentPlayerUUID);
-            if (existing != null)
-                return new DeliveryPlanViewModel(existing, playerContext);
-
-            var plan = new DeliveryPlan
-            {
-                UUID = Guid.NewGuid().ToString(),
-                OwnerUUID = playerContext.CurrentPlayerUUID,
-                RouteUUID = routeUUID
-            };
-
-            return new DeliveryPlanViewModel(plan, playerContext);
         }
 
         public void Save()

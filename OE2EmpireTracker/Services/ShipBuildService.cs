@@ -77,23 +77,6 @@ namespace OE2EmpireTracker.Services
             return items;
         }
 
-        private static BuildItem CreateComponentItem(
-            string blueprintUUID, string itemName,
-            DestinationType assemblyLocationType, string assemblyLocationUUID)
-        {
-            return new BuildItem
-            {
-                UUID = Guid.NewGuid().ToString(),
-                ItemType = BuildItemType.Manufactory,
-                Status = BuildItemStatus.Staged,
-                BlueprintUUID = blueprintUUID,
-                ItemName = itemName,
-                Quantity = 1,
-                AssemblyLocationType = assemblyLocationType,
-                AssemblyLocationUUID = assemblyLocationUUID
-            };
-        }
-
         /// <summary>
         /// Validates that a ship class can be assembled at the given station type.
         /// Returns null if valid, or an error message if invalid.
@@ -186,6 +169,23 @@ namespace OE2EmpireTracker.Services
             sw.Stop();
             Log.Debug("PERF ComputeStationStats: '{0}' in {1}ms", stationBlueprint.Name, sw.ElapsedMilliseconds);
             return stats;
+        }
+
+        private static BuildItem CreateComponentItem(
+            string blueprintUUID, string itemName,
+            DestinationType assemblyLocationType, string assemblyLocationUUID)
+        {
+            return new BuildItem
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ItemType = BuildItemType.Manufactory,
+                Status = BuildItemStatus.Staged,
+                BlueprintUUID = blueprintUUID,
+                ItemName = itemName,
+                Quantity = 1,
+                AssemblyLocationType = assemblyLocationType,
+                AssemblyLocationUUID = assemblyLocationUUID
+            };
         }
 
         private static void AddBlueprintStats(ShipStats stats, Blueprint bp)

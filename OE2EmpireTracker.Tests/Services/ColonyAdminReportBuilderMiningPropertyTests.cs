@@ -34,56 +34,6 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.Reset();
         }
 
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name);
-            bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = bpType;
-            PlayerContext.GetInstance().AddBlueprint(bp);
-            return bp;
-        }
-
-        private Survey CreateSurvey(string resource, string purity, string amount)
-        {
-            var pc = PlayerContext.GetInstance();
-            var survey = new Survey("TestSurvey_" + Guid.NewGuid().ToString().Substring(0, 6));
-            survey.UUID = Guid.NewGuid().ToString();
-            survey.Resources[resource] = new SurveyResource(resource, purity, amount);
-            pc.AddSurvey(survey);
-            return survey;
-        }
-
-        private static ColonyStructure MakeActiveMiner(
-            string blueprintUUID,
-            int gameSeq,
-            string surveyUUID,
-            string surveyResource)
-        {
-            var structure = new ColonyStructure();
-            structure.UUID = Guid.NewGuid().ToString();
-            structure.FlatpackBlueprintUUID = blueprintUUID;
-            structure.DisplaySequence = gameSeq;
-            structure.Properties.SetProperty(GameConstants.PropBuilt, true);
-            structure.Properties.SetProperty(GameConstants.PropOnline, true);
-            var timer = new CountDownTime();
-            timer.StartRepeating(3600);
-            structure.ProcessCompletionTime = timer;
-            structure.MiningSurvey = surveyUUID;
-            structure.MiningSurveyResource = surveyResource;
-            return structure;
-        }
-
-        private static Colony MakeColony()
-        {
-            return new Colony
-            {
-                UUID = Guid.NewGuid().ToString(),
-                SystemName = "TestSystem",
-                ColonyName = "TestColony",
-                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
-            };
-        }
-
         /// <summary>
         /// Feature: colony-admin-summary, Property 9: Mining aggregation -- one row per resource+purity.
         /// For any colony with N active miners on the same (Resource, Purity) combination,
@@ -138,6 +88,37 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
+        private static ColonyStructure MakeActiveMiner(
+            string blueprintUUID,
+            int gameSeq,
+            string surveyUUID,
+            string surveyResource)
+        {
+            var structure = new ColonyStructure();
+            structure.UUID = Guid.NewGuid().ToString();
+            structure.FlatpackBlueprintUUID = blueprintUUID;
+            structure.DisplaySequence = gameSeq;
+            structure.Properties.SetProperty(GameConstants.PropBuilt, true);
+            structure.Properties.SetProperty(GameConstants.PropOnline, true);
+            var timer = new CountDownTime();
+            timer.StartRepeating(3600);
+            structure.ProcessCompletionTime = timer;
+            structure.MiningSurvey = surveyUUID;
+            structure.MiningSurveyResource = surveyResource;
+            return structure;
+        }
+
+        private static Colony MakeColony()
+        {
+            return new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                SystemName = "TestSystem",
+                ColonyName = "TestColony",
+                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
+            };
+        }
+
         private static int CountOccurrences(string text, string pattern)
         {
             int count = 0;
@@ -149,6 +130,25 @@ namespace OE2EmpireTracker.Tests.Services
             }
 
             return count;
+        }
+
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name);
+            bp.UUID = Guid.NewGuid().ToString();
+            bp.BluePrintType = bpType;
+            PlayerContext.GetInstance().AddBlueprint(bp);
+            return bp;
+        }
+
+        private Survey CreateSurvey(string resource, string purity, string amount)
+        {
+            var pc = PlayerContext.GetInstance();
+            var survey = new Survey("TestSurvey_" + Guid.NewGuid().ToString().Substring(0, 6));
+            survey.UUID = Guid.NewGuid().ToString();
+            survey.Resources[resource] = new SurveyResource(resource, purity, amount);
+            pc.AddSurvey(survey);
+            return survey;
         }
     }
 }

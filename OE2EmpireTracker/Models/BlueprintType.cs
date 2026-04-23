@@ -8,10 +8,20 @@ namespace OE2EmpireTracker.Models
 {
     public class BlueprintType
     {
+        public BlueprintType()
+        {
+            Properties = new string[0];
+            ResearchableProperties = new string[0];
+        }
+
         public string Id { get; set; }
+
         public string Name { get; set; }
+
         public bool Universal { get; set; }
+
         public string[] Properties { get; set; }
+
         public string[] ResearchableProperties { get; set; }
 
         /// <summary>
@@ -27,11 +37,5 @@ namespace OE2EmpireTracker.Models
         /// Empty string means no output item is defined yet.
         /// </summary>
         public string OutputItemType { get; set; } = string.Empty;
-
-        public BlueprintType()
-        {
-            Properties = new string[0];
-            ResearchableProperties = new string[0];
-        }
     }
 }

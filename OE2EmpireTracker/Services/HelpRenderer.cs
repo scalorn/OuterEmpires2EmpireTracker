@@ -11,13 +11,6 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class HelpRenderer
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-
-        private static readonly MarkdownPipeline Pipeline =
-            new MarkdownPipelineBuilder()
-                .UseAdvancedExtensions()
-                .Build();
-
         private const string CssStyle = @"
             body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -78,6 +71,13 @@ namespace OE2EmpireTracker.Services
             li { margin-bottom: 4px; }
             hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
         ";
+
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        private static readonly MarkdownPipeline Pipeline =
+            new MarkdownPipelineBuilder()
+                .UseAdvancedExtensions()
+                .Build();
 
         /// <summary>
         /// Converts raw markdown text to a full HTML document string.

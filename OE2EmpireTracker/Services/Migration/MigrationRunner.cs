@@ -7,15 +7,9 @@ namespace OE2EmpireTracker.Services.Migration
 {
     public static class MigrationRunner
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-
         public const int CurrentVersion = 8;
 
-        /// <summary>
-        /// Set to true when a migration fails. Prevents saving data in a
-        /// partially-migrated state.
-        /// </summary>
-        public static bool MigrationFailed { get; private set; }
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private static readonly Dictionary<int, Action<EmpireContext, PlayerContext>>
             Migrations = new Dictionary<int, Action<EmpireContext, PlayerContext>>
@@ -29,6 +23,17 @@ namespace OE2EmpireTracker.Services.Migration
             { 7, Migration007_RemoveClassFromProperties.Run },
             { 8, Migration008_RouteStopDestinationMigration.Run },
         };
+
+        /// <summary>
+        /// Set to true when a migration fails. Prevents saving data in a
+        /// partially-migrated state.
+        /// </summary>
+        public static bool MigrationFailed { get; private set; }
+
+        /// <summary>
+        /// When true, suppresses MessageBox dialogs (e.g. during unit tests).
+        /// </summary>
+        public static bool SuppressUI { get; set; }
 
         public static void Run(EmpireContext ec, PlayerContext pc)
         {
@@ -88,9 +93,14 @@ namespace OE2EmpireTracker.Services.Migration
         }
 
         /// <summary>
-        /// When true, suppresses MessageBox dialogs (e.g. during unit tests).
+        /// Resets the failure flag. Used by tests and after a successful
+        /// File -> New / File -> Open that reloads clean data.
         /// </summary>
-        public static bool SuppressUI { get; set; }
+        public static void ResetFailureState()
+        {
+            MigrationFailed = false;
+            SuppressUI = false;
+        }
 
         private static void HandleFailure(string phase, Exception ex)
         {
@@ -108,16 +118,6 @@ namespace OE2EmpireTracker.Services.Migration
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
-        }
-
-        /// <summary>
-        /// Resets the failure flag. Used by tests and after a successful
-        /// File -> New / File -> Open that reloads clean data.
-        /// </summary>
-        public static void ResetFailureState()
-        {
-            MigrationFailed = false;
-            SuppressUI = false;
         }
     }
 }

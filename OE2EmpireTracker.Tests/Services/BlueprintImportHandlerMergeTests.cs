@@ -17,13 +17,18 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class BlueprintImportHandlerMergeTests
     {
-        private PlayerContext playerContext;
-        private EmpireContext empireContext;
         private static readonly string TestPlayerUUID = "test-player-uuid-merge";
 
+        private PlayerContext playerContext;
+
+        private EmpireContext empireContext;
+
         private string _originalEmpireFilePath;
+
         private string _originalPlayerFilePath;
+
         private string _tempBaselineDataPath;
+
         private string _tempPlayerDataPath;
 
         [OneTimeSetUp]
@@ -66,23 +71,6 @@ namespace OE2EmpireTracker.Tests.Services
             foreach (var item in empireContext.GlobalBlueprintList.ToList()) empireContext.RemoveGlobalBlueprint(item);
             foreach (var item in playerContext.BlueprintList.ToList()) playerContext.RemoveBlueprint(item);
             playerContext.CurrentPlayerUUID = TestPlayerUUID;
-        }
-
-        // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private static BpModel MakeBlueprint(
-            string name, string uuid = null, string bpType = "Reactor",
-            int evolution = 0, int cls = 1, string techLevel = null)
-        {
-            var bp = new BpModel(name);
-            bp.UUID = uuid ?? Guid.NewGuid().ToString();
-            bp.BluePrintType = bpType;
-            bp.Evolution = evolution;
-            bp.Class = cls;
-            bp.TechLevel = techLevel;
-            return bp;
         }
 
         // -----------------------------------------------------------------------
@@ -343,6 +331,23 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result.Resources["Iron"], Is.EqualTo("300"), "Existing resource preserved when incoming is empty");
             Assert.That(result.Resources["Silicon"], Is.EqualTo("150"), "Existing resource preserved when incoming is empty");
             Assert.That(result.Resources.Count, Is.EqualTo(2));
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private static BpModel MakeBlueprint(
+            string name, string uuid = null, string bpType = "Reactor",
+            int evolution = 0, int cls = 1, string techLevel = null)
+        {
+            var bp = new BpModel(name);
+            bp.UUID = uuid ?? Guid.NewGuid().ToString();
+            bp.BluePrintType = bpType;
+            bp.Evolution = evolution;
+            bp.Class = cls;
+            bp.TechLevel = techLevel;
+            return bp;
         }
     }
 }

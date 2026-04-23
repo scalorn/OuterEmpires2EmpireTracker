@@ -17,33 +17,6 @@ namespace OE2EmpireTracker.Tests.Models
         }
 
         // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private static Item MakeItem(IT itemType, string baseID, int quantity, string uuid = null)
-        {
-            return new Item
-            {
-                UUID = uuid ?? Guid.NewGuid().ToString(),
-                ItemType = itemType,
-                BaseItemTypeID = baseID,
-                Quantity = quantity
-            };
-        }
-
-        private static Item MakeResource(string baseID, string purity, int quantity, string uuid = null)
-        {
-            return new Item
-            {
-                UUID = uuid ?? Guid.NewGuid().ToString(),
-                ItemType = IT.Resource,
-                BaseItemTypeID = baseID,
-                ResourcePurity = purity,
-                Quantity = quantity
-            };
-        }
-
-        // -----------------------------------------------------------------------
         // AddItem / ContainsKey / Count
         // -----------------------------------------------------------------------
 
@@ -409,6 +382,33 @@ namespace OE2EmpireTracker.Tests.Models
             _bag.Clear();
 
             Assert.That(_bag.FindResource("Iron", "High"), Is.Empty);
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private static Item MakeItem(IT itemType, string baseID, int quantity, string uuid = null)
+        {
+            return new Item
+            {
+                UUID = uuid ?? Guid.NewGuid().ToString(),
+                ItemType = itemType,
+                BaseItemTypeID = baseID,
+                Quantity = quantity
+            };
+        }
+
+        private static Item MakeResource(string baseID, string purity, int quantity, string uuid = null)
+        {
+            return new Item
+            {
+                UUID = uuid ?? Guid.NewGuid().ToString(),
+                ItemType = IT.Resource,
+                BaseItemTypeID = baseID,
+                ResourcePurity = purity,
+                Quantity = quantity
+            };
         }
     }
 }

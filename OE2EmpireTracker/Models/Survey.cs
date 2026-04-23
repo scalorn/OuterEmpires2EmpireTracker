@@ -11,25 +11,6 @@ namespace OE2EmpireTracker.Models
 {
     public class Survey : Item
     {
-        public string OwnerUUID { get; set; } = string.Empty;
-        public string ScannedBy { get; set; }
-        public string DateTime { get; set; }
-        public string PlanetName { get; set; }
-        public string SystemName { get; set; } = string.Empty;
-        public string SurveyID { get; set; }
-        public string ScannerBlueprintUUID { get; set; }
-        public Dictionary<string, string> Properties { get; set; }
-        public Dictionary<string, SurveyResource> Resources { get; set; }
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        [DefaultValue(SurveyType.Planet)]
-        public SurveyType SurveyType { get; set; } = SurveyType.Planet;
-
-        public string AsteroidUUID { get; set; } = string.Empty;
-
-        [JsonIgnore]
-        public Dictionary<string, int> ParsedMaxReserves { get; set; }
-
         [JsonIgnore]
         public override string ExtendedName
         {
@@ -67,14 +48,37 @@ namespace OE2EmpireTracker.Models
             Properties = new Dictionary<string, string>();
             Resources = new Dictionary<string, SurveyResource>();
         }
+
+        public string OwnerUUID { get; set; } = string.Empty;
+
+        public string ScannedBy { get; set; }
+
+        public string DateTime { get; set; }
+
+        public string PlanetName { get; set; }
+
+        public string SystemName { get; set; } = string.Empty;
+
+        public string SurveyID { get; set; }
+
+        public string ScannerBlueprintUUID { get; set; }
+
+        public Dictionary<string, string> Properties { get; set; }
+
+        public Dictionary<string, SurveyResource> Resources { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        [DefaultValue(SurveyType.Planet)]
+        public SurveyType SurveyType { get; set; } = SurveyType.Planet;
+
+        public string AsteroidUUID { get; set; } = string.Empty;
+
+        [JsonIgnore]
+        public Dictionary<string, int> ParsedMaxReserves { get; set; }
     }
 
     public class SurveyResource
     {
-        public string Resource { get; set; } = string.Empty;
-        public string Purity { get; set; } = string.Empty;
-        public string Amount { get; set; } = string.Empty;
-
         [JsonIgnore]
         public string ExtendedName
         {
@@ -95,5 +99,11 @@ namespace OE2EmpireTracker.Models
             Purity = purity;
             Amount = amount;
         }
+
+        public string Resource { get; set; } = string.Empty;
+
+        public string Purity { get; set; } = string.Empty;
+
+        public string Amount { get; set; } = string.Empty;
     }
 }

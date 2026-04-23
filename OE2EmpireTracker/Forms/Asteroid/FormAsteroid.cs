@@ -13,11 +13,11 @@ namespace OE2EmpireTracker.Forms.Asteroid
     public partial class FormAsteroid : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         private PlayerContext playerContext;
+
         private Models.Asteroid _selectedAsteroid;
 
         public FormAsteroid()
@@ -57,6 +57,17 @@ namespace OE2EmpireTracker.Forms.Asteroid
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.AsteroidDataChanged += OnAsteroidDataChanged;
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.AsteroidDataChanged -= OnAsteroidDataChanged;
+            base.OnFormClosed(e);
         }
 
         // Layout
@@ -451,13 +462,6 @@ namespace OE2EmpireTracker.Forms.Asteroid
             PopulateAsteroidList();
             if (_selectedAsteroid != null && _selectedAsteroid.UUID == e.AsteroidUUID)
                 PopulateForm();
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            playerContext.AsteroidDataChanged -= OnAsteroidDataChanged;
-            base.OnFormClosed(e);
         }
     }
 }

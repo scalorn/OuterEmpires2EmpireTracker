@@ -9,28 +9,15 @@ namespace OE2EmpireTracker.Tests.Parsers
     [TestFixture]
     public class SurveyParserTests
     {
-        private SurveyParser _parser;
-
         // Small inline fragment for basic unit tests (no clipboard headers)
         private const string SampleHtml = @"<div class=""SmallSlideOut_FormSection""><span> </span><div class=""SmallSlideOut_Form_Row_NameOfItem_Section""><div class=""SmallSlideOut_Form_Row_Text_Bold""></div><div class=""SmallSlideOut_Form_Row_Description SmallSlideOut_Form_Row_Description_Small"">A detailed survey report taken on 27JUL24-11:44p by Scalorn Scorpus</div></div></div><div class=""SmallSlideOut_FormSection""><div class=""SmallSlideOut_Form_Row""><div class=""ScanDetailOutput""><div class=""ScanRarityTypeRow"">Common Elements Detected:</div><div class=""div_block ui_text_lightgrey ScanDetailOutputResourceName"">Post-Trans Metals (Low Purity)</div> <div class=""div_block ui_text_blue_light ScanDetailOutputResourceDetail"">41/hour</div><div class=""ScanRarityTypeRow"">Uncommon Elements Detected:</div><div class=""div_block ui_text_lightgrey ScanDetailOutputResourceName"">Heavy Trans-Metals (High Purity)</div> <div class=""div_block ui_text_blue_light ScanDetailOutputResourceDetail"">20/hour</div> <div class=""div_block ui_text_lightgrey ScanDetailOutputResourceName"">Heavy Trans-Metals (High Purity)</div> <div class=""div_block ui_text_blue_light ScanDetailOutputResourceDetail"">38/hour</div><div class=""ScanRarityTypeRow"">Rare Elements Detected:</div><div class=""div_block ui_text_lightgrey ScanDetailOutputResourceName"">Lanthanides (High Purity)</div> <div class=""div_block ui_text_blue_light ScanDetailOutputResourceDetail"">5/hour</div><div class=""ScanRarityTypeRow"">Trace:</div><div class=""div_block ui_text_lightgrey ScanDetailOutputResourceName"">(Unknown Trace Elements)</div> <div class=""div_block ui_text_blue_light"">?/hour</div></div></div></div>";
+
+        private SurveyParser _parser;
 
         [SetUp]
         public void SetUp()
         {
             _parser = new SurveyParser();
-        }
-
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            string path = Path.Combine(baseDir, "TestData", filename);
-            return File.ReadAllText(path);
-        }
-
-        private static string ExtractFragment(string clipboardData)
-        {
-            return OE2EmpireTracker.Parsers.BlueprintScanner
-                .ExtractHtmlFragmentFromClipboardData(clipboardData);
         }
 
         // -----------------------------------------------------------------------
@@ -284,19 +271,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.DoesNotThrow(() => _parser.ProcessHtml(survey, null));
         }
 
-        // -----------------------------------------------------------------------
-        // ZehVazoranIIM2 -- full integration from external file
-        // -----------------------------------------------------------------------
-
-        private Survey ParseZehVazoran()
-        {
-            string clipboardData = LoadTestData("ZehVazoranIIM2.html");
-            string html = ExtractFragment(clipboardData);
-            var survey = new Survey();
-            _parser.ProcessHtml(survey, html);
-            return survey;
-        }
-
         [Test]
         public void ZehVazoran_ExtractsPlanetName()
         {
@@ -357,19 +331,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(ParseZehVazoran().Resources.Keys.Any(k => k.Contains("Unknown")), Is.False);
         }
 
-        // -----------------------------------------------------------------------
-        // QuogarV2249II -- full integration from external file (Med Purity)
-        // -----------------------------------------------------------------------
-
-        private Survey ParseQuogar()
-        {
-            string clipboardData = LoadTestData("QuogarV2249II.html");
-            string html = ExtractFragment(clipboardData);
-            var survey = new Survey();
-            _parser.ProcessHtml(survey, html);
-            return survey;
-        }
-
         [Test]
         public void Quogar_ExtractsPlanetName()
         {
@@ -428,19 +389,6 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void Quogar_SkipsUnknownTrace()
         {
             Assert.That(ParseQuogar().Resources.Keys.Any(k => k.Contains("Unknown")), Is.False);
-        }
-
-        // -----------------------------------------------------------------------
-        // AsteroidSurveySample -- full integration from external file (asteroid)
-        // -----------------------------------------------------------------------
-
-        private Survey ParseAsteroidSurvey()
-        {
-            string clipboardData = LoadTestData("AsteroidSurveySample.html");
-            string html = ExtractFragment(clipboardData);
-            var survey = new Survey();
-            _parser.ProcessHtml(survey, html);
-            return survey;
         }
 
         [Test]
@@ -529,6 +477,58 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void AsteroidSurvey_SkipsUnknownTrace()
         {
             Assert.That(ParseAsteroidSurvey().Resources.Keys.Any(k => k.Contains("Unknown")), Is.False);
+        }
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            string path = Path.Combine(baseDir, "TestData", filename);
+            return File.ReadAllText(path);
+        }
+
+        private static string ExtractFragment(string clipboardData)
+        {
+            return OE2EmpireTracker.Parsers.BlueprintScanner
+                .ExtractHtmlFragmentFromClipboardData(clipboardData);
+        }
+
+        // -----------------------------------------------------------------------
+        // ZehVazoranIIM2 -- full integration from external file
+        // -----------------------------------------------------------------------
+
+        private Survey ParseZehVazoran()
+        {
+            string clipboardData = LoadTestData("ZehVazoranIIM2.html");
+            string html = ExtractFragment(clipboardData);
+            var survey = new Survey();
+            _parser.ProcessHtml(survey, html);
+            return survey;
+        }
+
+        // -----------------------------------------------------------------------
+        // QuogarV2249II -- full integration from external file (Med Purity)
+        // -----------------------------------------------------------------------
+
+        private Survey ParseQuogar()
+        {
+            string clipboardData = LoadTestData("QuogarV2249II.html");
+            string html = ExtractFragment(clipboardData);
+            var survey = new Survey();
+            _parser.ProcessHtml(survey, html);
+            return survey;
+        }
+
+        // -----------------------------------------------------------------------
+        // AsteroidSurveySample -- full integration from external file (asteroid)
+        // -----------------------------------------------------------------------
+
+        private Survey ParseAsteroidSurvey()
+        {
+            string clipboardData = LoadTestData("AsteroidSurveySample.html");
+            string html = ExtractFragment(clipboardData);
+            var survey = new Survey();
+            _parser.ProcessHtml(survey, html);
+            return survey;
         }
     }
 }

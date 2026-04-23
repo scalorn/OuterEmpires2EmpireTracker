@@ -28,38 +28,6 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private static string Html(string body) =>
-            $"<html><body>{body}</body></html>";
-
-        private static string TitleDiv(string text) =>
-            $"<div class='SmallSlideOut_Form_Row_Text_Bold'>{text}</div>";
-
-        private static string EvoDiv(string number) =>
-            $"<div class='EvolutionNumber'>{number}</div>";
-
-        private static string DescDiv(string text) =>
-            $"<div class='SmallSlideOut_Form_Row_Description'>{text}</div>";
-
-        private static string ResourceRow(string name, string qty) =>
-            $"<div class='ScanDetailOutputResourceName'>{name}</div>" +
-            $"<div class='ScanDetailOutputResourceDetail'>{qty}</div>";
-
-        private static string PropRow(string label, string value) =>
-            $"<div class='ShipComponentProperty'>" +
-            $"<div class='CargoInfoDialogue'>{label}</div>" +
-            $"<div class='div_block ui_text_blue_light'>{value}</div>" +
-            $"</div>";
-
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
-        }
-
-        // -----------------------------------------------------------------------
         // ProcessHtml -- name and tech level
         // -----------------------------------------------------------------------
 
@@ -800,34 +768,6 @@ namespace OE2EmpireTracker.Tests.Blueprint
         }
 
         // -----------------------------------------------------------------------
-        // Market HTML helpers for seller name / TechLevel tests
-        // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Builds a minimal market HTML snippet with a listing row + detail row.
-        /// </summary>
-        private static string MarketHtml(string bpName, string sellerSpan, string evoNumber = "0")
-        {
-            // Seller span is optional -- pass empty string for no seller
-            string descContent = bpName + sellerSpan;
-            return "<html><body><table><tbody>"
-                + $"<tr class='MarketListingRow'>"
-                + $"<td><div class='EvolutionNumber'>{evoNumber}</div></td>"
-                + $"<td><div class='div_block MarketListingRowDetailDescription'>{descContent}</div></td>"
-                + "</tr>"
-                + "<tr class='MarketListingRowDetail'><td colspan='6'>"
-                + "<div class='Market_ShipComponentProperty'>"
-                + "<div class='Market_ShipComponentProperty_Label'>Class</div>"
-                + "<div class='ui_text_blue_light'>1</div>"
-                + "</div>"
-                + "</td></tr>"
-                + "</tbody></table></body></html>";
-        }
-
-        private static string SellerSpan(string seller) =>
-            $"<span class='ui_text_light_grey'><br/>{seller}</span>";
-
-        // -----------------------------------------------------------------------
         // ProcessMarketHtml -- TechLevel extraction
         // -----------------------------------------------------------------------
 
@@ -910,5 +850,65 @@ namespace OE2EmpireTracker.Tests.Blueprint
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].SellerName, Is.EqualTo(string.Empty));
         }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private static string Html(string body) =>
+            $"<html><body>{body}</body></html>";
+
+        private static string TitleDiv(string text) =>
+            $"<div class='SmallSlideOut_Form_Row_Text_Bold'>{text}</div>";
+
+        private static string EvoDiv(string number) =>
+            $"<div class='EvolutionNumber'>{number}</div>";
+
+        private static string DescDiv(string text) =>
+            $"<div class='SmallSlideOut_Form_Row_Description'>{text}</div>";
+
+        private static string ResourceRow(string name, string qty) =>
+            $"<div class='ScanDetailOutputResourceName'>{name}</div>" +
+            $"<div class='ScanDetailOutputResourceDetail'>{qty}</div>";
+
+        private static string PropRow(string label, string value) =>
+            $"<div class='ShipComponentProperty'>" +
+            $"<div class='CargoInfoDialogue'>{label}</div>" +
+            $"<div class='div_block ui_text_blue_light'>{value}</div>" +
+            $"</div>";
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
+        }
+
+        // -----------------------------------------------------------------------
+        // Market HTML helpers for seller name / TechLevel tests
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Builds a minimal market HTML snippet with a listing row + detail row.
+        /// </summary>
+        private static string MarketHtml(string bpName, string sellerSpan, string evoNumber = "0")
+        {
+            // Seller span is optional -- pass empty string for no seller
+            string descContent = bpName + sellerSpan;
+            return "<html><body><table><tbody>"
+                + $"<tr class='MarketListingRow'>"
+                + $"<td><div class='EvolutionNumber'>{evoNumber}</div></td>"
+                + $"<td><div class='div_block MarketListingRowDetailDescription'>{descContent}</div></td>"
+                + "</tr>"
+                + "<tr class='MarketListingRowDetail'><td colspan='6'>"
+                + "<div class='Market_ShipComponentProperty'>"
+                + "<div class='Market_ShipComponentProperty_Label'>Class</div>"
+                + "<div class='ui_text_blue_light'>1</div>"
+                + "</div>"
+                + "</td></tr>"
+                + "</tbody></table></body></html>";
+        }
+
+        private static string SellerSpan(string seller) =>
+            $"<span class='ui_text_light_grey'><br/>{seller}</span>";
     }
 }

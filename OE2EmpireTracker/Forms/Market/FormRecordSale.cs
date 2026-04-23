@@ -7,16 +7,16 @@ namespace OE2EmpireTracker.Forms.Market
     public class FormRecordSale : Form
     {
         private TextBox txtQuantity;
-        private TextBox txtPricePerUnit;
-        private TextBox txtCounterparty;
-        private TextBox txtCounterpartyFaction;
-        private Button cmdOK;
-        private Button cmdCancel;
 
-        public int SaleQuantity { get; private set; }
-        public decimal SalePricePerUnit { get; private set; }
-        public string Counterparty { get; private set; }
-        public string CounterpartyFaction { get; private set; }
+        private TextBox txtPricePerUnit;
+
+        private TextBox txtCounterparty;
+
+        private TextBox txtCounterpartyFaction;
+
+        private Button cmdOK;
+
+        private Button cmdCancel;
 
         public FormRecordSale(MarketListing listing)
         {
@@ -78,6 +78,14 @@ namespace OE2EmpireTracker.Forms.Market
                 CounterpartyFaction = txtCounterpartyFaction.Text.Trim();
             };
         }
+
+        public int SaleQuantity { get; private set; }
+
+        public decimal SalePricePerUnit { get; private set; }
+
+        public string Counterparty { get; private set; }
+
+        public string CounterpartyFaction { get; private set; }
 
         private Label AddLabel(string text, int x, int y)
         {

@@ -40,6 +40,7 @@ namespace OE2EmpireTracker.Services
     public static class EvolutionChainService
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Walks baseBlueprintUUID links backward from the given blueprint
         /// to the Ev0 ancestor. Returns the chain sorted by Evolution ascending.
@@ -159,25 +160,6 @@ namespace OE2EmpireTracker.Services
             return segments;
         }
 
-        private static decimal GetNumericValue(Blueprint bp, string propName, PropertyValueType propType)
-        {
-            if (bp.Properties == null)
-                return 0.0m;
-
-            if (propType == PropertyValueType.Time)
-            {
-                string strVal;
-                bp.Properties.GetString(propName, string.Empty, out strVal);
-                return ParseTimeToSeconds(strVal);
-            }
-            else
-            {
-                decimal val;
-                bp.Properties.GetDecimal(propName, 0.0m, out val);
-                return val;
-            }
-        }
-
         /// <summary>
         /// Parses time strings like "1d 2h 30m 15s" to total seconds.
         /// Handles any combination of d/h/m/s components.
@@ -206,6 +188,25 @@ namespace OE2EmpireTracker.Services
                 total += decimal.Parse(match.Groups[1].Value);
 
             return total;
+        }
+
+        private static decimal GetNumericValue(Blueprint bp, string propName, PropertyValueType propType)
+        {
+            if (bp.Properties == null)
+                return 0.0m;
+
+            if (propType == PropertyValueType.Time)
+            {
+                string strVal;
+                bp.Properties.GetString(propName, string.Empty, out strVal);
+                return ParseTimeToSeconds(strVal);
+            }
+            else
+            {
+                decimal val;
+                bp.Properties.GetDecimal(propName, 0.0m, out val);
+                return val;
+            }
         }
     }
 }

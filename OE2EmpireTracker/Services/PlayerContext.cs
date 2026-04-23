@@ -16,54 +16,8 @@ namespace OE2EmpireTracker.Services
     public class PlayerContext
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private static PlayerContext _instance;
-        public static string FilePath { get; set; } = "PlayerData.json";
-
-        private string _currentPlayerUUID = string.Empty;
 
         private readonly object _listLock = new object();
-
-        private Dictionary<string, Blueprint> _blueprintCache;
-        private Dictionary<string, Survey> _surveyCache;
-        private Dictionary<string, Colony> _colonyCache;
-        private List<Blueprint> _allBlueprintsCache;
-
-        private Dictionary<string, Station> _stationCache;
-        private Dictionary<string, ShipTemplate> _shipTemplateCache;
-        private Dictionary<string, Ship> _shipCache;
-        private Dictionary<string, BuildPlan> _buildPlanCache;
-        private Dictionary<string, Asteroid> _asteroidCache;
-        private Dictionary<string, Faction> _factionCache;
-        private Dictionary<string, MarketListing> _marketListingCache;
-        private Dictionary<string, PlayerProfile> _playerProfileCache;
-        private Dictionary<string, DeliveryRoute> _deliveryRouteCache;
-        private Dictionary<string, DeliveryPlan> _deliveryPlanCache;
-        private Dictionary<string, PricingPlan> _pricingPlanCache;
-        private Dictionary<string, MarketTransaction> _marketTransactionCache;
-        private Dictionary<string, StockPlan> _stockPlanCache;
-        private Dictionary<string, StockProfile> _stockProfileCache;
-        private Dictionary<string, SupplyChain> _supplyChainCache;
-        private Dictionary<string, WarehouseOverflowRule> _warehouseOverflowRuleCache;
-        private Dictionary<string, ExternalCharacter> _externalCharacterCache;
-
-        private Dictionary<string, int> _blueprintTypeCountCache;
-
-        private Dictionary<string, List<BuildItem>> _blueprintBuildItemIndex;
-        private Dictionary<string, List<BuildItem>> _buildLocationBuildItemIndex;
-
-        /// <summary>
-        /// Runtime flag: set when stock targets need recalculation after a data change.
-        /// Not serialized.
-        /// </summary>
-        [JsonIgnore]
-        public bool CascadeStockTargetsDirty { get; set; } = false;
-
-        /// <summary>
-        /// Runtime flag: set when resource checks need recalculation after a data change.
-        /// Not serialized.
-        /// </summary>
-        [JsonIgnore]
-        public bool CascadeResourceCheckDirty { get; set; } = false;
 
         /// <summary>
         /// UUID of the currently selected player. Forms filter data by this value.
@@ -80,6 +34,161 @@ namespace OE2EmpireTracker.Services
                     CurrentPlayerChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the PlayerProfile for the currently selected player, or null.
+        /// </summary>
+        public PlayerProfile CurrentPlayer
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_currentPlayerUUID)) return null;
+                return _playerProfileList.FirstOrDefault(p => p.UUID == _currentPlayerUUID);
+            }
+        }
+
+        private static PlayerContext _instance;
+
+        private string _currentPlayerUUID = string.Empty;
+
+        private Dictionary<string, Blueprint> _blueprintCache;
+
+        private Dictionary<string, Survey> _surveyCache;
+
+        private Dictionary<string, Colony> _colonyCache;
+
+        private List<Blueprint> _allBlueprintsCache;
+
+        private Dictionary<string, Station> _stationCache;
+
+        private Dictionary<string, ShipTemplate> _shipTemplateCache;
+
+        private Dictionary<string, Ship> _shipCache;
+
+        private Dictionary<string, BuildPlan> _buildPlanCache;
+
+        private Dictionary<string, Asteroid> _asteroidCache;
+
+        private Dictionary<string, Faction> _factionCache;
+
+        private Dictionary<string, MarketListing> _marketListingCache;
+
+        private Dictionary<string, PlayerProfile> _playerProfileCache;
+
+        private Dictionary<string, DeliveryRoute> _deliveryRouteCache;
+
+        private Dictionary<string, DeliveryPlan> _deliveryPlanCache;
+
+        private Dictionary<string, PricingPlan> _pricingPlanCache;
+
+        private Dictionary<string, MarketTransaction> _marketTransactionCache;
+
+        private Dictionary<string, StockPlan> _stockPlanCache;
+
+        private Dictionary<string, StockProfile> _stockProfileCache;
+
+        private Dictionary<string, SupplyChain> _supplyChainCache;
+
+        private Dictionary<string, WarehouseOverflowRule> _warehouseOverflowRuleCache;
+
+        private Dictionary<string, ExternalCharacter> _externalCharacterCache;
+
+        private Dictionary<string, int> _blueprintTypeCountCache;
+
+        private Dictionary<string, List<BuildItem>> _blueprintBuildItemIndex;
+
+        private Dictionary<string, List<BuildItem>> _buildLocationBuildItemIndex;
+
+        private List<PlayerProfile> _playerProfileList;
+
+        private List<Blueprint> _blueprintList;
+
+        private List<Survey> _surveyList;
+
+        private List<Colony> _colonyList;
+
+        private List<DeliveryRoute> _deliveryRouteList;
+
+        private List<DeliveryPlan> _deliveryPlanList;
+
+        private List<PricingPlan> _pricingPlanList;
+
+        private List<BuildPlan> _buildPlanList = new List<BuildPlan>();
+
+        private List<ShipTemplate> _shipTemplateList = new List<ShipTemplate>();
+
+        private List<Ship> _shipList = new List<Ship>();
+
+        private List<Station> _stationList = new List<Station>();
+
+        private List<MarketListing> _marketListingList = new List<MarketListing>();
+
+        private List<MarketTransaction> _marketTransactionList = new List<MarketTransaction>();
+
+        private List<StockPlan> _stockPlanList = new List<StockPlan>();
+
+        private List<StockProfile> _stockProfileList = new List<StockProfile>();
+
+        private List<SupplyChain> _supplyChainList = new List<SupplyChain>();
+
+        private List<WarehouseOverflowRule> _warehouseOverflowRuleList = new List<WarehouseOverflowRule>();
+
+        private List<Faction> _factionList = new List<Faction>();
+
+        private List<ExternalCharacter> _externalCharacterList = new List<ExternalCharacter>();
+
+        private List<Asteroid> _asteroidList = new List<Asteroid>();
+
+        private PlayerContext() : base()
+        {
+            _instance = this;
+
+            PlayerRoot playerRoot = null;
+            if (File.Exists(FilePath))
+            {
+                Log.Info("Loading player data from {0}", FilePath);
+                string jsonContent = File.ReadAllText(FilePath);
+                playerRoot = JsonConvert.DeserializeObject<PlayerRoot>(jsonContent);
+                Log.Info(
+                    "Loaded {0} profiles, {1} blueprints, {2} surveys, {3} colonies",
+                    playerRoot.PlayerProfile.Length,
+                    playerRoot.Blueprint.Length,
+                    playerRoot.Survey.Length,
+                    playerRoot.Colony.Length);
+            }
+            else
+            {
+                Log.Warn("Player data file not found at {0}, starting with empty data", FilePath);
+                playerRoot = new PlayerRoot();
+            }
+
+            InitPlayerProfiles(playerRoot);
+            InitBlueprints(playerRoot);
+            InitSurveys(playerRoot);
+            InitColonies(playerRoot);
+            InitDeliveryRoutes(playerRoot);
+            InitDeliveryPlans(playerRoot);
+            InitPricingPlans(playerRoot);
+            InitBuildPlans(playerRoot);
+            InitShipTemplates(playerRoot);
+            InitShips(playerRoot);
+            InitStations(playerRoot);
+            InitMarketListings(playerRoot);
+            InitMarketTransactions(playerRoot);
+            InitStockPlans(playerRoot);
+            InitStockProfiles(playerRoot);
+            InitSupplyChains(playerRoot);
+            InitWarehouseOverflowRules(playerRoot);
+            InitFactions(playerRoot);
+            InitExternalCharacters(playerRoot);
+            InitAsteroids(playerRoot);
+            DataVersion = playerRoot.DataVersion;
+
+            // Migrate and restore current player
+            MigrateOwnerUUIDs();
+            CleanupOrphanedData();
+            RestoreCurrentPlayer(playerRoot.CurrentPlayerUUID);
         }
 
         /// <summary>
@@ -168,6 +277,91 @@ namespace OE2EmpireTracker.Services
         /// Fired when external character (contacts) data is modified.
         /// </summary>
         public event EventHandler<ContactDataChangedEventArgs> ContactDataChanged;
+
+        public static string FilePath { get; set; } = "PlayerData.json";
+
+        /// <summary>
+        /// Runtime flag: set when stock targets need recalculation after a data change.
+        /// Not serialized.
+        /// </summary>
+        [JsonIgnore]
+        public bool CascadeStockTargetsDirty { get; set; } = false;
+
+        /// <summary>
+        /// Runtime flag: set when resource checks need recalculation after a data change.
+        /// Not serialized.
+        /// </summary>
+        [JsonIgnore]
+        public bool CascadeResourceCheckDirty { get; set; } = false;
+
+        public int DataVersion { get; set; } = 0;
+
+        public IReadOnlyList<PlayerProfile> PlayerProfileList => _playerProfileList;
+
+        public BindingSource BindingSourcePlayerProfile { get; set; }
+
+        public IReadOnlyList<Blueprint> BlueprintList => _blueprintList;
+
+        public BindingSource BindingSourceBlueprint { get; set; }
+
+        public IReadOnlyList<Survey> SurveyList => _surveyList;
+
+        public BindingSource BindingSourceSurvey { get; set; }
+
+        public IReadOnlyList<Colony> ColonyList => _colonyList;
+
+        public BindingSource BindingSourceColony { get; set; }
+
+        public IReadOnlyList<DeliveryRoute> DeliveryRouteList => _deliveryRouteList;
+
+        public IReadOnlyList<DeliveryPlan> DeliveryPlanList => _deliveryPlanList;
+
+        public IReadOnlyList<PricingPlan> PricingPlanList => _pricingPlanList;
+
+        public IReadOnlyList<BuildPlan> BuildPlanList => _buildPlanList;
+
+        public IReadOnlyList<ShipTemplate> ShipTemplateList => _shipTemplateList;
+
+        public IReadOnlyList<Ship> ShipList => _shipList;
+
+        public IReadOnlyList<Station> StationList => _stationList;
+
+        public IReadOnlyList<MarketListing> MarketListingList => _marketListingList;
+
+        public IReadOnlyList<MarketTransaction> MarketTransactionList => _marketTransactionList;
+
+        public IReadOnlyList<StockPlan> StockPlanList => _stockPlanList;
+
+        public IReadOnlyList<StockProfile> StockProfileList => _stockProfileList;
+
+        public IReadOnlyList<SupplyChain> SupplyChainList => _supplyChainList;
+
+        public IReadOnlyList<WarehouseOverflowRule> WarehouseOverflowRuleList => _warehouseOverflowRuleList;
+
+        public IReadOnlyList<Faction> FactionList => _factionList;
+
+        public IReadOnlyList<ExternalCharacter> ExternalCharacterList => _externalCharacterList;
+
+        public IReadOnlyList<Asteroid> AsteroidList => _asteroidList;
+
+        public IEnumerable<CountDownTimeReference> ActiveCountdowns => AllCountdownSources()
+            .Where(c => c.CountDownTime.TimeRemaining > 0)
+            .OrderBy(c => c.CountDownTime.TimeRemaining);
+
+        public static PlayerContext GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new PlayerContext();
+            }
+
+            return _instance;
+        }
+
+        public static void Reset()
+        {
+            _instance = null;
+        }
 
         /// <summary>
         /// Notifies subscribers that the player profile list has changed.
@@ -295,135 +489,6 @@ namespace OE2EmpireTracker.Services
         public void OnContactDataChanged(string characterUUID)
         {
             ContactDataChanged?.Invoke(this, new ContactDataChangedEventArgs(characterUUID));
-        }
-
-        /// <summary>
-        /// Returns the PlayerProfile for the currently selected player, or null.
-        /// </summary>
-        public PlayerProfile CurrentPlayer
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_currentPlayerUUID)) return null;
-                return _playerProfileList.FirstOrDefault(p => p.UUID == _currentPlayerUUID);
-            }
-        }
-
-        public int DataVersion { get; set; } = 0;
-        private List<PlayerProfile> _playerProfileList;
-        public IReadOnlyList<PlayerProfile> PlayerProfileList => _playerProfileList;
-        public BindingSource BindingSourcePlayerProfile { get; set; }
-        private List<Blueprint> _blueprintList;
-        public IReadOnlyList<Blueprint> BlueprintList => _blueprintList;
-        public BindingSource BindingSourceBlueprint { get; set; }
-        private List<Survey> _surveyList;
-        public IReadOnlyList<Survey> SurveyList => _surveyList;
-        public BindingSource BindingSourceSurvey { get; set; }
-        private List<Colony> _colonyList;
-        public IReadOnlyList<Colony> ColonyList => _colonyList;
-        public BindingSource BindingSourceColony { get; set; }
-        private List<DeliveryRoute> _deliveryRouteList;
-        public IReadOnlyList<DeliveryRoute> DeliveryRouteList => _deliveryRouteList;
-        private List<DeliveryPlan> _deliveryPlanList;
-        public IReadOnlyList<DeliveryPlan> DeliveryPlanList => _deliveryPlanList;
-        private List<PricingPlan> _pricingPlanList;
-        public IReadOnlyList<PricingPlan> PricingPlanList => _pricingPlanList;
-
-        private List<BuildPlan> _buildPlanList = new List<BuildPlan>();
-        public IReadOnlyList<BuildPlan> BuildPlanList => _buildPlanList;
-        private List<ShipTemplate> _shipTemplateList = new List<ShipTemplate>();
-        public IReadOnlyList<ShipTemplate> ShipTemplateList => _shipTemplateList;
-        private List<Ship> _shipList = new List<Ship>();
-        public IReadOnlyList<Ship> ShipList => _shipList;
-        private List<Station> _stationList = new List<Station>();
-        public IReadOnlyList<Station> StationList => _stationList;
-        private List<MarketListing> _marketListingList = new List<MarketListing>();
-        public IReadOnlyList<MarketListing> MarketListingList => _marketListingList;
-        private List<MarketTransaction> _marketTransactionList = new List<MarketTransaction>();
-        public IReadOnlyList<MarketTransaction> MarketTransactionList => _marketTransactionList;
-        private List<StockPlan> _stockPlanList = new List<StockPlan>();
-        public IReadOnlyList<StockPlan> StockPlanList => _stockPlanList;
-        private List<StockProfile> _stockProfileList = new List<StockProfile>();
-        public IReadOnlyList<StockProfile> StockProfileList => _stockProfileList;
-        private List<SupplyChain> _supplyChainList = new List<SupplyChain>();
-        public IReadOnlyList<SupplyChain> SupplyChainList => _supplyChainList;
-        private List<WarehouseOverflowRule> _warehouseOverflowRuleList = new List<WarehouseOverflowRule>();
-        public IReadOnlyList<WarehouseOverflowRule> WarehouseOverflowRuleList => _warehouseOverflowRuleList;
-        private List<Faction> _factionList = new List<Faction>();
-        public IReadOnlyList<Faction> FactionList => _factionList;
-        private List<ExternalCharacter> _externalCharacterList = new List<ExternalCharacter>();
-        public IReadOnlyList<ExternalCharacter> ExternalCharacterList => _externalCharacterList;
-        private List<Asteroid> _asteroidList = new List<Asteroid>();
-        public IReadOnlyList<Asteroid> AsteroidList => _asteroidList;
-
-        public IEnumerable<CountDownTimeReference> ActiveCountdowns => AllCountdownSources()
-            .Where(c => c.CountDownTime.TimeRemaining > 0)
-            .OrderBy(c => c.CountDownTime.TimeRemaining);
-
-        public static PlayerContext GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new PlayerContext();
-            }
-
-            return _instance;
-        }
-
-        public static void Reset()
-        {
-            _instance = null;
-        }
-
-        private PlayerContext() : base()
-        {
-            _instance = this;
-
-            PlayerRoot playerRoot = null;
-            if (File.Exists(FilePath))
-            {
-                Log.Info("Loading player data from {0}", FilePath);
-                string jsonContent = File.ReadAllText(FilePath);
-                playerRoot = JsonConvert.DeserializeObject<PlayerRoot>(jsonContent);
-                Log.Info(
-                    "Loaded {0} profiles, {1} blueprints, {2} surveys, {3} colonies",
-                    playerRoot.PlayerProfile.Length,
-                    playerRoot.Blueprint.Length,
-                    playerRoot.Survey.Length,
-                    playerRoot.Colony.Length);
-            }
-            else
-            {
-                Log.Warn("Player data file not found at {0}, starting with empty data", FilePath);
-                playerRoot = new PlayerRoot();
-            }
-
-            InitPlayerProfiles(playerRoot);
-            InitBlueprints(playerRoot);
-            InitSurveys(playerRoot);
-            InitColonies(playerRoot);
-            InitDeliveryRoutes(playerRoot);
-            InitDeliveryPlans(playerRoot);
-            InitPricingPlans(playerRoot);
-            InitBuildPlans(playerRoot);
-            InitShipTemplates(playerRoot);
-            InitShips(playerRoot);
-            InitStations(playerRoot);
-            InitMarketListings(playerRoot);
-            InitMarketTransactions(playerRoot);
-            InitStockPlans(playerRoot);
-            InitStockProfiles(playerRoot);
-            InitSupplyChains(playerRoot);
-            InitWarehouseOverflowRules(playerRoot);
-            InitFactions(playerRoot);
-            InitExternalCharacters(playerRoot);
-            InitAsteroids(playerRoot);
-            DataVersion = playerRoot.DataVersion;
-
-            // Migrate and restore current player
-            MigrateOwnerUUIDs();
-            CleanupOrphanedData();
-            RestoreCurrentPlayer(playerRoot.CurrentPlayerUUID);
         }
 
         public void WriteContext()
@@ -1701,32 +1766,6 @@ namespace OE2EmpireTracker.Services
             }
         }
 
-        private void RebuildBuildItemIndexes()
-        {
-            _blueprintBuildItemIndex = new Dictionary<string, List<BuildItem>>();
-            _buildLocationBuildItemIndex = new Dictionary<string, List<BuildItem>>();
-            foreach (var plan in _buildPlanList)
-            {
-                if (plan.Items == null) continue;
-                foreach (var item in plan.Items)
-                {
-                    if (!string.IsNullOrEmpty(item.BlueprintUUID))
-                    {
-                        if (!_blueprintBuildItemIndex.ContainsKey(item.BlueprintUUID))
-                            _blueprintBuildItemIndex[item.BlueprintUUID] = new List<BuildItem>();
-                        _blueprintBuildItemIndex[item.BlueprintUUID].Add(item);
-                    }
-
-                    if (!string.IsNullOrEmpty(item.BuildLocationUUID))
-                    {
-                        if (!_buildLocationBuildItemIndex.ContainsKey(item.BuildLocationUUID))
-                            _buildLocationBuildItemIndex[item.BuildLocationUUID] = new List<BuildItem>();
-                        _buildLocationBuildItemIndex[item.BuildLocationUUID].Add(item);
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Returns a snapshot of ColonyList for safe iteration outside the lock.
         /// </summary>
@@ -1881,56 +1920,6 @@ namespace OE2EmpireTracker.Services
             }
         }
 
-        // -----------------------------------------------------------------------
-        // Player Selection & Migration
-        // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Auto-assigns empty OwnerUUID on colonies, blueprints, and surveys
-        /// to the first player profile (alphabetically). Handles migration of
-        /// existing save files that predate multi-player support.
-        /// </summary>
-        private void MigrateOwnerUUIDs()
-        {
-            if (_playerProfileList.Count == 0) return;
-
-            string firstPlayerUUID = _playerProfileList[0].UUID;
-            if (string.IsNullOrEmpty(firstPlayerUUID)) return;
-
-            int migrated = 0;
-            foreach (var colony in _colonyList)
-            {
-                if (string.IsNullOrEmpty(colony.OwnerUUID))
-                {
-                    colony.OwnerUUID = firstPlayerUUID;
-                    migrated++;
-                }
-            }
-
-            foreach (var blueprint in _blueprintList)
-            {
-                if (string.IsNullOrEmpty(blueprint.OwnerUUID))
-                {
-                    blueprint.OwnerUUID = firstPlayerUUID;
-                    migrated++;
-                }
-            }
-
-            foreach (var survey in _surveyList)
-            {
-                if (string.IsNullOrEmpty(survey.OwnerUUID))
-                {
-                    survey.OwnerUUID = firstPlayerUUID;
-                    migrated++;
-                }
-            }
-
-            if (migrated > 0)
-            {
-                Log.Info("Migrated {0} items to player {1}", migrated, _playerProfileList[0].Name);
-            }
-        }
-
         /// <summary>
         /// Removes all colonies, blueprints, surveys, and routes owned by the given player UUID.
         /// Called during cascade delete.
@@ -2042,170 +2031,6 @@ namespace OE2EmpireTracker.Services
             InvalidateBlueprintCache();
             InvalidateSurveyCache();
             InvalidateColonyCache();
-        }
-
-        /// <summary>
-        /// Removes data owned by players that no longer exist.
-        /// Called on load after all lists are initialized.
-        /// </summary>
-        private void CleanupOrphanedData()
-        {
-            var validUUIDs = new HashSet<string>(_playerProfileList.Select(p => p.UUID));
-            int removed = 0;
-
-            foreach (var colony in _colonyList.Where(c => !string.IsNullOrEmpty(c.OwnerUUID) && !validUUIDs.Contains(c.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned colony: {0} ({1}) owner={2}", colony.PlanetName, colony.ColonyName, colony.OwnerUUID);
-
-                _colonyList.Remove(colony);
-                removed++;
-            }
-
-            foreach (var bp in _blueprintList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned blueprint: {0} owner={1}", bp.ExtendedName, bp.OwnerUUID);
-
-                _blueprintList.Remove(bp);
-                removed++;
-            }
-
-            foreach (var survey in _surveyList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned survey: {0} owner={1}", survey.ExtendedName, survey.OwnerUUID);
-
-                _surveyList.Remove(survey);
-                removed++;
-            }
-
-            foreach (var route in _deliveryRouteList.Where(r => !string.IsNullOrEmpty(r.OwnerUUID) && !validUUIDs.Contains(r.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned route: {0} owner={1}", route.Name, route.OwnerUUID);
-
-                _deliveryRouteList.Remove(route);
-                removed++;
-            }
-
-            foreach (var plan in _deliveryPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned delivery plan: {0} owner={1}", plan.Name, plan.OwnerUUID);
-
-                _deliveryPlanList.Remove(plan);
-                removed++;
-            }
-
-            foreach (var pp in _pricingPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned pricing plan: {0} owner={1}", pp.Name, pp.OwnerUUID);
-
-                _pricingPlanList.Remove(pp);
-                removed++;
-            }
-
-            foreach (var bp2 in _buildPlanList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned build plan: {0} owner={1}", bp2.Name, bp2.OwnerUUID);
-
-                _buildPlanList.Remove(bp2);
-                removed++;
-            }
-
-            foreach (var st in _shipTemplateList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned ship template: {0} owner={1}", st.Name, st.OwnerUUID);
-
-                _shipTemplateList.Remove(st);
-                removed++;
-            }
-
-            foreach (var ship in _shipList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned ship: {0} owner={1}", ship.Name, ship.OwnerUUID);
-
-                _shipList.Remove(ship);
-                removed++;
-            }
-
-            foreach (var station in _stationList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned station: {0} owner={1}", station.Name, station.OwnerUUID);
-
-                _stationList.Remove(station);
-                removed++;
-            }
-
-            foreach (var ml in _marketListingList.Where(m => !string.IsNullOrEmpty(m.OwnerUUID) && !validUUIDs.Contains(m.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned market listing: {0} owner={1}", ml.UUID, ml.OwnerUUID);
-
-                _marketListingList.Remove(ml);
-                removed++;
-            }
-
-            foreach (var mt in _marketTransactionList.Where(m => !string.IsNullOrEmpty(m.OwnerUUID) && !validUUIDs.Contains(m.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned market transaction: {0} owner={1}", mt.UUID, mt.OwnerUUID);
-
-                _marketTransactionList.Remove(mt);
-                removed++;
-            }
-
-            foreach (var sp in _stockPlanList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned stock plan: {0} owner={1}", sp.Name, sp.OwnerUUID);
-
-                _stockPlanList.Remove(sp);
-                removed++;
-            }
-
-            foreach (var spf in _stockProfileList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned stock profile: {0} owner={1}", spf.Name, spf.OwnerUUID);
-
-                _stockProfileList.Remove(spf);
-                removed++;
-            }
-
-            foreach (var sc in _supplyChainList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned supply chain: {0} owner={1}", sc.Name, sc.OwnerUUID);
-
-                _supplyChainList.Remove(sc);
-                removed++;
-            }
-
-            foreach (var wor in _warehouseOverflowRuleList.Where(w => !string.IsNullOrEmpty(w.OwnerUUID) && !validUUIDs.Contains(w.OwnerUUID)).ToList())
-            {
-                Log.Warn("Removing orphaned overflow rule: {0} owner={1}", wor.UUID, wor.OwnerUUID);
-                _warehouseOverflowRuleList.Remove(wor);
-                removed++;
-            }
-
-            if (removed > 0)
-                Log.Info("Cleaned up {0} orphaned items on load", removed);
-
-            InvalidateBlueprintCache();
-            InvalidateSurveyCache();
-            InvalidateColonyCache();
-        }
-
-        /// <summary>
-        /// Restores the current player from the saved UUID, falling back to
-        /// the first player if the saved UUID is invalid or empty.
-        /// Does not fire CurrentPlayerChanged (called during construction).
-        /// </summary>
-        private void RestoreCurrentPlayer(string savedUUID)
-        {
-            if (!string.IsNullOrEmpty(savedUUID) &&
-                _playerProfileList.Any(p => p.UUID == savedUUID))
-            {
-                _currentPlayerUUID = savedUUID;
-            }
-            else if (_playerProfileList.Count > 0)
-            {
-                _currentPlayerUUID = _playerProfileList[0].UUID ?? string.Empty;
-            }
-
-            Log.Info("Current player restored: {0}", _currentPlayerUUID);
         }
 
         /// <summary>
@@ -2438,32 +2263,250 @@ namespace OE2EmpireTracker.Services
 
             return countdowns;
         }
+
+        private void RebuildBuildItemIndexes()
+        {
+            _blueprintBuildItemIndex = new Dictionary<string, List<BuildItem>>();
+            _buildLocationBuildItemIndex = new Dictionary<string, List<BuildItem>>();
+            foreach (var plan in _buildPlanList)
+            {
+                if (plan.Items == null) continue;
+                foreach (var item in plan.Items)
+                {
+                    if (!string.IsNullOrEmpty(item.BlueprintUUID))
+                    {
+                        if (!_blueprintBuildItemIndex.ContainsKey(item.BlueprintUUID))
+                            _blueprintBuildItemIndex[item.BlueprintUUID] = new List<BuildItem>();
+                        _blueprintBuildItemIndex[item.BlueprintUUID].Add(item);
+                    }
+
+                    if (!string.IsNullOrEmpty(item.BuildLocationUUID))
+                    {
+                        if (!_buildLocationBuildItemIndex.ContainsKey(item.BuildLocationUUID))
+                            _buildLocationBuildItemIndex[item.BuildLocationUUID] = new List<BuildItem>();
+                        _buildLocationBuildItemIndex[item.BuildLocationUUID].Add(item);
+                    }
+                }
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Player Selection & Migration
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Auto-assigns empty OwnerUUID on colonies, blueprints, and surveys
+        /// to the first player profile (alphabetically). Handles migration of
+        /// existing save files that predate multi-player support.
+        /// </summary>
+        private void MigrateOwnerUUIDs()
+        {
+            if (_playerProfileList.Count == 0) return;
+
+            string firstPlayerUUID = _playerProfileList[0].UUID;
+            if (string.IsNullOrEmpty(firstPlayerUUID)) return;
+
+            int migrated = 0;
+            foreach (var colony in _colonyList)
+            {
+                if (string.IsNullOrEmpty(colony.OwnerUUID))
+                {
+                    colony.OwnerUUID = firstPlayerUUID;
+                    migrated++;
+                }
+            }
+
+            foreach (var blueprint in _blueprintList)
+            {
+                if (string.IsNullOrEmpty(blueprint.OwnerUUID))
+                {
+                    blueprint.OwnerUUID = firstPlayerUUID;
+                    migrated++;
+                }
+            }
+
+            foreach (var survey in _surveyList)
+            {
+                if (string.IsNullOrEmpty(survey.OwnerUUID))
+                {
+                    survey.OwnerUUID = firstPlayerUUID;
+                    migrated++;
+                }
+            }
+
+            if (migrated > 0)
+            {
+                Log.Info("Migrated {0} items to player {1}", migrated, _playerProfileList[0].Name);
+            }
+        }
+
+        /// <summary>
+        /// Removes data owned by players that no longer exist.
+        /// Called on load after all lists are initialized.
+        /// </summary>
+        private void CleanupOrphanedData()
+        {
+            var validUUIDs = new HashSet<string>(_playerProfileList.Select(p => p.UUID));
+            int removed = 0;
+
+            foreach (var colony in _colonyList.Where(c => !string.IsNullOrEmpty(c.OwnerUUID) && !validUUIDs.Contains(c.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned colony: {0} ({1}) owner={2}", colony.PlanetName, colony.ColonyName, colony.OwnerUUID);
+
+                _colonyList.Remove(colony);
+                removed++;
+            }
+
+            foreach (var bp in _blueprintList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned blueprint: {0} owner={1}", bp.ExtendedName, bp.OwnerUUID);
+
+                _blueprintList.Remove(bp);
+                removed++;
+            }
+
+            foreach (var survey in _surveyList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned survey: {0} owner={1}", survey.ExtendedName, survey.OwnerUUID);
+
+                _surveyList.Remove(survey);
+                removed++;
+            }
+
+            foreach (var route in _deliveryRouteList.Where(r => !string.IsNullOrEmpty(r.OwnerUUID) && !validUUIDs.Contains(r.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned route: {0} owner={1}", route.Name, route.OwnerUUID);
+
+                _deliveryRouteList.Remove(route);
+                removed++;
+            }
+
+            foreach (var plan in _deliveryPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned delivery plan: {0} owner={1}", plan.Name, plan.OwnerUUID);
+
+                _deliveryPlanList.Remove(plan);
+                removed++;
+            }
+
+            foreach (var pp in _pricingPlanList.Where(p => !string.IsNullOrEmpty(p.OwnerUUID) && !validUUIDs.Contains(p.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned pricing plan: {0} owner={1}", pp.Name, pp.OwnerUUID);
+
+                _pricingPlanList.Remove(pp);
+                removed++;
+            }
+
+            foreach (var bp2 in _buildPlanList.Where(b => !string.IsNullOrEmpty(b.OwnerUUID) && !validUUIDs.Contains(b.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned build plan: {0} owner={1}", bp2.Name, bp2.OwnerUUID);
+
+                _buildPlanList.Remove(bp2);
+                removed++;
+            }
+
+            foreach (var st in _shipTemplateList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned ship template: {0} owner={1}", st.Name, st.OwnerUUID);
+
+                _shipTemplateList.Remove(st);
+                removed++;
+            }
+
+            foreach (var ship in _shipList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned ship: {0} owner={1}", ship.Name, ship.OwnerUUID);
+
+                _shipList.Remove(ship);
+                removed++;
+            }
+
+            foreach (var station in _stationList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned station: {0} owner={1}", station.Name, station.OwnerUUID);
+
+                _stationList.Remove(station);
+                removed++;
+            }
+
+            foreach (var ml in _marketListingList.Where(m => !string.IsNullOrEmpty(m.OwnerUUID) && !validUUIDs.Contains(m.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned market listing: {0} owner={1}", ml.UUID, ml.OwnerUUID);
+
+                _marketListingList.Remove(ml);
+                removed++;
+            }
+
+            foreach (var mt in _marketTransactionList.Where(m => !string.IsNullOrEmpty(m.OwnerUUID) && !validUUIDs.Contains(m.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned market transaction: {0} owner={1}", mt.UUID, mt.OwnerUUID);
+
+                _marketTransactionList.Remove(mt);
+                removed++;
+            }
+
+            foreach (var sp in _stockPlanList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned stock plan: {0} owner={1}", sp.Name, sp.OwnerUUID);
+
+                _stockPlanList.Remove(sp);
+                removed++;
+            }
+
+            foreach (var spf in _stockProfileList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned stock profile: {0} owner={1}", spf.Name, spf.OwnerUUID);
+
+                _stockProfileList.Remove(spf);
+                removed++;
+            }
+
+            foreach (var sc in _supplyChainList.Where(s => !string.IsNullOrEmpty(s.OwnerUUID) && !validUUIDs.Contains(s.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned supply chain: {0} owner={1}", sc.Name, sc.OwnerUUID);
+
+                _supplyChainList.Remove(sc);
+                removed++;
+            }
+
+            foreach (var wor in _warehouseOverflowRuleList.Where(w => !string.IsNullOrEmpty(w.OwnerUUID) && !validUUIDs.Contains(w.OwnerUUID)).ToList())
+            {
+                Log.Warn("Removing orphaned overflow rule: {0} owner={1}", wor.UUID, wor.OwnerUUID);
+                _warehouseOverflowRuleList.Remove(wor);
+                removed++;
+            }
+
+            if (removed > 0)
+                Log.Info("Cleaned up {0} orphaned items on load", removed);
+
+            InvalidateBlueprintCache();
+            InvalidateSurveyCache();
+            InvalidateColonyCache();
+        }
+
+        /// <summary>
+        /// Restores the current player from the saved UUID, falling back to
+        /// the first player if the saved UUID is invalid or empty.
+        /// Does not fire CurrentPlayerChanged (called during construction).
+        /// </summary>
+        private void RestoreCurrentPlayer(string savedUUID)
+        {
+            if (!string.IsNullOrEmpty(savedUUID) &&
+                _playerProfileList.Any(p => p.UUID == savedUUID))
+            {
+                _currentPlayerUUID = savedUUID;
+            }
+            else if (_playerProfileList.Count > 0)
+            {
+                _currentPlayerUUID = _playerProfileList[0].UUID ?? string.Empty;
+            }
+
+            Log.Info("Current player restored: {0}", _currentPlayerUUID);
+        }
     }
 
     public class PlayerRoot
     {
-        public int DataVersion { get; set; }
-        public string CurrentPlayerUUID { get; set; }
-        public PlayerProfile[] PlayerProfile { get; set; }
-        public Blueprint[] Blueprint { get; set; }
-        public Survey[] Survey { get; set; }
-        public Colony[] Colony { get; set; }
-        public DeliveryRoute[] DeliveryRoute { get; set; }
-        public DeliveryPlan[] DeliveryPlan { get; set; }
-        public PricingPlan[] PricingPlan { get; set; }
-        public BuildPlan[] BuildPlan { get; set; }
-        public ShipTemplate[] ShipTemplate { get; set; }
-        public Ship[] Ship { get; set; }
-        public Station[] Station { get; set; }
-        public MarketListing[] MarketListing { get; set; }
-        public MarketTransaction[] MarketTransaction { get; set; }
-        public StockPlan[] StockPlan { get; set; }
-        public StockProfile[] StockProfile { get; set; }
-        public SupplyChain[] SupplyChain { get; set; }
-        public WarehouseOverflowRule[] WarehouseOverflowRule { get; set; }
-        public Faction[] Faction { get; set; }
-        public ExternalCharacter[] ExternalCharacter { get; set; }
-        public Asteroid[] Asteroid { get; set; }
         public PlayerRoot()
         {
             DataVersion = 0;
@@ -2489,6 +2532,50 @@ namespace OE2EmpireTracker.Services
             ExternalCharacter = new ExternalCharacter[0];
             Asteroid = new Asteroid[0];
         }
+
+        public int DataVersion { get; set; }
+
+        public string CurrentPlayerUUID { get; set; }
+
+        public PlayerProfile[] PlayerProfile { get; set; }
+
+        public Blueprint[] Blueprint { get; set; }
+
+        public Survey[] Survey { get; set; }
+
+        public Colony[] Colony { get; set; }
+
+        public DeliveryRoute[] DeliveryRoute { get; set; }
+
+        public DeliveryPlan[] DeliveryPlan { get; set; }
+
+        public PricingPlan[] PricingPlan { get; set; }
+
+        public BuildPlan[] BuildPlan { get; set; }
+
+        public ShipTemplate[] ShipTemplate { get; set; }
+
+        public Ship[] Ship { get; set; }
+
+        public Station[] Station { get; set; }
+
+        public MarketListing[] MarketListing { get; set; }
+
+        public MarketTransaction[] MarketTransaction { get; set; }
+
+        public StockPlan[] StockPlan { get; set; }
+
+        public StockProfile[] StockProfile { get; set; }
+
+        public SupplyChain[] SupplyChain { get; set; }
+
+        public WarehouseOverflowRule[] WarehouseOverflowRule { get; set; }
+
+        public Faction[] Faction { get; set; }
+
+        public ExternalCharacter[] ExternalCharacter { get; set; }
+
+        public Asteroid[] Asteroid { get; set; }
     }
 
     public class CountDownTimeReference
@@ -2508,67 +2595,78 @@ namespace OE2EmpireTracker.Services
 
     public class ColonyDataChangedEventArgs : EventArgs
     {
-        public string ColonyUUID { get; }
         public ColonyDataChangedEventArgs(string colonyUUID) { ColonyUUID = colonyUUID; }
+
+        public string ColonyUUID { get; }
     }
 
     public class BlueprintDataChangedEventArgs : EventArgs
     {
-        public string BlueprintUUID { get; }
         public BlueprintDataChangedEventArgs(string blueprintUUID) { BlueprintUUID = blueprintUUID; }
+
+        public string BlueprintUUID { get; }
     }
 
     public class SurveyDataChangedEventArgs : EventArgs
     {
-        public string SurveyUUID { get; }
         public SurveyDataChangedEventArgs(string surveyUUID) { SurveyUUID = surveyUUID; }
+
+        public string SurveyUUID { get; }
     }
 
     public class PlayerProfileDataChangedEventArgs : EventArgs
     {
-        public string PlayerUUID { get; }
         public PlayerProfileDataChangedEventArgs(string playerUUID) { PlayerUUID = playerUUID; }
+
+        public string PlayerUUID { get; }
     }
 
     public class BuildPlanDataChangedEventArgs : EventArgs
     {
-        public string BuildPlanUUID { get; }
         public BuildPlanDataChangedEventArgs(string uuid) { BuildPlanUUID = uuid; }
+
+        public string BuildPlanUUID { get; }
     }
 
     public class AsteroidDataChangedEventArgs : EventArgs
     {
-        public string AsteroidUUID { get; }
         public AsteroidDataChangedEventArgs(string asteroidUUID) { AsteroidUUID = asteroidUUID; }
+
+        public string AsteroidUUID { get; }
     }
 
     public class ShipTemplateDataChangedEventArgs : EventArgs
     {
-        public string ShipTemplateUUID { get; }
         public ShipTemplateDataChangedEventArgs(string uuid) { ShipTemplateUUID = uuid; }
+
+        public string ShipTemplateUUID { get; }
     }
 
     public class ShipDataChangedEventArgs : EventArgs
     {
-        public string ShipUUID { get; }
         public ShipDataChangedEventArgs(string uuid) { ShipUUID = uuid; }
+
+        public string ShipUUID { get; }
     }
 
     public class StockDataChangedEventArgs : EventArgs
     {
-        public string StockPlanUUID { get; }
         public StockDataChangedEventArgs(string uuid) { StockPlanUUID = uuid; }
+
+        public string StockPlanUUID { get; }
     }
 
     public class SupplyChainDataChangedEventArgs : EventArgs
     {
-        public string SupplyChainUUID { get; }
         public SupplyChainDataChangedEventArgs(string uuid) { SupplyChainUUID = uuid; }
+
+        public string SupplyChainUUID { get; }
     }
 
     public class ContactDataChangedEventArgs : EventArgs
     {
-        public string CharacterUUID { get; }
         public ContactDataChangedEventArgs(string uuid) { CharacterUUID = uuid; }
+
+        public string CharacterUUID { get; }
     }
 }

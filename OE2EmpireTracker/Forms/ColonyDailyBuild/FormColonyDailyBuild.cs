@@ -16,12 +16,14 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
     public partial class FormColonyDailyBuild : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         private EmpireContext empireContext;
+
         private PlayerContext playerContext;
+
+        private string _lastRouteUUID = string.Empty;
 
         public FormColonyDailyBuild()
         {
@@ -42,6 +44,18 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged += OnColonyDataChanged;
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.ColonyDataChanged -= OnColonyDataChanged;
+            base.OnFormClosed(e);
         }
 
         // -----------------------------------------------------------------------
@@ -78,8 +92,6 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
         {
             _lastRouteUUID = RouteDropdownHelper.Populate(cmbRoute, playerContext.GetCurrentPlayerRoutes(), txtRouteFilter.Text ?? string.Empty, cmbRoute.SelectedValue as string, CmbRoute_SelectedIndexChanged);
         }
-
-        private string _lastRouteUUID = string.Empty;
 
         private void CmbRoute_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -197,12 +209,6 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
             Log.Info("BuildContent PERF: total={0}ms", sw.ElapsedMilliseconds);
         }
 
-        private class BuildTag
-        {
-            public string ColonyUUID { get; set; }
-            public string StructureUUID { get; set; }
-        }
-
         // -----------------------------------------------------------------------
         // Build Click
         // -----------------------------------------------------------------------
@@ -304,12 +310,10 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                 BuildContent(routeUUID);
         }
 
-        protected override void OnFormClosed(FormClosedEventArgs e)
+        private class BuildTag
         {
-            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            playerContext.ColonyDataChanged -= OnColonyDataChanged;
-            base.OnFormClosed(e);
+            public string ColonyUUID { get; set; }
+            public string StructureUUID { get; set; }
         }
     }
 }

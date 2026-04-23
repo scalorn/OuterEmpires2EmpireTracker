@@ -21,7 +21,163 @@ namespace OE2EmpireTracker.Tests.Services
         // ---------------------------------------------------------------
 
         private static readonly string[] ShortStrings = { "a", "bb", "ccc", "d1", "e2f", string.Empty };
+
         private static readonly string[] NonEmptyStrings = { "a", "bb", "ccc", "d1", "e2f" };
+
+        // ---------------------------------------------------------------
+        // PlayerRoot
+        // ---------------------------------------------------------------
+
+        public static Gen<PlayerRoot> GenPlayerRoot() =>
+            from currentUuid in GenUuid()
+            from profileCount in Gen.Choose(0, 2)
+            from profiles in Gen.ListOf(profileCount, GenPlayerProfile())
+            from bpCount in Gen.Choose(0, 2)
+            from blueprints in Gen.ListOf(bpCount, GenBlueprint())
+            from surveyCount in Gen.Choose(0, 2)
+            from surveys in Gen.ListOf(surveyCount, GenSurvey())
+            from colonyCount in Gen.Choose(0, 2)
+            from colonies in Gen.ListOf(colonyCount, GenColony())
+            from routeCount in Gen.Choose(0, 2)
+            from routes in Gen.ListOf(routeCount, GenDeliveryRoute())
+            from planCount in Gen.Choose(0, 2)
+            from plans in Gen.ListOf(planCount, GenDeliveryPlan())
+            select new PlayerRoot
+            {
+                CurrentPlayerUUID = currentUuid,
+                PlayerProfile = profiles.ToArray(),
+                Blueprint = blueprints.ToArray(),
+                Survey = surveys.ToArray(),
+                Colony = colonies.ToArray(),
+                DeliveryRoute = routes.ToArray(),
+                DeliveryPlan = plans.ToArray()
+            };
+
+        // ---------------------------------------------------------------
+        // BaselineRoot
+        // ---------------------------------------------------------------
+
+        public static Gen<BaselineRoot> GenBaselineRoot() =>
+            from scCount in Gen.Choose(0, 3)
+            from shipClasses in Gen.ListOf(scCount, GenShipClass())
+            from btCount in Gen.Choose(0, 3)
+            from bpTypes in Gen.ListOf(btCount, GenBlueprintType())
+            from bpCount in Gen.Choose(0, 2)
+            from blueprints in Gen.ListOf(bpCount, GenBlueprint())
+            from tlCount in Gen.Choose(0, 3)
+            from techLevels in Gen.ListOf(tlCount, GenTechLevel())
+            select new BaselineRoot
+            {
+                ShipClass = shipClasses.ToArray(),
+                BlueprintType = bpTypes.ToArray(),
+                Blueprint = blueprints.ToArray(),
+                TechLevel = techLevels.ToArray()
+            };
+
+        // ---------------------------------------------------------------
+        // Composite Arbitrary registration
+        // ---------------------------------------------------------------
+
+        public static Arbitrary<PropertyBag> PropertyBagArbitrary() =>
+            Arb.From(GenPropertyBag());
+
+        public static Arbitrary<ItemBag> ItemBagArbitrary() =>
+            Arb.From(GenItemBag());
+
+        public static Arbitrary<Item> ItemArbitrary() =>
+            Arb.From(GenItem());
+
+        public static Arbitrary<ColonyStructure> ColonyStructureArbitrary() =>
+            Arb.From(GenColonyStructure());
+
+        public static Arbitrary<Colony> ColonyArbitrary() =>
+            Arb.From(GenColony());
+
+        public static Arbitrary<OE2EmpireTracker.Models.Blueprint> BlueprintArbitrary() =>
+            Arb.From(GenBlueprint());
+
+        public static Arbitrary<Survey> SurveyArbitrary() =>
+            Arb.From(GenSurvey());
+
+        public static Arbitrary<SurveyResource> SurveyResourceArbitrary() =>
+            Arb.From(GenSurveyResource());
+
+        public static Arbitrary<DeliveryItem> DeliveryItemArbitrary() =>
+            Arb.From(GenDeliveryItem());
+
+        public static Arbitrary<DeliveryPlanStop> DeliveryPlanStopArbitrary() =>
+            Arb.From(GenDeliveryPlanStop());
+
+        public static Arbitrary<DeliveryPlan> DeliveryPlanArbitrary() =>
+            Arb.From(GenDeliveryPlan());
+
+        public static Arbitrary<RouteStop> RouteStopArbitrary() =>
+            Arb.From(GenRouteStop());
+
+        public static Arbitrary<DeliveryRoute> DeliveryRouteArbitrary() =>
+            Arb.From(GenDeliveryRoute());
+
+        public static Arbitrary<PlayerRank> PlayerRankArbitrary() =>
+            Arb.From(GenPlayerRank());
+
+        public static Arbitrary<PlayerSkill> PlayerSkillArbitrary() =>
+            Arb.From(GenPlayerSkill());
+
+        public static Arbitrary<PlayerProfile> PlayerProfileArbitrary() =>
+            Arb.From(GenPlayerProfile());
+
+        public static Arbitrary<CountDownTime> CountDownTimeArbitrary() =>
+            Arb.From(GenCountDownTime());
+
+        public static Arbitrary<CommodityRequested> CommodityRequestedArbitrary() =>
+            Arb.From(GenCommodityRequested());
+
+        public static Arbitrary<LockTracking> LockTrackingArbitrary() =>
+            Arb.From(GenLockTracking());
+
+        public static Arbitrary<WindowPosition> WindowPositionArbitrary() =>
+            Arb.From(GenWindowPosition());
+
+        public static Arbitrary<WindowState> WindowStateArbitrary() =>
+            Arb.From(GenWindowState());
+
+        public static Arbitrary<FormControlState> FormControlStateArbitrary() =>
+            Arb.From(GenFormControlState());
+
+        public static Arbitrary<ComboState> ComboStateArbitrary() =>
+            Arb.From(GenComboState());
+
+        public static Arbitrary<GridState> GridStateArbitrary() =>
+            Arb.From(GenGridState());
+
+        public static Arbitrary<GridColumnState> GridColumnStateArbitrary() =>
+            Arb.From(GenGridColumnState());
+
+        public static Arbitrary<UIPreferences> UIPreferencesArbitrary() =>
+            Arb.From(GenUIPreferences());
+
+        public static Arbitrary<BlueprintType> BlueprintTypeArbitrary() =>
+            Arb.From(GenBlueprintType());
+
+        public static Arbitrary<ShipClass> ShipClassArbitrary() =>
+            Arb.From(GenShipClass());
+
+        public static Arbitrary<TechLevel> TechLevelArbitrary() =>
+            Arb.From(GenTechLevel());
+
+        public static Arbitrary<PlayerRoot> PlayerRootArbitrary() =>
+            Arb.From(GenPlayerRoot());
+
+        public static Arbitrary<BaselineRoot> BaselineRootArbitrary() =>
+            Arb.From(GenBaselineRoot());
+
+        /// <summary>
+        /// Registers all custom Arbitrary generators with FsCheck.
+        /// </summary>
+        public static void Register()
+        {
+            Arb.Register(typeof(ModelGenerators));
+        }
 
         private static Gen<string> GenShortString() =>
             Gen.Elements(ShortStrings);
@@ -694,161 +850,6 @@ namespace OE2EmpireTracker.Tests.Services
         private static Gen<TechLevel> GenTechLevel() =>
             from name in Gen.Elements("TL1", "TL2", "TL3")
             select new TechLevel { Name = name };
-
-        // ---------------------------------------------------------------
-        // PlayerRoot
-        // ---------------------------------------------------------------
-
-        public static Gen<PlayerRoot> GenPlayerRoot() =>
-            from currentUuid in GenUuid()
-            from profileCount in Gen.Choose(0, 2)
-            from profiles in Gen.ListOf(profileCount, GenPlayerProfile())
-            from bpCount in Gen.Choose(0, 2)
-            from blueprints in Gen.ListOf(bpCount, GenBlueprint())
-            from surveyCount in Gen.Choose(0, 2)
-            from surveys in Gen.ListOf(surveyCount, GenSurvey())
-            from colonyCount in Gen.Choose(0, 2)
-            from colonies in Gen.ListOf(colonyCount, GenColony())
-            from routeCount in Gen.Choose(0, 2)
-            from routes in Gen.ListOf(routeCount, GenDeliveryRoute())
-            from planCount in Gen.Choose(0, 2)
-            from plans in Gen.ListOf(planCount, GenDeliveryPlan())
-            select new PlayerRoot
-            {
-                CurrentPlayerUUID = currentUuid,
-                PlayerProfile = profiles.ToArray(),
-                Blueprint = blueprints.ToArray(),
-                Survey = surveys.ToArray(),
-                Colony = colonies.ToArray(),
-                DeliveryRoute = routes.ToArray(),
-                DeliveryPlan = plans.ToArray()
-            };
-
-        // ---------------------------------------------------------------
-        // BaselineRoot
-        // ---------------------------------------------------------------
-
-        public static Gen<BaselineRoot> GenBaselineRoot() =>
-            from scCount in Gen.Choose(0, 3)
-            from shipClasses in Gen.ListOf(scCount, GenShipClass())
-            from btCount in Gen.Choose(0, 3)
-            from bpTypes in Gen.ListOf(btCount, GenBlueprintType())
-            from bpCount in Gen.Choose(0, 2)
-            from blueprints in Gen.ListOf(bpCount, GenBlueprint())
-            from tlCount in Gen.Choose(0, 3)
-            from techLevels in Gen.ListOf(tlCount, GenTechLevel())
-            select new BaselineRoot
-            {
-                ShipClass = shipClasses.ToArray(),
-                BlueprintType = bpTypes.ToArray(),
-                Blueprint = blueprints.ToArray(),
-                TechLevel = techLevels.ToArray()
-            };
-
-        // ---------------------------------------------------------------
-        // Composite Arbitrary registration
-        // ---------------------------------------------------------------
-
-        public static Arbitrary<PropertyBag> PropertyBagArbitrary() =>
-            Arb.From(GenPropertyBag());
-
-        public static Arbitrary<ItemBag> ItemBagArbitrary() =>
-            Arb.From(GenItemBag());
-
-        public static Arbitrary<Item> ItemArbitrary() =>
-            Arb.From(GenItem());
-
-        public static Arbitrary<ColonyStructure> ColonyStructureArbitrary() =>
-            Arb.From(GenColonyStructure());
-
-        public static Arbitrary<Colony> ColonyArbitrary() =>
-            Arb.From(GenColony());
-
-        public static Arbitrary<OE2EmpireTracker.Models.Blueprint> BlueprintArbitrary() =>
-            Arb.From(GenBlueprint());
-
-        public static Arbitrary<Survey> SurveyArbitrary() =>
-            Arb.From(GenSurvey());
-
-        public static Arbitrary<SurveyResource> SurveyResourceArbitrary() =>
-            Arb.From(GenSurveyResource());
-
-        public static Arbitrary<DeliveryItem> DeliveryItemArbitrary() =>
-            Arb.From(GenDeliveryItem());
-
-        public static Arbitrary<DeliveryPlanStop> DeliveryPlanStopArbitrary() =>
-            Arb.From(GenDeliveryPlanStop());
-
-        public static Arbitrary<DeliveryPlan> DeliveryPlanArbitrary() =>
-            Arb.From(GenDeliveryPlan());
-
-        public static Arbitrary<RouteStop> RouteStopArbitrary() =>
-            Arb.From(GenRouteStop());
-
-        public static Arbitrary<DeliveryRoute> DeliveryRouteArbitrary() =>
-            Arb.From(GenDeliveryRoute());
-
-        public static Arbitrary<PlayerRank> PlayerRankArbitrary() =>
-            Arb.From(GenPlayerRank());
-
-        public static Arbitrary<PlayerSkill> PlayerSkillArbitrary() =>
-            Arb.From(GenPlayerSkill());
-
-        public static Arbitrary<PlayerProfile> PlayerProfileArbitrary() =>
-            Arb.From(GenPlayerProfile());
-
-        public static Arbitrary<CountDownTime> CountDownTimeArbitrary() =>
-            Arb.From(GenCountDownTime());
-
-        public static Arbitrary<CommodityRequested> CommodityRequestedArbitrary() =>
-            Arb.From(GenCommodityRequested());
-
-        public static Arbitrary<LockTracking> LockTrackingArbitrary() =>
-            Arb.From(GenLockTracking());
-
-        public static Arbitrary<WindowPosition> WindowPositionArbitrary() =>
-            Arb.From(GenWindowPosition());
-
-        public static Arbitrary<WindowState> WindowStateArbitrary() =>
-            Arb.From(GenWindowState());
-
-        public static Arbitrary<FormControlState> FormControlStateArbitrary() =>
-            Arb.From(GenFormControlState());
-
-        public static Arbitrary<ComboState> ComboStateArbitrary() =>
-            Arb.From(GenComboState());
-
-        public static Arbitrary<GridState> GridStateArbitrary() =>
-            Arb.From(GenGridState());
-
-        public static Arbitrary<GridColumnState> GridColumnStateArbitrary() =>
-            Arb.From(GenGridColumnState());
-
-        public static Arbitrary<UIPreferences> UIPreferencesArbitrary() =>
-            Arb.From(GenUIPreferences());
-
-        public static Arbitrary<BlueprintType> BlueprintTypeArbitrary() =>
-            Arb.From(GenBlueprintType());
-
-        public static Arbitrary<ShipClass> ShipClassArbitrary() =>
-            Arb.From(GenShipClass());
-
-        public static Arbitrary<TechLevel> TechLevelArbitrary() =>
-            Arb.From(GenTechLevel());
-
-        public static Arbitrary<PlayerRoot> PlayerRootArbitrary() =>
-            Arb.From(GenPlayerRoot());
-
-        public static Arbitrary<BaselineRoot> BaselineRootArbitrary() =>
-            Arb.From(GenBaselineRoot());
-
-        /// <summary>
-        /// Registers all custom Arbitrary generators with FsCheck.
-        /// </summary>
-        public static void Register()
-        {
-            Arb.Register(typeof(ModelGenerators));
-        }
     }
 
     // ===================================================================
@@ -952,28 +953,6 @@ namespace OE2EmpireTracker.Tests.Services
             var compact = JsonConvert.SerializeObject(root, JsonSettings.SerializerSettings);
             var verbose = JsonConvert.SerializeObject(root, Formatting.Indented);
             return compact.Length <= verbose.Length;
-        }
-
-        /// <summary>
-        /// Removes JSON fields that are computed from DateTime.Now and therefore
-        /// non-deterministic across serialize/deserialize passes.
-        /// CountDownTime.TimeRemainingString setter mutates StartTime/EndTime
-        /// during deserialization, making those fields volatile too.
-        /// </summary>
-        private static string StripVolatileFields(string json)
-        {
-            // Remove volatile CountDownTime fields: TimeRemainingString, StartTime, EndTime
-            // These are mutated by the TimeRemainingString setter during deserialization.
-            var result = System.Text.RegularExpressions.Regex.Replace(
-                json,
-                @"\s*""(TimeRemainingString|StartTime|EndTime)""\s*:\s*""[^""]*""\s*,?",
-                string.Empty);
-            // Clean up any trailing commas before closing braces
-            result = System.Text.RegularExpressions.Regex.Replace(
-                result,
-                @",(\s*[}\]])",
-                "$1");
-            return result;
         }
 
         // Unit test: Settings configuration verification
@@ -1086,6 +1065,28 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(fromCompact.ResourcePurity, Is.EqualTo(fromVerbose.ResourcePurity));
             Assert.That(fromCompact.Volume, Is.EqualTo(fromVerbose.Volume));
             Assert.That(fromCompact.BaseItemTypeID, Is.EqualTo(fromVerbose.BaseItemTypeID));
+        }
+
+        /// <summary>
+        /// Removes JSON fields that are computed from DateTime.Now and therefore
+        /// non-deterministic across serialize/deserialize passes.
+        /// CountDownTime.TimeRemainingString setter mutates StartTime/EndTime
+        /// during deserialization, making those fields volatile too.
+        /// </summary>
+        private static string StripVolatileFields(string json)
+        {
+            // Remove volatile CountDownTime fields: TimeRemainingString, StartTime, EndTime
+            // These are mutated by the TimeRemainingString setter during deserialization.
+            var result = System.Text.RegularExpressions.Regex.Replace(
+                json,
+                @"\s*""(TimeRemainingString|StartTime|EndTime)""\s*:\s*""[^""]*""\s*,?",
+                string.Empty);
+            // Clean up any trailing commas before closing braces
+            result = System.Text.RegularExpressions.Regex.Replace(
+                result,
+                @",(\s*[}\]])",
+                "$1");
+            return result;
         }
     }
 }

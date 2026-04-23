@@ -33,51 +33,6 @@ namespace OE2EmpireTracker.Tests.Parsers
             EmpireContext.Reset();
         }
 
-        private Colony CreateColony(string ownerUUID, string planetName, string systemName)
-        {
-            return new Colony
-            {
-                UUID = System.Guid.NewGuid().ToString(),
-                OwnerUUID = ownerUUID,
-                PlanetName = planetName,
-                SystemName = systemName,
-                ColonyName = "Test Colony"
-            };
-        }
-
-        private ColonyStructure CreateMiningRig(string uuid, string resource, string purity, string existingSurvey = null)
-        {
-            return new ColonyStructure
-            {
-                UUID = uuid,
-                MiningSurveyResource = resource,
-                RefiningResourcePurity = purity,
-                MiningSurvey = existingSurvey
-            };
-        }
-
-        private Survey CreateSurvey(
-            string uuid,
-            string planetName,
-            string surveyId,
-            string resourceName,
-            string purity,
-            string amount)
-        {
-            var survey = new Survey("Test Survey")
-            {
-                UUID = uuid,
-                PlanetName = planetName,
-                SurveyID = surveyId,
-                Resources = new Dictionary<string, SurveyResource>
-                {
-                    [resourceName] = new SurveyResource(resourceName, purity, amount)
-                }
-            };
-
-            return survey;
-        }
-
         /// <summary>
         /// Validates: Requirement 3.1 -- preserve existing valid real survey on reimport.
         /// </summary>
@@ -240,6 +195,51 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(result, Is.True);
             string expectedUUID = DeterministicUUID.GenerateDefaultSurvey("owner-1", "Alpha Prime", "Sol");
             Assert.That(structure.MiningSurvey, Is.EqualTo(expectedUUID));
+        }
+
+        private Colony CreateColony(string ownerUUID, string planetName, string systemName)
+        {
+            return new Colony
+            {
+                UUID = System.Guid.NewGuid().ToString(),
+                OwnerUUID = ownerUUID,
+                PlanetName = planetName,
+                SystemName = systemName,
+                ColonyName = "Test Colony"
+            };
+        }
+
+        private ColonyStructure CreateMiningRig(string uuid, string resource, string purity, string existingSurvey = null)
+        {
+            return new ColonyStructure
+            {
+                UUID = uuid,
+                MiningSurveyResource = resource,
+                RefiningResourcePurity = purity,
+                MiningSurvey = existingSurvey
+            };
+        }
+
+        private Survey CreateSurvey(
+            string uuid,
+            string planetName,
+            string surveyId,
+            string resourceName,
+            string purity,
+            string amount)
+        {
+            var survey = new Survey("Test Survey")
+            {
+                UUID = uuid,
+                PlanetName = planetName,
+                SurveyID = surveyId,
+                Resources = new Dictionary<string, SurveyResource>
+                {
+                    [resourceName] = new SurveyResource(resourceName, purity, amount)
+                }
+            };
+
+            return survey;
         }
     }
 }

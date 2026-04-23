@@ -24,12 +24,7 @@ namespace OE2EmpireTracker.Models
     public class Commodity
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        [Required]
-        public Models.CommodityIndustry.CommodityIndustryEnum CommodityIndustry { get; set; }
-        public Models.CommodityGroup.CommodityGroupEnum CommodityGroup { get; set; }
 
-        public string ID { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
         [JsonIgnore]
         public string ExtendedName
         {
@@ -60,19 +55,32 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public Dictionary<string, string> ConstructionResources { get; set; } = new Dictionary<string, string>();
-
         private static List<Commodity> _commodities = GetCommodities();
-        private static Dictionary<string, Commodity> _commodityMapByEnum;
-        private static Dictionary<string, Commodity> _commodityMapByString;
 
-        public static IReadOnlyList<Commodity> Commodities => _commodities.AsReadOnly();
-        public static IReadOnlyDictionary<string, Commodity> ResourceMapByEnum => _commodityMapByEnum;
-        public static IReadOnlyDictionary<string, Commodity> ResourceMapByString => _commodityMapByString;
+        private static Dictionary<string, Commodity> _commodityMapByEnum;
+
+        private static Dictionary<string, Commodity> _commodityMapByString;
 
         public Commodity()
         {
         }
+
+        public static IReadOnlyList<Commodity> Commodities => _commodities.AsReadOnly();
+
+        public static IReadOnlyDictionary<string, Commodity> ResourceMapByEnum => _commodityMapByEnum;
+
+        public static IReadOnlyDictionary<string, Commodity> ResourceMapByString => _commodityMapByString;
+
+        [Required]
+        public Models.CommodityIndustry.CommodityIndustryEnum CommodityIndustry { get; set; }
+
+        public Models.CommodityGroup.CommodityGroupEnum CommodityGroup { get; set; }
+
+        public string ID { get; set; } = string.Empty;
+
+        public string Name { get; set; } = string.Empty;
+
+        public Dictionary<string, string> ConstructionResources { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// Replaces the commodity list with externally-loaded data (e.g. from BaselineData.json).

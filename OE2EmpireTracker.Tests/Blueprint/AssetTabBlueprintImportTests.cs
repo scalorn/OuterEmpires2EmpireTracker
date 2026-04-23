@@ -29,30 +29,6 @@ namespace OE2EmpireTracker.Tests.Blueprint
             _scanner = new BlueprintScanner();
         }
 
-        private static string LoadTestData(string filename)
-        {
-            string baseDir = TestContext.CurrentContext.TestDirectory;
-            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
-        }
-
-        private OE2EmpireTracker.Models.Blueprint ParseAssetTabStats()
-        {
-            string raw = LoadTestData("IndivudalBPAssetTabWSMS-LL6Stats.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
-            var bp = new OE2EmpireTracker.Models.Blueprint();
-            _scanner.ProcessHtml(bp, html);
-            return bp;
-        }
-
-        private OE2EmpireTracker.Models.Blueprint ParseAssetTabResources()
-        {
-            string raw = LoadTestData("IndivudalBPAssetTabWSMS-LL6Resources.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
-            var bp = new OE2EmpireTracker.Models.Blueprint();
-            _scanner.ProcessHtml(bp, html);
-            return bp;
-        }
-
         // -------------------------------------------------------------------
         // Stats tab -- asset tab view
         // -------------------------------------------------------------------
@@ -175,6 +151,30 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 bp.Properties.Count,
                 Is.GreaterThan(0),
                 "Properties from Stats import should still be present");
+        }
+
+        private static string LoadTestData(string filename)
+        {
+            string baseDir = TestContext.CurrentContext.TestDirectory;
+            return File.ReadAllText(Path.Combine(baseDir, "TestData", filename));
+        }
+
+        private OE2EmpireTracker.Models.Blueprint ParseAssetTabStats()
+        {
+            string raw = LoadTestData("IndivudalBPAssetTabWSMS-LL6Stats.html");
+            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, html);
+            return bp;
+        }
+
+        private OE2EmpireTracker.Models.Blueprint ParseAssetTabResources()
+        {
+            string raw = LoadTestData("IndivudalBPAssetTabWSMS-LL6Resources.html");
+            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            var bp = new OE2EmpireTracker.Models.Blueprint();
+            _scanner.ProcessHtml(bp, html);
+            return bp;
         }
     }
 }

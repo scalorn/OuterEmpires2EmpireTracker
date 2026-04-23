@@ -52,12 +52,6 @@ namespace OE2EmpireTracker.Tests.Services
             }
         }
 
-        private PlayerContext FreshPlayerContext()
-        {
-            PlayerContext.Reset();
-            return PlayerContext.GetInstance();
-        }
-
         // Feature: readonly-list-encapsulation, Property 1: Add-then-Find round trip
         /// <summary>
         /// For Blueprint, Survey, Colony, Station â€” add entity via mutation method,
@@ -422,6 +416,12 @@ namespace OE2EmpireTracker.Tests.Services
                 return (items.Count == 0)
                     .Label($"GetBuildItemsByBlueprint after remove returned {items.Count} items, expected 0");
             });
+        }
+
+        private PlayerContext FreshPlayerContext()
+        {
+            PlayerContext.Reset();
+            return PlayerContext.GetInstance();
         }
     }
 }

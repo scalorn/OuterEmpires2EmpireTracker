@@ -18,6 +18,7 @@ namespace OE2EmpireTracker.Tests.Parsers
     public class MinerSetupHelperSetupMinersTests
     {
         private PlayerContext _playerContext;
+
         private EmpireContext _empireContext;
 
         [SetUp]
@@ -34,56 +35,6 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void TearDown()
         {
             EmpireContext.Reset();
-        }
-
-        private Colony CreateColony(string ownerUUID, string planetName, string systemName)
-        {
-            return new Colony
-            {
-                UUID = Guid.NewGuid().ToString(),
-                OwnerUUID = ownerUUID,
-                PlanetName = planetName,
-                SystemName = systemName,
-                ColonyName = "Test Colony"
-            };
-        }
-
-        private ColonyStructure CreateMiningRig(string uuid, string resource, string purity)
-        {
-            return new ColonyStructure
-            {
-                UUID = uuid,
-                MiningSurveyResource = resource,
-                RefiningResourcePurity = purity
-            };
-        }
-
-        private ColonyStructure CreateNonMiningStructure(string uuid)
-        {
-            return new ColonyStructure
-            {
-                UUID = uuid
-            };
-        }
-
-        private Survey CreateRealSurvey(
-            string uuid,
-            string planetName,
-            string surveyId,
-            string resourceName,
-            string purity,
-            string amount)
-        {
-            return new Survey("Test Survey")
-            {
-                UUID = uuid,
-                PlanetName = planetName,
-                SurveyID = surveyId,
-                Resources = new Dictionary<string, SurveyResource>
-                {
-                    [resourceName] = new SurveyResource(resourceName, purity, amount)
-                }
-            };
         }
 
         /// <summary>
@@ -368,6 +319,56 @@ namespace OE2EmpireTracker.Tests.Parsers
 
             // Assert: timer NOT started (maxRate defaults to 0)
             Assert.That(miner.ProcessCompletionTime, Is.Null);
+        }
+
+        private Colony CreateColony(string ownerUUID, string planetName, string systemName)
+        {
+            return new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = ownerUUID,
+                PlanetName = planetName,
+                SystemName = systemName,
+                ColonyName = "Test Colony"
+            };
+        }
+
+        private ColonyStructure CreateMiningRig(string uuid, string resource, string purity)
+        {
+            return new ColonyStructure
+            {
+                UUID = uuid,
+                MiningSurveyResource = resource,
+                RefiningResourcePurity = purity
+            };
+        }
+
+        private ColonyStructure CreateNonMiningStructure(string uuid)
+        {
+            return new ColonyStructure
+            {
+                UUID = uuid
+            };
+        }
+
+        private Survey CreateRealSurvey(
+            string uuid,
+            string planetName,
+            string surveyId,
+            string resourceName,
+            string purity,
+            string amount)
+        {
+            return new Survey("Test Survey")
+            {
+                UUID = uuid,
+                PlanetName = planetName,
+                SurveyID = surveyId,
+                Resources = new Dictionary<string, SurveyResource>
+                {
+                    [resourceName] = new SurveyResource(resourceName, purity, amount)
+                }
+            };
         }
     }
 }

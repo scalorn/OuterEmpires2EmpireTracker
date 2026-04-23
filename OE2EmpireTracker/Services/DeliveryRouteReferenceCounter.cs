@@ -76,10 +76,8 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public class DeliveryRouteReferenceReport
     {
-        public int TotalCount { get; }
-        public int DeliveryPlanCount { get; }
-        public int OverflowRuleCount { get; }
-        public int SupplyChainStageCount { get; }
+        public static readonly DeliveryRouteReferenceReport Empty =
+            new DeliveryRouteReferenceReport(0, 0, 0);
 
         public DeliveryRouteReferenceReport(
             int deliveryPlanCount,
@@ -92,7 +90,12 @@ namespace OE2EmpireTracker.Services
             TotalCount = deliveryPlanCount + overflowRuleCount + supplyChainStageCount;
         }
 
-        public static readonly DeliveryRouteReferenceReport Empty =
-            new DeliveryRouteReferenceReport(0, 0, 0);
+        public int TotalCount { get; }
+
+        public int DeliveryPlanCount { get; }
+
+        public int OverflowRuleCount { get; }
+
+        public int SupplyChainStageCount { get; }
     }
 }

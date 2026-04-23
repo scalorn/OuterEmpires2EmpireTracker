@@ -33,23 +33,6 @@ namespace OE2EmpireTracker.Tests.Parsers
         }
 
         /// <summary>
-        /// Helper to create a colony structure configured as a refinery.
-        /// </summary>
-        private ColonyStructure CreateRefinery(string uuid, string resource, string purity, bool built, bool online)
-        {
-            var structure = new ColonyStructure
-            {
-                UUID = uuid,
-                RefiningResource = resource,
-                RefiningResourcePurity = purity
-            };
-
-            structure.Properties.SetProperty(GameConstants.PropBuilt, built);
-            structure.Properties.SetProperty(GameConstants.PropOnline, online);
-            return structure;
-        }
-
-        /// <summary>
         /// Validates: Requirements 8.1, 8.2
         /// When a refinery has a resource and purity, and no matching warehouse resource exists,
         /// SetupRefineries creates a warehouse resource with quantity 0.
@@ -309,6 +292,23 @@ namespace OE2EmpireTracker.Tests.Parsers
             Assert.That(colony.Items.FindResource("Iron", "Medium").Count, Is.EqualTo(1));
             Assert.That(colony.Items.FindResource("Copper", "High").Count, Is.EqualTo(1));
             Assert.That(colony.Items.FindResource("Gold", "Low").Count, Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// Helper to create a colony structure configured as a refinery.
+        /// </summary>
+        private ColonyStructure CreateRefinery(string uuid, string resource, string purity, bool built, bool online)
+        {
+            var structure = new ColonyStructure
+            {
+                UUID = uuid,
+                RefiningResource = resource,
+                RefiningResourcePurity = purity
+            };
+
+            structure.Properties.SetProperty(GameConstants.PropBuilt, built);
+            structure.Properties.SetProperty(GameConstants.PropOnline, online);
+            return structure;
         }
     }
 }

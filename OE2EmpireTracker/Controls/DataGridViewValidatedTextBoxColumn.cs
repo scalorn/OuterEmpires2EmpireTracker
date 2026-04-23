@@ -10,6 +10,21 @@ namespace OE2EmpireTracker.Controls
     /// </summary>
     public class DataGridViewValidatedTextBoxColumn : DataGridViewColumn
     {
+        public override DataGridViewCell CellTemplate
+        {
+            get => base.CellTemplate;
+            set
+            {
+                if (value != null && !(value is DataGridViewValidatedTextBoxCell))
+                    throw new InvalidCastException("CellTemplate must be a DataGridViewValidatedTextBoxCell.");
+                base.CellTemplate = value;
+            }
+        }
+
+        public DataGridViewValidatedTextBoxColumn() : base(new DataGridViewValidatedTextBoxCell())
+        {
+        }
+
         [Category("Validation")]
         public string ValidationPattern { get; set; }
 
@@ -21,21 +36,6 @@ namespace OE2EmpireTracker.Controls
 
         [Category("Colors")]
         public Color InvalidColor { get; set; } = Color.LightCoral;
-
-        public DataGridViewValidatedTextBoxColumn() : base(new DataGridViewValidatedTextBoxCell())
-        {
-        }
-
-        public override DataGridViewCell CellTemplate
-        {
-            get => base.CellTemplate;
-            set
-            {
-                if (value != null && !(value is DataGridViewValidatedTextBoxCell))
-                    throw new InvalidCastException("CellTemplate must be a DataGridViewValidatedTextBoxCell.");
-                base.CellTemplate = value;
-            }
-        }
     }
 
     /// <summary>
@@ -76,15 +76,6 @@ namespace OE2EmpireTracker.Controls
     /// </summary>
     public class DataGridViewValidatedTextBoxEditingControl : ValidatedTextBox, IDataGridViewEditingControl
     {
-        private DataGridView _dataGridView;
-        private bool _valueChanged;
-        private int _rowIndex;
-
-        public DataGridViewValidatedTextBoxEditingControl()
-        {
-            BorderStyle = BorderStyle.None;
-        }
-
         public DataGridView EditingControlDataGridView
         {
             get => _dataGridView;
@@ -107,6 +98,17 @@ namespace OE2EmpireTracker.Controls
         {
             get => _valueChanged;
             set => _valueChanged = value;
+        }
+
+        private DataGridView _dataGridView;
+
+        private bool _valueChanged;
+
+        private int _rowIndex;
+
+        public DataGridViewValidatedTextBoxEditingControl()
+        {
+            BorderStyle = BorderStyle.None;
         }
 
         public Cursor EditingPanelCursor => Cursors.IBeam;

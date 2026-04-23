@@ -38,42 +38,6 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             EmpireContext.Reset();
         }
 
-        private static Gen<string> PropertyValueGen()
-        {
-            return Gen.Choose(1, 9999).Select(n => n.ToString());
-        }
-
-        /// <summary>
-        /// Generates a Blueprint with a random subset of old-keyed properties
-        /// and some unrelated properties that should be left alone.
-        /// </summary>
-        private static Gen<BpModel> BlueprintWithOldKeysGen()
-        {
-            var oldKeys = Remap.Keys.ToList();
-            return from subsetSize in Gen.Choose(0, oldKeys.Count)
-                   from indices in Gen.Shuffle(Enumerable.Range(0, oldKeys.Count).ToArray())
-                   from values in Gen.ListOf(oldKeys.Count, PropertyValueGen())
-                   select BuildBlueprint(oldKeys, indices.Take(subsetSize).ToList(), values.ToList());
-        }
-
-        private static BpModel BuildBlueprint(
-            List<string> oldKeys, List<int> chosenIndices, List<string> values)
-        {
-            var bp = new BpModel("TestBP");
-            bp.UUID = Guid.NewGuid().ToString();
-
-            // Add chosen old keys
-            foreach (int idx in chosenIndices)
-            {
-                bp.Properties.Properties[oldKeys[idx]] = values[idx % values.Count];
-            }
-
-            // Add an unrelated property that must survive
-            bp.Properties.Properties["Health"] = "500";
-
-            return bp;
-        }
-
         [FsCheck.NUnit.Property(MaxTest = 100)]
         public Property OldKeysRenamedAndValuesPreserved()
         {
@@ -202,6 +166,42 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             // Version bumped
             Assert.That(ec.DataVersion, Is.EqualTo(MigrationRunner.CurrentVersion));
             Assert.That(pc.DataVersion, Is.EqualTo(MigrationRunner.CurrentVersion));
+        }
+
+        private static Gen<string> PropertyValueGen()
+        {
+            return Gen.Choose(1, 9999).Select(n => n.ToString());
+        }
+
+        /// <summary>
+        /// Generates a Blueprint with a random subset of old-keyed properties
+        /// and some unrelated properties that should be left alone.
+        /// </summary>
+        private static Gen<BpModel> BlueprintWithOldKeysGen()
+        {
+            var oldKeys = Remap.Keys.ToList();
+            return from subsetSize in Gen.Choose(0, oldKeys.Count)
+                   from indices in Gen.Shuffle(Enumerable.Range(0, oldKeys.Count).ToArray())
+                   from values in Gen.ListOf(oldKeys.Count, PropertyValueGen())
+                   select BuildBlueprint(oldKeys, indices.Take(subsetSize).ToList(), values.ToList());
+        }
+
+        private static BpModel BuildBlueprint(
+            List<string> oldKeys, List<int> chosenIndices, List<string> values)
+        {
+            var bp = new BpModel("TestBP");
+            bp.UUID = Guid.NewGuid().ToString();
+
+            // Add chosen old keys
+            foreach (int idx in chosenIndices)
+            {
+                bp.Properties.Properties[oldKeys[idx]] = values[idx % values.Count];
+            }
+
+            // Add an unrelated property that must survive
+            bp.Properties.Properties["Health"] = "500";
+
+            return bp;
         }
     }
 }

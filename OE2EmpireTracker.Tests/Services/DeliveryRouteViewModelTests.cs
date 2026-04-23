@@ -23,12 +23,6 @@ namespace OE2EmpireTracker.Tests.Services
             playerContext = PlayerContext.GetInstance();
         }
 
-        private DeliveryRouteViewModel CreateViewModel()
-        {
-            var route = new DeliveryRoute { UUID = "r1", Name = "Test Route", OwnerUUID = "p1" };
-            return new DeliveryRouteViewModel(route, playerContext);
-        }
-
         // -----------------------------------------------------------------------
         // AddStop
         // -----------------------------------------------------------------------
@@ -251,6 +245,12 @@ namespace OE2EmpireTracker.Tests.Services
                     vm.Stops[i].Sequence,
                     Is.EqualTo(i),
                     $"Stop at index {i} has wrong sequence");
+        }
+
+        private DeliveryRouteViewModel CreateViewModel()
+        {
+            var route = new DeliveryRoute { UUID = "r1", Name = "Test Route", OwnerUUID = "p1" };
+            return new DeliveryRouteViewModel(route, playerContext);
         }
     }
 }

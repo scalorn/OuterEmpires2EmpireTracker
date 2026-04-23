@@ -24,37 +24,6 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private static ColonyStructure MakeStructure(
-            bool staged,
-            bool built,
-            CountDownTime buildCompletionTime = null)
-        {
-            var s = new ColonyStructure();
-            s.UUID = Guid.NewGuid().ToString();
-            s.Properties.SetProperty(GameConstants.PropStaged, staged);
-            s.Properties.SetProperty(GameConstants.PropBuilt, built);
-            s.BuildCompletionTime = buildCompletionTime;
-            return s;
-        }
-
-        private static CountDownTime MakeExpiredTimer()
-        {
-            var t = new CountDownTime();
-            t.TimeRemaining = -10; // already expired
-            return t;
-        }
-
-        private static CountDownTime MakeActiveTimer()
-        {
-            var t = new CountDownTime();
-            t.TimeRemaining = 3600; // 1 hour remaining
-            return t;
-        }
-
-        // -----------------------------------------------------------------------
         // Property 2: Structure state predicates are mutually consistent
         // Feature: colony-daily-build, Property 2
         // **Validates: Requirements 3.2, 3.3**
@@ -101,12 +70,6 @@ namespace OE2EmpireTracker.Tests.Services
                     }
                 }
             }
-        }
-
-        private static string TimerDesc(CountDownTime t)
-        {
-            if (t == null) return "null";
-            return t.TimeRemaining > 0 ? "active" : "expired";
         }
 
         // -----------------------------------------------------------------------
@@ -289,6 +252,43 @@ namespace OE2EmpireTracker.Tests.Services
                     Is.SameAs(expectedFirst),
                     $"Expected first staged at position {stagedPos}");
             }
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private static ColonyStructure MakeStructure(
+            bool staged,
+            bool built,
+            CountDownTime buildCompletionTime = null)
+        {
+            var s = new ColonyStructure();
+            s.UUID = Guid.NewGuid().ToString();
+            s.Properties.SetProperty(GameConstants.PropStaged, staged);
+            s.Properties.SetProperty(GameConstants.PropBuilt, built);
+            s.BuildCompletionTime = buildCompletionTime;
+            return s;
+        }
+
+        private static CountDownTime MakeExpiredTimer()
+        {
+            var t = new CountDownTime();
+            t.TimeRemaining = -10; // already expired
+            return t;
+        }
+
+        private static CountDownTime MakeActiveTimer()
+        {
+            var t = new CountDownTime();
+            t.TimeRemaining = 3600; // 1 hour remaining
+            return t;
+        }
+
+        private static string TimerDesc(CountDownTime t)
+        {
+            if (t == null) return "null";
+            return t.TimeRemaining > 0 ? "active" : "expired";
         }
     }
 }

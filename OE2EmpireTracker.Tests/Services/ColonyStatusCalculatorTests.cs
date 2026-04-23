@@ -19,56 +19,6 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Test helpers
-        // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Creates a blueprint with the given properties set on its PropertyBag.
-        /// </summary>
-        private static OE2EmpireTracker.Models.Blueprint MakeBlueprint(Dictionary<string, string> properties = null)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint("TestBlueprint");
-            bp.UUID = Guid.NewGuid().ToString();
-            if (properties != null)
-            {
-                foreach (var kv in properties)
-                    bp.Properties.SetProperty(kv.Key, kv.Value);
-            }
-
-            return bp;
-        }
-
-        /// <summary>
-        /// Creates a ColonyStructure with a UUID and optional property bag state.
-        /// </summary>
-        private static ColonyStructure MakeStructure(bool built = false, bool staged = false, bool online = false)
-        {
-            var s = new ColonyStructure();
-            s.UUID = Guid.NewGuid().ToString();
-            s.Properties.SetProperty("Built", built);
-            s.Properties.SetProperty("Staged", staged);
-            s.Properties.SetProperty("Online", online);
-            return s;
-        }
-
-        /// <summary>
-        /// Runs the per-structure CalculateBuilt with a fresh calculator and returns the resulting status.
-        /// </summary>
-        private static ColonyStructureStatus Calculate(
-            ColonyStructure structure,
-            ColonyStructureStatus prevStatus,
-            IColonyStructureWorkers workerSource,
-            OE2EmpireTracker.Models.Blueprint blueprint)
-        {
-            var colony = new Colony();
-            colony.Structures.Add(structure);
-            var calc = new ColonyStatusCalculator(colony);
-            var status = new ColonyStructureStatus();
-            calc.CalculateBuilt(structure, prevStatus, status, workerSource, blueprint);
-            return status;
-        }
-
-        // -----------------------------------------------------------------------
         // Power accumulation
         // -----------------------------------------------------------------------
 
@@ -730,6 +680,56 @@ namespace OE2EmpireTracker.Tests.Services
             }
 
             Assert.That(total, Is.EqualTo(150.0m));
+        }
+
+        // -----------------------------------------------------------------------
+        // Test helpers
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Creates a blueprint with the given properties set on its PropertyBag.
+        /// </summary>
+        private static OE2EmpireTracker.Models.Blueprint MakeBlueprint(Dictionary<string, string> properties = null)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint("TestBlueprint");
+            bp.UUID = Guid.NewGuid().ToString();
+            if (properties != null)
+            {
+                foreach (var kv in properties)
+                    bp.Properties.SetProperty(kv.Key, kv.Value);
+            }
+
+            return bp;
+        }
+
+        /// <summary>
+        /// Creates a ColonyStructure with a UUID and optional property bag state.
+        /// </summary>
+        private static ColonyStructure MakeStructure(bool built = false, bool staged = false, bool online = false)
+        {
+            var s = new ColonyStructure();
+            s.UUID = Guid.NewGuid().ToString();
+            s.Properties.SetProperty("Built", built);
+            s.Properties.SetProperty("Staged", staged);
+            s.Properties.SetProperty("Online", online);
+            return s;
+        }
+
+        /// <summary>
+        /// Runs the per-structure CalculateBuilt with a fresh calculator and returns the resulting status.
+        /// </summary>
+        private static ColonyStructureStatus Calculate(
+            ColonyStructure structure,
+            ColonyStructureStatus prevStatus,
+            IColonyStructureWorkers workerSource,
+            OE2EmpireTracker.Models.Blueprint blueprint)
+        {
+            var colony = new Colony();
+            colony.Structures.Add(structure);
+            var calc = new ColonyStatusCalculator(colony);
+            var status = new ColonyStructureStatus();
+            calc.CalculateBuilt(structure, prevStatus, status, workerSource, blueprint);
+            return status;
         }
     }
 }

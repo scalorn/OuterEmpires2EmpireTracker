@@ -21,14 +21,17 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
     public partial class FormPlayerProfile : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
         private EmpireContext empireContext;
+
         private PlayerContext playerContext;
+
         private PlayerProfileViewModel viewModel;
 
         private Dictionary<SkillGroupName, CheckBox> _skillGroups = new Dictionary<SkillGroupName, CheckBox>();
+
         private Dictionary<string, PlayerSkillBlock> skillBlocks = new Dictionary<string, PlayerSkillBlock>();
 
         public FormPlayerProfile()
@@ -106,6 +109,119 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             playerContext.PlayerProfileDataChanged += OnPlayerProfileDataChanged;
         }
 
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        public void PopulateForm()
+        {
+            var sw = Stopwatch.StartNew();
+            txtPlayerName.Text = viewModel.Name;
+            cmbFaction.Text = viewModel.Faction;
+            txtTotalCredits.Text = viewModel.TotalCredits.ToString();
+            txtSkillPoints.Text = viewModel.SkillPoints.ToString();
+
+            txtPublicRank.Text = viewModel.PublicRank.Rank.ToString();
+            txtPublicRankCurXP.Text = viewModel.PublicRank.CurrentXP.ToString();
+            txtPublicRankNextXP.Text = viewModel.PublicRank.NextXP.ToString();
+
+            txtPrivateRank.Text = viewModel.PrivateRank.Rank.ToString();
+            txtPrivateRankCurXP.Text = viewModel.PrivateRank.CurrentXP.ToString();
+            txtPrivateRankNextXP.Text = viewModel.PrivateRank.NextXP.ToString();
+
+            txtMilitaryRank.Text = viewModel.MilitaryRank.Rank.ToString();
+            txtMilitaryRankCurXP.Text = viewModel.MilitaryRank.CurrentXP.ToString();
+            txtMilitaryRankNextXP.Text = viewModel.MilitaryRank.NextXP.ToString();
+
+            foreach (var entry in _skillGroups)
+            {
+                entry.Value.Checked = viewModel.GetSkillGroup(entry.Key);
+            }
+
+            UpdateSkillBlock(pskHumanResources, SkillName.HumanResources);
+            UpdateSkillBlock(pskForeman, SkillName.Foreman);
+            UpdateSkillBlock(pskFounder, SkillName.Founder);
+            UpdateSkillBlock(pskEnergyEfficiency, SkillName.EnergyEfficiency);
+            UpdateSkillBlock(pskBuilder, SkillName.Builder);
+            UpdateSkillBlock(pskRefiningFocus, SkillName.RefiningFocus);
+            UpdateSkillBlock(pskProductionFocus, SkillName.ProductionFocus);
+            UpdateSkillBlock(pskExtractionFocus, SkillName.ExtractionFocus);
+            UpdateSkillBlock(pskDamageControl, SkillName.DamageControl);
+            UpdateSkillBlock(pskEngineeringCapacity, SkillName.EngineeringCapacity);
+            UpdateSkillBlock(pskSoundAsAPound, SkillName.SoundsAsAPound);
+            UpdateSkillBlock(pskSelfMadeMillionaire, SkillName.SelfMadeMillionaire);
+            UpdateSkillBlock(pskAAAHealthcare, SkillName.AAAHealthcare);
+            UpdateSkillBlock(pskJobOpportunities, SkillName.JobOpportunities);
+            UpdateSkillBlock(pskContractManagement, SkillName.ContractManagement);
+            UpdateSkillBlock(pskResearchReview, SkillName.ResearchReview);
+            UpdateSkillBlock(pskResearchMethods, SkillName.ResearchMethods);
+            UpdateSkillBlock(pskResearchFocus, SkillName.ResearchFocus);
+            UpdateSkillBlock(pskSurveyingMethods, SkillName.SurveyingMethods);
+            UpdateSkillBlock(pskScanningMethods, SkillName.ScanningMethods);
+            UpdateSkillBlock(pskQuartermaster, SkillName.Quartermaster);
+            UpdateSkillBlock(pskBroker, SkillName.Broker);
+
+            bool isTraining = viewModel.IsAnySkillTraining();
+            foreach (var skillBlockEntry in skillBlocks)
+            {
+                skillBlockEntry.Value.CanStartTraining = !isTraining;
+            }
+
+            sw.Stop();
+            Log.Info("PopulateForm PERF: total={0}ms", sw.ElapsedMilliseconds);
+            sw.Stop();
+            Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        /// <summary>
+        /// Merges parsed profile data into an existing profile, preserving UUID.
+        /// </summary>
+        internal static void MergeProfile(Models.PlayerProfile existing, Models.PlayerProfile parsed)
+        {
+            existing.Name = parsed.Name;
+            existing.Faction = parsed.Faction;
+            existing.TotalCredits = parsed.TotalCredits;
+            existing.SkillPoints = parsed.SkillPoints;
+            existing.CitizenId = parsed.CitizenId;
+            existing.RegistrationDate = parsed.RegistrationDate;
+            existing.ActiveTime = parsed.ActiveTime;
+
+            // Merge ranks
+            MergeRank(existing.Public, parsed.Public);
+            MergeRank(existing.Private, parsed.Private);
+            MergeRank(existing.Military, parsed.Military);
+
+            // Merge skill groups and skills
+            foreach (SkillGroupName group in Enum.GetValues(typeof(SkillGroupName)))
+            {
+                existing.SetSkillGroup(group, parsed.GetSkillGroup(group));
+            }
+
+            foreach (var skillEntry in parsed.Skills)
+            {
+                var existingSkill = existing.GetSkill(skillEntry.Key);
+                existingSkill.Level = skillEntry.Value.Level;
+                existingSkill.TrainingStarted = skillEntry.Value.TrainingStarted;
+                existingSkill.CompletionTime = skillEntry.Value.CompletionTime;
+            }
+        }
+
+        internal static void MergeRank(PlayerRank existing, PlayerRank parsed)
+        {
+            existing.Rank = parsed.Rank;
+            existing.Title = parsed.Title;
+            existing.CurrentXP = parsed.CurrentXP;
+            existing.NextXP = parsed.NextXP;
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.PlayerProfileDataChanged -= OnPlayerProfileDataChanged;
+            base.OnFormClosed(e);
+        }
+
         private void OnPlayerProfileDataChanged(object sender, PlayerProfileDataChangedEventArgs e)
         {
             if (IsDisposed) return;
@@ -174,66 +290,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             flpPlayerDetails.Size = new System.Drawing.Size(
                 flpPlayerData.Size.Width - flpPlayerDetails.Margin.Left - flpPlayerDetails.Margin.Right,
                 flpPlayerData.Size.Height - flpCommands.Size.Height - flpCommands.Margin.Top - flpCommands.Margin.Bottom - flpPlayerDetails.Margin.Top - flpPlayerDetails.Margin.Bottom);
-        }
-
-        public void PopulateForm()
-        {
-            var sw = Stopwatch.StartNew();
-            txtPlayerName.Text = viewModel.Name;
-            cmbFaction.Text = viewModel.Faction;
-            txtTotalCredits.Text = viewModel.TotalCredits.ToString();
-            txtSkillPoints.Text = viewModel.SkillPoints.ToString();
-
-            txtPublicRank.Text = viewModel.PublicRank.Rank.ToString();
-            txtPublicRankCurXP.Text = viewModel.PublicRank.CurrentXP.ToString();
-            txtPublicRankNextXP.Text = viewModel.PublicRank.NextXP.ToString();
-
-            txtPrivateRank.Text = viewModel.PrivateRank.Rank.ToString();
-            txtPrivateRankCurXP.Text = viewModel.PrivateRank.CurrentXP.ToString();
-            txtPrivateRankNextXP.Text = viewModel.PrivateRank.NextXP.ToString();
-
-            txtMilitaryRank.Text = viewModel.MilitaryRank.Rank.ToString();
-            txtMilitaryRankCurXP.Text = viewModel.MilitaryRank.CurrentXP.ToString();
-            txtMilitaryRankNextXP.Text = viewModel.MilitaryRank.NextXP.ToString();
-
-            foreach (var entry in _skillGroups)
-            {
-                entry.Value.Checked = viewModel.GetSkillGroup(entry.Key);
-            }
-
-            UpdateSkillBlock(pskHumanResources, SkillName.HumanResources);
-            UpdateSkillBlock(pskForeman, SkillName.Foreman);
-            UpdateSkillBlock(pskFounder, SkillName.Founder);
-            UpdateSkillBlock(pskEnergyEfficiency, SkillName.EnergyEfficiency);
-            UpdateSkillBlock(pskBuilder, SkillName.Builder);
-            UpdateSkillBlock(pskRefiningFocus, SkillName.RefiningFocus);
-            UpdateSkillBlock(pskProductionFocus, SkillName.ProductionFocus);
-            UpdateSkillBlock(pskExtractionFocus, SkillName.ExtractionFocus);
-            UpdateSkillBlock(pskDamageControl, SkillName.DamageControl);
-            UpdateSkillBlock(pskEngineeringCapacity, SkillName.EngineeringCapacity);
-            UpdateSkillBlock(pskSoundAsAPound, SkillName.SoundsAsAPound);
-            UpdateSkillBlock(pskSelfMadeMillionaire, SkillName.SelfMadeMillionaire);
-            UpdateSkillBlock(pskAAAHealthcare, SkillName.AAAHealthcare);
-            UpdateSkillBlock(pskJobOpportunities, SkillName.JobOpportunities);
-            UpdateSkillBlock(pskContractManagement, SkillName.ContractManagement);
-            UpdateSkillBlock(pskResearchReview, SkillName.ResearchReview);
-            UpdateSkillBlock(pskResearchMethods, SkillName.ResearchMethods);
-            UpdateSkillBlock(pskResearchFocus, SkillName.ResearchFocus);
-            UpdateSkillBlock(pskSurveyingMethods, SkillName.SurveyingMethods);
-            UpdateSkillBlock(pskScanningMethods, SkillName.ScanningMethods);
-            UpdateSkillBlock(pskQuartermaster, SkillName.Quartermaster);
-            UpdateSkillBlock(pskBroker, SkillName.Broker);
-
-            bool isTraining = viewModel.IsAnySkillTraining();
-            foreach (var skillBlockEntry in skillBlocks)
-            {
-                skillBlockEntry.Value.CanStartTraining = !isTraining;
-            }
-
-            sw.Stop();
-            Log.Info("PopulateForm PERF: total={0}ms", sw.ElapsedMilliseconds);
-            sw.Stop();
-            Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ConfigureSkillBlockOnce(CheckBox skillGroup, PlayerSkillBlock skillBlock, SkillName skill)
@@ -564,55 +620,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
-        }
-
-        /// <summary>
-        /// Merges parsed profile data into an existing profile, preserving UUID.
-        /// </summary>
-        internal static void MergeProfile(Models.PlayerProfile existing, Models.PlayerProfile parsed)
-        {
-            existing.Name = parsed.Name;
-            existing.Faction = parsed.Faction;
-            existing.TotalCredits = parsed.TotalCredits;
-            existing.SkillPoints = parsed.SkillPoints;
-            existing.CitizenId = parsed.CitizenId;
-            existing.RegistrationDate = parsed.RegistrationDate;
-            existing.ActiveTime = parsed.ActiveTime;
-
-            // Merge ranks
-            MergeRank(existing.Public, parsed.Public);
-            MergeRank(existing.Private, parsed.Private);
-            MergeRank(existing.Military, parsed.Military);
-
-            // Merge skill groups and skills
-            foreach (SkillGroupName group in Enum.GetValues(typeof(SkillGroupName)))
-            {
-                existing.SetSkillGroup(group, parsed.GetSkillGroup(group));
-            }
-
-            foreach (var skillEntry in parsed.Skills)
-            {
-                var existingSkill = existing.GetSkill(skillEntry.Key);
-                existingSkill.Level = skillEntry.Value.Level;
-                existingSkill.TrainingStarted = skillEntry.Value.TrainingStarted;
-                existingSkill.CompletionTime = skillEntry.Value.CompletionTime;
-            }
-        }
-
-        internal static void MergeRank(PlayerRank existing, PlayerRank parsed)
-        {
-            existing.Rank = parsed.Rank;
-            existing.Title = parsed.Title;
-            existing.CurrentXP = parsed.CurrentXP;
-            existing.NextXP = parsed.NextXP;
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            playerContext.PlayerProfileDataChanged -= OnPlayerProfileDataChanged;
-            base.OnFormClosed(e);
         }
     }
 }

@@ -13,9 +13,8 @@ namespace OE2EmpireTracker.Forms.Market
     public partial class FormMarket : Form, IProgrammaticUpdateSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         private PlayerContext playerContext;
 
@@ -46,6 +45,17 @@ namespace OE2EmpireTracker.Forms.Market
 
             PopulateListingsGrid();
             PopulateTransactionsGrid();
+        }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.MarketDataChanged -= OnMarketDataChanged;
+            base.OnFormClosed(e);
         }
 
         // -----------------------------------------------------------------------
@@ -451,13 +461,6 @@ namespace OE2EmpireTracker.Forms.Market
 
             PopulateListingsGrid();
             PopulateTransactionsGrid();
-        }
-
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
-            playerContext.MarketDataChanged -= OnMarketDataChanged;
-            base.OnFormClosed(e);
         }
 
         // -----------------------------------------------------------------------

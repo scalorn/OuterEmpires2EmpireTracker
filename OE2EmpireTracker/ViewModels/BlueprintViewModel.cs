@@ -14,30 +14,6 @@ namespace OE2EmpireTracker.ViewModels
     public class BlueprintViewModel
     {
         private readonly PlayerContext _playerContext;
-        private Blueprint _blueprint;
-
-        public Blueprint Data => _blueprint;
-
-        public BlueprintViewModel(Blueprint blueprint, PlayerContext playerContext)
-        {
-            _blueprint = blueprint ?? throw new ArgumentNullException(nameof(blueprint));
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
-        }
-
-        // -----------------------------------------------------------------------
-        // Identity
-        // -----------------------------------------------------------------------
-
-        public string Name { get => _blueprint.Name; set => _blueprint.Name = value; }
-        public string NickName { get => _blueprint.NickName; set => _blueprint.NickName = value; }
-        public string Description { get => _blueprint.Description; set => _blueprint.Description = value; }
-        public string BluePrintType { get => _blueprint.BluePrintType; set => _blueprint.BluePrintType = value; }
-        public int Class { get => _blueprint.Class; set => _blueprint.Class = value; }
-        public string TechLevel { get => _blueprint.TechLevel; set => _blueprint.TechLevel = value; }
-        public int Evolution { get => _blueprint.Evolution; set => _blueprint.Evolution = value; }
-        public int CopyCost { get => _blueprint.CopyCost; set => _blueprint.CopyCost = value; }
-        public string BaseBlueprintUUID { get => _blueprint.BaseBlueprintUUID; set => _blueprint.BaseBlueprintUUID = value; }
-        public string UUID => _blueprint.UUID;
 
         /// <summary>
         /// Returns true if this blueprint is in the global list (BaselineData.json).
@@ -50,6 +26,40 @@ namespace OE2EmpireTracker.ViewModels
                 return ec?.GlobalBlueprintList?.Contains(_blueprint) == true;
             }
         }
+
+        private Blueprint _blueprint;
+
+        public BlueprintViewModel(Blueprint blueprint, PlayerContext playerContext)
+        {
+            _blueprint = blueprint ?? throw new ArgumentNullException(nameof(blueprint));
+            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        }
+
+        public Blueprint Data => _blueprint;
+
+        // -----------------------------------------------------------------------
+        // Identity
+        // -----------------------------------------------------------------------
+
+        public string Name { get => _blueprint.Name; set => _blueprint.Name = value; }
+
+        public string NickName { get => _blueprint.NickName; set => _blueprint.NickName = value; }
+
+        public string Description { get => _blueprint.Description; set => _blueprint.Description = value; }
+
+        public string BluePrintType { get => _blueprint.BluePrintType; set => _blueprint.BluePrintType = value; }
+
+        public int Class { get => _blueprint.Class; set => _blueprint.Class = value; }
+
+        public string TechLevel { get => _blueprint.TechLevel; set => _blueprint.TechLevel = value; }
+
+        public int Evolution { get => _blueprint.Evolution; set => _blueprint.Evolution = value; }
+
+        public int CopyCost { get => _blueprint.CopyCost; set => _blueprint.CopyCost = value; }
+
+        public string BaseBlueprintUUID { get => _blueprint.BaseBlueprintUUID; set => _blueprint.BaseBlueprintUUID = value; }
+
+        public string UUID => _blueprint.UUID;
 
         // -----------------------------------------------------------------------
         // Properties

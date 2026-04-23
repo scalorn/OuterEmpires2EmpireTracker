@@ -16,6 +16,10 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ColonyAdminReportBuilderRefiningPropertyTests
     {
+        private static readonly string[] Purities = { "Low", "Medium", "High" };
+
+        private static readonly int[] PurityMultipliers = { 1, 3, 5 };
+
         [SetUp]
         public void SetUp()
         {
@@ -32,49 +36,6 @@ namespace OE2EmpireTracker.Tests.Services
             PlayerContext.Reset();
             EmpireContext.Reset();
         }
-
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name)
-        {
-            var bp = new OE2EmpireTracker.Models.Blueprint(name);
-            bp.UUID = Guid.NewGuid().ToString();
-            bp.BluePrintType = bpType;
-            PlayerContext.GetInstance().AddBlueprint(bp);
-            return bp;
-        }
-
-        private static ColonyStructure MakeActiveRefiner(
-            string blueprintUUID,
-            int gameSeq,
-            string resource,
-            string purity)
-        {
-            var structure = new ColonyStructure();
-            structure.UUID = Guid.NewGuid().ToString();
-            structure.FlatpackBlueprintUUID = blueprintUUID;
-            structure.DisplaySequence = gameSeq;
-            structure.Properties.SetProperty(GameConstants.PropBuilt, true);
-            structure.Properties.SetProperty(GameConstants.PropOnline, true);
-            var timer = new CountDownTime();
-            timer.StartRepeating(3600);
-            structure.ProcessCompletionTime = timer;
-            structure.RefiningResource = resource;
-            structure.RefiningResourcePurity = purity;
-            return structure;
-        }
-
-        private static Colony MakeColony()
-        {
-            return new Colony
-            {
-                UUID = Guid.NewGuid().ToString(),
-                SystemName = "TestSystem",
-                ColonyName = "TestColony",
-                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
-            };
-        }
-
-        private static readonly string[] Purities = { "Low", "Medium", "High" };
-        private static readonly int[] PurityMultipliers = { 1, 3, 5 };
 
         /// <summary>
         /// Feature: colony-admin-summary, Property 10: Refining aggregation -- one row per resource+purity.
@@ -135,6 +96,37 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
+        private static ColonyStructure MakeActiveRefiner(
+            string blueprintUUID,
+            int gameSeq,
+            string resource,
+            string purity)
+        {
+            var structure = new ColonyStructure();
+            structure.UUID = Guid.NewGuid().ToString();
+            structure.FlatpackBlueprintUUID = blueprintUUID;
+            structure.DisplaySequence = gameSeq;
+            structure.Properties.SetProperty(GameConstants.PropBuilt, true);
+            structure.Properties.SetProperty(GameConstants.PropOnline, true);
+            var timer = new CountDownTime();
+            timer.StartRepeating(3600);
+            structure.ProcessCompletionTime = timer;
+            structure.RefiningResource = resource;
+            structure.RefiningResourcePurity = purity;
+            return structure;
+        }
+
+        private static Colony MakeColony()
+        {
+            return new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                SystemName = "TestSystem",
+                ColonyName = "TestColony",
+                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
+            };
+        }
+
         private static int CountOccurrences(string text, string pattern)
         {
             int count = 0;
@@ -146,6 +138,15 @@ namespace OE2EmpireTracker.Tests.Services
             }
 
             return count;
+        }
+
+        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string bpType, string name)
+        {
+            var bp = new OE2EmpireTracker.Models.Blueprint(name);
+            bp.UUID = Guid.NewGuid().ToString();
+            bp.BluePrintType = bpType;
+            PlayerContext.GetInstance().AddBlueprint(bp);
+            return bp;
         }
     }
 }

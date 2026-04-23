@@ -9,9 +9,8 @@ namespace OE2EmpireTracker.ViewModels
     public class DeliveryRouteViewModel
     {
         private readonly PlayerContext _playerContext;
-        private DeliveryRoute _route;
 
-        public DeliveryRoute Data => _route;
+        private DeliveryRoute _route;
 
         public DeliveryRouteViewModel(DeliveryRoute route, PlayerContext playerContext)
         {
@@ -19,7 +18,10 @@ namespace OE2EmpireTracker.ViewModels
             _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
         }
 
+        public DeliveryRoute Data => _route;
+
         public string Name { get => _route.Name; set => _route.Name = value; }
+
         public string UUID => _route.UUID;
 
         public IReadOnlyList<RouteStop> Stops => _route.Stops.AsReadOnly();
@@ -143,12 +145,6 @@ namespace OE2EmpireTracker.ViewModels
             return newIndices;
         }
 
-        private void RenumberStops()
-        {
-            for (int i = 0; i < _route.Stops.Count; i++)
-                _route.Stops[i].Sequence = i;
-        }
-
         public IReadOnlyList<DeliveryRoute> GetFilteredRoutes(string nameFilter)
         {
             var list = _playerContext.GetCurrentPlayerRoutes();
@@ -195,6 +191,12 @@ namespace OE2EmpireTracker.ViewModels
         public void SelectRoute(DeliveryRoute route)
         {
             _route = route ?? new DeliveryRoute();
+        }
+
+        private void RenumberStops()
+        {
+            for (int i = 0; i < _route.Stops.Count; i++)
+                _route.Stops[i].Sequence = i;
         }
     }
 }

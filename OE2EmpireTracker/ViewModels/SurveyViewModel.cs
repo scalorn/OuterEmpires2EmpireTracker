@@ -13,32 +13,8 @@ namespace OE2EmpireTracker.ViewModels
     public class SurveyViewModel
     {
         private readonly PlayerContext _playerContext;
+
         private readonly EmpireContext _empireContext;
-        private Survey _survey;
-
-        public Survey Data => _survey;
-
-        public SurveyViewModel(Survey survey, PlayerContext playerContext, EmpireContext empireContext)
-        {
-            _survey = survey ?? throw new ArgumentNullException(nameof(survey));
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
-            _empireContext = empireContext ?? throw new ArgumentNullException(nameof(empireContext));
-        }
-
-        // -----------------------------------------------------------------------
-        // Identity
-        // -----------------------------------------------------------------------
-
-        public string PlanetName { get => _survey.PlanetName; set => _survey.PlanetName = value; }
-        public string SystemName { get => _survey.SystemName; set => _survey.SystemName = value; }
-        public string SurveyID { get => _survey.SurveyID; set => _survey.SurveyID = value; }
-        public string NickName { get => _survey.NickName; set => _survey.NickName = value; }
-        public string ScannedBy { get => _survey.ScannedBy; set => _survey.ScannedBy = value; }
-        public string DateTime { get => _survey.DateTime; set => _survey.DateTime = value; }
-        public string DisplayDateTime => SurveyDateTimeParser.FormatForDisplay(_survey.DateTime);
-        public string ScannerBlueprintUUID { get => _survey.ScannerBlueprintUUID; set => _survey.ScannerBlueprintUUID = value; }
-        public string UUID => _survey.UUID;
-        public SurveyType SurveyTypeValue { get => _survey.SurveyType; set => _survey.SurveyType = value; }
 
         // -----------------------------------------------------------------------
         // Properties (sensor readings)
@@ -61,6 +37,41 @@ namespace OE2EmpireTracker.ViewModels
             get => _survey.Properties.ContainsKey("ScanLevel") ? _survey.Properties["ScanLevel"] : string.Empty;
             set => _survey.Properties["ScanLevel"] = value;
         }
+
+        private Survey _survey;
+
+        public SurveyViewModel(Survey survey, PlayerContext playerContext, EmpireContext empireContext)
+        {
+            _survey = survey ?? throw new ArgumentNullException(nameof(survey));
+            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+            _empireContext = empireContext ?? throw new ArgumentNullException(nameof(empireContext));
+        }
+
+        public Survey Data => _survey;
+
+        // -----------------------------------------------------------------------
+        // Identity
+        // -----------------------------------------------------------------------
+
+        public string PlanetName { get => _survey.PlanetName; set => _survey.PlanetName = value; }
+
+        public string SystemName { get => _survey.SystemName; set => _survey.SystemName = value; }
+
+        public string SurveyID { get => _survey.SurveyID; set => _survey.SurveyID = value; }
+
+        public string NickName { get => _survey.NickName; set => _survey.NickName = value; }
+
+        public string ScannedBy { get => _survey.ScannedBy; set => _survey.ScannedBy = value; }
+
+        public string DateTime { get => _survey.DateTime; set => _survey.DateTime = value; }
+
+        public string DisplayDateTime => SurveyDateTimeParser.FormatForDisplay(_survey.DateTime);
+
+        public string ScannerBlueprintUUID { get => _survey.ScannerBlueprintUUID; set => _survey.ScannerBlueprintUUID = value; }
+
+        public string UUID => _survey.UUID;
+
+        public SurveyType SurveyTypeValue { get => _survey.SurveyType; set => _survey.SurveyType = value; }
 
         // -----------------------------------------------------------------------
         // Resources

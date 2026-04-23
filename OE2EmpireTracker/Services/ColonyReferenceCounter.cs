@@ -140,12 +140,7 @@ namespace OE2EmpireTracker.Services
 
     public class ColonyReferenceReport
     {
-        public int TotalCount { get; }
-        public int RouteCount { get; }
-        public int PlanCount { get; }
-        public int BuildItemCount { get; }
-        public int SupplyChainCount { get; }
-        public int OverflowCount { get; }
+        public static readonly ColonyReferenceReport Empty = new ColonyReferenceReport(0, 0, 0, 0, 0);
 
         public ColonyReferenceReport(
             int routeCount,
@@ -162,6 +157,16 @@ namespace OE2EmpireTracker.Services
             TotalCount = routeCount + planCount + buildItemCount + supplyChainCount + overflowCount;
         }
 
-        public static readonly ColonyReferenceReport Empty = new ColonyReferenceReport(0, 0, 0, 0, 0);
+        public int TotalCount { get; }
+
+        public int RouteCount { get; }
+
+        public int PlanCount { get; }
+
+        public int BuildItemCount { get; }
+
+        public int SupplyChainCount { get; }
+
+        public int OverflowCount { get; }
     }
 }

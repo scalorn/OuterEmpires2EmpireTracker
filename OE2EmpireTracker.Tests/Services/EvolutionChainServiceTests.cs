@@ -14,14 +14,33 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class EvolutionChainServiceTests
     {
-        private static Bp MakeBlueprint(string uuid, string baseBlueprintUUID, int evolution)
+        // Known numeric property names (Integer, Decimal, Time) from BlueprintPropertyValidation
+        private static readonly string[] KnownNumericProperties = new[]
         {
-            var bp = new Bp("TestBP");
-            bp.UUID = uuid;
-            bp.BaseBlueprintUUID = baseBlueprintUUID;
-            bp.Evolution = evolution;
-            return bp;
-        }
+            "Accuracy", "Mass", "Health", "Shield Hitpoints",           // Integer
+            "Acceleration Rate", "Rate of Fire", "Mining Yield",        // Decimal
+            "Manufacture Run Time"                                      // Time
+        };
+
+        // Known non-numeric property names (CheckBox, ComboBox) from BlueprintPropertyValidation
+        private static readonly string[] KnownNonNumericProperties = new[]
+        {
+            "Can Manufacture", "Can Research", "Consumable",            // CheckBox
+            "Commodity Industry"                                        // ComboBox
+        };
+
+        // Unknown property names (not in BlueprintPropertyValidation -> Unknown type)
+        private static readonly string[] UnknownProperties = new[]
+        {
+            "Ammo Type", "License Career", "Material Focus"
+        };
+
+        // A small set of known numeric property names for controlled generation
+        private static readonly string[] IntegerProps = new[] { "Accuracy", "Mass", "Health", "Shield Hitpoints" };
+
+        private static readonly string[] DecimalProps = new[] { "Acceleration Rate", "Rate of Fire", "Mining Yield" };
+
+        private static readonly string[] TimeProps = new[] { "Manufacture Run Time" };
 
         /// <summary>
         /// // Feature: evolution-graph, Property 1: Chain resolution produces a complete, ordered ancestor list
@@ -99,27 +118,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label("Result contains the start blueprint");
             });
         }
-
-        // Known numeric property names (Integer, Decimal, Time) from BlueprintPropertyValidation
-        private static readonly string[] KnownNumericProperties = new[]
-        {
-            "Accuracy", "Mass", "Health", "Shield Hitpoints",           // Integer
-            "Acceleration Rate", "Rate of Fire", "Mining Yield",        // Decimal
-            "Manufacture Run Time"                                      // Time
-        };
-
-        // Known non-numeric property names (CheckBox, ComboBox) from BlueprintPropertyValidation
-        private static readonly string[] KnownNonNumericProperties = new[]
-        {
-            "Can Manufacture", "Can Research", "Consumable",            // CheckBox
-            "Commodity Industry"                                        // ComboBox
-        };
-
-        // Unknown property names (not in BlueprintPropertyValidation -> Unknown type)
-        private static readonly string[] UnknownProperties = new[]
-        {
-            "Ammo Type", "License Career", "Material Focus"
-        };
 
         /// <summary>
         /// // Feature: evolution-graph, Property 2: Graph data contains only numeric properties from the BlueprintType
@@ -236,11 +234,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label("No non-numeric properties appear in Series");
             });
         }
-
-        // A small set of known numeric property names for controlled generation
-        private static readonly string[] IntegerProps = new[] { "Accuracy", "Mass", "Health", "Shield Hitpoints" };
-        private static readonly string[] DecimalProps = new[] { "Acceleration Rate", "Rate of Fire", "Mining Yield" };
-        private static readonly string[] TimeProps = new[] { "Manufacture Run Time" };
 
         /// <summary>
         /// // Feature: evolution-graph, Property 3: Unchanged properties are excluded and NoChanges flag is correct
@@ -607,6 +600,15 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(result.NoChanges, Is.True);
             Assert.That(result.Series, Is.Empty);
+        }
+
+        private static Bp MakeBlueprint(string uuid, string baseBlueprintUUID, int evolution)
+        {
+            var bp = new Bp("TestBP");
+            bp.UUID = uuid;
+            bp.BaseBlueprintUUID = baseBlueprintUUID;
+            bp.Evolution = evolution;
+            return bp;
         }
     }
 }

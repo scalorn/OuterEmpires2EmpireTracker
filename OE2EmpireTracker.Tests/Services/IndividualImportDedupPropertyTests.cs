@@ -14,45 +14,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class IndividualImportDedupPropertyTests
     {
-        private static Gen<string> NonEmptyAlphaStringGen()
-        {
-            return Gen.Elements(
-                "Alpha", "Beta", "Gamma", "Delta", "Hull", "Shield", "Reactor",
-                "Drive", "Weapon", "Cargo", "Nav", "Fuel", "Thruster", "Laser",
-                "Drone", "Plating", "Coupler", "Scanner", "Grapple", "Hopper");
-        }
-
-        private static Gen<string> TechLevelGen()
-        {
-            return Gen.Elements("LL", "ML", "HL", "Milspec", "Civilian", string.Empty);
-        }
-
-        private static Gen<string> BluePrintTypeGen()
-        {
-            return Gen.Elements("Hull", "Shield", "Reactor", "Main Drive", "Weapon", "Flatpack", string.Empty);
-        }
-
-        private static Gen<BpModel> BlueprintGen()
-        {
-            return from name in NonEmptyAlphaStringGen()
-                   from evo in Gen.Choose(0, 10)
-                   from bpType in BluePrintTypeGen()
-                   from cls in Gen.Choose(0, 5)
-                   from tl in TechLevelGen()
-                   select MakeBlueprint(name, evo, bpType, cls, tl);
-        }
-
-        private static BpModel MakeBlueprint(string name, int evolution, string bpType, int cls, string techLevel)
-        {
-            var bp = new BpModel();
-            bp.Name = name;
-            bp.Evolution = evolution;
-            bp.BluePrintType = bpType;
-            bp.Class = cls;
-            bp.TechLevel = techLevel;
-            return bp;
-        }
-
         /// <summary>
         /// Property 1: UpdateExisting overwrites data while preserving protected fields.
         /// For any existing blueprint with arbitrary UUID, OwnerUUID, NickName, CopyCost,
@@ -334,6 +295,45 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(propsMatch)
                     .And(resMatch);
             });
+        }
+
+        private static Gen<string> NonEmptyAlphaStringGen()
+        {
+            return Gen.Elements(
+                "Alpha", "Beta", "Gamma", "Delta", "Hull", "Shield", "Reactor",
+                "Drive", "Weapon", "Cargo", "Nav", "Fuel", "Thruster", "Laser",
+                "Drone", "Plating", "Coupler", "Scanner", "Grapple", "Hopper");
+        }
+
+        private static Gen<string> TechLevelGen()
+        {
+            return Gen.Elements("LL", "ML", "HL", "Milspec", "Civilian", string.Empty);
+        }
+
+        private static Gen<string> BluePrintTypeGen()
+        {
+            return Gen.Elements("Hull", "Shield", "Reactor", "Main Drive", "Weapon", "Flatpack", string.Empty);
+        }
+
+        private static Gen<BpModel> BlueprintGen()
+        {
+            return from name in NonEmptyAlphaStringGen()
+                   from evo in Gen.Choose(0, 10)
+                   from bpType in BluePrintTypeGen()
+                   from cls in Gen.Choose(0, 5)
+                   from tl in TechLevelGen()
+                   select MakeBlueprint(name, evo, bpType, cls, tl);
+        }
+
+        private static BpModel MakeBlueprint(string name, int evolution, string bpType, int cls, string techLevel)
+        {
+            var bp = new BpModel();
+            bp.Name = name;
+            bp.Evolution = evolution;
+            bp.BluePrintType = bpType;
+            bp.Class = cls;
+            bp.TechLevel = techLevel;
+            return bp;
         }
     }
 }
