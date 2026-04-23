@@ -15,6 +15,17 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 {
     public partial class PlayerSkillBlock : UserControl
     {
+        private Models.PlayerSkill _playerSkill;
+
+        private bool _canStartTraining;
+
+        private bool completionModification = false;
+
+        public PlayerSkillBlock()
+        {
+            InitializeComponent();
+        }
+
         [Category("Skill Data")]
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -50,17 +61,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 _canStartTraining = value;
                 PopulateForm();
             }
-        }
-
-        private Models.PlayerSkill _playerSkill;
-
-        private bool _canStartTraining;
-
-        private bool completionModification = false;
-
-        public PlayerSkillBlock()
-        {
-            InitializeComponent();
         }
 
         [Browsable(true)]

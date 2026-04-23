@@ -13,9 +13,6 @@ namespace OE2EmpireTracker.Forms.Contacts
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private int _isProgrammaticUpdate = 0;
-        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
-        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
-
         private PlayerContext playerContext;
         private Faction _selectedFaction;
         private ExternalCharacter _selectedCharacter;
@@ -71,6 +68,10 @@ namespace OE2EmpireTracker.Forms.Contacts
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
+
+        public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
+
+        public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         // -----------------------------------------------------------------------
         // Layout
@@ -581,14 +582,14 @@ namespace OE2EmpireTracker.Forms.Contacts
 
         private class FactionComboItem
         {
-            public string DisplayName { get; }
-            public string UUID { get; }
-
             public FactionComboItem(string displayName, string uuid)
             {
                 DisplayName = displayName;
                 UUID = uuid;
             }
+
+            public string DisplayName { get; }
+            public string UUID { get; }
 
             public override string ToString() => DisplayName;
         }

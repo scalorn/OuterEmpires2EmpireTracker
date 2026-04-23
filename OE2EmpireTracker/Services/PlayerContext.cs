@@ -19,6 +19,10 @@ namespace OE2EmpireTracker.Services
 
         private readonly object _listLock = new object();
 
+        private static PlayerContext _instance;
+
+        private string _currentPlayerUUID = string.Empty;
+
         /// <summary>
         /// UUID of the currently selected player. Forms filter data by this value.
         /// </summary>
@@ -47,10 +51,6 @@ namespace OE2EmpireTracker.Services
                 return _playerProfileList.FirstOrDefault(p => p.UUID == _currentPlayerUUID);
             }
         }
-
-        private static PlayerContext _instance;
-
-        private string _currentPlayerUUID = string.Empty;
 
         private Dictionary<string, Blueprint> _blueprintCache;
 

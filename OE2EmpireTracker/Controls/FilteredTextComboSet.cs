@@ -69,6 +69,14 @@ namespace OE2EmpireTracker.Controls
         /// </summary>
         public List<string> Items => _fullItems;
 
+        protected TextBox TxtFilter { get; set; }
+
+        protected ComboBox CmbItems { get; set; }
+
+        protected bool SuppressSelectionEvent { get; set; }
+
+        protected bool IsEditing { get; set; }
+
         /// <summary>
         /// Filters the full item list using case-insensitive contains-match.
         /// Returns the filtered items and an index map back to the full list.
@@ -91,14 +99,6 @@ namespace OE2EmpireTracker.Controls
 
             return (filtered, indexMap);
         }
-
-        protected TextBox TxtFilter { get; set; }
-
-        protected ComboBox CmbItems { get; set; }
-
-        protected bool SuppressSelectionEvent { get; set; }
-
-        protected bool IsEditing { get; set; }
 
         /// <summary>
         /// Sets the item list and optionally selects a current value.

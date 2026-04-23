@@ -904,7 +904,9 @@ namespace OE2EmpireTracker.Forms.Survey
         private void LvwSurveys_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             if (e.Column == _sortColumn)
+            {
                 _sortOrder = _sortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+            }
             else
             {
                 _sortColumn = e.Column;

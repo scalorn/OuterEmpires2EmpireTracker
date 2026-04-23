@@ -20,6 +20,13 @@ namespace OE2EmpireTracker.ViewModels
 
         private List<ColonyStructureViewModel> _cachedStructureVMs;
 
+        public ColonyViewModel(Colony colony, PlayerContext playerContext)
+        {
+            _colony = colony ?? throw new ArgumentNullException(nameof(colony));
+            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+            _calculator = new ColonyStatusCalculator(_colony);
+        }
+
         // -----------------------------------------------------------------------
         // Colony identity
         // -----------------------------------------------------------------------
@@ -53,13 +60,6 @@ namespace OE2EmpireTracker.ViewModels
 
                 return _cachedStructureVMs.AsReadOnly();
             }
-        }
-
-        public ColonyViewModel(Colony colony, PlayerContext playerContext)
-        {
-            _colony = colony ?? throw new ArgumentNullException(nameof(colony));
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
-            _calculator = new ColonyStatusCalculator(_colony);
         }
 
         public Colony Data => _colony;

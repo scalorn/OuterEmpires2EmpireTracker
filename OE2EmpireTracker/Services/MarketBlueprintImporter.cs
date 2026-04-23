@@ -42,6 +42,15 @@ namespace OE2EmpireTracker.Services
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// Protected property names that are preserved when updating an existing blueprint.
+        /// </summary>
+        private static readonly HashSet<string> ProtectedProperties = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            BlueprintPropertyKeys.ManufactureRunTime,
+            GameConstants.PropPowerRequired
+        };
+
         public static ImportResult Import(
             List<MarketBlueprint> marketBlueprints,
             PlayerContext playerContext,
@@ -333,14 +342,5 @@ namespace OE2EmpireTracker.Services
             if (!string.IsNullOrEmpty(incoming.Name))
                 existing.Name = incoming.Name;
         }
-
-        /// <summary>
-        /// Protected property names that are preserved when updating an existing blueprint.
-        /// </summary>
-        private static readonly HashSet<string> ProtectedProperties = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            BlueprintPropertyKeys.ManufactureRunTime,
-            GameConstants.PropPowerRequired
-        };
     }
 }
