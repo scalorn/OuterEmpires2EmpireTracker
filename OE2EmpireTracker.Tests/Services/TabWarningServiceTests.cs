@@ -67,8 +67,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Gen.Constant(double.MinValue),           // sentinel for DateTime.MinValue
                 Gen.Choose(-72, -1).Select(h => (double)h),   // past (overdue)
                 Gen.Choose(0, 72).Select(h => (double)h),     // near-future (0-3 days)
-                Gen.Choose(73, 240).Select(h => (double)h)    // far-future (3-10 days)
-            );
+                Gen.Choose(73, 240).Select(h => (double)h));    // far-future (3-10 days)
 
             var genFulfilled = Arb.Generate<bool>();
 
@@ -147,8 +146,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Gen.Choose(-72, -1).Select(h => now.AddHours(h)),                         // overdue
                 Gen.Choose(0, 24).Select(h => now.AddHours(h)),                           // due within 1 day (red zone)
                 Gen.Choose(25, 48).Select(h => now.AddHours(h)),                          // due within 2 days (yellow zone)
-                Gen.Choose(49, 240).Select(h => now.AddHours(h))                          // far future
-            );
+                Gen.Choose(49, 240).Select(h => now.AddHours(h)));                          // far future
 
             var genFulfilledRequest = genNeedBy.Select(needBy => new CommodityRequested
             {

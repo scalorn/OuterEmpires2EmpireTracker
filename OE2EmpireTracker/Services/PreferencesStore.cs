@@ -11,9 +11,9 @@ namespace OE2EmpireTracker.Services
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly string _filePath;
-
         private static PreferencesStore _instance;
+
+        private readonly string _filePath;
 
         private UIPreferences _preferences;
 

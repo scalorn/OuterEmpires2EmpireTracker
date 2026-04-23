@@ -290,7 +290,8 @@ namespace OE2EmpireTracker.Tests.Services
                 if (bpType == BlueprintTypes.MiningRig)
                 {
                     string resource = "Ore_" + iteration;
-                    string purity = (new[] { "Low", "Medium", "High" })[Rng.Next(3)];
+                    string[] purities = new[] { "Low", "Medium", "High" };
+                    string purity = purities[Rng.Next(3)];
                     string amount = Rng.Next(1, 500).ToString();
                     var survey = CreateSurvey(resource, purity, amount);
                     structure.MiningSurvey = survey.UUID;
@@ -309,7 +310,8 @@ namespace OE2EmpireTracker.Tests.Services
                     if (iteration % 2 == 0)
                     {
                         string resource = "Mineral_" + iteration;
-                        string purity = (new[] { "Low", "Medium", "High" })[Rng.Next(3)];
+                        string[] purities = new[] { "Low", "Medium", "High" };
+                        string purity = purities[Rng.Next(3)];
                         structure.RefiningResource = resource;
                         structure.RefiningResourcePurity = purity;
 

@@ -58,6 +58,102 @@ namespace OE2EmpireTracker.Parsers
         };
 
         /// <summary>
+        /// Extracts selected HTML fragment string from clipboard data by parsing header information.
+        /// </summary>
+        /// <param name="htmlDataString">String representing HTML clipboard data. This includes HTML header.</param>
+        /// <returns>String containing only the HTML selection part of htmlDataString, without header. Returns error message if parsing fails.</returns>
+        /// <remarks>
+        /// Uses Microsoft's standard clipboard HTML format which wraps fragments with:
+        /// - <!--StartFragment--> marker followed by byte count to fragment start
+        /// - <!--EndFragment--> marker followed by byte count to fragment end
+        ///
+        /// The method extracts the content between these markers to isolate just the selected fragment.
+        ///
+        /// Reference: https:// msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx
+        ///
+        /// TODO: Current implementation assumes 10-digit indices which may be brittle for non-standard cases.
+        /// More flexible parsing should be implemented to handle edge cases.
+        /// </remarks>
+        public static string ExtractHtmlFragmentFromClipboardData(string htmlDataString)
+        {
+            // Delegated to ClipboardHelper -- the canonical implementation lives there.
+            return ClipboardHelper.ExtractHtmlFragment(htmlDataString);
+        }
+
+        /// <summary>
+        /// Reclassifies a blueprint type based on the blueprint name.
+        /// Used when multiple types share the same icon position and icon-based
+        /// resolution picks the wrong one.
+        /// </summary>
+        private static string ReclassifyByName(string resolvedType, string blueprintName)
+        {
+            if (string.IsNullOrEmpty(blueprintName))
+                return resolvedType;
+
+            // Ore Hopper
+            if (blueprintName.IndexOf("Ore Hopper", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (resolvedType != BlueprintTypes.OreHopper)
+                    Log.Info($"  Reclassified '{blueprintName}' from '{resolvedType}' to '{BlueprintTypes.OreHopper}' by name");
+                return BlueprintTypes.OreHopper;
+            }
+
+            // Mining Laser
+            if (blueprintName.IndexOf("Mining Laser", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (resolvedType != BlueprintTypes.MiningLaser)
+                    Log.Info($"  Reclassified '{blueprintName}' from '{resolvedType}' to '{BlueprintTypes.MiningLaser}' by name");
+                return BlueprintTypes.MiningLaser;
+            }
+
+            // Asteroid Grapple / Speed Grapple / any Grapple
+            if (blueprintName.IndexOf("Grapple", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (resolvedType != BlueprintTypes.AsteroidGrapple)
+                    Log.Info($"  Reclassified '{blueprintName}' from '{resolvedType}' to '{BlueprintTypes.AsteroidGrapple}' by name");
+                return BlueprintTypes.AsteroidGrapple;
+            }
+
+            return resolvedType;
+        }
+
+        /// <summary>
+        /// Normalizes property values based on the property key.
+        /// Time properties like ManufactureTime get "hours" -> "h", "minutes" -> "m" etc.
+        /// </summary>
+        private static string NormalizePropertyValue(string key, string value)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+
+            var propType = Constants.BlueprintPropertyValidation.GetPropertyType(key);
+
+            switch (propType)
+            {
+                case Constants.PropertyValueType.Time:
+                    // "9 hours" -> "9h", "30 minutes" -> "30m"
+                    value = Regex.Replace(value, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
+                    value = Regex.Replace(value, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
+                    value = Regex.Replace(value, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
+                    value = Regex.Replace(value, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
+                    return value.Trim();
+
+                case Constants.PropertyValueType.Decimal:
+                    // Strip units: "31.5MW/s" -> "31.5", "2.959%" -> "2.959"
+                    var decMatch = Regex.Match(value, @"[+-]?\d+(\.\d+)?");
+                    return decMatch.Success ? decMatch.Value : value;
+
+                case Constants.PropertyValueType.Integer:
+                    // Strip any non-digit characters except leading +/-
+                    var intMatch = Regex.Match(value, @"[+-]?\d+");
+                    return intMatch.Success ? intMatch.Value : value;
+
+                default:
+                    Log.Warn("No normalization rule for property: '{0}' (type: Unknown)", key);
+                    return value;
+            }
+        }
+
+        /// <summary>
         /// Handles the click event for the Import button.
         /// </summary>
         /// <param name="sender">The object that triggered the event.</param>
@@ -539,102 +635,6 @@ namespace OE2EmpireTracker.Parsers
         }
 
         /// <summary>
-        /// Extracts selected HTML fragment string from clipboard data by parsing header information.
-        /// </summary>
-        /// <param name="htmlDataString">String representing HTML clipboard data. This includes HTML header.</param>
-        /// <returns>String containing only the HTML selection part of htmlDataString, without header. Returns error message if parsing fails.</returns>
-        /// <remarks>
-        /// Uses Microsoft's standard clipboard HTML format which wraps fragments with:
-        /// - <!--StartFragment--> marker followed by byte count to fragment start
-        /// - <!--EndFragment--> marker followed by byte count to fragment end
-        ///
-        /// The method extracts the content between these markers to isolate just the selected fragment.
-        ///
-        /// Reference: https:// msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx
-        ///
-        /// TODO: Current implementation assumes 10-digit indices which may be brittle for non-standard cases.
-        /// More flexible parsing should be implemented to handle edge cases.
-        /// </remarks>
-        public static string ExtractHtmlFragmentFromClipboardData(string htmlDataString)
-        {
-            // Delegated to ClipboardHelper -- the canonical implementation lives there.
-            return ClipboardHelper.ExtractHtmlFragment(htmlDataString);
-        }
-
-        /// <summary>
-        /// Reclassifies a blueprint type based on the blueprint name.
-        /// Used when multiple types share the same icon position and icon-based
-        /// resolution picks the wrong one.
-        /// </summary>
-        private static string ReclassifyByName(string resolvedType, string blueprintName)
-        {
-            if (string.IsNullOrEmpty(blueprintName))
-                return resolvedType;
-
-            // Ore Hopper
-            if (blueprintName.IndexOf("Ore Hopper", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                if (resolvedType != BlueprintTypes.OreHopper)
-                    Log.Info($"  Reclassified '{blueprintName}' from '{resolvedType}' to '{BlueprintTypes.OreHopper}' by name");
-                return BlueprintTypes.OreHopper;
-            }
-
-            // Mining Laser
-            if (blueprintName.IndexOf("Mining Laser", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                if (resolvedType != BlueprintTypes.MiningLaser)
-                    Log.Info($"  Reclassified '{blueprintName}' from '{resolvedType}' to '{BlueprintTypes.MiningLaser}' by name");
-                return BlueprintTypes.MiningLaser;
-            }
-
-            // Asteroid Grapple / Speed Grapple / any Grapple
-            if (blueprintName.IndexOf("Grapple", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                if (resolvedType != BlueprintTypes.AsteroidGrapple)
-                    Log.Info($"  Reclassified '{blueprintName}' from '{resolvedType}' to '{BlueprintTypes.AsteroidGrapple}' by name");
-                return BlueprintTypes.AsteroidGrapple;
-            }
-
-            return resolvedType;
-        }
-
-        /// <summary>
-        /// Normalizes property values based on the property key.
-        /// Time properties like ManufactureTime get "hours" -> "h", "minutes" -> "m" etc.
-        /// </summary>
-        private static string NormalizePropertyValue(string key, string value)
-        {
-            if (string.IsNullOrEmpty(value)) return value;
-
-            var propType = Constants.BlueprintPropertyValidation.GetPropertyType(key);
-
-            switch (propType)
-            {
-                case Constants.PropertyValueType.Time:
-                    // "9 hours" -> "9h", "30 minutes" -> "30m"
-                    value = Regex.Replace(value, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
-                    value = Regex.Replace(value, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
-                    value = Regex.Replace(value, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
-                    value = Regex.Replace(value, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
-                    return value.Trim();
-
-                case Constants.PropertyValueType.Decimal:
-                    // Strip units: "31.5MW/s" -> "31.5", "2.959%" -> "2.959"
-                    var decMatch = Regex.Match(value, @"[+-]?\d+(\.\d+)?");
-                    return decMatch.Success ? decMatch.Value : value;
-
-                case Constants.PropertyValueType.Integer:
-                    // Strip any non-digit characters except leading +/-
-                    var intMatch = Regex.Match(value, @"[+-]?\d+");
-                    return intMatch.Success ? intMatch.Value : value;
-
-                default:
-                    Log.Warn("No normalization rule for property: '{0}' (type: Unknown)", key);
-                    return value;
-            }
-        }
-
-        /// <summary>
         /// Processes HTML content by parsing with SgmlReader and debugging child nodes.
         /// </summary>
         /// <param name="inputText">The HTML string to parse.</param>
@@ -691,7 +691,7 @@ namespace OE2EmpireTracker.Parsers
                 Log.Info("C" + depth + " = " + item.InnerText);
                 if (item.HasChildNodes)
                 {
-                    Children((depth + 1), item.ChildNodes);
+                    Children(depth + 1, item.ChildNodes);
                 }
             }
         }

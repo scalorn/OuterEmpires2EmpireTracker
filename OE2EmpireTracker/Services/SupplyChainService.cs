@@ -6,18 +6,6 @@ using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
-    public class SupplyChainDeliveryRequest
-    {
-        public string SupplyChainUUID { get; set; }
-        public int StageSequence { get; set; }
-        public string ResourceName { get; set; }
-        public string ResourcePurity { get; set; }
-        public int ExcessQuantity { get; set; }
-        public string DeliveryRouteUUID { get; set; }
-        public string SourceLocationUUID { get; set; }
-        public DestinationType SourceLocationType { get; set; }
-    }
-
     public static class SupplyChainService
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -95,6 +83,7 @@ namespace OE2EmpireTracker.Services
                         return hold.FindResource(stage.ResourceName, stage.ResourcePurity)
                             .Sum(i => i.Quantity);
                     }
+
                     return 0;
 
                 case DestinationType.Ship:
@@ -107,5 +96,17 @@ namespace OE2EmpireTracker.Services
                     return 0;
             }
         }
+    }
+
+    public class SupplyChainDeliveryRequest
+    {
+        public string SupplyChainUUID { get; set; }
+        public int StageSequence { get; set; }
+        public string ResourceName { get; set; }
+        public string ResourcePurity { get; set; }
+        public int ExcessQuantity { get; set; }
+        public string DeliveryRouteUUID { get; set; }
+        public string SourceLocationUUID { get; set; }
+        public DestinationType SourceLocationType { get; set; }
     }
 }

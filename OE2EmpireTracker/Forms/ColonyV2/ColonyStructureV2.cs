@@ -833,8 +833,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (recipe != null) displayName = recipe.OutputResource + " (S" + recipe.Tier + ")";
                 var items = new List<RefinerySelectionItem>
                 {
-                    new RefinerySelectionItem { Key = displayKey, DisplayName = displayName,
-                        ResourceName = structureData.RefiningResource, Purity = structureData.RefiningResourcePurity }
+                    new RefinerySelectionItem
+                    {
+                        Key = displayKey,
+                        DisplayName = displayName,
+                        ResourceName = structureData.RefiningResource,
+                        Purity = structureData.RefiningResourcePurity
+                    }
                 };
 
                 cmbSelection.DataSource = null;
@@ -1995,7 +2000,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     researchFocusLevel = owner.GetSkill(SkillName.ResearchFocus).Level;
             }
 
-            researchSeconds = Math.Max(1, (long)(researchSeconds * (1.0 - researchFocusLevel * 0.03)));
+            researchSeconds = Math.Max(1, (long)(researchSeconds * (1.0 - (researchFocusLevel * 0.03))));
 
             structureData.ProcessCompletionTime = new CountDownTime();
             structureData.ProcessCompletionTime.StartTime = SystemClock.UtcNow;
@@ -2037,7 +2042,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     productionFocusLevel = owner.GetSkill(SkillName.ProductionFocus).Level;
             }
 
-            mfgSeconds = Math.Max(1, (long)(mfgSeconds * (1.0 - productionFocusLevel * 0.03)));
+            mfgSeconds = Math.Max(1, (long)(mfgSeconds * (1.0 - (productionFocusLevel * 0.03))));
 
             // Parse quantity from txtQuantity
             int qty = 1;
@@ -2080,7 +2085,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     productionFocusLevel = owner.GetSkill(SkillName.ProductionFocus).Level;
             }
 
-            commodityCycleSeconds = Math.Max(1, (long)(commodityCycleSeconds * (1.0 - productionFocusLevel * 0.03)));
+            commodityCycleSeconds = Math.Max(1, (long)(commodityCycleSeconds * (1.0 - (productionFocusLevel * 0.03))));
 
             structureData.ProcessCompletionTime.StartRepeating(commodityCycleSeconds);
             timerCountdown.Interval = GetCountdownIntervalMs();

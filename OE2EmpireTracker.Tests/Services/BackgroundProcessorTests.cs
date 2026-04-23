@@ -163,7 +163,9 @@ namespace OE2EmpireTracker.Tests.Services
                 HashSet<string> referenceSet = expiredSetsByPlayer[0];
                 for (int p = 1; p < expiredSetsByPlayer.Count; p++)
                 {
-                    Assert.That(expiredSetsByPlayer[p], Is.EquivalentTo(referenceSet),
+                    Assert.That(
+                        expiredSetsByPlayer[p],
+                        Is.EquivalentTo(referenceSet),
                         $"Mismatch at iteration {i} (seed={seed}). " +
                         $"Expired set differs when CurrentPlayerUUID changes. " +
                         $"Reference count={referenceSet.Count}, Set[{p}] count={expiredSetsByPlayer[p].Count}. " +
@@ -251,7 +253,9 @@ namespace OE2EmpireTracker.Tests.Services
                         pc.ColonyDataChanged -= handler;
                     }
 
-                    Assert.That(actualProcessed, Is.EquivalentTo(expectedProcessed),
+                    Assert.That(
+                        actualProcessed,
+                        Is.EquivalentTo(expectedProcessed),
                         $"Mismatch at iteration {i} (seed={seed}). " +
                         $"Expected {expectedProcessed.Count} colonies processed, got {actualProcessed.Count}. " +
                         $"Expected: [{string.Join(", ", expectedProcessed)}], " +

@@ -147,8 +147,7 @@ namespace OE2EmpireTracker.Tests.Services
                     // For each blueprint in the chain, generate random values for numeric props
                     var chainGen = Gen.Sequence(
                         Enumerable.Range(0, chainLen).Select(idx =>
-                            Gen.Choose(1, 1000).Select(val => new { Index = idx, Value = val })
-                      ));
+                            Gen.Choose(1, 1000).Select(val => new { Index = idx, Value = val })));
 
                     return chainGen.Select(chainValues =>
                     {
@@ -167,11 +166,11 @@ namespace OE2EmpireTracker.Tests.Services
                                     propType == PropertyValueType.Decimal)
                                 {
                                     // Use different values per evolution to ensure change
-                                    bp.Properties.SetProperty(propName, (decimal)(values[i].Value + i * 10));
+                                    bp.Properties.SetProperty(propName, (decimal)(values[i].Value + (i * 10)));
                                 }
                                 else if (propType == PropertyValueType.Time)
                                 {
-                                    int secs = values[i].Value + i * 60;
+                                    int secs = values[i].Value + (i * 60);
                                     bp.Properties.SetProperty(propName, $"{secs}s");
                                 }
 
@@ -287,7 +286,7 @@ namespace OE2EmpireTracker.Tests.Services
                                         foreach (var propName in changedProps)
                                         {
                                             // Ev0 gets baseVal, subsequent evolutions get baseVal + delta*i
-                                            int val = baseVal + delta * i;
+                                            int val = baseVal + (delta * i);
                                             var propType = BlueprintPropertyValidation.GetPropertyType(propName);
                                             if (propType == PropertyValueType.Time)
                                                 bp.Properties.SetProperty(propName, $"{val}s");
@@ -382,7 +381,7 @@ namespace OE2EmpireTracker.Tests.Services
                             {
                                 // Ev0 gets ev0Val, subsequent evolutions get ev0Val + delta * i
                                 // This ensures non-zero Ev0 and values that change
-                                decimal val = ev0Val + delta * i;
+                                decimal val = ev0Val + (delta * i);
                                 bp.Properties.SetProperty(propName, val);
                                 rawValues[propName][i] = val;
                             }

@@ -7,6 +7,12 @@ namespace OE2EmpireTracker.Models
 {
     public class ColonyStructure
     {
+        public ColonyStructure() : base()
+        {
+            Properties = new PropertyBag();
+            AssignedWorkers = new PropertyBag();
+        }
+
         /// <summary>
         /// Returns true if the structure has Built=True and Online=True in its PropertyBag.
         /// </summary>
@@ -22,12 +28,6 @@ namespace OE2EmpireTracker.Models
                 Properties.GetBoolean(GameConstants.PropOnline, false, out online);
                 return online;
             }
-        }
-
-        public ColonyStructure() : base()
-        {
-            Properties = new PropertyBag();
-            AssignedWorkers = new PropertyBag();
         }
 
         public string UUID { get; set; } = null;

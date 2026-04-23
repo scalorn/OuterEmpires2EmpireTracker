@@ -149,8 +149,11 @@ namespace OE2EmpireTracker.Parsers
         /// highest Amount.
         /// </remarks>
         internal static Survey FindBestSurvey(
-            string planetName, string resourceName, string purity,
-            decimal maxRate, PlayerContext playerContext)
+            string planetName,
+            string resourceName,
+            string purity,
+            decimal maxRate,
+            PlayerContext playerContext)
         {
             if (string.IsNullOrEmpty(planetName) ||
                 string.IsNullOrEmpty(resourceName) ||
@@ -248,8 +251,10 @@ namespace OE2EmpireTracker.Parsers
         /// 3. No valid survey -> FindBestSurvey; if none, CreateOrUpdateDefaultSurvey
         /// </remarks>
         internal static bool AssignSurvey(
-            ColonyStructure structure, Colony colony,
-            PlayerContext playerContext, decimal maxRate)
+            ColonyStructure structure,
+            Colony colony,
+            PlayerContext playerContext,
+            decimal maxRate)
         {
             // Step 1: skip if no resource assigned
             if (string.IsNullOrEmpty(structure.MiningSurveyResource))
@@ -402,7 +407,8 @@ namespace OE2EmpireTracker.Parsers
         /// being mined. Removes the default survey entirely if no resources remain.
         /// </summary>
         internal static void CleanupDefaultSurvey(
-            Colony colony, PlayerContext playerContext,
+            Colony colony,
+            PlayerContext playerContext,
             EmpireContext empireContext)
         {
             string defaultUUID = DeterministicUUID.GenerateDefaultSurvey(
@@ -497,8 +503,11 @@ namespace OE2EmpireTracker.Parsers
         /// Returns the default survey.
         /// </summary>
         internal static Survey CreateOrUpdateDefaultSurvey(
-            Colony colony, string resourceName, string purity,
-            decimal maxRate, PlayerContext playerContext)
+            Colony colony,
+            string resourceName,
+            string purity,
+            decimal maxRate,
+            PlayerContext playerContext)
         {
             string uuid = DeterministicUUID.GenerateDefaultSurvey(
                 colony.OwnerUUID, colony.PlanetName, colony.SystemName);

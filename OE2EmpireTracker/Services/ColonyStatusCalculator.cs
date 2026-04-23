@@ -495,7 +495,7 @@ namespace OE2EmpireTracker.Services
 
             status.EntertainmentProvided = builtEntertainmentProvided;
             // Entertainment required is 2 per worker (game rule)
-            status.EntertainmentRequired = builtEntertainmentRequired + (colonyWorkers.Count + unallocatedWorkersAdded) * 2;
+            status.EntertainmentRequired = builtEntertainmentRequired + ((colonyWorkers.Count + unallocatedWorkersAdded) * 2);
 
             // Diagnostic: log per-structure worker accumulation
             var bp = flatpackBlueprint;

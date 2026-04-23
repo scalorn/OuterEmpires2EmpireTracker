@@ -411,12 +411,14 @@ namespace OE2EmpireTracker.Services
                         var stations = _playerContext.StationList.ToList();
 
                         var shortfalls = StockTargetService.CheckTargets(
-                            stockPlans, playerUUID,
+                            stockPlans,
+                            playerUUID,
                             uuid => _playerContext.FindColony(uuid),
                             uuid => _playerContext.StationList.FirstOrDefault(s => s.UUID == uuid),
                             uuid => _playerContext.ShipTemplateList.FirstOrDefault(t => t.UUID == uuid),
                             uuid => _playerContext.FindBlueprint(uuid),
-                            colonies, stations);
+                            colonies,
+                            stations);
 
                         if (shortfalls.Count > 0)
                         {

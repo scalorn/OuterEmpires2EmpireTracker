@@ -1351,7 +1351,9 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                         "Delivery plan '{0}' created with {1} stop(s).",
                         plan.Name,
                         plan.Stops.Count),
-                    "Resource Delivery", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "Resource Delivery",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
 
                 Log.Info(
                     "Generated resource delivery plan '{0}' ({1}) with {2} stops for plan '{3}'",
@@ -1411,7 +1413,9 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                         "Consolidated delivery plan '{0}' created with {1} stop(s).",
                         plan.Name,
                         plan.Stops.Count),
-                    "Consolidated Delivery", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "Consolidated Delivery",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
 
                 Log.Info(
                     "Generated consolidated delivery plan '{0}' ({1}) with {2} stops from {3} plans",
@@ -1462,7 +1466,9 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                         "Flatpack delivery plan '{0}' created with {1} stop(s).",
                         plan.Name,
                         plan.Stops.Count),
-                    "Flatpack Delivery", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "Flatpack Delivery",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
 
                 Log.Info(
                     "Generated flatpack delivery plan '{0}' ({1}) with {2} stops from {3} plans",

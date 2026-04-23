@@ -27,7 +27,11 @@ namespace OE2EmpireTracker.ViewModels
                 _structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out v);
                 return v;
             }
-            set { _structure.Properties.SetProperty(GameConstants.PropBuilt, value); }
+
+            set
+            {
+                _structure.Properties.SetProperty(GameConstants.PropBuilt, value);
+            }
         }
 
         public bool IsStaged
@@ -38,7 +42,11 @@ namespace OE2EmpireTracker.ViewModels
                 _structure.Properties.GetBoolean(GameConstants.PropStaged, false, out v);
                 return v;
             }
-            set { _structure.Properties.SetProperty(GameConstants.PropStaged, value); }
+
+            set
+            {
+                _structure.Properties.SetProperty(GameConstants.PropStaged, value);
+            }
         }
 
         public bool IsOnline
@@ -49,7 +57,11 @@ namespace OE2EmpireTracker.ViewModels
                 _structure.Properties.GetBoolean(GameConstants.PropOnline, false, out v);
                 return v;
             }
-            set { _structure.Properties.SetProperty(GameConstants.PropOnline, value); }
+
+            set
+            {
+                _structure.Properties.SetProperty(GameConstants.PropOnline, value);
+            }
         }
 
         // -----------------------------------------------------------------------

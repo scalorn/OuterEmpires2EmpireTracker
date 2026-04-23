@@ -72,10 +72,7 @@ namespace OE2EmpireTracker.Forms.Market
             {
                 if (cmbItemType.Items[i] is ItemType.ItemTypeEnum t2 && t2 == listing.ItemType)
                 {
-                {
                     cmbItemType.SelectedIndex = i;
-                }
-
                     break;
                 }
             }
@@ -84,10 +81,7 @@ namespace OE2EmpireTracker.Forms.Market
             {
                 if (cmbStation.Items[i] is StationItem si && si.UUID == listing.StationUUID)
                 {
-                {
                     cmbStation.SelectedIndex = i;
-                }
-
                     break;
                 }
             }

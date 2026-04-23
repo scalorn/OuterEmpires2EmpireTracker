@@ -434,10 +434,20 @@ namespace OE2EmpireTracker.Tests.Services
                 resVals);
 
         private static OE2EmpireTracker.Models.Blueprint BuildBlueprint(
-            string uuid, string name, string owner, string baseUuid,
-            string bpType, int evo, string techLevel, int cls, int cost,
-            string nick, string desc, PropertyBag props,
-            IEnumerable<string> resKeys, IEnumerable<string> resVals)
+            string uuid,
+            string name,
+            string owner,
+            string baseUuid,
+            string bpType,
+            int evo,
+            string techLevel,
+            int cls,
+            int cost,
+            string nick,
+            string desc,
+            PropertyBag props,
+            IEnumerable<string> resKeys,
+            IEnumerable<string> resVals)
         {
             var bp = new OE2EmpireTracker.Models.Blueprint(name)
             {
@@ -509,11 +519,20 @@ namespace OE2EmpireTracker.Tests.Services
                 resVals);
 
         private static Survey BuildSurvey(
-            string uuid, string owner, string scanned, string dt,
-            string planet, string system, string surveyId, string scannerUuid,
-            string nick, string desc,
-            IEnumerable<string> propKeys, IEnumerable<string> propVals,
-            IEnumerable<string> resKeys, IEnumerable<SurveyResource> resVals)
+            string uuid,
+            string owner,
+            string scanned,
+            string dt,
+            string planet,
+            string system,
+            string surveyId,
+            string scannerUuid,
+            string nick,
+            string desc,
+            IEnumerable<string> propKeys,
+            IEnumerable<string> propVals,
+            IEnumerable<string> resKeys,
+            IEnumerable<SurveyResource> resVals)
         {
             var s = new Survey
             {
@@ -671,9 +690,16 @@ namespace OE2EmpireTracker.Tests.Services
             select BuildPlayerProfile(uuid, name, faction, credits, pub, priv, mil, sp, skillNames, skillVals);
 
         private static PlayerProfile BuildPlayerProfile(
-            string uuid, string name, string faction, int credits,
-            PlayerRank pub, PlayerRank priv, PlayerRank mil, int sp,
-            IEnumerable<string> skillNames, IEnumerable<PlayerSkill> skillVals)
+            string uuid,
+            string name,
+            string faction,
+            int credits,
+            PlayerRank pub,
+            PlayerRank priv,
+            PlayerRank mil,
+            int sp,
+            IEnumerable<string> skillNames,
+            IEnumerable<PlayerSkill> skillVals)
         {
             var p = new PlayerProfile
             {
@@ -712,8 +738,10 @@ namespace OE2EmpireTracker.Tests.Services
             select BuildGridState(colNames, colStates, sortCol, sortDir);
 
         private static GridState BuildGridState(
-            IEnumerable<string> names, IEnumerable<GridColumnState> states,
-            string sortCol, string sortDir)
+            IEnumerable<string> names,
+            IEnumerable<GridColumnState> states,
+            string sortCol,
+            string sortDir)
         {
             var gs = new GridState { SortColumnName = sortCol, SortDirection = sortDir };
             var kArr = names.Distinct().ToArray();
@@ -744,10 +772,14 @@ namespace OE2EmpireTracker.Tests.Services
             select BuildFormControlState(ftKeys, ftVals, csKeys, csVals, comboKeys, comboVals, gridKeys, gridVals);
 
         private static FormControlState BuildFormControlState(
-            IEnumerable<string> ftKeys, IEnumerable<string> ftVals,
-            IEnumerable<string> csKeys, IEnumerable<bool> csVals,
-            IEnumerable<string> comboKeys, IEnumerable<ComboState> comboVals,
-            IEnumerable<string> gridKeys, IEnumerable<GridState> gridVals)
+            IEnumerable<string> ftKeys,
+            IEnumerable<string> ftVals,
+            IEnumerable<string> csKeys,
+            IEnumerable<bool> csVals,
+            IEnumerable<string> comboKeys,
+            IEnumerable<ComboState> comboVals,
+            IEnumerable<string> gridKeys,
+            IEnumerable<GridState> gridVals)
         {
             var fcs = new FormControlState();
             MergeDictionary(fcs.FilterTexts, ftKeys, ftVals);

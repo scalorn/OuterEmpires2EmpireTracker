@@ -127,11 +127,15 @@ namespace OE2EmpireTracker
             colResource.ValueMember = "Name";
             colResource.DataSource = empireContext.BindingSourceResource;
 
-            dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message);
-            ev.ThrowException = false;
+            dgvResources.DataError += (s, ev) =>
+            {
+                Log.Warn("dgvResources DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message);
+                ev.ThrowException = false;
             };
-            dgvStatistics.DataError += (s, ev) => { Log.Warn("dgvStatistics DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message);
-            ev.ThrowException = false;
+            dgvStatistics.DataError += (s, ev) =>
+            {
+                Log.Warn("dgvStatistics DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message);
+                ev.ThrowException = false;
             };
 
             // Wire resources grid events
@@ -409,7 +413,9 @@ namespace OE2EmpireTracker
         private void LvwBlueprints_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             if (e.Column == _sortColumn)
+            {
                 _sortOrder = _sortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+            }
             else
             {
                 _sortColumn = e.Column;
@@ -566,7 +572,9 @@ namespace OE2EmpireTracker
                     {
                         MessageBox.Show(
                             "Please select or import a blueprint first, then import the resources tab.",
-                            "Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            "Import",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
                         return;
                     }
 
@@ -1072,12 +1080,14 @@ namespace OE2EmpireTracker
             if (viewModel.Data.Properties?.Count > 0)
             {
                 foreach (var kvp in viewModel.Data.Properties.Properties)
+                {
                     Log.Info(
                         "  BAG KEY: [{0}] = '{1}' (len={2}, chars={3})",
                         kvp.Key,
                         kvp.Value,
                         kvp.Key.Length,
                         string.Join(", ", kvp.Key.Select(c => ((int)c).ToString("X4"))));
+                }
             }
 
             foreach (DataGridViewRow row in dgvStatistics.Rows)

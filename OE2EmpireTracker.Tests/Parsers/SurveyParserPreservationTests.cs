@@ -344,9 +344,16 @@ namespace OE2EmpireTracker.Tests.Parsers
         private static Gen<string> ResourceNameGen()
         {
             return Gen.Elements(
-                "Post-Trans Metals", "Heavy Trans-Metals", "Complex Metallics",
-                "Alkali Organics", "Noble Gases", "Lanthanides", "Halogens",
-                "Strong Alkali Organics", "Heavy Noble Gases", "Superheavy Exotics");
+                "Post-Trans Metals",
+                "Heavy Trans-Metals",
+                "Complex Metallics",
+                "Alkali Organics",
+                "Noble Gases",
+                "Lanthanides",
+                "Halogens",
+                "Strong Alkali Organics",
+                "Heavy Noble Gases",
+                "Superheavy Exotics");
         }
 
         private static Gen<string> PurityGen()

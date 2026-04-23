@@ -15,7 +15,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             for (int level = 0; level <= 50; level++)
             {
-                long expected = Math.Max(1, (long)(86400.0 * (1.0 - level * 0.02)));
+                long expected = Math.Max(1, (long)(86400.0 * (1.0 - (level * 0.02))));
                 long actual = BuildTimeCalculator.Calculate(level);
                 Assert.That(
                     actual,

@@ -10,6 +10,15 @@ namespace OE2EmpireTracker.Models
     public class CountDownTime
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="CountDownTime"/> class.
+        /// </summary>
+        public CountDownTime()
+        {
+            StartTime = DateTime.MinValue;
+            EndTime = StartTime;
+        }
+
+        /// <summary>
         /// Gets or sets the number of seconds remaining until the next expiration.
         /// For repeating timers this returns the remaining seconds until the next interval boundary.
         /// </summary>
@@ -132,18 +141,9 @@ namespace OE2EmpireTracker.Models
                 int minutes = match.Groups[3].Success ? int.Parse(match.Groups[3].Value) : 0;
                 int seconds = match.Groups[4].Success ? int.Parse(match.Groups[4].Value) : 0;
 
-                long totalSeconds = ((long)days * 24 + hours) * 60 * 60 + minutes * 60 + seconds;
+                long totalSeconds = ((((long)days * 24) + hours) * 60 * 60) + (minutes * 60) + seconds;
                 TimeRemaining = totalSeconds;
             }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CountDownTime"/> class.
-        /// </summary>
-        public CountDownTime()
-        {
-            StartTime = DateTime.MinValue;
-            EndTime = StartTime;
         }
 
         /// <summary>

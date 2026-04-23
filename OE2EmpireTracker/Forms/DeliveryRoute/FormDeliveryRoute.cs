@@ -65,11 +65,15 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
             // Plan tab wiring
             PopulateItemTypeCombos();
-            cmbDropItemType.SelectedIndexChanged += (s, ev) => { PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
-            UpdatePurityVisibility(cmbDropItemType, cmbDropPurity);
+            cmbDropItemType.SelectedIndexChanged += (s, ev) =>
+            {
+                PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
+                UpdatePurityVisibility(cmbDropItemType, cmbDropPurity);
             };
-            cmbPickItemType.SelectedIndexChanged += (s, ev) => { PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);
-            UpdatePurityVisibility(cmbPickItemType, cmbPickPurity);
+            cmbPickItemType.SelectedIndexChanged += (s, ev) =>
+            {
+                PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);
+                UpdatePurityVisibility(cmbPickItemType, cmbPickPurity);
             };
             txtDropFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
             txtPickFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);

@@ -4,7 +4,7 @@ using NLog;
 
 public class DataEntryGridView : System.Windows.Forms.DataGridView
 {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
     private bool changingSelection = false;
 
@@ -17,7 +17,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
     protected override bool ProcessDialogKey(Keys keyData)
     {
         Log.Debug("ProcessDialogKey Key = " + keyData);
-        Keys key = (keyData & (Keys.KeyCode | Keys.Shift));
+        Keys key = keyData & (Keys.KeyCode | Keys.Shift);
 
         if (key == Keys.Tab)
         {
@@ -72,7 +72,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
         {
             int col = this.CurrentCell.ColumnIndex;
             // We are on a read only cell. move forward.
-            if (col >=0 && col < this.Columns.Count && this.Columns[col].ReadOnly)
+            if (col >= 0 && col < this.Columns.Count && this.Columns[col].ReadOnly)
             {
                 HandleForward(this.Focused);
             }
@@ -150,7 +150,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
     private int FindPreviousCell(int col)
     {
         for (; col >= 0;
-        col--)
+            col--)
         {
             if (this.Columns[col] != null && !this.Columns[col].ReadOnly)
             {
@@ -164,7 +164,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
     private int FindNextCell(int col)
     {
         for (; col < this.Columns.Count;
-        col++)
+            col++)
         {
             if (!this.Columns[col].ReadOnly)
             {
@@ -179,7 +179,7 @@ public class DataEntryGridView : System.Windows.Forms.DataGridView
     {
         changingSelection = true;
         this.CurrentCell =
-        this.Rows[rowIndex].Cells[col];
+            this.Rows[rowIndex].Cells[col];
         if (enableEdit)
         {
             this.BeginEdit(true);

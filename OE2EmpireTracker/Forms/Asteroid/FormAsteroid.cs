@@ -113,6 +113,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                     a.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0 ||
                     a.SystemName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
+
             asteroids = asteroids.OrderBy(a => a.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
             var refCounter = new AsteroidReferenceCounter(
@@ -376,7 +377,9 @@ namespace OE2EmpireTracker.Forms.Asteroid
                         "Cannot delete asteroid \"{0}\" \u2014 it is referenced by {1} survey(s), build item(s), or route stop(s).",
                         _selectedAsteroid.Name,
                         report.TotalCount),
-                    "Delete Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    "Delete Blocked",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 

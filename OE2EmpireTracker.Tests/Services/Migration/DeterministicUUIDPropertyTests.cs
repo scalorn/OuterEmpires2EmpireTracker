@@ -47,14 +47,22 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                          || key1.Item5 != key2.Item5
                       select new { Key1 = key1, Key2 = key2 };
 
-            return Prop.ForAll(gen.ToArbitrary(), data =>
+            return Prop.ForAll(
+                gen.ToArbitrary(),
+                data =>
             {
                 var uuid1 = DeterministicUUID.Generate(
-                    data.Key1.Item1, data.Key1.Item2, data.Key1.Item3,
-                    data.Key1.Item4, data.Key1.Item5);
+                    data.Key1.Item1,
+                    data.Key1.Item2,
+                    data.Key1.Item3,
+                    data.Key1.Item4,
+                    data.Key1.Item5);
                 var uuid2 = DeterministicUUID.Generate(
-                    data.Key2.Item1, data.Key2.Item2, data.Key2.Item3,
-                    data.Key2.Item4, data.Key2.Item5);
+                    data.Key2.Item1,
+                    data.Key2.Item2,
+                    data.Key2.Item3,
+                    data.Key2.Item4,
+                    data.Key2.Item5);
 
                 return (uuid1 != uuid2)
                     .Label($"Expected different UUIDs for different inputs, both got '{uuid1}'");

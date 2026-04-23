@@ -21,7 +21,9 @@ namespace OE2EmpireTracker.Tests.Services.Migration
     public class Migration003PropertyTests
     {
         private static readonly string[] Months =
-            { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
+        {
+            "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+        };
 
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 7: Migration is idempotent on ISO values.
@@ -149,10 +151,15 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             var nullGen = Gen.Constant((string)null);
             var emptyGen = Gen.Constant(string.Empty);
             var garbage = Gen.Elements(
-                "not-a-date", "ZZZZZ", "99ZZZ99-99:99x",
-                "abc123!@#", "2024-13-45T99:99:99",
-                "32JAN24-1:00p", "00XXX00-0:00z",
-                "random garbage here", "!!!",
+                "not-a-date",
+                "ZZZZZ",
+                "99ZZZ99-99:99x",
+                "abc123!@#",
+                "2024-13-45T99:99:99",
+                "32JAN24-1:00p",
+                "00XXX00-0:00z",
+                "random garbage here",
+                "!!!",
                 "2024-02-30T12:00:00"); // invalid day for Feb
 
             return Gen.OneOf(nullGen, emptyGen, garbage);

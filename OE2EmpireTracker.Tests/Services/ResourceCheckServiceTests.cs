@@ -280,7 +280,9 @@ namespace OE2EmpireTracker.Tests.Services
             var result = ResourceCheckService.ComputePlanShortfalls(
                 plan,
                 id => id == "colony-1" ? colony : null,
-                id => null, id => null, "p1",
+                id => null,
+                id => null,
+                "p1",
                 id => id == "bp-1" ? bp : null);
 
             Assert.That(result.Count, Is.EqualTo(1));
@@ -341,7 +343,10 @@ namespace OE2EmpireTracker.Tests.Services
             var result = ResourceCheckService.ComputePlanShortfalls(
                 plan,
                 id => id == "colony-1" ? colony : null,
-                id => null, id => null, "p1", bpFinder);
+                id => null,
+                id => null,
+                "p1",
+                bpFinder);
 
             // Only item1 should have shortfalls
             Assert.That(result.Count, Is.EqualTo(1));

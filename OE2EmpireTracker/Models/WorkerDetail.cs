@@ -38,10 +38,6 @@ namespace OE2EmpireTracker.Models
 
         private static readonly Dictionary<string, WorkerDetail> _workerDetailMapByName;
 
-        public WorkerDetail()
-        {
-        }
-
         static WorkerDetail()
         {
             _workerDetailMapByID = new Dictionary<string, WorkerDetail>();
@@ -51,6 +47,10 @@ namespace OE2EmpireTracker.Models
                 _workerDetailMapByID[w.ID] = w;
                 _workerDetailMapByName[w.Name] = w;
             }
+        }
+
+        public WorkerDetail()
+        {
         }
 
         public static IReadOnlyList<WorkerDetail> WorkerDetails => _workerDetails.AsReadOnly();

@@ -18,6 +18,8 @@ namespace OE2EmpireTracker.ViewModels
 
         private readonly ColonyStatusCalculator _calculator;
 
+        private List<ColonyStructureViewModel> _cachedStructureVMs;
+
         // -----------------------------------------------------------------------
         // Colony identity
         // -----------------------------------------------------------------------
@@ -52,8 +54,6 @@ namespace OE2EmpireTracker.ViewModels
                 return _cachedStructureVMs.AsReadOnly();
             }
         }
-
-        private List<ColonyStructureViewModel> _cachedStructureVMs;
 
         public ColonyViewModel(Colony colony, PlayerContext playerContext)
         {

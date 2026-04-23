@@ -134,32 +134,19 @@ namespace OE2EmpireTracker.Tests.Parsers
         public Property CountdownFormatRejectsInvalid()
         {
             var invalidGen = Gen.OneOf(
-                // Empty and whitespace strings
                 Gen.Elements(string.Empty, " ", "  ", "\t", "\n", "   \t  "),
-
-                // Strings with unrecognized suffixes
                 Gen.Choose(0, 999).SelectMany(n =>
                     Gen.Elements('x', 'y', 'z', 'q', 'p', 'a', 'b', 'c', 'e', 'f')
                        .Select(suffix => n + suffix.ToString())),
-
-                // Strings with duplicate units (e.g. "5d 3d", "2h 7h")
                 Gen.Choose(0, 100).SelectMany(a =>
                     Gen.Choose(0, 100).SelectMany(b =>
                         Gen.Elements('d', 'h', 'm', 's')
                            .Select(unit => a + unit.ToString() + " " + b + unit.ToString()))),
-
-                // Strings with negative numbers
                 Gen.Choose(1, 999).SelectMany(n =>
                     Gen.Elements('d', 'h', 'm', 's')
                        .Select(unit => "-" + n + unit.ToString())),
-
-                // Pure text with no numbers
                 Gen.Elements("abc", "hello", "days", "hours", "dhms", "test", "foo bar"),
-
-                // Single characters that aren't valid tokens
                 Gen.Elements("d", "h", "m", "s", "5", "0", "x"),
-
-                // Tokens with non-numeric prefixes
                 Gen.Elements("abcd", "xxh", "??m", "!!s", "1.5d", "2.0h", "3, 5m"));
 
             return Prop.ForAll(invalidGen.ToArbitrary(), input =>

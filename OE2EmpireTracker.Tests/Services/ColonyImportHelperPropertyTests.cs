@@ -136,9 +136,9 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"UUID changed from '{originalUuid}' to '{data.Existing.UUID}'");
                 var ownerPreserved = (data.Existing.OwnerUUID == originalOwnerUuid)
                     .Label($"OwnerUUID changed from '{originalOwnerUuid}' to '{data.Existing.OwnerUUID}'");
-                var itemsPreserved = (ReferenceEquals(data.Existing.Items, originalItems))
+                var itemsPreserved = ReferenceEquals(data.Existing.Items, originalItems)
                     .Label("Items reference changed");
-                var structsPreserved = (ReferenceEquals(data.Existing.Structures, originalStructures))
+                var structsPreserved = ReferenceEquals(data.Existing.Structures, originalStructures)
                     .Label("Structures reference changed");
                 var structCountPreserved = (data.Existing.Structures.Count == originalStructCount)
                     .Label($"Structures count changed from {originalStructCount} to {data.Existing.Structures.Count}");

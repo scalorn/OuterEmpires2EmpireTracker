@@ -202,7 +202,7 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            return amount * (1.0m + extractionFocusLevel * 0.01m);
+            return amount * (1.0m + (extractionFocusLevel * 0.01m));
         }
 
         /// <summary>

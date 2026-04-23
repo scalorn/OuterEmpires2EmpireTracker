@@ -187,7 +187,7 @@ namespace OE2EmpireTracker.Models
                     name = reader.Value as string;
                 }
 
-                    if (token == JsonToken.StartObject)
+                if (token == JsonToken.StartObject)
                     {
                         // Deserialize the Item object using the provided serializer. This will consume
                         // the entire object from the reader.

@@ -207,8 +207,16 @@ namespace OE2EmpireTracker.Tests.Services
         {
             Assert.Throws<ArgumentNullException>(() =>
                 MarketService.RecordPurchase(
-                    ItemType.ItemTypeEnum.ShipPart, "X", "ref", 1, 10m,
-                    "s1", "C", "F", "p1", null));
+                    ItemType.ItemTypeEnum.ShipPart,
+                    "X",
+                    "ref",
+                    1,
+                    10m,
+                    "s1",
+                    "C",
+                    "F",
+                    "p1",
+                    null));
         }
 
         [Test]
@@ -236,8 +244,16 @@ namespace OE2EmpireTracker.Tests.Services
         public void RecordPurchase_SetsTimestamp()
         {
             var tx = MarketService.RecordPurchase(
-                ItemType.ItemTypeEnum.Resource, "Iron", "res-iron", 1, 10m,
-                "s1", "C", "F", "p1", uuid => null);
+                ItemType.ItemTypeEnum.Resource,
+                "Iron",
+                "res-iron",
+                1,
+                10m,
+                "s1",
+                "C",
+                "F",
+                "p1",
+                uuid => null);
 
             Assert.That(tx.Timestamp, Is.Not.Empty);
             Assert.That(DateTime.TryParse(tx.Timestamp, out _), Is.True);

@@ -104,8 +104,10 @@ namespace OE2EmpireTracker.Forms.Survey
             cmbPurity.ValueMember = "Name";
             cmbPurity.DataSource = empireContext.BindingSourceResourcePurity;
 
-            dgvResources.DataError += (s, ev) => { Log.Warn("dgvResources DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message);
-            ev.ThrowException = false;
+            dgvResources.DataError += (s, ev) =>
+            {
+                Log.Warn("dgvResources DataError at [{0}, {1}]: {2}", ev.RowIndex, ev.ColumnIndex, ev.Exception?.Message);
+                ev.ThrowException = false;
             };
 
             // Add read-only Max Reserve column (programmatic — not in Designer)

@@ -82,7 +82,7 @@ namespace OE2EmpireTracker.Services
             var refineryBp = FindPlayerBlueprint(BlueprintTypes.Refinery);
             foreach (var entry in bestResources.OrderBy(r => r.ResourceName))
             {
-                decimal miningRate = entry.RawAmount * (1.0m + _extractionFocusLevel * 0.01m);
+                decimal miningRate = entry.RawAmount * (1.0m + (_extractionFocusLevel * 0.01m));
                 int refinersNeeded = (int)Math.Ceiling((double)miningRate / GameConstants.RefiningBaseRate);
 
                 for (int i = 0; i < refinersNeeded; i++)
@@ -132,7 +132,7 @@ namespace OE2EmpireTracker.Services
                     decimal amount;
                     if (!decimal.TryParse(resource.Amount, out amount)) continue;
 
-                    decimal adjustedRate = amount * (1.0m + _extractionFocusLevel * 0.01m);
+                    decimal adjustedRate = amount * (1.0m + (_extractionFocusLevel * 0.01m));
                     int refiningMultiplier = GetRefiningMultiplier(resource.Purity);
                     decimal refinedOutput = adjustedRate * refiningMultiplier;
 

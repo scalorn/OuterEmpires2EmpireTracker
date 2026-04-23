@@ -99,11 +99,17 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             foreach (var entry in entries)
             {
                 string oldUUID = DeterministicUUID.Generate(
-                    entry.OldName, entry.Evolution,
-                    entry.BluePrintType, entry.Class, entry.TechLevel);
+                    entry.OldName,
+                    entry.Evolution,
+                    entry.BluePrintType,
+                    entry.Class,
+                    entry.TechLevel);
                 string newUUID = DeterministicUUID.Generate(
-                    entry.NewName, entry.Evolution,
-                    entry.BluePrintType, entry.Class, entry.TechLevel);
+                    entry.NewName,
+                    entry.Evolution,
+                    entry.BluePrintType,
+                    entry.Class,
+                    entry.TechLevel);
 
                 var bp = ec.GlobalBlueprintList.FirstOrDefault(b => b.UUID == oldUUID);
                 if (bp == null) continue;

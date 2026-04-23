@@ -50,7 +50,9 @@ namespace OE2EmpireTracker.Services
 
             // Find or create the delivery plan
             DeliveryPlan plan = FindOrCreatePlan(
-                buildPlan.DeliveryPlanUUID, route, playerContext,
+                buildPlan.DeliveryPlanUUID,
+                route,
+                playerContext,
                 string.Format("Build: {0}", buildPlan.Name));
 
             // Rebuild stops from shortfalls

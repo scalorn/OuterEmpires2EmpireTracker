@@ -20,7 +20,10 @@ namespace OE2EmpireTracker.Tests.Services
             var result = StockTargetService.CheckTargets(
                 Enumerable.Empty<StockPlan>(),
                 PlayerUUID,
-                _ => null, _ => null, _ => null, _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
                 Enumerable.Empty<Colony>(),
                 Enumerable.Empty<Station>());
 
@@ -49,7 +52,10 @@ namespace OE2EmpireTracker.Tests.Services
             var result = StockTargetService.CheckTargets(
                 new[] { plan },
                 PlayerUUID,
-                _ => null, _ => null, _ => null, _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
                 Enumerable.Empty<Colony>(),
                 Enumerable.Empty<Station>());
 
@@ -79,7 +85,10 @@ namespace OE2EmpireTracker.Tests.Services
             var result = StockTargetService.CheckTargets(
                 new[] { plan },
                 PlayerUUID,
-                _ => null, _ => null, _ => null, _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
                 new[] { colony },
                 Enumerable.Empty<Station>());
 
@@ -110,7 +119,10 @@ namespace OE2EmpireTracker.Tests.Services
             var result = StockTargetService.CheckTargets(
                 new[] { plan },
                 PlayerUUID,
-                _ => null, _ => null, _ => null, _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
                 new[] { colony },
                 Enumerable.Empty<Station>());
 
@@ -146,7 +158,9 @@ namespace OE2EmpireTracker.Tests.Services
                 new[] { plan },
                 PlayerUUID,
                 uuid => uuid == "col-A" ? colonyA : uuid == "col-B" ? colonyB : null,
-                _ => null, _ => null, _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
                 new[] { colonyA, colonyB },
                 Enumerable.Empty<Station>());
 
@@ -180,7 +194,8 @@ namespace OE2EmpireTracker.Tests.Services
                 PlayerUUID,
                 _ => null,
                 uuid => uuid == "sta-1" ? station : null,
-                _ => null, _ => null,
+                _ => null,
+                _ => null,
                 Enumerable.Empty<Colony>(),
                 new[] { station });
 
@@ -212,7 +227,10 @@ namespace OE2EmpireTracker.Tests.Services
             var result = StockTargetService.CheckTargets(
                 new[] { plan },
                 PlayerUUID,
-                _ => null, _ => null, _ => null, _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
                 new[] { colony },
                 new[] { station });
 
@@ -259,7 +277,8 @@ namespace OE2EmpireTracker.Tests.Services
             var result = StockTargetService.CheckTargets(
                 new[] { plan },
                 PlayerUUID,
-                _ => null, _ => null,
+                _ => null,
+                _ => null,
                 uuid => uuid == "tmpl-1" ? template : null,
                 _ => null,
                 new[] { colony },
@@ -277,7 +296,10 @@ namespace OE2EmpireTracker.Tests.Services
             var result = StockTargetService.CheckTargets(
                 null,
                 PlayerUUID,
-                _ => null, _ => null, _ => null, _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
+                _ => null,
                 Enumerable.Empty<Colony>(),
                 Enumerable.Empty<Station>());
 

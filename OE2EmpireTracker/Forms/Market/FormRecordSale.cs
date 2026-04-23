@@ -31,7 +31,7 @@ namespace OE2EmpireTracker.Forms.Market
             AddLabel(string.Format("Available: {0}", listing.Quantity), 10, y);
             y += 25;
             string condStr = listing.MaxHP > 0
-                ? string.Format("Condition: {0:F0}%", (listing.CurrentHP * 100.0 / listing.MaxHP))
+                ? string.Format("Condition: {0:F0}%", listing.CurrentHP * 100.0 / listing.MaxHP)
                 : "Condition: N/A";
             AddLabel(condStr, 10, y);
             y += 25;

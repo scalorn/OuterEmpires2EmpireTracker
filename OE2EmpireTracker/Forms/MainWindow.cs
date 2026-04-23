@@ -588,7 +588,9 @@ namespace OE2EmpireTracker
 
             PopulatePlayerDropdown();
             UpdateNoPlayerGuard();
-        }        private bool PerformSaveAs()
+        }
+
+        private bool PerformSaveAs()
         {
             using (var dlg = new SaveFileDialog())
             {

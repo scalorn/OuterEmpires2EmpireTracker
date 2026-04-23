@@ -166,7 +166,7 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var cdt = new CountDownTime();
             cdt.TimeRemainingString = "1d 2h 3m 4s";
-            long expected = ((1 * 24 + 2) * 60 + 3) * 60 + 4; // 93784
+            long expected = (((((1 * 24) + 2) * 60) + 3) * 60) + 4; // 93784
             Assert.That(cdt.TimeRemaining, Is.InRange(expected - 2, expected));
         }
 
@@ -175,7 +175,7 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var cdt = new CountDownTime();
             cdt.TimeRemainingString = "5h";
-            Assert.That(cdt.TimeRemaining, Is.InRange(5 * 3600 - 2, 5 * 3600));
+            Assert.That(cdt.TimeRemaining, Is.InRange((5 * 3600) - 2, 5 * 3600));
         }
 
         [Test]

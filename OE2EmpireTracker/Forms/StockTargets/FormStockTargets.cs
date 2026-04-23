@@ -132,6 +132,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 plans = plans.Where(p =>
                     p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
+
             plans = plans.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
             foreach (var plan in plans)
@@ -385,9 +386,14 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 string locationName = ResolveLocationName(target.Scope, target.LocationUUID);
 
                 int rowIdx = dgvTargets.Rows.Add(
-                    typeName, target.ItemName,
-                    target.TargetQuantity.ToString(), target.CriticalThreshold.ToString(),
-                    target.Scope.ToString(), locationName, string.Empty, string.Empty);
+                    typeName,
+                    target.ItemName,
+                    target.TargetQuantity.ToString(),
+                    target.CriticalThreshold.ToString(),
+                    target.Scope.ToString(),
+                    locationName,
+                    string.Empty,
+                    string.Empty);
                 dgvTargets.Rows[rowIdx].Tag = target;
             }
 
@@ -708,9 +714,13 @@ namespace OE2EmpireTracker.Forms.StockTargets
             // Generate replenishment items if a build plan is assigned
             if (string.IsNullOrEmpty(_selectedPlan.ReplenishmentBuildPlanUUID))
             {
-                MessageBox.Show(string.Format(
-                    "{0} shortfall(s) found but no replenishment plan assigned.",
-                    shortfalls.Count), "Stock Check", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    string.Format(
+                        "{0} shortfall(s) found but no replenishment plan assigned.",
+                        shortfalls.Count),
+                    "Stock Check",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -732,11 +742,14 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 buildPlan.Items.AddRange(newItems);
                 playerContext.WriteContext();
                 playerContext.CascadeResourceCheckDirty = true;
-                MessageBox.Show(string.Format(
-                    "Generated {0} build item(s) in plan \"{1}\".",
-                    newItems.Count,
-                    buildPlan.Name), "Orders Generated",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    string.Format(
+                        "Generated {0} build item(s) in plan \"{1}\".",
+                        newItems.Count,
+                        buildPlan.Name),
+                    "Orders Generated",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
             else
             {
@@ -777,6 +790,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 profiles = profiles.Where(p =>
                     p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
+
             profiles = profiles.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
             foreach (var profile in profiles)
@@ -1052,8 +1066,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
             if (IsDisposed) return;
             if (InvokeRequired)
             {
-                try { BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
-                } catch (ObjectDisposedException)
+                try
+                {
+                    BeginInvoke(new Action(() => OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
                 {
                 }
 

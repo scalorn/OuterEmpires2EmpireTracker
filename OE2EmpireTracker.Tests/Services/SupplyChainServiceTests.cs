@@ -52,7 +52,9 @@ namespace OE2EmpireTracker.Tests.Services
             var result = SupplyChainService.CheckThresholds(
                 new[] { chain },
                 uuid => uuid == "col-1" ? colony : null,
-                _ => null, _ => null, PlayerUUID);
+                _ => null,
+                _ => null,
+                PlayerUUID);
 
             Assert.That(result, Is.Empty);
         }
@@ -84,7 +86,9 @@ namespace OE2EmpireTracker.Tests.Services
             var result = SupplyChainService.CheckThresholds(
                 new[] { chain },
                 uuid => uuid == "col-1" ? colony : null,
-                _ => null, _ => null, PlayerUUID);
+                _ => null,
+                _ => null,
+                PlayerUUID);
 
             Assert.That(result, Is.Empty);
         }
@@ -117,7 +121,9 @@ namespace OE2EmpireTracker.Tests.Services
             var result = SupplyChainService.CheckThresholds(
                 new[] { chain },
                 uuid => uuid == "col-1" ? colony : null,
-                _ => null, _ => null, PlayerUUID);
+                _ => null,
+                _ => null,
+                PlayerUUID);
 
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result[0].ExcessQuantity, Is.EqualTo(30));
@@ -154,7 +160,9 @@ namespace OE2EmpireTracker.Tests.Services
             var result = SupplyChainService.CheckThresholds(
                 new[] { chain },
                 uuid => uuid == "col-1" ? colony : null,
-                _ => null, _ => null, PlayerUUID);
+                _ => null,
+                _ => null,
+                PlayerUUID);
 
             Assert.That(result, Is.Empty);
         }
@@ -186,7 +194,9 @@ namespace OE2EmpireTracker.Tests.Services
             var result = SupplyChainService.CheckThresholds(
                 new[] { chain },
                 uuid => uuid == "col-1" ? colony : null,
-                _ => null, _ => null, PlayerUUID);
+                _ => null,
+                _ => null,
+                PlayerUUID);
 
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result[0].ExcessQuantity, Is.EqualTo(15));
@@ -220,7 +230,8 @@ namespace OE2EmpireTracker.Tests.Services
                 new[] { chain },
                 _ => null,
                 uuid => uuid == "sta-1" ? station : null,
-                _ => null, PlayerUUID);
+                _ => null,
+                PlayerUUID);
 
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result[0].ExcessQuantity, Is.EqualTo(35));
@@ -230,9 +241,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void CheckThresholds_NullChains_ReturnsEmpty()
         {
-            var result = SupplyChainService.CheckThresholds(
-                null,
-                _ => null, _ => null, _ => null, PlayerUUID);
+            var result = SupplyChainService.CheckThresholds(null, _ => null, _ => null, _ => null, PlayerUUID);
 
             Assert.That(result, Is.Empty);
         }

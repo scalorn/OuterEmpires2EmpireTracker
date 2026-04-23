@@ -4,15 +4,6 @@ using Newtonsoft.Json.Converters;
 
 namespace OE2EmpireTracker.Models
 {
-    public class SupplyChain
-    {
-        public string UUID { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string OwnerUUID { get; set; } = string.Empty;
-        public bool IsActive { get; set; } = true;
-        public List<SupplyChainStage> Stages { get; set; } = new List<SupplyChainStage>();
-    }
-
     public enum SupplyChainStageType
     {
         Mine,
@@ -21,6 +12,15 @@ namespace OE2EmpireTracker.Models
         Refine,
         Deliver,
         Research
+    }
+
+    public class SupplyChain
+    {
+        public string UUID { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string OwnerUUID { get; set; } = string.Empty;
+        public bool IsActive { get; set; } = true;
+        public List<SupplyChainStage> Stages { get; set; } = new List<SupplyChainStage>();
     }
 
     public class SupplyChainStage

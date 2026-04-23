@@ -25,6 +25,22 @@ namespace OE2EmpireTracker.Models
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
+        private static List<Commodity> _commodities = GetCommodities();
+
+        private static Dictionary<string, Commodity> _commodityMapByEnum;
+
+        private static Dictionary<string, Commodity> _commodityMapByString;
+
+        public Commodity()
+        {
+        }
+
+        public static IReadOnlyList<Commodity> Commodities => _commodities.AsReadOnly();
+
+        public static IReadOnlyDictionary<string, Commodity> ResourceMapByEnum => _commodityMapByEnum;
+
+        public static IReadOnlyDictionary<string, Commodity> ResourceMapByString => _commodityMapByString;
+
         [JsonIgnore]
         public string ExtendedName
         {
@@ -54,22 +70,6 @@ namespace OE2EmpireTracker.Models
                 return extendedName;
             }
         }
-
-        private static List<Commodity> _commodities = GetCommodities();
-
-        private static Dictionary<string, Commodity> _commodityMapByEnum;
-
-        private static Dictionary<string, Commodity> _commodityMapByString;
-
-        public Commodity()
-        {
-        }
-
-        public static IReadOnlyList<Commodity> Commodities => _commodities.AsReadOnly();
-
-        public static IReadOnlyDictionary<string, Commodity> ResourceMapByEnum => _commodityMapByEnum;
-
-        public static IReadOnlyDictionary<string, Commodity> ResourceMapByString => _commodityMapByString;
 
         [Required]
         public Models.CommodityIndustry.CommodityIndustryEnum CommodityIndustry { get; set; }

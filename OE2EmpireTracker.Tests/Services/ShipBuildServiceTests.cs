@@ -30,8 +30,12 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var template = CreateTemplate("hull-1", "reactor-1", "drive-1");
             var items = ShipBuildService.GenerateShipBuildItems(
-                template, 1, DestinationType.Station, "station-1",
-                id => new OE2EmpireTracker.Models.Blueprint(id) { UUID = id }, id => 0);
+                template,
+                1,
+                DestinationType.Station,
+                "station-1",
+                id => new OE2EmpireTracker.Models.Blueprint(id) { UUID = id },
+                id => 0);
 
             Assert.That(items.Count, Is.EqualTo(3)); // hull + 2 components
             Assert.That(items.All(i => i.ItemType == BuildItemType.Manufactory), Is.True);
@@ -42,7 +46,10 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var template = CreateTemplate("hull-1", "reactor-1");
             var items = ShipBuildService.GenerateShipBuildItems(
-                template, 1, DestinationType.Station, "station-1",
+                template,
+                1,
+                DestinationType.Station,
+                "station-1",
                 id => new OE2EmpireTracker.Models.Blueprint(id) { UUID = id },
                 id => id == "reactor-1" ? 5 : 0); // reactor in stock
 
@@ -55,8 +62,12 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var template = CreateTemplate("hull-1", "reactor-1");
             var items = ShipBuildService.GenerateShipBuildItems(
-                template, 3, DestinationType.Station, "station-1",
-                id => new OE2EmpireTracker.Models.Blueprint(id) { UUID = id }, id => 0);
+                template,
+                3,
+                DestinationType.Station,
+                "station-1",
+                id => new OE2EmpireTracker.Models.Blueprint(id) { UUID = id },
+                id => 0);
 
             Assert.That(items.Count, Is.EqualTo(6)); // 3 x (hull + reactor)
         }

@@ -74,7 +74,7 @@ namespace OE2EmpireTracker.Forms.Market
             {
                 string stationName = ResolveStationName(listing.StationUUID);
                 string condition = listing.MaxHP > 0
-                    ? string.Format("{0:F0}%", (listing.CurrentHP * 100.0 / listing.MaxHP))
+                    ? string.Format("{0:F0}%", listing.CurrentHP * 100.0 / listing.MaxHP)
                     : "N/A";
                 int refs = refCounter.CountReferences(listing.UUID);
 
@@ -144,7 +144,9 @@ namespace OE2EmpireTracker.Forms.Market
                         "Cannot delete listing \"{0}\" \u2014 it is referenced by {1} transaction(s).",
                         listing.ItemName,
                         refs),
-                    "Delete Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    "Delete Blocked",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -176,8 +178,12 @@ namespace OE2EmpireTracker.Forms.Market
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
                     var tx = MarketService.RecordSale(
-                        listing, dlg.SaleQuantity, dlg.SalePricePerUnit,
-                        dlg.Counterparty, dlg.CounterpartyFaction, listing.StationUUID);
+                        listing,
+                        dlg.SaleQuantity,
+                        dlg.SalePricePerUnit,
+                        dlg.Counterparty,
+                        dlg.CounterpartyFaction,
+                        listing.StationUUID);
 
                     if (tx == null)
                     {
@@ -240,7 +246,7 @@ namespace OE2EmpireTracker.Forms.Market
 
                 string stationName = ResolveStationName(tx.StationUUID);
                 string condition = tx.MaxHP > 0
-                    ? string.Format("{0:F0}%", (tx.CurrentHP * 100.0 / tx.MaxHP))
+                    ? string.Format("{0:F0}%", tx.CurrentHP * 100.0 / tx.MaxHP)
                     : string.Empty;
                 string dateStr = string.Empty;
                 if (DateTime.TryParse(tx.Timestamp, out DateTime parsed))

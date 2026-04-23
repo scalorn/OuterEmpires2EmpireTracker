@@ -105,7 +105,7 @@ namespace OE2EmpireTracker.Tests.Services
                     calc.CalculateBuilt(s, prev, current, iw, bp);
 
                     TestContext.WriteLine(
-                        $"  [{i}] {bp?.ExtendedName, -40} Pwr={current.PowerRequired}/{current.PowerProvided} " +
+                        $"  [{i}] {bp?.ExtendedName,-40} Pwr={current.PowerRequired}/{current.PowerProvided} " +
                         $"Hab={current.HabitationRequired}/{current.HabitationProvision} " +
                         $"Food={current.FoodRequired}/{current.FoodProvision} " +
                         $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}" +

@@ -14,6 +14,18 @@ namespace OE2EmpireTracker.Models
 {
     public class Blueprint : Item
     {
+        public Blueprint(string name /*, int quantity*/) : base(Models.ItemType.ItemTypeEnum.Blueprint, name /* , quantity */)
+        {
+            Properties = new PropertyBag();
+            Resources = new Dictionary<string, string>();
+        }
+
+        public Blueprint() : base(Models.ItemType.ItemTypeEnum.Blueprint, string.Empty)
+        {
+            Properties = new PropertyBag();
+            Resources = new Dictionary<string, string>();
+        }
+
         [JsonIgnore]
         public string OutputItemName
         {
@@ -68,18 +80,6 @@ namespace OE2EmpireTracker.Models
                 extendedName = extendedName.Trim();
                 return extendedName;
             }
-        }
-
-        public Blueprint(string name /*, int quantity*/) : base(Models.ItemType.ItemTypeEnum.Blueprint, name /* , quantity */)
-        {
-            Properties = new PropertyBag();
-            Resources = new Dictionary<string, string>();
-        }
-
-        public Blueprint() : base(Models.ItemType.ItemTypeEnum.Blueprint, string.Empty)
-        {
-            Properties = new PropertyBag();
-            Resources = new Dictionary<string, string>();
         }
 
         public string OwnerUUID { get; set; } = string.Empty;

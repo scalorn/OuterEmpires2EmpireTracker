@@ -300,9 +300,26 @@ namespace OE2EmpireTracker.Tests.Services
         private static Gen<string> NonEmptyAlphaStringGen()
         {
             return Gen.Elements(
-                "Alpha", "Beta", "Gamma", "Delta", "Hull", "Shield", "Reactor",
-                "Drive", "Weapon", "Cargo", "Nav", "Fuel", "Thruster", "Laser",
-                "Drone", "Plating", "Coupler", "Scanner", "Grapple", "Hopper");
+                "Alpha",
+                "Beta",
+                "Gamma",
+                "Delta",
+                "Hull",
+                "Shield",
+                "Reactor",
+                "Drive",
+                "Weapon",
+                "Cargo",
+                "Nav",
+                "Fuel",
+                "Thruster",
+                "Laser",
+                "Drone",
+                "Plating",
+                "Coupler",
+                "Scanner",
+                "Grapple",
+                "Hopper");
         }
 
         private static Gen<string> TechLevelGen()

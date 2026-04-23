@@ -15,6 +15,16 @@ namespace OE2EmpireTracker.Models
 {
     public class Item
     {
+        public Item(Models.ItemType.ItemTypeEnum itemType, string name)
+        {
+            this.ItemType = itemType;
+            this.Name = name;
+        }
+
+        public Item()
+        {
+        }
+
         [JsonIgnore]
         public virtual string ExtendedName
         {
@@ -84,16 +94,6 @@ namespace OE2EmpireTracker.Models
 
                 return extendedName;
             }
-        }
-
-        public Item(Models.ItemType.ItemTypeEnum itemType, string name)
-        {
-            this.ItemType = itemType;
-            this.Name = name;
-        }
-
-        public Item()
-        {
         }
 
         public string UUID { get; set; }

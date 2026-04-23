@@ -157,9 +157,9 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"DateTime mismatch");
                 var scannerMatch = (data.Existing.ScannerBlueprintUUID == data.Source.ScannerBlueprintUUID)
                     .Label($"ScannerBlueprintUUID mismatch");
-                var resourceMatch = (ReferenceEquals(data.Existing.Resources, data.Source.Resources))
+                var resourceMatch = ReferenceEquals(data.Existing.Resources, data.Source.Resources)
                     .Label("Resources reference should be updated from source");
-                var propsMatch = (ReferenceEquals(data.Existing.Properties, data.Source.Properties))
+                var propsMatch = ReferenceEquals(data.Existing.Properties, data.Source.Properties)
                     .Label("Properties reference should be updated from source");
                 var surveyTypeMatch = (data.Existing.SurveyType == data.Source.SurveyType)
                     .Label($"SurveyType: expected '{data.Source.SurveyType}', got '{data.Existing.SurveyType}'");

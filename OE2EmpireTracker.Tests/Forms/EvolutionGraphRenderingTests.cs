@@ -27,8 +27,8 @@ namespace OE2EmpireTracker.Tests.Forms
             // This guarantees at least one segment and allows both gaps and consecutive pairs.
             var pointsGen = Gen.Choose(2, 16).SelectMany(count =>
                 Gen.Shuffle(Enumerable.Range(0, 16).ToArray())
-                    .Select(shuffled => shuffled.Take(count).OrderBy(x => x).ToArray())
-          ).SelectMany(evLevels =>
+                    .Select(shuffled => shuffled.Take(count).OrderBy(x => x).ToArray()))
+          .SelectMany(evLevels =>
             {
                 // For each evolution level, generate a random percent value (1.0--500.0)
                 var percentsGen = Gen.Sequence(

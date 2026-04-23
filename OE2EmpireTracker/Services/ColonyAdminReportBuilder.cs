@@ -304,7 +304,7 @@ namespace OE2EmpireTracker.Services
             if (remainingCycles <= 0) return;
 
             long currentCycleRemaining = Math.Max(0, row.CountDown.TimeRemaining);
-            long batchSeconds = remainingCycles * structure.ProcessCompletionTime.RepeatIntervalSeconds + currentCycleRemaining;
+            long batchSeconds = (remainingCycles * structure.ProcessCompletionTime.RepeatIntervalSeconds) + currentCycleRemaining;
 
             builder.Append("    Batch: ", DetailColor);
             builder.Append(ActivityRow.FormatSeconds(batchSeconds), CountdownColor);
@@ -359,7 +359,7 @@ namespace OE2EmpireTracker.Services
                 decimal amount;
                 if (!decimal.TryParse(resource.Amount, out amount)) continue;
 
-                decimal rate = amount * (1.0m + extractionFocusLevel * 0.01m);
+                decimal rate = amount * (1.0m + (extractionFocusLevel * 0.01m));
                 string key = resource.Resource + "|" + resource.Purity;
 
                 if (miningGroups.ContainsKey(key))

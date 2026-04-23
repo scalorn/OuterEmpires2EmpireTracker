@@ -219,7 +219,7 @@ namespace OE2EmpireTracker.Tests.Models
                         barrier.Wait();
                         for (int i = 0; i < opsPerThread; i++)
                         {
-                            string propName = "prop" + (threadIndex * opsPerThread + i);
+                            string propName = "prop" + ((threadIndex * opsPerThread) + i);
                             bag.SetProperty(propName, true);
 
                             bool value;

@@ -117,7 +117,10 @@ namespace OE2EmpireTracker.Services
                     continue;
 
                 ItemBag inventory = ResolveLocationInventory(
-                    item, colonyFinder, shipFinder, stationFinder,
+                    item,
+                    colonyFinder,
+                    shipFinder,
+                    stationFinder,
                     currentPlayerUUID);
 
                 if (inventory == null)

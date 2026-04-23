@@ -17,7 +17,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public static long Calculate(int builderSkillLevel)
         {
-            double seconds = 86400.0 * (1.0 - builderSkillLevel * 0.02);
+            double seconds = 86400.0 * (1.0 - (builderSkillLevel * 0.02));
             return Math.Max(1, (long)seconds);
         }
     }

@@ -216,8 +216,14 @@ namespace OE2EmpireTracker.Services
             _stockTargetMap.TryGetValue(blueprintUUID, out int stockTargetCount);
 
             return new ReferenceReport(
-                flatpackCount, researchingCount, manufacturingCount,
-                baseBlueprintCount, scannerCount, buildItemCount, shipComponentCount, stockTargetCount);
+                flatpackCount,
+                researchingCount,
+                manufacturingCount,
+                baseBlueprintCount,
+                scannerCount,
+                buildItemCount,
+                shipComponentCount,
+                stockTargetCount);
         }
     }
 }

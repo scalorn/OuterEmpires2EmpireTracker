@@ -1034,6 +1034,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     sb.AppendLine(string.Format(
                         "  {0} x{1}", item.ExtendedName, item.Quantity));
                 }
+
                 sb.AppendLine();
             }
 

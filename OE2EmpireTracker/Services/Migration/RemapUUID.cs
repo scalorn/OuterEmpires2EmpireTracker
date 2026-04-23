@@ -31,26 +31,23 @@ namespace OE2EmpireTracker.Services.Migration
 
             // Colony.UUID
             foreach (var colony in pc.ColonyList)
+            {
                 if (colony.UUID == oldUUID) colony.UUID = newUUID;
-                {
+            }
 
             // ColonyStructure references (3 fields)
             foreach (var colony in pc.ColonyList)
             {
                 foreach (var s in colony.Structures)
                 {
-                {
                     if (s.FlatpackBlueprintUUID == oldUUID)
                         s.FlatpackBlueprintUUID = newUUID;
-                }
-
                     if (s.ResearchingBlueprintUUID == oldUUID)
                         s.ResearchingBlueprintUUID = newUUID;
                     if (s.ManufacturingBlueprintUUID == oldUUID)
                         s.ManufacturingBlueprintUUID = newUUID;
                 }
             }
-                }
 
             // RouteStop.ColonyUUID
             foreach (var route in pc.DeliveryRouteList)

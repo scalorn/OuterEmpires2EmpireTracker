@@ -11,6 +11,19 @@ namespace OE2EmpireTracker.Models
 {
     public class Survey : Item
     {
+        public Survey(string name /*, int quantity*/) : base(Models.ItemType.ItemTypeEnum.Survey, name /* , quantity */)
+        {
+            Properties = new Dictionary<string, string>();
+            Resources = new Dictionary<string, SurveyResource>();
+        }
+
+        public Survey() : base()
+        {
+            ItemType = Models.ItemType.ItemTypeEnum.Survey;
+            Properties = new Dictionary<string, string>();
+            Resources = new Dictionary<string, SurveyResource>();
+        }
+
         [JsonIgnore]
         public override string ExtendedName
         {
@@ -34,19 +47,6 @@ namespace OE2EmpireTracker.Models
 
                 return extendedName.Trim();
             }
-        }
-
-        public Survey(string name /*, int quantity*/) : base(Models.ItemType.ItemTypeEnum.Survey, name /* , quantity */)
-        {
-            Properties = new Dictionary<string, string>();
-            Resources = new Dictionary<string, SurveyResource>();
-        }
-
-        public Survey() : base()
-        {
-            ItemType = Models.ItemType.ItemTypeEnum.Survey;
-            Properties = new Dictionary<string, string>();
-            Resources = new Dictionary<string, SurveyResource>();
         }
 
         public string OwnerUUID { get; set; } = string.Empty;
@@ -79,16 +79,6 @@ namespace OE2EmpireTracker.Models
 
     public class SurveyResource
     {
-        [JsonIgnore]
-        public string ExtendedName
-        {
-            get
-            {
-                string extendedName = Resource + (!string.IsNullOrEmpty(Purity) ? $" ({Purity})" : string.Empty) + (!string.IsNullOrEmpty(Amount) ? $" ({Amount})/h" : string.Empty);
-                return extendedName;
-            }
-        }
-
         public SurveyResource()
         {
         }
@@ -98,6 +88,16 @@ namespace OE2EmpireTracker.Models
             Resource = resource;
             Purity = purity;
             Amount = amount;
+        }
+
+        [JsonIgnore]
+        public string ExtendedName
+        {
+            get
+            {
+                string extendedName = Resource + (!string.IsNullOrEmpty(Purity) ? $" ({Purity})" : string.Empty) + (!string.IsNullOrEmpty(Amount) ? $" ({Amount})/h" : string.Empty);
+                return extendedName;
+            }
         }
 
         public string Resource { get; set; } = string.Empty;

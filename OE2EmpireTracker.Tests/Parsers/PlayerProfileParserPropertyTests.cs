@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Tests.Parsers
             var nonNegativeLongGen = Gen.Choose(0, int.MaxValue)
                 .Select(x => (long)x)
                 .Or(Gen.Choose(0, int.MaxValue).Two()
-                    .Select(t => (long)t.Item1 * int.MaxValue + t.Item2)
+                    .Select(t => ((long)t.Item1 * int.MaxValue) + t.Item2)
                     .Where(x => x >= 0));
 
             return Prop.ForAll(
@@ -126,7 +126,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                     else
                         timeString = "0 hours";
 
-                    long expectedSeconds = ((long)days * 24 + hours) * 3600;
+                    long expectedSeconds = (((long)days * 24) + hours) * 3600;
                     long parsed = PlayerProfileParser.ParseTrainingTime(timeString);
 
                     return (Math.Abs(parsed - expectedSeconds) <= 1)
@@ -146,8 +146,32 @@ namespace OE2EmpireTracker.Tests.Parsers
             // Generator for a non-empty alphabetic name (1--20 chars)
             var nameGen = Gen.Choose(1, 20).SelectMany(len =>
                 Gen.ArrayOf(len, Gen.Elements<char>(
-                    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-                    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'))
+                    'A',
+                    'B',
+                    'C',
+                    'D',
+                    'E',
+                    'F',
+                    'G',
+                    'H',
+                    'I',
+                    'J',
+                    'K',
+                    'L',
+                    'M',
+                    'a',
+                    'b',
+                    'c',
+                    'd',
+                    'e',
+                    'f',
+                    'g',
+                    'h',
+                    'i',
+                    'j',
+                    'k',
+                    'l',
+                    'm'))
                 .Select(chars => new string(chars)))
                 .Where(s => !string.IsNullOrEmpty(s));
 

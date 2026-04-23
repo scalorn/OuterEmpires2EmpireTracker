@@ -78,8 +78,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
 
             _referenceCounter = new ColonyReferenceCounter(
-                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList,
-                playerContext.SupplyChainList, playerContext.WarehouseOverflowRuleList);
+                playerContext.DeliveryRouteList,
+                playerContext.DeliveryPlanList,
+                playerContext.BuildPlanList,
+                playerContext.SupplyChainList,
+                playerContext.WarehouseOverflowRuleList);
 
             // Configure colony list
             lvwColonies.Columns.Add("Planet", 80);
@@ -439,7 +442,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void LvwColonies_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             if (e.Column == _sortColumn)
+            {
                 _sortOrder = _sortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+            }
             else
             {
                 _sortColumn = e.Column;
@@ -1160,8 +1165,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             // Draw grip dots in the center
-            int midX = rect.X + rect.Width / 2;
-            int midY = rect.Y + rect.Height / 2;
+            int midX = rect.X + (rect.Width / 2);
+            int midY = rect.Y + (rect.Height / 2);
             using (var dotBrush = new System.Drawing.SolidBrush(System.Drawing.SystemColors.ControlDarkDark))
             {
                 for (int dy = -20; dy <= 20; dy += 10)
@@ -1533,11 +1538,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             ApplyTabWarning(
                 tabPWorkers,
-                TabWarningService.EvaluateWorkerWarning( selectedColony?.Commodities, SystemClock.UtcNow));
+                TabWarningService.EvaluateWorkerWarning(selectedColony?.Commodities, SystemClock.UtcNow));
 
             ApplyTabWarning(
                 tabPAdministration,
-                TabWarningService.EvaluateColonyImportStalenessWarning( selectedColony?.LastImportDateTime, SystemClock.UtcNow));
+                TabWarningService.EvaluateColonyImportStalenessWarning(selectedColony?.LastImportDateTime, SystemClock.UtcNow));
 
             UpdateWorkerTabTitle();
             UpdateStructuresTabTitle();
@@ -1884,7 +1889,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             int minutes = match.Groups[3].Success ? int.Parse(match.Groups[3].Value) : 0;
             int seconds = match.Groups[4].Success ? int.Parse(match.Groups[4].Value) : 0;
 
-            long totalSeconds = ((long)days * 24 + hours) * 3600 + minutes * 60 + seconds;
+            long totalSeconds = ((((long)days * 24) + hours) * 3600) + (minutes * 60) + seconds;
             if (totalSeconds <= 0) return null;
             return SystemClock.UtcNow.AddSeconds(totalSeconds);
         }

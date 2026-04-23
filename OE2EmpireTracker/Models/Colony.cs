@@ -301,7 +301,7 @@ namespace OE2EmpireTracker.Models
             }
 
             // ExtractionFocus: +1% per level
-            decimal extractionMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.ExtractionFocus) * GameConstants.ExtractionFocusRatePerLevel;
+            decimal extractionMultiplier = 1.0m + (GetOwnerSkillLevel(SkillName.ExtractionFocus) * GameConstants.ExtractionFocusRatePerLevel);
 
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {
@@ -309,7 +309,7 @@ namespace OE2EmpireTracker.Models
 
                 quantityInt += (int)quantity;
 
-                leftOver += (quantity - quantityInt);
+                leftOver += quantity - quantityInt;
                 structure.ProcessCompletionTime.ConsumeIntervals(1);
             }
 
@@ -340,7 +340,7 @@ namespace OE2EmpireTracker.Models
         {
             int baseRate = GameConstants.RefiningBaseRate;
             // RefiningFocus: +2% per level
-            decimal refiningMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.RefiningFocus) * GameConstants.RefiningFocusRatePerLevel;
+            decimal refiningMultiplier = 1.0m + (GetOwnerSkillLevel(SkillName.RefiningFocus) * GameConstants.RefiningFocusRatePerLevel);
             int outputMultiplier;
             switch (structure.RefiningResourcePurity)
             {
@@ -409,7 +409,7 @@ namespace OE2EmpireTracker.Models
             // Per-unit cost: how many input resources per 1 output unit
             int perUnitCost = recipe.ConsumeRate / recipe.ProduceRate;
             // RefiningFocus: +2% per level
-            decimal refiningMultiplier = 1.0m + GetOwnerSkillLevel(SkillName.RefiningFocus) * GameConstants.RefiningFocusRatePerLevel;
+            decimal refiningMultiplier = 1.0m + (GetOwnerSkillLevel(SkillName.RefiningFocus) * GameConstants.RefiningFocusRatePerLevel);
 
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {

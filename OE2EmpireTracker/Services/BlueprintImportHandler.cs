@@ -76,8 +76,10 @@ namespace OE2EmpireTracker.Services
         /// then dedup in the appropriate list.
         /// </summary>
         public static FindTargetResult FindTarget(
-            Blueprint tempBP, Blueprint selected,
-            PlayerContext pc, EmpireContext ec)
+            Blueprint tempBP,
+            Blueprint selected,
+            PlayerContext pc,
+            EmpireContext ec)
         {
             Log.Info(
                 "  Selected blueprint: name='{0}' evo={1} type='{2}' class={3} tech='{4}' UUID={5}",
@@ -151,8 +153,10 @@ namespace OE2EmpireTracker.Services
         /// Returns the final blueprint object.
         /// </summary>
         public static Blueprint MergeAndPersist(
-            FindTargetResult findResult, Blueprint tempBP,
-            PlayerContext pc, EmpireContext ec)
+            FindTargetResult findResult,
+            Blueprint tempBP,
+            PlayerContext pc,
+            EmpireContext ec)
         {
             Blueprint importedBP;
 

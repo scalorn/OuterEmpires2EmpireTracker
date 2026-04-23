@@ -21,34 +21,6 @@ namespace OE2EmpireTracker.Controls
 
         public static readonly string NumberValidation = @"^[+-]?\d+$";
 
-        [Category("Validation")]
-        public string ValidationPattern
-        {
-            get => _validationRegex?.ToString();
-            set
-            {
-                _validationErrorPattern = value ?? string.Empty;
-                var options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
-                _validationRegex = new Regex(_validationErrorPattern, options);
-
-                if (_debounceTimer != null)
-                {
-                    _debounceTimer.Dispose();
-                }
-
-                _debounceTimer = new Timer();
-                _debounceTimer.Interval = 300;
-                _debounceTimer.Tick += DebounceTick;
-            }
-        }
-
-        [Browsable(false)]
-        public bool IsValid
-        {
-            get => _isValid;
-            set => _isValid = value;
-        }
-
         private bool _allowSpaces = true;
 
         private bool _autoFormat = true;
@@ -80,6 +52,34 @@ namespace OE2EmpireTracker.Controls
             Enabled = true;
             TabIndex = 1;
             // SizeMode = Mode.Single;
+        }
+
+        [Category("Validation")]
+        public string ValidationPattern
+        {
+            get => _validationRegex?.ToString();
+            set
+            {
+                _validationErrorPattern = value ?? string.Empty;
+                var options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
+                _validationRegex = new Regex(_validationErrorPattern, options);
+
+                if (_debounceTimer != null)
+                {
+                    _debounceTimer.Dispose();
+                }
+
+                _debounceTimer = new Timer();
+                _debounceTimer.Interval = 300;
+                _debounceTimer.Tick += DebounceTick;
+            }
+        }
+
+        [Browsable(false)]
+        public bool IsValid
+        {
+            get => _isValid;
+            set => _isValid = value;
         }
 
         [Category("Validation")]

@@ -378,7 +378,7 @@ namespace OE2EmpireTracker.Tests.Services
                 var blueprints = new List<MarketBlueprint>();
 
                 for (int i = 0; i < count; i++)
-                    blueprints.Add(MakeRandomMarketBlueprint(trial * 1000 + i));
+                    blueprints.Add(MakeRandomMarketBlueprint((trial * 1000) + i));
 
                 // Add some intentional duplicates
                 if (blueprints.Count >= 2)
@@ -421,7 +421,7 @@ namespace OE2EmpireTracker.Tests.Services
                 var blueprints = new List<MarketBlueprint>();
 
                 for (int i = 0; i < count; i++)
-                    blueprints.Add(MakeRandomMarketBlueprint(trial * 2000 + i));
+                    blueprints.Add(MakeRandomMarketBlueprint((trial * 2000) + i));
 
                 var result = MarketBlueprintImporter.Import(blueprints, playerContext, empireContext);
 
@@ -579,7 +579,7 @@ namespace OE2EmpireTracker.Tests.Services
                     if (rng.Next(4) == 0)
                         blueprints.Add(MakeUnexpandedBlueprint("Unexpanded_" + i, Sellers[rng.Next(Sellers.Length)]));
                     else
-                        blueprints.Add(MakeRandomMarketBlueprint(trial * 3000 + i));
+                        blueprints.Add(MakeRandomMarketBlueprint((trial * 3000) + i));
                 }
 
                 var result = MarketBlueprintImporter.Import(blueprints, playerContext, empireContext);
@@ -1223,10 +1223,16 @@ namespace OE2EmpireTracker.Tests.Services
         // -----------------------------------------------------------------------
 
         private static MarketBlueprint MakeMarketBlueprint(
-            string name, string seller, string bpType = "Reactor",
-            int evolution = 0, int cls = 1, string techLevel = null,
-            Dictionary<string, string> props = null,
-            Dictionary<string, string> resources = null)
+            string name,
+            string seller,
+            string bpType = "Reactor",
+            int evolution = 0,
+            int cls = 1,
+            string techLevel = null,
+            Dictionary<string,
+            string> props = null,
+            Dictionary<string,
+            string> resources = null)
         {
             var bp = new BpModel(name);
             bp.BluePrintType = bpType;

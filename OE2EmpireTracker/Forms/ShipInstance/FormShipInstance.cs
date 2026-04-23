@@ -575,12 +575,25 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 "Defence \u2014 Energy: {10}  Kinetic: {11}  Missile: {12}\n" +
                 "Accel: {13}  |  Rotation: {14}  |  Jump: {15} (Fuel/Jump: {16})\n" +
                 "Mining Yield: {17}  |  Scan Level: {18}",
-                stats.TotalMass, stats.PowerGenerated, stats.PowerConsumed, stats.PowerBalance,
-                stats.CargoCapacity, stats.FuelCapacity, stats.HopperCapacity,
-                stats.TotalHealth, stats.ShieldHitpoints, stats.ShieldRegen,
-                stats.EnergyDefence, stats.KineticDefence, stats.MissileDefence,
-                stats.Acceleration, stats.RotationalThrust, stats.MaxJumpDistance, stats.FuelPerJump,
-                stats.MiningYield, stats.ScanLevel);
+                stats.TotalMass,
+                stats.PowerGenerated,
+                stats.PowerConsumed,
+                stats.PowerBalance,
+                stats.CargoCapacity,
+                stats.FuelCapacity,
+                stats.HopperCapacity,
+                stats.TotalHealth,
+                stats.ShieldHitpoints,
+                stats.ShieldRegen,
+                stats.EnergyDefence,
+                stats.KineticDefence,
+                stats.MissileDefence,
+                stats.Acceleration,
+                stats.RotationalThrust,
+                stats.MaxJumpDistance,
+                stats.FuelPerJump,
+                stats.MiningYield,
+                stats.ScanLevel);
             sw.Stop();
             Log.Info("PERF RefreshStats: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -912,7 +925,9 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                         "Cannot delete ship \"{0}\" — it is referenced by {1} delivery plan(s) or build item(s).",
                         _selectedShip.Name,
                         refs),
-                    "Delete Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    "Delete Blocked",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 

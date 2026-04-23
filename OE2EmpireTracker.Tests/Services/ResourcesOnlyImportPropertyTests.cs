@@ -221,8 +221,20 @@ namespace OE2EmpireTracker.Tests.Services
         private static Gen<string> NonEmptyAlphaStringGen()
         {
             return Gen.Elements(
-                "Alpha", "Beta", "Gamma", "Delta", "Hull", "Shield", "Reactor",
-                "Drive", "Weapon", "Cargo", "Nav", "Fuel", "Thruster", "Laser");
+                "Alpha",
+                "Beta",
+                "Gamma",
+                "Delta",
+                "Hull",
+                "Shield",
+                "Reactor",
+                "Drive",
+                "Weapon",
+                "Cargo",
+                "Nav",
+                "Fuel",
+                "Thruster",
+                "Laser");
         }
 
         /// <summary>

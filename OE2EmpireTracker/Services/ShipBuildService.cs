@@ -47,7 +47,8 @@ namespace OE2EmpireTracker.Services
                         items.Add(CreateComponentItem(
                             template.HullBlueprintUUID,
                             bp?.Name ?? "Hull",
-                            assemblyLocationType, assemblyLocationUUID));
+                            assemblyLocationType,
+                            assemblyLocationUUID));
                     }
                 }
 
@@ -62,7 +63,8 @@ namespace OE2EmpireTracker.Services
                         items.Add(CreateComponentItem(
                             slot.BlueprintUUID,
                             bp?.Name ?? slot.SlotType,
-                            assemblyLocationType, assemblyLocationUUID));
+                            assemblyLocationType,
+                            assemblyLocationUUID));
                     }
                 }
             }
@@ -172,8 +174,10 @@ namespace OE2EmpireTracker.Services
         }
 
         private static BuildItem CreateComponentItem(
-            string blueprintUUID, string itemName,
-            DestinationType assemblyLocationType, string assemblyLocationUUID)
+            string blueprintUUID,
+            string itemName,
+            DestinationType assemblyLocationType,
+            string assemblyLocationUUID)
         {
             return new BuildItem
             {

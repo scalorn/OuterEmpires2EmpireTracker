@@ -323,8 +323,12 @@ namespace OE2EmpireTracker.Tests.Services
         // -----------------------------------------------------------------------
 
         private static BpModel MakeBlueprint(
-            string name, string uuid = null, string bpType = "Reactor",
-            int evolution = 0, int cls = 1, string techLevel = null)
+            string name,
+            string uuid = null,
+            string bpType = "Reactor",
+            int evolution = 0,
+            int cls = 1,
+            string techLevel = null)
         {
             var bp = new BpModel(name);
             bp.UUID = uuid ?? Guid.NewGuid().ToString();

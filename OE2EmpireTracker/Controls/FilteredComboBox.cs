@@ -32,7 +32,7 @@ namespace OE2EmpireTracker.Controls
             }
             else
             {
-                List<BlueprintType> blueprintTypes = (List<BlueprintType>) UnfilteredList.DataSource;
+                List<BlueprintType> blueprintTypes = (List<BlueprintType>)UnfilteredList.DataSource;
                 var filteredList = blueprintTypes
                     .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();

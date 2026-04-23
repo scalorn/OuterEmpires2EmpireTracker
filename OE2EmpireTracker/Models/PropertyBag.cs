@@ -12,6 +12,11 @@ namespace OE2EmpireTracker.Models
     {
         private readonly object _syncRoot = new object();
 
+        public PropertyBag()
+        {
+            Properties = new Dictionary<string, string>();
+        }
+
         public int Count
         {
             get
@@ -21,11 +26,6 @@ namespace OE2EmpireTracker.Models
                     return Properties.Count;
                 }
             }
-        }
-
-        public PropertyBag()
-        {
-            Properties = new Dictionary<string, string>();
         }
 
         public Dictionary<string, string> Properties { get; set; }

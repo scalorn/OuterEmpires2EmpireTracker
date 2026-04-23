@@ -120,7 +120,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         {
             PlayerSkill.TrainingStarted = true;
             PlayerSkill.CompletionTime.StartTime = SystemClock.UtcNow;
-            PlayerSkill.CompletionTime.TimeRemaining = (long) TimeSpan.FromDays(PlayerSkill.Level + 1).TotalSeconds;
+            PlayerSkill.CompletionTime.TimeRemaining = (long)TimeSpan.FromDays(PlayerSkill.Level + 1).TotalSeconds;
             PlayerSkill.CompletionTime.TimeRemaining = 10;
 
             PopulateForm();

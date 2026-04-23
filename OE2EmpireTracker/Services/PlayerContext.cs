@@ -1798,7 +1798,7 @@ namespace OE2EmpireTracker.Services
             lock (_listLock)
             {
                 _blueprintBuildItemIndex = null;
-            _buildLocationBuildItemIndex = null;
+                _buildLocationBuildItemIndex = null;
             }
         }
 

@@ -6,15 +6,6 @@ using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
-    public class StockShortfall
-    {
-        public StockTarget Target { get; set; }
-        public string PlanUUID { get; set; }
-        public int CurrentQuantity { get; set; }
-        public int ShortfallQuantity { get; set; }
-        public bool IsCritical { get; set; }
-    }
-
     public static class StockTargetService
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -49,8 +40,14 @@ namespace OE2EmpireTracker.Services
                 foreach (var target in plan.Targets)
                 {
                     int currentQty = ResolveCurrentQuantity(
-                        target, currentPlayerUUID, colonyFinder, stationFinder,
-                        templateFinder, blueprintFinder, colonies, stations);
+                        target,
+                        currentPlayerUUID,
+                        colonyFinder,
+                        stationFinder,
+                        templateFinder,
+                        blueprintFinder,
+                        colonies,
+                        stations);
 
                     int shortfall = target.TargetQuantity - currentQty;
                     if (shortfall <= 0) continue;
@@ -287,5 +284,14 @@ namespace OE2EmpireTracker.Services
                 default: return BuildItemType.Manufactory;
             }
         }
+    }
+
+    public class StockShortfall
+    {
+        public StockTarget Target { get; set; }
+        public string PlanUUID { get; set; }
+        public int CurrentQuantity { get; set; }
+        public int ShortfallQuantity { get; set; }
+        public bool IsCritical { get; set; }
     }
 }

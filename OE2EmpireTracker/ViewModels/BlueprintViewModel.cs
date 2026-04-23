@@ -15,6 +15,14 @@ namespace OE2EmpireTracker.ViewModels
     {
         private readonly PlayerContext _playerContext;
 
+        private Blueprint _blueprint;
+
+        public BlueprintViewModel(Blueprint blueprint, PlayerContext playerContext)
+        {
+            _blueprint = blueprint ?? throw new ArgumentNullException(nameof(blueprint));
+            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+        }
+
         /// <summary>
         /// Returns true if this blueprint is in the global list (BaselineData.json).
         /// </summary>
@@ -25,14 +33,6 @@ namespace OE2EmpireTracker.ViewModels
                 var ec = EmpireContext.GetInstance();
                 return ec?.GlobalBlueprintList?.Contains(_blueprint) == true;
             }
-        }
-
-        private Blueprint _blueprint;
-
-        public BlueprintViewModel(Blueprint blueprint, PlayerContext playerContext)
-        {
-            _blueprint = blueprint ?? throw new ArgumentNullException(nameof(blueprint));
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
         }
 
         public Blueprint Data => _blueprint;

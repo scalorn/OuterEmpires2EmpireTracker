@@ -305,7 +305,8 @@ namespace OE2EmpireTracker.Forms.Station
                 }
 
                 int rowIdx = dgvHold.Rows.Add(
-                    typeName, displayName,
+                    typeName,
+                    displayName,
                     item.ResourcePurity,
                     item.Quantity.ToString(),
                     item.CurrentHP.ToString(),
@@ -606,10 +607,19 @@ namespace OE2EmpireTracker.Forms.Station
                 "Health: {4}  |  Shield: {5} (Regen: {6})\n" +
                 "Defence \u2014 Energy: {7}  Kinetic: {8}  Missile: {9}\n" +
                 "Weapons \u2014 Small: {10}  Medium: {11}  Large: {12}",
-                stats.TotalMass, stats.PowerGenerated, stats.PowerConsumed, stats.PowerBalance,
-                stats.TotalHealth, stats.ShieldHitpoints, stats.ShieldRegen,
-                stats.EnergyDefence, stats.KineticDefence, stats.MissileDefence,
-                stats.SmallWeaponsInstalled, stats.MediumWeaponsInstalled, stats.LargeWeaponsInstalled);
+                stats.TotalMass,
+                stats.PowerGenerated,
+                stats.PowerConsumed,
+                stats.PowerBalance,
+                stats.TotalHealth,
+                stats.ShieldHitpoints,
+                stats.ShieldRegen,
+                stats.EnergyDefence,
+                stats.KineticDefence,
+                stats.MissileDefence,
+                stats.SmallWeaponsInstalled,
+                stats.MediumWeaponsInstalled,
+                stats.LargeWeaponsInstalled);
             sw.Stop();
             Log.Info("PERF RefreshStationStats: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -751,7 +761,9 @@ namespace OE2EmpireTracker.Forms.Station
                         "Cannot delete station \"{0}\" \u2014 it is referenced by {1} route stop(s), delivery plan(s), or build item(s).",
                         _selectedStation.Name,
                         refs),
-                    "Delete Blocked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    "Delete Blocked",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 

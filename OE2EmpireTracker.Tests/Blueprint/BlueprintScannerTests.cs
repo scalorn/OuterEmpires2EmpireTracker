@@ -621,7 +621,8 @@ namespace OE2EmpireTracker.Tests.Blueprint
             foreach (var mb in results)
             {
                 var bp = mb.Blueprint;
-                if (bp.Properties.Count > 0) // skip unexpanded listings
+                // skip unexpanded listings
+                if (bp.Properties.Count > 0)
                 {
                     Assert.That(
                         bp.BluePrintType,
@@ -646,7 +647,9 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 TestContext.WriteLine($"\n=== Blueprint {i + 1}: {bp.Name} (Ev{bp.Evolution}, Class {bp.Class}, Icon: {iconPos ?? "none"}, TechLevel: {bp.TechLevel ?? "null"}, Seller: {results[i].SellerName}) ===");
 
                 TestContext.WriteLine("Properties:");
-                string[] knownProps = { "Class", "Mass", "Cargo Volume Size", "License Level",
+                string[] knownProps =
+                {
+                    "Class", "Mass", "Cargo Volume Size", "License Level",
                     "License Career", "Health", "Eng Capacity Required", "Max Hull Plating",
                     "Max Hull Reinforcement", "Max Hull Sealant Units", "Cargo Capacity",
                     "Fuel Capacity", "Large Weapon Mounts", "Medium Weapon Mounts",
@@ -654,7 +657,8 @@ namespace OE2EmpireTracker.Tests.Blueprint
                     "Energy Defence", "Kinetic Damage Defence", "Missile Damage Defence",
                     "Crew Supported", "Reactor Slots", "Main Drive Slots", "Thruster Slots",
                     "Jump Drive Slots", "Nav Comp Slots", "Scanner Slots", "Shield Slots",
-                    "Cargo Pod Slots", "Fuel Tank Slots", "Coupler Slots", "GERTY Slots" };
+                    "Cargo Pod Slots", "Fuel Tank Slots", "Coupler Slots", "GERTY Slots"
+                };
                 foreach (var prop in knownProps)
                 {
                     string val;

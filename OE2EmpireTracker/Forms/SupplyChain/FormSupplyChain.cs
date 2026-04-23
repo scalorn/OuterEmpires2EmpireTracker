@@ -113,6 +113,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 chains = chains.Where(c =>
                     c.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
+
             chains = chains.OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase).ToList();
 
             foreach (var chain in chains)
@@ -645,7 +646,9 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                                 "Stage {0} ({1}) has a threshold but no delivery route assigned.",
                                 stage.Sequence,
                                 stage.StageType),
-                            "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            "Validation",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
                         return;
                     }
                 }

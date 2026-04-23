@@ -402,7 +402,7 @@ namespace OE2EmpireTracker.Parsers
                 int.TryParse(hourMatch.Groups[1].Value, out hours);
             }
 
-            return ((long)days * 24 + hours) * 3600;
+            return (((long)days * 24) + hours) * 3600;
         }
 
         /// <summary>

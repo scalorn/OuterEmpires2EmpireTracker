@@ -13,48 +13,11 @@ namespace OE2EmpireTracker.Controls
     /// </summary>
     public class FilteredTextComboSet : UserControl
     {
-        /// <summary>
-        /// Gets the index of the selected item in the full (unfiltered) item list,
-        /// or -1 if nothing is selected.
-        /// </summary>
-        public int SelectedFullIndex
-        {
-            get
-            {
-                if (CmbItems.SelectedIndex < 0 || CmbItems.SelectedIndex >= _filteredIndexMap.Count)
-                    return -1;
-                return _filteredIndexMap[CmbItems.SelectedIndex];
-            }
-        }
-
         private List<string> _fullItems = new List<string>();
 
         private List<int> _filteredIndexMap = new List<int>();
 
         private bool _suppressFilterEvent;
-
-        /// <summary>
-        /// Filters the full item list using case-insensitive contains-match.
-        /// Returns the filtered items and an index map back to the full list.
-        /// </summary>
-        public static (List<string> filtered, List<int> indexMap) ApplyFilter(List<string> fullItems, string filter)
-        {
-            var filtered = new List<string>();
-            var indexMap = new List<int>();
-            if (fullItems == null) return (filtered, indexMap);
-
-            for (int i = 0; i < fullItems.Count; i++)
-            {
-                string item = fullItems[i] ?? string.Empty;
-                if (string.IsNullOrEmpty(filter) || item.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    filtered.Add(fullItems[i]);
-                    indexMap.Add(i);
-                }
-            }
-
-            return (filtered, indexMap);
-        }
 
         public FilteredTextComboSet()
         {
@@ -81,6 +44,43 @@ namespace OE2EmpireTracker.Controls
         /// Fires when the user selects an item in the combo box.
         /// </summary>
         public event EventHandler SelectedItemChanged;
+
+        /// <summary>
+        /// Gets the index of the selected item in the full (unfiltered) item list,
+        /// or -1 if nothing is selected.
+        /// </summary>
+        public int SelectedFullIndex
+        {
+            get
+            {
+                if (CmbItems.SelectedIndex < 0 || CmbItems.SelectedIndex >= _filteredIndexMap.Count)
+                    return -1;
+                return _filteredIndexMap[CmbItems.SelectedIndex];
+            }
+        }
+
+        /// <summary>
+        /// Filters the full item list using case-insensitive contains-match.
+        /// Returns the filtered items and an index map back to the full list.
+        /// </summary>
+        public static (List<string> filtered, List<int> indexMap) ApplyFilter(List<string> fullItems, string filter)
+        {
+            var filtered = new List<string>();
+            var indexMap = new List<int>();
+            if (fullItems == null) return (filtered, indexMap);
+
+            for (int i = 0; i < fullItems.Count; i++)
+            {
+                string item = fullItems[i] ?? string.Empty;
+                if (string.IsNullOrEmpty(filter) || item.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    filtered.Add(fullItems[i]);
+                    indexMap.Add(i);
+                }
+            }
+
+            return (filtered, indexMap);
+        }
 
         /// <summary>
         /// Gets the currently selected item string, or null if nothing is selected.

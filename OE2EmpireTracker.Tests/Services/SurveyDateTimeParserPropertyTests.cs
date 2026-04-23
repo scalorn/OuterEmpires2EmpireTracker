@@ -11,7 +11,9 @@ namespace OE2EmpireTracker.Tests.Services
     public class SurveyDateTimeParserPropertyTests
     {
         private static readonly string[] Months =
-            { "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" };
+        {
+            "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+        };
 
         /// <summary>
         /// Feature: survey-datetime-normalization, Property 1: Game format round-trip.

@@ -26,9 +26,9 @@ namespace OE2EmpireTracker.Services
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly object _commodityLock = new object();
-
         private static EmpireContext _instance;
+
+        private readonly object _commodityLock = new object();
 
         // Task 6.1: Private backing fields with IReadOnlyList<T> properties
         private List<BlueprintType> _blueprintTypeList;
