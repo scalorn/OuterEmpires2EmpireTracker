@@ -2,7 +2,7 @@
 
 ### FormBlueprintV2
 
-MDI child form. SplitContainer with left-list / right-detail, tabbed detail area with properties, resources, and evolution graph.
+MDI child form. SplitContainer with left-list / right-detail, tabbed detail area with properties, resources, evolution graph, and price evolution.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
@@ -19,7 +19,7 @@ MDI child form. SplitContainer with left-list / right-detail, tabbed detail area
 │ │Reac│ Reactor Mk3│ 3 │ 2 │4││                                                    │
 │ │Driv│ Drive Mk3  │ 3 │ 1 │2││ [New] [Save] [Delete] [Import] [Import Market]     │
 │ │Hull│ Hull Clip.  │ 2 │ 3 │1││                                                    │
-│ │Weap│ Laser Mk2  │ 2 │ 1 │3││ ┌─ Properties ─┬─ Resources ─┬─ Evolution Graph ─┐│
+│ │Weap│ Laser Mk2  │ 2 │ 1 │3││ ┌─ Properties ─┬─ Resources ─┬─ Evolution Graph ─┬─ Price Evolution ─┐│
 │ │Shld│ Shield Mk1 │ 1 │ 1 │0││ │                                                 ││
 │ │    │            │   │   │ ││ │ ┌──────────────────┬──────────────────┐           ││
 │ │    │            │   │   │ ││ │ │ Property         │ Value            │           ││
@@ -55,6 +55,7 @@ Controls:
     - Properties tab: `dgvStatistics` (DataEntryGridView) — Property/Value columns (editable)
     - Resources tab: `dgvResources` (DataGridView) — Resource (ComboBox)/Amount columns, `btnAddResource`/`btnDeleteResource`
     - Evolution Graph tab: `chartEvolution` (Chart) — line chart of property changes across evolutions, `pnlPropertyCheckboxes` (toggle which properties to graph), `lblNoChanges`
+    - Price Evolution tab: `chartPriceEvolution` (Chart) — line chart of manufacturing cost across evolutions, `cmbPriceEvoPlan` (ComboBox — pricing plan selector), `lblPriceEvoNoPlan` (Label — shown when no plan selected)
   - `flpPricing`: `cmbPricingPlan` (ComboBox), `lblComputedPrice` (Label) — computed price from selected pricing plan
 
 Satisfies: REQ-BPR-010 (blueprint management), REQ-BPR-020 (evolution tracking), REQ-BPR-030 (blueprint import)

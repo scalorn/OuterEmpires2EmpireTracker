@@ -127,3 +127,22 @@ flowchart LR
 │  ☑ Health (red)  ☑ Power Generated (blue)  ☐ Cargo Capacity (green)        │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+## Price Evolution
+
+### Overview
+
+The Price Evolution tab shows how manufacturing cost changes across evolution levels for a selected blueprint, using a pricing plan to compute the price at each level.
+
+### Requirements
+
+**REQ-EVO-050** The system SHALL add a "Price Evolution" tab after the "Property Evolution" tab in the Blueprint form's tabDetailedData control.  
+**REQ-EVO-051** The tab SHALL contain a pricing plan combo (`cmbPriceEvoPlan`), a chart (`chartPriceEvolution`), and a status label (`lblPriceEvoNoPlan`).  
+**REQ-EVO-052** The pricing plan combo SHALL be populated from `playerContext.PricingPlanList` with DisplayMember="Name" and ValueMember="UUID".  
+**REQ-EVO-053** When no pricing plan is selected, the chart SHALL be hidden and the label SHALL display "Select a pricing plan".  
+**REQ-EVO-054** When the evolution chain has one or fewer blueprints, the chart SHALL be hidden and the label SHALL display "No evolution data".  
+**REQ-EVO-055** For each blueprint in the evolution chain, the system SHALL compute the price using `PriceCalculator.ComputeBlueprintPrice` with manufacturing hours parsed from the "Manufacture Run Time" property.  
+**REQ-EVO-056** The chart X-axis SHALL show evolution levels 0-15 (integer). The Y-axis SHALL auto-scale to the data range and format labels as currency with no decimal places.  
+**REQ-EVO-057** The chart SHALL display a single blue line (2px, solid) with circle markers at each data point.  
+**REQ-EVO-058** The chart SHALL refresh when a different blueprint is selected, when the pricing plan combo changes, or when PricingDataChanged fires.  
+**REQ-EVO-059** When the current player changes, the pricing plan combo SHALL be repopulated.

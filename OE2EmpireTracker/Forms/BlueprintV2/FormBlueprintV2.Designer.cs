@@ -103,6 +103,10 @@ namespace OE2EmpireTracker
             this.lblPricingPlan = new System.Windows.Forms.Label();
             this.cmbPricingPlan = new System.Windows.Forms.ComboBox();
             this.lblComputedPrice = new System.Windows.Forms.Label();
+            this.tabPPriceEvolution = new System.Windows.Forms.TabPage();
+            this.chartPriceEvolution = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.cmbPriceEvoPlan = new System.Windows.Forms.ComboBox();
+            this.lblPriceEvoNoPlan = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
@@ -134,6 +138,8 @@ namespace OE2EmpireTracker
 
             this.tabPEvolutionGraph.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartEvolution)).BeginInit();
+            this.tabPPriceEvolution.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartPriceEvolution)).BeginInit();
             this.flpPricing.SuspendLayout();
             this.SuspendLayout();
             // splitMain
@@ -629,6 +635,7 @@ namespace OE2EmpireTracker
             this.tabDetailedData.Controls.Add(this.tabPStatistics);
             this.tabDetailedData.Controls.Add(this.tabPResources);
             this.tabDetailedData.Controls.Add(this.tabPEvolutionGraph);
+            this.tabDetailedData.Controls.Add(this.tabPPriceEvolution);
             this.tabDetailedData.Location = new System.Drawing.Point(7, 318);
             this.tabDetailedData.Margin = new System.Windows.Forms.Padding(3);
             this.tabDetailedData.Name = "tabDetailedData";
@@ -762,6 +769,50 @@ namespace OE2EmpireTracker
             this.lblNoChanges.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblNoChanges.Visible = false;
 
+            // tabPPriceEvolution
+            this.tabPPriceEvolution.Controls.Add(this.chartPriceEvolution);
+            this.tabPPriceEvolution.Controls.Add(this.cmbPriceEvoPlan);
+            this.tabPPriceEvolution.Controls.Add(this.lblPriceEvoNoPlan);
+            this.tabPPriceEvolution.Location = new System.Drawing.Point(4, 22);
+            this.tabPPriceEvolution.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPPriceEvolution.Name = "tabPPriceEvolution";
+            this.tabPPriceEvolution.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPPriceEvolution.Size = new System.Drawing.Size(792, 294);
+            this.tabPPriceEvolution.TabIndex = 3;
+            this.tabPPriceEvolution.Text = "Price Evolution";
+            this.tabPPriceEvolution.UseVisualStyleBackColor = true;
+            // cmbPriceEvoPlan
+            this.cmbPriceEvoPlan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPriceEvoPlan.FormattingEnabled = true;
+            this.cmbPriceEvoPlan.Location = new System.Drawing.Point(5, 5);
+            this.cmbPriceEvoPlan.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbPriceEvoPlan.Name = "cmbPriceEvoPlan";
+            this.cmbPriceEvoPlan.Size = new System.Drawing.Size(200, 21);
+            this.cmbPriceEvoPlan.TabIndex = 0;
+            // chartPriceEvolution
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            chartArea2.AxisX.Minimum = 0D;
+            chartArea2.AxisX.Maximum = 15D;
+            chartArea2.AxisX.Interval = 1D;
+            chartArea2.AxisX.Title = "Evolution Level";
+            chartArea2.AxisY.Title = "Price";
+            chartArea2.AxisY.LabelStyle.Format = "C0";
+            chartArea2.Name = "PriceEvolutionArea";
+            this.chartPriceEvolution.ChartAreas.Add(chartArea2);
+            this.chartPriceEvolution.Location = new System.Drawing.Point(2, 30);
+            this.chartPriceEvolution.Name = "chartPriceEvolution";
+            this.chartPriceEvolution.Size = new System.Drawing.Size(788, 262);
+            this.chartPriceEvolution.TabIndex = 1;
+            // lblPriceEvoNoPlan
+            this.lblPriceEvoNoPlan.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblPriceEvoNoPlan.Location = new System.Drawing.Point(2, 2);
+            this.lblPriceEvoNoPlan.Name = "lblPriceEvoNoPlan";
+            this.lblPriceEvoNoPlan.Size = new System.Drawing.Size(788, 290);
+            this.lblPriceEvoNoPlan.TabIndex = 2;
+            this.lblPriceEvoNoPlan.Text = "Select a pricing plan";
+            this.lblPriceEvoNoPlan.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblPriceEvoNoPlan.Visible = false;
+
             // flpPricing
             this.flpPricing.AutoSize = true;
             this.flpPricing.Controls.Add(this.lblPricingPlan);
@@ -845,6 +896,8 @@ namespace OE2EmpireTracker
 
             this.tabPEvolutionGraph.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartEvolution)).EndInit();
+            this.tabPPriceEvolution.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartPriceEvolution)).EndInit();
             this.flpPricing.ResumeLayout(false);
             this.ResumeLayout(false);
         }
@@ -933,5 +986,9 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.Label lblPricingPlan;
         private System.Windows.Forms.ComboBox cmbPricingPlan;
         private System.Windows.Forms.Label lblComputedPrice;
+        private System.Windows.Forms.TabPage tabPPriceEvolution;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartPriceEvolution;
+        private System.Windows.Forms.ComboBox cmbPriceEvoPlan;
+        private System.Windows.Forms.Label lblPriceEvoNoPlan;
     }
 }
