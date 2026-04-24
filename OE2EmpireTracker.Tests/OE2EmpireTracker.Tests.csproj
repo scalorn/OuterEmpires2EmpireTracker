@@ -381,6 +381,8 @@
     <Compile Include="Services\IconPositionExtractorTests.cs" />
     <Compile Include="Services\IconPositionExtractorPropertyTests.cs" />
     <Compile Include="Services\EvolutionChainServiceTests.cs" />
+    <Compile Include="Services\SerializationSorterPropertyTests.cs" />
+    <Compile Include="Services\SerializationSorterTests.cs" />
     <Compile Include="Services\HelpRendererPropertyTests.cs" />
     <Compile Include="Services\HelpTopicRegistryPropertyTests.cs" />
     <Compile Include="Services\HelpTopicRegistryTests.cs" />

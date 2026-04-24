@@ -324,3 +324,27 @@ Logic:
 - ClassifyImport: ResourcesOnly (has resources but no properties/type), Full (has name), NoName (fallback).
 - FindTarget: checks selected blueprint match first (Name+Evolution+Type), then dedup via MarketBlueprintImporter.FindByDedupKey. Routes Evo0→global, others→player.
 - MergeAndPersist: updates existing or creates new with deterministic UUID (global) or random UUID (player), persists, fires event.
+
+## SerializationSorter
+
+Static helper in Services/SerializationSorter.cs.
+
+```csharp
+public static class SerializationSorter
+{
+    public static PlayerRoot SortPlayerRoot(PlayerRoot source);
+    public static BaselineRoot SortBaselineRoot(BaselineRoot source);
+    internal static T[] SortByString<T>(T[] source, Func<T, string> keySelector);
+    internal static T[] SortByInt<T>(T[] source, Func<T, int> keySelector);
+    internal static T[] SortByStringThenInt<T>(T[] source, Func<T, string> key1, Func<T, int> key2);
+    internal static T[] SortByStringThenString<T>(T[] source, Func<T, string> key1, Func<T, string> key2);
+}
+```
+
+Logic:
+- SortPlayerRoot creates a new PlayerRoot with all 20 top-level arrays sorted by UUID (ordinal string), then sorts nested arrays on their respective keys (Colony.Structures by UUID, Colony.Commodities by Name, DeliveryRoute.Stops by Sequence, etc.).
+- SortBaselineRoot creates a new BaselineRoot with arrays sorted by primary key (BlueprintType.Id, ShipClass.Id, TechLevel.Name, Commodity.ID, RefiningRecipe.OutputResource, ResearchTimeEntry.Evolution).
+- Sort helpers return new arrays; null input returns empty array. Null keys coalesced to empty string (sort first).
+- Called by WriteContext() methods before JSON serialization to produce deterministic output.
+
+Satisfies: REQ-JSON-ORDER (see .kiro/specs/json-deterministic-order/requirements.md)
