@@ -1361,7 +1361,16 @@ namespace OE2EmpireTracker
             chartEvolution.Visible = true;
             pnlPropertyCheckboxes.Visible = true;
 
-            // Clear existing series and checkboxes
+            // Clear existing series and checkboxes, preserving unchecked state
+            var uncheckedProperties = new HashSet<string>();
+            foreach (Control ctrl in pnlPropertyCheckboxes.Controls)
+            {
+                if (ctrl is CheckBox cb && !cb.Checked && cb.Tag is string propName)
+                {
+                    uncheckedProperties.Add(propName);
+                }
+            }
+
             chartEvolution.Series.Clear();
             pnlPropertyCheckboxes.Controls.Clear();
 
@@ -1435,15 +1444,28 @@ namespace OE2EmpireTracker
                     }
                 }
 
-                // Add checkbox for this property (checked by default)
+                // Add checkbox for this property (preserve previous unchecked state)
+                bool isChecked = !uncheckedProperties.Contains(propertyName);
                 var checkbox = new CheckBox
                 {
                     Text = propertyName,
-                    Checked = true,
+                    Checked = isChecked,
                     ForeColor = lineColor,
                     AutoSize = true,
                     Tag = propertyName
                 };
+
+                // Apply initial visibility based on preserved state
+                if (!isChecked)
+                {
+                    foreach (var series in chartEvolution.Series)
+                    {
+                        if (series.Name.StartsWith(propertyName + "_"))
+                        {
+                            series.Enabled = false;
+                        }
+                    }
+                }
 
                 checkbox.CheckedChanged += (s, ev) =>
                 {
