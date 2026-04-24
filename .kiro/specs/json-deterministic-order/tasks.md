@@ -96,19 +96,19 @@ Implement deterministic ordering of all entity arrays and dictionary entries at 
     - Add `SortedDictionaryResolver_SerializesDictionaryKeysInOrder` — create a `Dictionary<string, decimal>`, serialize with resolver, verify JSON key order
     - _Requirements: 11.1, 11.2, 12.1_
 
-- [-] 5. Checkpoint — Verify dictionary and ItemBag sorting
+- [x] 5. Checkpoint — Verify dictionary and ItemBag sorting
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Wire sorting into WriteContext methods
-  - [~] 6.1 Modify `PlayerContext.WriteContext()` in `OE2EmpireTracker/Services/PlayerContext.cs`
+- [x] 6. Wire sorting into WriteContext methods
+  - [x] 6.1 Modify `PlayerContext.WriteContext()` in `OE2EmpireTracker/Services/PlayerContext.cs`
     - Add `playerRoot = SerializationSorter.SortPlayerRoot(playerRoot);` after the lock block builds the PlayerRoot and before `JsonConvert.SerializeObject`
     - _Requirements: 1.1, 3.1, 3.2, 4.1, 5.1–5.3, 6.1, 7.1–7.3, 8.1, 8.2, 9.1, 10.1, 13.1, 13.2_
 
-  - [~] 6.2 Modify `EmpireContext.WriteContext()` in `OE2EmpireTracker/Services/EmpireContext.cs`
+  - [x] 6.2 Modify `EmpireContext.WriteContext()` in `OE2EmpireTracker/Services/EmpireContext.cs`
     - Add `baselineRoot = SerializationSorter.SortBaselineRoot(baselineRoot);` after building the BaselineRoot and before `JsonConvert.SerializeObject`
     - _Requirements: 2.1–2.7, 13.1, 13.3_
 
-  - [~] 6.3 Write integration tests for end-to-end verification
+  - [x] 6.3 Write integration tests for end-to-end verification
     - Create `OE2EmpireTracker.Tests/Services/SerializationSorterIntegrationTests.cs`
     - Test `PlayerContext_WriteContext_ProducesSortedJson` — populate PlayerContext with entities in random order, call WriteContext, deserialize output, verify all arrays sorted
     - Test `EmpireContext_WriteContext_ProducesSortedJson` — populate EmpireContext with entities in random order, call WriteContext, deserialize output, verify all arrays sorted
@@ -116,7 +116,7 @@ Implement deterministic ordering of all entity arrays and dictionary entries at 
     - Test `EmpireContext_WriteContext_PreservesInMemoryListOrder` — snapshot in-memory list order before WriteContext, verify unchanged after
     - _Requirements: 1.1, 2.1–2.7, 13.1, 13.2, 13.3_
 
-- [~] 7. Final checkpoint — Ensure all tests pass
+- [-] 7. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

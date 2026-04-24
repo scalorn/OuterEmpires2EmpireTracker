@@ -181,6 +181,9 @@ namespace OE2EmpireTracker.Services
             baselineRoot.Commodity = _commodityList?.ToArray();
             baselineRoot.RefiningRecipe = new List<RefiningRecipe>(RefiningRecipes.Recipes).ToArray();
             baselineRoot.ResearchTime = new List<ResearchTimeEntry>(ResearchTimeLookup.ResearchTimes).ToArray();
+
+            baselineRoot = SerializationSorter.SortBaselineRoot(baselineRoot);
+
             string jsonContent = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Baseline data saved to {0}", FilePath);

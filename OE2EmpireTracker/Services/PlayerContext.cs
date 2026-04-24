@@ -490,6 +490,8 @@ namespace OE2EmpireTracker.Services
                 playerRoot.Asteroid = _asteroidList.ToArray();
             }
 
+            playerRoot = SerializationSorter.SortPlayerRoot(playerRoot);
+
             string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Player data saved to {0}", FilePath);
