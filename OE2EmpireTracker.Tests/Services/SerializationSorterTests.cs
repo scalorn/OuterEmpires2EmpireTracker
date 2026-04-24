@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
@@ -290,6 +292,41 @@ namespace OE2EmpireTracker.Tests.Services
         {
             Assert.That(SerializationSorter.SortPlayerRoot(null), Is.Null);
             Assert.That(SerializationSorter.SortBaselineRoot(null), Is.Null);
+        }
+
+        [Test]
+        public void ItemBagConverter_SerializesKeysInSortedOrder()
+        {
+            var bag = new ItemBag();
+            bag.Items["z-uuid"] = new Item { UUID = "z-uuid", Name = "Zeta" };
+            bag.Items["a-uuid"] = new Item { UUID = "a-uuid", Name = "Alpha" };
+            bag.Items["m-uuid"] = new Item { UUID = "m-uuid", Name = "Mid" };
+
+            var json = JsonConvert.SerializeObject(bag, JsonSettings.SerializerSettings);
+            var jobj = JObject.Parse(json);
+            var keys = jobj.Properties().Select(p => p.Name).ToList();
+
+            Assert.That(keys, Is.EqualTo(new[] { "a-uuid", "m-uuid", "z-uuid" }));
+        }
+
+        [Test]
+        public void SortedDictionaryResolver_SerializesDictionaryKeysInOrder()
+        {
+            var dict = new Dictionary<string, decimal>
+            {
+                { "zeta", 3.14m },
+                { "alpha", 1.0m },
+                { "mid", 2.0m }
+            };
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new SortedDictionaryContractResolver()
+            };
+            var json = JsonConvert.SerializeObject(dict, settings);
+            var jobj = JObject.Parse(json);
+            var keys = jobj.Properties().Select(p => p.Name).ToList();
+
+            Assert.That(keys, Is.EqualTo(new[] { "alpha", "mid", "zeta" }));
         }
 
         private static PlayerRoot BuildMinimalPlayerRoot()

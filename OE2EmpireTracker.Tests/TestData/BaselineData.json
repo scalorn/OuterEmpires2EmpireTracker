@@ -1528,27 +1528,6 @@
   "Blueprint": [
     {
       "OwnerUUID": "",
-      "LegacyUUID": "cd1cc97a-8ed2-4204-95bf-b0b042fa65ce",
-      "BluePrintType": "Munitions/CoilgunMunitions",
-      "Properties": {
-        "Amount Manufactured": "100",
-        "Mass": "1",
-        "Cargo Volume Size": "0",
-        "Kinetic Damage Rating": "6",
-        "Ammo Type": "",
-        "_IconPosition": "-176px -746px"
-      },
-      "Resources": {
-        "Alkali Metals": "55",
-        "Non-Metallics": "11",
-        "Heavy Post-Trans Metals": "22"
-      },
-      "UUID": "d926d34d-f7aa-581a-a4c3-15b5d5319662",
-      "ItemType": "Blueprint",
-      "Name": "10cm Coilgun Munitions"
-    },
-    {
-      "OwnerUUID": "",
       "LegacyUUID": "76e6cf23-847d-4cc8-83ac-ebbe3dc9f627",
       "BluePrintType": "Munitions/RailgunMunitions",
       "Properties": {
@@ -3342,6 +3321,55 @@
       "UUID": "100db98e-ff10-53b8-a885-3364ccc0ed09",
       "ItemType": "Blueprint",
       "Name": "Battle Cruiser"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Hull",
+      "Class": 7,
+      "Properties": {
+        "_IconPosition": "-328px -62px",
+        "Manufacture Run Time": "8d , 13h",
+        "Mass": "63000",
+        "Cargo Volume Size": "66667",
+        "License Level": "40",
+        "License Career": "Military",
+        "Health": "17500",
+        "Eng Capacity Available": "49000",
+        "Max Hull Plating": "1",
+        "Max Hull Reinforcement": "3",
+        "Max Hull Sealant Units": "4",
+        "Cargo Capacity": "50000",
+        "Fuel Capacity": "35000",
+        "Large Weapon Mounts": "2",
+        "Medium Weapon Mounts": "2",
+        "Small Weapon Mounts": "4",
+        "Wear and Tear Rate": "1",
+        "Maximum Damage Repair": "95",
+        "Energy Defence": "127",
+        "Kinetic Damage Defence": "130",
+        "Missile Damage Defence": "283",
+        "Crew Supported": "3",
+        "Reactor Slots": "1",
+        "Main Drive Slots": "1",
+        "Thruster Slots": "1",
+        "Jump Drive Slots": "1",
+        "Nav Comp Slots": "1",
+        "Scanner Slots": "1",
+        "Shield Slots": "1",
+        "Cargo Pod Slots": "5",
+        "Fuel Tank Slots": "3",
+        "Coupler Slots": "1",
+        "GERTY Slots": "8"
+      },
+      "Resources": {
+        "Alkaline Earth Metals": "434029",
+        "Metallics": "73563",
+        "Metaloids": "107457"
+      },
+      "UUID": "d77e601c-f477-561f-a016-eb797256109f",
+      "ItemType": "Blueprint",
+      "Name": "Battleship",
+      "Description": "Ship Hull"
     },
     {
       "OwnerUUID": "",
@@ -25278,10 +25306,10 @@
         "Manufacture Run Time": "2d , 14h"
       },
       "Resources": {
-        "Post-Trans Metals": "53065",
-        "Metallics": "12207",
-        "Heavy Trans-Metals": "24672",
-        "Complex Metallics": "10201"
+        "Complex Metallics": "1066",
+        "Heavy Trans-Metals": "2293",
+        "Non-Metallics": "1261",
+        "Halogens": "6312"
       },
       "UUID": "baa9f7a4-6579-545d-89aa-bb8daf5fe174",
       "ItemType": "Blueprint",
@@ -25618,52 +25646,24 @@
     },
     {
       "OwnerUUID": "",
-      "BluePrintType": "Hull",
-      "Class": 7,
+      "BluePrintType": "Munitions/CoilgunMunitions",
       "Properties": {
-        "_IconPosition": "-328px -62px",
-        "Manufacture Run Time": "8d , 13h",
-        "Mass": "63000",
-        "Cargo Volume Size": "66667",
-        "License Level": "40",
-        "License Career": "Military",
-        "Health": "17500",
-        "Eng Capacity Available": "49000",
-        "Max Hull Plating": "1",
-        "Max Hull Reinforcement": "3",
-        "Max Hull Sealant Units": "4",
-        "Cargo Capacity": "50000",
-        "Fuel Capacity": "35000",
-        "Large Weapon Mounts": "2",
-        "Medium Weapon Mounts": "2",
-        "Small Weapon Mounts": "4",
-        "Wear and Tear Rate": "1",
-        "Maximum Damage Repair": "95",
-        "Energy Defence": "127",
-        "Kinetic Damage Defence": "130",
-        "Missile Damage Defence": "283",
-        "Crew Supported": "3",
-        "Reactor Slots": "1",
-        "Main Drive Slots": "1",
-        "Thruster Slots": "1",
-        "Jump Drive Slots": "1",
-        "Nav Comp Slots": "1",
-        "Scanner Slots": "1",
-        "Shield Slots": "1",
-        "Cargo Pod Slots": "5",
-        "Fuel Tank Slots": "3",
-        "Coupler Slots": "1",
-        "GERTY Slots": "8"
+        "_IconPosition": "-176px -746px",
+        "Manufacture Run Time": "1h",
+        "Amount Manufactured": "100",
+        "Mass": "1",
+        "Cargo Volume Size": "0",
+        "Kinetic Damage Rating": "6"
       },
       "Resources": {
-        "Alkaline Earth Metals": "434029",
-        "Metallics": "73563",
-        "Metaloids": "107457"
+        "Noble Gases": "5",
+        "Non-Metallics": "1",
+        "Heavy Trans-Metals": "2"
       },
-      "UUID": "d77e601c-f477-561f-a016-eb797256109f",
+      "UUID": "d926d34d-f7aa-581a-a4c3-15b5d5319662",
       "ItemType": "Blueprint",
-      "Name": "Battleship",
-      "Description": "Ship Hull"
+      "Name": "10cm Coilgun Munitions",
+      "Description": "Coilgun Ammunition"
     }
   ],
   "TechLevel": [

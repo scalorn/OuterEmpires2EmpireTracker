@@ -157,7 +157,8 @@ namespace OE2EmpireTracker.Models
         public override void WriteJson(JsonWriter writer, ItemBag value, JsonSerializer serializer)
         {
             writer.WriteStartObject();
-            foreach (KeyValuePair<string, Item> entry in value.Items)
+            foreach (KeyValuePair<string, Item> entry in value.Items
+                .OrderBy(kvp => kvp.Key, StringComparer.Ordinal))
             {
                 writer.WritePropertyName(entry.Key);
                 string text = JsonConvert.SerializeObject(entry.Value, JsonSettings.SerializerSettings);

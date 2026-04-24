@@ -136,7 +136,7 @@
           "Level": 4,
           "TrainingStarted": true,
           "CompletionTime": {
-            "TimeRemainingString": "18d 21h 25m 59s",
+            "TimeRemainingString": "18d 21h 14m 58s",
             "StartTime": "2026-04-23T21:54:33.7137819Z",
             "EndTime": "2026-05-13T09:30:39.7137819Z"
           }
@@ -18024,7 +18024,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7207833Z",
             "EndTime": "2026-04-24T12:29:31.7207833Z",
             "RepeatIntervalSeconds": 3600,
@@ -18136,7 +18136,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7207833Z",
             "EndTime": "2026-04-24T12:29:31.7207833Z",
             "RepeatIntervalSeconds": 3600,
@@ -18187,7 +18187,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7207833Z",
             "EndTime": "2026-04-24T12:29:31.7207833Z",
             "RepeatIntervalSeconds": 3600,
@@ -18261,7 +18261,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7207833Z",
             "EndTime": "2026-04-24T12:29:31.7207833Z",
             "RepeatIntervalSeconds": 3600,
@@ -18350,7 +18350,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7207833Z",
             "EndTime": "2026-04-24T12:29:31.7207833Z",
             "RepeatIntervalSeconds": 3600,
@@ -18600,7 +18600,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7207833Z",
             "EndTime": "2026-04-24T12:29:31.7207833Z",
             "RepeatIntervalSeconds": 3600,
@@ -18653,7 +18653,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7207833Z",
             "EndTime": "2026-04-24T12:29:31.7207833Z",
             "RepeatIntervalSeconds": 3600,
@@ -18742,7 +18742,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 14s",
+            "TimeRemainingString": "16m 13s",
             "StartTime": "2026-04-24T11:31:54.7207833Z",
             "EndTime": "2026-04-24T12:31:54.7207833Z",
             "RepeatIntervalSeconds": 3600,
@@ -18792,7 +18792,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 14s",
+            "TimeRemainingString": "16m 13s",
             "StartTime": "2026-04-24T11:31:54.7207833Z",
             "EndTime": "2026-04-24T12:31:54.7207833Z",
             "RepeatIntervalSeconds": 3600,
@@ -19336,7 +19336,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.721784Z",
             "EndTime": "2026-04-24T12:29:30.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -19448,7 +19448,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.721784Z",
             "EndTime": "2026-04-24T12:29:30.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -19498,7 +19498,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.721784Z",
             "EndTime": "2026-04-24T12:29:30.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -19571,7 +19571,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.721784Z",
             "EndTime": "2026-04-24T12:29:30.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -19660,7 +19660,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.721784Z",
             "EndTime": "2026-04-24T12:29:30.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -19910,7 +19910,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 8s",
+            "TimeRemainingString": "44m 7s",
             "StartTime": "2026-04-24T11:59:48.721784Z",
             "EndTime": "2026-04-24T12:59:48.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -19980,7 +19980,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 14s",
+            "TimeRemainingString": "16m 13s",
             "StartTime": "2026-04-24T11:31:54.721784Z",
             "EndTime": "2026-04-24T12:31:54.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -20086,7 +20086,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 14s",
+            "TimeRemainingString": "16m 13s",
             "StartTime": "2026-04-24T11:31:54.721784Z",
             "EndTime": "2026-04-24T12:31:54.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -20507,7 +20507,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 8s",
+            "TimeRemainingString": "44m 7s",
             "StartTime": "2026-04-24T11:59:48.721784Z",
             "EndTime": "2026-04-24T12:59:48.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -20619,7 +20619,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 8s",
+            "TimeRemainingString": "44m 7s",
             "StartTime": "2026-04-24T11:59:48.721784Z",
             "EndTime": "2026-04-24T12:59:48.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -20670,7 +20670,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 8s",
+            "TimeRemainingString": "44m 7s",
             "StartTime": "2026-04-24T11:59:48.721784Z",
             "EndTime": "2026-04-24T12:59:48.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -20761,7 +20761,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 8s",
+            "TimeRemainingString": "44m 7s",
             "StartTime": "2026-04-24T11:59:48.721784Z",
             "EndTime": "2026-04-24T12:59:48.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -20850,7 +20850,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 8s",
+            "TimeRemainingString": "44m 7s",
             "StartTime": "2026-04-24T11:59:48.721784Z",
             "EndTime": "2026-04-24T12:59:48.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -21448,7 +21448,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.721784Z",
             "EndTime": "2026-04-24T12:29:30.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -21560,7 +21560,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.721784Z",
             "EndTime": "2026-04-24T12:29:30.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -21610,7 +21610,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.721784Z",
             "EndTime": "2026-04-24T12:29:30.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -21701,7 +21701,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.721784Z",
             "EndTime": "2026-04-24T12:29:30.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -21772,7 +21772,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.721784Z",
             "EndTime": "2026-04-24T12:29:30.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -22037,7 +22037,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.721784Z",
             "EndTime": "2026-04-24T12:29:30.721784Z",
             "RepeatIntervalSeconds": 3600,
@@ -22497,7 +22497,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.722784Z",
             "EndTime": "2026-04-24T12:29:30.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -22609,7 +22609,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.722784Z",
             "EndTime": "2026-04-24T12:29:30.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -22660,7 +22660,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.722784Z",
             "EndTime": "2026-04-24T12:29:30.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -22734,7 +22734,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.722784Z",
             "EndTime": "2026-04-24T12:29:30.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -22806,7 +22806,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.722784Z",
             "EndTime": "2026-04-24T12:29:30.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -22897,7 +22897,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.722784Z",
             "EndTime": "2026-04-24T12:29:30.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -22969,7 +22969,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.722784Z",
             "EndTime": "2026-04-24T12:29:30.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -23077,7 +23077,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.722784Z",
             "EndTime": "2026-04-24T12:29:30.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -23111,7 +23111,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.722784Z",
             "EndTime": "2026-04-24T12:29:30.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -23200,7 +23200,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.722784Z",
             "EndTime": "2026-04-24T12:29:30.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -23828,7 +23828,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.722784Z",
             "EndTime": "2026-04-24T12:29:31.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -23940,7 +23940,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.722784Z",
             "EndTime": "2026-04-24T12:29:31.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -23991,7 +23991,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.722784Z",
             "EndTime": "2026-04-24T12:29:31.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -24065,7 +24065,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.722784Z",
             "EndTime": "2026-04-24T12:29:31.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -24136,7 +24136,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 8s",
+            "TimeRemainingString": "44m 7s",
             "StartTime": "2026-04-24T11:59:48.722784Z",
             "EndTime": "2026-04-24T12:59:48.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -24227,7 +24227,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.722784Z",
             "EndTime": "2026-04-24T12:29:31.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -24474,7 +24474,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.722784Z",
             "EndTime": "2026-04-24T12:29:31.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -24563,7 +24563,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 49s",
+            "TimeRemainingString": "39m 48s",
             "StartTime": "2026-04-24T11:55:29.722784Z",
             "EndTime": "2026-04-24T12:55:29.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -24613,7 +24613,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 49s",
+            "TimeRemainingString": "39m 48s",
             "StartTime": "2026-04-24T11:55:29.722784Z",
             "EndTime": "2026-04-24T12:55:29.722784Z",
             "RepeatIntervalSeconds": 3600,
@@ -25193,7 +25193,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -25305,7 +25305,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -25356,7 +25356,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -25430,7 +25430,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -25502,7 +25502,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -25593,7 +25593,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -25665,7 +25665,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -25932,7 +25932,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -25965,7 +25965,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 9s",
+            "TimeRemainingString": "44m 8s",
             "StartTime": "2026-04-24T11:59:49.7237848Z",
             "EndTime": "2026-04-24T12:59:49.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -26091,7 +26091,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 14s",
+            "TimeRemainingString": "16m 13s",
             "StartTime": "2026-04-24T11:31:54.7237848Z",
             "EndTime": "2026-04-24T12:31:54.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -26580,7 +26580,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -26692,7 +26692,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -26743,7 +26743,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -26834,7 +26834,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -26923,7 +26923,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -27013,7 +27013,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -27084,7 +27084,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7237848Z",
             "EndTime": "2026-04-24T12:29:31.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -27349,7 +27349,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 8s",
+            "TimeRemainingString": "44m 7s",
             "StartTime": "2026-04-24T11:59:48.7237848Z",
             "EndTime": "2026-04-24T12:59:48.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -27382,7 +27382,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 49s",
+            "TimeRemainingString": "39m 48s",
             "StartTime": "2026-04-24T11:55:29.7237848Z",
             "EndTime": "2026-04-24T12:55:29.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -27508,7 +27508,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 14s",
+            "TimeRemainingString": "16m 13s",
             "StartTime": "2026-04-24T11:31:54.7237848Z",
             "EndTime": "2026-04-24T12:31:54.7237848Z",
             "RepeatIntervalSeconds": 3600,
@@ -27934,7 +27934,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7247835Z",
             "EndTime": "2026-04-24T12:29:30.7247835Z",
             "RepeatIntervalSeconds": 3600,
@@ -28063,7 +28063,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "56m 56s",
+            "TimeRemainingString": "45m 55s",
             "StartTime": "2026-04-24T12:01:36.7267848Z",
             "EndTime": "2026-04-24T13:01:36.7267848Z",
             "RepeatIntervalSeconds": 3600,
@@ -28114,7 +28114,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "56m 56s",
+            "TimeRemainingString": "45m 55s",
             "StartTime": "2026-04-24T12:01:36.7267848Z",
             "EndTime": "2026-04-24T13:01:36.7267848Z",
             "RepeatIntervalSeconds": 3600,
@@ -28750,7 +28750,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7267848Z",
             "EndTime": "2026-04-24T12:29:30.7267848Z",
             "RepeatIntervalSeconds": 3600,
@@ -28862,7 +28862,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7267848Z",
             "EndTime": "2026-04-24T12:29:30.7267848Z",
             "RepeatIntervalSeconds": 3600,
@@ -28913,7 +28913,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7267848Z",
             "EndTime": "2026-04-24T12:29:30.7267848Z",
             "RepeatIntervalSeconds": 3600,
@@ -29004,7 +29004,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7267848Z",
             "EndTime": "2026-04-24T12:29:30.7267848Z",
             "RepeatIntervalSeconds": 3600,
@@ -29093,7 +29093,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7267848Z",
             "EndTime": "2026-04-24T12:29:30.7267848Z",
             "RepeatIntervalSeconds": 3600,
@@ -30175,7 +30175,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "58m 9s",
+            "TimeRemainingString": "47m 8s",
             "StartTime": "2026-04-24T12:02:49.7277849Z",
             "EndTime": "2026-04-24T13:02:49.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -30287,7 +30287,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "58m 10s",
+            "TimeRemainingString": "47m 9s",
             "StartTime": "2026-04-24T12:02:50.7277849Z",
             "EndTime": "2026-04-24T13:02:50.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -30338,7 +30338,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7277849Z",
             "EndTime": "2026-04-24T12:29:31.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -30429,7 +30429,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7277849Z",
             "EndTime": "2026-04-24T12:29:31.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -30518,7 +30518,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7277849Z",
             "EndTime": "2026-04-24T12:29:31.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -31123,7 +31123,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7277849Z",
             "EndTime": "2026-04-24T12:29:30.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -31235,7 +31235,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7277849Z",
             "EndTime": "2026-04-24T12:29:30.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -31286,7 +31286,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7277849Z",
             "EndTime": "2026-04-24T12:29:30.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -31573,7 +31573,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7277849Z",
             "EndTime": "2026-04-24T12:29:30.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -31645,7 +31645,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7277849Z",
             "EndTime": "2026-04-24T12:29:30.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -31695,7 +31695,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 49s",
+            "TimeRemainingString": "39m 48s",
             "StartTime": "2026-04-24T11:55:29.7277849Z",
             "EndTime": "2026-04-24T12:55:29.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -31748,7 +31748,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 49s",
+            "TimeRemainingString": "39m 48s",
             "StartTime": "2026-04-24T11:55:29.7277849Z",
             "EndTime": "2026-04-24T12:55:29.7277849Z",
             "RepeatIntervalSeconds": 3600,
@@ -32224,7 +32224,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7287852Z",
             "EndTime": "2026-04-24T12:29:30.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -32353,7 +32353,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7287852Z",
             "EndTime": "2026-04-24T12:29:30.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -32949,7 +32949,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7287852Z",
             "EndTime": "2026-04-24T12:29:31.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -33061,7 +33061,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7287852Z",
             "EndTime": "2026-04-24T12:29:31.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -33112,7 +33112,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7287852Z",
             "EndTime": "2026-04-24T12:29:31.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -33399,7 +33399,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7287852Z",
             "EndTime": "2026-04-24T12:29:31.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -33471,7 +33471,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7287852Z",
             "EndTime": "2026-04-24T12:29:31.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -33521,7 +33521,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 49s",
+            "TimeRemainingString": "39m 48s",
             "StartTime": "2026-04-24T11:55:29.7287852Z",
             "EndTime": "2026-04-24T12:55:29.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -33574,7 +33574,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 49s",
+            "TimeRemainingString": "39m 48s",
             "StartTime": "2026-04-24T11:55:29.7287852Z",
             "EndTime": "2026-04-24T12:55:29.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -34060,7 +34060,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7287852Z",
             "EndTime": "2026-04-24T12:29:30.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -34172,7 +34172,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7287852Z",
             "EndTime": "2026-04-24T12:29:30.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -34223,7 +34223,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7287852Z",
             "EndTime": "2026-04-24T12:29:30.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -34510,7 +34510,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7287852Z",
             "EndTime": "2026-04-24T12:29:30.7287852Z",
             "RepeatIntervalSeconds": 3600,
@@ -34927,7 +34927,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7297855Z",
             "EndTime": "2026-04-24T12:29:30.7297855Z",
             "RepeatIntervalSeconds": 3600,
@@ -35039,7 +35039,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7297855Z",
             "EndTime": "2026-04-24T12:29:31.7297855Z",
             "RepeatIntervalSeconds": 3600,
@@ -35090,7 +35090,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7297855Z",
             "EndTime": "2026-04-24T12:29:31.7297855Z",
             "RepeatIntervalSeconds": 3600,
@@ -35377,7 +35377,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7297855Z",
             "EndTime": "2026-04-24T12:29:31.7297855Z",
             "RepeatIntervalSeconds": 3600,
@@ -35466,7 +35466,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 8s",
+            "TimeRemainingString": "44m 7s",
             "StartTime": "2026-04-24T11:59:48.7297855Z",
             "EndTime": "2026-04-24T12:59:48.7297855Z",
             "RepeatIntervalSeconds": 3600,
@@ -35516,7 +35516,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 14s",
+            "TimeRemainingString": "16m 13s",
             "StartTime": "2026-04-24T11:31:54.7297855Z",
             "EndTime": "2026-04-24T12:31:54.7297855Z",
             "RepeatIntervalSeconds": 3600,
@@ -35586,7 +35586,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 14s",
+            "TimeRemainingString": "16m 13s",
             "StartTime": "2026-04-24T11:31:54.7297855Z",
             "EndTime": "2026-04-24T12:31:54.7297855Z",
             "RepeatIntervalSeconds": 3600,
@@ -35970,7 +35970,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7297855Z",
             "EndTime": "2026-04-24T12:29:30.7297855Z",
             "RepeatIntervalSeconds": 3600,
@@ -36099,7 +36099,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7297855Z",
             "EndTime": "2026-04-24T12:29:30.7297855Z",
             "RepeatIntervalSeconds": 3600,
@@ -37227,7 +37227,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7397907Z",
             "EndTime": "2026-04-24T12:29:30.7397907Z",
             "RepeatIntervalSeconds": 3600,
@@ -37339,7 +37339,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7397907Z",
             "EndTime": "2026-04-24T12:29:30.7397907Z",
             "RepeatIntervalSeconds": 3600,
@@ -37390,7 +37390,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7397907Z",
             "EndTime": "2026-04-24T12:29:30.7397907Z",
             "RepeatIntervalSeconds": 3600,
@@ -37677,7 +37677,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7397907Z",
             "EndTime": "2026-04-24T12:29:30.7397907Z",
             "RepeatIntervalSeconds": 3600,
@@ -37766,7 +37766,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7397907Z",
             "EndTime": "2026-04-24T12:29:30.7397907Z",
             "RepeatIntervalSeconds": 3600,
@@ -37816,7 +37816,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 14s",
+            "TimeRemainingString": "16m 13s",
             "StartTime": "2026-04-24T11:31:54.7397907Z",
             "EndTime": "2026-04-24T12:31:54.7397907Z",
             "RepeatIntervalSeconds": 3600,
@@ -37876,7 +37876,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 14s",
+            "TimeRemainingString": "16m 13s",
             "StartTime": "2026-04-24T11:31:54.7397907Z",
             "EndTime": "2026-04-24T12:31:54.7397907Z",
             "RepeatIntervalSeconds": 3600,
@@ -38340,7 +38340,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7397907Z",
             "EndTime": "2026-04-24T12:29:31.7397907Z",
             "RepeatIntervalSeconds": 3600,
@@ -38452,7 +38452,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7397907Z",
             "EndTime": "2026-04-24T12:29:31.7397907Z",
             "RepeatIntervalSeconds": 3600,
@@ -38503,7 +38503,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7397907Z",
             "EndTime": "2026-04-24T12:29:31.7397907Z",
             "RepeatIntervalSeconds": 3600,
@@ -38790,7 +38790,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7407913Z",
             "EndTime": "2026-04-24T12:29:31.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -38879,7 +38879,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 8s",
+            "TimeRemainingString": "44m 7s",
             "StartTime": "2026-04-24T11:59:48.7407913Z",
             "EndTime": "2026-04-24T12:59:48.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -38929,7 +38929,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 14s",
+            "TimeRemainingString": "16m 13s",
             "StartTime": "2026-04-24T11:31:54.7407913Z",
             "EndTime": "2026-04-24T12:31:54.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -39362,7 +39362,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7407913Z",
             "EndTime": "2026-04-24T12:29:31.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -39474,7 +39474,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7407913Z",
             "EndTime": "2026-04-24T12:29:31.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -39525,7 +39525,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7407913Z",
             "EndTime": "2026-04-24T12:29:31.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -39812,7 +39812,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7407913Z",
             "EndTime": "2026-04-24T12:29:31.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -39901,7 +39901,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "47m 19s",
+            "TimeRemainingString": "36m 18s",
             "StartTime": "2026-04-24T11:51:59.7407913Z",
             "EndTime": "2026-04-24T12:51:59.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -39951,7 +39951,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 48s",
+            "TimeRemainingString": "39m 47s",
             "StartTime": "2026-04-24T11:55:28.7407913Z",
             "EndTime": "2026-04-24T12:55:28.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -40360,7 +40360,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7407913Z",
             "EndTime": "2026-04-24T12:29:30.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -40469,7 +40469,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7407913Z",
             "EndTime": "2026-04-24T12:29:30.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -40519,7 +40519,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7407913Z",
             "EndTime": "2026-04-24T12:29:30.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -40608,7 +40608,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7407913Z",
             "EndTime": "2026-04-24T12:29:30.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -40695,7 +40695,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7407913Z",
             "EndTime": "2026-04-24T12:29:30.7407913Z",
             "RepeatIntervalSeconds": 3600,
@@ -41333,7 +41333,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -41445,7 +41445,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -41496,7 +41496,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -41570,7 +41570,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -41642,7 +41642,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -41733,7 +41733,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -41805,7 +41805,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -41896,7 +41896,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -41947,7 +41947,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -42019,7 +42019,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -42110,7 +42110,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -42161,7 +42161,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -42290,7 +42290,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -42948,7 +42948,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -43060,7 +43060,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -43111,7 +43111,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -43185,7 +43185,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -43257,7 +43257,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 50s",
+            "TimeRemainingString": "13m 49s",
             "StartTime": "2026-04-24T11:29:30.7417917Z",
             "EndTime": "2026-04-24T12:29:30.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -43348,7 +43348,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7417917Z",
             "EndTime": "2026-04-24T12:29:31.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -43420,7 +43420,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7417917Z",
             "EndTime": "2026-04-24T12:29:31.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -43528,7 +43528,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7417917Z",
             "EndTime": "2026-04-24T12:29:31.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -43562,7 +43562,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7417917Z",
             "EndTime": "2026-04-24T12:29:31.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -43651,7 +43651,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7417917Z",
             "EndTime": "2026-04-24T12:29:31.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -43742,7 +43742,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7417917Z",
             "EndTime": "2026-04-24T12:29:31.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -43793,7 +43793,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7417917Z",
             "EndTime": "2026-04-24T12:29:31.7417917Z",
             "RepeatIntervalSeconds": 3600,
@@ -44629,7 +44629,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.742792Z",
             "EndTime": "2026-04-24T12:29:31.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -44699,7 +44699,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.742792Z",
             "EndTime": "2026-04-24T12:29:31.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -44788,7 +44788,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.742792Z",
             "EndTime": "2026-04-24T12:29:31.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -44858,7 +44858,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.742792Z",
             "EndTime": "2026-04-24T12:29:31.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -45295,7 +45295,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -45407,7 +45407,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -45458,7 +45458,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -45532,7 +45532,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -45604,7 +45604,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -45695,7 +45695,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -45767,7 +45767,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -45875,7 +45875,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -45909,7 +45909,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -45998,7 +45998,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -46089,7 +46089,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -46140,7 +46140,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -46252,7 +46252,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.742792Z",
             "EndTime": "2026-04-24T12:29:32.742792Z",
             "RepeatIntervalSeconds": 3600,
@@ -46897,7 +46897,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -47009,7 +47009,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -47060,7 +47060,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -47134,7 +47134,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -47223,7 +47223,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -47473,7 +47473,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -47526,7 +47526,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -47632,7 +47632,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 50s",
+            "TimeRemainingString": "39m 49s",
             "StartTime": "2026-04-24T11:55:30.7437922Z",
             "EndTime": "2026-04-24T12:55:30.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -47665,7 +47665,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 15s",
+            "TimeRemainingString": "16m 14s",
             "StartTime": "2026-04-24T11:31:55.7437922Z",
             "EndTime": "2026-04-24T12:31:55.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -48183,7 +48183,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -48295,7 +48295,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -48346,7 +48346,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -48437,7 +48437,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -48525,7 +48525,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -48775,7 +48775,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -49177,7 +49177,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -49306,7 +49306,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -49357,7 +49357,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7437922Z",
             "EndTime": "2026-04-24T12:29:31.7437922Z",
             "RepeatIntervalSeconds": 3600,
@@ -49918,7 +49918,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -50047,7 +50047,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -50098,7 +50098,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -50659,7 +50659,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -50788,7 +50788,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -51324,7 +51324,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -51453,7 +51453,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -52019,7 +52019,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -52131,7 +52131,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -52181,7 +52181,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -52272,7 +52272,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -52343,7 +52343,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -52608,7 +52608,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7447925Z",
             "EndTime": "2026-04-24T12:29:31.7447925Z",
             "RepeatIntervalSeconds": 3600,
@@ -53058,7 +53058,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7457927Z",
             "EndTime": "2026-04-24T12:29:32.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -53170,7 +53170,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7457927Z",
             "EndTime": "2026-04-24T12:29:32.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -53221,7 +53221,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7457927Z",
             "EndTime": "2026-04-24T12:29:32.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -53295,7 +53295,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7457927Z",
             "EndTime": "2026-04-24T12:29:32.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -53367,7 +53367,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7457927Z",
             "EndTime": "2026-04-24T12:29:32.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -53458,7 +53458,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7457927Z",
             "EndTime": "2026-04-24T12:29:32.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -53530,7 +53530,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7457927Z",
             "EndTime": "2026-04-24T12:29:32.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -53620,7 +53620,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7457927Z",
             "EndTime": "2026-04-24T12:29:32.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -53830,7 +53830,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7457927Z",
             "EndTime": "2026-04-24T12:29:32.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -53956,7 +53956,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 50s",
+            "TimeRemainingString": "39m 49s",
             "StartTime": "2026-04-24T11:55:30.7457927Z",
             "EndTime": "2026-04-24T12:55:30.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -54006,7 +54006,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 15s",
+            "TimeRemainingString": "16m 14s",
             "StartTime": "2026-04-24T11:31:55.7457927Z",
             "EndTime": "2026-04-24T12:31:55.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -54074,7 +54074,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 15s",
+            "TimeRemainingString": "16m 14s",
             "StartTime": "2026-04-24T11:31:55.7457927Z",
             "EndTime": "2026-04-24T12:31:55.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -54540,7 +54540,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7457927Z",
             "EndTime": "2026-04-24T12:29:31.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -54652,7 +54652,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7457927Z",
             "EndTime": "2026-04-24T12:29:31.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -54703,7 +54703,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7457927Z",
             "EndTime": "2026-04-24T12:29:31.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -54777,7 +54777,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7457927Z",
             "EndTime": "2026-04-24T12:29:31.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -54866,7 +54866,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7457927Z",
             "EndTime": "2026-04-24T12:29:31.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -54957,7 +54957,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7457927Z",
             "EndTime": "2026-04-24T12:29:31.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -55028,7 +55028,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7457927Z",
             "EndTime": "2026-04-24T12:29:31.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -55295,7 +55295,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7457927Z",
             "EndTime": "2026-04-24T12:29:31.7457927Z",
             "RepeatIntervalSeconds": 3600,
@@ -55698,7 +55698,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "33m 14s",
+            "TimeRemainingString": "22m 13s",
             "StartTime": "2026-04-23T21:37:54.7467934Z",
             "EndTime": "2026-04-23T22:37:54.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -55825,7 +55825,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7467934Z",
             "EndTime": "2026-04-24T12:29:31.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -56367,7 +56367,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7467934Z",
             "EndTime": "2026-04-24T12:29:31.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -56479,7 +56479,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7467934Z",
             "EndTime": "2026-04-24T12:29:31.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -56530,7 +56530,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7467934Z",
             "EndTime": "2026-04-24T12:29:31.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -56621,7 +56621,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7467934Z",
             "EndTime": "2026-04-24T12:29:31.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -56710,7 +56710,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7467934Z",
             "EndTime": "2026-04-24T12:29:31.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -57292,7 +57292,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "21m 38s",
+            "TimeRemainingString": "10m 37s",
             "StartTime": "2026-04-24T11:26:18.7467934Z",
             "EndTime": "2026-04-24T12:26:18.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -57404,7 +57404,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "21m 38s",
+            "TimeRemainingString": "10m 37s",
             "StartTime": "2026-04-24T11:26:18.7467934Z",
             "EndTime": "2026-04-24T12:26:18.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -57455,7 +57455,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7467934Z",
             "EndTime": "2026-04-24T12:29:31.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -57546,7 +57546,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7467934Z",
             "EndTime": "2026-04-24T12:29:31.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -57635,7 +57635,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7467934Z",
             "EndTime": "2026-04-24T12:29:31.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -58265,7 +58265,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7467934Z",
             "EndTime": "2026-04-24T12:29:31.7467934Z",
             "RepeatIntervalSeconds": 3600,
@@ -58377,7 +58377,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -58428,7 +58428,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -58502,7 +58502,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -58574,7 +58574,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -58665,7 +58665,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -58736,7 +58736,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -59002,7 +59002,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -59035,7 +59035,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -59151,7 +59151,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -59201,7 +59201,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 15s",
+            "TimeRemainingString": "16m 14s",
             "StartTime": "2026-04-24T11:31:55.7477938Z",
             "EndTime": "2026-04-24T12:31:55.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -59715,7 +59715,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -59827,7 +59827,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -59878,7 +59878,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -59969,7 +59969,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -60041,7 +60041,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -60132,7 +60132,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -60770,7 +60770,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -60882,7 +60882,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -60933,7 +60933,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -61007,7 +61007,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -61096,7 +61096,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -61186,7 +61186,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7477938Z",
             "EndTime": "2026-04-24T12:29:31.7477938Z",
             "RepeatIntervalSeconds": 3600,
@@ -61416,7 +61416,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -61522,7 +61522,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 49s",
+            "TimeRemainingString": "39m 48s",
             "StartTime": "2026-04-24T11:55:29.7487932Z",
             "EndTime": "2026-04-24T12:55:29.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62004,7 +62004,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62116,7 +62116,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62167,7 +62167,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62241,7 +62241,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62313,7 +62313,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62404,7 +62404,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62476,7 +62476,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62567,7 +62567,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62618,7 +62618,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62690,7 +62690,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62781,7 +62781,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62832,7 +62832,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62961,7 +62961,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -62995,7 +62995,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -63634,7 +63634,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -63746,7 +63746,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -63797,7 +63797,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -63888,7 +63888,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -63960,7 +63960,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -64227,7 +64227,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7487932Z",
             "EndTime": "2026-04-24T12:29:31.7487932Z",
             "RepeatIntervalSeconds": 3600,
@@ -64297,7 +64297,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7497952Z",
             "EndTime": "2026-04-24T12:29:31.7497952Z",
             "RepeatIntervalSeconds": 3600,
@@ -64386,7 +64386,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 50s",
+            "TimeRemainingString": "39m 49s",
             "StartTime": "2026-04-24T11:55:30.7497952Z",
             "EndTime": "2026-04-24T12:55:30.7497952Z",
             "RepeatIntervalSeconds": 3600,
@@ -64436,7 +64436,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 15s",
+            "TimeRemainingString": "16m 14s",
             "StartTime": "2026-04-24T11:31:55.7497952Z",
             "EndTime": "2026-04-24T12:31:55.7497952Z",
             "RepeatIntervalSeconds": 3600,
@@ -64514,7 +64514,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 15s",
+            "TimeRemainingString": "16m 14s",
             "StartTime": "2026-04-24T11:31:55.7497952Z",
             "EndTime": "2026-04-24T12:31:55.7497952Z",
             "RepeatIntervalSeconds": 3600,
@@ -64951,7 +64951,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7497952Z",
             "EndTime": "2026-04-24T12:29:31.7497952Z",
             "RepeatIntervalSeconds": 3600,
@@ -65063,7 +65063,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7497952Z",
             "EndTime": "2026-04-24T12:29:31.7497952Z",
             "RepeatIntervalSeconds": 3600,
@@ -65114,7 +65114,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7497952Z",
             "EndTime": "2026-04-24T12:29:31.7497952Z",
             "RepeatIntervalSeconds": 3600,
@@ -65205,7 +65205,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7497952Z",
             "EndTime": "2026-04-24T12:29:31.7497952Z",
             "RepeatIntervalSeconds": 3600,
@@ -65277,7 +65277,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7497952Z",
             "EndTime": "2026-04-24T12:29:31.7497952Z",
             "RepeatIntervalSeconds": 3600,
@@ -65544,7 +65544,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7497952Z",
             "EndTime": "2026-04-24T12:29:31.7497952Z",
             "RepeatIntervalSeconds": 3600,
@@ -66023,7 +66023,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -66135,7 +66135,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -66186,7 +66186,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -66260,7 +66260,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -66332,7 +66332,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -66423,7 +66423,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -66478,7 +66478,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -66586,7 +66586,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -66620,7 +66620,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -66709,7 +66709,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -66800,7 +66800,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -66851,7 +66851,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -67479,7 +67479,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -67591,7 +67591,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -67642,7 +67642,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -67733,7 +67733,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -67805,7 +67805,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -67895,7 +67895,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7503145Z",
             "EndTime": "2026-04-24T12:29:31.7503145Z",
             "RepeatIntervalSeconds": 3600,
@@ -68560,7 +68560,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -68669,7 +68669,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -68719,7 +68719,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -68791,7 +68791,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -68861,7 +68861,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -68950,7 +68950,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -69003,7 +69003,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -69092,7 +69092,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -69125,7 +69125,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -69195,7 +69195,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -69284,7 +69284,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -69334,7 +69334,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -69443,7 +69443,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -69493,7 +69493,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7513025Z",
             "EndTime": "2026-04-24T12:29:32.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -70094,7 +70094,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7513025Z",
             "EndTime": "2026-04-24T12:29:31.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -70223,7 +70223,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7513025Z",
             "EndTime": "2026-04-24T12:29:31.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -70788,7 +70788,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7513025Z",
             "EndTime": "2026-04-24T12:29:31.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -70900,7 +70900,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7513025Z",
             "EndTime": "2026-04-24T12:29:31.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -70951,7 +70951,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7513025Z",
             "EndTime": "2026-04-24T12:29:31.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -71025,7 +71025,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7513025Z",
             "EndTime": "2026-04-24T12:29:31.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -71114,7 +71114,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7513025Z",
             "EndTime": "2026-04-24T12:29:31.7513025Z",
             "RepeatIntervalSeconds": 3600,
@@ -71364,7 +71364,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -71434,7 +71434,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 9s",
+            "TimeRemainingString": "44m 8s",
             "StartTime": "2026-04-24T11:59:49.7523021Z",
             "EndTime": "2026-04-24T12:59:49.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -71540,7 +71540,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 50s",
+            "TimeRemainingString": "39m 49s",
             "StartTime": "2026-04-24T11:55:30.7523021Z",
             "EndTime": "2026-04-24T12:55:30.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72100,7 +72100,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72212,7 +72212,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72263,7 +72263,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72337,7 +72337,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72409,7 +72409,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72500,7 +72500,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72572,7 +72572,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72680,7 +72680,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72714,7 +72714,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72803,7 +72803,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72894,7 +72894,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -72945,7 +72945,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -73556,7 +73556,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -73668,7 +73668,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -73719,7 +73719,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -73810,7 +73810,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -73899,7 +73899,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -73990,7 +73990,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -74062,7 +74062,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7523021Z",
             "EndTime": "2026-04-24T12:29:31.7523021Z",
             "RepeatIntervalSeconds": 3600,
@@ -74153,7 +74153,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7533026Z",
             "EndTime": "2026-04-24T12:29:31.7533026Z",
             "RepeatIntervalSeconds": 3600,
@@ -74204,7 +74204,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7533026Z",
             "EndTime": "2026-04-24T12:29:31.7533026Z",
             "RepeatIntervalSeconds": 3600,
@@ -74939,7 +74939,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.764305Z",
             "EndTime": "2026-04-24T12:29:31.764305Z",
             "RepeatIntervalSeconds": 3600,
@@ -75051,7 +75051,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.764305Z",
             "EndTime": "2026-04-24T12:29:31.764305Z",
             "RepeatIntervalSeconds": 3600,
@@ -75102,7 +75102,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.764305Z",
             "EndTime": "2026-04-24T12:29:31.764305Z",
             "RepeatIntervalSeconds": 3600,
@@ -75193,7 +75193,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.764305Z",
             "EndTime": "2026-04-24T12:29:31.764305Z",
             "RepeatIntervalSeconds": 3600,
@@ -75265,7 +75265,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.764305Z",
             "EndTime": "2026-04-24T12:29:31.764305Z",
             "RepeatIntervalSeconds": 3600,
@@ -75532,7 +75532,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.764305Z",
             "EndTime": "2026-04-24T12:29:31.764305Z",
             "RepeatIntervalSeconds": 3600,
@@ -75602,7 +75602,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.764305Z",
             "EndTime": "2026-04-24T12:29:31.764305Z",
             "RepeatIntervalSeconds": 3600,
@@ -75691,7 +75691,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 15s",
+            "TimeRemainingString": "16m 14s",
             "StartTime": "2026-04-24T11:31:55.764305Z",
             "EndTime": "2026-04-24T12:31:55.764305Z",
             "RepeatIntervalSeconds": 3600,
@@ -75741,7 +75741,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 15s",
+            "TimeRemainingString": "16m 14s",
             "StartTime": "2026-04-24T11:31:55.764305Z",
             "EndTime": "2026-04-24T12:31:55.764305Z",
             "RepeatIntervalSeconds": 3600,
@@ -76212,7 +76212,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -76324,7 +76324,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -76375,7 +76375,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -76449,7 +76449,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -76521,7 +76521,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -76612,7 +76612,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -76684,7 +76684,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -76934,7 +76934,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -76984,7 +76984,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -77093,7 +77093,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 15s",
+            "TimeRemainingString": "16m 14s",
             "StartTime": "2026-04-24T11:31:55.7653051Z",
             "EndTime": "2026-04-24T12:31:55.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -77143,7 +77143,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 15s",
+            "TimeRemainingString": "16m 14s",
             "StartTime": "2026-04-24T11:31:55.7653051Z",
             "EndTime": "2026-04-24T12:31:55.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -77704,7 +77704,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -77816,7 +77816,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -77867,7 +77867,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -77941,7 +77941,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -78013,7 +78013,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -78104,7 +78104,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7653051Z",
             "EndTime": "2026-04-24T12:29:31.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -78176,7 +78176,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7653051Z",
             "EndTime": "2026-04-24T12:29:32.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -78267,7 +78267,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7653051Z",
             "EndTime": "2026-04-24T12:29:32.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -78318,7 +78318,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7653051Z",
             "EndTime": "2026-04-24T12:29:32.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -78390,7 +78390,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7653051Z",
             "EndTime": "2026-04-24T12:29:32.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -78481,7 +78481,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7653051Z",
             "EndTime": "2026-04-24T12:29:32.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -78532,7 +78532,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7653051Z",
             "EndTime": "2026-04-24T12:29:32.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -78661,7 +78661,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7653051Z",
             "EndTime": "2026-04-24T12:29:32.7653051Z",
             "RepeatIntervalSeconds": 3600,
@@ -79280,7 +79280,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7663061Z",
             "EndTime": "2026-04-24T12:29:31.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -79392,7 +79392,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7663061Z",
             "EndTime": "2026-04-24T12:29:31.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -79443,7 +79443,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7663061Z",
             "EndTime": "2026-04-24T12:29:31.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -79729,7 +79729,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7663061Z",
             "EndTime": "2026-04-24T12:29:31.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -79818,7 +79818,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 51s",
+            "TimeRemainingString": "13m 50s",
             "StartTime": "2026-04-24T11:29:31.7663061Z",
             "EndTime": "2026-04-24T12:29:31.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -79868,7 +79868,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 15s",
+            "TimeRemainingString": "16m 14s",
             "StartTime": "2026-04-24T11:31:55.7663061Z",
             "EndTime": "2026-04-24T12:31:55.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -80920,7 +80920,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7663061Z",
             "EndTime": "2026-04-24T12:29:32.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -81031,7 +81031,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7663061Z",
             "EndTime": "2026-04-24T12:29:32.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -81081,7 +81081,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7663061Z",
             "EndTime": "2026-04-24T12:29:32.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -81366,7 +81366,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7663061Z",
             "EndTime": "2026-04-24T12:29:32.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -81773,7 +81773,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7663061Z",
             "EndTime": "2026-04-24T12:29:32.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -81884,7 +81884,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7663061Z",
             "EndTime": "2026-04-24T12:29:32.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -81934,7 +81934,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7663061Z",
             "EndTime": "2026-04-24T12:29:32.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -82219,7 +82219,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7663061Z",
             "EndTime": "2026-04-24T12:29:32.7663061Z",
             "RepeatIntervalSeconds": 3600,
@@ -82628,7 +82628,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -82739,7 +82739,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -82789,7 +82789,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -83074,7 +83074,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -83146,7 +83146,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 10s",
+            "TimeRemainingString": "44m 9s",
             "StartTime": "2026-04-24T11:59:50.7673061Z",
             "EndTime": "2026-04-24T12:59:50.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -83196,7 +83196,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 16s",
+            "TimeRemainingString": "16m 15s",
             "StartTime": "2026-04-24T11:31:56.7673061Z",
             "EndTime": "2026-04-24T12:31:56.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -83699,7 +83699,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7673061Z",
             "EndTime": "2026-04-24T12:29:32.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -83811,7 +83811,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7673061Z",
             "EndTime": "2026-04-24T12:29:32.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -83862,7 +83862,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7673061Z",
             "EndTime": "2026-04-24T12:29:32.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -84149,7 +84149,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7673061Z",
             "EndTime": "2026-04-24T12:29:32.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -84221,7 +84221,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7673061Z",
             "EndTime": "2026-04-24T12:29:32.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -84271,7 +84271,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 16s",
+            "TimeRemainingString": "16m 15s",
             "StartTime": "2026-04-24T11:31:56.7673061Z",
             "EndTime": "2026-04-24T12:31:56.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -84341,7 +84341,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 16s",
+            "TimeRemainingString": "16m 15s",
             "StartTime": "2026-04-24T11:31:56.7673061Z",
             "EndTime": "2026-04-24T12:31:56.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -85034,7 +85034,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -85104,7 +85104,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -85193,7 +85193,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -85263,7 +85263,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -85352,7 +85352,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -85402,7 +85402,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -85472,7 +85472,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -85561,7 +85561,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -85611,7 +85611,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -85720,7 +85720,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7673061Z",
             "EndTime": "2026-04-24T12:29:33.7673061Z",
             "RepeatIntervalSeconds": 3600,
@@ -85921,7 +85921,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkaline Earth Metals",
   "Name": "Heavy Alkaline Earth Metals",
-  "Quantity": 1108,
+  "Quantity": 1336,
   "ResourcePurity": "High"
 },
         "ced9f273-8d26-4898-8cb1-96dac03b5e37": {
@@ -85947,7 +85947,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Organics",
   "Name": "Alkali Organics",
-  "Quantity": 3144,
+  "Quantity": 3696,
   "ResourcePurity": "Low"
 },
         "0ea0e545-5a49-4eb4-b2aa-5d4ee41adafd": {
@@ -85955,7 +85955,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Halogens",
   "Name": "Halogens",
-  "Quantity": 1108,
+  "Quantity": 1336,
   "ResourcePurity": "High"
 },
         "28009395-12e7-49d5-a4c3-f7ab1d3a86d5": {
@@ -85963,7 +85963,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Noble Gases",
   "Name": "Noble Gases",
-  "Quantity": 953,
+  "Quantity": 1164,
   "ResourcePurity": "High"
 },
         "27c90f20-0f46-4c41-b8ee-39e30c494b87": {
@@ -85980,7 +85980,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Post-Trans Metals",
   "Name": "Heavy Post-Trans Metals",
-  "Quantity": 975,
+  "Quantity": 1422,
   "ResourcePurity": "Medium"
 },
         "c6ab3b8a-6f6e-486a-8552-77d78d23b910": {
@@ -86057,7 +86057,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkali Metals",
   "Name": "Heavy Alkali Metals",
-  "Quantity": 235,
+  "Quantity": 476,
   "ResourcePurity": "High"
 },
         "390ac2ce-8ddc-49a7-8bf8-0e2e8b356397": {
@@ -86073,7 +86073,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkaline Earth Metals",
   "Name": "Alkaline Earth Metals",
-  "Quantity": 711,
+  "Quantity": 1562,
   "ResourcePurity": "High"
 }
       },
@@ -86299,15 +86299,15 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "5m 29s",
-            "StartTime": "2026-04-24T11:10:09.7683064Z",
-            "EndTime": "2026-04-24T12:10:09.7683064Z",
+            "TimeRemainingString": "54m 28s",
+            "StartTime": "2026-04-24T12:10:09.7683064Z",
+            "EndTime": "2026-04-24T13:10:09.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Alkaline Earth Metals",
-          "MiningLeftOvers": 772.7372,
+          "MiningLeftOvers": 773.2140,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -86408,15 +86408,15 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "5m 29s",
-            "StartTime": "2026-04-24T11:10:09.7683064Z",
-            "EndTime": "2026-04-24T12:10:09.7683064Z",
+            "TimeRemainingString": "54m 28s",
+            "StartTime": "2026-04-24T12:10:09.7683064Z",
+            "EndTime": "2026-04-24T13:10:09.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Heavy Alkaline Earth Metals",
-          "MiningLeftOvers": 220.5101,
+          "MiningLeftOvers": 220.5245,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -86458,15 +86458,15 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "5m 29s",
-            "StartTime": "2026-04-24T11:10:09.7683064Z",
-            "EndTime": "2026-04-24T12:10:09.7683064Z",
+            "TimeRemainingString": "54m 28s",
+            "StartTime": "2026-04-24T12:10:09.7683064Z",
+            "EndTime": "2026-04-24T13:10:09.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Heavy Alkali Metals",
-          "MiningLeftOvers": 229.7998,
+          "MiningLeftOvers": 229.8510,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -86530,15 +86530,15 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "5m 29s",
-            "StartTime": "2026-04-24T11:10:09.7683064Z",
-            "EndTime": "2026-04-24T12:10:09.7683064Z",
+            "TimeRemainingString": "54m 28s",
+            "StartTime": "2026-04-24T12:10:09.7683064Z",
+            "EndTime": "2026-04-24T13:10:09.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
-          "MiningLeftOvers": 420.8893,
+          "MiningLeftOvers": 421.0285,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -86600,15 +86600,15 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "5m 29s",
-            "StartTime": "2026-04-24T11:10:09.7683064Z",
-            "EndTime": "2026-04-24T12:10:09.7683064Z",
+            "TimeRemainingString": "54m 28s",
+            "StartTime": "2026-04-24T12:10:09.7683064Z",
+            "EndTime": "2026-04-24T13:10:09.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Alkali Organics",
-          "MiningLeftOvers": 510.9788,
+          "MiningLeftOvers": 511.2060,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -86689,15 +86689,15 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "5m 29s",
-            "StartTime": "2026-04-24T11:10:09.7683064Z",
-            "EndTime": "2026-04-24T12:10:09.7683064Z",
+            "TimeRemainingString": "54m 28s",
+            "StartTime": "2026-04-24T12:10:09.7683064Z",
+            "EndTime": "2026-04-24T13:10:09.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Halogens",
-          "MiningLeftOvers": 220.5101,
+          "MiningLeftOvers": 220.5245,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -86742,15 +86742,15 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "5m 29s",
-            "StartTime": "2026-04-24T11:10:09.7683064Z",
-            "EndTime": "2026-04-24T12:10:09.7683064Z",
+            "TimeRemainingString": "54m 28s",
+            "StartTime": "2026-04-24T12:10:09.7683064Z",
+            "EndTime": "2026-04-24T13:10:09.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Noble Gases",
-          "MiningLeftOvers": 207.2897,
+          "MiningLeftOvers": 207.3265,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -86848,7 +86848,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "28m 2s",
+            "TimeRemainingString": "17m 1s",
             "StartTime": "2026-04-24T11:32:42.7683064Z",
             "EndTime": "2026-04-24T12:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -86881,7 +86881,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "28m 2s",
+            "TimeRemainingString": "17m 1s",
             "StartTime": "2026-04-24T11:32:42.7683064Z",
             "EndTime": "2026-04-24T12:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -86968,7 +86968,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "28m 2s",
+            "TimeRemainingString": "17m 1s",
             "StartTime": "2026-04-24T11:32:42.7683064Z",
             "EndTime": "2026-04-24T12:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -87057,7 +87057,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "28m 2s",
+            "TimeRemainingString": "17m 1s",
             "StartTime": "2026-04-24T11:32:42.7683064Z",
             "EndTime": "2026-04-24T12:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -87107,7 +87107,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "28m 2s",
+            "TimeRemainingString": "17m 1s",
             "StartTime": "2026-04-24T11:32:42.7683064Z",
             "EndTime": "2026-04-24T12:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -87216,7 +87216,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "28m 2s",
+            "TimeRemainingString": "17m 1s",
             "StartTime": "2026-04-24T11:32:42.7683064Z",
             "EndTime": "2026-04-24T12:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -87266,7 +87266,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "28m 2s",
+            "TimeRemainingString": "17m 1s",
             "StartTime": "2026-04-24T11:32:42.7683064Z",
             "EndTime": "2026-04-24T12:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -87942,7 +87942,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "51m 55s",
+            "TimeRemainingString": "40m 54s",
             "StartTime": "2026-04-24T11:56:35.7683064Z",
             "EndTime": "2026-04-24T12:56:35.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88051,7 +88051,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "51m 45s",
+            "TimeRemainingString": "40m 44s",
             "StartTime": "2026-04-24T11:56:25.7683064Z",
             "EndTime": "2026-04-24T12:56:25.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88101,7 +88101,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 2s",
+            "TimeRemainingString": "39m 1s",
             "StartTime": "2026-04-24T11:54:42.7683064Z",
             "EndTime": "2026-04-24T12:54:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88173,7 +88173,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "51m 41s",
+            "TimeRemainingString": "40m 40s",
             "StartTime": "2026-04-24T11:56:21.7683064Z",
             "EndTime": "2026-04-24T12:56:21.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88243,7 +88243,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 3s",
+            "TimeRemainingString": "39m 2s",
             "StartTime": "2026-04-24T11:54:43.7683064Z",
             "EndTime": "2026-04-24T12:54:43.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88332,7 +88332,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7683064Z",
             "EndTime": "2026-04-24T12:29:32.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88402,7 +88402,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7683064Z",
             "EndTime": "2026-04-24T12:29:32.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88508,7 +88508,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7683064Z",
             "EndTime": "2026-04-24T12:29:32.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88541,7 +88541,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7683064Z",
             "EndTime": "2026-04-24T12:29:32.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88628,7 +88628,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7683064Z",
             "EndTime": "2026-04-24T12:29:32.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88717,7 +88717,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7683064Z",
             "EndTime": "2026-04-24T12:29:32.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88767,7 +88767,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7683064Z",
             "EndTime": "2026-04-24T12:29:32.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88876,7 +88876,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7683064Z",
             "EndTime": "2026-04-24T12:29:32.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -88926,7 +88926,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7683064Z",
             "EndTime": "2026-04-24T12:29:32.7683064Z",
             "RepeatIntervalSeconds": 3600,
@@ -89422,7 +89422,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Lanthanide Volatiles",
   "Name": "Lanthanide Volatiles",
-  "Quantity": 171,
+  "Quantity": 383,
   "ResourcePurity": "High"
 },
         "17236893-676b-4315-a555-3a69b07ea2dd": {
@@ -89655,7 +89655,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "31m 6s",
+            "TimeRemainingString": "20m 5s",
             "StartTime": "2026-04-24T11:35:46.7693065Z",
             "EndTime": "2026-04-24T12:35:46.7693065Z",
             "RepeatIntervalSeconds": 3600,
@@ -89764,7 +89764,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "31m 10s",
+            "TimeRemainingString": "20m 9s",
             "StartTime": "2026-04-24T11:35:50.7693065Z",
             "EndTime": "2026-04-24T12:35:50.7693065Z",
             "RepeatIntervalSeconds": 3600,
@@ -89814,15 +89814,15 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "34s",
-            "StartTime": "2026-04-24T11:05:14.7693065Z",
-            "EndTime": "2026-04-24T12:05:14.7693065Z",
+            "TimeRemainingString": "49m 33s",
+            "StartTime": "2026-04-24T12:05:14.7693065Z",
+            "EndTime": "2026-04-24T13:05:14.7693065Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "09117134-86a2-4d42-8030-b0164bdf23f9",
           "MiningSurveyResource": "Lanthanide Volatiles",
-          "MiningLeftOvers": 208.4513,
+          "MiningLeftOvers": 208.6497,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -89903,7 +89903,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "25m 39s",
+            "TimeRemainingString": "14m 38s",
             "StartTime": "2026-04-24T11:30:19.7693065Z",
             "EndTime": "2026-04-24T12:30:19.7693065Z",
             "RepeatIntervalSeconds": 3600,
@@ -89973,7 +89973,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "25m 38s",
+            "TimeRemainingString": "14m 37s",
             "StartTime": "2026-04-24T11:30:18.7693065Z",
             "EndTime": "2026-04-24T12:30:18.7693065Z",
             "RepeatIntervalSeconds": 3600,
@@ -90062,7 +90062,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "31m 8s",
+            "TimeRemainingString": "20m 7s",
             "StartTime": "2026-04-24T11:35:48.7693065Z",
             "EndTime": "2026-04-24T12:35:48.7693065Z",
             "RepeatIntervalSeconds": 3600,
@@ -90132,7 +90132,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "26m 5s",
+            "TimeRemainingString": "15m 4s",
             "StartTime": "2026-04-24T11:30:45.7693065Z",
             "EndTime": "2026-04-24T12:30:45.7693065Z",
             "RepeatIntervalSeconds": 3600,
@@ -90238,7 +90238,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "25m 39s",
+            "TimeRemainingString": "14m 38s",
             "StartTime": "2026-04-24T11:30:19.7693065Z",
             "EndTime": "2026-04-24T12:30:19.7693065Z",
             "RepeatIntervalSeconds": 3600,
@@ -90271,7 +90271,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 51s",
+            "TimeRemainingString": "39m 50s",
             "StartTime": "2026-04-24T11:55:31.7693065Z",
             "EndTime": "2026-04-24T12:55:31.7693065Z",
             "RepeatIntervalSeconds": 3600,
@@ -90556,7 +90556,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "50m 51s",
+            "TimeRemainingString": "39m 50s",
             "StartTime": "2026-04-24T11:55:31.7693065Z",
             "EndTime": "2026-04-24T12:55:31.7693065Z",
             "RepeatIntervalSeconds": 3600,
@@ -90607,7 +90607,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 16s",
+            "TimeRemainingString": "16m 15s",
             "StartTime": "2026-04-24T11:31:56.7693065Z",
             "EndTime": "2026-04-24T12:31:56.7693065Z",
             "RepeatIntervalSeconds": 3600,
@@ -90668,7 +90668,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "26m 5s",
+            "TimeRemainingString": "15m 4s",
             "StartTime": "2026-04-24T11:30:45.7693065Z",
             "EndTime": "2026-04-24T12:30:45.7693065Z",
             "RepeatIntervalSeconds": 3600,
@@ -91148,7 +91148,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "58m 49s",
+            "TimeRemainingString": "47m 48s",
             "StartTime": "2026-04-24T12:03:29.7703062Z",
             "EndTime": "2026-04-24T13:03:29.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -91260,7 +91260,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -91311,7 +91311,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -91402,7 +91402,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -91474,7 +91474,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -91565,7 +91565,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -91637,7 +91637,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -91745,7 +91745,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "58m 49s",
+            "TimeRemainingString": "47m 48s",
             "StartTime": "2026-04-24T12:03:29.7703062Z",
             "EndTime": "2026-04-24T13:03:29.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -91779,7 +91779,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -91868,7 +91868,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -91959,7 +91959,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -92010,7 +92010,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -92859,7 +92859,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -92971,7 +92971,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -93022,7 +93022,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -93096,7 +93096,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -93168,7 +93168,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -93259,7 +93259,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -93314,7 +93314,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -93422,7 +93422,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -93456,7 +93456,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -93545,7 +93545,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -93636,7 +93636,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7703062Z",
             "EndTime": "2026-04-24T12:29:32.7703062Z",
             "RepeatIntervalSeconds": 3600,
@@ -93687,7 +93687,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7713067Z",
             "EndTime": "2026-04-24T12:29:32.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -93799,7 +93799,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 52s",
+            "TimeRemainingString": "13m 51s",
             "StartTime": "2026-04-24T11:29:32.7713067Z",
             "EndTime": "2026-04-24T12:29:32.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -94477,7 +94477,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -94586,7 +94586,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -94636,7 +94636,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -94708,7 +94708,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -94778,7 +94778,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -94867,7 +94867,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -94920,7 +94920,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -95026,7 +95026,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -95059,7 +95059,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -95146,7 +95146,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -95391,7 +95391,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 16s",
+            "TimeRemainingString": "16m 15s",
             "StartTime": "2026-04-24T11:31:56.7713067Z",
             "EndTime": "2026-04-24T12:31:56.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -95459,7 +95459,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "27m 16s",
+            "TimeRemainingString": "16m 15s",
             "StartTime": "2026-04-24T11:31:56.7713067Z",
             "EndTime": "2026-04-24T12:31:56.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -95898,7 +95898,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -96007,7 +96007,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -96057,7 +96057,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -96146,7 +96146,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -96233,7 +96233,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -96322,7 +96322,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7713067Z",
             "EndTime": "2026-04-24T12:29:33.7713067Z",
             "RepeatIntervalSeconds": 3600,
@@ -97166,7 +97166,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -97236,7 +97236,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -97325,7 +97325,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -97378,7 +97378,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -97467,7 +97467,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -97500,7 +97500,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -97570,7 +97570,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -97676,7 +97676,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -97709,7 +97709,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -97835,7 +97835,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -97885,7 +97885,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -97974,7 +97974,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -98044,7 +98044,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -98112,7 +98112,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -98560,7 +98560,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7723066Z",
             "EndTime": "2026-04-24T12:29:33.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -98689,7 +98689,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "55m 12s",
+            "TimeRemainingString": "44m 11s",
             "StartTime": "2026-04-24T11:59:52.7723066Z",
             "EndTime": "2026-04-24T12:59:52.7723066Z",
             "RepeatIntervalSeconds": 3600,
@@ -100010,7 +100010,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7733063Z",
             "EndTime": "2026-04-24T12:29:33.7733063Z",
             "RepeatIntervalSeconds": 3600,
@@ -100139,7 +100139,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7733063Z",
             "EndTime": "2026-04-24T12:29:33.7733063Z",
             "RepeatIntervalSeconds": 3600,
@@ -100655,7 +100655,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "24m 53s",
+            "TimeRemainingString": "13m 52s",
             "StartTime": "2026-04-24T11:29:33.7733063Z",
             "EndTime": "2026-04-24T12:29:33.7733063Z",
             "RepeatIntervalSeconds": 3600,
@@ -102109,7 +102109,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "28m 3s",
+            "TimeRemainingString": "17m 2s",
             "StartTime": "2026-04-24T11:32:43.7733063Z",
             "EndTime": "2026-04-24T12:32:43.7733063Z",
             "RepeatIntervalSeconds": 3600,
@@ -102221,7 +102221,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "28m 3s",
+            "TimeRemainingString": "17m 2s",
             "StartTime": "2026-04-24T11:32:43.7733063Z",
             "EndTime": "2026-04-24T12:32:43.7733063Z",
             "RepeatIntervalSeconds": 3600,
@@ -102272,7 +102272,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "28m 3s",
+            "TimeRemainingString": "17m 2s",
             "StartTime": "2026-04-24T11:32:43.7733063Z",
             "EndTime": "2026-04-24T12:32:43.7733063Z",
             "RepeatIntervalSeconds": 3600,
@@ -102363,7 +102363,7 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "TimeRemainingString": "28m 3s",
+            "TimeRemainingString": "17m 2s",
             "StartTime": "2026-04-24T11:32:43.7743076Z",
             "EndTime": "2026-04-24T12:32:43.7743076Z",
             "RepeatIntervalSeconds": 3600,

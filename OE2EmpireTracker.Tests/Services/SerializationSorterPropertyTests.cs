@@ -1,6 +1,9 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Services
@@ -310,6 +313,75 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     Assert.That(input[i], Is.SameAs(originalOrder[i]),
                         string.Format("Iteration {0}: input[{1}] reference should be unchanged after sort", iter, i));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates a Dictionary with 0-20 random string key-value pairs.
+        /// Keys are random printable ASCII strings of length 1-15.
+        /// </summary>
+        private static Dictionary<string, string> GenerateRandomStringDictionary(Random rng)
+        {
+            int count = rng.Next(0, 21);
+            var dict = new Dictionary<string, string>();
+            for (int i = 0; i < count; i++)
+            {
+                string key = GenerateNonNullRandomKey(rng);
+                if (!dict.ContainsKey(key))
+                    dict[key] = GenerateNonNullRandomKey(rng);
+            }
+            return dict;
+        }
+
+        /// <summary>
+        /// Generates a non-null random string key of length 1-15 (printable ASCII).
+        /// Dictionary keys cannot be null, so this variant always returns a non-null string.
+        /// </summary>
+        private static string GenerateNonNullRandomKey(Random rng)
+        {
+            int len = rng.Next(1, 16);
+            var chars = new char[len];
+            for (int c = 0; c < len; c++)
+                chars[c] = (char)rng.Next(32, 127); // printable ASCII
+            return new string(chars);
+        }
+
+        /// <summary>
+        /// **Validates: Requirements 11.1, 11.2, 12.1, 12.2, 12.3, 12.4, 12.5, 12.6**
+        ///
+        /// Property 4: Dictionary serialization produces sorted key order.
+        /// For any Dictionary with string keys, serializing it with SortedDictionaryContractResolver
+        /// produces JSON where property names appear in ascending ordinal string order.
+        /// </summary>
+        [Test]
+        [Category("Property 4: Dictionary key ordering")]
+        public void DictionarySerialization_ProducesAscendingKeyOrder()
+        {
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new SortedDictionaryContractResolver()
+            };
+
+            var rng = new Random(42);
+            for (int iter = 0; iter < Iterations; iter++)
+            {
+                var dict = GenerateRandomStringDictionary(rng);
+                var json = JsonConvert.SerializeObject(dict, settings);
+                var jobj = JObject.Parse(json);
+                var keys = jobj.Properties().Select(p => p.Name).ToList();
+
+                // Assert all dictionary keys are present in the JSON
+                Assert.That(keys.Count, Is.EqualTo(dict.Count),
+                    string.Format("Iteration {0}: JSON property count should match dictionary count", iter));
+
+                // Assert keys are in ascending ordinal string order
+                for (int i = 0; i < keys.Count - 1; i++)
+                {
+                    int cmp = StringComparer.Ordinal.Compare(keys[i], keys[i + 1]);
+                    Assert.That(cmp, Is.LessThan(0),
+                        string.Format("Iteration {0}: JSON key '{1}' at index {2} should be < key '{3}' at index {4} (ordinal)",
+                            iter, keys[i], i, keys[i + 1], i + 1));
                 }
             }
         }

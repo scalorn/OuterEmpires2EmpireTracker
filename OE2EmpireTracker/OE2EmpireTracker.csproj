@@ -222,6 +222,7 @@
     <Compile Include="Services\ColonyActivityCollector.cs" />
     <Compile Include="Services\MarketBlueprintImporter.cs" />
     <Compile Include="Services\SerializationSorter.cs" />
+    <Compile Include="Services\SortedDictionaryContractResolver.cs" />
     <Compile Include="Services\TabWarningService.cs" />
     <Compile Include="Services\ColonyInactivityCollector.cs" />
     <Compile Include="Services\ColonyAdminReportBuilder.cs" />

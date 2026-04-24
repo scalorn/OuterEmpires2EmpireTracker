@@ -8,7 +8,8 @@ namespace OE2EmpireTracker.Services
         {
             Formatting = Formatting.Indented,
             DefaultValueHandling = DefaultValueHandling.Ignore,
-            NullValueHandling = NullValueHandling.Ignore
+            NullValueHandling = NullValueHandling.Ignore,
+            ContractResolver = new SortedDictionaryContractResolver()
         };
     }
 }

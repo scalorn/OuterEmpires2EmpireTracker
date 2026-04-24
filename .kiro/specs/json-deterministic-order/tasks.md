@@ -67,36 +67,36 @@ Implement deterministic ordering of all entity arrays and dictionary entries at 
     - Test `SortPlayerRoot_NullInput_ReturnsNull` — verify null root returns null
     - _Requirements: 1.1, 2.1–2.7, 3.1, 3.2, 4.1, 5.1–5.3, 6.1, 7.1–7.3, 8.1, 8.2, 9.1, 10.1_
 
-- [-] 3. Checkpoint — Verify sort helpers and root sort methods
+- [x] 3. Checkpoint — Verify sort helpers and root sort methods
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Implement SortedDictionaryContractResolver and ItemBag changes
-  - [~] 4.1 Create `OE2EmpireTracker/Services/SortedDictionaryContractResolver.cs`
+- [x] 4. Implement SortedDictionaryContractResolver and ItemBag changes
+  - [x] 4.1 Create `OE2EmpireTracker/Services/SortedDictionaryContractResolver.cs`
     - Extend `DefaultContractResolver`
     - Override `CreateDictionaryContract` to wrap dictionary serialization with sorted key iteration using `StringComparer.Ordinal`
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6_
 
-  - [~] 4.2 Register `SortedDictionaryContractResolver` in `JsonSettings.SerializerSettings`
+  - [x] 4.2 Register `SortedDictionaryContractResolver` in `JsonSettings.SerializerSettings`
     - Add `ContractResolver = new SortedDictionaryContractResolver()` to the existing settings in `OE2EmpireTracker/Services/JsonSettings.cs`
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6_
 
-  - [~] 4.3 Modify `ItemBagJSONConverter.WriteJson` in `OE2EmpireTracker/Models/ItemBag.cs`
+  - [x] 4.3 Modify `ItemBagJSONConverter.WriteJson` in `OE2EmpireTracker/Models/ItemBag.cs`
     - Change `foreach (KeyValuePair<string, Item> entry in value.Items)` to iterate `value.Items.OrderBy(kvp => kvp.Key, StringComparer.Ordinal)`
     - _Requirements: 11.1, 11.2_
 
-  - [~] 4.4 Write property test: Dictionary serialization produces sorted key order
+  - [x] 4.4 Write property test: Dictionary serialization produces sorted key order
     - **Property 4: Dictionary serialization produces sorted key order**
     - Add to `SerializationSorterPropertyTests.cs`
     - Generate `Dictionary<string, string>` with 0–20 random key-value pairs
     - Serialize with `SortedDictionaryContractResolver`, parse JSON, verify property names in ascending ordinal order
     - **Validates: Requirements 11.1, 11.2, 12.1, 12.2, 12.3, 12.4, 12.5, 12.6**
 
-  - [~] 4.5 Write unit tests for ContractResolver and ItemBag sorting
+  - [x] 4.5 Write unit tests for ContractResolver and ItemBag sorting
     - Add `ItemBagConverter_SerializesKeysInSortedOrder` to `SerializationSorterTests.cs` — create an ItemBag with UUIDs in reverse order, serialize, verify JSON property order
     - Add `SortedDictionaryResolver_SerializesDictionaryKeysInOrder` — create a `Dictionary<string, decimal>`, serialize with resolver, verify JSON key order
     - _Requirements: 11.1, 11.2, 12.1_
 
-- [~] 5. Checkpoint — Verify dictionary and ItemBag sorting
+- [-] 5. Checkpoint — Verify dictionary and ItemBag sorting
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Wire sorting into WriteContext methods

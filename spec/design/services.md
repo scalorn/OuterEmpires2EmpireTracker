@@ -348,3 +348,23 @@ Logic:
 - Called by WriteContext() methods before JSON serialization to produce deterministic output.
 
 Satisfies: REQ-JSON-ORDER (see .kiro/specs/json-deterministic-order/requirements.md)
+
+## SortedDictionaryContractResolver
+
+Custom contract resolver in Services/SortedDictionaryContractResolver.cs.
+
+```csharp
+public class SortedDictionaryContractResolver : DefaultContractResolver
+{
+    protected override JsonDictionaryContract CreateDictionaryContract(Type objectType);
+}
+```
+
+Logic:
+- Overrides `CreateDictionaryContract` to attach a `SortedDictionaryConverter` to all `Dictionary<string, T>` types.
+- The converter serializes dictionary entries with keys sorted in ascending ordinal string order (`StringComparer.Ordinal`).
+- Deserialization is unaffected (`CanRead => false`).
+- Registered in `JsonSettings.SerializerSettings` as the default contract resolver.
+- Does not affect `ItemBag` which has its own `[JsonConverter]` attribute.
+
+Satisfies: REQ-JSON-ORDER (see .kiro/specs/json-deterministic-order/requirements.md)
