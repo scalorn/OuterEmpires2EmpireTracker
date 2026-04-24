@@ -11195,7 +11195,8 @@
         "Wear and Tear Rate": "3",
         "Maximum Damage Repair": "80",
         "Acceleration Rate": "14.25",
-        "_IconPosition": "-252px -62px"
+        "_IconPosition": "-252px -62px",
+        "Manufacture Run Time": "4h"
       },
       "Resources": {
         "Heavy Noble Gases": "1187",
@@ -12324,7 +12325,8 @@
         "Wear and Tear Rate": "3",
         "Maximum Damage Repair": "80",
         "Jump Charge Time": "12",
-        "_IconPosition": "-480px -480px"
+        "_IconPosition": "-480px -480px",
+        "Manufacture Run Time": "2h"
       },
       "Resources": {
         "Post-Trans Metals": "359",
@@ -25295,7 +25297,8 @@
         "Energy Defence": "58",
         "Shield Hitpoints": "450",
         "Shield regen": "3",
-        "_IconPosition": "-214px -252px"
+        "_IconPosition": "-214px -252px",
+        "Manufacture Run Time": "4h"
       },
       "Resources": {
         "Alkali Metals": "1193",
