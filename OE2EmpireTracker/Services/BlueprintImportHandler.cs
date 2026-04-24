@@ -120,6 +120,20 @@ namespace OE2EmpireTracker.Services
                 };
             }
 
+            // New blueprint state (no UUID) — user clicked New then Import, always create new
+            if (string.IsNullOrEmpty(selected.UUID))
+            {
+                bool hasPlayer = !string.IsNullOrEmpty(pc.CurrentPlayerUUID);
+                bool isGlobalRoute = MarketBlueprintImporter.IsGlobalRoute(tempBP.Evolution, hasPlayer);
+                Log.Info("  New blueprint state (no UUID) -- creating new ({0})", isGlobalRoute ? "global" : "player");
+                return new FindTargetResult
+                {
+                    Target = null,
+                    IsGlobal = isGlobalRoute,
+                    IsSelectedMatch = false
+                };
+            }
+
             // No selected match — route via market logic
             bool hasCurrentPlayer = !string.IsNullOrEmpty(pc.CurrentPlayerUUID);
             bool globalRoute = MarketBlueprintImporter.IsGlobalRoute(tempBP.Evolution, hasCurrentPlayer);
