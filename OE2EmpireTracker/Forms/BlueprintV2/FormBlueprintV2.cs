@@ -1374,6 +1374,33 @@ namespace OE2EmpireTracker
             chartEvolution.Series.Clear();
             pnlPropertyCheckboxes.Controls.Clear();
 
+            // Add evolution guide lines: expected +/- 50% range from Evo 0 to Evo 15
+            var guideUpper = new Series("_GuideUpper")
+            {
+                ChartType = SeriesChartType.Line,
+                Color = Color.FromArgb(60, Color.Gray),
+                BorderWidth = 1,
+                BorderDashStyle = ChartDashStyle.Dot,
+                IsVisibleInLegend = false
+            };
+
+            guideUpper.Points.AddXY(0, 100);
+            guideUpper.Points.AddXY(15, 150);
+            chartEvolution.Series.Add(guideUpper);
+
+            var guideLower = new Series("_GuideLower")
+            {
+                ChartType = SeriesChartType.Line,
+                Color = Color.FromArgb(60, Color.Gray),
+                BorderWidth = 1,
+                BorderDashStyle = ChartDashStyle.Dot,
+                IsVisibleInLegend = false
+            };
+
+            guideLower.Points.AddXY(0, 100);
+            guideLower.Points.AddXY(15, 50);
+            chartEvolution.Series.Add(guideLower);
+
             int colorIndex = 0;
             foreach (var kvp in graphData.Series)
             {

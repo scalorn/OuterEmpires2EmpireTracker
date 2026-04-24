@@ -722,7 +722,7 @@ namespace OE2EmpireTracker
             this.tabPEvolutionGraph.Padding = new System.Windows.Forms.Padding(2);
             this.tabPEvolutionGraph.Size = new System.Drawing.Size(792, 294);
             this.tabPEvolutionGraph.TabIndex = 2;
-            this.tabPEvolutionGraph.Text = "Evolution Graph";
+            this.tabPEvolutionGraph.Text = "Property Evolution";
             this.tabPEvolutionGraph.UseVisualStyleBackColor = true;
             chartArea1.AxisX.Minimum = 0D;
             chartArea1.AxisX.Maximum = 15D;
