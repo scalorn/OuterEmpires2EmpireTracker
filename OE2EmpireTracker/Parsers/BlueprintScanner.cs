@@ -173,11 +173,25 @@ namespace OE2EmpireTracker.Parsers
 
                     if (titleNode != null)
                     {
-                        string titleFull = titleNode.InnerText.Trim();
-                        if (evoNode != null && !string.IsNullOrEmpty(evoNode.InnerText))
+                        // Build title text from child nodes, excluding the EvolutionNumber div
+                        var titleBuilder = new System.Text.StringBuilder();
+                        foreach (XmlNode child in titleNode.ChildNodes)
                         {
-                            titleFull = titleFull.Replace(evoNode.InnerText, string.Empty).Trim();
+                            if (child == evoNode)
+                            {
+                                continue;
+                            }
+
+                            // Skip nested divs that contain the evo node
+                            if (child.NodeType == XmlNodeType.Element && evoNode != null && child.SelectSingleNode(".//div[contains(@class,'EvolutionNumber')]") != null)
+                            {
+                                continue;
+                            }
+
+                            titleBuilder.Append(child.InnerText);
                         }
+
+                        string titleFull = titleBuilder.ToString().Trim();
 
                         var m = Regex.Match(titleFull, "^(.*)\\((.*)\\)$");
                         if (m.Success)
