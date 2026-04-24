@@ -116,7 +116,7 @@ Implement deterministic ordering of all entity arrays and dictionary entries at 
     - Test `EmpireContext_WriteContext_PreservesInMemoryListOrder` — snapshot in-memory list order before WriteContext, verify unchanged after
     - _Requirements: 1.1, 2.1–2.7, 13.1, 13.2, 13.3_
 
-- [-] 7. Final checkpoint — Ensure all tests pass
+- [x] 7. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
