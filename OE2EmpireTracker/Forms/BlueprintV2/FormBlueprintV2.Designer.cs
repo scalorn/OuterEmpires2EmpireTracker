@@ -105,7 +105,6 @@ namespace OE2EmpireTracker
             this.lblComputedPrice = new System.Windows.Forms.Label();
             this.tabPPriceEvolution = new System.Windows.Forms.TabPage();
             this.chartPriceEvolution = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.cmbPriceEvoPlan = new System.Windows.Forms.ComboBox();
             this.lblPriceEvoNoPlan = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
@@ -771,7 +770,6 @@ namespace OE2EmpireTracker
 
             // tabPPriceEvolution
             this.tabPPriceEvolution.Controls.Add(this.chartPriceEvolution);
-            this.tabPPriceEvolution.Controls.Add(this.cmbPriceEvoPlan);
             this.tabPPriceEvolution.Controls.Add(this.lblPriceEvoNoPlan);
             this.tabPPriceEvolution.Location = new System.Drawing.Point(4, 22);
             this.tabPPriceEvolution.Margin = new System.Windows.Forms.Padding(2);
@@ -781,14 +779,6 @@ namespace OE2EmpireTracker
             this.tabPPriceEvolution.TabIndex = 3;
             this.tabPPriceEvolution.Text = "Price Evolution";
             this.tabPPriceEvolution.UseVisualStyleBackColor = true;
-            // cmbPriceEvoPlan
-            this.cmbPriceEvoPlan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbPriceEvoPlan.FormattingEnabled = true;
-            this.cmbPriceEvoPlan.Location = new System.Drawing.Point(5, 5);
-            this.cmbPriceEvoPlan.Margin = new System.Windows.Forms.Padding(2);
-            this.cmbPriceEvoPlan.Name = "cmbPriceEvoPlan";
-            this.cmbPriceEvoPlan.Size = new System.Drawing.Size(200, 21);
-            this.cmbPriceEvoPlan.TabIndex = 0;
             // chartPriceEvolution
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             chartArea2.AxisX.Minimum = 0D;
@@ -799,9 +789,10 @@ namespace OE2EmpireTracker
             chartArea2.AxisY.LabelStyle.Format = "C0";
             chartArea2.Name = "PriceEvolutionArea";
             this.chartPriceEvolution.ChartAreas.Add(chartArea2);
-            this.chartPriceEvolution.Location = new System.Drawing.Point(2, 30);
+            this.chartPriceEvolution.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chartPriceEvolution.Location = new System.Drawing.Point(2, 2);
             this.chartPriceEvolution.Name = "chartPriceEvolution";
-            this.chartPriceEvolution.Size = new System.Drawing.Size(788, 262);
+            this.chartPriceEvolution.Size = new System.Drawing.Size(788, 290);
             this.chartPriceEvolution.TabIndex = 1;
             // lblPriceEvoNoPlan
             this.lblPriceEvoNoPlan.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -988,7 +979,6 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.Label lblComputedPrice;
         private System.Windows.Forms.TabPage tabPPriceEvolution;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartPriceEvolution;
-        private System.Windows.Forms.ComboBox cmbPriceEvoPlan;
         private System.Windows.Forms.Label lblPriceEvoNoPlan;
     }
 }

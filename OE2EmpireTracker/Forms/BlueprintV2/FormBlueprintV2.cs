@@ -150,12 +150,6 @@ namespace OE2EmpireTracker
             PopulatePricingPlanCombo();
             cmbPricingPlan.SelectedIndexChanged += CmbPricingPlan_SelectedIndexChanged;
 
-            // Configure price evolution plan combo
-            cmbPriceEvoPlan.DisplayMember = "Name";
-            cmbPriceEvoPlan.ValueMember = "UUID";
-            PopulatePriceEvoPlanCombo();
-            cmbPriceEvoPlan.SelectedIndexChanged += CmbPriceEvoPlan_SelectedIndexChanged;
-
             // Subscribe to data events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.BlueprintDataChanged += OnBlueprintDataChanged;
@@ -1538,43 +1532,6 @@ namespace OE2EmpireTracker
         // -----------------------------------------------------------------------
 
         /// <summary>
-        /// Populates the price evolution plan combo with the current player's pricing plans.
-        /// Preserves the previous selection if it still exists.
-        /// </summary>
-        private void PopulatePriceEvoPlanCombo()
-        {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-            using var guard = new ProgrammaticUpdateGuard(this);
-            string selectedUUID = cmbPriceEvoPlan.SelectedValue as string;
-            cmbPriceEvoPlan.DataSource = null;
-
-            var plans = playerContext.GetCurrentPlayerPricingPlans();
-            var items = new List<object>();
-            items.Add(new { Name = "(none)", UUID = string.Empty });
-            foreach (var p in plans.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase))
-                items.Add(new { Name = p.Name, UUID = p.UUID });
-
-            cmbPriceEvoPlan.DisplayMember = "Name";
-            cmbPriceEvoPlan.ValueMember = "UUID";
-            cmbPriceEvoPlan.DataSource = items;
-
-            if (!string.IsNullOrEmpty(selectedUUID) && items.Any(i => ((dynamic)i).UUID == selectedUUID))
-                cmbPriceEvoPlan.SelectedValue = selectedUUID;
-            else
-                cmbPriceEvoPlan.SelectedIndex = 0;
-            sw.Stop();
-            Log.Info("PERF PopulatePriceEvoPlanCombo: {0}ms", sw.ElapsedMilliseconds);
-        }
-
-        /// <summary>
-        /// Handles price evolution plan selection changes — refreshes the price evolution graph.
-        /// </summary>
-        private void CmbPriceEvoPlan_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_isProgrammaticUpdate > 0) return;
-            RefreshPriceEvolutionGraph();
-        }
-
         /// <summary>
         /// Resolves the evolution chain, computes the price at each evolution level,
         /// and plots a line chart of evolution level vs price.
@@ -1589,12 +1546,11 @@ namespace OE2EmpireTracker
                 return;
             }
 
-            string planUUID = cmbPriceEvoPlan.SelectedValue as string;
+            string planUUID = cmbPricingPlan.SelectedValue as string;
             if (string.IsNullOrEmpty(planUUID))
             {
                 chartPriceEvolution.Visible = false;
-                cmbPriceEvoPlan.Visible = true;
-                lblPriceEvoNoPlan.Text = "Select a pricing plan";
+                lblPriceEvoNoPlan.Text = "Select a pricing plan above";
                 lblPriceEvoNoPlan.Visible = true;
                 return;
             }
@@ -1603,7 +1559,7 @@ namespace OE2EmpireTracker
             if (plan == null)
             {
                 chartPriceEvolution.Visible = false;
-                lblPriceEvoNoPlan.Text = "Select a pricing plan";
+                lblPriceEvoNoPlan.Text = "Select a pricing plan above";
                 lblPriceEvoNoPlan.Visible = true;
                 return;
             }
@@ -1616,7 +1572,6 @@ namespace OE2EmpireTracker
             if (chain.Count <= 1)
             {
                 chartPriceEvolution.Visible = false;
-                cmbPriceEvoPlan.Visible = true;
                 lblPriceEvoNoPlan.Text = "No evolution data";
                 lblPriceEvoNoPlan.Visible = true;
                 return;
@@ -1644,7 +1599,6 @@ namespace OE2EmpireTracker
             // Show chart, hide label
             lblPriceEvoNoPlan.Visible = false;
             chartPriceEvolution.Visible = true;
-            cmbPriceEvoPlan.Visible = true;
 
             // Clear and rebuild series
             chartPriceEvolution.Series.Clear();
@@ -1732,6 +1686,7 @@ namespace OE2EmpireTracker
         {
             if (_isProgrammaticUpdate > 0) return;
             UpdateCalculatedPrice();
+            RefreshPriceEvolutionGraph();
         }
 
         /// <summary>
@@ -1787,8 +1742,8 @@ namespace OE2EmpireTracker
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             PopulatePricingPlanCombo();
-            PopulatePriceEvoPlanCombo();
             UpdateCalculatedPrice();
+            RefreshPriceEvolutionGraph();
             sw.Stop();
             Log.Info("PERF RefreshPricing: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -1844,7 +1799,6 @@ namespace OE2EmpireTracker
 
             // Pricing
             PopulatePricingPlanCombo();
-            PopulatePriceEvoPlanCombo();
             UpdateCalculatedPrice();
 
             sw.Stop();
@@ -1954,7 +1908,6 @@ namespace OE2EmpireTracker
             viewModel.Reset();
             ClearForm();
             PopulatePricingPlanCombo();
-            PopulatePriceEvoPlanCombo();
             RefreshBlueprintList();
         }
 
