@@ -1379,9 +1379,9 @@ namespace OE2EmpireTracker
             var guideUpper = new Series("_GuideUpper")
             {
                 ChartType = SeriesChartType.Line,
-                Color = Color.FromArgb(60, Color.Gray),
-                BorderWidth = 1,
-                BorderDashStyle = ChartDashStyle.Dot,
+                Color = Color.LightGray,
+                BorderWidth = 2,
+                BorderDashStyle = ChartDashStyle.Dash,
                 IsVisibleInLegend = false
             };
 
@@ -1392,9 +1392,9 @@ namespace OE2EmpireTracker
             var guideLower = new Series("_GuideLower")
             {
                 ChartType = SeriesChartType.Line,
-                Color = Color.FromArgb(60, Color.Gray),
-                BorderWidth = 1,
-                BorderDashStyle = ChartDashStyle.Dot,
+                Color = Color.LightGray,
+                BorderWidth = 2,
+                BorderDashStyle = ChartDashStyle.Dash,
                 IsVisibleInLegend = false
             };
 
