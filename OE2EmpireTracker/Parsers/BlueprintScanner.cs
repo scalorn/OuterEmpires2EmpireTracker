@@ -381,6 +381,9 @@ namespace OE2EmpireTracker.Parsers
                     blueprint.Resources[name] = qtyNormalized;
                     Log.Info($"Extracted resource: {name} = {qtyNormalized}");
                 }
+
+                // Fix up game data quirks (e.g. Reactor "Power Required" → "Power Provided")
+                FixupFlatpackProperties(blueprint);
             }
             catch (Exception ex)
             {
@@ -563,6 +566,9 @@ namespace OE2EmpireTracker.Parsers
                         }
                     }
 
+                    // Fix up game data quirks (e.g. Reactor "Power Required" → "Power Provided")
+                    FixupFlatpackProperties(bp);
+
                     results.Add(new MarketBlueprint { Blueprint = bp, SellerName = sellerName });
                     Log.Info($"Market import: {bp.Name} (Ev{bp.Evolution}, TechLevel={bp.TechLevel ?? "null"}, Seller={sellerName}) -- {bp.Properties.Count} properties, {bp.Resources.Count} resources");
                 }
@@ -651,63 +657,38 @@ namespace OE2EmpireTracker.Parsers
         /// <summary>
         /// Processes HTML content by parsing with SgmlReader and debugging child nodes.
         /// </summary>
-        /// <param name="inputText">The HTML string to parse.</param>
-        /// <remarks>
-        /// Currently used for debugging - prints inner text of each node to Debug window.
-        /// Uses SgmlReader for HTML parsing with whitespace handling preserved.
-        /// </remarks>
-        private void ProcessHTML(string inputText)
-        {
-            StringReader reader = new StringReader(inputText);
-
-            // Setup SgmlReader with HTML document type and settings
-            Sgml.SgmlReader sgmlReader = new Sgml.SgmlReader()
-            {
-                DocType = "HTML",
-                WhitespaceHandling = WhitespaceHandling.All,
-                CaseFolding = Sgml.CaseFolding.ToLower,
-                InputStream = reader
-            };
-
-            // Create document with whitespace preservation
-            XmlDocument doc = new XmlDocument()
-            {
-                PreserveWhitespace = true,
-                XmlResolver = null
-            };
-
-            doc.Load(sgmlReader);
-
-            // Debug: Print inner text of each node
-            foreach (XmlNode item in doc)
-            {
-                Log.Info("T = " + item.InnerText);
-                if (item.HasChildNodes)
-                {
-                    Children(0, item.ChildNodes);
-                }
-            }
-        }
-
         /// <summary>
-        /// Recursively processes child nodes and prints their inner text to debug output.
+        /// Fixes up flatpack properties that the game labels incorrectly.
+        /// The Reactor Core Flatpack reports its power output as "Power Required"
+        /// in the game UI, but it actually provides power to the colony. This method
+        /// remaps "Power Required" to "Power Provided" for reactor flatpacks.
+        /// Called from all import paths after properties are parsed and type is resolved.
         /// </summary>
-        /// <param name="depth">Current recursion depth for indentation.</param>
-        /// <param name="nodes">List of child nodes to process.</param>
-        /// <remarks>
-        /// Used by ProcessHTML() to traverse and debug HTML node structure.
-        /// Increments depth parameter for recursive calls to show nesting level.
-        /// </remarks>
-        private void Children(int depth, XmlNodeList nodes)
+        public static void FixupFlatpackProperties(Models.Blueprint blueprint)
         {
-            foreach (XmlNode item in nodes)
+            if (blueprint == null || string.IsNullOrEmpty(blueprint.BluePrintType))
+                return;
+
+            // Reactor Core: "Power Required" is actually "Power Provided"
+            if (blueprint.BluePrintType == "Flatpacks/ReactorCore")
             {
-                Log.Info("C" + depth + " = " + item.InnerText);
-                if (item.HasChildNodes)
+                string powerValue;
+                if (blueprint.Properties.GetString(GameConstants.PropPowerRequired, null, out powerValue)
+                    && !string.IsNullOrEmpty(powerValue))
                 {
-                    Children(depth + 1, item.ChildNodes);
+                    // Only remap if Power Provided doesn't already exist
+                    string existingProvided;
+                    blueprint.Properties.GetString(GameConstants.PropPowerProvided, null, out existingProvided);
+                    if (string.IsNullOrEmpty(existingProvided))
+                    {
+                        blueprint.Properties.SetProperty(GameConstants.PropPowerProvided, powerValue);
+                        blueprint.Properties.Remove(GameConstants.PropPowerRequired);
+                        Log.Info("FixupFlatpackProperties: Reactor '{0}' — remapped Power Required={1} to Power Provided",
+                            blueprint.Name, powerValue);
+                    }
                 }
             }
         }
+
     }
 }

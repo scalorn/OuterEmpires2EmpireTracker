@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.Services
@@ -318,6 +319,9 @@ namespace OE2EmpireTracker.Services
                 tempBP.Name, tempBP.Evolution, tempBP.TechLevel,
                 tempBP.BluePrintType, tempBP.Class,
                 tempBP.Properties?.Count ?? 0, tempBP.Resources?.Count ?? 0);
+
+            // Fix up game data quirks (e.g. Reactor "Power Required" → "Power Provided")
+            BlueprintScanner.FixupFlatpackProperties(tempBP);
 
             // Route: evo 0 → global, evo > 0 → player
             bool hasPlayer = !string.IsNullOrEmpty(playerContext.CurrentPlayerUUID);

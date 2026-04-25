@@ -380,6 +380,14 @@ namespace OE2EmpireTracker.Services
             list.Sort((x, y) => x.Name.CompareTo(y.Name));
             _globalBlueprintList = new List<Blueprint>(list);
             InvalidateGlobalBlueprintCache();
+
+            // Fix up game data quirks on existing blueprints
+            // (e.g. Reactor "Power Required" → "Power Provided")
+            foreach (var bp in _globalBlueprintList)
+            {
+                Parsers.BlueprintScanner.FixupFlatpackProperties(bp);
+            }
+
             Log.Info("Loaded {0} global blueprints", _globalBlueprintList.Count);
         }
 
