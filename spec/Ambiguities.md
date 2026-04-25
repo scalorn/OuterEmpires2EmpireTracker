@@ -755,3 +755,11 @@ The specific failure: deficit at position [157] for Remote Operations Array — 
 **Proposed fix:** Add a total structure count guard (e.g. `GameConstants.MaxColonyStructures = 65`) to `FixDeficits` and `PlaceSupportSafe`. When the result list reaches the limit, stop creating new structures. Also consider: the optimizer should only reorder existing structures, not create new ones beyond what the colony already has — creation should be a separate "suggest additional structures" feature.
 
 **Spec reference:** spec/requirements/Colony.md REQ-COL-095 series
+
+---
+
+### AMB-092 — RESOLVED: LegacyUUIDEqualsOriginalAndIsPreserved FsCheck test duplicate key crash
+**Resolution:** The FsCheck property test generated blueprints with `rng.Next(10000)` names that could collide, producing duplicate deterministic UUIDs after migration. The `.ToDictionary(b => b.UUID, ...)` then threw `ArgumentException: An item with the same key has already been added`. Additionally, the test loaded test data via `EmpireContext.GetInstance()` which pre-populated `GlobalBlueprintList` with existing blueprints that could also collide with test-generated ones.
+
+Fixed by: (1) ensuring unique generated names via `HashSet<string>` dedup loop, (2) clearing `GlobalBlueprintList` before adding test blueprints so only test-generated data is present during migration.
+**Action:** LegacyUUIDPropertyTests.cs updated.

@@ -49,13 +49,18 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 var ec = EmpireContext.GetInstance();
                 var pc = PlayerContext.GetInstance();
 
+                // Clear existing blueprints so only test-generated ones are present
+                foreach (var item in ec.GlobalBlueprintList.ToList()) ec.RemoveGlobalBlueprint(item);
+
                 var rng = new System.Random(data.Seed);
                 var originalUUIDs = new Dictionary<string, string>(); // name -> original UUID
 
-                // Add blueprints with random (non-deterministic) UUIDs
+                // Add blueprints with unique names and random (non-deterministic) UUIDs
+                var usedNames = new HashSet<string>();
                 for (int i = 0; i < data.BpCount; i++)
                 {
-                    string name = "TestBP_" + rng.Next(10000);
+                    string name;
+                    do { name = "TestBP_" + rng.Next(10000); } while (!usedNames.Add(name));
                     var bp = new OE2EmpireTracker.Models.Blueprint(name);
                     bp.UUID = Guid.NewGuid().ToString();
                     bp.Evolution = 0;
