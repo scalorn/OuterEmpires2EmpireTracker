@@ -337,10 +337,7 @@ namespace OE2EmpireTracker.Forms.Survey
             }
 
             sw.Stop();
-            Log.Info(
-                "PopulateListView PERF: total={0}ms items={1}",
-                sw.ElapsedMilliseconds,
-                surveys.Count);
+            Log.Info("PERF PopulateListView: total={0}ms items={1}", sw.ElapsedMilliseconds, surveys.Count);
         }
 
         private void TxtSurveyFilter_TextChanged(object sender, EventArgs e)

@@ -89,6 +89,7 @@ namespace OE2EmpireTracker.Models
         /// Gets or sets the remaining countdown time as a human-readable string
         /// in the format "Xd Yh Zm Ws".
         /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
         public string TimeRemainingString
         {
             get

@@ -1,0 +1,4241 @@
+[
+  {
+    "gameId": "aUZ8L",
+    "extraId": "8A44N",
+    "name": "10cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "1",
+      "Cargo Volume Size": "0.18",
+      "Kinetic Damage Rating": "6"
+    },
+    "resources": {
+      "Noble Gases": "5",
+      "Non-Metallics": "1",
+      "Heavy Trans-Metals": "2"
+    }
+  },
+  {
+    "gameId": "gbLsW",
+    "extraId": "Zy80k",
+    "name": "10cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "2",
+      "Cargo Volume Size": "0.18",
+      "Kinetic Damage Rating": "6.25"
+    },
+    "resources": {
+      "Noble Gases": "5",
+      "Acidic Inorganics": "1",
+      "Metaloids": "2"
+    }
+  },
+  {
+    "gameId": "xKFvX",
+    "extraId": "a5bmC",
+    "name": "10cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "92/run",
+      "Mass": "2",
+      "Cargo Volume Size": "0.18",
+      "Kinetic Damage Rating": "6.49"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "4",
+      "Acidic Inorganics": "1",
+      "Heavy Post-Trans Metals": "2"
+    }
+  },
+  {
+    "gameId": "0oGaV",
+    "extraId": "NNBx8",
+    "name": "10cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "2",
+      "Cargo Volume Size": "0.186",
+      "Kinetic Damage Rating": "6.34"
+    },
+    "resources": {
+      "Alkali Metals": "4",
+      "Non-Metallics": "1",
+      "Heavy Post-Trans Metals": "2"
+    }
+  },
+  {
+    "gameId": "69GPr",
+    "extraId": "piSU8",
+    "name": "10cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "2",
+      "Cargo Volume Size": "0.191",
+      "Kinetic Damage Rating": "6.43"
+    },
+    "resources": {
+      "Post-Trans Metals": "5",
+      "Acidic Inorganics": "1",
+      "Metaloids": "2",
+      "Alkali Organics": "1",
+      "Heavy Alkaline Earth Metals": "1"
+    }
+  },
+  {
+    "gameId": "wWHOU",
+    "extraId": "zMHQB",
+    "name": "10cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "2",
+      "Cargo Volume Size": "0.191",
+      "Kinetic Damage Rating": "6.51"
+    },
+    "resources": {
+      "Trans-Metals": "5",
+      "Metallics": "1",
+      "Heavy Trans-Metals": "2",
+      "Acidic Organics": "1",
+      "Heavy Alkaline Earth Metals": "1"
+    }
+  },
+  {
+    "gameId": "XxcgF",
+    "extraId": "4Pktj",
+    "name": "10cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "2",
+      "Cargo Volume Size": "0.196",
+      "Kinetic Damage Rating": "6.51"
+    },
+    "resources": {
+      "Heavy Noble Gases": "5",
+      "Non-Metallics": "1",
+      "Heavy Post-Trans Metals": "2",
+      "Acidic Organics": "1",
+      "Heavy Alkaline Earth Metals": "1"
+    }
+  },
+  {
+    "gameId": "TB008",
+    "extraId": "1RUxB",
+    "name": "10cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "2.029",
+      "Cargo Volume Size": "0.196",
+      "Kinetic Damage Rating": "6.59"
+    },
+    "resources": {
+      "Halogens": "5",
+      "Alkali Inorganics": "1",
+      "Metaloids": "2",
+      "Alkali Organics": "1",
+      "Heavy Alkaline Earth Metals": "1"
+    }
+  },
+  {
+    "gameId": "T83b2",
+    "extraId": "Izjvf",
+    "name": "10cm Disruptor EMP Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "75/run",
+      "Mass": "5.5",
+      "Cargo Volume Size": "2.2",
+      "Energy Damage Rating": "60"
+    },
+    "resources": {
+      "Halogens": "41",
+      "Non-Metallics": "7",
+      "Metaloids": "13"
+    }
+  },
+  {
+    "gameId": "MaK8W",
+    "extraId": "WhPwd",
+    "name": "10cm Piercer Sabot Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "50/run",
+      "Mass": "8",
+      "Cargo Volume Size": "3.2",
+      "Kinetic Damage Rating": "48"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "31",
+      "Alkali Inorganics": "5",
+      "Metaloids": "10"
+    }
+  },
+  {
+    "gameId": "dXIfa",
+    "extraId": "lhQQu",
+    "name": "10cm Railgun Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "5",
+      "Cargo Volume Size": "2",
+      "Kinetic Damage Rating": "30"
+    },
+    "resources": {
+      "Trans-Metals": "22",
+      "Acidic Inorganics": "4",
+      "Metaloids": "6"
+    }
+  },
+  {
+    "gameId": "NZDkf",
+    "extraId": "J8d7S",
+    "name": "10cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "3.5",
+      "Cargo Volume Size": "1.4",
+      "Kinetic Damage Rating": "21"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "16",
+      "Metallics": "3",
+      "Heavy Post-Trans Metals": "4"
+    }
+  },
+  {
+    "gameId": "BW5xe",
+    "extraId": "VzBME",
+    "name": "10cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "3.5",
+      "Cargo Volume Size": "1.446",
+      "Kinetic Damage Rating": "21.88"
+    },
+    "resources": {
+      "Alkali Metals": "17",
+      "Non-Metallics": "2",
+      "Heavy Post-Trans Metals": "5"
+    }
+  },
+  {
+    "gameId": "wVc2V",
+    "extraId": "ve3lt",
+    "name": "10cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "3.5",
+      "Cargo Volume Size": "1.446",
+      "Kinetic Damage Rating": "22.21"
+    },
+    "resources": {
+      "Heavy Noble Gases": "16",
+      "Non-Metallics": "3",
+      "Metaloids": "5"
+    }
+  },
+  {
+    "gameId": "wQ3YX",
+    "extraId": "Hro7W",
+    "name": "10cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "3.612",
+      "Cargo Volume Size": "1.446",
+      "Kinetic Damage Rating": "22.21"
+    },
+    "resources": {
+      "Alkali Metals": "16",
+      "Acidic Inorganics": "2",
+      "Heavy Trans-Metals": "5"
+    }
+  },
+  {
+    "gameId": "uxzvi",
+    "extraId": "JddyG",
+    "name": "10cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "3.612",
+      "Cargo Volume Size": "1.446",
+      "Kinetic Damage Rating": "22.52"
+    },
+    "resources": {
+      "Post-Trans Metals": "17",
+      "Non-Metallics": "2",
+      "Heavy Trans-Metals": "5",
+      "Strong Alkali Inorganics": "1",
+      "Heavy Alkali Metals": "1"
+    }
+  },
+  {
+    "gameId": "1aVtW",
+    "extraId": "A02OC",
+    "name": "10cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "3.612",
+      "Cargo Volume Size": "1.485",
+      "Kinetic Damage Rating": "22.52"
+    },
+    "resources": {
+      "Heavy Noble Gases": "17",
+      "Alkali Inorganics": "2",
+      "Heavy Trans-Metals": "6",
+      "Strong Alkali Inorganics": "1",
+      "Lanthanides": "1"
+    }
+  },
+  {
+    "gameId": "ZDpQu",
+    "extraId": "bqutc",
+    "name": "10cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "3.612",
+      "Cargo Volume Size": "1.521",
+      "Kinetic Damage Rating": "22.81"
+    },
+    "resources": {
+      "Noble Gases": "16",
+      "Metallics": "3",
+      "Heavy Trans-Metals": "5",
+      "Acidic Organics": "1",
+      "Heavy Alkaline Earth Metals": "1"
+    }
+  },
+  {
+    "gameId": "YenB1",
+    "extraId": "o7N9U",
+    "name": "10cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 6,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "3.712",
+      "Cargo Volume Size": "1.521",
+      "Kinetic Damage Rating": "23.34"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "16",
+      "Alkali Inorganics": "2",
+      "Heavy Post-Trans Metals": "6",
+      "Alkali Organics": "2",
+      "Heavy Alkali Metals": "2",
+      "Strong Alkali Organics": "1",
+      "Superheavy Exotics": "1"
+    }
+  },
+  {
+    "gameId": "8dqM8",
+    "extraId": "xRL66",
+    "name": "20cm Disruptor EMP Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "75/run",
+      "Mass": "7.15",
+      "Cargo Volume Size": "3.3",
+      "Energy Damage Rating": "70"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "45",
+      "Acidic Inorganics": "8",
+      "Metaloids": "13"
+    }
+  },
+  {
+    "gameId": "arrvW",
+    "extraId": "gnWR3",
+    "name": "20cm Piercer Sabot Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "50/run",
+      "Mass": "10.4",
+      "Cargo Volume Size": "4.8",
+      "Kinetic Damage Rating": "64"
+    },
+    "resources": {
+      "Heavy Noble Gases": "47",
+      "Metallics": "7",
+      "Heavy Post-Trans Metals": "14"
+    }
+  },
+  {
+    "gameId": "LDpNM",
+    "extraId": "wniQP",
+    "name": "20cm Railgun Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "6.5",
+      "Cargo Volume Size": "3",
+      "Kinetic Damage Rating": "40"
+    },
+    "resources": {
+      "Trans-Metals": "30",
+      "Metallics": "5",
+      "Heavy Post-Trans Metals": "8"
+    }
+  },
+  {
+    "gameId": "ydvGf",
+    "extraId": "0Mjhr",
+    "name": "20cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "4.55",
+      "Cargo Volume Size": "2.1",
+      "Kinetic Damage Rating": "28"
+    },
+    "resources": {
+      "Halogens": "20",
+      "Acidic Inorganics": "3",
+      "Heavy Post-Trans Metals": "6"
+    }
+  },
+  {
+    "gameId": "fDa0l",
+    "extraId": "DE1iM",
+    "name": "20cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "4.55",
+      "Cargo Volume Size": "2.166",
+      "Kinetic Damage Rating": "29.14"
+    },
+    "resources": {
+      "Halogens": "23",
+      "Acidic Inorganics": "4",
+      "Metaloids": "6"
+    }
+  },
+  {
+    "gameId": "7DDdR",
+    "extraId": "cEtwT",
+    "name": "20cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "4.55",
+      "Cargo Volume Size": "2.225",
+      "Kinetic Damage Rating": "29.57"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "22",
+      "Non-Metallics": "3",
+      "Metaloids": "5"
+    }
+  },
+  {
+    "gameId": "zeonc",
+    "extraId": "CVw6f",
+    "name": "20cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "4.55",
+      "Cargo Volume Size": "2.225",
+      "Kinetic Damage Rating": "29.98"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "24",
+      "Alkali Inorganics": "4",
+      "Metaloids": "6",
+      "Strong Alkali Inorganics": "1",
+      "Lanthanides": "1"
+    }
+  },
+  {
+    "gameId": "D9Nt1",
+    "extraId": "cJvAW",
+    "name": "20cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "4.55",
+      "Cargo Volume Size": "2.278",
+      "Kinetic Damage Rating": "29.98"
+    },
+    "resources": {
+      "Noble Gases": "24",
+      "Metallics": "4",
+      "Metaloids": "7",
+      "Strong Alkali Inorganics": "1",
+      "Lanthanides": "1"
+    }
+  },
+  {
+    "gameId": "tAPHX",
+    "extraId": "Fiwnj",
+    "name": "20cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "4.55",
+      "Cargo Volume Size": "2.278",
+      "Kinetic Damage Rating": "30.36"
+    },
+    "resources": {
+      "Trans-Metals": "21",
+      "Metallics": "3",
+      "Heavy Post-Trans Metals": "7",
+      "Alkali Organics": "1",
+      "Lanthanides": "1"
+    }
+  },
+  {
+    "gameId": "Cbnzw",
+    "extraId": "steuJ",
+    "name": "20cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "4.698",
+      "Cargo Volume Size": "2.278",
+      "Kinetic Damage Rating": "30.37"
+    },
+    "resources": {
+      "Alkali Metals": "19",
+      "Acidic Inorganics": "3",
+      "Heavy Trans-Metals": "7",
+      "Complex Non-Metallics": "1",
+      "Lanthanides": "1"
+    }
+  },
+  {
+    "gameId": "9zHE5",
+    "extraId": "gmk23",
+    "name": "2cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "0.2",
+      "Cargo Volume Size": "0.08",
+      "Kinetic Damage Rating": "2"
+    },
+    "resources": {
+      "Noble Gases": "2",
+      "Alkali Inorganics": "1",
+      "Heavy Post-Trans Metals": "1"
+    }
+  },
+  {
+    "gameId": "GuBFt",
+    "extraId": "LYra4",
+    "name": "2cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "0.203",
+      "Cargo Volume Size": "0.08",
+      "Kinetic Damage Rating": "2.08"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "2",
+      "Metallics": "1",
+      "Metaloids": "1"
+    }
+  },
+  {
+    "gameId": "qrpXZ",
+    "extraId": "YXIiA",
+    "name": "2cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "0.209",
+      "Cargo Volume Size": "0.08",
+      "Kinetic Damage Rating": "2.16"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "2",
+      "Acidic Inorganics": "1",
+      "Metaloids": "1"
+    }
+  },
+  {
+    "gameId": "N9ngU",
+    "extraId": "8oH3f",
+    "name": "2cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "0.209",
+      "Cargo Volume Size": "0.083",
+      "Kinetic Damage Rating": "2.19"
+    },
+    "resources": {
+      "Alkali Metals": "2",
+      "Acidic Inorganics": "1",
+      "Metaloids": "1",
+      "Strong Alkali Inorganics": "1",
+      "Lanthanides": "1"
+    }
+  },
+  {
+    "gameId": "K8wkL",
+    "extraId": "2kc1m",
+    "name": "2cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "0.214",
+      "Cargo Volume Size": "0.083",
+      "Kinetic Damage Rating": "2.22"
+    },
+    "resources": {
+      "Alkali Metals": "2",
+      "Alkali Inorganics": "1",
+      "Heavy Trans-Metals": "1",
+      "Complex Non-Metallics": "1",
+      "Heavy Alkali Metals": "1"
+    }
+  },
+  {
+    "gameId": "98Sh5",
+    "extraId": "mHnvY",
+    "name": "2cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "0.214",
+      "Cargo Volume Size": "0.083",
+      "Kinetic Damage Rating": "2.25"
+    },
+    "resources": {
+      "Halogens": "2",
+      "Non-Metallics": "1",
+      "Metaloids": "1",
+      "Alkali Organics": "1",
+      "Heavy Alkali Metals": "1"
+    }
+  },
+  {
+    "gameId": "eNoBg",
+    "extraId": "zE9In",
+    "name": "2cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "0.218",
+      "Cargo Volume Size": "0.083",
+      "Kinetic Damage Rating": "2.25"
+    },
+    "resources": {
+      "Alkali Metals": "2",
+      "Alkali Inorganics": "1",
+      "Heavy Trans-Metals": "1",
+      "Acidic Organics": "1",
+      "Lanthanides": "1"
+    }
+  },
+  {
+    "gameId": "zED3Z",
+    "extraId": "AoiRj",
+    "name": "30cm Disruptor EMP Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "75/run",
+      "Mass": "9.3",
+      "Cargo Volume Size": "4.29",
+      "Energy Damage Rating": "115"
+    },
+    "resources": {
+      "Alkali Metals": "74",
+      "Acidic Inorganics": "12",
+      "Metaloids": "24"
+    }
+  },
+  {
+    "gameId": "155TY",
+    "extraId": "eKMN2",
+    "name": "30cm Piercer Sabot Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "50/run",
+      "Mass": "13.52",
+      "Cargo Volume Size": "6.24",
+      "Kinetic Damage Rating": "86"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "62",
+      "Acidic Inorganics": "8",
+      "Metaloids": "17"
+    }
+  },
+  {
+    "gameId": "C3lmG",
+    "extraId": "PBy4x",
+    "name": "30cm Railgun Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "8.45",
+      "Cargo Volume Size": "3.9",
+      "Kinetic Damage Rating": "54"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "38",
+      "Acidic Inorganics": "6",
+      "Heavy Trans-Metals": "11"
+    }
+  },
+  {
+    "gameId": "cpo8t",
+    "extraId": "zLd11",
+    "name": "30cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "5.92",
+      "Cargo Volume Size": "2.73",
+      "Kinetic Damage Rating": "38"
+    },
+    "resources": {
+      "Post-Trans Metals": "25",
+      "Metallics": "4",
+      "Heavy Post-Trans Metals": "7"
+    }
+  },
+  {
+    "gameId": "li10W",
+    "extraId": "DpaiI",
+    "name": "30cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "92/run",
+      "Mass": "5.92",
+      "Cargo Volume Size": "2.73",
+      "Kinetic Damage Rating": "39.58"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "23",
+      "Alkali Inorganics": "4",
+      "Heavy Post-Trans Metals": "7"
+    }
+  },
+  {
+    "gameId": "fkFzf",
+    "extraId": "Web7m",
+    "name": "30cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "5.92",
+      "Cargo Volume Size": "2.818",
+      "Kinetic Damage Rating": "39.6"
+    },
+    "resources": {
+      "Noble Gases": "23",
+      "Non-Metallics": "4",
+      "Metaloids": "7"
+    }
+  },
+  {
+    "gameId": "XLOjm",
+    "extraId": "mpuWj",
+    "name": "30cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "5.92",
+      "Cargo Volume Size": "2.818",
+      "Kinetic Damage Rating": "40.19"
+    },
+    "resources": {
+      "Trans-Metals": "33",
+      "Acidic Inorganics": "4",
+      "Heavy Post-Trans Metals": "8"
+    }
+  },
+  {
+    "gameId": "FEO4I",
+    "extraId": "W2j8m",
+    "name": "30cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "6.108",
+      "Cargo Volume Size": "2.818",
+      "Kinetic Damage Rating": "40.19"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "26",
+      "Alkali Inorganics": "4",
+      "Heavy Trans-Metals": "8"
+    }
+  },
+  {
+    "gameId": "wdpPa",
+    "extraId": "fEFMj",
+    "name": "30cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "6.108",
+      "Cargo Volume Size": "2.897",
+      "Kinetic Damage Rating": "40.74"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "22",
+      "Non-Metallics": "4",
+      "Heavy Trans-Metals": "10",
+      "Strong Alkali Inorganics": "1",
+      "Heavy Alkali Metals": "1"
+    }
+  },
+  {
+    "gameId": "vs2Sf",
+    "extraId": "q4mnn",
+    "name": "30cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "6.274",
+      "Cargo Volume Size": "2.897",
+      "Kinetic Damage Rating": "41.27"
+    },
+    "resources": {
+      "Post-Trans Metals": "24",
+      "Metallics": "4",
+      "Heavy Trans-Metals": "9",
+      "Complex Non-Metallics": "1",
+      "Heavy Alkaline Earth Metals": "1"
+    }
+  },
+  {
+    "gameId": "LyijZ",
+    "extraId": "uxduD",
+    "name": "30cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "6.426",
+      "Cargo Volume Size": "2.897",
+      "Kinetic Damage Rating": "41.77"
+    },
+    "resources": {
+      "Halogens": "23",
+      "Metallics": "4",
+      "Metaloids": "8",
+      "Acidic Organics": "2",
+      "Heavy Alkali Metals": "2"
+    }
+  },
+  {
+    "gameId": "FHiyV",
+    "extraId": "zzpzi",
+    "name": "40cm Disruptor EMP Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "75/run",
+      "Mass": "12.08",
+      "Cargo Volume Size": "5.58",
+      "Energy Damage Rating": "130"
+    },
+    "resources": {
+      "Trans-Metals": "86",
+      "Non-Metallics": "15",
+      "Heavy Trans-Metals": "26"
+    }
+  },
+  {
+    "gameId": "aQbjs",
+    "extraId": "9IisX",
+    "name": "40cm Piercer Sabot Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "50/run",
+      "Mass": "17.58",
+      "Cargo Volume Size": "8.11",
+      "Kinetic Damage Rating": "115"
+    },
+    "resources": {
+      "Alkali Metals": "79",
+      "Metallics": "11",
+      "Metaloids": "24"
+    }
+  },
+  {
+    "gameId": "KzbUq",
+    "extraId": "XqaQU",
+    "name": "40cm Railgun Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "10.985",
+      "Cargo Volume Size": "5.07",
+      "Kinetic Damage Rating": "72"
+    },
+    "resources": {
+      "Trans-Metals": "50",
+      "Metallics": "8",
+      "Heavy Trans-Metals": "15"
+    }
+  },
+  {
+    "gameId": "Qv8rB",
+    "extraId": "XIOjQ",
+    "name": "40cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "7.69",
+      "Cargo Volume Size": "3.55",
+      "Kinetic Damage Rating": "50"
+    },
+    "resources": {
+      "Noble Gases": "38",
+      "Alkali Inorganics": "6",
+      "Metaloids": "10"
+    }
+  },
+  {
+    "gameId": "I7Mnf",
+    "extraId": "AFNFH",
+    "name": "40cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "7.69",
+      "Cargo Volume Size": "3",
+      "Kinetic Damage Rating": "52.1"
+    },
+    "resources": {
+      "Alkali Metals": "40",
+      "Metallics": "5",
+      "Metaloids": "10"
+    }
+  },
+  {
+    "gameId": "gJymv",
+    "extraId": "IsPXn",
+    "name": "40cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "92/run",
+      "Mass": "7.69",
+      "Cargo Volume Size": "3",
+      "Kinetic Damage Rating": "54.08"
+    },
+    "resources": {
+      "Post-Trans Metals": "41",
+      "Metallics": "7",
+      "Metaloids": "9"
+    }
+  },
+  {
+    "gameId": "EeV7T",
+    "extraId": "qIYBf",
+    "name": "40cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "7.942",
+      "Cargo Volume Size": "3",
+      "Kinetic Damage Rating": "52.88"
+    },
+    "resources": {
+      "Alkali Metals": "35",
+      "Alkali Inorganics": "6",
+      "Heavy Post-Trans Metals": "9"
+    }
+  },
+  {
+    "gameId": "3WrfA",
+    "extraId": "ZP5Xi",
+    "name": "40cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "8.161",
+      "Cargo Volume Size": "3",
+      "Kinetic Damage Rating": "53.61"
+    },
+    "resources": {
+      "Trans-Metals": "36",
+      "Non-Metallics": "6",
+      "Metaloids": "11",
+      "Complex Non-Metallics": "1",
+      "Heavy Alkaline Earth Metals": "1"
+    }
+  },
+  {
+    "gameId": "GxpMF",
+    "extraId": "cRKma",
+    "name": "40cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "8.161",
+      "Cargo Volume Size": "3.099",
+      "Kinetic Damage Rating": "54.3"
+    },
+    "resources": {
+      "Post-Trans Metals": "33",
+      "Alkali Inorganics": "6",
+      "Heavy Trans-Metals": "9",
+      "Acidic Organics": "1",
+      "Heavy Alkali Metals": "2"
+    }
+  },
+  {
+    "gameId": "C9a78",
+    "extraId": "M5I54",
+    "name": "40cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "8.161",
+      "Cargo Volume Size": "3.099",
+      "Kinetic Damage Rating": "54.96"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "27",
+      "Non-Metallics": "5",
+      "Heavy Trans-Metals": "14",
+      "Acidic Organics": "3",
+      "Heavy Alkaline Earth Metals": "3"
+    }
+  },
+  {
+    "gameId": "Cpl98",
+    "extraId": "lK1ma",
+    "name": "40cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "8.161",
+      "Cargo Volume Size": "3.188",
+      "Kinetic Damage Rating": "54.94"
+    },
+    "resources": {
+      "Alkali Metals": "37",
+      "Acidic Inorganics": "5",
+      "Heavy Trans-Metals": "12",
+      "Acidic Organics": "3",
+      "Heavy Alkali Metals": "3"
+    }
+  },
+  {
+    "gameId": "IMkAT",
+    "extraId": "Ak21K",
+    "name": "50cm Disruptor EMP Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "75/run",
+      "Mass": "15.71",
+      "Cargo Volume Size": "7.25",
+      "Energy Damage Rating": "150"
+    },
+    "resources": {
+      "Halogens": "106",
+      "Metallics": "15",
+      "Heavy Post-Trans Metals": "33"
+    }
+  },
+  {
+    "gameId": "gMaHs",
+    "extraId": "Pmv5R",
+    "name": "50cm Piercer Sabot Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "50/run",
+      "Mass": "22.85",
+      "Cargo Volume Size": "10.55",
+      "Kinetic Damage Rating": "154"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "105",
+      "Metallics": "15",
+      "Heavy Post-Trans Metals": "30"
+    }
+  },
+  {
+    "gameId": "fT54P",
+    "extraId": "a2MQj",
+    "name": "50cm Railgun Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "14.2805",
+      "Cargo Volume Size": "6.591",
+      "Kinetic Damage Rating": "96"
+    },
+    "resources": {
+      "Trans-Metals": "64",
+      "Alkali Inorganics": "11",
+      "Heavy Trans-Metals": "19"
+    }
+  },
+  {
+    "gameId": "qNJcU",
+    "extraId": "h2jdo",
+    "name": "50cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "10",
+      "Cargo Volume Size": "4.61",
+      "Kinetic Damage Rating": "67"
+    },
+    "resources": {
+      "Noble Gases": "44",
+      "Non-Metallics": "7",
+      "Heavy Trans-Metals": "14"
+    }
+  },
+  {
+    "gameId": "73dw1",
+    "extraId": "WUEKT",
+    "name": "50cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "10",
+      "Cargo Volume Size": "4",
+      "Kinetic Damage Rating": "69.73"
+    },
+    "resources": {
+      "Alkali Metals": "45",
+      "Alkali Inorganics": "6",
+      "Metaloids": "17"
+    }
+  },
+  {
+    "gameId": "wYx3T",
+    "extraId": "0bgvz",
+    "name": "50cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "10",
+      "Cargo Volume Size": "4.129",
+      "Kinetic Damage Rating": "72.34"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "56",
+      "Alkali Inorganics": "8",
+      "Heavy Post-Trans Metals": "17"
+    }
+  },
+  {
+    "gameId": "72VZF",
+    "extraId": "Axlhk",
+    "name": "50cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "10.32",
+      "Cargo Volume Size": "4.129",
+      "Kinetic Damage Rating": "73.33"
+    },
+    "resources": {
+      "Noble Gases": "56",
+      "Acidic Inorganics": "7",
+      "Heavy Trans-Metals": "15",
+      "Strong Alkali Inorganics": "1",
+      "Lanthanides": "1"
+    }
+  },
+  {
+    "gameId": "GnZde",
+    "extraId": "6eAhn",
+    "name": "50cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "10.606",
+      "Cargo Volume Size": "4.129",
+      "Kinetic Damage Rating": "74.26"
+    },
+    "resources": {
+      "Heavy Noble Gases": "46",
+      "Non-Metallics": "6",
+      "Metaloids": "13",
+      "Alkali Organics": "2",
+      "Heavy Alkali Metals": "2"
+    }
+  },
+  {
+    "gameId": "TrPqm",
+    "extraId": "uXXli",
+    "name": "50cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "10.858",
+      "Cargo Volume Size": "4.129",
+      "Kinetic Damage Rating": "75.14"
+    },
+    "resources": {
+      "Trans-Metals": "45",
+      "Non-Metallics": "7",
+      "Metaloids": "14",
+      "Strong Alkali Inorganics": "3",
+      "Heavy Alkaline Earth Metals": "3"
+    }
+  },
+  {
+    "gameId": "2dzWH",
+    "extraId": "6JAAA",
+    "name": "50cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 7,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "11.081",
+      "Cargo Volume Size": "4.129",
+      "Kinetic Damage Rating": "76.76"
+    },
+    "resources": {
+      "Heavy Noble Gases": "40",
+      "Non-Metallics": "6",
+      "Metaloids": "18",
+      "Strong Alkali Inorganics": "5",
+      "Complex Metallics": "2",
+      "Heavy Alkali Metals": "5",
+      "Transuranic Volatiles": "2"
+    }
+  },
+  {
+    "gameId": "avEZu",
+    "extraId": "mzQBO",
+    "name": "5cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "0.5",
+      "Cargo Volume Size": "0.12",
+      "Kinetic Damage Rating": "4"
+    },
+    "resources": {
+      "Post-Trans Metals": "3",
+      "Metallics": "1",
+      "Heavy Trans-Metals": "1"
+    }
+  },
+  {
+    "gameId": "vobV3",
+    "extraId": "zn9YL",
+    "name": "5cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "0.5",
+      "Cargo Volume Size": "0.122",
+      "Kinetic Damage Rating": "4.16"
+    },
+    "resources": {
+      "Trans-Metals": "4",
+      "Metallics": "1",
+      "Metaloids": "1"
+    }
+  },
+  {
+    "gameId": "f1NvO",
+    "extraId": "47CpK",
+    "name": "5cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "0.5",
+      "Cargo Volume Size": "0.125",
+      "Kinetic Damage Rating": "4.31"
+    },
+    "resources": {
+      "Trans-Metals": "3",
+      "Acidic Inorganics": "1",
+      "Heavy Trans-Metals": "1"
+    }
+  },
+  {
+    "gameId": "LJicq",
+    "extraId": "mXfN8",
+    "name": "5cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "0.5",
+      "Cargo Volume Size": "0.125",
+      "Kinetic Damage Rating": "4.37"
+    },
+    "resources": {
+      "Trans-Metals": "3",
+      "Non-Metallics": "1",
+      "Heavy Trans-Metals": "1",
+      "Acidic Organics": "1",
+      "Lanthanides": "1"
+    }
+  },
+  {
+    "gameId": "qCxJi",
+    "extraId": "WM6di",
+    "name": "5cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "0.5",
+      "Cargo Volume Size": "0.125",
+      "Kinetic Damage Rating": "4.37"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "3",
+      "Alkali Inorganics": "1",
+      "Metaloids": "1",
+      "Strong Alkali Inorganics": "1",
+      "Heavy Alkaline Earth Metals": "1"
+    }
+  },
+  {
+    "gameId": "nfDrj",
+    "extraId": "3rynG",
+    "name": "5cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "0.5",
+      "Cargo Volume Size": "0.125",
+      "Kinetic Damage Rating": "4.37"
+    },
+    "resources": {
+      "Heavy Noble Gases": "3",
+      "Non-Metallics": "1",
+      "Heavy Trans-Metals": "1",
+      "Acidic Organics": "1",
+      "Lanthanides": "1"
+    }
+  },
+  {
+    "gameId": "C0biA",
+    "extraId": "FlgMz",
+    "name": "5cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "0.5",
+      "Cargo Volume Size": "0.125",
+      "Kinetic Damage Rating": "4.37"
+    },
+    "resources": {
+      "Alkali Metals": "3",
+      "Metallics": "1",
+      "Heavy Post-Trans Metals": "1",
+      "Complex Non-Metallics": "1",
+      "Heavy Alkaline Earth Metals": "1"
+    }
+  },
+  {
+    "gameId": "1XusO",
+    "extraId": "LDisV",
+    "name": "5cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "0.5",
+      "Cargo Volume Size": "0.128",
+      "Kinetic Damage Rating": "4.37"
+    },
+    "resources": {
+      "Noble Gases": "3",
+      "Alkali Inorganics": "1",
+      "Heavy Trans-Metals": "1",
+      "Complex Non-Metallics": "1",
+      "Heavy Alkali Metals": "1"
+    }
+  },
+  {
+    "gameId": "gFMBo",
+    "extraId": "YtpOX",
+    "name": "5cm Coilgun Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Coilgun Ammunition",
+    "iconClass": "ui_icon_E20",
+    "iconPosition": "-176px -746px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "0.516",
+      "Cargo Volume Size": "0.128",
+      "Kinetic Damage Rating": "4.43"
+    },
+    "resources": {
+      "Halogens": "3",
+      "Metallics": "1",
+      "Metaloids": "1",
+      "Strong Alkali Inorganics": "1",
+      "Heavy Alkaline Earth Metals": "1"
+    }
+  },
+  {
+    "gameId": "fagoO",
+    "extraId": "Tiwnk",
+    "name": "60cm Disruptor EMP Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "75/run",
+      "Mass": "20.42",
+      "Cargo Volume Size": "9.43",
+      "Energy Damage Rating": "175"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "134",
+      "Non-Metallics": "19",
+      "Heavy Trans-Metals": "33"
+    }
+  },
+  {
+    "gameId": "fldK0",
+    "extraId": "KKsFh",
+    "name": "60cm Piercer Sabot Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "50/run",
+      "Mass": "29.7",
+      "Cargo Volume Size": "13.71",
+      "Kinetic Damage Rating": "205"
+    },
+    "resources": {
+      "Heavy Noble Gases": "150",
+      "Alkali Inorganics": "20",
+      "Heavy Post-Trans Metals": "43"
+    }
+  },
+  {
+    "gameId": "MtPY6",
+    "extraId": "uCuyh",
+    "name": "60cm Railgun Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "18.5647",
+      "Cargo Volume Size": "8.5683",
+      "Kinetic Damage Rating": "128"
+    },
+    "resources": {
+      "Noble Gases": "82",
+      "Metallics": "14",
+      "Heavy Post-Trans Metals": "26"
+    }
+  },
+  {
+    "gameId": "XkiDG",
+    "extraId": "vc0bg",
+    "name": "60cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "13",
+      "Cargo Volume Size": "6",
+      "Kinetic Damage Rating": "90"
+    },
+    "resources": {
+      "Heavy Noble Gases": "64",
+      "Metallics": "9",
+      "Heavy Trans-Metals": "17"
+    }
+  },
+  {
+    "gameId": "6eIP7",
+    "extraId": "rEZio",
+    "name": "60cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "13",
+      "Cargo Volume Size": "7",
+      "Kinetic Damage Rating": "93.81"
+    },
+    "resources": {
+      "Post-Trans Metals": "54",
+      "Acidic Inorganics": "10",
+      "Heavy Post-Trans Metals": "19"
+    }
+  },
+  {
+    "gameId": "LwLYV",
+    "extraId": "jFjsE",
+    "name": "60cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "13.42",
+      "Cargo Volume Size": "7",
+      "Kinetic Damage Rating": "97.27"
+    },
+    "resources": {
+      "Trans-Metals": "69",
+      "Alkali Inorganics": "12",
+      "Heavy Trans-Metals": "21"
+    }
+  },
+  {
+    "gameId": "59AcY",
+    "extraId": "Orly2",
+    "name": "60cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "13.795",
+      "Cargo Volume Size": "7",
+      "Kinetic Damage Rating": "98.6"
+    },
+    "resources": {
+      "Post-Trans Metals": "75",
+      "Metallics": "10",
+      "Metaloids": "25",
+      "Alkali Organics": "1",
+      "Lanthanides": "1"
+    }
+  },
+  {
+    "gameId": "on66C",
+    "extraId": "REV7t",
+    "name": "60cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "13.795",
+      "Cargo Volume Size": "7",
+      "Kinetic Damage Rating": "99.82"
+    },
+    "resources": {
+      "Trans-Metals": "63",
+      "Non-Metallics": "8",
+      "Metaloids": "18",
+      "Alkali Organics": "3",
+      "Heavy Alkaline Earth Metals": "3"
+    }
+  },
+  {
+    "gameId": "z072S",
+    "extraId": "0Gajy",
+    "name": "60cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "13.795",
+      "Cargo Volume Size": "7.171",
+      "Kinetic Damage Rating": "99.86"
+    },
+    "resources": {
+      "Heavy Noble Gases": "77",
+      "Non-Metallics": "11",
+      "Metaloids": "17",
+      "Alkali Organics": "2",
+      "Heavy Alkali Metals": "3"
+    }
+  },
+  {
+    "gameId": "l0TB7",
+    "extraId": "tYo9N",
+    "name": "60cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 6,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "14.119",
+      "Cargo Volume Size": "7.171",
+      "Kinetic Damage Rating": "102.15"
+    },
+    "resources": {
+      "Post-Trans Metals": "48",
+      "Metallics": "11",
+      "Heavy Post-Trans Metals": "24",
+      "Acidic Organics": "6",
+      "Complex Metallics": "1",
+      "Lanthanides": "7",
+      "Lanthanide Volatiles": "2"
+    }
+  },
+  {
+    "gameId": "tW4VL",
+    "extraId": "ri384",
+    "name": "70cm Disruptor EMP Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "75/run",
+      "Mass": "26.55",
+      "Cargo Volume Size": "12.25",
+      "Energy Damage Rating": "200"
+    },
+    "resources": {
+      "Halogens": "146",
+      "Metallics": "20",
+      "Heavy Trans-Metals": "38"
+    }
+  },
+  {
+    "gameId": "srToG",
+    "extraId": "nG28P",
+    "name": "70cm Piercer Sabot Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "50/run",
+      "Mass": "38.61",
+      "Cargo Volume Size": "17.82",
+      "Kinetic Damage Rating": "275"
+    },
+    "resources": {
+      "Alkali Metals": "183",
+      "Non-Metallics": "27",
+      "Metaloids": "59"
+    }
+  },
+  {
+    "gameId": "8HirJ",
+    "extraId": "1q2cd",
+    "name": "70cm Railgun Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "24.134",
+      "Cargo Volume Size": "11.1388",
+      "Kinetic Damage Rating": "172"
+    },
+    "resources": {
+      "Trans-Metals": "111",
+      "Alkali Inorganics": "17",
+      "Metaloids": "34"
+    }
+  },
+  {
+    "gameId": "30DYh",
+    "extraId": "5ELIJ",
+    "name": "70cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "16.89",
+      "Cargo Volume Size": "7.8",
+      "Kinetic Damage Rating": "120"
+    },
+    "resources": {
+      "Heavy Noble Gases": "83",
+      "Non-Metallics": "13",
+      "Heavy Post-Trans Metals": "25"
+    }
+  },
+  {
+    "gameId": "6e7pQ",
+    "extraId": "mhZ2E",
+    "name": "70cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "16.89",
+      "Cargo Volume Size": "8",
+      "Kinetic Damage Rating": "125.01"
+    },
+    "resources": {
+      "Noble Gases": "90",
+      "Non-Metallics": "14",
+      "Metaloids": "21"
+    }
+  },
+  {
+    "gameId": "NbBTe",
+    "extraId": "WwDLH",
+    "name": "70cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "16.89",
+      "Cargo Volume Size": "8.223",
+      "Kinetic Damage Rating": "129.69"
+    },
+    "resources": {
+      "Noble Gases": "90",
+      "Metallics": "13",
+      "Metaloids": "25"
+    }
+  },
+  {
+    "gameId": "Ins0y",
+    "extraId": "haLdg",
+    "name": "70cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "16.89",
+      "Cargo Volume Size": "8.223",
+      "Kinetic Damage Rating": "131.46"
+    },
+    "resources": {
+      "Alkali Metals": "75",
+      "Non-Metallics": "14",
+      "Heavy Trans-Metals": "32",
+      "Acidic Organics": "2",
+      "Heavy Alkaline Earth Metals": "2"
+    }
+  },
+  {
+    "gameId": "v0r5z",
+    "extraId": "83O24",
+    "name": "70cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "16.89",
+      "Cargo Volume Size": "8.223",
+      "Kinetic Damage Rating": "131.46"
+    },
+    "resources": {
+      "Heavy Noble Gases": "94",
+      "Non-Metallics": "16",
+      "Heavy Trans-Metals": "26",
+      "Alkali Organics": "2",
+      "Heavy Alkaline Earth Metals": "2"
+    }
+  },
+  {
+    "gameId": "cAl0x",
+    "extraId": "iqtvO",
+    "name": "70cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "17.435",
+      "Cargo Volume Size": "8.223",
+      "Kinetic Damage Rating": "131.45"
+    },
+    "resources": {
+      "Trans-Metals": "72",
+      "Alkali Inorganics": "13",
+      "Metaloids": "26",
+      "Acidic Organics": "2",
+      "Heavy Alkali Metals": "2"
+    }
+  },
+  {
+    "gameId": "cOpdK",
+    "extraId": "8hf0f",
+    "name": "70cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "17.435",
+      "Cargo Volume Size": "8.223",
+      "Kinetic Damage Rating": "133.12"
+    },
+    "resources": {
+      "Trans-Metals": "78",
+      "Alkali Inorganics": "14",
+      "Heavy Post-Trans Metals": "29",
+      "Strong Alkali Inorganics": "4",
+      "Heavy Alkali Metals": "3"
+    }
+  },
+  {
+    "gameId": "uIOu3",
+    "extraId": "yIggN",
+    "name": "70cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "17.914",
+      "Cargo Volume Size": "8.223",
+      "Kinetic Damage Rating": "133.13"
+    },
+    "resources": {
+      "Post-Trans Metals": "86",
+      "Acidic Inorganics": "14",
+      "Metaloids": "30",
+      "Complex Non-Metallics": "4",
+      "Heavy Alkaline Earth Metals": "4"
+    }
+  },
+  {
+    "gameId": "bnHb5",
+    "extraId": "Rw7S3",
+    "name": "80cm Disruptor EMP Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "75/run",
+      "Mass": "34.51",
+      "Cargo Volume Size": "15.93",
+      "Energy Damage Rating": "245"
+    },
+    "resources": {
+      "Alkali Metals": "175",
+      "Non-Metallics": "25",
+      "Metaloids": "54"
+    }
+  },
+  {
+    "gameId": "JnX13",
+    "extraId": "YwXkA",
+    "name": "80cm Piercer Sabot Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "50/run",
+      "Mass": "50.2",
+      "Cargo Volume Size": "23.17",
+      "Kinetic Damage Rating": "371"
+    },
+    "resources": {
+      "Noble Gases": "250",
+      "Metallics": "35",
+      "Metaloids": "71"
+    }
+  },
+  {
+    "gameId": "1o9KX",
+    "extraId": "Cvg2n",
+    "name": "80cm Railgun Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "31.3743",
+      "Cargo Volume Size": "14.4804",
+      "Kinetic Damage Rating": "232"
+    },
+    "resources": {
+      "Halogens": "150",
+      "Acidic Inorganics": "25",
+      "Heavy Trans-Metals": "45"
+    }
+  },
+  {
+    "gameId": "FICq5",
+    "extraId": "q8crX",
+    "name": "80cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "21.96",
+      "Cargo Volume Size": "10.14",
+      "Kinetic Damage Rating": "162"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "122",
+      "Non-Metallics": "15",
+      "Heavy Trans-Metals": "36"
+    }
+  },
+  {
+    "gameId": "XPGv3",
+    "extraId": "o5Upe",
+    "name": "80cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "92/run",
+      "Mass": "21.96",
+      "Cargo Volume Size": "10.14",
+      "Kinetic Damage Rating": "168.72"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "95",
+      "Non-Metallics": "15",
+      "Heavy Trans-Metals": "29"
+    }
+  },
+  {
+    "gameId": "40Pbr",
+    "extraId": "uOw8e",
+    "name": "80cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "22.679",
+      "Cargo Volume Size": "10.14",
+      "Kinetic Damage Rating": "168.79"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "137",
+      "Non-Metallics": "19",
+      "Heavy Trans-Metals": "36"
+    }
+  },
+  {
+    "gameId": "UxsvL",
+    "extraId": "VPbEJ",
+    "name": "80cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "22.679",
+      "Cargo Volume Size": "10.467",
+      "Kinetic Damage Rating": "171.31"
+    },
+    "resources": {
+      "Noble Gases": "99",
+      "Alkali Inorganics": "20",
+      "Metaloids": "36"
+    }
+  },
+  {
+    "gameId": "kXGm8",
+    "extraId": "5wc1w",
+    "name": "80cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "22.679",
+      "Cargo Volume Size": "10.467",
+      "Kinetic Damage Rating": "173.67"
+    },
+    "resources": {
+      "Halogens": "124",
+      "Non-Metallics": "20",
+      "Metaloids": "34",
+      "Complex Non-Metallics": "2",
+      "Heavy Alkali Metals": "3"
+    }
+  },
+  {
+    "gameId": "in22s",
+    "extraId": "EUqP7",
+    "name": "80cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "22.679",
+      "Cargo Volume Size": "10.467",
+      "Kinetic Damage Rating": "173.71"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "105",
+      "Alkali Inorganics": "18",
+      "Heavy Post-Trans Metals": "33",
+      "Complex Non-Metallics": "2",
+      "Lanthanides": "2"
+    }
+  },
+  {
+    "gameId": "0Sd5b",
+    "extraId": "MRQpF",
+    "name": "80cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "22.679",
+      "Cargo Volume Size": "10.467",
+      "Kinetic Damage Rating": "173.64"
+    },
+    "resources": {
+      "Post-Trans Metals": "129",
+      "Non-Metallics": "18",
+      "Heavy Trans-Metals": "40",
+      "Strong Alkali Inorganics": "2",
+      "Lanthanides": "3"
+    }
+  },
+  {
+    "gameId": "RYN4f",
+    "extraId": "5iIIX",
+    "name": "80cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "100/run",
+      "Mass": "23.295",
+      "Cargo Volume Size": "10.467",
+      "Kinetic Damage Rating": "173.69"
+    },
+    "resources": {
+      "Halogens": "132",
+      "Alkali Inorganics": "21",
+      "Metaloids": "41",
+      "Alkali Organics": "2",
+      "Lanthanides": "2"
+    }
+  },
+  {
+    "gameId": "b0OD1",
+    "extraId": "u5gLh",
+    "name": "80cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "23.295",
+      "Cargo Volume Size": "10.467",
+      "Kinetic Damage Rating": "175.88"
+    },
+    "resources": {
+      "Heavy Noble Gases": "125",
+      "Metallics": "19",
+      "Metaloids": "41",
+      "Complex Non-Metallics": "4",
+      "Heavy Alkali Metals": "4"
+    }
+  },
+  {
+    "gameId": "1oU4L",
+    "extraId": "7lhDl",
+    "name": "80cm Shardstorm Fragmentation Munitions",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Railgun Ammunition",
+    "iconClass": "ui_icon_G21",
+    "iconPosition": "-252px -784px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "97/run",
+      "Mass": "23.295",
+      "Cargo Volume Size": "10.754",
+      "Kinetic Damage Rating": "178.06"
+    },
+    "resources": {
+      "Alkali Metals": "96",
+      "Metallics": "20",
+      "Heavy Trans-Metals": "39",
+      "Complex Non-Metallics": "8",
+      "Heavy Alkali Metals": "8"
+    }
+  },
+  {
+    "gameId": "e1wfe",
+    "extraId": "j5grj",
+    "name": "T1 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "100",
+      "Cargo Volume Size": "40",
+      "Missile Damage Rating": "140",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Noble Gases": "91",
+      "Metallics": "15",
+      "Heavy Trans-Metals": "15",
+      "Acidic Organics": "15",
+      "Lanthanides": "14"
+    }
+  },
+  {
+    "gameId": "GgRZd",
+    "extraId": "SXkDl",
+    "name": "T1 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "101",
+      "Cargo Volume Size": "40",
+      "Missile Damage Rating": "145.8",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Trans-Metals": "80",
+      "Non-Metallics": "13",
+      "Metaloids": "15",
+      "Alkali Organics": "15",
+      "Heavy Alkaline Earth Metals": "17"
+    }
+  },
+  {
+    "gameId": "6ZJ7W",
+    "extraId": "fyrnI",
+    "name": "T1 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "101",
+      "Cargo Volume Size": "40",
+      "Missile Damage Rating": "151.3",
+      "Accuracy": "59.7%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "100",
+      "Alkali Inorganics": "17",
+      "Heavy Trans-Metals": "15",
+      "Complex Non-Metallics": "18",
+      "Heavy Alkali Metals": "16"
+    }
+  },
+  {
+    "gameId": "EpbjB",
+    "extraId": "Wpk93",
+    "name": "T1 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "101",
+      "Cargo Volume Size": "40",
+      "Missile Damage Rating": "151.3",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.38MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "78",
+      "Non-Metallics": "14",
+      "Heavy Post-Trans Metals": "14",
+      "Strong Alkali Inorganics": "17",
+      "Heavy Alkali Metals": "13"
+    }
+  },
+  {
+    "gameId": "oSOag",
+    "extraId": "aL3Ur",
+    "name": "T1 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "101",
+      "Cargo Volume Size": "40",
+      "Missile Damage Rating": "148",
+      "Accuracy": "62.9%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Trans-Metals": "96",
+      "Non-Metallics": "15",
+      "Heavy Post-Trans Metals": "17",
+      "Strong Alkali Inorganics": "15",
+      "Lanthanides": "13"
+    }
+  },
+  {
+    "gameId": "rD7t9",
+    "extraId": "UauLx",
+    "name": "T1 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "14/run",
+      "Mass": "101",
+      "Cargo Volume Size": "40",
+      "Missile Damage Rating": "148",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Halogens": "77",
+      "Acidic Inorganics": "16",
+      "Heavy Post-Trans Metals": "16",
+      "Complex Non-Metallics": "14",
+      "Heavy Alkaline Earth Metals": "17"
+    }
+  },
+  {
+    "gameId": "IgVxx",
+    "extraId": "I8Ivm",
+    "name": "T1 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "101",
+      "Cargo Volume Size": "40",
+      "Missile Damage Rating": "148",
+      "Accuracy": "62.9%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "78",
+      "Acidic Inorganics": "15",
+      "Heavy Trans-Metals": "16",
+      "Strong Alkali Inorganics": "18",
+      "Heavy Alkaline Earth Metals": "13"
+    }
+  },
+  {
+    "gameId": "u3sYl",
+    "extraId": "wOaWf",
+    "name": "T1 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "14/run",
+      "Mass": "101",
+      "Cargo Volume Size": "40",
+      "Missile Damage Rating": "148",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Halogens": "92",
+      "Acidic Inorganics": "17",
+      "Metaloids": "15",
+      "Alkali Organics": "13",
+      "Heavy Alkaline Earth Metals": "14"
+    }
+  },
+  {
+    "gameId": "kEkLl",
+    "extraId": "m6bmT",
+    "name": "T1 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "101",
+      "Cargo Volume Size": "41.284",
+      "Missile Damage Rating": "148",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Noble Gases": "104",
+      "Alkali Inorganics": "13",
+      "Metaloids": "16",
+      "Acidic Organics": "14",
+      "Heavy Alkaline Earth Metals": "15"
+    }
+  },
+  {
+    "gameId": "4Wmi6",
+    "extraId": "YkiDS",
+    "name": "T1 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "103.887",
+      "Cargo Volume Size": "41.284",
+      "Missile Damage Rating": "150.1",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "94",
+      "Acidic Inorganics": "17",
+      "Heavy Post-Trans Metals": "16",
+      "Alkali Organics": "18",
+      "Heavy Alkaline Earth Metals": "15"
+    }
+  },
+  {
+    "gameId": "eFvdY",
+    "extraId": "jfYez",
+    "name": "T1 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "106.424",
+      "Cargo Volume Size": "41.284",
+      "Missile Damage Rating": "153.8",
+      "Accuracy": "62.9%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "95",
+      "Acidic Inorganics": "15",
+      "Heavy Trans-Metals": "18",
+      "Alkali Organics": "18",
+      "Heavy Alkaline Earth Metals": "21"
+    }
+  },
+  {
+    "gameId": "pjuGh",
+    "extraId": "Vx3us",
+    "name": "T1 Kaiten Torpedo",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Torpedo",
+    "iconClass": "ui_icon_G24",
+    "iconPosition": "-252px -898px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "10/run",
+      "Mass": "200",
+      "Cargo Volume Size": "50",
+      "Missile Damage Rating": "250",
+      "Accuracy": "85%",
+      "Acceleration Rate": "1MN"
+    },
+    "resources": {
+      "Alkali Metals": "152",
+      "Alkali Inorganics": "27",
+      "Metaloids": "26",
+      "Alkali Organics": "26",
+      "Heavy Alkaline Earth Metals": "23"
+    }
+  },
+  {
+    "gameId": "Oi2gH",
+    "extraId": "kHEyZ",
+    "name": "T1 Starstrike Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "20/run",
+      "Mass": "37.5",
+      "Cargo Volume Size": "20",
+      "Missile Damage Rating": "75",
+      "Accuracy": "80%",
+      "Acceleration Rate": "2MN"
+    },
+    "resources": {
+      "Trans-Metals": "45",
+      "Acidic Inorganics": "7",
+      "Heavy Trans-Metals": "8",
+      "Acidic Organics": "8",
+      "Heavy Alkali Metals": "8"
+    }
+  },
+  {
+    "gameId": "stuBQ",
+    "extraId": "covmG",
+    "name": "T1 Viperstrike EMP Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "20/run",
+      "Mass": "25",
+      "Cargo Volume Size": "15",
+      "Energy Damage Rating": "60",
+      "Missile Damage Rating": "15",
+      "Accuracy": "85%",
+      "Acceleration Rate": "3MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "45",
+      "Alkali Inorganics": "8",
+      "Heavy Post-Trans Metals": "8",
+      "Strong Alkali Inorganics": "8",
+      "Heavy Alkaline Earth Metals": "8"
+    }
+  },
+  {
+    "gameId": "GMtvP",
+    "extraId": "2KY5T",
+    "name": "T2 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "120",
+      "Cargo Volume Size": "50",
+      "Missile Damage Rating": "160",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "100",
+      "Non-Metallics": "16",
+      "Heavy Post-Trans Metals": "16",
+      "Acidic Organics": "16",
+      "Heavy Alkali Metals": "18"
+    }
+  },
+  {
+    "gameId": "ppgaE",
+    "extraId": "G9jYO",
+    "name": "T2 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "121",
+      "Cargo Volume Size": "50",
+      "Missile Damage Rating": "166.7",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "101",
+      "Non-Metallics": "17",
+      "Heavy Post-Trans Metals": "20",
+      "Strong Alkali Inorganics": "17",
+      "Lanthanides": "14"
+    }
+  },
+  {
+    "gameId": "M4PNO",
+    "extraId": "tXuHZ",
+    "name": "T2 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "121",
+      "Cargo Volume Size": "50",
+      "Missile Damage Rating": "173",
+      "Accuracy": "59.8%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "115",
+      "Alkali Inorganics": "16",
+      "Metaloids": "15",
+      "Acidic Organics": "18",
+      "Heavy Alkaline Earth Metals": "18"
+    }
+  },
+  {
+    "gameId": "dmZSn",
+    "extraId": "AVDA9",
+    "name": "T2 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "14/run",
+      "Mass": "121",
+      "Cargo Volume Size": "50",
+      "Missile Damage Rating": "172.8",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "121",
+      "Acidic Inorganics": "21",
+      "Heavy Trans-Metals": "19",
+      "Strong Alkali Inorganics": "20",
+      "Heavy Alkali Metals": "15"
+    }
+  },
+  {
+    "gameId": "Qv7B1",
+    "extraId": "zEshx",
+    "name": "T2 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "124.467",
+      "Cargo Volume Size": "50",
+      "Missile Damage Rating": "169.2",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Halogens": "109",
+      "Metallics": "17",
+      "Heavy Trans-Metals": "15",
+      "Complex Non-Metallics": "20",
+      "Lanthanides": "20"
+    }
+  },
+  {
+    "gameId": "5dDeS",
+    "extraId": "s3ind",
+    "name": "T2 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "14/run",
+      "Mass": "124.467",
+      "Cargo Volume Size": "50",
+      "Missile Damage Rating": "171.6",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "84",
+      "Non-Metallics": "14",
+      "Heavy Trans-Metals": "16",
+      "Acidic Organics": "16",
+      "Lanthanides": "18"
+    }
+  },
+  {
+    "gameId": "kT8Q4",
+    "extraId": "irWRL",
+    "name": "T2 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "124.467",
+      "Cargo Volume Size": "51.621",
+      "Missile Damage Rating": "171.6",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Alkali Metals": "116",
+      "Metallics": "16",
+      "Heavy Post-Trans Metals": "21",
+      "Complex Non-Metallics": "20",
+      "Heavy Alkali Metals": "21"
+    }
+  },
+  {
+    "gameId": "baSZG",
+    "extraId": "H3Cxl",
+    "name": "T2 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "124.467",
+      "Cargo Volume Size": "51.621",
+      "Missile Damage Rating": "173.8",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.45MN"
+    },
+    "resources": {
+      "Trans-Metals": "120",
+      "Non-Metallics": "14",
+      "Heavy Trans-Metals": "17",
+      "Acidic Organics": "20",
+      "Heavy Alkali Metals": "23"
+    }
+  },
+  {
+    "gameId": "H3jCK",
+    "extraId": "Og6l5",
+    "name": "T2 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "124.467",
+      "Cargo Volume Size": "51.621",
+      "Missile Damage Rating": "173.8",
+      "Accuracy": "62.9%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "119",
+      "Metallics": "16",
+      "Heavy Trans-Metals": "19",
+      "Alkali Organics": "23",
+      "Heavy Alkali Metals": "22"
+    }
+  },
+  {
+    "gameId": "lyHvG",
+    "extraId": "eaMQy",
+    "name": "T2 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "124.467",
+      "Cargo Volume Size": "51.621",
+      "Missile Damage Rating": "173.8",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.45MN"
+    },
+    "resources": {
+      "Halogens": "83",
+      "Alkali Inorganics": "18",
+      "Heavy Post-Trans Metals": "16",
+      "Alkali Organics": "20",
+      "Lanthanides": "18"
+    }
+  },
+  {
+    "gameId": "Au0c5",
+    "extraId": "MJ8Hg",
+    "name": "T2 Kaiten Torpedo",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Torpedo",
+    "iconClass": "ui_icon_G24",
+    "iconPosition": "-252px -898px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "10/run",
+      "Mass": "230",
+      "Cargo Volume Size": "60",
+      "Missile Damage Rating": "275",
+      "Accuracy": "85%",
+      "Acceleration Rate": "1MN"
+    },
+    "resources": {
+      "Trans-Metals": "163",
+      "Metallics": "29",
+      "Heavy Trans-Metals": "27",
+      "Acidic Organics": "26",
+      "Heavy Alkali Metals": "26"
+    }
+  },
+  {
+    "gameId": "HM3Sd",
+    "extraId": "2LHxJ",
+    "name": "T2 Starstrike Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "20/run",
+      "Mass": "45",
+      "Cargo Volume Size": "30",
+      "Missile Damage Rating": "85",
+      "Accuracy": "80%",
+      "Acceleration Rate": "2MN"
+    },
+    "resources": {
+      "Trans-Metals": "55",
+      "Acidic Inorganics": "9",
+      "Metaloids": "8",
+      "Alkali Organics": "8",
+      "Lanthanides": "9"
+    }
+  },
+  {
+    "gameId": "Alz4v",
+    "extraId": "tUSSL",
+    "name": "T2 Viperstrike EMP Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "20/run",
+      "Mass": "30",
+      "Cargo Volume Size": "22",
+      "Energy Damage Rating": "70",
+      "Missile Damage Rating": "17",
+      "Accuracy": "85%",
+      "Acceleration Rate": "3MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "57",
+      "Alkali Inorganics": "9",
+      "Heavy Post-Trans Metals": "9",
+      "Acidic Organics": "10",
+      "Lanthanides": "8"
+    }
+  },
+  {
+    "gameId": "suHvz",
+    "extraId": "raDZE",
+    "name": "T3 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "140",
+      "Cargo Volume Size": "65",
+      "Missile Damage Rating": "195",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "120",
+      "Alkali Inorganics": "22",
+      "Metaloids": "19",
+      "Strong Alkali Inorganics": "20",
+      "Lanthanides": "20"
+    }
+  },
+  {
+    "gameId": "Axvnk",
+    "extraId": "34v9x",
+    "name": "T3 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "140",
+      "Cargo Volume Size": "66",
+      "Missile Damage Rating": "203.1",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Alkali Metals": "127",
+      "Alkali Inorganics": "20",
+      "Heavy Post-Trans Metals": "18",
+      "Acidic Organics": "21",
+      "Lanthanides": "21"
+    }
+  },
+  {
+    "gameId": "bCvAP",
+    "extraId": "r7OZY",
+    "name": "T3 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "144",
+      "Cargo Volume Size": "66",
+      "Missile Damage Rating": "210.7",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Halogens": "140",
+      "Non-Metallics": "19",
+      "Heavy Post-Trans Metals": "19",
+      "Strong Alkali Inorganics": "23",
+      "Lanthanides": "18"
+    }
+  },
+  {
+    "gameId": "IAo0C",
+    "extraId": "WIH98",
+    "name": "T3 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "147.919",
+      "Cargo Volume Size": "66",
+      "Missile Damage Rating": "217.8",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "146",
+      "Metallics": "22",
+      "Heavy Post-Trans Metals": "20",
+      "Complex Non-Metallics": "25",
+      "Heavy Alkali Metals": "23"
+    }
+  },
+  {
+    "gameId": "rhk9b",
+    "extraId": "bLU6V",
+    "name": "T3 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "14/run",
+      "Mass": "147.919",
+      "Cargo Volume Size": "66",
+      "Missile Damage Rating": "220.5",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "117",
+      "Alkali Inorganics": "17",
+      "Heavy Trans-Metals": "19",
+      "Acidic Organics": "22",
+      "Lanthanides": "27"
+    }
+  },
+  {
+    "gameId": "Blsf7",
+    "extraId": "ZMHyC",
+    "name": "T3 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "147.919",
+      "Cargo Volume Size": "66",
+      "Missile Damage Rating": "220.5",
+      "Accuracy": "62.9%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "145",
+      "Non-Metallics": "22",
+      "Metaloids": "20",
+      "Complex Non-Metallics": "26",
+      "Heavy Alkaline Earth Metals": "29"
+    }
+  },
+  {
+    "gameId": "1tSB9",
+    "extraId": "aO2DF",
+    "name": "T3 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "147.919",
+      "Cargo Volume Size": "67.83",
+      "Missile Damage Rating": "220.5",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Noble Gases": "142",
+      "Non-Metallics": "21",
+      "Heavy Trans-Metals": "23",
+      "Strong Alkali Inorganics": "28",
+      "Heavy Alkaline Earth Metals": "20"
+    }
+  },
+  {
+    "gameId": "T6jdb",
+    "extraId": "pQlQu",
+    "name": "T3 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "14/run",
+      "Mass": "147.919",
+      "Cargo Volume Size": "67.83",
+      "Missile Damage Rating": "223.1",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Noble Gases": "139",
+      "Metallics": "22",
+      "Heavy Post-Trans Metals": "22",
+      "Strong Alkali Inorganics": "27",
+      "Lanthanides": "26"
+    }
+  },
+  {
+    "gameId": "LTrnb",
+    "extraId": "iqDxD",
+    "name": "T3 Kaiten Torpedo",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Torpedo",
+    "iconClass": "ui_icon_G24",
+    "iconPosition": "-252px -898px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "10/run",
+      "Mass": "260",
+      "Cargo Volume Size": "70",
+      "Missile Damage Rating": "300",
+      "Accuracy": "85%",
+      "Acceleration Rate": "1MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "164",
+      "Acidic Inorganics": "29",
+      "Metaloids": "32",
+      "Strong Alkali Inorganics": "32",
+      "Heavy Alkali Metals": "29"
+    }
+  },
+  {
+    "gameId": "coYyz",
+    "extraId": "SQxXq",
+    "name": "T3 Starstrike Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "20/run",
+      "Mass": "53",
+      "Cargo Volume Size": "40",
+      "Missile Damage Rating": "105",
+      "Accuracy": "80%",
+      "Acceleration Rate": "2MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "66",
+      "Acidic Inorganics": "10",
+      "Heavy Post-Trans Metals": "11",
+      "Alkali Organics": "11",
+      "Heavy Alkali Metals": "11"
+    }
+  },
+  {
+    "gameId": "3YXwb",
+    "extraId": "Rm03U",
+    "name": "T3 Viperstrike EMP Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "20/run",
+      "Mass": "36",
+      "Cargo Volume Size": "30",
+      "Energy Damage Rating": "85",
+      "Missile Damage Rating": "21",
+      "Accuracy": "85%",
+      "Acceleration Rate": "3MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "69",
+      "Metallics": "11",
+      "Metaloids": "12",
+      "Alkali Organics": "10",
+      "Heavy Alkali Metals": "10"
+    }
+  },
+  {
+    "gameId": "21oV7",
+    "extraId": "fW0Xz",
+    "name": "T4 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "180",
+      "Cargo Volume Size": "80",
+      "Missile Damage Rating": "230",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Halogens": "133",
+      "Alkali Inorganics": "24",
+      "Metaloids": "23",
+      "Acidic Organics": "25",
+      "Lanthanides": "23"
+    }
+  },
+  {
+    "gameId": "wtKIz",
+    "extraId": "dnR6e",
+    "name": "T4 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "182",
+      "Cargo Volume Size": "80",
+      "Missile Damage Rating": "239.6",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "116",
+      "Non-Metallics": "28",
+      "Metaloids": "25",
+      "Alkali Organics": "22",
+      "Heavy Alkali Metals": "28"
+    }
+  },
+  {
+    "gameId": "ys1po",
+    "extraId": "a1oQk",
+    "name": "T4 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "14/run",
+      "Mass": "182",
+      "Cargo Volume Size": "80",
+      "Missile Damage Rating": "248.4",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "167",
+      "Alkali Inorganics": "25",
+      "Metaloids": "28",
+      "Strong Alkali Inorganics": "23",
+      "Lanthanides": "29"
+    }
+  },
+  {
+    "gameId": "vzQty",
+    "extraId": "zod7M",
+    "name": "T4 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "182",
+      "Cargo Volume Size": "80",
+      "Missile Damage Rating": "243.2",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.45MN"
+    },
+    "resources": {
+      "Noble Gases": "161",
+      "Non-Metallics": "24",
+      "Heavy Post-Trans Metals": "24",
+      "Alkali Organics": "27",
+      "Lanthanides": "25"
+    }
+  },
+  {
+    "gameId": "aRppu",
+    "extraId": "DsyO4",
+    "name": "T4 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "14/run",
+      "Mass": "182",
+      "Cargo Volume Size": "80",
+      "Missile Damage Rating": "243.1",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Alkali Metals": "157",
+      "Alkali Inorganics": "23",
+      "Metaloids": "26",
+      "Alkali Organics": "29",
+      "Heavy Alkali Metals": "25"
+    }
+  },
+  {
+    "gameId": "192xr",
+    "extraId": "e9zZT",
+    "name": "T4 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "182",
+      "Cargo Volume Size": "82.59",
+      "Missile Damage Rating": "243.2",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Alkali Metals": "148",
+      "Alkali Inorganics": "25",
+      "Heavy Trans-Metals": "21",
+      "Alkali Organics": "23",
+      "Lanthanides": "22"
+    }
+  },
+  {
+    "gameId": "YaCY5",
+    "extraId": "CrrPm",
+    "name": "T4 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "187.114",
+      "Cargo Volume Size": "82.59",
+      "Missile Damage Rating": "246.5",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "159",
+      "Acidic Inorganics": "26",
+      "Heavy Trans-Metals": "21",
+      "Alkali Organics": "27",
+      "Lanthanides": "31"
+    }
+  },
+  {
+    "gameId": "wyER4",
+    "extraId": "xXH6y",
+    "name": "T4 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "187.114",
+      "Cargo Volume Size": "82.59",
+      "Missile Damage Rating": "249.7",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.45MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "163",
+      "Alkali Inorganics": "20",
+      "Metaloids": "30",
+      "Complex Non-Metallics": "27",
+      "Lanthanides": "30"
+    }
+  },
+  {
+    "gameId": "su2yG",
+    "extraId": "XITsl",
+    "name": "T4 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "187.114",
+      "Cargo Volume Size": "82.59",
+      "Missile Damage Rating": "249.7",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.45MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "136",
+      "Acidic Inorganics": "24",
+      "Heavy Trans-Metals": "27",
+      "Acidic Organics": "23",
+      "Lanthanides": "33"
+    }
+  },
+  {
+    "gameId": "fzRdS",
+    "extraId": "VL0xu",
+    "name": "T4 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "187.114",
+      "Cargo Volume Size": "82.59",
+      "Missile Damage Rating": "249.7",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.45MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "170",
+      "Acidic Inorganics": "21",
+      "Metaloids": "25",
+      "Strong Alkali Inorganics": "25",
+      "Lanthanides": "24"
+    }
+  },
+  {
+    "gameId": "YLWJl",
+    "extraId": "XhGhc",
+    "name": "T4 Kaiten Torpedo",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Torpedo",
+    "iconClass": "ui_icon_G24",
+    "iconPosition": "-252px -898px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "10/run",
+      "Mass": "300",
+      "Cargo Volume Size": "80",
+      "Missile Damage Rating": "325",
+      "Accuracy": "85%",
+      "Acceleration Rate": "1MN"
+    },
+    "resources": {
+      "Halogens": "205",
+      "Alkali Inorganics": "31",
+      "Heavy Post-Trans Metals": "31",
+      "Acidic Organics": "31",
+      "Heavy Alkaline Earth Metals": "35"
+    }
+  },
+  {
+    "gameId": "FwmcY",
+    "extraId": "McyZ8",
+    "name": "T4 Starstrike Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "20/run",
+      "Mass": "68",
+      "Cargo Volume Size": "50",
+      "Missile Damage Rating": "125",
+      "Accuracy": "80%",
+      "Acceleration Rate": "2MN"
+    },
+    "resources": {
+      "Alkali Metals": "72",
+      "Non-Metallics": "14",
+      "Heavy Trans-Metals": "13",
+      "Acidic Organics": "13",
+      "Heavy Alkaline Earth Metals": "13"
+    }
+  },
+  {
+    "gameId": "zVlZm",
+    "extraId": "DT00O",
+    "name": "T4 Viperstrike EMP Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "20/run",
+      "Mass": "45",
+      "Cargo Volume Size": "38",
+      "Energy Damage Rating": "100",
+      "Missile Damage Rating": "25",
+      "Accuracy": "85%",
+      "Acceleration Rate": "3MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "74",
+      "Alkali Inorganics": "13",
+      "Heavy Post-Trans Metals": "13",
+      "Complex Non-Metallics": "12",
+      "Lanthanides": "14"
+    }
+  },
+  {
+    "gameId": "9950E",
+    "extraId": "ySGsx",
+    "name": "T5 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "200",
+      "Cargo Volume Size": "95",
+      "Missile Damage Rating": "275",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "166",
+      "Non-Metallics": "27",
+      "Heavy Trans-Metals": "26",
+      "Complex Non-Metallics": "27",
+      "Heavy Alkaline Earth Metals": "27"
+    }
+  },
+  {
+    "gameId": "lZRxc",
+    "extraId": "GDKPE",
+    "name": "T5 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "200",
+      "Cargo Volume Size": "95",
+      "Missile Damage Rating": "286.6",
+      "Accuracy": "62.3%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Halogens": "194",
+      "Acidic Inorganics": "33",
+      "Metaloids": "31",
+      "Alkali Organics": "25",
+      "Lanthanides": "32"
+    }
+  },
+  {
+    "gameId": "RUqdQ",
+    "extraId": "Doj3p",
+    "name": "T5 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "200",
+      "Cargo Volume Size": "95",
+      "Missile Damage Rating": "286.6",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.38MN"
+    },
+    "resources": {
+      "Alkali Metals": "152",
+      "Non-Metallics": "32",
+      "Metaloids": "28",
+      "Strong Alkali Inorganics": "24",
+      "Heavy Alkali Metals": "34"
+    }
+  },
+  {
+    "gameId": "RO9c1",
+    "extraId": "xlgoY",
+    "name": "T5 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "206.543",
+      "Cargo Volume Size": "95",
+      "Missile Damage Rating": "286.4",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "196",
+      "Metallics": "30",
+      "Heavy Post-Trans Metals": "33",
+      "Complex Non-Metallics": "24",
+      "Heavy Alkaline Earth Metals": "26"
+    }
+  },
+  {
+    "gameId": "APXXQ",
+    "extraId": "Fjemp",
+    "name": "T5 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "206.543",
+      "Cargo Volume Size": "95",
+      "Missile Damage Rating": "290.8",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.45MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "161",
+      "Acidic Inorganics": "32",
+      "Heavy Post-Trans Metals": "31",
+      "Alkali Organics": "32",
+      "Lanthanides": "27"
+    }
+  },
+  {
+    "gameId": "ToKBR",
+    "extraId": "vH3KY",
+    "name": "T5 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "212.135",
+      "Cargo Volume Size": "95",
+      "Missile Damage Rating": "290.7",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Halogens": "185",
+      "Acidic Inorganics": "34",
+      "Heavy Trans-Metals": "33",
+      "Complex Non-Metallics": "34",
+      "Heavy Alkali Metals": "32"
+    }
+  },
+  {
+    "gameId": "sPSew",
+    "extraId": "wzLVk",
+    "name": "T5 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "212.135",
+      "Cargo Volume Size": "98.043",
+      "Missile Damage Rating": "294.7",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Halogens": "168",
+      "Metallics": "32",
+      "Metaloids": "26",
+      "Complex Non-Metallics": "27",
+      "Heavy Alkaline Earth Metals": "35"
+    }
+  },
+  {
+    "gameId": "8qzJY",
+    "extraId": "o0i3y",
+    "name": "T5 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "212.135",
+      "Cargo Volume Size": "98.043",
+      "Missile Damage Rating": "298.5",
+      "Accuracy": "62.9%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "188",
+      "Alkali Inorganics": "25",
+      "Metaloids": "33",
+      "Complex Non-Metallics": "27",
+      "Heavy Alkaline Earth Metals": "34"
+    }
+  },
+  {
+    "gameId": "DXw87",
+    "extraId": "Aioap",
+    "name": "T5 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "212.135",
+      "Cargo Volume Size": "98.043",
+      "Missile Damage Rating": "298.5",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.45MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "172",
+      "Alkali Inorganics": "30",
+      "Metaloids": "26",
+      "Strong Alkali Inorganics": "29",
+      "Lanthanides": "35"
+    }
+  },
+  {
+    "gameId": "t7u1k",
+    "extraId": "pHjDZ",
+    "name": "T5 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "212.135",
+      "Cargo Volume Size": "98.043",
+      "Missile Damage Rating": "298.5",
+      "Accuracy": "62.9%",
+      "Acceleration Rate": "1.5MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "147",
+      "Non-Metallics": "22",
+      "Metaloids": "34",
+      "Alkali Organics": "38",
+      "Heavy Alkali Metals": "30"
+    }
+  },
+  {
+    "gameId": "xuO25",
+    "extraId": "tZBvp",
+    "name": "T5 Hammerblow Heavy Missile",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "15/run",
+      "Mass": "212.135",
+      "Cargo Volume Size": "100.774",
+      "Missile Damage Rating": "302",
+      "Accuracy": "65%",
+      "Acceleration Rate": "1.45MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "167",
+      "Metallics": "27",
+      "Heavy Post-Trans Metals": "32",
+      "Complex Non-Metallics": "39",
+      "Heavy Alkaline Earth Metals": "38"
+    }
+  },
+  {
+    "gameId": "b7i0V",
+    "extraId": "oyD9V",
+    "name": "T5 Kaiten Torpedo",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Torpedo",
+    "iconClass": "ui_icon_G24",
+    "iconPosition": "-252px -898px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "10/run",
+      "Mass": "350",
+      "Cargo Volume Size": "90",
+      "Missile Damage Rating": "350",
+      "Accuracy": "85%",
+      "Acceleration Rate": "1MN"
+    },
+    "resources": {
+      "Alkali Metals": "227",
+      "Acidic Inorganics": "34",
+      "Heavy Post-Trans Metals": "35",
+      "Acidic Organics": "36",
+      "Heavy Alkaline Earth Metals": "35"
+    }
+  },
+  {
+    "gameId": "P880R",
+    "extraId": "QfFbT",
+    "name": "T5 Starstrike Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "20/run",
+      "Mass": "75",
+      "Cargo Volume Size": "60",
+      "Missile Damage Rating": "150",
+      "Accuracy": "80%",
+      "Acceleration Rate": "2MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "98",
+      "Non-Metallics": "16",
+      "Heavy Post-Trans Metals": "14",
+      "Complex Non-Metallics": "14",
+      "Lanthanides": "17"
+    }
+  },
+  {
+    "gameId": "HNc2b",
+    "extraId": "Wn4bK",
+    "name": "T5 Viperstrike EMP Missile",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Missile",
+    "iconClass": "ui_icon_G23",
+    "iconPosition": "-252px -860px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Amount Manufactured": "20/run",
+      "Mass": "50",
+      "Cargo Volume Size": "45",
+      "Energy Damage Rating": "120",
+      "Missile Damage Rating": "30",
+      "Accuracy": "85%",
+      "Acceleration Rate": "3MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "93",
+      "Metallics": "15",
+      "Heavy Post-Trans Metals": "15",
+      "Acidic Organics": "16",
+      "Lanthanides": "16"
+    }
+  }
+]

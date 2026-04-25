@@ -77,11 +77,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
-            int w = flpSearchList.ClientSize.Width;
-            int h = flpSearchList.ClientSize.Height;
-            int listHeight = h - flpPlanFilter.Height - flpCommands.Height - 18;
-            if (listHeight < 50) listHeight = 50;
-            lvwPlans.Size = new System.Drawing.Size(w - 6, listHeight);
+            LayoutHelper.SizeListToFillPanel(flpSearchList, flpPlanFilter, flpCommands, lvwPlans);
         }
 
         private void FlpDetail_Layout(object sender, LayoutEventArgs e)

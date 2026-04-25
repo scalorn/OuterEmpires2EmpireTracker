@@ -96,6 +96,7 @@ graph TD
 
 - `DataGridViewFilteredComboBoxColumn` — custom DataGridView column that hosts a FilteredComboBox for in-grid filtered combo selection.
 - `FilteredTextComboSet` — composite control combining a text filter TextBox with a FilteredComboBox, used for type-ahead filtering in forms.
+- `LayoutHelper` — static layout helpers for common form panel sizing patterns. `SizeListToFillPanel` sizes a ListView to fill remaining height after filter/command panels.
 
 ## Layered Architecture
 

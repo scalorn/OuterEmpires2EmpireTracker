@@ -1,0 +1,141 @@
+[
+  {
+    "gameId": "BcXWW",
+    "extraId": "XJMOc",
+    "name": "Class 4 Hull Sealant Injection Unit",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Hull Sealant Injection unit, used to patch the ship up",
+    "iconClass": "ui_icon_F13",
+    "iconPosition": "-214px -480px",
+    "properties": {
+      "Manufacture Run Time": "3 hours",
+      "Class": "4",
+      "Mass": "160",
+      "Cargo Volume Size": "80",
+      "Power Required": "8MW",
+      "Eng. Capacity Required": "320",
+      "Consumable": "On use",
+      "Maximum Damage Repair %": "80%",
+      "Hull HP Percent Restored": "20%",
+      "Cooldown Time": "40s",
+      "Deploy Time": "40s"
+    },
+    "resources": {
+      "Alkali Metals": "179",
+      "Alkali Inorganics": "22",
+      "Heavy Trans-Metals": "47"
+    }
+  },
+  {
+    "gameId": "prs2x",
+    "extraId": "kqSTg",
+    "name": "GERTY Repair Drone Type-C",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "GERTY Repair Drone",
+    "iconClass": "ui_icon_J13",
+    "iconPosition": "-366px -480px",
+    "properties": {
+      "Manufacture Run Time": "1 hours",
+      "Class": "4",
+      "Mass": "100",
+      "Cargo Volume Size": "25",
+      "Power Required": "5MW",
+      "Eng. Capacity Required": "100",
+      "Consumable": "On use",
+      "Maximum Damage Repair %": "80%",
+      "HP% restored for a part": "10%",
+      "Deploy Time": "15s"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "51",
+      "Metallics": "8",
+      "Metaloids": "16"
+    }
+  },
+  {
+    "gameId": "A5bFg",
+    "extraId": "7LQd9",
+    "name": "Medium Ore Hopper",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Stores unrefined raw resources from mining operations",
+    "iconClass": "ui_icon_C12",
+    "iconPosition": "-100px -442px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "4",
+      "Mass": "100",
+      "Cargo Volume Size": "60",
+      "Health (Hitpoints)": "240",
+      "Eng. Capacity Required": "300",
+      "Raw Material Capacity": "600",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Heavy Noble Gases": "457",
+      "Acidic Inorganics": "76",
+      "Heavy Trans-Metals": "152"
+    }
+  },
+  {
+    "gameId": "kMvIb",
+    "extraId": "8QfYl",
+    "name": "Phalanx Light Compound Plating",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Armour plating for ship",
+    "iconClass": "ui_icon_N2",
+    "iconPosition": "-518px -62px",
+    "properties": {
+      "Manufacture Run Time": "9 hours",
+      "Class": "4",
+      "Mass": "320",
+      "Cargo Volume Size": "320",
+      "Health (Hitpoints)": "1280",
+      "Eng. Capacity Required": "80",
+      "Wear and Tear Rate": "0.8%",
+      "Maximum Damage Repair %": "5%",
+      "Energy Defence Rating": "13",
+      "Kinetic Defence Rating": "11",
+      "Missile Defence Rating": "14"
+    },
+    "resources": {
+      "Noble Gases": "2685",
+      "Non-Metallics": "379",
+      "Heavy Post-Trans Metals": "730"
+    }
+  },
+  {
+    "gameId": "AccXa",
+    "extraId": "l77zL",
+    "name": "RAK-MM Material Scanner",
+    "techLevel": "MilSpec",
+    "evolution": 0,
+    "description": "Scanners used for scanning planets for resource deposits",
+    "iconClass": "ui_icon_C7",
+    "iconPosition": "-100px -252px",
+    "properties": {
+      "Manufacture Run Time": "3 hours",
+      "Class": "4",
+      "Mass": "70",
+      "Cargo Volume Size": "90",
+      "Power Required": "54MW",
+      "Health (Hitpoints)": "280",
+      "Eng. Capacity Required": "260",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Sensor Abundance Factor": "2.25",
+      "Purity Modifier": "7.5",
+      "Scan Level": "45"
+    },
+    "resources": {
+      "Post-Trans Metals": "691",
+      "Non-Metallics": "106",
+      "Heavy Post-Trans Metals": "214",
+      "Strong Alkali Organics": "102"
+    }
+  }
+]

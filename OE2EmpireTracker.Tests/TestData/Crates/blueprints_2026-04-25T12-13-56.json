@@ -1,0 +1,602 @@
+[
+  {
+    "gameId": "gsXCn",
+    "extraId": "5CweH",
+    "name": "Administration Block Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Administration commodities.",
+    "iconClass": "ui_icon_F18",
+    "iconPosition": "-214px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Alkali Metals": "2738",
+      "Metallics": "424",
+      "Heavy Post-Trans Metals": "764"
+    }
+  },
+  {
+    "gameId": "eslmY",
+    "extraId": "QPYzp",
+    "name": "Agridome Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Agriculture commodities.",
+    "iconClass": "ui_icon_A18",
+    "iconPosition": "-24px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Post-Trans Metals": "3464",
+      "Acidic Inorganics": "472",
+      "Heavy Post-Trans Metals": "1211"
+    }
+  },
+  {
+    "gameId": "pn9Er",
+    "extraId": "5FuUJ",
+    "name": "Centre of Economics Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Economics commodities.",
+    "iconClass": "ui_icon_D18",
+    "iconPosition": "-138px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Halogens": "3016",
+      "Metallics": "535",
+      "Metaloids": "1040"
+    }
+  },
+  {
+    "gameId": "oxVYn",
+    "extraId": "JzYR8",
+    "name": "Colony Command Centre Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "The heart of the colony and the absolute minimum structure needed to secure the claim on a colony site.",
+    "iconClass": "ui_icon_A16",
+    "iconPosition": "-24px -594px",
+    "properties": {
+      "Manufacture Run Time": "2 hours",
+      "Structural Integrity": "2500",
+      "Hull Manufacture Time Modification": "0%",
+      "Can Research": "No",
+      "Unassigned Specialist Detail(s)": "1",
+      "Max Per Colony": "1",
+      "White Collar Detail(s)": "1",
+      "Manufacturing Time Reduction": "0%",
+      "Warehousing Capacity": "10000",
+      "Mining Yield Modification": "0%",
+      "Habitation Provision": "2",
+      "Refining Time Modification": "0%",
+      "Research Time Modification": "0%",
+      "Food Provision": "2"
+    },
+    "resources": {
+      "Noble Gases": "2993",
+      "Non-Metallics": "529",
+      "Heavy Trans-Metals": "1105",
+      "Strong Acidic Inorganics": "487"
+    }
+  },
+  {
+    "gameId": "3qTrU",
+    "extraId": "IiZ8w",
+    "name": "Engineering Block Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Engineering commodities.",
+    "iconClass": "ui_icon_I18",
+    "iconPosition": "-328px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Halogens": "2867",
+      "Alkali Inorganics": "581",
+      "Heavy Post-Trans Metals": "901"
+    }
+  },
+  {
+    "gameId": "kGprV",
+    "extraId": "EH9WX",
+    "name": "Entertainment Centre Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Where colonist go to relax and blow off some steam.",
+    "iconClass": "ui_icon_M16",
+    "iconPosition": "-480px -594px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Entertainment Provided": "10",
+      "Structural Integrity": "75",
+      "Power Required": "2MW",
+      "Can Research": "No",
+      "Unassigned Specialist Detail(s)": "1",
+      "Blue Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Trans-Metals": "2198",
+      "Alkali Inorganics": "420",
+      "Heavy Post-Trans Metals": "421",
+      "Acidic Organics": "446",
+      "Heavy Alkaline Earth Metals": "431"
+    }
+  },
+  {
+    "gameId": "H9rjU",
+    "extraId": "KtsZW",
+    "name": "Habitation Block Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Life support and habitation functions enough for 4 Details.",
+    "iconClass": "ui_icon_C16",
+    "iconPosition": "-100px -594px",
+    "properties": {
+      "Manufacture Run Time": "3 hours",
+      "Structural Integrity": "100",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Unassigned Specialist Detail(s)": "1",
+      "Max Per Colony": "999",
+      "Habitation Provision": "4"
+    },
+    "resources": {
+      "Post-Trans Metals": "2148",
+      "Non-Metallics": "370",
+      "Heavy Post-Trans Metals": "822"
+    }
+  },
+  {
+    "gameId": "voiAO",
+    "extraId": "auh6F",
+    "name": "Healthcare Institute Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Medical commodities.",
+    "iconClass": "ui_icon_N18",
+    "iconPosition": "-518px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Heavy Noble Gases": "5214",
+      "Metallics": "692",
+      "Metaloids": "1049"
+    }
+  },
+  {
+    "gameId": "OZjkQ",
+    "extraId": "VOJJo",
+    "name": "Hydroponics Bay Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Provide food enough for 4 Details.",
+    "iconClass": "ui_icon_D16",
+    "iconPosition": "-138px -594px",
+    "properties": {
+      "Manufacture Run Time": "3 hours",
+      "Structural Integrity": "100",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Unassigned Specialist Detail(s)": "1",
+      "Max Per Colony": "999",
+      "Blue Collar Detail(s)": "1",
+      "Food Provision": "4"
+    },
+    "resources": {
+      "Alkali Metals": "2364",
+      "Acidic Inorganics": "465",
+      "Metaloids": "494",
+      "Strong Alkali Inorganics": "385",
+      "Lanthanides": "534"
+    }
+  },
+  {
+    "gameId": "2Dsgk",
+    "extraId": "ZFFDW",
+    "name": "Institute of Defence Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Defence commodities.",
+    "iconClass": "ui_icon_M18",
+    "iconPosition": "-480px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Halogens": "2699",
+      "Metallics": "393",
+      "Heavy Post-Trans Metals": "927"
+    }
+  },
+  {
+    "gameId": "oZk8W",
+    "extraId": "VbsiA",
+    "name": "Leisure Industry Centre Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Leisure commodities.",
+    "iconClass": "ui_icon_H18",
+    "iconPosition": "-290px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Alkali Metals": "4811",
+      "Non-Metallics": "567",
+      "Heavy Trans-Metals": "1206"
+    }
+  },
+  {
+    "gameId": "xWPtc",
+    "extraId": "XJ7PC",
+    "name": "Logistics Centre Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Logistics commodities.",
+    "iconClass": "ui_icon_B18",
+    "iconPosition": "-62px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Heavy Noble Gases": "3546",
+      "Non-Metallics": "466",
+      "Metaloids": "1030"
+    }
+  },
+  {
+    "gameId": "N0LNy",
+    "extraId": "354hD",
+    "name": "Manufactory Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Manufacturing plant.",
+    "iconClass": "ui_icon_K16",
+    "iconPosition": "-404px -594px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Structural Integrity": "250",
+      "Power Required": "5MW",
+      "Can Research": "No",
+      "Unassigned Specialist Detail(s)": "1",
+      "Max Per Colony": "999",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Heavy Noble Gases": "1995",
+      "Acidic Inorganics": "474",
+      "Heavy Trans-Metals": "455",
+      "Strong Alkali Inorganics": "363",
+      "Heavy Alkaline Earth Metals": "483"
+    }
+  },
+  {
+    "gameId": "LNXcF",
+    "extraId": "kEMQl",
+    "name": "Manufacturing Industry Centre Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Manufacturing commodities.",
+    "iconClass": "ui_icon_K18",
+    "iconPosition": "-404px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Halogens": "2964",
+      "Alkali Inorganics": "457",
+      "Heavy Post-Trans Metals": "972"
+    }
+  },
+  {
+    "gameId": "thAyL",
+    "extraId": "hHmTB",
+    "name": "Mining Industry Centre Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Mining commodities.",
+    "iconClass": "ui_icon_J18",
+    "iconPosition": "-366px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Post-Trans Metals": "3291",
+      "Acidic Inorganics": "382",
+      "Metaloids": "1065"
+    }
+  },
+  {
+    "gameId": "rptjU",
+    "extraId": "RGo5P",
+    "name": "Mining Rig Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Can mine one surveyed resource vein.",
+    "iconClass": "ui_icon_H16",
+    "iconPosition": "-290px -594px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Structural Integrity": "150",
+      "Power Required": "2MW",
+      "Can Research": "No",
+      "Extraction Efficiency": "100%",
+      "Unassigned Specialist Detail(s)": "1",
+      "Max Per Colony": "999",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Halogens": "3952",
+      "Acidic Inorganics": "635",
+      "Heavy Post-Trans Metals": "712",
+      "Alkali Organics": "518",
+      "Lanthanides": "552"
+    }
+  },
+  {
+    "gameId": "ewDuO",
+    "extraId": "f7Zvx",
+    "name": "Off-World Living Institute Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Habitation commodities.",
+    "iconClass": "ui_icon_G18",
+    "iconPosition": "-252px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Noble Gases": "2269",
+      "Non-Metallics": "394",
+      "Heavy Post-Trans Metals": "872"
+    }
+  },
+  {
+    "gameId": "YfcNJ",
+    "extraId": "wVNVE",
+    "name": "Reactor Core Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Provides 6Mw of power per core.",
+    "iconClass": "ui_icon_B16",
+    "iconPosition": "-62px -594px",
+    "properties": {
+      "Manufacture Run Time": "2 hours",
+      "Structural Integrity": "250",
+      "Power Required": "6MW",
+      "Can Research": "No",
+      "Unassigned Specialist Detail(s)": "1",
+      "Max Per Colony": "999"
+    },
+    "resources": {
+      "Trans-Metals": "3257",
+      "Alkali Inorganics": "434",
+      "Heavy Trans-Metals": "614",
+      "Strong Alkali Inorganics": "604",
+      "Lanthanides": "603"
+    }
+  },
+  {
+    "gameId": "XY23w",
+    "extraId": "dyEvs",
+    "name": "Refinery Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Process raw materials into refined materials.",
+    "iconClass": "ui_icon_I16",
+    "iconPosition": "-328px -594px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Structural Integrity": "150",
+      "Power Required": "5MW",
+      "Can Research": "No",
+      "Unassigned Specialist Detail(s)": "1",
+      "Max Per Colony": "999",
+      "Refining Rate": "25",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Noble Gases": "2881",
+      "Alkali Inorganics": "430",
+      "Heavy Post-Trans Metals": "482",
+      "Complex Non-Metallics": "518",
+      "Heavy Alkaline Earth Metals": "442"
+    }
+  },
+  {
+    "gameId": "JRejr",
+    "extraId": "KmP7v",
+    "name": "Refining Industry Centre Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Refining commodities.",
+    "iconClass": "ui_icon_L18",
+    "iconPosition": "-442px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "2797",
+      "Alkali Inorganics": "363",
+      "Heavy Post-Trans Metals": "829"
+    }
+  },
+  {
+    "gameId": "WDVZl",
+    "extraId": "2SUsl",
+    "name": "Remote Operations Array Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Colony owner can control all colony operations remotely within a set range.",
+    "iconClass": "ui_icon_G16",
+    "iconPosition": "-252px -594px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Structural Integrity": "50",
+      "Power Required": "2MW",
+      "Remote Operations": "1",
+      "Can Research": "No",
+      "Max Per Colony": "1",
+      "Specialist Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Noble Gases": "2598",
+      "Metallics": "431",
+      "Heavy Trans-Metals": "830"
+    }
+  },
+  {
+    "gameId": "oQRrR",
+    "extraId": "aCNmj",
+    "name": "Research Laboratory Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Research & Development facility.",
+    "iconClass": "ui_icon_M16",
+    "iconPosition": "-480px -594px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Structural Integrity": "150",
+      "Power Required": "4MW",
+      "Can Research": "No",
+      "Max Per Colony": "999",
+      "Research Time Modification": "100%",
+      "Specialist Detail(s)": "1"
+    },
+    "resources": {
+      "Heavy Noble Gases": "3021",
+      "Alkali Inorganics": "473",
+      "Heavy Trans-Metals": "904",
+      "Strong Acidic Inorganics": "388"
+    }
+  },
+  {
+    "gameId": "T9Djt",
+    "extraId": "xwjRy",
+    "name": "Science Centre Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Research commodities.",
+    "iconClass": "ui_icon_E18",
+    "iconPosition": "-176px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Alkali Metals": "2496",
+      "Acidic Inorganics": "468",
+      "Metaloids": "937"
+    }
+  },
+  {
+    "gameId": "eyO7M",
+    "extraId": "coiJn",
+    "name": "Technology Institute Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Producer of Hi-Tech commodities.",
+    "iconClass": "ui_icon_C18",
+    "iconPosition": "-100px -670px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Power Required": "1MW",
+      "Can Research": "No",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Post-Trans Metals": "3098",
+      "Acidic Inorganics": "454",
+      "Heavy Post-Trans Metals": "928"
+    }
+  },
+  {
+    "gameId": "CTmxy",
+    "extraId": "Outxk",
+    "name": "Warehouse Flatpack",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Colony mass storage facility.",
+    "iconClass": "ui_icon_L16",
+    "iconPosition": "-442px -594px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Structural Integrity": "100",
+      "Power Required": "2MW",
+      "Can Research": "No",
+      "Max Per Colony": "999",
+      "Warehousing Capacity": "250000",
+      "Blue Collar Detail(s)": "1",
+      "Unassigned White Collar Detail(s)": "1"
+    },
+    "resources": {
+      "Halogens": "3401",
+      "Alkali Inorganics": "451",
+      "Metaloids": "1178"
+    }
+  }
+]

@@ -81,7 +81,8 @@ namespace OE2EmpireTracker.Services
                     : playerContext.BlueprintList;
 
                 // Dedup by Name + Evolution + BluePrintType + Class + TechLevel
-                var existing = FindByDedupKey(targetList, bp);
+                // Returns null when multiple candidates exist (ambiguous — create new)
+                var existing = FindUnambiguousMatch(targetList, bp);
 
                 if (existing != null)
                 {
@@ -171,6 +172,135 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Finds an unambiguous dedup match. Returns the existing blueprint only when
+        /// exactly one candidate matches the dedup key. When multiple candidates exist
+        /// (same Name+Evo+Type+Class+TechLevel but different evolution paths), returns
+        /// null so the caller creates a new blueprint rather than guessing which to update.
+        /// </summary>
+        internal static Models.Blueprint FindUnambiguousMatch(
+            IEnumerable<Models.Blueprint> list,
+            Models.Blueprint bp)
+        {
+            if (list == null) return null;
+
+            Models.Blueprint first = null;
+            bool multiple = false;
+
+            foreach (var existing in list)
+            {
+                if (string.Equals(existing.Name, bp.Name, StringComparison.Ordinal)
+                    && existing.Evolution == bp.Evolution
+                    && string.Equals(existing.BluePrintType, bp.BluePrintType, StringComparison.Ordinal)
+                    && existing.Class == bp.Class
+                    && string.Equals(existing.TechLevel, bp.TechLevel, StringComparison.Ordinal))
+                {
+                    if (first == null)
+                    {
+                        first = existing;
+                    }
+                    else
+                    {
+                        multiple = true;
+                        break;
+                    }
+                }
+            }
+
+            if (multiple)
+            {
+                Log.Info("    FindUnambiguousMatch: multiple candidates for '{0}' Evo{1} — treating as new",
+                    bp.Name, bp.Evolution);
+                return null;
+            }
+
+            return first;
+        }
+
+        /// <summary>
+        /// Finds the best-matching existing blueprint for batch re-import dedup.
+        /// Used by CrateImporter where we need to pair each incoming entry with its
+        /// specific existing counterpart among multiple candidates sharing the same
+        /// dedup key. Scores candidates by property similarity.
+        /// For individual/market imports, use FindUnambiguousMatch instead.
+        /// Returns null if no candidate matches the dedup key.
+        /// </summary>
+        internal static Models.Blueprint FindBestMatch(
+            IEnumerable<Models.Blueprint> list,
+            Models.Blueprint incoming)
+        {
+            if (list == null) return null;
+
+            var candidates = list.Where(existing =>
+                string.Equals(existing.Name, incoming.Name, StringComparison.Ordinal)
+                && existing.Evolution == incoming.Evolution
+                && string.Equals(existing.BluePrintType, incoming.BluePrintType, StringComparison.Ordinal)
+                && existing.Class == incoming.Class
+                && string.Equals(existing.TechLevel, incoming.TechLevel, StringComparison.Ordinal))
+                .ToList();
+
+            if (candidates.Count == 0)
+                return null;
+
+            if (candidates.Count == 1)
+                return candidates[0];
+
+            // Multiple candidates — score each by property similarity
+            Log.Info("    FindBestMatch: {0} candidates for '{1}' Evo{2}, scoring by properties",
+                candidates.Count, incoming.Name, incoming.Evolution);
+
+            Models.Blueprint bestMatch = null;
+            int bestScore = -1;
+
+            foreach (var candidate in candidates)
+            {
+                int score = ScorePropertyMatch(candidate, incoming);
+                Log.Info("      UUID={0} score={1}", candidate.UUID, score);
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestMatch = candidate;
+                }
+            }
+
+            if (bestScore > 0)
+            {
+                Log.Info("    FindBestMatch: best UUID={0} score={1}", bestMatch.UUID, bestScore);
+                return bestMatch;
+            }
+
+            Log.Info("    FindBestMatch: no candidate scored > 0, treating as new");
+            return null;
+        }
+
+        /// <summary>
+        /// Scores how well an existing blueprint's properties match the incoming one.
+        /// Compares normalized property values. Higher score = better match.
+        /// </summary>
+        internal static int ScorePropertyMatch(Models.Blueprint existing, Models.Blueprint incoming)
+        {
+            if (existing.Properties == null || incoming.Properties == null)
+                return 0;
+
+            int matches = 0;
+
+            foreach (var kvp in incoming.Properties.Properties)
+            {
+                if (kvp.Key.StartsWith("_")) continue;
+
+                string existingValue;
+                if (existing.Properties.GetString(kvp.Key, null, out existingValue) && existingValue != null)
+                {
+                    if (string.Equals(existingValue, kvp.Value, StringComparison.Ordinal))
+                    {
+                        matches++;
+                    }
+                }
+            }
+
+            return matches;
+        }
+
+        /// <summary>
         /// Determines whether a blueprint should be stored in the global or player list.
         /// Returns true for global, false for player.
         /// </summary>
@@ -246,32 +376,75 @@ namespace OE2EmpireTracker.Services
             // Preserve protected scalar fields: UUID, OwnerUUID, NickName, CopyCost, TechLevel, Description
             // (we simply don't overwrite them)
 
-            // Merge properties -- add/overwrite incoming keys but preserve existing keys
-            // not present in incoming. This prevents a partial parse (e.g. resources page
-            // that only extracts 1 property) from wiping out a full property set.
+            // Replace properties -- the incoming blueprint has the definitive property list.
+            // After game rebalancing, old property keys that no longer exist must be removed.
+            // Preserve internal properties (starting with _) that aren't in the incoming data.
+            // For protected properties: if incoming has the key, keep the existing value
+            // (prevents partial-parse overwrite); if incoming doesn't have the key, remove it
+            // (the game dropped the property).
+            // Properties are added in sorted order to maintain deterministic serialization.
+            // When incoming has no properties (e.g. resources-only import), preserve existing.
             if (incoming.Properties != null && incoming.Properties.Count > 0)
             {
                 Log.Info(
-                    "UpdateExisting: merging properties ({0} incoming into {1} existing) for {2} (hashcode={3})",
+                    "UpdateExisting: replacing properties ({0} incoming, was {1} existing) for {2} (hashcode={3})",
                     incoming.Properties.Count,
                     existing.Properties?.Count ?? 0,
                     existing.Name,
                     existing.GetHashCode());
 
-                if (existing.Properties == null)
-                    existing.Properties = new PropertyBag();
-
-                foreach (var kvp in incoming.Properties.Properties)
+                // Collect internal properties from existing that should be preserved
+                var internalProps = new Dictionary<string, string>();
+                if (existing.Properties != null)
                 {
-                    if (!ProtectedProperties.Contains(kvp.Key))
+                    foreach (var kvp in existing.Properties.Properties)
                     {
-                        existing.Properties.SetProperty(kvp.Key, kvp.Value);
+                        if (kvp.Key.StartsWith("_") && !incoming.Properties.ContainsKey(kvp.Key))
+                        {
+                            internalProps[kvp.Key] = kvp.Value;
+                        }
                     }
-                    else if (!existing.Properties.ContainsKey(kvp.Key))
+                }
+
+                // Collect protected property values from existing (only if incoming also has the key)
+                var protectedValues = new Dictionary<string, string>();
+                if (existing.Properties != null)
+                {
+                    foreach (var protectedKey in ProtectedProperties)
                     {
-                        // Protected property, but existing doesn't have it yet — write it
-                        existing.Properties.SetProperty(kvp.Key, kvp.Value);
+                        if (incoming.Properties.ContainsKey(protectedKey))
+                        {
+                            string existingValue;
+                            if (existing.Properties.GetString(protectedKey, null, out existingValue)
+                                && !string.IsNullOrEmpty(existingValue))
+                            {
+                                protectedValues[protectedKey] = existingValue;
+                            }
+                        }
                     }
+                }
+
+                // Build new property bag from incoming in sorted order
+                var sortedKeys = incoming.Properties.Properties.Keys
+                    .OrderBy(k => k, StringComparer.Ordinal).ToList();
+                existing.Properties = new PropertyBag();
+
+                foreach (var key in sortedKeys)
+                {
+                    if (protectedValues.ContainsKey(key))
+                    {
+                        existing.Properties.SetProperty(key, protectedValues[key]);
+                    }
+                    else
+                    {
+                        existing.Properties.SetProperty(key, incoming.Properties.Properties[key]);
+                    }
+                }
+
+                // Restore internal properties in sorted order
+                foreach (var kvp in internalProps.OrderBy(kv => kv.Key, StringComparer.Ordinal))
+                {
+                    existing.Properties.SetProperty(kvp.Key, kvp.Value);
                 }
             }
             else
@@ -282,23 +455,18 @@ namespace OE2EmpireTracker.Services
                     existing.Name);
             }
 
-            // Merge resources -- add/overwrite incoming keys but preserve existing keys
-            // not present in incoming. Same rationale as properties.
+            // Replace resources -- the incoming blueprint has the definitive resource list.
+            // After game rebalancing, old resource keys that no longer exist must be removed.
+            // When incoming has no resources (e.g. statistics-only import), preserve existing.
             if (incoming.Resources != null && incoming.Resources.Count > 0)
             {
                 Log.Info(
-                    "UpdateExisting: merging resources ({0} incoming into {1} existing) for {2}",
+                    "UpdateExisting: replacing resources ({0} incoming, was {1} existing) for {2}",
                     incoming.Resources.Count,
                     existing.Resources?.Count ?? 0,
                     existing.Name);
 
-                if (existing.Resources == null)
-                    existing.Resources = new Dictionary<string, string>();
-
-                foreach (var kvp in incoming.Resources)
-                {
-                    existing.Resources[kvp.Key] = kvp.Value;
-                }
+                existing.Resources = new Dictionary<string, string>(incoming.Resources);
             }
             else
             {

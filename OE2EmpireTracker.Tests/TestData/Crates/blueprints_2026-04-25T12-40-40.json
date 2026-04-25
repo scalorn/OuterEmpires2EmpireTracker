@@ -1,0 +1,2018 @@
+[
+  {
+    "gameId": "0Sf3E",
+    "extraId": "jryZY",
+    "name": "AMX-M Reactor Core",
+    "techLevel": "MilSpec",
+    "evolution": 0,
+    "description": "Reactor that generates power for the ship",
+    "iconClass": "ui_icon_B2",
+    "iconPosition": "-62px -62px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Class": "5",
+      "Mass": "510",
+      "Cargo Volume Size": "210",
+      "Power Generated": "1013MW",
+      "Health (Hitpoints)": "2550",
+      "Eng. Capacity Required": "630",
+      "Power regeneration rate": "17.5MW/s",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Heavy Noble Gases": "5435",
+      "Acidic Inorganics": "978",
+      "Heavy Post-Trans Metals": "991",
+      "Acidic Organics": "1064",
+      "Heavy Alkali Metals": "1048"
+    }
+  },
+  {
+    "gameId": "fZoql",
+    "extraId": "KldzJ",
+    "name": "Class 5 Hull Sealant Injection Unit",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Hull Sealant Injection unit, used to patch the ship up",
+    "iconClass": "ui_icon_F13",
+    "iconPosition": "-214px -480px",
+    "properties": {
+      "Manufacture Run Time": "6 hours",
+      "Class": "5",
+      "Mass": "320",
+      "Cargo Volume Size": "160",
+      "Power Required": "14MW",
+      "Eng. Capacity Required": "630",
+      "Consumable": "On use",
+      "Maximum Damage Repair %": "80%",
+      "Hull HP Percent Restored": "20%",
+      "Cooldown Time": "50s",
+      "Deploy Time": "50s"
+    },
+    "resources": {
+      "Heavy Noble Gases": "348",
+      "Metallics": "47",
+      "Heavy Post-Trans Metals": "102"
+    }
+  },
+  {
+    "gameId": "esRR7",
+    "extraId": "Gbiw3",
+    "name": "GERTY Repair Drone Type-D",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "GERTY Repair Drone",
+    "iconClass": "ui_icon_J13",
+    "iconPosition": "-366px -480px",
+    "properties": {
+      "Manufacture Run Time": "2 hours",
+      "Class": "5",
+      "Mass": "100",
+      "Cargo Volume Size": "25",
+      "Power Required": "5MW",
+      "Eng. Capacity Required": "200",
+      "Consumable": "On use",
+      "Maximum Damage Repair %": "80%",
+      "HP% restored for a part": "10%",
+      "Deploy Time": "20s"
+    },
+    "resources": {
+      "Halogens": "57",
+      "Acidic Inorganics": "7",
+      "Heavy Post-Trans Metals": "15"
+    }
+  },
+  {
+    "gameId": "NABVE",
+    "extraId": "0e2xG",
+    "name": "IGME-M Thrusters",
+    "techLevel": "MilSpec",
+    "evolution": 0,
+    "description": "Thrusters for in system ship propulsion",
+    "iconClass": "ui_icon_H2",
+    "iconPosition": "-290px -62px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "101MW",
+      "Health (Hitpoints)": "650",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Rotational Thrust": "3.15MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "1640",
+      "Non-Metallics": "241",
+      "Heavy Trans-Metals": "528"
+    }
+  },
+  {
+    "gameId": "Hfw8b",
+    "extraId": "qZ8oO",
+    "name": "IGME-M Thrusters",
+    "techLevel": "MilSpec",
+    "evolution": 1,
+    "description": "Thrusters for in system ship propulsion",
+    "iconClass": "ui_icon_H2",
+    "iconPosition": "-290px -62px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "107MW",
+      "Health (Hitpoints)": "650",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Rotational Thrust": "3.28MN"
+    },
+    "resources": {
+      "Halogens": "2051",
+      "Acidic Inorganics": "256",
+      "Heavy Trans-Metals": "546"
+    }
+  },
+  {
+    "gameId": "aCwRK",
+    "extraId": "yym3G",
+    "name": "IGME-M Thrusters",
+    "techLevel": "MilSpec",
+    "evolution": 2,
+    "description": "Thrusters for in system ship propulsion",
+    "iconClass": "ui_icon_H2",
+    "iconPosition": "-290px -62px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "114MW",
+      "Health (Hitpoints)": "650",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Rotational Thrust": "3.41MN"
+    },
+    "resources": {
+      "Alkali Metals": "1440",
+      "Metallics": "232",
+      "Metaloids": "584"
+    }
+  },
+  {
+    "gameId": "JCAzX",
+    "extraId": "puc3o",
+    "name": "IGME-M Thrusters",
+    "techLevel": "MilSpec",
+    "evolution": 3,
+    "description": "Thrusters for in system ship propulsion",
+    "iconClass": "ui_icon_H2",
+    "iconPosition": "-290px -62px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "114MW",
+      "Health (Hitpoints)": "620",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Rotational Thrust": "3.53MN"
+    },
+    "resources": {
+      "Trans-Metals": "1262",
+      "Acidic Inorganics": "230",
+      "Heavy Trans-Metals": "534",
+      "Strong Alkali Inorganics": "22",
+      "Heavy Alkaline Earth Metals": "21"
+    }
+  },
+  {
+    "gameId": "ULuYP",
+    "extraId": "jmQTA",
+    "name": "IGME-M Thrusters",
+    "techLevel": "MilSpec",
+    "evolution": 4,
+    "description": "Thrusters for in system ship propulsion",
+    "iconClass": "ui_icon_H2",
+    "iconPosition": "-290px -62px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "114MW",
+      "Health (Hitpoints)": "620",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3.151%",
+      "Maximum Damage Repair %": "80%",
+      "Rotational Thrust": "3.64MN"
+    },
+    "resources": {
+      "Trans-Metals": "1440",
+      "Metallics": "246",
+      "Metaloids": "415",
+      "Acidic Organics": "47",
+      "Heavy Alkaline Earth Metals": "42"
+    }
+  },
+  {
+    "gameId": "GMRgp",
+    "extraId": "7THVz",
+    "name": "IGME-M Thrusters",
+    "techLevel": "MilSpec",
+    "evolution": 5,
+    "description": "Thrusters for in system ship propulsion",
+    "iconClass": "ui_icon_H2",
+    "iconPosition": "-290px -62px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "114MW",
+      "Health (Hitpoints)": "620",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3.151%",
+      "Maximum Damage Repair %": "80.27%",
+      "Rotational Thrust": "3.74MN"
+    },
+    "resources": {
+      "Noble Gases": "1285",
+      "Acidic Inorganics": "243",
+      "Heavy Post-Trans Metals": "535",
+      "Strong Alkali Inorganics": "87",
+      "Lanthanides": "99"
+    }
+  },
+  {
+    "gameId": "hDvbg",
+    "extraId": "CT4Zz",
+    "name": "IGME-M Thrusters",
+    "techLevel": "MilSpec",
+    "evolution": 6,
+    "description": "Thrusters for in system ship propulsion",
+    "iconClass": "ui_icon_H2",
+    "iconPosition": "-290px -62px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "96",
+      "Power Required": "114MW",
+      "Health (Hitpoints)": "620",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3.151%",
+      "Maximum Damage Repair %": "80.27%",
+      "Rotational Thrust": "3.85MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "1438",
+      "Non-Metallics": "236",
+      "Heavy Post-Trans Metals": "421",
+      "Acidic Organics": "132",
+      "Strong Acidic Inorganics": "24",
+      "Lanthanides": "126",
+      "Superheavy Exotics": "23"
+    }
+  },
+  {
+    "gameId": "sgV7q",
+    "extraId": "wsVB8",
+    "name": "IGME-M Thrusters",
+    "techLevel": "MilSpec",
+    "evolution": 7,
+    "description": "Thrusters for in system ship propulsion",
+    "iconClass": "ui_icon_H2",
+    "iconPosition": "-290px -62px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "96",
+      "Power Required": "114MW",
+      "Health (Hitpoints)": "620",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3.151%",
+      "Maximum Damage Repair %": "77.98%",
+      "Rotational Thrust": "3.89MN"
+    },
+    "resources": {
+      "Heavy Noble Gases": "1385",
+      "Acidic Inorganics": "193",
+      "Heavy Post-Trans Metals": "589",
+      "Strong Alkali Inorganics": "130",
+      "Complex Metallics": "43",
+      "Lanthanides": "144",
+      "Lanthanide Volatiles": "39"
+    }
+  },
+  {
+    "gameId": "Aw0Ki",
+    "extraId": "8RovX",
+    "name": "IGME-M Thrusters",
+    "techLevel": "MilSpec",
+    "evolution": 8,
+    "description": "Thrusters for in system ship propulsion",
+    "iconClass": "ui_icon_H2",
+    "iconPosition": "-290px -62px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "96",
+      "Power Required": "114MW",
+      "Health (Hitpoints)": "620",
+      "Eng. Capacity Required": "392.04",
+      "Wear and Tear Rate": "3.151%",
+      "Maximum Damage Repair %": "78%",
+      "Rotational Thrust": "3.93MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "1232",
+      "Alkali Inorganics": "171",
+      "Metaloids": "485",
+      "Acidic Organics": "217",
+      "Strong Acidic Inorganics": "56",
+      "Heavy Alkaline Earth Metals": "199",
+      "Transuranic Volatiles": "42"
+    }
+  },
+  {
+    "gameId": "DF6It",
+    "extraId": "O1ItF",
+    "name": "Large Cargo Hold Expansion",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Cargo pods convert engineering space to cargo space",
+    "iconClass": "ui_icon_C12",
+    "iconPosition": "-100px -442px",
+    "properties": {
+      "Manufacture Run Time": "5 hours",
+      "Class": "5",
+      "Mass": "170",
+      "Cargo Volume Size": "100",
+      "Health (Hitpoints)": "850",
+      "Eng. Capacity Required": "500",
+      "Cargo Capacity": "1000",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Trans-Metals": "1812",
+      "Metallics": "258",
+      "Heavy Trans-Metals": "477"
+    }
+  },
+  {
+    "gameId": "GGDUG",
+    "extraId": "918qj",
+    "name": "Large Cargo Hold Expansion",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Cargo pods convert engineering space to cargo space",
+    "iconClass": "ui_icon_C12",
+    "iconPosition": "-100px -442px",
+    "properties": {
+      "Manufacture Run Time": "5 hours",
+      "Class": "5",
+      "Mass": "170",
+      "Cargo Volume Size": "100",
+      "Health (Hitpoints)": "850",
+      "Eng. Capacity Required": "513",
+      "Cargo Capacity": "1043",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Post-Trans Metals": "1744",
+      "Alkali Inorganics": "204",
+      "Heavy Trans-Metals": "497"
+    }
+  },
+  {
+    "gameId": "eoEay",
+    "extraId": "7Uoad",
+    "name": "Large Cargo Hold Expansion",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Cargo pods convert engineering space to cargo space",
+    "iconClass": "ui_icon_C12",
+    "iconPosition": "-100px -442px",
+    "properties": {
+      "Manufacture Run Time": "5 hours",
+      "Class": "5",
+      "Mass": "178",
+      "Cargo Volume Size": "100",
+      "Health (Hitpoints)": "850",
+      "Eng. Capacity Required": "513",
+      "Cargo Capacity": "1083",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Trans-Metals": "1932",
+      "Non-Metallics": "221",
+      "Metaloids": "538"
+    }
+  },
+  {
+    "gameId": "infmJ",
+    "extraId": "LrcOj",
+    "name": "Large Cargo Hold Expansion",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Cargo pods convert engineering space to cargo space",
+    "iconClass": "ui_icon_C12",
+    "iconPosition": "-100px -442px",
+    "properties": {
+      "Manufacture Run Time": "5 hours",
+      "Class": "5",
+      "Mass": "178",
+      "Cargo Volume Size": "100",
+      "Health (Hitpoints)": "850",
+      "Eng. Capacity Required": "541",
+      "Cargo Capacity": "1121",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Trans-Metals": "1705",
+      "Alkali Inorganics": "233",
+      "Metaloids": "479",
+      "Acidic Organics": "29",
+      "Heavy Alkaline Earth Metals": "25"
+    }
+  },
+  {
+    "gameId": "japOS",
+    "extraId": "nYt8h",
+    "name": "Large Cargo Hold Expansion",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Cargo pods convert engineering space to cargo space",
+    "iconClass": "ui_icon_C12",
+    "iconPosition": "-100px -442px",
+    "properties": {
+      "Manufacture Run Time": "5 hours",
+      "Class": "5",
+      "Mass": "187",
+      "Cargo Volume Size": "100",
+      "Health (Hitpoints)": "850",
+      "Eng. Capacity Required": "541",
+      "Cargo Capacity": "1157",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "1455",
+      "Metallics": "211",
+      "Heavy Post-Trans Metals": "476",
+      "Alkali Organics": "54",
+      "Heavy Alkali Metals": "49"
+    }
+  },
+  {
+    "gameId": "EMHGT",
+    "extraId": "adWxE",
+    "name": "Large Cargo Hold Expansion",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Cargo pods convert engineering space to cargo space",
+    "iconClass": "ui_icon_C12",
+    "iconPosition": "-100px -442px",
+    "properties": {
+      "Manufacture Run Time": "5 hours",
+      "Class": "5",
+      "Mass": "187",
+      "Cargo Volume Size": "105",
+      "Health (Hitpoints)": "850",
+      "Eng. Capacity Required": "541",
+      "Cargo Capacity": "1191",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Noble Gases": "1545",
+      "Metallics": "194",
+      "Heavy Trans-Metals": "530",
+      "Complex Non-Metallics": "117",
+      "Lanthanides": "86"
+    }
+  },
+  {
+    "gameId": "EuOM8",
+    "extraId": "n7Wjz",
+    "name": "Large Cargo Hold Expansion",
+    "techLevel": "",
+    "evolution": 7,
+    "description": "Cargo pods convert engineering space to cargo space",
+    "iconClass": "ui_icon_C12",
+    "iconPosition": "-100px -442px",
+    "properties": {
+      "Manufacture Run Time": "5 hours",
+      "Class": "5",
+      "Mass": "187",
+      "Cargo Volume Size": "105",
+      "Health (Hitpoints)": "815",
+      "Eng. Capacity Required": "541",
+      "Cargo Capacity": "1239",
+      "Wear and Tear Rate": "5.163%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Post-Trans Metals": "1213",
+      "Metallics": "167",
+      "Heavy Trans-Metals": "675",
+      "Alkali Organics": "168",
+      "Complex Metallics": "53",
+      "Lanthanides": "163",
+      "Superheavy Exotics": "47"
+    }
+  },
+  {
+    "gameId": "lLydi",
+    "extraId": "aFx6P",
+    "name": "Large Cargo Hold Expansion",
+    "techLevel": "",
+    "evolution": 7,
+    "description": "Cargo pods convert engineering space to cargo space",
+    "iconClass": "ui_icon_C12",
+    "iconPosition": "-100px -442px",
+    "properties": {
+      "Manufacture Run Time": "5 hours",
+      "Class": "5",
+      "Mass": "187",
+      "Cargo Volume Size": "105",
+      "Health (Hitpoints)": "815",
+      "Eng. Capacity Required": "541",
+      "Cargo Capacity": "1239",
+      "Wear and Tear Rate": "5.159%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Alkali Metals": "1058",
+      "Acidic Inorganics": "196",
+      "Heavy Trans-Metals": "636",
+      "Alkali Organics": "164",
+      "Lanthanides": "122",
+      "Strong Alkali Organics": "50",
+      "Superheavy Exotics": "50"
+    }
+  },
+  {
+    "gameId": "OphI4",
+    "extraId": "lnSfS",
+    "name": "Large Cargo Hold Expansion",
+    "techLevel": "",
+    "evolution": 7,
+    "description": "Cargo pods convert engineering space to cargo space",
+    "iconClass": "ui_icon_C12",
+    "iconPosition": "-100px -442px",
+    "properties": {
+      "Manufacture Run Time": "5 hours",
+      "Class": "5",
+      "Mass": "187",
+      "Cargo Volume Size": "105",
+      "Health (Hitpoints)": "815",
+      "Eng. Capacity Required": "541",
+      "Cargo Capacity": "1239",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "77.41%"
+    },
+    "resources": {
+      "Heavy Noble Gases": "1169",
+      "Alkali Inorganics": "176",
+      "Metaloids": "586",
+      "Acidic Organics": "152",
+      "Heavy Alkali Metals": "169",
+      "Strong Alkali Organics": "56",
+      "Superheavy Exotics": "53"
+    }
+  },
+  {
+    "gameId": "hrcym",
+    "extraId": "iKVYY",
+    "name": "Large Ore Hopper",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Stores unrefined raw resources from mining operations",
+    "iconClass": "ui_icon_C12",
+    "iconPosition": "-100px -442px",
+    "properties": {
+      "Manufacture Run Time": "8 hours",
+      "Class": "5",
+      "Mass": "220",
+      "Cargo Volume Size": "120",
+      "Health (Hitpoints)": "600",
+      "Eng. Capacity Required": "600",
+      "Raw Material Capacity": "1500",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Halogens": "1203",
+      "Alkali Inorganics": "192",
+      "Heavy Trans-Metals": "343"
+    }
+  },
+  {
+    "gameId": "AuZxi",
+    "extraId": "qh4sv",
+    "name": "MD-M Main Drive",
+    "techLevel": "MilSpec",
+    "evolution": 0,
+    "description": "Main drive for a ship",
+    "iconClass": "ui_icon_G2",
+    "iconPosition": "-252px -62px",
+    "properties": {
+      "Manufacture Run Time": "13 hours",
+      "Class": "5",
+      "Mass": "750",
+      "Cargo Volume Size": "1000",
+      "Power Required": "354MW",
+      "Health (Hitpoints)": "3750",
+      "Eng. Capacity Required": "1500",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Acceleration Rate": "45MN"
+    },
+    "resources": {
+      "Post-Trans Metals": "8697",
+      "Alkali Inorganics": "1515",
+      "Metaloids": "1452",
+      "Complex Non-Metallics": "1389",
+      "Heavy Alkali Metals": "1447"
+    }
+  },
+  {
+    "gameId": "mF3x3",
+    "extraId": "SbOoS",
+    "name": "MD-M Main Drive",
+    "techLevel": "MilSpec",
+    "evolution": 1,
+    "description": "Main drive for a ship",
+    "iconClass": "ui_icon_G2",
+    "iconPosition": "-252px -62px",
+    "properties": {
+      "Manufacture Run Time": "13 hours",
+      "Class": "5",
+      "Mass": "750",
+      "Cargo Volume Size": "1000",
+      "Power Required": "354MW",
+      "Health (Hitpoints)": "3750",
+      "Eng. Capacity Required": "1500",
+      "Wear and Tear Rate": "3.189%",
+      "Maximum Damage Repair %": "80%",
+      "Acceleration Rate": "46.86MN"
+    },
+    "resources": {
+      "Halogens": "8979",
+      "Alkali Inorganics": "1626",
+      "Heavy Trans-Metals": "1565",
+      "Strong Alkali Inorganics": "1626",
+      "Heavy Alkali Metals": "1479"
+    }
+  },
+  {
+    "gameId": "VSUGh",
+    "extraId": "irxRD",
+    "name": "MD-M Main Drive",
+    "techLevel": "MilSpec",
+    "evolution": 2,
+    "description": "Main drive for a ship",
+    "iconClass": "ui_icon_G2",
+    "iconPosition": "-252px -62px",
+    "properties": {
+      "Manufacture Run Time": "13 hours",
+      "Class": "5",
+      "Mass": "771",
+      "Cargo Volume Size": "1000",
+      "Power Required": "354MW",
+      "Health (Hitpoints)": "3750",
+      "Eng. Capacity Required": "1500",
+      "Wear and Tear Rate": "3.189%",
+      "Maximum Damage Repair %": "80%",
+      "Acceleration Rate": "48.56MN"
+    },
+    "resources": {
+      "Alkali Metals": "7064",
+      "Metallics": "1201",
+      "Heavy Trans-Metals": "1517",
+      "Alkali Organics": "1492",
+      "Lanthanides": "1277"
+    }
+  },
+  {
+    "gameId": "0mYYG",
+    "extraId": "roHt9",
+    "name": "MD-M Main Drive",
+    "techLevel": "MilSpec",
+    "evolution": 3,
+    "description": "Main drive for a ship",
+    "iconClass": "ui_icon_G2",
+    "iconPosition": "-252px -62px",
+    "properties": {
+      "Manufacture Run Time": "13 hours",
+      "Class": "5",
+      "Mass": "771",
+      "Cargo Volume Size": "1000",
+      "Power Required": "375MW",
+      "Health (Hitpoints)": "3750",
+      "Eng. Capacity Required": "1500",
+      "Wear and Tear Rate": "3.189%",
+      "Maximum Damage Repair %": "80%",
+      "Acceleration Rate": "50.38MN"
+    },
+    "resources": {
+      "Trans-Metals": "7073",
+      "Metallics": "1465",
+      "Metaloids": "1509",
+      "Acidic Organics": "1699",
+      "Lanthanides": "1400"
+    }
+  },
+  {
+    "gameId": "Cizfu",
+    "extraId": "tOJLG",
+    "name": "MD-M Main Drive",
+    "techLevel": "MilSpec",
+    "evolution": 4,
+    "description": "Main drive for a ship",
+    "iconClass": "ui_icon_G2",
+    "iconPosition": "-252px -62px",
+    "properties": {
+      "Manufacture Run Time": "13 hours",
+      "Class": "5",
+      "Mass": "771",
+      "Cargo Volume Size": "1031",
+      "Power Required": "375MW",
+      "Health (Hitpoints)": "3750",
+      "Eng. Capacity Required": "1500",
+      "Wear and Tear Rate": "3.189%",
+      "Maximum Damage Repair %": "80%",
+      "Acceleration Rate": "51.96MN"
+    },
+    "resources": {
+      "Noble Gases": "7662",
+      "Non-Metallics": "1488",
+      "Heavy Trans-Metals": "1214",
+      "Alkali Organics": "1427",
+      "Heavy Alkali Metals": "1570"
+    }
+  },
+  {
+    "gameId": "XBAOv",
+    "extraId": "NSisC",
+    "name": "MD-M Main Drive",
+    "techLevel": "MilSpec",
+    "evolution": 5,
+    "description": "Main drive for a ship",
+    "iconClass": "ui_icon_G2",
+    "iconPosition": "-252px -62px",
+    "properties": {
+      "Manufacture Run Time": "13 hours",
+      "Class": "5",
+      "Mass": "771",
+      "Cargo Volume Size": "1031",
+      "Power Required": "375MW",
+      "Health (Hitpoints)": "3750",
+      "Eng. Capacity Required": "1500",
+      "Wear and Tear Rate": "3.189%",
+      "Maximum Damage Repair %": "80.11%",
+      "Acceleration Rate": "53.45MN"
+    },
+    "resources": {
+      "Trans-Metals": "7915",
+      "Alkali Inorganics": "1195",
+      "Heavy Trans-Metals": "1519",
+      "Acidic Organics": "1413",
+      "Lanthanides": "1492"
+    }
+  },
+  {
+    "gameId": "nmZoT",
+    "extraId": "sXgnT",
+    "name": "MD-M Main Drive",
+    "techLevel": "MilSpec",
+    "evolution": 6,
+    "description": "Main drive for a ship",
+    "iconClass": "ui_icon_G2",
+    "iconPosition": "-252px -62px",
+    "properties": {
+      "Manufacture Run Time": "13 hours",
+      "Class": "5",
+      "Mass": "771",
+      "Cargo Volume Size": "1031",
+      "Power Required": "380.46MW",
+      "Health (Hitpoints)": "3750",
+      "Eng. Capacity Required": "1500",
+      "Wear and Tear Rate": "3.189%",
+      "Maximum Damage Repair %": "80.11%",
+      "Acceleration Rate": "55MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "7373",
+      "Metallics": "1287",
+      "Heavy Trans-Metals": "1230",
+      "Alkali Organics": "1908",
+      "Lanthanides": "2037",
+      "Transuranic Volatiles": "140",
+      "Strong Alkali Organics": "131"
+    }
+  },
+  {
+    "gameId": "YOuz2",
+    "extraId": "suRTr",
+    "name": "MD-M Main Drive",
+    "techLevel": "MilSpec",
+    "evolution": 7,
+    "description": "Main drive for a ship",
+    "iconClass": "ui_icon_G2",
+    "iconPosition": "-252px -62px",
+    "properties": {
+      "Manufacture Run Time": "13 hours",
+      "Class": "5",
+      "Mass": "771",
+      "Cargo Volume Size": "1031",
+      "Power Required": "380.46MW",
+      "Health (Hitpoints)": "3750",
+      "Eng. Capacity Required": "1500",
+      "Wear and Tear Rate": "3.275%",
+      "Maximum Damage Repair %": "80.11%",
+      "Acceleration Rate": "55.58MN"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "6829",
+      "Alkali Inorganics": "1128",
+      "Heavy Trans-Metals": "1468",
+      "Complex Non-Metallics": "1844",
+      "Strong Acidic Inorganics": "282",
+      "Heavy Alkali Metals": "1576",
+      "Transuranic Volatiles": "292"
+    }
+  },
+  {
+    "gameId": "ejim8",
+    "extraId": "7BfjR",
+    "name": "Merchantman",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Ship Hull",
+    "iconClass": "ui_icon_I2",
+    "iconPosition": "-328px -62px",
+    "properties": {
+      "Manufacture Run Time": "1 days, 22 hours",
+      "Class": "5",
+      "Mass": "13000",
+      "Cargo Volume Size": "9334",
+      "License Level": "21",
+      "License Career": "Public",
+      "Health (Hitpoints)": "5000",
+      "Eng. Capacity Available": "11000",
+      "Max Hull Plating": "1",
+      "Max Hull Reinforcement": "2",
+      "Max Hull Sealant Units": "3",
+      "Cargo Capacity": "28000",
+      "Fuel Capacity": "7000",
+      "Large Weapon Mounts": "0",
+      "Medium Weapon Mounts": "0",
+      "Small Weapon Mounts": "2",
+      "Wear and Tear Rate": "1%",
+      "Maximum Damage Repair %": "70%",
+      "Energy Defence": "45",
+      "Kinetic Damage Defence": "33",
+      "Missile Damage Defence": "74",
+      "The number of crew supported": "3",
+      "Reactor Slots": "1",
+      "Main Drive Slots": "1",
+      "Thruster Slots": "1",
+      "Jump Drive Slots": "1",
+      "Nav Comp Slots": "1",
+      "Scanner Slots": "1",
+      "Shield Slots": "1",
+      "Cargo Pod Slots": "4",
+      "Fuel Tank Slots": "6",
+      "Coupler Slots": "1",
+      "GERTY Slots": "5"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "36189",
+      "Alkali Inorganics": "4567",
+      "Metaloids": "9683"
+    }
+  },
+  {
+    "gameId": "Lj6Bx",
+    "extraId": "MLazh",
+    "name": "NavCom-M",
+    "techLevel": "MilSpec",
+    "evolution": 0,
+    "description": "Navigation computer for transitioning between systems",
+    "iconClass": "ui_icon_M13",
+    "iconPosition": "-480px -480px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "51MW",
+      "Health (Hitpoints)": "650",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Jump Charge Time": "17s"
+    },
+    "resources": {
+      "Post-Trans Metals": "1542",
+      "Acidic Inorganics": "229",
+      "Heavy Post-Trans Metals": "473",
+      "Strong Alkali Organics": "269"
+    }
+  },
+  {
+    "gameId": "jcZrP",
+    "extraId": "rC4k2",
+    "name": "NavCom-M",
+    "techLevel": "MilSpec",
+    "evolution": 1,
+    "description": "Navigation computer for transitioning between systems",
+    "iconClass": "ui_icon_M13",
+    "iconPosition": "-480px -480px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "51MW",
+      "Health (Hitpoints)": "650",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3.11%",
+      "Maximum Damage Repair %": "80%",
+      "Jump Charge Time": "16.71s"
+    },
+    "resources": {
+      "Trans-Metals": "1673",
+      "Alkali Inorganics": "246",
+      "Metaloids": "463",
+      "Strong Alkali Organics": "203"
+    }
+  },
+  {
+    "gameId": "FnA6J",
+    "extraId": "HAEyn",
+    "name": "NavCom-M",
+    "techLevel": "MilSpec",
+    "evolution": 2,
+    "description": "Navigation computer for transitioning between systems",
+    "iconClass": "ui_icon_M13",
+    "iconPosition": "-480px -480px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "51MW",
+      "Health (Hitpoints)": "650",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3.11%",
+      "Maximum Damage Repair %": "79%",
+      "Jump Charge Time": "16.44s"
+    },
+    "resources": {
+      "Heavy Noble Gases": "1752",
+      "Non-Metallics": "212",
+      "Heavy Trans-Metals": "533",
+      "Strong Alkali Organics": "264"
+    }
+  },
+  {
+    "gameId": "9WCk7",
+    "extraId": "kM3uu",
+    "name": "NavCom-M",
+    "techLevel": "MilSpec",
+    "evolution": 3,
+    "description": "Navigation computer for transitioning between systems",
+    "iconClass": "ui_icon_M13",
+    "iconPosition": "-480px -480px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "51MW",
+      "Health (Hitpoints)": "650",
+      "Eng. Capacity Required": "404",
+      "Wear and Tear Rate": "3.11%",
+      "Maximum Damage Repair %": "79%",
+      "Jump Charge Time": "16.19s"
+    },
+    "resources": {
+      "Alkali Metals": "1625",
+      "Metallics": "253",
+      "Heavy Trans-Metals": "432",
+      "Strong Alkali Inorganics": "30",
+      "Lanthanides": "30",
+      "Strong Alkali Organics": "245"
+    }
+  },
+  {
+    "gameId": "FdzjR",
+    "extraId": "S1ctz",
+    "name": "NavCom-M",
+    "techLevel": "MilSpec",
+    "evolution": 4,
+    "description": "Navigation computer for transitioning between systems",
+    "iconClass": "ui_icon_M13",
+    "iconPosition": "-480px -480px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "51MW",
+      "Health (Hitpoints)": "620",
+      "Eng. Capacity Required": "404",
+      "Wear and Tear Rate": "3.11%",
+      "Maximum Damage Repair %": "79%",
+      "Jump Charge Time": "15.95s"
+    },
+    "resources": {
+      "Trans-Metals": "1127",
+      "Alkali Inorganics": "233",
+      "Heavy Post-Trans Metals": "405",
+      "Alkali Organics": "49",
+      "Heavy Alkaline Earth Metals": "54",
+      "Strong Alkali Organics": "219"
+    }
+  },
+  {
+    "gameId": "Czy6t",
+    "extraId": "Gptmy",
+    "name": "NavCom-M",
+    "techLevel": "MilSpec",
+    "evolution": 5,
+    "description": "Navigation computer for transitioning between systems",
+    "iconClass": "ui_icon_M13",
+    "iconPosition": "-480px -480px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "51MW",
+      "Health (Hitpoints)": "620",
+      "Eng. Capacity Required": "404",
+      "Wear and Tear Rate": "3.297%",
+      "Maximum Damage Repair %": "79%",
+      "Jump Charge Time": "15.73s"
+    },
+    "resources": {
+      "Trans-Metals": "1300",
+      "Non-Metallics": "211",
+      "Heavy Post-Trans Metals": "373",
+      "Alkali Organics": "108",
+      "Complex Metallics": "322",
+      "Lanthanides": "58"
+    }
+  },
+  {
+    "gameId": "u7vqo",
+    "extraId": "SeQW3",
+    "name": "NavCom-M",
+    "techLevel": "MilSpec",
+    "evolution": 6,
+    "description": "Navigation computer for transitioning between systems",
+    "iconClass": "ui_icon_M13",
+    "iconPosition": "-480px -480px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "51.86MW",
+      "Health (Hitpoints)": "620",
+      "Eng. Capacity Required": "404",
+      "Wear and Tear Rate": "3.297%",
+      "Maximum Damage Repair %": "79%",
+      "Jump Charge Time": "15.53s"
+    },
+    "resources": {
+      "Heavy Noble Gases": "1096",
+      "Acidic Inorganics": "231",
+      "Heavy Trans-Metals": "444",
+      "Acidic Organics": "132",
+      "Complex Metallics": "298",
+      "Heavy Alkali Metals": "97",
+      "Transuranic Volatiles": "21"
+    }
+  },
+  {
+    "gameId": "Ixdv4",
+    "extraId": "7BnF4",
+    "name": "NavCom-M",
+    "techLevel": "MilSpec",
+    "evolution": 7,
+    "description": "Navigation computer for transitioning between systems",
+    "iconClass": "ui_icon_M13",
+    "iconPosition": "-480px -480px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "130",
+      "Cargo Volume Size": "95",
+      "Power Required": "53.28MW",
+      "Health (Hitpoints)": "620",
+      "Eng. Capacity Required": "404",
+      "Wear and Tear Rate": "3.297%",
+      "Maximum Damage Repair %": "79%",
+      "Jump Charge Time": "15.35s"
+    },
+    "resources": {
+      "Alkali Metals": "1105",
+      "Metallics": "162",
+      "Heavy Post-Trans Metals": "365",
+      "Acidic Organics": "132",
+      "Complex Metallics": "250",
+      "Lanthanides": "97",
+      "Lanthanide Volatiles": "56"
+    }
+  },
+  {
+    "gameId": "oMawm",
+    "extraId": "dfgYb",
+    "name": "Phalanx Compound Plating",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Armour plating for ship",
+    "iconClass": "ui_icon_N2",
+    "iconPosition": "-518px -62px",
+    "properties": {
+      "Manufacture Run Time": "15 hours",
+      "Class": "5",
+      "Mass": "520",
+      "Cargo Volume Size": "520",
+      "Health (Hitpoints)": "2600",
+      "Eng. Capacity Required": "130",
+      "Wear and Tear Rate": "0.8%",
+      "Maximum Damage Repair %": "5%",
+      "Energy Defence Rating": "15",
+      "Kinetic Defence Rating": "15",
+      "Missile Defence Rating": "16"
+    },
+    "resources": {
+      "Alkali Metals": "5528",
+      "Non-Metallics": "750",
+      "Heavy Trans-Metals": "1569"
+    }
+  },
+  {
+    "gameId": "ASf0X",
+    "extraId": "rXgaL",
+    "name": "RAK-M Material Scanner",
+    "techLevel": "MilSpec",
+    "evolution": 1,
+    "description": "Scanners used for scanning planets for resource deposits",
+    "iconClass": "ui_icon_C7",
+    "iconPosition": "-100px -252px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "100",
+      "Cargo Volume Size": "130",
+      "Power Required": "101MW",
+      "Health (Hitpoints)": "476",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Sensor Abundance Factor": "2.625",
+      "Purity Modifier": "15",
+      "Scan Level": "62.54"
+    },
+    "resources": {
+      "Heavy Noble Gases": "1122",
+      "Non-Metallics": "172",
+      "Heavy Trans-Metals": "373",
+      "Strong Acidic Inorganics": "194"
+    }
+  },
+  {
+    "gameId": "2Ie54",
+    "extraId": "ruX1n",
+    "name": "RAK-M Material Scanner",
+    "techLevel": "MilSpec",
+    "evolution": 2,
+    "description": "Scanners used for scanning planets for resource deposits",
+    "iconClass": "ui_icon_C7",
+    "iconPosition": "-100px -252px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "107",
+      "Cargo Volume Size": "130",
+      "Power Required": "101MW",
+      "Health (Hitpoints)": "476",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Sensor Abundance Factor": "2.625",
+      "Purity Modifier": "15",
+      "Scan Level": "64.92"
+    },
+    "resources": {
+      "Trans-Metals": "941",
+      "Non-Metallics": "211",
+      "Heavy Post-Trans Metals": "365",
+      "Strong Alkali Organics": "189"
+    }
+  },
+  {
+    "gameId": "kJm9i",
+    "extraId": "8ZiEs",
+    "name": "RAK-M Material Scanner",
+    "techLevel": "MilSpec",
+    "evolution": 3,
+    "description": "Scanners used for scanning planets for resource deposits",
+    "iconClass": "ui_icon_C7",
+    "iconPosition": "-100px -252px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "107",
+      "Cargo Volume Size": "136",
+      "Power Required": "101MW",
+      "Health (Hitpoints)": "476",
+      "Eng. Capacity Required": "380",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Sensor Abundance Factor": "2.625",
+      "Purity Modifier": "15",
+      "Scan Level": "67.16"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "978",
+      "Non-Metallics": "183",
+      "Metaloids": "296",
+      "Acidic Organics": "17",
+      "Complex Metallics": "215",
+      "Heavy Alkali Metals": "17"
+    }
+  },
+  {
+    "gameId": "qXKa4",
+    "extraId": "XDjcp",
+    "name": "RAK-M Material Scanner",
+    "techLevel": "MilSpec",
+    "evolution": 4,
+    "description": "Scanners used for scanning planets for resource deposits",
+    "iconClass": "ui_icon_C7",
+    "iconPosition": "-100px -252px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "107",
+      "Cargo Volume Size": "136",
+      "Power Required": "101MW",
+      "Health (Hitpoints)": "476",
+      "Eng. Capacity Required": "395",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Sensor Abundance Factor": "2.625",
+      "Purity Modifier": "15",
+      "Scan Level": "69.27"
+    },
+    "resources": {
+      "Alkali Metals": "1097",
+      "Acidic Inorganics": "150",
+      "Metaloids": "316",
+      "Complex Non-Metallics": "38",
+      "Complex Metallics": "168",
+      "Lanthanides": "42"
+    }
+  },
+  {
+    "gameId": "VgHNW",
+    "extraId": "iOl9V",
+    "name": "RAK-M Material Scanner",
+    "techLevel": "MilSpec",
+    "evolution": 5,
+    "description": "Scanners used for scanning planets for resource deposits",
+    "iconClass": "ui_icon_C7",
+    "iconPosition": "-100px -252px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "107",
+      "Cargo Volume Size": "136",
+      "Power Required": "101MW",
+      "Health (Hitpoints)": "449",
+      "Eng. Capacity Required": "395",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Sensor Abundance Factor": "2.625",
+      "Purity Modifier": "15",
+      "Scan Level": "71.26"
+    },
+    "resources": {
+      "Alkali Metals": "1060",
+      "Non-Metallics": "173",
+      "Heavy Post-Trans Metals": "253",
+      "Complex Non-Metallics": "68",
+      "Heavy Alkaline Earth Metals": "58",
+      "Strong Alkali Organics": "217"
+    }
+  },
+  {
+    "gameId": "gNaM2",
+    "extraId": "4DhzM",
+    "name": "RAK-M Material Scanner",
+    "techLevel": "MilSpec",
+    "evolution": 6,
+    "description": "Scanners used for scanning planets for resource deposits",
+    "iconClass": "ui_icon_C7",
+    "iconPosition": "-100px -252px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "111",
+      "Cargo Volume Size": "136",
+      "Power Required": "101MW",
+      "Health (Hitpoints)": "449",
+      "Eng. Capacity Required": "395",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Sensor Abundance Factor": "2.625",
+      "Purity Modifier": "15",
+      "Scan Level": "73.13"
+    },
+    "resources": {
+      "Trans-Metals": "990",
+      "Acidic Inorganics": "132",
+      "Metaloids": "292",
+      "Acidic Organics": "89",
+      "Complex Metallics": "205",
+      "Heavy Alkali Metals": "58",
+      "Superheavy Exotics": "15"
+    }
+  },
+  {
+    "gameId": "1CLlr",
+    "extraId": "gl1Wp",
+    "name": "RAK-M Material Scanner",
+    "techLevel": "MilSpec",
+    "evolution": 7,
+    "description": "Scanners used for scanning planets for resource deposits",
+    "iconClass": "ui_icon_C7",
+    "iconPosition": "-100px -252px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "111",
+      "Cargo Volume Size": "136",
+      "Power Required": "101MW",
+      "Health (Hitpoints)": "425",
+      "Eng. Capacity Required": "395",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Sensor Abundance Factor": "2.625",
+      "Purity Modifier": "15",
+      "Scan Level": "74.9"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "766",
+      "Metallics": "105",
+      "Heavy Trans-Metals": "215",
+      "Complex Non-Metallics": "93",
+      "Strong Acidic Inorganics": "234",
+      "Heavy Alkaline Earth Metals": "97",
+      "Transuranic Volatiles": "35"
+    }
+  },
+  {
+    "gameId": "ZHV3y",
+    "extraId": "vqOgp",
+    "name": "RAK-M Material Scanner",
+    "techLevel": "MilSpec",
+    "evolution": 8,
+    "description": "Scanners used for scanning planets for resource deposits",
+    "iconClass": "ui_icon_C7",
+    "iconPosition": "-100px -252px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "112",
+      "Cargo Volume Size": "136",
+      "Power Required": "101MW",
+      "Health (Hitpoints)": "425",
+      "Eng. Capacity Required": "395",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Sensor Abundance Factor": "2.625",
+      "Purity Modifier": "15",
+      "Scan Level": "76.76"
+    },
+    "resources": {
+      "Post-Trans Metals": "648",
+      "Metallics": "143",
+      "Heavy Trans-Metals": "194",
+      "Alkali Organics": "121",
+      "Heavy Alkaline Earth Metals": "87",
+      "Strong Alkali Organics": "235",
+      "Lanthanide Volatiles": "75"
+    }
+  },
+  {
+    "gameId": "QHDuo",
+    "extraId": "qEw2O",
+    "name": "RAK-M Material Scanner",
+    "techLevel": "MilSpec",
+    "evolution": 10,
+    "description": "Scanners used for scanning planets for resource deposits",
+    "iconClass": "ui_icon_C7",
+    "iconPosition": "-100px -252px",
+    "properties": {
+      "Manufacture Run Time": "4 hours",
+      "Class": "5",
+      "Mass": "114.245",
+      "Cargo Volume Size": "136",
+      "Power Required": "101MW",
+      "Health (Hitpoints)": "425",
+      "Eng. Capacity Required": "395",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "77.44%",
+      "Sensor Abundance Factor": "2.625",
+      "Purity Modifier": "15",
+      "Scan Level": "78.11"
+    },
+    "resources": {
+      "Halogens": "575",
+      "Acidic Inorganics": "95",
+      "Heavy Trans-Metals": "226",
+      "Complex Non-Metallics": "165",
+      "Strong Acidic Inorganics": "242",
+      "Lanthanides": "152",
+      "Superheavy Exotics": "150",
+      "S1. Translanthanic Exotics": "29",
+      "S2. Element 126": "18"
+    }
+  },
+  {
+    "gameId": "SUQ7B",
+    "extraId": "xMPVm",
+    "name": "Rigid Fixture Fuel Tank",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Extra fuel tank for a ship",
+    "iconClass": "ui_icon_D12",
+    "iconPosition": "-138px -442px",
+    "properties": {
+      "Manufacture Run Time": "9 hours",
+      "Class": "5",
+      "Mass": "340",
+      "Cargo Volume Size": "500",
+      "Health (Hitpoints)": "1700",
+      "Eng. Capacity Required": "1000",
+      "Fuel Capacity": "450",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Halogens": "3475",
+      "Non-Metallics": "556",
+      "Metaloids": "991"
+    }
+  },
+  {
+    "gameId": "sFPG2",
+    "extraId": "XodqQ",
+    "name": "Rigid Fixture Fuel Tank",
+    "techLevel": "",
+    "evolution": 1,
+    "description": "Extra fuel tank for a ship",
+    "iconClass": "ui_icon_D12",
+    "iconPosition": "-138px -442px",
+    "properties": {
+      "Manufacture Run Time": "9 hours",
+      "Class": "5",
+      "Mass": "340",
+      "Cargo Volume Size": "500",
+      "Health (Hitpoints)": "1700",
+      "Eng. Capacity Required": "1028",
+      "Fuel Capacity": "470",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "80%"
+    },
+    "resources": {
+      "Heavy Noble Gases": "3945",
+      "Non-Metallics": "559",
+      "Heavy Trans-Metals": "817"
+    }
+  },
+  {
+    "gameId": "bdZ9j",
+    "extraId": "Ornlq",
+    "name": "Rigid Fixture Fuel Tank",
+    "techLevel": "",
+    "evolution": 2,
+    "description": "Extra fuel tank for a ship",
+    "iconClass": "ui_icon_D12",
+    "iconPosition": "-138px -442px",
+    "properties": {
+      "Manufacture Run Time": "9 hours",
+      "Class": "5",
+      "Mass": "340",
+      "Cargo Volume Size": "500",
+      "Health (Hitpoints)": "1700",
+      "Eng. Capacity Required": "1028",
+      "Fuel Capacity": "488",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "78.92%"
+    },
+    "resources": {
+      "Alkali Metals": "2880",
+      "Acidic Inorganics": "471",
+      "Heavy Trans-Metals": "1084"
+    }
+  },
+  {
+    "gameId": "eoKiX",
+    "extraId": "qV7ff",
+    "name": "Rigid Fixture Fuel Tank",
+    "techLevel": "",
+    "evolution": 3,
+    "description": "Extra fuel tank for a ship",
+    "iconClass": "ui_icon_D12",
+    "iconPosition": "-138px -442px",
+    "properties": {
+      "Manufacture Run Time": "9 hours",
+      "Class": "5",
+      "Mass": "340",
+      "Cargo Volume Size": "524",
+      "Health (Hitpoints)": "1700",
+      "Eng. Capacity Required": "1028",
+      "Fuel Capacity": "505",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "78.92%"
+    },
+    "resources": {
+      "Noble Gases": "3030",
+      "Non-Metallics": "398",
+      "Heavy Trans-Metals": "1115",
+      "Strong Alkali Inorganics": "49",
+      "Heavy Alkali Metals": "41"
+    }
+  },
+  {
+    "gameId": "EOVN9",
+    "extraId": "o0TbM",
+    "name": "Rigid Fixture Fuel Tank",
+    "techLevel": "",
+    "evolution": 4,
+    "description": "Extra fuel tank for a ship",
+    "iconClass": "ui_icon_D12",
+    "iconPosition": "-138px -442px",
+    "properties": {
+      "Manufacture Run Time": "9 hours",
+      "Class": "5",
+      "Mass": "350",
+      "Cargo Volume Size": "524",
+      "Health (Hitpoints)": "1700",
+      "Eng. Capacity Required": "1028",
+      "Fuel Capacity": "521",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "78.92%"
+    },
+    "resources": {
+      "Halogens": "3055",
+      "Metallics": "420",
+      "Heavy Post-Trans Metals": "912",
+      "Alkali Organics": "111",
+      "Heavy Alkali Metals": "97"
+    }
+  },
+  {
+    "gameId": "HfMe0",
+    "extraId": "k9F2C",
+    "name": "Rigid Fixture Fuel Tank",
+    "techLevel": "",
+    "evolution": 5,
+    "description": "Extra fuel tank for a ship",
+    "iconClass": "ui_icon_D12",
+    "iconPosition": "-138px -442px",
+    "properties": {
+      "Manufacture Run Time": "9 hours",
+      "Class": "5",
+      "Mass": "350",
+      "Cargo Volume Size": "524",
+      "Health (Hitpoints)": "1700",
+      "Eng. Capacity Required": "1082",
+      "Fuel Capacity": "536",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "78.92%"
+    },
+    "resources": {
+      "Noble Gases": "3137",
+      "Alkali Inorganics": "383",
+      "Metaloids": "1053",
+      "Acidic Organics": "180",
+      "Heavy Alkali Metals": "179"
+    }
+  },
+  {
+    "gameId": "7vsaA",
+    "extraId": "4mvNR",
+    "name": "Rigid Fixture Fuel Tank",
+    "techLevel": "",
+    "evolution": 6,
+    "description": "Extra fuel tank for a ship",
+    "iconClass": "ui_icon_D12",
+    "iconPosition": "-138px -442px",
+    "properties": {
+      "Manufacture Run Time": "9 hours",
+      "Class": "5",
+      "Mass": "350",
+      "Cargo Volume Size": "524",
+      "Health (Hitpoints)": "1629",
+      "Eng. Capacity Required": "1082",
+      "Fuel Capacity": "552",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "78.92%"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "2385",
+      "Non-Metallics": "379",
+      "Metaloids": "1106",
+      "Acidic Organics": "261",
+      "Complex Metallics": "52",
+      "Lanthanides": "273",
+      "Transuranic Volatiles": "46"
+    }
+  },
+  {
+    "gameId": "8YdwN",
+    "extraId": "TRiNQ",
+    "name": "Rigid Fixture Fuel Tank",
+    "techLevel": "",
+    "evolution": 7,
+    "description": "Extra fuel tank for a ship",
+    "iconClass": "ui_icon_D12",
+    "iconPosition": "-138px -442px",
+    "properties": {
+      "Manufacture Run Time": "9 hours",
+      "Class": "5",
+      "Mass": "350",
+      "Cargo Volume Size": "538.071",
+      "Health (Hitpoints)": "1629",
+      "Eng. Capacity Required": "1082",
+      "Fuel Capacity": "558",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "78.92%"
+    },
+    "resources": {
+      "Noble Gases": "2396",
+      "Non-Metallics": "311",
+      "Heavy Trans-Metals": "1002",
+      "Complex Non-Metallics": "256",
+      "Complex Metallics": "97",
+      "Lanthanides": "256",
+      "Lanthanide Volatiles": "112"
+    }
+  },
+  {
+    "gameId": "RJDRi",
+    "extraId": "hyHQy",
+    "name": "S5 Fractal Docking Coupler",
+    "techLevel": "",
+    "evolution": 0,
+    "description": "Enable ships to join for fuel or cargo transfer",
+    "iconClass": "ui_icon_M12",
+    "iconPosition": "-480px -442px",
+    "properties": {
+      "Manufacture Run Time": "5 hours",
+      "Class": "5",
+      "Mass": "250",
+      "Cargo Volume Size": "85",
+      "Power Required": "24MW",
+      "Health (Hitpoints)": "625",
+      "Eng. Capacity Required": "500",
+      "Wear and Tear Rate": "5%",
+      "Maximum Damage Repair %": "80%",
+      "Fuel Transfer Rate": "15/s"
+    },
+    "resources": {
+      "Alkali Metals": "1363",
+      "Non-Metallics": "181",
+      "Metaloids": "348"
+    }
+  },
+  {
+    "gameId": "VuGHm",
+    "extraId": "gPDJh",
+    "name": "WSMS-M Jump Drive",
+    "techLevel": "MilSpec",
+    "evolution": 1,
+    "description": "Jump Drive",
+    "iconClass": "ui_icon_A12",
+    "iconPosition": "-24px -442px",
+    "properties": {
+      "Manufacture Run Time": "8 hours",
+      "Class": "5",
+      "Mass": "590",
+      "Cargo Volume Size": "220",
+      "Power Required": "668MW",
+      "Health (Hitpoints)": "2950",
+      "Eng. Capacity Required": "880",
+      "Wear and Tear Rate": "3.111%",
+      "Maximum Damage Repair %": "80%",
+      "Fuel Used / JAS / Mass": "0.0018",
+      "Max Jump Distance": "27.1JAS"
+    },
+    "resources": {
+      "Noble Gases": "7114",
+      "Acidic Inorganics": "1102",
+      "Heavy Trans-Metals": "2667"
+    }
+  },
+  {
+    "gameId": "cOF4x",
+    "extraId": "t3fNS",
+    "name": "WSMS-M Jump Drive",
+    "techLevel": "MilSpec",
+    "evolution": 2,
+    "description": "Jump Drive",
+    "iconClass": "ui_icon_A12",
+    "iconPosition": "-24px -442px",
+    "properties": {
+      "Manufacture Run Time": "8 hours",
+      "Class": "5",
+      "Mass": "590",
+      "Cargo Volume Size": "220",
+      "Power Required": "668MW",
+      "Health (Hitpoints)": "2794",
+      "Eng. Capacity Required": "880",
+      "Wear and Tear Rate": "3.111%",
+      "Maximum Damage Repair %": "80%",
+      "Fuel Used / JAS / Mass": "0.0018",
+      "Max Jump Distance": "28.1JAS"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "6136",
+      "Acidic Inorganics": "1255",
+      "Metaloids": "2187"
+    }
+  },
+  {
+    "gameId": "uZTos",
+    "extraId": "MZyzU",
+    "name": "WSMS-M Jump Drive",
+    "techLevel": "MilSpec",
+    "evolution": 3,
+    "description": "Jump Drive",
+    "iconClass": "ui_icon_A12",
+    "iconPosition": "-24px -442px",
+    "properties": {
+      "Manufacture Run Time": "8 hours",
+      "Class": "5",
+      "Mass": "590",
+      "Cargo Volume Size": "220",
+      "Power Required": "668MW",
+      "Health (Hitpoints)": "2656",
+      "Eng. Capacity Required": "880",
+      "Wear and Tear Rate": "3.111%",
+      "Maximum Damage Repair %": "80%",
+      "Fuel Used / JAS / Mass": "0.0018",
+      "Max Jump Distance": "29.1JAS"
+    },
+    "resources": {
+      "Heavy Noble Gases": "6944",
+      "Alkali Inorganics": "1084",
+      "Heavy Trans-Metals": "1849",
+      "Complex Non-Metallics": "114",
+      "Heavy Alkali Metals": "85"
+    }
+  },
+  {
+    "gameId": "h2Bjw",
+    "extraId": "3XTjp",
+    "name": "WSMS-M Jump Drive",
+    "techLevel": "MilSpec",
+    "evolution": 4,
+    "description": "Jump Drive",
+    "iconClass": "ui_icon_A12",
+    "iconPosition": "-24px -442px",
+    "properties": {
+      "Manufacture Run Time": "8 hours",
+      "Class": "5",
+      "Mass": "590",
+      "Cargo Volume Size": "220",
+      "Power Required": "668MW",
+      "Health (Hitpoints)": "2656",
+      "Eng. Capacity Required": "880",
+      "Wear and Tear Rate": "3.111%",
+      "Maximum Damage Repair %": "80%",
+      "Fuel Used / JAS / Mass": "0.0019",
+      "Max Jump Distance": "30JAS"
+    },
+    "resources": {
+      "Halogens": "7768",
+      "Metallics": "1067",
+      "Metaloids": "1992",
+      "Strong Alkali Inorganics": "214",
+      "Heavy Alkaline Earth Metals": "189"
+    }
+  },
+  {
+    "gameId": "DjEDJ",
+    "extraId": "HFXnP",
+    "name": "WSMS-M Jump Drive",
+    "techLevel": "MilSpec",
+    "evolution": 5,
+    "description": "Jump Drive",
+    "iconClass": "ui_icon_A12",
+    "iconPosition": "-24px -442px",
+    "properties": {
+      "Manufacture Run Time": "8 hours",
+      "Class": "5",
+      "Mass": "590",
+      "Cargo Volume Size": "220",
+      "Power Required": "690MW",
+      "Health (Hitpoints)": "2656",
+      "Eng. Capacity Required": "880",
+      "Wear and Tear Rate": "3.111%",
+      "Maximum Damage Repair %": "80%",
+      "Fuel Used / JAS / Mass": "0.0019",
+      "Max Jump Distance": "30.9JAS"
+    },
+    "resources": {
+      "Halogens": "5944",
+      "Acidic Inorganics": "748",
+      "Heavy Trans-Metals": "2456",
+      "Complex Non-Metallics": "390",
+      "Heavy Alkali Metals": "384"
+    }
+  },
+  {
+    "gameId": "rlcl6",
+    "extraId": "8bxhV",
+    "name": "WSMS-M Jump Drive",
+    "techLevel": "MilSpec",
+    "evolution": 6,
+    "description": "Jump Drive",
+    "iconClass": "ui_icon_A12",
+    "iconPosition": "-24px -442px",
+    "properties": {
+      "Manufacture Run Time": "8 hours",
+      "Class": "5",
+      "Mass": "590",
+      "Cargo Volume Size": "220",
+      "Power Required": "718MW",
+      "Health (Hitpoints)": "2656",
+      "Eng. Capacity Required": "880",
+      "Wear and Tear Rate": "3.111%",
+      "Maximum Damage Repair %": "80%",
+      "Fuel Used / JAS / Mass": "0.0019",
+      "Max Jump Distance": "31.7JAS"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "4754",
+      "Acidic Inorganics": "726",
+      "Metaloids": "1772",
+      "Strong Alkali Inorganics": "518",
+      "Heavy Alkaline Earth Metals": "534",
+      "Transuranic Volatiles": "94",
+      "Strong Alkali Organics": "112"
+    }
+  },
+  {
+    "gameId": "BPMnF",
+    "extraId": "KsuRQ",
+    "name": "WSMS-M Jump Drive",
+    "techLevel": "MilSpec",
+    "evolution": 7,
+    "description": "Jump Drive",
+    "iconClass": "ui_icon_A12",
+    "iconPosition": "-24px -442px",
+    "properties": {
+      "Manufacture Run Time": "8 hours",
+      "Class": "5",
+      "Mass": "613",
+      "Cargo Volume Size": "220",
+      "Power Required": "718MW",
+      "Health (Hitpoints)": "2656",
+      "Eng. Capacity Required": "880",
+      "Wear and Tear Rate": "3.111%",
+      "Maximum Damage Repair %": "80%",
+      "Fuel Used / JAS / Mass": "0.0019",
+      "Max Jump Distance": "32.5JAS"
+    },
+    "resources": {
+      "Alkali Metals": "4898",
+      "Metallics": "817",
+      "Heavy Post-Trans Metals": "2434",
+      "Complex Non-Metallics": "614",
+      "Strong Acidic Inorganics": "186",
+      "Lanthanides": "699",
+      "Lanthanide Volatiles": "206"
+    }
+  },
+  {
+    "gameId": "wv0sf",
+    "extraId": "JAWzJ",
+    "name": "WSMS-M Jump Drive",
+    "techLevel": "MilSpec",
+    "evolution": 8,
+    "description": "Jump Drive",
+    "iconClass": "ui_icon_A12",
+    "iconPosition": "-24px -442px",
+    "properties": {
+      "Manufacture Run Time": "8 hours",
+      "Class": "5",
+      "Mass": "613",
+      "Cargo Volume Size": "220",
+      "Power Required": "718MW",
+      "Health (Hitpoints)": "2656",
+      "Eng. Capacity Required": "894.66",
+      "Wear and Tear Rate": "3.111%",
+      "Maximum Damage Repair %": "80%",
+      "Fuel Used / JAS / Mass": "0.0019",
+      "Max Jump Distance": "33.3JAS"
+    },
+    "resources": {
+      "Heavy Noble Gases": "6831",
+      "Metallics": "679",
+      "Metaloids": "2655",
+      "Complex Non-Metallics": "893",
+      "Strong Acidic Inorganics": "231",
+      "Heavy Alkali Metals": "856",
+      "Transuranic Volatiles": "168"
+    }
+  },
+  {
+    "gameId": "onl5X",
+    "extraId": "eFY1x",
+    "name": "WSMS-M Jump Drive",
+    "techLevel": "MilSpec",
+    "evolution": 9,
+    "description": "Jump Drive",
+    "iconClass": "ui_icon_A12",
+    "iconPosition": "-24px -442px",
+    "properties": {
+      "Manufacture Run Time": "8 hours",
+      "Class": "5",
+      "Mass": "613",
+      "Cargo Volume Size": "220",
+      "Power Required": "718MW",
+      "Health (Hitpoints)": "2583",
+      "Eng. Capacity Required": "894.66",
+      "Wear and Tear Rate": "3.111%",
+      "Maximum Damage Repair %": "80%",
+      "Fuel Used / JAS / Mass": "0.0019",
+      "Max Jump Distance": "33.6JAS"
+    },
+    "resources": {
+      "Alkaline Earth Metals": "4885",
+      "Metallics": "884",
+      "Metaloids": "2225",
+      "Alkali Organics": "699",
+      "Strong Acidic Inorganics": "309",
+      "Heavy Alkaline Earth Metals": "753",
+      "Superheavy Exotics": "291"
+    }
+  },
+  {
+    "gameId": "dydXj",
+    "extraId": "5i4i5",
+    "name": "X-M-M 642 Field Generator",
+    "techLevel": "MilSpec",
+    "evolution": 0,
+    "description": "Shield",
+    "iconClass": "ui_icon_F7",
+    "iconPosition": "-214px -252px",
+    "properties": {
+      "Manufacture Run Time": "16 hours",
+      "Class": "5",
+      "Mass": "2510",
+      "Cargo Volume Size": "755",
+      "Health (Hitpoints)": "380",
+      "Eng. Capacity Required": "1880",
+      "Power Draw Per Second": "9MW",
+      "Wear and Tear Rate": "3%",
+      "Maximum Damage Repair %": "80%",
+      "Energy Defence": "77",
+      "Shield Hitpoints": "1152",
+      "Shield regen": "17/s"
+    },
+    "resources": {
+      "Post-Trans Metals": "2684",
+      "Acidic Inorganics": "468",
+      "Heavy Post-Trans Metals": "977",
+      "Strong Acidic Inorganics": "463"
+    }
+  }
+]

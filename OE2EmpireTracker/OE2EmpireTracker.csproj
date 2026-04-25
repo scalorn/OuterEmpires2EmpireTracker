@@ -221,6 +221,7 @@
     <Compile Include="Services\BuildTimeCalculator.cs" />
     <Compile Include="Services\ColonyActivityCollector.cs" />
     <Compile Include="Services\MarketBlueprintImporter.cs" />
+    <Compile Include="Services\CrateImporter.cs" />
     <Compile Include="Services\SerializationSorter.cs" />
     <Compile Include="Services\SortedDictionaryContractResolver.cs" />
     <Compile Include="Services\TabWarningService.cs" />
@@ -266,6 +267,7 @@
     <Compile Include="Constants\SlotTypes.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
     <Compile Include="Controls\ListViewItemComparer.cs" />
+    <Compile Include="Controls\LayoutHelper.cs" />
     <Compile Include="Controls\RtfBuilder.cs" />
     <Compile Include="Controls\ProgrammaticUpdateGuard.cs" />
     <Compile Include="Models\Commodity.cs" />

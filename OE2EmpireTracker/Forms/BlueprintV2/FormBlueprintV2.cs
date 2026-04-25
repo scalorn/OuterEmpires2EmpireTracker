@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -116,6 +117,7 @@ namespace OE2EmpireTracker
             btnDelete.Click += BtnDelete_Click;
             btnImport.Click += BtnImport_Click;
             btnImportMarket.Click += BtnImportMarket_Click;
+            btnImportCrate.Click += BtnImportCrate_Click;
 
             // Wire statistics grid events
             dgvStatistics.CellValueChanged += DgvStatistics_CellValueChanged;
@@ -784,6 +786,64 @@ namespace OE2EmpireTracker
 
             // Refresh the blueprint list
             RefreshBlueprintList();
+        }
+
+        private void BtnImportCrate_Click(object sender, EventArgs e)
+        {
+            using (var ofd = new OpenFileDialog())
+            {
+                ofd.Title = "Import Blueprints from Crate Scraper JSON";
+                ofd.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
+                ofd.FilterIndex = 1;
+
+                if (ofd.ShowDialog() != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    var result = CrateImporter.ImportFromFile(ofd.FileName, playerContext, empireContext);
+
+                    if (result.Errors.Count > 0 && result.Created == 0 && result.Updated == 0)
+                    {
+                        MessageBox.Show(
+                            string.Join("\n", result.Errors),
+                            "Import Crate Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendLine($"File: {Path.GetFileName(ofd.FileName)}");
+                    sb.AppendLine($"Total in file: {result.TotalInFile}");
+                    sb.AppendLine($"Created: {result.Created}  Updated: {result.Updated}  Skipped: {result.Skipped}  Failed: {result.Failed}");
+
+                    if (result.Errors.Count > 0)
+                    {
+                        sb.AppendLine();
+                        sb.AppendLine("Errors:");
+                        foreach (var err in result.Errors.Take(10))
+                            sb.AppendLine($"  {err}");
+                    }
+
+                    MessageBox.Show(
+                        sb.ToString(),
+                        "Import Crate Results",
+                        MessageBoxButtons.OK,
+                        result.Failed > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+
+                    RefreshBlueprintList();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error importing crate JSON file");
+                    MessageBox.Show(
+                        "Failed to import crate file: " + ex.Message,
+                        "Import Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
         }
 
         // -----------------------------------------------------------------------

@@ -147,9 +147,9 @@ namespace OE2EmpireTracker.Services
                 ? ec.GlobalBlueprintList
                 : pc.BlueprintList;
 
-            var existing = MarketBlueprintImporter.FindByDedupKey(targetList, tempBP);
+            var existing = MarketBlueprintImporter.FindUnambiguousMatch(targetList, tempBP);
             Log.Info(
-                "  FindByDedupKey in {0} list ({1} blueprints): {2}",
+                "  FindUnambiguousMatch in {0} list ({1} blueprints): {2}",
                 globalRoute ? "global" : "player",
                 targetList.Count,
                 existing != null ? $"MATCH UUID={existing.UUID}" : "NO MATCH");

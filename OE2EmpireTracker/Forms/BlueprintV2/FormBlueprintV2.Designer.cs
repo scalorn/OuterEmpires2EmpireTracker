@@ -83,6 +83,7 @@ namespace OE2EmpireTracker
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnImport = new System.Windows.Forms.Button();
             this.btnImportMarket = new System.Windows.Forms.Button();
+            this.btnImportCrate = new System.Windows.Forms.Button();
             this.tabDetailedData = new System.Windows.Forms.TabControl();
             this.tabPStatistics = new System.Windows.Forms.TabPage();
             this.dgvStatistics = new DataEntryGridView();
@@ -595,6 +596,7 @@ namespace OE2EmpireTracker
             this.flpCommands.Controls.Add(this.btnDelete);
             this.flpCommands.Controls.Add(this.btnImport);
             this.flpCommands.Controls.Add(this.btnImportMarket);
+            this.flpCommands.Controls.Add(this.btnImportCrate);
             this.flpCommands.Location = new System.Drawing.Point(7, 283);
             this.flpCommands.Margin = new System.Windows.Forms.Padding(3);
             this.flpCommands.Name = "flpCommands";
@@ -630,6 +632,12 @@ namespace OE2EmpireTracker
             this.btnImportMarket.TabIndex = 4;
             this.btnImportMarket.Text = "Import Market";
             this.btnImportMarket.UseVisualStyleBackColor = true;
+            this.btnImportCrate.Location = new System.Drawing.Point(428, 3);
+            this.btnImportCrate.Name = "btnImportCrate";
+            this.btnImportCrate.Size = new System.Drawing.Size(95, 23);
+            this.btnImportCrate.TabIndex = 5;
+            this.btnImportCrate.Text = "Import Crate";
+            this.btnImportCrate.UseVisualStyleBackColor = true;
             // tabDetailedData
             this.tabDetailedData.Controls.Add(this.tabPStatistics);
             this.tabDetailedData.Controls.Add(this.tabPResources);
@@ -957,6 +965,7 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Button btnImportMarket;
+        private System.Windows.Forms.Button btnImportCrate;
         private System.Windows.Forms.TabControl tabDetailedData;
         private System.Windows.Forms.TabPage tabPStatistics;
         private DataEntryGridView dgvStatistics;
