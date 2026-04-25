@@ -692,37 +692,36 @@ All derived from existing kiro specs and verified against implemented code. Requ
 
 ## Test Failures (April 2026 Audit)
 
-### AMB-088 — OPEN: UpdateExisting drops protected properties when incoming lacks them
-**Issue:** `MarketBlueprintImporter.UpdateExisting()` only preserves protected properties (`Manufacture Run Time`, `Power Required`) when the incoming blueprint also has those keys. If the incoming blueprint doesn't have them, they are dropped from the existing blueprint. The code comment says "if incoming doesn't have the key, remove it (the game dropped the property)" — but the tests expect protected properties to always be preserved regardless of whether incoming has them.
+### AMB-088 — OPEN: Tests assert old protected-property behavior after intentional code change
+**Issue:** `MarketBlueprintImporter.UpdateExisting()` was intentionally changed on the `spec-work` branch to only preserve protected properties (`Manufacture Run Time`, `Power Required`) when the incoming blueprint also has those keys. If incoming doesn't have the key, the property is removed — this is correct behavior because it means the game dropped the property (e.g. Power Required was removed from reactors after a game rebalance).
 
-The intent of protected properties is that they are user-set values (e.g. manually entered manufacture run time) that should never be overwritten or removed by a market import. The current logic contradicts this intent.
+The code change was made in commits `d65d920` and `4123eff` on `spec-work` in response to user-reported bugs: stale properties (like Power Required on reactors that now only have Power Generated) were persisting after reimport because the old code did additive merge. The fix changed to replacement merge with sorted key order for deterministic serialization.
+
+The code was applied to mainline but the **tests were not updated** to match the new behavior. Three tests still assert the old "always preserve protected properties" semantics.
 
 **Failing tests (3):**
 - `UpdateExistingOverwritesDataWhilePreservingProtectedFields` (FsCheck)
 - `Property_ProtectedFieldPreservation`
 - `Import_Update_PreservesProtectedFields`
 
-**Proposed fix:** Change the protected property preservation logic to always carry forward protected values from the existing blueprint, regardless of whether incoming also has the key. After building the new PropertyBag from incoming keys, restore any protected properties that existed on the original blueprint.
+**Fix needed:** Update the 3 tests to assert the new behavior: protected properties are preserved only when the incoming blueprint also has the key. When incoming lacks the key, the property should be removed.
 
 **Spec reference:** spec/requirements/BlueprintProperties.md, `.kiro/specs/mass-blueprint-importer/`
 
 ---
 
-### AMB-089 — OPEN: UpdateExisting does replacement merge; individual import expects additive merge
-**Issue:** `MarketBlueprintImporter.UpdateExisting()` does a **replacement** merge for both properties and resources — it builds a new PropertyBag/Resources dictionary from only the incoming keys. Existing keys not present in incoming are dropped.
+### AMB-089 — OPEN: Tests assert old additive merge behavior after intentional replacement merge change
+**Issue:** `MarketBlueprintImporter.UpdateExisting()` was intentionally changed on the `spec-work` branch to do **replacement** merge for both properties and resources (commits `f6e5356`, `d65d920`). When incoming has properties/resources, the existing set is fully replaced. When incoming has none (e.g. resources-only or statistics-only import), existing data is preserved.
 
-`BlueprintImportHandler.MergeAndPersist()` calls `UpdateExisting` for individual blueprint imports. Individual imports often parse only a subset of data (e.g. only the statistics page, or only the resources page). The tests expect **additive** merge semantics: incoming keys overwrite existing, new keys are added, but existing keys not in incoming are preserved.
+This was done because after game rebalancing, old resource/property keys that no longer exist on a blueprint were persisting via the old additive merge. The user reported: "The resources have a mismash of the old resources before the rebalance and the new resources on the BP. The BP has the definitive list of resources. It should be a complete replace."
 
-The market bulk import path may legitimately want replacement semantics (the full market listing is the definitive property set). The individual import path needs additive semantics (partial data should not erase existing data).
+The `BlueprintImportHandler.MergeAndPersist` tests were written for the old additive merge behavior and were not updated. They assert that existing keys not in incoming are preserved — which is the opposite of the intended behavior.
 
 **Failing tests (2):**
 - `MergeAndPersist_ExistingTarget_AdditivePropertyMerge`
 - `MergeAndPersist_ExistingTarget_AdditiveResourceMerge`
 
-**Options:**
-1. Change `UpdateExisting` to always do additive merge (existing keys not in incoming are preserved). This changes market import behavior — old properties that the game dropped would persist.
-2. Add a `bool additive` parameter to `UpdateExisting`. Market import passes `false` (replacement), individual import passes `true` (additive).
-3. Create a separate `MergeExisting` method for individual imports that does additive merge, leaving `UpdateExisting` as replacement for market imports.
+**Fix needed:** Update the 2 tests to assert replacement merge behavior: when incoming has properties/resources, existing keys not in incoming are dropped. Rename the tests to reflect the new semantics (e.g. `MergeAndPersist_ExistingTarget_ReplacementPropertyMerge`).
 
 **Spec reference:** spec/requirements/BlueprintProperties.md
 
