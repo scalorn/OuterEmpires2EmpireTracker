@@ -68,7 +68,8 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void ProcessHtml_EvolutionNumber_ParsedAsInt()
         {
             var bp = new OE2EmpireTracker.Models.Blueprint();
-            _scanner.ProcessHtml(bp, Html(EvoDiv("3") + TitleDiv("Pulse Cannon3")));
+            // In real game HTML, the evo div is nested inside the title div
+            _scanner.ProcessHtml(bp, Html(TitleDiv(EvoDiv("3") + "Pulse Cannon")));
 
             Assert.That(bp.Evolution, Is.EqualTo(3));
         }
@@ -77,7 +78,10 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void ProcessHtml_EvolutionRemovedFromTitle()
         {
             var bp = new OE2EmpireTracker.Models.Blueprint();
-            _scanner.ProcessHtml(bp, Html(EvoDiv("2") + TitleDiv("Jump Drive2")));
+            // In real game HTML, the evo div is nested inside the title div.
+            // The code excludes it by DOM position, not string stripping,
+            // so names with digits (e.g. "X-M-S 612 Field Generator") are safe.
+            _scanner.ProcessHtml(bp, Html(TitleDiv(EvoDiv("2") + "Jump Drive")));
 
             Assert.That(bp.Name, Is.EqualTo("Jump Drive"));
         }

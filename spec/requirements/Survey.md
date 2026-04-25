@@ -56,7 +56,7 @@
 ## Blueprint Scanner
 
 **REQ-SRV-050** BlueprintScanner.processHtml() SHALL parse a blueprint HTML fragment and populate a Blueprint object with Name, TechLevel, Evolution, Description, Properties, and Resources.  
-**REQ-SRV-051** The evolution number SHALL be stripped from the title string before setting Name.  
+**REQ-SRV-051** The evolution number SHALL be excluded from the Name by skipping the EvolutionNumber div during DOM traversal of the title node's children. The code SHALL NOT use string replacement to strip digits, as this corrupts names containing numeric characters (e.g. "X-M-S 612 Field Generator").  
 **REQ-SRV-052** TechLevel SHALL be extracted from parentheses at the end of the title, e.g. `Name (TechLevel)`.  
 **REQ-SRV-053** Property values SHALL have delta indicators (e.g. `(▲ 435)`) stripped before storage.  
 **REQ-SRV-054** Property keys SHALL be remapped using the PropertyRemap dictionary to normalize game HTML labels to canonical spaced form (e.g. "Health (Hitpoints)" → "Health", "Eng. Capacity Required" → "Eng Capacity Required", "Blue Collar Detail(s)" → "Blue Collar Detail", "Warehousing Capacity" → "Warehouse Capacity"). Keys not in the remap table are used as-is.  

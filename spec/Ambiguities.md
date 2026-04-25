@@ -731,19 +731,11 @@ The `BlueprintImportHandler.MergeAndPersist` tests were written for the old addi
 
 ---
 
-### AMB-090 — OPEN: BlueprintScanner.ProcessHtml does not strip evolution number from title
-**Issue:** When the evolution div is a sibling of the title div (not nested inside it), `ProcessHtml` does not strip the trailing evolution number from the blueprint name. The title builder loop only skips the evo node when it's a direct child of the title node.
+### AMB-090 — RESOLVED: Test used wrong HTML structure for evolution number exclusion
+**Resolution:** The test `ProcessHtml_EvolutionRemovedFromTitle` placed the EvolutionNumber div as a sibling of the title div, but in real game HTML it is nested inside the title div. The code correctly excludes the evolution number by DOM position (skipping the EvolutionNumber child node during title text assembly), not by string replacement. The old string-replacement approach was removed in commit `9c341de` because it mangled names containing digits (e.g. "X-M-S 612 Field Generator" became "X-M-S 62 Field Generator").
 
-Test passes `EvoDiv("2") + TitleDiv("Jump Drive2")` and expects `"Jump Drive"` but gets `"Jump Drive2"`.
-
-In real game HTML, the evolution number div may be nested inside the title div or may be a sibling — both layouts have been observed. The code handles the nested case (skips the evo node in the child loop) but not the sibling case.
-
-**Failing test (1):**
-- `ProcessHtml_EvolutionRemovedFromTitle`
-
-**Proposed fix:** After building the title text, if an evolution number was parsed, strip the trailing evolution number string from the name. E.g. if `blueprint.Evolution == 2`, remove trailing `"2"` from the name.
-
-**Spec reference:** spec/requirements/BlueprintProperties.md
+Fixed both `ProcessHtml_EvolutionNumber_ParsedAsInt` and `ProcessHtml_EvolutionRemovedFromTitle` to nest the evo div inside the title div, matching real game HTML structure. Updated REQ-SRV-051 to specify DOM-based exclusion instead of string stripping.
+**Action:** BlueprintScannerTests.cs updated. spec/requirements/Survey.md REQ-SRV-051 updated.
 
 ---
 
