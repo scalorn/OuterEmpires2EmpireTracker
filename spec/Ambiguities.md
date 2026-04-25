@@ -686,3 +686,77 @@ All derived from existing kiro specs and verified against implemented code. Requ
 ### AMB-087 — RESOLVED
 **Resolution:** Fixed 2 real reference counter gaps: (1) BlueprintReferenceCounter now counts StockPlan.Targets[].ItemReferenceID via a `_stockTargetMap` and `stockPlans` parameter. (2) StationReferenceCounter now counts Ship.LocationUUID (when LocationType == Station) via a `_shipLocationMap` and `ships` parameter. Also updated refcount-check.js to check entity name OR common variable patterns (lowercase, last compound word) to reduce false positives.
 **Action:** BlueprintReferenceCounter.cs, StationReferenceCounter.cs, ReferenceReport.cs, refcount-check.js updated.
+
+
+---
+
+## Test Failures (April 2026 Audit)
+
+### AMB-088 — OPEN: UpdateExisting drops protected properties when incoming lacks them
+**Issue:** `MarketBlueprintImporter.UpdateExisting()` only preserves protected properties (`Manufacture Run Time`, `Power Required`) when the incoming blueprint also has those keys. If the incoming blueprint doesn't have them, they are dropped from the existing blueprint. The code comment says "if incoming doesn't have the key, remove it (the game dropped the property)" — but the tests expect protected properties to always be preserved regardless of whether incoming has them.
+
+The intent of protected properties is that they are user-set values (e.g. manually entered manufacture run time) that should never be overwritten or removed by a market import. The current logic contradicts this intent.
+
+**Failing tests (3):**
+- `UpdateExistingOverwritesDataWhilePreservingProtectedFields` (FsCheck)
+- `Property_ProtectedFieldPreservation`
+- `Import_Update_PreservesProtectedFields`
+
+**Proposed fix:** Change the protected property preservation logic to always carry forward protected values from the existing blueprint, regardless of whether incoming also has the key. After building the new PropertyBag from incoming keys, restore any protected properties that existed on the original blueprint.
+
+**Spec reference:** spec/requirements/BlueprintProperties.md, `.kiro/specs/mass-blueprint-importer/`
+
+---
+
+### AMB-089 — OPEN: UpdateExisting does replacement merge; individual import expects additive merge
+**Issue:** `MarketBlueprintImporter.UpdateExisting()` does a **replacement** merge for both properties and resources — it builds a new PropertyBag/Resources dictionary from only the incoming keys. Existing keys not present in incoming are dropped.
+
+`BlueprintImportHandler.MergeAndPersist()` calls `UpdateExisting` for individual blueprint imports. Individual imports often parse only a subset of data (e.g. only the statistics page, or only the resources page). The tests expect **additive** merge semantics: incoming keys overwrite existing, new keys are added, but existing keys not in incoming are preserved.
+
+The market bulk import path may legitimately want replacement semantics (the full market listing is the definitive property set). The individual import path needs additive semantics (partial data should not erase existing data).
+
+**Failing tests (2):**
+- `MergeAndPersist_ExistingTarget_AdditivePropertyMerge`
+- `MergeAndPersist_ExistingTarget_AdditiveResourceMerge`
+
+**Options:**
+1. Change `UpdateExisting` to always do additive merge (existing keys not in incoming are preserved). This changes market import behavior — old properties that the game dropped would persist.
+2. Add a `bool additive` parameter to `UpdateExisting`. Market import passes `false` (replacement), individual import passes `true` (additive).
+3. Create a separate `MergeExisting` method for individual imports that does additive merge, leaving `UpdateExisting` as replacement for market imports.
+
+**Spec reference:** spec/requirements/BlueprintProperties.md
+
+---
+
+### AMB-090 — OPEN: BlueprintScanner.ProcessHtml does not strip evolution number from title
+**Issue:** When the evolution div is a sibling of the title div (not nested inside it), `ProcessHtml` does not strip the trailing evolution number from the blueprint name. The title builder loop only skips the evo node when it's a direct child of the title node.
+
+Test passes `EvoDiv("2") + TitleDiv("Jump Drive2")` and expects `"Jump Drive"` but gets `"Jump Drive2"`.
+
+In real game HTML, the evolution number div may be nested inside the title div or may be a sibling — both layouts have been observed. The code handles the nested case (skips the evo node in the child loop) but not the sibling case.
+
+**Failing test (1):**
+- `ProcessHtml_EvolutionRemovedFromTitle`
+
+**Proposed fix:** After building the title text, if an evolution number was parsed, strip the trailing evolution number string from the name. E.g. if `blueprint.Evolution == 2`, remove trailing `"2"` from the name.
+
+**Spec reference:** spec/requirements/BlueprintProperties.md
+
+---
+
+### AMB-091 — OPEN: BuildOrderOptimizer runaway — generates 1042 structures from 61 input
+**Issue:** `BuildOrderOptimizer.Optimize()` generates 1042 structures from 61 input structures. When the support pool is exhausted, `CreateStructure` creates new support structures. Each new support structure needs workers (hab, food, ent, power), which triggers cascading support creation via recursive `PlaceSupportSafe` calls. The result is runaway growth far beyond the game's 65-structure colony limit.
+
+The specific failure: deficit at position [157] for Remote Operations Array — Power 910/900. The optimizer over-provisions support but still ends up with a marginal power deficit because the cascading creation doesn't converge cleanly.
+
+**Failing test (1):**
+- `Optimize_UserColony_NoDeficitsAfterBootstrap`
+
+**Root causes:**
+1. No total structure count guard — the optimizer has no awareness of the game's 65-structure colony limit.
+2. `CreateStructure` has no limit on how many structures it can create beyond `MaxPerColony` per blueprint type.
+3. The recursive `PlaceSupportSafe` can cascade indefinitely when each new support structure triggers new deficits.
+
+**Proposed fix:** Add a total structure count guard (e.g. `GameConstants.MaxColonyStructures = 65`) to `FixDeficits` and `PlaceSupportSafe`. When the result list reaches the limit, stop creating new structures. Also consider: the optimizer should only reorder existing structures, not create new ones beyond what the colony already has — creation should be a separate "suggest additional structures" feature.
+
+**Spec reference:** spec/requirements/Colony.md REQ-COL-095 series
