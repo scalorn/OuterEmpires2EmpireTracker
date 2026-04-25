@@ -39,15 +39,10 @@ namespace OE2EmpireTracker.Tests.Services
         // -----------------------------------------------------------------------
 
         // -----------------------------------------------------------------------
-        // DISABLED: Existing tests disabled pending AMB-091 resolution.
-        // The optimizer cannot work correctly because no blueprint in
-        // BaselineData.json has a "Power Provided" property. The Reactor Core
-        // Flatpack has "Power Required = 6" but nothing indicating how much
-        // power it generates. Until the data is corrected, these tests are
-        // meaningless.
+        // Test: Colony matching user's scenario
         // -----------------------------------------------------------------------
 
-        [Test, Ignore("AMB-091: No blueprints have Power Provided — optimizer cannot resolve power deficits")]
+        [Test]
         public void Optimize_UserColony_NoDeficitsAfterBootstrap()
         {
             var colony = new Colony();
@@ -141,7 +136,7 @@ namespace OE2EmpireTracker.Tests.Services
             }
         }
 
-        [Test, Ignore("AMB-091: No blueprints have Power Provided — optimizer cannot resolve power deficits")]
+        [Test]
         public void Optimize_SmallColony_BootstrapCoversFirstPrimary()
         {
             var colony = new Colony();

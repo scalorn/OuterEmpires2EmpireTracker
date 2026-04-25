@@ -739,17 +739,11 @@ Fixed both `ProcessHtml_EvolutionNumber_ParsedAsInt` and `ProcessHtml_EvolutionR
 
 ---
 
-### AMB-091 — IN PROGRESS: BuildOrderOptimizer — Reactor Power Provided fixup and systematic test rebuild
-**Root cause found:** No blueprint in BaselineData.json had a `Power Provided` property. The game labels the Reactor Core Flatpack's power output as `Power Required`, but it actually provides power to the colony. The optimizer could never find a power-providing structure, causing runaway creation.
+### AMB-091 — RESOLVED: BuildOrderOptimizer — Reactor Power Required→Provided fixup
+**Root cause:** The game labels the Reactor Core Flatpack's power output as "Power Required" but it actually provides power to the colony. No blueprint had "Power Provided", so the optimizer could never resolve power deficits, causing runaway structure creation (61 input → 1042 output).
 
-**Fix applied:** Added `BlueprintScanner.FixupFlatpackProperties()` that remaps `Power Required` → `Power Provided` for `Flatpacks/ReactorCore` blueprints. Called from all 3 import paths (individual, market, crate) and retroactively on load in `EmpireContext.InitGlobalBlueprints()`. Also removed dead code (`ProcessHTML` and `Children` debug methods).
-
-**Existing optimizer tests disabled** with `[Ignore("AMB-091")]` pending systematic rebuild. Next steps:
-1. Base case: CC only → verify optimizer adds bootstrap support structures
-2. CC + one primary (miner, refiner, etc.) → verify support structures and order
-3. Build up to full colony scenarios
-
-**Spec reference:** spec/requirements/Colony.md REQ-COL-095 series
+**Fix:** Added `BlueprintScanner.FixupFlatpackProperties()` that remaps `Power Required` → `Power Provided` for `Flatpacks/ReactorCore`. Called from all 3 import paths and retroactively on load. Both existing optimizer tests now pass. The large colony test produces 63 structures (61 input + 2 created support) with no deficits from the first primary onwards.
+**Action:** BlueprintScanner.cs, CrateImporter.cs, EmpireContext.cs updated. Dead code (ProcessHTML, Children) removed.
 
 ---
 
