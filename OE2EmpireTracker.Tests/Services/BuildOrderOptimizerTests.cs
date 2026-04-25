@@ -168,7 +168,190 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Helpers
+        // Systematic optimizer tests — build up from base case
+        //
+        // Blueprint resource values (from BaselineData.json + Reactor fixup):
+        //   CC:       Hab=2, Food=2, WhiteCollar=1, UnassignedSpecialist=1
+        //   Reactor:  PowerProvided=6, UnassignedSpecialist=1
+        //   Hab:      HabProvision=4, PowerReq=1, UnassignedSpecialist=1
+        //   Hydro:    FoodProvision=4, PowerReq=1, BlueCollar=1, UnassignedSpecialist=1
+        //   Ent:      EntProvided=10, PowerReq=2, BlueCollar=1, UnassignedSpecialist=1
+        //   Miner:    PowerReq=2, BlueCollar=1, UnassignedSpecialist=1, UnassignedWhiteCollar=1
+        //   Refinery: PowerReq=5, BlueCollar=1, UnassignedSpecialist=1, UnassignedWhiteCollar=1
+        //   Manufactory: PowerReq=5, BlueCollar=1, UnassignedSpecialist=1, UnassignedWhiteCollar=1
+        //   Warehouse: PowerReq=2, UnassignedSpecialist=1
+        //   Research:  PowerReq=4, BlueCollar=1, UnassignedSpecialist=1, UnassignedWhiteCollar=1
+        //   ROA:       PowerReq=2, BlueCollar=1, UnassignedSpecialist=1, UnassignedWhiteCollar=1
+        //
+        // Unassigned workers: counted once (first structure needing that type).
+        // Worker costs: 1 hab, 1 food, 2 ent per worker.
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void Optimize_CCOnly_CreatesBootstrapSupport()
+        {
+            var colony = MakeColony("Flatpacks/ColonyCommandCentre");
+            var result = Optimize(colony);
+            LogOrderWithStatus(result);
+
+            // CC must be first
+            AssertType(result, 0, "Flatpacks/ColonyCommandCentre");
+
+            // Optimizer should create support to resolve the CC's entertainment deficit
+            Assert.That(result.Count, Is.GreaterThan(1),
+                "Optimizer should add support structures for CC's entertainment deficit");
+            Assert.That(result.Count, Is.LessThanOrEqualTo(10),
+                "Should not create excessive support for just a CC");
+
+            // Must have at least one entertainment centre to resolve the deficit
+            Assert.That(CountType(result, "Flatpacks/EntertainmentCentreFlatpack"),
+                Is.GreaterThanOrEqualTo(1), "Need at least 1 Ent Centre for CC's workers");
+        }
+
+        [Test]
+        public void Optimize_CC_Miner_NoDeficitsAtPrimary()
+        {
+            var colony = MakeColony("Flatpacks/ColonyCommandCentre", "Flatpacks/MiningRig");
+            var result = Optimize(colony);
+            LogOrderWithStatus(result);
+
+            AssertType(result, 0, "Flatpacks/ColonyCommandCentre");
+            AssertType(result, result.Count - 1, "Flatpacks/MiningRig");
+            AssertNoDeficitsFromFirstPrimary(result);
+            Assert.That(result.Count, Is.LessThanOrEqualTo(15));
+        }
+
+        [Test]
+        public void Optimize_CC_Refinery_NoDeficitsAtPrimary()
+        {
+            var colony = MakeColony("Flatpacks/ColonyCommandCentre", "Flatpacks/Refinery");
+            var result = Optimize(colony);
+            LogOrderWithStatus(result);
+
+            AssertType(result, 0, "Flatpacks/ColonyCommandCentre");
+            AssertType(result, result.Count - 1, "Flatpacks/Refinery");
+            AssertNoDeficitsFromFirstPrimary(result);
+            Assert.That(result.Count, Is.LessThanOrEqualTo(15));
+        }
+
+        [Test]
+        public void Optimize_CC_Manufactory_NoDeficitsAtPrimary()
+        {
+            var colony = MakeColony("Flatpacks/ColonyCommandCentre", "Flatpacks/Manufactory");
+            var result = Optimize(colony);
+            LogOrderWithStatus(result);
+
+            AssertType(result, 0, "Flatpacks/ColonyCommandCentre");
+            AssertType(result, result.Count - 1, "Flatpacks/Manufactory");
+            AssertNoDeficitsFromFirstPrimary(result);
+            Assert.That(result.Count, Is.LessThanOrEqualTo(15));
+        }
+
+        [Test]
+        public void Optimize_CC_Warehouse_NoDeficitsAtPrimary()
+        {
+            var colony = MakeColony("Flatpacks/ColonyCommandCentre", "Flatpacks/Warehouse");
+            var result = Optimize(colony);
+            LogOrderWithStatus(result);
+
+            AssertType(result, 0, "Flatpacks/ColonyCommandCentre");
+            AssertType(result, result.Count - 1, "Flatpacks/Warehouse");
+            AssertNoDeficitsFromFirstPrimary(result);
+            Assert.That(result.Count, Is.LessThanOrEqualTo(15));
+        }
+
+        [Test]
+        public void Optimize_CC_ResearchLab_NoDeficitsAtPrimary()
+        {
+            var colony = MakeColony("Flatpacks/ColonyCommandCentre", "Flatpacks/ResearchLaboratory");
+            var result = Optimize(colony);
+            LogOrderWithStatus(result);
+
+            AssertType(result, 0, "Flatpacks/ColonyCommandCentre");
+            AssertType(result, result.Count - 1, "Flatpacks/ResearchLaboratory");
+            AssertNoDeficitsFromFirstPrimary(result);
+            Assert.That(result.Count, Is.LessThanOrEqualTo(15));
+        }
+
+        [Test]
+        public void Optimize_CC_ROA_NoDeficitsAtPrimary()
+        {
+            var colony = MakeColony("Flatpacks/ColonyCommandCentre", "Flatpacks/RemoteOperationsArray");
+            var result = Optimize(colony);
+            LogOrderWithStatus(result);
+
+            AssertType(result, 0, "Flatpacks/ColonyCommandCentre");
+            AssertType(result, result.Count - 1, "Flatpacks/RemoteOperationsArray");
+            AssertNoDeficitsFromFirstPrimary(result);
+            Assert.That(result.Count, Is.LessThanOrEqualTo(15));
+        }
+
+        [Test]
+        public void Optimize_CC_2Miners_NoDeficitsAtPrimaries()
+        {
+            var colony = MakeColony("Flatpacks/ColonyCommandCentre", "Flatpacks/MiningRig", "Flatpacks/MiningRig");
+            var result = Optimize(colony);
+            LogOrderWithStatus(result);
+
+            AssertType(result, 0, "Flatpacks/ColonyCommandCentre");
+            AssertNoDeficitsFromFirstPrimary(result);
+            Assert.That(CountType(result, "Flatpacks/MiningRig"), Is.EqualTo(2));
+            Assert.That(result.Count, Is.LessThanOrEqualTo(20));
+        }
+
+        [Test]
+        public void Optimize_CC_Miner_Refinery_NoDeficitsAtPrimaries()
+        {
+            var colony = MakeColony("Flatpacks/ColonyCommandCentre", "Flatpacks/MiningRig", "Flatpacks/Refinery");
+            var result = Optimize(colony);
+            LogOrderWithStatus(result);
+
+            AssertType(result, 0, "Flatpacks/ColonyCommandCentre");
+            AssertNoDeficitsFromFirstPrimary(result);
+            Assert.That(CountType(result, "Flatpacks/MiningRig"), Is.EqualTo(1));
+            Assert.That(CountType(result, "Flatpacks/Refinery"), Is.EqualTo(1));
+            Assert.That(result.Count, Is.LessThanOrEqualTo(20));
+        }
+
+        [Test]
+        public void Optimize_AllInputStructuresPreserved()
+        {
+            var colony = MakeColony(
+                "Flatpacks/ColonyCommandCentre", "Flatpacks/ReactorCore",
+                "Flatpacks/HabitationBlock", "Flatpacks/HydroponicsBay",
+                "Flatpacks/EntertainmentCentreFlatpack",
+                "Flatpacks/MiningRig", "Flatpacks/Refinery");
+            var inputUUIDs = colony.Structures.Select(s => s.UUID).ToHashSet();
+
+            var result = Optimize(colony);
+            LogOrderWithStatus(result);
+
+            foreach (var uuid in inputUUIDs)
+            {
+                Assert.That(result.Any(s => s.UUID == uuid), Is.True,
+                    $"Input structure {uuid} missing from output");
+            }
+        }
+
+        [Test]
+        public void Optimize_OutputDoesNotExceed65Structures()
+        {
+            var colony = new Colony { UUID = Guid.NewGuid().ToString() };
+            colony.Structures.Add(MakeStructure("Flatpacks/ColonyCommandCentre"));
+            for (int i = 0; i < 4; i++) colony.Structures.Add(MakeStructure("Flatpacks/MiningRig"));
+            for (int i = 0; i < 8; i++) colony.Structures.Add(MakeStructure("Flatpacks/Refinery"));
+            colony.Structures.Add(MakeStructure("Flatpacks/Manufactory"));
+            colony.Structures.Add(MakeStructure("Flatpacks/ResearchLaboratory"));
+
+            var result = Optimize(colony);
+            LogOrderWithStatus(result);
+
+            Assert.That(result.Count, Is.LessThanOrEqualTo(65),
+                $"Output has {result.Count} structures — exceeds 65 colony limit");
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers (used by existing tests)
         // -----------------------------------------------------------------------
 
         private string FindGlobalBlueprintUUID(string blueprintType)
@@ -242,6 +425,117 @@ namespace OE2EmpireTracker.Tests.Services
                    blueprintType == "Flatpacks/HabitationBlock" ||
                    blueprintType == "Flatpacks/HydroponicsBay" ||
                    blueprintType == "Flatpacks/EntertainmentCentreFlatpack";
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers (used by systematic tests)
+        // -----------------------------------------------------------------------
+
+        private Colony MakeColony(params string[] blueprintTypes)
+        {
+            var colony = new Colony { UUID = Guid.NewGuid().ToString() };
+            foreach (var type in blueprintTypes)
+                colony.Structures.Add(MakeStructure(type));
+            return colony;
+        }
+
+        private List<ColonyStructure> Optimize(Colony colony)
+        {
+            return new BuildOrderOptimizer(playerContext).Optimize(colony);
+        }
+
+        private void AssertType(List<ColonyStructure> result, int index, string expectedType)
+        {
+            var bp = playerContext.FindBlueprint(result[index].FlatpackBlueprintUUID);
+            Assert.That(bp, Is.Not.Null, $"No blueprint found at [{index}]");
+            Assert.That(bp.BluePrintType, Is.EqualTo(expectedType),
+                $"[{index}] expected {expectedType}, got {bp.BluePrintType}");
+        }
+
+        private int CountType(List<ColonyStructure> result, string blueprintType)
+        {
+            return result.Count(s =>
+            {
+                var bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                return bp != null && bp.BluePrintType == blueprintType;
+            });
+        }
+
+        private void AssertNoDeficitsFromFirstPrimary(List<ColonyStructure> result)
+        {
+            var calc = new ColonyStatusCalculator(new Colony());
+            var iw = new IdealColonyStructureWorkers();
+            var prev = new ColonyStructureStatus();
+
+            int firstPrimaryPos = -1;
+            for (int i = 0; i < result.Count; i++)
+            {
+                var bp = playerContext.FindBlueprint(result[i].FlatpackBlueprintUUID);
+                if (bp != null && !IsSupportType(bp.BluePrintType)
+                    && bp.BluePrintType != "Flatpacks/ColonyCommandCentre")
+                {
+                    firstPrimaryPos = i;
+                    break;
+                }
+            }
+
+            if (firstPrimaryPos < 0) return;
+
+            for (int i = 0; i < result.Count; i++)
+            {
+                var s = result[i];
+                var bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                var current = new ColonyStructureStatus();
+                calc.CalculateBuilt(s, prev, current, iw, bp);
+
+                if (i >= firstPrimaryPos)
+                {
+                    bool deficit = current.PowerRequired > current.PowerProvided ||
+                                   current.HabitationRequired > current.HabitationProvision ||
+                                   current.FoodRequired > current.FoodProvision ||
+                                   current.EntertainmentRequired > current.EntertainmentProvided;
+
+                    Assert.That(deficit, Is.False,
+                        $"Deficit at [{i}] {bp?.ExtendedName}: " +
+                        $"Pwr={current.PowerRequired}/{current.PowerProvided} " +
+                        $"Hab={current.HabitationRequired}/{current.HabitationProvision} " +
+                        $"Food={current.FoodRequired}/{current.FoodProvision} " +
+                        $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}");
+                }
+
+                prev = current;
+            }
+        }
+
+        private void LogOrderWithStatus(List<ColonyStructure> result)
+        {
+            var calc = new ColonyStatusCalculator(new Colony());
+            var iw = new IdealColonyStructureWorkers();
+            var prev = new ColonyStructureStatus();
+
+            TestContext.WriteLine($"Output: {result.Count} structures");
+            for (int i = 0; i < result.Count; i++)
+            {
+                var s = result[i];
+                var bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                var current = new ColonyStructureStatus();
+                calc.CalculateBuilt(s, prev, current, iw, bp);
+
+                bool deficit = current.PowerRequired > current.PowerProvided ||
+                               current.HabitationRequired > current.HabitationProvision ||
+                               current.FoodRequired > current.FoodProvision ||
+                               current.EntertainmentRequired > current.EntertainmentProvided;
+
+                TestContext.WriteLine(
+                    $"  [{i}] {bp?.ExtendedName,-40} " +
+                    $"Pwr={current.PowerRequired}/{current.PowerProvided} " +
+                    $"Hab={current.HabitationRequired}/{current.HabitationProvision} " +
+                    $"Food={current.FoodRequired}/{current.FoodProvision} " +
+                    $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}" +
+                    (deficit ? " *** DEFICIT ***" : string.Empty));
+
+                prev = current;
+            }
         }
     }
 }
