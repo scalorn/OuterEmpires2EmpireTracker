@@ -11,7 +11,7 @@ namespace OE2EmpireTracker.Tests.Services
 {
     /// <summary>
     /// Unit tests for BlueprintImportHandler.MergeAndPersist.
-    /// Validates: Requirement 6.6, 6.7 (additive merge, empty props skipped,
+    /// Validates: Requirement 6.6, 6.7 (replacement merge, empty props skipped,
     /// new blueprint creation, resources merge)
     /// </summary>
     [TestFixture]
@@ -74,15 +74,15 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Additive Merge Tests
+        // Replacement Merge Tests
         // -----------------------------------------------------------------------
 
         /// <summary>
-        /// Additive merge: incoming properties overwrite existing keys,
-        /// but existing keys not in incoming are preserved.
+        /// Replacement merge: incoming properties replace existing properties entirely.
+        /// Existing keys not in incoming are dropped (game rebalancing removes stale keys).
         /// </summary>
         [Test]
-        public void MergeAndPersist_ExistingTarget_AdditivePropertyMerge()
+        public void MergeAndPersist_ExistingTarget_ReplacementPropertyMerge()
         {
             var existing = MakeBlueprint("AMX-SS Reactor Core", "existing-uuid-1", "Reactor", 0);
             existing.Properties.SetProperty("Power Output", "1200");
@@ -96,7 +96,7 @@ namespace OE2EmpireTracker.Tests.Services
             incoming.Properties = new PropertyBag();
             incoming.Properties.SetProperty("Power Output", "1500"); // overwrite
             incoming.Properties.SetProperty("Durability", "200");    // new key
-            // "Efficiency" and "Weight" not in incoming Ã¢â‚¬â€ should be preserved
+            // "Efficiency" and "Weight" not in incoming -- dropped by replacement merge
 
             var findResult = new BlueprintImportHandler.FindTargetResult
             {
@@ -110,9 +110,9 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result, Is.SameAs(existing));
             Assert.That(result.Properties.Properties["Power Output"], Is.EqualTo("1500"), "Incoming overwrites existing key");
             Assert.That(result.Properties.Properties["Durability"], Is.EqualTo("200"), "New key added from incoming");
-            Assert.That(result.Properties.Properties["Efficiency"], Is.EqualTo("85"), "Existing key not in incoming is preserved");
-            Assert.That(result.Properties.Properties["Weight"], Is.EqualTo("50"), "Existing key not in incoming is preserved");
-            Assert.That(result.Properties.Count, Is.EqualTo(4));
+            Assert.That(result.Properties.ContainsKey("Efficiency"), Is.False, "Existing key not in incoming is dropped");
+            Assert.That(result.Properties.ContainsKey("Weight"), Is.False, "Existing key not in incoming is dropped");
+            Assert.That(result.Properties.Count, Is.EqualTo(2));
         }
 
         // -----------------------------------------------------------------------
@@ -134,7 +134,7 @@ namespace OE2EmpireTracker.Tests.Services
             var incoming = new BpModel("Fighter Hull");
             incoming.BluePrintType = "Hull";
             incoming.Evolution = 3;
-            incoming.Properties = new PropertyBag(); // empty Ã¢â‚¬â€ no properties
+            incoming.Properties = new PropertyBag(); // empty -- no properties
             incoming.Resources = new Dictionary<string, string>();
 
             var findResult = new BlueprintImportHandler.FindTargetResult
@@ -255,11 +255,11 @@ namespace OE2EmpireTracker.Tests.Services
         // -----------------------------------------------------------------------
 
         /// <summary>
-        /// Resources merge: incoming resources overwrite existing keys,
-        /// but existing keys not in incoming are preserved.
+        /// Replacement merge: incoming resources replace existing resources entirely.
+        /// Existing keys not in incoming are dropped (game rebalancing removes stale resources).
         /// </summary>
         [Test]
-        public void MergeAndPersist_ExistingTarget_AdditiveResourceMerge()
+        public void MergeAndPersist_ExistingTarget_ReplacementResourceMerge()
         {
             var existing = MakeBlueprint("AMX-SS Reactor Core", "existing-uuid-4", "Reactor", 0);
             existing.Resources = new Dictionary<string, string>
@@ -280,7 +280,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { "Titanium", "100" }  // new key
             };
 
-            // "Copper" and "Gold" not in incoming Ã¢â‚¬â€ should be preserved
+            // "Copper" and "Gold" not in incoming -- dropped by replacement merge
 
             var findResult = new BlueprintImportHandler.FindTargetResult
             {
@@ -293,9 +293,9 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(result.Resources["Iron"], Is.EqualTo("600"), "Incoming overwrites existing resource");
             Assert.That(result.Resources["Titanium"], Is.EqualTo("100"), "New resource added from incoming");
-            Assert.That(result.Resources["Copper"], Is.EqualTo("200"), "Existing resource not in incoming is preserved");
-            Assert.That(result.Resources["Gold"], Is.EqualTo("50"), "Existing resource not in incoming is preserved");
-            Assert.That(result.Resources.Count, Is.EqualTo(4));
+            Assert.That(result.Resources.ContainsKey("Copper"), Is.False, "Existing resource not in incoming is dropped");
+            Assert.That(result.Resources.ContainsKey("Gold"), Is.False, "Existing resource not in incoming is dropped");
+            Assert.That(result.Resources.Count, Is.EqualTo(2));
         }
 
         /// <summary>

@@ -241,8 +241,9 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Validates: Requirement 6
-        /// Protected fields (UUID, OwnerUUID, NickName, CopyCost, Description,
-        /// Manufacture Run Time, Power Required) preserved on update
+        /// Protected scalar fields (UUID, OwnerUUID, NickName, CopyCost, Description)
+        /// preserved on update. Protected property-bag fields (Manufacture Run Time,
+        /// Power Required) are dropped when incoming lacks them (replacement merge).
         /// </summary>
         [Test]
         public void Import_Update_PreservesProtectedFields()
@@ -286,13 +287,14 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(updated.NickName, Is.EqualTo("My Reactor"));
             Assert.That(updated.CopyCost, Is.EqualTo(5000));
             Assert.That(updated.Description, Is.EqualTo("A fine reactor"));
-            // Protected property-bag fields restored
+            // Protected property-bag fields are dropped when incoming doesn't have them
+            // (replacement merge: incoming is the definitive property set)
             string mrt;
             updated.Properties.GetString("Manufacture Run Time", null, out mrt);
-            Assert.That(mrt, Is.EqualTo("3600"));
+            Assert.That(mrt, Is.Null, "Manufacture Run Time should be dropped when incoming lacks it");
             string pr;
             updated.Properties.GetString("Power Required", null, out pr);
-            Assert.That(pr, Is.EqualTo("100"));
+            Assert.That(pr, Is.Null, "Power Required should be dropped when incoming lacks it");
             // Non-protected property updated
             string health;
             updated.Properties.GetString("Health", null, out health);
@@ -539,19 +541,21 @@ namespace OE2EmpireTracker.Tests.Services
                     Is.EqualTo("Desc" + trial),
                     $"Trial {trial}: Description must be preserved");
 
+                // Protected property-bag fields are dropped when incoming lacks them
+                // (replacement merge: incoming is the definitive property set)
                 string mrt;
                 updated.Properties.GetString("Manufacture Run Time", null, out mrt);
                 Assert.That(
                     mrt,
-                    Is.EqualTo("MRT_" + trial),
-                    $"Trial {trial}: Manufacture Run Time must be preserved");
+                    Is.Null,
+                    $"Trial {trial}: Manufacture Run Time should be dropped when incoming lacks it");
 
                 string pr;
                 updated.Properties.GetString("Power Required", null, out pr);
                 Assert.That(
                     pr,
-                    Is.EqualTo("PR_" + trial),
-                    $"Trial {trial}: Power Required must be preserved");
+                    Is.Null,
+                    $"Trial {trial}: Power Required should be dropped when incoming lacks it");
             }
         }
 

@@ -188,7 +188,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             result1.Clear(); // Modify the returned list
 
-            // Get the list again Ã¢â‚¬â€ should be unchanged
+            // Get the list again -- should be unchanged
             var result2 = bag.FindByType(ItemType.ItemTypeEnum.Resource, "Iron");
             Assert.That(result2.Count, Is.EqualTo(2), "Modifying returned list should not affect ItemBag");
         }
@@ -312,7 +312,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             var locks = tracking.GetLocksForProcess(processUUID);
 
-            // Verify it's read-only Ã¢â‚¬â€ attempting to cast and modify should fail
+            // Verify it's read-only -- attempting to cast and modify should fail
             Assert.That(locks, Is.InstanceOf<System.Collections.ObjectModel.ReadOnlyCollection<ItemLock>>());
             Assert.That(locks.Count, Is.EqualTo(2));
 
@@ -487,7 +487,7 @@ namespace OE2EmpireTracker.Tests.Models
             // Validates: Requirements 11.3
             var pc = PlayerContext.GetInstance();
 
-            // Create colony A Ã¢â‚¬â€ locked, with expired timer
+            // Create colony A -- locked, with expired timer
             var bpA = MakeBlueprint("Power Plant", new Dictionary<string, string>
             {
                 { GameConstants.PropPowerProvided, "100" }
@@ -505,7 +505,7 @@ namespace OE2EmpireTracker.Tests.Models
             colonyA.Structures.Add(structA);
             pc.AddColony(colonyA);
 
-            // Create colony B Ã¢â‚¬â€ not locked, with expired timer
+            // Create colony B -- not locked, with expired timer
             var bpB = MakeBlueprint("Power Plant", new Dictionary<string, string>
             {
                 { GameConstants.PropPowerProvided, "200" }

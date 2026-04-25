@@ -22,7 +22,8 @@ namespace OE2EmpireTracker.Tests.Services
         /// - existing.Properties contains all non-protected keys from incoming.Properties
         /// - existing.Resources equals incoming.Resources
         /// - existing.UUID, OwnerUUID, NickName, CopyCost are unchanged
-        /// - Protected property keys preserved if they existed on original but not in incoming
+        /// - Protected property keys are preserved only when incoming also has them;
+        ///   when incoming lacks them, they are dropped (replacement merge)
         /// **Validates: Requirements 2.1, 2.2**
         /// </summary>
         [FsCheck.NUnit.Property(MaxTest = 100)]
@@ -114,16 +115,38 @@ namespace OE2EmpireTracker.Tests.Services
                 var propsPresent = incomingPropsPresent
                     .Label("Not all incoming non-protected properties are present");
 
-                // Protected keys should be preserved (they were on original but not in incoming)
+                // Protected keys behavior depends on whether incoming has properties:
+                // - When incoming has properties (PropCount > 0): replacement merge drops
+                //   protected keys that aren't in incoming
+                // - When incoming has no properties (PropCount == 0): existing properties
+                //   are fully preserved (including protected keys)
                 string mfgVal;
                 existing.Properties.GetString("Manufacture Run Time", null, out mfgVal);
-                var mfgPreserved = (mfgVal == data.MfgRunTime)
-                    .Label($"Manufacture Run Time: expected '{data.MfgRunTime}', got '{mfgVal}'");
+                Property mfgCheck;
+                if (data.PropCount > 0)
+                {
+                    mfgCheck = (mfgVal == null)
+                        .Label($"Manufacture Run Time: expected null (dropped), got '{mfgVal}'");
+                }
+                else
+                {
+                    mfgCheck = (mfgVal == data.MfgRunTime)
+                        .Label($"Manufacture Run Time: expected '{data.MfgRunTime}' (preserved, empty incoming), got '{mfgVal}'");
+                }
 
                 string pwrVal;
                 existing.Properties.GetString("Power Required", null, out pwrVal);
-                var pwrPreserved = (pwrVal == data.PowerReq)
-                    .Label($"Power Required: expected '{data.PowerReq}', got '{pwrVal}'");
+                Property pwrCheck;
+                if (data.PropCount > 0)
+                {
+                    pwrCheck = (pwrVal == null)
+                        .Label($"Power Required: expected null (dropped), got '{pwrVal}'");
+                }
+                else
+                {
+                    pwrCheck = (pwrVal == data.PowerReq)
+                        .Label($"Power Required: expected '{data.PowerReq}' (preserved, empty incoming), got '{pwrVal}'");
+                }
 
                 return uuidPreserved
                     .And(ownerPreserved)
@@ -131,8 +154,8 @@ namespace OE2EmpireTracker.Tests.Services
                     .And(costPreserved)
                     .And(resMatch)
                     .And(propsPresent)
-                    .And(mfgPreserved)
-                    .And(pwrPreserved);
+                    .And(mfgCheck)
+                    .And(pwrCheck);
             });
         }
 

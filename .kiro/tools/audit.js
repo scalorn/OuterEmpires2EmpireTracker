@@ -23,6 +23,7 @@ const tools = [
     { name: 'Mockup Controls', script: 'mockup-controls.js' },
     { name: 'Dead Code', script: 'dead-code.js' },
     { name: 'Duplicate Code', script: 'dupe-code.js' },
+    { name: 'UTF-8 Encoding', script: 'utf8-check.js' },
 ];
 
 let totalFindings = 0;

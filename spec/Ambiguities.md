@@ -692,7 +692,9 @@ All derived from existing kiro specs and verified against implemented code. Requ
 
 ## Test Failures (April 2026 Audit)
 
-### AMB-088 — OPEN: Tests assert old protected-property behavior after intentional code change
+### AMB-088 — RESOLVED: Tests asserted old protected-property behavior after intentional code change
+**Resolution:** Updated 3 tests to match the intentional replacement merge behavior from spec-work commits `d65d920` and `4123eff`. Protected property-bag fields ("Manufacture Run Time", "Power Required") are now correctly expected to be dropped when incoming lacks them. When incoming has zero properties, existing properties are fully preserved (including protected ones). Fixed mojibake in test comments (triple-encoded em-dash replaced with ASCII `--`).
+**Action:** MarketBlueprintImporterTests.cs, IndividualImportDedupPropertyTests.cs updated.
 **Issue:** `MarketBlueprintImporter.UpdateExisting()` was intentionally changed on the `spec-work` branch to only preserve protected properties (`Manufacture Run Time`, `Power Required`) when the incoming blueprint also has those keys. If incoming doesn't have the key, the property is removed — this is correct behavior because it means the game dropped the property (e.g. Power Required was removed from reactors after a game rebalance).
 
 The code change was made in commits `d65d920` and `4123eff` on `spec-work` in response to user-reported bugs: stale properties (like Power Required on reactors that now only have Power Generated) were persisting after reimport because the old code did additive merge. The fix changed to replacement merge with sorted key order for deterministic serialization.
@@ -710,7 +712,9 @@ The code was applied to mainline but the **tests were not updated** to match the
 
 ---
 
-### AMB-089 — OPEN: Tests assert old additive merge behavior after intentional replacement merge change
+### AMB-089 — RESOLVED: Tests asserted old additive merge behavior after intentional replacement merge change
+**Resolution:** Updated 2 tests to match the intentional replacement merge behavior from spec-work commits `f6e5356` and `d65d920`. Renamed `AdditivePropertyMerge` → `ReplacementPropertyMerge` and `AdditiveResourceMerge` → `ReplacementResourceMerge`. Assertions now expect existing keys not in incoming to be dropped (not preserved). Fixed mojibake in test comments. Also fixed mojibake in ThreadSafetyTests.cs (4 instances).
+**Action:** BlueprintImportHandlerMergeTests.cs, ThreadSafetyTests.cs updated.
 **Issue:** `MarketBlueprintImporter.UpdateExisting()` was intentionally changed on the `spec-work` branch to do **replacement** merge for both properties and resources (commits `f6e5356`, `d65d920`). When incoming has properties/resources, the existing set is fully replaced. When incoming has none (e.g. resources-only or statistics-only import), existing data is preserved.
 
 This was done because after game rebalancing, old resource/property keys that no longer exist on a blueprint were persisting via the old additive merge. The user reported: "The resources have a mismash of the old resources before the rebalance and the new resources on the BP. The BP has the definitive list of resources. It should be a complete replace."
