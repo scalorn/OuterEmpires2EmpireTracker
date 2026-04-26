@@ -1,4 +1,5 @@
 using System;
+using NLog;
 using OE2EmpireTracker.Constants;
 
 namespace OE2EmpireTracker.Models
@@ -86,6 +87,7 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class IdealColonyStructureWorkers : IColonyStructureWorkers
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         public bool IsWorkerAssigned(ColonyStructure structure, string workerKey)
         {
             return true;

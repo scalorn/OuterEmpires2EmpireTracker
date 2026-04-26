@@ -1,4 +1,5 @@
 using System;
+using NLog;
 
 namespace OE2EmpireTracker.Services
 {
@@ -8,6 +9,8 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class SystemClock
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Replaceable function that returns the current UTC time.
         /// Default: DateTime.UtcNow. Tests override this to freeze or control time.

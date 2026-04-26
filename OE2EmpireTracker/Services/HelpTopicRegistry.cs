@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NLog;
 
 namespace OE2EmpireTracker.Services
 {
@@ -8,6 +9,8 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class HelpTopicRegistry
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private static readonly Dictionary<string, string> FormTopicMap = new Dictionary<string, string>
         {
             { "FormColony", "colonies.md" },

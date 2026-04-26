@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using NLog;
 
 namespace OE2EmpireTracker.Services
 {
     public static class SurveyDateTimeParser
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         public const string IsoFormat = "yyyy-MM-ddTHH:mm:ssZ";
 
         private static readonly Regex GameFormatRegex = new Regex(

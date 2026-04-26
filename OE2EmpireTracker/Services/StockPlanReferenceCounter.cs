@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -9,6 +10,8 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public class StockPlanReferenceCounter
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private readonly Dictionary<string, int> _profileEntryMap;
 
         public StockPlanReferenceCounter(IEnumerable<StockProfile> stockProfiles)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using NLog;
 
 namespace OE2EmpireTracker.Services
 {
@@ -14,6 +15,8 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public class SortedDictionaryContractResolver : DefaultContractResolver
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         protected override JsonDictionaryContract CreateDictionaryContract(Type objectType)
         {
             var contract = base.CreateDictionaryContract(objectType);

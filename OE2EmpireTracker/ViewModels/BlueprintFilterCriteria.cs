@@ -1,3 +1,5 @@
+using NLog;
+
 namespace OE2EmpireTracker.ViewModels
 {
     /// <summary>
@@ -6,6 +8,8 @@ namespace OE2EmpireTracker.ViewModels
     /// </summary>
     public class BlueprintFilterCriteria
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         public string BlueprintTypeId { get; set; }   // null = no filter
         public int? ShipClassId { get; set; }          // null = no filter
         public string TechLevelName { get; set; }      // null = no filter

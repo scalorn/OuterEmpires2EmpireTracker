@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -19,6 +20,8 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class TabWarningService
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         /// <summary>Structure count at or above which the yellow warning activates.</summary>
         private static int StructureYellowThreshold =>
             PreferencesStore.GetInstance().Preferences.Thresholds.StructureCountYellow;

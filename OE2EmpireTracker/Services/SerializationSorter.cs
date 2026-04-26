@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
     public static class SerializationSorter
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         internal static T[] SortByString<T>(T[] source, Func<T, string> keySelector)
         {
             if (source == null) return Array.Empty<T>();
