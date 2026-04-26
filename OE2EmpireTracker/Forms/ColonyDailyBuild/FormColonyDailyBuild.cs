@@ -135,7 +135,7 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
                 return;
             }
 
-            foreach (var stop in route.Stops.OrderBy(s => s.Sequence))
+            foreach (var stop in CollectionSortHelper.OrderRouteStops(route.Stops))
             {
                 var colony = playerContext.FindColony(stop.ColonyUUID);
                 if (colony == null) continue;

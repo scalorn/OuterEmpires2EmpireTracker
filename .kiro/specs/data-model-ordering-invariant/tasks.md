@@ -88,55 +88,55 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
 - [x] 3. Checkpoint - Verify CollectionSortHelper builds and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Refactor colony structure consumers
-  - [-] 4.1 Refactor `ColonyViewModel.StructureViewModels` to use `CollectionSortHelper.OrderStructures()`
+- [x] 4. Refactor colony structure consumers
+  - [x] 4.1 Refactor `ColonyViewModel.StructureViewModels` to use `CollectionSortHelper.OrderStructures()`
     - Replace `.OrderBy(s => s.BuildQueueSequence)` with `CollectionSortHelper.OrderStructures(...)`
     - _Requirements: 4.1, 8.4_
 
-  - [-] 4.2 Refactor `ColonyStatusCalculator.CalculateBuilt()` and `CalculateIdeal()` to use `CollectionSortHelper.OrderStructures()`
+  - [x] 4.2 Refactor `ColonyStatusCalculator.CalculateBuilt()` and `CalculateIdeal()` to use `CollectionSortHelper.OrderStructures()`
     - Replace both `.OrderBy(s => s.BuildQueueSequence)` calls
     - _Requirements: 4.2, 4.3, 8.4_
 
-  - [-] 4.3 Refactor `BuildOrderOptimizer.Optimize()` to use `CollectionSortHelper.OrderStructures()`
+  - [x] 4.3 Refactor `BuildOrderOptimizer.Optimize()` to use `CollectionSortHelper.OrderStructures()`
     - Replace `.OrderBy(s => s.BuildQueueSequence)` call
     - _Requirements: 4.4, 8.4_
 
-  - [-] 4.4 Refactor `ColonyBuildEligibility.GetFirstStagedStructure()` to use `CollectionSortHelper.OrderStructures()`
+  - [x] 4.4 Refactor `ColonyBuildEligibility.GetFirstStagedStructure()` to use `CollectionSortHelper.OrderStructures()`
     - Replace `.OrderBy(s => s.BuildQueueSequence)` call
     - _Requirements: 4.5, 8.4_
 
-  - [-] 4.5 Refactor `FormColonyV2.PopulateStructures()` to use `CollectionSortHelper.OrderStructures()`
+  - [x] 4.5 Refactor `FormColonyV2.PopulateStructures()` to use `CollectionSortHelper.OrderStructures()`
     - Replace `.Sort(BuildQueueSequence)` call
     - _Requirements: 4.1, 8.4_
 
-  - [-] 4.6 Refactor `ColonyInactivityCollector` to use `CollectionSortHelper.OrderStructures()` and `OrderStructuresDescending()`
+  - [x] 4.6 Refactor `ColonyInactivityCollector` to use `CollectionSortHelper.OrderStructures()` and `OrderStructuresDescending()`
     - Replace `.OrderBy(r => r.DisplaySequence)` with `CollectionSortHelper.OrderStructures(...)`
     - Replace `.OrderByDescending(r => r.DisplaySequence)` with `CollectionSortHelper.OrderStructuresDescending(...)`
     - _Requirements: 8.4_
 
 - [ ] 5. Refactor route stop consumers
-  - [~] 5.1 Refactor `DeliveryPlanViewModel` (4 methods) to use `CollectionSortHelper.OrderRouteStops()`
+  - [x] 5.1 Refactor `DeliveryPlanViewModel` (4 methods) to use `CollectionSortHelper.OrderRouteStops()`
     - Replace all `routeStops.OrderBy(s => s.Sequence)` calls
     - _Requirements: 4.7, 8.4_
 
-  - [~] 5.2 Refactor `DeliveryGenerationService` (2 route stop methods) to use `CollectionSortHelper.OrderRouteStops()`
+  - [x] 5.2 Refactor `DeliveryGenerationService` (2 route stop methods) to use `CollectionSortHelper.OrderRouteStops()`
     - Replace `route.Stops.OrderBy(s => s.Sequence)` calls
     - _Requirements: 4.8, 8.4_
 
-  - [~] 5.3 Refactor `FormColonyDailyBuild.BuildContent()` to use `CollectionSortHelper.OrderRouteStops()`
+  - [x] 5.3 Refactor `FormColonyDailyBuild.BuildContent()` to use `CollectionSortHelper.OrderRouteStops()`
     - Replace `route.Stops.OrderBy(s => s.Sequence)` call
     - _Requirements: 4.11, 8.4_
 
 - [ ] 6. Refactor plan stop and supply chain consumers
-  - [~] 6.1 Refactor `DeliveryPlan.CalculateLoadList()` to use `CollectionSortHelper.OrderPlanStops()`
+  - [x] 6.1 Refactor `DeliveryPlan.CalculateLoadList()` to use `CollectionSortHelper.OrderPlanStops()`
     - Replace `Stops.OrderBy(s => s.Sequence)` call
     - _Requirements: 4.6, 8.4_
 
-  - [~] 6.2 Refactor `FormDeliveryExecution` (2 locations) to use `CollectionSortHelper.OrderPlanStops()`
+  - [x] 6.2 Refactor `FormDeliveryExecution` (2 locations) to use `CollectionSortHelper.OrderPlanStops()`
     - Replace `.Stops.OrderBy(s => s.Sequence)` calls
     - _Requirements: 4.10, 8.4_
 
-  - [~] 6.3 Refactor `FormSupplyChain` (4 stage locations + 1 chain sort) to use `CollectionSortHelper`
+  - [x] 6.3 Refactor `FormSupplyChain` (4 stage locations + 1 chain sort) to use `CollectionSortHelper`
     - Replace `.Stages.OrderBy(s => s.Sequence)` calls with `CollectionSortHelper.OrderSupplyChainStages(...)`
     - Replace `chains.OrderBy(c => c.Name)` with `CollectionSortHelper.OrderSupplyChains(...)`
     - _Requirements: 4.9, 8.4_

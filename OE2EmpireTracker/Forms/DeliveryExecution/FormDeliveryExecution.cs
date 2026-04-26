@@ -382,7 +382,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 .FirstOrDefault(r => r.UUID == selectedPlan.RouteUUID);
 
             // Build per-stop sections
-            foreach (var stop in selectedPlan.Stops.OrderBy(s => s.Sequence))
+            foreach (var stop in CollectionSortHelper.OrderPlanStops(selectedPlan.Stops))
             {
                 // Skip completed stops
                 if (stop.StopCompleted) continue;
@@ -1071,8 +1071,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     ShipUUID = selectedPlan.ShipUUID
                 };
 
-                foreach (var stop in selectedPlan.Stops
-                    .OrderBy(s => s.Sequence))
+                foreach (var stop in CollectionSortHelper.OrderPlanStops(selectedPlan.Stops))
                 {
                     var newStop = new DeliveryPlanStop
                     {

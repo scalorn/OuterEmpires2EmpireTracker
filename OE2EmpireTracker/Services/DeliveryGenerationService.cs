@@ -314,7 +314,7 @@ namespace OE2EmpireTracker.Services
         {
             plan.Stops.Clear();
 
-            foreach (var routeStop in route.Stops.OrderBy(s => s.Sequence))
+            foreach (var routeStop in CollectionSortHelper.OrderRouteStops(route.Stops))
             {
                 string locationUUID = ResolveStopLocationUUID(routeStop);
                 Dictionary<string, int> resources;
@@ -474,7 +474,7 @@ namespace OE2EmpireTracker.Services
         {
             plan.Stops.Clear();
 
-            foreach (var routeStop in route.Stops.OrderBy(s => s.Sequence))
+            foreach (var routeStop in CollectionSortHelper.OrderRouteStops(route.Stops))
             {
                 string locationUUID = ResolveStopLocationUUID(routeStop);
                 List<FlatpackInfo> flatpacks;

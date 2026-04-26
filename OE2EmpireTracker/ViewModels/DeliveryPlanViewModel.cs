@@ -156,7 +156,7 @@ namespace OE2EmpireTracker.ViewModels
         public int AutoFillCommodities(IEnumerable<RouteStop> routeStops, Func<string, Colony> colonyFinder)
         {
             int added = 0;
-            foreach (var routeStop in routeStops.OrderBy(s => s.Sequence))
+            foreach (var routeStop in CollectionSortHelper.OrderRouteStops(routeStops))
             {
                 var colony = colonyFinder(routeStop.ColonyUUID);
                 if (colony == null) continue;
@@ -188,7 +188,7 @@ namespace OE2EmpireTracker.ViewModels
             int timeHorizonHours = 0)
         {
             int added = 0;
-            foreach (var routeStop in routeStops.OrderBy(s => s.Sequence))
+            foreach (var routeStop in CollectionSortHelper.OrderRouteStops(routeStops))
             {
                 var colony = colonyFinder(routeStop.ColonyUUID);
                 if (colony == null)
@@ -275,7 +275,7 @@ namespace OE2EmpireTracker.ViewModels
             string currentPlayerUUID = null)
         {
             int added = 0;
-            foreach (var routeStop in routeStops.OrderBy(s => s.Sequence))
+            foreach (var routeStop in CollectionSortHelper.OrderRouteStops(routeStops))
             {
                 var colony = colonyFinder(routeStop.ColonyUUID);
                 if (colony == null) continue;
@@ -385,7 +385,7 @@ namespace OE2EmpireTracker.ViewModels
             PlayerContext playerContext)
         {
             int added = 0;
-            foreach (var routeStop in routeStops.OrderBy(s => s.Sequence))
+            foreach (var routeStop in CollectionSortHelper.OrderRouteStops(routeStops))
             {
                 var colony = colonyFinder(routeStop.ColonyUUID);
                 if (colony == null) continue;

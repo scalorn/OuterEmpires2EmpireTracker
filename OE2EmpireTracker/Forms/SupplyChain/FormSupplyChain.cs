@@ -114,7 +114,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                     c.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
 
-            chains = chains.OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            chains = CollectionSortHelper.OrderSupplyChains(chains).ToList();
 
             foreach (var chain in chains)
             {
@@ -347,7 +347,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             dgvStages.Rows.Clear();
             if (_selectedChain == null) return;
 
-            foreach (var stage in _selectedChain.Stages.OrderBy(s => s.Sequence))
+            foreach (var stage in CollectionSortHelper.OrderSupplyChainStages(_selectedChain.Stages))
             {
                 string locationName = ResolveLocationName(stage.LocationType, stage.LocationUUID);
                 string resourceDisplay = stage.ResourceName;
@@ -532,7 +532,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             if (_selectedChain == null || dgvStages.SelectedRows.Count == 0) return;
             var stage = dgvStages.SelectedRows[0].Tag as SupplyChainStage;
             if (stage == null) return;
-            var sorted = _selectedChain.Stages.OrderBy(s => s.Sequence).ToList();
+            var sorted = CollectionSortHelper.OrderSupplyChainStages(_selectedChain.Stages).ToList();
             int idx = sorted.IndexOf(stage);
             if (idx <= 0) return;
             int prevSeq = sorted[idx - 1].Sequence;
@@ -547,7 +547,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             if (_selectedChain == null || dgvStages.SelectedRows.Count == 0) return;
             var stage = dgvStages.SelectedRows[0].Tag as SupplyChainStage;
             if (stage == null) return;
-            var sorted = _selectedChain.Stages.OrderBy(s => s.Sequence).ToList();
+            var sorted = CollectionSortHelper.OrderSupplyChainStages(_selectedChain.Stages).ToList();
             int idx = sorted.IndexOf(stage);
             if (idx < 0 || idx >= sorted.Count - 1) return;
             int nextSeq = sorted[idx + 1].Sequence;
@@ -566,7 +566,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 return;
             }
 
-            var sorted = _selectedChain.Stages.OrderBy(s => s.Sequence).ToList();
+            var sorted = CollectionSortHelper.OrderSupplyChainStages(_selectedChain.Stages).ToList();
             var parts = new List<string>();
             foreach (var stage in sorted)
             {
