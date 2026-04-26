@@ -131,7 +131,13 @@ namespace OE2EmpireTracker.Services
             // Clear all existing worker locks -- will be rebuilt from current state
             ClearAllWorkerLocks();
 
-            foreach (ColonyStructure structure in colony.Structures)
+            // Iterate in BuildQueueSequence order so DisplaySequence numbers (#1, #2, etc.)
+            // match the UI display order, not the serialization (UUID) order.
+            var orderedStructures = colony.Structures
+                .OrderBy(s => s.BuildQueueSequence)
+                .ToList();
+
+            foreach (ColonyStructure structure in orderedStructures)
             {
                 Models.Blueprint flatpackBlueprint = GetCachedBlueprint(structure.FlatpackBlueprintUUID, blueprintPassCache);
                 if (flatpackBlueprint != null)
@@ -195,7 +201,12 @@ namespace OE2EmpireTracker.Services
             var workers = new IdealColonyStructureWorkers();
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
 
-            foreach (ColonyStructure structure in colony.Structures)
+            // Iterate in BuildQueueSequence order to match CalculateBuilt ordering
+            var orderedStructures = colony.Structures
+                .OrderBy(s => s.BuildQueueSequence)
+                .ToList();
+
+            foreach (ColonyStructure structure in orderedStructures)
             {
                 Models.Blueprint flatpackBlueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
