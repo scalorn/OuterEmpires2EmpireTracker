@@ -1,6 +1,6 @@
 # Feature Backlog
 
-**Next available ID: BL-102** (check COMPLETED.md before assigning — IDs are shared across both files)
+**Next available ID: BL-107** (check COMPLETED.md before assigning — IDs are shared across both files)
 
 Open features and enhancements to be worked on.
 
@@ -241,3 +241,32 @@ Declared on StationStats but never set or read. Always empty string. Same patter
 ## Empire-Systems Audit Gaps
 
 The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
+
+## FilteredTextComboSet — Future Adoption Candidates
+
+Controls identified during the custom-control-adoption spec audit that don't have a paired filter TextBox today but would benefit from inline filtering. Each requires either adding a FilteredTextComboSet where no filter exists, or enhancing FilteredTextComboSet to support object binding (BindingSource with DisplayMember/ValueMember).
+
+### BL-102: FormStation — cmbStationBlueprint FilteredTextComboSet Adoption
+**Dependencies:** custom-control-adoption spec (in progress)
+**Status: New**
+`cmbStationBlueprint` in FormStation is a standard ComboBox populated with a large blueprint list (50+ items) via BindingSource with DisplayMember/ValueMember. No paired filter TextBox exists today. Users must scroll through the full list to find a station blueprint. Adopting FilteredTextComboSet here requires either (a) converting from BindingSource to plain string list with a parallel UUID list, or (b) enhancing FilteredTextComboSet to support object binding natively. Option (b) would also benefit BL-103 and BL-104.
+
+### BL-103: FormStation — cmbHoldItem and cmbMunItem FilteredTextComboSet Adoption
+**Dependencies:** custom-control-adoption spec (in progress)
+**Status: New**
+`cmbHoldItem` and `cmbMunItem` in FormStation are standard ComboBoxes populated with item lists that can be large (50+ resources, commodities, blueprints depending on the selected type). No paired filter TextBox exists today. Adding FilteredTextComboSet would improve item selection UX, especially for the Resource item type which has 50+ entries. These use a type-cascade pattern (cmbHoldType/cmbMunItem controls which items appear) — the FilteredTextComboSet replaces only the item combo, not the type selector.
+
+### BL-104: FormShipInstance — cmbAddItem FilteredTextComboSet Adoption
+**Dependencies:** custom-control-adoption spec (in progress)
+**Status: New**
+`cmbAddItem` in FormShipInstance is a standard ComboBox populated with item lists that can be large (50+ items depending on the selected type). No paired filter TextBox exists today. Same type-cascade pattern as FormStation hold items (cmbAddType controls which items appear). Adding FilteredTextComboSet would improve item selection UX. Same BindingSource consideration as BL-102.
+
+### BL-105: FormSupplyChain — cmbLocation, cmbResource, cmbRoute FilteredTextComboSet Adoption
+**Dependencies:** custom-control-adoption spec (in progress)
+**Status: New**
+Three ComboBoxes in FormSupplyChain's stage editor are populated dynamically but have no paired filter TextBox: `cmbLocation` (colonies/stations/asteroids/ships — can be 10-50 items), `cmbResource` (50+ resources), and `cmbRoute` (5-20 routes). These use a type-cascade pattern (cmbLocationType/cmbStageType controls which items appear). Adding FilteredTextComboSet to cmbResource would be most valuable (large list). cmbLocation and cmbRoute are smaller but would benefit from consistent UX.
+
+### BL-106: FormBuildPlanner — FilteredTextComboSet Adoption for Item Pickers
+**Dependencies:** custom-control-adoption spec (in progress)
+**Status: New**
+FormBuildPlanner has multiple ComboBoxes for selecting blueprints, resources, commodities, routes, plans, and surveys. None have paired filter TextBoxes — the form uses cascading type selectors instead. The blueprint and resource pickers have large item lists (50-100+ items) that would benefit from inline filtering. This is a larger conversion since the form has no existing filter pattern to replace — FilteredTextComboSet controls would need to be added fresh rather than replacing existing TextBox+ComboBox pairs.
