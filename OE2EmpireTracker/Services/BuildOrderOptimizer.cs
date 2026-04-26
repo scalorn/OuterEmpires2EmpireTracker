@@ -50,7 +50,8 @@ namespace OE2EmpireTracker.Services
             var supportPool = new List<ColonyStructure>();
 
             // Sort by BuildQueueSequence so primaries preserve the user's intended order.
-            // The underlying list may be in UUID order (from serialization sort).
+            // The underlying list is already sorted on load (InitColonies), but sort here
+            // defensively in case the list was modified after load.
             var orderedStructures = colony.Structures
                 .OrderBy(s => s.BuildQueueSequence)
                 .ToList();

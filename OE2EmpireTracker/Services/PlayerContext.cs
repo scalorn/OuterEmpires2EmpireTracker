@@ -654,6 +654,24 @@ namespace OE2EmpireTracker.Services
             List<Colony> list = new List<Colony>(playerRoot.Colony);
             list = list.OrderBy(p => p.PlanetName).ToList();
 
+            // Sort each colony's structures by BuildQueueSequence so the list is always
+            // in display order. The serialization sort stores structures in UUID order for
+            // deterministic JSON diffs, but BuildQueueSequence preserves the user's build order.
+            // For existing data where BuildQueueSequence was never set (all zeros), stamp
+            // sequential values based on the current list position (one-time migration).
+            foreach (var colony in list)
+            {
+                if (colony.Structures != null && colony.Structures.Count > 0)
+                {
+                    if (colony.Structures[0].BuildQueueSequence == 0)
+                    {
+                        colony.StampBuildQueueSequence();
+                    }
+
+                    colony.Structures.Sort((a, b) => a.BuildQueueSequence.CompareTo(b.BuildQueueSequence));
+                }
+            }
+
             _colonyList = new List<Colony>(list);
             // Initialize the BindingSource component
             BindingSourceColony = new BindingSource();

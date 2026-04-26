@@ -487,14 +487,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     selectedColony?.ColonyName ?? selectedColony?.PlanetName ?? "(null)",
                     selectedColony?.UUID ?? "(null)");
 
-                // Ensure BuildQueueSequence is stamped (one-time migration for existing data
-                // loaded from JSON where all values default to 0)
-                if (selectedColony != null && selectedColony.Structures.Count > 0
-                    && selectedColony.Structures[0].BuildQueueSequence == 0)
-                {
-                    selectedColony.StampBuildQueueSequence();
-                }
-
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
 
                 // Immediate: show identity fields on UI thread
@@ -861,12 +853,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
             }
 
-            // Sort by BuildQueueSequence so UI order is independent of serialization order
-            if (structureVMs is List<ColonyStructureViewModel> sortableList)
-            {
-                sortableList.Sort((a, b) => a.Data.BuildQueueSequence.CompareTo(b.Data.BuildQueueSequence));
-            }
-
+            // Structures are already in BuildQueueSequence order (sorted on load in InitColonies)
             int needed = structureVMs.Count;
 
             long t0 = sw.ElapsedMilliseconds;
