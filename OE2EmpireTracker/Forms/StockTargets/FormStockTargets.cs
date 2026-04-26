@@ -133,7 +133,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                     p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
 
-            plans = plans.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            plans = CollectionSortHelper.OrderStockPlans(plans).ToList();
 
             foreach (var plan in plans)
             {
@@ -249,7 +249,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             var buildPlans = playerContext.GetCurrentPlayerBuildPlans();
             var items = new List<KeyValuePair<string, string>>();
             items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
-            foreach (var bp in buildPlans.OrderBy(p => p.Name))
+            foreach (var bp in CollectionSortHelper.OrderBuildPlans(buildPlans))
                 items.Add(new KeyValuePair<string, string>(bp.UUID, bp.Name));
 
             cmbReplenishmentPlan.DataSource = items;
@@ -275,7 +275,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             switch (type)
             {
                 case "ShipTemplate":
-                    foreach (var t in playerContext.GetCurrentPlayerShipTemplates().OrderBy(t => t.Name))
+                    foreach (var t in CollectionSortHelper.OrderShipTemplates(playerContext.GetCurrentPlayerShipTemplates()))
                         items.Add(new KeyValuePair<string, string>(t.UUID, t.Name));
                     break;
                 case "Commodity":
@@ -304,7 +304,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                     var blueprints = playerContext.GetAllBlueprints();
                     if (blueprints != null)
                     {
-                        foreach (var bp in blueprints.Where(b => !string.IsNullOrEmpty(b.Name)).OrderBy(b => b.ExtendedName))
+                        foreach (var bp in CollectionSortHelper.OrderBlueprints(blueprints.Where(b => !string.IsNullOrEmpty(b.Name))))
                         {
                             items.Add(new KeyValuePair<string, string>(bp.UUID, bp.ExtendedName));
                         }
@@ -338,11 +338,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
             switch (scope)
             {
                 case StockTargetScope.Colony:
-                    foreach (var c in playerContext.ColonyList.OrderBy(c => c.ColonyName))
+                    foreach (var c in CollectionSortHelper.OrderColonies(playerContext.ColonyList))
                         items.Add(new KeyValuePair<string, string>(c.UUID, c.ColonyName));
                     break;
                 case StockTargetScope.Station:
-                    foreach (var s in playerContext.StationList.OrderBy(s => s.Name))
+                    foreach (var s in CollectionSortHelper.OrderStations(playerContext.StationList))
                         items.Add(new KeyValuePair<string, string>(s.UUID, s.Name));
                     break;
             }
@@ -791,7 +791,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                     p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
 
-            profiles = profiles.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            profiles = CollectionSortHelper.OrderStockProfiles(profiles).ToList();
 
             foreach (var profile in profiles)
             {
@@ -914,7 +914,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             }
 
             var items = new List<KeyValuePair<string, string>>();
-            foreach (var plan in plans.OrderBy(p => p.Name))
+            foreach (var plan in CollectionSortHelper.OrderStockPlans(plans))
                 items.Add(new KeyValuePair<string, string>(plan.UUID, plan.Name));
 
             if (items.Count > 0)

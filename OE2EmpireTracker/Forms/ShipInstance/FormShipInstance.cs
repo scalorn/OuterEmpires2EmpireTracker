@@ -119,7 +119,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             string filter = txtFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
                 ships = ships.Where(s => s.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-            ships = ships.OrderBy(s => s.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            ships = CollectionSortHelper.OrderShips(ships).ToList();
 
             var refCounter = new ShipReferenceCounter(
                 playerContext.GetCurrentPlayerPlans(),
@@ -286,9 +286,9 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             using var guard = new ProgrammaticUpdateGuard(this);
             var names = new List<string>();
             _hullUUIDs = new List<string>();
-            var hulls = playerContext.GetAllBlueprints()
-                .Where(bp => bp.BluePrintType == "Hull")
-                .OrderBy(bp => bp.ExtendedName);
+            var hulls = CollectionSortHelper.OrderBlueprints(
+                playerContext.GetAllBlueprints()
+                .Where(bp => bp.BluePrintType == "Hull"));
             foreach (var bp in hulls)
             {
                 names.Add(bp.ExtendedName);
@@ -409,9 +409,9 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     var itemList = new List<string>();
                     itemList.Add("(empty)");
                     uuidByIndex.Add(string.Empty);
-                    var eligibleBps = playerContext.GetAllBlueprints()
-                        .Where(bp => def.BlueprintTypes.Contains(bp.BluePrintType) && bp.Class == hullClass)
-                        .OrderBy(bp => bp.ExtendedName);
+                    var eligibleBps = CollectionSortHelper.OrderBlueprints(
+                        playerContext.GetAllBlueprints()
+                        .Where(bp => def.BlueprintTypes.Contains(bp.BluePrintType) && bp.Class == hullClass));
                     foreach (var bp in eligibleBps)
                     {
                         itemList.Add(bp.ExtendedName);
@@ -850,7 +850,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                     DropDownStyle = ComboBoxStyle.DropDownList
                 };
 
-                foreach (var t in templates.OrderBy(t => t.Name))
+                foreach (var t in CollectionSortHelper.OrderShipTemplates(templates))
                     cmb.Items.Add(t);
                 cmb.DisplayMember = "Name";
                 if (cmb.Items.Count > 0) cmb.SelectedIndex = 0;

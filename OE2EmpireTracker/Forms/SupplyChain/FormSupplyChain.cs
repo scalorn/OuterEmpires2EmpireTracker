@@ -285,19 +285,19 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             switch (locType)
             {
                 case DestinationType.Colony:
-                    foreach (var c in playerContext.ColonyList.OrderBy(c => c.ColonyName))
+                    foreach (var c in CollectionSortHelper.OrderColonies(playerContext.ColonyList))
                         items.Add(new KeyValuePair<string, string>(c.UUID, c.ColonyName));
                     break;
                 case DestinationType.Station:
-                    foreach (var s in playerContext.StationList.OrderBy(s => s.Name))
+                    foreach (var s in CollectionSortHelper.OrderStations(playerContext.StationList))
                         items.Add(new KeyValuePair<string, string>(s.UUID, s.Name));
                     break;
                 case DestinationType.Asteroid:
-                    foreach (var a in playerContext.AsteroidList.OrderBy(a => a.Name))
+                    foreach (var a in CollectionSortHelper.OrderAsteroids(playerContext.AsteroidList))
                         items.Add(new KeyValuePair<string, string>(a.UUID, a.Name));
                     break;
                 case DestinationType.Ship:
-                    foreach (var sh in playerContext.ShipList.OrderBy(sh => sh.Name))
+                    foreach (var sh in CollectionSortHelper.OrderShips(playerContext.ShipList))
                         items.Add(new KeyValuePair<string, string>(sh.UUID, sh.Name));
                     break;
             }
@@ -320,7 +320,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             cmbRoute.DataSource = null;
             cmbRoute.Items.Clear();
 
-            var routes = playerContext.DeliveryRouteList.OrderBy(r => r.Name).ToList();
+            var routes = CollectionSortHelper.OrderDeliveryRoutes(playerContext.DeliveryRouteList).ToList();
             var items = new List<KeyValuePair<string, string>>();
             items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
             foreach (var r in routes)

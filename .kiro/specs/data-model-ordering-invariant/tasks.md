@@ -196,7 +196,7 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
 - [x] 10. Checkpoint - Verify all consumer refactoring builds and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Create steering file for AI compliance
+- [x] 11. Create steering file for AI compliance
   - [x] 11.1 Create `.kiro/steering/data-model-ordering.md`
     - Document the unordered-bag invariant statement
     - Document the three approved consumption patterns with examples
@@ -207,7 +207,7 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - Set inclusion to `auto` (always loaded into AI context)
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 8.8_
 
-- [ ] 12. Create inline sort audit check
+- [x] 12. Create inline sort audit check
   - [x] 12.1 Create `.kiro/tools/inline-sort-check.js`
     - Scan all `.cs` files in `OE2EmpireTracker/` and `OE2EmpireTracker.Tests/` (excluding `bin/`, `obj/`, `Designer.cs`)
     - Skip `CollectionSortHelper.cs` and `SerializationSorter.cs`
@@ -220,7 +220,7 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - Add the new check to the audit runner
     - _Requirements: 9.3_
 
-- [~] 13. Run audit to verify zero inline sort findings
+- [-] 13. Run audit to verify zero inline sort findings
   - Run `node .kiro/tools/inline-sort-check.js` and verify exit code 0
   - Run `node .kiro/tools/audit.js` and verify no new findings from the inline sort check
   - _Requirements: 9.4_

@@ -2213,8 +2213,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 filteredList = filteredList
                     .Where(s => s.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0
                              || s.PlanetName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .OrderBy(s => s.PlanetName)
                     .ToList();
+                filteredList = CollectionSortHelper.OrderSurveys(filteredList).ToList();
             }
 
             filteredList.Insert(0, new Models.Survey());
@@ -2979,7 +2979,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             switch (destType)
             {
                 case DestinationType.Colony:
-                    foreach (var c in playerContext.ColonyList.OrderBy(c => c.ColonyName))
+                    foreach (var c in CollectionSortHelper.OrderColonies(playerContext.ColonyList))
                     {
                         if (string.IsNullOrEmpty(filter) || c.ColonyName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
                         {
@@ -2989,7 +2989,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
                     break;
                 case DestinationType.Station:
-                    foreach (var s in playerContext.StationList.OrderBy(s => s.Name))
+                    foreach (var s in CollectionSortHelper.OrderStations(playerContext.StationList))
                     {
                         if (string.IsNullOrEmpty(filter) || s.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
                         {
@@ -3018,7 +3018,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbOverflowRoute.DataSource = null;
             cmbOverflowRoute.Items.Clear();
             string filter = txtOverflowRouteFilter.Text.Trim();
-            var routes = playerContext.DeliveryRouteList.OrderBy(r => r.Name).ToList();
+            var routes = CollectionSortHelper.OrderDeliveryRoutes(playerContext.DeliveryRouteList).ToList();
             var items = new List<KeyValuePair<string, string>>();
             items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
             foreach (var r in routes)

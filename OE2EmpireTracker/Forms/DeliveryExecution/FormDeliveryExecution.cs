@@ -174,8 +174,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             var plans = playerContext.GetCurrentPlayerPlans()
                 .Where(p => p.RouteUUID == routeUUID && !p.Completed)
                 .Where(p => string.IsNullOrEmpty(filter) || (p.Name ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
-                .OrderBy(p => p.Name)
                 .ToList();
+            plans = CollectionSortHelper.OrderDeliveryPlans(plans).ToList();
 
             var items = new List<DropdownItem>();
             items.Add(new DropdownItem { UUID = string.Empty, Display = string.Empty });
@@ -228,7 +228,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             var ships = playerContext.GetCurrentPlayerShips();
             var items = new List<DropdownItem>();
             items.Add(new DropdownItem { UUID = string.Empty, Display = "(no ship)" });
-            foreach (var ship in ships.OrderBy(s => s.Name))
+            foreach (var ship in CollectionSortHelper.OrderShips(ships))
             {
                 items.Add(new DropdownItem { UUID = ship.UUID, Display = ship.Name });
             }

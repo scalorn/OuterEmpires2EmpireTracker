@@ -107,7 +107,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 plans = plans.Where(p => p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
 
-            plans = plans.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            plans = CollectionSortHelper.OrderPricingPlans(plans).ToList();
 
             foreach (var plan in plans)
             {

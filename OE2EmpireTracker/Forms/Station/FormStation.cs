@@ -116,7 +116,7 @@ namespace OE2EmpireTracker.Forms.Station
             string filter = txtFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
                 stations = stations.Where(s => s.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-            stations = stations.OrderBy(s => s.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            stations = CollectionSortHelper.OrderStations(stations).ToList();
 
             var refCounter = new StationReferenceCounter(
                 playerContext.DeliveryRouteList.ToList(),
@@ -550,9 +550,9 @@ namespace OE2EmpireTracker.Forms.Station
             cmbStationBlueprint.Items.Clear();
 
             // Station hull blueprints
-            var blueprints = playerContext.GetAllBlueprints()
-                .Where(bp => !string.IsNullOrEmpty(bp.Name))
-                .OrderBy(bp => bp.ExtendedName)
+            var blueprints = CollectionSortHelper.OrderBlueprints(
+                playerContext.GetAllBlueprints()
+                .Where(bp => !string.IsNullOrEmpty(bp.Name)))
                 .ToList();
 
             var items = new List<KeyValuePair<string, string>>();

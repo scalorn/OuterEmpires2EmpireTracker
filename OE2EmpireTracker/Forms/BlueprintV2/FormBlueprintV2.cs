@@ -1724,7 +1724,7 @@ namespace OE2EmpireTracker
             var plans = playerContext.GetCurrentPlayerPricingPlans();
             var items = new List<object>();
             items.Add(new { Name = "(none)", UUID = string.Empty });
-            foreach (var p in plans.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase))
+            foreach (var p in CollectionSortHelper.OrderPricingPlans(plans))
                 items.Add(new { Name = p.Name, UUID = p.UUID });
 
             cmbPricingPlan.DisplayMember = "Name";

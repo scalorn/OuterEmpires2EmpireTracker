@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Forms.Market
             AddLabel("Station:", 10, y);
             cmbStation = new ComboBox { Left = 120, Top = y, Width = 230, DropDownStyle = ComboBoxStyle.DropDownList };
             cmbStation.Items.Add(new StationItem { Display = "(None)", UUID = string.Empty });
-            foreach (var s in playerContext.GetCurrentPlayerStations().OrderBy(s => s.Name))
+            foreach (var s in CollectionSortHelper.OrderStations(playerContext.GetCurrentPlayerStations()))
                 cmbStation.Items.Add(new StationItem { Display = s.Name, UUID = s.UUID });
             this.Controls.Add(cmbStation);
             y += 30;

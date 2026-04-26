@@ -135,7 +135,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                 factions = factions.Where(f => f.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
 
-            factions = factions.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            factions = CollectionSortHelper.OrderFactions(factions).ToList();
 
             var refCounter = new FactionReferenceCounter(
                 playerContext.ExternalCharacterList,
@@ -330,7 +330,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                 characters = characters.Where(c => c.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
 
-            characters = characters.OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            characters = CollectionSortHelper.OrderExternalCharacters(characters).ToList();
 
             foreach (var character in characters)
             {
@@ -445,7 +445,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             cmbCharFaction.Items.Clear();
             cmbCharFaction.Items.Add(new FactionComboItem("(none)", string.Empty));
 
-            foreach (var faction in playerContext.FactionList.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase))
+            foreach (var faction in CollectionSortHelper.OrderFactions(playerContext.FactionList))
             {
                 cmbCharFaction.Items.Add(new FactionComboItem(faction.Name, faction.UUID));
             }

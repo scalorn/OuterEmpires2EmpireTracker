@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Controls
 {
@@ -37,7 +38,7 @@ namespace OE2EmpireTracker.Controls
 
             var items = new List<DropdownItem>();
             items.Add(new DropdownItem { UUID = string.Empty, Display = string.Empty });
-            foreach (var route in routes.OrderBy(r => r.Name))
+            foreach (var route in CollectionSortHelper.OrderDeliveryRoutes(routes))
             {
                 if (!string.IsNullOrEmpty(filter) && route.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0)
                     continue;

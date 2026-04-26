@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 plans = plans.Where(p => p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
 
-            plans = plans.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            plans = CollectionSortHelper.OrderBuildPlans(plans).ToList();
 
             var refCounter = new BuildPlanReferenceCounter(playerContext.StockPlanList);
 
@@ -662,7 +662,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                         bp.ExtendedName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
                 }
 
-                foreach (var bp in blueprints.OrderBy(bp => bp.ExtendedName))
+                foreach (var bp in CollectionSortHelper.OrderBlueprints(blueprints))
                 {
                     cmbItem.Items.Add(new ItemEntry { Display = bp.ExtendedName, ID = bp.UUID });
                 }
@@ -709,7 +709,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                         bp.ExtendedName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
                 }
 
-                foreach (var bp in blueprints.OrderBy(bp => bp.ExtendedName))
+                foreach (var bp in CollectionSortHelper.OrderBlueprints(blueprints))
                 {
                     cmbItem.Items.Add(new ItemEntry { Display = bp.ExtendedName, ID = bp.UUID });
                 }
@@ -1190,7 +1190,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     DropDownStyle = ComboBoxStyle.DropDownList
                 };
 
-                foreach (var r in routes.OrderBy(r => r.Name))
+                foreach (var r in CollectionSortHelper.OrderDeliveryRoutes(routes))
                     cmb.Items.Add(r);
                 cmb.DisplayMember = "Name";
                 if (cmb.Items.Count > 0) cmb.SelectedIndex = 0;
@@ -1249,7 +1249,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     CheckOnClick = true
                 };
 
-                foreach (var p in allPlans.OrderBy(p => p.Name))
+                foreach (var p in CollectionSortHelper.OrderBuildPlans(allPlans))
                     clb.Items.Add(p.Name, false);
 
                 var btnOk = new Button
@@ -1272,7 +1272,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     return null;
 
                 var selected = new List<BuildPlan>();
-                var orderedPlans = allPlans.OrderBy(p => p.Name).ToList();
+                var orderedPlans = CollectionSortHelper.OrderBuildPlans(allPlans).ToList();
                 for (int i = 0; i < clb.Items.Count; i++)
                 {
                     if (clb.GetItemChecked(i))
@@ -1515,7 +1515,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             cmbSurvey.Items.Add(new ItemEntry { Display = "(none)", ID = string.Empty });
 
             var surveys = playerContext.GetCurrentPlayerSurveys();
-            foreach (var s in surveys.OrderBy(s => s.Name))
+            foreach (var s in CollectionSortHelper.OrderSurveys(surveys))
                 cmbSurvey.Items.Add(new ItemEntry { Display = s.Name, ID = s.UUID });
             cmbSurvey.SelectedIndex = 0;
             sw.Stop();

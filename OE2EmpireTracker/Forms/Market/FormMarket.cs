@@ -70,7 +70,7 @@ namespace OE2EmpireTracker.Forms.Market
             var listings = playerContext.GetCurrentPlayerListings();
             var refCounter = new MarketListingReferenceCounter(playerContext.MarketTransactionList);
 
-            foreach (var listing in listings.OrderBy(l => l.ItemName))
+            foreach (var listing in CollectionSortHelper.OrderMarketListings(listings))
             {
                 string stationName = ResolveStationName(listing.StationUUID);
                 string condition = listing.MaxHP > 0
@@ -367,7 +367,8 @@ namespace OE2EmpireTracker.Forms.Market
 
             var plans = playerContext.PricingPlanList
                 .Where(p => p.OwnerUUID == playerContext.CurrentPlayerUUID)
-                .OrderBy(p => p.Name).ToList();
+                .ToList();
+            plans = CollectionSortHelper.OrderPricingPlans(plans).ToList();
 
             var items = new List<KeyValuePair<string, string>>();
             items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
@@ -402,8 +403,8 @@ namespace OE2EmpireTracker.Forms.Market
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            var stations = playerContext.GetCurrentPlayerStations()
-                .OrderBy(s => s.Name).ToList();
+            var stations = CollectionSortHelper.OrderStations(
+                playerContext.GetCurrentPlayerStations()).ToList();
 
             cmbTxStation.Items.Clear();
             cmbTxStation.Items.Add(new StationEntry { Display = "(All)", UUID = string.Empty });

@@ -114,7 +114,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                     a.SystemName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
 
-            asteroids = asteroids.OrderBy(a => a.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            asteroids = CollectionSortHelper.OrderAsteroids(asteroids).ToList();
 
             var refCounter = new AsteroidReferenceCounter(
                 playerContext.SurveyList.ToList(),

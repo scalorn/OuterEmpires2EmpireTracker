@@ -233,9 +233,9 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 PopulatePlanDropdown();
 
                 // Auto-select the first open (non-completed) plan
-                var firstOpenPlan = playerContext.GetCurrentPlayerPlans()
-                    .Where(p => p.RouteUUID == route.UUID && !p.Completed)
-                    .OrderBy(p => p.Name)
+                var firstOpenPlan = CollectionSortHelper.OrderDeliveryPlans(
+                    playerContext.GetCurrentPlayerPlans()
+                    .Where(p => p.RouteUUID == route.UUID && !p.Completed))
                     .FirstOrDefault();
                 if (firstOpenPlan != null)
                 {
@@ -306,8 +306,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
             if (destType == DestinationType.Colony)
             {
-                var colonies = playerContext.GetCurrentPlayerColonies()
-                    .OrderBy(c => c.PlanetName)
+                var colonies = CollectionSortHelper.OrderColonies(
+                    playerContext.GetCurrentPlayerColonies())
                     .ToList();
 
                 if (chkPreventDuplicates.Checked)
@@ -328,8 +328,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             }
             else if (destType == DestinationType.Station)
             {
-                var stations = playerContext.GetCurrentPlayerStations()
-                    .OrderBy(s => s.Name)
+                var stations = CollectionSortHelper.OrderStations(
+                    playerContext.GetCurrentPlayerStations())
                     .ToList();
 
                 if (chkPreventDuplicates.Checked)
@@ -347,8 +347,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             }
             else if (destType == DestinationType.Asteroid)
             {
-                var asteroids = playerContext.SnapshotAsteroidList()
-                    .OrderBy(a => a.Name)
+                var asteroids = CollectionSortHelper.OrderAsteroids(
+                    playerContext.SnapshotAsteroidList())
                     .ToList();
 
                 if (chkPreventDuplicates.Checked)
@@ -666,11 +666,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             string filter = txtPlanFilter.Text ?? string.Empty;
             bool showCompleted = chkShowCompleted.Checked;
 
-            var plans = playerContext.GetCurrentPlayerPlans()
+            var plans = CollectionSortHelper.OrderDeliveryPlans(
+                playerContext.GetCurrentPlayerPlans()
                 .Where(p => p.RouteUUID == routeUUID)
                 .Where(p => showCompleted || !p.Completed)
-                .Where(p => string.IsNullOrEmpty(filter) || (p.Name ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
-                .OrderBy(p => p.Name)
+                .Where(p => string.IsNullOrEmpty(filter) || (p.Name ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0))
                 .ToList();
 
             var items = new List<PlanDropdownItem>();

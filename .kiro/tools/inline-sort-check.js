@@ -108,6 +108,46 @@ const EXEMPT_PATTERNS = [
     // SortedDictionaryContractResolver (JSON infrastructure)
     /dict\.Keys\.Cast/,
 
+    // Static enum/constant list sorts (not persisted model collections)
+    /Resource\.Resources\.OrderBy/,
+    /ResourcePurity\.Purities/,
+    /Commodity\.ResourceMapByEnum\.Values\.OrderBy/,
+    /Commodity\.Commodities/,
+    /WorkerDetail\.WorkerDetails/,
+    /commodityNames\.OrderBy/,
+
+    // EmpireContext static data sorts (blueprint types, tech levels, resources, etc.)
+    /empireContext\.\w+List\s*\n?\s*\.Where.*\n?\s*\.OrderBy/,
+    /empireContext\.BlueprintTypeList/,
+    /EmpireContext\.GetInstance\(\)\?\.ResourceList/,
+    /EmpireContext\.GetInstance\(\)\?\.CommodityList/,
+
+    // Local DTO/summary sorts (not model collections)
+    /summary\.ItemBreakdown\.OrderBy/,
+    /rows\.OrderBy\s*\(\s*r\s*=>\s*r\.ColonyName/,
+    /\.ThenBy\s*\(\s*r\s*=>\s*r\.StructureName/,
+
+    // ItemBag dictionary value sorts (display-only iteration of dictionary values)
+    /bag\.Items\.OrderBy\s*\(\s*k\s*=>\s*k\.Value\.Name/,
+    /crate\.Contents\.Items\.OrderBy\s*\(\s*k\s*=>\s*k\.Value\.Name/,
+    /MunitionsHold\.Items\.OrderBy\s*\(\s*k\s*=>\s*k\.Value\.Name/,
+
+    // Local filtered list sorts from static data (Resource, Commodity, WorkerDetail copies)
+    /filteredList\s*=\s*filteredList[\s\S]*\.OrderBy/,
+
+    // Local variable sorts from EmpireContext static data (resources, commodities assigned from EmpireContext/Resource.Resources)
+    // These are local variables assigned from static enum lists, not model collections
+    /resources\.OrderBy\s*\(\s*r\s*=>\s*r\.Name\s*\)/,
+    /resources\.OrderBy\s*\(\s*x\s*=>\s*x\.Name\s*\)/,
+    /commodities\.OrderBy\s*\(\s*c\s*=>\s*c\.Name\s*\)/,
+
+    // BlueprintTypeList sorts (static game data, not persisted model collections)
+    /flatpackTypes\s*.*\.OrderBy/,
+    /\.Where\s*\(\s*bt\s*=>\s*bt\.Id\.IsFlatpack\(\)\s*\)\s*\n?\s*\.OrderBy/,
+
+    // Local grouping sorts (.GroupBy().OrderBy(g => g.Key))
+    /\.GroupBy\s*\(.*\)\s*\n?\s*\.OrderBy\s*\(\s*g\s*=>\s*g\.Key\s*\)/,
+
     // Test assertion sorts — sorting extracted scalars for comparison
     // These sort local projections (.Select(...).OrderBy) for deterministic assertions
     /\.UUID\s*\)\s*\.\s*OrderBy/,
@@ -147,11 +187,13 @@ function findCsFiles(dir, results) {
     return results;
 }
 
-function isExempt(line, prevLine) {
+function isExempt(line, prevLine, prevPrevLine) {
     for (const pattern of EXEMPT_PATTERNS) {
         if (pattern.test(line)) return true;
         // Also check previous line + current line together (multi-line expressions)
         if (prevLine && pattern.test(prevLine + ' ' + line.trim())) return true;
+        // Check 2 lines back for multi-line chains (e.g. filteredList = filteredList\n.Where(...)\n.OrderBy(...))
+        if (prevPrevLine && pattern.test(prevPrevLine + ' ' + prevLine.trim() + ' ' + line.trim())) return true;
     }
     return false;
 }
@@ -189,9 +231,10 @@ for (const filePath of allFiles) {
         if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('///')) continue;
 
         const prevLine = i > 0 ? lines[i - 1] : '';
+        const prevPrevLine = i > 1 ? lines[i - 2] : '';
 
         // Check exemptions
-        if (isExempt(line, prevLine)) continue;
+        if (isExempt(line, prevLine, prevPrevLine)) continue;
 
         const lineRelFile = path.relative('.', filePath).replace(/\\/g, '/');
         const lineNum = i + 1;

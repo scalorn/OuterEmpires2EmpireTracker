@@ -111,7 +111,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             string filter = txtFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
                 templates = templates.Where(t => t.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-            templates = templates.OrderBy(t => t.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            templates = CollectionSortHelper.OrderShipTemplates(templates).ToList();
 
             var refCounter = new ShipTemplateReferenceCounter(
                 playerContext.SnapshotShipList(),
@@ -192,9 +192,9 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             using var guard = new ProgrammaticUpdateGuard(this);
             var names = new List<string>();
             _hullUUIDs = new List<string>();
-            var hulls = playerContext.GetAllBlueprints()
-                .Where(bp => bp.BluePrintType == "Hull")
-                .OrderBy(bp => bp.ExtendedName);
+            var hulls = CollectionSortHelper.OrderBlueprints(
+                playerContext.GetAllBlueprints()
+                .Where(bp => bp.BluePrintType == "Hull"));
             foreach (var bp in hulls)
             {
                 names.Add(bp.ExtendedName);
@@ -265,9 +265,9 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     var itemList = new List<string>();
                     itemList.Add("(empty)");
                     uuidByIndex.Add(string.Empty);
-                    var eligibleBps = playerContext.GetAllBlueprints()
-                        .Where(bp => def.BlueprintTypes.Contains(bp.BluePrintType) && bp.Class == hullClass)
-                        .OrderBy(bp => bp.ExtendedName);
+                    var eligibleBps = CollectionSortHelper.OrderBlueprints(
+                        playerContext.GetAllBlueprints()
+                        .Where(bp => def.BlueprintTypes.Contains(bp.BluePrintType) && bp.Class == hullClass));
                     foreach (var bp in eligibleBps)
                     {
                         itemList.Add(bp.ExtendedName);
