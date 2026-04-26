@@ -494,16 +494,6 @@ namespace OE2EmpireTracker.Services
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
 
-            // Re-sort colony structures by BuildQueueSequence after serialization sort
-            // mutated them to UUID order. This keeps the live list in display order.
-            foreach (var colony in _colonyList)
-            {
-                if (colony.Structures != null && colony.Structures.Count > 1)
-                {
-                    colony.Structures.Sort((a, b) => a.BuildQueueSequence.CompareTo(b.BuildQueueSequence));
-                }
-            }
-
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Player data saved to {0}", FilePath);
         }
@@ -664,21 +654,14 @@ namespace OE2EmpireTracker.Services
             List<Colony> list = new List<Colony>(playerRoot.Colony);
             list = list.OrderBy(p => p.PlanetName).ToList();
 
-            // Sort each colony's structures by BuildQueueSequence so the list is always
-            // in display order. The serialization sort stores structures in UUID order for
-            // deterministic JSON diffs, but BuildQueueSequence preserves the user's build order.
-            // For existing data where BuildQueueSequence was never set (all zeros), stamp
-            // sequential values based on the current list position (one-time migration).
+            // Stamp BuildQueueSequence for existing data where values are all zero (migration).
+            // Don't sort the list — consumers sort by BuildQueueSequence themselves.
             foreach (var colony in list)
             {
-                if (colony.Structures != null && colony.Structures.Count > 0)
+                if (colony.Structures != null && colony.Structures.Count > 0
+                    && colony.Structures[0].BuildQueueSequence == 0)
                 {
-                    if (colony.Structures[0].BuildQueueSequence == 0)
-                    {
-                        colony.StampBuildQueueSequence();
-                    }
-
-                    colony.Structures.Sort((a, b) => a.BuildQueueSequence.CompareTo(b.BuildQueueSequence));
+                    colony.StampBuildQueueSequence();
                 }
             }
 

@@ -853,7 +853,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
             }
 
-            // Structures are already in BuildQueueSequence order (sorted on load in InitColonies)
+            // Structures are sorted by BuildQueueSequence for display — never trust
+            // the raw list order (serialization sort may have changed it to UUID order)
+            if (structureVMs is List<ColonyStructureViewModel> sortableList)
+            {
+                sortableList.Sort((a, b) => a.Data.BuildQueueSequence.CompareTo(b.Data.BuildQueueSequence));
+            }
+
             int needed = structureVMs.Count;
 
             long t0 = sw.ElapsedMilliseconds;
