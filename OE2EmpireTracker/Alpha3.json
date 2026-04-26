@@ -45313,6 +45313,15 @@
           "CurrentAttitude": ""
         },
         {
+          "UUID": "29e22dbe-9ae5-4349-8d04-178cfe7661e4",
+          "FlatpackBlueprintUUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
+          "displaySequence": 5,
+          "buildQueueSequence": 54,
+          "Properties": {},
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
           "UUID": "2e23f23e-ffb4-4939-8ae0-3522176923ae",
           "FlatpackBlueprintUUID": "db010e53-d097-5d36-8599-89986d570414",
           "displaySequence": 2,
@@ -45921,6 +45930,15 @@
           "CurrentAttitude": ""
         },
         {
+          "UUID": "9defede4-56d5-486b-8c40-c1ed9db82907",
+          "FlatpackBlueprintUUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
+          "displaySequence": 4,
+          "buildQueueSequence": 52,
+          "Properties": {},
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
           "UUID": "9ff188a7-8620-4ac9-a032-0718bc3f141e",
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
           "displaySequence": 5,
@@ -46337,9 +46355,18 @@
           "CurrentAttitude": ""
         },
         {
-          "UUID": "fb14c552-174a-4f6c-976a-bec0eb81ae9e",
+          "UUID": "f9912bee-bb3a-4513-8968-a454b8b524a0",
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 13,
+          "buildQueueSequence": 53,
+          "Properties": {},
+          "AssignedWorkers": {},
+          "CurrentAttitude": ""
+        },
+        {
+          "UUID": "fb14c552-174a-4f6c-976a-bec0eb81ae9e",
+          "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
+          "displaySequence": 14,
           "buildingID": 14198,
           "buildQueueSequence": 51,
           "Properties": {
@@ -46378,33 +46405,63 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-04-26T19:04:16Z",
+      "LastImportDateTime": "2026-04-26T19:10:29Z",
       "Locks": {
-        "555af048-1a71-4c26-956e-31e9ba0dfa3e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "2e23f23e-ffb4-4939-8ae0-3522176923ae": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "833d6977-b3dc-44a0-94ec-7c0b4c626cf3": {
-          "WorkDetail:SpecialistDetail": 1
-        },
-        "41a21f16-00d8-4296-bad5-2c61c631b7e2": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "354c41a8-45c2-491a-8f13-28c4c8fe18be": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
         "71ee37ef-7994-4b88-b2e0-73cc3e5782ea": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "de55f1d2-632a-4230-8c87-16f023dbacbb": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "50c3ad3e-f04b-40cf-a187-e19becb7821c": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "83ec51bb-8af8-468f-95e4-14efe7a62bba": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "c0459c5b-97d3-4095-988f-b86bab4719ef": {
           "WorkDetail:BlueCollarDetail": 1
         },
+        "555af048-1a71-4c26-956e-31e9ba0dfa3e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "354c41a8-45c2-491a-8f13-28c4c8fe18be": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "9727c11e-4911-4b51-b891-9193cc6fab50": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "833d6977-b3dc-44a0-94ec-7c0b4c626cf3": {
+          "WorkDetail:SpecialistDetail": 1
+        },
+        "caa87dff-e384-442b-9c5d-5a6b05cc0607": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "8351ef49-09cb-4d7d-9b06-ca6fbeec905c": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "48b9e5cf-bdfd-4ef7-aefc-4c6b51a6a838": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
         "46119860-fcba-4f3c-b106-f34f1696a720": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "50c3ad3e-f04b-40cf-a187-e19becb7821c": {
+        "52fb9afd-01ea-44c1-8b0b-b28ef6ca8c04": {
+          "WorkDetail:WhiteCollarDetail": 1
+        },
+        "2e23f23e-ffb4-4939-8ae0-3522176923ae": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "41a21f16-00d8-4296-bad5-2c61c631b7e2": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "08af79ad-fa50-44e0-9a36-1e6155e0cc9f": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "1e55f7e3-6c6c-4321-9677-aa9a38789244": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "7bd01e45-1e6c-4fc4-bd66-d93eb84de6f9": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "3a3fd9a3-10a9-4cdb-a22e-57f90a18d364": {
@@ -46413,50 +46470,11 @@
         "3c964a70-7220-4426-9db4-4b207b8971e2": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "7bd01e45-1e6c-4fc4-bd66-d93eb84de6f9": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "9727c11e-4911-4b51-b891-9193cc6fab50": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
         "d71e27a2-5691-4225-8fa2-d192cbd49067": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "de55f1d2-632a-4230-8c87-16f023dbacbb": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "83ec51bb-8af8-468f-95e4-14efe7a62bba": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "e2e455d4-8df0-4052-afc9-9a862c86f8f4": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "9ff188a7-8620-4ac9-a032-0718bc3f141e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "48b9e5cf-bdfd-4ef7-aefc-4c6b51a6a838": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "caa87dff-e384-442b-9c5d-5a6b05cc0607": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "8351ef49-09cb-4d7d-9b06-ca6fbeec905c": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "52fb9afd-01ea-44c1-8b0b-b28ef6ca8c04": {
-          "WorkDetail:WhiteCollarDetail": 1
-        },
         "6024e72d-30b2-4fd1-894f-7c6df6c64cf5": {
           "WorkDetail:SpecialistDetail": 1
-        },
-        "d26275ac-b81a-4141-9852-daabb6a0b8a3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "26f8554f-fb29-4ef9-ba82-df5f86d3adc5": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "1e55f7e3-6c6c-4321-9677-aa9a38789244": {
-          "WorkDetail:BlueCollarDetail": 1
         },
         "1cab6f30-1812-4c5b-8acb-33842d9e41f0": {
           "WorkDetail:BlueCollarDetail": 1
@@ -46464,7 +46482,16 @@
         "e95c67ba-e7cf-45eb-85cb-bc966747b957": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "08af79ad-fa50-44e0-9a36-1e6155e0cc9f": {
+        "9ff188a7-8620-4ac9-a032-0718bc3f141e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "d26275ac-b81a-4141-9852-daabb6a0b8a3": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "26f8554f-fb29-4ef9-ba82-df5f86d3adc5": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "e2e455d4-8df0-4052-afc9-9a862c86f8f4": {
           "WorkDetail:BlueCollarDetail": 1
         }
       }
@@ -93007,73 +93034,37 @@
       ],
       "LastImportDateTime": "2026-04-26T18:48:32Z",
       "Locks": {
-        "2c759eb4-cffa-49aa-913e-62dd8fb38f4e": {
-          "WorkDetail:BlueCollarDetail": 1
+        "86eae570-e3e9-4c67-a549-488bb4545462": {
+          "WorkDetail:SpecialistDetail": 1
         },
-        "ce40e1fe-0fd4-4ed8-b8cb-b6a408a52ed3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "8444b655-176e-434c-a650-da2ebfbfd958": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "58d78004-ea10-4af7-b28f-ef0b93cac31d": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "eb920c70-101c-4c8c-9d05-28aad58c198a": {
-          "Flatpack:ea1ef8d1-3a12-5730-a386-91b5fcd03363": 1
-        },
-        "b188548b-6c38-4f5c-ba70-8e028778cc83": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "1aa806bc-afbc-4bdc-b1b9-8d2a0058745d": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "7bf0ab79-f380-40d4-8e66-7115d5c514e3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "c33f3ad0-bac0-47b9-9a68-12a61bd70584": {
-          "Flatpack:ea1ef8d1-3a12-5730-a386-91b5fcd03363": 1
-        },
-        "664a4617-9ed8-4def-8b01-83a2c39ac4c5": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "d5dc6a3d-83f0-49f6-b525-d032db6a06b5": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "770b4e0e-98f2-49ca-8d1c-ec104df3fa09": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "59614115-434b-40be-bfcb-f16dc2e046bb": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "9be7981f-fc35-4164-a729-47ef9286fc49": {
+        "78cf365b-9116-485e-b16e-f64d3d8b6437": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "3700c1d3-b49a-4cd0-8f10-46a34fe443ab": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "12592c82-bee3-44e1-a921-2545d507f469": {
+        "68b0dbcd-b712-4051-9302-4ce2ba949ad3": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "3ee8a795-a626-49bc-9ef5-2848a0563201": {
-          "Flatpack:623b6d38-342d-5ba7-b1fe-376621732aa2": 1
+        "77260b08-4441-42dc-82a5-96127e955969": {
+          "WorkDetail:WhiteCollarDetail": 1
         },
-        "2add3382-0147-4b7f-a4ae-84ae1c72f30e": {
+        "13c0e41a-0436-4d45-ba22-e79157153b0b": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "86eae570-e3e9-4c67-a549-488bb4545462": {
-          "WorkDetail:SpecialistDetail": 1
-        },
-        "b927bfb5-e37b-498c-8784-34978eaa3784": {
-          "WorkDetail:SpecialistDetail": 1
-        },
-        "e0f337fc-f1f9-44c9-98fc-ffe96f4c1a3d": {
-          "WorkDetail:BlueCollarDetail": 1
+        "4c58524e-51e2-4db6-a34d-7e552582dee7": {
+          "Flatpack:80b44a11-d93f-5b3d-8c1e-31c2fc8882ac": 1
         },
         "46c55153-fe15-4185-9b37-ac21ca20eaa9": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "13c0e41a-0436-4d45-ba22-e79157153b0b": {
+        "169a9a58-040c-460e-b82c-c46bd9f69f4c": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "97e77460-d014-40d8-929f-3f24db2d215e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "7522d88b-631d-4ee8-8b5e-8d33f6a5eaf9": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "abce98cf-d6da-4f0d-827b-6718587b8972": {
@@ -93082,38 +93073,74 @@
         "afe40dbf-46fc-4f34-bee0-a9c2d261c09e": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "4c58524e-51e2-4db6-a34d-7e552582dee7": {
-          "Flatpack:80b44a11-d93f-5b3d-8c1e-31c2fc8882ac": 1
-        },
-        "33054711-d04c-4eb1-ba91-be7f39cf0f76": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "97e77460-d014-40d8-929f-3f24db2d215e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "78cf365b-9116-485e-b16e-f64d3d8b6437": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "7522d88b-631d-4ee8-8b5e-8d33f6a5eaf9": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "3bbb40ad-0f26-4ecb-b989-3064e1677362": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "77260b08-4441-42dc-82a5-96127e955969": {
-          "WorkDetail:WhiteCollarDetail": 1
-        },
         "628f70d5-71d1-4413-a5de-8bd1fd0fe779": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "68b0dbcd-b712-4051-9302-4ce2ba949ad3": {
+        "8444b655-176e-434c-a650-da2ebfbfd958": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "b79cb6b1-c95f-4f32-83a6-6b0dd5195276": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "169a9a58-040c-460e-b82c-c46bd9f69f4c": {
+        "2add3382-0147-4b7f-a4ae-84ae1c72f30e": {
           "WorkDetail:BlueCollarDetail": 1
+        },
+        "3ee8a795-a626-49bc-9ef5-2848a0563201": {
+          "Flatpack:623b6d38-342d-5ba7-b1fe-376621732aa2": 1
+        },
+        "2c759eb4-cffa-49aa-913e-62dd8fb38f4e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "33054711-d04c-4eb1-ba91-be7f39cf0f76": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "3bbb40ad-0f26-4ecb-b989-3064e1677362": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "7bf0ab79-f380-40d4-8e66-7115d5c514e3": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "b188548b-6c38-4f5c-ba70-8e028778cc83": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "770b4e0e-98f2-49ca-8d1c-ec104df3fa09": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "59614115-434b-40be-bfcb-f16dc2e046bb": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "1aa806bc-afbc-4bdc-b1b9-8d2a0058745d": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "b927bfb5-e37b-498c-8784-34978eaa3784": {
+          "WorkDetail:SpecialistDetail": 1
+        },
+        "664a4617-9ed8-4def-8b01-83a2c39ac4c5": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "ce40e1fe-0fd4-4ed8-b8cb-b6a408a52ed3": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "d5dc6a3d-83f0-49f6-b525-d032db6a06b5": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "e0f337fc-f1f9-44c9-98fc-ffe96f4c1a3d": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "eb920c70-101c-4c8c-9d05-28aad58c198a": {
+          "Flatpack:ea1ef8d1-3a12-5730-a386-91b5fcd03363": 1
+        },
+        "9be7981f-fc35-4164-a729-47ef9286fc49": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "58d78004-ea10-4af7-b28f-ef0b93cac31d": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "12592c82-bee3-44e1-a921-2545d507f469": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "c33f3ad0-bac0-47b9-9a68-12a61bd70584": {
+          "Flatpack:ea1ef8d1-3a12-5730-a386-91b5fcd03363": 1
         }
       }
     },

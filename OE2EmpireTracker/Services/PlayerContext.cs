@@ -494,6 +494,16 @@ namespace OE2EmpireTracker.Services
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
 
+            // Re-sort colony structures by BuildQueueSequence after serialization sort
+            // mutated them to UUID order. This keeps the live list in display order.
+            foreach (var colony in _colonyList)
+            {
+                if (colony.Structures != null && colony.Structures.Count > 1)
+                {
+                    colony.Structures.Sort((a, b) => a.BuildQueueSequence.CompareTo(b.BuildQueueSequence));
+                }
+            }
+
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Player data saved to {0}", FilePath);
         }
