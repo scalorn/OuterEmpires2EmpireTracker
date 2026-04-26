@@ -73,12 +73,14 @@ namespace OE2EmpireTracker.Services
                 Asteroid = SortByString(source.Asteroid, x => x.UUID)
             };
 
-            // Sort nested arrays on the shared entity references
+            // Sort nested arrays for deterministic JSON output.
+            // NOTE: These sorts mutate the live entity objects (shared references).
+            // Colony.Structures is saved and restored by the caller (WriteContext)
+            // because structure order is user-meaningful (build order).
             foreach (var colony in sorted.Colony)
             {
-                // NOTE: colony.Structures is intentionally NOT sorted here.
-                // Structure order is user-meaningful (build order) and must be preserved.
-                // Sorting by UUID would destroy manual ordering via MoveUp/MoveDown.
+                if (colony.Structures != null)
+                    colony.Structures = SortByString(colony.Structures.ToArray(), x => x.UUID).ToList();
                 if (colony.Commodities != null)
                     colony.Commodities = SortByString(colony.Commodities.ToArray(), x => x.Name).ToList();
             }

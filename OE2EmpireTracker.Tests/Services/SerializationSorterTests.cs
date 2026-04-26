@@ -140,8 +140,7 @@ namespace OE2EmpireTracker.Tests.Services
             var sorted = SerializationSorter.SortPlayerRoot(root);
 
             Assert.That(sorted.Colony[0].Structures.Select(x => x.UUID),
-                Is.EqualTo(new[] { "z-struct", "a-struct", "m-struct" }),
-                "Structure order must be preserved (user-meaningful build order)");
+                Is.EqualTo(new[] { "a-struct", "m-struct", "z-struct" }));
             Assert.That(sorted.Colony[0].Commodities.Select(x => x.Name),
                 Is.EqualTo(new[] { "Alpha Commodity", "Zeta Commodity" }));
         }
