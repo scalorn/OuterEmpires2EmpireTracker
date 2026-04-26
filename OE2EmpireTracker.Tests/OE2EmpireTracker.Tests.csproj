@@ -240,6 +240,7 @@
     <Compile Include="Models\ColonyStructureTests.cs" />
     <Compile Include="Services\ColonyStatusCalculatorTests.cs" />
     <Compile Include="Services\BuildOrderOptimizerTests.cs" />
+    <Compile Include="Services\BuildOrderOptimizerPropertyTests.cs" />
     <Compile Include="Services\ContextFilePathTests.cs" />
     <Compile Include="Services\DictionaryCacheTests.cs" />
     <Compile Include="Services\ReadOnlyListEncapsulationPropertyTests.cs" />

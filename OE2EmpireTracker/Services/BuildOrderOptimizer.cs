@@ -65,6 +65,10 @@ namespace OE2EmpireTracker.Services
             var result = new List<ColonyStructure>();
             var idealWorkers = new IdealColonyStructureWorkers();
 
+            // Running accumulator — tracks cumulative resource state incrementally.
+            // Updated via SimulateOneMore each time a structure is appended to result.
+            ColonyStructureStatus accumulator = new ColonyStructureStatus();
+
             // Bootstrap: CC, Reactor, Hab, Hydro, Ent
             PlaceFromPool(result, supportPool, BlueprintTypes.ColonyCommandCentre);
             PlaceFromPool(result, supportPool, "Flatpacks/ReactorCore");
@@ -72,29 +76,32 @@ namespace OE2EmpireTracker.Services
             PlaceFromPool(result, supportPool, "Flatpacks/HydroponicsBay");
             PlaceFromPool(result, supportPool, "Flatpacks/EntertainmentCentreFlatpack");
 
+            // Update accumulator for each bootstrap structure
+            for (int i = 0; i < result.Count; i++)
+            {
+                Blueprint bp = _playerContext.FindBlueprint(result[i].FlatpackBlueprintUUID);
+                accumulator = SimulateOneMore(accumulator, result[i], bp, idealWorkers);
+            }
+
             // Process each primary
             foreach (var primary in primaries)
             {
-                ColonyStructureStatus status = SimulateAll(result, idealWorkers);
-
-                // Step A: Fix any existing deficits
+                // Step A: Fix any existing deficits (accumulator is already current)
                 int beforeCount = result.Count;
-                FixDeficits(result, supportPool, status, idealWorkers);
+                FixDeficits(result, supportPool, accumulator, idealWorkers, ref accumulator);
                 if (result.Count > beforeCount)
                     Log.Info("Step A: added {0} support before primary", result.Count - beforeCount);
-                status = SimulateAll(result, idealWorkers);
 
                 // Step B: Look ahead -- after placing this primary, would there be
                 // a deficit? Also check if adding a hab + hydro after would cause one.
                 Blueprint primaryBp = _playerContext.FindBlueprint(primary.FlatpackBlueprintUUID);
-                ColonyStructureStatus afterPrimary = SimulateOneMore(status, primary, primaryBp, idealWorkers);
+                ColonyStructureStatus afterPrimary = SimulateOneMore(accumulator, primary, primaryBp, idealWorkers);
 
                 // First fix deficits the primary itself would cause
                 if (HasDeficit(afterPrimary))
                 {
-                    FixDeficits(result, supportPool, afterPrimary, idealWorkers);
-                    status = SimulateAll(result, idealWorkers);
-                    afterPrimary = SimulateOneMore(status, primary, primaryBp, idealWorkers);
+                    FixDeficits(result, supportPool, afterPrimary, idealWorkers, ref accumulator);
+                    afterPrimary = SimulateOneMore(accumulator, primary, primaryBp, idealWorkers);
                 }
 
                 // Then look further ahead: after the primary + hab + hydro,
@@ -113,36 +120,33 @@ namespace OE2EmpireTracker.Services
                 // Fix hab, food, and entertainment deficits from the look-ahead.
                 // After fixing these, also check if the new support structures
                 // pushed power into deficit (hab/hydro/ent all need power).
-                ColonyStructureStatus currentEnd = SimulateAll(result, idealWorkers);
-                if (afterFutureSupport.HabitationRequired > currentEnd.HabitationProvision)
+                if (afterFutureSupport.HabitationRequired > accumulator.HabitationProvision)
                 {
-                    PlaceSupportSafe(result, supportPool, GameConstants.PropHabitationProvision, idealWorkers);
+                    PlaceSupportSafe(result, supportPool, GameConstants.PropHabitationProvision, idealWorkers, ref accumulator);
                 }
 
-                currentEnd = SimulateAll(result, idealWorkers);
-                if (afterFutureSupport.FoodRequired > currentEnd.FoodProvision)
+                if (afterFutureSupport.FoodRequired > accumulator.FoodProvision)
                 {
-                    PlaceSupportSafe(result, supportPool, GameConstants.PropFoodProvision, idealWorkers);
+                    PlaceSupportSafe(result, supportPool, GameConstants.PropFoodProvision, idealWorkers, ref accumulator);
                 }
 
-                currentEnd = SimulateAll(result, idealWorkers);
-                if (afterFutureSupport.EntertainmentRequired > currentEnd.EntertainmentProvided)
+                if (afterFutureSupport.EntertainmentRequired > accumulator.EntertainmentProvided)
                 {
-                    PlaceSupportSafe(result, supportPool, GameConstants.PropEntertainmentProvided, idealWorkers);
+                    PlaceSupportSafe(result, supportPool, GameConstants.PropEntertainmentProvided, idealWorkers, ref accumulator);
                 }
 
                 // Final check: after all look-ahead placements, verify the primary
                 // won't cause a deficit. This catches power deficits from support
                 // structures placed by the look-ahead or Step B.
-                status = SimulateAll(result, idealWorkers);
-                afterPrimary = SimulateOneMore(status, primary, primaryBp, idealWorkers);
+                afterPrimary = SimulateOneMore(accumulator, primary, primaryBp, idealWorkers);
                 if (HasDeficit(afterPrimary))
                 {
-                    FixDeficits(result, supportPool, afterPrimary, idealWorkers);
+                    FixDeficits(result, supportPool, afterPrimary, idealWorkers, ref accumulator);
                 }
 
-                // Step C: Place the primary
+                // Step C: Place the primary and advance the accumulator
                 result.Add(primary);
+                accumulator = SimulateOneMore(accumulator, primary, primaryBp, idealWorkers);
                 Log.Info(
                     "Placed primary '{0}' at [{1}]",
                     primaryBp?.ExtendedName ?? primary.FlatpackBlueprintUUID,
@@ -152,17 +156,17 @@ namespace OE2EmpireTracker.Services
             // Append leftover support, fixing deficits as needed
             foreach (var leftover in supportPool)
             {
-                ColonyStructureStatus status = SimulateAll(result, idealWorkers);
                 Blueprint lBp = _playerContext.FindBlueprint(leftover.FlatpackBlueprintUUID);
-                ColonyStructureStatus afterLeftover = SimulateOneMore(status, leftover, lBp, idealWorkers);
+                ColonyStructureStatus afterLeftover = SimulateOneMore(accumulator, leftover, lBp, idealWorkers);
                 if (HasDeficit(afterLeftover))
                 {
                     // The leftover support itself would cause a deficit -- create support for it
                     var tempPool = new List<ColonyStructure>(); // empty pool, force creation
-                    FixDeficits(result, tempPool, afterLeftover, idealWorkers);
+                    FixDeficits(result, tempPool, afterLeftover, idealWorkers, ref accumulator);
                 }
 
                 result.Add(leftover);
+                accumulator = SimulateOneMore(accumulator, leftover, lBp, idealWorkers);
             }
 
             Log.Info("Build order optimized: {0} structures", result.Count);
@@ -188,33 +192,31 @@ namespace OE2EmpireTracker.Services
             List<ColonyStructure> result,
             List<ColonyStructure> pool,
             ColonyStructureStatus targetStatus,
-            IColonyStructureWorkers workers)
+            IColonyStructureWorkers workers,
+            ref ColonyStructureStatus accumulator)
         {
             // Keep placing support until the result list has enough resources
             // to satisfy the target status (which includes a future primary).
             for (int safety = 0; safety < 50; safety++)
             {
-                ColonyStructureStatus currentEnd = SimulateAll(result, workers);
-
-                // Check each resource: does currentEnd have enough provision
-                // to cover the target's requirements?
+                // Use accumulator directly instead of SimulateAll
                 string needed = null;
-                if (targetStatus.PowerRequired > currentEnd.PowerProvided)
+                if (targetStatus.PowerRequired > accumulator.PowerProvided)
                     needed = GameConstants.PropPowerProvided;
-                else if (targetStatus.HabitationRequired > currentEnd.HabitationProvision)
+                else if (targetStatus.HabitationRequired > accumulator.HabitationProvision)
                     needed = GameConstants.PropHabitationProvision;
-                else if (targetStatus.FoodRequired > currentEnd.FoodProvision)
+                else if (targetStatus.FoodRequired > accumulator.FoodProvision)
                     needed = GameConstants.PropFoodProvision;
-                else if (targetStatus.EntertainmentRequired > currentEnd.EntertainmentProvided)
+                else if (targetStatus.EntertainmentRequired > accumulator.EntertainmentProvided)
                     needed = GameConstants.PropEntertainmentProvided;
 
                 // Also check if the result list itself has a deficit
                 if (needed == null)
-                    needed = GetHighestPriorityDeficit(currentEnd);
+                    needed = GetHighestPriorityDeficit(accumulator);
 
                 if (needed == null) break;
 
-                PlaceSupportSafe(result, pool, needed, workers);
+                PlaceSupportSafe(result, pool, needed, workers, ref accumulator);
             }
         }
 
@@ -226,7 +228,8 @@ namespace OE2EmpireTracker.Services
             List<ColonyStructure> result,
             List<ColonyStructure> pool,
             string deficitType,
-            IColonyStructureWorkers workers)
+            IColonyStructureWorkers workers,
+            ref ColonyStructureStatus accumulator)
         {
             // Get the support structure from pool or create it
             ColonyStructure support = TakeFromPool(pool, deficitType);
@@ -238,43 +241,43 @@ namespace OE2EmpireTracker.Services
 
             // Simulate placing it -- would it cause a NEW deficit?
             Blueprint bp = _playerContext.FindBlueprint(support.FlatpackBlueprintUUID);
-            ColonyStructureStatus beforeStatus = SimulateAll(result, workers);
-            ColonyStructureStatus afterStatus = SimulateOneMore(beforeStatus, support, bp, workers);
+            ColonyStructureStatus afterStatus = SimulateOneMore(accumulator, support, bp, workers);
 
             // Check for new deficits caused by this support structure.
             // Place prerequisites BEFORE this structure.
             // Power: Ent Centre needs 2 power, Hydro/Hab need 1
             if (afterStatus.PowerRequired > afterStatus.PowerProvided &&
-                !(beforeStatus.PowerRequired > beforeStatus.PowerProvided))
+                !(accumulator.PowerRequired > accumulator.PowerProvided))
             {
-                PlaceSupportSafe(result, pool, GameConstants.PropPowerProvided, workers);
+                PlaceSupportSafe(result, pool, GameConstants.PropPowerProvided, workers, ref accumulator);
             }
 
             // Entertainment: Hydro/Ent workers need entertainment
             if (afterStatus.EntertainmentRequired > afterStatus.EntertainmentProvided &&
-                !(beforeStatus.EntertainmentRequired > beforeStatus.EntertainmentProvided) &&
+                !(accumulator.EntertainmentRequired > accumulator.EntertainmentProvided) &&
                 deficitType != GameConstants.PropEntertainmentProvided)
             {
-                PlaceSupportSafe(result, pool, GameConstants.PropEntertainmentProvided, workers);
+                PlaceSupportSafe(result, pool, GameConstants.PropEntertainmentProvided, workers, ref accumulator);
             }
 
             // Hab: workers need habitation
             if (afterStatus.HabitationRequired > afterStatus.HabitationProvision &&
-                !(beforeStatus.HabitationRequired > beforeStatus.HabitationProvision) &&
+                !(accumulator.HabitationRequired > accumulator.HabitationProvision) &&
                 deficitType != GameConstants.PropHabitationProvision)
             {
-                PlaceSupportSafe(result, pool, GameConstants.PropHabitationProvision, workers);
+                PlaceSupportSafe(result, pool, GameConstants.PropHabitationProvision, workers, ref accumulator);
             }
 
             // Food: workers need food
             if (afterStatus.FoodRequired > afterStatus.FoodProvision &&
-                !(beforeStatus.FoodRequired > beforeStatus.FoodProvision) &&
+                !(accumulator.FoodRequired > accumulator.FoodProvision) &&
                 deficitType != GameConstants.PropFoodProvision)
             {
-                PlaceSupportSafe(result, pool, GameConstants.PropFoodProvision, workers);
+                PlaceSupportSafe(result, pool, GameConstants.PropFoodProvision, workers, ref accumulator);
             }
 
             result.Add(support);
+            accumulator = SimulateOneMore(accumulator, support, bp, workers);
             Log.Info("  Placed support '{0}' at [{1}]", bp?.ExtendedName ?? "?", result.Count - 1);
         }
 
@@ -379,21 +382,6 @@ namespace OE2EmpireTracker.Services
         // -----------------------------------------------------------------------
         // Simulation
         // -----------------------------------------------------------------------
-
-        private ColonyStructureStatus SimulateAll(List<ColonyStructure> structures, IColonyStructureWorkers workers)
-        {
-            var calculator = new ColonyStatusCalculator(new Colony());
-            ColonyStructureStatus prev = new ColonyStructureStatus();
-            foreach (var s in structures)
-            {
-                Blueprint bp = _playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
-                var current = new ColonyStructureStatus();
-                calculator.CalculateBuilt(s, prev, current, workers, bp);
-                prev = current;
-            }
-
-            return prev;
-        }
 
         private ColonyStructureStatus SimulateOneMore(
             ColonyStructureStatus prev,
