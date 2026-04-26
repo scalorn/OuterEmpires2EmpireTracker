@@ -49,7 +49,13 @@ namespace OE2EmpireTracker.Services
             var primaries = new List<ColonyStructure>();
             var supportPool = new List<ColonyStructure>();
 
-            foreach (var structure in colony.Structures)
+            // Sort by BuildQueueSequence so primaries preserve the user's intended order.
+            // The underlying list may be in UUID order (from serialization sort).
+            var orderedStructures = colony.Structures
+                .OrderBy(s => s.BuildQueueSequence)
+                .ToList();
+
+            foreach (var structure in orderedStructures)
             {
                 Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (bp == null)
