@@ -52,9 +52,34 @@ namespace OE2EmpireTracker.Services
         public static ColonyStructure GetFirstStagedStructure(Colony colony, PlayerContext pc)
         {
             // Sort by BuildQueueSequence — never trust the raw list order
-            return colony.Structures
+            var ordered = colony.Structures
                 .OrderBy(s => s.BuildQueueSequence)
-                .FirstOrDefault(s => IsStagedStructure(s, pc));
+                .ToList();
+
+            Log.Info("GetFirstStagedStructure: colony={0} ({1}), {2} structures",
+                colony.ColonyName ?? colony.PlanetName ?? "(unknown)",
+                colony.UUID,
+                ordered.Count);
+
+            foreach (var s in ordered)
+            {
+                var bp = pc.FindBlueprint(s.FlatpackBlueprintUUID);
+                string bpName = bp?.ExtendedName ?? s.FlatpackBlueprintUUID ?? "?";
+                bool isStaged = IsStagedStructure(s, pc);
+                bool isBuilt = new ColonyStructureViewModel(s, pc).IsBuilt;
+
+                Log.Info("  seq={0} uuid={1} bp={2} staged={3} built={4}",
+                    s.BuildQueueSequence, s.UUID, bpName, isStaged, isBuilt);
+
+                if (isStaged)
+                {
+                    Log.Info("  -> SELECTED as first staged structure");
+                    return s;
+                }
+            }
+
+            Log.Info("  -> No staged structure found");
+            return null;
         }
     }
 }
