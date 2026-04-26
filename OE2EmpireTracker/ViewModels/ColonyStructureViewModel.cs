@@ -145,72 +145,86 @@ namespace OE2EmpireTracker.ViewModels
 
         public void MoveUp(Colony colony)
         {
-            int index = colony.Structures.IndexOf(_structure);
-            if (index <= 0)
-            {
-                Log.Info("MoveUp: blocked — index={0} (at top or not found), structure={1}",
-                    index, _structure.UUID);
-                return;
-            }
+            int mySeq = _structure.BuildQueueSequence;
 
-            // Prevent moving a non-CC structure into position 0 (CC must always be first)
-            if (index == 1)
+            // Find the structure with the next lower BuildQueueSequence
+            ColonyStructure neighbor = null;
+            int neighborSeq = int.MinValue;
+            foreach (var s in colony.Structures)
             {
-                var firstBp = _playerContext.FindBlueprint(colony.Structures[0].FlatpackBlueprintUUID);
-                if (firstBp != null && firstBp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
+                if (s.BuildQueueSequence < mySeq && s.BuildQueueSequence > neighborSeq)
                 {
-                    Log.Info("MoveUp: blocked — cannot move above CC at position 0, structure={0} index={1}",
-                        _structure.UUID, index);
-                    return;
+                    neighbor = s;
+                    neighborSeq = s.BuildQueueSequence;
                 }
             }
 
-            colony.Structures.RemoveAt(index);
-            colony.Structures.Insert(index - 1, _structure);
+            if (neighbor == null)
+            {
+                Log.Info("MoveUp: blocked — already at top (seq={0}), structure={1}",
+                    mySeq, _structure.UUID);
+                return;
+            }
 
-            // Swap BuildQueueSequence with the displaced structure
-            var displaced = colony.Structures[index];
-            int temp = _structure.BuildQueueSequence;
-            _structure.BuildQueueSequence = displaced.BuildQueueSequence;
-            displaced.BuildQueueSequence = temp;
+            // Prevent moving above CC (CC should have the lowest BuildQueueSequence)
+            var neighborBp = _playerContext.FindBlueprint(neighbor.FlatpackBlueprintUUID);
+            if (neighborBp != null && neighborBp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
+            {
+                Log.Info("MoveUp: blocked — cannot move above CC, structure={0} seq={1}",
+                    _structure.UUID, mySeq);
+                return;
+            }
 
-            Log.Info("MoveUp: moved structure={0} from index={1} to index={2}, colony={3} structureCount={4}",
-                _structure.UUID, index, index - 1, colony.UUID, colony.Structures.Count);
+            // Swap BuildQueueSequence values
+            _structure.BuildQueueSequence = neighborSeq;
+            neighbor.BuildQueueSequence = mySeq;
+
+            Log.Info("MoveUp: swapped structure={0} seq {1}->{2} with neighbor={3} seq {4}->{5}, colony={6}",
+                _structure.UUID, mySeq, _structure.BuildQueueSequence,
+                neighbor.UUID, neighborSeq, neighbor.BuildQueueSequence,
+                colony.UUID);
         }
 
         public void MoveDown(Colony colony)
         {
-            int index = colony.Structures.IndexOf(_structure);
-            if (index < 0 || index >= colony.Structures.Count - 1)
+            int mySeq = _structure.BuildQueueSequence;
+
+            // Prevent moving CC down (CC should stay at the top)
+            var myBp = _playerContext.FindBlueprint(_structure.FlatpackBlueprintUUID);
+            if (myBp != null && myBp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
             {
-                Log.Info("MoveDown: blocked — index={0} count={1} (at bottom or not found), structure={2}",
-                    index, colony.Structures.Count, _structure.UUID);
+                Log.Info("MoveDown: blocked — CC must stay at top, structure={0}",
+                    _structure.UUID);
                 return;
             }
 
-            // Prevent moving the CC away from position 0
-            if (index == 0)
+            // Find the structure with the next higher BuildQueueSequence
+            ColonyStructure neighbor = null;
+            int neighborSeq = int.MaxValue;
+            foreach (var s in colony.Structures)
             {
-                var bp = _playerContext.FindBlueprint(_structure.FlatpackBlueprintUUID);
-                if (bp != null && bp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
+                if (s.BuildQueueSequence > mySeq && s.BuildQueueSequence < neighborSeq)
                 {
-                    Log.Info("MoveDown: blocked — CC must stay at position 0, structure={0}",
-                        _structure.UUID);
-                    return;
+                    neighbor = s;
+                    neighborSeq = s.BuildQueueSequence;
                 }
             }
 
-            colony.Structures.RemoveAt(index);
-            colony.Structures.Insert(index + 1, _structure);
+            if (neighbor == null)
+            {
+                Log.Info("MoveDown: blocked — already at bottom (seq={0}), structure={1}",
+                    mySeq, _structure.UUID);
+                return;
+            }
 
-            // Swap BuildQueueSequence with the displaced structure
-            var displaced = colony.Structures[index];
-            int temp = _structure.BuildQueueSequence;
-            _structure.BuildQueueSequence = displaced.BuildQueueSequence;
-            displaced.BuildQueueSequence = temp;
+            // Swap BuildQueueSequence values
+            _structure.BuildQueueSequence = neighborSeq;
+            neighbor.BuildQueueSequence = mySeq;
 
-            Log.Info("MoveDown: moved structure={0} from index={1} to index={2}, colony={3} structureCount={4}",
-                _structure.UUID, index, index + 1, colony.UUID, colony.Structures.Count);
+            Log.Info("MoveDown: swapped structure={0} seq {1}->{2} with neighbor={3} seq {4}->{5}, colony={6}",
+                _structure.UUID, mySeq, _structure.BuildQueueSequence,
+                neighbor.UUID, neighborSeq, neighbor.BuildQueueSequence,
+                colony.UUID);
         }
 
         public void Delete(Colony colony)

@@ -79184,7 +79184,7 @@
           "UUID": "c0585f32-6b50-4b9d-b75d-fdfd36e686b7",
           "FlatpackBlueprintUUID": "db010e53-d097-5d36-8599-89986d570414",
           "displaySequence": 8,
-          "buildQueueSequence": 50,
+          "buildQueueSequence": 48,
           "Properties": {},
           "AssignedWorkers": {},
           "CurrentAttitude": ""
@@ -79194,7 +79194,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 14,
           "buildingID": 14008,
-          "buildQueueSequence": 48,
+          "buildQueueSequence": 50,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -79679,112 +79679,112 @@
       ],
       "LastImportDateTime": "2026-04-26T13:10:36Z",
       "Locks": {
+        "c7861346-6643-46f2-bc0b-7ccf51537e8a": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "aa6a7390-16ea-428b-a5d4-b2edf28f4744": {
+          "Flatpack:ea1ef8d1-3a12-5730-a386-91b5fcd03363": 1
+        },
+        "c7e3b5a7-d9cb-4dee-8cdf-2478b7293b5d": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "7b4139ed-28ec-4632-9fa0-a2a69eea0716": {
+          "WorkDetail:SpecialistDetail": 1
+        },
+        "75cb5d57-8b13-4875-846d-9fe0778552e9": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
         "41428777-73db-4dd5-afbf-a15bc8b37d72": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "72fc3013-acb3-4d82-8c74-f8d2ee5155ac": {
+        "95488445-ee5b-4774-8b82-00837ce7e25b": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "d84a07f9-e485-47e1-9fac-99d60e0d9928": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "3567eed0-2018-422b-bc10-f446b785c123": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "f0f20416-7b01-4221-8b06-51b3a58b265e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "c5ed4f01-25c4-4cdf-add1-f60be626cf6e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "7bce3e72-c785-4c14-8344-5da8d9e2d5d3": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "7e3899bf-511c-4db8-b735-5f2555dd8fd0": {
+          "WorkDetail:SpecialistDetail": 1
+        },
+        "2f936bc7-0891-4a3f-b28a-0f71719bf726": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "dcfb9900-76c2-428f-950e-b31f3ae64691": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "a0a07c7a-4a30-4694-9c6d-bf9b7e2983d7": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "202163a8-64f5-4b0f-9bc5-377bbe75eebc": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "cd7e79a2-b126-4a15-9f91-12dfddfde1ff": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "77a8466c-f844-4266-9d8f-2862f0ba1da1": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "f0c17737-645d-445f-b1d1-069ecd0046c5": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "89637979-7b94-450a-9d18-d3db6383af6e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "abe68942-2f04-4507-8591-4efb62017ac0": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "a214d188-a128-4d77-9315-66f1e1728577": {
           "WorkDetail:BlueCollarDetail": 1,
           "Flatpack:623b6d38-342d-5ba7-b1fe-376621732aa2": 1
         },
-        "a983974e-0da9-4aaf-92ac-8e59667e3de3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "c7861346-6643-46f2-bc0b-7ccf51537e8a": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "89637979-7b94-450a-9d18-d3db6383af6e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "264fff19-d8f5-469a-a5bb-e31c79c73a1b": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "c7e3b5a7-d9cb-4dee-8cdf-2478b7293b5d": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "0a7e3a0c-5544-4fbb-a2d6-671701b53671": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
         "675c5f31-4d83-45d7-8f87-f90e6c1cbdd7": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "a0b2465e-47e6-4027-87e7-26edad9d111a": {
-          "WorkDetail:WhiteCollarDetail": 1
-        },
-        "a0a07c7a-4a30-4694-9c6d-bf9b7e2983d7": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "cd7e79a2-b126-4a15-9f91-12dfddfde1ff": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "202163a8-64f5-4b0f-9bc5-377bbe75eebc": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "7e3899bf-511c-4db8-b735-5f2555dd8fd0": {
-          "WorkDetail:SpecialistDetail": 1
-        },
-        "dcfb9900-76c2-428f-950e-b31f3ae64691": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "2f936bc7-0891-4a3f-b28a-0f71719bf726": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "a4dc00ce-bbe9-4e3c-af3d-538e9ff32eba": {
-          "Flatpack:80b44a11-d93f-5b3d-8c1e-31c2fc8882ac": 1
-        },
-        "18ba369a-9ab9-45ae-aed2-0282e5aaeba7": {
-          "WorkDetail:BlueCollarDetail": 1,
-          "Flatpack:ea1ef8d1-3a12-5730-a386-91b5fcd03363": 1
-        },
-        "95488445-ee5b-4774-8b82-00837ce7e25b": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "6e260a00-47c1-48a9-9c8f-81b9cdb47fdb": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "7b4139ed-28ec-4632-9fa0-a2a69eea0716": {
-          "WorkDetail:SpecialistDetail": 1
-        },
-        "c5ed4f01-25c4-4cdf-add1-f60be626cf6e": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "951e0bb4-bda5-46d4-96a2-85a6a8a650ef": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "abe68942-2f04-4507-8591-4efb62017ac0": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "07ee4fb1-11bb-40c4-b9b8-194593ba136d": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "75cb5d57-8b13-4875-846d-9fe0778552e9": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "f0c17737-645d-445f-b1d1-069ecd0046c5": {
+        "6e260a00-47c1-48a9-9c8f-81b9cdb47fdb": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "f0f3fca3-35b0-4c7e-af6a-5636686e77ce": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "f0f20416-7b01-4221-8b06-51b3a58b265e": {
+        "a983974e-0da9-4aaf-92ac-8e59667e3de3": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "d84a07f9-e485-47e1-9fac-99d60e0d9928": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "7bce3e72-c785-4c14-8344-5da8d9e2d5d3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "aa6a7390-16ea-428b-a5d4-b2edf28f4744": {
+        "18ba369a-9ab9-45ae-aed2-0282e5aaeba7": {
+          "WorkDetail:BlueCollarDetail": 1,
           "Flatpack:ea1ef8d1-3a12-5730-a386-91b5fcd03363": 1
         },
-        "77a8466c-f844-4266-9d8f-2862f0ba1da1": {
+        "07ee4fb1-11bb-40c4-b9b8-194593ba136d": {
           "WorkDetail:BlueCollarDetail": 1
+        },
+        "0a7e3a0c-5544-4fbb-a2d6-671701b53671": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "264fff19-d8f5-469a-a5bb-e31c79c73a1b": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "a0b2465e-47e6-4027-87e7-26edad9d111a": {
+          "WorkDetail:WhiteCollarDetail": 1
+        },
+        "72fc3013-acb3-4d82-8c74-f8d2ee5155ac": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "a4dc00ce-bbe9-4e3c-af3d-538e9ff32eba": {
+          "Flatpack:80b44a11-d93f-5b3d-8c1e-31c2fc8882ac": 1
         }
       }
     },
@@ -89086,6 +89086,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 1,
           "buildingID": 10381,
+          "buildQueueSequence": 1,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89103,6 +89104,7 @@
           "FlatpackBlueprintUUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
           "displaySequence": 1,
           "buildingID": 11628,
+          "buildQueueSequence": 2,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89121,6 +89123,7 @@
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
           "displaySequence": 1,
           "buildingID": 12830,
+          "buildQueueSequence": 3,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89154,6 +89157,7 @@
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
           "displaySequence": 2,
           "buildingID": 13242,
+          "buildQueueSequence": 4,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89187,6 +89191,7 @@
           "FlatpackBlueprintUUID": "db010e53-d097-5d36-8599-89986d570414",
           "displaySequence": 1,
           "buildingID": 11751,
+          "buildQueueSequence": 5,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89209,6 +89214,7 @@
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
           "displaySequence": 1,
           "buildingID": 11999,
+          "buildQueueSequence": 6,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89230,6 +89236,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 2,
           "buildingID": 11848,
+          "buildQueueSequence": 7,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89247,6 +89254,7 @@
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
           "displaySequence": 2,
           "buildingID": 12047,
+          "buildQueueSequence": 8,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89267,6 +89275,7 @@
           "FlatpackBlueprintUUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
           "displaySequence": 2,
           "buildingID": 11901,
+          "buildQueueSequence": 9,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89285,6 +89294,7 @@
           "FlatpackBlueprintUUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
           "displaySequence": 3,
           "buildingID": 12549,
+          "buildQueueSequence": 10,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89303,6 +89313,7 @@
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
           "displaySequence": 3,
           "buildingID": 13484,
+          "buildQueueSequence": 11,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89335,6 +89346,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 3,
           "buildingID": 12380,
+          "buildQueueSequence": 12,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89352,6 +89364,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 4,
           "buildingID": 12493,
+          "buildQueueSequence": 13,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89369,6 +89382,7 @@
           "FlatpackBlueprintUUID": "db010e53-d097-5d36-8599-89986d570414",
           "displaySequence": 2,
           "buildingID": 11954,
+          "buildQueueSequence": 14,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89391,6 +89405,7 @@
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
           "displaySequence": 4,
           "buildingID": 13577,
+          "buildQueueSequence": 15,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89423,6 +89438,7 @@
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
           "displaySequence": 3,
           "buildingID": 12655,
+          "buildQueueSequence": 16,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89444,6 +89460,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 5,
           "buildingID": 14273,
+          "buildQueueSequence": 17,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89461,6 +89478,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 6,
           "buildingID": 12704,
+          "buildQueueSequence": 18,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89478,6 +89496,7 @@
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
           "displaySequence": 5,
           "buildingID": 13781,
+          "buildQueueSequence": 19,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89511,6 +89530,7 @@
           "FlatpackBlueprintUUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
           "displaySequence": 4,
           "buildingID": 12952,
+          "buildQueueSequence": 20,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89529,6 +89549,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 7,
           "buildingID": 12892,
+          "buildQueueSequence": 21,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89546,6 +89567,7 @@
           "FlatpackBlueprintUUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
           "displaySequence": 5,
           "buildingID": 13341,
+          "buildQueueSequence": 22,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89564,6 +89586,7 @@
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
           "displaySequence": 6,
           "buildingID": 13815,
+          "buildQueueSequence": 23,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89597,6 +89620,7 @@
           "FlatpackBlueprintUUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
           "displaySequence": 1,
           "buildingID": 14195,
+          "buildQueueSequence": 24,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89619,6 +89643,7 @@
           "FlatpackBlueprintUUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
           "displaySequence": 2,
           "buildingID": 14155,
+          "buildQueueSequence": 25,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89641,6 +89666,7 @@
           "FlatpackBlueprintUUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
           "displaySequence": 3,
           "buildingID": 14114,
+          "buildQueueSequence": 26,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89673,6 +89699,7 @@
           "FlatpackBlueprintUUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
           "displaySequence": 4,
           "buildingID": 13127,
+          "buildQueueSequence": 27,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89705,6 +89732,7 @@
           "FlatpackBlueprintUUID": "db010e53-d097-5d36-8599-89986d570414",
           "displaySequence": 3,
           "buildingID": 12603,
+          "buildQueueSequence": 28,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89726,6 +89754,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 8,
           "buildingID": 13184,
+          "buildQueueSequence": 29,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89743,6 +89772,7 @@
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
           "displaySequence": 4,
           "buildingID": 13069,
+          "buildQueueSequence": 30,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89764,6 +89794,7 @@
           "FlatpackBlueprintUUID": "f391b2ae-1c75-58e6-8664-377251f57461",
           "displaySequence": 1,
           "buildingID": 10138,
+          "buildQueueSequence": 31,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89792,6 +89823,7 @@
           "FlatpackBlueprintUUID": "db010e53-d097-5d36-8599-89986d570414",
           "displaySequence": 4,
           "buildingID": 13010,
+          "buildQueueSequence": 32,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89813,6 +89845,7 @@
           "FlatpackBlueprintUUID": "6c7a74ff-bfa6-57ed-9bdd-a006b6a15033",
           "displaySequence": 1,
           "buildingID": 12770,
+          "buildQueueSequence": 33,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89835,6 +89868,7 @@
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
           "displaySequence": 7,
           "buildingID": 13946,
+          "buildQueueSequence": 34,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89867,6 +89901,7 @@
           "FlatpackBlueprintUUID": "5fdb782b-a672-527a-a3b0-ef991a7849da",
           "displaySequence": 1,
           "buildingID": 10425,
+          "buildQueueSequence": 35,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89889,6 +89924,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 9,
           "buildingID": 14174,
+          "buildQueueSequence": 36,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89906,6 +89942,7 @@
           "FlatpackBlueprintUUID": "db010e53-d097-5d36-8599-89986d570414",
           "displaySequence": 5,
           "buildingID": 13388,
+          "buildQueueSequence": 37,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89928,6 +89965,7 @@
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
           "displaySequence": 5,
           "buildingID": 13436,
+          "buildQueueSequence": 38,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89948,6 +89986,7 @@
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
           "displaySequence": 6,
           "buildingID": 13702,
+          "buildQueueSequence": 39,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89969,6 +90008,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 10,
           "buildingID": 14133,
+          "buildQueueSequence": 40,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -89986,6 +90026,7 @@
           "FlatpackBlueprintUUID": "db010e53-d097-5d36-8599-89986d570414",
           "displaySequence": 6,
           "buildingID": 13660,
+          "buildQueueSequence": 41,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90008,6 +90049,7 @@
           "FlatpackBlueprintUUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
           "displaySequence": 5,
           "buildingID": 14042,
+          "buildQueueSequence": 42,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90041,6 +90083,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 11,
           "buildingID": 13292,
+          "buildQueueSequence": 43,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90058,6 +90101,7 @@
           "FlatpackBlueprintUUID": "49763d1e-1bcf-5b26-892c-0b87ab8e11b6",
           "displaySequence": 1,
           "buildingID": 10475,
+          "buildQueueSequence": 44,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90080,6 +90124,7 @@
           "FlatpackBlueprintUUID": "8a78639d-5e80-5aaa-8759-7a8cb4d4b852",
           "displaySequence": 1,
           "buildingID": 12439,
+          "buildQueueSequence": 45,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90102,6 +90147,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 12,
           "buildingID": 13531,
+          "buildQueueSequence": 46,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90119,6 +90165,7 @@
           "FlatpackBlueprintUUID": "db010e53-d097-5d36-8599-89986d570414",
           "displaySequence": 7,
           "buildingID": 13917,
+          "buildQueueSequence": 47,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90140,6 +90187,7 @@
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
           "displaySequence": 7,
           "buildingID": 13743,
+          "buildQueueSequence": 48,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90161,6 +90209,7 @@
           "FlatpackBlueprintUUID": "db010e53-d097-5d36-8599-89986d570414",
           "displaySequence": 8,
           "buildingID": 14094,
+          "buildQueueSequence": 49,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90183,6 +90232,7 @@
           "FlatpackBlueprintUUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
           "displaySequence": 6,
           "buildingID": 13621,
+          "buildQueueSequence": 50,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90201,6 +90251,7 @@
           "FlatpackBlueprintUUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
           "displaySequence": 7,
           "buildingID": 13883,
+          "buildQueueSequence": 51,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90219,6 +90270,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 13,
           "buildingID": 13851,
+          "buildQueueSequence": 52,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90236,6 +90288,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 14,
           "buildingID": 13979,
+          "buildQueueSequence": 53,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90253,6 +90306,7 @@
           "FlatpackBlueprintUUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
           "displaySequence": 8,
           "buildingID": 14068,
+          "buildQueueSequence": 54,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90271,6 +90325,7 @@
           "FlatpackBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "displaySequence": 15,
           "buildingID": 14012,
+          "buildQueueSequence": 55,
           "Properties": {
             "Built": "True",
             "Online": "True",
@@ -90295,94 +90350,94 @@
       ],
       "LastImportDateTime": "2026-04-24T18:24:59Z",
       "Locks": {
-        "9be7981f-fc35-4164-a729-47ef9286fc49": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "8444b655-176e-434c-a650-da2ebfbfd958": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "33054711-d04c-4eb1-ba91-be7f39cf0f76": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "770b4e0e-98f2-49ca-8d1c-ec104df3fa09": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "7bf0ab79-f380-40d4-8e66-7115d5c514e3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "12592c82-bee3-44e1-a921-2545d507f469": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "58d78004-ea10-4af7-b28f-ef0b93cac31d": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "46c55153-fe15-4185-9b37-ac21ca20eaa9": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "13c0e41a-0436-4d45-ba22-e79157153b0b": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "abce98cf-d6da-4f0d-827b-6718587b8972": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "77260b08-4441-42dc-82a5-96127e955969": {
-          "WorkDetail:WhiteCollarDetail": 1
-        },
-        "afe40dbf-46fc-4f34-bee0-a9c2d261c09e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "b188548b-6c38-4f5c-ba70-8e028778cc83": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "68b0dbcd-b712-4051-9302-4ce2ba949ad3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "97e77460-d014-40d8-929f-3f24db2d215e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "b927bfb5-e37b-498c-8784-34978eaa3784": {
-          "WorkDetail:SpecialistDetail": 1
-        },
-        "1aa806bc-afbc-4bdc-b1b9-8d2a0058745d": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
         "3bbb40ad-0f26-4ecb-b989-3064e1677362": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "2add3382-0147-4b7f-a4ae-84ae1c72f30e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "2c759eb4-cffa-49aa-913e-62dd8fb38f4e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "3700c1d3-b49a-4cd0-8f10-46a34fe443ab": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "86eae570-e3e9-4c67-a549-488bb4545462": {
-          "WorkDetail:SpecialistDetail": 1
-        },
-        "b79cb6b1-c95f-4f32-83a6-6b0dd5195276": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "78cf365b-9116-485e-b16e-f64d3d8b6437": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "664a4617-9ed8-4def-8b01-83a2c39ac4c5": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "169a9a58-040c-460e-b82c-c46bd9f69f4c": {
+        "afe40dbf-46fc-4f34-bee0-a9c2d261c09e": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "ce40e1fe-0fd4-4ed8-b8cb-b6a408a52ed3": {
+        "77260b08-4441-42dc-82a5-96127e955969": {
+          "WorkDetail:WhiteCollarDetail": 1
+        },
+        "68b0dbcd-b712-4051-9302-4ce2ba949ad3": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "7522d88b-631d-4ee8-8b5e-8d33f6a5eaf9": {
+        "e0f337fc-f1f9-44c9-98fc-ffe96f4c1a3d": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "86eae570-e3e9-4c67-a549-488bb4545462": {
+          "WorkDetail:SpecialistDetail": 1
+        },
+        "97e77460-d014-40d8-929f-3f24db2d215e": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "d5dc6a3d-83f0-49f6-b525-d032db6a06b5": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "e0f337fc-f1f9-44c9-98fc-ffe96f4c1a3d": {
+        "3700c1d3-b49a-4cd0-8f10-46a34fe443ab": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "770b4e0e-98f2-49ca-8d1c-ec104df3fa09": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "33054711-d04c-4eb1-ba91-be7f39cf0f76": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "2c759eb4-cffa-49aa-913e-62dd8fb38f4e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "7bf0ab79-f380-40d4-8e66-7115d5c514e3": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "46c55153-fe15-4185-9b37-ac21ca20eaa9": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "1aa806bc-afbc-4bdc-b1b9-8d2a0058745d": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "b927bfb5-e37b-498c-8784-34978eaa3784": {
+          "WorkDetail:SpecialistDetail": 1
+        },
+        "9be7981f-fc35-4164-a729-47ef9286fc49": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "b79cb6b1-c95f-4f32-83a6-6b0dd5195276": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "b188548b-6c38-4f5c-ba70-8e028778cc83": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "abce98cf-d6da-4f0d-827b-6718587b8972": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "58d78004-ea10-4af7-b28f-ef0b93cac31d": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "2add3382-0147-4b7f-a4ae-84ae1c72f30e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "7522d88b-631d-4ee8-8b5e-8d33f6a5eaf9": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "8444b655-176e-434c-a650-da2ebfbfd958": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "ce40e1fe-0fd4-4ed8-b8cb-b6a408a52ed3": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "169a9a58-040c-460e-b82c-c46bd9f69f4c": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "78cf365b-9116-485e-b16e-f64d3d8b6437": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "13c0e41a-0436-4d45-ba22-e79157153b0b": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "12592c82-bee3-44e1-a921-2545d507f469": {
           "WorkDetail:BlueCollarDetail": 1
         }
       }
