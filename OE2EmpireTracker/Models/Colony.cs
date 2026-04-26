@@ -73,6 +73,19 @@ namespace OE2EmpireTracker.Models
             return false;
         }
 
+        /// <summary>
+        /// Assigns sequential BuildQueueSequence values (1-based) to all structures
+        /// based on their current list position. Call after import, optimizer, or any
+        /// operation that establishes a new structure order.
+        /// </summary>
+        public void StampBuildQueueSequence()
+        {
+            for (int i = 0; i < Structures.Count; i++)
+            {
+                Structures[i].BuildQueueSequence = i + 1;
+            }
+        }
+
         public void ProcessColony()
         {
             // Processing order per REQ-COL-100 / REQ-ARCH-080:

@@ -167,6 +167,13 @@ namespace OE2EmpireTracker.ViewModels
 
             colony.Structures.RemoveAt(index);
             colony.Structures.Insert(index - 1, _structure);
+
+            // Swap BuildQueueSequence with the displaced structure
+            var displaced = colony.Structures[index];
+            int temp = _structure.BuildQueueSequence;
+            _structure.BuildQueueSequence = displaced.BuildQueueSequence;
+            displaced.BuildQueueSequence = temp;
+
             Log.Info("MoveUp: moved structure={0} from index={1} to index={2}, colony={3} structureCount={4}",
                 _structure.UUID, index, index - 1, colony.UUID, colony.Structures.Count);
         }
@@ -195,6 +202,13 @@ namespace OE2EmpireTracker.ViewModels
 
             colony.Structures.RemoveAt(index);
             colony.Structures.Insert(index + 1, _structure);
+
+            // Swap BuildQueueSequence with the displaced structure
+            var displaced = colony.Structures[index];
+            int temp = _structure.BuildQueueSequence;
+            _structure.BuildQueueSequence = displaced.BuildQueueSequence;
+            displaced.BuildQueueSequence = temp;
+
             Log.Info("MoveDown: moved structure={0} from index={1} to index={2}, colony={3} structureCount={4}",
                 _structure.UUID, index, index + 1, colony.UUID, colony.Structures.Count);
         }

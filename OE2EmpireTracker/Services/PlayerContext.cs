@@ -490,27 +490,9 @@ namespace OE2EmpireTracker.Services
                 playerRoot.Asteroid = _asteroidList.ToArray();
             }
 
-            // Save colony structure order before sorting — structure order is user-meaningful
-            // (build order set by MoveUp/MoveDown and the optimizer). The serialization sorter
-            // sorts structures by UUID for deterministic JSON diffs, which mutates the live
-            // Colony objects. We restore the original order after serialization.
-            var structureBackups = new Dictionary<string, List<ColonyStructure>>();
-            foreach (var colony in _colonyList)
-            {
-                if (colony.Structures != null)
-                    structureBackups[colony.UUID] = colony.Structures;
-            }
-
             playerRoot = SerializationSorter.SortPlayerRoot(playerRoot);
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
-
-            // Restore original structure order on live Colony objects
-            foreach (var colony in _colonyList)
-            {
-                if (structureBackups.TryGetValue(colony.UUID, out var original))
-                    colony.Structures = original;
-            }
 
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Player data saved to {0}", FilePath);

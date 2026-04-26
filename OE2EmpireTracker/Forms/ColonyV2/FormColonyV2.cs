@@ -852,6 +852,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
             }
 
+            // Sort by BuildQueueSequence so UI order is independent of serialization order
+            if (structureVMs is List<ColonyStructureViewModel> sortableList)
+            {
+                sortableList.Sort((a, b) => a.Data.BuildQueueSequence.CompareTo(b.Data.BuildQueueSequence));
+            }
+
             int needed = structureVMs.Count;
 
             long t0 = sw.ElapsedMilliseconds;
@@ -1344,6 +1350,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
                 selectedColony.Structures.Clear();
                 selectedColony.Structures.AddRange(optimized);
+                selectedColony.StampBuildQueueSequence();
 
                 Log.Info(
                     "CmdOptimize_Click: colony now has {0} structures after replace",
@@ -2591,6 +2598,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                         selectedColony.OwnerUUID = playerContext.CurrentPlayerUUID;
                     }
 
+                    selectedColony.StampBuildQueueSequence();
                     colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                     PopulateForm();
 
@@ -2641,6 +2649,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                         newColony.Commodities.Count);
                 }
 
+                selectedColony.StampBuildQueueSequence();
                 playerContext.WriteContext();
                 playerContext.OnColonyDataChanged(selectedColony.UUID);
 

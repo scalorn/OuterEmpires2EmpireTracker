@@ -93,6 +93,7 @@ namespace OE2EmpireTracker.ViewModels
             };
 
             _colony.Structures.Add(structure);
+            structure.BuildQueueSequence = _colony.Structures.Count;
             InvalidateStructureViewModels();
             return new ColonyStructureViewModel(structure, _playerContext);
         }
