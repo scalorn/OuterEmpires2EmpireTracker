@@ -46,26 +46,26 @@ Adopt FilteredTextComboSet, DataGridViewFilteredComboBoxColumn, and DataEntryGri
     - Update `spec/mockups/surveys.md` to reflect control changes
     - _Requirements: 15_
 
-- [ ] 3. Convert FormDeliveryRoute
-  - [~] 3.1 Replace txtDropFilter + cmbDropItem with FilteredTextComboSet
+- [x] 3. Convert FormDeliveryRoute
+  - [x] 3.1 Replace txtDropFilter + cmbDropItem with FilteredTextComboSet
     - In `FormDeliveryRoute.Designer.cs`: change `cmbDropItem` type to `FilteredTextComboSet`, remove `txtDropFilter` declaration/instantiation/Controls.Add/sizing
     - In `FormDeliveryRoute.cs`: remove `txtDropFilter.TextChanged` lambda subscription, convert `PopulateItemPicker` to call `cmbDropItem.SetItems(itemNames, currentValue)` instead of rebuilding DataSource, rewire selection event
     - The type-cascade combo `cmbDropItemType` stays as standard ComboBox — only the item picker changes
     - _Requirements: 4, 13, 14_
 
-  - [~] 3.2 Replace txtPickFilter + cmbPickItem with FilteredTextComboSet
+  - [x] 3.2 Replace txtPickFilter + cmbPickItem with FilteredTextComboSet
     - Same pattern as 3.1 but for the pick-up item picker
     - In `FormDeliveryRoute.Designer.cs`: change `cmbPickItem` type, remove `txtPickFilter`
     - In `FormDeliveryRoute.cs`: remove `txtPickFilter.TextChanged` lambda, convert `PopulateItemPicker` for pick-up side
     - Note: `PopulateItemPicker` is a shared method used by both drop-off and pick-up — it needs to handle both FilteredTextComboSet controls. Refactor the method signature to accept `FilteredTextComboSet` instead of `ComboBox` + `ValidatedTextBox`
     - _Requirements: 5, 13, 14_
 
-  - [~] 3.3 Replace dgvDropOff and dgvPickUp with DataEntryGridView
+  - [x] 3.3 Replace dgvDropOff and dgvPickUp with DataEntryGridView
     - In `FormDeliveryRoute.Designer.cs`: change both `dgvDropOff` and `dgvPickUp` types to `DataEntryGridView`
     - No code-behind changes needed
     - _Requirements: 11_
 
-  - [~] 3.4 Build, test, audit, update mockup, commit
+  - [x] 3.4 Build, test, audit, update mockup, commit
     - Build solution, run tests, run audit
     - Update `spec/mockups/delivery-routes.md` to reflect control changes
     - _Requirements: 15_

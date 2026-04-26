@@ -43,7 +43,7 @@ Plan tab:
 │ │ ├──────────┼──────────────────────┼──────┤                                    │   │
 │ │ │ Resource │ Refined Titanium     │  200 │                                    │   │
 │ │ └──────────┴──────────────────────┴──────┘                                    │   │
-│ │ [Resource▼] [____] [Refined Titanium ▼] [Purity▼] [200] [Add] [Remove]       │   │
+│ │ [Resource▼] [Refined Titanium ▼] [Purity▼] [200] [Add] [Remove]              │   │
 │ │                                                                               │   │
 │ │ Pick Up:                                                                      │   │
 │ │ ┌──────────┬──────────────────────┬──────┐                                    │   │
@@ -51,7 +51,7 @@ Plan tab:
 │ │ ├──────────┼──────────────────────┼──────┤                                    │   │
 │ │ │ Commodity│ Fuel Cells           │   50 │                                    │   │
 │ │ └──────────┴──────────────────────┴──────┘                                    │   │
-│ │ [Commodity▼] [____] [Fuel Cells      ▼] [50] [Add] [Remove]                  │   │
+│ │ [Commodity▼] [Fuel Cells      ▼] [50] [Add] [Remove]                         │   │
 │ └───────────────────────────────────────────────────────────────────────────────┘   │
 ```
 
@@ -64,8 +64,8 @@ Controls:
   - Plan tab: `flpPlanContent` (top-down)
     - `flpPlanSelector`: `chkShowCompleted`, `txtPlanFilter`, `cmbPlan`, `cmdNewPlan`, `cmdDeletePlan`, `cmdExecutePlan`, `cmdAutoFill`
     - `txtPlanName`, `lblPlanStop` (bold, shows selected stop context)
-    - Drop Off: `dgvDropOff` (Type/Item/Qty), add row with `cmbDropItemType`/`txtDropFilter`/`cmbDropItem`/`cmbDropPurity`/`txtDropQty`/`cmdAddDropOff`/`cmdRemoveDropOff`
-    - Pick Up: `dgvPickUp` (Type/Item/Qty), add row with `cmbPickItemType`/`txtPickFilter`/`cmbPickItem`/`cmbPickPurity`/`txtPickQty`/`cmdAddPickUp`/`cmdRemovePickUp`
+    - Drop Off: `dgvDropOff` (DataEntryGridView, Type/Item/Qty), add row with `cmbDropItemType`/`cmbDropItem` (FilteredTextComboSet)/`cmbDropPurity`/`txtDropQty`/`cmdAddDropOff`/`cmdRemoveDropOff`
+    - Pick Up: `dgvPickUp` (DataEntryGridView, Type/Item/Qty), add row with `cmbPickItemType`/`cmbPickItem` (FilteredTextComboSet)/`cmbPickPurity`/`txtPickQty`/`cmdAddPickUp`/`cmdRemovePickUp`
 - Bottom: `flpCommands` → `cmdNew`, `cmdSave`, `cmdDelete`
 
 Satisfies: REQ-DEL-010 (delivery route management), REQ-DEL-020 (delivery plan management)

@@ -67,16 +67,14 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulateItemTypeCombos();
             cmbDropItemType.SelectedIndexChanged += (s, ev) =>
             {
-                PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
+                PopulateItemPicker(cmbDropItemType, cmbDropItem);
                 UpdatePurityVisibility(cmbDropItemType, cmbDropPurity);
             };
             cmbPickItemType.SelectedIndexChanged += (s, ev) =>
             {
-                PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);
+                PopulateItemPicker(cmbPickItemType, cmbPickItem);
                 UpdatePurityVisibility(cmbPickItemType, cmbPickPurity);
             };
-            txtDropFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbDropItemType, txtDropFilter, cmbDropItem);
-            txtPickFilter.TextChanged += (s, ev) => PopulateItemPicker(cmbPickItemType, txtPickFilter, cmbPickItem);
             cmdAddDropOff.Click += CmdAddDropOff_Click;
             cmdAddPickUp.Click += CmdAddPickUp_Click;
             cmdRemoveDropOff.Click += CmdRemoveDropOff_Click;
@@ -974,25 +972,16 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             purityCombo.Visible = itemType != null && itemType.ID == ItemType.ItemTypeEnum.Resource;
         }
 
-        private void PopulateItemPicker(ComboBox typeCombo, ValidatedTextBox filterBox, ComboBox itemCombo)
+        private void PopulateItemPicker(ComboBox typeCombo, FilteredTextComboSet itemCombo)
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             var itemType = typeCombo.SelectedItem as ItemType;
             if (itemType == null) return;
 
-            string filter = filterBox.Text ?? string.Empty;
-            itemCombo.DataSource = null;
             var items = GetItemsForType(itemType.ID);
-            if (!string.IsNullOrEmpty(filter))
-            {
-                items = items.Where(i =>
-                    string.IsNullOrEmpty(i.Display) ||
-                    i.Display.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-            }
-
-            itemCombo.DisplayMember = "Display";
-            itemCombo.ValueMember = "ID";
-            itemCombo.DataSource = items;
+            var itemNames = items.Select(i => i.Display).ToList();
+            string currentValue = itemCombo.SelectedItem ?? string.Empty;
+            itemCombo.SetItems(itemNames, currentValue);
             sw.Stop();
             Log.Info("PERF PopulateItemPicker: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -1094,9 +1083,14 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 if (selectedPlanStop == null) return;
             }
 
-            var entry = cmbDropItem.SelectedItem as ItemPickerEntry;
-            if (entry == null || string.IsNullOrEmpty(entry.ID)) return;
             var itemType = cmbDropItemType.SelectedItem as ItemType;
+            if (itemType == null) return;
+            int selectedIdx = cmbDropItem.SelectedFullIndex;
+            if (selectedIdx < 0) return;
+            var items = GetItemsForType(itemType.ID);
+            if (selectedIdx >= items.Count) return;
+            var entry = items[selectedIdx];
+            if (string.IsNullOrEmpty(entry.ID)) return;
             int qty = 1;
             int.TryParse(txtDropQty.Text, out qty);
             if (qty <= 0) qty = 1;
@@ -1120,9 +1114,14 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 if (selectedPlanStop == null) return;
             }
 
-            var entry = cmbPickItem.SelectedItem as ItemPickerEntry;
-            if (entry == null || string.IsNullOrEmpty(entry.ID)) return;
             var itemType = cmbPickItemType.SelectedItem as ItemType;
+            if (itemType == null) return;
+            int selectedIdx = cmbPickItem.SelectedFullIndex;
+            if (selectedIdx < 0) return;
+            var items = GetItemsForType(itemType.ID);
+            if (selectedIdx >= items.Count) return;
+            var entry = items[selectedIdx];
+            if (string.IsNullOrEmpty(entry.ID)) return;
             int qty = 1;
             int.TryParse(txtPickQty.Text, out qty);
             if (qty <= 0) qty = 1;
