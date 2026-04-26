@@ -220,12 +220,12 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - Add the new check to the audit runner
     - _Requirements: 9.3_
 
-- [-] 13. Run audit to verify zero inline sort findings
+- [x] 13. Run audit to verify zero inline sort findings
   - Run `node .kiro/tools/inline-sort-check.js` and verify exit code 0
   - Run `node .kiro/tools/audit.js` and verify no new findings from the inline sort check
   - _Requirements: 9.4_
 
-- [~] 14. Final checkpoint - Ensure all tests pass and audit is clean
+- [-] 14. Final checkpoint - Ensure all tests pass and audit is clean
   - Ensure all tests pass, ask the user if questions arise.
   - Build the solution, run all tests, run full audit
   - Verify zero inline sort findings outside allowed files
