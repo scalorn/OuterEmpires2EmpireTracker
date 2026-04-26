@@ -18,6 +18,7 @@ These run automatically via the post-task-audit hook:
 7. **Dead Code** (dead-code.js) — Finds private methods that are never referenced outside their declaration line. Scans all .cs files (excluding Designer.cs) and checks each private method name appears at least twice in its declaring file or once in any other file. Known framework methods (Dispose, InitializeComponent, etc.) are excluded.
 8. **Duplicate Code** (dupe-code.js) — Finds methods with identical normalized bodies across different classes. Extracts method bodies, strips whitespace and comments, hashes them, and reports matches across different classes. Only methods with 5+ lines are checked. Intentionally copied methods can be added to the KNOWN_DUPES set.
 9. **UTF-8 Encoding** (utf8-check.js) — Scans all .cs files in OE2EmpireTracker/ and OE2EmpireTracker.Tests/, plus all .md files in spec/ and docs/. Detects invalid UTF-8 byte sequences (U+FFFD replacement characters) and double/triple-encoded UTF-8 mojibake (e.g. em-dash U+2014 becoming garbled multi-byte sequences like `Ã¢â‚¬â€`). These occur when UTF-8 bytes are misinterpreted as Windows-1252 and re-encoded.
+10. **Logger Check** (logger-check.js) — Verifies all ViewModel and Service classes have an NLog Logger declaration (`LogManager.GetCurrentClassLogger()`). Pure static utility classes, data containers, reference counters, and interfaces are exempt. Prevents classes from silently swallowing errors or having no diagnostic trace.
 
 ## Manual Audit Checklist
 

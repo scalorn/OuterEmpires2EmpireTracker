@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Services.Migration;
@@ -13,6 +14,8 @@ namespace OE2EmpireTracker.ViewModels
     /// </summary>
     public class BlueprintViewModel
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private readonly PlayerContext _playerContext;
 
         private Blueprint _blueprint;

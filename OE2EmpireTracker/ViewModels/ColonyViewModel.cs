@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -12,6 +13,8 @@ namespace OE2EmpireTracker.ViewModels
     /// </summary>
     public class ColonyViewModel
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private readonly Colony _colony;
 
         private readonly PlayerContext _playerContext;

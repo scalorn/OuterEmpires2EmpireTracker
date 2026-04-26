@@ -24,6 +24,7 @@ const tools = [
     { name: 'Dead Code', script: 'dead-code.js' },
     { name: 'Duplicate Code', script: 'dupe-code.js' },
     { name: 'UTF-8 Encoding', script: 'utf8-check.js' },
+    { name: 'Logger Check', script: 'logger-check.js' },
 ];
 
 let totalFindings = 0;
