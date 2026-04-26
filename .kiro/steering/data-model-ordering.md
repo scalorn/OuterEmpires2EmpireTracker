@@ -133,6 +133,7 @@ Key methods:
 | OrderExternalCharacters(IEnumerable<ExternalCharacter>) | Name asc |
 | OrderAsteroids(IEnumerable<Asteroid>) | Name asc |
 | OrderActivityRowsByTimeRemaining(IEnumerable<ActivityRow>) | GetSecondsRemaining() asc |
+| OrderItemBagEntries(IDictionary<string, Item>) | Value.Name asc |
 | OrderCountdownsByTimeRemaining(IEnumerable<CountDownTimeReference>) | TimeRemaining asc |
 | OrderByName<T>(IEnumerable<T>, Func<T, string>) | Generic name selector asc |
 

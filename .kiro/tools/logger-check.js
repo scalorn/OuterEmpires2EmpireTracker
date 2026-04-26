@@ -40,7 +40,6 @@ const EXEMPT = new Set([
     'DeliveryPlanReferenceCounter',     // static pure query — counts references
     'DeliveryRouteReferenceCounter',    // static pure query — counts references
     'StockPlanReferenceCounter',        // static pure query — counts references
-    'CollectionSortHelper',             // static pure sort functions — no state
 ]);
 
 const findings = [];

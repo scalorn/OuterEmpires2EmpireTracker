@@ -968,7 +968,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     .ToList();
             }
 
-            filteredList = filteredList.OrderBy(p => p.ExtendedName, StringComparer.OrdinalIgnoreCase).ToList();
+            filteredList = CollectionSortHelper.OrderBlueprints(filteredList).ToList();
             filteredList.Insert(0, new Models.Blueprint());
 
             var bs = new BindingSource();

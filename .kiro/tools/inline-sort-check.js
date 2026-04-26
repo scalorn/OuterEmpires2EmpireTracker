@@ -127,13 +127,15 @@ const EXEMPT_PATTERNS = [
     /rows\.OrderBy\s*\(\s*r\s*=>\s*r\.ColonyName/,
     /\.ThenBy\s*\(\s*r\s*=>\s*r\.StructureName/,
 
-    // ItemBag dictionary value sorts (display-only iteration of dictionary values)
-    /bag\.Items\.OrderBy\s*\(\s*k\s*=>\s*k\.Value\.Name/,
-    /crate\.Contents\.Items\.OrderBy\s*\(\s*k\s*=>\s*k\.Value\.Name/,
-    /MunitionsHold\.Items\.OrderBy\s*\(\s*k\s*=>\s*k\.Value\.Name/,
+    // ItemBag dictionary value sorts — refactored to CollectionSortHelper.OrderItemBagEntries
 
-    // Local filtered list sorts from static data (Resource, Commodity, WorkerDetail copies)
-    /filteredList\s*=\s*filteredList[\s\S]*\.OrderBy/,
+    // Local filtered list sorts on static game data (Resource, Commodity, WorkerDetail copies)
+    // These are local variables copied from static enum lists, not model collections
+    /filteredList\s*[\s\S]*\.OrderBy\s*\(\s*p\s*=>\s*p\.Name\s*\)/,
+    /filteredList\s*[\s\S]*\.OrderBy\s*\(\s*p\s*=>\s*p\.ExtendedName\s*\)/,
+    /filteredList\s*[\s\S]*\.OrderBy\s*\(\s*c\s*=>\s*c\.ExtendedName\s*\)/,
+
+    // Local filtered list sorts — refactored to CollectionSortHelper
 
     // Local variable sorts from EmpireContext static data (resources, commodities assigned from EmpireContext/Resource.Resources)
     // These are local variables assigned from static enum lists, not model collections
@@ -167,8 +169,7 @@ const EXEMPT_PATTERNS = [
     /dataPoints\.Sort/,
     /points\.Sort\s*\(\s*\(\s*a\s*,\s*b\s*\)\s*=>\s*a\.Evolution/,
 
-    // FormColonyActivity — sorting activity rows by computed time (local)
-    /\.OrderBy\s*\(\s*r\s*=>\s*r\.GetSecondsRemaining\s*\(\s*\)\s*\)/,
+    // FormColonyActivity — refactored to CollectionSortHelper.OrderActivityRowsByTimeRemaining
 ];
 
 function findCsFiles(dir, results) {

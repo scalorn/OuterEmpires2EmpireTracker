@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using NLog;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -16,6 +17,7 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class CollectionSortHelper
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         // ----------------------------------------------------------------
         //  Generic helpers (for game-constant types not in the Sort Key Registry)
         // ----------------------------------------------------------------
@@ -464,6 +466,25 @@ namespace OE2EmpireTracker.Services
             if (reserves == null) return Array.Empty<AsteroidReserve>();
             return reserves
                 .OrderBy(r => r.ResourceName ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        // ----------------------------------------------------------------
+        //  ItemBag Dictionary Sorts
+        // ----------------------------------------------------------------
+
+        /// <summary>
+        /// Sorts ItemBag entries by item Name (ascending, OrdinalIgnoreCase).
+        /// Returns key-value pairs sorted by the item's Name property.
+        /// Used for display iteration of ItemBag dictionaries.
+        /// </summary>
+        public static IReadOnlyList<KeyValuePair<string, Item>> OrderItemBagEntries(
+            IDictionary<string, Item> items)
+        {
+            if (items == null) return Array.Empty<KeyValuePair<string, Item>>();
+            return items
+                .OrderBy(kvp => kvp.Value?.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
                 .ToList()
                 .AsReadOnly();
         }

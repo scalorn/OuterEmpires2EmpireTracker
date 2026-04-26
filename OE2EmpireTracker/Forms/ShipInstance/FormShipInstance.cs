@@ -628,7 +628,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 return;
             }
 
-            foreach (var kvp in bag.Items.OrderBy(k => k.Value.Name))
+            foreach (var kvp in CollectionSortHelper.OrderItemBagEntries(bag.Items))
             {
                 var item = kvp.Value;
                 string typeName = item.ItemType.ToString();
@@ -672,7 +672,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             lblCrateContents.Text = string.Format("Crate Contents ({0}):", crate.Name);
             lblCrateContents.Visible = true;
             dgvCrateContents.Visible = true;
-            foreach (var kvp in crate.Contents.Items.OrderBy(k => k.Value.Name))
+            foreach (var kvp in CollectionSortHelper.OrderItemBagEntries(crate.Contents.Items))
             {
                 var item = kvp.Value;
                 dgvCrateContents.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.ResourcePurity, item.Quantity.ToString());

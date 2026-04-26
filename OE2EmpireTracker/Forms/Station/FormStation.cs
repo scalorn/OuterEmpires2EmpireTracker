@@ -292,7 +292,7 @@ namespace OE2EmpireTracker.Forms.Station
                 return;
             }
 
-            foreach (var kvp in bag.Items.OrderBy(k => k.Value.Name))
+            foreach (var kvp in CollectionSortHelper.OrderItemBagEntries(bag.Items))
             {
                 var item = kvp.Value;
                 string typeName = item.ItemType.ToString();
@@ -346,7 +346,7 @@ namespace OE2EmpireTracker.Forms.Station
             lblHoldCrateContents.Text = string.Format("Crate Contents ({0}):", crate.Name);
             lblHoldCrateContents.Visible = true;
             dgvHoldCrateContents.Visible = true;
-            foreach (var kvp in crate.Contents.Items.OrderBy(k => k.Value.Name))
+            foreach (var kvp in CollectionSortHelper.OrderItemBagEntries(crate.Contents.Items))
             {
                 var item = kvp.Value;
                 dgvHoldCrateContents.Rows.Add(item.ItemType.ToString(), item.ExtendedName, item.ResourcePurity, item.Quantity.ToString());
@@ -679,7 +679,7 @@ namespace OE2EmpireTracker.Forms.Station
             if (_selectedStation == null) return;
             if (!tabMunitions.Enabled) return;
 
-            foreach (var kvp in _selectedStation.MunitionsHold.Items.OrderBy(k => k.Value.Name))
+            foreach (var kvp in CollectionSortHelper.OrderItemBagEntries(_selectedStation.MunitionsHold.Items))
             {
                 var item = kvp.Value;
                 int rowIdx = dgvMunitions.Rows.Add(item.ExtendedName, item.Quantity.ToString());

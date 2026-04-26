@@ -168,10 +168,10 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             var selectedTypes = GetSelectedActivityTypes();
             string textFilter = txtFilter.Text ?? string.Empty;
 
-            var filtered = allRows
-                .Where(r => selectedTypes.Contains(r.Type))
-                .Where(r => PassesTextFilter(r, textFilter))
-                .OrderBy(r => r.GetSecondsRemaining())
+            var filtered = CollectionSortHelper.OrderActivityRowsByTimeRemaining(
+                allRows
+                    .Where(r => selectedTypes.Contains(r.Type))
+                    .Where(r => PassesTextFilter(r, textFilter)))
                 .ToList();
 
             foreach (var row in filtered)
