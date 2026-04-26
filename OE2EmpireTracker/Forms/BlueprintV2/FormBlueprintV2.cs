@@ -71,6 +71,9 @@ namespace OE2EmpireTracker
         // Statistics grid structure cache key: "{typeId}|{extraKeysHash}"
         private string _cachedGridKey;
 
+        // Parallel list of Blueprint objects for base blueprint UUID lookup via SelectedFullIndex
+        private List<Blueprint> _baseBlueprintList = new List<Blueprint>();
+
         public FormBlueprintV2()
         {
             InitializeComponent();
@@ -107,8 +110,7 @@ namespace OE2EmpireTracker
             cmbShipClass.SelectedIndexChanged += CmbShipClass_SelectedIndexChanged;
             cmbTechLevel.SelectedIndexChanged += CmbTechLevel_SelectedIndexChanged;
             cmbEvolution.SelectedIndexChanged += CmbEvolution_SelectedIndexChanged;
-            cmbBaseBlueprint.SelectedIndexChanged += CmbBaseBlueprint_SelectedIndexChanged;
-            txtFilterBaseBlueprint.TextChanged += TxtFilterBaseBlueprint_TextChanged;
+            cmbBaseBlueprint.SelectedItemChanged += CmbBaseBlueprint_SelectedItemChanged;
             chkGlobalBlueprint.CheckedChanged += ChkGlobalBlueprint_CheckedChanged;
 
             // Wire command buttons
@@ -125,9 +127,8 @@ namespace OE2EmpireTracker
             dgvStatistics.CurrentCellDirtyStateChanged += DgvStatistics_CurrentCellDirtyStateChanged;
 
             // Configure resources grid combo
-            colResource.DisplayMember = "Name";
-            colResource.ValueMember = "Name";
-            colResource.DataSource = empireContext.BindingSourceResource;
+            var resourceNameList = empireContext.ResourceList.Select(r => r.Name).ToList();
+            colResource.Items = resourceNameList;
 
             dgvResources.DataError += (s, ev) =>
             {
@@ -296,9 +297,6 @@ namespace OE2EmpireTracker
             cmbEvolution.ValueMember = "Name";
             cmbEvolution.DataSource = empireContext.BindingSourceEvolution;
             cmbEvolution.SelectedIndex = 0;
-
-            cmbBaseBlueprint.DisplayMember = "ExtendedName";
-            cmbBaseBlueprint.ValueMember = "UUID";
         }
 
         // -----------------------------------------------------------------------
@@ -637,11 +635,9 @@ namespace OE2EmpireTracker
                 // Auto-select best base blueprint match
                 using (var guard = new ProgrammaticUpdateGuard(this))
                 {
-                    if (string.IsNullOrEmpty(importedBP.BaseBlueprintUUID) && cmbBaseBlueprint.Items.Count > 1)
+                    if (string.IsNullOrEmpty(importedBP.BaseBlueprintUUID) && _baseBlueprintList.Count > 1)
                     {
-                        cmbBaseBlueprint.SelectedIndex = 1;
-                        var bp = cmbBaseBlueprint.SelectedItem as Models.Blueprint;
-                        viewModel.BaseBlueprintUUID = bp?.UUID ?? string.Empty;
+                        viewModel.BaseBlueprintUUID = _baseBlueprintList[1].UUID ?? string.Empty;
                     }
                 }
             }
@@ -910,17 +906,14 @@ namespace OE2EmpireTracker
             viewModel.Evolution = ev;
         }
 
-        private void CmbBaseBlueprint_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbBaseBlueprint_SelectedItemChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            var bp = cmbBaseBlueprint.SelectedItem as Blueprint;
-            viewModel.BaseBlueprintUUID = bp?.UUID ?? string.Empty;
-        }
-
-        private void TxtFilterBaseBlueprint_TextChanged(object sender, EventArgs e)
-        {
-            UpdateBaseBlueprintList();
-            cmbBaseBlueprint.DroppedDown = true;
+            int fullIndex = cmbBaseBlueprint.SelectedFullIndex;
+            if (fullIndex >= 0 && fullIndex < _baseBlueprintList.Count)
+                viewModel.BaseBlueprintUUID = _baseBlueprintList[fullIndex].UUID ?? string.Empty;
+            else
+                viewModel.BaseBlueprintUUID = string.Empty;
         }
 
         private void ChkGlobalBlueprint_CheckedChanged(object sender, EventArgs e)
@@ -950,20 +943,27 @@ namespace OE2EmpireTracker
         }
 
         /// <summary>
-        /// Updates the base blueprint combo with candidates filtered by current blueprint fields.
+        /// Updates the base blueprint combo with candidates matching the current blueprint fields.
+        /// Maintains a parallel list of Blueprint objects for UUID lookup via SelectedFullIndex.
         /// </summary>
         private void UpdateBaseBlueprintList()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            string searchText = txtFilterBaseBlueprint.Text;
-            var candidates = new List<Blueprint>(viewModel.GetBaseBlueprintCandidates(searchText));
+            var candidates = new List<Blueprint>(viewModel.GetBaseBlueprintCandidates());
 
-            // Add empty entry at top to allow deselecting
+            // Insert empty entry at top to allow deselecting
             candidates.Insert(0, new Blueprint());
 
-            var bs = new BindingSource();
-            bs.DataSource = candidates;
-            cmbBaseBlueprint.DataSource = bs;
+            _baseBlueprintList = candidates;
+            var names = candidates.Select(b => b.ExtendedName ?? string.Empty).ToList();
+            string currentValue = string.Empty;
+            if (!string.IsNullOrEmpty(viewModel.Data.BaseBlueprintUUID))
+            {
+                var match = candidates.FirstOrDefault(b => b.UUID == viewModel.Data.BaseBlueprintUUID);
+                if (match != null) currentValue = match.ExtendedName ?? string.Empty;
+            }
+
+            cmbBaseBlueprint.SetItems(names, currentValue);
         }
 
         /// <summary>
@@ -1839,12 +1839,7 @@ namespace OE2EmpireTracker
             cmbEvolution.SelectedItem = empireContext.FindEvolution(viewModel.Data.Evolution);
 
             // Base blueprint
-            txtFilterBaseBlueprint.Text = string.Empty;
             UpdateBaseBlueprintList();
-            if (!string.IsNullOrEmpty(viewModel.Data.BaseBlueprintUUID))
-                cmbBaseBlueprint.SelectedValue = viewModel.Data.BaseBlueprintUUID;
-            else
-                cmbBaseBlueprint.SelectedIndex = 0;
 
             // Global checkbox
             chkGlobalBlueprint.Checked = viewModel.IsGlobal;
@@ -1890,9 +1885,8 @@ namespace OE2EmpireTracker
             cmbTechLevel.SelectedIndex = -1;
             cmbEvolution.SelectedIndex = 0;
 
-            txtFilterBaseBlueprint.Text = string.Empty;
-            UpdateBaseBlueprintList();
-            cmbBaseBlueprint.SelectedIndex = -1;
+            _baseBlueprintList.Clear();
+            cmbBaseBlueprint.SetItems(new List<string>(), string.Empty);
 
             chkGlobalBlueprint.Checked = false;
 

@@ -14,7 +14,7 @@ MDI child form. SplitContainer with left-list / right-detail, tabbed detail area
 │ [Clear Filters]               │ Copy Cost: [15000________________]                 │
 │                               │ Type: [Reactor    ▼]  Class: [Capital  ▼]          │
 │ ┌────┬────────────┬───┬───┬─┐│ Tech: [3          ▼]  Evo:   [2        ▼]          │
-│ │Type│ Name       │TL │Evo│R││ Base BP: [____] [Reactor Mk2              ▼]        │
+│ │Type│ Name       │TL │Evo│R││ Base BP: [____│Reactor Mk2              ▼]        │
 │ ├────┼────────────┼───┼───┼─┤│ ☑ Global Blueprint                                 │
 │ │Reac│ Reactor Mk3│ 3 │ 2 │4││                                                    │
 │ │Driv│ Drive Mk3  │ 3 │ 1 │2││ [New] [Save] [Delete] [Import] [Import Market] [Import Crate] │
@@ -48,12 +48,12 @@ Controls:
   - `flpIdentity` — identity fields:
     - `txtName`, `txtNickName`, `txtDescription`, `txtCopyCost`
     - `cmbBlueprintType`, `cmbShipClass`, `cmbTechLevel`, `cmbEvolution`
-    - `txtFilterBaseBlueprint` + `cmbBaseBlueprint` (filtered combo for base/parent blueprint)
+    - `cmbBaseBlueprint` (FilteredTextComboSet) — filtered combo for base/parent blueprint
     - `chkGlobalBlueprint` (CheckBox) — marks blueprint as shared/global
   - `flpCommands`: `btnNew`, `btnSave`, `btnDelete`, `btnImport`, `btnImportMarket`, `btnImportCrate`
   - `tabDetailedData` (TabControl):
     - Properties tab: `dgvStatistics` (DataEntryGridView) — Property/Value columns (editable)
-    - Resources tab: `dgvResources` (DataGridView) — Resource (ComboBox)/Amount columns, `btnAddResource`/`btnDeleteResource`
+    - Resources tab: `dgvResources` (DataEntryGridView) — Resource (DataGridViewFilteredComboBoxColumn)/Amount columns, `btnAddResource`/`btnDeleteResource`
     - Evolution Graph tab: `chartEvolution` (Chart) — line chart of property changes across evolutions, `pnlPropertyCheckboxes` (toggle which properties to graph), `lblNoChanges`
     - Price Evolution tab: `chartPriceEvolution` (Chart) — line chart of manufacturing cost across evolutions, `lblPriceEvoNoPlan` (Label — shown when no plan selected)
   - `flpPricing`: `cmbPricingPlan` (ComboBox), `lblComputedPrice` (Label) — computed price from selected pricing plan

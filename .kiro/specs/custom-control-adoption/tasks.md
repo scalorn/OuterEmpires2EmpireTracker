@@ -70,23 +70,23 @@ Adopt FilteredTextComboSet, DataGridViewFilteredComboBoxColumn, and DataEntryGri
     - Update `spec/mockups/delivery-routes.md` to reflect control changes
     - _Requirements: 15_
 
-- [ ] 4. Convert FormBlueprintV2
-  - [~] 4.1 Replace txtFilterBaseBlueprint + cmbBaseBlueprint with FilteredTextComboSet
+- [x] 4. Convert FormBlueprintV2
+  - [x] 4.1 Replace txtFilterBaseBlueprint + cmbBaseBlueprint with FilteredTextComboSet
     - In `FormBlueprintV2.Designer.cs`: change `cmbBaseBlueprint` type to `FilteredTextComboSet`, remove `txtFilterBaseBlueprint` declaration/instantiation/Controls.Add/sizing
     - In `FormBlueprintV2.cs`: remove `txtFilterBaseBlueprint.TextChanged` subscription, remove `TxtFilterBaseBlueprint_TextChanged` handler, convert `UpdateBaseBlueprintList()` to use `cmbBaseBlueprint.SetItems(blueprintNames, currentValue)`, maintain a parallel list of Blueprint objects for UUID lookup via `SelectedFullIndex`
     - _Requirements: 13, 14_
 
-  - [~] 4.2 Replace colResource DataGridViewComboBoxColumn with DataGridViewFilteredComboBoxColumn
+  - [x] 4.2 Replace colResource DataGridViewComboBoxColumn with DataGridViewFilteredComboBoxColumn
     - In `FormBlueprintV2.Designer.cs`: change `colResource` type from `DataGridViewComboBoxColumn` to `DataGridViewFilteredComboBoxColumn`
     - In `FormBlueprintV2.cs`: change resource list population to set `colResource.Items = resourceNameList`
     - _Requirements: 8_
 
-  - [~] 4.3 Replace dgvResources DataGridView with DataEntryGridView
+  - [x] 4.3 Replace dgvResources DataGridView with DataEntryGridView
     - In `FormBlueprintV2.Designer.cs`: change `dgvResources` type to `DataEntryGridView`
     - No code-behind changes needed
     - _Requirements: 12_
 
-  - [~] 4.4 Build, test, audit, update mockup, commit
+  - [x] 4.4 Build, test, audit, update mockup, commit
     - Build solution, run tests, run audit
     - Update `spec/mockups/blueprints.md` to reflect control changes
     - _Requirements: 15_

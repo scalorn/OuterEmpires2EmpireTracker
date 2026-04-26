@@ -72,8 +72,7 @@ namespace OE2EmpireTracker
             this.cmbEvolution = new System.Windows.Forms.ComboBox();
             this.flpBaseBlueprintRow = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBaseBlueprint = new System.Windows.Forms.Label();
-            this.txtFilterBaseBlueprint = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.cmbBaseBlueprint = new System.Windows.Forms.ComboBox();
+            this.cmbBaseBlueprint = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.chkGlobalBlueprint = new System.Windows.Forms.CheckBox();
             this.flpGlobalRow = new System.Windows.Forms.FlowLayoutPanel();
             this.lblGlobal = new System.Windows.Forms.Label();
@@ -93,8 +92,8 @@ namespace OE2EmpireTracker
             this.pnlResourceButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAddResource = new System.Windows.Forms.Button();
             this.btnDeleteResource = new System.Windows.Forms.Button();
-            this.dgvResources = new System.Windows.Forms.DataGridView();
-            this.colResource = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.dgvResources = new DataEntryGridView();
+            this.colResource = new OE2EmpireTracker.Controls.DataGridViewFilteredComboBoxColumn();
             this.colAmount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.tabPEvolutionGraph = new System.Windows.Forms.TabPage();
             this.chartEvolution = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -537,7 +536,6 @@ namespace OE2EmpireTracker
             // flpBaseBlueprintRow
             this.flpBaseBlueprintRow.AutoSize = true;
             this.flpBaseBlueprintRow.Controls.Add(this.lblBaseBlueprint);
-            this.flpBaseBlueprintRow.Controls.Add(this.txtFilterBaseBlueprint);
             this.flpBaseBlueprintRow.Controls.Add(this.cmbBaseBlueprint);
             this.flpBaseBlueprintRow.Location = new System.Drawing.Point(2, 230);
             this.flpBaseBlueprintRow.Margin = new System.Windows.Forms.Padding(2);
@@ -552,17 +550,11 @@ namespace OE2EmpireTracker
             this.lblBaseBlueprint.TabIndex = 0;
             this.lblBaseBlueprint.Text = "Base Blueprint";
             this.lblBaseBlueprint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.txtFilterBaseBlueprint.Location = new System.Drawing.Point(107, 3);
-            this.txtFilterBaseBlueprint.Name = "txtFilterBaseBlueprint";
-            this.txtFilterBaseBlueprint.Size = new System.Drawing.Size(100, 20);
-            this.txtFilterBaseBlueprint.TabIndex = 1;
-            this.cmbBaseBlueprint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbBaseBlueprint.FormattingEnabled = true;
-            this.cmbBaseBlueprint.Location = new System.Drawing.Point(212, 2);
+            this.cmbBaseBlueprint.Location = new System.Drawing.Point(106, 2);
             this.cmbBaseBlueprint.Margin = new System.Windows.Forms.Padding(2);
             this.cmbBaseBlueprint.Name = "cmbBaseBlueprint";
             this.cmbBaseBlueprint.Size = new System.Drawing.Size(201, 21);
-            this.cmbBaseBlueprint.TabIndex = 2;
+            this.cmbBaseBlueprint.TabIndex = 1;
             // chkGlobalBlueprint
             this.chkGlobalBlueprint.AutoSize = true;
             this.chkGlobalBlueprint.Location = new System.Drawing.Point(106, 3);
@@ -954,8 +946,7 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.ComboBox cmbEvolution;
         private System.Windows.Forms.FlowLayoutPanel flpBaseBlueprintRow;
         private System.Windows.Forms.Label lblBaseBlueprint;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterBaseBlueprint;
-        private System.Windows.Forms.ComboBox cmbBaseBlueprint;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbBaseBlueprint;
         private System.Windows.Forms.CheckBox chkGlobalBlueprint;
         private System.Windows.Forms.FlowLayoutPanel flpGlobalRow;
         private System.Windows.Forms.Label lblGlobal;
@@ -975,8 +966,8 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.FlowLayoutPanel pnlResourceButtons;
         private System.Windows.Forms.Button btnAddResource;
         private System.Windows.Forms.Button btnDeleteResource;
-        private System.Windows.Forms.DataGridView dgvResources;
-        private System.Windows.Forms.DataGridViewComboBoxColumn colResource;
+        private DataEntryGridView dgvResources;
+        private OE2EmpireTracker.Controls.DataGridViewFilteredComboBoxColumn colResource;
         private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn colAmount;
         private System.Windows.Forms.TabPage tabPEvolutionGraph;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartEvolution;
