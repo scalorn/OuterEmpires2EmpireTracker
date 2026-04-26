@@ -1,6 +1,6 @@
 # Feature Backlog
 
-**Next available ID: BL-085** (check COMPLETED.md before assigning — IDs are shared across both files)
+**Next available ID: BL-102** (check COMPLETED.md before assigning — IDs are shared across both files)
 
 Open features and enhancements to be worked on.
 
@@ -108,7 +108,7 @@ Build a custom `TreeDataGridView` control extending DataGridView that supports e
 
 **Decision point:** Try master-detail first during Iteration 4 (Stations). If vertical space is a problem in practice, build this control as a replacement. Design the control with depth support from the start so nesting is incremental if it comes.
 
-### BL-085: Blueprint Cost Evolution Graph
+###  : Blueprint Cost Evolution Graph
 **Dependencies:** None
 
 Add a cost evolution graph to the Blueprint form, similar to the existing evolution graph but plotting the estimated cost of each blueprint at each evolution level. Cost is computed using a selected pricing plan — sum of (resource quantity × resource price) for each resource in the blueprint, plus any time-based costs from the plan. The graph shows how total manufacturing cost changes as the blueprint evolves, helping players decide which evolution to manufacture based on cost efficiency. Requires a pricing plan selector dropdown on the graph panel. Reuse the charting infrastructure from the evolution graph (System.Windows.Forms.DataVisualization.Charting).
@@ -154,6 +154,89 @@ Before we can move to a database or SOA we need to protect the data model from i
 Phase 1 (readonly-list-encapsulation) protects the *collections* — you can't add/remove entities without going through PlayerContext. Phase 2 (this item) protects the *entities themselves* — you can't mutate a Blueprint's Name or a Colony's OwnerUUID without going through a controlled update path. This likely means read-only public properties with internal/private setters, plus Update methods or a unit-of-work pattern that tracks changes and persists them atomically.
 
 Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat Code Coverage"` works natively. In the meantime, use the file-level coverage analysis tool (`node .kiro/tools/spec-coverage.js`) and the reference counter completeness tests as proxies for coverage.
+
+## Unused Model Fields
+
+Fields on model classes that exist in the data model (persisted in JSON) but are never read by production code. Discovered during the April 2026 model field audit. Each item is a candidate for either wiring into production logic or removing.
+
+### BL-086: ColonyStructure.CurrentAttitude — Not Wired to Production Code
+**Dependencies:** None
+**Status: Deferred** — Known incomplete feature (AMB-004/REQ-COL-001b). Deserialized from PlayerData.json but no production code reads the value. Will be needed when worker morale is implemented. Leave as-is until morale feature is built.
+
+### BL-087: ColonyStructure.ContentmentIndex — Not Wired to Production Code
+**Dependencies:** None
+**Status: Deferred** — Same incomplete feature group as CurrentAttitude (AMB-004). Deserialized from JSON, never consumed by production code. Leave as-is until morale feature is built.
+
+### BL-088: ColonyStructure.WageLevel — Not Wired to Production Code
+**Dependencies:** None
+**Status: Deferred** — Same incomplete feature group as CurrentAttitude (AMB-004). Deserialized from JSON, never consumed by production code. Leave as-is until morale feature is built.
+
+### BL-089: BlueprintType.ResearchableProperties — Not Wired to Production Code
+**Dependencies:** None
+**Status: New**
+Deserialized from BaselineData.json but no production code ever reads the value after loading. Potential future feature for research lab UI (showing which properties can be researched on a blueprint type). Either wire it into the Research Lab UI or remove it from the model.
+
+### BL-090: BuildItem.ParentBuildItemUUID — Never Set or Read
+**Dependencies:** None
+**Status: New**
+Declared on BuildItem but never set by any code and never read. Appears to be a planned feature for hierarchical build item dependencies (e.g. "build this after that") that was never implemented. Remove or implement.
+
+### BL-091: UIPreferences.OpenForms — Replaced by OpenFormEntries
+**Dependencies:** None
+**Status: New**
+Replaced by `OpenFormEntries` (which IS used in MainWindow.cs). Kept for JSON backward compatibility — Newtonsoft deserializes old `OpenForms` arrays from UIPreferences.json, but no code reads the property. Safe to remove after one release cycle (all users will have migrated to OpenFormEntries format).
+
+### BL-092: ShipStats.CrewSupported — Never Set or Read
+**Dependencies:** None
+**Status: New**
+Declared on ShipStats but never set by `ShipBuildService.AddBlueprintStats()` and never displayed in any form. Always zero. Remove or wire into ship stat computation.
+
+### BL-093: ShipStats.EngCapacityAvailable — Never Set or Read
+**Dependencies:** None
+**Status: New**
+Declared on ShipStats but never set or read. Always zero. Remove or wire into ship stat computation.
+
+### BL-094: ShipStats.EngCapacityUsed — Never Set or Read
+**Dependencies:** None
+**Status: New**
+Declared on ShipStats but never set or read. Always zero. Same field exists on StationStats (BL-099) — also unused.
+
+### BL-095: ShipStats.MiningYieldIncrease — Never Set or Read
+**Dependencies:** None
+**Status: New**
+Declared on ShipStats but never set by `AddBlueprintStats()` and never displayed. Note: `MiningYield` IS used — `MiningYieldIncrease` is a separate unused field. Remove or wire into ship stat computation.
+
+### BL-096: ShipStats.SensorAbundanceFactor — Never Set or Read
+**Dependencies:** None
+**Status: New**
+Declared on ShipStats but never set or read. Always zero. Remove or wire into ship stat computation.
+
+### BL-097: ShipStats.PurityModifier — Never Set or Read
+**Dependencies:** None
+**Status: New**
+Declared on ShipStats but never set or read. Always zero. Note: `SurveyViewModel.PurityModifier` IS used — that's a different property on a different class. Remove or wire into ship stat computation.
+
+### BL-098: ShipStats.SlotSummary — Never Set or Read
+**Dependencies:** None
+**Status: New**
+Declared on ShipStats but never set or read. Always empty string. Same field exists on StationStats (BL-100) — also unused. Remove or wire into ship stat display.
+
+### BL-099: StationStats.EngCapacityUsed — Never Set or Read
+**Dependencies:** None
+**Status: New**
+Declared on StationStats but never set or read. Always zero. Same pattern as ShipStats.EngCapacityUsed (BL-094). Remove or wire into station stat computation.
+
+### BL-100: StationStats.SlotSummary — Never Set or Read
+**Dependencies:** None
+**Status: New**
+Declared on StationStats but never set or read. Always empty string. Same pattern as ShipStats.SlotSummary (BL-098). Remove or wire into station stat display.
+
+### BL-101: ColonyWorker Properties — Set but Never Read
+**Dependencies:** None
+**Status: New**
+`ColonyWorker` class has `WorkerType`, `Structure`, and `Assigned` properties set in the constructor, but the class is only ever used as a counter (`colonyWorkers.Count`). The property values are never read after construction. Either consume the properties (e.g. for worker assignment display) or simplify the class to just a counter.
+
+---
 
 ## Empire-Systems Audit Gaps
 
