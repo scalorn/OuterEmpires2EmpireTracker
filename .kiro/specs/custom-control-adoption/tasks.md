@@ -24,24 +24,24 @@ Adopt FilteredTextComboSet, DataGridViewFilteredComboBoxColumn, and DataEntryGri
     - Update `spec/mockups/colonies.md` to reflect the control changes (remove txtSurveyFilter, txtSelectionFilter from wireframe and control list)
     - _Requirements: 15_
 
-- [ ] 2. Convert FormSurvey
-  - [~] 2.1 Replace txtFilterScannerBlueprint + cmbScannerBlueprint with FilteredTextComboSet
+- [x] 2. Convert FormSurvey
+  - [x] 2.1 Replace txtFilterScannerBlueprint + cmbScannerBlueprint with FilteredTextComboSet
     - In `FormSurvey.Designer.cs`: change `cmbScannerBlueprint` type to `FilteredTextComboSet`, remove `txtFilterScannerBlueprint` declaration/instantiation/Controls.Add/sizing
     - In `FormSurvey.cs`: remove `txtFilterScannerBlueprint.TextChanged` subscription, remove `TxtFilterScannerBlueprint_TextChanged` handler, remove `UpdateScannerBlueprintList()` method (or convert it to call `SetItems`), rewire selection event
     - _Requirements: 3, 13, 14_
 
-  - [~] 2.2 Replace Resource DataGridViewComboBoxColumn with DataGridViewFilteredComboBoxColumn
+  - [x] 2.2 Replace Resource DataGridViewComboBoxColumn with DataGridViewFilteredComboBoxColumn
     - In `FormSurvey.Designer.cs`: change `Resource` column type from `System.Windows.Forms.DataGridViewComboBoxColumn` to `OE2EmpireTracker.Controls.DataGridViewFilteredComboBoxColumn`
     - In `FormSurvey.cs`: change resource list population from `Resource.DataSource` or `Resource.Items.AddRange` to setting `Resource.Items = resourceNameList`
     - Keep Purity column as standard DataGridViewComboBoxColumn (only 5 items)
     - _Requirements: 7_
 
-  - [~] 2.3 Replace dgvResources DataGridView with DataEntryGridView
+  - [x] 2.3 Replace dgvResources DataGridView with DataEntryGridView
     - In `FormSurvey.Designer.cs`: change `dgvResources` type from `System.Windows.Forms.DataGridView` to `DataEntryGridView`
     - No code-behind changes needed — drop-in replacement
     - _Requirements: 9_
 
-  - [~] 2.4 Build, test, audit, update mockup, commit
+  - [x] 2.4 Build, test, audit, update mockup, commit
     - Build solution, run tests, run audit
     - Update `spec/mockups/surveys.md` to reflect control changes
     - _Requirements: 15_

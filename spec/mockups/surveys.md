@@ -13,7 +13,7 @@ MDI child form. Left-list / right-detail with rich filtering and resource grid.
 │ Type: [All▼] Purity:[All▼]  │ Planet Name: [Kepler-442b________]                   │
 │ Min Amount: [_____]         │ Survey ID:   [SVY-00142___________]                   │
 │                             │ Nickname:    [Rich Iron Site_______]                   │
-│ ┌─────────────────────────┐ │ Scanner BP:  [____] [Deep Scanner Mk3       ▼]        │
+│ ┌─────────────────────────┐ │ Scanner BP:  [Deep Scanner Mk3              ▼]        │
 │ │▸ Kepler-442b (SVY-142) │ │ Scanned By:  [Captain Kirk_________]                  │
 │ │  Sol-3 (SVY-089)       │ │ Scan Date:   [2024-03-15 14:30___] [📅]               │
 │ │  Proxima-b (SVY-201)   │ │ Sensor Abund:[85_____]                                │
@@ -43,12 +43,12 @@ Controls:
 - Right: `flpSurveyData` (top-down, AutoScroll, WrapContents=false):
   - `flpSurveyDetails` (top-down) — survey identity fields:
     - `cmbSurveyTypeEdit` (Planet/Asteroid dropdown — label changes to "Asteroid Name" when Asteroid selected), `txtSystemName`, `txtPlanetName`, `txtSurveyID`, `txtNickName`
-    - `txtFilterScannerBlueprint` + `cmbScannerBlueprint` (filtered combo for scanner blueprint)
+    - `cmbScannerBlueprint` (FilteredTextComboSet) — scanner blueprint picker with inline filtering
     - `txtScannedBy` — player who performed the scan
     - `txtScanDateTime` + `dtpScanDateTime` (DateTimePicker) — scan timestamp
     - `txtSensorAbundance`, `txtPurityModifier`, `txtScanLevel`
-  - `dgvResources` (DataGridView, editable):
-    - `Resource` (ComboBoxColumn) — resource name
+  - `dgvResources` (DataEntryGridView, editable, Tab-navigates between editable cells):
+    - `Resource` (DataGridViewFilteredComboBoxColumn) — resource name with inline filtering
     - `Purity` (ComboBoxColumn) — purity level
     - `Amount` (ValidatedTextBoxColumn) — quantity
     - `MaxReserve` (TextBoxColumn, read-only) — max reserve from linked asteroid (asteroid surveys only; empty for planet surveys)

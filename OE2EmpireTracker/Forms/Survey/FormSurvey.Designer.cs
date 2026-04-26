@@ -63,8 +63,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.txtNickName = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpScannerBlueprint = new System.Windows.Forms.FlowLayoutPanel();
             this.lblScannerBlueprint = new System.Windows.Forms.Label();
-            this.txtFilterScannerBlueprint = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.cmbScannerBlueprint = new System.Windows.Forms.ComboBox();
+            this.cmbScannerBlueprint = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.flpScannedBy = new System.Windows.Forms.FlowLayoutPanel();
             this.lblScannedBy = new System.Windows.Forms.Label();
             this.txtScannedBy = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -81,8 +80,8 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScanLevel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblScanLevel = new System.Windows.Forms.Label();
             this.txtScanLevel = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.dgvResources = new System.Windows.Forms.DataGridView();
-            this.Resource = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.dgvResources = new DataEntryGridView();
+            this.Resource = new OE2EmpireTracker.Controls.DataGridViewFilteredComboBoxColumn();
             this.Purity = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Amount = new OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
@@ -450,7 +449,6 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             this.flpScannerBlueprint.AutoSize = true;
             this.flpScannerBlueprint.Controls.Add(this.lblScannerBlueprint);
-            this.flpScannerBlueprint.Controls.Add(this.txtFilterScannerBlueprint);
             this.flpScannerBlueprint.Controls.Add(this.cmbScannerBlueprint);
             this.flpScannerBlueprint.Location = new System.Drawing.Point(2, 92);
             this.flpScannerBlueprint.Margin = new System.Windows.Forms.Padding(2);
@@ -470,28 +468,9 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lblScannerBlueprint.Text = "Scanner Blueprint";
             this.lblScannerBlueprint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // txtFilterScannerBlueprint
-            // 
-            this.txtFilterScannerBlueprint.AllowSpaces = true;
-            this.txtFilterScannerBlueprint.AutoFormat = true;
-            this.txtFilterScannerBlueprint.ErrorMessage = "";
-            this.txtFilterScannerBlueprint.InvalidColor = System.Drawing.Color.LightCoral;
-            this.txtFilterScannerBlueprint.IsValid = true;
-            this.txtFilterScannerBlueprint.Location = new System.Drawing.Point(107, 3);
-            this.txtFilterScannerBlueprint.Name = "txtFilterScannerBlueprint";
-            this.txtFilterScannerBlueprint.Size = new System.Drawing.Size(100, 20);
-            this.txtFilterScannerBlueprint.TabIndex = 0;
-            this.txtFilterScannerBlueprint.ValidationPattern = null;
-            this.txtFilterScannerBlueprint.ValidColor = System.Drawing.Color.White;
-            this.txtFilterScannerBlueprint.TextChanged += new System.EventHandler(this.TxtFilterScannerBlueprint_TextChanged);
-            // 
             // cmbScannerBlueprint
             // 
-            this.cmbScannerBlueprint.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cmbScannerBlueprint.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbScannerBlueprint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbScannerBlueprint.FormattingEnabled = true;
-            this.cmbScannerBlueprint.Location = new System.Drawing.Point(212, 2);
+            this.cmbScannerBlueprint.Location = new System.Drawing.Point(107, 2);
             this.cmbScannerBlueprint.Margin = new System.Windows.Forms.Padding(2);
             this.cmbScannerBlueprint.Name = "cmbScannerBlueprint";
             this.cmbScannerBlueprint.Size = new System.Drawing.Size(201, 21);
@@ -869,8 +848,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private System.Windows.Forms.ComboBox cmbSurveyTypeEdit;
         private System.Windows.Forms.FlowLayoutPanel flpScannerBlueprint;
         private System.Windows.Forms.Label lblScannerBlueprint;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterScannerBlueprint;
-        private System.Windows.Forms.ComboBox cmbScannerBlueprint;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbScannerBlueprint;
         private System.Windows.Forms.FlowLayoutPanel flpScannedBy;
         private System.Windows.Forms.Label lblScannedBy;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtScannedBy;
@@ -883,7 +861,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private System.Windows.Forms.FlowLayoutPanel flpScanLevel;
         private System.Windows.Forms.Label lblScanLevel;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtScanLevel;
-        private System.Windows.Forms.DataGridView dgvResources;
+        private DataEntryGridView dgvResources;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button btnSave;
@@ -898,7 +876,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private System.Windows.Forms.FlowLayoutPanel flpNickName;
         private System.Windows.Forms.Label lblNickName;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtNickName;
-        private System.Windows.Forms.DataGridViewComboBoxColumn Resource;
+        private OE2EmpireTracker.Controls.DataGridViewFilteredComboBoxColumn Resource;
         private System.Windows.Forms.DataGridViewComboBoxColumn Purity;
         private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn Amount;
         private System.Windows.Forms.DateTimePicker dtpScanDateTime;

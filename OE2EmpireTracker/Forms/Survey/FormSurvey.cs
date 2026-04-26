@@ -36,6 +36,8 @@ namespace OE2EmpireTracker.Forms.Survey
         private int _sortColumn = 2; // PlanetName
         private SortOrder _sortOrder = SortOrder.Ascending;
 
+        private List<Blueprint> _scannerBlueprintItems = new List<Blueprint>();
+
         public FormSurvey()
         {
             InitializeComponent();
@@ -44,10 +46,8 @@ namespace OE2EmpireTracker.Forms.Survey
             viewModel = new SurveyViewModel(new OE2EmpireTracker.Models.Survey(), playerContext, empireContext);
 
             // Configure scanner blueprint combo box
-            cmbScannerBlueprint.DisplayMember = "ExtendedName";
-            cmbScannerBlueprint.ValueMember = "UUID";
-            UpdateScannerBlueprintList();
-            cmbScannerBlueprint.SelectedIndex = -1;
+            PopulateScannerBlueprintList(null);
+            cmbScannerBlueprint.SelectedItemChanged += CmbScannerBlueprint_SelectedItemChanged;
 
             // Set up survey list view with columns
             lvwSurveys.View = View.Details;
@@ -94,10 +94,8 @@ namespace OE2EmpireTracker.Forms.Survey
             txtMinAmount.TextChanged += TxtMinAmount_TextChanged;
 
             // Configure resource data grid
-            DataGridViewComboBoxColumn colResource = (DataGridViewComboBoxColumn)dgvResources.Columns["Resource"];
-            colResource.DisplayMember = "Name";
-            colResource.ValueMember = "Name";
-            colResource.DataSource = empireContext.BindingSourceResource;
+            var resourceNameList = empireContext.ResourceList.Select(r => r.Name).ToList();
+            Resource.Items = resourceNameList;
 
             DataGridViewComboBoxColumn cmbPurity = (DataGridViewComboBoxColumn)dgvResources.Columns["Purity"];
             cmbPurity.DisplayMember = "Name";
@@ -132,7 +130,6 @@ namespace OE2EmpireTracker.Forms.Survey
             txtSensorAbundance.TextChanged += TxtSensorAbundance_TextChanged;
             txtPurityModifier.TextChanged += TxtPurityModifier_TextChanged;
             txtScanLevel.TextChanged += TxtScanLevel_TextChanged;
-            cmbScannerBlueprint.SelectedIndexChanged += CmbScannerBlueprint_SelectedIndexChanged;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.SurveyDataChanged += OnSurveyDataChanged;
@@ -264,14 +261,15 @@ namespace OE2EmpireTracker.Forms.Survey
             UpdateDeleteButtonState();
         }
 
-        private void UpdateScannerBlueprintList()
+        private void PopulateScannerBlueprintList(string currentValue)
         {
-            string searchText = txtFilterScannerBlueprint.Text;
-            var filteredList = viewModel.GetFilteredScannerBlueprints(searchText);
-
-            BindingSource filteredSource = new BindingSource();
-            filteredSource.DataSource = filteredList;
-            cmbScannerBlueprint.DataSource = filteredSource;
+            var sw = Stopwatch.StartNew();
+            var blueprints = viewModel.GetFilteredScannerBlueprints(string.Empty);
+            _scannerBlueprintItems = blueprints.ToList();
+            var displayNames = _scannerBlueprintItems.Select(b => b.ExtendedName ?? string.Empty).ToList();
+            cmbScannerBlueprint.SetItems(displayNames, currentValue);
+            sw.Stop();
+            Log.Info("PERF PopulateScannerBlueprintList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateListView(IReadOnlyList<OE2EmpireTracker.Models.Survey> surveys)
@@ -495,10 +493,11 @@ namespace OE2EmpireTracker.Forms.Survey
             viewModel.ScanLevel = txtScanLevel.Text;
         }
 
-        private void CmbScannerBlueprint_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbScannerBlueprint_SelectedItemChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            var bp = cmbScannerBlueprint.SelectedItem as Models.Blueprint;
+            int idx = cmbScannerBlueprint.SelectedFullIndex;
+            var bp = (idx >= 0 && idx < _scannerBlueprintItems.Count) ? _scannerBlueprintItems[idx] : null;
             viewModel.ScannerBlueprintUUID = bp?.UUID ?? string.Empty;
         }
 
@@ -553,7 +552,7 @@ namespace OE2EmpireTracker.Forms.Survey
             txtPurityModifier.Text = string.Empty;
             txtScanLevel.Text = string.Empty;
 
-            cmbScannerBlueprint.SelectedItem = null;
+            PopulateScannerBlueprintList(null);
             dgvResources.CellValidating -= DgvResources_CellValidating;
             try
             {
@@ -617,12 +616,6 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             if (string.IsNullOrEmpty(viewModel.UUID)) return;
             PopulateFormFromViewModel();
-        }
-
-        private void TxtFilterScannerBlueprint_TextChanged(object sender, EventArgs e)
-        {
-            UpdateScannerBlueprintList();
-            cmbScannerBlueprint.DroppedDown = true;
         }
 
         private void DgvResources_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
@@ -812,8 +805,9 @@ namespace OE2EmpireTracker.Forms.Survey
 
             long t1 = sw.ElapsedMilliseconds;
 
-            txtFilterScannerBlueprint.Text = string.Empty;
-            cmbScannerBlueprint.SelectedItem = viewModel.FindScannerBlueprint();
+            var scannerBp = viewModel.FindScannerBlueprint();
+            string scannerBpName = scannerBp?.ExtendedName ?? string.Empty;
+            PopulateScannerBlueprintList(scannerBpName);
 
             dgvResources.CellValidating -= DgvResources_CellValidating;
             try
