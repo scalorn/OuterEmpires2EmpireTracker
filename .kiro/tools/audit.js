@@ -25,6 +25,7 @@ const tools = [
     { name: 'Duplicate Code', script: 'dupe-code.js' },
     { name: 'UTF-8 Encoding', script: 'utf8-check.js' },
     { name: 'Logger Check', script: 'logger-check.js' },
+    { name: 'Unused Classes', script: 'unused-class.js' },
 ];
 
 let totalFindings = 0;
