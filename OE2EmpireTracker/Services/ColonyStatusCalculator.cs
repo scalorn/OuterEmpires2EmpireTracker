@@ -132,9 +132,7 @@ namespace OE2EmpireTracker.Services
             ClearAllWorkerLocks();
 
             // Sort by BuildQueueSequence — never trust the raw list order
-            var orderedStructures = colony.Structures
-                .OrderBy(s => s.BuildQueueSequence)
-                .ToList();
+            var orderedStructures = CollectionSortHelper.OrderStructures(colony.Structures);
 
             foreach (ColonyStructure structure in orderedStructures)
             {
@@ -201,9 +199,7 @@ namespace OE2EmpireTracker.Services
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
 
             // Sort by BuildQueueSequence — never trust the raw list order
-            var orderedStructures = colony.Structures
-                .OrderBy(s => s.BuildQueueSequence)
-                .ToList();
+            var orderedStructures = CollectionSortHelper.OrderStructures(colony.Structures);
 
             foreach (ColonyStructure structure in orderedStructures)
             {

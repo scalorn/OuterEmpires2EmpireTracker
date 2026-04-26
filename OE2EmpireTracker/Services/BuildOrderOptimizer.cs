@@ -52,9 +52,7 @@ namespace OE2EmpireTracker.Services
             // Sort by BuildQueueSequence so primaries preserve the user's intended order.
             // The underlying list is already sorted on load (InitColonies), but sort here
             // defensively in case the list was modified after load.
-            var orderedStructures = colony.Structures
-                .OrderBy(s => s.BuildQueueSequence)
-                .ToList();
+            var orderedStructures = CollectionSortHelper.OrderStructures(colony.Structures);
 
             foreach (var structure in orderedStructures)
             {

@@ -52,9 +52,7 @@ namespace OE2EmpireTracker.Services
         public static ColonyStructure GetFirstStagedStructure(Colony colony, PlayerContext pc)
         {
             // Sort by BuildQueueSequence — never trust the raw list order
-            var ordered = colony.Structures
-                .OrderBy(s => s.BuildQueueSequence)
-                .ToList();
+            var ordered = CollectionSortHelper.OrderStructures(colony.Structures);
 
             Log.Info("GetFirstStagedStructure: colony={0} ({1}), {2} structures",
                 colony.ColonyName ?? colony.PlanetName ?? "(unknown)",

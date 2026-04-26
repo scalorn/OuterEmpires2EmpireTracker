@@ -304,8 +304,8 @@ namespace OE2EmpireTracker.Services
                 // If consumption doesn't exceed mining output, no underutilization
                 if (totalConsumption <= totalMiningOutput) continue;
 
-                // Calculate how much supply each refiner gets, in priority order (lowest DisplaySequence first)
-                var priorityOrder = refinersInGroup.OrderBy(r => r.DisplaySequence).ToList();
+                // Calculate how much supply each refiner gets, in priority order (lowest BuildQueueSequence first)
+                var priorityOrder = CollectionSortHelper.OrderStructures(refinersInGroup);
                 var refinerAvailable = new Dictionary<string, decimal>();
 
                 decimal supply = totalMiningOutput;
@@ -317,8 +317,8 @@ namespace OE2EmpireTracker.Services
                     supply = Math.Max(0m, supply - consumeRate);
                 }
 
-                // Flag refiners where available < consumeRate, starting from highest DisplaySequence
-                var sortedRefiners = refinersInGroup.OrderByDescending(r => r.DisplaySequence).ToList();
+                // Flag refiners where available < consumeRate, starting from highest BuildQueueSequence
+                var sortedRefiners = CollectionSortHelper.OrderStructuresDescending(refinersInGroup);
                 foreach (var refiner in sortedRefiners)
                 {
                     int consumeRate = GetRefiningConsumptionRate(refiner);

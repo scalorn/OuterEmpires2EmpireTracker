@@ -85,31 +85,31 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - Smoke test that each sort helper method exists and compiles
     - _Requirements: 8.2, 8.3_
 
-- [-] 3. Checkpoint - Verify CollectionSortHelper builds and tests pass
+- [x] 3. Checkpoint - Verify CollectionSortHelper builds and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Refactor colony structure consumers
-  - [~] 4.1 Refactor `ColonyViewModel.StructureViewModels` to use `CollectionSortHelper.OrderStructures()`
+  - [-] 4.1 Refactor `ColonyViewModel.StructureViewModels` to use `CollectionSortHelper.OrderStructures()`
     - Replace `.OrderBy(s => s.BuildQueueSequence)` with `CollectionSortHelper.OrderStructures(...)`
     - _Requirements: 4.1, 8.4_
 
-  - [~] 4.2 Refactor `ColonyStatusCalculator.CalculateBuilt()` and `CalculateIdeal()` to use `CollectionSortHelper.OrderStructures()`
+  - [-] 4.2 Refactor `ColonyStatusCalculator.CalculateBuilt()` and `CalculateIdeal()` to use `CollectionSortHelper.OrderStructures()`
     - Replace both `.OrderBy(s => s.BuildQueueSequence)` calls
     - _Requirements: 4.2, 4.3, 8.4_
 
-  - [~] 4.3 Refactor `BuildOrderOptimizer.Optimize()` to use `CollectionSortHelper.OrderStructures()`
+  - [-] 4.3 Refactor `BuildOrderOptimizer.Optimize()` to use `CollectionSortHelper.OrderStructures()`
     - Replace `.OrderBy(s => s.BuildQueueSequence)` call
     - _Requirements: 4.4, 8.4_
 
-  - [~] 4.4 Refactor `ColonyBuildEligibility.GetFirstStagedStructure()` to use `CollectionSortHelper.OrderStructures()`
+  - [-] 4.4 Refactor `ColonyBuildEligibility.GetFirstStagedStructure()` to use `CollectionSortHelper.OrderStructures()`
     - Replace `.OrderBy(s => s.BuildQueueSequence)` call
     - _Requirements: 4.5, 8.4_
 
-  - [~] 4.5 Refactor `FormColonyV2.PopulateStructures()` to use `CollectionSortHelper.OrderStructures()`
+  - [-] 4.5 Refactor `FormColonyV2.PopulateStructures()` to use `CollectionSortHelper.OrderStructures()`
     - Replace `.Sort(BuildQueueSequence)` call
     - _Requirements: 4.1, 8.4_
 
-  - [~] 4.6 Refactor `ColonyInactivityCollector` to use `CollectionSortHelper.OrderStructures()` and `OrderStructuresDescending()`
+  - [-] 4.6 Refactor `ColonyInactivityCollector` to use `CollectionSortHelper.OrderStructures()` and `OrderStructuresDescending()`
     - Replace `.OrderBy(r => r.DisplaySequence)` with `CollectionSortHelper.OrderStructures(...)`
     - Replace `.OrderByDescending(r => r.DisplaySequence)` with `CollectionSortHelper.OrderStructuresDescending(...)`
     - _Requirements: 8.4_
