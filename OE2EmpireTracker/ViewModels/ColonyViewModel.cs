@@ -93,7 +93,17 @@ namespace OE2EmpireTracker.ViewModels
             };
 
             _colony.Structures.Add(structure);
-            structure.BuildQueueSequence = _colony.Structures.Count;
+
+            // Assign BuildQueueSequence as max existing + 1 so the new structure
+            // appears at the end of the display order
+            int maxSeq = 0;
+            foreach (var s in _colony.Structures)
+            {
+                if (s.BuildQueueSequence > maxSeq)
+                    maxSeq = s.BuildQueueSequence;
+            }
+
+            structure.BuildQueueSequence = maxSeq + 1;
             InvalidateStructureViewModels();
             return new ColonyStructureViewModel(structure, _playerContext);
         }
