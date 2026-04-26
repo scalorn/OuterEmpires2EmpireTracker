@@ -525,6 +525,42 @@
     <EmbeddedResource Include="..\docs\preferences.md">
       <Link>docs\preferences.md</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\build-planner.md">
+      <Link>docs\build-planner.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\pricing-plans.md">
+      <Link>docs\pricing-plans.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\supply-chains.md">
+      <Link>docs\supply-chains.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\ships.md">
+      <Link>docs\ships.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\stations.md">
+      <Link>docs\stations.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\market.md">
+      <Link>docs\market.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\stock-targets.md">
+      <Link>docs\stock-targets.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\contacts.md">
+      <Link>docs\contacts.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\asteroids.md">
+      <Link>docs\asteroids.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\colony-activity.md">
+      <Link>docs\colony-activity.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\colony-daily-build.md">
+      <Link>docs\colony-daily-build.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\delivery-execution.md">
+      <Link>docs\delivery-execution.md</Link>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>

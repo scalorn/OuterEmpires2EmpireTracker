@@ -13,20 +13,32 @@ namespace OE2EmpireTracker.Tests.Services
         /// GetAllTopics returns exactly 9 topics with the expected filenames in order.
         /// </summary>
         [Test]
-        public void GetAllTopics_Returns10Topics_WithCorrectFilenames()
+        public void GetAllTopics_Returns22Topics_WithCorrectFilenames()
         {
             var topics = HelpTopicRegistry.GetAllTopics();
 
-            Assert.That(topics.Count, Is.EqualTo(10));
+            Assert.That(topics.Count, Is.EqualTo(22));
 
             var expectedFilenames = new[]
             {
                 "README.md",
                 "getting-started.md",
                 "colonies.md",
+                "colony-activity.md",
+                "colony-daily-build.md",
                 "blueprints.md",
                 "surveys.md",
+                "asteroids.md",
                 "delivery-routes.md",
+                "delivery-execution.md",
+                "build-planner.md",
+                "pricing-plans.md",
+                "supply-chains.md",
+                "ships.md",
+                "stations.md",
+                "market.md",
+                "stock-targets.md",
+                "contacts.md",
                 "player-profiles.md",
                 "background-processing.md",
                 "window-state.md",
@@ -45,12 +57,22 @@ namespace OE2EmpireTracker.Tests.Services
         [TestCase("FormBlueprintV2", "blueprints.md")]
         [TestCase("FormSurvey", "surveys.md")]
         [TestCase("FormDeliveryRoute", "delivery-routes.md")]
-        [TestCase("FormDeliveryExecution", "delivery-routes.md")]
+        [TestCase("FormDeliveryExecution", "delivery-execution.md")]
         [TestCase("FormAutoFill", "delivery-routes.md")]
         [TestCase("FormPlayerProfile", "player-profiles.md")]
-        [TestCase("FormColonyActivity", "colonies.md")]
-        [TestCase("FormColonyDailyBuild", "colonies.md")]
+        [TestCase("FormColonyActivity", "colony-activity.md")]
+        [TestCase("FormColonyDailyBuild", "colony-daily-build.md")]
+        [TestCase("FormAsteroid", "asteroids.md")]
         [TestCase("FormPreferences", "preferences.md")]
+        [TestCase("FormBuildPlanner", "build-planner.md")]
+        [TestCase("FormPricingPlan", "pricing-plans.md")]
+        [TestCase("FormSupplyChain", "supply-chains.md")]
+        [TestCase("FormShipTemplate", "ships.md")]
+        [TestCase("FormShipInstance", "ships.md")]
+        [TestCase("FormStation", "stations.md")]
+        [TestCase("FormMarket", "market.md")]
+        [TestCase("FormStockTargets", "stock-targets.md")]
+        [TestCase("FormContacts", "contacts.md")]
         public void GetTopicForForm_MappedType_ReturnsCorrectFile(string formType, string expectedFile)
         {
             var result = HelpTopicRegistry.GetTopicForForm(formType);

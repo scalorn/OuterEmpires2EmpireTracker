@@ -21,11 +21,22 @@ namespace OE2EmpireTracker.Tests.Services
             { "FormBlueprintV2", "blueprints.md" },
             { "FormSurvey", "surveys.md" },
             { "FormDeliveryRoute", "delivery-routes.md" },
-            { "FormDeliveryExecution", "delivery-routes.md" },
+            { "FormDeliveryExecution", "delivery-execution.md" },
             { "FormAutoFill", "delivery-routes.md" },
             { "FormPlayerProfile", "player-profiles.md" },
-            { "FormColonyActivity", "colonies.md" },
-            { "FormColonyDailyBuild", "colonies.md" }
+            { "FormColonyActivity", "colony-activity.md" },
+            { "FormColonyDailyBuild", "colony-daily-build.md" },
+            { "FormAsteroid", "asteroids.md" },
+            { "FormPreferences", "preferences.md" },
+            { "FormBuildPlanner", "build-planner.md" },
+            { "FormPricingPlan", "pricing-plans.md" },
+            { "FormSupplyChain", "supply-chains.md" },
+            { "FormShipTemplate", "ships.md" },
+            { "FormShipInstance", "ships.md" },
+            { "FormStation", "stations.md" },
+            { "FormMarket", "market.md" },
+            { "FormStockTargets", "stock-targets.md" },
+            { "FormContacts", "contacts.md" }
         };
 
         /// <summary>

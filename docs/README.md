@@ -6,9 +6,13 @@ Welcome to the OE2 Empire Tracker documentation. This application helps you mana
 
 - [Getting Started](getting-started.md) — Initial setup, creating a player profile, and general workflow
 - [Colonies](colonies.md) — Colony import, structures, commodities, and daily build operations
+- [Colony Activity](colony-activity.md) — Real-time dashboard of active timers and idle structures
+- [Colony Daily Build](colony-daily-build.md) — Route-based build initiation for staged structures
 - [Blueprints](blueprints.md) — Blueprint import, market import, evolution chains, and filters
 - [Surveys](surveys.md) — Survey import and resource viewing
+- [Asteroids](asteroids.md) — Asteroid reserves, depletion tracking, and linked surveys
 - [Delivery Routes](delivery-routes.md) — Route planning, auto-fill, and delivery execution
+- [Delivery Execution](delivery-execution.md) — Step-by-step delivery with cargo tracking and fulfillment
 - [Build Planner](build-planner.md) — Manufacturing planning, resource checks, and delivery generation
 - [Pricing Plans](pricing-plans.md) — Resource pricing, cost computation, and valuation scenarios
 - [Supply Chains](supply-chains.md) — Resource pipeline modeling, stage thresholds, and automated deliveries
