@@ -486,6 +486,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     "V2.LvwColonies_ItemSelectionChanged: colony={0} uuid={1}",
                     selectedColony?.ColonyName ?? selectedColony?.PlanetName ?? "(null)",
                     selectedColony?.UUID ?? "(null)");
+
+                // Ensure BuildQueueSequence is stamped (one-time migration for existing data
+                // loaded from JSON where all values default to 0)
+                if (selectedColony != null && selectedColony.Structures.Count > 0
+                    && selectedColony.Structures[0].BuildQueueSequence == 0)
+                {
+                    selectedColony.StampBuildQueueSequence();
+                }
+
                 colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
 
                 // Immediate: show identity fields on UI thread
