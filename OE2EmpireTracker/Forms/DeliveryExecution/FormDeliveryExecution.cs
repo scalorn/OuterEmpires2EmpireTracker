@@ -387,6 +387,17 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 // Skip completed stops
                 if (stop.StopCompleted) continue;
 
+                // Determine if this is a refuel stop (needed before deciding whether to show the stop)
+                RouteStop matchingRouteStop = null;
+                if (route != null)
+                    matchingRouteStop = route.Stops.FirstOrDefault(rs => rs.Sequence == stop.Sequence);
+                bool isRefuelStop = matchingRouteStop != null &&
+                    (matchingRouteStop.Purpose == RouteStopPurpose.Refuel || matchingRouteStop.Purpose == RouteStopPurpose.CargoAndRefuel);
+
+                // Skip stops with nothing to do (no drop-offs, no pick-ups, not a refuel stop)
+                if (stop.DropOff.Count == 0 && stop.PickUp.Count == 0 && !isRefuelStop)
+                    continue;
+
                 string stopTitle;
                 if (stop.DestinationType == DestinationType.Station)
                 {
@@ -467,12 +478,6 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 }
 
                 // Refuel checklist item for Refuel or CargoAndRefuel stops
-                RouteStop matchingRouteStop = null;
-                if (route != null)
-                    matchingRouteStop = route.Stops.FirstOrDefault(rs => rs.Sequence == stop.Sequence);
-                bool isRefuelStop = matchingRouteStop != null &&
-                    (matchingRouteStop.Purpose == RouteStopPurpose.Refuel || matchingRouteStop.Purpose == RouteStopPurpose.CargoAndRefuel);
-
                 if (isRefuelStop)
                 {
                     var lblRefuel = new Label { Text = "  Refuel:", AutoSize = true, Margin = new Padding(10, 2, 3, 2) };

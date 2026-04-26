@@ -86,6 +86,7 @@ Colonies are on planets. Planets are in systems. Travel between systems costs ti
 **REQ-DEL-050b** The form left panel SHALL have route selector and plan selector dropdowns.
 **REQ-DEL-051** The form SHALL show a consolidated "load list" at the top — items that need to be loaded before departure. An item needs pre-loading if it is dropped off at a stop but not picked up at any earlier stop in sufficient quantity.
 **REQ-DEL-052** Below the load list, all stops SHALL be visible at once in a scrollable layout, each showing drop-off and pick-up items.
+**REQ-DEL-052a** Stops that have no drop-off items, no pick-up items, and are not refuel stops SHALL be hidden from the execution view. Only stops with actionable content are displayed.
 **REQ-DEL-053** Each item SHALL have a checkbox to mark it as delivered/picked up. Checking SHALL auto-save immediately.
 **REQ-DEL-054** When a commodity is marked as delivered, the corresponding CommodityRequested on the colony SHALL be updated (Delivered count incremented, Fulfilled set if complete).
 **REQ-DEL-055** When a flatpack is marked as delivered, the corresponding planned structure on the colony SHALL be marked as Staged.
