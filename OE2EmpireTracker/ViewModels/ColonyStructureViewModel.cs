@@ -1,4 +1,5 @@
 using System;
+using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
@@ -11,6 +12,8 @@ namespace OE2EmpireTracker.ViewModels
     /// </summary>
     public class ColonyStructureViewModel
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private readonly ColonyStructure _structure;
 
         private readonly PlayerContext _playerContext;
@@ -143,35 +146,57 @@ namespace OE2EmpireTracker.ViewModels
         public void MoveUp(Colony colony)
         {
             int index = colony.Structures.IndexOf(_structure);
-            if (index <= 0) return;
+            if (index <= 0)
+            {
+                Log.Info("MoveUp: blocked — index={0} (at top or not found), structure={1}",
+                    index, _structure.UUID);
+                return;
+            }
 
             // Prevent moving a non-CC structure into position 0 (CC must always be first)
             if (index == 1)
             {
                 var firstBp = _playerContext.FindBlueprint(colony.Structures[0].FlatpackBlueprintUUID);
                 if (firstBp != null && firstBp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
+                {
+                    Log.Info("MoveUp: blocked — cannot move above CC at position 0, structure={0} index={1}",
+                        _structure.UUID, index);
                     return;
+                }
             }
 
             colony.Structures.RemoveAt(index);
             colony.Structures.Insert(index - 1, _structure);
+            Log.Info("MoveUp: moved structure={0} from index={1} to index={2}, colony={3} structureCount={4}",
+                _structure.UUID, index, index - 1, colony.UUID, colony.Structures.Count);
         }
 
         public void MoveDown(Colony colony)
         {
             int index = colony.Structures.IndexOf(_structure);
-            if (index < 0 || index >= colony.Structures.Count - 1) return;
+            if (index < 0 || index >= colony.Structures.Count - 1)
+            {
+                Log.Info("MoveDown: blocked — index={0} count={1} (at bottom or not found), structure={2}",
+                    index, colony.Structures.Count, _structure.UUID);
+                return;
+            }
 
             // Prevent moving the CC away from position 0
             if (index == 0)
             {
                 var bp = _playerContext.FindBlueprint(_structure.FlatpackBlueprintUUID);
                 if (bp != null && bp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
+                {
+                    Log.Info("MoveDown: blocked — CC must stay at position 0, structure={0}",
+                        _structure.UUID);
                     return;
+                }
             }
 
             colony.Structures.RemoveAt(index);
             colony.Structures.Insert(index + 1, _structure);
+            Log.Info("MoveDown: moved structure={0} from index={1} to index={2}, colony={3} structureCount={4}",
+                _structure.UUID, index, index + 1, colony.UUID, colony.Structures.Count);
         }
 
         public void Delete(Colony colony)
