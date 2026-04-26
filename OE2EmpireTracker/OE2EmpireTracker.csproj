@@ -289,9 +289,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DataGridViewFilteredComboBoxColumn.cs" />
-    <Compile Include="Controls\FilteredComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\RouteDropdownHelper.cs" />
     <Compile Include="Controls\FilteredTextComboSet.cs" />
     <Compile Include="Controls\ValidatedTextBox.cs">

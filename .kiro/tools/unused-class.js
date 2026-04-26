@@ -33,8 +33,6 @@ const KNOWN_INTERNAL = new Set([
     'SkillNameExtensions',
     // Entry point — called by the runtime
     'Program',
-    // Pre-existing dead class — replaced by FilteredTextComboSet, cleanup pending
-    'FilteredComboBox',
 ]);
 
 function findCsFiles(dir, results, includeDesigner) {
