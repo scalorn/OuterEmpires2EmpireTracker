@@ -9,11 +9,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
     /// </summary>
     public class ColonyStructureDataChangedEventArgs : EventArgs
     {
-        public ColonyStructureDataChangedEventArgs(bool isStructural)
+        public ColonyStructureDataChangedEventArgs(bool isStructural, string scrollToStructureUUID = null)
         {
             IsStructural = isStructural;
+            ScrollToStructureUUID = scrollToStructureUUID;
         }
 
         public bool IsStructural { get; }
+
+        /// <summary>
+        /// When set, the parent form should scroll to the structure with this UUID
+        /// after rebuilding the layout. Used by MoveUp/MoveDown to keep the moved
+        /// structure visible after the structural rebuild.
+        /// </summary>
+        public string ScrollToStructureUUID { get; }
     }
 }

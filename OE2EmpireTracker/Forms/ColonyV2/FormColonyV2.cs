@@ -1062,6 +1062,21 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (e.IsStructural)
             {
                 PopulateStructures();
+
+                // Scroll to the moved structure after rebuild (MoveUp/MoveDown)
+                if (!string.IsNullOrEmpty(e.ScrollToStructureUUID))
+                {
+                    for (int i = 0; i < _poolInUse; i++)
+                    {
+                        var ctrl2 = _pool[i];
+                        if (ctrl2.Visible && ctrl2.ViewModel?.Data?.UUID == e.ScrollToStructureUUID)
+                        {
+                            flpStructures.ScrollControlIntoView(ctrl2);
+                            ctrl2.Focus();
+                            break;
+                        }
+                    }
+                }
             }
             else
             {

@@ -1693,14 +1693,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (ViewModel == null || Colony == null) return;
             ViewModel.MoveUp(Colony);
-            OnColonyStructureDataChanged(structural: true);
+            OnColonyStructureDataChanged(structural: true, scrollToStructureUUID: ViewModel.Data.UUID);
         }
 
         private void CmdDown_Click(object sender, EventArgs e)
         {
             if (ViewModel == null || Colony == null) return;
             ViewModel.MoveDown(Colony);
-            OnColonyStructureDataChanged(structural: true);
+            OnColonyStructureDataChanged(structural: true, scrollToStructureUUID: ViewModel.Data.UUID);
         }
 
         private void CmdDelete_Click(object sender, EventArgs e)
@@ -2306,9 +2306,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Event helper
         // -----------------------------------------------------------------------
 
-        private void OnColonyStructureDataChanged(bool structural)
+        private void OnColonyStructureDataChanged(bool structural, string scrollToStructureUUID = null)
         {
-            ColonyStructureDataChanged?.Invoke(this, new ColonyStructureDataChangedEventArgs(structural));
+            ColonyStructureDataChanged?.Invoke(this, new ColonyStructureDataChangedEventArgs(structural, scrollToStructureUUID));
         }
 
         // -----------------------------------------------------------------------
