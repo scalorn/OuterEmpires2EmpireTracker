@@ -68,6 +68,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private bool _structureTypesPopulated = false;
 
+        /// <summary>Parallel list of Blueprint objects matching cmbFlatpacks display items, for UUID lookup via SelectedFullIndex.</summary>
+        private List<Models.Blueprint> _flatpackBlueprints = new List<Models.Blueprint>();
+
         public FormColonyV2()
         {
             InitializeComponent();
@@ -106,8 +109,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Wire tab change for deferred population
             tabDetailedData.SelectedIndexChanged += TabDetailedData_SelectedIndexChanged;
 
-            // Wire flatpack filter and add button (8.3)
-            txtFilterFlatpack.TextChanged += TxtFilterFlatpack_TextChanged;
+            // Wire flatpack add button (8.3)
             cmdAddFlatpack.Click += CmdAddFlatpack_Click;
             PopulateFlatpackCombo();
 
@@ -953,47 +955,29 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void PopulateFlatpackCombo()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            string searchText = txtFilterFlatpack.Text;
             var filteredList = new List<Models.Blueprint>(playerContext.GetAllBlueprints());
 
             filteredList = filteredList
                 .Where(item => item.BluePrintType != null && item.BluePrintType.IsFlatpack())
                 .ToList();
 
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                filteredList = filteredList
-                    .Where(item => item.ExtendedName != null &&
-                                   item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-            }
-
             filteredList = CollectionSortHelper.OrderBlueprints(filteredList).ToList();
             filteredList.Insert(0, new Models.Blueprint());
 
-            var bs = new BindingSource();
-            bs.DataSource = filteredList;
-
-            cmbFlatpacks.DataSource = null;
-            cmbFlatpacks.DisplayMember = "ExtendedName";
-            cmbFlatpacks.ValueMember = "UUID";
-            cmbFlatpacks.DataSource = bs;
+            _flatpackBlueprints = filteredList;
+            var names = filteredList.Select(b => b.ExtendedName ?? string.Empty).ToList();
+            cmbFlatpacks.SetItems(names, string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateFlatpackCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void TxtFilterFlatpack_TextChanged(object sender, EventArgs e)
-        {
-            PopulateFlatpackCombo();
-            cmbFlatpacks.DroppedDown = true;
-        }
-
         private void CmdAddFlatpack_Click(object sender, EventArgs e)
         {
-            if (cmbFlatpacks.SelectedValue == null || string.IsNullOrEmpty(cmbFlatpacks.SelectedValue.ToString()))
-                return;
+            int idx = cmbFlatpacks.SelectedFullIndex;
+            if (idx < 0 || idx >= _flatpackBlueprints.Count) return;
+            string uuid = _flatpackBlueprints[idx].UUID;
+            if (string.IsNullOrEmpty(uuid)) return;
 
-            string uuid = cmbFlatpacks.SelectedValue.ToString();
             Log.Debug("V2.CmdAddFlatpack_Click: blueprintUUID={0}", uuid);
 
             if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))

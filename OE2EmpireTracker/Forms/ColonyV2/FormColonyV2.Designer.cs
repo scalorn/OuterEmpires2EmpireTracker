@@ -50,8 +50,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.rtbStatusSummary = new System.Windows.Forms.RichTextBox();
             this.flpStructures = new System.Windows.Forms.FlowLayoutPanel();
             this.flpAddStructure = new System.Windows.Forms.FlowLayoutPanel();
-            this.txtFilterFlatpack = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.cmbFlatpacks = new System.Windows.Forms.ComboBox();
+
+            this.cmbFlatpacks = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.cmdAddFlatpack = new System.Windows.Forms.Button();
             this.tabPWorkers = new System.Windows.Forms.TabPage();
             this.dgvCommodityRequests = new System.Windows.Forms.DataGridView();
@@ -417,7 +417,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // 
             // flpAddStructure
             // 
-            this.flpAddStructure.Controls.Add(this.txtFilterFlatpack);
             this.flpAddStructure.Controls.Add(this.cmbFlatpacks);
             this.flpAddStructure.Controls.Add(this.cmdAddFlatpack);
             this.flpAddStructure.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -427,28 +426,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpAddStructure.TabIndex = 2;
             this.flpAddStructure.WrapContents = false;
             // 
-            // txtFilterFlatpack
-            // 
-            this.txtFilterFlatpack.Location = new System.Drawing.Point(3, 3);
-            this.txtFilterFlatpack.Name = "txtFilterFlatpack";
-            this.txtFilterFlatpack.Size = new System.Drawing.Size(150, 20);
-            this.txtFilterFlatpack.TabIndex = 0;
-            // 
             // cmbFlatpacks
             // 
-            this.cmbFlatpacks.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFlatpacks.FormattingEnabled = true;
-            this.cmbFlatpacks.Location = new System.Drawing.Point(159, 3);
+            this.cmbFlatpacks.Location = new System.Drawing.Point(3, 3);
             this.cmbFlatpacks.Name = "cmbFlatpacks";
-            this.cmbFlatpacks.Size = new System.Drawing.Size(300, 21);
-            this.cmbFlatpacks.TabIndex = 1;
+            this.cmbFlatpacks.Size = new System.Drawing.Size(450, 21);
+            this.cmbFlatpacks.TabIndex = 0;
             // 
             // cmdAddFlatpack
             // 
-            this.cmdAddFlatpack.Location = new System.Drawing.Point(465, 3);
+            this.cmdAddFlatpack.Location = new System.Drawing.Point(459, 3);
             this.cmdAddFlatpack.Name = "cmdAddFlatpack";
             this.cmdAddFlatpack.Size = new System.Drawing.Size(50, 23);
-            this.cmdAddFlatpack.TabIndex = 2;
+            this.cmdAddFlatpack.TabIndex = 1;
             this.cmdAddFlatpack.Text = "Add";
             this.cmdAddFlatpack.UseVisualStyleBackColor = true;
             // 
@@ -1033,8 +1023,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.ListView lvwStructureTypes;
         private System.Windows.Forms.FlowLayoutPanel flpStructures;
         private System.Windows.Forms.FlowLayoutPanel flpAddStructure;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtFilterFlatpack;
-        private System.Windows.Forms.ComboBox cmbFlatpacks;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbFlatpacks;
         private System.Windows.Forms.Button cmdAddFlatpack;
         private System.Windows.Forms.TabPage tabPWorkers;
         private System.Windows.Forms.DataGridView dgvCommodityRequests;

@@ -91,14 +91,14 @@ Adopt FilteredTextComboSet, DataGridViewFilteredComboBoxColumn, and DataEntryGri
     - Update `spec/mockups/blueprints.md` to reflect control changes
     - _Requirements: 15_
 
-- [ ] 5. Convert FormColonyV2 — Flatpack picker
-  - [~] 5.1 Replace txtFilterFlatpack + cmbFlatpacks with FilteredTextComboSet
+- [x] 5. Convert FormColonyV2 — Flatpack picker
+  - [x] 5.1 Replace txtFilterFlatpack + cmbFlatpacks with FilteredTextComboSet
     - In `FormColonyV2.Designer.cs`: change `cmbFlatpacks` type to `FilteredTextComboSet`, remove `txtFilterFlatpack` declaration/instantiation/Controls.Add/sizing
     - In `FormColonyV2.cs`: remove `txtFilterFlatpack.TextChanged += TxtFilterFlatpack_TextChanged` subscription, remove `TxtFilterFlatpack_TextChanged` handler, convert `PopulateFlatpackCombo()` from BindingSource pattern to `cmbFlatpacks.SetItems(flatpackNames, currentName)`, maintain a parallel list of Blueprint objects or UUIDs for lookup via `SelectedFullIndex`
     - The current code uses `cmbFlatpacks.SelectedValue` (UUID via ValueMember) — after conversion, use `SelectedFullIndex` to index into the parallel UUID list
     - _Requirements: 6.1, 13, 14_
 
-  - [~] 5.2 Build, test, audit, commit
+  - [x] 5.2 Build, test, audit, commit
     - Build solution, run tests, run audit
     - _Requirements: 15_
 
