@@ -56,7 +56,10 @@ namespace OE2EmpireTracker.ViewModels
             {
                 if (_cachedStructureVMs == null)
                 {
+                    // Sort by BuildQueueSequence — never trust the raw list order.
+                    // Serialization sort may have reordered to UUID order.
                     _cachedStructureVMs = _colony.Structures
+                        .OrderBy(s => s.BuildQueueSequence)
                         .Select(s => new ColonyStructureViewModel(s, _playerContext))
                         .ToList();
                 }

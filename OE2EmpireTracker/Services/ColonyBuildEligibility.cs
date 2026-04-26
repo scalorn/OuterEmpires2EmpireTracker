@@ -51,7 +51,10 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public static ColonyStructure GetFirstStagedStructure(Colony colony, PlayerContext pc)
         {
-            return colony.Structures.FirstOrDefault(s => IsStagedStructure(s, pc));
+            // Sort by BuildQueueSequence — never trust the raw list order
+            return colony.Structures
+                .OrderBy(s => s.BuildQueueSequence)
+                .FirstOrDefault(s => IsStagedStructure(s, pc));
         }
     }
 }
