@@ -200,7 +200,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(CollectionSortHelper.OrderPlanStops(new List<DeliveryPlanStop>()).Count, Is.EqualTo(0));
             Assert.That(CollectionSortHelper.OrderSupplyChainStages(new List<SupplyChainStage>()).Count, Is.EqualTo(0));
             Assert.That(CollectionSortHelper.OrderColonies(new List<Colony>()).Count, Is.EqualTo(0));
-            Assert.That(CollectionSortHelper.OrderBlueprints(new List<Blueprint>()).Count, Is.EqualTo(0));
+            Assert.That(CollectionSortHelper.OrderBlueprints(new List<OE2EmpireTracker.Models.Blueprint>()).Count, Is.EqualTo(0));
             Assert.That(CollectionSortHelper.OrderPlayerProfiles(new List<PlayerProfile>()).Count, Is.EqualTo(0));
             Assert.That(CollectionSortHelper.OrderSurveys(new List<Survey>()).Count, Is.EqualTo(0));
             Assert.That(CollectionSortHelper.OrderCommodityRequests(new List<CommodityRequested>()).Count, Is.EqualTo(0));
@@ -230,8 +230,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             // Alternate sort methods
             Assert.That(CollectionSortHelper.OrderMarketTransactionsByTimestamp(new List<MarketTransaction>()).Count, Is.EqualTo(0));
-            Assert.That(CollectionSortHelper.OrderBlueprintsByEvolutionDescending(new List<Blueprint>()).Count, Is.EqualTo(0));
-            Assert.That(CollectionSortHelper.OrderBlueprintsByEvolution(new List<Blueprint>()).Count, Is.EqualTo(0));
+            Assert.That(CollectionSortHelper.OrderBlueprintsByEvolutionDescending(new List<OE2EmpireTracker.Models.Blueprint>()).Count, Is.EqualTo(0));
+            Assert.That(CollectionSortHelper.OrderBlueprintsByEvolution(new List<OE2EmpireTracker.Models.Blueprint>()).Count, Is.EqualTo(0));
             Assert.That(CollectionSortHelper.OrderActivityRowsByTimeRemaining(new List<ActivityRow>()).Count, Is.EqualTo(0));
             Assert.That(CollectionSortHelper.OrderCountdownsByTimeRemaining(new List<CountDownTimeReference>()).Count, Is.EqualTo(0));
         }

@@ -18,13 +18,13 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - Follow the implementation pattern from the design document
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
-- [ ] 2. Write tests for CollectionSortHelper
+- [x] 2. Write tests for CollectionSortHelper
   - [x] 2.1 Add FsCheck NuGet packages to `OE2EmpireTracker.Tests`
     - Add FsCheck 2.16.6 and FsCheck.NUnit to `packages.config`
     - Run `nuget restore` to install
     - _Requirements: 8.2_
 
-  - [-] 2.2 Write property test: OrderStructures always sorted by BuildQueueSequence
+  - [x] 2.2 Write property test: OrderStructures always sorted by BuildQueueSequence
     - Create `OE2EmpireTracker.Tests/Services/CollectionSortHelperPropertyTests.cs`
     - **Property 1: Sort helper produces correctly ordered output (structures)**
     - Generate random `List<ColonyStructure>` with random `BuildQueueSequence` values
@@ -32,49 +32,49 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - Use `[Property(MaxTest = 100)]` attribute
     - **Validates: Requirements 3.1, 8.2, 8.5**
 
-  - [~] 2.3 Write property test: OrderRouteStops always sorted by Sequence
+  - [x] 2.3 Write property test: OrderRouteStops always sorted by Sequence
     - **Property 1: Sort helper produces correctly ordered output (route stops)**
     - Generate random `List<RouteStop>` with random `Sequence` values
     - Assert each element's `Sequence` <= next element's `Sequence`
     - **Validates: Requirements 3.1, 8.2, 8.5**
 
-  - [~] 2.4 Write property test: OrderColonies always sorted by composite key
+  - [x] 2.4 Write property test: OrderColonies always sorted by composite key
     - **Property 1: Sort helper produces correctly ordered output (colonies)**
     - Generate random `List<Colony>` with random `SystemName`/`PlanetName`/`ColonyName`
     - Assert composite key ordering is correct
     - **Validates: Requirements 3.1, 8.2, 8.5**
 
-  - [~] 2.5 Write property test: OrderComponents always sorted by SlotType then SlotIndex
+  - [x] 2.5 Write property test: OrderComponents always sorted by SlotType then SlotIndex
     - **Property 1: Sort helper produces correctly ordered output (components)**
     - Generate random `List<ShipComponentSlot>` with random `SlotType`/`SlotIndex`
     - Assert `SlotType` ordering, then `SlotIndex` within same `SlotType`
     - **Validates: Requirements 3.1, 8.2, 8.5**
 
-  - [~] 2.6 Write property test: SortHelper and SerializationSorter agree on RouteStop order
+  - [x] 2.6 Write property test: SortHelper and SerializationSorter agree on RouteStop order
     - **Property 2: Sort helper and SerializationSorter agree on relative order for shared keys**
     - Generate random `RouteStop[]`, sort with both `CollectionSortHelper` and `SerializationSorter`
     - Assert identical relative order
     - **Validates: Requirements 3.3**
 
-  - [~] 2.7 Write property test: SortHelper and SerializationSorter agree on Component order
+  - [x] 2.7 Write property test: SortHelper and SerializationSorter agree on Component order
     - **Property 2: Sort helper and SerializationSorter agree on relative order for shared keys**
     - Generate random `ShipComponentSlot[]`, sort with both sorters
     - Assert identical relative order
     - **Validates: Requirements 3.3**
 
-  - [~] 2.8 Write property test: GetFirstStagedStructure returns lowest-sequence staged structure
+  - [x] 2.8 Write property test: GetFirstStagedStructure returns lowest-sequence staged structure
     - **Property 3: GetFirstStagedStructure returns the lowest-sequence staged structure**
     - Generate random colony with shuffled structures, at least one staged
     - Assert returned structure has the lowest `BuildQueueSequence` among staged structures
     - **Validates: Requirements 4.5**
 
-  - [~] 2.9 Write property test: CalculateLoadList is order-independent
+  - [x] 2.9 Write property test: CalculateLoadList is order-independent
     - **Property 4: CalculateLoadList is order-independent**
     - Generate random `DeliveryPlan` with shuffled stops
     - Assert load list result is identical regardless of stop permutation
     - **Validates: Requirements 4.6**
 
-  - [~] 2.10 Write unit tests for CollectionSortHelper edge cases
+  - [x] 2.10 Write unit tests for CollectionSortHelper edge cases
     - Create `OE2EmpireTracker.Tests/Services/CollectionSortHelperTests.cs`
     - Test null input returns empty list
     - Test empty input returns empty list
@@ -85,7 +85,7 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - Smoke test that each sort helper method exists and compiles
     - _Requirements: 8.2, 8.3_
 
-- [~] 3. Checkpoint - Verify CollectionSortHelper builds and tests pass
+- [-] 3. Checkpoint - Verify CollectionSortHelper builds and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Refactor colony structure consumers

@@ -223,6 +223,7 @@
     <Compile Include="Services\MarketBlueprintImporter.cs" />
     <Compile Include="Services\CrateImporter.cs" />
     <Compile Include="Services\SerializationSorter.cs" />
+    <Compile Include="Services\CollectionSortHelper.cs" />
     <Compile Include="Services\SortedDictionaryContractResolver.cs" />
     <Compile Include="Services\TabWarningService.cs" />
     <Compile Include="Services\ColonyInactivityCollector.cs" />
