@@ -380,3 +380,8 @@ Identical player-changed handlers across FormBuildPlanner and FormPricingPlan. A
 ### BL-083 (Audit): Duplicate — flpSearchList_Layout (5 lines)
 Identical layout handlers across FormBuildPlanner and FormPricingPlan. Accepted as baseline — trivial 5-line methods, not worth abstracting.
 **Status: Accepted — by design**
+
+
+### BL-072: BuildOrderOptimizer — Incremental Simulation
+Refactored BuildOrderOptimizer.Optimize() to replace O(n²) SimulateAll calls with O(n) incremental delta tracking using a running ColonyStructureStatus accumulator. SimulateAll re-simulated the entire result list from scratch on every status query (O(n) per call × O(n) calls = O(n²)). The refactored version maintains a single accumulator updated via SimulateOneMore each time a structure is appended, reducing overall complexity to O(n). FixDeficits and PlaceSupportSafe updated to accept `ref ColonyStructureStatus accumulator` and update it directly. Look-ahead projections remain stateless — they use SimulateOneMore against the accumulator without modifying it. SimulateAll method deleted entirely. Pure internal refactor — public API unchanged, all 17 existing pinned tests produce identical output. 4 FsCheck property tests (incremental accumulation equivalence, SimulateOneMore purity, optimizer output equivalence, linear call count). Spec: `.kiro/specs/optimizer-incremental-simulation/`.
+**Status: Complete**

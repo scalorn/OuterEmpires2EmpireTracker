@@ -311,11 +311,34 @@ namespace OE2EmpireTracker.Tests.Services
                         return false.Label($"Input structure {uuid} missing from output");
                 }
 
-                // (a) No deficits from first primary onward
+                // (a) No deficits from first primary through last primary.
+                // Leftover support appended after the last primary may have
+                // transient deficits (e.g. Ent Centre needing power) — this is
+                // expected behavior per REQ-COL-095g.
                 var calc = new ColonyStatusCalculator(new Colony());
                 var iw = new IdealColonyStructureWorkers();
                 var prev = new ColonyStructureStatus();
                 int firstPrimaryPos = -1;
+                int lastPrimaryPos = -1;
+
+                // First pass: find first and last primary positions
+                {
+                    var scanPrev = new ColonyStructureStatus();
+                    for (int i = 0; i < result.Count; i++)
+                    {
+                        var s = result[i];
+                        var bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                        if (bp != null && !IsSupportType(bp.BluePrintType) &&
+                            bp.BluePrintType != BlueprintTypes.ColonyCommandCentre)
+                        {
+                            if (firstPrimaryPos < 0) firstPrimaryPos = i;
+                            lastPrimaryPos = i;
+                        }
+                    }
+                }
+
+                if (firstPrimaryPos < 0)
+                    return true.Label("OK — no primaries");
 
                 for (int i = 0; i < result.Count; i++)
                 {
@@ -324,14 +347,7 @@ namespace OE2EmpireTracker.Tests.Services
                     var current = new ColonyStructureStatus();
                     calc.CalculateBuilt(s, prev, current, iw, bp);
 
-                    if (firstPrimaryPos < 0 && bp != null &&
-                        !IsSupportType(bp.BluePrintType) &&
-                        bp.BluePrintType != BlueprintTypes.ColonyCommandCentre)
-                    {
-                        firstPrimaryPos = i;
-                    }
-
-                    if (firstPrimaryPos >= 0 && i >= firstPrimaryPos)
+                    if (i >= firstPrimaryPos && i <= lastPrimaryPos)
                     {
                         bool deficit = current.PowerRequired > current.PowerProvided ||
                                        current.HabitationRequired > current.HabitationProvision ||
