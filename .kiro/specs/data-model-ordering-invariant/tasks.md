@@ -197,7 +197,7 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 11. Create steering file for AI compliance
-  - [~] 11.1 Create `.kiro/steering/data-model-ordering.md`
+  - [x] 11.1 Create `.kiro/steering/data-model-ordering.md`
     - Document the unordered-bag invariant statement
     - Document the three approved consumption patterns with examples
     - Include the complete Sort Key Registry table from Requirements 3.1
@@ -208,7 +208,7 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 8.8_
 
 - [ ] 12. Create inline sort audit check
-  - [~] 12.1 Create `.kiro/tools/inline-sort-check.js`
+  - [x] 12.1 Create `.kiro/tools/inline-sort-check.js`
     - Scan all `.cs` files in `OE2EmpireTracker/` and `OE2EmpireTracker.Tests/` (excluding `bin/`, `obj/`, `Designer.cs`)
     - Skip `CollectionSortHelper.cs` and `SerializationSorter.cs`
     - Match lines containing `.OrderBy(`, `.OrderByDescending(`, `.ThenBy(`, `.ThenByDescending(`, `.Sort(` on known model types
@@ -216,7 +216,7 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - Exit code 0 = clean, exit code 1 = findings
     - _Requirements: 9.1, 9.2_
 
-  - [~] 12.2 Integrate `inline-sort-check.js` into `audit.js` as check #12 "Inline Sort"
+  - [x] 12.2 Integrate `inline-sort-check.js` into `audit.js` as check #12 "Inline Sort"
     - Add the new check to the audit runner
     - _Requirements: 9.3_
 
