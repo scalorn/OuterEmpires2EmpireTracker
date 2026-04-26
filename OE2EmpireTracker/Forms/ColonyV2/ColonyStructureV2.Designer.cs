@@ -45,12 +45,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkWorker6 = new System.Windows.Forms.CheckBox();
             this.flpSurveySelection = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSurveyFilter = new System.Windows.Forms.Label();
-            this.txtSurveyFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.cmbSurvey = new System.Windows.Forms.ComboBox();
+            this.cmbSurvey = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.flpSelection = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSelectionFilter = new System.Windows.Forms.Label();
-            this.txtSelectionFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.cmbSelection = new System.Windows.Forms.ComboBox();
+            this.cmbSelection = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.flpManufacturing = new System.Windows.Forms.FlowLayoutPanel();
             this.rtbProgressStatus = new System.Windows.Forms.RichTextBox();
             this.txtCompletionTime = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -240,7 +238,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // flpSurveySelection
             // 
             this.flpSurveySelection.Controls.Add(this.lblSurveyFilter);
-            this.flpSurveySelection.Controls.Add(this.txtSurveyFilter);
             this.flpSurveySelection.Controls.Add(this.cmbSurvey);
             this.flpSurveySelection.Location = new System.Drawing.Point(3, 89);
             this.flpSurveySelection.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
@@ -257,21 +254,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.lblSurveyFilter.Size = new System.Drawing.Size(45, 13);
             this.lblSurveyFilter.TabIndex = 0;
             this.lblSurveyFilter.Text = "Survey:";
-            this.txtSurveyFilter.Location = new System.Drawing.Point(54, 3);
-            this.txtSurveyFilter.Name = "txtSurveyFilter";
-            this.txtSurveyFilter.Size = new System.Drawing.Size(100, 20);
-            this.txtSurveyFilter.TabIndex = 1;
-            this.cmbSurvey.FormattingEnabled = true;
-            this.cmbSurvey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbSurvey.Location = new System.Drawing.Point(160, 3);
+            this.cmbSurvey.Location = new System.Drawing.Point(54, 3);
             this.cmbSurvey.Name = "cmbSurvey";
-            this.cmbSurvey.Size = new System.Drawing.Size(200, 21);
-            this.cmbSurvey.TabIndex = 2;
+            this.cmbSurvey.Size = new System.Drawing.Size(300, 21);
+            this.cmbSurvey.TabIndex = 1;
             // 
             // flpSelection
             // 
             this.flpSelection.Controls.Add(this.lblSelectionFilter);
-            this.flpSelection.Controls.Add(this.txtSelectionFilter);
             this.flpSelection.Controls.Add(this.cmbSelection);
             this.flpSelection.Controls.Add(this.txtQuantity);
             this.flpSelection.Controls.Add(this.chkStageResources);
@@ -289,16 +279,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.lblSelectionFilter.Size = new System.Drawing.Size(40, 13);
             this.lblSelectionFilter.TabIndex = 0;
             this.lblSelectionFilter.Text = "Select:";
-            this.txtSelectionFilter.Location = new System.Drawing.Point(49, 3);
-            this.txtSelectionFilter.Name = "txtSelectionFilter";
-            this.txtSelectionFilter.Size = new System.Drawing.Size(100, 20);
-            this.txtSelectionFilter.TabIndex = 1;
-            this.cmbSelection.FormattingEnabled = true;
-            this.cmbSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbSelection.Location = new System.Drawing.Point(155, 3);
+            this.cmbSelection.Location = new System.Drawing.Point(49, 3);
             this.cmbSelection.Name = "cmbSelection";
-            this.cmbSelection.Size = new System.Drawing.Size(200, 21);
-            this.cmbSelection.TabIndex = 2;
+            this.cmbSelection.Size = new System.Drawing.Size(300, 21);
+            this.cmbSelection.TabIndex = 1;
             // 
             // flpManufacturing — merged with former flpTimer
             // Layout: [ProgressStatus] [Countdown] [Qty] [StageRes] [Start] [Done]
@@ -450,12 +434,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.CheckBox chkWorker6;
         private System.Windows.Forms.FlowLayoutPanel flpSurveySelection;
         private System.Windows.Forms.Label lblSurveyFilter;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtSurveyFilter;
-        private System.Windows.Forms.ComboBox cmbSurvey;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbSurvey;
         private System.Windows.Forms.FlowLayoutPanel flpSelection;
         private System.Windows.Forms.Label lblSelectionFilter;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtSelectionFilter;
-        private System.Windows.Forms.ComboBox cmbSelection;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbSelection;
         private System.Windows.Forms.FlowLayoutPanel flpManufacturing;
         private System.Windows.Forms.RichTextBox rtbProgressStatus;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtCompletionTime;

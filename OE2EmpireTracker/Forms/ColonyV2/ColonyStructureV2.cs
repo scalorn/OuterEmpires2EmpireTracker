@@ -30,6 +30,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private int _isProgrammaticUpdate = 0;
 
+        /// <summary>Parallel list of Survey objects matching cmbSurvey display items, for UUID lookup via SelectedFullIndex.</summary>
+        private List<Models.Survey> _surveyItems = new List<Models.Survey>();
+
+        /// <summary>Parallel list of value strings matching cmbSelection display items, for key/UUID lookup via SelectedFullIndex.</summary>
+        private List<string> _selectionValues = new List<string>();
+
         /// <summary>True while the user is manually editing txtCompletionTime.</summary>
         private bool _completionModification = false;
 
@@ -47,12 +53,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             };
 
             // Wire event handlers for survey/selection/sub-selection combos and filters
-            txtSurveyFilter.TextChanged += TxtSurveyFilter_TextChanged;
-            cmbSurvey.SelectedIndexChanged += CmbSurvey_SelectedIndexChanged;
-            cmbSurvey.DropDown += CmbSurvey_DropDown;
-            txtSelectionFilter.TextChanged += TxtSelectionFilter_TextChanged;
-            cmbSelection.SelectedIndexChanged += CmbSelection_SelectedIndexChanged;
-            cmbSelection.DropDown += CmbSelection_DropDown;
+            cmbSurvey.SelectedItemChanged += CmbSurvey_SelectedItemChanged;
+            cmbSelection.SelectedItemChanged += CmbSelection_SelectedItemChanged;
             cmdStart.Click += CmdStart_Click;
             cmdDone.Click += CmdDone_Click;
             txtCompletionTime.Enter += TxtCompletionTime_Enter;
@@ -108,12 +110,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             rtbStatus.Text = string.Empty;
             txtCompletionTime.Text = string.Empty;
             rtbProgressStatus.Text = string.Empty;
-            txtSurveyFilter.Text = string.Empty;
-            txtSelectionFilter.Text = string.Empty;
 
-            // Clear combo data sources
-            cmbSurvey.DataSource = null;
-            cmbSelection.DataSource = null;
+            // Clear combo data
+            cmbSurvey.SetItems(new List<string>(), null);
+            _surveyItems.Clear();
+            cmbSelection.SetItems(new List<string>(), null);
+            _selectionValues.Clear();
 
             // Uncheck all state checkboxes
             chkStaged.Checked = false;
@@ -579,7 +581,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 showSelection = true;
             }
 
-            if (showSelection && (cmbSelection.SelectedIndex >= 0 || !string.IsNullOrEmpty(structureData.MiningSurveyResource)))
+            if (showSelection && (cmbSelection.SelectedFullIndex >= 0 || !string.IsNullOrEmpty(structureData.MiningSurveyResource)))
             {
                 showCmdStart = true;
             }
@@ -597,23 +599,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else if (hasSelection)
             {
-                PopulateSurveyCombo();
-                cmbSurvey.SelectedValue = structureData.MiningSurvey;
-                PopulateResourceComboFromSurvey();
-                if (!string.IsNullOrEmpty(structureData.MiningSurveyResource))
-                {
-                    cmbSelection.SelectedValue = structureData.MiningSurveyResource;
-                }
+                PopulateSurveyCombo(structureData.MiningSurvey);
+                PopulateResourceComboFromSurvey(structureData.MiningSurveyResource);
             }
 
-            txtSurveyFilter.Enabled = enableCmbSurvey;
             cmbSurvey.Enabled = enableCmbSurvey;
 
             // Resource selection row
             if (!string.IsNullOrEmpty(structureData.MiningSurvey))
             {
                 flpSelection.Visible = true;
-                txtSelectionFilter.Enabled = enableCmbSelection;
                 cmbSelection.Enabled = enableCmbSelection;
             }
             else
@@ -646,30 +641,28 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void PopulateSurveyCombo()
+        private void PopulateSurveyCombo(string currentSurveyUUID = null)
         {
-            string searchText = txtSurveyFilter.Text ?? string.Empty;
-
             var filteredList = new List<Models.Survey>(_playerContext.SurveyList);
 
             filteredList = filteredList
                 .Where(item => Colony != null && string.Equals(item.PlanetName, Colony.PlanetName, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                filteredList = filteredList
-                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-            }
-
+            filteredList.Sort((a, b) => string.Compare(a.ExtendedName, b.ExtendedName, StringComparison.OrdinalIgnoreCase));
             filteredList.Insert(0, new Models.Survey());
 
-            cmbSurvey.DataSource = null;
-            cmbSurvey.DisplayMember = "ExtendedName";
-            cmbSurvey.ValueMember = "UUID";
-            cmbSurvey.DataSource = filteredList;
-            cmbSurvey.SelectedIndex = -1;
+            _surveyItems = filteredList;
+            var displayNames = filteredList.Select(s => s.ExtendedName ?? string.Empty).ToList();
+
+            string currentDisplay = null;
+            if (!string.IsNullOrEmpty(currentSurveyUUID))
+            {
+                var match = filteredList.FirstOrDefault(s => s.UUID == currentSurveyUUID);
+                if (match != null) currentDisplay = match.ExtendedName;
+            }
+
+            cmbSurvey.SetItems(displayNames, currentDisplay);
         }
 
         /// <summary>
@@ -682,11 +675,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var items = new List<Models.Survey>();
             if (survey != null) items.Add(survey);
             else items.Add(new Models.Survey { PlanetName = surveyUUID });
-            cmbSurvey.DataSource = null;
-            cmbSurvey.DisplayMember = "ExtendedName";
-            cmbSurvey.ValueMember = "UUID";
-            cmbSurvey.DataSource = items;
-            if (items.Count > 0) cmbSurvey.SelectedIndex = 0;
+            _surveyItems = items;
+            var displayNames = items.Select(s => s.ExtendedName ?? string.Empty).ToList();
+            cmbSurvey.SetItems(displayNames, displayNames.FirstOrDefault());
         }
 
         /// <summary>
@@ -697,16 +688,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (string.IsNullOrEmpty(resource))
             {
-                cmbSelection.DataSource = null;
+                cmbSelection.SetItems(new List<string>(), null);
+                _selectionValues.Clear();
                 return;
             }
 
-            var items = new List<SurveyResource> { new SurveyResource { Resource = resource } };
-            cmbSelection.DataSource = null;
-            cmbSelection.DisplayMember = "ExtendedName";
-            cmbSelection.ValueMember = "Resource";
-            cmbSelection.DataSource = items;
-            cmbSelection.SelectedIndex = 0;
+            _selectionValues = new List<string> { resource };
+            cmbSelection.SetItems(new List<string> { resource }, resource);
         }
 
         /// <summary>
@@ -715,45 +703,36 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         private void SetSingleItemSelectionCombo(string key, string displayName)
         {
-            var items = new List<ResearchSelectionItem>
-            {
-                new ResearchSelectionItem { UUID = key, DisplayName = displayName }
-            };
-
-            cmbSelection.DataSource = null;
-            cmbSelection.DisplayMember = "DisplayName";
-            cmbSelection.ValueMember = "UUID";
-            cmbSelection.DataSource = items;
-            cmbSelection.SelectedIndex = 0;
+            _selectionValues = new List<string> { key };
+            cmbSelection.SetItems(new List<string> { displayName }, displayName);
         }
 
-        private void PopulateResourceComboFromSurvey()
+        private void PopulateResourceComboFromSurvey(string currentResource = null)
         {
-            string searchText = txtSelectionFilter.Text ?? string.Empty;
-
-            Models.Survey survey = cmbSurvey.SelectedItem as Models.Survey;
+            int surveyIdx = cmbSurvey.SelectedFullIndex;
+            Models.Survey survey = (surveyIdx >= 0 && surveyIdx < _surveyItems.Count) ? _surveyItems[surveyIdx] : null;
             if (survey == null || survey.Resources == null)
             {
-                cmbSelection.DataSource = null;
+                cmbSelection.SetItems(new List<string>(), null);
+                _selectionValues.Clear();
                 return;
             }
 
-            var filteredList = survey.Resources.Values.ToList();
+            var resources = survey.Resources.Values.ToList();
+            resources.Sort((a, b) => string.Compare(a.Resource, b.Resource, StringComparison.OrdinalIgnoreCase));
+            resources.Insert(0, new SurveyResource());
 
-            if (!string.IsNullOrEmpty(searchText))
+            _selectionValues = resources.Select(r => r.Resource ?? string.Empty).ToList();
+            var displayNames = resources.Select(r => r.ExtendedName ?? string.Empty).ToList();
+
+            string currentDisplay = null;
+            if (!string.IsNullOrEmpty(currentResource))
             {
-                filteredList = filteredList
-                    .Where(item => item.Resource.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
+                var match = resources.FirstOrDefault(r => r.Resource == currentResource);
+                if (match != null) currentDisplay = match.ExtendedName;
             }
 
-            filteredList.Insert(0, new SurveyResource());
-
-            cmbSelection.DataSource = null;
-            cmbSelection.DisplayMember = "ExtendedName";
-            cmbSelection.ValueMember = "Resource";
-            cmbSelection.DataSource = filteredList;
-            cmbSelection.SelectedIndex = -1;
+            cmbSelection.SetItems(displayNames, currentDisplay);
         }
 
         private void PopulateMiningProgressStatus()
@@ -831,33 +810,18 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (recipe != null) displayKey += "|S" + recipe.Tier;
                 string displayName = structureData.RefiningResource + " (" + (structureData.RefiningResourcePurity ?? string.Empty) + ")";
                 if (recipe != null) displayName = recipe.OutputResource + " (S" + recipe.Tier + ")";
-                var items = new List<RefinerySelectionItem>
-                {
-                    new RefinerySelectionItem
-                    {
-                        Key = displayKey,
-                        DisplayName = displayName,
-                        ResourceName = structureData.RefiningResource,
-                        Purity = structureData.RefiningResourcePurity
-                    }
-                };
 
-                cmbSelection.DataSource = null;
-                cmbSelection.DisplayMember = "DisplayName";
-                cmbSelection.ValueMember = "Key";
-                cmbSelection.DataSource = items;
-                cmbSelection.SelectedIndex = 0;
+                _selectionValues = new List<string> { displayKey };
+                cmbSelection.SetItems(new List<string> { displayName }, displayName);
             }
             else if (hasSelection)
             {
-                PopulateSelectionWithUnrefinedResources();
                 string restoreKey = structureData.RefiningResource + "|" + structureData.RefiningResourcePurity;
                 var recipe = RefiningRecipes.FindByInput(structureData.RefiningResource, structureData.RefiningResourcePurity);
                 if (recipe != null) restoreKey += "|S" + recipe.Tier;
-                cmbSelection.SelectedValue = restoreKey;
+                PopulateSelectionWithUnrefinedResources(restoreKey);
             }
 
-            txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
 
             // Manufacturing row: Start/Done only (no qty/stage)
@@ -885,10 +849,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void PopulateSelectionWithUnrefinedResources()
+        private void PopulateSelectionWithUnrefinedResources(string currentKey = null)
         {
-            string searchText = txtSelectionFilter.Text ?? string.Empty;
-
             var unrefinedItems = new List<RefinerySelectionItem>();
 
             // Add unrefined resources from warehouse
@@ -970,22 +932,20 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
             }
 
-            // Filter by search text
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                unrefinedItems = unrefinedItems
-                    .Where(item => item.DisplayName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-            }
-
             unrefinedItems.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
             unrefinedItems.Insert(0, new RefinerySelectionItem { Key = string.Empty, DisplayName = string.Empty, ResourceName = string.Empty, Purity = string.Empty });
 
-            cmbSelection.DataSource = null;
-            cmbSelection.DisplayMember = "DisplayName";
-            cmbSelection.ValueMember = "Key";
-            cmbSelection.DataSource = unrefinedItems;
-            cmbSelection.SelectedIndex = -1;
+            _selectionValues = unrefinedItems.Select(i => i.Key).ToList();
+            var displayNames = unrefinedItems.Select(i => i.DisplayName).ToList();
+
+            string currentDisplay = null;
+            if (!string.IsNullOrEmpty(currentKey))
+            {
+                var match = unrefinedItems.FirstOrDefault(i => i.Key == currentKey);
+                if (match != null) currentDisplay = match.DisplayName;
+            }
+
+            cmbSelection.SetItems(displayNames, currentDisplay);
         }
 
         private void PopulateRefineryProgressStatus()
@@ -1081,11 +1041,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else if (hasSelection)
             {
-                PopulateSelectionWithResearchableBlueprints();
-                cmbSelection.SelectedValue = structureData.ResearchingBlueprintUUID;
+                PopulateSelectionWithResearchableBlueprints(structureData.ResearchingBlueprintUUID);
             }
 
-            txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
 
             // Manufacturing row: Start/Done only (no qty/stage)
@@ -1113,10 +1071,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void PopulateSelectionWithResearchableBlueprints()
+        private void PopulateSelectionWithResearchableBlueprints(string currentUUID = null)
         {
-            string searchText = txtSelectionFilter.Text ?? string.Empty;
-
             var items = new List<ResearchSelectionItem>();
 
             foreach (Models.Blueprint bp in _playerContext.GetAllBlueprints())
@@ -1130,9 +1086,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (!canResearch) continue;
 
                 string display = bp.ExtendedName;
-                if (!string.IsNullOrEmpty(searchText) &&
-                    display.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) < 0)
-                    continue;
 
                 items.Add(new ResearchSelectionItem
                 {
@@ -1144,11 +1097,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
             items.Insert(0, new ResearchSelectionItem { UUID = string.Empty, DisplayName = string.Empty });
 
-            cmbSelection.DataSource = null;
-            cmbSelection.DisplayMember = "DisplayName";
-            cmbSelection.ValueMember = "UUID";
-            cmbSelection.DataSource = items;
-            cmbSelection.SelectedIndex = -1;
+            _selectionValues = items.Select(i => i.UUID).ToList();
+            var displayNames = items.Select(i => i.DisplayName).ToList();
+
+            string currentDisplay = null;
+            if (!string.IsNullOrEmpty(currentUUID))
+            {
+                var match = items.FirstOrDefault(i => i.UUID == currentUUID);
+                if (match != null) currentDisplay = match.DisplayName;
+            }
+
+            cmbSelection.SetItems(displayNames, currentDisplay);
         }
 
         private void PopulateResearchLabProgressStatus()
@@ -1241,11 +1200,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else if (hasSelection)
             {
-                PopulateSelectionWithManufacturableBlueprints();
-                cmbSelection.SelectedValue = structureData.ManufacturingBlueprintUUID;
+                PopulateSelectionWithManufacturableBlueprints(structureData.ManufacturingBlueprintUUID);
             }
 
-            txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
 
             // Manufacturing row: qty, stage resources, start/done
@@ -1296,10 +1253,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void PopulateSelectionWithManufacturableBlueprints()
+        private void PopulateSelectionWithManufacturableBlueprints(string currentUUID = null)
         {
-            string searchText = txtSelectionFilter.Text ?? string.Empty;
-
             var items = new List<ResearchSelectionItem>();
 
             foreach (Models.Blueprint bp in _playerContext.GetAllBlueprints())
@@ -1311,9 +1266,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (!canManufacture) continue;
 
                 string display = bp.ExtendedName;
-                if (!string.IsNullOrEmpty(searchText) &&
-                    display.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) < 0)
-                    continue;
 
                 items.Add(new ResearchSelectionItem
                 {
@@ -1325,11 +1277,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
             items.Insert(0, new ResearchSelectionItem { UUID = string.Empty, DisplayName = string.Empty });
 
-            cmbSelection.DataSource = null;
-            cmbSelection.DisplayMember = "DisplayName";
-            cmbSelection.ValueMember = "UUID";
-            cmbSelection.DataSource = items;
-            cmbSelection.SelectedIndex = -1;
+            _selectionValues = items.Select(i => i.UUID).ToList();
+            var displayNames = items.Select(i => i.DisplayName).ToList();
+
+            string currentDisplay = null;
+            if (!string.IsNullOrEmpty(currentUUID))
+            {
+                var match = items.FirstOrDefault(i => i.UUID == currentUUID);
+                if (match != null) currentDisplay = match.DisplayName;
+            }
+
+            cmbSelection.SetItems(displayNames, currentDisplay);
         }
 
         private void PopulateManufactoryProgressStatus()
@@ -1414,24 +1372,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (hasActiveProcess && hasSelection)
             {
                 // Active process: just show the selected commodity, don't build full list
-                var items = new List<CommoditySelectionItem>
-                {
-                    new CommoditySelectionItem { Name = structureData.ManufacturingCommodityName, DisplayName = structureData.ManufacturingCommodityName }
-                };
-
-                cmbSelection.DataSource = null;
-                cmbSelection.DisplayMember = "DisplayName";
-                cmbSelection.ValueMember = "Name";
-                cmbSelection.DataSource = items;
-                cmbSelection.SelectedIndex = 0;
+                _selectionValues = new List<string> { structureData.ManufacturingCommodityName };
+                cmbSelection.SetItems(new List<string> { structureData.ManufacturingCommodityName }, structureData.ManufacturingCommodityName);
             }
             else if (hasSelection)
             {
-                PopulateSelectionWithCommodities();
-                cmbSelection.SelectedValue = structureData.ManufacturingCommodityName;
+                PopulateSelectionWithCommodities(structureData.ManufacturingCommodityName);
             }
 
-            txtSelectionFilter.Enabled = enableCmbSelection;
             cmbSelection.Enabled = enableCmbSelection;
 
             // Manufacturing row: qty, stage resources, start/done
@@ -1482,10 +1430,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void PopulateSelectionWithCommodities()
+        private void PopulateSelectionWithCommodities(string currentName = null)
         {
-            string searchText = txtSelectionFilter.Text ?? string.Empty;
-
             // Get the CommodityIndustry from the flatpack blueprint
             string industryFilter = string.Empty;
             if (_blueprint != null)
@@ -1508,9 +1454,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
 
                 string display = commodity.ExtendedName;
-                if (!string.IsNullOrEmpty(searchText) &&
-                    display.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) < 0)
-                    continue;
 
                 items.Add(new CommoditySelectionItem
                 {
@@ -1522,11 +1465,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             items.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
             items.Insert(0, new CommoditySelectionItem { Name = string.Empty, DisplayName = string.Empty });
 
-            cmbSelection.DataSource = null;
-            cmbSelection.DisplayMember = "DisplayName";
-            cmbSelection.ValueMember = "Name";
-            cmbSelection.DataSource = items;
-            cmbSelection.SelectedIndex = -1;
+            _selectionValues = items.Select(i => i.Name).ToList();
+            var displayNames = items.Select(i => i.DisplayName).ToList();
+
+            string currentDisplay = null;
+            if (!string.IsNullOrEmpty(currentName))
+            {
+                var match = items.FirstOrDefault(i => i.Name == currentName);
+                if (match != null) currentDisplay = match.DisplayName;
+            }
+
+            cmbSelection.SetItems(displayNames, currentDisplay);
         }
 
         private void PopulateCommodityFactoryProgressStatus()
@@ -1711,59 +1660,18 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // Survey filter and selection handlers (Mining Rig)
+        // Survey and selection handlers
         // -----------------------------------------------------------------------
 
-        /// <summary>Populate survey combo on first dropdown if it was deferred during colony switch.</summary>
-        private void CmbSurvey_DropDown(object sender, EventArgs e)
-        {
-            if (_isProgrammaticUpdate > 0) return;
-            if (cmbSurvey.DataSource == null || cmbSurvey.Items.Count <= 1)
-            {
-                PopulateSurveyCombo();
-            }
-        }
-
-        /// <summary>Populate selection combo on first dropdown if it was deferred during colony switch.</summary>
-        private void CmbSelection_DropDown(object sender, EventArgs e)
-        {
-            if (_isProgrammaticUpdate > 0) return;
-            if (cmbSelection.DataSource == null || cmbSelection.Items.Count <= 1)
-            {
-                if (_blueprint == null) return;
-                if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
-                    PopulateResourceComboFromSurvey();
-                else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
-                    PopulateSelectionWithUnrefinedResources();
-                else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
-                    PopulateSelectionWithResearchableBlueprints();
-                else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
-                    PopulateSelectionWithManufacturableBlueprints();
-                else if (_blueprint.BluePrintType.IsCommodityFactory())
-                    PopulateSelectionWithCommodities();
-            }
-        }
-
-        private void TxtSurveyFilter_TextChanged(object sender, EventArgs e)
-        {
-            if (_isProgrammaticUpdate > 0) return;
-            if (_blueprint == null || _blueprint.BluePrintType != BlueprintTypes.MiningRig) return;
-
-            string previousValue = cmbSurvey.SelectedValue as string;
-            PopulateSurveyCombo();
-            if (previousValue != null)
-                cmbSurvey.SelectedValue = previousValue;
-            cmbSurvey.DroppedDown = true;
-        }
-
-        private void CmbSurvey_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbSurvey_SelectedItemChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (ViewModel == null) return;
 
             var structureData = ViewModel.Data;
-            string survey = cmbSurvey.SelectedValue as string;
-            Log.Debug("V2.CmbSurvey_SelectedIndexChanged: old={0} new={1}", structureData.MiningSurvey ?? "(none)", survey ?? "(none)");
+            int idx = cmbSurvey.SelectedFullIndex;
+            string survey = (idx >= 0 && idx < _surveyItems.Count) ? _surveyItems[idx].UUID : null;
+            Log.Debug("V2.CmbSurvey_SelectedItemChanged: old={0} new={1}", structureData.MiningSurvey ?? "(none)", survey ?? "(none)");
             if (survey != structureData.MiningSurvey)
             {
                 structureData.MiningLeftOvers = decimal.Zero;
@@ -1776,66 +1684,38 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 HandleMiningRigControls();
         }
 
-        // -----------------------------------------------------------------------
-        // Selection filter and combo handlers (shared across types)
-        // -----------------------------------------------------------------------
-
-        private void TxtSelectionFilter_TextChanged(object sender, EventArgs e)
-        {
-            if (_isProgrammaticUpdate > 0) return;
-            if (_blueprint == null) return;
-
-            string previousValue = cmbSelection.SelectedValue as string;
-
-            if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
-                PopulateResourceComboFromSurvey();
-            else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
-                PopulateSelectionWithUnrefinedResources();
-            else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
-                PopulateSelectionWithResearchableBlueprints();
-            else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
-                PopulateSelectionWithManufacturableBlueprints();
-            else if (_blueprint.BluePrintType.IsCommodityFactory())
-                PopulateSelectionWithCommodities();
-
-            if (previousValue != null)
-                cmbSelection.SelectedValue = previousValue;
-
-            cmbSelection.DroppedDown = true;
-        }
-
-        private void CmbSelection_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbSelection_SelectedItemChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             if (ViewModel == null || _blueprint == null) return;
 
             var structureData = ViewModel.Data;
+            int idx = cmbSelection.SelectedFullIndex;
+            string value = (idx >= 0 && idx < _selectionValues.Count) ? _selectionValues[idx] : null;
 
             if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
             {
-                string surveyResource = cmbSelection.SelectedValue as string;
-                Log.Debug("V2.CmbSelection_SelectedIndexChanged: type=MiningRig old={0} new={1}", structureData.MiningSurveyResource ?? "(none)", surveyResource ?? "(none)");
-                if (surveyResource != structureData.MiningSurveyResource)
+                Log.Debug("V2.CmbSelection_SelectedItemChanged: type=MiningRig old={0} new={1}", structureData.MiningSurveyResource ?? "(none)", value ?? "(none)");
+                if (value != structureData.MiningSurveyResource)
                 {
                     structureData.MiningLeftOvers = decimal.Zero;
                 }
 
-                structureData.MiningSurveyResource = surveyResource;
+                structureData.MiningSurveyResource = value;
                 // Only refresh controls if a real item was selected (not the empty placeholder)
-                if (!string.IsNullOrEmpty(surveyResource))
+                if (!string.IsNullOrEmpty(value))
                     HandleMiningRigControls();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
             {
-                string key = cmbSelection.SelectedValue as string;
                 Log.Debug(
-                    "V2.CmbSelection_SelectedIndexChanged: type=Refinery old={0}|{1} new={2}",
+                    "V2.CmbSelection_SelectedItemChanged: type=Refinery old={0}|{1} new={2}",
                     structureData.RefiningResource ?? "(none)",
                     structureData.RefiningResourcePurity ?? "(none)",
-                    key ?? "(none)");
-                if (!string.IsNullOrEmpty(key) && key.Contains("|"))
+                    value ?? "(none)");
+                if (!string.IsNullOrEmpty(value) && value.Contains("|"))
                 {
-                    string[] parts = key.Split('|');
+                    string[] parts = value.Split('|');
                     structureData.RefiningResource = parts[0];
                     structureData.RefiningResourcePurity = parts[1];
                 }
@@ -1847,31 +1727,28 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
             {
-                string uuid = cmbSelection.SelectedValue as string;
                 Log.Debug(
-                    "V2.CmbSelection_SelectedIndexChanged: type=ResearchLab old={0} new={1}",
+                    "V2.CmbSelection_SelectedItemChanged: type=ResearchLab old={0} new={1}",
                     structureData.ResearchingBlueprintUUID ?? "(none)",
-                    uuid ?? "(none)");
-                structureData.ResearchingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
+                    value ?? "(none)");
+                structureData.ResearchingBlueprintUUID = string.IsNullOrEmpty(value) ? null : value;
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
             {
-                string uuid = cmbSelection.SelectedValue as string;
                 Log.Debug(
-                    "V2.CmbSelection_SelectedIndexChanged: type=Manufactory old={0} new={1}",
+                    "V2.CmbSelection_SelectedItemChanged: type=Manufactory old={0} new={1}",
                     structureData.ManufacturingBlueprintUUID ?? "(none)",
-                    uuid ?? "(none)");
-                structureData.ManufacturingBlueprintUUID = string.IsNullOrEmpty(uuid) ? null : uuid;
+                    value ?? "(none)");
+                structureData.ManufacturingBlueprintUUID = string.IsNullOrEmpty(value) ? null : value;
                 structureData.ManufacturingCompleted = 0;
             }
             else if (_blueprint.BluePrintType.IsCommodityFactory())
             {
-                string name = cmbSelection.SelectedValue as string;
                 Log.Debug(
-                    "V2.CmbSelection_SelectedIndexChanged: type=CommodityFactory old={0} new={1}",
+                    "V2.CmbSelection_SelectedItemChanged: type=CommodityFactory old={0} new={1}",
                     structureData.ManufacturingCommodityName ?? "(none)",
-                    name ?? "(none)");
-                structureData.ManufacturingCommodityName = string.IsNullOrEmpty(name) ? null : name;
+                    value ?? "(none)");
+                structureData.ManufacturingCommodityName = string.IsNullOrEmpty(value) ? null : value;
                 structureData.ManufacturingCompleted = 0;
             }
         }

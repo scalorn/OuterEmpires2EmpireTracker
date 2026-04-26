@@ -140,6 +140,12 @@ const SECTION_MAP = {
             },
         },
     ],
+    'colonies.md': [
+        {
+            header: /^###\s+ColonyStructureV2\b/,
+            form: 'ColonyV2/ColonyStructureV2',
+        },
+    ],
     'colony-overflow.md': [
         {
             header: /^###\s+Warehouse Overflow/,

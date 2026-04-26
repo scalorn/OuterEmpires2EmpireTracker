@@ -11,6 +11,7 @@
 | [contacts.md](contacts.md) | FormContacts (Factions, External Characters tabs) | 1 |
 | [asteroids.md](asteroids.md) | FormAsteroid | 6 |
 | [supply-chains.md](supply-chains.md) | FormSupplyChain | 6 |
+| [colonies.md](colonies.md) | ColonyStructureV2 (Structures tab UserControl) | — |
 | [colony-overflow.md](colony-overflow.md) | Warehouse Overflow tab (FormColony) | 6 |
 | [colony-activity.md](colony-activity.md) | FormColonyActivity | — |
 | [colony-daily-build.md](colony-daily-build.md) | FormColonyDailyBuild | — |
