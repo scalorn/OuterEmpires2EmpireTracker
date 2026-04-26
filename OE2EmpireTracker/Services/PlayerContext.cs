@@ -301,9 +301,9 @@ namespace OE2EmpireTracker.Services
 
         public IReadOnlyList<Asteroid> AsteroidList => _asteroidList;
 
-        public IEnumerable<CountDownTimeReference> ActiveCountdowns => AllCountdownSources()
-            .Where(c => c.CountDownTime.TimeRemaining > 0)
-            .OrderBy(c => c.CountDownTime.TimeRemaining);
+        public IEnumerable<CountDownTimeReference> ActiveCountdowns => CollectionSortHelper.OrderCountdownsByTimeRemaining(
+            AllCountdownSources()
+                .Where(c => c.CountDownTime.TimeRemaining > 0));
 
         public static PlayerContext GetInstance()
         {
@@ -500,9 +500,8 @@ namespace OE2EmpireTracker.Services
 
         public void InitPlayerProfiles(PlayerRoot playerRoot)
         {
-            List<PlayerProfile> list = new List<PlayerProfile>(playerRoot.PlayerProfile);
-            list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            _playerProfileList = new List<PlayerProfile>(list);
+            var sorted = CollectionSortHelper.OrderPlayerProfiles(playerRoot.PlayerProfile);
+            _playerProfileList = new List<PlayerProfile>(sorted);
             // Initialize the BindingSource component
             BindingSourcePlayerProfile = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -511,9 +510,8 @@ namespace OE2EmpireTracker.Services
 
         public void InitBlueprints(PlayerRoot playerRoot)
         {
-            List<Blueprint> list = new List<Blueprint>(playerRoot.Blueprint);
-            list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            _blueprintList = new List<Blueprint>(list);
+            var sorted = CollectionSortHelper.OrderBlueprints(playerRoot.Blueprint);
+            _blueprintList = new List<Blueprint>(sorted);
             // Initialize the BindingSource component
             BindingSourceBlueprint = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -585,10 +583,8 @@ namespace OE2EmpireTracker.Services
 
         public void InitSurveys(PlayerRoot playerRoot)
         {
-            List<Survey> list = new List<Survey>(playerRoot.Survey);
-            list = list.OrderBy(p => p.PlanetName).ThenBy(p => p.DateTime).ToList();
-
-            _surveyList = new List<Survey>(list);
+            var sorted = CollectionSortHelper.OrderSurveys(playerRoot.Survey);
+            _surveyList = new List<Survey>(sorted);
             // Initialize the BindingSource component
             BindingSourceSurvey = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -651,8 +647,8 @@ namespace OE2EmpireTracker.Services
 
         public void InitColonies(PlayerRoot playerRoot)
         {
-            List<Colony> list = new List<Colony>(playerRoot.Colony);
-            list = list.OrderBy(p => p.PlanetName).ToList();
+            var sorted = CollectionSortHelper.OrderColonies(playerRoot.Colony);
+            var list = new List<Colony>(sorted);
 
             // Stamp BuildQueueSequence for existing data where values are all zero (migration).
             // Don't sort the list — consumers sort by BuildQueueSequence themselves.
@@ -675,23 +671,20 @@ namespace OE2EmpireTracker.Services
 
         public void InitDeliveryRoutes(PlayerRoot playerRoot)
         {
-            var list = new List<DeliveryRoute>(playerRoot.DeliveryRoute ?? new DeliveryRoute[0]);
-            list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
-            _deliveryRouteList = new List<DeliveryRoute>(list);
+            var sorted = CollectionSortHelper.OrderDeliveryRoutes(playerRoot.DeliveryRoute ?? new DeliveryRoute[0]);
+            _deliveryRouteList = new List<DeliveryRoute>(sorted);
         }
 
         public void InitDeliveryPlans(PlayerRoot playerRoot)
         {
-            var list = new List<DeliveryPlan>(playerRoot.DeliveryPlan ?? new DeliveryPlan[0]);
-            list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
-            _deliveryPlanList = new List<DeliveryPlan>(list);
+            var sorted = CollectionSortHelper.OrderDeliveryPlans(playerRoot.DeliveryPlan ?? new DeliveryPlan[0]);
+            _deliveryPlanList = new List<DeliveryPlan>(sorted);
         }
 
         public void InitPricingPlans(PlayerRoot playerRoot)
         {
-            var list = new List<PricingPlan>(playerRoot.PricingPlan ?? new PricingPlan[0]);
-            list.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.OrdinalIgnoreCase));
-            _pricingPlanList = new List<PricingPlan>(list);
+            var sorted = CollectionSortHelper.OrderPricingPlans(playerRoot.PricingPlan ?? new PricingPlan[0]);
+            _pricingPlanList = new List<PricingPlan>(sorted);
         }
 
         public void InitBuildPlans(PlayerRoot playerRoot)

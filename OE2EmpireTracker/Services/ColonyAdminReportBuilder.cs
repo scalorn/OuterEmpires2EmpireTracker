@@ -91,7 +91,7 @@ namespace OE2EmpireTracker.Services
         {
             if (rows.Count == 0) return false;
 
-            var sorted = rows.OrderBy(r => r.GetSecondsRemaining()).ToList();
+            var sorted = CollectionSortHelper.OrderActivityRowsByTimeRemaining(rows).ToList();
 
             if (needsLeadingNewline) builder.Append("\n", TextColor);
             builder.Append("Building\n", HeaderColor);
@@ -190,11 +190,10 @@ namespace OE2EmpireTracker.Services
         {
             // Split into non-repeating (Manufacturing, CommodityManufacturing, Research)
             // and repeating (Mining, Refining) which get aggregated
-            var nonRepeating = rows
-                .Where(r => r.Type == ActivityType.Manufacturing ||
+            var nonRepeating = CollectionSortHelper.OrderActivityRowsByTimeRemaining(
+                rows.Where(r => r.Type == ActivityType.Manufacturing ||
                             r.Type == ActivityType.CommodityManufacturing ||
-                            r.Type == ActivityType.Research)
-                .OrderBy(r => r.GetSecondsRemaining())
+                            r.Type == ActivityType.Research))
                 .ToList();
 
             var miningRows = rows.Where(r => r.Type == ActivityType.Mining).ToList();

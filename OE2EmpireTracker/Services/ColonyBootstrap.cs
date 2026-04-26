@@ -67,7 +67,7 @@ namespace OE2EmpireTracker.Services
 
             // REQ-COL-096b: One mining rig per resource
             var miningRigBp = FindPlayerBlueprint(BlueprintTypes.MiningRig);
-            foreach (var entry in bestResources.OrderBy(r => r.ResourceName))
+            foreach (var entry in CollectionSortHelper.OrderByName(bestResources, r => r.ResourceName))
             {
                 if (miningRigBp != null)
                 {
@@ -80,7 +80,7 @@ namespace OE2EmpireTracker.Services
 
             // REQ-COL-096c: Refiners per resource based on mining rate
             var refineryBp = FindPlayerBlueprint(BlueprintTypes.Refinery);
-            foreach (var entry in bestResources.OrderBy(r => r.ResourceName))
+            foreach (var entry in CollectionSortHelper.OrderByName(bestResources, r => r.ResourceName))
             {
                 decimal miningRate = entry.RawAmount * (1.0m + (_extractionFocusLevel * 0.01m));
                 int refinersNeeded = (int)Math.Ceiling((double)miningRate / GameConstants.RefiningBaseRate);

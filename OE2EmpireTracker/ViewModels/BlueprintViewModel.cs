@@ -140,7 +140,7 @@ namespace OE2EmpireTracker.ViewModels
             }
 
             // Order by evolution descending (best match first)
-            return all.OrderByDescending(b => b.Evolution).ToList().AsReadOnly();
+            return CollectionSortHelper.OrderBlueprintsByEvolutionDescending(all);
         }
 
         // -----------------------------------------------------------------------
@@ -198,8 +198,8 @@ namespace OE2EmpireTracker.ViewModels
                 }
             }
 
-            list.Sort((a, b) => string.Compare(a.ExtendedName, b.ExtendedName, StringComparison.OrdinalIgnoreCase));
-            return list.AsReadOnly();
+            var sorted = CollectionSortHelper.OrderBlueprints(list);
+            return sorted;
         }
 
         // -----------------------------------------------------------------------

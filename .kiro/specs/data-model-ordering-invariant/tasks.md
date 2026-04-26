@@ -114,7 +114,7 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - Replace `.OrderByDescending(r => r.DisplaySequence)` with `CollectionSortHelper.OrderStructuresDescending(...)`
     - _Requirements: 8.4_
 
-- [ ] 5. Refactor route stop consumers
+- [x] 5. Refactor route stop consumers
   - [x] 5.1 Refactor `DeliveryPlanViewModel` (4 methods) to use `CollectionSortHelper.OrderRouteStops()`
     - Replace all `routeStops.OrderBy(s => s.Sequence)` calls
     - _Requirements: 4.7, 8.4_
@@ -127,7 +127,7 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - Replace `route.Stops.OrderBy(s => s.Sequence)` call
     - _Requirements: 4.11, 8.4_
 
-- [ ] 6. Refactor plan stop and supply chain consumers
+- [x] 6. Refactor plan stop and supply chain consumers
   - [x] 6.1 Refactor `DeliveryPlan.CalculateLoadList()` to use `CollectionSortHelper.OrderPlanStops()`
     - Replace `Stops.OrderBy(s => s.Sequence)` call
     - _Requirements: 4.6, 8.4_
@@ -141,8 +141,8 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - Replace `chains.OrderBy(c => c.Name)` with `CollectionSortHelper.OrderSupplyChains(...)`
     - _Requirements: 4.9, 8.4_
 
-- [ ] 7. Refactor PlayerContext init methods
-  - [~] 7.1 Refactor `PlayerContext` init methods to use `CollectionSortHelper`
+- [x] 7. Refactor PlayerContext init methods
+  - [x] 7.1 Refactor `PlayerContext` init methods to use `CollectionSortHelper`
     - `InitPlayerProfiles()` → `CollectionSortHelper.OrderPlayerProfiles(...)`
     - `InitBlueprints()` → `CollectionSortHelper.OrderBlueprints(...)`
     - `InitSurveys()` → `CollectionSortHelper.OrderSurveys(...)`
@@ -152,48 +152,48 @@ All code is C# targeting .NET Framework 4.8.1. Property-based tests use FsCheck 
     - `InitPricingPlans()` → `CollectionSortHelper.OrderPricingPlans(...)`
     - _Requirements: 8.4_
 
-- [ ] 8. Refactor EmpireContext init methods
-  - [~] 8.1 Refactor `EmpireContext` init methods to use `CollectionSortHelper`
+- [x] 8. Refactor EmpireContext init methods
+  - [x] 8.1 Refactor `EmpireContext` init methods to use `CollectionSortHelper`
     - `InitBlueprintTypes()`, `InitTechLevels()`, `InitResources()`, `InitResourceGroups()`, `InitResourcePurities()` → generic `OrderByName(...)` or appropriate helper
     - `InitGlobalBlueprints()` → `CollectionSortHelper.OrderBlueprints(...)`
     - _Requirements: 8.4_
 
-- [ ] 9. Refactor admin report, other services, and form/viewmodel sorts
-  - [~] 9.1 Refactor `ColonyAdminReportBuilder` activity row sorts to use `CollectionSortHelper.OrderActivityRowsByTimeRemaining()`
+- [x] 9. Refactor admin report, other services, and form/viewmodel sorts
+  - [x] 9.1 Refactor `ColonyAdminReportBuilder` activity row sorts to use `CollectionSortHelper.OrderActivityRowsByTimeRemaining()`
     - Replace building and non-repeating `rows.OrderBy(r => r.GetSecondsRemaining())` calls
     - Mining/refining group sorts are exempt (local tuple sorts)
     - _Requirements: 8.4_
 
-  - [~] 9.2 Refactor `ColonyBootstrap` to use `CollectionSortHelper.OrderAsteroidReserves()`
+  - [x] 9.2 Refactor `ColonyBootstrap` to use `CollectionSortHelper.OrderAsteroidReserves()`
     - Replace 2x `bestResources.OrderBy(r => r.ResourceName)` calls
     - _Requirements: 8.4_
 
-  - [~] 9.3 Refactor `DeliveryGenerationService` flatpack sort to use `CollectionSortHelper.OrderBuildItems()`
+  - [x] 9.3 Refactor `DeliveryGenerationService` flatpack sort to use `CollectionSortHelper.OrderBuildItems()`
     - Replace `flatpacks.OrderBy(f => f.ItemName)` call
     - _Requirements: 8.4_
 
-  - [~] 9.4 Refactor `EvolutionChainService` to use `CollectionSortHelper.OrderBlueprintsByEvolution()`
+  - [x] 9.4 Refactor `EvolutionChainService` to use `CollectionSortHelper.OrderBlueprintsByEvolution()`
     - Replace 2x `.Sort(Evolution)` calls
     - _Requirements: 8.4_
 
-  - [~] 9.5 Refactor `PlayerContext.ActiveCountdowns` to use `CollectionSortHelper.OrderCountdownsByTimeRemaining()`
+  - [x] 9.5 Refactor `PlayerContext.ActiveCountdowns` to use `CollectionSortHelper.OrderCountdownsByTimeRemaining()`
     - Replace `.OrderBy(c => c.TimeRemaining)` call
     - _Requirements: 8.4_
 
-  - [~] 9.6 Refactor `BlueprintViewModel` sorts to use `CollectionSortHelper`
+  - [x] 9.6 Refactor `BlueprintViewModel` sorts to use `CollectionSortHelper`
     - `GetEvolutionChain()` → `CollectionSortHelper.OrderBlueprintsByEvolutionDescending(...)`
     - `GetAllOfType()` → `CollectionSortHelper.OrderBlueprints(...)`
     - _Requirements: 8.4_
 
-  - [~] 9.7 Refactor `FormMarket` transaction sort to use `CollectionSortHelper.OrderMarketTransactionsByTimestamp()`
+  - [x] 9.7 Refactor `FormMarket` transaction sort to use `CollectionSortHelper.OrderMarketTransactionsByTimestamp()`
     - Replace `transactions.OrderByDescending(t => t.Timestamp)` call
     - _Requirements: 8.4_
 
-  - [~] 9.8 Refactor `FormColonyV2` blueprint sorts to use `CollectionSortHelper.OrderBlueprints()`
+  - [x] 9.8 Refactor `FormColonyV2` blueprint sorts to use `CollectionSortHelper.OrderBlueprints()`
     - Replace 2x `filteredList.Sort(ExtendedName)` calls
     - _Requirements: 8.4_
 
-- [~] 10. Checkpoint - Verify all consumer refactoring builds and tests pass
+- [x] 10. Checkpoint - Verify all consumer refactoring builds and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 11. Create steering file for AI compliance

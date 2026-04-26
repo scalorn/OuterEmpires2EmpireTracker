@@ -44,8 +44,8 @@ namespace OE2EmpireTracker.Services
                 current = resolver(current.BaseBlueprintUUID);
             }
 
-            chain.Sort((a, b) => a.Evolution.CompareTo(b.Evolution));
-            return chain;
+            var sorted = CollectionSortHelper.OrderBlueprintsByEvolution(chain);
+            return new List<Blueprint>(sorted);
         }
 
         /// <summary>

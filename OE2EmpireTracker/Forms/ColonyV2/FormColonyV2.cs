@@ -2242,11 +2242,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     .ToList();
             }
 
-            filteredList.Sort((x, y) => x.ExtendedName.CompareTo(y.ExtendedName));
-            filteredList.Insert(0, new Models.Blueprint());
+            var sortedList = new List<Models.Blueprint>(CollectionSortHelper.OrderBlueprints(filteredList));
+            sortedList.Insert(0, new Models.Blueprint());
 
             var bs = new BindingSource();
-            bs.DataSource = filteredList;
+            bs.DataSource = sortedList;
 
             cmbItem.DataSource = null;
             cmbItem.DisplayMember = "ExtendedName";
@@ -2278,11 +2278,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     .ToList();
             }
 
-            filteredList.Sort((x, y) => x.ExtendedName.CompareTo(y.ExtendedName));
-            filteredList.Insert(0, new Models.Blueprint());
+            var sortedList = new List<Models.Blueprint>(CollectionSortHelper.OrderBlueprints(filteredList));
+            sortedList.Insert(0, new Models.Blueprint());
 
             var bs = new BindingSource();
-            bs.DataSource = filteredList;
+            bs.DataSource = sortedList;
 
             cmbItem.DataSource = null;
             cmbItem.DisplayMember = "ExtendedName";

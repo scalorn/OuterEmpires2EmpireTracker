@@ -17,6 +17,26 @@ namespace OE2EmpireTracker.Services
     public static class CollectionSortHelper
     {
         // ----------------------------------------------------------------
+        //  Generic helpers (for game-constant types not in the Sort Key Registry)
+        // ----------------------------------------------------------------
+
+        /// <summary>
+        /// Generic sort by a string key selector (ascending, OrdinalIgnoreCase).
+        /// Used for game-constant types (BlueprintType, TechLevel, Resource, etc.)
+        /// that have a Name property but are not data model collections.
+        /// </summary>
+        public static IReadOnlyList<T> OrderByName<T>(
+            IEnumerable<T> items,
+            Func<T, string> nameSelector)
+        {
+            if (items == null) return Array.Empty<T>();
+            return items
+                .OrderBy(i => nameSelector(i) ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        // ----------------------------------------------------------------
         //  Colony Structures
         // ----------------------------------------------------------------
 

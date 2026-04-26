@@ -226,7 +226,7 @@ namespace OE2EmpireTracker.Forms.Market
             DateTime? fromDate = dtpTxFrom.Checked ? dtpTxFrom.Value.Date : (DateTime?)null;
             DateTime? toDate = dtpTxTo.Checked ? dtpTxTo.Value.Date.AddDays(1) : (DateTime?)null;
 
-            foreach (var tx in transactions.OrderByDescending(t => t.Timestamp))
+            foreach (var tx in CollectionSortHelper.OrderMarketTransactionsByTimestamp(transactions))
             {
                 if (typeFilter == "Buy" && tx.TransactionType != TransactionType.Buy) continue;
                 if (typeFilter == "Sell" && tx.TransactionType != TransactionType.Sell) continue;

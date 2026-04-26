@@ -191,9 +191,8 @@ namespace OE2EmpireTracker.Services
 
         public void InitBlueprintTypes(BaselineRoot baselineRoot)
         {
-            List<BlueprintType> list = new List<BlueprintType>(baselineRoot.BlueprintType);
-            list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            _blueprintTypeList = new List<BlueprintType>(list);
+            var sorted = CollectionSortHelper.OrderByName(baselineRoot.BlueprintType, x => x.Name);
+            _blueprintTypeList = new List<BlueprintType>(sorted);
             // Initialize the BindingSource component
             BindingSourceBlueprintType = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -249,9 +248,8 @@ namespace OE2EmpireTracker.Services
 
         public void InitTechLevels(BaselineRoot baselineRoot)
         {
-            List<TechLevel> list = new List<TechLevel>(baselineRoot.TechLevel);
-            list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            _techLevelList = new List<TechLevel>(list);
+            var sorted = CollectionSortHelper.OrderByName(baselineRoot.TechLevel, x => x.Name);
+            _techLevelList = new List<TechLevel>(sorted);
             // Initialize the BindingSource component
             BindingSourceTechLevel = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -302,9 +300,8 @@ namespace OE2EmpireTracker.Services
 
         public void InitResources(BaselineRoot baselineRoot)
         {
-            List<Resource> list = new List<Resource>(Resource.Resources);
-            list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            _resourceList = new List<Resource>(list);
+            var sorted = CollectionSortHelper.OrderByName(Resource.Resources, x => x.Name);
+            _resourceList = new List<Resource>(sorted);
             // Initialize the BindingSource component
             BindingSourceResource = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -313,9 +310,8 @@ namespace OE2EmpireTracker.Services
 
         public void InitResourceGroups(BaselineRoot baselineRoot)
         {
-            List<ResourceGroup> list = new List<ResourceGroup>(ResourceGroup.Groups);
-            list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            _resourceGroupList = new List<ResourceGroup>(list);
+            var sorted = CollectionSortHelper.OrderByName(ResourceGroup.Groups, x => x.Name);
+            _resourceGroupList = new List<ResourceGroup>(sorted);
             // Initialize the BindingSource component
             BindingSourceResourceGroup = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -324,9 +320,8 @@ namespace OE2EmpireTracker.Services
 
         public void InitResourcePurities(BaselineRoot baselineRoot)
         {
-            List<ResourcePurity> list = new List<ResourcePurity>(ResourcePurity.Purities);
-            list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            _resourcePurityList = new List<ResourcePurity>(list);
+            var sorted = CollectionSortHelper.OrderByName(ResourcePurity.Purities, x => x.Name);
+            _resourcePurityList = new List<ResourcePurity>(sorted);
             BindingSourceResourcePurity = new BindingSource();
             BindingSourceResourcePurity.DataSource = _resourcePurityList;
         }
@@ -376,9 +371,8 @@ namespace OE2EmpireTracker.Services
 
         public void InitGlobalBlueprints(BaselineRoot baselineRoot)
         {
-            var list = new List<Blueprint>(baselineRoot.Blueprint ?? new Blueprint[0]);
-            list.Sort((x, y) => x.Name.CompareTo(y.Name));
-            _globalBlueprintList = new List<Blueprint>(list);
+            var sorted = CollectionSortHelper.OrderBlueprints(baselineRoot.Blueprint ?? new Blueprint[0]);
+            _globalBlueprintList = new List<Blueprint>(sorted);
             InvalidateGlobalBlueprintCache();
 
             // Fix up game data quirks on existing blueprints

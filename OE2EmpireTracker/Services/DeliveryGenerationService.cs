@@ -483,7 +483,7 @@ namespace OE2EmpireTracker.Services
 
                 var planStop = CreatePlanStop(routeStop);
 
-                foreach (var fp in flatpacks.OrderBy(f => f.ItemName))
+                foreach (var fp in CollectionSortHelper.OrderByName(flatpacks, f => f.ItemName))
                 {
                     var deliveryItem = new DeliveryItem
                     {
