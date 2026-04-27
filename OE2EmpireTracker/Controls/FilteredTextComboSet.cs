@@ -199,7 +199,12 @@ namespace OE2EmpireTracker.Controls
             {
                 try
                 {
-                    CmbItems.DroppedDown = true;
+                    if (!CmbItems.DroppedDown)
+                        CmbItems.DroppedDown = true;
+
+                    // Restore focus to filter TextBox — DroppedDown steals focus to the combo
+                    if (IsEditing && !TxtFilter.Focused)
+                        TxtFilter.Focus();
                 }
                 catch
                 {
