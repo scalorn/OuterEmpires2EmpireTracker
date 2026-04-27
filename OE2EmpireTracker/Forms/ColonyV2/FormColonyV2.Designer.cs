@@ -102,8 +102,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.colItemAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flpAddItem = new System.Windows.Forms.FlowLayoutPanel();
             this.cmbItemType = new System.Windows.Forms.ComboBox();
-            this.txtItemFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.cmbItem = new System.Windows.Forms.ComboBox();
+            this.cmbItem = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.cmbPurity = new System.Windows.Forms.ComboBox();
             this.txtQuantity = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdAddItem = new System.Windows.Forms.Button();
@@ -819,7 +818,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // flpAddItem
             // 
             this.flpAddItem.Controls.Add(this.cmbItemType);
-            this.flpAddItem.Controls.Add(this.txtItemFilter);
             this.flpAddItem.Controls.Add(this.cmbItem);
             this.flpAddItem.Controls.Add(this.cmbPurity);
             this.flpAddItem.Controls.Add(this.txtQuantity);
@@ -841,47 +839,38 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmbItemType.Size = new System.Drawing.Size(121, 21);
             this.cmbItemType.TabIndex = 0;
             // 
-            // txtItemFilter
-            // 
-            this.txtItemFilter.Location = new System.Drawing.Point(130, 3);
-            this.txtItemFilter.Name = "txtItemFilter";
-            this.txtItemFilter.Size = new System.Drawing.Size(97, 20);
-            this.txtItemFilter.TabIndex = 1;
-            // 
             // cmbItem
             // 
-            this.cmbItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbItem.FormattingEnabled = true;
-            this.cmbItem.Location = new System.Drawing.Point(233, 3);
+            this.cmbItem.Location = new System.Drawing.Point(130, 3);
             this.cmbItem.Name = "cmbItem";
-            this.cmbItem.Size = new System.Drawing.Size(250, 21);
-            this.cmbItem.TabIndex = 2;
+            this.cmbItem.Size = new System.Drawing.Size(347, 21);
+            this.cmbItem.TabIndex = 1;
             // 
             // cmbPurity
             // 
             this.cmbPurity.DisplayMember = "Name";
             this.cmbPurity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPurity.FormattingEnabled = true;
-            this.cmbPurity.Location = new System.Drawing.Point(489, 3);
+            this.cmbPurity.Location = new System.Drawing.Point(483, 3);
             this.cmbPurity.Name = "cmbPurity";
             this.cmbPurity.Size = new System.Drawing.Size(70, 21);
-            this.cmbPurity.TabIndex = 3;
+            this.cmbPurity.TabIndex = 2;
             this.cmbPurity.Visible = false;
             // 
             // txtQuantity
             // 
-            this.txtQuantity.Location = new System.Drawing.Point(565, 3);
+            this.txtQuantity.Location = new System.Drawing.Point(559, 3);
             this.txtQuantity.Name = "txtQuantity";
             this.txtQuantity.Size = new System.Drawing.Size(60, 20);
-            this.txtQuantity.TabIndex = 4;
+            this.txtQuantity.TabIndex = 3;
             this.txtQuantity.Text = "0";
             // 
             // cmdAddItem
             // 
-            this.cmdAddItem.Location = new System.Drawing.Point(631, 3);
+            this.cmdAddItem.Location = new System.Drawing.Point(625, 3);
             this.cmdAddItem.Name = "cmdAddItem";
             this.cmdAddItem.Size = new System.Drawing.Size(50, 23);
-            this.cmdAddItem.TabIndex = 5;
+            this.cmdAddItem.TabIndex = 4;
             this.cmdAddItem.Text = "Add";
             this.cmdAddItem.UseVisualStyleBackColor = true;
             // 
@@ -1045,8 +1034,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.DataGridViewTextBoxColumn colItemAmount;
         private System.Windows.Forms.FlowLayoutPanel flpAddItem;
         private System.Windows.Forms.ComboBox cmbItemType;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtItemFilter;
-        private System.Windows.Forms.ComboBox cmbItem;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbItem;
         private System.Windows.Forms.ComboBox cmbPurity;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtQuantity;
         private System.Windows.Forms.Button cmdAddItem;

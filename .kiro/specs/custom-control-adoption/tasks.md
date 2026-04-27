@@ -102,14 +102,14 @@ Adopt FilteredTextComboSet, DataGridViewFilteredComboBoxColumn, and DataEntryGri
     - Build solution, run tests, run audit
     - _Requirements: 15_
 
-- [ ] 6. Convert FormColonyV2 — Item picker
-  - [~] 6.1 Replace txtItemFilter + cmbItem with FilteredTextComboSet
+- [-] 6. Convert FormColonyV2 — Item picker
+  - [x] 6.1 Replace txtItemFilter + cmbItem with FilteredTextComboSet
     - In `FormColonyV2.Designer.cs`: change `cmbItem` type to `FilteredTextComboSet`, remove `txtItemFilter` declaration/instantiation/Controls.Add/sizing
     - In `FormColonyV2.cs`: remove `txtItemFilter.TextChanged += TxtItemFilter_TextChanged` subscription, remove `TxtItemFilter_TextChanged` handler, convert the six `PopulateXxxItems` methods (Resource, Commodity, Worker, Survey, Blueprint, Output) to use `cmbItem.SetItems(itemNames, currentValue)` instead of rebuilding DataSource
     - The type-cascade combo `cmbItemType` stays as standard ComboBox
     - _Requirements: 6.2, 13, 14_
 
-  - [~] 6.2 Build, test, audit, commit
+  - [x] 6.2 Build, test, audit, commit
     - Build solution, run tests, run audit
     - _Requirements: 15_
 

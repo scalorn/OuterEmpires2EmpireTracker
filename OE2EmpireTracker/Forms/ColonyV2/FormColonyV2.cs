@@ -71,6 +71,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// <summary>Parallel list of Blueprint objects matching cmbFlatpacks display items, for UUID lookup via SelectedFullIndex.</summary>
         private List<Models.Blueprint> _flatpackBlueprints = new List<Models.Blueprint>();
 
+        /// <summary>Parallel list of objects matching cmbItem display items, for lookup via SelectedFullIndex.</summary>
+        private List<object> _itemPickerObjects = new List<object>();
+
         public FormColonyV2()
         {
             InitializeComponent();
@@ -134,8 +137,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbItemType.DataSource = Models.ItemType.ItemTypes;
             cmbItemType.DisplayMember = "Name";
             cmbItemType.SelectedIndexChanged += CmbItemType_SelectedIndexChanged;
-            txtItemFilter.TextChanged += TxtItemFilter_TextChanged;
-            cmbItem.SelectedIndexChanged += CmbItem_SelectedIndexChanged;
+            cmbItem.SelectedItemChanged += CmbItem_SelectedItemChanged;
             cmbPurity.DataSource = Models.ResourcePurity.Purities;
             cmbPurity.DisplayMember = "Name";
             cmdAddItem.Click += CmdAddItem_Click;
@@ -2068,13 +2070,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void CmbItem_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbItem_SelectedItemChanged(object sender, EventArgs e)
         {
             Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
             cmbPurity.Visible = false;
             if (itemType != null && itemType.ID == Models.ItemType.ItemTypeEnum.Resource)
             {
-                Resource resource = cmbItem.SelectedItem as Resource;
+                int idx = cmbItem.SelectedFullIndex;
+                Resource resource = (idx >= 0 && idx < _itemPickerObjects.Count) ? _itemPickerObjects[idx] as Resource : null;
                 if (resource != null && !string.IsNullOrEmpty(resource.Name))
                 {
                     // Hide purity for synthetic resources
@@ -2086,53 +2089,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
         }
 
-        private void TxtItemFilter_TextChanged(object sender, EventArgs e)
-        {
-            Models.ItemType itemType = cmbItemType.SelectedItem as Models.ItemType;
-            if (itemType == null) return;
-
-            if (itemType.ID == Models.ItemType.ItemTypeEnum.Resource)
-                PopulateItemWithResources();
-            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Commodity)
-                PopulateItemWithCommodities();
-            else if (itemType.ID == Models.ItemType.ItemTypeEnum.WorkDetail)
-                PopulateItemWithWorkerDetails();
-            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Survey)
-                PopulateItemWithSurveys();
-            else if (itemType.ID == Models.ItemType.ItemTypeEnum.Blueprint)
-                PopulateItemWithBlueprints();
-            else if (itemType.ID == Models.ItemType.ItemTypeEnum.ShipPart ||
-                     itemType.ID == Models.ItemType.ItemTypeEnum.ShipHull ||
-                     itemType.ID == Models.ItemType.ItemTypeEnum.Munition ||
-                     itemType.ID == Models.ItemType.ItemTypeEnum.Flatpack ||
-                     itemType.ID == Models.ItemType.ItemTypeEnum.SpaceBuildPackage ||
-                     itemType.ID == Models.ItemType.ItemTypeEnum.Share)
-                PopulateItemWithBlueprintsByOutputType(itemType.ID);
-
-            cmbItem.DroppedDown = true;
-        }
-
         private void PopulateItemWithResources()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            string searchText = txtItemFilter.Text;
-            List<Resource> filteredList = new List<Resource>(Models.Resource.Resources);
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                filteredList = filteredList
-                    .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .OrderBy(p => p.Name)
-                    .ToList();
-                filteredList.Insert(0, new Resource());
-            }
+            var sortedList = new List<Resource>(CollectionSortHelper.OrderByName(Models.Resource.Resources, r => r.Name));
+            sortedList.Insert(0, new Resource());
 
-            var bs = new BindingSource();
-            bs.DataSource = filteredList;
-
-            cmbItem.DataSource = null;
-            cmbItem.DisplayMember = "Name";
-            cmbItem.ValueMember = "Name";
-            cmbItem.DataSource = bs;
+            _itemPickerObjects = sortedList.Cast<object>().ToList();
+            var names = sortedList.Select(r => r.Name ?? string.Empty).ToList();
+            cmbItem.SetItems(names, string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateItemWithResources: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -2140,24 +2105,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void PopulateItemWithCommodities()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            string searchText = txtItemFilter.Text;
-            List<Commodity> filteredList = new List<Commodity>(Models.Commodity.Commodities);
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                filteredList = filteredList
-                    .Where(item => item.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .OrderBy(p => p.ExtendedName)
-                    .ToList();
-                filteredList.Insert(0, new Commodity());
-            }
+            var sortedList = new List<Commodity>(CollectionSortHelper.OrderByName(Models.Commodity.Commodities, c => c.ExtendedName));
+            sortedList.Insert(0, new Commodity());
 
-            var bs = new BindingSource();
-            bs.DataSource = filteredList;
-
-            cmbItem.DataSource = null;
-            cmbItem.DisplayMember = "ExtendedName";
-            cmbItem.ValueMember = "Name";
-            cmbItem.DataSource = bs;
+            _itemPickerObjects = sortedList.Cast<object>().ToList();
+            var names = sortedList.Select(c => c.ExtendedName ?? string.Empty).ToList();
+            cmbItem.SetItems(names, string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateItemWithCommodities: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -2165,24 +2118,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void PopulateItemWithWorkerDetails()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            string searchText = txtItemFilter.Text;
-            List<WorkerDetail> filteredList = new List<WorkerDetail>(Models.WorkerDetail.WorkerDetails);
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                filteredList = filteredList
-                    .Where(item => item.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .OrderBy(p => p.Name)
-                    .ToList();
-                filteredList.Insert(0, new WorkerDetail());
-            }
+            var sortedList = new List<WorkerDetail>(CollectionSortHelper.OrderByName(Models.WorkerDetail.WorkerDetails, w => w.Name));
+            sortedList.Insert(0, new WorkerDetail());
 
-            var bs = new BindingSource();
-            bs.DataSource = filteredList;
-
-            cmbItem.DataSource = null;
-            cmbItem.DisplayMember = "Name";
-            cmbItem.ValueMember = "ID";
-            cmbItem.DataSource = bs;
+            _itemPickerObjects = sortedList.Cast<object>().ToList();
+            var names = sortedList.Select(w => w.Name ?? string.Empty).ToList();
+            cmbItem.SetItems(names, string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateItemWithWorkerDetails: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -2190,26 +2131,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void PopulateItemWithSurveys()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            string searchText = txtItemFilter.Text;
-            List<Models.Survey> filteredList = new List<Models.Survey>(playerContext.SurveyList);
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                filteredList = filteredList
-                    .Where(s => s.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0
-                             || s.PlanetName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-                filteredList = CollectionSortHelper.OrderSurveys(filteredList).ToList();
-            }
+            var sortedList = CollectionSortHelper.OrderSurveys(playerContext.SurveyList).ToList();
+            sortedList.Insert(0, new Models.Survey());
 
-            filteredList.Insert(0, new Models.Survey());
-
-            var bs = new BindingSource();
-            bs.DataSource = filteredList;
-
-            cmbItem.DataSource = null;
-            cmbItem.DisplayMember = "ExtendedName";
-            cmbItem.ValueMember = "UUID";
-            cmbItem.DataSource = bs;
+            _itemPickerObjects = sortedList.Cast<object>().ToList();
+            var names = sortedList.Select(s => s.ExtendedName ?? string.Empty).ToList();
+            cmbItem.SetItems(names, string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateItemWithSurveys: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -2217,25 +2144,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void PopulateItemWithBlueprints()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            string searchText = txtItemFilter.Text;
-            List<Models.Blueprint> filteredList = new List<Models.Blueprint>(playerContext.GetAllBlueprints());
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                filteredList = filteredList
-                    .Where(b => b.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-            }
-
-            var sortedList = new List<Models.Blueprint>(CollectionSortHelper.OrderBlueprints(filteredList));
+            var sortedList = new List<Models.Blueprint>(CollectionSortHelper.OrderBlueprints(playerContext.GetAllBlueprints()));
             sortedList.Insert(0, new Models.Blueprint());
 
-            var bs = new BindingSource();
-            bs.DataSource = sortedList;
-
-            cmbItem.DataSource = null;
-            cmbItem.DisplayMember = "ExtendedName";
-            cmbItem.ValueMember = "UUID";
-            cmbItem.DataSource = bs;
+            _itemPickerObjects = sortedList.Cast<object>().ToList();
+            var names = sortedList.Select(b => b.ExtendedName ?? string.Empty).ToList();
+            cmbItem.SetItems(names, string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateItemWithBlueprints: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -2243,7 +2157,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void PopulateItemWithBlueprintsByOutputType(Models.ItemType.ItemTypeEnum outputType)
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            string searchText = txtItemFilter.Text;
             string outputTypeName = outputType.ToString();
 
             List<Models.Blueprint> filteredList = new List<Models.Blueprint>();
@@ -2255,23 +2168,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 filteredList.Add(bp);
             }
 
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                filteredList = filteredList
-                    .Where(b => b.ExtendedName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-            }
-
             var sortedList = new List<Models.Blueprint>(CollectionSortHelper.OrderBlueprints(filteredList));
             sortedList.Insert(0, new Models.Blueprint());
 
-            var bs = new BindingSource();
-            bs.DataSource = sortedList;
-
-            cmbItem.DataSource = null;
-            cmbItem.DisplayMember = "ExtendedName";
-            cmbItem.ValueMember = "UUID";
-            cmbItem.DataSource = bs;
+            _itemPickerObjects = sortedList.Cast<object>().ToList();
+            var names = sortedList.Select(b => b.ExtendedName ?? string.Empty).ToList();
+            cmbItem.SetItems(names, string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateItemWithBlueprintsByOutputType: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -2288,9 +2190,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             Models.Item item = new Models.Item() { UUID = Guid.NewGuid().ToString() };
             item.ItemType = itemType.ID;
 
+            int idx = cmbItem.SelectedFullIndex;
+            object selectedObj = (idx >= 0 && idx < _itemPickerObjects.Count) ? _itemPickerObjects[idx] : null;
+
             if (itemType.ID == Models.ItemType.ItemTypeEnum.Resource)
             {
-                Models.Resource resource = cmbItem.SelectedItem as Models.Resource;
+                Models.Resource resource = selectedObj as Models.Resource;
                 if (resource != null)
                 {
                     item.BaseItemTypeID = resource.Name;
@@ -2305,7 +2210,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else if (itemType.ID == Models.ItemType.ItemTypeEnum.Commodity)
             {
-                Models.Commodity commodity = cmbItem.SelectedItem as Models.Commodity;
+                Models.Commodity commodity = selectedObj as Models.Commodity;
                 if (commodity != null)
                 {
                     item.BaseItemTypeID = commodity.Name;
@@ -2314,7 +2219,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else if (itemType.ID == Models.ItemType.ItemTypeEnum.WorkDetail)
             {
-                Models.WorkerDetail workerDetail = cmbItem.SelectedItem as Models.WorkerDetail;
+                Models.WorkerDetail workerDetail = selectedObj as Models.WorkerDetail;
                 if (workerDetail != null)
                 {
                     item.BaseItemTypeID = workerDetail.ID;
@@ -2323,7 +2228,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else if (itemType.ID == Models.ItemType.ItemTypeEnum.Survey)
             {
-                Models.Survey survey = cmbItem.SelectedItem as Models.Survey;
+                Models.Survey survey = selectedObj as Models.Survey;
                 if (survey != null)
                 {
                     item.BaseItemTypeID = survey.UUID;
@@ -2332,7 +2237,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
             else if (itemType.ID == Models.ItemType.ItemTypeEnum.Blueprint)
             {
-                Models.Blueprint blueprint = cmbItem.SelectedItem as Models.Blueprint;
+                Models.Blueprint blueprint = selectedObj as Models.Blueprint;
                 if (blueprint != null)
                 {
                     item.BaseItemTypeID = blueprint.UUID;
@@ -2346,7 +2251,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                      itemType.ID == Models.ItemType.ItemTypeEnum.SpaceBuildPackage ||
                      itemType.ID == Models.ItemType.ItemTypeEnum.Share)
             {
-                Models.Blueprint blueprint = cmbItem.SelectedItem as Models.Blueprint;
+                Models.Blueprint blueprint = selectedObj as Models.Blueprint;
                 if (blueprint != null)
                 {
                     item.BaseItemTypeID = blueprint.UUID;
