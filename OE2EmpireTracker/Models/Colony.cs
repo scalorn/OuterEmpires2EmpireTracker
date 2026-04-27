@@ -85,8 +85,10 @@ namespace OE2EmpireTracker.Models
                 Structures[i].BuildQueueSequence = i + 1;
             }
 
-            Log.Info("StampBuildQueueSequence: stamped {0} structures for colony {1}",
-                Structures.Count, UUID ?? "(no UUID)");
+            Log.Info(
+                "StampBuildQueueSequence: stamped {0} structures for colony {1}",
+                Structures.Count,
+                UUID ?? "(no UUID)");
         }
 
         public void ProcessColony()

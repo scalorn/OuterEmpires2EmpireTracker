@@ -1,10 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using System.Collections.Generic;
-using System.Linq;
 using Bp = OE2EmpireTracker.Models.Blueprint;
 
 namespace OE2EmpireTracker.Tests.Services

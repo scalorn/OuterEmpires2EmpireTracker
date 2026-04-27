@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -52,6 +52,7 @@ namespace OE2EmpireTracker.Tests.Services
                         if (result[i].BuildQueueSequence < result[i - 1].BuildQueueSequence)
                             return false;
                     }
+
                     return true;
                 });
         }
@@ -76,6 +77,7 @@ namespace OE2EmpireTracker.Tests.Services
                         if (result[i].Sequence < result[i - 1].Sequence)
                             return false;
                     }
+
                     return true;
                 });
         }
@@ -139,6 +141,7 @@ namespace OE2EmpireTracker.Tests.Services
                         }
                     }
                 }
+
                 return true;
             });
         }
@@ -183,6 +186,7 @@ namespace OE2EmpireTracker.Tests.Services
                             return false;
                     }
                 }
+
                 return true;
             });
         }
@@ -218,6 +222,7 @@ namespace OE2EmpireTracker.Tests.Services
                         if (helperResult[i].Sequence != sorterResult[i].Sequence)
                             return false;
                     }
+
                     return true;
                 });
         }
@@ -265,6 +270,7 @@ namespace OE2EmpireTracker.Tests.Services
                     if (helperResult[i].SlotIndex != sorterResult[i].SlotIndex)
                         return false;
                 }
+
                 return true;
             });
         }
@@ -287,7 +293,6 @@ namespace OE2EmpireTracker.Tests.Services
             var colonyGen = from count in countGen
                             from seqs in Gen.ArrayOf(count, seqGen)
                             from stagedFlags in Gen.ArrayOf(count, stagedGen)
-                            // Ensure at least one is staged
                             let ensuredFlags = stagedFlags.All(f => !f)
                                 ? stagedFlags.Select((f, i) => i == 0 ? true : f).ToArray()
                                 : stagedFlags
@@ -417,8 +422,10 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     if (canonicalResult[i].Name != shuffledResult[i].Name ||
                         canonicalResult[i].Quantity != shuffledResult[i].Quantity)
+                    {
                         return false.Label(
                             $"Item mismatch at [{i}]: {canonicalResult[i].Name}x{canonicalResult[i].Quantity} vs {shuffledResult[i].Name}x{shuffledResult[i].Quantity}");
+                    }
                 }
 
                 return true.Label("OK");

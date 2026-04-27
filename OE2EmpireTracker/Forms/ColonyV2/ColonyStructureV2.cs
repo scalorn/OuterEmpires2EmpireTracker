@@ -824,6 +824,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     var recipe = RefiningRecipes.FindByInput(structureData.RefiningResource, structureData.RefiningResourcePurity);
                     if (recipe != null) restoreKey += "|S" + recipe.Tier;
                 }
+
                 PopulateSelectionWithUnrefinedResources(restoreKey);
             }
 

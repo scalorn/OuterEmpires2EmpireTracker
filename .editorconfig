@@ -97,6 +97,12 @@ dotnet_diagnostic.SA1512.severity = none
 dotnet_diagnostic.SA1515.severity = none
 # SA1025: Code should not contain multiple whitespace in a row — alignment whitespace is intentional
 dotnet_diagnostic.SA1025.severity = none
+# SA1116: First parameter should begin on line after declaration — too strict for readable Assert/Log calls
+dotnet_diagnostic.SA1116.severity = none
+# SA1117: Parameters should all be on same line or each on own line — too strict for readable Assert/Log calls
+dotnet_diagnostic.SA1117.severity = none
+# SA1118: Parameter should not span multiple lines — too strict for array/tuple initializers in test assertions
+dotnet_diagnostic.SA1118.severity = none
 # SA0001: XML comment analysis disabled — we don't generate XML docs
 dotnet_diagnostic.SA0001.severity = none
 # SA1402: File may only contain a single type — test helper classes colocated with tests
@@ -112,5 +118,11 @@ dotnet_diagnostic.SA1400.severity = none
 dotnet_diagnostic.SA1306.severity = none
 generated_code = true
 
-# --- Test project: no additional suppressions — fix warnings in code ---
+# --- Test project: relax member ordering rules for test readability ---
 [OE2EmpireTracker.Tests/**/*.cs]
+# SA1201: Elements should appear in correct order — test files group helpers near their tests
+dotnet_diagnostic.SA1201.severity = none
+# SA1202: Elements should be ordered by access — test files group helpers near their tests
+dotnet_diagnostic.SA1202.severity = none
+# SA1204: Static members should appear before non-static — test files group helpers near their tests
+dotnet_diagnostic.SA1204.severity = none

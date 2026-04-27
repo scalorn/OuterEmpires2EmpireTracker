@@ -10,42 +10,6 @@ namespace OE2EmpireTracker.Services
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        internal static T[] SortByString<T>(T[] source, Func<T, string> keySelector)
-        {
-            if (source == null) return Array.Empty<T>();
-            return source
-                .OrderBy(x => keySelector(x) ?? string.Empty, StringComparer.Ordinal)
-                .ToArray();
-        }
-
-        internal static T[] SortByInt<T>(T[] source, Func<T, int> keySelector)
-        {
-            if (source == null) return Array.Empty<T>();
-            return source
-                .OrderBy(x => keySelector(x))
-                .ToArray();
-        }
-
-        internal static T[] SortByStringThenInt<T>(T[] source,
-            Func<T, string> key1, Func<T, int> key2)
-        {
-            if (source == null) return Array.Empty<T>();
-            return source
-                .OrderBy(x => key1(x) ?? string.Empty, StringComparer.Ordinal)
-                .ThenBy(x => key2(x))
-                .ToArray();
-        }
-
-        internal static T[] SortByStringThenString<T>(T[] source,
-            Func<T, string> key1, Func<T, string> key2)
-        {
-            if (source == null) return Array.Empty<T>();
-            return source
-                .OrderBy(x => key1(x) ?? string.Empty, StringComparer.Ordinal)
-                .ThenBy(x => key2(x) ?? string.Empty, StringComparer.Ordinal)
-                .ToArray();
-        }
-
         public static PlayerRoot SortPlayerRoot(PlayerRoot source)
         {
             if (source == null) return null;
@@ -176,6 +140,46 @@ namespace OE2EmpireTracker.Services
                 RefiningRecipe = SortByString(source.RefiningRecipe, x => x.OutputResource),
                 ResearchTime = SortByInt(source.ResearchTime, x => x.Evolution)
             };
+        }
+
+        internal static T[] SortByString<T>(T[] source, Func<T, string> keySelector)
+        {
+            if (source == null) return Array.Empty<T>();
+            return source
+                .OrderBy(x => keySelector(x) ?? string.Empty, StringComparer.Ordinal)
+                .ToArray();
+        }
+
+        internal static T[] SortByInt<T>(T[] source, Func<T, int> keySelector)
+        {
+            if (source == null) return Array.Empty<T>();
+            return source
+                .OrderBy(x => keySelector(x))
+                .ToArray();
+        }
+
+        internal static T[] SortByStringThenInt<T>(
+            T[] source,
+            Func<T, string> key1,
+            Func<T, int> key2)
+        {
+            if (source == null) return Array.Empty<T>();
+            return source
+                .OrderBy(x => key1(x) ?? string.Empty, StringComparer.Ordinal)
+                .ThenBy(x => key2(x))
+                .ToArray();
+        }
+
+        internal static T[] SortByStringThenString<T>(
+            T[] source,
+            Func<T, string> key1,
+            Func<T, string> key2)
+        {
+            if (source == null) return Array.Empty<T>();
+            return source
+                .OrderBy(x => key1(x) ?? string.Empty, StringComparer.Ordinal)
+                .ThenBy(x => key2(x) ?? string.Empty, StringComparer.Ordinal)
+                .ToArray();
         }
     }
 }

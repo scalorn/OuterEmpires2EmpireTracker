@@ -44,30 +44,6 @@ namespace OE2EmpireTracker.Services
         };
 
         /// <summary>
-        /// Result of a crate import operation.
-        /// </summary>
-        public class CrateImportResult
-        {
-            public int TotalInFile { get; set; }
-            public int Created { get; set; }
-            public int Updated { get; set; }
-            public int Skipped { get; set; }
-            public int Failed { get; set; }
-            public List<string> Errors { get; } = new List<string>();
-            public List<CrateImportEntry> Entries { get; } = new List<CrateImportEntry>();
-        }
-
-        public class CrateImportEntry
-        {
-            public string Name { get; set; }
-            public int Evolution { get; set; }
-            public string TechLevel { get; set; }
-            public ImportAction Action { get; set; }
-            public string Storage { get; set; }
-            public string SkipReason { get; set; }
-        }
-
-        /// <summary>
         /// Imports blueprints from a JSON file path.
         /// </summary>
         public static CrateImportResult ImportFromFile(
@@ -160,7 +136,10 @@ namespace OE2EmpireTracker.Services
 
             Log.Info(
                 "Crate import complete: {0} created, {1} updated, {2} skipped, {3} failed",
-                result.Created, result.Updated, result.Skipped, result.Failed);
+                result.Created,
+                result.Updated,
+                result.Skipped,
+                result.Failed);
 
             return result;
         }
@@ -316,9 +295,13 @@ namespace OE2EmpireTracker.Services
 
             Log.Info(
                 "  Crate entry: name='{0}' evo={1} tech='{2}' type='{3}' class={4} props={5} res={6}",
-                tempBP.Name, tempBP.Evolution, tempBP.TechLevel,
-                tempBP.BluePrintType, tempBP.Class,
-                tempBP.Properties?.Count ?? 0, tempBP.Resources?.Count ?? 0);
+                tempBP.Name,
+                tempBP.Evolution,
+                tempBP.TechLevel,
+                tempBP.BluePrintType,
+                tempBP.Class,
+                tempBP.Properties?.Count ?? 0,
+                tempBP.Resources?.Count ?? 0);
 
             // Fix up game data quirks (e.g. Reactor "Power Required" → "Power Provided")
             BlueprintScanner.FixupFlatpackProperties(tempBP);
@@ -418,8 +401,11 @@ namespace OE2EmpireTracker.Services
                     bt.Name != null && bt.Name.ToLowerInvariant().Contains(firstWord));
                 if (keywordMatch != null)
                 {
-                    Log.Info("    Description '{0}' matched type '{1}' via keyword '{2}'",
-                        description, keywordMatch.Id, firstWord);
+                    Log.Info(
+                        "    Description '{0}' matched type '{1}' via keyword '{2}'",
+                        description,
+                        keywordMatch.Id,
+                        firstWord);
                     return keywordMatch.Id;
                 }
             }
@@ -429,8 +415,10 @@ namespace OE2EmpireTracker.Services
                 bt.Name != null && descLower.Contains(bt.Name.ToLowerInvariant()));
             if (containsMatch != null)
             {
-                Log.Info("    Description '{0}' matched type '{1}' via contains",
-                    description, containsMatch.Id);
+                Log.Info(
+                    "    Description '{0}' matched type '{1}' via contains",
+                    description,
+                    containsMatch.Id);
                 return containsMatch.Id;
             }
 
@@ -512,6 +500,30 @@ namespace OE2EmpireTracker.Services
                 return BlueprintTypes.AsteroidGrapple;
 
             return resolvedType;
+        }
+
+        /// <summary>
+        /// Result of a crate import operation.
+        /// </summary>
+        public class CrateImportResult
+        {
+            public int TotalInFile { get; set; }
+            public int Created { get; set; }
+            public int Updated { get; set; }
+            public int Skipped { get; set; }
+            public int Failed { get; set; }
+            public List<string> Errors { get; } = new List<string>();
+            public List<CrateImportEntry> Entries { get; } = new List<CrateImportEntry>();
+        }
+
+        public class CrateImportEntry
+        {
+            public string Name { get; set; }
+            public int Evolution { get; set; }
+            public string TechLevel { get; set; }
+            public ImportAction Action { get; set; }
+            public string Storage { get; set; }
+            public string SkipReason { get; set; }
         }
     }
 }

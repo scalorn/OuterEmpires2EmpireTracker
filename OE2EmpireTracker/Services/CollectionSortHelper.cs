@@ -11,13 +11,14 @@ namespace OE2EmpireTracker.Services
     /// Provides canonical domain-order sort methods for data model collections.
     /// Every ordered collection in the Sort Key Registry has a corresponding method here.
     /// Consumers MUST use these methods instead of inline .OrderBy() expressions.
-    /// 
+    ///
     /// NOTE: This class sorts by domain-meaningful keys (Name, Sequence, BuildQueueSequence).
     /// SerializationSorter sorts by UUID for deterministic JSON diffs. They serve different purposes.
     /// </summary>
     public static class CollectionSortHelper
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         // ----------------------------------------------------------------
         //  Generic helpers (for game-constant types not in the Sort Key Registry)
         // ----------------------------------------------------------------

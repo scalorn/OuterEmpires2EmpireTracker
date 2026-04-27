@@ -81,6 +81,41 @@ namespace OE2EmpireTracker.Parsers
         }
 
         /// <summary>
+        /// Fixes up flatpack properties that the game labels incorrectly.
+        /// The Reactor Core Flatpack reports its power output as "Power Required"
+        /// in the game UI, but it actually provides power to the colony. This method
+        /// remaps "Power Required" to "Power Provided" for reactor flatpacks.
+        /// Called from all import paths after properties are parsed and type is resolved.
+        /// </summary>
+        public static void FixupFlatpackProperties(Models.Blueprint blueprint)
+        {
+            if (blueprint == null || string.IsNullOrEmpty(blueprint.BluePrintType))
+                return;
+
+            // Reactor Core: "Power Required" is actually "Power Provided"
+            if (blueprint.BluePrintType == "Flatpacks/ReactorCore")
+            {
+                string powerValue;
+                if (blueprint.Properties.GetString(GameConstants.PropPowerRequired, null, out powerValue)
+                    && !string.IsNullOrEmpty(powerValue))
+                {
+                    // Only remap if Power Provided doesn't already exist
+                    string existingProvided;
+                    blueprint.Properties.GetString(GameConstants.PropPowerProvided, null, out existingProvided);
+                    if (string.IsNullOrEmpty(existingProvided))
+                    {
+                        blueprint.Properties.SetProperty(GameConstants.PropPowerProvided, powerValue);
+                        blueprint.Properties.Remove(GameConstants.PropPowerRequired);
+                        Log.Info(
+                            "FixupFlatpackProperties: Reactor '{0}' — remapped Power Required={1} to Power Provided",
+                            blueprint.Name,
+                            powerValue);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Handles the click event for the Import button.
         /// </summary>
         /// <param name="sender">The object that triggered the event.</param>
@@ -653,42 +688,5 @@ namespace OE2EmpireTracker.Parsers
                     return value;
             }
         }
-
-        /// <summary>
-        /// Processes HTML content by parsing with SgmlReader and debugging child nodes.
-        /// </summary>
-        /// <summary>
-        /// Fixes up flatpack properties that the game labels incorrectly.
-        /// The Reactor Core Flatpack reports its power output as "Power Required"
-        /// in the game UI, but it actually provides power to the colony. This method
-        /// remaps "Power Required" to "Power Provided" for reactor flatpacks.
-        /// Called from all import paths after properties are parsed and type is resolved.
-        /// </summary>
-        public static void FixupFlatpackProperties(Models.Blueprint blueprint)
-        {
-            if (blueprint == null || string.IsNullOrEmpty(blueprint.BluePrintType))
-                return;
-
-            // Reactor Core: "Power Required" is actually "Power Provided"
-            if (blueprint.BluePrintType == "Flatpacks/ReactorCore")
-            {
-                string powerValue;
-                if (blueprint.Properties.GetString(GameConstants.PropPowerRequired, null, out powerValue)
-                    && !string.IsNullOrEmpty(powerValue))
-                {
-                    // Only remap if Power Provided doesn't already exist
-                    string existingProvided;
-                    blueprint.Properties.GetString(GameConstants.PropPowerProvided, null, out existingProvided);
-                    if (string.IsNullOrEmpty(existingProvided))
-                    {
-                        blueprint.Properties.SetProperty(GameConstants.PropPowerProvided, powerValue);
-                        blueprint.Properties.Remove(GameConstants.PropPowerRequired);
-                        Log.Info("FixupFlatpackProperties: Reactor '{0}' — remapped Power Required={1} to Power Provided",
-                            blueprint.Name, powerValue);
-                    }
-                }
-            }
-        }
-
     }
 }

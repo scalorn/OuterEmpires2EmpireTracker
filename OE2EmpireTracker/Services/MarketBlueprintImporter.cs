@@ -208,8 +208,10 @@ namespace OE2EmpireTracker.Services
 
             if (multiple)
             {
-                Log.Info("    FindUnambiguousMatch: multiple candidates for '{0}' Evo{1} — treating as new",
-                    bp.Name, bp.Evolution);
+                Log.Info(
+                    "    FindUnambiguousMatch: multiple candidates for '{0}' Evo{1} — treating as new",
+                    bp.Name,
+                    bp.Evolution);
                 return null;
             }
 
@@ -245,8 +247,11 @@ namespace OE2EmpireTracker.Services
                 return candidates[0];
 
             // Multiple candidates — score each by property similarity
-            Log.Info("    FindBestMatch: {0} candidates for '{1}' Evo{2}, scoring by properties",
-                candidates.Count, incoming.Name, incoming.Evolution);
+            Log.Info(
+                "    FindBestMatch: {0} candidates for '{1}' Evo{2}, scoring by properties",
+                candidates.Count,
+                incoming.Name,
+                incoming.Evolution);
 
             Models.Blueprint bestMatch = null;
             int bestScore = -1;

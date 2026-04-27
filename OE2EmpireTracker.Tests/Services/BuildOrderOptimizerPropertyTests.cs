@@ -21,9 +21,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class BuildOrderOptimizerPropertyTests
     {
-        private EmpireContext empireContext;
-        private PlayerContext playerContext;
-
         private static readonly string[] AllBlueprintTypes = new[]
         {
             BlueprintTypes.ColonyCommandCentre,
@@ -57,6 +54,9 @@ namespace OE2EmpireTracker.Tests.Services
             "Flatpacks/EntertainmentCentreFlatpack",
         };
 
+        private EmpireContext empireContext;
+        private PlayerContext playerContext;
+
         [OneTimeSetUp]
         public void FixtureSetUp()
         {
@@ -64,68 +64,6 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.Reset();
             empireContext = EmpireContext.GetInstance();
             playerContext = PlayerContext.GetInstance();
-        }
-
-        // -----------------------------------------------------------------------
-        // Helpers
-        // -----------------------------------------------------------------------
-
-        private string FindGlobalBlueprintUUID(string blueprintType)
-        {
-            var bp = empireContext.GlobalBlueprintList
-                .FirstOrDefault(b => b.BluePrintType == blueprintType);
-            return bp?.UUID;
-        }
-
-        private ColonyStructure MakeStructure(string blueprintType)
-        {
-            return new ColonyStructure
-            {
-                UUID = Guid.NewGuid().ToString(),
-                FlatpackBlueprintUUID = FindGlobalBlueprintUUID(blueprintType)
-            };
-        }
-
-        private bool IsSupportType(string blueprintType)
-        {
-            return blueprintType == "Flatpacks/ReactorCore" ||
-                   blueprintType == "Flatpacks/HabitationBlock" ||
-                   blueprintType == "Flatpacks/HydroponicsBay" ||
-                   blueprintType == "Flatpacks/EntertainmentCentreFlatpack";
-        }
-
-        private bool StatusFieldsEqual(ColonyStructureStatus a, ColonyStructureStatus b)
-        {
-            return a.PowerProvided == b.PowerProvided &&
-                   a.PowerRequired == b.PowerRequired &&
-                   a.HabitationProvision == b.HabitationProvision &&
-                   a.HabitationRequired == b.HabitationRequired &&
-                   a.FoodProvision == b.FoodProvision &&
-                   a.FoodRequired == b.FoodRequired &&
-                   a.EntertainmentProvided == b.EntertainmentProvided &&
-                   a.EntertainmentRequired == b.EntertainmentRequired &&
-                   a.WarehouseCapacity == b.WarehouseCapacity &&
-                   a.WarehouseRequired == b.WarehouseRequired &&
-                   a.UnallocatedBlueCollarPresent == b.UnallocatedBlueCollarPresent &&
-                   a.UnallocatedWhiteCollarPresent == b.UnallocatedWhiteCollarPresent &&
-                   a.UnallocatedSpecialistPresent == b.UnallocatedSpecialistPresent;
-        }
-
-        private string StatusDiff(ColonyStructureStatus a, ColonyStructureStatus b)
-        {
-            var diffs = new List<string>();
-            if (a.PowerProvided != b.PowerProvided) diffs.Add($"PwrProv {a.PowerProvided} vs {b.PowerProvided}");
-            if (a.PowerRequired != b.PowerRequired) diffs.Add($"PwrReq {a.PowerRequired} vs {b.PowerRequired}");
-            if (a.HabitationProvision != b.HabitationProvision) diffs.Add($"HabProv {a.HabitationProvision} vs {b.HabitationProvision}");
-            if (a.HabitationRequired != b.HabitationRequired) diffs.Add($"HabReq {a.HabitationRequired} vs {b.HabitationRequired}");
-            if (a.FoodProvision != b.FoodProvision) diffs.Add($"FoodProv {a.FoodProvision} vs {b.FoodProvision}");
-            if (a.FoodRequired != b.FoodRequired) diffs.Add($"FoodReq {a.FoodRequired} vs {b.FoodRequired}");
-            if (a.EntertainmentProvided != b.EntertainmentProvided) diffs.Add($"EntProv {a.EntertainmentProvided} vs {b.EntertainmentProvided}");
-            if (a.EntertainmentRequired != b.EntertainmentRequired) diffs.Add($"EntReq {a.EntertainmentRequired} vs {b.EntertainmentRequired}");
-            if (a.UnallocatedBlueCollarPresent != b.UnallocatedBlueCollarPresent) diffs.Add($"UnallocBC {a.UnallocatedBlueCollarPresent} vs {b.UnallocatedBlueCollarPresent}");
-            if (a.UnallocatedWhiteCollarPresent != b.UnallocatedWhiteCollarPresent) diffs.Add($"UnallocWC {a.UnallocatedWhiteCollarPresent} vs {b.UnallocatedWhiteCollarPresent}");
-            if (a.UnallocatedSpecialistPresent != b.UnallocatedSpecialistPresent) diffs.Add($"UnallocSp {a.UnallocatedSpecialistPresent} vs {b.UnallocatedSpecialistPresent}");
-            return string.Join(", ", diffs);
         }
 
         // -----------------------------------------------------------------------
@@ -302,13 +240,17 @@ namespace OE2EmpireTracker.Tests.Services
                 // (c) CC is first
                 var firstBp = playerContext.FindBlueprint(result[0].FlatpackBlueprintUUID);
                 if (firstBp == null || firstBp.BluePrintType != BlueprintTypes.ColonyCommandCentre)
+                {
                     return false.Label("CC is not first");
+                }
 
                 // (b) All input structures preserved
                 foreach (var uuid in inputUUIDs)
                 {
                     if (!result.Any(s => s.UUID == uuid))
+                    {
                         return false.Label($"Input structure {uuid} missing from output");
+                    }
                 }
 
                 // (a) No deficits from first primary through last primary.
@@ -354,12 +296,14 @@ namespace OE2EmpireTracker.Tests.Services
                                        current.FoodRequired > current.FoodProvision ||
                                        current.EntertainmentRequired > current.EntertainmentProvided;
                         if (deficit)
+                        {
                             return false.Label(
                                 $"Deficit at [{i}] {bp?.BluePrintType}: " +
                                 $"Pwr={current.PowerRequired}/{current.PowerProvided} " +
                                 $"Hab={current.HabitationRequired}/{current.HabitationProvision} " +
                                 $"Food={current.FoodRequired}/{current.FoodProvision} " +
                                 $"Ent={current.EntertainmentRequired}/{current.EntertainmentProvided}");
+                        }
                     }
 
                     prev = current;
@@ -405,6 +349,68 @@ namespace OE2EmpireTracker.Tests.Services
                 return bounded.Label(
                     bounded ? "OK" : $"Output {result.Count} exceeds input {inputCount} + 50");
             });
+        }
+
+        // -----------------------------------------------------------------------
+        // Helpers
+        // -----------------------------------------------------------------------
+
+        private string FindGlobalBlueprintUUID(string blueprintType)
+        {
+            var bp = empireContext.GlobalBlueprintList
+                .FirstOrDefault(b => b.BluePrintType == blueprintType);
+            return bp?.UUID;
+        }
+
+        private ColonyStructure MakeStructure(string blueprintType)
+        {
+            return new ColonyStructure
+            {
+                UUID = Guid.NewGuid().ToString(),
+                FlatpackBlueprintUUID = FindGlobalBlueprintUUID(blueprintType)
+            };
+        }
+
+        private bool IsSupportType(string blueprintType)
+        {
+            return blueprintType == "Flatpacks/ReactorCore" ||
+                   blueprintType == "Flatpacks/HabitationBlock" ||
+                   blueprintType == "Flatpacks/HydroponicsBay" ||
+                   blueprintType == "Flatpacks/EntertainmentCentreFlatpack";
+        }
+
+        private bool StatusFieldsEqual(ColonyStructureStatus a, ColonyStructureStatus b)
+        {
+            return a.PowerProvided == b.PowerProvided &&
+                   a.PowerRequired == b.PowerRequired &&
+                   a.HabitationProvision == b.HabitationProvision &&
+                   a.HabitationRequired == b.HabitationRequired &&
+                   a.FoodProvision == b.FoodProvision &&
+                   a.FoodRequired == b.FoodRequired &&
+                   a.EntertainmentProvided == b.EntertainmentProvided &&
+                   a.EntertainmentRequired == b.EntertainmentRequired &&
+                   a.WarehouseCapacity == b.WarehouseCapacity &&
+                   a.WarehouseRequired == b.WarehouseRequired &&
+                   a.UnallocatedBlueCollarPresent == b.UnallocatedBlueCollarPresent &&
+                   a.UnallocatedWhiteCollarPresent == b.UnallocatedWhiteCollarPresent &&
+                   a.UnallocatedSpecialistPresent == b.UnallocatedSpecialistPresent;
+        }
+
+        private string StatusDiff(ColonyStructureStatus a, ColonyStructureStatus b)
+        {
+            var diffs = new List<string>();
+            if (a.PowerProvided != b.PowerProvided) diffs.Add($"PwrProv {a.PowerProvided} vs {b.PowerProvided}");
+            if (a.PowerRequired != b.PowerRequired) diffs.Add($"PwrReq {a.PowerRequired} vs {b.PowerRequired}");
+            if (a.HabitationProvision != b.HabitationProvision) diffs.Add($"HabProv {a.HabitationProvision} vs {b.HabitationProvision}");
+            if (a.HabitationRequired != b.HabitationRequired) diffs.Add($"HabReq {a.HabitationRequired} vs {b.HabitationRequired}");
+            if (a.FoodProvision != b.FoodProvision) diffs.Add($"FoodProv {a.FoodProvision} vs {b.FoodProvision}");
+            if (a.FoodRequired != b.FoodRequired) diffs.Add($"FoodReq {a.FoodRequired} vs {b.FoodRequired}");
+            if (a.EntertainmentProvided != b.EntertainmentProvided) diffs.Add($"EntProv {a.EntertainmentProvided} vs {b.EntertainmentProvided}");
+            if (a.EntertainmentRequired != b.EntertainmentRequired) diffs.Add($"EntReq {a.EntertainmentRequired} vs {b.EntertainmentRequired}");
+            if (a.UnallocatedBlueCollarPresent != b.UnallocatedBlueCollarPresent) diffs.Add($"UnallocBC {a.UnallocatedBlueCollarPresent} vs {b.UnallocatedBlueCollarPresent}");
+            if (a.UnallocatedWhiteCollarPresent != b.UnallocatedWhiteCollarPresent) diffs.Add($"UnallocWC {a.UnallocatedWhiteCollarPresent} vs {b.UnallocatedWhiteCollarPresent}");
+            if (a.UnallocatedSpecialistPresent != b.UnallocatedSpecialistPresent) diffs.Add($"UnallocSp {a.UnallocatedSpecialistPresent} vs {b.UnallocatedSpecialistPresent}");
+            return string.Join(", ", diffs);
         }
     }
 }

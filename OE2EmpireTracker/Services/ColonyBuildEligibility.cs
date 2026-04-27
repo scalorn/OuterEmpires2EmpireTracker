@@ -54,7 +54,8 @@ namespace OE2EmpireTracker.Services
             // Sort by BuildQueueSequence — never trust the raw list order
             var ordered = CollectionSortHelper.OrderStructures(colony.Structures);
 
-            Log.Info("GetFirstStagedStructure: colony={0} ({1}), {2} structures",
+            Log.Info(
+                "GetFirstStagedStructure: colony={0} ({1}), {2} structures",
                 colony.ColonyName ?? colony.PlanetName ?? "(unknown)",
                 colony.UUID,
                 ordered.Count);
@@ -66,8 +67,13 @@ namespace OE2EmpireTracker.Services
                 bool isStaged = IsStagedStructure(s, pc);
                 bool isBuilt = new ColonyStructureViewModel(s, pc).IsBuilt;
 
-                Log.Info("  seq={0} uuid={1} bp={2} staged={3} built={4}",
-                    s.BuildQueueSequence, s.UUID, bpName, isStaged, isBuilt);
+                Log.Info(
+                    "  seq={0} uuid={1} bp={2} staged={3} built={4}",
+                    s.BuildQueueSequence,
+                    s.UUID,
+                    bpName,
+                    isStaged,
+                    isBuilt);
 
                 if (isStaged)
                 {

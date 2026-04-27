@@ -62,6 +62,12 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     internal class SortedDictionaryConverter : JsonConverter
     {
+        /// <summary>
+        /// Return false so deserialization uses the default behavior.
+        /// Only serialization (WriteJson) is customized.
+        /// </summary>
+        public override bool CanRead => false;
+
         public override bool CanConvert(Type objectType) => true;
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -77,6 +83,7 @@ namespace OE2EmpireTracker.Services
                 writer.WritePropertyName(key);
                 serializer.Serialize(writer, dict[key]);
             }
+
             writer.WriteEndObject();
         }
 
@@ -85,11 +92,5 @@ namespace OE2EmpireTracker.Services
             // This should never be called because CanRead returns false
             throw new NotImplementedException("SortedDictionaryConverter only handles serialization.");
         }
-
-        /// <summary>
-        /// Return false so deserialization uses the default behavior.
-        /// Only serialization (WriteJson) is customized.
-        /// </summary>
-        public override bool CanRead => false;
     }
 }

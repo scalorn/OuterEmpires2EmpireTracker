@@ -60,7 +60,11 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 for (int i = 0; i < data.BpCount; i++)
                 {
                     string name;
-                    do { name = "TestBP_" + rng.Next(10000); } while (!usedNames.Add(name));
+                    do
+                    {
+                        name = "TestBP_" + rng.Next(10000);
+                    }
+                    while (!usedNames.Add(name));
                     var bp = new OE2EmpireTracker.Models.Blueprint(name);
                     bp.UUID = Guid.NewGuid().ToString();
                     bp.Evolution = 0;

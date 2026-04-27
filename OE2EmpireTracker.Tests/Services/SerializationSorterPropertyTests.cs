@@ -1,10 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -83,8 +83,7 @@ namespace OE2EmpireTracker.Tests.Services
                     string nextKey = sorted[i + 1].Key ?? string.Empty;
                     int cmp = StringComparer.Ordinal.Compare(currentKey, nextKey);
                     Assert.That(cmp, Is.LessThanOrEqualTo(0),
-                        string.Format("Iteration {0}: element [{1}] key '{2}' should be <= element [{3}] key '{4}' (ordinal)",
-                            iter, i, sorted[i].Key ?? "(null)", i + 1, sorted[i + 1].Key ?? "(null)"));
+                        string.Format("Iteration {0}: element [{1}] key '{2}' should be <= element [{3}] key '{4}' (ordinal)", iter, i, sorted[i].Key ?? "(null)", i + 1, sorted[i + 1].Key ?? "(null)"));
                 }
 
                 // Assert null/empty keys appear before non-empty keys
@@ -94,11 +93,15 @@ namespace OE2EmpireTracker.Tests.Services
                     string key = sorted[i].Key;
                     bool isNullOrEmpty = string.IsNullOrEmpty(key);
                     if (!isNullOrEmpty)
+                    {
                         seenNonEmpty = true;
+                    }
                     else if (seenNonEmpty)
+                    {
                         Assert.Fail(string.Format(
                             "Iteration {0}: null/empty key at index {1} appears after non-empty key",
                             iter, i));
+                    }
                 }
             }
         }
@@ -148,8 +151,7 @@ namespace OE2EmpireTracker.Tests.Services
                 for (int i = 0; i < sorted.Length - 1; i++)
                 {
                     Assert.That(sorted[i].Key, Is.LessThanOrEqualTo(sorted[i + 1].Key),
-                        string.Format("Iteration {0}: element [{1}] key {2} should be <= element [{3}] key {4}",
-                            iter, i, sorted[i].Key, i + 1, sorted[i + 1].Key));
+                        string.Format("Iteration {0}: element [{1}] key {2} should be <= element [{3}] key {4}", iter, i, sorted[i].Key, i + 1, sorted[i + 1].Key));
                 }
             }
         }
@@ -180,11 +182,14 @@ namespace OE2EmpireTracker.Tests.Services
             int count = rng.Next(0, 51);
             var arr = new StringIntKeyEntity[count];
             for (int i = 0; i < count; i++)
+            {
                 arr[i] = new StringIntKeyEntity
                 {
                     Key1 = GenerateRandomStringKey(rng),
                     Key2 = rng.Next(int.MinValue, int.MaxValue)
                 };
+            }
+
             return arr;
         }
 
@@ -196,11 +201,14 @@ namespace OE2EmpireTracker.Tests.Services
             int count = rng.Next(0, 51);
             var arr = new StringStringKeyEntity[count];
             for (int i = 0; i < count; i++)
+            {
                 arr[i] = new StringStringKeyEntity
                 {
                     Key1 = GenerateRandomStringKey(rng),
                     Key2 = GenerateRandomStringKey(rng)
                 };
+            }
+
             return arr;
         }
 
@@ -234,14 +242,12 @@ namespace OE2EmpireTracker.Tests.Services
                     string nxtKey1 = siSorted[i + 1].Key1 ?? string.Empty;
                     int cmpPrimary = StringComparer.Ordinal.Compare(curKey1, nxtKey1);
                     Assert.That(cmpPrimary, Is.LessThanOrEqualTo(0),
-                        string.Format("StringThenInt iteration {0}: element [{1}] key1 '{2}' should be <= element [{3}] key1 '{4}' (ordinal)",
-                            iter, i, siSorted[i].Key1 ?? "(null)", i + 1, siSorted[i + 1].Key1 ?? "(null)"));
+                        string.Format("StringThenInt iteration {0}: element [{1}] key1 '{2}' should be <= element [{3}] key1 '{4}' (ordinal)", iter, i, siSorted[i].Key1 ?? "(null)", i + 1, siSorted[i + 1].Key1 ?? "(null)"));
 
                     if (cmpPrimary == 0)
                     {
                         Assert.That(siSorted[i].Key2, Is.LessThanOrEqualTo(siSorted[i + 1].Key2),
-                            string.Format("StringThenInt iteration {0}: tied key1 '{1}', element [{2}] key2 {3} should be <= element [{4}] key2 {5}",
-                                iter, siSorted[i].Key1 ?? "(null)", i, siSorted[i].Key2, i + 1, siSorted[i + 1].Key2));
+                            string.Format("StringThenInt iteration {0}: tied key1 '{1}', element [{2}] key2 {3} should be <= element [{4}] key2 {5}", iter, siSorted[i].Key1 ?? "(null)", i, siSorted[i].Key2, i + 1, siSorted[i + 1].Key2));
                     }
                 }
 
@@ -260,8 +266,7 @@ namespace OE2EmpireTracker.Tests.Services
                     string nxtKey1 = ssSorted[i + 1].Key1 ?? string.Empty;
                     int cmpPrimary = StringComparer.Ordinal.Compare(curKey1, nxtKey1);
                     Assert.That(cmpPrimary, Is.LessThanOrEqualTo(0),
-                        string.Format("StringThenString iteration {0}: element [{1}] key1 '{2}' should be <= element [{3}] key1 '{4}' (ordinal)",
-                            iter, i, ssSorted[i].Key1 ?? "(null)", i + 1, ssSorted[i + 1].Key1 ?? "(null)"));
+                        string.Format("StringThenString iteration {0}: element [{1}] key1 '{2}' should be <= element [{3}] key1 '{4}' (ordinal)", iter, i, ssSorted[i].Key1 ?? "(null)", i + 1, ssSorted[i + 1].Key1 ?? "(null)"));
 
                     if (cmpPrimary == 0)
                     {
@@ -269,8 +274,7 @@ namespace OE2EmpireTracker.Tests.Services
                         string nxtKey2 = ssSorted[i + 1].Key2 ?? string.Empty;
                         int cmpSecondary = StringComparer.Ordinal.Compare(curKey2, nxtKey2);
                         Assert.That(cmpSecondary, Is.LessThanOrEqualTo(0),
-                            string.Format("StringThenString iteration {0}: tied key1 '{1}', element [{2}] key2 '{3}' should be <= element [{4}] key2 '{5}' (ordinal)",
-                                iter, ssSorted[i].Key1 ?? "(null)", i, ssSorted[i].Key2 ?? "(null)", i + 1, ssSorted[i + 1].Key2 ?? "(null)"));
+                            string.Format("StringThenString iteration {0}: tied key1 '{1}', element [{2}] key2 '{3}' should be <= element [{4}] key2 '{5}' (ordinal)", iter, ssSorted[i].Key1 ?? "(null)", i, ssSorted[i].Key2 ?? "(null)", i + 1, ssSorted[i + 1].Key2 ?? "(null)"));
                     }
                 }
             }
@@ -331,6 +335,7 @@ namespace OE2EmpireTracker.Tests.Services
                 if (!dict.ContainsKey(key))
                     dict[key] = GenerateNonNullRandomKey(rng);
             }
+
             return dict;
         }
 
@@ -380,8 +385,7 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     int cmp = StringComparer.Ordinal.Compare(keys[i], keys[i + 1]);
                     Assert.That(cmp, Is.LessThan(0),
-                        string.Format("Iteration {0}: JSON key '{1}' at index {2} should be < key '{3}' at index {4} (ordinal)",
-                            iter, keys[i], i, keys[i + 1], i + 1));
+                        string.Format("Iteration {0}: JSON key '{1}' at index {2} should be < key '{3}' at index {4} (ordinal)", iter, keys[i], i, keys[i + 1], i + 1));
                 }
             }
         }

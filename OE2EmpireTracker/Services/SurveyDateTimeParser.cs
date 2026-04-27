@@ -9,9 +9,9 @@ namespace OE2EmpireTracker.Services
 {
     public static class SurveyDateTimeParser
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-
         public const string IsoFormat = "yyyy-MM-ddTHH:mm:ssZ";
+
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private static readonly Regex GameFormatRegex = new Regex(
             @"^(\d{2})([A-Z]{3})(\d{2})-(\d{1,2}):(\d{2})([ap])$",

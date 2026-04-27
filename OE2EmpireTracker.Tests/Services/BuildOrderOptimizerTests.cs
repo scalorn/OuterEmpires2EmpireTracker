@@ -11,10 +11,6 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class BuildOrderOptimizerTests
     {
-        private EmpireContext empireContext;
-
-        private PlayerContext playerContext;
-
         // Type alias constants for readability in pinned test data
         private const string CC = "Flatpacks/ColonyCommandCentre";
         private const string Rx = "Flatpacks/ReactorCore";
@@ -27,6 +23,10 @@ namespace OE2EmpireTracker.Tests.Services
         private const string Wh = "Flatpacks/Warehouse";
         private const string Rs = "Flatpacks/ResearchLaboratory";
         private const string RO = "Flatpacks/RemoteOperationsArray";
+
+        private EmpireContext empireContext;
+
+        private PlayerContext playerContext;
 
         [OneTimeSetUp]
         public void FixtureSetUp()
