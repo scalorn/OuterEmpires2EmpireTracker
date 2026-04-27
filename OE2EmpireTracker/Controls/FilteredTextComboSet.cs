@@ -102,10 +102,30 @@ namespace OE2EmpireTracker.Controls
 
         /// <summary>
         /// Sets the item list and optionally selects a current value.
+        /// If the user is actively editing (filter visible), preserves the
+        /// current filter text and selection to avoid disrupting mid-typing.
         /// </summary>
         public void SetItems(List<string> items, string currentValue)
         {
             _fullItems = items ?? new List<string>();
+
+            if (IsEditing)
+            {
+                // Preserve filter text and selection during background refresh
+                string previousSelection = CmbItems.SelectedItem?.ToString();
+                string restoreValue = currentValue ?? previousSelection;
+                SuppressSelectionEvent = true;
+                RebuildFilteredList();
+                if (!string.IsNullOrEmpty(restoreValue))
+                {
+                    int idx = CmbItems.Items.IndexOf(restoreValue);
+                    if (idx >= 0) CmbItems.SelectedIndex = idx;
+                }
+
+                SuppressSelectionEvent = false;
+                return;
+            }
+
             _suppressFilterEvent = true;
             SuppressSelectionEvent = true;
             TxtFilter.Text = string.Empty;
