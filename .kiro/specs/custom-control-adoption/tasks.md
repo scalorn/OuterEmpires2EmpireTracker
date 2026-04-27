@@ -171,14 +171,14 @@ Adopt FilteredTextComboSet, DataGridViewFilteredComboBoxColumn, and DataEntryGri
     - Update `spec/mockups/pricing-plans.md` to reflect DataEntryGridView type
     - _Requirements: 15_
 
-- [ ] 11. Final verification
-  - [~] 11.1 Run full audit and verify zero new findings
+- [x] 11. Final verification
+  - [x] 11.1 Run full audit and verify zero new findings
     - Run `node .kiro/tools/audit.js` — all checks must pass
     - Run full test suite — all tests must pass
     - Verify mockup-controls check passes for all converted forms
     - _Requirements: 15_
 
-  - [~] 11.2 Verify no remaining Old_Filter_Pattern sites
+  - [x] 11.2 Verify no remaining Old_Filter_Pattern sites
     - Search codebase for `TextChanged.*cmb` patterns that match the old filter pattern
     - Confirm all 12 FilteredTextComboSet candidate sites from the design doc have been converted
     - Confirm all 2 DataGridViewFilteredComboBoxColumn candidate sites have been converted
