@@ -144,18 +144,18 @@ Adopt FilteredTextComboSet, DataGridViewFilteredComboBoxColumn, and DataEntryGri
     - Update `spec/mockups/colonies.md` to reflect all FormColonyV2 control changes from tasks 5-8 (FilteredTextComboSet pickers + DataEntryGridView grids)
     - _Requirements: 15_
 
-- [ ] 9. Convert FormStockTargets
-  - [~] 9.1 Replace txtEntryFilter + cmbEntry with FilteredTextComboSet
+- [x] 9. Convert FormStockTargets
+  - [x] 9.1 Replace txtEntryFilter + cmbEntry with FilteredTextComboSet
     - In `FormStockTargets.Designer.cs`: change `cmbEntry` type to `FilteredTextComboSet`, remove `txtEntryFilter` declaration/instantiation/Controls.Add/sizing
     - In `FormStockTargets.cs`: remove `txtEntryFilter.TextChanged += TxtEntryFilter_TextChanged` subscription, remove `TxtEntryFilter_TextChanged` handler, convert `PopulateEntryCombo()` to use `cmbEntry.SetItems(planNames, currentValue)`, maintain parallel list of plan UUIDs for lookup via `SelectedFullIndex`
     - _Requirements: 13, 14_
 
-  - [~] 9.2 Replace dgvTargets with DataEntryGridView
+  - [x] 9.2 Replace dgvTargets with DataEntryGridView
     - In `FormStockTargets.Designer.cs`: change `dgvTargets` type to `DataEntryGridView`
     - No code-behind changes needed
     - _Requirements: 9 area (stock targets grid has editable columns)_
 
-  - [~] 9.3 Build, test, audit, update mockup, commit
+  - [x] 9.3 Build, test, audit, update mockup, commit
     - Build solution, run tests, run audit
     - Update `spec/mockups/stock-targets.md` to reflect control changes
     - _Requirements: 15_

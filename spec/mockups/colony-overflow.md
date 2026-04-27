@@ -80,6 +80,6 @@ Controls:
 - Profiles tab right section: `txtProfileName`, `chkProfileActive` (CheckBox, write-through to StockProfile.IsActive), `dgvEntries` (DataGridView), add-entry panel, logic summary label
 - Inactive profiles: list view shows profile name in gray italic. Excluded from stock target aggregation.
 - `dgvEntries` columns: GroupID (editable text), Plan name (read-only, resolved from StockPlanUUID)
-- Add-entry panel: `txtGroupID`, `txtEntryFilter`, `cmbEntry` (FilteredComboBox of StockPlans), `cmdAddEntry` / `cmdRemoveEntry`
+- Add-entry panel: `txtGroupID`, `cmbEntry` (FilteredTextComboSet of StockPlans), `cmdAddEntry` / `cmdRemoveEntry`
 - Logic summary: read-only label auto-generated from the entries, showing the AND/OR grouping in plain language. Entries with the same GroupID are ORed (max), different GroupIDs are ANDed (summed).
 

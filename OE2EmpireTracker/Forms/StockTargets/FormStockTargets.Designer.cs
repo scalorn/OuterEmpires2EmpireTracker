@@ -39,7 +39,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.cmbReplenishmentPlan = new System.Windows.Forms.ComboBox();
             this.cmdSave = new System.Windows.Forms.Button();
             this.lblTargets = new System.Windows.Forms.Label();
-            this.dgvTargets = new System.Windows.Forms.DataGridView();
+            this.dgvTargets = new DataEntryGridView();
             this.colTargetType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTargetItem = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTargetQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -94,8 +94,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.lblGroupID = new System.Windows.Forms.Label();
             this.txtGroupID = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lblEntry = new System.Windows.Forms.Label();
-            this.txtEntryFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.cmbEntry = new System.Windows.Forms.ComboBox();
+            this.cmbEntry = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.flpEntryButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddEntry = new System.Windows.Forms.Button();
             this.cmdRemoveEntry = new System.Windows.Forms.Button();
@@ -429,7 +428,6 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.flpEntryAdd.Controls.Add(this.lblGroupID);
             this.flpEntryAdd.Controls.Add(this.txtGroupID);
             this.flpEntryAdd.Controls.Add(this.lblEntry);
-            this.flpEntryAdd.Controls.Add(this.txtEntryFilter);
             this.flpEntryAdd.Controls.Add(this.cmbEntry);
             this.flpEntryAdd.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.flpEntryAdd.Name = "flpEntryAdd";
@@ -437,8 +435,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.lblGroupID.AutoSize = true; this.lblGroupID.Text = "Group:"; this.lblGroupID.Anchor = System.Windows.Forms.AnchorStyles.Left; this.lblGroupID.Name = "lblGroupID";
             this.txtGroupID.Size = new System.Drawing.Size(40, 20); this.txtGroupID.Name = "txtGroupID"; this.txtGroupID.Text = "A";
             this.lblEntry.AutoSize = true; this.lblEntry.Text = "Plan:"; this.lblEntry.Anchor = System.Windows.Forms.AnchorStyles.Left; this.lblEntry.Name = "lblEntry";
-            this.txtEntryFilter.Size = new System.Drawing.Size(100, 20); this.txtEntryFilter.Name = "txtEntryFilter";
-            this.cmbEntry.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList; this.cmbEntry.Size = new System.Drawing.Size(250, 21); this.cmbEntry.Name = "cmbEntry";
+            this.cmbEntry.Size = new System.Drawing.Size(250, 21); this.cmbEntry.Name = "cmbEntry";
             // flpEntryButtons
             this.flpEntryButtons.AutoSize = true;
             this.flpEntryButtons.Controls.Add(this.cmdAddEntry);
@@ -517,7 +514,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
         private System.Windows.Forms.ComboBox cmbReplenishmentPlan;
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Label lblTargets;
-        private System.Windows.Forms.DataGridView dgvTargets;
+        private DataEntryGridView dgvTargets;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTargetType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTargetItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTargetQty;
@@ -572,8 +569,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
         private System.Windows.Forms.Label lblGroupID;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtGroupID;
         private System.Windows.Forms.Label lblEntry;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtEntryFilter;
-        private System.Windows.Forms.ComboBox cmbEntry;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbEntry;
         private System.Windows.Forms.FlowLayoutPanel flpEntryButtons;
         private System.Windows.Forms.Button cmdAddEntry;
         private System.Windows.Forms.Button cmdRemoveEntry;

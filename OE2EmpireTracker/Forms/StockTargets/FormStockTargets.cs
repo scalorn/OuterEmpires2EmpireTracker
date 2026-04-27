@@ -23,6 +23,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
         private StockProfile _selectedProfile;
 
+        private List<string> _entryPlanUUIDs = new List<string>();
+
         public FormStockTargets()
         {
             InitializeComponent();
@@ -71,7 +73,6 @@ namespace OE2EmpireTracker.Forms.StockTargets
             cmdSaveProfile.Click += CmdSaveProfile_Click;
             cmdAddEntry.Click += CmdAddEntry_Click;
             cmdRemoveEntry.Click += CmdRemoveEntry_Click;
-            txtEntryFilter.TextChanged += TxtEntryFilter_TextChanged;
             PopulateProfileList();
             ClearProfileForm();
 
@@ -854,8 +855,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
             txtProfileName.Text = string.Empty;
             chkProfileActive.Checked = true;
             dgvEntries.Rows.Clear();
-            cmbEntry.DataSource = null;
-            cmbEntry.Items.Clear();
+            cmbEntry.SetItems(new List<string>(), null);
+            _entryPlanUUIDs.Clear();
             lblLogicSummary.Text = string.Empty;
             SetProfileDetailEnabled(false);
         }
@@ -867,7 +868,6 @@ namespace OE2EmpireTracker.Forms.StockTargets
             cmdSaveProfile.Enabled = enabled;
             dgvEntries.Enabled = enabled;
             txtGroupID.Enabled = enabled;
-            txtEntryFilter.Enabled = enabled;
             cmbEntry.Enabled = enabled;
             cmdAddEntry.Enabled = enabled;
             cmdRemoveEntry.Enabled = enabled;
@@ -902,36 +902,22 @@ namespace OE2EmpireTracker.Forms.StockTargets
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            cmbEntry.DataSource = null;
-            cmbEntry.Items.Clear();
 
             var plans = playerContext.GetCurrentPlayerStockPlans();
-            string filter = txtEntryFilter.Text.Trim();
-            if (!string.IsNullOrEmpty(filter))
+            plans = CollectionSortHelper.OrderStockPlans(plans).ToList();
+
+            var planNames = new List<string>();
+            _entryPlanUUIDs = new List<string>();
+            foreach (var plan in plans)
             {
-                plans = plans.Where(p =>
-                    p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                planNames.Add(plan.Name);
+                _entryPlanUUIDs.Add(plan.UUID);
             }
 
-            var items = new List<KeyValuePair<string, string>>();
-            foreach (var plan in CollectionSortHelper.OrderStockPlans(plans))
-                items.Add(new KeyValuePair<string, string>(plan.UUID, plan.Name));
-
-            if (items.Count > 0)
-            {
-                cmbEntry.DataSource = items;
-                cmbEntry.DisplayMember = "Value";
-                cmbEntry.ValueMember = "Key";
-            }
+            cmbEntry.SetItems(planNames, null);
 
             sw.Stop();
             Log.Info("PERF PopulateEntryCombo: {0}ms", sw.ElapsedMilliseconds);
-        }
-
-        private void TxtEntryFilter_TextChanged(object sender, EventArgs e)
-        {
-            if (_isProgrammaticUpdate > 0) return;
-            PopulateEntryCombo();
         }
 
         private void UpdateLogicSummary()
@@ -1032,8 +1018,9 @@ namespace OE2EmpireTracker.Forms.StockTargets
         private void CmdAddEntry_Click(object sender, EventArgs e)
         {
             if (_selectedProfile == null) return;
-            string planUUID = cmbEntry.SelectedValue?.ToString() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(planUUID)) return;
+            int fullIdx = cmbEntry.SelectedFullIndex;
+            if (fullIdx < 0 || fullIdx >= _entryPlanUUIDs.Count) return;
+            string planUUID = _entryPlanUUIDs[fullIdx];
             string groupID = txtGroupID.Text.Trim();
             if (string.IsNullOrWhiteSpace(groupID)) groupID = "A";
 
