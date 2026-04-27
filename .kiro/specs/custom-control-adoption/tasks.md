@@ -102,7 +102,7 @@ Adopt FilteredTextComboSet, DataGridViewFilteredComboBoxColumn, and DataEntryGri
     - Build solution, run tests, run audit
     - _Requirements: 15_
 
-- [-] 6. Convert FormColonyV2 — Item picker
+- [x] 6. Convert FormColonyV2 — Item picker
   - [x] 6.1 Replace txtItemFilter + cmbItem with FilteredTextComboSet
     - In `FormColonyV2.Designer.cs`: change `cmbItem` type to `FilteredTextComboSet`, remove `txtItemFilter` declaration/instantiation/Controls.Add/sizing
     - In `FormColonyV2.cs`: remove `txtItemFilter.TextChanged += TxtItemFilter_TextChanged` subscription, remove `TxtItemFilter_TextChanged` handler, convert the six `PopulateXxxItems` methods (Resource, Commodity, Worker, Survey, Blueprint, Output) to use `cmbItem.SetItems(itemNames, currentValue)` instead of rebuilding DataSource
@@ -113,23 +113,23 @@ Adopt FilteredTextComboSet, DataGridViewFilteredComboBoxColumn, and DataEntryGri
     - Build solution, run tests, run audit
     - _Requirements: 15_
 
-- [ ] 7. Convert FormColonyV2 — Overflow pickers
-  - [~] 7.1 Replace txtOverflowResourceFilter + cmbOverflowResource with FilteredTextComboSet
+- [x] 7. Convert FormColonyV2 — Overflow pickers
+  - [x] 7.1 Replace txtOverflowResourceFilter + cmbOverflowResource with FilteredTextComboSet
     - In `FormColonyV2.Designer.cs`: change `cmbOverflowResource` type to `FilteredTextComboSet`, remove `txtOverflowResourceFilter` declaration/instantiation/Controls.Add/sizing
     - In `FormColonyV2.cs`: remove filter TextChanged subscription and handler, convert overflow resource population to `cmbOverflowResource.SetItems()`
     - _Requirements: 6.3, 13, 14_
 
-  - [~] 7.2 Replace txtOverflowDestFilter + cmbOverflowDest with FilteredTextComboSet
+  - [x] 7.2 Replace txtOverflowDestFilter + cmbOverflowDest with FilteredTextComboSet
     - In `FormColonyV2.Designer.cs`: change `cmbOverflowDest` type to `FilteredTextComboSet`, remove `txtOverflowDestFilter`
     - In `FormColonyV2.cs`: remove filter subscription/handler, convert population to `SetItems()`
     - _Requirements: 6.4, 13, 14_
 
-  - [~] 7.3 Replace txtOverflowRouteFilter + cmbOverflowRoute with FilteredTextComboSet
+  - [x] 7.3 Replace txtOverflowRouteFilter + cmbOverflowRoute with FilteredTextComboSet
     - In `FormColonyV2.Designer.cs`: change `cmbOverflowRoute` type to `FilteredTextComboSet`, remove `txtOverflowRouteFilter`
     - In `FormColonyV2.cs`: remove filter subscription/handler, convert population to `SetItems()`
     - _Requirements: 6.5, 13, 14_
 
-  - [~] 7.4 Build, test, audit, commit
+  - [x] 7.4 Build, test, audit, commit
     - Build solution, run tests, run audit
     - _Requirements: 15_
 

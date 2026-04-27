@@ -19,10 +19,10 @@ New tab on the existing FormColony, added alongside the existing Administration,
 â”‚ â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚   â”‚
 â”‚ â”‚                                                                       â”‚   â”‚
 â”‚ â”‚ Add Rule:                                                             â”‚   â”‚
-â”‚ â”‚ Resource:[Filter:___] [Iron â–¼] Purity:[Refined â–¼]                    â”‚   â”‚
+â”‚ â”‚ Resource:[Iron                                                 â–¼] Purity:[Refined â–¼]                    â”‚   â”‚
 â”‚ â”‚ Threshold:[3000]                                                      â”‚   â”‚
-â”‚ â”‚ Dest Type:[Stationâ–¼] Dest:[Filter:___] [Station Alpha          â–¼]   â”‚   â”‚
-â”‚ â”‚ Route:[Filter:___] [Alpha â†’ Station Alpha          â–¼]               â”‚   â”‚
+â”‚ â”‚ Dest Type:[Stationâ–¼] Dest:[Station Alpha          â–¼]   â”‚   â”‚
+â”‚ â”‚ Route:[Alpha â†’ Station Alpha          â–¼]               â”‚   â”‚
 â”‚ â”‚ [Add Rule] [Remove Rule]                                              â”‚   â”‚
 â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚
 ```
@@ -32,7 +32,7 @@ Controls:
 - `dgvOverflowRules` (DataGridView) â€” columns: Resource, Purity, Threshold, Current (read-only, from warehouse), Destination, Active (CheckBox column, write-through to WarehouseOverflowRule.IsActive)
 - Inactive rules: row text shown in gray. Background processor skips inactive rules.
 - Current column is color-coded: green when below threshold, yellow when within 20% of threshold, red when at or above threshold
-- Add-rule panel: `txtOverflowResourceFilter`, `cmbOverflowResource`, `cmbOverflowPurity`, `txtOverflowThreshold`, `cmbOverflowDestType`, `txtOverflowDestFilter`, `cmbOverflowDest`, `txtOverflowRouteFilter`, `cmbOverflowRoute` (FilteredComboBox of delivery routes), `cmdAddRule` / `cmdRemoveRule`
+- Add-rule panel: `cmbOverflowResource` (FilteredTextComboSet), `cmbOverflowPurity`, `txtOverflowThreshold`, `cmbOverflowDestType`, `cmbOverflowDest` (FilteredTextComboSet), `cmbOverflowRoute` (FilteredTextComboSet of delivery routes), `cmdAddRule` / `cmdRemoveRule`
 - Rules are per-colony (ColonyUUID set automatically from the selected colony). One rule per resource+purity per colony.
 - Destination combo populates with stations or colonies based on `cmbOverflowDestType`.
 
@@ -82,4 +82,4 @@ Controls:
 - `dgvEntries` columns: GroupID (editable text), Plan name (read-only, resolved from StockPlanUUID)
 - Add-entry panel: `txtGroupID`, `txtEntryFilter`, `cmbEntry` (FilteredComboBox of StockPlans), `cmdAddEntry` / `cmdRemoveEntry`
 - Logic summary: read-only label auto-generated from the entries, showing the AND/OR grouping in plain language. Entries with the same GroupID are ORed (max), different GroupIDs are ANDed (summed).
-
+

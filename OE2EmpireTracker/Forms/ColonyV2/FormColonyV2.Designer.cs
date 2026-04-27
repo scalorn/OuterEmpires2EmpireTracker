@@ -54,7 +54,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmbFlatpacks = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.cmdAddFlatpack = new System.Windows.Forms.Button();
             this.tabPWorkers = new System.Windows.Forms.TabPage();
-            this.dgvCommodityRequests = new System.Windows.Forms.DataGridView();
+            this.dgvCommodityRequests = new DataEntryGridView();
             this.colCRName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCRAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCRFulfilled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -77,8 +77,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.colOverflowActive = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.flpOverflowAdd = new System.Windows.Forms.FlowLayoutPanel();
             this.lblOverflowResource = new System.Windows.Forms.Label();
-            this.cmbOverflowResource = new System.Windows.Forms.ComboBox();
-            this.txtOverflowResourceFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.cmbOverflowResource = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.lblOverflowPurity = new System.Windows.Forms.Label();
             this.cmbOverflowPurity = new System.Windows.Forms.ComboBox();
             this.lblOverflowThreshold = new System.Windows.Forms.Label();
@@ -87,15 +86,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.lblOverflowDestType = new System.Windows.Forms.Label();
             this.cmbOverflowDestType = new System.Windows.Forms.ComboBox();
             this.lblOverflowDest = new System.Windows.Forms.Label();
-            this.cmbOverflowDest = new System.Windows.Forms.ComboBox();
-            this.txtOverflowDestFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.cmbOverflowDest = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.lblOverflowRoute = new System.Windows.Forms.Label();
-            this.cmbOverflowRoute = new System.Windows.Forms.ComboBox();
-            this.txtOverflowRouteFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.cmbOverflowRoute = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.flpOverflowButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddOverflowRule = new System.Windows.Forms.Button();
             this.cmdRemoveOverflowRule = new System.Windows.Forms.Button();
-            this.dgvItems = new System.Windows.Forms.DataGridView();
+            this.dgvItems = new DataEntryGridView();
             this.colItemType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colItemLocked = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -684,7 +681,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             //
             this.flpOverflowAdd.AutoSize = true;
             this.flpOverflowAdd.Controls.Add(this.lblOverflowResource);
-            this.flpOverflowAdd.Controls.Add(this.txtOverflowResourceFilter);
             this.flpOverflowAdd.Controls.Add(this.cmbOverflowResource);
             this.flpOverflowAdd.Controls.Add(this.lblOverflowPurity);
             this.flpOverflowAdd.Controls.Add(this.cmbOverflowPurity);
@@ -697,10 +693,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.lblOverflowResource.Text = "Resource:";
             this.lblOverflowResource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblOverflowResource.Name = "lblOverflowResource";
-            this.cmbOverflowResource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbOverflowResource.Size = new System.Drawing.Size(120, 21);
+            this.cmbOverflowResource.Size = new System.Drawing.Size(200, 21);
             this.cmbOverflowResource.Name = "cmbOverflowResource";
-            this.txtOverflowResourceFilter.Size = new System.Drawing.Size(80, 20); this.txtOverflowResourceFilter.Name = "txtOverflowResourceFilter";
             this.lblOverflowPurity.AutoSize = true;
             this.lblOverflowPurity.Text = "Purity:";
             this.lblOverflowPurity.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -721,10 +715,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpOverflowAdd2.Controls.Add(this.lblOverflowDestType);
             this.flpOverflowAdd2.Controls.Add(this.cmbOverflowDestType);
             this.flpOverflowAdd2.Controls.Add(this.lblOverflowDest);
-            this.flpOverflowAdd2.Controls.Add(this.txtOverflowDestFilter);
             this.flpOverflowAdd2.Controls.Add(this.cmbOverflowDest);
             this.flpOverflowAdd2.Controls.Add(this.lblOverflowRoute);
-            this.flpOverflowAdd2.Controls.Add(this.txtOverflowRouteFilter);
             this.flpOverflowAdd2.Controls.Add(this.cmbOverflowRoute);
             this.flpOverflowAdd2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flpOverflowAdd2.Name = "flpOverflowAdd2";
@@ -740,18 +732,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.lblOverflowDest.Text = "Dest:";
             this.lblOverflowDest.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblOverflowDest.Name = "lblOverflowDest";
-            this.cmbOverflowDest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbOverflowDest.Size = new System.Drawing.Size(180, 21);
+            this.cmbOverflowDest.Size = new System.Drawing.Size(260, 21);
             this.cmbOverflowDest.Name = "cmbOverflowDest";
-            this.txtOverflowDestFilter.Size = new System.Drawing.Size(80, 20); this.txtOverflowDestFilter.Name = "txtOverflowDestFilter";
             this.lblOverflowRoute.AutoSize = true;
             this.lblOverflowRoute.Text = "Route:";
             this.lblOverflowRoute.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblOverflowRoute.Name = "lblOverflowRoute";
-            this.cmbOverflowRoute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbOverflowRoute.Size = new System.Drawing.Size(180, 21);
+            this.cmbOverflowRoute.Size = new System.Drawing.Size(260, 21);
             this.cmbOverflowRoute.Name = "cmbOverflowRoute";
-            this.txtOverflowRouteFilter.Size = new System.Drawing.Size(80, 20); this.txtOverflowRouteFilter.Name = "txtOverflowRouteFilter";
             //
             // flpOverflowButtons
             //
@@ -1015,7 +1003,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private OE2EmpireTracker.Controls.FilteredTextComboSet cmbFlatpacks;
         private System.Windows.Forms.Button cmdAddFlatpack;
         private System.Windows.Forms.TabPage tabPWorkers;
-        private System.Windows.Forms.DataGridView dgvCommodityRequests;
+        private DataEntryGridView dgvCommodityRequests;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCRName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCRAmount;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colCRFulfilled;
@@ -1027,7 +1015,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private OE2EmpireTracker.Controls.ValidatedTextBox txtCommodityRequestNeedBy;
         private System.Windows.Forms.Button cmdAddCommodityRequest;
         private System.Windows.Forms.TabPage tabPWarehousing;
-        private System.Windows.Forms.DataGridView dgvItems;
+        private DataEntryGridView dgvItems;
         private System.Windows.Forms.DataGridViewTextBoxColumn colItemType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colItemName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colItemLocked;
@@ -1061,8 +1049,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.DataGridViewCheckBoxColumn colOverflowActive;
         private System.Windows.Forms.FlowLayoutPanel flpOverflowAdd;
         private System.Windows.Forms.Label lblOverflowResource;
-        private System.Windows.Forms.ComboBox cmbOverflowResource;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtOverflowResourceFilter;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbOverflowResource;
         private System.Windows.Forms.Label lblOverflowPurity;
         private System.Windows.Forms.ComboBox cmbOverflowPurity;
         private System.Windows.Forms.Label lblOverflowThreshold;
@@ -1071,11 +1058,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.Label lblOverflowDestType;
         private System.Windows.Forms.ComboBox cmbOverflowDestType;
         private System.Windows.Forms.Label lblOverflowDest;
-        private System.Windows.Forms.ComboBox cmbOverflowDest;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtOverflowDestFilter;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbOverflowDest;
         private System.Windows.Forms.Label lblOverflowRoute;
-        private System.Windows.Forms.ComboBox cmbOverflowRoute;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtOverflowRouteFilter;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbOverflowRoute;
         private System.Windows.Forms.FlowLayoutPanel flpOverflowButtons;
         private System.Windows.Forms.Button cmdAddOverflowRule;
         private System.Windows.Forms.Button cmdRemoveOverflowRule;

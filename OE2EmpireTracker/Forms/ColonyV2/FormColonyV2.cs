@@ -74,6 +74,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// <summary>Parallel list of objects matching cmbItem display items, for lookup via SelectedFullIndex.</summary>
         private List<object> _itemPickerObjects = new List<object>();
 
+        /// <summary>Parallel list of destination UUIDs matching cmbOverflowDest display items.</summary>
+        private List<string> _overflowDestUUIDs = new List<string>();
+
+        /// <summary>Parallel list of route UUIDs matching cmbOverflowRoute display items.</summary>
+        private List<string> _overflowRouteUUIDs = new List<string>();
+
         public FormColonyV2()
         {
             InitializeComponent();
@@ -155,9 +161,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbOverflowDestType.Items.Add(DestinationType.Station);
             if (cmbOverflowDestType.Items.Count > 0) cmbOverflowDestType.SelectedIndex = 0;
             cmbOverflowDestType.SelectedIndexChanged += CmbOverflowDestType_SelectedIndexChanged;
-            txtOverflowResourceFilter.TextChanged += (s, ev) => { if (_isProgrammaticUpdate == 0) PopulateOverflowResourceCombo(); };
-            txtOverflowDestFilter.TextChanged += (s, ev) => { if (_isProgrammaticUpdate == 0) PopulateOverflowDestCombo(); };
-            txtOverflowRouteFilter.TextChanged += (s, ev) => { if (_isProgrammaticUpdate == 0) PopulateOverflowRouteCombo(); };
+            cmbOverflowResource.SelectedItemChanged += (s, ev) => { /* resource selection */ };
+            cmbOverflowDest.SelectedItemChanged += (s, ev) => { /* dest selection */ };
+            cmbOverflowRoute.SelectedItemChanged += (s, ev) => { /* route selection */ };
             cmdAddOverflowRule.Click += CmdAddOverflowRule_Click;
             cmdRemoveOverflowRule.Click += CmdRemoveOverflowRule_Click;
             dgvOverflowRules.CurrentCellDirtyStateChanged += DgvOverflowRules_CurrentCellDirtyStateChanged;
@@ -2822,19 +2828,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            cmbOverflowResource.Items.Clear();
             var resources = empireContext?.ResourceList;
+            var names = new List<string>();
             if (resources != null)
             {
-                string filter = txtOverflowResourceFilter.Text.Trim();
-                var filtered = resources.OrderBy(r => r.Name).AsEnumerable();
-                if (!string.IsNullOrEmpty(filter))
-                    filtered = filtered.Where(r => r.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0);
-                foreach (var r in filtered)
-                    cmbOverflowResource.Items.Add(r.Name);
+                foreach (var r in resources.OrderBy(r => r.Name))
+                    names.Add(r.Name);
             }
 
-            if (cmbOverflowResource.Items.Count > 0) cmbOverflowResource.SelectedIndex = 0;
+            cmbOverflowResource.SetItems(names, names.Count > 0 ? names[0] : null);
             sw.Stop();
             Log.Info("PERF PopulateOverflowResourceCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -2859,42 +2861,31 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            cmbOverflowDest.DataSource = null;
-            cmbOverflowDest.Items.Clear();
             if (cmbOverflowDestType.SelectedItem == null) return;
             var destType = (DestinationType)cmbOverflowDestType.SelectedItem;
-            string filter = txtOverflowDestFilter.Text.Trim();
-            var items = new List<KeyValuePair<string, string>>();
+            var names = new List<string>();
+            _overflowDestUUIDs = new List<string>();
             switch (destType)
             {
                 case DestinationType.Colony:
                     foreach (var c in CollectionSortHelper.OrderColonies(playerContext.ColonyList))
                     {
-                        if (string.IsNullOrEmpty(filter) || c.ColonyName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
-                        {
-                            items.Add(new KeyValuePair<string, string>(c.UUID, c.ColonyName));
-                        }
+                        names.Add(c.ColonyName);
+                        _overflowDestUUIDs.Add(c.UUID);
                     }
 
                     break;
                 case DestinationType.Station:
                     foreach (var s in CollectionSortHelper.OrderStations(playerContext.StationList))
                     {
-                        if (string.IsNullOrEmpty(filter) || s.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
-                        {
-                            items.Add(new KeyValuePair<string, string>(s.UUID, s.Name));
-                        }
+                        names.Add(s.Name);
+                        _overflowDestUUIDs.Add(s.UUID);
                     }
 
                     break;
             }
 
-            if (items.Count > 0)
-            {
-                cmbOverflowDest.DataSource = items;
-                cmbOverflowDest.DisplayMember = "Value";
-                cmbOverflowDest.ValueMember = "Key";
-            }
+            cmbOverflowDest.SetItems(names, names.Count > 0 ? names[0] : null);
 
             sw.Stop();
             Log.Info("PERF PopulateOverflowDestCombo: {0}ms", sw.ElapsedMilliseconds);
@@ -2904,23 +2895,18 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            cmbOverflowRoute.DataSource = null;
-            cmbOverflowRoute.Items.Clear();
-            string filter = txtOverflowRouteFilter.Text.Trim();
             var routes = CollectionSortHelper.OrderDeliveryRoutes(playerContext.DeliveryRouteList).ToList();
-            var items = new List<KeyValuePair<string, string>>();
-            items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
+            var names = new List<string>();
+            _overflowRouteUUIDs = new List<string>();
+            names.Add("(none)");
+            _overflowRouteUUIDs.Add(string.Empty);
             foreach (var r in routes)
             {
-                if (string.IsNullOrEmpty(filter) || r.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    items.Add(new KeyValuePair<string, string>(r.UUID, r.Name));
-                }
+                names.Add(r.Name);
+                _overflowRouteUUIDs.Add(r.UUID);
             }
 
-            cmbOverflowRoute.DataSource = items;
-            cmbOverflowRoute.DisplayMember = "Value";
-            cmbOverflowRoute.ValueMember = "Key";
+            cmbOverflowRoute.SetItems(names, names.Count > 0 ? names[0] : null);
             sw.Stop();
             Log.Info("PERF PopulateOverflowRouteCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -2948,8 +2934,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             var destType = cmbOverflowDestType.SelectedItem is DestinationType dt ? dt : DestinationType.Station;
-            string destUUID = cmbOverflowDest.SelectedValue?.ToString() ?? string.Empty;
-            string routeUUID = cmbOverflowRoute.SelectedValue?.ToString() ?? string.Empty;
+            string destUUID = string.Empty;
+            int destIdx = cmbOverflowDest.SelectedFullIndex;
+            if (destIdx >= 0 && destIdx < _overflowDestUUIDs.Count)
+                destUUID = _overflowDestUUIDs[destIdx];
+            string routeUUID = string.Empty;
+            int routeIdx = cmbOverflowRoute.SelectedFullIndex;
+            if (routeIdx >= 0 && routeIdx < _overflowRouteUUIDs.Count)
+                routeUUID = _overflowRouteUUIDs[routeIdx];
 
             var existing = playerContext.WarehouseOverflowRuleList
                 .FirstOrDefault(r => r.ColonyUUID == selectedColony.UUID &&
