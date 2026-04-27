@@ -597,10 +597,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 SetSingleItemSurveyCombo(structureData.MiningSurvey);
                 SetSingleItemResourceCombo(structureData.MiningSurveyResource);
             }
-            else if (hasSelection)
+            else
             {
-                PopulateSurveyCombo(structureData.MiningSurvey);
-                PopulateResourceComboFromSurvey(structureData.MiningSurveyResource);
+                PopulateSurveyCombo(hasSelection ? structureData.MiningSurvey : null);
+                if (hasSelection)
+                    PopulateResourceComboFromSurvey(structureData.MiningSurveyResource);
             }
 
             cmbSurvey.Enabled = enableCmbSurvey;
@@ -814,11 +815,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 _selectionValues = new List<string> { displayKey };
                 cmbSelection.SetItems(new List<string> { displayName }, displayName);
             }
-            else if (hasSelection)
+            else
             {
-                string restoreKey = structureData.RefiningResource + "|" + structureData.RefiningResourcePurity;
-                var recipe = RefiningRecipes.FindByInput(structureData.RefiningResource, structureData.RefiningResourcePurity);
-                if (recipe != null) restoreKey += "|S" + recipe.Tier;
+                string restoreKey = null;
+                if (hasSelection)
+                {
+                    restoreKey = structureData.RefiningResource + "|" + structureData.RefiningResourcePurity;
+                    var recipe = RefiningRecipes.FindByInput(structureData.RefiningResource, structureData.RefiningResourcePurity);
+                    if (recipe != null) restoreKey += "|S" + recipe.Tier;
+                }
                 PopulateSelectionWithUnrefinedResources(restoreKey);
             }
 
@@ -1039,9 +1044,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 string displayName = bp != null ? bp.ExtendedName : structureData.ResearchingBlueprintUUID;
                 SetSingleItemSelectionCombo(structureData.ResearchingBlueprintUUID, displayName);
             }
-            else if (hasSelection)
+            else
             {
-                PopulateSelectionWithResearchableBlueprints(structureData.ResearchingBlueprintUUID);
+                PopulateSelectionWithResearchableBlueprints(hasSelection ? structureData.ResearchingBlueprintUUID : null);
             }
 
             cmbSelection.Enabled = enableCmbSelection;
@@ -1198,9 +1203,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 string displayName = bp != null ? bp.ExtendedName : structureData.ManufacturingBlueprintUUID;
                 SetSingleItemSelectionCombo(structureData.ManufacturingBlueprintUUID, displayName);
             }
-            else if (hasSelection)
+            else
             {
-                PopulateSelectionWithManufacturableBlueprints(structureData.ManufacturingBlueprintUUID);
+                PopulateSelectionWithManufacturableBlueprints(hasSelection ? structureData.ManufacturingBlueprintUUID : null);
             }
 
             cmbSelection.Enabled = enableCmbSelection;
@@ -1375,9 +1380,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 _selectionValues = new List<string> { structureData.ManufacturingCommodityName };
                 cmbSelection.SetItems(new List<string> { structureData.ManufacturingCommodityName }, structureData.ManufacturingCommodityName);
             }
-            else if (hasSelection)
+            else
             {
-                PopulateSelectionWithCommodities(structureData.ManufacturingCommodityName);
+                PopulateSelectionWithCommodities(hasSelection ? structureData.ManufacturingCommodityName : null);
             }
 
             cmbSelection.Enabled = enableCmbSelection;
