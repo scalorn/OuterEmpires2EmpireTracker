@@ -145,6 +145,11 @@ const SECTION_MAP = {
             header: /^###\s+ColonyStructureV2\b/,
             form: 'ColonyV2/ColonyStructureV2',
         },
+        {
+            header: /^###\s+FormColonyV2\b/,
+            form: 'ColonyV2/FormColonyV2',
+            partial: true,
+        },
     ],
     'colony-overflow.md': [
         {

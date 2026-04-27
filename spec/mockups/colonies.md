@@ -44,3 +44,31 @@ Notes:
 
 Implements: REQ-COL-structure-management (colony structure UI)
 Satisfies: Requirement 1 (survey picker FilteredTextComboSet), Requirement 2 (selection picker FilteredTextComboSet) from custom-control-adoption spec
+
+### FormColonyV2
+
+Main colony management form. Left panel: colony list with filter. Right panel: identity fields, tabbed detail area (Administration, Structures, Workers, Warehousing, Overflow), and command buttons.
+
+Key custom controls (tasks 5-8 of custom-control-adoption spec):
+
+**Structures tab:**
+- `cmbFlatpacks` (FilteredTextComboSet) — flatpack picker for adding structures. Replaced former txtFilterFlatpack + cmbFlatpacks pair.
+
+**Workers tab:**
+- `dgvCommodityRequests` (DataEntryGridView) — commodity request grid with tab-navigation support.
+
+**Warehousing tab:**
+- `cmbItem` (FilteredTextComboSet) — item picker for adding warehouse items. Replaced former txtItemFilter + cmbItem pair. Type-cascade combo `cmbItemType` stays as standard ComboBox.
+- `dgvItems` (DataEntryGridView) — warehouse items grid with tab-navigation support.
+
+**Overflow tab:**
+- `cmbOverflowResource` (FilteredTextComboSet) — resource picker for overflow rules. Replaced former txtOverflowResourceFilter + cmbOverflowResource pair.
+- `cmbOverflowDest` (FilteredTextComboSet) — destination picker for overflow rules. Replaced former txtOverflowDestFilter + cmbOverflowDest pair.
+- `cmbOverflowRoute` (FilteredTextComboSet) — route picker for overflow rules. Replaced former txtOverflowRouteFilter + cmbOverflowRoute pair.
+
+Notes:
+- All FilteredTextComboSet controls show full-width combo when unfocused, split into filter TextBox + combo on focus.
+- Parallel UUID lists (`_flatpackBlueprints`, `_itemPickerObjects`, `_overflowDestUUIDs`, `_overflowRouteUUIDs`) maintain lookup indices for SelectedFullIndex.
+- The overflow tab is also documented in `colony-overflow.md` (partial mockup covering the full overflow wireframe).
+
+Satisfies: Requirements 6.1-6.5 (FormColonyV2 pickers), Requirement 10 (DataEntryGridView grids) from custom-control-adoption spec

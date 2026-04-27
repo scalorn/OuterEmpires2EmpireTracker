@@ -133,13 +133,13 @@ Adopt FilteredTextComboSet, DataGridViewFilteredComboBoxColumn, and DataEntryGri
     - Build solution, run tests, run audit
     - _Requirements: 15_
 
-- [ ] 8. Convert FormColonyV2 — DataEntryGridView
-  - [~] 8.1 Replace dgvCommodityRequests and dgvItems with DataEntryGridView
+- [x] 8. Convert FormColonyV2 — DataEntryGridView
+  - [x] 8.1 Replace dgvCommodityRequests and dgvItems with DataEntryGridView
     - In `FormColonyV2.Designer.cs`: change `dgvCommodityRequests` type to `DataEntryGridView`, change `dgvItems` type to `DataEntryGridView`
     - No code-behind changes needed
     - _Requirements: 10_
 
-  - [~] 8.2 Build, test, audit, update mockup, commit
+  - [x] 8.2 Build, test, audit, update mockup, commit
     - Build solution, run tests, run audit
     - Update `spec/mockups/colonies.md` to reflect all FormColonyV2 control changes from tasks 5-8 (FilteredTextComboSet pickers + DataEntryGridView grids)
     - _Requirements: 15_
