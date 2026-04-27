@@ -39,7 +39,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             this.lblHourlyCost = new System.Windows.Forms.Label();
             this.txtHourlyCost = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdSave = new System.Windows.Forms.Button();
-            this.dgvResourcePrices = new System.Windows.Forms.DataGridView();
+            this.dgvResourcePrices = new DataEntryGridView();
             this.colResourceName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPurity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -336,7 +336,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         private System.Windows.Forms.Label lblHourlyCost;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtHourlyCost;
         private System.Windows.Forms.Button cmdSave;
-        private System.Windows.Forms.DataGridView dgvResourcePrices;
+        private DataEntryGridView dgvResourcePrices;
         private System.Windows.Forms.DataGridViewTextBoxColumn colResourceName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPurity;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPrice;

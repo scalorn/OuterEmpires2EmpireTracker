@@ -160,13 +160,13 @@ Adopt FilteredTextComboSet, DataGridViewFilteredComboBoxColumn, and DataEntryGri
     - Update `spec/mockups/stock-targets.md` to reflect control changes
     - _Requirements: 15_
 
-- [ ] 10. Convert FormPricingPlan
-  - [~] 10.1 Replace dgvResourcePrices with DataEntryGridView
+- [x] 10. Convert FormPricingPlan
+  - [x] 10.1 Replace dgvResourcePrices with DataEntryGridView
     - In `FormPricingPlan.Designer.cs`: change `dgvResourcePrices` type to `DataEntryGridView`
     - No code-behind changes needed
     - _Requirements: DataEntryGridView adoption for pricing plan grid_
 
-  - [~] 10.2 Build, test, audit, update mockup, commit
+  - [x] 10.2 Build, test, audit, update mockup, commit
     - Build solution, run tests, run audit
     - Update `spec/mockups/pricing-plans.md` to reflect DataEntryGridView type
     - _Requirements: 15_

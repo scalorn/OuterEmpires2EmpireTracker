@@ -44,7 +44,7 @@ Controls:
   - `txtFixedCost` (ValidatedTextBox) — fixed cost per item
   - `txtHourlyCost` (ValidatedTextBox) — hourly rate for time-based pricing
   - `cmdSave` (Button)
-  - `dgvResourcePrices` (DataGridView, full-row select) — resource price grid:
+  - `dgvResourcePrices` (DataEntryGridView, full-row select) — resource price grid:
     - `colResourceName` (TextBox, read-only, 220px) — resource name
     - `colPurity` (TextBox, read-only, 80px) — purity level
     - `colPrice` (TextBox, editable, 120px) — price per unit
