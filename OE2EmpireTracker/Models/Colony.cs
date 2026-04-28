@@ -299,7 +299,6 @@ namespace OE2EmpireTracker.Models
             }
 
             List<Item> items = Items.FindResource(surveyResource.Resource, surveyResource.Purity);
-            int quantityInt = 0;
             decimal leftOver = structure.MiningLeftOvers;
             Item item = null;
             if (items.Count > 0)
@@ -321,25 +320,27 @@ namespace OE2EmpireTracker.Models
             // ExtractionFocus: +1% per level
             decimal extractionMultiplier = 1.0m + (GetOwnerSkillLevel(SkillName.ExtractionFocus) * GameConstants.ExtractionFocusRatePerLevel);
 
-            while (structure.ProcessCompletionTime.IntervalsPassed > 0)
-            {
-                decimal quantity = (decimal.Parse(surveyResource.Amount) * extractionMultiplier) + leftOver;
+            long intervals = structure.ProcessCompletionTime.IntervalsPassed;
+            if (intervals <= 0)
+                return;
 
-                quantityInt += (int)quantity;
+            decimal perInterval = decimal.Parse(surveyResource.Amount) * extractionMultiplier;
+            decimal totalMined = (perInterval * intervals) + leftOver;
+            long quantityLong = (long)totalMined;
+            leftOver = totalMined - quantityLong;
 
-                leftOver += quantity - quantityInt;
-                structure.ProcessCompletionTime.ConsumeIntervals(1);
-            }
+            structure.ProcessCompletionTime.ConsumeIntervals(intervals);
 
-            item.Quantity += quantityInt;
+            item.Quantity += (int)Math.Min(quantityLong, int.MaxValue - item.Quantity);
             structure.MiningLeftOvers = leftOver;
 
             Log.Info(
-                "ProcessMiningRig: structure={0} resource={1} ({2}) mined={3} newQty={4} leftOver={5:F4}",
+                "ProcessMiningRig: structure={0} resource={1} ({2}) intervals={3} mined={4} newQty={5} leftOver={6:F4}",
                 structure.UUID,
                 surveyResource.Resource,
                 surveyResource.Purity,
-                quantityInt,
+                intervals,
+                quantityLong,
                 item.Quantity,
                 leftOver);
         }
