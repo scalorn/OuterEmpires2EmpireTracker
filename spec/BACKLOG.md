@@ -125,6 +125,10 @@ Set up the GitHub MCP server so Kiro can read/write GitHub issues, PRs, and wiki
 
 There will be a game API eventually. Plan the integration architecture now so we're ready when it arrives. Consider: authentication, polling vs push, data model mapping, how it replaces clipboard import, and what new capabilities it enables (real-time sync, automated queue management, etc.).
 
+**Secret storage:** Use Windows DPAPI (`System.Security.Cryptography.ProtectedData`) to encrypt API keys at rest. Store the encrypted blob in `%LOCALAPPDATA%\OE2EmpireTracker\secrets.dat`. The application API key is stored once (shared across all characters). Each character's API key is stored keyed by player UUID. Structure: `Dictionary<string, string>` serialized to JSON then encrypted with `DataProtectionScope.CurrentUser`. The encrypted file is useless on any other machine or user account. Add `secrets.dat` to `.gitignore` as a safety net.
+
+**Rate limiting:** Polly 7.2.4 is already installed in the project. Use Polly's rate limiter, retry with exponential backoff (for 429 responses), and circuit breaker policies to handle API throttling.
+
 ### BL-050: Default Survey Duplicate on Out-of-Order Import
 **Dependencies:** None
 

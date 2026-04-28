@@ -9,6 +9,7 @@
 ## Key Libraries
 - Newtonsoft.Json 13.0.4 — JSON serialization for all persistence
 - NLog 5.3.4 — logging (file + debugger targets, configured in `NLog.config`)
+- Polly 7.2.4 — resilience and transient-fault handling (rate limiting, retry, circuit breaker) for future API integration
 - Microsoft.Xml.SgmlReader — HTML parsing (survey data scraping)
 - AWSSDK.Core — AWS integration (future/planned features)
 - System.Text.Json — secondary JSON support
