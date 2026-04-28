@@ -333,6 +333,15 @@ namespace OE2EmpireTracker.Models
 
             item.Quantity += quantityInt;
             structure.MiningLeftOvers = leftOver;
+
+            Log.Info(
+                "ProcessMiningRig: structure={0} resource={1} ({2}) mined={3} newQty={4} leftOver={5:F4}",
+                structure.UUID,
+                surveyResource.Resource,
+                surveyResource.Purity,
+                quantityInt,
+                item.Quantity,
+                leftOver);
         }
 
         private void ProcessRefinery(ColonyStructure structure)
@@ -416,6 +425,16 @@ namespace OE2EmpireTracker.Models
 
                 refinedItem.Quantity += produced;
 
+                Log.Info(
+                    "ProcessNormalRefinery: structure={0} consumed={1} {2} ({3}) produced={4} {5} (Refined) newQty={6}",
+                    structure.UUID,
+                    consumed,
+                    structure.RefiningResource,
+                    structure.RefiningResourcePurity,
+                    produced,
+                    structure.RefiningResource,
+                    refinedItem.Quantity);
+
                 structure.ProcessCompletionTime.ConsumeIntervals(1);
             }
         }
@@ -482,6 +501,16 @@ namespace OE2EmpireTracker.Models
                     outputItem.Quantity += produced;
                 }
 
+                Log.Info(
+                    "ProcessSyntheticRefinery: structure={0} consumed={1} {2} ({3}) produced={4} {5} (Refined) tier=S{6}",
+                    structure.UUID,
+                    produced * (recipe.ConsumeRate / recipe.ProduceRate),
+                    recipe.InputResource,
+                    recipe.InputPurity,
+                    produced,
+                    recipe.OutputResource,
+                    recipe.Tier);
+
                 structure.ProcessCompletionTime.ConsumeIntervals(1);
             }
         }
@@ -529,6 +558,14 @@ namespace OE2EmpireTracker.Models
             bpItem.Quantity = 1;
             bpItem.Volume = 0;
             Items.AddItem(bpItem);
+
+            Log.Info(
+                "ProcessResearchLab: structure={0} evolved {1} evo {2}->{3} newBpUUID={4}",
+                structure.UUID,
+                sourceBp.Name,
+                sourceBp.Evolution,
+                newBp.Evolution,
+                newBp.UUID);
 
             structure.ProcessCompletionTime.ConsumeIntervals(1);
         }
@@ -586,6 +623,13 @@ namespace OE2EmpireTracker.Models
             {
                 structure.ProcessCompletionTime = null;
             }
+
+            Log.Info(
+                "ProcessManufactory: structure={0} blueprint={1} completed={2}/{3}",
+                structure.UUID,
+                sourceBp.ExtendedName,
+                structure.ManufacturingCompleted,
+                structure.ManufacturingQuantity);
         }
 
         private void ProcessCommodityFactory(ColonyStructure structure)
@@ -646,6 +690,13 @@ namespace OE2EmpireTracker.Models
             {
                 structure.ProcessCompletionTime = null;
             }
+
+            Log.Info(
+                "ProcessCommodityFactory: structure={0} commodity={1} completed={2}/{3}",
+                structure.UUID,
+                structure.ManufacturingCommodityName,
+                structure.ManufacturingCompleted,
+                structure.ManufacturingQuantity);
         }
     }
 }

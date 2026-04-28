@@ -1082,6 +1082,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             RefreshStatusSummary();
             UpdateTabWarnings();
+            _warehouseDirty = true;
 
             // Save context and fire event OUTSIDE the lock
             if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
