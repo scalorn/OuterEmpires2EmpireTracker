@@ -2033,9 +2033,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     _blueprint?.BluePrintType ?? "(none)");
                 if (structureData.ProcessCompletionTime != null)
                 {
+                    Log.Debug(
+                        "V2.CmdDone_Click: timer state before adjustment: isRepeating={0} intervalsPassed={1} timeRemaining={2} start={3:O} end={4:O} repeatInterval={5}s",
+                        structureData.ProcessCompletionTime.IsRepeating,
+                        structureData.ProcessCompletionTime.IsRepeating ? structureData.ProcessCompletionTime.IntervalsPassed : 0,
+                        structureData.ProcessCompletionTime.TimeRemaining,
+                        structureData.ProcessCompletionTime.StartTime,
+                        structureData.ProcessCompletionTime.EndTime,
+                        structureData.ProcessCompletionTime.RepeatIntervalSeconds);
+
                     if (structureData.ProcessCompletionTime.IsRepeating &&
                         structureData.ProcessCompletionTime.IntervalsPassed == 0)
                     {
+                        Log.Debug("V2.CmdDone_Click: forcing 1 interval (IntervalsPassed was 0)");
                         structureData.ProcessCompletionTime.StartTime =
                             SystemClock.UtcNow.AddSeconds(-structureData.ProcessCompletionTime.RepeatIntervalSeconds);
                     }
@@ -2044,6 +2054,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     {
                         structureData.ProcessCompletionTime.TimeRemaining = 0;
                     }
+
+                    Log.Debug(
+                        "V2.CmdDone_Click: timer state after adjustment: intervalsPassed={0} start={1:O}",
+                        structureData.ProcessCompletionTime.IsRepeating ? structureData.ProcessCompletionTime.IntervalsPassed : 0,
+                        structureData.ProcessCompletionTime.StartTime);
                 }
 
                 Colony.ProcessColony();
@@ -2131,7 +2146,19 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             if (structureData.ProcessCompletionTime != null)
             {
+                Log.Debug(
+                    "V2.TxtCompletionTime_Leave: structure={0} input='{1}' before: start={2:O} end={3:O} intervalsPassed={4}",
+                    structureData.UUID,
+                    txtCompletionTime.Text,
+                    structureData.ProcessCompletionTime.StartTime,
+                    structureData.ProcessCompletionTime.EndTime,
+                    structureData.ProcessCompletionTime.IsRepeating ? structureData.ProcessCompletionTime.IntervalsPassed : 0);
                 structureData.ProcessCompletionTime.TimeRemainingString = txtCompletionTime.Text;
+                Log.Debug(
+                    "V2.TxtCompletionTime_Leave: after: start={0:O} end={1:O} intervalsPassed={2}",
+                    structureData.ProcessCompletionTime.StartTime,
+                    structureData.ProcessCompletionTime.EndTime,
+                    structureData.ProcessCompletionTime.IsRepeating ? structureData.ProcessCompletionTime.IntervalsPassed : 0);
             }
             else if (structureData.BuildCompletionTime != null)
             {

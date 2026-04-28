@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using NLog;
 using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Models
@@ -9,13 +10,7 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class CountDownTime
     {
-        /// <summary>
-        /// Maximum number of intervals that IntervalsPassed will return.
-        /// Prevents runaway processing when StartTime is stale from a previous session
-        /// (e.g. app was closed for days with active repeating timers).
-        /// 168 = one week of hourly intervals.
-        /// </summary>
-        public const long MaxIntervalsCap = 168;
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CountDownTime"/> class.
@@ -60,20 +55,32 @@ namespace OE2EmpireTracker.Models
                         remaining = modulo == 0 ? RepeatIntervalSeconds : modulo;
                     }
 
+                    var oldStart = StartTime;
                     StartTime = now.AddSeconds(remaining - RepeatIntervalSeconds);
                     EndTime = now.AddSeconds(remaining);
+                    Log.Debug(
+                        "TimeRemaining.set(repeating): value={0} remaining={1} interval={2}s oldStart={3:O} newStart={4:O} end={5:O}",
+                        value,
+                        remaining,
+                        RepeatIntervalSeconds,
+                        oldStart,
+                        StartTime,
+                        EndTime);
                     return;
                 }
 
                 StartTime = now;
                 EndTime = now.AddSeconds(value);
+                Log.Debug(
+                    "TimeRemaining.set(oneshot): value={0} start={1:O} end={2:O}",
+                    value,
+                    StartTime,
+                    EndTime);
             }
         }
 
         /// <summary>
         /// Returns how many full repeat intervals have elapsed since the last StartTime.
-        /// Capped at 168 (one week of hourly intervals) to prevent runaway processing
-        /// when StartTime is stale from a previous session.
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         public long IntervalsPassed
@@ -85,14 +92,26 @@ namespace OE2EmpireTracker.Models
                     return 0;
                 }
 
-                var elapsedSeconds = (SystemClock.UtcNow - StartTime).TotalSeconds;
+                var now = SystemClock.UtcNow;
+                var elapsedSeconds = (now - StartTime).TotalSeconds;
                 if (elapsedSeconds <= 0)
                 {
                     return 0;
                 }
 
                 long intervals = (long)Math.Floor(elapsedSeconds / RepeatIntervalSeconds);
-                return Math.Min(intervals, MaxIntervalsCap);
+                if (intervals > 1)
+                {
+                    Log.Debug(
+                        "IntervalsPassed: {0} intervals (elapsed={1:F1}s start={2:O} now={3:O} interval={4}s)",
+                        intervals,
+                        elapsedSeconds,
+                        StartTime,
+                        now,
+                        RepeatIntervalSeconds);
+                }
+
+                return intervals;
             }
         }
 
@@ -154,6 +173,7 @@ namespace OE2EmpireTracker.Models
                 int seconds = match.Groups[4].Success ? int.Parse(match.Groups[4].Value) : 0;
 
                 long totalSeconds = ((((long)days * 24) + hours) * 60 * 60) + (minutes * 60) + seconds;
+                Log.Debug("TimeRemainingString.set: input='{0}' parsed={1}s", value, totalSeconds);
                 TimeRemaining = totalSeconds;
             }
         }
@@ -202,8 +222,17 @@ namespace OE2EmpireTracker.Models
                 return;
             }
 
+            var oldStart = StartTime;
             StartTime = StartTime.AddSeconds(toConsume * RepeatIntervalSeconds);
             EndTime = GetNextIntervalBoundary(SystemClock.UtcNow);
+            Log.Debug(
+                "ConsumeIntervals: requested={0} passed={1} consumed={2} oldStart={3:O} newStart={4:O} end={5:O}",
+                intervalCount,
+                passed,
+                toConsume,
+                oldStart,
+                StartTime,
+                EndTime);
         }
 
         /// <summary>
@@ -220,6 +249,11 @@ namespace OE2EmpireTracker.Models
             RepeatIntervalSeconds = intervalSeconds;
             StartTime = SystemClock.UtcNow;
             EndTime = StartTime.AddSeconds(intervalSeconds);
+            Log.Debug(
+                "StartRepeating: interval={0}s start={1:O} end={2:O}",
+                intervalSeconds,
+                StartTime,
+                EndTime);
         }
 
         /// <summary>
@@ -248,6 +282,13 @@ namespace OE2EmpireTracker.Models
 
             StartTime = SystemClock.UtcNow.AddSeconds(remaining - RepeatIntervalSeconds);
             EndTime = SystemClock.UtcNow.AddSeconds(remaining);
+            Log.Debug(
+                "StartRepeating(offset): interval={0}s secondsUntilNext={1} remaining={2} start={3:O} end={4:O}",
+                intervalSeconds,
+                secondsUntilNextInterval,
+                remaining,
+                StartTime,
+                EndTime);
         }
 
         private DateTime GetNextIntervalBoundary(DateTime now)

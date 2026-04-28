@@ -233,6 +233,14 @@ namespace OE2EmpireTracker.Models
                         continue;
                     }
 
+                    Log.Debug(
+                        "ProcessColony: ready structure={0} type={1} intervalsPassed={2} start={3:O} interval={4}s",
+                        structure.UUID,
+                        bp.BluePrintType,
+                        structure.ProcessCompletionTime.IsRepeating ? structure.ProcessCompletionTime.IntervalsPassed : -1,
+                        structure.ProcessCompletionTime.StartTime,
+                        structure.ProcessCompletionTime.RepeatIntervalSeconds);
+
                     ready.Add((structure, bp));
                 }
             }
