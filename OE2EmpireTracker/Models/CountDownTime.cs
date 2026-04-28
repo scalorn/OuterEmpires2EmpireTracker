@@ -10,6 +10,14 @@ namespace OE2EmpireTracker.Models
     public class CountDownTime
     {
         /// <summary>
+        /// Maximum number of intervals that IntervalsPassed will return.
+        /// Prevents runaway processing when StartTime is stale from a previous session
+        /// (e.g. app was closed for days with active repeating timers).
+        /// 168 = one week of hourly intervals.
+        /// </summary>
+        public const long MaxIntervalsCap = 168;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CountDownTime"/> class.
         /// </summary>
         public CountDownTime()
@@ -64,6 +72,8 @@ namespace OE2EmpireTracker.Models
 
         /// <summary>
         /// Returns how many full repeat intervals have elapsed since the last StartTime.
+        /// Capped at 168 (one week of hourly intervals) to prevent runaway processing
+        /// when StartTime is stale from a previous session.
         /// </summary>
         [Newtonsoft.Json.JsonIgnore]
         public long IntervalsPassed
@@ -81,7 +91,8 @@ namespace OE2EmpireTracker.Models
                     return 0;
                 }
 
-                return (long)Math.Floor(elapsedSeconds / RepeatIntervalSeconds);
+                long intervals = (long)Math.Floor(elapsedSeconds / RepeatIntervalSeconds);
+                return Math.Min(intervals, MaxIntervalsCap);
             }
         }
 
