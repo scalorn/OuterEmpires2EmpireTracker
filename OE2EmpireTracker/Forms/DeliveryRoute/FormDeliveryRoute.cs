@@ -30,6 +30,9 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private DeliveryPlanStop selectedPlanStop;
 
+        /// <summary>Parallel list of destination UUIDs matching cmbColony display items, for lookup via SelectedFullIndex.</summary>
+        private List<string> _colonyPickerUUIDs = new List<string>();
+
         public FormDeliveryRoute()
         {
             InitializeComponent();
@@ -47,8 +50,6 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             txtRouteFilter.TextChanged += TxtRouteFilter_TextChanged;
             txtRouteName.TextChanged += TxtRouteName_TextChanged;
 
-            cmbColony.DisplayMember = "Display";
-            cmbColony.ValueMember = "UUID";
             PopulateDestTypePicker();
             PopulateStopPurposePicker();
             PopulateColonyPicker();
@@ -366,10 +367,9 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 }
             }
 
-            cmbColony.DataSource = null;
-            cmbColony.DisplayMember = "Display";
-            cmbColony.ValueMember = "UUID";
-            cmbColony.DataSource = items;
+            _colonyPickerUUIDs = items.Select(i => i.UUID).ToList();
+            var displayNames = items.Select(i => i.Display).ToList();
+            cmbColony.SetItems(displayNames, string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateColonyPicker: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -484,7 +484,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void CmdAddStop_Click(object sender, EventArgs e)
         {
-            string destUUID = cmbColony.SelectedValue as string;
+            int idx = cmbColony.SelectedFullIndex;
+            string destUUID = (idx >= 0 && idx < _colonyPickerUUIDs.Count) ? _colonyPickerUUIDs[idx] : null;
             if (string.IsNullOrEmpty(destUUID)) return;
 
             var destType = GetSelectedDestType();

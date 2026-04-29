@@ -37,7 +37,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.colFuelEstimate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flpAddStop = new System.Windows.Forms.FlowLayoutPanel();
             this.lblAddStop = new System.Windows.Forms.Label();
-            this.cmbColony = new System.Windows.Forms.ComboBox();
+            this.cmbColony = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.cmdAddStop = new System.Windows.Forms.Button();
             this.cmdUp = new System.Windows.Forms.Button();
             this.cmdDown = new System.Windows.Forms.Button();
@@ -672,7 +672,6 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // 
             // cmbColony
             // 
-            this.cmbColony.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbColony.Location = new System.Drawing.Point(57, 3);
             this.cmbColony.Name = "cmbColony";
             this.cmbColony.Size = new System.Drawing.Size(250, 21);
@@ -802,7 +801,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private System.Windows.Forms.DataGridViewTextBoxColumn colFuelEstimate;
         private System.Windows.Forms.FlowLayoutPanel flpAddStop;
         private System.Windows.Forms.Label lblAddStop;
-        private System.Windows.Forms.ComboBox cmbColony;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbColony;
         private System.Windows.Forms.Button cmdAddStop;
         private System.Windows.Forms.Button cmdUp;
         private System.Windows.Forms.Button cmdDown;
