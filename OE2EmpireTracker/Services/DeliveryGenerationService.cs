@@ -265,7 +265,7 @@ namespace OE2EmpireTracker.Services
             {
                 var existing = playerContext.DeliveryPlanList
                     .FirstOrDefault(p => p.UUID == existingPlanUUID);
-                if (existing != null)
+                if (existing != null && !existing.Completed)
                 {
                     Log.Debug(
                         "FindOrCreatePlan: updating existing plan '{0}' ({1})",
@@ -275,6 +275,14 @@ namespace OE2EmpireTracker.Services
                     existing.RouteUUID = route.UUID;
                     existing.Stops.Clear();
                     return existing;
+                }
+
+                if (existing != null && existing.Completed)
+                {
+                    Log.Debug(
+                        "FindOrCreatePlan: existing plan '{0}' ({1}) is completed, creating new plan",
+                        existing.Name,
+                        existing.UUID);
                 }
             }
 
