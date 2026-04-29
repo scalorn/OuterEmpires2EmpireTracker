@@ -571,6 +571,12 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 UpdateWorkerDelivery(item, chk.Checked);
             }
 
+            // Resource delivery: add/remove resources from colony warehouse
+            if (item.ItemType == ItemType.ItemTypeEnum.Resource && selectedPlan != null)
+            {
+                UpdateResourceDelivery(item, chk.Checked);
+            }
+
             // Station hold operations: add/remove items from station holds
             if (selectedPlan != null)
             {
@@ -641,6 +647,23 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             }
 
             DeliveryFulfillment.DeliverWorkers(colony, item.BaseItemTypeID, item.Name, item.Quantity, delivered);
+            playerContext.OnColonyDataChanged(stop.ColonyUUID);
+        }
+
+        private void UpdateResourceDelivery(DeliveryItem item, bool delivered)
+        {
+            var stop = selectedPlan.Stops.FirstOrDefault(s =>
+                s.DropOff.Contains(item) || s.PickUp.Contains(item));
+            if (stop == null) return;
+
+            var colony = playerContext.FindColony(stop.ColonyUUID);
+            if (colony == null)
+            {
+                Log.Warn("Colony not found for stop {0} during resource delivery", stop.ColonyUUID);
+                return;
+            }
+
+            DeliveryFulfillment.DeliverResource(colony, item.BaseItemTypeID, item.ResourcePurity, item.Quantity, delivered);
             playerContext.OnColonyDataChanged(stop.ColonyUUID);
         }
 

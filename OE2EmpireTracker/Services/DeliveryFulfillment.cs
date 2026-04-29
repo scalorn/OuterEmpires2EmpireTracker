@@ -104,5 +104,59 @@ namespace OE2EmpireTracker.Services
 
             return true;
         }
+
+        /// <summary>
+        /// Delivers or removes resources from a colony warehouse.
+        /// When delivered: adds quantity to existing stack (matching name + purity) or creates new item.
+        /// When undelivered: subtracts quantity (minimum 0), removes item if quantity reaches 0.
+        /// </summary>
+        public static bool DeliverResource(Colony colony, string resourceName, string purity, int quantity, bool delivered)
+        {
+            if (colony == null || string.IsNullOrEmpty(resourceName) || quantity <= 0) return false;
+
+            var existing = colony.Items.FindResource(resourceName, purity);
+
+            if (delivered)
+            {
+                if (existing.Count > 0)
+                {
+                    existing[0].Quantity += quantity;
+                    Log.Info(
+                        "DeliverResource: added {0} {1} ({2}) to colony {3}, newQty={4}",
+                        quantity, resourceName, purity, colony.ColonyName, existing[0].Quantity);
+                }
+                else
+                {
+                    var resourceItem = new Item();
+                    resourceItem.UUID = Guid.NewGuid().ToString();
+                    resourceItem.ItemType = ItemType.ItemTypeEnum.Resource;
+                    resourceItem.BaseItemTypeID = resourceName;
+                    resourceItem.Name = resourceName;
+                    resourceItem.ResourcePurity = purity;
+                    resourceItem.Quantity = quantity;
+                    resourceItem.Volume = 1;
+                    colony.Items.AddItem(resourceItem);
+                    Log.Info(
+                        "DeliverResource: created {0} {1} ({2}) on colony {3}",
+                        quantity, resourceName, purity, colony.ColonyName);
+                }
+            }
+            else
+            {
+                if (existing.Count > 0)
+                {
+                    existing[0].Quantity = Math.Max(0, existing[0].Quantity - quantity);
+                    Log.Info(
+                        "DeliverResource: removed {0} {1} ({2}) from colony {3}, newQty={4}",
+                        quantity, resourceName, purity, colony.ColonyName, existing[0].Quantity);
+                    if (existing[0].Quantity <= 0)
+                    {
+                        colony.Items.Remove(existing[0].UUID);
+                    }
+                }
+            }
+
+            return true;
+        }
     }
 }
