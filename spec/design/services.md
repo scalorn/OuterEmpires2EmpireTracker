@@ -62,6 +62,58 @@ Logic:
 - Research: no resource shortfall (time + lab only).
 - Returns only positive shortfalls.
 
+## BuildPlanExecutionService
+
+Static service in `Services/BuildPlanExecutionService.cs`.
+
+```csharp
+public static class BuildPlanExecutionService
+{
+    // Status helpers
+    public static Dictionary<BuildItemStatus, int> ComputeStatusSummary(BuildPlan plan);
+    public static bool IsPlanComplete(BuildPlan plan);
+    public static List<ContentionInfo> DetectContention(BuildItem item, IEnumerable<BuildPlan> allPlans);
+
+    // Status detection (called by BackgroundProcessor cascade)
+    public static bool AdvanceBuildItemStatuses(
+        BuildPlan plan, Func<string, Colony> colonyFinder,
+        Func<string, Blueprint> blueprintFinder,
+        Func<string, Ship> shipFinder,
+        Func<string, Station> stationFinder,
+        string currentPlayerUUID);
+
+    // Manufacturing pre-configuration
+    public static bool CanStartManufacturing(
+        BuildItem item, BuildPlan plan,
+        Func<string, Colony> colonyFinder,
+        Func<string, Blueprint> blueprintFinder);
+    public static StartManufacturingResult StartManufacturing(
+        BuildItem item, BuildPlan plan,
+        Func<string, Colony> colonyFinder,
+        Func<string, Blueprint> blueprintFinder);
+    public static BatchStartResult StartAllReady(
+        BuildPlan plan, Func<string, Colony> colonyFinder,
+        Func<string, Blueprint> blueprintFinder);
+
+    // Nested result types
+    public class StartManufacturingResult { bool Success; string ErrorMessage; }
+    public class BatchStartResult { int StartedCount; int SkippedCount; List<string> SkippedReasons; }
+    public class ContentionInfo { string PlanName; string ItemName; string ItemUUID; }
+}
+```
+
+Logic:
+- Stateless service following the same pattern as ResourceCheckService.
+- ComputeStatusSummary returns counts per BuildItemStatus for a plan. All enum values present, defaulting to zero.
+- IsPlanComplete returns true only when all items are Completed (false for empty plans).
+- DetectContention finds items from other active plans assigned to the same StructureUUID.
+- AdvanceBuildItemStatuses handles three detection phases: Staged+allocated→Ready (zero shortfalls), Ready→InProgress (matching active job on structure), InProgress→Completed (job finished).
+- CanStartManufacturing checks eligibility: Ready status, valid structure, structure idle, lowest sequence, dependency satisfied.
+- StartManufacturing pre-configures ColonyStructure fields and advances item to InProgress.
+- StartAllReady batch-starts first eligible Ready item per structure.
+
+Satisfies: REQ-BPL-EXE (see .kiro/specs/build-plan-execution/requirements.md)
+
 ## DeliveryGenerationService (Iteration 1)
 
 Static service in `Services/DeliveryGenerationService.cs`.
