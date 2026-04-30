@@ -396,6 +396,47 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
+            // Build plan execution cascade
+            if (!_stopping.IsSet)
+            {
+                try
+                {
+                    var plans = _playerContext.SnapshotBuildPlanList();
+                    var activePlans = plans.Where(p => p.IsActive).ToList();
+                    bool anyExecutionChanged = false;
+
+                    foreach (var plan in activePlans)
+                    {
+                        if (_stopping.IsSet) break;
+
+                        bool changed = BuildPlanExecutionService.AdvanceBuildItemStatuses(
+                            plan,
+                            uuid => _playerContext.FindColony(uuid),
+                            uuid => _playerContext.FindBlueprint(uuid),
+                            uuid => _playerContext.FindShip(uuid),
+                            uuid => _playerContext.FindStation(uuid),
+                            _playerContext.CurrentPlayerUUID);
+
+                        if (changed)
+                        {
+                            if (!modifiedPlanUUIDs.Contains(plan.UUID))
+                                modifiedPlanUUIDs.Add(plan.UUID);
+                            anyExecutionChanged = true;
+                        }
+                    }
+
+                    if (anyExecutionChanged)
+                    {
+                        _playerContext.CascadeResourceCheckDirty = true;
+                        _playerContext.CascadeStockTargetsDirty = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error during build plan execution cascade");
+                }
+            }
+
             if (stockTargetsDirty)
             {
                 _playerContext.CascadeStockTargetsDirty = false;

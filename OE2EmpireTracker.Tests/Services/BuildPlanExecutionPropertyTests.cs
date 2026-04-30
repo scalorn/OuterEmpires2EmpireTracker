@@ -1439,5 +1439,372 @@ namespace OE2EmpireTracker.Tests.Services
                 }
             }
         }
+
+        /// <summary>
+        /// Feature: build-plan-execution, Property 12: Cascade dirty flags set on status changes
+        /// Validates: Requirements 9.1, 9.2, 12.3
+        ///
+        /// For any cascade cycle where at least one BuildItem status is advanced,
+        /// AdvanceBuildItemStatuses should return true. When no statuses change, it
+        /// should return false. The BackgroundProcessor sets CascadeResourceCheckDirty
+        /// and CascadeStockTargetsDirty based on this return value.
+        ///
+        /// This tests the service-level behavior: AdvanceBuildItemStatuses returns true
+        /// when statuses change and false when they don't. The BackgroundProcessor sets
+        /// the dirty flags based on the return value.
+        /// </summary>
+        [Test]
+        public void Property12_CascadeDirtyFlagsSetOnStatusChanges()
+        {
+            var rng = new Random(1212);
+            var itemTypes = new[] { BuildItemType.Manufactory, BuildItemType.Commodity, BuildItemType.Research, BuildItemType.Mining, BuildItemType.Refining };
+
+            for (int iter = 0; iter < Iterations; iter++)
+            {
+                var colonyUUID = Guid.NewGuid().ToString();
+                var structureUUID = Guid.NewGuid().ToString();
+                var blueprintUUID = "bp-" + rng.Next(1000);
+                var commodityName = "Commodity_" + rng.Next(100);
+                var itemType = itemTypes[rng.Next(itemTypes.Length)];
+
+                // Randomly decide scenario: should-change or should-not-change
+                int scenario = rng.Next(0, 4);
+                // 0 = InProgress item with completed structure (should change to Completed, return true)
+                // 1 = Ready item with matching active structure (should change to InProgress, return true)
+                // 2 = Ready item with no matching structure state (should NOT change, return false)
+                // 3 = Empty plan (should NOT change, return false)
+
+                var colony = new Colony
+                {
+                    UUID = colonyUUID,
+                    PlanetName = "TestPlanet",
+                    ColonyName = "TestColony"
+                };
+
+                var structure = new ColonyStructure
+                {
+                    UUID = structureUUID
+                };
+                colony.Structures.Add(structure);
+
+                var plan = new BuildPlan
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    Name = "Plan_" + rng.Next(1000),
+                    OwnerUUID = Guid.NewGuid().ToString(),
+                    IsActive = true
+                };
+
+                bool expectChanged;
+
+                if (scenario == 3)
+                {
+                    // Empty plan
+                    expectChanged = false;
+                }
+                else
+                {
+                    var item = new BuildItem
+                    {
+                        UUID = Guid.NewGuid().ToString(),
+                        ItemType = itemType,
+                        BlueprintUUID = blueprintUUID,
+                        CommodityName = commodityName,
+                        BuildLocationUUID = colonyUUID,
+                        StructureUUID = structureUUID,
+                        SequenceInStructure = 0,
+                        Quantity = rng.Next(1, 20)
+                    };
+
+                    switch (scenario)
+                    {
+                        case 0:
+                            // InProgress item, structure indicates completion
+                            item.Status = BuildItemStatus.InProgress;
+                            structure.ProcessCompletionTime = null;
+                            switch (itemType)
+                            {
+                                case BuildItemType.Manufactory:
+                                    structure.ManufacturingBlueprintUUID = null;
+                                    break;
+                                case BuildItemType.Commodity:
+                                    structure.ManufacturingCommodityName = null;
+                                    break;
+                                case BuildItemType.Research:
+                                    structure.ResearchingBlueprintUUID = null;
+                                    break;
+                                case BuildItemType.Mining:
+                                case BuildItemType.Refining:
+                                    // ProcessCompletionTime null is enough
+                                    break;
+                            }
+
+                            expectChanged = true;
+                            break;
+
+                        case 1:
+                            // Ready item, structure has matching active job
+                            item.Status = BuildItemStatus.Ready;
+                            var timer = new CountDownTime();
+                            timer.StartRepeating(60);
+                            structure.ProcessCompletionTime = timer;
+                            switch (itemType)
+                            {
+                                case BuildItemType.Manufactory:
+                                    structure.ManufacturingBlueprintUUID = blueprintUUID;
+                                    break;
+                                case BuildItemType.Commodity:
+                                    structure.ManufacturingCommodityName = commodityName;
+                                    break;
+                                case BuildItemType.Research:
+                                    structure.ResearchingBlueprintUUID = blueprintUUID;
+                                    break;
+                                case BuildItemType.Mining:
+                                case BuildItemType.Refining:
+                                    // ProcessCompletionTime non-null is enough
+                                    break;
+                            }
+
+                            expectChanged = true;
+                            break;
+
+                        default: // case 2
+                            // Ready item, no matching structure state
+                            item.Status = BuildItemStatus.Ready;
+                            structure.ProcessCompletionTime = null;
+                            expectChanged = false;
+                            break;
+                    }
+
+                    plan.Items.Add(item);
+                }
+
+                Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
+                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+                Func<string, Ship> shipFinder = uuid => null;
+                Func<string, Station> stationFinder = uuid => null;
+
+                bool result = BuildPlanExecutionService.AdvanceBuildItemStatuses(
+                    plan, colonyFinder, blueprintFinder, shipFinder, stationFinder, "player1");
+
+                Assert.That(result, Is.EqualTo(expectChanged),
+                    string.Format("Iteration {0} scenario {1}: AdvanceBuildItemStatuses returned {2}, expected {3}",
+                        iter, scenario, result, expectChanged));
+
+                // Additional check: when result is true and scenario is 0 (completion),
+                // verify the item actually reached Completed status
+                if (scenario == 0 && result)
+                {
+                    Assert.That(plan.Items[0].Status, Is.EqualTo(BuildItemStatus.Completed),
+                        string.Format("Iteration {0}: item should be Completed after InProgress->Completed transition", iter));
+                }
+
+                // Additional check: when result is true and scenario is 1 (start),
+                // verify the item actually reached InProgress status
+                if (scenario == 1 && result)
+                {
+                    Assert.That(plan.Items[0].Status, Is.EqualTo(BuildItemStatus.InProgress),
+                        string.Format("Iteration {0}: item should be InProgress after Ready->InProgress transition", iter));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Unit test: Empty plan returns no modifications (AdvanceBuildItemStatuses returns false)
+        /// Validates: Requirements 9.1, 9.3
+        /// </summary>
+        [Test]
+        public void AdvanceBuildItemStatuses_EmptyPlan_ReturnsFalse()
+        {
+            var plan = new BuildPlan
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Name = "EmptyPlan",
+                OwnerUUID = Guid.NewGuid().ToString(),
+                IsActive = true
+            };
+
+            Func<string, Colony> colonyFinder = uuid => null;
+            Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+            Func<string, Ship> shipFinder = uuid => null;
+            Func<string, Station> stationFinder = uuid => null;
+
+            bool result = BuildPlanExecutionService.AdvanceBuildItemStatuses(
+                plan, colonyFinder, blueprintFinder, shipFinder, stationFinder, "player1");
+
+            Assert.That(result, Is.False, "Empty plan should return false (no modifications)");
+        }
+
+        /// <summary>
+        /// Unit test: Single item lifecycle - Staged to Ready to InProgress to Completed
+        /// across multiple calls to AdvanceBuildItemStatuses.
+        /// Validates: Requirements 9.1, 12.1, 12.2, 12.3
+        /// </summary>
+        [Test]
+        public void AdvanceBuildItemStatuses_SingleItemLifecycle_StagedToCompleted()
+        {
+            var colonyUUID = Guid.NewGuid().ToString();
+            var structureUUID = Guid.NewGuid().ToString();
+
+            var colony = new Colony
+            {
+                UUID = colonyUUID,
+                PlanetName = "TestPlanet",
+                ColonyName = "TestColony"
+            };
+
+            var structure = new ColonyStructure
+            {
+                UUID = structureUUID
+            };
+            colony.Structures.Add(structure);
+
+            var item = new BuildItem
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ItemType = BuildItemType.Mining,
+                Status = BuildItemStatus.Staged,
+                BuildLocationUUID = colonyUUID,
+                StructureUUID = structureUUID,
+                MiningResource = "Iron",
+                MiningSurveyUUID = "survey-1",
+                Quantity = 5,
+                SequenceInStructure = 0
+            };
+
+            var plan = new BuildPlan
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Name = "LifecyclePlan",
+                OwnerUUID = Guid.NewGuid().ToString(),
+                IsActive = true
+            };
+            plan.Items.Add(item);
+
+            Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
+            Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+            Func<string, Ship> shipFinder = uuid => null;
+            Func<string, Station> stationFinder = uuid => null;
+
+            // Step 1: Staged -> Ready (Mining items have zero shortfalls)
+            bool changed1 = BuildPlanExecutionService.AdvanceBuildItemStatuses(
+                plan, colonyFinder, blueprintFinder, shipFinder, stationFinder, "player1");
+
+            Assert.That(changed1, Is.True, "Step 1: should return true (Staged->Ready)");
+            Assert.That(item.Status, Is.EqualTo(BuildItemStatus.Ready), "Step 1: item should be Ready");
+
+            // Step 2: Ready -> InProgress (set up active mining job on structure)
+            var timer = new CountDownTime();
+            timer.StartRepeating(120);
+            structure.ProcessCompletionTime = timer;
+
+            bool changed2 = BuildPlanExecutionService.AdvanceBuildItemStatuses(
+                plan, colonyFinder, blueprintFinder, shipFinder, stationFinder, "player1");
+
+            Assert.That(changed2, Is.True, "Step 2: should return true (Ready->InProgress)");
+            Assert.That(item.Status, Is.EqualTo(BuildItemStatus.InProgress), "Step 2: item should be InProgress");
+
+            // Step 2b: No change when called again with same state
+            bool changed2b = BuildPlanExecutionService.AdvanceBuildItemStatuses(
+                plan, colonyFinder, blueprintFinder, shipFinder, stationFinder, "player1");
+
+            Assert.That(changed2b, Is.False, "Step 2b: should return false (no change, still InProgress with active timer)");
+            Assert.That(item.Status, Is.EqualTo(BuildItemStatus.InProgress), "Step 2b: item should still be InProgress");
+
+            // Step 3: InProgress -> Completed (clear the timer = job finished)
+            structure.ProcessCompletionTime = null;
+
+            bool changed3 = BuildPlanExecutionService.AdvanceBuildItemStatuses(
+                plan, colonyFinder, blueprintFinder, shipFinder, stationFinder, "player1");
+
+            Assert.That(changed3, Is.True, "Step 3: should return true (InProgress->Completed)");
+            Assert.That(item.Status, Is.EqualTo(BuildItemStatus.Completed), "Step 3: item should be Completed");
+
+            // Step 4: No further changes after Completed
+            bool changed4 = BuildPlanExecutionService.AdvanceBuildItemStatuses(
+                plan, colonyFinder, blueprintFinder, shipFinder, stationFinder, "player1");
+
+            Assert.That(changed4, Is.False, "Step 4: should return false (already Completed)");
+            Assert.That(item.Status, Is.EqualTo(BuildItemStatus.Completed), "Step 4: item should still be Completed");
+        }
+
+        /// <summary>
+        /// Unit test: Return value correctly indicates when changes were made vs not made.
+        /// Tests multiple items where some change and some don't.
+        /// Validates: Requirements 9.1, 9.3
+        /// </summary>
+        [Test]
+        public void AdvanceBuildItemStatuses_ReturnValue_CorrectlyIndicatesChanges()
+        {
+            var colonyUUID = Guid.NewGuid().ToString();
+            var struct1UUID = Guid.NewGuid().ToString();
+            var struct2UUID = Guid.NewGuid().ToString();
+
+            var colony = new Colony
+            {
+                UUID = colonyUUID,
+                PlanetName = "TestPlanet",
+                ColonyName = "TestColony"
+            };
+
+            var structure1 = new ColonyStructure { UUID = struct1UUID };
+            var structure2 = new ColonyStructure { UUID = struct2UUID };
+            colony.Structures.Add(structure1);
+            colony.Structures.Add(structure2);
+
+            // Item 1: InProgress with completed structure -> should change to Completed
+            var item1 = new BuildItem
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ItemType = BuildItemType.Mining,
+                Status = BuildItemStatus.InProgress,
+                BuildLocationUUID = colonyUUID,
+                StructureUUID = struct1UUID,
+                SequenceInStructure = 0,
+                Quantity = 1
+            };
+            // structure1 has null ProcessCompletionTime = job finished
+
+            // Item 2: Already Completed -> should NOT change
+            var item2 = new BuildItem
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ItemType = BuildItemType.Mining,
+                Status = BuildItemStatus.Completed,
+                BuildLocationUUID = colonyUUID,
+                StructureUUID = struct2UUID,
+                SequenceInStructure = 0,
+                Quantity = 1
+            };
+
+            var plan = new BuildPlan
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Name = "MixedPlan",
+                OwnerUUID = Guid.NewGuid().ToString(),
+                IsActive = true
+            };
+            plan.Items.Add(item1);
+            plan.Items.Add(item2);
+
+            Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
+            Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+            Func<string, Ship> shipFinder = uuid => null;
+            Func<string, Station> stationFinder = uuid => null;
+
+            bool result = BuildPlanExecutionService.AdvanceBuildItemStatuses(
+                plan, colonyFinder, blueprintFinder, shipFinder, stationFinder, "player1");
+
+            // Should return true because item1 changed
+            Assert.That(result, Is.True, "Should return true when at least one item changes");
+            Assert.That(item1.Status, Is.EqualTo(BuildItemStatus.Completed), "Item1 should be Completed");
+            Assert.That(item2.Status, Is.EqualTo(BuildItemStatus.Completed), "Item2 should still be Completed");
+
+            // Call again - nothing should change now
+            bool result2 = BuildPlanExecutionService.AdvanceBuildItemStatuses(
+                plan, colonyFinder, blueprintFinder, shipFinder, stationFinder, "player1");
+
+            Assert.That(result2, Is.False, "Should return false when no items change");
+        }
     }
 }

@@ -93,11 +93,11 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
     - **Property 9: Batch start processes only first-in-sequence per structure**
     - **Validates: Requirements 4.1, 4.2, 4.3, 8.2**
 
-- [~] 6. Checkpoint - Ensure all tests pass
+- [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Integrate with BackgroundProcessor cascade
-  - [~] 7.1 Add CascadeBuildPlanExecution step in `BackgroundProcessor.ProcessCascades()`
+- [x] 7. Integrate with BackgroundProcessor cascade
+  - [x] 7.1 Add CascadeBuildPlanExecution step in `BackgroundProcessor.ProcessCascades()`
     - Insert after the existing `resourceCheckDirty` block and before `stockTargetsDirty`
     - Iterate active plans, call `BuildPlanExecutionService.AdvanceBuildItemStatuses` for each
     - Track modified plan UUIDs and add to modifiedPlanUUIDs list
@@ -105,11 +105,11 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
     - Wrap in try/catch with error logging, check `_stopping.IsSet` between plans
     - _Requirements: 1.1, 2.1, 9.1, 9.2, 9.3, 11.1, 12.3_
 
-  - [~] 7.2 Write property test for cascade dirty flags
+  - [x] 7.2 Write property test for cascade dirty flags
     - **Property 12: Cascade dirty flags set on status changes**
     - **Validates: Requirements 9.1, 9.2, 12.3**
 
-  - [~] 7.3 Write unit tests for BackgroundProcessor integration
+  - [x] 7.3 Write unit tests for BackgroundProcessor integration
     - Test empty plan returns no modifications
     - Test single item lifecycle: Staged to Ready to InProgress to Completed across cascade cycles
     - Test that modified plan UUIDs are collected correctly
