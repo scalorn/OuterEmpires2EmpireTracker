@@ -118,15 +118,21 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
 - [ ] 8. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Add FormBuildPlanner context menu items
-  - [ ] 9.1 Add "Start Manufacturing" context menu item (`tsmiStartManufacturing`) to the build items grid
+- [ ] 9. Add FormBuildPlanner command buttons and context menu
+  - [ ] 9.1 Add "Start Manufacturing" button (`cmdStartManufacturing`) and context menu item (`tsmiStartManufacturing`) to the build planner
+    - Add button to the command bar alongside existing cmdAllocate, cmdAutoAssign, cmdGenerateDelivery
+    - Add context menu strip (`cmsBuildItems`) to dgvBuildItems with "Start Manufacturing" item
+    - Both share the same click handler
     - Enable when selected item is Ready with valid StructureUUID and `CanStartManufacturing` returns true
     - On click: call `StartManufacturing`, show error MessageBox on failure, persist changes on success
     - Show warning if structure is busy (has active ProcessCompletionTime)
     - Show error if structure not found or not built and online
     - _Requirements: 3.1, 3.6, 3.7, 3.8, 8.1_
 
-  - [ ] 9.2 Add "Start All Ready" context menu item (`tsmiStartAllReady`) to the build items grid or plan-level menu
+  - [ ] 9.2 Add "Start All Ready" button (`cmdStartAllReady`) and context menu item (`tsmiStartAllReady`) to the build planner
+    - Add button to the command bar
+    - Add to the cmsBuildItems context menu strip
+    - Both share the same click handler
     - Enable when selected plan has any Ready items
     - On click: call `StartAllReady`, show summary dialog with started/skipped counts and reasons, persist changes
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_

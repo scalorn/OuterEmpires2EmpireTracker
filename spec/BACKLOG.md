@@ -1,6 +1,6 @@
 # Feature Backlog
 
-**Next available ID: BL-107** (check COMPLETED.md before assigning — IDs are shared across both files)
+**Next available ID: BL-108** (check COMPLETED.md before assigning — IDs are shared across both files)
 
 Open features and enhancements to be worked on.
 
@@ -274,3 +274,18 @@ Three ComboBoxes in FormSupplyChain's stage editor are populated dynamically but
 **Dependencies:** custom-control-adoption spec (in progress)
 **Status: New**
 FormBuildPlanner has multiple ComboBoxes for selecting blueprints, resources, commodities, routes, plans, and surveys. None have paired filter TextBoxes — the form uses cascading type selectors instead. The blueprint and resource pickers have large item lists (50-100+ items) that would benefit from inline filtering. This is a larger conversion since the form has no existing filter pattern to replace — FilteredTextComboSet controls would need to be added fresh rather than replacing existing TextBox+ComboBox pairs.
+
+### BL-107: Right-Click Context Menus for DataGridView Grids
+**Dependencies:** None
+**Status: New**
+Add right-click context menus to DataGridView grids across all forms. Currently no form uses right-click context menus on grids — all actions are via buttons in command bars. Context menus provide faster access to common actions without moving the mouse to the button bar. The build-plan-execution spec introduces the first grid context menu (`cmsBuildItems` on FormBuildPlanner). This backlog item extends the pattern to other forms:
+- **FormColonyV2**: dgvItems (Warehousing tab) — Add/Remove items, dgvCommodityRequests (Workers tab) — Add/Remove requests, dgvOverflowRules (Overflow tab) — Add/Remove rules
+- **FormDeliveryRoute**: dgvStops — Add/Up/Down/Remove stops, dgvDropOff/dgvPickUp — Add/Remove items
+- **FormDeliveryExecution**: load list and stop items — Mark delivered/undelivered
+- **FormSurvey**: dgvResources — Add/Remove resources
+- **FormBlueprintV2**: dgvResources — Add/Remove resources, dgvStatistics — Edit properties
+- **FormStockTargets**: dgvTargets — Add/Remove targets
+- **FormMarket**: dgvListings — Record sale, dgvTransactions — view details
+- **FormShipTemplate/FormShipInstance**: dgvSlots/dgvComponents — Add/Remove
+- **FormStation**: dgvHold/dgvComponents — Add/Remove
+Each context menu should mirror the existing button actions for that grid, providing the same functionality via right-click.

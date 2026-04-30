@@ -234,9 +234,14 @@ if (!_stopping.IsSet)
 
 ### FormBuildPlanner UI Changes
 
-**New context menu items** on the build items grid:
-- `tsmiStartManufacturing` -- "Start Manufacturing" (enabled when selected item is Ready with valid StructureUUID and passes CanStartManufacturing)
-- `tsmiStartAllReady` -- "Start All Ready" (enabled when plan has any Ready items)
+**New command buttons** in the build planner command bar:
+- `cmdStartManufacturing` — "Start Manufacturing" (enabled when selected item is Ready with valid StructureUUID and passes CanStartManufacturing)
+- `cmdStartAllReady` — "Start All Ready" (enabled when plan has any Ready items)
+
+**New context menu** on the build items grid (`cmsBuildItems`):
+- `tsmiStartManufacturing` — "Start Manufacturing" (same logic as button, available on right-click)
+- `tsmiStartAllReady` — "Start All Ready" (same logic as button)
+- Both buttons and context menu items share the same click handlers
 
 **Status summary label** (`lblStatusSummary`):
 - Positioned below the build items grid header area
