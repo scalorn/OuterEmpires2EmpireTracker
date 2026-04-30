@@ -22,9 +22,16 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
 
         private List<ActivityRow> allRows = new List<ActivityRow>();
 
+        private bool _refreshPending = false;
+
+        private System.Windows.Forms.Timer _refreshTimer;
+
         public FormColonyActivity()
         {
             InitializeComponent();
+            _refreshTimer = new System.Windows.Forms.Timer();
+            _refreshTimer.Interval = 250;
+            _refreshTimer.Tick += RefreshTimer_Tick;
             playerContext = EmpireContext.PlayerContext;
 
             // Wire checkbox handlers
@@ -74,6 +81,8 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             playerContext.ColonyDataChanged -= OnColonyDataChanged;
             timerRefresh.Stop();
             timerRefresh.Dispose();
+            _refreshTimer.Stop();
+            _refreshTimer.Dispose();
             base.OnFormClosed(e);
         }
 
@@ -273,15 +282,30 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
                 return;
             }
 
+            // Debounce: multiple ColonyDataChanged events fire in rapid succession
+            // during background processing. Set a dirty flag and refresh once on a
+            // short timer instead of rebuilding the grid for every event.
+            if (!_refreshPending)
+            {
+                _refreshPending = true;
+                _refreshTimer.Start();
+            }
+        }
+
+        private void RefreshTimer_Tick(object sender, EventArgs e)
+        {
+            _refreshTimer.Stop();
+            _refreshPending = false;
+
             try
             {
-                Log.Info("FormColonyActivity.OnColonyDataChanged: RefreshData starting for colony {0}", args.ColonyUUID);
+                Log.Info("FormColonyActivity: debounced RefreshData starting");
                 RefreshData();
-                Log.Info("FormColonyActivity.OnColonyDataChanged: RefreshData completed, row count = {0}", allRows.Count);
+                Log.Info("FormColonyActivity: debounced RefreshData completed, row count = {0}", allRows.Count);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error in OnColonyDataChanged RefreshData");
+                Log.Error(ex, "Error in debounced RefreshData");
             }
         }
     }
