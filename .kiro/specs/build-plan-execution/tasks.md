@@ -21,8 +21,8 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
     - **Property 11: Cross-plan contention detection**
     - **Validates: Requirements 14.1, 14.5**
 
-- [ ] 2. Implement AdvanceBuildItemStatuses detection logic
-  - [~] 2.1 Implement `AdvanceBuildItemStatuses(BuildPlan, colonyFinder, blueprintFinder, shipFinder, stationFinder, currentPlayerUUID)` with three detection phases
+- [x] 2. Implement AdvanceBuildItemStatuses detection logic
+  - [x] 2.1 Implement `AdvanceBuildItemStatuses(BuildPlan, colonyFinder, blueprintFinder, shipFinder, stationFinder, currentPlayerUUID)` with three detection phases
     - Phase 1: Staged+allocated items with zero shortfalls advance to Ready (calls `ResourceCheckService.ComputeShortfalls`)
     - Phase 2: Ready items advance to InProgress when structure has matching active job, item is lowest sequence among Ready items on that structure, and dependency (if any) is Completed
     - Phase 3: InProgress items advance to Completed when structure job finishes (type-specific checks per design)
@@ -30,27 +30,27 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
     - Wrap each item in try/catch, log errors, continue with remaining items
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 7.1, 7.2, 7.3, 8.1, 10.1, 10.2, 10.3, 11.1, 11.2, 11.3, 12.1, 12.2_
 
-  - [~] 2.2 Write property test for forward-only status transitions
+  - [x] 2.2 Write property test for forward-only status transitions
     - **Property 1: Forward-only status transitions**
     - **Validates: Requirements 1.5, 2.6**
 
-  - [~] 2.3 Write property test for Staged-to-Ready skip
+  - [x] 2.3 Write property test for Staged-to-Ready skip
     - **Property 4: Staged-to-Ready skip when resources present**
     - **Validates: Requirements 11.1, 11.2, 11.3**
 
-  - [~] 2.4 Write property test for Ready-to-InProgress detection
+  - [x] 2.4 Write property test for Ready-to-InProgress detection
     - **Property 2: Ready-to-InProgress detection for matching structure state**
     - **Validates: Requirements 1.1, 1.2, 1.3, 1.4, 8.1**
 
-  - [~] 2.5 Write property test for InProgress-to-Completed detection
+  - [x] 2.5 Write property test for InProgress-to-Completed detection
     - **Property 3: InProgress-to-Completed detection for cleared structure state**
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5, 10.1, 10.2**
 
-  - [~] 2.6 Write property test for dependency blocking
+  - [x] 2.6 Write property test for dependency blocking
     - **Property 5: Dependency blocks InProgress advancement**
     - **Validates: Requirements 7.1, 7.2, 7.3**
 
-  - [~] 2.7 Write property test for sequence ordering
+  - [x] 2.7 Write property test for sequence ordering
     - **Property 6: Sequence ordering restricts manufacturing start**
     - **Validates: Requirements 8.1, 8.2**
 
