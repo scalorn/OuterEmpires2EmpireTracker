@@ -299,9 +299,10 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
 
             try
             {
-                Log.Info("FormColonyActivity: debounced RefreshData starting");
+                var sw = System.Diagnostics.Stopwatch.StartNew();
                 RefreshData();
-                Log.Info("FormColonyActivity: debounced RefreshData completed, row count = {0}", allRows.Count);
+                sw.Stop();
+                Log.Info("PERF RefreshTimer_Tick: {0}ms, row count = {1}", sw.ElapsedMilliseconds, allRows.Count);
             }
             catch (Exception ex)
             {

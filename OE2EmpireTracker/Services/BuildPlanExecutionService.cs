@@ -641,10 +641,10 @@ namespace OE2EmpireTracker.Services
                 var items = kvp.Value;
 
                 // Sort by SequenceInStructure ascending
-                items.Sort((a, b) => a.SequenceInStructure.CompareTo(b.SequenceInStructure));
+                var sortedItems = CollectionSortHelper.OrderBuildItemsBySequence(items);
 
                 // Try to start the first item (lowest sequence)
-                var firstItem = items[0];
+                var firstItem = sortedItems[0];
                 bool canStart = CanStartManufacturing(firstItem, plan, colonyFinder, blueprintFinder);
 
                 if (canStart)
@@ -669,11 +669,11 @@ namespace OE2EmpireTracker.Services
                 }
 
                 // Remaining items in this group are skipped (waiting for earlier item)
-                for (int i = 1; i < items.Count; i++)
+                for (int i = 1; i < sortedItems.Count; i++)
                 {
                     result.SkippedCount++;
                     result.SkippedReasons.Add(
-                        string.Format("{0}: Waiting for earlier item in sequence", items[i].ItemName));
+                        string.Format("{0}: Waiting for earlier item in sequence", sortedItems[i].ItemName));
                 }
             }
 
@@ -839,16 +839,10 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Normalizes time strings from blueprint properties to the format expected by
         /// CountDownTime.TimeRemainingString (e.g. "9 hours" -> "9h", "30 minutes" -> "30m").
-        /// Mirrors the private NormalizeTimeString in ColonyStructureV2.
         /// </summary>
         private static string NormalizeTimeString(string timeStr)
         {
-            if (string.IsNullOrEmpty(timeStr)) return timeStr;
-            timeStr = Regex.Replace(timeStr, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
-            timeStr = Regex.Replace(timeStr, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
-            timeStr = Regex.Replace(timeStr, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
-            timeStr = Regex.Replace(timeStr, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
-            return timeStr.Trim();
+            return CountDownTime.NormalizeTimeString(timeStr);
         }
 
         /// <summary>

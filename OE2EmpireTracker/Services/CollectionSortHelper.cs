@@ -151,6 +151,34 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Sorts surveys by ExtendedName (ascending, OrdinalIgnoreCase).
+        /// Used by ColonyStructureV2 for survey combo population.
+        /// </summary>
+        public static IReadOnlyList<Survey> OrderSurveysByExtendedName(
+            IEnumerable<Survey> surveys)
+        {
+            if (surveys == null) return Array.Empty<Survey>();
+            return surveys
+                .OrderBy(s => s.ExtendedName ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
+        /// Sorts survey resources by Resource name (ascending, OrdinalIgnoreCase).
+        /// Used by ColonyStructureV2 for resource combo population.
+        /// </summary>
+        public static IReadOnlyList<SurveyResource> OrderSurveyResources(
+            IEnumerable<SurveyResource> resources)
+        {
+            if (resources == null) return new List<SurveyResource>();
+            return resources
+                .OrderBy(r => r.Resource, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
         /// Sorts ship/station/template components by SlotType, then SlotIndex (ascending).
         /// </summary>
         public static IReadOnlyList<ShipComponentSlot> OrderComponents(
@@ -454,6 +482,20 @@ namespace OE2EmpireTracker.Services
             if (items == null) return Array.Empty<BuildItem>();
             return items
                 .OrderBy(i => i.ItemName ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
+        /// Sorts build items by SequenceInStructure (ascending).
+        /// Used by BuildPlanExecutionService for processing items in structure order.
+        /// </summary>
+        public static IReadOnlyList<BuildItem> OrderBuildItemsBySequence(
+            IEnumerable<BuildItem> items)
+        {
+            if (items == null) return new List<BuildItem>();
+            return items
+                .OrderBy(i => i.SequenceInStructure)
                 .ToList()
                 .AsReadOnly();
         }

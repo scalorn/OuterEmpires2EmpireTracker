@@ -151,7 +151,7 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
     - For cross-plan contention: call `DetectContention` and append competing plan name " [BUSY: Plan X]"
     - _Requirements: 6.1, 6.2, 6.3, 14.4_
 
-- [~] 11. Final checkpoint - Ensure all tests pass
+- [x] 11. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

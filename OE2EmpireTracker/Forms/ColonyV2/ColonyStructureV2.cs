@@ -363,12 +363,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         private static string NormalizeTimeString(string timeStr)
         {
-            if (string.IsNullOrEmpty(timeStr)) return timeStr;
-            timeStr = Regex.Replace(timeStr, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
-            timeStr = Regex.Replace(timeStr, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
-            timeStr = Regex.Replace(timeStr, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
-            timeStr = Regex.Replace(timeStr, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
-            return timeStr.Trim();
+            return CountDownTime.NormalizeTimeString(timeStr);
         }
 
         private static string BuildStatusPlainText(ColonyStructure structureData)
@@ -650,16 +645,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 .Where(item => Colony != null && string.Equals(item.PlanetName, Colony.PlanetName, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
-            filteredList.Sort((a, b) => string.Compare(a.ExtendedName, b.ExtendedName, StringComparison.OrdinalIgnoreCase));
-            filteredList.Insert(0, new Models.Survey());
+            var sortedList = CollectionSortHelper.OrderSurveysByExtendedName(filteredList).ToList();
+            sortedList.Insert(0, new Models.Survey());
 
-            _surveyItems = filteredList;
-            var displayNames = filteredList.Select(s => s.ExtendedName ?? string.Empty).ToList();
+            _surveyItems = sortedList;
+            var displayNames = sortedList.Select(s => s.ExtendedName ?? string.Empty).ToList();
 
             string currentDisplay = null;
             if (!string.IsNullOrEmpty(currentSurveyUUID))
             {
-                var match = filteredList.FirstOrDefault(s => s.UUID == currentSurveyUUID);
+                var match = sortedList.FirstOrDefault(s => s.UUID == currentSurveyUUID);
                 if (match != null) currentDisplay = match.ExtendedName;
             }
 
@@ -720,16 +715,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             var resources = survey.Resources.Values.ToList();
-            resources.Sort((a, b) => string.Compare(a.Resource, b.Resource, StringComparison.OrdinalIgnoreCase));
-            resources.Insert(0, new SurveyResource());
+            var sortedResources = CollectionSortHelper.OrderSurveyResources(resources).ToList();
+            sortedResources.Insert(0, new SurveyResource());
 
-            _selectionValues = resources.Select(r => r.Resource ?? string.Empty).ToList();
-            var displayNames = resources.Select(r => r.ExtendedName ?? string.Empty).ToList();
+            _selectionValues = sortedResources.Select(r => r.Resource ?? string.Empty).ToList();
+            var displayNames = sortedResources.Select(r => r.ExtendedName ?? string.Empty).ToList();
 
             string currentDisplay = null;
             if (!string.IsNullOrEmpty(currentResource))
             {
-                var match = resources.FirstOrDefault(r => r.Resource == currentResource);
+                var match = sortedResources.FirstOrDefault(r => r.Resource == currentResource);
                 if (match != null) currentDisplay = match.ExtendedName;
             }
 

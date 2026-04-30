@@ -203,6 +203,21 @@ namespace OE2EmpireTracker.Models
         public bool IsRepeating => RepeatIntervalSeconds > 0;
 
         /// <summary>
+        /// Normalizes time strings from blueprint properties to the format expected by
+        /// TimeRemainingString (e.g. "9 hours" -> "9h", "30 minutes" -> "30m").
+        /// Shared utility used by ColonyStructureV2 and BuildPlanExecutionService.
+        /// </summary>
+        public static string NormalizeTimeString(string timeStr)
+        {
+            if (string.IsNullOrEmpty(timeStr)) return timeStr;
+            timeStr = Regex.Replace(timeStr, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
+            return timeStr.Trim();
+        }
+
+        /// <summary>
         /// Advances the countdown by the specified number of intervals.
         /// For repeating timers, this updates StartTime so that the remaining passed
         /// intervals are reduced by the consumed amount.
