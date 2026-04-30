@@ -115,11 +115,11 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
     - Test that modified plan UUIDs are collected correctly
     - _Requirements: 9.1, 9.3, 12.1, 12.2, 12.3_
 
-- [~] 8. Checkpoint - Ensure all tests pass
+- [x] 8. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Add FormBuildPlanner command buttons and context menu
-  - [~] 9.1 Add "Start Manufacturing" button (`cmdStartManufacturing`) and context menu item (`tsmiStartManufacturing`) to the build planner
+- [x] 9. Add FormBuildPlanner command buttons and context menu
+  - [x] 9.1 Add "Start Manufacturing" button (`cmdStartManufacturing`) and context menu item (`tsmiStartManufacturing`) to the build planner
     - Add button to the command bar alongside existing cmdAllocate, cmdAutoAssign, cmdGenerateDelivery
     - Add context menu strip (`cmsBuildItems`) to dgvBuildItems with "Start Manufacturing" item
     - Both share the same click handler
@@ -129,7 +129,7 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
     - Show error if structure not found or not built and online
     - _Requirements: 3.1, 3.6, 3.7, 3.8, 8.1_
 
-  - [~] 9.2 Add "Start All Ready" button (`cmdStartAllReady`) and context menu item (`tsmiStartAllReady`) to the build planner
+  - [x] 9.2 Add "Start All Ready" button (`cmdStartAllReady`) and context menu item (`tsmiStartAllReady`) to the build planner
     - Add button to the command bar
     - Add to the cmsBuildItems context menu strip
     - Both share the same click handler
@@ -137,15 +137,15 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
     - On click: call `StartAllReady`, show summary dialog with started/skipped counts and reasons, persist changes
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 10. Add status summary and busy indicators to FormBuildPlanner
-  - [~] 10.1 Add status summary label (`lblStatusSummary`) to FormBuildPlanner
+- [x] 10. Add status summary and busy indicators to FormBuildPlanner
+  - [x] 10.1 Add status summary label (`lblStatusSummary`) to FormBuildPlanner
     - Display format: "Staged: X | Delivering: Y | Ready: Z | InProgress: W | Completed: V"
     - When all items Completed: "Complete (N items)"
     - Update on PopulateBuildItemsGrid and OnBuildPlanDataChanged
     - Call `BuildPlanExecutionService.ComputeStatusSummary` for data
     - _Requirements: 5.1, 5.2, 5.3, 13.1, 13.2, 13.3_
 
-  - [~] 10.2 Add busy indicator formatting to build items grid
+  - [x] 10.2 Add busy indicator formatting to build items grid
     - During PopulateBuildItemsGrid, for each Ready item check if assigned structure has active ProcessCompletionTime
     - If busy: set location cell BackColor to `Color.MistyRose` and append " [BUSY]" to location text
     - For cross-plan contention: call `DetectContention` and append competing plan name " [BUSY: Plan X]"

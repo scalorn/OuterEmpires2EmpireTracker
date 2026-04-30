@@ -43,6 +43,10 @@ Controls:
 - `tlpBase` (TableLayoutPanel, 2 columns: 250px fixed / fill)
 - Left: `flpSearchList` â†’ `txtPlanFilter` (ValidatedTextBox) + `lvwPlans` (ListView) + `cmdNew` / `cmdDelete`
 - Right: `flpPlanData` â†’ `txtPlanName`, `txtDescription`, `chkActive` (CheckBox, write-through to BuildPlan.IsActive), `cmdSave`, `cmdAutoAssign`, `cmdAllocate`, `dgvBuildItems` (DataGridView), add-item panel, shortfall panel
+- `lblStatusSummary` (Label) -- shows per-status item counts ("Staged: X | Delivering: Y | Ready: Z | InProgress: W | Completed: V") or "Complete (N items)" when all done. Updated on grid population and data change events.
+- `cmdStartManufacturing` -- "Start Manufacturing" button, enabled when selected item is Ready with valid StructureUUID and passes CanStartManufacturing. Shares handler with `tsmiStartManufacturing` context menu item.
+- `cmdStartAllReady` -- "Start All Ready" button, enabled when plan has any Ready items. Shares handler with `tsmiStartAllReady` context menu item.
+- `cmsBuildItems` context menu on `dgvBuildItems` includes: Set Dependency, Clear Dependency, Start Manufacturing (`tsmiStartManufacturing`), Start All Ready (`tsmiStartAllReady`)
 - `cmdGenerateDelivery` is a dropdown button (ToolStripSplitButton style) with three options:
   - "Resource Delivery (This Plan)" â€” generates delivery for the selected plan's shortfalls only
   - "Consolidated Resource Delivery..." â€” prompts to select multiple plans, generates one merged delivery plan for all resource shortfalls across selected plans

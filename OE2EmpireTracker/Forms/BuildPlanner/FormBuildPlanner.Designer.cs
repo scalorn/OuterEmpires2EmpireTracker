@@ -52,6 +52,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmbPurity = new System.Windows.Forms.ComboBox();
             this.lblSurvey = new System.Windows.Forms.Label();
             this.cmbSurvey = new System.Windows.Forms.ComboBox();
+            this.cmdStartManufacturing = new System.Windows.Forms.Button();
+            this.cmdStartAllReady = new System.Windows.Forms.Button();
+            this.tsmiStartManufacturing = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiStartAllReady = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblStatusSummary = new System.Windows.Forms.Label();
             this.cmsBuildItems = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiSetDependency = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiClearDependency = new System.Windows.Forms.ToolStripMenuItem();
@@ -196,6 +201,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpDetail.Controls.Add(this.flpDescription);
             this.flpDetail.Controls.Add(this.flpIsActive);
             this.flpDetail.Controls.Add(this.cmdSave);
+            this.flpDetail.Controls.Add(this.lblStatusSummary);
             this.flpDetail.Controls.Add(this.dgvBuildItems);
             this.flpDetail.Controls.Add(this.lblShortfallHeader);
             this.flpDetail.Controls.Add(this.lblShortfallStatus);
@@ -282,6 +288,15 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmdSave.Size = new System.Drawing.Size(75, 23);
             this.cmdSave.Text = "Save";
             this.cmdSave.UseVisualStyleBackColor = true;
+            // 
+            // lblStatusSummary
+            // 
+            this.lblStatusSummary.AutoSize = true;
+            this.lblStatusSummary.Location = new System.Drawing.Point(3, 0);
+            this.lblStatusSummary.Name = "lblStatusSummary";
+            this.lblStatusSummary.Size = new System.Drawing.Size(300, 13);
+            this.lblStatusSummary.Text = "";
+            this.lblStatusSummary.ForeColor = System.Drawing.SystemColors.GrayText;
             // 
             // dgvBuildItems
             // 
@@ -633,6 +648,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow3.Controls.Add(this.cmdAllocate);
             this.flpAddItemRow3.Controls.Add(this.cmdGenerateDelivery);
             this.flpAddItemRow3.Controls.Add(this.cmdAutoAssign);
+            this.flpAddItemRow3.Controls.Add(this.cmdStartManufacturing);
+            this.flpAddItemRow3.Controls.Add(this.cmdStartAllReady);
             this.flpAddItemRow3.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.flpAddItemRow3.Location = new System.Drawing.Point(3, 80);
             this.flpAddItemRow3.Name = "flpAddItemRow3";
@@ -678,6 +695,24 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmdAutoAssign.Text = "Auto-Assign";
             this.cmdAutoAssign.UseVisualStyleBackColor = true;
             // 
+            // cmdStartManufacturing
+            // 
+            this.cmdStartManufacturing.Location = new System.Drawing.Point(488, 3);
+            this.cmdStartManufacturing.Name = "cmdStartManufacturing";
+            this.cmdStartManufacturing.Size = new System.Drawing.Size(130, 23);
+            this.cmdStartManufacturing.Text = "Start Manufacturing";
+            this.cmdStartManufacturing.UseVisualStyleBackColor = true;
+            this.cmdStartManufacturing.Enabled = false;
+            // 
+            // cmdStartAllReady
+            // 
+            this.cmdStartAllReady.Location = new System.Drawing.Point(624, 3);
+            this.cmdStartAllReady.Name = "cmdStartAllReady";
+            this.cmdStartAllReady.Size = new System.Drawing.Size(110, 23);
+            this.cmdStartAllReady.Text = "Start All Ready";
+            this.cmdStartAllReady.UseVisualStyleBackColor = true;
+            this.cmdStartAllReady.Enabled = false;
+            // 
             // cmsGenerateDelivery
             // 
             this.cmsGenerateDelivery.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -709,9 +744,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             // 
             this.cmsBuildItems.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiSetDependency,
-            this.tsmiClearDependency});
+            this.tsmiClearDependency,
+            this.tsmiStartManufacturing,
+            this.tsmiStartAllReady});
             this.cmsBuildItems.Name = "cmsBuildItems";
-            this.cmsBuildItems.Size = new System.Drawing.Size(200, 48);
+            this.cmsBuildItems.Size = new System.Drawing.Size(200, 92);
             // 
             // tsmiSetDependency
             // 
@@ -724,6 +761,18 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.tsmiClearDependency.Name = "tsmiClearDependency";
             this.tsmiClearDependency.Size = new System.Drawing.Size(199, 22);
             this.tsmiClearDependency.Text = "Clear Dependency";
+            // 
+            // tsmiStartManufacturing
+            // 
+            this.tsmiStartManufacturing.Name = "tsmiStartManufacturing";
+            this.tsmiStartManufacturing.Size = new System.Drawing.Size(199, 22);
+            this.tsmiStartManufacturing.Text = "Start Manufacturing";
+            // 
+            // tsmiStartAllReady
+            // 
+            this.tsmiStartAllReady.Name = "tsmiStartAllReady";
+            this.tsmiStartAllReady.Size = new System.Drawing.Size(199, 22);
+            this.tsmiStartAllReady.Text = "Start All Ready";
             // 
             // FormBuildPlanner
             // 
@@ -834,5 +883,10 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private System.Windows.Forms.ContextMenuStrip cmsBuildItems;
         private System.Windows.Forms.ToolStripMenuItem tsmiSetDependency;
         private System.Windows.Forms.ToolStripMenuItem tsmiClearDependency;
+        private System.Windows.Forms.Button cmdStartManufacturing;
+        private System.Windows.Forms.Button cmdStartAllReady;
+        private System.Windows.Forms.ToolStripMenuItem tsmiStartManufacturing;
+        private System.Windows.Forms.ToolStripMenuItem tsmiStartAllReady;
+        private System.Windows.Forms.Label lblStatusSummary;
     }
 }

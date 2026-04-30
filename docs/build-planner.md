@@ -47,6 +47,42 @@ Each option asks you to pick a delivery route first.
 
 Click **Auto-Assign** to automatically distribute unallocated items across idle structures on a delivery route. The planner respects blueprint copy limits — if you only have 2 copies of a reactor blueprint, at most 2 manufactories can produce it in parallel. Review the proposed assignments before applying.
 
+## Manufacturing Execution
+
+Once items reach Ready status, you can track the manufacturing lifecycle directly from the build planner.
+
+### Start Manufacturing
+
+Select a Ready item and click **Start Manufacturing** (or right-click → Start Manufacturing). This pre-configures the structure in the tracker with the correct blueprint, quantity, and timer so the tool knows what to expect when you start the job in-game. The item advances to InProgress immediately.
+
+Requirements for starting:
+- Item must be Ready with an assigned structure
+- Structure must be built and online with no active job
+- Item must be the lowest sequence on that structure (earlier items go first)
+- Any dependency must be completed
+
+### Start All Ready
+
+Click **Start All Ready** to batch-start manufacturing on all eligible Ready items in the plan. For each structure, only the first item in sequence order is started. A summary shows how many were started and how many were skipped (with reasons).
+
+### Automatic Status Detection
+
+The background processor automatically detects manufacturing progress:
+
+- **Staged → Ready** — when resources are already present at the colony (skips the delivery step)
+- **Ready → InProgress** — when the structure has a matching active job running
+- **InProgress → Completed** — when the structure's job finishes
+
+This means you can also start jobs in-game without using the build planner buttons, and the tracker will pick up the status change automatically.
+
+### Status Summary
+
+A summary line above the grid shows item counts per status: "Staged: 2 | Delivering: 1 | Ready: 3 | InProgress: 1 | Completed: 5". When all items finish, it shows "Complete (12 items)".
+
+### Busy Indicators
+
+Ready items whose assigned structure is currently busy show a pink **[BUSY]** indicator in the Location column. If another build plan is using the same structure, it shows **[BUSY: Plan Name]** so you know what's occupying it.
+
 ## Status Colors
 
 Items in the grid are color-coded by status:

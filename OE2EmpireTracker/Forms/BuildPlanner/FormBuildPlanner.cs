@@ -90,6 +90,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             tsmiSetDependency.Click += TsmiSetDependency_Click;
             tsmiClearDependency.Click += TsmiClearDependency_Click;
 
+            // Start Manufacturing wiring
+            cmdStartManufacturing.Click += CmdStartManufacturing_Click;
+            tsmiStartManufacturing.Click += CmdStartManufacturing_Click;
+            cmdStartAllReady.Click += CmdStartAllReady_Click;
+            tsmiStartAllReady.Click += CmdStartAllReady_Click;
+
             // Generate Delivery dropdown wiring
             cmdGenerateDelivery.Click += CmdGenerateDelivery_Click;
             tsmiResourceDelivery.Click += TsmiResourceDelivery_Click;
@@ -145,7 +151,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             int shortfallHeight = dgvShortfalls.Visible ? 120 : 0;
             int headerHeight = lblShortfallHeader.Height + lblShortfallStatus.Height + 6;
             int gridHeight = h - flpPlanName.Height - flpDescription.Height
-                - flpIsActive.Height - cmdSave.Height - headerHeight
+                - flpIsActive.Height - cmdSave.Height - lblStatusSummary.Height - headerHeight
                 - shortfallHeight - addItemHeight - 36;
             if (gridHeight < 50) gridHeight = 50;
             dgvBuildItems.Size = new System.Drawing.Size(w - 6, gridHeight);
@@ -250,6 +256,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             dgvShortfalls.Visible = false;
             lblShortfallStatus.Text = "Select a build item to check resources.";
             lblShortfallStatus.ForeColor = System.Drawing.SystemColors.GrayText;
+            lblStatusSummary.Text = string.Empty;
             SetDetailEnabled(false);
         }
 
@@ -270,6 +277,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             cmdAllocate.Enabled = enabled;
             cmdAutoAssign.Enabled = enabled;
             cmdGenerateDelivery.Enabled = enabled;
+            cmdStartManufacturing.Enabled = false; // Controlled by selection
+            cmdStartAllReady.Enabled = enabled;
         }
 
         private void PopulateBuildItemsGrid()
@@ -343,10 +352,46 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                         break;
                     // Staged: default styling, no special color
                 }
+
+                // Busy indicator for Ready items (Task 10.2)
+                if (item.Status == BuildItemStatus.Ready && !string.IsNullOrEmpty(item.StructureUUID))
+                {
+                    try
+                    {
+                        var colony = playerContext.GetCurrentPlayerColonies()
+                            .FirstOrDefault(c => c.UUID == item.BuildLocationUUID);
+                        if (colony != null)
+                        {
+                            var structure = colony.Structures.FirstOrDefault(s => s.UUID == item.StructureUUID);
+                            if (structure != null && structure.ProcessCompletionTime != null)
+                            {
+                                dgvBuildItems.Rows[rowIdx].Cells[colLocation.Index].Style.BackColor = System.Drawing.Color.MistyRose;
+                                dgvBuildItems.Rows[rowIdx].Cells[colLocation.Index].Value = location + " [BUSY]";
+                            }
+                        }
+
+                        // Cross-plan contention detection
+                        var contentions = BuildPlanExecutionService.DetectContention(
+                            item,
+                            playerContext.GetCurrentPlayerBuildPlans());
+                        if (contentions.Count > 0)
+                        {
+                            string currentLocation = dgvBuildItems.Rows[rowIdx].Cells[colLocation.Index].Value as string ?? location;
+                            dgvBuildItems.Rows[rowIdx].Cells[colLocation.Index].Style.BackColor = System.Drawing.Color.MistyRose;
+                            dgvBuildItems.Rows[rowIdx].Cells[colLocation.Index].Value =
+                                currentLocation + " [BUSY: " + contentions[0].PlanName + "]";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error checking busy state for item {0}", item.UUID);
+                    }
+                }
             }
 
             sw.Stop();
             Log.Info("PERF PopulateBuildItemsGrid: {0}ms", sw.ElapsedMilliseconds);
+            UpdateStatusSummary();
         }
 
         // -----------------------------------------------------------------------
@@ -357,6 +402,34 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateShortfallGrid();
+            UpdateStartManufacturingEnabled();
+        }
+
+        private void UpdateStartManufacturingEnabled()
+        {
+            if (_selectedPlan == null || dgvBuildItems.CurrentRow == null || dgvBuildItems.CurrentRow.Tag == null)
+            {
+                cmdStartManufacturing.Enabled = false;
+                tsmiStartManufacturing.Enabled = false;
+                return;
+            }
+
+            var buildItem = dgvBuildItems.CurrentRow.Tag as BuildItem;
+            if (buildItem == null)
+            {
+                cmdStartManufacturing.Enabled = false;
+                tsmiStartManufacturing.Enabled = false;
+                return;
+            }
+
+            bool canStart = BuildPlanExecutionService.CanStartManufacturing(
+                buildItem,
+                _selectedPlan,
+                uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
+                uuid => playerContext.FindBlueprint(uuid));
+
+            cmdStartManufacturing.Enabled = canStart;
+            tsmiStartManufacturing.Enabled = canStart;
         }
 
         private void PopulateShortfallGrid()
@@ -1634,6 +1707,190 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
             PopulateBuildItemsGrid();
             Log.Info("Cleared dependency on item '{0}'", buildItem.ItemName);
+        }
+
+        // -----------------------------------------------------------------------
+        // Start Manufacturing
+        // -----------------------------------------------------------------------
+
+        private void CmdStartManufacturing_Click(object sender, EventArgs e)
+        {
+            if (_selectedPlan == null) return;
+
+            if (dgvBuildItems.CurrentRow == null || dgvBuildItems.CurrentRow.Tag == null)
+            {
+                MessageBox.Show(
+                    "Select a build item first.",
+                    "Start Manufacturing",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            var buildItem = dgvBuildItems.CurrentRow.Tag as BuildItem;
+            if (buildItem == null) return;
+
+            bool canStart = BuildPlanExecutionService.CanStartManufacturing(
+                buildItem,
+                _selectedPlan,
+                uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
+                uuid => playerContext.FindBlueprint(uuid));
+
+            if (!canStart)
+            {
+                if (buildItem.Status != BuildItemStatus.Ready)
+                {
+                    MessageBox.Show(
+                        "Item must be in Ready status to start manufacturing.",
+                        "Start Manufacturing",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
+                else if (string.IsNullOrEmpty(buildItem.StructureUUID))
+                {
+                    MessageBox.Show(
+                        "Item has no assigned structure. Allocate it first.",
+                        "Start Manufacturing",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Cannot start manufacturing. The structure may be busy, not built, or a higher-priority item is queued.",
+                        "Start Manufacturing",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
+
+                return;
+            }
+
+            var result = BuildPlanExecutionService.StartManufacturing(
+                buildItem,
+                _selectedPlan,
+                uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
+                uuid => playerContext.FindBlueprint(uuid));
+
+            if (!result.Success)
+            {
+                MessageBox.Show(
+                    result.ErrorMessage,
+                    "Start Manufacturing",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            playerContext.WriteContext();
+            playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+            PopulateBuildItemsGrid();
+            Log.Info(
+                "Started manufacturing for item '{0}' in plan '{1}'",
+                buildItem.ItemName,
+                _selectedPlan.Name);
+        }
+
+        private void CmdStartAllReady_Click(object sender, EventArgs e)
+        {
+            if (_selectedPlan == null)
+            {
+                MessageBox.Show(
+                    "Select a build plan first.",
+                    "Start All Ready",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            var result = BuildPlanExecutionService.StartAllReady(
+                _selectedPlan,
+                uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
+                uuid => playerContext.FindBlueprint(uuid));
+
+            string message;
+            if (result.StartedCount == 0 && result.SkippedCount == 0)
+            {
+                message = "No Ready items with assigned structures found.";
+            }
+            else
+            {
+                message = string.Format(
+                    "Started: {0}\nSkipped: {1}",
+                    result.StartedCount,
+                    result.SkippedCount);
+
+                if (result.SkippedReasons.Count > 0)
+                {
+                    message += "\n\nSkip reasons:";
+                    foreach (var reason in result.SkippedReasons)
+                    {
+                        message += "\n  \u2022 " + reason;
+                    }
+                }
+            }
+
+            MessageBox.Show(
+                message,
+                "Start All Ready",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+
+            if (result.StartedCount > 0)
+            {
+                playerContext.WriteContext();
+                playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+                PopulateBuildItemsGrid();
+            }
+
+            Log.Info(
+                "Start All Ready for plan '{0}': {1} started, {2} skipped",
+                _selectedPlan.Name,
+                result.StartedCount,
+                result.SkippedCount);
+        }
+
+        // -----------------------------------------------------------------------
+        // Status Summary
+        // -----------------------------------------------------------------------
+
+        private void UpdateStatusSummary()
+        {
+            if (_selectedPlan == null)
+            {
+                lblStatusSummary.Text = string.Empty;
+                return;
+            }
+
+            if (_selectedPlan.Items.Count == 0)
+            {
+                lblStatusSummary.Text = string.Empty;
+                return;
+            }
+
+            var summary = BuildPlanExecutionService.ComputeStatusSummary(_selectedPlan);
+
+            if (BuildPlanExecutionService.IsPlanComplete(_selectedPlan))
+            {
+                lblStatusSummary.Text = string.Format("Complete ({0} items)", _selectedPlan.Items.Count);
+                lblStatusSummary.ForeColor = System.Drawing.Color.Green;
+            }
+            else
+            {
+                lblStatusSummary.Text = string.Format(
+                    "Staged: {0} | Delivering: {1} | Ready: {2} | InProgress: {3} | Completed: {4}",
+                    summary[BuildItemStatus.Staged],
+                    summary[BuildItemStatus.Delivering],
+                    summary[BuildItemStatus.Ready],
+                    summary[BuildItemStatus.InProgress],
+                    summary[BuildItemStatus.Completed]);
+                lblStatusSummary.ForeColor = System.Drawing.SystemColors.ControlText;
+            }
+
+            // Update Start All Ready button enabled state
+            bool hasReadyItems = summary[BuildItemStatus.Ready] > 0;
+            cmdStartAllReady.Enabled = _selectedPlan != null && hasReadyItems;
+            tsmiStartAllReady.Enabled = _selectedPlan != null && hasReadyItems;
         }
 
         // -----------------------------------------------------------------------
