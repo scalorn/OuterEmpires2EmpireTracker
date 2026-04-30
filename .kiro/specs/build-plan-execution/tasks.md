@@ -81,15 +81,15 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
     - **Property 8: StartManufacturing rejects busy structures**
     - **Validates: Requirements 3.7, 6.1**
 
-- [ ] 5. Implement StartAllReady batch operation
-  - [~] 5.1 Implement `StartAllReady(BuildPlan, colonyFinder, blueprintFinder)` batch start
+- [x] 5. Implement StartAllReady batch operation
+  - [x] 5.1 Implement `StartAllReady(BuildPlan, colonyFinder, blueprintFinder)` batch start
     - Iterate Ready items grouped by StructureUUID, process in SequenceInStructure order
     - Start only the first eligible Ready item per structure via CanStartManufacturing + StartManufacturing
     - Skip items whose structure is busy, record skip reason
     - Return BatchStartResult with StartedCount, SkippedCount, SkippedReasons
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 8.2_
 
-  - [~] 5.2 Write property test for batch start first-in-sequence
+  - [x] 5.2 Write property test for batch start first-in-sequence
     - **Property 9: Batch start processes only first-in-sequence per structure**
     - **Validates: Requirements 4.1, 4.2, 4.3, 8.2**
 

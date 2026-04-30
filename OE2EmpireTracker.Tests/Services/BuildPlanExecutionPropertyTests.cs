@@ -1259,5 +1259,185 @@ namespace OE2EmpireTracker.Tests.Services
                     string.Format("Iteration {0}: ManufacturingCompleted should not change", i));
             }
         }
+
+        /// <summary>
+        /// Feature: build-plan-execution, Property 9: Batch start processes only first-in-sequence per structure
+        /// Validates: Requirements 4.1, 4.2, 4.3, 8.2
+        ///
+        /// For any BuildPlan, calling StartAllReady should attempt to start manufacturing
+        /// only on Ready items that pass CanStartManufacturing. For each StructureUUID,
+        /// only the lowest-sequence Ready item should be started. The sum of StartedCount
+        /// + SkippedCount should equal the number of Ready items with valid StructureUUIDs.
+        /// </summary>
+        [Test]
+        public void Property9_BatchStartProcessesOnlyFirstInSequencePerStructure()
+        {
+            var rng = new Random(1009);
+
+            for (int iter = 0; iter < Iterations; iter++)
+            {
+                // Generate 2-4 structures, each with 1-3 Ready items at different sequences
+                int structureCount = rng.Next(2, 5);
+                var colonyUUID = Guid.NewGuid().ToString();
+
+                var colony = new Colony
+                {
+                    UUID = colonyUUID,
+                    PlanetName = "TestPlanet",
+                    ColonyName = "TestColony"
+                };
+
+                var plan = new BuildPlan
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    Name = "Plan_" + rng.Next(1000),
+                    OwnerUUID = Guid.NewGuid().ToString(),
+                    IsActive = true
+                };
+
+                int totalReadyWithStructure = 0;
+                var structureUUIDs = new List<string>();
+
+                for (int s = 0; s < structureCount; s++)
+                {
+                    var structureUUID = Guid.NewGuid().ToString();
+                    structureUUIDs.Add(structureUUID);
+
+                    // Create a built+online idle structure
+                    var structure = new ColonyStructure { UUID = structureUUID };
+                    structure.Properties.SetProperty(GameConstants.PropBuilt, true);
+                    structure.Properties.SetProperty(GameConstants.PropOnline, true);
+                    colony.Structures.Add(structure);
+
+                    // Create 1-3 Ready items on this structure
+                    int itemCount = rng.Next(1, 4);
+                    var usedSequences = new HashSet<int>();
+                    for (int j = 0; j < itemCount; j++)
+                    {
+                        int seq;
+                        do
+                        {
+                            seq = rng.Next(0, 1000);
+                        }
+                        while (usedSequences.Contains(seq));
+                        usedSequences.Add(seq);
+
+                        var item = new BuildItem
+                        {
+                            UUID = Guid.NewGuid().ToString(),
+                            ItemType = BuildItemType.Manufactory,
+                            Status = BuildItemStatus.Ready,
+                            ItemName = string.Format("Item_s{0}_j{1}", s, j),
+                            BuildLocationUUID = colonyUUID,
+                            StructureUUID = structureUUID,
+                            BlueprintUUID = "bp-" + rng.Next(1000),
+                            Quantity = rng.Next(1, 10),
+                            SequenceInStructure = seq
+                        };
+                        plan.Items.Add(item);
+                        totalReadyWithStructure++;
+                    }
+                }
+
+                // Also add some items with empty StructureUUID (should be silently skipped)
+                int emptyStructItems = rng.Next(0, 3);
+                for (int j = 0; j < emptyStructItems; j++)
+                {
+                    plan.Items.Add(new BuildItem
+                    {
+                        UUID = Guid.NewGuid().ToString(),
+                        ItemType = BuildItemType.Manufactory,
+                        Status = BuildItemStatus.Ready,
+                        ItemName = "NoStruct_" + j,
+                        BuildLocationUUID = colonyUUID,
+                        StructureUUID = string.Empty,
+                        BlueprintUUID = "bp-" + rng.Next(1000),
+                        Quantity = rng.Next(1, 10),
+                        SequenceInStructure = 0
+                    });
+                }
+
+                // Create a blueprint for the blueprintFinder
+                var blueprint = new OE2EmpireTracker.Models.Blueprint("TestBP")
+                {
+                    UUID = "bp-generic",
+                    Evolution = 0
+                };
+                blueprint.Properties.SetProperty(BlueprintPropertyKeys.ManufactureRunTime, "1h");
+
+                Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
+                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => blueprint;
+
+                // Act
+                var batchResult = BuildPlanExecutionService.StartAllReady(plan, colonyFinder, blueprintFinder);
+
+                // Assert 1: StartedCount matches number of structures with Ready items
+                Assert.That(batchResult.StartedCount, Is.EqualTo(structureCount),
+                    string.Format("Iteration {0}: StartedCount {1} should equal structure count {2}",
+                        iter, batchResult.StartedCount, structureCount));
+
+                // Assert 2: StartedCount + SkippedCount == total Ready items with valid StructureUUID
+                Assert.That(batchResult.StartedCount + batchResult.SkippedCount, Is.EqualTo(totalReadyWithStructure),
+                    string.Format("Iteration {0}: Started({1}) + Skipped({2}) = {3}, expected {4}",
+                        iter, batchResult.StartedCount, batchResult.SkippedCount,
+                        batchResult.StartedCount + batchResult.SkippedCount, totalReadyWithStructure));
+
+                // Assert 3: Only the lowest-sequence item per structure was started (advanced to InProgress)
+                foreach (var structUUID in structureUUIDs)
+                {
+                    // Find all items on this structure
+                    var structItems = new List<BuildItem>();
+                    foreach (var item in plan.Items)
+                    {
+                        if (item.StructureUUID == structUUID)
+                        {
+                            structItems.Add(item);
+                        }
+                    }
+
+                    // Find the lowest sequence
+                    int lowestSeq = int.MaxValue;
+                    foreach (var item in structItems)
+                    {
+                        if (item.SequenceInStructure < lowestSeq)
+                        {
+                            lowestSeq = item.SequenceInStructure;
+                        }
+                    }
+
+                    foreach (var item in structItems)
+                    {
+                        if (item.SequenceInStructure == lowestSeq)
+                        {
+                            Assert.That(item.Status, Is.EqualTo(BuildItemStatus.InProgress),
+                                string.Format("Iteration {0}: lowest-seq item (seq={1}) on structure {2} should be InProgress",
+                                    iter, item.SequenceInStructure, structUUID));
+                        }
+                        else
+                        {
+                            Assert.That(item.Status, Is.EqualTo(BuildItemStatus.Ready),
+                                string.Format("Iteration {0}: non-lowest-seq item (seq={1}, lowest={2}) on structure {3} should remain Ready",
+                                    iter, item.SequenceInStructure, lowestSeq, structUUID));
+                        }
+                    }
+                }
+
+                // Assert 4: SkippedCount matches remaining Ready items (total - structureCount)
+                int expectedSkipped = totalReadyWithStructure - structureCount;
+                Assert.That(batchResult.SkippedCount, Is.EqualTo(expectedSkipped),
+                    string.Format("Iteration {0}: SkippedCount {1} should equal {2} (total {3} - structures {4})",
+                        iter, batchResult.SkippedCount, expectedSkipped, totalReadyWithStructure, structureCount));
+
+                // Assert 5: Items with empty StructureUUID remain Ready (silently skipped)
+                foreach (var item in plan.Items)
+                {
+                    if (string.IsNullOrEmpty(item.StructureUUID))
+                    {
+                        Assert.That(item.Status, Is.EqualTo(BuildItemStatus.Ready),
+                            string.Format("Iteration {0}: item with empty StructureUUID should remain Ready", iter));
+                    }
+                }
+            }
+        }
     }
 }

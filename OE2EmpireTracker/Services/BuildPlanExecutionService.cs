@@ -597,6 +597,94 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Batch-starts manufacturing on all eligible Ready items in a plan.
+        /// Groups Ready items by StructureUUID, processes in SequenceInStructure order,
+        /// and starts only the first eligible item per structure.
+        /// Items with empty StructureUUID are silently skipped (not counted).
+        /// Returns a summary of started and skipped counts with reasons.
+        /// </summary>
+        /// <param name="plan">The build plan to process.</param>
+        /// <param name="colonyFinder">Delegate to resolve a colony by UUID.</param>
+        /// <param name="blueprintFinder">Delegate to resolve a blueprint by UUID.</param>
+        /// <returns>BatchStartResult with StartedCount, SkippedCount, and SkippedReasons.</returns>
+        public static BatchStartResult StartAllReady(
+            BuildPlan plan,
+            Func<string, Colony> colonyFinder,
+            Func<string, Blueprint> blueprintFinder)
+        {
+            if (plan == null) throw new ArgumentNullException(nameof(plan));
+            if (colonyFinder == null) throw new ArgumentNullException(nameof(colonyFinder));
+
+            var result = new BatchStartResult();
+
+            // Collect Ready items with valid StructureUUID, grouped by StructureUUID
+            var groupedByStructure = new Dictionary<string, List<BuildItem>>();
+            foreach (var item in plan.Items)
+            {
+                if (item.Status != BuildItemStatus.Ready)
+                    continue;
+                if (string.IsNullOrEmpty(item.StructureUUID))
+                    continue;
+
+                if (!groupedByStructure.ContainsKey(item.StructureUUID))
+                {
+                    groupedByStructure[item.StructureUUID] = new List<BuildItem>();
+                }
+
+                groupedByStructure[item.StructureUUID].Add(item);
+            }
+
+            // Process each structure group
+            foreach (var kvp in groupedByStructure)
+            {
+                var structureUUID = kvp.Key;
+                var items = kvp.Value;
+
+                // Sort by SequenceInStructure ascending
+                items.Sort((a, b) => a.SequenceInStructure.CompareTo(b.SequenceInStructure));
+
+                // Try to start the first item (lowest sequence)
+                var firstItem = items[0];
+                bool canStart = CanStartManufacturing(firstItem, plan, colonyFinder, blueprintFinder);
+
+                if (canStart)
+                {
+                    var startResult = StartManufacturing(firstItem, plan, colonyFinder, blueprintFinder);
+                    if (startResult.Success)
+                    {
+                        result.StartedCount++;
+                    }
+                    else
+                    {
+                        result.SkippedCount++;
+                        result.SkippedReasons.Add(
+                            string.Format("{0}: {1}", firstItem.ItemName, startResult.ErrorMessage));
+                    }
+                }
+                else
+                {
+                    result.SkippedCount++;
+                    result.SkippedReasons.Add(
+                        string.Format("{0}: Structure is not available for manufacturing", firstItem.ItemName));
+                }
+
+                // Remaining items in this group are skipped (waiting for earlier item)
+                for (int i = 1; i < items.Count; i++)
+                {
+                    result.SkippedCount++;
+                    result.SkippedReasons.Add(
+                        string.Format("{0}: Waiting for earlier item in sequence", items[i].ItemName));
+                }
+            }
+
+            Log.Info(
+                "StartAllReady: plan '{0}' batch result: {1} started, {2} skipped",
+                plan.Name, result.StartedCount, result.SkippedCount);
+
+            return result;
+        }
+
+        /// <summary>
         /// Finds a ColonyStructure by UUID within a colony's Structures list.
         /// </summary>
         private static ColonyStructure FindStructureByUUID(Colony colony, string structureUUID)
