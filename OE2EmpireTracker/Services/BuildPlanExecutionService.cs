@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -434,6 +436,167 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Checks if a build item can start manufacturing.
+        /// Returns true if: item is Ready, has valid StructureUUID, structure exists
+        /// and is built+online, structure has no active ProcessCompletionTime,
+        /// item is lowest sequence on structure among Ready items,
+        /// and dependency (if any) is Completed.
+        /// </summary>
+        public static bool CanStartManufacturing(
+            BuildItem item,
+            BuildPlan plan,
+            Func<string, Colony> colonyFinder,
+            Func<string, Blueprint> blueprintFinder)
+        {
+            if (item == null) throw new ArgumentNullException(nameof(item));
+            if (plan == null) throw new ArgumentNullException(nameof(plan));
+            if (colonyFinder == null) throw new ArgumentNullException(nameof(colonyFinder));
+
+            // Item must be Ready with valid StructureUUID
+            if (item.Status != BuildItemStatus.Ready)
+                return false;
+            if (string.IsNullOrEmpty(item.StructureUUID))
+                return false;
+
+            // Resolve colony and structure
+            var colony = colonyFinder(item.BuildLocationUUID);
+            if (colony == null)
+                return false;
+
+            ColonyStructure structure = FindStructureByUUID(colony, item.StructureUUID);
+            if (structure == null)
+                return false;
+
+            // Structure must be built and online
+            if (!structure.IsBuiltAndOnline)
+                return false;
+
+            // Structure must have no active ProcessCompletionTime
+            if (structure.ProcessCompletionTime != null)
+                return false;
+
+            // Item must be lowest SequenceInStructure among Ready items on that structure
+            foreach (var other in plan.Items)
+            {
+                if (other.UUID == item.UUID)
+                    continue;
+                if (other.Status != BuildItemStatus.Ready)
+                    continue;
+                if (other.StructureUUID != item.StructureUUID)
+                    continue;
+                if (other.SequenceInStructure < item.SequenceInStructure)
+                    return false;
+            }
+
+            // Dependency (if any) must be Completed (missing from plan = treated as satisfied)
+            if (!string.IsNullOrEmpty(item.DependsOnUUID))
+            {
+                foreach (var candidate in plan.Items)
+                {
+                    if (candidate.UUID == item.DependsOnUUID)
+                    {
+                        if (candidate.Status != BuildItemStatus.Completed)
+                            return false;
+                        break;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Pre-configures a ColonyStructure for manufacturing based on the build item.
+        /// Sets type-specific fields (blueprint/commodity, quantity, timer) on the structure.
+        /// Advances item to InProgress on success.
+        /// Returns a result indicating success or failure reason.
+        /// </summary>
+        public static StartManufacturingResult StartManufacturing(
+            BuildItem item,
+            BuildPlan plan,
+            Func<string, Colony> colonyFinder,
+            Func<string, Blueprint> blueprintFinder)
+        {
+            if (item == null) throw new ArgumentNullException(nameof(item));
+            if (plan == null) throw new ArgumentNullException(nameof(plan));
+            if (colonyFinder == null) throw new ArgumentNullException(nameof(colonyFinder));
+
+            // Validate item is Ready with valid StructureUUID
+            if (item.Status != BuildItemStatus.Ready || string.IsNullOrEmpty(item.StructureUUID))
+            {
+                return new StartManufacturingResult
+                {
+                    Success = false,
+                    ErrorMessage = "Item is not Ready or has no assigned structure."
+                };
+            }
+
+            // Resolve colony and structure
+            var colony = colonyFinder(item.BuildLocationUUID);
+            if (colony == null)
+            {
+                return new StartManufacturingResult
+                {
+                    Success = false,
+                    ErrorMessage = "Structure not found or not built. Please verify the colony data is up to date."
+                };
+            }
+
+            ColonyStructure structure = FindStructureByUUID(colony, item.StructureUUID);
+            if (structure == null || !structure.IsBuiltAndOnline)
+            {
+                return new StartManufacturingResult
+                {
+                    Success = false,
+                    ErrorMessage = "Structure not found or not built. Please verify the colony data is up to date."
+                };
+            }
+
+            // Structure must not be busy
+            if (structure.ProcessCompletionTime != null)
+            {
+                return new StartManufacturingResult
+                {
+                    Success = false,
+                    ErrorMessage = "Structure is busy with an active job."
+                };
+            }
+
+            // Configure structure based on item type
+            switch (item.ItemType)
+            {
+                case BuildItemType.Manufactory:
+                    ConfigureManufactory(structure, item, blueprintFinder);
+                    break;
+
+                case BuildItemType.Commodity:
+                    ConfigureCommodity(structure, item);
+                    break;
+
+                case BuildItemType.Research:
+                    ConfigureResearch(structure, item, blueprintFinder);
+                    break;
+
+                case BuildItemType.Mining:
+                    ConfigureMining(structure, item);
+                    break;
+
+                case BuildItemType.Refining:
+                    ConfigureRefining(structure, item);
+                    break;
+            }
+
+            // Advance item to InProgress
+            BackgroundProcessor.TryAdvanceStatus(item, BuildItemStatus.InProgress);
+
+            Log.Info(
+                "StartManufacturing: item {0} ({1}) in plan '{2}' on structure {3} started successfully",
+                item.UUID, item.ItemType, plan.Name, item.StructureUUID);
+
+            return new StartManufacturingResult { Success = true };
+        }
+
+        /// <summary>
         /// Finds a ColonyStructure by UUID within a colony's Structures list.
         /// </summary>
         private static ColonyStructure FindStructureByUUID(Colony colony, string structureUUID)
@@ -448,6 +611,156 @@ namespace OE2EmpireTracker.Services
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Configures a manufactory structure for blueprint manufacturing.
+        /// Sets ManufacturingBlueprintUUID, ManufacturingQuantity, ManufacturingCompleted,
+        /// and computes ProcessCompletionTime from the blueprint's ManufactureRunTime property.
+        /// </summary>
+        private static void ConfigureManufactory(ColonyStructure structure, BuildItem item, Func<string, Blueprint> blueprintFinder)
+        {
+            structure.ManufacturingBlueprintUUID = item.BlueprintUUID;
+            structure.ManufacturingQuantity = item.Quantity;
+            structure.ManufacturingCompleted = 0;
+
+            long mfgSeconds = 1;
+            if (blueprintFinder != null)
+            {
+                var blueprint = blueprintFinder(item.BlueprintUUID);
+                if (blueprint != null)
+                {
+                    string mfgTimeStr;
+                    blueprint.Properties.GetString(BlueprintPropertyKeys.ManufactureRunTime, "1", out mfgTimeStr);
+                    if (string.IsNullOrEmpty(mfgTimeStr)) mfgTimeStr = "1";
+
+                    // Normalize time format: "9 hours" -> "9h", "30 minutes" -> "30m", etc.
+                    mfgTimeStr = NormalizeTimeString(mfgTimeStr);
+
+                    // Parse using CountDownTime's TimeRemainingString parser
+                    var tempTimer = new CountDownTime();
+                    tempTimer.TimeRemainingString = mfgTimeStr;
+                    mfgSeconds = tempTimer.TimeRemaining;
+                    if (mfgSeconds <= 0) mfgSeconds = 1;
+                }
+            }
+
+            structure.ProcessCompletionTime = new CountDownTime();
+            structure.ProcessCompletionTime.StartRepeating(mfgSeconds);
+
+            Log.Debug(
+                "ConfigureManufactory: structure={0} blueprint={1} qty={2} intervalSeconds={3}",
+                structure.UUID, item.BlueprintUUID, item.Quantity, mfgSeconds);
+        }
+
+        /// <summary>
+        /// Configures a commodity factory structure for commodity production.
+        /// Sets ManufacturingCommodityName, ManufacturingQuantity, ManufacturingCompleted,
+        /// and uses GameConstants.CommodityCycleSeconds for the repeating interval.
+        /// </summary>
+        private static void ConfigureCommodity(ColonyStructure structure, BuildItem item)
+        {
+            structure.ManufacturingCommodityName = item.CommodityName;
+            structure.ManufacturingQuantity = item.Quantity;
+            structure.ManufacturingCompleted = 0;
+
+            long commodityCycleSeconds = GameConstants.CommodityCycleSeconds;
+            if (commodityCycleSeconds <= 0) commodityCycleSeconds = 600;
+
+            structure.ProcessCompletionTime = new CountDownTime();
+            structure.ProcessCompletionTime.StartRepeating(commodityCycleSeconds);
+
+            Log.Debug(
+                "ConfigureCommodity: structure={0} commodity={1} qty={2} intervalSeconds={3}",
+                structure.UUID, item.CommodityName, item.Quantity, commodityCycleSeconds);
+        }
+
+        /// <summary>
+        /// Configures a research lab structure for blueprint research.
+        /// Sets ResearchingBlueprintUUID and uses ResearchTimeLookup.GetResearchTimeSeconds()
+        /// for the one-shot timer duration.
+        /// </summary>
+        private static void ConfigureResearch(ColonyStructure structure, BuildItem item, Func<string, Blueprint> blueprintFinder)
+        {
+            structure.ResearchingBlueprintUUID = item.BlueprintUUID;
+
+            long researchSeconds = 0;
+            if (blueprintFinder != null)
+            {
+                var blueprint = blueprintFinder(item.BlueprintUUID);
+                if (blueprint != null)
+                {
+                    researchSeconds = ResearchTimeLookup.GetResearchTimeSeconds(blueprint.Evolution);
+                }
+            }
+
+            if (researchSeconds <= 0) researchSeconds = 2 * 86400; // Default: 2 days (evo 0)
+
+            structure.ProcessCompletionTime = new CountDownTime();
+            structure.ProcessCompletionTime.TimeRemaining = researchSeconds;
+
+            Log.Debug(
+                "ConfigureResearch: structure={0} blueprint={1} researchSeconds={2}",
+                structure.UUID, item.BlueprintUUID, researchSeconds);
+        }
+
+        /// <summary>
+        /// Configures a mining rig structure for mining.
+        /// Sets MiningSurvey and MiningSurveyResource from the build item.
+        /// Uses SecondsPerHour for the repeating timer (hour-aligned mining cycles).
+        /// </summary>
+        private static void ConfigureMining(ColonyStructure structure, BuildItem item)
+        {
+            structure.MiningSurvey = item.MiningSurveyUUID;
+            structure.MiningSurveyResource = item.MiningResource;
+
+            long miningIntervalSeconds = GameConstants.SecondsPerHour;
+
+            structure.ProcessCompletionTime = new CountDownTime();
+            long secondsUntilNextHour = GameConstants.SecondsPerHour
+                - (long)(SystemClock.UtcNow - SystemClock.UtcNow.Date.AddHours(SystemClock.UtcNow.Hour)).TotalSeconds;
+            structure.ProcessCompletionTime.StartRepeating(miningIntervalSeconds, secondsUntilNextHour);
+
+            Log.Debug(
+                "ConfigureMining: structure={0} survey={1} resource={2} intervalSeconds={3}",
+                structure.UUID, item.MiningSurveyUUID, item.MiningResource, miningIntervalSeconds);
+        }
+
+        /// <summary>
+        /// Configures a refinery structure for refining.
+        /// Sets RefiningResource and RefiningResourcePurity from the build item.
+        /// Uses SecondsPerHour for the repeating timer (hour-aligned refining cycles).
+        /// </summary>
+        private static void ConfigureRefining(ColonyStructure structure, BuildItem item)
+        {
+            structure.RefiningResource = item.RefiningResource;
+            structure.RefiningResourcePurity = item.RefiningPurity;
+
+            long refiningIntervalSeconds = GameConstants.SecondsPerHour;
+
+            structure.ProcessCompletionTime = new CountDownTime();
+            long secondsUntilNextHour = GameConstants.SecondsPerHour
+                - (long)(SystemClock.UtcNow - SystemClock.UtcNow.Date.AddHours(SystemClock.UtcNow.Hour)).TotalSeconds;
+            structure.ProcessCompletionTime.StartRepeating(refiningIntervalSeconds, secondsUntilNextHour);
+
+            Log.Debug(
+                "ConfigureRefining: structure={0} resource={1} purity={2} intervalSeconds={3}",
+                structure.UUID, item.RefiningResource, item.RefiningPurity, refiningIntervalSeconds);
+        }
+
+        /// <summary>
+        /// Normalizes time strings from blueprint properties to the format expected by
+        /// CountDownTime.TimeRemainingString (e.g. "9 hours" -> "9h", "30 minutes" -> "30m").
+        /// Mirrors the private NormalizeTimeString in ColonyStructureV2.
+        /// </summary>
+        private static string NormalizeTimeString(string timeStr)
+        {
+            if (string.IsNullOrEmpty(timeStr)) return timeStr;
+            timeStr = Regex.Replace(timeStr, @"\s*hours?\s*", "h ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*minutes?\s*", "m ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*seconds?\s*", "s ", RegexOptions.IgnoreCase);
+            timeStr = Regex.Replace(timeStr, @"\s*days?\s*", "d ", RegexOptions.IgnoreCase);
+            return timeStr.Trim();
         }
 
         /// <summary>

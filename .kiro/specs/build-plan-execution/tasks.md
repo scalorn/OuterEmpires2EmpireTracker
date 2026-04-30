@@ -54,18 +54,18 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
     - **Property 6: Sequence ordering restricts manufacturing start**
     - **Validates: Requirements 8.1, 8.2**
 
-- [~] 3. Checkpoint - Ensure all tests pass
+- [x] 3. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Implement CanStartManufacturing and StartManufacturing
-  - [~] 4.1 Implement `CanStartManufacturing(BuildItem, BuildPlan, colonyFinder, blueprintFinder)` eligibility check
+- [x] 4. Implement CanStartManufacturing and StartManufacturing
+  - [x] 4.1 Implement `CanStartManufacturing(BuildItem, BuildPlan, colonyFinder, blueprintFinder)` eligibility check
     - Item must be Ready with valid StructureUUID
     - Structure must exist, be built and online, have no active ProcessCompletionTime
     - Item must be lowest SequenceInStructure among Ready items on that structure in the plan
     - Dependency (if any) must be Completed
     - _Requirements: 3.1, 3.7, 3.8, 6.1, 7.1, 8.1_
 
-  - [~] 4.2 Implement `StartManufacturing(BuildItem, BuildPlan, colonyFinder, blueprintFinder)` pre-configuration
+  - [x] 4.2 Implement `StartManufacturing(BuildItem, BuildPlan, colonyFinder, blueprintFinder)` pre-configuration
     - Per item type: set type-specific fields on ColonyStructure (ManufacturingBlueprintUUID, ManufacturingCommodityName, ResearchingBlueprintUUID, MiningSurvey/Resource, RefiningResource/Purity)
     - Set ManufacturingQuantity and ManufacturingCompleted where applicable
     - Compute and set ProcessCompletionTime using appropriate time calculation (blueprint ManufactureRunTime, CommodityCycleSeconds, ResearchTimeLookup, mining/refining intervals) with ProductionFocus skill multiplier
@@ -73,11 +73,11 @@ Extend the Build Planner from a resource-delivery tracker into a full manufactur
     - Return StartManufacturingResult with Success=false and ErrorMessage for busy/missing/not-built structures
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
 
-  - [~] 4.3 Write property test for StartManufacturing configures correctly
+  - [x] 4.3 Write property test for StartManufacturing configures correctly
     - **Property 7: StartManufacturing configures structure correctly**
     - **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5, 3.6**
 
-  - [~] 4.4 Write property test for StartManufacturing rejects busy structures
+  - [x] 4.4 Write property test for StartManufacturing rejects busy structures
     - **Property 8: StartManufacturing rejects busy structures**
     - **Validates: Requirements 3.7, 6.1**
 

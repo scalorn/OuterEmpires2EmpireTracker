@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -977,6 +978,285 @@ namespace OE2EmpireTracker.Tests.Services
                                 i, item.SequenceInStructure, lowestSeq));
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Feature: build-plan-execution, Property 7: StartManufacturing configures structure correctly
+        /// Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5, 3.6
+        ///
+        /// For any Ready BuildItem where CanStartManufacturing returns true, calling
+        /// StartManufacturing should set the correct type-specific fields on the
+        /// ColonyStructure, advance the item to InProgress, set ProcessCompletionTime
+        /// to non-null, and return Success == true.
+        /// </summary>
+        [Test]
+        public void Property7_StartManufacturingConfiguresStructureCorrectly()
+        {
+            var rng = new Random(1007);
+            var testTypes = new[]
+            {
+                BuildItemType.Manufactory, BuildItemType.Commodity,
+                BuildItemType.Research, BuildItemType.Mining, BuildItemType.Refining
+            };
+
+            for (int i = 0; i < Iterations; i++)
+            {
+                var itemType = testTypes[rng.Next(testTypes.Length)];
+                var colonyUUID = Guid.NewGuid().ToString();
+                var structureUUID = Guid.NewGuid().ToString();
+                var blueprintUUID = "bp-" + rng.Next(1000);
+                var commodityName = "Commodity_" + rng.Next(100);
+                var miningResource = "Resource_" + rng.Next(50);
+                var miningSurveyUUID = "survey-" + rng.Next(100);
+                var refiningResource = "Ore_" + rng.Next(50);
+                var refiningPurity = GameConstants.PurityMedium;
+                int quantity = rng.Next(1, 50);
+
+                // Create a built+online idle structure
+                var structure = new ColonyStructure { UUID = structureUUID };
+                structure.Properties.SetProperty(GameConstants.PropBuilt, true);
+                structure.Properties.SetProperty(GameConstants.PropOnline, true);
+
+                var colony = new Colony
+                {
+                    UUID = colonyUUID,
+                    PlanetName = "TestPlanet",
+                    ColonyName = "TestColony"
+                };
+                colony.Structures.Add(structure);
+
+                // Create a blueprint with ManufactureRunTime for Manufactory items
+                var blueprint = new OE2EmpireTracker.Models.Blueprint("TestBP_" + rng.Next(1000))
+                {
+                    UUID = blueprintUUID,
+                    Evolution = rng.Next(0, 5)
+                };
+                blueprint.Properties.SetProperty(BlueprintPropertyKeys.ManufactureRunTime, "1h 30m");
+
+                var item = new BuildItem
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    ItemType = itemType,
+                    Status = BuildItemStatus.Ready,
+                    BuildLocationUUID = colonyUUID,
+                    StructureUUID = structureUUID,
+                    BlueprintUUID = blueprintUUID,
+                    CommodityName = commodityName,
+                    MiningResource = miningResource,
+                    MiningSurveyUUID = miningSurveyUUID,
+                    RefiningResource = refiningResource,
+                    RefiningPurity = refiningPurity,
+                    Quantity = quantity,
+                    SequenceInStructure = 0
+                };
+
+                var plan = new BuildPlan
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    Name = "Plan_" + rng.Next(1000),
+                    OwnerUUID = Guid.NewGuid().ToString(),
+                    IsActive = true
+                };
+                plan.Items.Add(item);
+
+                Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
+                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => uuid == blueprintUUID ? blueprint : null;
+
+                // Verify CanStartManufacturing returns true
+                bool canStart = BuildPlanExecutionService.CanStartManufacturing(
+                    item, plan, colonyFinder, blueprintFinder);
+                Assert.That(canStart, Is.True,
+                    string.Format("Iteration {0}: CanStartManufacturing should return true for {1}",
+                        i, itemType));
+
+                // Act
+                var result = BuildPlanExecutionService.StartManufacturing(
+                    item, plan, colonyFinder, blueprintFinder);
+
+                // Assert: Success
+                Assert.That(result.Success, Is.True,
+                    string.Format("Iteration {0}: StartManufacturing should return Success for {1}",
+                        i, itemType));
+
+                // Assert: Item advanced to InProgress
+                Assert.That(item.Status, Is.EqualTo(BuildItemStatus.InProgress),
+                    string.Format("Iteration {0}: item should be InProgress after StartManufacturing for {1}",
+                        i, itemType));
+
+                // Assert: ProcessCompletionTime is non-null
+                Assert.That(structure.ProcessCompletionTime, Is.Not.Null,
+                    string.Format("Iteration {0}: ProcessCompletionTime should be non-null for {1}",
+                        i, itemType));
+
+                // Assert: Type-specific fields
+                switch (itemType)
+                {
+                    case BuildItemType.Manufactory:
+                        Assert.That(structure.ManufacturingBlueprintUUID, Is.EqualTo(blueprintUUID),
+                            string.Format("Iteration {0}: ManufacturingBlueprintUUID should match", i));
+                        Assert.That(structure.ManufacturingQuantity, Is.EqualTo(quantity),
+                            string.Format("Iteration {0}: ManufacturingQuantity should match", i));
+                        Assert.That(structure.ManufacturingCompleted, Is.EqualTo(0),
+                            string.Format("Iteration {0}: ManufacturingCompleted should be 0", i));
+                        break;
+
+                    case BuildItemType.Commodity:
+                        Assert.That(structure.ManufacturingCommodityName, Is.EqualTo(commodityName),
+                            string.Format("Iteration {0}: ManufacturingCommodityName should match", i));
+                        Assert.That(structure.ManufacturingQuantity, Is.EqualTo(quantity),
+                            string.Format("Iteration {0}: ManufacturingQuantity should match", i));
+                        Assert.That(structure.ManufacturingCompleted, Is.EqualTo(0),
+                            string.Format("Iteration {0}: ManufacturingCompleted should be 0", i));
+                        break;
+
+                    case BuildItemType.Research:
+                        Assert.That(structure.ResearchingBlueprintUUID, Is.EqualTo(blueprintUUID),
+                            string.Format("Iteration {0}: ResearchingBlueprintUUID should match", i));
+                        break;
+
+                    case BuildItemType.Mining:
+                        Assert.That(structure.MiningSurvey, Is.EqualTo(miningSurveyUUID),
+                            string.Format("Iteration {0}: MiningSurvey should match", i));
+                        Assert.That(structure.MiningSurveyResource, Is.EqualTo(miningResource),
+                            string.Format("Iteration {0}: MiningSurveyResource should match", i));
+                        break;
+
+                    case BuildItemType.Refining:
+                        Assert.That(structure.RefiningResource, Is.EqualTo(refiningResource),
+                            string.Format("Iteration {0}: RefiningResource should match", i));
+                        Assert.That(structure.RefiningResourcePurity, Is.EqualTo(refiningPurity),
+                            string.Format("Iteration {0}: RefiningResourcePurity should match", i));
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Feature: build-plan-execution, Property 8: StartManufacturing rejects busy structures
+        /// Validates: Requirements 3.7, 6.1
+        ///
+        /// For any BuildItem whose assigned ColonyStructure has a non-null
+        /// ProcessCompletionTime, calling StartManufacturing should return
+        /// Success == false and should not modify the structure or the item's status.
+        /// </summary>
+        [Test]
+        public void Property8_StartManufacturingRejectsBusyStructures()
+        {
+            var rng = new Random(1008);
+            var testTypes = new[]
+            {
+                BuildItemType.Manufactory, BuildItemType.Commodity,
+                BuildItemType.Research, BuildItemType.Mining, BuildItemType.Refining
+            };
+
+            for (int i = 0; i < Iterations; i++)
+            {
+                var itemType = testTypes[rng.Next(testTypes.Length)];
+                var colonyUUID = Guid.NewGuid().ToString();
+                var structureUUID = Guid.NewGuid().ToString();
+                var blueprintUUID = "bp-" + rng.Next(1000);
+                var commodityName = "Commodity_" + rng.Next(100);
+                int quantity = rng.Next(1, 50);
+
+                // Create a built+online structure that is BUSY
+                var structure = new ColonyStructure { UUID = structureUUID };
+                structure.Properties.SetProperty(GameConstants.PropBuilt, true);
+                structure.Properties.SetProperty(GameConstants.PropOnline, true);
+
+                // Set ProcessCompletionTime to make it busy
+                var busyTimer = new CountDownTime();
+                busyTimer.StartRepeating(3600);
+                structure.ProcessCompletionTime = busyTimer;
+
+                // Capture original structure state for comparison
+                var origMfgBlueprintUUID = structure.ManufacturingBlueprintUUID;
+                var origMfgCommodityName = structure.ManufacturingCommodityName;
+                var origResearchBlueprintUUID = structure.ResearchingBlueprintUUID;
+                var origMiningSurvey = structure.MiningSurvey;
+                var origMiningSurveyResource = structure.MiningSurveyResource;
+                var origRefiningResource = structure.RefiningResource;
+                var origRefiningPurity = structure.RefiningResourcePurity;
+                var origMfgQuantity = structure.ManufacturingQuantity;
+                var origMfgCompleted = structure.ManufacturingCompleted;
+
+                var colony = new Colony
+                {
+                    UUID = colonyUUID,
+                    PlanetName = "TestPlanet",
+                    ColonyName = "TestColony"
+                };
+                colony.Structures.Add(structure);
+
+                var item = new BuildItem
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    ItemType = itemType,
+                    Status = BuildItemStatus.Ready,
+                    BuildLocationUUID = colonyUUID,
+                    StructureUUID = structureUUID,
+                    BlueprintUUID = blueprintUUID,
+                    CommodityName = commodityName,
+                    MiningResource = "Iron",
+                    MiningSurveyUUID = "survey-" + rng.Next(100),
+                    RefiningResource = "Ore",
+                    RefiningPurity = GameConstants.PurityHigh,
+                    Quantity = quantity,
+                    SequenceInStructure = 0
+                };
+
+                var plan = new BuildPlan
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    Name = "Plan_" + rng.Next(1000),
+                    OwnerUUID = Guid.NewGuid().ToString(),
+                    IsActive = true
+                };
+                plan.Items.Add(item);
+
+                Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
+                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+
+                // CanStartManufacturing should return false for busy structures
+                bool canStart = BuildPlanExecutionService.CanStartManufacturing(
+                    item, plan, colonyFinder, blueprintFinder);
+                Assert.That(canStart, Is.False,
+                    string.Format("Iteration {0}: CanStartManufacturing should be false for busy structure ({1})",
+                        i, itemType));
+
+                // Act
+                var result = BuildPlanExecutionService.StartManufacturing(
+                    item, plan, colonyFinder, blueprintFinder);
+
+                // Assert: Failure
+                Assert.That(result.Success, Is.False,
+                    string.Format("Iteration {0}: StartManufacturing should fail for busy structure ({1})",
+                        i, itemType));
+
+                // Assert: Item status unchanged (still Ready)
+                Assert.That(item.Status, Is.EqualTo(BuildItemStatus.Ready),
+                    string.Format("Iteration {0}: item should remain Ready when structure is busy ({1})",
+                        i, itemType));
+
+                // Assert: Structure fields unchanged
+                Assert.That(structure.ManufacturingBlueprintUUID, Is.EqualTo(origMfgBlueprintUUID),
+                    string.Format("Iteration {0}: ManufacturingBlueprintUUID should not change", i));
+                Assert.That(structure.ManufacturingCommodityName, Is.EqualTo(origMfgCommodityName),
+                    string.Format("Iteration {0}: ManufacturingCommodityName should not change", i));
+                Assert.That(structure.ResearchingBlueprintUUID, Is.EqualTo(origResearchBlueprintUUID),
+                    string.Format("Iteration {0}: ResearchingBlueprintUUID should not change", i));
+                Assert.That(structure.MiningSurvey, Is.EqualTo(origMiningSurvey),
+                    string.Format("Iteration {0}: MiningSurvey should not change", i));
+                Assert.That(structure.MiningSurveyResource, Is.EqualTo(origMiningSurveyResource),
+                    string.Format("Iteration {0}: MiningSurveyResource should not change", i));
+                Assert.That(structure.RefiningResource, Is.EqualTo(origRefiningResource),
+                    string.Format("Iteration {0}: RefiningResource should not change", i));
+                Assert.That(structure.RefiningResourcePurity, Is.EqualTo(origRefiningPurity),
+                    string.Format("Iteration {0}: RefiningResourcePurity should not change", i));
+                Assert.That(structure.ManufacturingQuantity, Is.EqualTo(origMfgQuantity),
+                    string.Format("Iteration {0}: ManufacturingQuantity should not change", i));
+                Assert.That(structure.ManufacturingCompleted, Is.EqualTo(origMfgCompleted),
+                    string.Format("Iteration {0}: ManufacturingCompleted should not change", i));
             }
         }
     }
