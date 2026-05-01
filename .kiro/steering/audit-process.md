@@ -22,6 +22,7 @@ These run automatically via the post-task-audit hook:
 11. **Unused Classes** (unused-class.js) — Finds public/internal classes that are never referenced outside their declaring file. Scans all .cs files (excluding Designer.cs) for class declarations, then checks if the class name appears in any other .cs file (including Designer.cs and test files). Classes referenced only within their own file must appear at least twice (declaration + usage). Extension method classes, the Program entry point, and known baseline items are exempt.
 12. **Spec Quality** (spec-quality.js) — Validates requirements files in spec/requirements/ have proper REQ-xxx IDs on all requirement statements, use testable language (SHALL/MUST), contain no vague adjectives without measurable criteria (intuitive, robust, scalable, etc.), and have no TODO/TBD/FIXME markers.
 13. **Term Consistency** (term-consistency.js) — Detects terminology drift across spec/ and docs/ markdown files. Maintains a list of canonical terms and their non-canonical synonyms. Reports files using non-canonical variants. Rules use word-boundary matching and skip code spans.
+14. **Event Matrix** (event-matrix.js) — Cross-checks the form-to-event subscription matrix in spec/requirements/DataChangeEvents.md (REQ-DCE-024) against actual `playerContext.*Changed +=` subscriptions in Form*.cs files. Reports events listed in the matrix but missing from code (IN_MATRIX_NOT_CODE) and subscriptions in code but missing from the matrix (IN_CODE_NOT_MATRIX).
 
 ## Manual Audit Checklist
 

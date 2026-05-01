@@ -29,6 +29,7 @@ const tools = [
     { name: 'Inline Sort', script: 'inline-sort-check.js' },
     { name: 'Spec Quality', script: 'spec-quality.js' },
     { name: 'Term Consistency', script: 'term-consistency.js' },
+    { name: 'Event Matrix', script: 'event-matrix.js' },
 ];
 
 let totalFindings = 0;
