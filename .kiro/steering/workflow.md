@@ -16,6 +16,10 @@
    - Update the corresponding mockup in `spec/mockups/` in the same commit as the code changes
    - If a control is added, removed, renamed, or repositioned, the mockup ASCII wireframe and control list must reflect it
    - If no mockup exists for the form, create one
+6. **Update user flows** — if the work changes form behavior or event subscriptions:
+   - Verify the user flow diagrams (Mermaid sequence diagrams) in the relevant spec/requirements/ file still match
+   - If a new interaction path is added, add it to the flow diagram
+   - If the event subscription matrix in DataChangeEvents.md is affected, update it (event-matrix.js will catch mismatches)
 6. Do not leave uncommitted changes at the end of a task
 7. **Run backup script** after every commit: `D:\projects\OuterEmpires2\OE2EmpireTracker\oebackup.ps1`
 
