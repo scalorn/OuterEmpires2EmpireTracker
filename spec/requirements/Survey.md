@@ -4,6 +4,13 @@
 
 The user wants to record planet resource surveys imported from the game, tracking which resources are available at what purities and amounts, so they can make informed decisions about where to mine.
 
+## Out of Scope
+
+- Automatic survey discovery or scanning from the game
+- Resource depletion tracking over time
+- Survey comparison or ranking tools (best planet for resource X)
+- Geological or terrain data beyond resource amounts
+
 ## Survey Data
 
 **REQ-SRV-001** A Survey SHALL have UUID, PlanetName, SurveyID, NickName, ScannedBy, DateTime, ScannerBlueprintUUID, a Properties dictionary, and a Resources dictionary keyed by resource name.  

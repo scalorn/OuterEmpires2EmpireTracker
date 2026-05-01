@@ -6,9 +6,10 @@ The user wants to plan complex manufacturing projects (ships, station components
 
 ## Out of Scope
 
-- Automatic scheduling or optimization of build order across colonies
 - Cost estimation or budget tracking for build plans
-- Integration with external tools or spreadsheets
+- Automatic scheduling or optimization of build order across colonies
+- Dependency resolution between plans (each plan is independent)
+- Time-to-completion forecasting for entire plans
 
 ## Build Plans
 

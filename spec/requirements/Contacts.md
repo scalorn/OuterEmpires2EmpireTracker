@@ -9,6 +9,7 @@ The user wants to track factions and external characters (other players, NPCs) t
 - Messaging or communication with other players
 - Faction reputation tracking or diplomacy mechanics
 - Automatic discovery of contacts from game data
+- Contact notes or relationship history
 
 ## Factions
 

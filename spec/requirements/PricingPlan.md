@@ -4,6 +4,13 @@
 
 The user wants to assign credit values to resources and compute rolled-up costs for manufactured items and commodities, enabling profit/loss analysis and informed market pricing decisions.
 
+## Out of Scope
+
+- Market price scraping or real-time price feeds
+- Automatic price adjustment based on supply/demand
+- Multi-currency or exchange rate support
+- Historical price tracking or price trend analysis
+
 ## Overview
 
 Pricing Plans assign monetary values (in credits) to resources, commodities, and manufactured items. Each plan is a named, per-player configuration containing base resource prices for Refined, S1, and S2 purity levels, plus optional time-cost parameters. The system rolls up base prices through bill-of-materials chains to compute item costs.

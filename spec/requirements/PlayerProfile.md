@@ -4,6 +4,13 @@
 
 The user wants to track multiple in-game characters (player profiles) with their skills, ranks, and credits, so that skill-based production multipliers are applied correctly per colony owner.
 
+## Out of Scope
+
+- Skill training queue or planning
+- Experience point tracking
+- Character appearance or cosmetic data
+- Skill point allocation recommendations
+
 ## Profile Data
 
 **REQ-PP-001** A PlayerProfile SHALL have UUID, Name, Faction, TotalCredits (decimal), SkillPoints (int), three PlayerRank objects (Public, Private, Military), a Skills dictionary, and a SkillGroups dictionary.  

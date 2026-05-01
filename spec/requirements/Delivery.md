@@ -4,6 +4,13 @@
 
 The user wants to plan and execute multi-stop delivery runs between colonies and stations, tracking what needs to be loaded, dropped off, and picked up at each stop — turning complex logistics into a simple checklist.
 
+## Out of Scope
+
+- Fuel cost calculation for routes
+- Travel time estimation between systems
+- Automatic route optimization (shortest path, fewest jumps)
+- Ship capacity enforcement as a hard block during planning (volume is displayed but not blocking)
+
 ## Delivery Planning Flow
 
 ```mermaid
