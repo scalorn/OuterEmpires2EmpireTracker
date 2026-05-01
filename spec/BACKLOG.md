@@ -179,11 +179,6 @@ Deserialized from BaselineData.json but no production code ever reads the value 
 **Status: New**
 Declared on BuildItem but never set by any code and never read. Appears to be a planned feature for hierarchical build item dependencies (e.g. "build this after that") that was never implemented. Remove or implement.
 
-### BL-091: UIPreferences.OpenForms — Replaced by OpenFormEntries
-**Dependencies:** None
-**Status: New**
-Replaced by `OpenFormEntries` (which IS used in MainWindow.cs). Kept for JSON backward compatibility — Newtonsoft deserializes old `OpenForms` arrays from UIPreferences.json, but no code reads the property. Safe to remove after one release cycle (all users will have migrated to OpenFormEntries format).
-
 ### BL-092: ShipStats.CrewSupported — Never Set or Read
 **Dependencies:** None
 **Status: New**

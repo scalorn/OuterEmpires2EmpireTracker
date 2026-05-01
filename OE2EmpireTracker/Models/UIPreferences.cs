@@ -9,7 +9,6 @@ namespace OE2EmpireTracker.Models
         public Dictionary<string, Dictionary<string, WindowState>> Forms { get; set; }
             = new Dictionary<string, Dictionary<string, WindowState>>();
 
-        public List<string> OpenForms { get; set; } = new List<string>();
         public List<OpenFormEntry> OpenFormEntries { get; set; } = new List<OpenFormEntry>();
 
         public ThresholdPreferences Thresholds { get; set; } = new ThresholdPreferences();
