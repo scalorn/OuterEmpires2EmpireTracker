@@ -1,6 +1,6 @@
 # Feature Backlog
 
-**Next available ID: BL-108** (check COMPLETED.md before assigning — IDs are shared across both files)
+**Next available ID: BL-130** (check COMPLETED.md before assigning — IDs are shared across both files)
 
 Open features and enhancements to be worked on.
 
@@ -273,3 +273,118 @@ Add right-click context menus to DataGridView grids across all forms. Currently 
 - **FormShipTemplate/FormShipInstance**: dgvSlots/dgvComponents — Add/Remove
 - **FormStation**: dgvHold/dgvComponents — Add/Remove
 Each context menu should mirror the existing button actions for that grid, providing the same functionality via right-click.
+
+
+## Read-Only Data Wrapper Migration — Per-Form Backlog Items
+
+These items migrate individual forms from consuming mutable entity references to using ReadOnly wrapper types for their read-only data paths (combo box population, list view display, reference counting, status display). Each form retains mutable access for its ViewModel/edit paths. Depends on the readonly-data-wrappers spec (complete).
+
+### BL-108: FormBlueprintV2 — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormBlueprintV2 to use ReadOnly wrappers. This form has extensive read-only consumption: blueprint list view with BlueprintReferenceCounter, FilteredTextComboSet combos for colony/survey/blueprint selection, commodity and resource lookups from EmpireContext, and evolution graph data. The BlueprintViewModel continues to use mutable Blueprint for editing. Switch list population to GetReadOnlyBlueprintList/GetCurrentPlayerReadOnlyBlueprints, combo population to ReadOnly types, and reference counter inputs to read-only lists.
+
+### BL-109: FormColonyV2 — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormColonyV2 to use ReadOnly wrappers. This form has heavy read-only consumption: colony list view with ColonyReferenceCounter, FilteredTextComboSet combos for flatpacks/items/resources/overflow destinations/routes, survey combos in ColonyStructureV2, and status display via ColonyStatusCalculator. The ColonyViewModel continues to use mutable Colony for editing. Switch list population, combo population, reference counter inputs, and status calculator inputs to read-only types.
+
+### BL-110: FormSurvey — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormSurvey to use ReadOnly wrappers. This form uses SurveyReferenceCounter for delete-guard logic, FilteredTextComboSet for scanner blueprint selection, and colony list for reference counting. The SurveyViewModel continues to use mutable Survey for editing. Switch list population to GetReadOnlySurveyList, reference counter inputs to read-only lists, and combo population to ReadOnly types.
+
+### BL-111: FormPlayerProfile — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormPlayerProfile to use ReadOnly wrappers. This form displays player profiles in a list view and populates faction combos. The PlayerProfileViewModel continues to use mutable PlayerProfile for editing. Switch list population to GetReadOnlyPlayerProfileList and faction combo to ReadOnly types.
+
+### BL-112: FormDeliveryRoute — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormDeliveryRoute to use ReadOnly wrappers. This form has extensive read-only consumption: route list view with DeliveryRouteReferenceCounter, FilteredTextComboSet combos for colony/item selection (drop-off and pick-up), and RouteDropdownHelper for destination combos. The DeliveryRouteViewModel continues to use mutable DeliveryRoute for editing. Switch list population, reference counter inputs, combo population, and RouteDropdownHelper inputs to read-only types.
+
+### BL-113: FormDeliveryExecution — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormDeliveryExecution to use ReadOnly wrappers. This form populates route combos via RouteDropdownHelper, displays delivery plan stops and items in read-only grids, and shows colony/station names for stop destinations. Switch route combo population, plan list, and destination name lookups to read-only types.
+
+### BL-114: FormAutoFill — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormAutoFill to use ReadOnly wrappers. This dialog reads colony inventory and commodity data to auto-fill delivery plan items. Switch colony and commodity lookups to read-only types.
+
+### BL-115: FormMarket — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormMarket to use ReadOnly wrappers. This form displays market listings in a grid with MarketListingReferenceCounter, shows transaction history, and populates station combos. Switch listing/transaction list population, reference counter inputs, and station combo to read-only types.
+
+### BL-116: FormListingEdit — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormListingEdit to use ReadOnly wrappers. This dialog populates station and item type combos for creating/editing market listings. Switch combo population to read-only types.
+
+### BL-117: FormRecordSale — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormRecordSale to use ReadOnly wrappers. This dialog displays listing details and records sale transactions. Switch listing display to read-only types.
+
+### BL-118: FormShipTemplate — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormShipTemplate to use ReadOnly wrappers. This form displays ship templates in a list view with ShipTemplateReferenceCounter, and uses FilteredTextComboSet for hull blueprint selection. Switch list population, reference counter inputs, and hull combo to read-only types.
+
+### BL-119: FormShipInstance — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormShipInstance to use ReadOnly wrappers. This form displays ships in a list view with ShipReferenceCounter, uses FilteredTextComboSet for hull blueprint selection, and populates location/template combos. Switch list population, reference counter inputs, and combo population to read-only types.
+
+### BL-120: FormStation — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormStation to use ReadOnly wrappers. This form displays stations in a list view with StationReferenceCounter, populates blueprint/item combos, and displays hold inventory and component grids. Switch list population, reference counter inputs, combo population, and inventory display to read-only types.
+
+### BL-121: FormBuildPlanner — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormBuildPlanner to use ReadOnly wrappers. This form has extensive read-only consumption: build plan list, build item grid, blueprint/colony/station/route/survey combos, and shortfall computation. Switch list population, combo population, and shortfall calculator inputs to read-only types.
+
+### BL-122: FormStructureAllocation — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormStructureAllocation to use ReadOnly wrappers. This dialog displays colony structures and their allocation status. Switch structure list and blueprint lookups to read-only types.
+
+### BL-123: FormPricingPlan — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormPricingPlan to use ReadOnly wrappers. This form displays pricing plans in a list view and populates resource combos from EmpireContext. Switch list population and resource combo to read-only types.
+
+### BL-124: FormStockTargets — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormStockTargets to use ReadOnly wrappers. This form displays stock plans/profiles in list views, uses FilteredTextComboSet for entry selection, and populates item/colony/station combos. Switch list population and combo population to read-only types.
+
+### BL-125: FormSupplyChain — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormSupplyChain to use ReadOnly wrappers. This form displays supply chains in a list view and populates location/resource/route combos for stage editing. Switch list population and combo population to read-only types.
+
+### BL-126: FormContacts — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormContacts to use ReadOnly wrappers. This form displays factions and external characters in list views with FactionReferenceCounter. Switch list population, reference counter inputs, and faction combo to read-only types.
+
+### BL-127: FormAsteroid — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormAsteroid to use ReadOnly wrappers. This form displays asteroids in a list view and shows reserve details. Switch list population and reserve display to read-only types.
+
+### BL-128: FormColonyActivity — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormColonyActivity to use ReadOnly wrappers. This form displays colony activity data in read-only grids and populates colony combos. Switch colony combo and activity data display to read-only types.
+
+### BL-129: FormColonyDailyBuild — Switch to ReadOnly Data Wrappers
+**Dependencies:** readonly-data-wrappers spec (done)
+**Status: New**
+Migrate read-only data paths in FormColonyDailyBuild to use ReadOnly wrappers. This form displays daily build status, populates colony and route combos via RouteDropdownHelper, and reads blueprint data for build time calculations. Switch combo population, route helper inputs, and blueprint lookups to read-only types.

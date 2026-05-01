@@ -336,7 +336,7 @@ The implementation is organized in layers: utility container wrappers first, the
     - Wrap entities with empty lists/dictionaries, verify wrapper returns empty `IReadOnlyList`/`IReadOnlyDictionary` (not null)
     - _Requirements: 1.9, 1.10_
 
-- [-] 12. Final checkpoint - Build, test, and verify
+- [x] 12. Final checkpoint - Build, test, and verify
   - Build the solution with zero warnings
   - Run all tests (existing + new) and verify they pass
   - Verify existing mutable API is unchanged (Requirement 10)
