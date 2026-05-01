@@ -39,10 +39,6 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Collection of workers assigned to structures within this colony.
-        /// Populated during <see cref="CalculateBuilt"/>.
-        /// </summary>
-        // public List<ColonyWorker> ColonyWorkers { get; set; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ColonyStatusCalculator"/> class for a specific colony.
         /// Sets up references to global contexts and initializes the worker list.
@@ -54,7 +50,6 @@ namespace OE2EmpireTracker.Services
             // Uses Singleton pattern access to retrieve contexts from the global state.
             empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
-            // ColonyWorkers = new List<ColonyWorker>();
         }
 
         public ColonyStructureStatus FinalActualStatus { get; set; }
@@ -407,7 +402,7 @@ namespace OE2EmpireTracker.Services
             decimal builtEntertainmentRequired = prevStatus.EntertainmentRequired;
             decimal builtWarehouseCapacity = prevStatus.WarehouseCapacity;
             decimal builtWarehouseRequired = prevStatus.WarehouseRequired;
-            List<ColonyWorker> colonyWorkers = new List<ColonyWorker>();
+            int workerCount = 0;
             var needUnallocated = new Dictionary<string, bool>();
             foreach (var wt in Models.WorkerDetail.WorkerTypes)
                 needUnallocated[wt.DetailKey] = false;
@@ -456,7 +451,7 @@ namespace OE2EmpireTracker.Services
                             workerSource.SetWorkerAssigned(structure, key, assigned);
                             if (assigned)
                             {
-                                colonyWorkers.Add(new ColonyWorker(structure, key, assigned));
+                                workerCount++;
                             }
                         }
                     }
@@ -493,15 +488,15 @@ namespace OE2EmpireTracker.Services
             status.PowerRequired = builtPowerRequired;
             status.HabitationProvision = builtHabitationProvision;
             // Habitation required is calculated based on workers in current implementation
-            status.HabitationRequired = builtHabitationRequired + colonyWorkers.Count + unallocatedWorkersAdded;
+            status.HabitationRequired = builtHabitationRequired + workerCount + unallocatedWorkersAdded;
 
             status.FoodProvision = builtFoodProvision;
             // Food required is calculated based on workers in current implementation
-            status.FoodRequired = builtFoodRequired + colonyWorkers.Count + unallocatedWorkersAdded;
+            status.FoodRequired = builtFoodRequired + workerCount + unallocatedWorkersAdded;
 
             status.EntertainmentProvided = builtEntertainmentProvided;
             // Entertainment required is 2 per worker (game rule)
-            status.EntertainmentRequired = builtEntertainmentRequired + ((colonyWorkers.Count + unallocatedWorkersAdded) * 2);
+            status.EntertainmentRequired = builtEntertainmentRequired + ((workerCount + unallocatedWorkersAdded) * 2);
 
             // Diagnostic: log per-structure worker accumulation
             var bp = flatpackBlueprint;
@@ -512,7 +507,7 @@ namespace OE2EmpireTracker.Services
                 built,
                 staged,
                 online,
-                colonyWorkers.Count,
+                workerCount,
                 unallocatedWorkersAdded,
                 status.HabitationProvision,
                 status.HabitationRequired,

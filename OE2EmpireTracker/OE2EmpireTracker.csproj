@@ -273,7 +273,6 @@
     <Compile Include="Services\DeliveryFulfillment.cs" />
     <Compile Include="Services\PriceCalculator.cs" />
     <Compile Include="Models\ColonyStructureStatus.cs" />
-    <Compile Include="Models\ColonyWorker.cs" />
     <Compile Include="Models\IColonyStructureWorkers.cs" />
     <Compile Include="Services\PlayerContext.cs" />
     <Compile Include="Persistence\SafeFileWriter.cs" />

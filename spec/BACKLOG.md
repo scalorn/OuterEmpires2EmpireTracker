@@ -224,11 +224,6 @@ Declared on StationStats but never set or read. Always zero. Same pattern as Shi
 **Status: New**
 Declared on StationStats but never set or read. Always empty string. Same pattern as ShipStats.SlotSummary (BL-098). Remove or wire into station stat display.
 
-### BL-101: ColonyWorker Properties — Set but Never Read
-**Dependencies:** None
-**Status: New**
-`ColonyWorker` class has `WorkerType`, `Structure`, and `Assigned` properties set in the constructor, but the class is only ever used as a counter (`colonyWorkers.Count`). The property values are never read after construction. Either consume the properties (e.g. for worker assignment display) or simplify the class to just a counter.
-
 ---
 
 ## Empire-Systems Audit Gaps
