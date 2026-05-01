@@ -1,5 +1,14 @@
 ﻿# Blueprint Property Validation Requirements
 
+## User Goal
+
+The user wants blueprint properties to be validated on entry so that typos and invalid values are caught immediately, ensuring data integrity for downstream calculations (pricing, manufacturing time, resource requirements).
+
+## Out of Scope
+
+- Automatic property discovery from the game (all properties are manually entered or imported)
+- Blueprint property editing beyond validation (that's the Blueprint form's job)
+
 ## Property Types
 
 **REQ-BPV-001** Blueprint properties SHALL be classified into the following value types: Integer, Decimal, Boolean, Time, ComboBox, CheckBox, Unknown.

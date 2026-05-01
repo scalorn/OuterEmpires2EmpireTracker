@@ -1,5 +1,9 @@
 # Colony Daily Build Form Requirements
 
+## User Goal
+
+The user wants to quickly see which colonies have structures ready to start building and initiate those builds in one place, rather than visiting each colony form individually.
+
 ## Overview
 
 **REQ-CDB-001** The Colony Daily Build form SHALL display all colonies eligible for building and allow the user to initiate builds.

@@ -1,5 +1,9 @@
 # Stock Target Requirements
 
+## User Goal
+
+The user wants to define inventory targets (minimum quantities of items to keep on hand) and automatically generate build orders when stock falls below those targets, ensuring they never run out of critical supplies.
+
 ## Out of Scope
 
 - Automatic purchasing from market to fill shortfalls

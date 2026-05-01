@@ -1,5 +1,9 @@
 # UI State Persistence Requirements
 
+## User Goal
+
+The user expects that window positions, sizes, column widths, sort orders, and filter selections are remembered between sessions — the app should look exactly as they left it.
+
 Note: Full detailed requirements are in `.kiro/specs/window-state-persistence/requirements.md`. This is a summary for the spec/requirements index.
 
 ## Overview

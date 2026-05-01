@@ -1,5 +1,15 @@
 # Colony Import Requirements
 
+## User Goal
+
+The user wants to import colony data from the game by copying HTML from the browser and pasting into the tracker, avoiding manual re-entry of structure lists, worker assignments, and resource inventories.
+
+## Out of Scope
+
+- Direct game API integration (import is clipboard-based only)
+- Automatic periodic re-import (user must manually paste each time)
+- Partial import (the entire colony page is imported as a unit)
+
 ## Import Flow
 
 ```mermaid

@@ -1,5 +1,9 @@
 # Market Requirements
 
+## User Goal
+
+The user wants to track market listings (items for sale) and transaction history (buys and sells) across stations, enabling profit/loss analysis and informed pricing decisions.
+
 ## Out of Scope
 
 - Real-time price feeds or API integration with the game

@@ -1,5 +1,9 @@
 # Game Mechanics Requirements
 
+## User Goal
+
+This file documents the game's production formulas and timing rules so the tracker can accurately simulate colony processing (mining rates, refining yields, manufacturing times, research durations, build times).
+
 ## Colony Processing Order
 
 ```mermaid

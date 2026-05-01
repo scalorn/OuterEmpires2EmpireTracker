@@ -1,5 +1,9 @@
 # Data Change Events Requirements
 
+## User Goal
+
+The user expects that when data changes (via background processing, import, or another form), all open forms automatically refresh to show current state — no manual refresh needed.
+
 ## Event Types
 
 **REQ-DCE-001** PlayerContext SHALL expose the following events:

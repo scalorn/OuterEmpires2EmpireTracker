@@ -1,5 +1,16 @@
 # Colony Requirements
 
+## User Goal
+
+The user wants to model their in-game colonies — tracking structures, resources, workers, and production — so they can plan builds, monitor status, and optimize colony layouts without constantly switching to the game.
+
+## Out of Scope
+
+- Real-time synchronization with the game (all data is manually imported or entered)
+- Colony combat or defense mechanics
+- Automated colony management or AI-driven build decisions
+- Inter-player colony trading or sharing
+
 ## Structure Lifecycle
 
 ```mermaid

@@ -1,5 +1,9 @@
 # Architecture Requirements
 
+## User Goal
+
+The architecture ensures the application is maintainable, testable, and reliable — providing consistent patterns for data access, UI binding, logging, and persistence that all features build upon.
+
 ## Layered Architecture Overview
 
 ```mermaid

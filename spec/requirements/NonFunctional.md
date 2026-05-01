@@ -1,5 +1,9 @@
 # Non-Functional Requirements
 
+## User Goal
+
+The application must be fast, reliable, and resilient — responding quickly to user actions, never losing data, and handling concurrent operations (background processing vs UI) without corruption or freezes.
+
 ## Performance Targets
 
 **REQ-NF-001** Form population (PopulateForm, PopulateListView, PopulateGrid) SHALL complete within 500ms for typical data volumes (up to 200 items in a list). PERF logging SHALL report actual timing.

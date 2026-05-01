@@ -1,5 +1,9 @@
 # Pricing Plan Requirements
 
+## User Goal
+
+The user wants to assign credit values to resources and compute rolled-up costs for manufactured items and commodities, enabling profit/loss analysis and informed market pricing decisions.
+
 ## Overview
 
 Pricing Plans assign monetary values (in credits) to resources, commodities, and manufactured items. Each plan is a named, per-player configuration containing base resource prices for Refined, S1, and S2 purity levels, plus optional time-cost parameters. The system rolls up base prices through bill-of-materials chains to compute item costs.

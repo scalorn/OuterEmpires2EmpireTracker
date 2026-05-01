@@ -1,5 +1,9 @@
 # Player Profile Requirements
 
+## User Goal
+
+The user wants to track multiple in-game characters (player profiles) with their skills, ranks, and credits, so that skill-based production multipliers are applied correctly per colony owner.
+
 ## Profile Data
 
 **REQ-PP-001** A PlayerProfile SHALL have UUID, Name, Faction, TotalCredits (decimal), SkillPoints (int), three PlayerRank objects (Public, Private, Military), a Skills dictionary, and a SkillGroups dictionary.  

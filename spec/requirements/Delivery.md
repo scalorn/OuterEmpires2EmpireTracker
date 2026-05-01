@@ -1,5 +1,9 @@
 # Delivery & Route Requirements
 
+## User Goal
+
+The user wants to plan and execute multi-stop delivery runs between colonies and stations, tracking what needs to be loaded, dropped off, and picked up at each stop — turning complex logistics into a simple checklist.
+
 ## Delivery Planning Flow
 
 ```mermaid

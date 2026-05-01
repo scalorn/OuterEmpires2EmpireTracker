@@ -1,5 +1,9 @@
 # Supply Chain Requirements
 
+## User Goal
+
+The user wants to define end-to-end production pipelines (mine → refine → deliver) with automatic threshold-based forwarding, so resources flow through the chain without manual intervention once configured.
+
 ## Out of Scope
 
 - Automatic route optimization (shortest path, fuel efficiency)

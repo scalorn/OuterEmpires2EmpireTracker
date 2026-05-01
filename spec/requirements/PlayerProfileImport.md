@@ -1,5 +1,9 @@
 # Player Profile Import Requirements
 
+## User Goal
+
+The user wants to import their character's skills and ranks from the game by copying the profile page HTML, avoiding manual entry of dozens of skill values.
+
 ## Overview
 
 Import player profile data from the game's clipboard HTML. Parses character identity, credits, ranks, skill points, skill groups, and individual skills. Creates or updates profiles by case-insensitive name match.

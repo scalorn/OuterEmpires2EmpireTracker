@@ -1,5 +1,15 @@
 # Contacts Requirements
 
+## User Goal
+
+The user wants to track factions and external characters (other players, NPCs) they interact with in the game, so they can reference them in market transactions, delivery counterparties, and diplomatic context.
+
+## Out of Scope
+
+- Messaging or communication with other players
+- Faction reputation tracking or diplomacy mechanics
+- Automatic discovery of contacts from game data
+
 ## Factions
 
 **REQ-CON-001** A Faction SHALL have UUID, Name, and Description.  

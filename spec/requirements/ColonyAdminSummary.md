@@ -1,5 +1,9 @@
 # Colony Administration Summary Requirements
 
+## User Goal
+
+The user wants a quick at-a-glance status report for each colony showing what's active, what's idle, and what needs attention — without drilling into individual structures.
+
 ## Overview
 
 The Colony form's Administration tab displays a per-colony status report summarizing active processes and idle structures in a formatted RichTextBox.

@@ -1,5 +1,15 @@
 # Background Processing Requirements
 
+## User Goal
+
+The user wants colony production (mining, refining, manufacturing, research, building) to advance automatically on timers without manual intervention, so the tracker stays current with the game's passage of time.
+
+## Out of Scope
+
+- Real-time game clock synchronization (timers are local approximations)
+- Processing while the application is closed (timers only advance when running)
+- Parallel processing of multiple colonies simultaneously (sequential by design)
+
 ## Processing Cycle Flowchart
 
 ```mermaid

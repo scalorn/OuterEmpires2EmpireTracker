@@ -1,5 +1,9 @@
 # Safe File Writer Requirements
 
+## User Goal
+
+The user expects that their data is never lost or corrupted, even if the application crashes mid-save. The safe file writer provides atomic writes with automatic backup.
+
 ## Atomic Write Strategy
 
 **REQ-SFW-001** File writes SHALL use a temp-then-replace strategy: content is written to a `.tmp` file first, then swapped into place.

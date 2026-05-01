@@ -7,7 +7,7 @@ Date: 2026-04-30
 
 | Category | Status | Notes |
 |----------|--------|-------|
-| 1. Functional Scope & Behavior | Partial | Out-of-scope now declared on 5 domains; user goals still implicit |
+| 1. Functional Scope & Behavior | Clear | User goals and out-of-scope declared on all domain files |
 | 2. Domain & Data Model | Clear | Well-covered across DataModel.md and domain files |
 | 3. Interaction & UX Flow | Clear | User flows added to Market, Ships, Stations, SupplyChains, StockTargets |
 | 4. Non-Functional Quality | Clear | NonFunctional.md created with 30 requirements |

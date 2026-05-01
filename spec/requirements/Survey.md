@@ -1,5 +1,9 @@
 # Survey Requirements
 
+## User Goal
+
+The user wants to record planet resource surveys imported from the game, tracking which resources are available at what purities and amounts, so they can make informed decisions about where to mine.
+
 ## Survey Data
 
 **REQ-SRV-001** A Survey SHALL have UUID, PlanetName, SurveyID, NickName, ScannedBy, DateTime, ScannerBlueprintUUID, a Properties dictionary, and a Resources dictionary keyed by resource name.  

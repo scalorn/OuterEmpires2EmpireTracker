@@ -1,5 +1,9 @@
 # Data Model Requirements
 
+## User Goal
+
+The data model provides the foundation for all persistence and computation. It must serialize cleanly to JSON, support multiple player profiles, and enable efficient lookup and cross-referencing between entities.
+
 ## PropertyBag
 
 **REQ-DM-001** PropertyBag SHALL store string, decimal, long, and bool values under string keys.  

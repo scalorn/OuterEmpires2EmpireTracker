@@ -1,5 +1,9 @@
 # MDI Window Menu Requirements
 
+## User Goal
+
+The user wants to manage multiple open forms efficiently — tiling, cascading, and switching between windows using a standard Window menu.
+
 ## Overview
 
 A standard MDI Window menu on MainWindow provides layout commands and an auto-populated list of open child forms.

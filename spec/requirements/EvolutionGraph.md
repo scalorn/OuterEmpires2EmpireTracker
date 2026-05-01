@@ -1,5 +1,9 @@
 # Evolution Graph Requirements
 
+## User Goal
+
+The user wants to visualize how a blueprint's properties improve across evolution levels, making it easy to decide whether to evolve further or stop at the current level.
+
 ## Overview
 
 The Evolution Graph adds a chart tab to the Blueprint form showing how blueprint properties change across evolution levels, plotted as percentages of the Ev0 base value.

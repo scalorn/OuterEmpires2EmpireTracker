@@ -1,5 +1,9 @@
 # Ship Requirements
 
+## User Goal
+
+The user wants to design ship loadouts (templates) by selecting hulls and components, then track built ships with their cargo, location, and condition — supporting fleet management and build planning.
+
 ## Out of Scope
 
 - Combat simulation or damage calculation during fights

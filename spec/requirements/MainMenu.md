@@ -1,5 +1,9 @@
 # Main Menu Requirements
 
+## User Goal
+
+The user wants standard file operations (new, open, save) and quick access to all feature forms from a familiar menu structure.
+
 ## Overview
 
 The MainWindow menu provides File lifecycle operations (New/Open/Save/Save As/Exit), a Manage menu for feature forms, and Help with About dialog.

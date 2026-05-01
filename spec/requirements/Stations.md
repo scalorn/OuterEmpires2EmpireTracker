@@ -1,5 +1,9 @@
 # Station Requirements
 
+## User Goal
+
+The user wants to track space stations (government and player-owned), manage per-player inventory holds at each station, and use stations as delivery route destinations.
+
 ## Out of Scope
 
 - Station construction or upgrade mechanics

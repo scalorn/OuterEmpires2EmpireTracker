@@ -1,5 +1,15 @@
 # Build Planner Requirements
 
+## User Goal
+
+The user wants to plan complex manufacturing projects (ships, station components, commodity batches) by defining what needs to be built, tracking resource delivery to build sites, and monitoring manufacturing progress across multiple colonies.
+
+## Out of Scope
+
+- Automatic scheduling or optimization of build order across colonies
+- Cost estimation or budget tracking for build plans
+- Integration with external tools or spreadsheets
+
 ## Build Plans
 
 **REQ-BPL-001** A BuildPlan SHALL have UUID, Name, OwnerUUID, Description, DeliveryPlanUUID, IsActive flag, and a nested list of BuildItems.  

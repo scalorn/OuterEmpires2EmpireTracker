@@ -1,5 +1,9 @@
 # Colony Activity Form Requirements
 
+## User Goal
+
+The user wants a single dashboard showing all active timers and pending commodity requests across all colonies, so they can see at a glance what's completing soon and what needs attention.
+
 ## Overview
 
 **REQ-CA-001** The Colony Activity form SHALL display all active countdown timers and unfulfilled commodity requests across all colonies for the current player.
