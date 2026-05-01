@@ -37,6 +37,7 @@ Each file covers one domain. Requirements are written as verifiable statements.
 | [Survey.md](Survey.md) | Survey management and blueprint scanning |
 | [UIStatePersistence.md](UIStatePersistence.md) | Window state persistence, preferences store |
 | [NonFunctional.md](NonFunctional.md) | Performance targets, scale assumptions, crash recovery, concurrency |
+| [GameConstraints.md](GameConstraints.md) | Game hard limits, design tradeoffs, UI constraints |
 
 ## Conventions
 

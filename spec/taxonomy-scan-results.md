@@ -13,7 +13,7 @@ Date: 2026-04-30
 | 4. Non-Functional Quality | Clear | NonFunctional.md created with 30 requirements |
 | 5. Integration & Dependencies | Clear | Event subscription matrix and cross-form rules documented |
 | 6. Edge Cases & Failure Handling | Clear | Empty/error states documented for all forms |
-| 7. Constraints & Tradeoffs | Missing | Game constraints implicit, never documented |
+| 7. Constraints & Tradeoffs | Clear | GameConstraints.md documents game limits, design tradeoffs, UI constraints |
 | 8. Terminology & Consistency | Clear | term-consistency.js now enforces this |
 
 ---
