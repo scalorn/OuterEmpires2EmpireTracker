@@ -40,6 +40,75 @@
 **REQ-SHP-041** The Cargo tab SHALL show used vs total cargo volume and warn when over capacity.  
 **REQ-SHP-042** Components SHALL be swappable after creation. Swapping SHALL trigger stat recomputation.  
 
+## Empty & Error States
+
+**REQ-SHP-060** When no ship templates exist, the template list SHALL be empty with column headers visible.  
+**REQ-SHP-061** When no hull blueprints are available (none imported), the hull selector SHALL be empty and the user SHALL not be able to create a template.  
+**REQ-SHP-062** When a template references a hull blueprint that no longer exists, the hull name SHALL display "(unknown)" and stats SHALL show zero.  
+**REQ-SHP-063** When a component slot references a blueprint that no longer exists, the slot SHALL display "(unknown)" and contribute zero to stats.  
+**REQ-SHP-064** When no ships exist, the ship instance list SHALL be empty with column headers visible.  
+**REQ-SHP-065** When a ship's cargo exceeds capacity, the volume display SHALL show in red (e.g. "1250/1000 m³") as a warning, not a blocking error.  
+
+## User Interaction Flows
+
+### Create Ship Template
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormShipTemplate
+    participant VM as ShipTemplateViewModel
+    participant PC as PlayerContext
+
+    User->>Form: Click [New]
+    Form->>Form: Clear all fields
+    User->>Form: Enter template name
+    User->>Form: Select hull from filtered hull blueprint list
+    Form->>Form: Generate slot grid based on hull's slot definitions
+    loop Each slot
+        User->>Form: Select component blueprint for slot (filtered by slot type)
+    end
+    User->>Form: Click [Save]
+    Form->>VM: Save template
+    VM->>PC: Add to ShipTemplateList, WriteContext()
+    Form->>Form: Refresh template list
+```
+
+### Create Ship from Template
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormShipInstance
+    participant Svc as ShipBuildService
+    participant PC as PlayerContext
+
+    User->>Form: Click [New from Template]
+    Form->>Form: Show template selector
+    User->>Form: Select template, enter ship name
+    Form->>Svc: Create ship (deep copy hull + components from template)
+    Svc->>PC: Add to ShipList, WriteContext()
+    Form->>Form: Refresh ship list, select new ship
+    Form->>Form: Display stats on Overview tab
+```
+
+### Swap Component
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormShipInstance (Overview tab)
+    participant Svc as ShipBuildService
+    participant PC as PlayerContext
+
+    User->>Form: Select component slot in grid
+    User->>Form: Select new blueprint from filtered combo
+    Form->>Form: Update slot BlueprintUUID
+    Form->>Svc: ComputeStats(ship)
+    Form->>Form: Refresh stats display
+    Form->>PC: WriteContext()
+```  
+
 ## Cargo Volume
 
 **REQ-SHP-050** Cargo volume SHALL be computed by summing Item.Volume × Quantity for all items. Crate items contribute the sum of their contents' volumes (the crate itself has zero volume).  

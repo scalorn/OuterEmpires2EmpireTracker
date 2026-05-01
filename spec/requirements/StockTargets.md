@@ -44,4 +44,64 @@
 **REQ-STK-050** FormStockTargets SHALL allow creating and editing stock plans with target lists.  
 **REQ-STK-051** The form SHALL provide a "Check & Generate Orders" button that evaluates shortfalls and creates replenishment build items.  
 **REQ-STK-052** The form SHALL display current stock levels vs targets with color coding (green = above target, yellow = below target, red = below critical threshold).  
-**REQ-STK-053** The form SHALL provide an IsActive toggle for pausing/resuming plans and profiles.
+**REQ-STK-053** The form SHALL provide an IsActive toggle for pausing/resuming plans and profiles.  
+
+## Empty & Error States
+
+**REQ-STK-060** When no stock plans exist, the plan list SHALL be empty with column headers visible.  
+**REQ-STK-061** When a plan has no targets, the target grid SHALL be empty and "Check & Generate Orders" SHALL report "No targets defined."  
+**REQ-STK-062** When a target references a ShipTemplate that no longer exists, the target SHALL display "(unknown template)" and be skipped during shortfall evaluation.  
+**REQ-STK-063** When a plan's ReplenishmentBuildPlanUUID references a deleted build plan, "Check & Generate Orders" SHALL display an error message and not generate items.  
+**REQ-STK-064** When a scoped target references a colony or station that no longer exists, the location SHALL display "(unknown)" and the target SHALL be skipped during evaluation.  
+
+## User Interaction Flows
+
+### Create Stock Plan with Targets
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormStockTargets
+    participant PC as PlayerContext
+
+    User->>Form: Click [New Plan]
+    Form->>Form: Clear plan fields
+    User->>Form: Enter plan name
+    User->>Form: Select replenishment build plan from dropdown
+    User->>Form: Toggle IsActive (default: on)
+    loop Add targets
+        User->>Form: Select item type, item, quantity, critical threshold
+        User->>Form: Select scope (EmpireWide/Colony/Station) and location
+        User->>Form: Click [Add Target]
+        Form->>Form: Append target to list
+    end
+    User->>Form: Click [Save]
+    Form->>PC: Add to StockPlanList, WriteContext()
+    Form->>Form: Refresh plan list
+```
+
+### Check & Generate Orders
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormStockTargets
+    participant Svc as StockTargetService
+    participant PC as PlayerContext
+
+    User->>Form: Click [Check & Generate Orders]
+    Form->>Svc: CheckTargets(activePlans, colonyFinder, stationFinder, templateFinder)
+    Svc->>Svc: Expand template targets to component-level
+    Svc->>Svc: Check scoped inventory for each target
+    Svc->>Svc: Compute shortfalls (target - current)
+    Svc-->>Form: Return shortfall list
+    alt Shortfalls found
+        Form->>Svc: GenerateReplenishmentItems(shortfalls, buildPlan)
+        Svc->>PC: Add build items to replenishment plan
+        Svc->>PC: WriteContext()
+        Form->>Form: Show summary "Generated N items in plan X"
+    else No shortfalls
+        Form->>Form: Show "All targets met — no orders needed"
+    end
+    Form->>Form: Refresh stock level display with color coding
+```

@@ -9,10 +9,10 @@ Date: 2026-04-30
 |----------|--------|-------|
 | 1. Functional Scope & Behavior | Partial | Out-of-scope now declared on 5 domains; user goals still implicit |
 | 2. Domain & Data Model | Clear | Well-covered across DataModel.md and domain files |
-| 3. Interaction & UX Flow | Partial | Some forms lack step-by-step journeys |
+| 3. Interaction & UX Flow | Clear | User flows added to Market, Ships, Stations, SupplyChains, StockTargets |
 | 4. Non-Functional Quality | Clear | NonFunctional.md created with 30 requirements |
 | 5. Integration & Dependencies | Partial | Events documented; cross-form cascading now in NonFunctional.md |
-| 6. Edge Cases & Failure Handling | Partial | Concurrent access and crash recovery now documented |
+| 6. Edge Cases & Failure Handling | Clear | Empty/error states documented for all forms |
 | 7. Constraints & Tradeoffs | Missing | Game constraints implicit, never documented |
 | 8. Terminology & Consistency | Clear | term-consistency.js now enforces this |
 

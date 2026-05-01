@@ -34,6 +34,57 @@
 **REQ-STN-032** The Hold tab SHALL support adding/removing items using the standard item picker pattern (type, filter, item, purity, quantity).  
 **REQ-STN-033** Crate support SHALL allow creating crates and moving items into/out of crates within a hold.  
 
+## Empty & Error States
+
+**REQ-STN-060** When no stations exist, the station list SHALL be empty with column headers visible.  
+**REQ-STN-061** When the current player has no items at the selected station, the Hold tab SHALL display an empty grid.  
+**REQ-STN-062** When a station is referenced in delivery routes but deleted, route stops SHALL display "(unknown)" for the station name.  
+
+## User Interaction Flows
+
+### Create Station
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormStation
+    participant PC as PlayerContext
+
+    User->>Form: Click [New]
+    Form->>Form: Clear all fields
+    User->>Form: Enter station name
+    User->>Form: Select type (Outpost/Station/Starbase)
+    User->>Form: Select ownership (Government/PlayerOwned)
+    User->>Form: Click [Save]
+    Form->>PC: Generate deterministic UUID from name
+    Form->>PC: Add to StationList, WriteContext()
+    Form->>Form: Refresh station list
+```
+
+### Manage Hold Items
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormStation (Hold tab)
+    participant PC as PlayerContext
+
+    User->>Form: Select station from list
+    Form->>Form: Load current player's hold for this station
+    Form->>Form: Display items in hold grid
+
+    User->>Form: Select item type, filter, item, purity, quantity
+    User->>Form: Click [Add]
+    Form->>PC: Add item to station hold for current player
+    Form->>PC: WriteContext()
+    Form->>Form: Refresh hold grid
+
+    User->>Form: Select item in grid, click [Remove]
+    Form->>PC: Remove item from hold
+    Form->>PC: WriteContext()
+    Form->>Form: Refresh hold grid
+```  
+
 ## Station Reference Counter
 
 **REQ-STN-040** StationReferenceCounter SHALL count references to a station from delivery route stops, delivery plan stops, market listings, warehouse overflow rule destinations, and supply chain stage locations.  

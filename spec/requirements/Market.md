@@ -33,3 +33,68 @@
 **REQ-MKT-031** The Listings tab SHALL display active listings with item name, quantity, price, station, and condition.  
 **REQ-MKT-032** The Transactions tab SHALL display transaction history filterable by type, item, counterparty, faction, station, and date range.  
 **REQ-MKT-033** The Summary tab SHALL display profit/loss aggregations.
+
+## Empty & Error States
+
+**REQ-MKT-040** When no listings exist, the Listings tab SHALL display an empty grid with column headers visible. No placeholder message required.  
+**REQ-MKT-041** When no transactions exist, the Transactions tab SHALL display an empty grid with column headers visible.  
+**REQ-MKT-042** When no transactions match the current filters, the grid SHALL be empty and the Summary tab SHALL show zero totals.  
+**REQ-MKT-043** When a listing references a station that no longer exists, the Station column SHALL display "(unknown)".  
+**REQ-MKT-044** When RecordSale is called with a quantity exceeding the listing quantity, it SHALL return null and not modify the listing.  
+**REQ-MKT-045** When RecordSale is called with zero or negative quantity, it SHALL return null.  
+
+## User Interaction Flows
+
+### Record a Sale
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormMarket (Listings tab)
+    participant Svc as MarketService
+    participant PC as PlayerContext
+
+    User->>Form: Select listing in grid
+    User->>Form: Click [Sell]
+    Form->>Form: Show sell dialog (quantity, counterparty, faction, notes)
+    User->>Form: Enter quantity, counterparty, click OK
+    Form->>Svc: RecordSale(listing, quantity, counterparty, faction, notes)
+    Svc->>Svc: Validate quantity <= listing.Quantity
+    Svc->>Svc: Create MarketTransaction (Sell)
+    Svc->>Svc: Decrement listing.Quantity
+    Svc->>PC: Add transaction, WriteContext()
+    Form->>Form: Refresh Listings grid (quantity updated)
+    Form->>Form: Refresh Transactions grid (new entry)
+```
+
+### Record a Purchase
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormMarket (Listings tab)
+    participant Svc as MarketService
+    participant PC as PlayerContext
+
+    User->>Form: Click [Buy]
+    Form->>Form: Show buy dialog (item type, name, quantity, price, station, counterparty, faction)
+    User->>Form: Fill details, click OK
+    Form->>Svc: RecordPurchase(details)
+    Svc->>Svc: Create MarketTransaction (Buy)
+    Svc->>Svc: Add item to station hold (if station specified)
+    Svc->>PC: Add transaction, WriteContext()
+    Form->>Form: Refresh Transactions grid
+```
+
+### Filter Transactions
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormMarket (Transactions tab)
+
+    User->>Form: Select filter (type/item/station/counterparty/faction/date)
+    Form->>Form: Apply filter to transaction list
+    Form->>Form: Refresh grid with matching transactions
+    Form->>Form: Update Summary tab totals for filtered set
+```

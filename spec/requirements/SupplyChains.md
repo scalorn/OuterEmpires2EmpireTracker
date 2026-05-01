@@ -38,4 +38,58 @@
 
 **REQ-SCH-040** FormSupplyChain SHALL allow creating and editing supply chains with an ordered list of stages.  
 **REQ-SCH-041** The form SHALL display a flow summary showing the pipeline from mining through delivery.  
-**REQ-SCH-042** The form SHALL provide an IsActive toggle for pausing/resuming chains.
+**REQ-SCH-042** The form SHALL provide an IsActive toggle for pausing/resuming chains.  
+
+## Empty & Error States
+
+**REQ-SCH-050** When no supply chains exist, the chain list SHALL be empty with column headers visible.  
+**REQ-SCH-051** When a chain has no stages, the stage grid SHALL be empty and the flow summary SHALL display "No stages defined."  
+**REQ-SCH-052** When a stage references a colony or station that no longer exists, the location column SHALL display "(unknown)".  
+**REQ-SCH-053** When a stage's DeliveryRouteUUID references a deleted route, the route column SHALL display "(unknown)" and threshold-triggered delivery generation SHALL be skipped for that stage with a warning logged.  
+
+## User Interaction Flows
+
+### Create Supply Chain
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormSupplyChain
+    participant PC as PlayerContext
+
+    User->>Form: Click [New]
+    Form->>Form: Clear all fields
+    User->>Form: Enter chain name
+    User->>Form: Toggle IsActive (default: on)
+    loop Add stages
+        User->>Form: Select stage type (Mine/Refine/Deliver/etc.)
+        User->>Form: Select location (colony/station)
+        User->>Form: Set resource, purity, threshold
+        User->>Form: Select delivery route for stage
+        User->>Form: Click [Add Stage]
+        Form->>Form: Append stage to ordered list
+    end
+    User->>Form: Click [Save]
+    Form->>PC: Add to SupplyChainList, WriteContext()
+    Form->>Form: Refresh chain list and flow summary
+```
+
+### Threshold Trigger (Background)
+
+```mermaid
+sequenceDiagram
+    participant BP as BackgroundProcessor
+    participant Svc as SupplyChainService
+    participant PC as PlayerContext
+
+    BP->>Svc: CheckThresholds(activeChains, colonyFinder, stationFinder)
+    loop Each active chain, each stage
+        Svc->>Svc: Get current quantity at stage location
+        alt Quantity > AccumulationThreshold
+            Svc->>Svc: Compute excess (current - threshold)
+            Svc->>PC: Generate delivery plan on stage's route
+        end
+    end
+    Svc-->>BP: Return triggered stages
+    BP->>PC: WriteContext()
+```
