@@ -4,21 +4,21 @@
 
 **REQ-NF-001** Form population (PopulateForm, PopulateListView, PopulateGrid) SHALL complete within 500ms for typical data volumes (up to 200 items in a list). PERF logging SHALL report actual timing.
 **REQ-NF-002** Colony import (clipboard parse + merge) SHALL complete within 2 seconds for a single colony with up to 66 structures.
-**REQ-NF-003** Background processing cycle SHALL complete within 10 seconds for up to 50 colonies. If processing exceeds 10 seconds, a warning SHALL be logged.
+**REQ-NF-003** Background processing cycle SHALL complete within 30 seconds for up to 200 colonies. If processing exceeds 30 seconds, a warning SHALL be logged.
 **REQ-NF-004** PlayerContext.WriteContext() SHALL complete within 3 seconds for typical save file sizes (up to 10MB).
 **REQ-NF-005** Blueprint scanner (mass import from HTML) SHALL process up to 500 listings within 10 seconds.
 **REQ-NF-006** Audit tools (node .kiro/tools/audit.js) SHALL complete within 60 seconds.
 
 ## Data Scale Assumptions
 
-**REQ-NF-010** The application SHALL support up to 50 colonies per player without degradation.
+**REQ-NF-010** The application SHALL support up to 200 colonies per player without degradation.
 **REQ-NF-011** The application SHALL support up to 66 structures per colony (game limit).
-**REQ-NF-012** The application SHALL support up to 2000 blueprints (player + global combined) without degradation.
+**REQ-NF-012** The application SHALL support up to 10000 blueprints (player + global combined) without degradation.
 **REQ-NF-013** The application SHALL support up to 200 surveys without degradation.
 **REQ-NF-014** The application SHALL support up to 50 delivery routes with up to 20 stops each.
-**REQ-NF-015** The application SHALL support up to 500 market listings and 5000 market transactions without degradation.
+**REQ-NF-015** The application SHALL support up to 500 market listings and 20000 market transactions without degradation.
 **REQ-NF-016** The application SHALL support up to 20 build plans with up to 100 build items each.
-**REQ-NF-017** "Without degradation" means form population remains under 500ms (REQ-NF-001) and background processing remains under 10 seconds (REQ-NF-003).
+**REQ-NF-017** "Without degradation" means form population remains under 500ms (REQ-NF-001) and background processing remains under 30 seconds (REQ-NF-003).
 
 ## Crash Recovery
 
