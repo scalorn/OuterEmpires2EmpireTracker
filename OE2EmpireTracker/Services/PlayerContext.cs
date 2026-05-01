@@ -2220,6 +2220,493 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        // -- Task 5.1: Full-list GetReadOnly methods --
+
+        public IReadOnlyList<ReadOnlyBlueprint> GetReadOnlyBlueprintList()
+        {
+            lock (_listLock)
+            {
+                return _blueprintList.Select(b => new ReadOnlyBlueprint(b)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyColony> GetReadOnlyColonyList()
+        {
+            lock (_listLock)
+            {
+                return _colonyList.Select(c => new ReadOnlyColony(c)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlySurvey> GetReadOnlySurveyList()
+        {
+            lock (_listLock)
+            {
+                return _surveyList.Select(s => new ReadOnlySurvey(s)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyPlayerProfile> GetReadOnlyPlayerProfileList()
+        {
+            lock (_listLock)
+            {
+                return _playerProfileList.Select(p => new ReadOnlyPlayerProfile(p)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyDeliveryRoute> GetReadOnlyDeliveryRouteList()
+        {
+            lock (_listLock)
+            {
+                return _deliveryRouteList.Select(r => new ReadOnlyDeliveryRoute(r)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyDeliveryPlan> GetReadOnlyDeliveryPlanList()
+        {
+            lock (_listLock)
+            {
+                return _deliveryPlanList.Select(p => new ReadOnlyDeliveryPlan(p)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyPricingPlan> GetReadOnlyPricingPlanList()
+        {
+            lock (_listLock)
+            {
+                return _pricingPlanList.Select(p => new ReadOnlyPricingPlan(p)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyBuildPlan> GetReadOnlyBuildPlanList()
+        {
+            lock (_listLock)
+            {
+                return _buildPlanList.Select(b => new ReadOnlyBuildPlan(b)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyShipTemplate> GetReadOnlyShipTemplateList()
+        {
+            lock (_listLock)
+            {
+                return _shipTemplateList.Select(s => new ReadOnlyShipTemplate(s)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyShip> GetReadOnlyShipList()
+        {
+            lock (_listLock)
+            {
+                return _shipList.Select(s => new ReadOnlyShip(s)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyStation> GetReadOnlyStationList()
+        {
+            lock (_listLock)
+            {
+                return _stationList.Select(s => new ReadOnlyStation(s)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyMarketListing> GetReadOnlyMarketListingList()
+        {
+            lock (_listLock)
+            {
+                return _marketListingList.Select(m => new ReadOnlyMarketListing(m)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyMarketTransaction> GetReadOnlyMarketTransactionList()
+        {
+            lock (_listLock)
+            {
+                return _marketTransactionList.Select(m => new ReadOnlyMarketTransaction(m)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyStockPlan> GetReadOnlyStockPlanList()
+        {
+            lock (_listLock)
+            {
+                return _stockPlanList.Select(s => new ReadOnlyStockPlan(s)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyStockProfile> GetReadOnlyStockProfileList()
+        {
+            lock (_listLock)
+            {
+                return _stockProfileList.Select(s => new ReadOnlyStockProfile(s)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlySupplyChain> GetReadOnlySupplyChainList()
+        {
+            lock (_listLock)
+            {
+                return _supplyChainList.Select(s => new ReadOnlySupplyChain(s)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyWarehouseOverflowRule> GetReadOnlyWarehouseOverflowRuleList()
+        {
+            lock (_listLock)
+            {
+                return _warehouseOverflowRuleList.Select(w => new ReadOnlyWarehouseOverflowRule(w)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyFaction> GetReadOnlyFactionList()
+        {
+            lock (_listLock)
+            {
+                return _factionList.Select(f => new ReadOnlyFaction(f)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyExternalCharacter> GetReadOnlyExternalCharacterList()
+        {
+            lock (_listLock)
+            {
+                return _externalCharacterList.Select(e => new ReadOnlyExternalCharacter(e)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyAsteroid> GetReadOnlyAsteroidList()
+        {
+            lock (_listLock)
+            {
+                return _asteroidList.Select(a => new ReadOnlyAsteroid(a)).ToList();
+            }
+        }
+
+        // -- Task 5.2: FindReadOnly methods --
+
+        public ReadOnlyBlueprint FindReadOnlyBlueprint(string id)
+        {
+            var entity = FindBlueprint(id);
+            return entity != null ? new ReadOnlyBlueprint(entity) : null;
+        }
+
+        public ReadOnlyColony FindReadOnlyColony(string id)
+        {
+            var entity = FindColony(id);
+            return entity != null ? new ReadOnlyColony(entity) : null;
+        }
+
+        public ReadOnlySurvey FindReadOnlySurvey(string id)
+        {
+            var entity = FindSurvey(id);
+            return entity != null ? new ReadOnlySurvey(entity) : null;
+        }
+
+        public ReadOnlyPlayerProfile FindReadOnlyPlayerProfile(string id)
+        {
+            var entity = FindPlayerProfile(id);
+            return entity != null ? new ReadOnlyPlayerProfile(entity) : null;
+        }
+
+        public ReadOnlyDeliveryRoute FindReadOnlyDeliveryRoute(string id)
+        {
+            var entity = FindDeliveryRoute(id);
+            return entity != null ? new ReadOnlyDeliveryRoute(entity) : null;
+        }
+
+        public ReadOnlyDeliveryPlan FindReadOnlyDeliveryPlan(string id)
+        {
+            var entity = FindDeliveryPlan(id);
+            return entity != null ? new ReadOnlyDeliveryPlan(entity) : null;
+        }
+
+        public ReadOnlyPricingPlan FindReadOnlyPricingPlan(string id)
+        {
+            var entity = FindPricingPlan(id);
+            return entity != null ? new ReadOnlyPricingPlan(entity) : null;
+        }
+
+        public ReadOnlyBuildPlan FindReadOnlyBuildPlan(string id)
+        {
+            var entity = FindBuildPlan(id);
+            return entity != null ? new ReadOnlyBuildPlan(entity) : null;
+        }
+
+        public ReadOnlyShipTemplate FindReadOnlyShipTemplate(string id)
+        {
+            var entity = FindShipTemplate(id);
+            return entity != null ? new ReadOnlyShipTemplate(entity) : null;
+        }
+
+        public ReadOnlyShip FindReadOnlyShip(string id)
+        {
+            var entity = FindShip(id);
+            return entity != null ? new ReadOnlyShip(entity) : null;
+        }
+
+        public ReadOnlyStation FindReadOnlyStation(string id)
+        {
+            var entity = FindStation(id);
+            return entity != null ? new ReadOnlyStation(entity) : null;
+        }
+
+        public ReadOnlyMarketListing FindReadOnlyMarketListing(string id)
+        {
+            var entity = FindMarketListing(id);
+            return entity != null ? new ReadOnlyMarketListing(entity) : null;
+        }
+
+        public ReadOnlyMarketTransaction FindReadOnlyMarketTransaction(string id)
+        {
+            var entity = FindMarketTransaction(id);
+            return entity != null ? new ReadOnlyMarketTransaction(entity) : null;
+        }
+
+        public ReadOnlyStockPlan FindReadOnlyStockPlan(string id)
+        {
+            var entity = FindStockPlan(id);
+            return entity != null ? new ReadOnlyStockPlan(entity) : null;
+        }
+
+        public ReadOnlyStockProfile FindReadOnlyStockProfile(string id)
+        {
+            var entity = FindStockProfile(id);
+            return entity != null ? new ReadOnlyStockProfile(entity) : null;
+        }
+
+        public ReadOnlySupplyChain FindReadOnlySupplyChain(string id)
+        {
+            var entity = FindSupplyChain(id);
+            return entity != null ? new ReadOnlySupplyChain(entity) : null;
+        }
+
+        public ReadOnlyWarehouseOverflowRule FindReadOnlyWarehouseOverflowRule(string id)
+        {
+            var entity = FindWarehouseOverflowRule(id);
+            return entity != null ? new ReadOnlyWarehouseOverflowRule(entity) : null;
+        }
+
+        public ReadOnlyFaction FindReadOnlyFaction(string id)
+        {
+            var entity = FindFaction(id);
+            return entity != null ? new ReadOnlyFaction(entity) : null;
+        }
+
+        public ReadOnlyExternalCharacter FindReadOnlyExternalCharacter(string id)
+        {
+            var entity = FindExternalCharacter(id);
+            return entity != null ? new ReadOnlyExternalCharacter(entity) : null;
+        }
+
+        public ReadOnlyAsteroid FindReadOnlyAsteroid(string id)
+        {
+            var entity = FindAsteroid(id);
+            return entity != null ? new ReadOnlyAsteroid(entity) : null;
+        }
+
+        // -- Task 5.3: Current-player filtered read-only methods --
+
+        public List<ReadOnlyColony> GetCurrentPlayerReadOnlyColonies()
+        {
+            lock (_listLock)
+            {
+                return _colonyList
+                    .Where(c => c.OwnerUUID == CurrentPlayerUUID)
+                    .Select(c => new ReadOnlyColony(c))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyBlueprint> GetCurrentPlayerReadOnlyBlueprints()
+        {
+            lock (_listLock)
+            {
+                return _blueprintList
+                    .Where(b => b.OwnerUUID == CurrentPlayerUUID)
+                    .Select(b => new ReadOnlyBlueprint(b))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlySurvey> GetCurrentPlayerReadOnlySurveys()
+        {
+            lock (_listLock)
+            {
+                return _surveyList
+                    .Where(s => s.OwnerUUID == CurrentPlayerUUID)
+                    .Select(s => new ReadOnlySurvey(s))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyDeliveryRoute> GetCurrentPlayerReadOnlyRoutes()
+        {
+            lock (_listLock)
+            {
+                return _deliveryRouteList
+                    .Where(r => r.OwnerUUID == CurrentPlayerUUID)
+                    .Select(r => new ReadOnlyDeliveryRoute(r))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyDeliveryPlan> GetCurrentPlayerReadOnlyPlans()
+        {
+            lock (_listLock)
+            {
+                return _deliveryPlanList
+                    .Where(p => p.OwnerUUID == CurrentPlayerUUID)
+                    .Select(p => new ReadOnlyDeliveryPlan(p))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyPricingPlan> GetCurrentPlayerReadOnlyPricingPlans()
+        {
+            lock (_listLock)
+            {
+                return _pricingPlanList
+                    .Where(p => p.OwnerUUID == CurrentPlayerUUID)
+                    .Select(p => new ReadOnlyPricingPlan(p))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyBuildPlan> GetCurrentPlayerReadOnlyBuildPlans()
+        {
+            lock (_listLock)
+            {
+                return _buildPlanList
+                    .Where(b => b.OwnerUUID == CurrentPlayerUUID)
+                    .Select(b => new ReadOnlyBuildPlan(b))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyShipTemplate> GetCurrentPlayerReadOnlyShipTemplates()
+        {
+            lock (_listLock)
+            {
+                return _shipTemplateList
+                    .Where(s => s.OwnerUUID == CurrentPlayerUUID)
+                    .Select(s => new ReadOnlyShipTemplate(s))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyShip> GetCurrentPlayerReadOnlyShips()
+        {
+            lock (_listLock)
+            {
+                return _shipList
+                    .Where(s => s.OwnerUUID == CurrentPlayerUUID)
+                    .Select(s => new ReadOnlyShip(s))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyMarketListing> GetCurrentPlayerReadOnlyListings()
+        {
+            lock (_listLock)
+            {
+                return _marketListingList
+                    .Where(m => m.OwnerUUID == CurrentPlayerUUID)
+                    .Select(m => new ReadOnlyMarketListing(m))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyMarketTransaction> GetCurrentPlayerReadOnlyTransactions()
+        {
+            lock (_listLock)
+            {
+                return _marketTransactionList
+                    .Where(m => m.OwnerUUID == CurrentPlayerUUID)
+                    .Select(m => new ReadOnlyMarketTransaction(m))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyStockPlan> GetCurrentPlayerReadOnlyStockPlans()
+        {
+            lock (_listLock)
+            {
+                return _stockPlanList
+                    .Where(s => s.OwnerUUID == CurrentPlayerUUID)
+                    .Select(s => new ReadOnlyStockPlan(s))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyStockProfile> GetCurrentPlayerReadOnlyStockProfiles()
+        {
+            lock (_listLock)
+            {
+                return _stockProfileList
+                    .Where(s => s.OwnerUUID == CurrentPlayerUUID)
+                    .Select(s => new ReadOnlyStockProfile(s))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlySupplyChain> GetCurrentPlayerReadOnlySupplyChains()
+        {
+            lock (_listLock)
+            {
+                return _supplyChainList
+                    .Where(s => s.OwnerUUID == CurrentPlayerUUID)
+                    .Select(s => new ReadOnlySupplyChain(s))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyWarehouseOverflowRule> GetCurrentPlayerReadOnlyOverflowRules()
+        {
+            lock (_listLock)
+            {
+                return _warehouseOverflowRuleList
+                    .Where(w => w.OwnerUUID == CurrentPlayerUUID)
+                    .Select(w => new ReadOnlyWarehouseOverflowRule(w))
+                    .ToList();
+            }
+        }
+
+        public List<ReadOnlyStation> GetCurrentPlayerReadOnlyStations()
+        {
+            lock (_listLock)
+            {
+                return _stationList
+                    .Where(s =>
+                        s.Ownership == StationOwnership.Government ||
+                        s.OwnerUUID == CurrentPlayerUUID)
+                    .Select(s => new ReadOnlyStation(s))
+                    .ToList();
+            }
+        }
+
+        /// <summary>
+        /// Returns all blueprints (current player's + global) as read-only wrappers.
+        /// </summary>
+        public List<ReadOnlyBlueprint> GetAllReadOnlyBlueprints()
+        {
+            lock (_listLock)
+            {
+                var result = _blueprintList
+                    .Select(b => new ReadOnlyBlueprint(b))
+                    .ToList();
+                var ec = EmpireContext.GetInstance();
+                if (ec?.GlobalBlueprintList != null)
+                {
+                    foreach (var gb in ec.GlobalBlueprintList)
+                    {
+                        result.Add(new ReadOnlyBlueprint(gb));
+                    }
+                }
+
+                return result;
+            }
+        }
+
         public List<CountDownTimeReference> AllCountdownSources()
         {
             List<CountDownTimeReference> countdowns = new List<CountDownTimeReference>();

@@ -573,6 +573,38 @@ namespace OE2EmpireTracker.Services
             _resourcePurityList.Remove(item);
             BindingSourceResourcePurity?.ResetBindings(false);
         }
+
+        // -- Task 6.1: GetReadOnly and FindReadOnly methods --
+
+        public IReadOnlyList<ReadOnlyCommodity> GetReadOnlyCommodityList()
+        {
+            lock (_commodityLock)
+            {
+                return _commodityList.Select(c => new ReadOnlyCommodity(c)).ToList();
+            }
+        }
+
+        public IReadOnlyList<ReadOnlyResource> GetReadOnlyResourceList()
+        {
+            return _resourceList.Select(r => new ReadOnlyResource(r)).ToList();
+        }
+
+        public IReadOnlyList<ReadOnlyBlueprint> GetReadOnlyGlobalBlueprintList()
+        {
+            return _globalBlueprintList.Select(b => new ReadOnlyBlueprint(b)).ToList();
+        }
+
+        public ReadOnlyCommodity FindReadOnlyCommodity(string name)
+        {
+            var entity = FindCommodity(name);
+            return entity != null ? new ReadOnlyCommodity(entity) : null;
+        }
+
+        public ReadOnlyBlueprint FindReadOnlyGlobalBlueprint(string id)
+        {
+            var entity = FindGlobalBlueprint(id);
+            return entity != null ? new ReadOnlyBlueprint(entity) : null;
+        }
     }
 
     public class BaselineRoot

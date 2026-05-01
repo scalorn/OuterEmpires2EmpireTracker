@@ -611,3 +611,58 @@ Maps a blueprint evolution level to its research duration. Serialized in Baselin
 Fields:
 - Evolution (int)  the current evolution level (0-14)
 - ResearchTimeSeconds (long)  duration in seconds to research from this level to the next
+
+## Read-Only Data Wrappers
+
+Read-only wrapper classes provide controlled access to the data model. Each mutable entity has a corresponding `ReadOnly{Entity}` class that holds a private readonly reference and exposes only getter properties. Wrappers are separate classes (no shared interfaces or base class with the mutable type), preventing consumer code from casting back to the mutable type. See `.kiro/specs/readonly-data-wrappers/` for the full spec.
+
+### Utility Container Wrappers
+
+- **ReadOnlyPropertyBag** — wraps PropertyBag, exposes GetDecimal, GetLong, GetBoolean, GetString, ContainsKey, Count
+- **ReadOnlyItemBag** — wraps ItemBag, exposes CountByType, FindByType, FindResource, Count, ContainsKey
+- **ReadOnlyLockTracking** — wraps LockTracking, exposes GetLockedQuantity, GetLocksForProcess
+- **ReadOnlyCountDownTime** — wraps CountDownTime, exposes TimeRemaining, TimeRemainingString, IntervalsPassed, IsRepeating, RepeatIntervalSeconds, StartTime, EndTime
+
+### Top-Level Entity Wrappers
+
+- **ReadOnlyBlueprint** — wraps Blueprint (Properties as ReadOnlyPropertyBag, Resources as IReadOnlyDictionary)
+- **ReadOnlyColony** — wraps Colony (Items as ReadOnlyItemBag, Structures as IReadOnlyList of ReadOnlyColonyStructure, Commodities as IReadOnlyList of ReadOnlyCommodityRequested, Locks as ReadOnlyLockTracking)
+- **ReadOnlySurvey** — wraps Survey (Resources as IReadOnlyDictionary of ReadOnlySurveyResource)
+- **ReadOnlyPlayerProfile** — wraps PlayerProfile (GetSkill returns ReadOnlyPlayerSkill, ranks as ReadOnlyPlayerRank)
+- **ReadOnlyDeliveryRoute** — wraps DeliveryRoute (Stops as IReadOnlyList of ReadOnlyRouteStop)
+- **ReadOnlyDeliveryPlan** — wraps DeliveryPlan (Stops as IReadOnlyList of ReadOnlyDeliveryPlanStop)
+- **ReadOnlyBuildPlan** — wraps BuildPlan (Items as IReadOnlyList of ReadOnlyBuildItem)
+- **ReadOnlyShipTemplate** — wraps ShipTemplate (Components as IReadOnlyList of ReadOnlyShipComponentSlot)
+- **ReadOnlyShip** — wraps Ship (Components, Cargo as ReadOnlyItemBag, Hopper as ReadOnlyItemBag)
+- **ReadOnlyStation** — wraps Station (Holds as IReadOnlyDictionary of ReadOnlyItemBag, Components, MunitionsHold as ReadOnlyItemBag)
+- **ReadOnlyMarketListing** — wraps MarketListing
+- **ReadOnlyMarketTransaction** — wraps MarketTransaction
+- **ReadOnlyStockPlan** — wraps StockPlan (Targets as IReadOnlyList of ReadOnlyStockTarget)
+- **ReadOnlyStockProfile** — wraps StockProfile (Entries as IReadOnlyList of ReadOnlyStockProfileEntry)
+- **ReadOnlySupplyChain** — wraps SupplyChain (Stages as IReadOnlyList of ReadOnlySupplyChainStage)
+- **ReadOnlyWarehouseOverflowRule** — wraps WarehouseOverflowRule
+- **ReadOnlyFaction** — wraps Faction
+- **ReadOnlyExternalCharacter** — wraps ExternalCharacter
+- **ReadOnlyAsteroid** — wraps Asteroid (Reserves as IReadOnlyList of ReadOnlyAsteroidReserve)
+- **ReadOnlyPricingPlan** — wraps PricingPlan (ResourcePrices as IReadOnlyDictionary)
+- **ReadOnlyCommodity** — wraps Commodity
+- **ReadOnlyResource** — wraps Resource
+
+### Nested Type Wrappers
+
+- **ReadOnlyColonyStructure** — wraps ColonyStructure (Properties/AssignedWorkers as ReadOnlyPropertyBag, timers as nullable ReadOnlyCountDownTime, Statuses as IReadOnlyDictionary of ReadOnlyColonyStructureStatus)
+- **ReadOnlyColonyStructureStatus** — wraps ColonyStructureStatus
+- **ReadOnlyCommodityRequested** — wraps CommodityRequested
+- **ReadOnlyItem** — wraps Item (Contents as nullable ReadOnlyItemBag)
+- **ReadOnlySurveyResource** — wraps SurveyResource
+- **ReadOnlyPlayerRank** — wraps PlayerRank
+- **ReadOnlyPlayerSkill** — wraps PlayerSkill
+- **ReadOnlyRouteStop** — wraps RouteStop
+- **ReadOnlyDeliveryPlanStop** — wraps DeliveryPlanStop (DropOff/PickUp as IReadOnlyList of ReadOnlyDeliveryItem)
+- **ReadOnlyDeliveryItem** — wraps DeliveryItem
+- **ReadOnlyBuildItem** — wraps BuildItem
+- **ReadOnlyShipComponentSlot** — wraps ShipComponentSlot
+- **ReadOnlyStockTarget** — wraps StockTarget
+- **ReadOnlyStockProfileEntry** — wraps StockProfileEntry
+- **ReadOnlyAsteroidReserve** — wraps AsteroidReserve
+- **ReadOnlySupplyChainStage** — wraps SupplyChainStage
