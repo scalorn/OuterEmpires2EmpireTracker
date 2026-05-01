@@ -1,5 +1,6 @@
 using System;
 using NLog;
+using OE2EmpireTracker.Constants;
 
 namespace OE2EmpireTracker.Services
 {
@@ -13,11 +14,11 @@ namespace OE2EmpireTracker.Services
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Calculates build time in seconds based on Builder skill level.
-        /// Formula: 86400 * (1 - level * 0.02), minimum 1 second.
+        /// Formula: BaseBuildTimeSeconds * (1 - level * BuilderRatePerLevel), minimum 1 second.
         /// </summary>
         public static long Calculate(int builderSkillLevel)
         {
-            double seconds = 86400.0 * (1.0 - (builderSkillLevel * 0.02));
+            double seconds = GameConstants.BaseBuildTimeSeconds * (1.0 - (builderSkillLevel * (double)GameConstants.BuilderRatePerLevel));
             return Math.Max(1, (long)seconds);
         }
     }

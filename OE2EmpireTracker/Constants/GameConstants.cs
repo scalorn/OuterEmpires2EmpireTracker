@@ -123,6 +123,15 @@ namespace OE2EmpireTracker.Constants
         /// <summary>RefiningFocus: +2% per level.</summary>
         public const decimal RefiningFocusRatePerLevel = 0.02m;
 
+        /// <summary>ProductionFocus: +3% per level (manufacturing and commodity time reduction).</summary>
+        public const decimal ProductionFocusRatePerLevel = 0.03m;
+
+        /// <summary>Builder: +2% per level (structure build time reduction).</summary>
+        public const decimal BuilderRatePerLevel = 0.02m;
+
+        /// <summary>Base structure build time in seconds (1 day).</summary>
+        public const long BaseBuildTimeSeconds = 86400L;
+
         // --- Refining ---
 
         /// <summary>Base refining rate per cycle (units consumed from source).</summary>

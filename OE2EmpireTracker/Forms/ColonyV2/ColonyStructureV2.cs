@@ -1920,7 +1920,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     productionFocusLevel = owner.GetSkill(SkillName.ProductionFocus).Level;
             }
 
-            mfgSeconds = Math.Max(1, (long)(mfgSeconds * (1.0 - (productionFocusLevel * 0.03))));
+            mfgSeconds = Math.Max(1, (long)(mfgSeconds * (1.0 - (productionFocusLevel * (double)GameConstants.ProductionFocusRatePerLevel))));
 
             // Parse quantity from txtQuantity
             int qty = 1;
@@ -1963,7 +1963,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     productionFocusLevel = owner.GetSkill(SkillName.ProductionFocus).Level;
             }
 
-            commodityCycleSeconds = Math.Max(1, (long)(commodityCycleSeconds * (1.0 - (productionFocusLevel * 0.03))));
+            commodityCycleSeconds = Math.Max(1, (long)(commodityCycleSeconds * (1.0 - (productionFocusLevel * (double)GameConstants.ProductionFocusRatePerLevel))));
 
             structureData.ProcessCompletionTime.StartRepeating(commodityCycleSeconds);
             timerCountdown.Interval = GetCountdownIntervalMs();
