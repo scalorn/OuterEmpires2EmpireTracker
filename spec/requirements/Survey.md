@@ -42,7 +42,7 @@
 ## Survey Form — Resources Grid
 
 **REQ-SRV-030** The resources grid SHALL have four columns: Resource (combo), Purity (combo), Amount (text), Max Reserve (text, read-only).  
-**REQ-SRV-031** The Resource combo SHALL be populated from the empire context resource list.  
+**REQ-SRV-031** The Resource combo SHALL be populated from the EmpireContext resource list.  
 **REQ-SRV-032** The Purity combo SHALL be populated from the resource purity list.  
 **REQ-SRV-033** When a survey is selected, the grid SHALL be cleared and repopulated from the survey's Resources dictionary.
 

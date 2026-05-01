@@ -55,6 +55,11 @@ Requirements (spec/requirements/)
 | Design Decisions | spec/decisions/ | Resolved questions, rationale |
 | Help Docs | docs/{topic}.md | User-facing documentation (embedded in app) |
 
+### Research Documents
+- For complex features involving technology choices, library comparisons, or architectural alternatives, create a research document at `spec/decisions/NNN-research-topic.md`
+- Document: alternatives considered, evaluation criteria, decision made, and rationale
+- Research docs are optional for simple features but recommended when multiple viable approaches exist
+
 ### Gap Detection
 - If you write code for a feature and can't find its requirements → add requirements first
 - If you find a requirement with no design doc → add the design element

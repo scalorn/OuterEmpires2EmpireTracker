@@ -299,7 +299,7 @@ All forms with editable controls now write to the data model immediately on chan
 ### Already Compliant
 - **ColonyStructure.cs** — `txtQuantity` writes through on TextChanged ✓
 - **FormDeliveryExecution.cs** — no editable fields (read-only) ✓
-- **ColonyStructure.cs** — all checkboxes (Built, Staged, Online, workers, StageResources) write through ✓
+- **ColonyStructure.cs** — all checkboxes (Built, Staged, Online, workers, StageResources) write-through ✓
 - **FormColony.cs** — commodity request grid writes through on CellValueChanged ✓
 
 

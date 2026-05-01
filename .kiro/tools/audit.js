@@ -27,6 +27,8 @@ const tools = [
     { name: 'Logger Check', script: 'logger-check.js' },
     { name: 'Unused Classes', script: 'unused-class.js' },
     { name: 'Inline Sort', script: 'inline-sort-check.js' },
+    { name: 'Spec Quality', script: 'spec-quality.js' },
+    { name: 'Term Consistency', script: 'term-consistency.js' },
 ];
 
 let totalFindings = 0;
