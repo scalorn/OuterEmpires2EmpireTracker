@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "name": "Run Full Audit",
-  "description": "Runs the full audit suite (magic strings, spec coverage, PERF timing, reference counters, control wiring, mockup controls) on demand.",
+  "name": "Run Full Audit (Manual)",
+  "description": "Runs the full audit suite on demand when manually triggered by the user.",
   "version": "1",
   "when": {
     "type": "userTriggered"
