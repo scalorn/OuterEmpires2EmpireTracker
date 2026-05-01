@@ -30,6 +30,7 @@ const tools = [
     { name: 'Spec Quality', script: 'spec-quality.js' },
     { name: 'Term Consistency', script: 'term-consistency.js' },
     { name: 'Event Matrix', script: 'event-matrix.js' },
+    { name: 'User Flow Check', script: 'user-flow-check.js' },
 ];
 
 let totalFindings = 0;

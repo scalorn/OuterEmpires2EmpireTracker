@@ -67,3 +67,75 @@ The user wants to plan complex manufacturing projects (ships, station components
 **REQ-BPL-082** Build item status SHALL be color-coded in the grid.  
 **REQ-BPL-083** The form SHALL provide an IsActive checkbox; inactive plans SHALL be styled with gray italic text.  
 **REQ-BPL-084** BuildPlanReferenceCounter SHALL count references from StockPlan.ReplenishmentBuildPlanUUID and display in a Refs column.
+
+## User Interaction Flows
+
+### Create Build Plan and Add Items
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormBuildPlanner
+    participant Svc as BuildPlanService
+    participant PC as PlayerContext
+
+    User->>Form: Click [New Plan]
+    Form->>Form: Clear plan fields
+    User->>Form: Enter plan name, description
+    User->>Form: Click [Save]
+    Form->>Svc: ValidatePlanName(name)
+    Svc-->>Form: Valid
+    Form->>PC: Add plan to BuildPlanList, WriteContext()
+    Form->>Form: Refresh plan list
+
+    User->>Form: Click [Add Item]
+    Form->>Form: Show item type selector (Manufactory/Commodity/etc.)
+    User->>Form: Select type, blueprint/commodity, quantity, location
+    Form->>PC: Add BuildItem to plan, WriteContext()
+    Form->>Form: Refresh build items grid
+```
+
+### Auto-Assign and Generate Delivery
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormBuildPlanner
+    participant Auto as AutoAssignService
+    participant Del as DeliveryGenerationService
+    participant PC as PlayerContext
+
+    User->>Form: Click [Auto-Assign]
+    Form->>Auto: ProposeAssignments(plan, colonies)
+    Auto-->>Form: Return proposed assignments
+    Form->>Form: Apply assignments to unallocated items
+    Form->>PC: WriteContext()
+    Form->>Form: Refresh grid (locations populated)
+
+    User->>Form: Click [Generate Delivery]
+    Form->>Del: GenerateDeliveryPlan(plan, shortfalls)
+    Del->>PC: Create delivery plan with resource items per stop
+    Del->>PC: WriteContext()
+    Form->>Form: Show confirmation with delivery plan name
+```
+
+### Start Manufacturing (Build Plan Execution)
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormBuildPlanner
+    participant Exec as BuildPlanExecutionService
+    participant PC as PlayerContext
+
+    User->>Form: Select Ready item in grid
+    User->>Form: Click [Start Manufacturing]
+    Form->>Exec: CanStartManufacturing(item, plan, colonyFinder, blueprintFinder)
+    Exec-->>Form: Eligible
+    Form->>Exec: StartManufacturing(item, plan, colonyFinder, blueprintFinder)
+    Exec->>Exec: Configure structure (set blueprint, quantity, timer)
+    Exec->>Exec: Advance item status to InProgress
+    Exec-->>Form: Success
+    Form->>PC: WriteContext()
+    Form->>Form: Refresh grid (status updated)
+```

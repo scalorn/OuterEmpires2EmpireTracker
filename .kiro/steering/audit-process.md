@@ -23,6 +23,7 @@ These run automatically via the post-task-audit hook:
 12. **Spec Quality** (spec-quality.js) — Validates requirements files in spec/requirements/ have proper REQ-xxx IDs on all requirement statements, use testable language (SHALL/MUST), contain no vague adjectives without measurable criteria (intuitive, robust, scalable, etc.), and have no TODO/TBD/FIXME markers.
 13. **Term Consistency** (term-consistency.js) — Detects terminology drift across spec/ and docs/ markdown files. Maintains a list of canonical terms and their non-canonical synonyms. Reports files using non-canonical variants. Rules use word-boundary matching and skip code spans.
 14. **Event Matrix** (event-matrix.js) — Cross-checks the form-to-event subscription matrix in spec/requirements/DataChangeEvents.md (REQ-DCE-024) against actual `playerContext.*Changed +=` subscriptions in Form*.cs files. Reports events listed in the matrix but missing from code (IN_MATRIX_NOT_CODE) and subscriptions in code but missing from the matrix (IN_CODE_NOT_MATRIX).
+15. **User Flow Check** (user-flow-check.js) — Verifies every non-infrastructure requirements file has at least one Mermaid sequenceDiagram (user flow). Infrastructure files (Architecture, DataModel, GameConstraints, GameMechanics, NonFunctional, SafeFileWriter, etc.) are exempt.
 
 ## Manual Audit Checklist
 

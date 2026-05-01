@@ -30,3 +30,51 @@ The user wants to track factions and external characters (other players, NPCs) t
 **REQ-CON-020** FormContacts SHALL provide a Factions tab for creating and editing factions.  
 **REQ-CON-021** FormContacts SHALL provide an External Characters tab for creating and editing external characters with faction assignment.  
 **REQ-CON-022** Deleting a faction SHALL NOT cascade-delete characters; their FactionUUID SHALL be cleared.
+
+
+## User Interaction Flows
+
+### Manage Factions
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormContacts (Factions tab)
+    participant PC as PlayerContext
+
+    User->>Form: Click [New Faction]
+    Form->>Form: Clear faction fields
+    User->>Form: Enter faction name, description
+    User->>Form: Click [Save]
+    Form->>PC: Generate deterministic UUID from name
+    Form->>PC: Add to FactionList, WriteContext()
+    Form->>Form: Refresh faction list
+
+    User->>Form: Select faction, click [Delete]
+    Form->>Form: Check FactionReferenceCounter
+    alt References exist
+        Form->>Form: Disable delete, show "In Use (N)"
+    else No references
+        Form->>PC: Remove faction, clear FactionUUID on linked characters
+        Form->>PC: WriteContext()
+        Form->>Form: Refresh faction list
+    end
+```
+
+### Manage External Characters
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Form as FormContacts (Characters tab)
+    participant PC as PlayerContext
+
+    User->>Form: Click [New Character]
+    Form->>Form: Clear character fields
+    User->>Form: Enter character name
+    User->>Form: Select faction from dropdown
+    User->>Form: Click [Save]
+    Form->>PC: Generate deterministic UUID from name
+    Form->>PC: Add to ExternalCharacterList, WriteContext()
+    Form->>Form: Refresh character list
+```
