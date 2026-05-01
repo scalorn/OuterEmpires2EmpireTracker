@@ -1,5 +1,13 @@
 # Ship Requirements
 
+## Out of Scope
+
+- Combat simulation or damage calculation during fights
+- Autopilot or route-following AI for ships
+- Fuel consumption tracking or refueling mechanics
+- Ship-to-ship trading or docking interactions
+- Visual ship builder or 3D rendering
+
 ## Ship Templates
 
 **REQ-SHP-001** A ShipTemplate SHALL have UUID, Name, OwnerUUID, HullBlueprintUUID, and a list of ShipComponentSlots.  

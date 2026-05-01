@@ -1,5 +1,13 @@
 # Market Requirements
 
+## Out of Scope
+
+- Real-time price feeds or API integration with the game
+- Automated trading or buy/sell bots
+- Price history charts or trend analysis
+- Multi-currency support (all prices are in-game credits)
+- Tax or fee calculations on transactions
+
 ## Market Listings
 
 **REQ-MKT-001** A MarketListing SHALL have UUID, OwnerUUID, StationUUID, ItemType, ItemReferenceID, ItemName, Quantity, and PricePerUnit.  

@@ -1,5 +1,13 @@
 # Stock Target Requirements
 
+## Out of Scope
+
+- Automatic purchasing from market to fill shortfalls
+- Price-aware replenishment (buy only if price is below threshold)
+- Historical stock level tracking or trend graphs
+- Alert notifications (email, sound) when stock is critical
+- Cross-player stock sharing or pooling
+
 ## Stock Plans
 
 **REQ-STK-001** A StockPlan SHALL have UUID, Name, OwnerUUID, ReplenishmentBuildPlanUUID, IsActive flag, and a list of StockTargets.  

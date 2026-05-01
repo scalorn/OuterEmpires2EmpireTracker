@@ -36,6 +36,7 @@ Each file covers one domain. Requirements are written as verifiable statements.
 | [SupplyChains.md](SupplyChains.md) | Supply chain stages, threshold checks, background processing |
 | [Survey.md](Survey.md) | Survey management and blueprint scanning |
 | [UIStatePersistence.md](UIStatePersistence.md) | Window state persistence, preferences store |
+| [NonFunctional.md](NonFunctional.md) | Performance targets, scale assumptions, crash recovery, concurrency |
 
 ## Conventions
 

@@ -1,5 +1,13 @@
 # Station Requirements
 
+## Out of Scope
+
+- Station construction or upgrade mechanics
+- NPC interaction at stations (shops, missions)
+- Station defense simulation or attack scenarios
+- Docking fees or station services pricing
+- Station discovery or exploration
+
 ## Station Model
 
 **REQ-STN-001** A Station SHALL have UUID, Name, StationType (Outpost/Station/Starbase), Ownership (Government/PlayerOwned), and OwnerUUID.  

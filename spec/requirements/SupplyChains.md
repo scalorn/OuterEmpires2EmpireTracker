@@ -1,5 +1,13 @@
 # Supply Chain Requirements
 
+## Out of Scope
+
+- Automatic route optimization (shortest path, fuel efficiency)
+- Real-time tracking of ships in transit
+- Multi-player supply chain coordination
+- Market price integration for profit/loss on chain outputs
+- Visual pipeline editor (drag-and-drop stage connections)
+
 ## Supply Chain Model
 
 **REQ-SCH-001** A SupplyChain SHALL have UUID, Name, OwnerUUID, IsActive flag, and an ordered list of SupplyChainStages.  
