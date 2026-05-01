@@ -50,6 +50,72 @@ The user expects that when data changes (via background processing, import, or a
 **REQ-DCE-022** Event handlers SHALL check `IsDisposed` before accessing form controls to prevent ObjectDisposedException.
 **REQ-DCE-023** When a data change event fires, the form SHALL refresh its display if the changed entity is currently selected or visible.
 
+## Form-to-Event Subscription Matrix
+
+**REQ-DCE-024** Each form SHALL subscribe to the events listed below. This matrix is the authoritative reference for which forms respond to which data changes.
+
+| Form | CurrentPlayerChanged | Domain Events |
+|------|---------------------|---------------|
+| FormColonyV2 | Yes | ColonyDataChanged |
+| FormColonyActivity | Yes | ColonyDataChanged |
+| FormColonyDailyBuild | Yes | ColonyDataChanged |
+| FormBlueprintV2 | Yes | BlueprintDataChanged, PricingDataChanged |
+| FormSurvey | Yes | SurveyDataChanged, ColonyDataChanged |
+| FormPlayerProfile | Yes | PlayerProfileDataChanged |
+| FormDeliveryRoute | Yes | DeliveryDataChanged |
+| FormDeliveryExecution | Yes | DeliveryDataChanged |
+| FormBuildPlanner | Yes | BuildPlanDataChanged, ColonyDataChanged |
+| FormMarket | Yes | MarketDataChanged |
+| FormStation | Yes | (CurrentPlayerChanged only) |
+| FormAsteroid | Yes | AsteroidDataChanged |
+| FormShipTemplate | Yes | (CurrentPlayerChanged only) |
+| FormShipInstance | Yes | (CurrentPlayerChanged only) |
+| FormStockTargets | Yes | (CurrentPlayerChanged only) |
+| FormSupplyChain | Yes | (CurrentPlayerChanged only) |
+| FormContacts | Yes | (CurrentPlayerChanged only) |
+| FormPricingPlan | Yes | (CurrentPlayerChanged only) |
+| MainWindow | — | PlayerProfilesChanged |
+
+## Cross-Form Interaction Rules
+
+**REQ-DCE-030a** When FormDeliveryExecution marks a commodity as delivered, it SHALL fire ColonyDataChanged for the destination colony. This causes FormColonyV2, FormColonyActivity, FormColonyDailyBuild, FormBuildPlanner, and FormSurvey to refresh if open.
+**REQ-DCE-030b** When FormDeliveryExecution marks a flatpack as delivered, it SHALL fire ColonyDataChanged for the destination colony. This causes colony forms to show the newly staged structure.
+**REQ-DCE-030c** When BackgroundProcessor processes a colony (mining, refining, manufacturing, research, building), it SHALL fire ColonyDataChanged for that colony. All colony-subscribed forms refresh automatically.
+**REQ-DCE-030d** When BackgroundProcessor advances build plan item statuses, it SHALL fire BuildPlanDataChanged for each modified plan. FormBuildPlanner refreshes automatically.
+**REQ-DCE-030e** When FormBlueprintV2 modifies a blueprint used in colony structures (manufacturing, research, flatpack), the colony forms SHALL NOT be notified directly — the blueprint change takes effect on the next background processing cycle.
+**REQ-DCE-030f** When FormPlayerProfile modifies skill levels, colony production rates change on the next background processing cycle. No immediate cross-form notification is required.
+
+## Event Sources
+
+**REQ-DCE-031** The following operations SHALL fire the specified events:
+
+| Operation | Event Fired | Source |
+|-----------|-------------|--------|
+| Colony save (FormColonyV2) | ColonyDataChanged | ColonyViewModel.Save() |
+| Colony import (clipboard) | ColonyDataChanged | ColonyParser import path |
+| Background processing (timer) | ColonyDataChanged (per colony) | BackgroundProcessor |
+| Background processing (build plans) | BuildPlanDataChanged (per plan) | BackgroundProcessor |
+| Delivery execution (commodity/flatpack/worker/resource) | ColonyDataChanged | FormDeliveryExecution |
+| Blueprint save | BlueprintDataChanged | BlueprintViewModel.Save() |
+| Blueprint import (scanner) | BlueprintDataChanged | BlueprintScanner |
+| Survey save | SurveyDataChanged | SurveyViewModel.Save() |
+| Survey import (clipboard) | SurveyDataChanged | SurveyParser import path |
+| Route/plan save | DeliveryDataChanged | DeliveryRouteViewModel.Save() |
+| Player profile save | PlayerProfileDataChanged | PlayerProfileViewModel.Save() |
+| Player profile import | PlayerProfileDataChanged | PlayerProfileParser |
+| Player add/remove | PlayerProfilesChanged | MainWindow |
+| Pricing plan save | PricingDataChanged | PricingPlanViewModel.Save() |
+| Build plan save | BuildPlanDataChanged | BuildPlanViewModel.Save() |
+| Market listing/transaction save | MarketDataChanged | MarketViewModel.Save() |
+| Station save | StationDataChanged | StationViewModel.Save() |
+| Asteroid save | AsteroidDataChanged | AsteroidViewModel.Save() |
+| Ship template save | ShipTemplateDataChanged | ShipTemplateViewModel.Save() |
+| Ship instance save | ShipDataChanged | ShipInstanceViewModel.Save() |
+| Stock plan save | StockDataChanged | StockTargetsViewModel.Save() |
+| Supply chain save | SupplyChainDataChanged | SupplyChainViewModel.Save() |
+| Contact save | ContactDataChanged | ContactsViewModel.Save() |
+| Player switch (dropdown) | CurrentPlayerChanged | MainWindow |
+
 ## Write-Through Pattern
 
 **REQ-DCE-030** All editable form controls SHALL write to the data model immediately on change (TextChanged, SelectedIndexChanged, CheckedChanged).
