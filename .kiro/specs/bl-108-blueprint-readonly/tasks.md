@@ -1,62 +1,61 @@
 # BL-108 Tasks
 
-## Phase 1: Read-Only Consumer Migration
+## Phase 1: Read-Only Consumer Migration (FormBlueprintV2)
 
 ### Task 1: Add GetAllReadOnlyBlueprints to PlayerContext
-- [ ] Add `GetAllReadOnlyBlueprints()` that returns combined player + global as `IReadOnlyList<ReadOnlyBlueprint>`
+- [ ] Add `GetAllReadOnlyBlueprints()` returning `IReadOnlyList<ReadOnlyBlueprint>`
 - [ ] Verify with unit test
 
 ### Task 2: Migrate List View to ReadOnly
-- [ ] Change `PopulateListView()` to use `ReadOnlyBlueprint` list
 - [ ] Change list view item Tag from `Blueprint` to `ReadOnlyBlueprint`
-- [ ] Update `RefreshBlueprintList()` to call `GetAllReadOnlyBlueprints()`
+- [ ] Update `RefreshBlueprintList()` and `PopulateListView()` to use read-only list
 - [ ] Update all code that reads from list view Tags
 
 ### Task 3: Migrate Selection Handler
-- [ ] Change `LvwBlueprints_ItemSelectionChanged` to read UUID from `ReadOnlyBlueprint`
-- [ ] Look up mutable `Blueprint` by UUID
-- [ ] Pass mutable to `viewModel.SelectBlueprint()`
+- [ ] Read UUID from `ReadOnlyBlueprint` Tag
+- [ ] Look up mutable `Blueprint` by UUID for ViewModel
 - [ ] Verify delete button ref count still works
 
 ### Task 4: Migrate Filter Combos to ReadOnly
-- [ ] Change filter combo population to use read-only type/class/tech lists
-- [ ] Ensure filter logic works with read-only types
+- [ ] Filter combo population uses read-only type/class/tech lists
 
 ### Task 5: Migrate Evolution Graph to ReadOnly
-- [ ] Update `EvolutionChainService` to accept read-only blueprint lists
-- [ ] Update `RefreshEvolutionGraph()` to pass read-only lists
+- [ ] `EvolutionChainService` accepts read-only blueprint lists
+- [ ] `RefreshEvolutionGraph()` passes read-only lists
 
 ### Task 6: Migrate Base Blueprint Candidates to ReadOnly
-- [ ] Change `GetBaseBlueprintCandidates()` to return read-only list
-- [ ] Update base blueprint combo and selection handler
+- [ ] `GetBaseBlueprintCandidates()` returns read-only list
+- [ ] Base blueprint combo uses read-only items
 
 ### Task 7: Migrate Pricing Plan Combo to ReadOnly
-- [ ] Change pricing plan combo to use read-only list
-- [ ] Update price calculator to accept read-only inputs
+- [ ] Pricing plan combo uses read-only list
+- [ ] Price calculator accepts read-only inputs
 
 ### Task 8: Migrate Reference Counter Inputs
-- [ ] Update `BlueprintReferenceCounter` to accept read-only inputs
+- [ ] `BlueprintReferenceCounter` accepts read-only inputs
 
-## Phase 2: Blueprint Property Immutability
+## Phase 2: Controlled Mutable Access
 
-### Task 9: Add InternalsVisibleTo
-- [ ] Add `[assembly: InternalsVisibleTo("OE2EmpireTracker.Tests")]` to main project
-- [ ] Verify tests still compile and pass
+### Task 9: Add FindMutableBlueprint Internal Methods
+- [ ] Add `internal Blueprint FindMutableBlueprint(string uuid)` to PlayerContext
+- [ ] Add `internal Blueprint FindMutableGlobalBlueprint(string uuid)` to EmpireContext
+- [ ] Add `internal` Add/Remove methods if not already internal
+- [ ] These exist alongside the current public methods initially
 
-### Task 10: Blueprint Internal Setters
-- [ ] Change all Blueprint property setters to `internal set`
-- [ ] Includes: BluePrintType, Evolution, TechLevel, Class, CopyCost, OwnerUUID, BaseBlueprintUUID, LegacyUUID, Properties, Resources
-- [ ] Verify BlueprintViewModel still compiles (same assembly)
-- [ ] Verify MarketBlueprintImporter still compiles (same assembly)
-- [ ] Verify BlueprintScanner still compiles (same assembly)
-- [ ] Verify JSON deserialization still works (round-trip tests)
-- [ ] Verify all tests pass (InternalsVisibleTo)
+### Task 10: Migrate Authorized Callers to FindMutableBlueprint
+- [ ] BlueprintViewModel.SelectBlueprint uses `FindMutableBlueprint`
+- [ ] BlueprintViewModel.Save uses internal Add/Remove
+- [ ] BlueprintImportHandler.MergeAndPersist uses `FindMutableBlueprint`
+- [ ] MarketBlueprintImporter.UpdateExisting receives mutable from pipeline
+- [ ] ColonyStructureV2 blueprint lookups — determine if mutable needed (likely read-only)
+- [ ] BuildPlanExecutionService blueprint lookups — determine if mutable needed (likely read-only)
+- [ ] Any other caller that genuinely needs mutable access
 
-### Task 11: Item Base Class Internal Setters
-- [ ] Change all Item property setters to `internal set`
-- [ ] Includes: UUID, ItemType, Name, NickName, Description, BaseItemTypeID, Quantity, ResourcePurity, Volume, Contents, CurrentHP, MaxHP, MaxRepairPercent
-- [ ] Verify all code that sets Item properties is within the main assembly
-- [ ] Verify JSON deserialization still works for all Item subclasses
+### Task 11: Change FindBlueprint Return Type to ReadOnly
+- [ ] Change `PlayerContext.FindBlueprint()` return type from `Blueprint` to `ReadOnlyBlueprint`
+- [ ] Change `EmpireContext.FindGlobalBlueprint()` return type from `Blueprint` to `ReadOnlyBlueprint`
+- [ ] Change `PlayerContext.GetAllBlueprints()` return type to `IReadOnlyList<ReadOnlyBlueprint>`
+- [ ] Fix all compile errors — each one is a decision point (mutable vs read-only)
 - [ ] Verify all tests pass
 
 ## Phase 3: Verification
@@ -64,6 +63,6 @@
 ### Task 12: Full Verification
 - [ ] Run all tests — zero failures
 - [ ] Run audit — zero findings
-- [ ] Grep for direct `Blueprint` property sets in FormBlueprintV2 — should only appear in ViewModel
-- [ ] Grep for `\.ItemType\s*=` outside constructors — should only appear in authorized paths
+- [ ] Grep for `FindMutableBlueprint` calls — should only be in ViewModel, Importer, Scanner
+- [ ] Grep for direct `Blueprint` variable declarations in FormBlueprintV2 — should only be in ViewModel/edit paths
 - [ ] Update BL-108 status in BACKLOG.md to Done

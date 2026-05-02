@@ -35,34 +35,25 @@ The pricing plan combo SHALL use read-only wrappers.
 ### REQ-BL108-009: No Mutable Entity in Read-Only Paths
 After migration, NO read-only code path SHALL hold a direct reference to a mutable `Blueprint`.
 
-## Phase 2: Blueprint Property Immutability
+## Phase 2: Controlled Mutable Access
 
-### REQ-BL108-010: Internal Setters on Blueprint
-All mutable properties on `Blueprint` SHALL have `internal` setters instead of `public` setters. This includes: `BluePrintType`, `Evolution`, `TechLevel`, `Class`, `CopyCost`, `OwnerUUID`, `BaseBlueprintUUID`, `LegacyUUID`, `Properties`, `Resources`. The `Name`, `NickName`, `Description` setters (inherited from `Item`) SHALL also be restricted.
+### REQ-BL108-010: PlayerContext Stops Exposing Mutable Blueprints Publicly
+`PlayerContext.FindBlueprint(uuid)` SHALL return `ReadOnlyBlueprint`. A new `internal` method `FindMutableBlueprint(uuid)` SHALL return the mutable `Blueprint` for authorized mutation paths only. `GetAllBlueprints()` SHALL return `IReadOnlyList<ReadOnlyBlueprint>`.
 
-### REQ-BL108-011: Internal Setters on Item Base Class
-The `Item` base class properties that Blueprint inherits (`UUID`, `ItemType`, `Name`, `NickName`, `Description`, `BaseItemTypeID`, `Quantity`, `ResourcePurity`, `Volume`, `Contents`, `CurrentHP`, `MaxHP`, `MaxRepairPercent`) SHALL have `internal` setters. This prevents any code outside the OE2EmpireTracker assembly from mutating Item/Blueprint state.
+### REQ-BL108-011: EmpireContext Stops Exposing Mutable Global Blueprints Publicly
+`EmpireContext.FindGlobalBlueprint(uuid)` SHALL return `ReadOnlyBlueprint`. A new `internal` method `FindMutableGlobalBlueprint(uuid)` SHALL return the mutable `Blueprint` for authorized mutation paths only.
 
-### REQ-BL108-012: InternalsVisibleTo for Test Project
-The main project SHALL declare `[InternalsVisibleTo("OE2EmpireTracker.Tests")]` so tests can still construct and mutate Blueprint objects for test setup.
+### REQ-BL108-012: BlueprintViewModel Uses Internal Mutable Access
+`BlueprintViewModel.SelectBlueprint()` SHALL use `FindMutableBlueprint()` to obtain the mutable reference for editing. The ViewModel is the ONLY form-level code that holds a mutable `Blueprint`.
 
-### REQ-BL108-013: JSON Deserialization Compatibility
-Newtonsoft.Json SHALL still be able to deserialize Blueprint objects from JSON. Since Newtonsoft uses reflection and can access internal setters within the same assembly, and the deserializer runs inside the main assembly, this SHALL work without changes. Verify with existing round-trip tests.
+### REQ-BL108-013: Importer Uses Internal Mutable Access
+`MarketBlueprintImporter.UpdateExisting()` and `MergeResourcesOnly()` receive mutable `Blueprint` references through the import pipeline, which uses `FindMutableBlueprint()` internally.
 
-### REQ-BL108-014: Authorized Mutation Paths
-The following code paths are the ONLY authorized mutators of Blueprint state:
-1. **BlueprintViewModel** — form edit path (write-through to model)
-2. **MarketBlueprintImporter.UpdateExisting** — import merge
-3. **MarketBlueprintImporter.MergeResourcesOnly** — resource-only import merge
-4. **BlueprintScanner.ProcessHtml** — HTML parsing into temp Blueprint
-5. **BlueprintImportHandler.MergeAndPersist** — import routing (sets UUID, OwnerUUID)
-6. **JSON deserialization** — loading from file
-7. **Migration code** — data migration paths
-
-All of these are within the main assembly and can access `internal` setters.
+### REQ-BL108-014: Scanner Creates Temporary Mutable Blueprints
+`BlueprintScanner` creates new `Blueprint()` objects for parsing. These are temporary and never stored — they're passed to the importer which merges them into existing entries via the mutable access path.
 
 ### REQ-BL108-015: Compile-Time Enforcement
-After migration, any attempt to set a Blueprint property from outside the main assembly (e.g. from a hypothetical plugin or external consumer) SHALL fail at compile time.
+After migration, any code that calls `FindBlueprint()` gets a `ReadOnlyBlueprint` — it cannot set properties because the wrapper has no setters. Only code that explicitly calls the `internal` mutable accessor can mutate. Since `internal` is assembly-scoped, this limits mutation to code within the main project that deliberately opts in.
 
 ## Phase 3: Verification
 

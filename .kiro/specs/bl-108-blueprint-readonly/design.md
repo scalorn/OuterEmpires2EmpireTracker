@@ -56,87 +56,70 @@ viewModel.SelectBlueprint(bp);
 | Import/scanner path | Creates temp Blueprint objects |
 | Save/delete path | Persists through ViewModel |
 
-## Phase 2: Internal Setters
+## Phase 2: Controlled Mutable Access
 
-### Item Base Class Changes
+### The Real Enforcement
+
+`internal set` on properties doesn't help in a single-assembly app — all code in the project can still mutate. The real enforcement is **controlling who gets a mutable reference**.
+
+After Phase 2:
+- `PlayerContext.FindBlueprint(uuid)` returns `ReadOnlyBlueprint` — callers can't mutate
+- `PlayerContext.FindMutableBlueprint(uuid)` (internal) returns mutable `Blueprint` — only authorized code calls this
+- `EmpireContext.FindGlobalBlueprint(uuid)` returns `ReadOnlyBlueprint`
+- `EmpireContext.FindMutableGlobalBlueprint(uuid)` (internal) returns mutable `Blueprint`
+
+### Who Gets Mutable Access
+
+| Code Path | Access | Method |
+|-----------|--------|--------|
+| BlueprintViewModel.SelectBlueprint | Mutable | `FindMutableBlueprint(uuid)` |
+| BlueprintViewModel.Save | Mutable | Already has reference from SelectBlueprint |
+| MarketBlueprintImporter.UpdateExisting | Mutable | Receives mutable from import pipeline |
+| BlueprintImportHandler.MergeAndPersist | Mutable | `FindMutableBlueprint(uuid)` or creates new |
+| BlueprintScanner | Mutable | Creates `new Blueprint()` (temporary) |
+| JSON deserialization | Mutable | Creates `new Blueprint()` via reflection |
+| Migration code | Mutable | Direct list access (internal) |
+
+### Who Gets ReadOnly Access
+
+Everything else:
+- List view population
+- Filter combo population
+- Reference counting
+- Evolution graph
+- Pricing calculation
+- Colony form reading blueprint properties
+- Build planner reading blueprint properties
+- Any form that displays blueprint data without editing it
+
+### API Changes on PlayerContext
 
 ```csharp
-public class Item
-{
-    // UUID: set during construction or deserialization only
-    public string UUID { get; internal set; }
+// PUBLIC — returns ReadOnly, safe for all consumers
+public ReadOnlyBlueprint FindBlueprint(string uuid) { ... }
+public IReadOnlyList<ReadOnlyBlueprint> GetAllBlueprints() { ... }
 
-    // ItemType: set in constructor, never changed
-    public ItemType.ItemTypeEnum ItemType { get; internal set; }
-
-    // Name/NickName/Description: set via ViewModel or import
-    public virtual string Name { get; internal set; } = string.Empty;
-    public virtual string NickName { get; internal set; } = string.Empty;
-    public virtual string Description { get; internal set; } = string.Empty;
-
-    // Other Item properties
-    public string BaseItemTypeID { get; internal set; } = string.Empty;
-    public int Quantity { get; internal set; } = 0;
-    public string ResourcePurity { get; internal set; } = string.Empty;
-    public decimal Volume { get; internal set; } = 0m;
-    public ItemBag Contents { get; internal set; }
-    public int CurrentHP { get; internal set; } = 0;
-    public int MaxHP { get; internal set; } = 0;
-    public decimal MaxRepairPercent { get; internal set; } = 0m;
-}
+// INTERNAL — returns mutable, only for ViewModel/Importer/Scanner
+internal Blueprint FindMutableBlueprint(string uuid) { ... }
+internal void AddBlueprint(Blueprint bp) { ... }
+internal void RemoveBlueprint(Blueprint bp) { ... }
 ```
 
-### Blueprint Class Changes
+### Migration Strategy
 
-```csharp
-public class Blueprint : Item
-{
-    public string OwnerUUID { get; internal set; } = string.Empty;
-    public string BaseBlueprintUUID { get; internal set; }
-    public string LegacyUUID { get; internal set; }
-    public string BluePrintType { get; internal set; }
-    public int Evolution { get; internal set; }
-    public string TechLevel { get; internal set; }
-    public int Class { get; internal set; }
-    public int CopyCost { get; internal set; }
-    public PropertyBag Properties { get; internal set; }
-    public Dictionary<string, string> Resources { get; internal set; }
-}
-```
+This is a breaking API change — every caller of `FindBlueprint` that expects a mutable `Blueprint` needs to be updated. The migration order:
 
-### InternalsVisibleTo
+1. Add the new `FindMutableBlueprint` internal methods alongside existing public methods
+2. Migrate authorized callers (ViewModel, Importer) to use `FindMutableBlueprint`
+3. Change `FindBlueprint` return type from `Blueprint` to `ReadOnlyBlueprint`
+4. Fix all compile errors — each one is a code path that was getting mutable access and shouldn't be
+5. Verify
 
-In `Properties/AssemblyInfo.cs` or a new file:
-```csharp
-[assembly: InternalsVisibleTo("OE2EmpireTracker.Tests")]
-```
+### Risk: Broad Impact
 
-### JSON Deserialization
+Changing `FindBlueprint` return type breaks every caller. This is intentional — each compile error forces a decision: does this code need mutable access (use `FindMutableBlueprint`) or read-only access (use the `ReadOnlyBlueprint` it now gets)?
 
-Newtonsoft.Json uses reflection to set properties. With `internal` setters, the deserializer can still set them because:
-- The deserializer runs within the same assembly (OE2EmpireTracker)
-- Newtonsoft.Json uses `BindingFlags.NonPublic` when the property has a non-public setter
-
-Verify with existing round-trip serialization tests.
-
-### Impact on Other Code
-
-Since `internal` is assembly-scoped, ALL code within OE2EmpireTracker can still set properties. This means:
-- ViewModel write-through works (same assembly)
-- Importer/scanner works (same assembly)
-- Migration code works (same assembly)
-- Colony form reading blueprint properties works (same assembly, read-only)
-
-The protection is against:
-- External assemblies (future plugins, API consumers)
-- The test project (unless InternalsVisibleTo is declared)
-- Accidental mutation from code that shouldn't be touching Blueprint state (caught by code review, not compiler — but ReadOnly wrappers in Phase 1 provide the compile-time enforcement for read-only paths)
-
-### Risk: Item Setters Affect All Item Subclasses
-
-Making `Item` setters `internal` affects ALL classes that inherit from `Item`, not just `Blueprint`. This includes warehouse items, delivery items, etc. Those code paths also need to be within the main assembly (which they are). But it's a broader change than just Blueprint.
-
-**Mitigation**: Do Item setter changes in a separate task, after Blueprint-specific changes are verified. Test thoroughly.
+Most callers only read properties and will work fine with `ReadOnlyBlueprint` since it exposes the same getters. The few that mutate will need to switch to `FindMutableBlueprint`.
 
 ## Task Ordering
 
