@@ -47,9 +47,30 @@ The ViewModel SHALL NOT write changes to the Blueprint entity on every keystroke
 ### REQ-BL108-013: Dirty Tracking
 The ViewModel SHALL track whether any field has been modified since the last load/save. The Save button SHALL be enabled only when the ViewModel is dirty.
 
+### REQ-BL108-014: Unsaved Changes Prompt on Selection Change
+When the user selects a different blueprint in the list view and the ViewModel is dirty, the form SHALL prompt: "Save changes to '{name}'?" with Save / Discard / Cancel options.
+- **Save**: calls BlueprintService.Update, then loads the new selection
+- **Discard**: discards local changes, loads the new selection
+- **Cancel**: cancels the selection change, keeps the current blueprint selected
+
+### REQ-BL108-015: Unsaved Changes Prompt on Form Close
+When the user closes the blueprint form (X button or MDI close) and the ViewModel is dirty, the form SHALL prompt with the same Save / Discard / Cancel dialog.
+- **Save**: saves, then closes
+- **Discard**: closes without saving
+- **Cancel**: cancels the close (form stays open)
+
+### REQ-BL108-016: Unsaved Changes Prompt on Application Exit
+When the application exits (MainWindow closing) and any open blueprint form has unsaved changes, the form's OnFormClosing handler SHALL trigger the same prompt. If the user cancels, the application exit SHALL be cancelled.
+
+### REQ-BL108-017: Unsaved Changes Prompt on New Blueprint
+When the user clicks New while the ViewModel is dirty, the form SHALL prompt before clearing the form for the new blueprint.
+
+### REQ-BL108-018: Unsaved Changes Prompt on Import
+When the user imports from clipboard while the ViewModel is dirty and the import targets the currently selected blueprint, the form SHALL prompt before overwriting local changes with imported data.
+
 ## Phase 3: BlueprintService
 
-### REQ-BL108-020: BlueprintService.Update
+### REQ-BL108-030: BlueprintService.Update
 A new `BlueprintService` class SHALL provide an `Update(string uuid, BlueprintUpdateRequest changes)` method that:
 1. Looks up the mutable Blueprint by UUID (internal access)
 2. Applies the changed fields from the request to the entity
@@ -57,19 +78,19 @@ A new `BlueprintService` class SHALL provide an `Update(string uuid, BlueprintUp
 4. Fires BlueprintDataChanged event
 5. Returns the updated ReadOnlyBlueprint
 
-### REQ-BL108-021: BlueprintService.Create
+### REQ-BL108-031: BlueprintService.Create
 `BlueprintService.Create(BlueprintCreateRequest request)` SHALL create a new Blueprint, assign a UUID (deterministic for global, random for player), add it to the appropriate list, persist, and return the ReadOnlyBlueprint.
 
-### REQ-BL108-022: BlueprintService.Delete
+### REQ-BL108-032: BlueprintService.Delete
 `BlueprintService.Delete(string uuid)` SHALL remove the blueprint from the appropriate list, persist, and fire the change event.
 
-### REQ-BL108-023: BlueprintService.Import
+### REQ-BL108-033: BlueprintService.Import
 `BlueprintService.Import(Blueprint tempBlueprint, ReadOnlyBlueprint selectedTarget)` SHALL handle the clipboard import flow — dedup matching, UpdateExisting/MergeResourcesOnly, persist, and return the result.
 
-### REQ-BL108-024: BlueprintService.MoveToGlobal / MoveToPlayer
+### REQ-BL108-034: BlueprintService.MoveToGlobal / MoveToPlayer
 `BlueprintService.MoveToGlobal(string uuid)` and `MoveToPlayer(string uuid)` SHALL handle the global/player toggle — moving the blueprint between lists, updating OwnerUUID, persisting both contexts.
 
-### REQ-BL108-025: Save Flow
+### REQ-BL108-035: Save Flow
 When the user clicks Save:
 1. ViewModel collects all local field values into a `BlueprintUpdateRequest`
 2. Calls `BlueprintService.Update(uuid, request)`
@@ -77,7 +98,7 @@ When the user clicks Save:
 4. Form receives the change event, refreshes list view with new ReadOnlyBlueprint
 5. ViewModel reloads from the fresh ReadOnlyBlueprint
 
-### REQ-BL108-026: Service Is the Only Mutator
+### REQ-BL108-036: Service Is the Only Mutator
 After migration, the Blueprint entity SHALL only be mutated by:
 1. `BlueprintService` methods (Update, Create, Delete, Import, Move)
 2. JSON deserialization (loading from file)
@@ -87,13 +108,13 @@ No form, ViewModel, or other consumer SHALL directly set properties on a Bluepri
 
 ## Phase 4: Verification
 
-### REQ-BL108-030: Existing Tests Pass
+### REQ-BL108-040: Existing Tests Pass
 All existing tests SHALL continue to pass.
 
-### REQ-BL108-031: Audit Clean
+### REQ-BL108-041: Audit Clean
 All audit checks SHALL pass with zero findings.
 
-### REQ-BL108-032: No Direct Mutation Outside Service
+### REQ-BL108-042: No Direct Mutation Outside Service
 Grep for direct Blueprint property sets — SHALL only appear in BlueprintService, deserialization, and migration code.
 
 ## Out of Scope

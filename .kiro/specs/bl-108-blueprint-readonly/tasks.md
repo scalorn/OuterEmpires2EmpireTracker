@@ -49,6 +49,14 @@
 - [ ] Save button enabled only when `viewModel.IsDirty`
 - [ ] Save button disabled after successful save
 
+### Task 9: Unsaved Changes Guard
+- [ ] Create `PromptUnsavedChanges()` helper returning Save/Discard/Cancel
+- [ ] Wire into `LvwBlueprints_ItemSelectionChanged` — prompt before switching
+- [ ] Wire into `OnFormClosing` — prompt before closing, cancel close on Cancel
+- [ ] Wire into `BtnNew_Click` — prompt before clearing for new
+- [ ] Wire into `BtnImport_Click` — prompt if import targets current dirty blueprint
+- [ ] Cancel option in selection change restores the previous list view selection
+
 ## Phase 3: BlueprintService
 
 ### Task 9: Create BlueprintService
