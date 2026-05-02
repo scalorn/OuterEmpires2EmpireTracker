@@ -113,8 +113,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
                     if (!eligible) continue;
 
-                    bool busy = !string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)
-                             || !string.IsNullOrEmpty(structure.ManufacturingCommodityName);
+                    bool busy = structure.ProcessCompletionTime != null;
 
                     if (idleOnly && busy) continue;
 
@@ -156,6 +155,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     row.TypeLabel,
                     row.IsBusy ? "Busy" : "Idle");
                 dgvStructures.Rows[idx].Tag = row;
+                if (row.IsBusy)
+                {
+                    Log.Debug("Allocation: '{0}' / '{1}' marked Busy (has active ProcessCompletionTime)",
+                        row.ColonyName, row.StructureName);
+                }
             }
 
             cmdAllocate.Enabled = dgvStructures.Rows.Count > 0;
