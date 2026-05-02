@@ -1,70 +1,103 @@
-# BL-108: FormBlueprintV2 — Immutable Data Model, Mutation Through Interface Only
+# BL-108: FormBlueprintV2 — Immutable Data Model, Mutation Through Service Only
 
 ## Motivation
 
-The ItemType=Survey corruption (traced to April 4, 2026) proved that public setters on entity POCOs are dangerous. Something in the blueprint form's code path mutated a Blueprint's ItemType from "Blueprint" to "Survey", corrupting 14 global blueprints. With public setters, any code anywhere can mutate any field at any time without going through a controlled path.
+The ItemType=Survey corruption proved that direct in-memory mutation of entities is dangerous. But the deeper goal (BL-074) is service-call readiness: the data model should work as if the entity lives on a remote service. You can't write-through to a remote object — you read a snapshot, edit locally, and submit changes through a service call.
 
-This item makes Blueprint properties immutable to external consumers. Only authorized mutation paths (ViewModel, Importer, Scanner) can modify Blueprint state. The form's read-only paths use ReadOnly wrappers that physically cannot mutate the data.
+This item restructures the blueprint form so that:
+- All data access goes through ReadOnly wrappers (no mutable entity references anywhere in the form)
+- The ViewModel is a local edit buffer disconnected from the entity
+- Saves go through a BlueprintService that applies changes atomically
+- The form never directly mutates a Blueprint — only the service does
 
 ## Phase 1: Read-Only Consumer Migration
 
 ### REQ-BL108-001: List View Uses ReadOnly Wrappers
-The blueprint list view SHALL be populated using `ReadOnlyBlueprint` instances. List view item Tags SHALL store `ReadOnlyBlueprint`, not mutable `Blueprint`.
+The blueprint list view SHALL be populated using `ReadOnlyBlueprint` instances. List view item Tags SHALL store `ReadOnlyBlueprint`.
 
 ### REQ-BL108-002: Reference Counter Uses ReadOnly Inputs
-`BlueprintReferenceCounter` SHALL accept read-only inputs for counting references.
+`BlueprintReferenceCounter` SHALL accept read-only inputs.
 
 ### REQ-BL108-003: Filter Combos Use ReadOnly Sources
-Filter combos (cmbFilterType, cmbFilterClass, cmbFilterTechLevel) SHALL be populated from read-only sources.
+Filter combos SHALL be populated from read-only type/class/tech lists.
 
-### REQ-BL108-004: Selection Boundary
-When the user selects a blueprint in the list view, the form SHALL read the UUID from the `ReadOnlyBlueprint` Tag, look up the mutable `Blueprint` by UUID, and pass it to the ViewModel. This is the ONLY point where a mutable reference is obtained.
-
-### REQ-BL108-005: Evolution Graph Uses ReadOnly
+### REQ-BL108-004: Evolution Graph Uses ReadOnly
 The evolution chain graph SHALL use `ReadOnlyBlueprint` instances.
 
-### REQ-BL108-006: Base Blueprint Candidates ReadOnly
+### REQ-BL108-005: Base Blueprint Candidates ReadOnly
 `GetBaseBlueprintCandidates()` SHALL return `IReadOnlyList<ReadOnlyBlueprint>`.
 
-### REQ-BL108-007: Import Path Unchanged
-The clipboard import path remains mutable (it creates temporary Blueprint objects). After import, the list refreshes using read-only wrappers.
-
-### REQ-BL108-008: Pricing Plan Combo ReadOnly
+### REQ-BL108-006: Pricing Plan Combo ReadOnly
 The pricing plan combo SHALL use read-only wrappers.
 
-### REQ-BL108-009: No Mutable Entity in Read-Only Paths
+### REQ-BL108-007: No Mutable Entity in Read-Only Paths
 After migration, NO read-only code path SHALL hold a direct reference to a mutable `Blueprint`.
 
-## Phase 2: Controlled Mutable Access
+## Phase 2: ViewModel as Local Edit Buffer
 
-### REQ-BL108-010: PlayerContext Stops Exposing Mutable Blueprints Publicly
-`PlayerContext.FindBlueprint(uuid)` SHALL return `ReadOnlyBlueprint`. A new `internal` method `FindMutableBlueprint(uuid)` SHALL return the mutable `Blueprint` for authorized mutation paths only. `GetAllBlueprints()` SHALL return `IReadOnlyList<ReadOnlyBlueprint>`.
+### REQ-BL108-010: ViewModel Copies Fields from ReadOnly
+When the user selects a blueprint, the ViewModel SHALL copy field values from the `ReadOnlyBlueprint` into local properties. The ViewModel SHALL NOT hold a reference to the mutable `Blueprint` entity.
 
-### REQ-BL108-011: EmpireContext Stops Exposing Mutable Global Blueprints Publicly
-`EmpireContext.FindGlobalBlueprint(uuid)` SHALL return `ReadOnlyBlueprint`. A new `internal` method `FindMutableGlobalBlueprint(uuid)` SHALL return the mutable `Blueprint` for authorized mutation paths only.
+### REQ-BL108-011: Text Boxes and Grids Bind to ViewModel Local State
+All editable controls (txtName, txtNickName, txtDescription, txtCopyCost, cmbBlueprintType, cmbShipClass, cmbTechLevel, cmbEvolution, dgvStatistics, dgvResources) SHALL read from and write to the ViewModel's local fields. Changes live in the ViewModel only — they do NOT propagate to the entity until Save.
 
-### REQ-BL108-012: BlueprintViewModel Uses Internal Mutable Access
-`BlueprintViewModel.SelectBlueprint()` SHALL use `FindMutableBlueprint()` to obtain the mutable reference for editing. The ViewModel is the ONLY form-level code that holds a mutable `Blueprint`.
+### REQ-BL108-012: No Write-Through
+The ViewModel SHALL NOT write changes to the Blueprint entity on every keystroke or control change. The current write-through pattern (TextChanged → viewModel.Name = txtName.Text → _blueprint.Name = value) SHALL be replaced with local-only state changes.
 
-### REQ-BL108-013: Importer Uses Internal Mutable Access
-`MarketBlueprintImporter.UpdateExisting()` and `MergeResourcesOnly()` receive mutable `Blueprint` references through the import pipeline, which uses `FindMutableBlueprint()` internally.
+### REQ-BL108-013: Dirty Tracking
+The ViewModel SHALL track whether any field has been modified since the last load/save. The Save button SHALL be enabled only when the ViewModel is dirty.
 
-### REQ-BL108-014: Scanner Creates Temporary Mutable Blueprints
-`BlueprintScanner` creates new `Blueprint()` objects for parsing. These are temporary and never stored — they're passed to the importer which merges them into existing entries via the mutable access path.
+## Phase 3: BlueprintService
 
-### REQ-BL108-015: Compile-Time Enforcement
-After migration, any code that calls `FindBlueprint()` gets a `ReadOnlyBlueprint` — it cannot set properties because the wrapper has no setters. Only code that explicitly calls the `internal` mutable accessor can mutate. Since `internal` is assembly-scoped, this limits mutation to code within the main project that deliberately opts in.
+### REQ-BL108-020: BlueprintService.Update
+A new `BlueprintService` class SHALL provide an `Update(string uuid, BlueprintUpdateRequest changes)` method that:
+1. Looks up the mutable Blueprint by UUID (internal access)
+2. Applies the changed fields from the request to the entity
+3. Persists via WriteContext
+4. Fires BlueprintDataChanged event
+5. Returns the updated ReadOnlyBlueprint
 
-## Phase 3: Verification
+### REQ-BL108-021: BlueprintService.Create
+`BlueprintService.Create(BlueprintCreateRequest request)` SHALL create a new Blueprint, assign a UUID (deterministic for global, random for player), add it to the appropriate list, persist, and return the ReadOnlyBlueprint.
 
-### REQ-BL108-016: Existing Tests Pass
-All existing tests SHALL continue to pass (via InternalsVisibleTo).
+### REQ-BL108-022: BlueprintService.Delete
+`BlueprintService.Delete(string uuid)` SHALL remove the blueprint from the appropriate list, persist, and fire the change event.
 
-### REQ-BL108-017: Audit Clean
+### REQ-BL108-023: BlueprintService.Import
+`BlueprintService.Import(Blueprint tempBlueprint, ReadOnlyBlueprint selectedTarget)` SHALL handle the clipboard import flow — dedup matching, UpdateExisting/MergeResourcesOnly, persist, and return the result.
+
+### REQ-BL108-024: BlueprintService.MoveToGlobal / MoveToPlayer
+`BlueprintService.MoveToGlobal(string uuid)` and `MoveToPlayer(string uuid)` SHALL handle the global/player toggle — moving the blueprint between lists, updating OwnerUUID, persisting both contexts.
+
+### REQ-BL108-025: Save Flow
+When the user clicks Save:
+1. ViewModel collects all local field values into a `BlueprintUpdateRequest`
+2. Calls `BlueprintService.Update(uuid, request)`
+3. Service applies changes to the entity, persists, fires event
+4. Form receives the change event, refreshes list view with new ReadOnlyBlueprint
+5. ViewModel reloads from the fresh ReadOnlyBlueprint
+
+### REQ-BL108-026: Service Is the Only Mutator
+After migration, the Blueprint entity SHALL only be mutated by:
+1. `BlueprintService` methods (Update, Create, Delete, Import, Move)
+2. JSON deserialization (loading from file)
+3. Migration code (data migration paths)
+
+No form, ViewModel, or other consumer SHALL directly set properties on a Blueprint.
+
+## Phase 4: Verification
+
+### REQ-BL108-030: Existing Tests Pass
+All existing tests SHALL continue to pass.
+
+### REQ-BL108-031: Audit Clean
 All audit checks SHALL pass with zero findings.
+
+### REQ-BL108-032: No Direct Mutation Outside Service
+Grep for direct Blueprint property sets — SHALL only appear in BlueprintService, deserialization, and migration code.
 
 ## Out of Scope
 
-- Changing other entity types (Colony, Survey, etc.) to internal setters — those are separate BL items
-- Adding a unit-of-work or change-tracking pattern — that's BL-074 Phase 3
-- Database migration — future work
+- Changing other entity types (Colony, Survey, etc.) to the service pattern — separate BL items
+- Actual remote service calls — this establishes the local service pattern that can later be swapped for HTTP/gRPC
+- Undo/redo — future enhancement on top of the edit buffer pattern

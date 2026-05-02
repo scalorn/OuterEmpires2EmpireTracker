@@ -1,132 +1,269 @@
-# BL-108 Design: Blueprint Immutable Data Model
+# BL-108 Design: Blueprint Immutable Data Model with Service Layer
 
-## Overview
-
-This is a two-phase migration:
-1. **Phase 1**: Switch FormBlueprintV2's read-only paths to use ReadOnly wrappers
-2. **Phase 2**: Make Blueprint/Item property setters `internal`, enforcing immutability at compile time
-
-## Phase 1: Read-Only Consumer Migration
-
-### Selection Boundary Pattern
-
-The critical design decision: the list view selection handler is the ONLY mutable boundary.
+## Current Architecture
 
 ```
-List View (ReadOnlyBlueprint in Tags)
+Form ──write-through──► ViewModel ──direct set──► Mutable Blueprint ──► JSON
+                              │
+                              └── holds mutable reference
+```
+
+Every keystroke in a text box writes directly to the Blueprint entity in memory. Any code with a Blueprint reference can mutate it. There's no controlled gate, no dirty tracking, no atomic save.
+
+## Target Architecture
+
+```
+Form ──local edit──► ViewModel (edit buffer) ──save──► BlueprintService ──► Mutable Blueprint ──► JSON
+  ▲                       │                                    │
+  │                       │ copies from                        │ fires event
+  │                       ▼                                    ▼
+  └──── refresh ◄── ReadOnlyBlueprint ◄──────────── PlayerContext/EmpireContext
+```
+
+The form never touches the entity. The ViewModel is a disconnected edit buffer. The service is the only code that mutates the entity.
+
+## ViewModel as Edit Buffer
+
+### Current ViewModel (write-through)
+
+```csharp
+public class BlueprintViewModel
+{
+    private Blueprint _blueprint;  // mutable reference
+
+    public string Name
+    {
+        get => _blueprint.Name;
+        set => _blueprint.Name = value;  // writes directly to entity
+    }
+}
+```
+
+### New ViewModel (edit buffer)
+
+```csharp
+public class BlueprintViewModel
+{
+    private string _uuid;
+    private bool _isDirty;
+
+    // Local edit state — disconnected from entity
+    private string _name;
+    private string _nickName;
+    private string _description;
+    private string _bluePrintType;
+    private int _evolution;
+    private string _techLevel;
+    private int _class;
+    private int _copyCost;
+    private string _baseBlueprintUUID;
+    private string _ownerUUID;
+    private bool _isGlobal;
+    private Dictionary<string, string> _properties;
+    private Dictionary<string, string> _resources;
+
+    public string Name
+    {
+        get => _name;
+        set { _name = value; _isDirty = true; }  // local only
+    }
+
+    // ... same pattern for all fields
+
+    /// <summary>
+    /// Loads field values from a ReadOnlyBlueprint snapshot.
+    /// Resets dirty state.
+    /// </summary>
+    public void LoadFrom(ReadOnlyBlueprint ro)
+    {
+        _uuid = ro.UUID;
+        _name = ro.Name;
+        _nickName = ro.NickName;
+        _description = ro.Description;
+        _bluePrintType = ro.BluePrintType;
+        _evolution = ro.Evolution;
+        _techLevel = ro.TechLevel;
+        _class = ro.Class;
+        _copyCost = ro.CopyCost;
+        _baseBlueprintUUID = ro.BaseBlueprintUUID;
+        _ownerUUID = ro.OwnerUUID;
+        // Copy properties and resources
+        _properties = new Dictionary<string, string>();
+        foreach (var prop in ro.Properties.Properties)
+            _properties[prop.Key] = prop.Value;
+        _resources = new Dictionary<string, string>(ro.Resources);
+        _isDirty = false;
+    }
+
+    /// <summary>
+    /// Builds an update request from the current local state.
+    /// </summary>
+    public BlueprintUpdateRequest BuildUpdateRequest()
+    {
+        return new BlueprintUpdateRequest
+        {
+            Name = _name,
+            NickName = _nickName,
+            Description = _description,
+            BluePrintType = _bluePrintType,
+            Evolution = _evolution,
+            TechLevel = _techLevel,
+            Class = _class,
+            CopyCost = _copyCost,
+            BaseBlueprintUUID = _baseBlueprintUUID,
+            Properties = new Dictionary<string, string>(_properties),
+            Resources = new Dictionary<string, string>(_resources),
+        };
+    }
+
+    public bool IsDirty => _isDirty;
+    public string UUID => _uuid;
+}
+```
+
+### BlueprintUpdateRequest
+
+A plain DTO carrying the fields to update:
+
+```csharp
+public class BlueprintUpdateRequest
+{
+    public string Name { get; set; }
+    public string NickName { get; set; }
+    public string Description { get; set; }
+    public string BluePrintType { get; set; }
+    public int Evolution { get; set; }
+    public string TechLevel { get; set; }
+    public int Class { get; set; }
+    public int CopyCost { get; set; }
+    public string BaseBlueprintUUID { get; set; }
+    public Dictionary<string, string> Properties { get; set; }
+    public Dictionary<string, string> Resources { get; set; }
+}
+```
+
+## BlueprintService
+
+```csharp
+public class BlueprintService
+{
+    private readonly PlayerContext _playerContext;
+    private readonly EmpireContext _empireContext;
+
+    public ReadOnlyBlueprint Update(string uuid, BlueprintUpdateRequest request)
+    {
+        var bp = _playerContext.FindMutableBlueprint(uuid)
+              ?? _empireContext.FindMutableGlobalBlueprint(uuid);
+        if (bp == null) throw new InvalidOperationException("Blueprint not found");
+
+        // Apply changes
+        bp.Name = request.Name;
+        bp.NickName = request.NickName;
+        bp.Description = request.Description;
+        bp.BluePrintType = request.BluePrintType;
+        bp.Evolution = request.Evolution;
+        bp.TechLevel = request.TechLevel;
+        bp.Class = request.Class;
+        bp.CopyCost = request.CopyCost;
+        bp.BaseBlueprintUUID = request.BaseBlueprintUUID;
+        bp.Properties = /* rebuild from request */;
+        bp.Resources = new Dictionary<string, string>(request.Resources);
+
+        // Persist
+        if (IsGlobal(bp))
+            _empireContext.WriteContext();
+        else
+            _playerContext.WriteContext();
+
+        _playerContext.OnBlueprintDataChanged(uuid);
+        return new ReadOnlyBlueprint(bp);
+    }
+
+    public ReadOnlyBlueprint Create(BlueprintCreateRequest request) { ... }
+    public void Delete(string uuid) { ... }
+    public ReadOnlyBlueprint Import(Blueprint temp, ReadOnlyBlueprint target) { ... }
+    public void MoveToGlobal(string uuid) { ... }
+    public void MoveToPlayer(string uuid) { ... }
+}
+```
+
+## Save Flow
+
+```
+User clicks Save
     │
-    ▼ user selects
-Selection Handler
-    │ reads UUID from ReadOnlyBlueprint
-    │ looks up mutable Blueprint by UUID
     ▼
-BlueprintViewModel (wraps mutable Blueprint)
+Form calls viewModel.BuildUpdateRequest()
     │
-    ▼ write-through
-Mutable Blueprint (internal setters)
+    ▼
+Form calls blueprintService.Update(viewModel.UUID, request)
+    │
+    ▼
+Service looks up mutable Blueprint (internal)
+Service applies all fields from request
+Service persists (WriteContext)
+Service fires BlueprintDataChanged
+    │
+    ▼
+Form receives BlueprintDataChanged event
+Form refreshes list view (ReadOnlyBlueprint)
+Form re-selects the blueprint
+ViewModel.LoadFrom(new ReadOnlyBlueprint)
+    │
+    ▼
+Form fields show the saved values
+ViewModel.IsDirty = false
 ```
+
+## Import Flow
+
+```
+User pastes clipboard
+    │
+    ▼
+BlueprintScanner parses HTML into temp Blueprint (mutable, temporary)
+    │
+    ▼
+Form calls blueprintService.Import(temp, selectedTarget)
+    │
+    ▼
+Service handles dedup, UpdateExisting/MergeResourcesOnly
+Service persists
+Service fires BlueprintDataChanged
+    │
+    ▼
+Form refreshes, re-selects
+ViewModel.LoadFrom(updated ReadOnlyBlueprint)
+```
+
+## What Changes for the User
+
+Nothing. The form looks and behaves identically. The only behavioral difference:
+- Changes don't persist until Save (currently they write-through immediately but still need Save to persist to disk — so the user experience is the same)
+- The Save button enables when changes are made (dirty tracking)
+
+## Service-Call Readiness
+
+The `BlueprintService.Update(uuid, request)` signature is directly replaceable with an HTTP call:
 
 ```csharp
-// Selection handler — the controlled gate
-var roBp = lvwBlueprints.SelectedItems[0].Tag as ReadOnlyBlueprint;
-var bp = playerContext.FindBlueprint(roBp.UUID)
-      ?? empireContext.FindGlobalBlueprint(roBp.UUID);
-viewModel.SelectBlueprint(bp);
+// Local (today)
+var result = blueprintService.Update(uuid, request);
+
+// Remote (future)
+var result = await httpClient.PutAsync($"/api/blueprints/{uuid}", request);
 ```
 
-### What Uses ReadOnly (Phase 1)
+The ViewModel, the form, and the ReadOnly wrappers don't change at all. Only the service implementation changes.
 
-| Component | Current | After |
-|-----------|---------|-------|
-| List view Tags | `Blueprint` | `ReadOnlyBlueprint` |
-| Filter combos | Mutable type lists | Read-only type lists |
-| Reference counter | Mutable lists | Read-only lists |
-| Evolution graph | Mutable blueprint lists | Read-only blueprint lists |
-| Base blueprint combo | Mutable list | Read-only list |
-| Pricing plan combo | Mutable list | Read-only list |
+## Risk: Statistics Grid Editing
 
-### What Stays Mutable (Phase 1)
+The statistics grid currently has editable cells that write through to the PropertyBag on every cell change. With the edit buffer pattern, cell edits write to the ViewModel's local `_properties` dictionary instead. This requires changing the grid's CellValueChanged handler to write to the ViewModel rather than directly to the entity.
 
-| Component | Reason |
-|-----------|--------|
-| BlueprintViewModel | Legitimate edit path |
-| Edit-panel combos (cmbBlueprintType, cmbShipClass, cmbTechLevel) | Write-through to ViewModel |
-| Statistics grid | Editable cells write through ViewModel |
-| Resources grid | Editable cells write through ViewModel |
-| Import/scanner path | Creates temp Blueprint objects |
-| Save/delete path | Persists through ViewModel |
+Same for the resources grid — cell edits write to `_resources` in the ViewModel.
 
-## Phase 2: Controlled Mutable Access
+## Risk: Write-Through Removal
 
-### The Real Enforcement
+The current write-through pattern means the in-memory entity always reflects the UI state. Other forms that read the same blueprint (e.g. colony form showing blueprint properties) see changes immediately. With the edit buffer, other forms see the old values until Save is clicked.
 
-`internal set` on properties doesn't help in a single-assembly app — all code in the project can still mutate. The real enforcement is **controlling who gets a mutable reference**.
-
-After Phase 2:
-- `PlayerContext.FindBlueprint(uuid)` returns `ReadOnlyBlueprint` — callers can't mutate
-- `PlayerContext.FindMutableBlueprint(uuid)` (internal) returns mutable `Blueprint` — only authorized code calls this
-- `EmpireContext.FindGlobalBlueprint(uuid)` returns `ReadOnlyBlueprint`
-- `EmpireContext.FindMutableGlobalBlueprint(uuid)` (internal) returns mutable `Blueprint`
-
-### Who Gets Mutable Access
-
-| Code Path | Access | Method |
-|-----------|--------|--------|
-| BlueprintViewModel.SelectBlueprint | Mutable | `FindMutableBlueprint(uuid)` |
-| BlueprintViewModel.Save | Mutable | Already has reference from SelectBlueprint |
-| MarketBlueprintImporter.UpdateExisting | Mutable | Receives mutable from import pipeline |
-| BlueprintImportHandler.MergeAndPersist | Mutable | `FindMutableBlueprint(uuid)` or creates new |
-| BlueprintScanner | Mutable | Creates `new Blueprint()` (temporary) |
-| JSON deserialization | Mutable | Creates `new Blueprint()` via reflection |
-| Migration code | Mutable | Direct list access (internal) |
-
-### Who Gets ReadOnly Access
-
-Everything else:
-- List view population
-- Filter combo population
-- Reference counting
-- Evolution graph
-- Pricing calculation
-- Colony form reading blueprint properties
-- Build planner reading blueprint properties
-- Any form that displays blueprint data without editing it
-
-### API Changes on PlayerContext
-
-```csharp
-// PUBLIC — returns ReadOnly, safe for all consumers
-public ReadOnlyBlueprint FindBlueprint(string uuid) { ... }
-public IReadOnlyList<ReadOnlyBlueprint> GetAllBlueprints() { ... }
-
-// INTERNAL — returns mutable, only for ViewModel/Importer/Scanner
-internal Blueprint FindMutableBlueprint(string uuid) { ... }
-internal void AddBlueprint(Blueprint bp) { ... }
-internal void RemoveBlueprint(Blueprint bp) { ... }
-```
-
-### Migration Strategy
-
-This is a breaking API change — every caller of `FindBlueprint` that expects a mutable `Blueprint` needs to be updated. The migration order:
-
-1. Add the new `FindMutableBlueprint` internal methods alongside existing public methods
-2. Migrate authorized callers (ViewModel, Importer) to use `FindMutableBlueprint`
-3. Change `FindBlueprint` return type from `Blueprint` to `ReadOnlyBlueprint`
-4. Fix all compile errors — each one is a code path that was getting mutable access and shouldn't be
-5. Verify
-
-### Risk: Broad Impact
-
-Changing `FindBlueprint` return type breaks every caller. This is intentional — each compile error forces a decision: does this code need mutable access (use `FindMutableBlueprint`) or read-only access (use the `ReadOnlyBlueprint` it now gets)?
-
-Most callers only read properties and will work fine with `ReadOnlyBlueprint` since it exposes the same getters. The few that mutate will need to switch to `FindMutableBlueprint`.
-
-## Task Ordering
-
-Phase 1 tasks (read-only wrappers) can be done independently of Phase 2 (internal setters). Phase 1 provides immediate protection for the blueprint form. Phase 2 provides assembly-wide enforcement.
-
-Recommended order:
-1. Phase 1 tasks (list view, selection, combos, graph, pricing)
-2. Phase 2: Blueprint-specific internal setters
-3. Phase 2: Item base class internal setters (broader impact)
-4. Verification
+This is actually correct behavior for a service-call model — you don't see uncommitted changes from other users. But it's a behavioral change from the current app.

@@ -1,6 +1,6 @@
 # BL-108 Tasks
 
-## Phase 1: Read-Only Consumer Migration (FormBlueprintV2)
+## Phase 1: Read-Only Consumer Migration
 
 ### Task 1: Add GetAllReadOnlyBlueprints to PlayerContext
 - [ ] Add `GetAllReadOnlyBlueprints()` returning `IReadOnlyList<ReadOnlyBlueprint>`
@@ -8,61 +8,88 @@
 
 ### Task 2: Migrate List View to ReadOnly
 - [ ] Change list view item Tag from `Blueprint` to `ReadOnlyBlueprint`
-- [ ] Update `RefreshBlueprintList()` and `PopulateListView()` to use read-only list
+- [ ] Update `RefreshBlueprintList()` and `PopulateListView()`
 - [ ] Update all code that reads from list view Tags
 
-### Task 3: Migrate Selection Handler
-- [ ] Read UUID from `ReadOnlyBlueprint` Tag
-- [ ] Look up mutable `Blueprint` by UUID for ViewModel
-- [ ] Verify delete button ref count still works
-
-### Task 4: Migrate Filter Combos to ReadOnly
-- [ ] Filter combo population uses read-only type/class/tech lists
-
-### Task 5: Migrate Evolution Graph to ReadOnly
-- [ ] `EvolutionChainService` accepts read-only blueprint lists
-- [ ] `RefreshEvolutionGraph()` passes read-only lists
-
-### Task 6: Migrate Base Blueprint Candidates to ReadOnly
-- [ ] `GetBaseBlueprintCandidates()` returns read-only list
-- [ ] Base blueprint combo uses read-only items
-
-### Task 7: Migrate Pricing Plan Combo to ReadOnly
+### Task 3: Migrate Filter Combos, Evolution Graph, Pricing, Reference Counter
+- [ ] Filter combos use read-only type/class/tech lists
+- [ ] Evolution graph uses read-only blueprint lists
+- [ ] Base blueprint candidates returns read-only list
 - [ ] Pricing plan combo uses read-only list
-- [ ] Price calculator accepts read-only inputs
+- [ ] Reference counter accepts read-only inputs
 
-### Task 8: Migrate Reference Counter Inputs
-- [ ] `BlueprintReferenceCounter` accepts read-only inputs
+## Phase 2: ViewModel as Edit Buffer
 
-## Phase 2: Controlled Mutable Access
+### Task 4: Create BlueprintUpdateRequest DTO
+- [ ] Create `BlueprintUpdateRequest` class with all editable fields
+- [ ] Create `BlueprintCreateRequest` class for new blueprints
 
-### Task 9: Add FindMutableBlueprint Internal Methods
-- [ ] Add `internal Blueprint FindMutableBlueprint(string uuid)` to PlayerContext
-- [ ] Add `internal Blueprint FindMutableGlobalBlueprint(string uuid)` to EmpireContext
-- [ ] Add `internal` Add/Remove methods if not already internal
-- [ ] These exist alongside the current public methods initially
+### Task 5: Refactor BlueprintViewModel to Edit Buffer
+- [ ] Replace mutable `_blueprint` reference with local field copies
+- [ ] Add `LoadFrom(ReadOnlyBlueprint)` to copy fields from snapshot
+- [ ] Add `BuildUpdateRequest()` to collect changes into DTO
+- [ ] Add `IsDirty` tracking
+- [ ] All property setters write to local state only
+- [ ] Remove `SelectBlueprint(Blueprint)` — replace with `LoadFrom(ReadOnlyBlueprint)`
 
-### Task 10: Migrate Authorized Callers to FindMutableBlueprint
-- [ ] BlueprintViewModel.SelectBlueprint uses `FindMutableBlueprint`
-- [ ] BlueprintViewModel.Save uses internal Add/Remove
-- [ ] BlueprintImportHandler.MergeAndPersist uses `FindMutableBlueprint`
-- [ ] MarketBlueprintImporter.UpdateExisting receives mutable from pipeline
-- [ ] ColonyStructureV2 blueprint lookups — determine if mutable needed (likely read-only)
-- [ ] BuildPlanExecutionService blueprint lookups — determine if mutable needed (likely read-only)
-- [ ] Any other caller that genuinely needs mutable access
+### Task 6: Update Form Selection Handler
+- [ ] On blueprint selection: read UUID from ReadOnlyBlueprint Tag
+- [ ] Look up ReadOnlyBlueprint (not mutable)
+- [ ] Call `viewModel.LoadFrom(readOnlyBlueprint)`
+- [ ] Populate form fields from ViewModel local state
 
-### Task 11: Change FindBlueprint Return Type to ReadOnly
-- [ ] Change `PlayerContext.FindBlueprint()` return type from `Blueprint` to `ReadOnlyBlueprint`
-- [ ] Change `EmpireContext.FindGlobalBlueprint()` return type from `Blueprint` to `ReadOnlyBlueprint`
-- [ ] Change `PlayerContext.GetAllBlueprints()` return type to `IReadOnlyList<ReadOnlyBlueprint>`
-- [ ] Fix all compile errors — each one is a decision point (mutable vs read-only)
-- [ ] Verify all tests pass
+### Task 7: Remove Write-Through from Form
+- [ ] TextChanged handlers write to ViewModel local state (already the case after Task 5)
+- [ ] Statistics grid CellValueChanged writes to ViewModel's local properties dict
+- [ ] Resources grid CellValueChanged writes to ViewModel's local resources dict
+- [ ] cmbBlueprintType/cmbShipClass/cmbTechLevel write to ViewModel local fields
+- [ ] No control writes directly to a Blueprint entity
 
-## Phase 3: Verification
+### Task 8: Wire Dirty Tracking to Save Button
+- [ ] Save button enabled only when `viewModel.IsDirty`
+- [ ] Save button disabled after successful save
 
-### Task 12: Full Verification
+## Phase 3: BlueprintService
+
+### Task 9: Create BlueprintService
+- [ ] `Update(string uuid, BlueprintUpdateRequest)` — applies changes, persists, fires event, returns ReadOnlyBlueprint
+- [ ] `Create(BlueprintCreateRequest)` — creates new, assigns UUID, persists, returns ReadOnlyBlueprint
+- [ ] `Delete(string uuid)` — removes, persists, fires event
+- [ ] `Import(Blueprint temp, ReadOnlyBlueprint selectedTarget)` — handles dedup/merge, persists, returns result
+- [ ] `MoveToGlobal(string uuid)` / `MoveToPlayer(string uuid)` — moves between lists, persists
+
+### Task 10: Update Form Save Handler
+- [ ] Save button calls `viewModel.BuildUpdateRequest()`
+- [ ] Calls `blueprintService.Update(uuid, request)`
+- [ ] On success: refresh list, re-select, `viewModel.LoadFrom(result)`
+
+### Task 11: Update Form Import Handler
+- [ ] Import calls `blueprintService.Import(temp, selectedTarget)`
+- [ ] On success: refresh list, select imported blueprint
+
+### Task 12: Update Form Delete Handler
+- [ ] Delete calls `blueprintService.Delete(uuid)`
+- [ ] On success: refresh list, clear form
+
+### Task 13: Update Form Global Toggle
+- [ ] Global checkbox save calls `blueprintService.MoveToGlobal/MoveToPlayer(uuid)`
+
+### Task 14: Add FindMutableBlueprint Internal Methods
+- [ ] `internal Blueprint FindMutableBlueprint(string uuid)` on PlayerContext
+- [ ] `internal Blueprint FindMutableGlobalBlueprint(string uuid)` on EmpireContext
+- [ ] Only called by BlueprintService
+
+### Task 15: Change FindBlueprint Return Type
+- [ ] `FindBlueprint()` returns `ReadOnlyBlueprint`
+- [ ] `FindGlobalBlueprint()` returns `ReadOnlyBlueprint`
+- [ ] Fix all compile errors across the codebase
+
+## Phase 4: Verification
+
+### Task 16: Full Verification
 - [ ] Run all tests — zero failures
 - [ ] Run audit — zero findings
-- [ ] Grep for `FindMutableBlueprint` calls — should only be in ViewModel, Importer, Scanner
-- [ ] Grep for direct `Blueprint` variable declarations in FormBlueprintV2 — should only be in ViewModel/edit paths
+- [ ] Grep for direct Blueprint property sets — only in BlueprintService, deserialization, migration
+- [ ] Grep for `FindMutableBlueprint` — only in BlueprintService
+- [ ] Verify form behavior: select, edit, save, import, delete, global toggle all work
 - [ ] Update BL-108 status in BACKLOG.md to Done
