@@ -120,6 +120,52 @@ public class BlueprintViewModel
         };
     }
 
+    /// <summary>
+    /// Builds a create request for a new blueprint.
+    /// </summary>
+    public BlueprintCreateRequest BuildCreateRequest()
+    {
+        return new BlueprintCreateRequest
+        {
+            Name = _name,
+            NickName = _nickName,
+            Description = _description,
+            BluePrintType = _bluePrintType,
+            Evolution = _evolution,
+            TechLevel = _techLevel,
+            Class = _class,
+            CopyCost = _copyCost,
+            BaseBlueprintUUID = _baseBlueprintUUID,
+            Properties = new Dictionary<string, string>(_properties),
+            Resources = new Dictionary<string, string>(_resources),
+        };
+    }
+
+    /// <summary>
+    /// Resets to empty state for a new blueprint.
+    /// </summary>
+    public void Reset()
+    {
+        _original = null;
+        _uuid = null;
+        _name = string.Empty;
+        _nickName = string.Empty;
+        _description = string.Empty;
+        _bluePrintType = null;
+        _evolution = 0;
+        _techLevel = null;
+        _class = 0;
+        _copyCost = 0;
+        _baseBlueprintUUID = null;
+        _ownerUUID = string.Empty;
+        _isGlobal = false;
+        _properties = new Dictionary<string, string>();
+        _resources = new Dictionary<string, string>();
+    }
+
+    /// <summary>True if this is a new blueprint not yet saved.</summary>
+    public bool IsNew => _original == null;
+
     public string UUID => _uuid;
     public ReadOnlyBlueprint Original => _original;
 }
@@ -138,6 +184,27 @@ public class BlueprintUpdateRequest
     /// </summary>
     public ReadOnlyBlueprint Original { get; set; }
 
+    public string Name { get; set; }
+    public string NickName { get; set; }
+    public string Description { get; set; }
+    public string BluePrintType { get; set; }
+    public int Evolution { get; set; }
+    public string TechLevel { get; set; }
+    public int Class { get; set; }
+    public int CopyCost { get; set; }
+    public string BaseBlueprintUUID { get; set; }
+    public Dictionary<string, string> Properties { get; set; }
+    public Dictionary<string, string> Resources { get; set; }
+}
+```
+
+### BlueprintCreateRequest
+
+A DTO for creating a new blueprint. No Original snapshot (it doesn't exist yet). No UUID (the service assigns it).
+
+```csharp
+public class BlueprintCreateRequest
+{
     public string Name { get; set; }
     public string NickName { get; set; }
     public string Description { get; set; }
@@ -199,30 +266,67 @@ public class BlueprintService
 
 ## Save Flow
 
+The Save button doesn't need to know whether it's a create or update — the ViewModel decides based on whether `_original` is null.
+
 ```
 User clicks Save
     │
     ▼
-Form calls viewModel.BuildUpdateRequest()
+viewModel.IsNew?  (i.e. _original == null)
+    │
+    ├── YES (new blueprint)
+    │     ▼
+    │   Form calls viewModel.BuildCreateRequest()
+    │   Form calls blueprintService.Create(request, isGlobal)
+    │     ▼
+    │   Service creates Blueprint, assigns UUID, adds to list
+    │   Service persists, fires BlueprintDataChanged
+    │     ▼
+    │   Form refreshes list, selects new blueprint by UUID
+    │   ViewModel.LoadFrom(new ReadOnlyBlueprint)
+    │
+    └── NO (existing blueprint)
+          ▼
+        Form calls viewModel.BuildUpdateRequest()
+        Form calls blueprintService.Update(viewModel.UUID, request)
+          ▼
+        Service looks up mutable Blueprint, applies changes
+        Service persists, fires BlueprintDataChanged
+          ▼
+        Form refreshes list, re-selects blueprint
+        ViewModel.LoadFrom(updated ReadOnlyBlueprint)
     │
     ▼
-Form calls blueprintService.Update(viewModel.UUID, request)
+ViewModel._original is now set, IsDirty = false
+```
+
+## New Blueprint Flow
+
+```
+User clicks New
     │
     ▼
-Service looks up mutable Blueprint (internal)
-Service applies all fields from request
-Service persists (WriteContext)
-Service fires BlueprintDataChanged
+Prompt if ViewModel.IsDirty (Save / Discard / Cancel)
     │
     ▼
-Form receives BlueprintDataChanged event
-Form refreshes list view (ReadOnlyBlueprint)
-Form re-selects the blueprint
-ViewModel.LoadFrom(new ReadOnlyBlueprint)
+ViewModel.Reset()
+  _original = null
+  _uuid = null
+  all local fields = defaults (empty strings, zero ints)
     │
     ▼
-Form fields show the saved values
-ViewModel.IsDirty = false
+Form clears all controls
+Form enables edit panel
+Save button disabled (IsDirty = false — nothing entered yet)
+    │
+    ▼
+User fills in name, type, properties, resources
+Each change updates ViewModel local state
+IsDirty = true (because _original is null and fields are non-default)
+Save button enables
+    │
+    ▼
+User clicks Save → Create flow (see above)
 ```
 
 ## Import Flow

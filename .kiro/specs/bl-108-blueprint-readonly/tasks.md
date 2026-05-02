@@ -66,9 +66,16 @@
 - [ ] `MoveToGlobal(string uuid)` / `MoveToPlayer(string uuid)` — moves between lists, persists
 
 ### Task 10: Update Form Save Handler
-- [ ] Save button calls `viewModel.BuildUpdateRequest()`
-- [ ] Calls `blueprintService.Update(uuid, request)`
-- [ ] On success: refresh list, re-select, `viewModel.LoadFrom(result)`
+- [ ] Save checks `viewModel.IsNew` to decide Create vs Update
+- [ ] Create: calls `viewModel.BuildCreateRequest()`, then `blueprintService.Create(request, isGlobal)`
+- [ ] Update: calls `viewModel.BuildUpdateRequest()`, then `blueprintService.Update(uuid, request)`
+- [ ] On success: refresh list, select by UUID, `viewModel.LoadFrom(result)`
+
+### Task 11: Update Form New Handler
+- [ ] New button prompts if dirty (Save / Discard / Cancel)
+- [ ] Calls `viewModel.Reset()` to clear to empty state
+- [ ] Clears all form controls
+- [ ] Save button disabled until user enters data
 
 ### Task 11: Update Form Import Handler
 - [ ] Individual import (with selection): merge parsed stats/resources into ViewModel local state, mark dirty
