@@ -73,10 +73,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblItemType = new System.Windows.Forms.Label();
             this.cmbItemType = new System.Windows.Forms.ComboBox();
-            this.lblItemFilter = new System.Windows.Forms.Label();
-            this.txtItemFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.lblItem = new System.Windows.Forms.Label();
-            this.cmbItem = new System.Windows.Forms.ComboBox();
+            this.cmbItem = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.flpAddItemRow2 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblQuantity = new System.Windows.Forms.Label();
             this.txtQuantity = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -466,9 +463,6 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow1.AutoSize = true;
             this.flpAddItemRow1.Controls.Add(this.lblItemType);
             this.flpAddItemRow1.Controls.Add(this.cmbItemType);
-            this.flpAddItemRow1.Controls.Add(this.lblItemFilter);
-            this.flpAddItemRow1.Controls.Add(this.txtItemFilter);
-            this.flpAddItemRow1.Controls.Add(this.lblItem);
             this.flpAddItemRow1.Controls.Add(this.cmbItem);
             this.flpAddItemRow1.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.flpAddItemRow1.Location = new System.Drawing.Point(3, 16);
@@ -491,36 +485,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmbItemType.Name = "cmbItemType";
             this.cmbItemType.Size = new System.Drawing.Size(120, 21);
             // 
-            // lblItemFilter
-            // 
-            this.lblItemFilter.AutoSize = true;
-            this.lblItemFilter.Location = new System.Drawing.Point(169, 5);
-            this.lblItemFilter.Name = "lblItemFilter";
-            this.lblItemFilter.Size = new System.Drawing.Size(32, 13);
-            this.lblItemFilter.Text = "Filter:";
-            this.lblItemFilter.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            // 
-            // txtItemFilter
-            // 
-            this.txtItemFilter.Location = new System.Drawing.Point(207, 3);
-            this.txtItemFilter.Name = "txtItemFilter";
-            this.txtItemFilter.Size = new System.Drawing.Size(120, 20);
-            // 
-            // lblItem
-            // 
-            this.lblItem.AutoSize = true;
-            this.lblItem.Location = new System.Drawing.Point(333, 5);
-            this.lblItem.Name = "lblItem";
-            this.lblItem.Size = new System.Drawing.Size(30, 13);
-            this.lblItem.Text = "Item:";
-            this.lblItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            // 
             // cmbItem
             // 
-            this.cmbItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbItem.Location = new System.Drawing.Point(369, 3);
+            this.cmbItem.Location = new System.Drawing.Point(169, 3);
             this.cmbItem.Name = "cmbItem";
-            this.cmbItem.Size = new System.Drawing.Size(280, 21);
+            this.cmbItem.Size = new System.Drawing.Size(480, 21);
             // 
             // flpAddItemRow2
             // 
@@ -851,10 +820,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private System.Windows.Forms.FlowLayoutPanel flpAddItemRow1;
         private System.Windows.Forms.Label lblItemType;
         private System.Windows.Forms.ComboBox cmbItemType;
-        private System.Windows.Forms.Label lblItemFilter;
-        private OE2EmpireTracker.Controls.ValidatedTextBox txtItemFilter;
-        private System.Windows.Forms.Label lblItem;
-        private System.Windows.Forms.ComboBox cmbItem;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbItem;
         private System.Windows.Forms.FlowLayoutPanel flpAddItemRow2;
         private System.Windows.Forms.Label lblQuantity;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtQuantity;
