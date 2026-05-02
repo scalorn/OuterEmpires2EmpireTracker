@@ -289,6 +289,11 @@ Full immutable data model for the blueprint form. ViewModel becomes a disconnect
 **Status: New**
 Add explicit Add/Delete buttons for the statistics grid (dgvStatistics), matching the existing Add/Delete on the resources grid. Delete SHALL be disabled for properties that are part of the BlueprintType's defined property list — only user-added extra properties can be deleted. Add right-click context menus to both the statistics grid and resources grid with Add Row and Delete Row items. Delete Row in the context menu follows the same rules: disabled for type-defined statistics properties, always enabled for resources.
 
+### BL-132: FormBlueprintV2 — Switch Type and Pricing Plan Combos to FilteredTextComboSet
+**Dependencies:** None
+**Status: New**
+The blueprint type combo (cmbBlueprintType) has grown long enough to need filtering. Switch it to FilteredTextComboSet on both the filter panel (cmbFilterType) and the edit panel (cmbBlueprintType). Also switch the pricing plan combo (cmbPricingPlan) to FilteredTextComboSet to future-proof it as more plans are added. Follow the same pattern used by cmbItem on the build planner and cmbHull on the ship forms — SetItems with a parallel ID list, SelectedFullIndex for lookup.
+
 ### BL-109: FormColonyV2 — Switch to ReadOnly Data Wrappers
 **Dependencies:** readonly-data-wrappers spec (done)
 **Status: New**
