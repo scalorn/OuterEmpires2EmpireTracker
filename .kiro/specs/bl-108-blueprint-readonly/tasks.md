@@ -7,30 +7,30 @@
 - [x] Verify with unit test
 
 ### Task 2: Migrate List View to ReadOnly
-- [-] Change list view item Tag from `Blueprint` to `ReadOnlyBlueprint`
-- [-] Update `RefreshBlueprintList()` and `PopulateListView()`
-- [-] Update all code that reads from list view Tags
+- [x] Change list view item Tag from `Blueprint` to `ReadOnlyBlueprint`
+- [x] Update `RefreshBlueprintList()` and `PopulateListView()`
+- [x] Update all code that reads from list view Tags
 
 ### Task 3: Migrate Filter Combos, Evolution Graph, Pricing, Reference Counter
-- [~] Filter combos use read-only type/class/tech lists
-- [~] Evolution graph uses read-only blueprint lists
-- [~] Base blueprint candidates returns read-only list
-- [~] Pricing plan combo uses read-only list
-- [~] Reference counter accepts read-only inputs
+- [x] Filter combos use read-only type/class/tech lists
+- [x] Evolution graph uses read-only blueprint lists
+- [x] Base blueprint candidates returns read-only list
+- [x] Pricing plan combo uses read-only list
+- [x] Reference counter accepts read-only inputs
 
 ## Phase 2: ViewModel as Edit Buffer
 
 ### Task 4: Create BlueprintUpdateRequest DTO
-- [~] Create `BlueprintUpdateRequest` class with all editable fields
-- [~] Create `BlueprintCreateRequest` class for new blueprints
+- [x] Create `BlueprintUpdateRequest` class with all editable fields
+- [x] Create `BlueprintCreateRequest` class for new blueprints
 
 ### Task 5: Refactor BlueprintViewModel to Edit Buffer
-- [~] Replace mutable `_blueprint` reference with local field copies
-- [~] Add `LoadFrom(ReadOnlyBlueprint)` to copy fields from snapshot
-- [~] Add `BuildUpdateRequest()` to collect changes into DTO
-- [~] Add `IsDirty` tracking
-- [~] All property setters write to local state only
-- [~] Remove `SelectBlueprint(Blueprint)` — replace with `LoadFrom(ReadOnlyBlueprint)`
+- [-] Replace mutable `_blueprint` reference with local field copies
+- [-] Add `LoadFrom(ReadOnlyBlueprint)` to copy fields from snapshot
+- [-] Add `BuildUpdateRequest()` to collect changes into DTO
+- [-] Add `IsDirty` tracking
+- [-] All property setters write to local state only
+- [-] Remove `SelectBlueprint(Blueprint)` — replace with `LoadFrom(ReadOnlyBlueprint)`
 
 ### Task 6: Update Form Selection Handler
 - [ ] On blueprint selection: read UUID from ReadOnlyBlueprint Tag

@@ -258,7 +258,9 @@ namespace OE2EmpireTracker.Tests.ViewModels
 
         private BlueprintViewModel CreateViewModel(BP current)
         {
-            return new BlueprintViewModel(current, playerContext);
+            var vm = new BlueprintViewModel(playerContext);
+            vm.LoadFrom(new OE2EmpireTracker.Models.ReadOnlyBlueprint(current));
+            return vm;
         }
     }
 }

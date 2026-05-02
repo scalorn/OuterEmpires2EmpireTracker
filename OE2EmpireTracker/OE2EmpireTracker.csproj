@@ -398,6 +398,8 @@
     <Compile Include="Models\ReadOnlySurvey.cs" />
     <Compile Include="Models\ReadOnlySurveyResource.cs" />
     <Compile Include="Models\ReadOnlyWarehouseOverflowRule.cs" />
+    <Compile Include="Models\BlueprintUpdateRequest.cs" />
+    <Compile Include="Models\BlueprintCreateRequest.cs" />
     <Compile Include="Parsers\BlueprintScanner.cs" />
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>

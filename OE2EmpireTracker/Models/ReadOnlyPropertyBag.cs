@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace OE2EmpireTracker.Models
 {
@@ -16,6 +17,11 @@ namespace OE2EmpireTracker.Models
         }
 
         public int Count => _entity.Count;
+
+        /// <summary>
+        /// Returns the property keys. Enables iteration without exposing the mutable dictionary.
+        /// </summary>
+        public IEnumerable<string> Keys => _entity.Properties.Keys;
 
         public bool ContainsKey(string name) => _entity.ContainsKey(name);
 

@@ -71,8 +71,8 @@ namespace OE2EmpireTracker
         // Statistics grid structure cache key: "{typeId}|{extraKeysHash}"
         private string _cachedGridKey;
 
-        // Parallel list of Blueprint objects for base blueprint UUID lookup via SelectedFullIndex
-        private List<Blueprint> _baseBlueprintList = new List<Blueprint>();
+        // Parallel list of ReadOnlyBlueprint objects for base blueprint UUID lookup via SelectedFullIndex
+        private List<ReadOnlyBlueprint> _baseBlueprintList = new List<ReadOnlyBlueprint>();
 
         public FormBlueprintV2()
         {
@@ -450,16 +450,14 @@ namespace OE2EmpireTracker
                 var readOnly = lvwBlueprints.SelectedItems[0].Tag as ReadOnlyBlueprint;
                 string uuid = readOnly?.UUID;
 
-                // Temporary bridge: look up the mutable Blueprint for SelectBlueprint
-                // (Task 5 will replace this with viewModel.LoadFrom(readOnly))
-                Blueprint mutable = null;
-                if (!string.IsNullOrEmpty(uuid))
+                if (readOnly != null)
                 {
-                    mutable = playerContext.FindBlueprint(uuid)
-                           ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(uuid);
+                    viewModel.LoadFrom(readOnly);
                 }
-
-                viewModel.SelectBlueprint(mutable ?? new Blueprint());
+                else
+                {
+                    viewModel.Reset();
+                }
 
                 // Update delete button state
                 var counter = CreateReferenceCounter();
@@ -504,27 +502,27 @@ namespace OE2EmpireTracker
                 return;
             }
 
-            // All data is already in the model via write-through — just persist
+            // All data is already in the ViewModel local state — just persist
             Log.Info(
                 "BtnSave: persisting bp='{0}' UUID={1} type='{2}' class={3} tech='{4}'",
-                viewModel.Data.Name,
-                viewModel.Data.UUID,
-                viewModel.Data.BluePrintType ?? "(null)",
-                viewModel.Data.Class,
-                viewModel.Data.TechLevel ?? "(null)");
+                viewModel.Name,
+                viewModel.UUID,
+                viewModel.BluePrintType ?? "(null)",
+                viewModel.Class,
+                viewModel.TechLevel ?? "(null)");
             viewModel.Save(chkGlobalBlueprint.Checked);
 
             RefreshBlueprintList();
-            SelectBlueprintInList(viewModel.Data.UUID);
+            SelectBlueprintInList(viewModel.UUID);
         }
 
         private void BtnDelete_Click(object sender, EventArgs e)
         {
             if (!btnDelete.Enabled) return;
-            if (viewModel.Data.UUID == null) return;
+            if (viewModel.UUID == null) return;
 
             var result = MessageBox.Show(
-                $"Delete blueprint '{viewModel.Data.Name}'?",
+                $"Delete blueprint '{viewModel.Name}'?",
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -587,7 +585,7 @@ namespace OE2EmpireTracker
                 // Resources-only import: merge into selected blueprint
                 if (importType == BlueprintImportHandler.ImportType.ResourcesOnly)
                 {
-                    if (string.IsNullOrEmpty(viewModel.Data.UUID))
+                    if (string.IsNullOrEmpty(viewModel.UUID))
                     {
                         MessageBox.Show(
                             "Please select or import a blueprint first, then import the resources tab.",
@@ -597,55 +595,83 @@ namespace OE2EmpireTracker
                         return;
                     }
 
-                    MarketBlueprintImporter.MergeResourcesOnly(viewModel.Data, tempBP);
+                    // Look up mutable entity for merge operation (will be replaced by BlueprintService in Task 9)
+                    Blueprint mutableForMerge = playerContext.FindBlueprint(viewModel.UUID)
+                        ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(viewModel.UUID);
+                    if (mutableForMerge != null)
+                    {
+                        MarketBlueprintImporter.MergeResourcesOnly(mutableForMerge, tempBP);
+                    }
 
                     // Persist to the correct list
-                    bool resGlobal = empireContext.GlobalBlueprintList.Any(b => b.UUID == viewModel.Data.UUID);
+                    bool resGlobal = empireContext.GlobalBlueprintList.Any(b => b.UUID == viewModel.UUID);
                     if (resGlobal)
                         empireContext.WriteContext();
                     else
                         playerContext.WriteContext();
 
                     // Notify, refresh, re-select
-                    playerContext.OnBlueprintDataChanged(viewModel.Data.UUID);
+                    playerContext.OnBlueprintDataChanged(viewModel.UUID);
                     RefreshBlueprintList();
-                    SelectBlueprintInList(viewModel.Data.UUID);
+                    SelectBlueprintInList(viewModel.UUID);
                     PopulateForm();
                     Log.Info(
                         "Resources-only import merged into selected blueprint: {0} UUID={1}",
-                        viewModel.Data.Name,
-                        viewModel.Data.UUID);
+                        viewModel.Name,
+                        viewModel.UUID);
                     return;
                 }
 
-                // NoName fallback: use scanner.ProcessClipboard directly
+                // NoName fallback: use scanner.ProcessClipboard on a temp Blueprint
                 if (importType == BlueprintImportHandler.ImportType.NoName)
                 {
                     Log.Warn("  No name parsed from clipboard -- using fallback direct import");
-                    scanner.ProcessClipboard(viewModel.Data);
-                    if (string.IsNullOrEmpty(viewModel.Data.UUID))
+                    // Look up mutable entity or create new (will be replaced by BlueprintService in Task 9)
+                    Blueprint fallbackBp;
+                    if (!string.IsNullOrEmpty(viewModel.UUID))
                     {
-                        bool fallbackGlobal = viewModel.Data.Evolution == 0
-                            && string.IsNullOrEmpty(viewModel.Data.OwnerUUID);
-                        viewModel.Data.UUID = fallbackGlobal
-                            ? DeterministicUUID.Generate(viewModel.Data)
+                        fallbackBp = playerContext.FindBlueprint(viewModel.UUID)
+                            ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(viewModel.UUID)
+                            ?? new Blueprint();
+                    }
+                    else
+                    {
+                        fallbackBp = new Blueprint();
+                    }
+
+                    scanner.ProcessClipboard(fallbackBp);
+                    if (string.IsNullOrEmpty(fallbackBp.UUID))
+                    {
+                        bool fallbackGlobal = fallbackBp.Evolution == 0
+                            && string.IsNullOrEmpty(fallbackBp.OwnerUUID);
+                        fallbackBp.UUID = fallbackGlobal
+                            ? DeterministicUUID.Generate(fallbackBp)
                             : Guid.NewGuid().ToString();
                     }
 
+                    viewModel.LoadFrom(new ReadOnlyBlueprint(fallbackBp));
                     PopulateForm();
                     Log.Info("Blueprint imported from clipboard (fallback, no name parsed)");
                     return;
                 }
 
                 // Full import — delegate routing and merge to BlueprintImportHandler
+                // Look up mutable entity for FindTarget (will be replaced by BlueprintService in Task 9)
+                Blueprint selectedMutable = null;
+                if (!string.IsNullOrEmpty(viewModel.UUID))
+                {
+                    selectedMutable = playerContext.FindBlueprint(viewModel.UUID)
+                        ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(viewModel.UUID);
+                }
+
                 var findResult = BlueprintImportHandler.FindTarget(
-                    tempBP, viewModel.Data, playerContext, empireContext);
+                    tempBP, selectedMutable ?? new Blueprint(), playerContext, empireContext);
 
                 var importedBP = BlueprintImportHandler.MergeAndPersist(
                     findResult, tempBP, playerContext, empireContext);
 
                 // Refresh UI, select imported blueprint
-                viewModel.SelectBlueprint(importedBP);
+                viewModel.LoadFrom(new ReadOnlyBlueprint(importedBP));
                 RefreshBlueprintList();
                 SelectBlueprintInList(importedBP.UUID);
                 PopulateForm();
@@ -901,8 +927,8 @@ namespace OE2EmpireTracker
                 oldType ?? "(null)",
                 newType ?? "(null)",
                 cmbBlueprintType.SelectedIndex,
-                viewModel?.Data?.Name ?? "(null)",
-                viewModel?.Data?.UUID ?? "(null)");
+                viewModel?.Name ?? "(null)",
+                viewModel?.UUID ?? "(null)");
 
             // Hide ShipClass and TechLevel for Universal types
             UpdateUniversalVisibility(bt);
@@ -976,17 +1002,17 @@ namespace OE2EmpireTracker
         private void UpdateBaseBlueprintList()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
-            var candidates = new List<Blueprint>(viewModel.GetBaseBlueprintCandidates());
+            var candidates = new List<ReadOnlyBlueprint>(viewModel.GetBaseBlueprintCandidates());
 
             // Insert empty entry at top to allow deselecting
-            candidates.Insert(0, new Blueprint());
+            candidates.Insert(0, new ReadOnlyBlueprint(new Blueprint()));
 
             _baseBlueprintList = candidates;
             var names = candidates.Select(b => b.ExtendedName ?? string.Empty).ToList();
             string currentValue = string.Empty;
-            if (!string.IsNullOrEmpty(viewModel.Data.BaseBlueprintUUID))
+            if (!string.IsNullOrEmpty(viewModel.BaseBlueprintUUID))
             {
-                var match = candidates.FirstOrDefault(b => b.UUID == viewModel.Data.BaseBlueprintUUID);
+                var match = candidates.FirstOrDefault(b => b.UUID == viewModel.BaseBlueprintUUID);
                 if (match != null) currentValue = match.ExtendedName ?? string.Empty;
             }
 
@@ -1025,14 +1051,14 @@ namespace OE2EmpireTracker
 
             Log.Info(
                 "RefreshStatisticsGrid: blueprint='{0}' type='{1}' definedProps={2} bagCount={3}",
-                viewModel.Data.Name ?? "(null)",
+                viewModel.Name ?? "(null)",
                 bt?.Id ?? "(null)",
                 definedProps.Length,
-                viewModel.Data.Properties?.Count ?? 0);
+                viewModel.PropertyCount);
 
             // Find extra properties in PropertyBag not in the type definition
             var definedSet = new HashSet<string>(definedProps, StringComparer.Ordinal);
-            var extraProps = viewModel.Data.Properties.Properties.Keys
+            var extraProps = viewModel.PropertyKeys
                 .Where(k => !definedSet.Contains(k) && !k.StartsWith("_"))
                 .OrderBy(k => k, StringComparer.OrdinalIgnoreCase)
                 .ToArray();
@@ -1113,7 +1139,7 @@ namespace OE2EmpireTracker
                 Log.Warn(
                     "Extra property '{0}' on '{1}' (not in {2} type definition)",
                     property,
-                    viewModel.Data.Name ?? "(new)",
+                    viewModel.Name ?? "(new)",
                     (cmbBlueprintType.SelectedItem as BlueprintType)?.Id ?? "unknown");
                 AddStatisticsRow(property);
             }
@@ -1161,13 +1187,13 @@ namespace OE2EmpireTracker
             Log.Info(
                 "PopulateStatisticsValues: rows={0} blueprint='{1}' bagCount={2}",
                 dgvStatistics.Rows.Count,
-                viewModel.Data.Name ?? "(null)",
-                viewModel.Data.Properties?.Count ?? 0);
+                viewModel.Name ?? "(null)",
+                viewModel.PropertyCount);
 
             // Dump actual bag keys for diagnosis
-            if (viewModel.Data.Properties?.Count > 0)
+            if (viewModel.PropertyCount > 0)
             {
-                foreach (var kvp in viewModel.Data.Properties.Properties)
+                foreach (var kvp in viewModel.Properties)
                 {
                     Log.Info(
                         "  BAG KEY: [{0}] = '{1}' (len={2}, chars={3})",
@@ -1190,7 +1216,7 @@ namespace OE2EmpireTracker
                     "PopulateStatisticsValues: '{0}' = '{1}' (from bag: {2})",
                     property,
                     value,
-                    viewModel.Data.Properties.ContainsKey(property));
+                    viewModel.PropertyContainsKey(property));
 
                 var propType = BlueprintPropertyValidation.GetPropertyType(property);
                 if (propType == PropertyValueType.CheckBox)
@@ -1227,7 +1253,7 @@ namespace OE2EmpireTracker
             string strValue = cellValue is bool ? cellValue.ToString() : cellValue as string;
 
             if (string.IsNullOrEmpty(strValue))
-                viewModel.Data.Properties.Remove(propName);
+                viewModel.RemoveProperty(propName);
             else
                 viewModel.SetProperty(propName, strValue);
         }
@@ -1376,7 +1402,7 @@ namespace OE2EmpireTracker
 
             string resourceName = dgvResources.Rows[rowIndex].Cells["Resource"].Value as string;
             if (!string.IsNullOrEmpty(resourceName))
-                viewModel.Data.Resources.Remove(resourceName);
+                viewModel.RemoveResource(resourceName);
 
             dgvResources.Rows.RemoveAt(rowIndex);
         }
@@ -1416,8 +1442,11 @@ namespace OE2EmpireTracker
                 return;
             }
 
-            var blueprint = viewModel.Data;
-            if (blueprint == null || string.IsNullOrEmpty(blueprint.UUID))
+            var blueprint = !string.IsNullOrEmpty(viewModel.UUID)
+                ? (playerContext.FindBlueprint(viewModel.UUID)
+                   ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(viewModel.UUID))
+                : null;
+            if (blueprint == null || string.IsNullOrEmpty(viewModel.UUID))
             {
                 ClearEvolutionGraph();
                 return;
@@ -1627,7 +1656,7 @@ namespace OE2EmpireTracker
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
 
-            if (viewModel == null || viewModel.Data == null || string.IsNullOrEmpty(viewModel.Data.UUID))
+            if (viewModel == null || string.IsNullOrEmpty(viewModel.UUID))
             {
                 ClearPriceEvolutionGraph();
                 return;
@@ -1652,8 +1681,20 @@ namespace OE2EmpireTracker
             }
 
             // Resolve the evolution chain
+            var priceBlueprint = !string.IsNullOrEmpty(viewModel.UUID)
+                ? (playerContext.FindBlueprint(viewModel.UUID)
+                   ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(viewModel.UUID))
+                : null;
+            if (priceBlueprint == null)
+            {
+                chartPriceEvolution.Visible = false;
+                lblPriceEvoNoPlan.Text = "No evolution data";
+                lblPriceEvoNoPlan.Visible = true;
+                return;
+            }
+
             var chain = EvolutionChainService.ResolveChain(
-                viewModel.Data,
+                priceBlueprint,
                 uuid => playerContext.FindBlueprint(uuid) ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(uuid));
 
             if (chain.Count <= 1)
@@ -1782,7 +1823,7 @@ namespace OE2EmpireTracker
         /// </summary>
         private void UpdateCalculatedPrice()
         {
-            if (viewModel.Data.UUID == null || viewModel.Data.Resources == null || viewModel.Data.Resources.Count == 0)
+            if (viewModel.UUID == null || viewModel.ResourceCount == 0)
             {
                 lblComputedPrice.Text = string.Empty;
                 return;
@@ -1802,19 +1843,25 @@ namespace OE2EmpireTracker
                 return;
             }
 
-            // Parse manufacturing hours from blueprint properties
-            decimal mfgHours = 0m;
-            if (viewModel.Data.Properties != null)
+            // Look up mutable entity for PriceCalculator (will be replaced by service in future)
+            Blueprint priceBp = playerContext.FindBlueprint(viewModel.UUID)
+                ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(viewModel.UUID);
+            if (priceBp == null)
             {
-                viewModel.Data.Properties.GetString(BlueprintPropertyKeys.ManufactureRunTime, null, out string mfgTimeStr);
-                if (!string.IsNullOrEmpty(mfgTimeStr))
-                {
-                    decimal seconds = EvolutionChainService.ParseTimeToSeconds(mfgTimeStr);
-                    mfgHours = seconds / 3600m;
-                }
+                lblComputedPrice.Text = string.Empty;
+                return;
             }
 
-            var result = PriceCalculator.ComputeBlueprintPrice(plan, viewModel.Data, mfgHours);
+            // Parse manufacturing hours from blueprint properties
+            decimal mfgHours = 0m;
+            viewModel.GetProperty(BlueprintPropertyKeys.ManufactureRunTime, null, out string mfgTimeStr);
+            if (!string.IsNullOrEmpty(mfgTimeStr))
+            {
+                decimal seconds = EvolutionChainService.ParseTimeToSeconds(mfgTimeStr);
+                mfgHours = seconds / 3600m;
+            }
+
+            var result = PriceCalculator.ComputeBlueprintPrice(plan, priceBp, mfgHours);
             string priceText = result.Price.ToString("N2");
             if (!result.IsComplete)
                 priceText += " *";
@@ -1844,19 +1891,19 @@ namespace OE2EmpireTracker
         /// </summary>
         private void PopulateForm()
         {
-            if (viewModel.Data.UUID == null) return;
+            if (viewModel.UUID == null) return;
 
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
             // Identity fields
-            txtName.Text = viewModel.Data.Name ?? string.Empty;
-            txtNickName.Text = viewModel.Data.NickName ?? string.Empty;
-            txtDescription.Text = viewModel.Data.Description ?? string.Empty;
-            txtCopyCost.Text = viewModel.Data.CopyCost.ToString();
+            txtName.Text = viewModel.Name ?? string.Empty;
+            txtNickName.Text = viewModel.NickName ?? string.Empty;
+            txtDescription.Text = viewModel.Description ?? string.Empty;
+            txtCopyCost.Text = viewModel.CopyCost.ToString();
 
             // Blueprint type
-            string dataType = viewModel.Data.BluePrintType;
+            string dataType = viewModel.BluePrintType;
             var foundBt = empireContext.FindBlueprintType(dataType);
             cmbBlueprintType.SelectedItem = foundBt;
             var bt = cmbBlueprintType.SelectedItem as BlueprintType;
@@ -1866,13 +1913,13 @@ namespace OE2EmpireTracker
                 foundBt != null ? foundBt.Id : "(not found)",
                 bt?.Id ?? "(null)",
                 cmbBlueprintType.SelectedIndex,
-                viewModel.Data.Name ?? "(null)");
+                viewModel.Name ?? "(null)");
             UpdateUniversalVisibility(bt);
 
             // Dependent combos
-            cmbShipClass.SelectedItem = empireContext.FindShipClass(viewModel.Data.Class);
-            cmbTechLevel.SelectedItem = empireContext.FindTechLevel(viewModel.Data.TechLevel);
-            cmbEvolution.SelectedItem = empireContext.FindEvolution(viewModel.Data.Evolution);
+            cmbShipClass.SelectedItem = empireContext.FindShipClass(viewModel.Class);
+            cmbTechLevel.SelectedItem = empireContext.FindTechLevel(viewModel.TechLevel);
+            cmbEvolution.SelectedItem = empireContext.FindEvolution(viewModel.Evolution);
 
             // Base blueprint
             UpdateBaseBlueprintList();
@@ -1968,7 +2015,7 @@ namespace OE2EmpireTracker
                 return;
             }
 
-            if (viewModel.Data.UUID == e.BlueprintUUID)
+            if (viewModel.UUID == e.BlueprintUUID)
             {
                 PopulateForm();
             }

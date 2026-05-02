@@ -33,6 +33,9 @@ const KNOWN_INTERNAL = new Set([
     'SkillNameExtensions',
     // Entry point — called by the runtime
     'Program',
+    // BL-108 DTOs — consumed by BlueprintViewModel and BlueprintService (in-progress refactoring)
+    'BlueprintUpdateRequest',
+    'BlueprintCreateRequest',
 ]);
 
 function findCsFiles(dir, results, includeDesigner) {

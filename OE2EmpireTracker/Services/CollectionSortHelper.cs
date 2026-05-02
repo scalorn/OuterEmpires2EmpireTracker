@@ -565,6 +565,20 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Sorts read-only blueprints by Evolution descending (highest first).
+        /// Used by BlueprintViewModel.GetBaseBlueprintCandidates().
+        /// </summary>
+        public static IReadOnlyList<ReadOnlyBlueprint> OrderReadOnlyBlueprintsByEvolutionDescending(
+            IEnumerable<ReadOnlyBlueprint> blueprints)
+        {
+            if (blueprints == null) return Array.Empty<ReadOnlyBlueprint>();
+            return blueprints
+                .OrderByDescending(b => b.Evolution)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
         /// Sorts blueprints by Evolution ascending.
         /// Used by EvolutionChainService.
         /// </summary>
