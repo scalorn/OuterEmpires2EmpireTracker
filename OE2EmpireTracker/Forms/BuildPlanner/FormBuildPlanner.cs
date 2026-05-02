@@ -82,6 +82,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             cmbItemType.SelectedIndex = 0;
             cmbItemType.SelectedIndexChanged += CmbItemType_SelectedIndexChanged;
             cmbItem.SelectedItemChanged += CmbItem_SelectedItemChanged;
+            PopulateItemCombo();
             cmdAddItem.Click += CmdAddItem_Click;
             cmdQueueCalc.Click += CmdQueueCalc_Click;
             cmdAllocate.Click += CmdAllocate_Click;
