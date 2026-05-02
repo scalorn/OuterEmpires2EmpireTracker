@@ -17110,40 +17110,6 @@
     },
     {
       "OwnerUUID": "",
-      "BluePrintType": "MissileLauncher/Small",
-      "Class": 8,
-      "Properties": {
-        "Accuracy": "85",
-        "Cargo Volume Size": "3711",
-        "Eng Capacity Required": "6185",
-        "Health": "2597",
-        "Launch Velocity": "2",
-        "Magazine Size": "5",
-        "Manufacture Run Time": "2d , 4h",
-        "Mass": "6927",
-        "Max Range": "120",
-        "Maximum Damage Repair": "90",
-        "Min Range": "30",
-        "Power Draw Per Shot": "121",
-        "Rate of Fire": "2",
-        "Reload Time": "10",
-        "Weapon Slot Size": "Small",
-        "Wear and Tear Rate": "0.3",
-        "_IconClass": "ui_icon_A23",
-        "_IconPosition": "-24px -860px"
-      },
-      "Resources": {
-        "Acidic Inorganics": "1201",
-        "Alkali Metals": "7717",
-        "Heavy Trans-Metals": "2022"
-      },
-      "UUID": "9ecfd5ed-0058-5b31-9242-71598fe377ed",
-      "ItemType": "Blueprint",
-      "Name": "ASM-8S Missile Launcher",
-      "Description": "Missile Launcher (small)"
-    },
-    {
-      "OwnerUUID": "",
       "BluePrintType": "SystemObjectScanner",
       "TechLevel": "Hi-Tech",
       "Class": 7,

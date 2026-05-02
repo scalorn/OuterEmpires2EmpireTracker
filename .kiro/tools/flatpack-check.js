@@ -75,10 +75,9 @@ for (const file of FILES) {
         }
     }
 
-    // Check 3: No duplicate UUIDs among flatpack blueprints
+    // Check 3: No duplicate UUIDs among ALL blueprints
     const uuidMap = {};
     for (const bp of blueprints) {
-        if (!bp.BluePrintType || !bp.BluePrintType.startsWith('Flatpacks/')) continue;
         if (!bp.UUID) continue;
         if (uuidMap[bp.UUID]) {
             console.log(`DUP UUID: ${label}: UUID ${bp.UUID} used by "${bp.Name}" and "${uuidMap[bp.UUID]}"`);
