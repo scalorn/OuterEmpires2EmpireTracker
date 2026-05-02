@@ -31,6 +31,7 @@ const tools = [
     { name: 'Term Consistency', script: 'term-consistency.js' },
     { name: 'Event Matrix', script: 'event-matrix.js' },
     { name: 'User Flow Check', script: 'user-flow-check.js' },
+    { name: 'Flatpack Integrity', script: 'flatpack-check.js' },
 ];
 
 let totalFindings = 0;

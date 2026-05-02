@@ -184,6 +184,22 @@ namespace OE2EmpireTracker.Services
 
             baselineRoot = SerializationSorter.SortBaselineRoot(baselineRoot);
 
+            // Integrity check: validate all global blueprints before saving
+            foreach (var bp in baselineRoot.Blueprint ?? Array.Empty<Blueprint>())
+            {
+                string error = bp.ValidateIntegrity();
+                if (error != null)
+                {
+                    Log.Error("BLUEPRINT INTEGRITY VIOLATION in WriteContext (global): {0}", error);
+                    System.Windows.Forms.MessageBox.Show(
+                        "Blueprint corruption detected before save:\n\n" + error +
+                        "\n\nThe save will proceed but this data may be corrupted. Please report this.",
+                        "Blueprint Integrity Violation",
+                        System.Windows.Forms.MessageBoxButtons.OK,
+                        System.Windows.Forms.MessageBoxIcon.Error);
+                }
+            }
+
             string jsonContent = JsonConvert.SerializeObject(baselineRoot, JsonSettings.SerializerSettings);
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Baseline data saved to {0}", FilePath);
