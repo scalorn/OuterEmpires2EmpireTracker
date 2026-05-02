@@ -20,6 +20,8 @@ const path = require('path');
 const FILES = [
     'OE2EmpireTracker.Tests/TestData/BaselineData.json',
     'OE2EmpireTracker/BaselineData.json',
+    'OE2EmpireTracker/PlayerData.json',
+    'OE2EmpireTracker/Alpha3.json',
 ];
 
 let findings = 0;
