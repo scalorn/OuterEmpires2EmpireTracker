@@ -424,6 +424,7 @@
     <Compile Include="Models\ReadOnlyWrapperPropertyTests.cs" />
     <Compile Include="Models\ReadOnlyContextMethodTests.cs" />
     <Compile Include="Models\ReadOnlyWrapperStructuralTests.cs" />
+    <Compile Include="Models\ReadOnlyPlayerProfileGapFillTests.cs" />
     <Compile Include="Models\SerializationBackwardCompatibilityTests.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />

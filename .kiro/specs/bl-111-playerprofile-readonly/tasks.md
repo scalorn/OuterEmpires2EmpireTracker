@@ -18,7 +18,7 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
     - Add CompletionStartTime, CompletionEndTime, CompletionTimeRemaining, CompletionTimeRemainingString properties (expose CountDownTime fields as read-only scalars)
     - _Requirements: 2.1, 2.2_
 
-  - [ ]* 1.3 Write unit tests for ReadOnly wrapper gap fill
+  - [-] 1.3 Write unit tests for ReadOnly wrapper gap fill
     - Test ReadOnlyPlayerProfile exposes Faction, TotalCredits, SkillPoints, CitizenId, RegistrationDate, ActiveTime
     - Test ReadOnlyPlayerProfile.Skills returns wrapped ReadOnlyPlayerSkill entries
     - Test ReadOnlyPlayerSkill exposes TrainingStarted and CompletionTime fields
@@ -80,18 +80,18 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
     - BuildCreateRequest: builds PlayerProfileCreateRequest from local state
     - _Requirements: 18.1, 18.2_
 
-  - [ ]* 5.5 Write property test: LoadFrom round-trip preserves all fields (Property 1)
+  - [ ] 5.5 Write property test: LoadFrom round-trip preserves all fields (Property 1)
     - **Property 1: LoadFrom round-trip preserves all fields**
     - Generate random PlayerProfile with arbitrary scalars, ranks, skills, skill groups
     - Wrap in ReadOnlyPlayerProfile, call LoadFrom, verify all local fields match
     - **Validates: Requirements 1.7, 1.8, 5.1, 5.2, 5.3, 5.4**
 
-  - [ ]* 5.6 Write property test: IsDirty is false immediately after LoadFrom (Property 2)
+  - [ ] 5.6 Write property test: IsDirty is false immediately after LoadFrom (Property 2)
     - **Property 2: IsDirty is false immediately after LoadFrom**
     - Generate random PlayerProfile, wrap, LoadFrom, assert IsDirty == false
     - **Validates: Requirements 9.1, 9.6**
 
-  - [ ]* 5.7 Write property test: IsDirty detects any single field change (Property 3)
+  - [ ] 5.7 Write property test: IsDirty detects any single field change (Property 3)
     - **Property 3: IsDirty detects any single field change**
     - Generate random PlayerProfile, LoadFrom, change one random field to a different value, assert IsDirty == true
     - **Validates: Requirements 9.1, 9.2, 9.3, 9.4, 9.5, 9.7**
@@ -130,28 +130,28 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
     - Persist, fire events, return ReadOnlyPlayerProfile
     - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5, 17.6_
 
-  - [ ]* 7.5 Write property test: Service.Update round-trip (Property 4)
+  - [~] 7.5 Write property test: Service.Update round-trip (Property 4)
     - **Property 4: Service.Update round-trip**
     - Generate random existing profile and random update request
     - Call Update, verify returned ReadOnlyPlayerProfile matches request values
     - **Validates: Requirements 14.3, 14.4, 14.5, 14.6, 14.9**
 
-  - [ ]* 7.6 Write property test: Service.Create round-trip (Property 5)
+  - [~] 7.6 Write property test: Service.Create round-trip (Property 5)
     - **Property 5: Service.Create round-trip**
     - Generate random create request, call Create, verify returned profile matches request and has non-empty UUID
     - **Validates: Requirements 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.7**
 
-  - [ ]* 7.7 Write property test: Service.Delete removes profile (Property 6)
+  - [~] 7.7 Write property test: Service.Delete removes profile (Property 6)
     - **Property 6: Service.Delete removes profile**
     - Generate random existing profile, call Delete, verify profile no longer findable
     - **Validates: Requirements 16.1, 16.2, 16.3, 16.4, 16.5**
 
-  - [ ]* 7.8 Write property test: Service.Import preserves UUID on name match (Property 7)
+  - [~] 7.8 Write property test: Service.Import preserves UUID on name match (Property 7)
     - **Property 7: Service.Import preserves UUID on name match**
     - Generate random existing profile and parsed profile with same name (case-insensitive), call Import, verify UUID preserved and fields updated
     - **Validates: Requirements 17.2, 17.3**
 
-  - [ ]* 7.9 Write unit tests for PlayerProfileService
+  - [~] 7.9 Write unit tests for PlayerProfileService
     - Test Update throws InvalidOperationException on unknown UUID
     - Test Update fires PlayerProfileDataChanged event
     - Test Create fires both PlayerProfilesChanged and PlayerProfileDataChanged events
@@ -228,7 +228,7 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
     - Run node .kiro/tools/audit.js, fix any new findings beyond accepted baseline
     - _Requirements: 21.1_
 
-  - [ ]* 11.3 Write verification tests for no direct mutation outside service
+  - [~] 11.3 Write verification tests for no direct mutation outside service
     - Test that grep for direct PlayerProfile property sets only finds matches in service, deserialization, migration, and class itself
     - Test that grep for direct PlayerSkill property sets only finds matches in service, parser, deserialization, and class itself
     - Test that grep for direct PlayerRank property sets only finds matches in service, parser, deserialization, and class itself
