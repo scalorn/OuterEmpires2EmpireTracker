@@ -1,122 +1,149 @@
-# BL-108 Design: FormBlueprintV2 ReadOnly Migration
+# BL-108 Design: Blueprint Immutable Data Model
 
-## Current State
+## Overview
 
-FormBlueprintV2 currently holds mutable `Blueprint` references everywhere:
-- `lvwBlueprints` items have `Tag = Blueprint` (mutable)
-- `BlueprintViewModel` wraps a mutable `Blueprint` for editing
-- Filter combos use mutable `BlueprintType`, `ShipClass`, `TechLevel` from EmpireContext
-- Evolution graph builds chains from mutable blueprint lists
-- Reference counter receives mutable blueprint lists
-- Pricing plan combo uses mutable `PricingPlan` list
+This is a two-phase migration:
+1. **Phase 1**: Switch FormBlueprintV2's read-only paths to use ReadOnly wrappers
+2. **Phase 2**: Make Blueprint/Item property setters `internal`, enforcing immutability at compile time
 
-Any code that touches these mutable references can accidentally mutate the data. The ItemType=Survey corruption proved this happens in practice.
+## Phase 1: Read-Only Consumer Migration
 
-## Target State
+### Selection Boundary Pattern
+
+The critical design decision: the list view selection handler is the ONLY mutable boundary.
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│ FormBlueprintV2                                         │
-│                                                         │
-│  List View (read-only path)                             │
-│    Tag = ReadOnlyBlueprint ◄── GetReadOnlyBlueprintList │
-│    Refs = BlueprintReferenceCounter(ReadOnly inputs)    │
-│                                                         │
-│  Filter Combos (read-only path)                         │
-│    cmbFilterType ◄── ReadOnly BlueprintType list        │
-│    cmbFilterClass ◄── ReadOnly ShipClass list           │
-│    cmbFilterTechLevel ◄── ReadOnly TechLevel list       │
-│                                                         │
-│  Selection ──► UUID ──► FindBlueprint(uuid) ──► mutable │
-│                                                         │
-│  Edit Panel (mutable path)                              │
-│    BlueprintViewModel wraps mutable Blueprint            │
-│    Statistics grid reads/writes via ViewModel            │
-│    Resources grid reads/writes via ViewModel             │
-│    Type/Class/TechLevel combos write via ViewModel       │
-│                                                         │
-│  Evolution Graph (read-only path)                        │
-│    Chain data ◄── ReadOnly blueprint lists               │
-│                                                         │
-│  Pricing (read-only path)                                │
-│    Plan combo ◄── GetReadOnlyPricingPlanList             │
-│    Price calc ◄── ReadOnly plan + ReadOnly blueprint     │
-└─────────────────────────────────────────────────────────┘
+List View (ReadOnlyBlueprint in Tags)
+    │
+    ▼ user selects
+Selection Handler
+    │ reads UUID from ReadOnlyBlueprint
+    │ looks up mutable Blueprint by UUID
+    ▼
+BlueprintViewModel (wraps mutable Blueprint)
+    │
+    ▼ write-through
+Mutable Blueprint (internal setters)
 ```
 
-## Key Design Decision: Selection Boundary
-
-The critical boundary is the list view selection handler. Today:
 ```csharp
-// CURRENT: list item Tag is mutable Blueprint
-var bp = lvwBlueprints.SelectedItems[0].Tag as Blueprint;
-viewModel.SelectBlueprint(bp);  // ViewModel now holds mutable ref
-PopulateForm();
-```
-
-After migration:
-```csharp
-// NEW: list item Tag is ReadOnlyBlueprint
+// Selection handler — the controlled gate
 var roBp = lvwBlueprints.SelectedItems[0].Tag as ReadOnlyBlueprint;
-string uuid = roBp.UUID;
-
-// Cross the read-only → mutable boundary via UUID lookup
-var bp = playerContext.FindBlueprint(uuid)
-      ?? empireContext.FindGlobalBlueprint(uuid);
-viewModel.SelectBlueprint(bp);  // ViewModel holds mutable ref for editing
-PopulateForm();
+var bp = playerContext.FindBlueprint(roBp.UUID)
+      ?? empireContext.FindGlobalBlueprint(roBp.UUID);
+viewModel.SelectBlueprint(bp);
 ```
 
-This is the ONLY place where a mutable reference is obtained from a read-only one. The UUID lookup is the controlled gate.
+### What Uses ReadOnly (Phase 1)
 
-## Migration Steps
+| Component | Current | After |
+|-----------|---------|-------|
+| List view Tags | `Blueprint` | `ReadOnlyBlueprint` |
+| Filter combos | Mutable type lists | Read-only type lists |
+| Reference counter | Mutable lists | Read-only lists |
+| Evolution graph | Mutable blueprint lists | Read-only blueprint lists |
+| Base blueprint combo | Mutable list | Read-only list |
+| Pricing plan combo | Mutable list | Read-only list |
 
-### Step 1: List View Population
-Change `RefreshBlueprintList()` / `PopulateListView()`:
-- Call `playerContext.GetAllReadOnlyBlueprints()` (combined player + global, read-only)
-- Store `ReadOnlyBlueprint` in list view item Tags
-- Read `ExtendedName`, `BluePrintType`, `Evolution`, `Class`, `TechLevel` from the read-only wrapper
+### What Stays Mutable (Phase 1)
 
-### Step 2: Selection Handler
-Change `LvwBlueprints_ItemSelectionChanged`:
-- Read UUID from `ReadOnlyBlueprint` Tag
-- Look up mutable `Blueprint` by UUID
-- Pass mutable to ViewModel
+| Component | Reason |
+|-----------|--------|
+| BlueprintViewModel | Legitimate edit path |
+| Edit-panel combos (cmbBlueprintType, cmbShipClass, cmbTechLevel) | Write-through to ViewModel |
+| Statistics grid | Editable cells write through ViewModel |
+| Resources grid | Editable cells write through ViewModel |
+| Import/scanner path | Creates temp Blueprint objects |
+| Save/delete path | Persists through ViewModel |
 
-### Step 3: Reference Counter
-Change `BlueprintReferenceCounter` inputs:
-- Accept read-only colony/build-plan/ship lists for counting
-- Or: keep mutable inputs but ensure the counter doesn't mutate them (lower priority — the counter is already read-only in behavior)
+## Phase 2: Internal Setters
 
-### Step 4: Filter Combos
-- `cmbFilterType` items: use read-only BlueprintType list
-- `cmbFilterClass` items: use read-only ShipClass list  
-- `cmbFilterTechLevel` items: use read-only TechLevel list
+### Item Base Class Changes
 
-### Step 5: Evolution Graph
-- `EvolutionChainService` methods accept `IReadOnlyList<ReadOnlyBlueprint>`
-- Graph data builder works with read-only wrappers
+```csharp
+public class Item
+{
+    // UUID: set during construction or deserialization only
+    public string UUID { get; internal set; }
 
-### Step 6: Pricing Plan Combo
-- Populate from `playerContext.GetReadOnlyPricingPlanList()`
-- Price calculator accepts `ReadOnlyPricingPlan` + `ReadOnlyBlueprint`
+    // ItemType: set in constructor, never changed
+    public ItemType.ItemTypeEnum ItemType { get; internal set; }
 
-### Step 7: Base Blueprint Combo
-- `GetBaseBlueprintCandidates()` returns `IReadOnlyList<ReadOnlyBlueprint>`
-- Combo items are read-only
+    // Name/NickName/Description: set via ViewModel or import
+    public virtual string Name { get; internal set; } = string.Empty;
+    public virtual string NickName { get; internal set; } = string.Empty;
+    public virtual string Description { get; internal set; } = string.Empty;
 
-## What Does NOT Change
+    // Other Item properties
+    public string BaseItemTypeID { get; internal set; } = string.Empty;
+    public int Quantity { get; internal set; } = 0;
+    public string ResourcePurity { get; internal set; } = string.Empty;
+    public decimal Volume { get; internal set; } = 0m;
+    public ItemBag Contents { get; internal set; }
+    public int CurrentHP { get; internal set; } = 0;
+    public int MaxHP { get; internal set; } = 0;
+    public decimal MaxRepairPercent { get; internal set; } = 0m;
+}
+```
 
-- `BlueprintViewModel` — continues to wrap mutable `Blueprint` for editing
-- Statistics grid editing — reads/writes through ViewModel
-- Resources grid editing — reads/writes through ViewModel
-- Type/Class/TechLevel combo write-through — writes through ViewModel
-- Import path — creates mutable temp Blueprint, routes through importer
-- Save/Delete — persists through ViewModel
-- `CmbBlueprintType.SelectedItem` for the EDIT combo — this is the mutable type combo that writes through to the ViewModel, not the filter combo
+### Blueprint Class Changes
 
-## Risk: Combo DataSource Binding
+```csharp
+public class Blueprint : Item
+{
+    public string OwnerUUID { get; internal set; } = string.Empty;
+    public string BaseBlueprintUUID { get; internal set; }
+    public string LegacyUUID { get; internal set; }
+    public string BluePrintType { get; internal set; }
+    public int Evolution { get; internal set; }
+    public string TechLevel { get; internal set; }
+    public int Class { get; internal set; }
+    public int CopyCost { get; internal set; }
+    public PropertyBag Properties { get; internal set; }
+    public Dictionary<string, string> Resources { get; internal set; }
+}
+```
 
-The edit-panel combos (`cmbBlueprintType`, `cmbShipClass`, `cmbTechLevel`) currently use `BindingSource` backed by mutable lists. These combos need to remain mutable because `SelectedItem` writes back to the ViewModel. The FILTER combos (cmbFilterType, cmbFilterClass, cmbFilterTechLevel) can switch to read-only since they only filter the list view.
+### InternalsVisibleTo
 
-Care must be taken not to confuse the two sets of combos during migration.
+In `Properties/AssemblyInfo.cs` or a new file:
+```csharp
+[assembly: InternalsVisibleTo("OE2EmpireTracker.Tests")]
+```
+
+### JSON Deserialization
+
+Newtonsoft.Json uses reflection to set properties. With `internal` setters, the deserializer can still set them because:
+- The deserializer runs within the same assembly (OE2EmpireTracker)
+- Newtonsoft.Json uses `BindingFlags.NonPublic` when the property has a non-public setter
+
+Verify with existing round-trip serialization tests.
+
+### Impact on Other Code
+
+Since `internal` is assembly-scoped, ALL code within OE2EmpireTracker can still set properties. This means:
+- ViewModel write-through works (same assembly)
+- Importer/scanner works (same assembly)
+- Migration code works (same assembly)
+- Colony form reading blueprint properties works (same assembly, read-only)
+
+The protection is against:
+- External assemblies (future plugins, API consumers)
+- The test project (unless InternalsVisibleTo is declared)
+- Accidental mutation from code that shouldn't be touching Blueprint state (caught by code review, not compiler — but ReadOnly wrappers in Phase 1 provide the compile-time enforcement for read-only paths)
+
+### Risk: Item Setters Affect All Item Subclasses
+
+Making `Item` setters `internal` affects ALL classes that inherit from `Item`, not just `Blueprint`. This includes warehouse items, delivery items, etc. Those code paths also need to be within the main assembly (which they are). But it's a broader change than just Blueprint.
+
+**Mitigation**: Do Item setter changes in a separate task, after Blueprint-specific changes are verified. Test thoroughly.
+
+## Task Ordering
+
+Phase 1 tasks (read-only wrappers) can be done independently of Phase 2 (internal setters). Phase 1 provides immediate protection for the blueprint form. Phase 2 provides assembly-wide enforcement.
+
+Recommended order:
+1. Phase 1 tasks (list view, selection, combos, graph, pricing)
+2. Phase 2: Blueprint-specific internal setters
+3. Phase 2: Item base class internal setters (broader impact)
+4. Verification
