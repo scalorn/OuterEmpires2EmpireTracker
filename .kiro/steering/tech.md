@@ -50,6 +50,12 @@ nuget restore OE2EmpireTracker.sln
 - After running tests, read the TRX file to check results: search for `outcome="Failed"` to find failures, and read the `<Message>` and `<StackTrace>` elements for details
 - When the running app locks the exe, use `getDiagnostics` instead of building
 
+## Important: Zero Warnings Policy
+- The build MUST produce **zero warnings** — this includes all StyleCop SA* warnings (SA1201, SA1202, SA1500, etc.)
+- StyleCop warnings are NOT cosmetic — they are enforced coding standards. Every SA* warning must be fixed before committing.
+- Common StyleCop rules: SA1201 (member ordering by kind), SA1202 (member ordering by access), SA1500 (brace placement)
+- After building, grep the output for "warning" and fix every one. Do not dismiss them as "pre-existing" or "style-only".
+
 ## Conventions
 - Logging via `NLog.LogManager.GetCurrentClassLogger()` — use `Log.Info`, `Log.Debug`, `Log.Error`
 - JSON persistence with `Newtonsoft.Json` (`JsonConvert.SerializeObject` / `DeserializeObject`)

@@ -1,7 +1,7 @@
 # Workflow Rules
 
 ## After Every Piece of Work
-1. **Build and test** before committing — the solution must compile with **zero warnings** and all tests must pass
+1. **Build and test** before committing — the solution must compile with **zero errors AND zero warnings** (including StyleCop SA* warnings) and all tests must pass. StyleCop warnings are not "just style" — they are enforced rules. Fix every SA* warning before committing.
 2. **Run audit** — `node .kiro/tools/audit.js` must report no new findings (PERF timing on small combo methods is an accepted baseline)
 3. **Always commit** — never ask whether to commit; just do it after verifying the build/tests pass
 3. **Commit** all changes with a detailed commit message describing what was done and why

@@ -34824,7 +34824,7 @@
   "ItemType": "Flatpack",
   "BaseItemTypeID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
   "Name": "Refinery Flatpack",
-  "Quantity": 6
+  "Quantity": 7
 },
         "cdaa40f9-2f2f-4622-861e-8812a14d32a8": {
   "UUID": "cdaa40f9-2f2f-4622-861e-8812a14d32a8",
@@ -35000,8 +35000,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T18:08:33.1524433Z",
-            "EndTime": "2026-05-02T19:08:32.1524433Z",
+            "StartTime": "2026-05-02T19:08:32.1524433Z",
+            "EndTime": "2026-05-02T20:08:31.1524433Z",
             "RepeatIntervalSeconds": 3599,
             "IsRepeating": true
           },
@@ -35009,7 +35009,7 @@
           "MiningSurveyResource": "Strategic Mover",
           "ManufacturingBlueprintUUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
           "ManufacturingQuantity": 168,
-          "ManufacturingCompleted": 6,
+          "ManufacturingCompleted": 7,
           "CurrentAttitude": ""
         },
         {
