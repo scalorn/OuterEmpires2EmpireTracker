@@ -433,6 +433,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             cmdStartManufacturing.Enabled = canStart;
             tsmiStartManufacturing.Enabled = canStart;
+            Log.Debug("UpdateStartMfgEnabled: item='{0}' status={1} structure={2} canStart={3}",
+                buildItem.ItemName, buildItem.Status, buildItem.StructureUUID ?? "(none)", canStart);
         }
 
         private void PopulateShortfallGrid()

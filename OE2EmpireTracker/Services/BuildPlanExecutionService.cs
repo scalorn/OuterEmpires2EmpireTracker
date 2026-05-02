@@ -454,26 +454,47 @@ namespace OE2EmpireTracker.Services
 
             // Item must be Ready with valid StructureUUID
             if (item.Status != BuildItemStatus.Ready)
+            {
+                Log.Debug("CanStartMfg: item '{0}' status={1} (need Ready)", item.ItemName, item.Status);
                 return false;
+            }
+
             if (string.IsNullOrEmpty(item.StructureUUID))
+            {
+                Log.Debug("CanStartMfg: item '{0}' has no StructureUUID", item.ItemName);
                 return false;
+            }
 
             // Resolve colony and structure
             var colony = colonyFinder(item.BuildLocationUUID);
             if (colony == null)
+            {
+                Log.Debug("CanStartMfg: item '{0}' colony not found (location={1})", item.ItemName, item.BuildLocationUUID);
                 return false;
+            }
 
             ColonyStructure structure = FindStructureByUUID(colony, item.StructureUUID);
             if (structure == null)
+            {
+                Log.Debug("CanStartMfg: item '{0}' structure not found (uuid={1})", item.ItemName, item.StructureUUID);
                 return false;
+            }
 
             // Structure must be built and online
             if (!structure.IsBuiltAndOnline)
+            {
+                Log.Debug("CanStartMfg: item '{0}' structure not built/online (IsBuiltAndOnline=false)",
+                    item.ItemName);
                 return false;
+            }
 
             // Structure must have no active ProcessCompletionTime
             if (structure.ProcessCompletionTime != null)
+            {
+                Log.Debug("CanStartMfg: item '{0}' structure busy (completion={1})",
+                    item.ItemName, structure.ProcessCompletionTime.TimeRemainingString);
                 return false;
+            }
 
             // Item must be lowest SequenceInStructure among Ready items on that structure
             foreach (var other in plan.Items)
@@ -485,7 +506,11 @@ namespace OE2EmpireTracker.Services
                 if (other.StructureUUID != item.StructureUUID)
                     continue;
                 if (other.SequenceInStructure < item.SequenceInStructure)
+                {
+                    Log.Debug("CanStartMfg: item '{0}' blocked by lower-sequence item '{1}' (seq {2} < {3})",
+                        item.ItemName, other.ItemName, other.SequenceInStructure, item.SequenceInStructure);
                     return false;
+                }
             }
 
             // Dependency (if any) must be Completed (missing from plan = treated as satisfied)
@@ -496,12 +521,18 @@ namespace OE2EmpireTracker.Services
                     if (candidate.UUID == item.DependsOnUUID)
                     {
                         if (candidate.Status != BuildItemStatus.Completed)
+                        {
+                            Log.Debug("CanStartMfg: item '{0}' dependency '{1}' not completed (status={2})",
+                                item.ItemName, candidate.ItemName, candidate.Status);
                             return false;
+                        }
+
                         break;
                     }
                 }
             }
 
+            Log.Debug("CanStartMfg: item '{0}' eligible", item.ItemName);
             return true;
         }
 
