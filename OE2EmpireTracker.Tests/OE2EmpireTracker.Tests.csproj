@@ -331,6 +331,7 @@
     <Compile Include="Forms\PricingPlanValidationPropertyTests.cs" />
     <Compile Include="ViewModels\BaseBlueprintCandidatesTests.cs" />
     <Compile Include="ViewModels\BlueprintFilterPropertyTests.cs" />
+    <Compile Include="ViewModels\PlayerProfileViewModelPropertyTests.cs" />
     <Compile Include="Parsers\ColonyParserTests.cs" />
     <Compile Include="Parsers\ColonyParserDedupeTests.cs" />
     <Compile Include="Parsers\ColonyParserIdempotencyTests.cs" />
@@ -414,6 +415,9 @@
     <Compile Include="Services\SerializationSorterTests.cs" />
     <Compile Include="Services\SerializationSorterIntegrationTests.cs" />
     <Compile Include="Services\CollectionSortHelperPropertyTests.cs" />
+    <Compile Include="Services\PlayerProfileServicePropertyTests.cs" />
+    <Compile Include="Services\PlayerProfileServiceTests.cs" />
+    <Compile Include="Services\PlayerProfileMutationGuardTests.cs" />
     <Compile Include="Services\CollectionSortHelperTests.cs" />
     <Compile Include="Services\HelpRendererPropertyTests.cs" />
     <Compile Include="Services\HelpTopicRegistryPropertyTests.cs" />
