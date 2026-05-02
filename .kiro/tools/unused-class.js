@@ -36,6 +36,9 @@ const KNOWN_INTERNAL = new Set([
     // BL-108 DTOs — consumed by BlueprintViewModel and BlueprintService (in-progress refactoring)
     'BlueprintUpdateRequest',
     'BlueprintCreateRequest',
+    // BL-111 DTOs — consumed by PlayerProfileViewModel and PlayerProfileService (in-progress refactoring)
+    'PlayerProfileUpdateRequest',
+    'PlayerProfileCreateRequest',
 ]);
 
 function findCsFiles(dir, results, includeDesigner) {

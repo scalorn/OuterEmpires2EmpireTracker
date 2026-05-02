@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace OE2EmpireTracker.Models
 {
@@ -18,12 +21,32 @@ namespace OE2EmpireTracker.Models
 
         public string UUID => _entity.UUID;
         public string Name => _entity.Name;
+
+        public string Faction => _entity.Faction;
+
         public string FactionUUID => _entity.FactionUUID;
+
+        public decimal TotalCredits => _entity.TotalCredits;
+
+        public int SkillPoints => _entity.SkillPoints;
+
+        public string CitizenId => _entity.CitizenId;
+
+        public string RegistrationDate => _entity.RegistrationDate;
+
+        public string ActiveTime => _entity.ActiveTime;
 
         // Rank properties - wrapped
         public ReadOnlyPlayerRank Public => new ReadOnlyPlayerRank(_entity.Public);
         public ReadOnlyPlayerRank Private => new ReadOnlyPlayerRank(_entity.Private);
         public ReadOnlyPlayerRank Military => new ReadOnlyPlayerRank(_entity.Military);
+
+        // Skills dictionary - wrapped as IReadOnlyDictionary
+        public IReadOnlyDictionary<string, ReadOnlyPlayerSkill> Skills =>
+            new ReadOnlyDictionary<string, ReadOnlyPlayerSkill>(
+                _entity.Skills.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => new ReadOnlyPlayerSkill(kvp.Value)));
 
         // Skill access - returns read-only wrapper
         public ReadOnlyPlayerSkill GetSkill(string skillName) =>

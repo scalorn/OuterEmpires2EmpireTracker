@@ -138,6 +138,11 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        /// <summary>
+        /// When true, suppresses MessageBox dialogs (e.g. during unit tests).
+        /// </summary>
+        public static bool SuppressUI { get; set; }
+
         public static string FilePath { get; set; } = "BaselineData.json";
 
         public static PlayerContext PlayerContext { get; set; }
@@ -232,12 +237,15 @@ namespace OE2EmpireTracker.Services
                 if (error != null)
                 {
                     Log.Error("BLUEPRINT INTEGRITY VIOLATION in WriteContext (global): {0}", error);
-                    System.Windows.Forms.MessageBox.Show(
-                        "Blueprint corruption detected before save:\n\n" + error +
-                        "\n\nThe save will proceed but this data may be corrupted. Please report this.",
-                        "Blueprint Integrity Violation",
-                        System.Windows.Forms.MessageBoxButtons.OK,
-                        System.Windows.Forms.MessageBoxIcon.Error);
+                    if (!SuppressUI)
+                    {
+                        System.Windows.Forms.MessageBox.Show(
+                            "Blueprint corruption detected before save:\n\n" + error +
+                            "\n\nThe save will proceed but this data may be corrupted. Please report this.",
+                            "Blueprint Integrity Violation",
+                            System.Windows.Forms.MessageBoxButtons.OK,
+                            System.Windows.Forms.MessageBoxIcon.Error);
+                    }
                 }
             }
 

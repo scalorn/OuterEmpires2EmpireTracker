@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -241,6 +241,11 @@ namespace OE2EmpireTracker.Services
         /// Fired when external character (contacts) data is modified.
         /// </summary>
         public event EventHandler<ContactDataChangedEventArgs> ContactDataChanged;
+
+        /// <summary>
+        /// When true, suppresses MessageBox dialogs (e.g. during unit tests).
+        /// </summary>
+        public static bool SuppressUI { get; set; }
 
         public static string FilePath { get; set; } = "PlayerData.json";
 
@@ -535,12 +540,15 @@ namespace OE2EmpireTracker.Services
                 if (error != null)
                 {
                     Log.Error("BLUEPRINT INTEGRITY VIOLATION in WriteContext (player): {0}", error);
-                    System.Windows.Forms.MessageBox.Show(
-                        "Blueprint corruption detected before save:\n\n" + error +
-                        "\n\nThe save will proceed but this data may be corrupted. Please report this.",
-                        "Blueprint Integrity Violation",
-                        System.Windows.Forms.MessageBoxButtons.OK,
-                        System.Windows.Forms.MessageBoxIcon.Error);
+                    if (!SuppressUI)
+                    {
+                        System.Windows.Forms.MessageBox.Show(
+                            "Blueprint corruption detected before save:\n\n" + error +
+                            "\n\nThe save will proceed but this data may be corrupted. Please report this.",
+                            "Blueprint Integrity Violation",
+                            System.Windows.Forms.MessageBoxButtons.OK,
+                            System.Windows.Forms.MessageBoxIcon.Error);
+                    }
                 }
             }
 
@@ -2824,6 +2832,30 @@ namespace OE2EmpireTracker.Services
 
                 _blueprintCache.TryGetValue(uuid, out Blueprint bp2);
                 return bp2;
+            }
+        }
+
+        /// <summary>
+        /// Returns the mutable PlayerProfile entity. Only called by PlayerProfileService.
+        /// </summary>
+        internal PlayerProfile FindMutablePlayerProfile(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_playerProfileCache == null)
+                {
+                    _playerProfileCache = new Dictionary<string, PlayerProfile>();
+                    foreach (var r in _playerProfileList)
+                    {
+                        if (r.UUID != null && !_playerProfileCache.ContainsKey(r.UUID))
+                            _playerProfileCache[r.UUID] = r;
+                    }
+                }
+
+                _playerProfileCache.TryGetValue(uuid, out var match);
+                return match;
             }
         }
 

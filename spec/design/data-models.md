@@ -663,6 +663,9 @@ Read-only wrapper classes provide controlled access to the data model. Each muta
 
 - **BlueprintUpdateRequest** — DTO carrying the original ReadOnlyBlueprint snapshot and current local field values for updating an existing blueprint through BlueprintService
 - **BlueprintCreateRequest** — DTO carrying field values for creating a new blueprint through BlueprintService (no Original snapshot, no UUID)
+- **PlayerProfileUpdateRequest** — DTO carrying the original ReadOnlyPlayerProfile snapshot and current local field values for updating an existing profile through PlayerProfileService
+- **PlayerProfileCreateRequest** — DTO carrying field values for creating a new player profile through PlayerProfileService (no Original snapshot, no UUID)
+- **SkillUpdateData** — DTO carrying a single skill's state (Level, TrainingStarted, CompletionStartTime, CompletionEndTime) for profile create/update requests
 - **ReadOnlyDeliveryPlanStop** — wraps DeliveryPlanStop (DropOff/PickUp as IReadOnlyList of ReadOnlyDeliveryItem)
 - **ReadOnlyDeliveryItem** — wraps DeliveryItem
 - **ReadOnlyBuildItem** — wraps BuildItem

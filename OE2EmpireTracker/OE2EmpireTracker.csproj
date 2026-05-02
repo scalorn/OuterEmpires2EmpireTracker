@@ -401,6 +401,9 @@
     <Compile Include="Models\ReadOnlyWarehouseOverflowRule.cs" />
     <Compile Include="Models\BlueprintUpdateRequest.cs" />
     <Compile Include="Models\BlueprintCreateRequest.cs" />
+    <Compile Include="Models\SkillUpdateData.cs" />
+    <Compile Include="Models\PlayerProfileUpdateRequest.cs" />
+    <Compile Include="Models\PlayerProfileCreateRequest.cs" />
     <Compile Include="Parsers\BlueprintScanner.cs" />
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>

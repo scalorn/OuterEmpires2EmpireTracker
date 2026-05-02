@@ -6,14 +6,14 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
 
 ## Tasks
 
-- [ ] 1. ReadOnly wrapper gap fill
-  - [ ] 1.1 Add missing properties to ReadOnlyPlayerProfile
+- [x] 1. ReadOnly wrapper gap fill
+  - [x] 1.1 Add missing properties to ReadOnlyPlayerProfile
     - Add Faction, TotalCredits, SkillPoints, CitizenId, RegistrationDate, ActiveTime properties
     - Add Skills property returning IReadOnlyDictionary<string, ReadOnlyPlayerSkill>
     - Verify SkillGroups accessor already exists, add if missing
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8_
 
-  - [ ] 1.2 Add missing properties to ReadOnlyPlayerSkill
+  - [x] 1.2 Add missing properties to ReadOnlyPlayerSkill
     - Add TrainingStarted property
     - Add CompletionStartTime, CompletionEndTime, CompletionTimeRemaining, CompletionTimeRemainingString properties (expose CountDownTime fields as read-only scalars)
     - _Requirements: 2.1, 2.2_
@@ -24,38 +24,38 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
     - Test ReadOnlyPlayerSkill exposes TrainingStarted and CompletionTime fields
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 2.1, 2.2_
 
-- [ ] 2. PlayerContext: FindMutablePlayerProfile
-  - [ ] 2.1 Add FindMutablePlayerProfile internal method to PlayerContext
+- [x] 2. PlayerContext: FindMutablePlayerProfile
+  - [x] 2.1 Add FindMutablePlayerProfile internal method to PlayerContext
     - Follow the same pattern as FindMutableBlueprint
     - Uses existing _playerProfileCache, builds cache on first call
     - Mark as internal - only for service use
     - _Requirements: 14.2_
 
-- [ ] 3. Data transfer objects
-  - [ ] 3.1 Create SkillUpdateData class
+- [x] 3. Data transfer objects
+  - [x] 3.1 Create SkillUpdateData class
     - Level, TrainingStarted, CompletionStartTime, CompletionEndTime properties
     - Place in Models/ folder
     - _Requirements: 14.5_
 
-  - [ ] 3.2 Create PlayerProfileUpdateRequest class
+  - [x] 3.2 Create PlayerProfileUpdateRequest class
     - Original (ReadOnlyPlayerProfile), scalar fields, rank fields (flat per track), Skills dictionary, SkillGroups dictionary
     - _Requirements: 14.1, 14.3, 14.4, 14.5, 14.6_
 
-  - [ ] 3.3 Create PlayerProfileCreateRequest class
+  - [x] 3.3 Create PlayerProfileCreateRequest class
     - Same fields as update request but without Original or UUID
     - _Requirements: 15.1, 15.3_
 
-- [ ] 4. Checkpoint
+- [-] 4. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. ViewModel edit buffer
-  - [ ] 5.1 Create LocalSkillData and LocalRankData classes
+  - [~] 5.1 Create LocalSkillData and LocalRankData classes
     - LocalSkillData: Level, TrainingStarted, CompletionStartTime, CompletionEndTime, computed TimeRemaining and TimeRemainingString
     - LocalRankData: Rank, CurrentXP, NextXP, Title
     - Place in ViewModels/ folder
     - _Requirements: 5.3, 5.2_
 
-  - [ ] 5.2 Rewrite PlayerProfileViewModel as edit buffer
+  - [~] 5.2 Rewrite PlayerProfileViewModel as edit buffer
     - Replace mutable entity reference with local fields: Name, Faction, TotalCredits, SkillPoints, CitizenId, RegistrationDate, ActiveTime
     - Add local rank data (PublicRank, PrivateRank, MilitaryRank as LocalRankData)
     - Add local skills dictionary (Dictionary<string, LocalSkillData>)
@@ -68,14 +68,14 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
     - Implement UUID property
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 6.1, 6.2, 6.3, 7.1, 7.2_
 
-  - [ ] 5.3 Implement dirty tracking in PlayerProfileViewModel
+  - [~] 5.3 Implement dirty tracking in PlayerProfileViewModel
     - Implement IsDirty property comparing all local fields against _original snapshot
     - Compare scalar fields, all three rank tracks field-by-field, skills dictionary, skill groups dictionary
     - Handle new profile case: IsDirty true once any field has non-default value
     - Handle loaded profile case: IsDirty false immediately after LoadFrom
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
 
-  - [ ] 5.4 Implement BuildUpdateRequest and BuildCreateRequest on ViewModel
+  - [~] 5.4 Implement BuildUpdateRequest and BuildCreateRequest on ViewModel
     - BuildUpdateRequest: builds PlayerProfileUpdateRequest from local state including Original snapshot
     - BuildCreateRequest: builds PlayerProfileCreateRequest from local state
     - _Requirements: 18.1, 18.2_
@@ -100,7 +100,7 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. PlayerProfileService
-  - [ ] 7.1 Create PlayerProfileService with Update method
+  - [~] 7.1 Create PlayerProfileService with Update method
     - Accept UUID and PlayerProfileUpdateRequest
     - Look up mutable profile via PlayerContext.FindMutablePlayerProfile
     - Apply all scalar fields, ranks, skills, skill groups to entity
@@ -109,21 +109,21 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
     - Throw InvalidOperationException if UUID not found
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.7, 14.8, 14.9, 14.10_
 
-  - [ ] 7.2 Add Create method to PlayerProfileService
+  - [~] 7.2 Add Create method to PlayerProfileService
     - Accept PlayerProfileCreateRequest
     - Create new PlayerProfile with generated UUID, populate all fields
     - Add to PlayerContext, persist, fire PlayerProfilesChanged and PlayerProfileDataChanged events
     - Return new ReadOnlyPlayerProfile
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.7_
 
-  - [ ] 7.3 Add Delete method to PlayerProfileService
+  - [~] 7.3 Add Delete method to PlayerProfileService
     - Accept UUID string
     - Remove profile via RemovePlayerProfile, cascade delete via CascadeDeletePlayer
     - Persist, fire events
     - Return silently if UUID empty or profile not found
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 16.6_
 
-  - [ ] 7.4 Add Import method to PlayerProfileService
+  - [~] 7.4 Add Import method to PlayerProfileService
     - Accept parsed PlayerProfile temp object
     - Find existing by name (case-insensitive) - merge if found, create new if not
     - Move MergeProfile logic from FormPlayerProfile to service
@@ -166,20 +166,20 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 9. Migrate FormPlayerProfile to edit buffer and service
-  - [ ] 9.1 Migrate list view to use ReadOnlyPlayerProfile Tags
+  - [~] 9.1 Migrate list view to use ReadOnlyPlayerProfile Tags
     - PopulateListView stores ReadOnlyPlayerProfile in ListViewItem.Tag via GetReadOnlyPlayerProfileList()
     - ItemSelectionChanged extracts ReadOnlyPlayerProfile from Tag, calls viewModel.LoadFrom()
     - Filter logic uses ReadOnlyPlayerProfile.Name
     - _Requirements: 3.1, 3.2, 4.1_
 
-  - [ ] 9.2 Rebind form controls to ViewModel local state
+  - [~] 9.2 Rebind form controls to ViewModel local state
     - Text boxes (txtPlayerName, cmbFaction, txtTotalCredits, txtSkillPoints) read/write ViewModel local fields
     - Rank text boxes read/write ViewModel local rank data
     - Skill group checkboxes read/write ViewModel local skill group dictionary
     - Remove all write-through to mutable entity from TextChanged handlers
     - _Requirements: 6.1, 6.2, 6.3, 7.1, 7.2_
 
-  - [ ] 9.3 Migrate PlayerSkillBlock to use LocalSkillData
+  - [~] 9.3 Migrate PlayerSkillBlock to use LocalSkillData
     - Replace PlayerSkill reference with LocalSkillData property
     - Timer completion updates LocalSkillData (TrainingStarted=false, Level+=1) instead of entity
     - Start Training updates LocalSkillData instead of entity
@@ -187,29 +187,29 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
     - Countdown display reads from LocalSkillData
     - _Requirements: 6.4, 7.3, 8.1, 8.2, 8.3, 8.4_
 
-  - [ ] 9.4 Wire Save button to PlayerProfileService
+  - [~] 9.4 Wire Save button to PlayerProfileService
     - New profile (IsNew): call BuildCreateRequest then service.Create
     - Existing profile: call BuildUpdateRequest then service.Update
     - Refresh list view and reload ViewModel from returned ReadOnlyPlayerProfile
     - Enable Save button only when IsDirty is true
     - _Requirements: 18.1, 18.2, 18.3, 18.4, 9.8_
 
-  - [ ] 9.5 Wire Delete button to PlayerProfileService
+  - [~] 9.5 Wire Delete button to PlayerProfileService
     - Call service.Delete(uuid), reset ViewModel, refresh list
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5_
 
-  - [ ] 9.6 Wire Import button to PlayerProfileService
+  - [~] 9.6 Wire Import button to PlayerProfileService
     - Parse clipboard, call service.Import(tempProfile)
     - Refresh list, select imported profile, reload ViewModel
     - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5, 17.6_
 
-  - [ ] 9.7 Implement unsaved changes prompts
+  - [~] 9.7 Implement unsaved changes prompts
     - Add shared PromptUnsavedChanges() method with Save/Discard/Cancel dialog
     - Wire into: selection change, form close, application exit, New button
     - Save: call service, then proceed; Discard: proceed without saving; Cancel: cancel action
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 11.1, 11.2, 11.3, 11.4, 12.1, 12.2, 13.1, 13.2, 13.3, 13.4_
 
-  - [ ] 9.8 Remove all direct entity mutation from form and ViewModel
+  - [~] 9.8 Remove all direct entity mutation from form and ViewModel
     - Remove Data property from ViewModel
     - Remove any remaining direct PlayerProfile property sets in form code
     - Remove any remaining direct PlayerSkill property sets in PlayerSkillBlock
@@ -220,11 +220,11 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 11. Verification
-  - [ ] 11.1 Run existing test suite and fix any regressions
+  - [~] 11.1 Run existing test suite and fix any regressions
     - Build solution, run all tests, fix any failures introduced by migration
     - _Requirements: 20.1_
 
-  - [ ] 11.2 Run audit and fix any new findings
+  - [~] 11.2 Run audit and fix any new findings
     - Run node .kiro/tools/audit.js, fix any new findings beyond accepted baseline
     - _Requirements: 21.1_
 

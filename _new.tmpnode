@@ -1,0 +1,15 @@
+public string Name => _entity.Name;
+
+        public string Faction => _entity.Faction;
+
+        public string FactionUUID => _entity.FactionUUID;
+
+        public decimal TotalCredits => _entity.TotalCredits;
+
+        public int SkillPoints => _entity.SkillPoints;
+
+        public string CitizenId => _entity.CitizenId;
+
+        public string RegistrationDate => _entity.RegistrationDate;
+
+        public string ActiveTime => _entity.ActiveTime;

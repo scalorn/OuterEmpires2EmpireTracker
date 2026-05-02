@@ -14,6 +14,8 @@ namespace OE2EmpireTracker.Tests
         public void AssemblyInit()
         {
             MigrationRunner.SuppressUI = true;
+            OE2EmpireTracker.Services.PlayerContext.SuppressUI = true;
+            OE2EmpireTracker.Services.EmpireContext.SuppressUI = true;
         }
     }
 }
