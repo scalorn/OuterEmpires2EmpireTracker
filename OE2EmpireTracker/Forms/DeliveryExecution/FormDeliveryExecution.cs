@@ -874,8 +874,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             playerContext.RemoveDeliveryPlan(selectedPlan);
             playerContext.WriteContext();
+            string deletedName = selectedPlan.Name;
             playerContext.OnDeliveryDataChanged();
-            Log.Info("Delivery plan '{0}' deleted", selectedPlan.Name);
+            Log.Info("Delivery plan '{0}' deleted", deletedName);
 
             ClearExecution();
             string routeUUID = cmbRoute.SelectedValue as string;
