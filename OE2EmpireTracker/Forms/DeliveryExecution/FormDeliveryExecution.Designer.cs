@@ -300,10 +300,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             // 
             this.flpStops.AutoSize = true;
             this.flpStops.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpStops.Dock = System.Windows.Forms.DockStyle.Top;
             this.flpStops.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpStops.Location = new System.Drawing.Point(2, 155);
             this.flpStops.Name = "flpStops";
-            this.flpStops.Size = new System.Drawing.Size(768, 0);
             this.flpStops.WrapContents = false;
             // 
             // FormDeliveryExecution

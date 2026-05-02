@@ -71,7 +71,6 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             flpBase.Layout += FlpBase_Layout;
             flpSelectors.Layout += FlpSelectors_Layout;
             pnlLoadList.Layout += PnlLoadList_Layout;
-            pnlExecution.Layout += PnlExecution_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.DeliveryDataChanged += OnDeliveryDataChanged;
@@ -127,12 +126,6 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             flpSelectors.Size = new Size(
                 flpSelectors.Size.Width,
                 flpBase.Size.Height - flpSelectors.Margin.Top - flpSelectors.Margin.Bottom);
-        }
-
-        private void PnlExecution_Layout(object sender, LayoutEventArgs e)
-        {
-            int w = pnlExecution.ClientSize.Width;
-            flpStops.Width = w;
         }
 
         private void PnlLoadList_Layout(object sender, LayoutEventArgs e)
