@@ -45,7 +45,7 @@ All editable controls (txtName, txtNickName, txtDescription, txtCopyCost, cmbBlu
 The ViewModel SHALL NOT write changes to the Blueprint entity on every keystroke or control change. The current write-through pattern (TextChanged → viewModel.Name = txtName.Text → _blueprint.Name = value) SHALL be replaced with local-only state changes.
 
 ### REQ-BL108-013: Dirty Tracking
-The ViewModel SHALL track whether any field has been modified since the last load/save. The Save button SHALL be enabled only when the ViewModel is dirty.
+The ViewModel SHALL track whether any field has been modified since the last load/save. The ViewModel SHALL retain the original `ReadOnlyBlueprint` snapshot it was loaded from, enabling field-level dirty detection by comparing current local values against the original. The Save button SHALL be enabled only when the ViewModel is dirty.
 
 ### REQ-BL108-014: Unsaved Changes Prompt on Selection Change
 When the user selects a different blueprint in the list view and the ViewModel is dirty, the form SHALL prompt: "Save changes to '{name}'?" with Save / Discard / Cancel options.

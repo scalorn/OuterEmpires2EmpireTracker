@@ -44,8 +44,8 @@ public class BlueprintViewModel
 ```csharp
 public class BlueprintViewModel
 {
+    private ReadOnlyBlueprint _original;  // snapshot loaded from — kept for dirty comparison
     private string _uuid;
-    private bool _isDirty;
 
     // Local edit state — disconnected from entity
     private string _name;
@@ -65,69 +65,79 @@ public class BlueprintViewModel
     public string Name
     {
         get => _name;
-        set { _name = value; _isDirty = true; }  // local only
+        set => _name = value;
     }
 
     // ... same pattern for all fields
 
     /// <summary>
-    /// Loads field values from a ReadOnlyBlueprint snapshot.
-    /// Resets dirty state.
+    /// True if any local field differs from the original snapshot.
     /// </summary>
-    public void LoadFrom(ReadOnlyBlueprint ro)
+    public bool IsDirty
     {
-        _uuid = ro.UUID;
-        _name = ro.Name;
-        _nickName = ro.NickName;
-        _description = ro.Description;
-        _bluePrintType = ro.BluePrintType;
-        _evolution = ro.Evolution;
-        _techLevel = ro.TechLevel;
-        _class = ro.Class;
-        _copyCost = ro.CopyCost;
-        _baseBlueprintUUID = ro.BaseBlueprintUUID;
-        _ownerUUID = ro.OwnerUUID;
-        // Copy properties and resources
-        _properties = new Dictionary<string, string>();
-        foreach (var prop in ro.Properties.Properties)
-            _properties[prop.Key] = prop.Value;
-        _resources = new Dictionary<string, string>(ro.Resources);
-        _isDirty = false;
+        get
+        {
+            if (_original == null) return _uuid != null;  // new blueprint
+            return _name != _original.Name
+                || _nickName != _original.NickName
+                || _description != _original.Description
+                || _bluePrintType != _original.BluePrintType
+                || _evolution != _original.Evolution
+                || _techLevel != _original.TechLevel
+                || _class != _original.Class
+                || _copyCost != _original.CopyCost
+                || _baseBlueprintUUID != _original.BaseBlueprintUUID
+                || !PropertiesEqual(_properties, _original.Properties)
+                || !ResourcesEqual(_resources, _original.Resources);
+        }
     }
 
     /// <summary>
-    /// Builds an update request from the current local state.
+    /// Loads field values from a ReadOnlyBlueprint snapshot.
+    /// Retains the original for dirty comparison.
+    /// </summary>
+    public void LoadFrom(ReadOnlyBlueprint ro)
+    {
+        _original = ro;
+        _uuid = ro.UUID;
+        _name = ro.Name;
+        // ... copy all fields
+    }
+
+    /// <summary>
+    /// Builds an update request carrying both the original snapshot
+    /// and the current local state. The service can use the original
+    /// for field-level diff if needed.
     /// </summary>
     public BlueprintUpdateRequest BuildUpdateRequest()
     {
         return new BlueprintUpdateRequest
         {
+            Original = _original,
             Name = _name,
             NickName = _nickName,
-            Description = _description,
-            BluePrintType = _bluePrintType,
-            Evolution = _evolution,
-            TechLevel = _techLevel,
-            Class = _class,
-            CopyCost = _copyCost,
-            BaseBlueprintUUID = _baseBlueprintUUID,
-            Properties = new Dictionary<string, string>(_properties),
-            Resources = new Dictionary<string, string>(_resources),
+            // ... all fields
         };
     }
 
-    public bool IsDirty => _isDirty;
     public string UUID => _uuid;
+    public ReadOnlyBlueprint Original => _original;
 }
 ```
 
 ### BlueprintUpdateRequest
 
-A plain DTO carrying the fields to update:
+A plain DTO carrying the original snapshot and the current local state. The service can diff against the original for field-level change detection if needed (e.g. only sending changed fields to a remote API):
 
 ```csharp
 public class BlueprintUpdateRequest
 {
+    /// <summary>
+    /// The original snapshot the edit was based on.
+    /// Enables field-level dirty detection and optimistic concurrency.
+    /// </summary>
+    public ReadOnlyBlueprint Original { get; set; }
+
     public string Name { get; set; }
     public string NickName { get; set; }
     public string Description { get; set; }
