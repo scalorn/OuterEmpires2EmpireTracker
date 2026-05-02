@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -12,18 +13,49 @@ namespace OE2EmpireTracker.Tests.Models
     [TestFixture]
     public class ThreadSafetyTests
     {
+        private string _tempDir;
+        private string _originalPlayerFilePath;
+
         [OneTimeSetUp]
         public void FixtureSetUp()
         {
             TestHelper.SetEmpireFilePath();
+
+            // Save and override PlayerContext.FilePath with a dedicated temp directory
+            _originalPlayerFilePath = PlayerContext.FilePath;
+            _tempDir = Path.Combine(Path.GetTempPath(), "OE2Tests_ThreadSafety_" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(_tempDir);
+            PlayerContext.FilePath = Path.Combine(_tempDir, "PlayerData.json");
+
             EmpireContext.Reset();
+        }
+
+        [OneTimeTearDown]
+        public void FixtureTearDown()
+        {
+            PlayerContext.Reset();
+            EmpireContext.Reset();
+
+            // Restore original file path so other fixtures aren't affected
+            PlayerContext.FilePath = _originalPlayerFilePath;
+
+            try
+            {
+                if (Directory.Exists(_tempDir))
+                    Directory.Delete(_tempDir, true);
+            }
+            catch
+            {
+                /* best effort cleanup */
+            }
         }
 
         [TearDown]
         public void TearDown()
         {
-            PlayerContext.Reset();
-            EmpireContext.Reset();
+            // Only reset PlayerContext between tests within this fixture.
+            // Do NOT reset EmpireContext — other fixtures share the singleton.
+            // PlayerContext.FilePath is still pointing at our temp dir.
         }
 
         // -----------------------------------------------------------------------

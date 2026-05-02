@@ -10644,7 +10644,7 @@
       "CopyCost": 2350,
       "Properties": {
         "Can Research": "No",
-        "Manufacture Run Time": "1h 0m",
+        "Manufacture Run Time": "4h",
         "Max Per Colony": "1",
         "Power Required": "2",
         "Remote Operations": "1",
@@ -10655,9 +10655,9 @@
         "_IconPosition": "-252px -594px"
       },
       "Resources": {
-        "Heavy Trans-Metals": "830",
-        "Metallics": "431",
-        "Noble Gases": "2598"
+        "Heavy Trans-Metals": "251",
+        "Metallics": "130",
+        "Noble Gases": "785"
       },
       "UUID": "5fdb782b-a672-527a-a3b0-ef991a7849da",
       "ItemType": "Survey",
@@ -11991,6 +11991,25 @@
       "UUID": "6fabc145-6de5-5c73-bc98-13a3e628b826",
       "ItemType": "Blueprint",
       "Name": "Elementary Field Generator"
+    },
+    {
+      "OwnerUUID": "",
+      "BluePrintType": "Flatpacks/Warehouse",
+      "Properties": {
+        "_IconPosition": "-404px -594px"
+      },
+      "Resources": {
+        "Acidic Inorganics": "113",
+        "Heavy Alkaline Earth Metals": "115",
+        "Heavy Noble Gases": "475",
+        "Heavy Trans-Metals": "108",
+        "Strong Alkali Inorganics": "86",
+        "Trans-Metals": "1"
+      },
+      "UUID": "70212cdf-c88e-5b76-bcd0-1c7da7adbb2f",
+      "ItemType": "Blueprint",
+      "Name": "Manufactory Flatpack",
+      "Description": "Manufacturing plant."
     },
     {
       "OwnerUUID": "",
@@ -14972,7 +14991,7 @@
       "CopyCost": 1628,
       "Properties": {
         "Can Research": "No",
-        "Manufacture Run Time": "1h 0m",
+        "Manufacture Run Time": "4h",
         "Max Per Colony": "999",
         "Power Required": "4",
         "Research Time Modification": "100",
@@ -14982,10 +15001,10 @@
         "_IconPosition": "-480px -594px"
       },
       "Resources": {
-        "Alkali Inorganics": "473",
-        "Heavy Noble Gases": "3021",
-        "Heavy Trans-Metals": "904",
-        "Strong Acidic Inorganics": "388"
+        "Alkali Inorganics": "71",
+        "Heavy Noble Gases": "456",
+        "Heavy Trans-Metals": "136",
+        "Strong Acidic Inorganics": "59"
       },
       "UUID": "8a78639d-5e80-5aaa-8759-7a8cb4d4b852",
       "ItemType": "Survey",
@@ -25586,14 +25605,14 @@
       "OwnerUUID": "",
       "BaseBlueprintUUID": "",
       "LegacyUUID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
-      "BluePrintType": "Flatpacks/CommodityFactory/MiningIndustryCentre",
+      "BluePrintType": "Flatpacks/ColonyCommandCentre",
       "CopyCost": 2590,
       "Properties": {
         "Can Research": "No",
         "Food Provision": "2",
         "Habitation Provision": "2",
         "Hull Manufacture Time Modification": "0",
-        "Manufacture Run Time": "1h 0m",
+        "Manufacture Run Time": "2h",
         "Manufacturing Time Reduction": "0",
         "Max Per Colony": "1",
         "Mining Yield Modification": "0",
@@ -25607,10 +25626,10 @@
         "_IconPosition": "-24px -594px"
       },
       "Resources": {
-        "Heavy Trans-Metals": "1105",
-        "Noble Gases": "2993",
-        "Non-Metallics": "529",
-        "Strong Acidic Inorganics": "487"
+        "Heavy Trans-Metals": "269",
+        "Noble Gases": "730",
+        "Non-Metallics": "129",
+        "Strong Acidic Inorganics": "119"
       },
       "UUID": "f391b2ae-1c75-58e6-8664-377251f57461",
       "ItemType": "Survey",
