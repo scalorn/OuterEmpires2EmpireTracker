@@ -13886,18 +13886,18 @@
         "Can Research": "No",
         "Manufacture Run Time": "1h 0m",
         "Max Per Colony": "999",
-        "Power Required": "6",
         "Structural Integrity": "250",
         "Unassigned Specialist Detail": "1",
         "_IconClass": "ui_icon_B16",
-        "_IconPosition": "-62px -594px"
+        "_IconPosition": "-62px -594px",
+        "Power Provided": "6"
       },
       "Resources": {
-        "Alkali Inorganics": "434",
-        "Heavy Trans-Metals": "614",
-        "Lanthanides": "603",
-        "Strong Alkali Inorganics": "604",
-        "Trans-Metals": "3257"
+        "Alkali Inorganics": "110",
+        "Heavy Trans-Metals": "155",
+        "Lanthanides": "152",
+        "Strong Alkali Inorganics": "152",
+        "Trans-Metals": "822"
       },
       "UUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
       "ItemType": "Survey",
@@ -23716,18 +23716,18 @@
       "Properties": {
         "Can Research": "No",
         "Habitation Provision": "4",
-        "Manufacture Run Time": "1h 0m",
+        "Manufacture Run Time": "3h",
         "Max Per Colony": "999",
         "Power Required": "1",
         "Structural Integrity": "100",
         "Unassigned Specialist Detail": "1",
-        "_IconClass": "ui_icon_C16",
-        "_IconPosition": "-100px -594px"
+        "_IconPosition": "-100px -594px",
+        "_IconClass": "ui_icon_C16"
       },
       "Resources": {
-        "Heavy Post-Trans Metals": "822",
-        "Non-Metallics": "370",
-        "Post-Trans Metals": "2148"
+        "Heavy Post-Trans Metals": "172",
+        "Non-Metallics": "78",
+        "Post-Trans Metals": "450"
       },
       "UUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
       "ItemType": "Survey",
@@ -24678,11 +24678,11 @@
         "_IconPosition": "-328px -594px"
       },
       "Resources": {
-        "Alkali Inorganics": "430",
-        "Complex Non-Metallics": "518",
-        "Heavy Alkaline Earth Metals": "442",
-        "Heavy Post-Trans Metals": "482",
-        "Noble Gases": "2881"
+        "Alkali Inorganics": "102",
+        "Complex Non-Metallics": "123",
+        "Heavy Alkaline Earth Metals": "105",
+        "Heavy Post-Trans Metals": "114",
+        "Noble Gases": "683"
       },
       "UUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
       "ItemType": "Survey",

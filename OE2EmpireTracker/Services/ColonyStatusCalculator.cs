@@ -575,16 +575,9 @@ namespace OE2EmpireTracker.Services
         {
             if (colony.Locks == null) return;
 
-            // Clear locks for each structure
-            foreach (var structure in colony.Structures)
-            {
-                if (!string.IsNullOrEmpty(structure.UUID))
-                    colony.Locks.ClearLocksForProcess(structure.UUID);
-            }
-
-            // Clear unallocated worker locks for the colony
-            if (!string.IsNullOrEmpty(colony.UUID))
-                colony.Locks.ClearLocksForProcess(colony.UUID);
+            // Clear ALL locks — they will be rebuilt from current state.
+            // This handles orphaned locks from deleted structures.
+            colony.Locks = new LockTracking();
         }
 
         private void LockAssignedWorkers(ColonyStructure structure, Models.Blueprint flatpackBlueprint)
