@@ -91,7 +91,7 @@ namespace OE2EmpireTracker.Tests.Services
             var nonExistent = new Bp("Ghost") { UUID = "bp-999" };
             Assert.DoesNotThrow(() => _ctx.RemoveBlueprint(nonExistent));
             Assert.That(_ctx.BlueprintList.Count, Is.EqualTo(1));
-            Assert.That(_ctx.FindBlueprint("bp-1"), Is.SameAs(existing));
+            Assert.That(_ctx.FindBlueprint("bp-1")?.UUID, Is.EqualTo(existing.UUID));
         }
 
         [Test]

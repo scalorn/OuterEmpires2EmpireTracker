@@ -794,7 +794,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         }
 
         // Helpers
-        private List<SlotDefinition> GetSlotDefinitions(Models.Blueprint hullBp)
+        private List<SlotDefinition> GetSlotDefinitions(ReadOnlyBlueprint hullBp)
         {
             // Build reverse map: slot type → list of BlueprintType IDs that fit that slot
             var slotToBpTypes = new Dictionary<string, List<string>>();

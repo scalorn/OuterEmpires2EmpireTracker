@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -111,7 +111,7 @@ namespace OE2EmpireTracker.Models
             // ManufacturingBlueprintUUID from a data import or prior bug)
             foreach (ColonyStructure structure in Structures)
             {
-                Blueprint bp = pc.FindBlueprint(structure.FlatpackBlueprintUUID);
+                var bp = pc.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (bp == null) continue;
 
                 bool isManufactory = bp.BluePrintType == BlueprintTypes.Manufactory;
@@ -226,14 +226,14 @@ namespace OE2EmpireTracker.Models
             }
 
             // Build a list of ready structures with their blueprints for steps 2-7
-            var ready = new List<(ColonyStructure structure, Blueprint blueprint)>();
+            var ready = new List<(ColonyStructure structure, ReadOnlyBlueprint blueprint)>();
             foreach (ColonyStructure structure in Structures)
             {
                 if (structure.ProcessCompletionTime != null &&
                     (structure.ProcessCompletionTime.IntervalsPassed > 0 ||
                      (!structure.ProcessCompletionTime.IsRepeating && structure.ProcessCompletionTime.TimeRemaining <= 0)))
                 {
-                    Blueprint bp = pc.FindBlueprint(structure.FlatpackBlueprintUUID);
+                    var bp = pc.FindBlueprint(structure.FlatpackBlueprintUUID);
                     if (bp == null)
                     {
                         Log.Warn(
@@ -540,7 +540,7 @@ namespace OE2EmpireTracker.Models
                 return;
 
             PlayerContext pc = PlayerContext.GetInstance();
-            Blueprint sourceBp = pc.FindBlueprint(structure.ResearchingBlueprintUUID);
+            var sourceBp = pc.FindBlueprint(structure.ResearchingBlueprintUUID);
             if (sourceBp == null)
                 return;
 
@@ -560,9 +560,10 @@ namespace OE2EmpireTracker.Models
             newBp.Description = sourceBp.Description;
             newBp.NickName = "NEEDS SCANNED"; // Searchable marker for unscanned blueprints
             // Properties copied, resources left empty for user to import
-            foreach (var prop in sourceBp.Properties.Properties)
+            foreach (var key in sourceBp.Properties.Keys)
             {
-                newBp.Properties.SetProperty(prop.Key, prop.Value);
+                sourceBp.Properties.GetString(key, string.Empty, out string val);
+                newBp.Properties.SetProperty(key, val);
             }
 
             // Resources intentionally empty / user imports via Blueprint Form
@@ -595,7 +596,7 @@ namespace OE2EmpireTracker.Models
                 return;
 
             PlayerContext pc = PlayerContext.GetInstance();
-            Blueprint sourceBp = pc.FindBlueprint(structure.ManufacturingBlueprintUUID);
+            var sourceBp = pc.FindBlueprint(structure.ManufacturingBlueprintUUID);
             if (sourceBp == null)
                 return;
 

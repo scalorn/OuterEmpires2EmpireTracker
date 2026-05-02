@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using NLog;
@@ -175,7 +175,7 @@ namespace OE2EmpireTracker.Services
         public static bool AdvanceBuildItemStatuses(
             BuildPlan plan,
             Func<string, Colony> colonyFinder,
-            Func<string, Blueprint> blueprintFinder,
+            Func<string, ReadOnlyBlueprint> blueprintFinder,
             Func<string, Ship> shipFinder,
             Func<string, Station> stationFinder,
             string currentPlayerUUID)
@@ -446,7 +446,7 @@ namespace OE2EmpireTracker.Services
             BuildItem item,
             BuildPlan plan,
             Func<string, Colony> colonyFinder,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             if (plan == null) throw new ArgumentNullException(nameof(plan));
@@ -546,7 +546,7 @@ namespace OE2EmpireTracker.Services
             BuildItem item,
             BuildPlan plan,
             Func<string, Colony> colonyFinder,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             if (plan == null) throw new ArgumentNullException(nameof(plan));
@@ -641,7 +641,7 @@ namespace OE2EmpireTracker.Services
         public static BatchStartResult StartAllReady(
             BuildPlan plan,
             Func<string, Colony> colonyFinder,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             if (plan == null) throw new ArgumentNullException(nameof(plan));
             if (colonyFinder == null) throw new ArgumentNullException(nameof(colonyFinder));
@@ -737,7 +737,7 @@ namespace OE2EmpireTracker.Services
         /// Sets ManufacturingBlueprintUUID, ManufacturingQuantity, ManufacturingCompleted,
         /// and computes ProcessCompletionTime from the blueprint's ManufactureRunTime property.
         /// </summary>
-        private static void ConfigureManufactory(ColonyStructure structure, BuildItem item, Func<string, Blueprint> blueprintFinder)
+        private static void ConfigureManufactory(ColonyStructure structure, BuildItem item, Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             structure.ManufacturingBlueprintUUID = item.BlueprintUUID;
             structure.ManufacturingQuantity = item.Quantity;
@@ -799,7 +799,7 @@ namespace OE2EmpireTracker.Services
         /// Sets ResearchingBlueprintUUID and uses ResearchTimeLookup.GetResearchTimeSeconds()
         /// for the one-shot timer duration.
         /// </summary>
-        private static void ConfigureResearch(ColonyStructure structure, BuildItem item, Func<string, Blueprint> blueprintFinder)
+        private static void ConfigureResearch(ColonyStructure structure, BuildItem item, Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             structure.ResearchingBlueprintUUID = item.BlueprintUUID;
 

@@ -34,7 +34,7 @@ namespace OE2EmpireTracker.Tests.Services
                 1,
                 DestinationType.Station,
                 "station-1",
-                id => new OE2EmpireTracker.Models.Blueprint(id) { UUID = id },
+                id => new ReadOnlyBlueprint(new OE2EmpireTracker.Models.Blueprint(id) { UUID = id }),
                 id => 0);
 
             Assert.That(items.Count, Is.EqualTo(3)); // hull + 2 components
@@ -50,7 +50,7 @@ namespace OE2EmpireTracker.Tests.Services
                 1,
                 DestinationType.Station,
                 "station-1",
-                id => new OE2EmpireTracker.Models.Blueprint(id) { UUID = id },
+                id => new ReadOnlyBlueprint(new OE2EmpireTracker.Models.Blueprint(id) { UUID = id }),
                 id => id == "reactor-1" ? 5 : 0); // reactor in stock
 
             Assert.That(items.Count, Is.EqualTo(1)); // only hull
@@ -66,7 +66,7 @@ namespace OE2EmpireTracker.Tests.Services
                 3,
                 DestinationType.Station,
                 "station-1",
-                id => new OE2EmpireTracker.Models.Blueprint(id) { UUID = id },
+                id => new ReadOnlyBlueprint(new OE2EmpireTracker.Models.Blueprint(id) { UUID = id }),
                 id => 0);
 
             Assert.That(items.Count, Is.EqualTo(6)); // 3 x (hull + reactor)
@@ -187,7 +187,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(stats.EnergyDefence, Is.EqualTo(50m));
         }
 
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(
+        private ReadOnlyBlueprint CreateBlueprint(
             string uuid,
             string name,
             Dictionary<string,
@@ -202,7 +202,7 @@ namespace OE2EmpireTracker.Tests.Services
                 }
             }
 
-            return bp;
+            return new ReadOnlyBlueprint(bp);
         }
 
         private ShipTemplate CreateTemplate(string hullUUID, params string[] componentUUIDs)

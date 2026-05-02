@@ -367,7 +367,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             }
 
             // Compute volume and mass via CargoVolumeService
-            Func<string, Models.Blueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
+            Func<string, ReadOnlyBlueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
             var cargoResult = CargoVolumeService.ComputeLoadVolume(loadItems, bpFinder);
 
             // Update header with totals
@@ -982,7 +982,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             }
 
             var loadItems = selectedPlan.CalculateLoadList();
-            Func<string, Models.Blueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
+            Func<string, ReadOnlyBlueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
             var cargoResult = CargoVolumeService.ComputeLoadVolume(loadItems, bpFinder);
             UpdateCargoDisplayFromResult(cargoResult);
         }
@@ -1043,7 +1043,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             if (selectedPlan == null || currentCargoCapacity <= 0) return;
 
             var loadItems = selectedPlan.CalculateLoadList();
-            Func<string, Models.Blueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
+            Func<string, ReadOnlyBlueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
             var trips = CargoVolumeService.SplitIntoTrips(
                 loadItems, currentCargoCapacity, bpFinder);
 

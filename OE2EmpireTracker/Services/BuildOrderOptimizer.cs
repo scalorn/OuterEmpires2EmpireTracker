@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
@@ -21,7 +21,7 @@ namespace OE2EmpireTracker.Services
             _playerContext = playerContext;
         }
 
-        public bool IsSupportStructure(Blueprint blueprint)
+        public bool IsSupportStructure(ReadOnlyBlueprint blueprint)
         {
             if (blueprint == null) return false;
             decimal val;
@@ -56,7 +56,7 @@ namespace OE2EmpireTracker.Services
 
             foreach (var structure in orderedStructures)
             {
-                Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                var bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (bp == null)
                     primaries.Add(structure);
                 else if (IsSupportStructure(bp) || bp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
@@ -70,7 +70,7 @@ namespace OE2EmpireTracker.Services
             var result = new List<ColonyStructure>();
             var idealWorkers = new IdealColonyStructureWorkers();
 
-            // Running accumulator — tracks cumulative resource state incrementally.
+            // Running accumulator â€” tracks cumulative resource state incrementally.
             // Updated via SimulateOneMore each time a structure is appended to result.
             ColonyStructureStatus accumulator = new ColonyStructureStatus();
 
@@ -84,7 +84,7 @@ namespace OE2EmpireTracker.Services
             // Update accumulator for each bootstrap structure
             for (int i = 0; i < result.Count; i++)
             {
-                Blueprint bp = _playerContext.FindBlueprint(result[i].FlatpackBlueprintUUID);
+                var bp = _playerContext.FindBlueprint(result[i].FlatpackBlueprintUUID);
                 accumulator = SimulateOneMore(accumulator, result[i], bp, idealWorkers);
             }
 
@@ -99,7 +99,7 @@ namespace OE2EmpireTracker.Services
 
                 // Step B: Look ahead -- after placing this primary, would there be
                 // a deficit? Also check if adding a hab + hydro after would cause one.
-                Blueprint primaryBp = _playerContext.FindBlueprint(primary.FlatpackBlueprintUUID);
+                var primaryBp = _playerContext.FindBlueprint(primary.FlatpackBlueprintUUID);
                 ColonyStructureStatus afterPrimary = SimulateOneMore(accumulator, primary, primaryBp, idealWorkers);
 
                 // First fix deficits the primary itself would cause
@@ -114,8 +114,8 @@ namespace OE2EmpireTracker.Services
                 // Don't fix POWER here -- power deficits from future primaries will
                 // be handled by their own Step B. Fixing power in the look-ahead
                 // double-counts and over-provisions reactors.
-                Blueprint habBp = FindBlueprintByType("Flatpacks/HabitationBlock");
-                Blueprint hydroBp = FindBlueprintByType("Flatpacks/HydroponicsBay");
+                var habBp = FindBlueprintByType("Flatpacks/HabitationBlock");
+                var hydroBp = FindBlueprintByType("Flatpacks/HydroponicsBay");
                 ColonyStructureStatus afterFutureSupport = afterPrimary;
                 if (habBp != null)
                     afterFutureSupport = SimulateOneMore(afterFutureSupport, null, habBp, idealWorkers);
@@ -161,7 +161,7 @@ namespace OE2EmpireTracker.Services
             // Append leftover support, fixing deficits as needed
             foreach (var leftover in supportPool)
             {
-                Blueprint lBp = _playerContext.FindBlueprint(leftover.FlatpackBlueprintUUID);
+                var lBp = _playerContext.FindBlueprint(leftover.FlatpackBlueprintUUID);
                 ColonyStructureStatus afterLeftover = SimulateOneMore(accumulator, leftover, lBp, idealWorkers);
                 if (HasDeficit(afterLeftover))
                 {
@@ -245,7 +245,7 @@ namespace OE2EmpireTracker.Services
             }
 
             // Simulate placing it -- would it cause a NEW deficit?
-            Blueprint bp = _playerContext.FindBlueprint(support.FlatpackBlueprintUUID);
+            var bp = _playerContext.FindBlueprint(support.FlatpackBlueprintUUID);
             ColonyStructureStatus afterStatus = SimulateOneMore(accumulator, support, bp, workers);
 
             // Check for new deficits caused by this support structure.
@@ -303,7 +303,7 @@ namespace OE2EmpireTracker.Services
         {
             foreach (var candidate in pool)
             {
-                Blueprint bp = _playerContext.FindBlueprint(candidate.FlatpackBlueprintUUID);
+                var bp = _playerContext.FindBlueprint(candidate.FlatpackBlueprintUUID);
                 if (bp == null) continue;
                 decimal val;
                 if (bp.Properties.GetDecimal(provisionProperty, 0, out val) && val > 0)
@@ -378,10 +378,11 @@ namespace OE2EmpireTracker.Services
             };
         }
 
-        private Blueprint FindBlueprintByType(string blueprintType)
+        private ReadOnlyBlueprint FindBlueprintByType(string blueprintType)
         {
-            return _playerContext.GetAllBlueprints()
+            var bp = _playerContext.GetAllBlueprints()
                 .FirstOrDefault(b => b.UUID != null && b.BluePrintType == blueprintType);
+            return bp != null ? new ReadOnlyBlueprint(bp) : null;
         }
 
         // -----------------------------------------------------------------------
@@ -391,7 +392,7 @@ namespace OE2EmpireTracker.Services
         private ColonyStructureStatus SimulateOneMore(
             ColonyStructureStatus prev,
             ColonyStructure structure,
-            Blueprint blueprint,
+            ReadOnlyBlueprint blueprint,
             IColonyStructureWorkers workers)
         {
             var calculator = new ColonyStatusCalculator(new Colony());

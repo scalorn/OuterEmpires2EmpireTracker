@@ -191,7 +191,7 @@ namespace OE2EmpireTracker.Tests.Services
                 NonNegativeDecimalGen().ToArbitrary(),
                 (plan, resources, hours) =>
                 {
-                    var blueprint = new OE2EmpireTracker.Models.Blueprint { Resources = resources };
+                    var blueprint = new ReadOnlyBlueprint(new OE2EmpireTracker.Models.Blueprint { Resources = resources });
                     var result = PriceCalculator.ComputeBlueprintPrice(plan, blueprint, hours);
 
                     // Manually compute expected price

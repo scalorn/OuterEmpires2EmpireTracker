@@ -68,8 +68,8 @@ namespace OE2EmpireTracker.Tests.Services
                 var bp = new Bp { UUID = id, Name = "TestBP" };
                 ctx.AddBlueprint(bp);
                 var found = ctx.FindBlueprint(id);
-                return (found == bp)
-                    .Label($"FindBlueprint('{id}') returned same instance: {found == bp}");
+                return (found != null && found.UUID == bp.UUID)
+                    .Label($"FindBlueprint('{id}') returned matching UUID: {found?.UUID == bp.UUID}");
             });
         }
 
@@ -203,8 +203,8 @@ namespace OE2EmpireTracker.Tests.Services
                 ctx.AddBlueprint(bp);
                 ctx.InvalidateBlueprintCache();
                 var found = ctx.FindBlueprint(id);
-                return (found == bp)
-                    .Label($"After invalidate, FindBlueprint('{id}') returned same instance: {found == bp}");
+                return (found != null && found.UUID == bp.UUID)
+                    .Label($"After invalidate, FindBlueprint('{id}') returned matching UUID: {found?.UUID == bp.UUID}");
             });
         }
 

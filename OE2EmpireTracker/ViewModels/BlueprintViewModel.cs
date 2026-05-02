@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
@@ -18,10 +18,10 @@ namespace OE2EmpireTracker.ViewModels
 
         private readonly PlayerContext _playerContext;
 
-        // Snapshot loaded from — kept for dirty comparison
+        // Snapshot loaded from â€” kept for dirty comparison
         private ReadOnlyBlueprint _original;
 
-        // Local edit state — disconnected from entity
+        // Local edit state â€” disconnected from entity
         private string _uuid;
         private string _name;
         private string _nickName;
@@ -34,6 +34,7 @@ namespace OE2EmpireTracker.ViewModels
         private string _baseBlueprintUUID;
         private string _ownerUUID;
         private bool _isGlobal;
+        private bool _originalIsGlobal;
         private Dictionary<string, string> _properties;
         private Dictionary<string, string> _resources;
 
@@ -45,14 +46,14 @@ namespace OE2EmpireTracker.ViewModels
         }
 
         /// <summary>
-        /// Backwards-compatible constructor. The Blueprint parameter is ignored —
+        /// Backwards-compatible constructor. The Blueprint parameter is ignored â€”
         /// call LoadFrom() to populate from a ReadOnlyBlueprint.
         /// </summary>
         public BlueprintViewModel(Blueprint blueprint, PlayerContext playerContext)
             : this(playerContext)
         {
             // blueprint parameter kept for compile compatibility during migration.
-            // No fields are copied — LoadFrom or Reset should be called.
+            // No fields are copied â€” LoadFrom or Reset should be called.
         }
 
         // -----------------------------------------------------------------------
@@ -77,7 +78,7 @@ namespace OE2EmpireTracker.ViewModels
         }
 
         // -----------------------------------------------------------------------
-        // Identity — local edit state
+        // Identity â€” local edit state
         // -----------------------------------------------------------------------
 
         public string Name { get => _name; set => _name = value; }
@@ -116,7 +117,7 @@ namespace OE2EmpireTracker.ViewModels
         public string OwnerUUID { get => _ownerUUID; set => _ownerUUID = value; }
 
         // -----------------------------------------------------------------------
-        // Properties — local dictionary (properties)
+        // Properties â€” local dictionary (properties)
         // -----------------------------------------------------------------------
 
         public int PropertyCount => _properties.Count;
@@ -126,7 +127,7 @@ namespace OE2EmpireTracker.ViewModels
         public IReadOnlyDictionary<string, string> Properties => _properties;
 
         // -----------------------------------------------------------------------
-        // Resources — local dictionary (properties)
+        // Resources â€” local dictionary (properties)
         // -----------------------------------------------------------------------
 
         public int ResourceCount => _resources.Count;
@@ -154,13 +155,14 @@ namespace OE2EmpireTracker.ViewModels
                     || _class != _original.Class
                     || _copyCost != _original.CopyCost
                     || _baseBlueprintUUID != _original.BaseBlueprintUUID
+                    || _isGlobal != _originalIsGlobal
                     || !PropertiesEqual(_properties, _original.Properties)
                     || !ResourcesEqual(_resources, _original.Resources);
             }
         }
 
         // -----------------------------------------------------------------------
-        // Properties — local dictionary (methods)
+        // Properties â€” local dictionary (methods)
         // -----------------------------------------------------------------------
 
         public void ClearProperties() => _properties.Clear();
@@ -180,7 +182,7 @@ namespace OE2EmpireTracker.ViewModels
         public bool PropertyContainsKey(string key) => _properties.ContainsKey(key);
 
         // -----------------------------------------------------------------------
-        // Resources — local dictionary (methods)
+        // Resources â€” local dictionary (methods)
         // -----------------------------------------------------------------------
 
         public void ClearResources() => _resources.Clear();
@@ -219,6 +221,7 @@ namespace OE2EmpireTracker.ViewModels
             // Determine global status
             var ec = EmpireContext.GetInstance();
             _isGlobal = ec?.FindReadOnlyGlobalBlueprint(ro.UUID) != null;
+            _originalIsGlobal = _isGlobal;
 
             // Copy properties
             _properties = new Dictionary<string, string>();
@@ -252,6 +255,7 @@ namespace OE2EmpireTracker.ViewModels
             _baseBlueprintUUID = null;
             _ownerUUID = string.Empty;
             _isGlobal = false;
+            _originalIsGlobal = false;
             _properties = new Dictionary<string, string>();
             _resources = new Dictionary<string, string>();
         }
@@ -422,7 +426,7 @@ namespace OE2EmpireTracker.ViewModels
         }
 
         // -----------------------------------------------------------------------
-        // Persistence (stubs — will be replaced by BlueprintService in Task 9)
+        // Persistence (stubs â€” will be replaced by BlueprintService in Task 9)
         // -----------------------------------------------------------------------
 
         public void Save()
@@ -431,7 +435,7 @@ namespace OE2EmpireTracker.ViewModels
         }
 
         /// <summary>
-        /// Temporary stub — saves by looking up the mutable entity and applying local state.
+        /// Temporary stub â€” saves by looking up the mutable entity and applying local state.
         /// Will be replaced by BlueprintService.Update/Create in Task 9/10.
         /// </summary>
         public void Save(bool isGlobal)
@@ -450,9 +454,9 @@ namespace OE2EmpireTracker.ViewModels
             }
             else
             {
-                // Existing blueprint — look up mutable entity
-                bp = _playerContext.FindBlueprint(_uuid)
-                  ?? ec?.FindGlobalBlueprint(_uuid);
+                // Existing blueprint â€” look up mutable entity
+                bp = _playerContext.FindMutableBlueprint(_uuid)
+                  ?? ec?.FindMutableGlobalBlueprint(_uuid);
                 if (bp == null)
                 {
                     Log.Error("Save: could not find mutable blueprint for UUID={0}", _uuid);
@@ -509,6 +513,7 @@ namespace OE2EmpireTracker.ViewModels
             // Reload from fresh snapshot so IsDirty resets
             _original = new ReadOnlyBlueprint(bp);
             _isGlobal = isGlobal;
+            _originalIsGlobal = isGlobal;
         }
 
         public void Delete()
@@ -516,7 +521,7 @@ namespace OE2EmpireTracker.ViewModels
             if (_uuid == null) return;
             string deletedUUID = _uuid;
 
-            var bp = _playerContext.FindBlueprint(_uuid);
+            var bp = _playerContext.FindMutableBlueprint(_uuid);
             if (bp != null)
             {
                 _playerContext.RemoveBlueprint(bp);
@@ -525,7 +530,7 @@ namespace OE2EmpireTracker.ViewModels
             else
             {
                 var ec = EmpireContext.GetInstance();
-                var globalBp = ec?.FindGlobalBlueprint(_uuid);
+                var globalBp = ec?.FindMutableGlobalBlueprint(_uuid);
                 if (globalBp != null)
                 {
                     ec.RemoveGlobalBlueprint(globalBp);

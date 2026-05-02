@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Services
             Func<string, Colony> colonyFinder,
             Func<string, Station> stationFinder,
             Func<string, ShipTemplate> templateFinder,
-            Func<string, Blueprint> blueprintFinder,
+            Func<string, ReadOnlyBlueprint> blueprintFinder,
             IEnumerable<Colony> allColonies,
             IEnumerable<Station> allStations)
         {
@@ -132,7 +132,7 @@ namespace OE2EmpireTracker.Services
             Func<string, Colony> colonyFinder,
             Func<string, Station> stationFinder,
             Func<string, ShipTemplate> templateFinder,
-            Func<string, Blueprint> blueprintFinder,
+            Func<string, ReadOnlyBlueprint> blueprintFinder,
             List<Colony> allColonies,
             List<Station> allStations)
         {
@@ -216,7 +216,7 @@ namespace OE2EmpireTracker.Services
             Func<string, Colony> colonyFinder,
             Func<string, Station> stationFinder,
             Func<string, ShipTemplate> templateFinder,
-            Func<string, Blueprint> blueprintFinder,
+            Func<string, ReadOnlyBlueprint> blueprintFinder,
             List<Colony> allColonies,
             List<Station> allStations)
         {

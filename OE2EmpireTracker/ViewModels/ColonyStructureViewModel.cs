@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
@@ -137,7 +137,7 @@ namespace OE2EmpireTracker.ViewModels
 
         public string FlatpackBlueprintUUID => _structure.FlatpackBlueprintUUID;
 
-        public Blueprint Blueprint => _playerContext.FindBlueprint(_structure.FlatpackBlueprintUUID);
+        public ReadOnlyBlueprint Blueprint => _playerContext.FindBlueprint(_structure.FlatpackBlueprintUUID);
 
         public string BlueprintType => Blueprint?.BluePrintType ?? string.Empty;
 
@@ -184,7 +184,7 @@ namespace OE2EmpireTracker.ViewModels
             if (neighbor == null)
             {
                 Log.Info(
-                    "MoveUp: blocked — already at top (seq={0}), structure={1}",
+                    "MoveUp: blocked â€” already at top (seq={0}), structure={1}",
                     mySeq,
                     _structure.UUID);
                 return;
@@ -195,7 +195,7 @@ namespace OE2EmpireTracker.ViewModels
             if (neighborBp != null && neighborBp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
             {
                 Log.Info(
-                    "MoveUp: blocked — cannot move above CC, structure={0} seq={1}",
+                    "MoveUp: blocked â€” cannot move above CC, structure={0} seq={1}",
                     _structure.UUID,
                     mySeq);
                 return;
@@ -225,7 +225,7 @@ namespace OE2EmpireTracker.ViewModels
             if (myBp != null && myBp.BluePrintType == BlueprintTypes.ColonyCommandCentre)
             {
                 Log.Info(
-                    "MoveDown: blocked — CC must stay at top, structure={0}",
+                    "MoveDown: blocked â€” CC must stay at top, structure={0}",
                     _structure.UUID);
                 return;
             }
@@ -245,7 +245,7 @@ namespace OE2EmpireTracker.ViewModels
             if (neighbor == null)
             {
                 Log.Info(
-                    "MoveDown: blocked — already at bottom (seq={0}), structure={1}",
+                    "MoveDown: blocked â€” already at bottom (seq={0}), structure={1}",
                     mySeq,
                     _structure.UUID);
                 return;

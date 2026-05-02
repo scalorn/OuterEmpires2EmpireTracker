@@ -268,7 +268,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var bp1 = CreateBlueprint("bp-1", "Reactor Flatpack");
             var bp2 = CreateBlueprint("bp-2", "Refinery Flatpack");
-            var blueprints = new Dictionary<string, OE2EmpireTracker.Models.Blueprint>
+            var blueprints = new Dictionary<string, ReadOnlyBlueprint>
             {
                 { bp1.UUID, bp1 },
                 { bp2.UUID, bp2 }
@@ -440,9 +440,9 @@ namespace OE2EmpireTracker.Tests.Services
             return s;
         }
 
-        private OE2EmpireTracker.Models.Blueprint CreateBlueprint(string uuid, string name)
+        private ReadOnlyBlueprint CreateBlueprint(string uuid, string name)
         {
-            return new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid };
+            return new ReadOnlyBlueprint(new OE2EmpireTracker.Models.Blueprint(name) { UUID = uuid });
         }
     }
 }

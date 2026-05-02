@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -252,7 +252,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     // Manufactured items: read CargoVolumeSize from blueprint
                     if (!string.IsNullOrEmpty(item.BaseItemTypeID) && playerContext != null)
                     {
-                        Models.Blueprint bp = playerContext.FindBlueprint(item.BaseItemTypeID);
+                        var bp = playerContext.FindBlueprint(item.BaseItemTypeID);
                         if (bp != null)
                         {
                             decimal vol = 0;
@@ -864,7 +864,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             // Structures are already sorted by BuildQueueSequence via
-            // ColonyViewModel.StructureViewModels → CollectionSortHelper.OrderStructures().
+            // ColonyViewModel.StructureViewModels â†’ CollectionSortHelper.OrderStructures().
             // No additional sort needed here.
 
             int needed = structureVMs.Count;
@@ -1038,13 +1038,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 if (e.IsStructural)
                 {
-                    // 8.4: Structural change — full rebuild
+                    // 8.4: Structural change â€” full rebuild
                     colonyViewModel.InvalidateStructureViewModels();
                     colonyViewModel.RecalculateStatus();
                 }
                 else
                 {
-                    // 8.5: Non-structural change — O(1) delta update
+                    // 8.5: Non-structural change â€” O(1) delta update
                     if (ctrl?.ViewModel != null)
                     {
                         colonyViewModel.Calculator.RecalculateStructure(ctrl.ViewModel.Data);
@@ -1210,7 +1210,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
-        // Administration tab — Admin Report (11.1)
+        // Administration tab â€” Admin Report (11.1)
         // -------------------------------------------------------------------
 
         private void RefreshAdminReport()
@@ -1234,7 +1234,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 {
                     try
                     {
-                        // Lock held just to ensure consistent read — BuildReport reads colony data
+                        // Lock held just to ensure consistent read â€” BuildReport reads colony data
                     }
                     finally
                     {
@@ -1267,7 +1267,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
-        // Administration tab — Bootstrap / Optimize (11.2, 11.3)
+        // Administration tab â€” Bootstrap / Optimize (11.2, 11.3)
         // -------------------------------------------------------------------
 
         private void CmdBootstrap_Click(object sender, EventArgs e)
@@ -1563,7 +1563,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
-        // Workers Tab — Commodity Requests (19.1-19.8)
+        // Workers Tab â€” Commodity Requests (19.1-19.8)
         // -------------------------------------------------------------------
 
         private void CmdAddCommodityRequest_Click(object sender, EventArgs e)
@@ -1861,7 +1861,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
-        // Workers Tab — Tab Title and Countdown Helpers (19.7)
+        // Workers Tab â€” Tab Title and Countdown Helpers (19.7)
         // -------------------------------------------------------------------
 
         private void UpdateWorkerTabTitle()
@@ -1928,7 +1928,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
-        // Warehousing Tab — Item Grid and Add Controls (20.1-20.6)
+        // Warehousing Tab â€” Item Grid and Add Controls (20.1-20.6)
         // -------------------------------------------------------------------
 
         private void PopulateItemGrid()
@@ -2036,7 +2036,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
-        // Warehousing — Item Type Combo (20.2)
+        // Warehousing â€” Item Type Combo (20.2)
         // -------------------------------------------------------------------
 
         private void CmbItemType_SelectedIndexChanged(object sender, EventArgs e)
@@ -2186,7 +2186,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
-        // Warehousing — Add Item (20.3)
+        // Warehousing â€” Add Item (20.3)
         // -------------------------------------------------------------------
 
         private void CmdAddItem_Click(object sender, EventArgs e)
@@ -2301,7 +2301,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
-        // Warehousing — Delete Item (20.4)
+        // Warehousing â€” Delete Item (20.4)
         // -------------------------------------------------------------------
 
         private void DgvItems_KeyDown(object sender, KeyEventArgs e)
@@ -2356,7 +2356,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
-        // Warehousing — Editable Amount Column (20.5)
+        // Warehousing â€” Editable Amount Column (20.5)
         // -------------------------------------------------------------------
 
         private void DgvItems_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -2691,7 +2691,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         /// <summary>
-        /// Handler for structure type checkbox changes — updates the unchecked set
+        /// Handler for structure type checkbox changes â€” updates the unchecked set
         /// and re-applies the filter.
         /// </summary>
         private void LvwStructureTypes_ItemChecked(object sender, ItemCheckedEventArgs e)
@@ -2713,7 +2713,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         /// <summary>
         /// Shows/hides structure controls based on the current checked types.
-        /// Lightweight — just toggles Visible on existing controls instead of full rebuild.
+        /// Lightweight â€” just toggles Visible on existing controls instead of full rebuild.
         /// </summary>
         private void ApplyStructureTypeFilter()
         {

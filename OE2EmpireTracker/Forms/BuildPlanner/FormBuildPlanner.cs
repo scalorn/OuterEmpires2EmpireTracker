@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -56,7 +56,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 if (colony == null) return null;
                 var structure = colony.Structures.FirstOrDefault(s => s.UUID == structureUUID);
                 if (structure == null) return null;
-                Models.Blueprint bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                var bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (bp == null) return null;
                 return string.IsNullOrEmpty(bp.OutputItemName) ? bp.Name : bp.OutputItemName;
             };
@@ -541,7 +541,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             if (item.ItemType == BuildItemType.Manufactory)
             {
-                Models.Blueprint bp = playerContext.FindBlueprint(item.BlueprintUUID);
+                var bp = playerContext.FindBlueprint(item.BlueprintUUID);
                 if (bp?.Resources != null)
                 {
                     foreach (var entry in bp.Resources)
@@ -584,7 +584,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
             else if (item.ItemType == BuildItemType.Research)
             {
-                Models.Blueprint bp = playerContext.FindBlueprint(item.BlueprintUUID);
+                var bp = playerContext.FindBlueprint(item.BlueprintUUID);
                 if (bp?.Resources != null)
                 {
                     foreach (var entry in bp.Resources)

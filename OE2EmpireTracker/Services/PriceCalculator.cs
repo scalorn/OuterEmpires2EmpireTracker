@@ -88,7 +88,7 @@ namespace OE2EmpireTracker.Services
         /// Computes the price of a manufactured item from its blueprint resources
         /// plus optional time costs (FixedCostPerItem + HourlyCostRate × hours).
         /// </summary>
-        public static ComputedPrice ComputeBlueprintPrice(PricingPlan plan, Blueprint blueprint, decimal manufacturingHours)
+        public static ComputedPrice ComputeBlueprintPrice(PricingPlan plan, ReadOnlyBlueprint blueprint, decimal manufacturingHours)
         {
             var result = new ComputedPrice { Price = 0m, IsComplete = true };
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Services
         /// <returns>Total volume and mass.</returns>
         public static CargoLoadResult ComputeLoadVolume(
             List<DeliveryItem> loadList,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             if (loadList == null) return new CargoLoadResult();
             if (blueprintFinder == null) blueprintFinder = _ => null;
@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Services
         /// Returns the per-unit cargo volume for a delivery item.
         /// For crates, sums the volume of contents (one level only).
         /// </summary>
-        public static decimal GetItemVolume(DeliveryItem item, Func<string, Blueprint> blueprintFinder)
+        public static decimal GetItemVolume(DeliveryItem item, Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             switch (item.ItemType)
             {
@@ -85,7 +85,7 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Returns the per-unit mass for a delivery item.
         /// </summary>
-        public static decimal GetItemMass(DeliveryItem item, Func<string, Blueprint> blueprintFinder)
+        public static decimal GetItemMass(DeliveryItem item, Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             switch (item.ItemType)
             {
@@ -121,7 +121,7 @@ namespace OE2EmpireTracker.Services
         public static List<List<DeliveryItem>> SplitIntoTrips(
             List<DeliveryItem> loadList,
             decimal cargoCapacity,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             if (loadList == null || loadList.Count == 0)
                 return new List<List<DeliveryItem>>();
@@ -200,7 +200,7 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Checks if a blueprint represents a crate type.
         /// </summary>
-        private static bool IsCrateType(Blueprint bp)
+        private static bool IsCrateType(ReadOnlyBlueprint bp)
         {
             if (bp == null) return false;
             return !string.IsNullOrEmpty(bp.BluePrintType) &&
@@ -212,7 +212,7 @@ namespace OE2EmpireTracker.Services
         /// Looks at the crate blueprint's resource requirements as a proxy for contents.
         /// Falls back to the crate's own Cargo Volume Size if no contents can be determined.
         /// </summary>
-        private static decimal GetCrateContentsVolume(Blueprint crateBp, Func<string, Blueprint> blueprintFinder)
+        private static decimal GetCrateContentsVolume(ReadOnlyBlueprint crateBp, Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             // A crate's volume is its own Cargo Volume Size property
             decimal crateVol = 0m;

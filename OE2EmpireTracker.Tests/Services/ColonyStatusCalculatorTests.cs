@@ -689,7 +689,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// <summary>
         /// Creates a blueprint with the given properties set on its PropertyBag.
         /// </summary>
-        private static OE2EmpireTracker.Models.Blueprint MakeBlueprint(Dictionary<string, string> properties = null)
+        private static ReadOnlyBlueprint MakeBlueprint(Dictionary<string, string> properties = null)
         {
             var bp = new OE2EmpireTracker.Models.Blueprint("TestBlueprint");
             bp.UUID = Guid.NewGuid().ToString();
@@ -699,7 +699,7 @@ namespace OE2EmpireTracker.Tests.Services
                     bp.Properties.SetProperty(kv.Key, kv.Value);
             }
 
-            return bp;
+            return new ReadOnlyBlueprint(bp);
         }
 
         /// <summary>
@@ -722,7 +722,7 @@ namespace OE2EmpireTracker.Tests.Services
             ColonyStructure structure,
             ColonyStructureStatus prevStatus,
             IColonyStructureWorkers workerSource,
-            OE2EmpireTracker.Models.Blueprint blueprint)
+            ReadOnlyBlueprint blueprint)
         {
             var colony = new Colony();
             colony.Structures.Add(structure);

@@ -46,15 +46,15 @@ namespace OE2EmpireTracker.Tests.Services
             return s;
         }
 
-        private Blueprint CreateBlueprint(string uuid, string name, string bpType,
+        private ReadOnlyBlueprint CreateBlueprint(string uuid, string name, string bpType,
             int quantity = 1)
         {
-            return new Blueprint(name)
+            return new ReadOnlyBlueprint(new Blueprint(name)
             {
                 UUID = uuid,
                 BluePrintType = bpType,
                 Quantity = quantity
-            };
+            });
         }
 
         private DeliveryRoute CreateRoute(params string[] colonyUUIDs)
@@ -194,7 +194,7 @@ namespace OE2EmpireTracker.Tests.Services
             var plan = new BuildPlan { UUID = "plan-1", Name = "Test" };
             plan.Items.Add(CreateManufactoryItem("bp-1", 5));
 
-            Func<string, Blueprint> bpFinder = id =>
+            Func<string, ReadOnlyBlueprint> bpFinder = id =>
             {
                 if (id == "mfg-bp") return mfgBp;
                 if (id == "bp-1") return itemBp;
@@ -227,7 +227,7 @@ namespace OE2EmpireTracker.Tests.Services
             plan.Items.Add(CreateManufactoryItem("bp-1", 5));
             plan.Items.Add(CreateManufactoryItem("bp-1", 3));
 
-            Func<string, Blueprint> bpFinder = id =>
+            Func<string, ReadOnlyBlueprint> bpFinder = id =>
             {
                 if (id == "mfg-bp") return mfgBp;
                 if (id == "bp-1") return itemBp;
@@ -261,7 +261,7 @@ namespace OE2EmpireTracker.Tests.Services
             plan.Items.Add(CreateManufactoryItem("bp-1", 5));
             plan.Items.Add(CreateManufactoryItem("bp-1", 3));
 
-            Func<string, Blueprint> bpFinder = id =>
+            Func<string, ReadOnlyBlueprint> bpFinder = id =>
             {
                 if (id == "mfg-bp") return mfgBp;
                 if (id == "bp-1") return itemBp;
@@ -295,7 +295,7 @@ namespace OE2EmpireTracker.Tests.Services
             var plan = new BuildPlan { UUID = "plan-1", Name = "Test" };
             plan.Items.Add(CreateManufactoryItem("bp-1", 5));
 
-            Func<string, Blueprint> bpFinder = id =>
+            Func<string, ReadOnlyBlueprint> bpFinder = id =>
             {
                 if (id == "mfg-bp") return mfgBp;
                 if (id == "bp-1") return itemBp;
@@ -396,7 +396,7 @@ namespace OE2EmpireTracker.Tests.Services
             plan.Items.Add(CreateManufactoryItem("bp-1", 5));
             plan.Items.Add(CreateCommodityItem("Grain", 10));
 
-            Func<string, Blueprint> bpFinder = id =>
+            Func<string, ReadOnlyBlueprint> bpFinder = id =>
             {
                 if (id == "mfg-bp") return mfgBp;
                 if (id == "bp-1") return itemBp;
@@ -439,7 +439,7 @@ namespace OE2EmpireTracker.Tests.Services
                 return null;
             };
 
-            Func<string, Blueprint> bpFinder = id =>
+            Func<string, ReadOnlyBlueprint> bpFinder = id =>
             {
                 if (id == "mfg-bp") return mfgBp;
                 if (id == "bp-1") return itemBp;
@@ -477,7 +477,7 @@ namespace OE2EmpireTracker.Tests.Services
             var plan = new BuildPlan { UUID = "plan-1", Name = "Test" };
             plan.Items.Add(CreateManufactoryItem("bp-1", 5));
 
-            Func<string, Blueprint> bpFinder = id =>
+            Func<string, ReadOnlyBlueprint> bpFinder = id =>
             {
                 if (id == "mfg-bp") return mfgBp;
                 if (id == "bp-1") return itemBp;
@@ -528,7 +528,7 @@ namespace OE2EmpireTracker.Tests.Services
             plan.Items.Add(CreateManufactoryItem("bp-1", 3));
             plan.Items.Add(CreateManufactoryItem("bp-1", 2));
 
-            Func<string, Blueprint> bpFinder = id =>
+            Func<string, ReadOnlyBlueprint> bpFinder = id =>
             {
                 if (id == "mfg-bp") return mfgBp;
                 if (id == "bp-1") return itemBp;
@@ -561,7 +561,7 @@ namespace OE2EmpireTracker.Tests.Services
             var plan = new BuildPlan { UUID = "plan-1", Name = "Test" };
             plan.Items.Add(CreateManufactoryItem("bp-1", 5));
 
-            Func<string, Blueprint> bpFinder = id =>
+            Func<string, ReadOnlyBlueprint> bpFinder = id =>
             {
                 if (id == "mfg-bp") return mfgBp;
                 if (id == "bp-1") return itemBp;

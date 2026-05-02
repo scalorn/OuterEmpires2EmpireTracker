@@ -327,7 +327,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         }
 
         // Hull Combo — GetSlotDefinitions
-        private List<SlotDefinition> GetSlotDefinitions(Blueprint hullBp)
+        private List<SlotDefinition> GetSlotDefinitions(ReadOnlyBlueprint hullBp)
         {
             var slotToBpTypes = new Dictionary<string, List<string>>();
             foreach (var kvp in SlotTypes.BlueprintTypeToSlotType)

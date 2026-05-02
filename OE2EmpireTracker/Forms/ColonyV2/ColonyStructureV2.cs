@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -40,7 +40,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private bool _completionModification = false;
 
         /// <summary>Cached blueprint reference, set during UpdateData.</summary>
-        private Models.Blueprint _blueprint;
+        private ReadOnlyBlueprint _blueprint;
 
         public ColonyStructureV2()
         {
@@ -90,7 +90,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         // -----------------------------------------------------------------------
-        // 7.2: Reset() â€” pool reuse
+        // 7.2: Reset() Ã¢â‚¬â€ pool reuse
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -156,14 +156,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // 7.3: UpdateData(Blueprint bp) â€” full repaint
+        // 7.3: UpdateData(Blueprint bp) Ã¢â‚¬â€ full repaint
         // -----------------------------------------------------------------------
 
         /// <summary>
         /// Full repaint of the control with the given pre-resolved blueprint.
         /// Sets header, status RTF, worker checkboxes, and panel visibility by type.
         /// </summary>
-        public void UpdateData(Models.Blueprint bp)
+        public void UpdateData(ReadOnlyBlueprint bp)
         {
             if (ViewModel == null) return;
 
@@ -297,7 +297,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // 7.4: UpdateBackgroundColor() â€” lightweight path
+        // 7.4: UpdateBackgroundColor() Ã¢â‚¬â€ lightweight path
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -1121,7 +1121,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 return;
             }
 
-            Models.Blueprint bp = _playerContext.FindBlueprint(structureData.ResearchingBlueprintUUID);
+            var bp = _playerContext.FindBlueprint(structureData.ResearchingBlueprintUUID);
             if (bp == null)
             {
                 rtbProgressStatus.Text = string.Empty;
@@ -1301,7 +1301,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 return;
             }
 
-            Models.Blueprint bp = _playerContext.FindBlueprint(structureData.ManufacturingBlueprintUUID);
+            var bp = _playerContext.FindBlueprint(structureData.ManufacturingBlueprintUUID);
             if (bp == null)
             {
                 rtbProgressStatus.Text = string.Empty;
@@ -1494,7 +1494,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // 7.5: State checkboxes â€” Built, Online, Staged with mutual exclusion
+        // 7.5: State checkboxes Ã¢â‚¬â€ Built, Online, Staged with mutual exclusion
         // -----------------------------------------------------------------------
 
         private void ChkBuilt_CheckedChanged(object sender, EventArgs e)
@@ -1867,7 +1867,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var structureData = ViewModel.Data;
             if (string.IsNullOrEmpty(structureData.ResearchingBlueprintUUID)) return;
 
-            Models.Blueprint bp = _playerContext.FindBlueprint(structureData.ResearchingBlueprintUUID);
+            var bp = _playerContext.FindBlueprint(structureData.ResearchingBlueprintUUID);
             if (bp == null) return;
 
             long researchSeconds = ResearchTimeLookup.GetResearchTimeSeconds(bp.Evolution);
@@ -1898,7 +1898,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var structureData = ViewModel.Data;
             if (string.IsNullOrEmpty(structureData.ManufacturingBlueprintUUID)) return;
 
-            Models.Blueprint bp = _playerContext.FindBlueprint(structureData.ManufacturingBlueprintUUID);
+            var bp = _playerContext.FindBlueprint(structureData.ManufacturingBlueprintUUID);
             if (bp == null) return;
 
             // Parse manufacture time from blueprint properties (default 1s if absent)

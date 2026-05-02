@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -22,7 +22,7 @@ using OE2EmpireTracker.ViewModels;
 namespace OE2EmpireTracker
 {
     /// <summary>
-    /// FormBlueprintV2 — Clean rewrite of the blueprint management form.
+    /// FormBlueprintV2 â€” Clean rewrite of the blueprint management form.
     /// Built around write-through: the data model (PropertyBag, Resources) is always
     /// the source of truth. The grid is a view, not a store.
     /// </summary>
@@ -63,6 +63,8 @@ namespace OE2EmpireTracker
 
         private BlueprintViewModel viewModel;
 
+        private BlueprintService _blueprintService;
+
         // ListView sorting state
         private int _sortColumn = 0;
 
@@ -84,6 +86,7 @@ namespace OE2EmpireTracker
             empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
             viewModel = new BlueprintViewModel(new Blueprint(), playerContext);
+            _blueprintService = new BlueprintService(playerContext, empireContext);
 
             InitFilterCombos();
             InitDetailCombos();
@@ -462,7 +465,7 @@ namespace OE2EmpireTracker
         }
 
         // -----------------------------------------------------------------------
-        // Dirty Tracking / Unsaved Changes (Tasks 8–9)
+        // Dirty Tracking / Unsaved Changes (Tasks 8â€“9)
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -527,7 +530,7 @@ namespace OE2EmpireTracker
                         return;
                     }
 
-                    // DialogResult.No — discard, fall through to load new
+                    // DialogResult.No â€” discard, fall through to load new
                 }
 
                 if (readOnly != null)
@@ -600,16 +603,37 @@ namespace OE2EmpireTracker
                 return;
             }
 
-            // All data is already in the ViewModel local state — just persist
+            bool isGlobal = chkGlobalBlueprint.Checked;
+
             Log.Info(
-                "BtnSave: persisting bp='{0}' UUID={1} type='{2}' class={3} tech='{4}'",
+                "BtnSave: persisting bp='{0}' UUID={1} type='{2}' class={3} tech='{4}' isNew={5}",
                 viewModel.Name,
                 viewModel.UUID,
                 viewModel.BluePrintType ?? "(null)",
                 viewModel.Class,
-                viewModel.TechLevel ?? "(null)");
-            viewModel.Save(chkGlobalBlueprint.Checked);
+                viewModel.TechLevel ?? "(null)",
+                viewModel.IsNew);
 
+            ReadOnlyBlueprint result;
+            if (viewModel.IsNew)
+            {
+                var request = viewModel.BuildCreateRequest();
+                result = _blueprintService.Create(request, isGlobal);
+            }
+            else
+            {
+                // Handle global toggle: move between lists if needed
+                bool wasGlobal = viewModel.IsGlobal;
+                if (wasGlobal && !isGlobal)
+                    _blueprintService.MoveToPlayer(viewModel.UUID);
+                else if (!wasGlobal && isGlobal)
+                    _blueprintService.MoveToGlobal(viewModel.UUID);
+
+                var request = viewModel.BuildUpdateRequest();
+                result = _blueprintService.Update(viewModel.UUID, request);
+            }
+
+            viewModel.LoadFrom(result);
             RefreshBlueprintList();
             SelectBlueprintInList(viewModel.UUID);
             _previousSelectedUUID = viewModel.UUID;
@@ -628,7 +652,7 @@ namespace OE2EmpireTracker
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            viewModel.Delete();
+            _blueprintService.Delete(viewModel.UUID);
             viewModel.Reset();
             RefreshBlueprintList();
             lvwBlueprints.SelectedItems.Clear();
@@ -682,7 +706,7 @@ namespace OE2EmpireTracker
                 var importType = BlueprintImportHandler.ClassifyImport(tempBP);
                 Log.Info("  ImportType: {0}", importType);
 
-                // Resources-only import: merge into selected blueprint
+                // Resources-only import: merge into ViewModel local state, mark dirty
                 if (importType == BlueprintImportHandler.ImportType.ResourcesOnly)
                 {
                     if (string.IsNullOrEmpty(viewModel.UUID))
@@ -695,28 +719,25 @@ namespace OE2EmpireTracker
                         return;
                     }
 
-                    // Look up mutable entity for merge operation (will be replaced by BlueprintService in Task 9)
-                    Blueprint mutableForMerge = playerContext.FindBlueprint(viewModel.UUID)
-                        ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(viewModel.UUID);
-                    if (mutableForMerge != null)
+                    // Merge parsed resources into ViewModel local state
+                    if (tempBP.Resources != null)
                     {
-                        MarketBlueprintImporter.MergeResourcesOnly(mutableForMerge, tempBP);
+                        foreach (var kvp in tempBP.Resources)
+                            viewModel.SetResource(kvp.Key, kvp.Value);
                     }
 
-                    // Persist to the correct list
-                    bool resGlobal = empireContext.GlobalBlueprintList.Any(b => b.UUID == viewModel.UUID);
-                    if (resGlobal)
-                        empireContext.WriteContext();
-                    else
-                        playerContext.WriteContext();
+                    // Merge parsed properties (if any) into ViewModel local state
+                    if (tempBP.Properties != null && tempBP.Properties.Count > 0)
+                    {
+                        foreach (var kvp in tempBP.Properties.Properties)
+                            viewModel.SetProperty(kvp.Key, kvp.Value);
+                    }
 
-                    // Notify, refresh, re-select
-                    playerContext.OnBlueprintDataChanged(viewModel.UUID);
-                    RefreshBlueprintList();
-                    SelectBlueprintInList(viewModel.UUID);
+                    // Refresh form to show merged data, update dirty state
                     PopulateForm();
+                    UpdateSaveButtonState();
                     Log.Info(
-                        "Resources-only import merged into selected blueprint: {0} UUID={1}",
+                        "Resources-only import merged into ViewModel local state: {0} UUID={1}",
                         viewModel.Name,
                         viewModel.UUID);
                     return;
@@ -726,17 +747,17 @@ namespace OE2EmpireTracker
                 if (importType == BlueprintImportHandler.ImportType.NoName)
                 {
                     Log.Warn("  No name parsed from clipboard -- using fallback direct import");
-                    // Look up mutable entity or create new (will be replaced by BlueprintService in Task 9)
-                    Blueprint fallbackBp;
+                    Blueprint fallbackBp = new Blueprint();
+
+                    // Copy current ViewModel state into temp for ProcessClipboard to merge into
                     if (!string.IsNullOrEmpty(viewModel.UUID))
                     {
-                        fallbackBp = playerContext.FindBlueprint(viewModel.UUID)
-                            ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(viewModel.UUID)
-                            ?? new Blueprint();
-                    }
-                    else
-                    {
-                        fallbackBp = new Blueprint();
+                        fallbackBp.UUID = viewModel.UUID;
+                        fallbackBp.Name = viewModel.Name;
+                        fallbackBp.BluePrintType = viewModel.BluePrintType;
+                        fallbackBp.Evolution = viewModel.Evolution;
+                        fallbackBp.Class = viewModel.Class;
+                        fallbackBp.TechLevel = viewModel.TechLevel;
                     }
 
                     scanner.ProcessClipboard(fallbackBp);
@@ -755,31 +776,20 @@ namespace OE2EmpireTracker
                     return;
                 }
 
-                // Full import — delegate routing and merge to BlueprintImportHandler
-                // Look up mutable entity for FindTarget (will be replaced by BlueprintService in Task 9)
-                Blueprint selectedMutable = null;
-                if (!string.IsNullOrEmpty(viewModel.UUID))
-                {
-                    selectedMutable = playerContext.FindBlueprint(viewModel.UUID)
-                        ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(viewModel.UUID);
-                }
-
-                var findResult = BlueprintImportHandler.FindTarget(
-                    tempBP, selectedMutable ?? new Blueprint(), playerContext, empireContext);
-
-                var importedBP = BlueprintImportHandler.MergeAndPersist(
-                    findResult, tempBP, playerContext, empireContext);
+                // Full import â€” delegate to BlueprintService
+                ReadOnlyBlueprint selectedTarget = viewModel.Original;
+                var importResult = _blueprintService.Import(tempBP, selectedTarget);
 
                 // Refresh UI, select imported blueprint
-                viewModel.LoadFrom(new ReadOnlyBlueprint(importedBP));
+                viewModel.LoadFrom(importResult);
                 RefreshBlueprintList();
-                SelectBlueprintInList(importedBP.UUID);
+                SelectBlueprintInList(importResult.UUID);
                 PopulateForm();
 
                 // Auto-select best base blueprint match
                 using (var guard = new ProgrammaticUpdateGuard(this))
                 {
-                    if (string.IsNullOrEmpty(importedBP.BaseBlueprintUUID) && _baseBlueprintList.Count > 1)
+                    if (string.IsNullOrEmpty(importResult.BaseBlueprintUUID) && _baseBlueprintList.Count > 1)
                     {
                         viewModel.BaseBlueprintUUID = _baseBlueprintList[1].UUID ?? string.Empty;
                     }
@@ -861,8 +871,8 @@ namespace OE2EmpireTracker
                 if (entry.Action == ImportAction.Skipped || string.IsNullOrEmpty(entry.UUID))
                     continue;
 
-                Blueprint bp = playerContext.FindBlueprint(entry.UUID)
-                    ?? empireContext.GlobalBlueprintList.FirstOrDefault(b => b.UUID == entry.UUID);
+                var bp = playerContext.FindBlueprint(entry.UUID)
+                    ?? empireContext.FindGlobalBlueprint(entry.UUID);
                 if (bp?.Properties == null || bp.Properties.Count == 0)
                     continue;
 
@@ -873,11 +883,12 @@ namespace OE2EmpireTracker
                 var knownProps = new HashSet<string>(bt.Properties, StringComparer.OrdinalIgnoreCase);
                 knownProps.Add("_IconPosition");
 
-                foreach (var propKey in bp.Properties.Properties.Keys)
+                foreach (var propKey in bp.Properties.Keys)
                 {
                     if (!knownProps.Contains(propKey))
                     {
-                        unknownPropWarnings.Add($"  {bp.Name}: '{propKey}' = '{bp.Properties.Properties[propKey]}'");
+                        bp.Properties.GetString(propKey, string.Empty, out string propVal);
+                        unknownPropWarnings.Add($"  {bp.Name}: '{propKey}' = '{propVal}'");
                         Log.Warn("Market import: unknown property '{0}' on {1} ({2})", propKey, bp.Name, bt.Name);
                     }
                 }
@@ -907,7 +918,7 @@ namespace OE2EmpireTracker
             if (unknownPropWarnings.Count > 0)
             {
                 sb.AppendLine();
-                sb.AppendLine($"Unknown properties detected ({unknownPropWarnings.Count}) — details in the log.");
+                sb.AppendLine($"Unknown properties detected ({unknownPropWarnings.Count}) â€” details in the log.");
             }
 
             MessageBox.Show(
@@ -1081,7 +1092,10 @@ namespace OE2EmpireTracker
         private void ChkGlobalBlueprint_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            // Global flag is read at save time — no viewModel field to write.
+            // Global flag is applied at save time via BlueprintService.MoveToGlobal/MoveToPlayer.
+            // Changing the checkbox makes the form "dirty" for save purposes.
+            viewModel.IsGlobal = chkGlobalBlueprint.Checked;
+            UpdateSaveButtonState();
         }
 
         /// <summary>
@@ -1144,7 +1158,7 @@ namespace OE2EmpireTracker
         }
 
         // -----------------------------------------------------------------------
-        // Statistics Grid (Tasks 3.1–3.4)
+        // Statistics Grid (Tasks 3.1â€“3.4)
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -1226,7 +1240,7 @@ namespace OE2EmpireTracker
 
             dgvStatistics.Columns.Add(colProp);
 
-            // CurrentValue column — placeholder, cells are swapped per-row below
+            // CurrentValue column â€” placeholder, cells are swapped per-row below
             var colVal = new DataGridViewTextBoxColumn
             {
                 Name = "CurrentValue",
@@ -1386,7 +1400,7 @@ namespace OE2EmpireTracker
             if (string.IsNullOrEmpty(propertyName)) return;
 
             string pattern = BlueprintPropertyValidation.GetValidationPattern(propertyName);
-            if (pattern == null) return; // Unknown — no validation
+            if (pattern == null) return; // Unknown â€” no validation
 
             if (!Regex.IsMatch(value, pattern))
             {
@@ -1412,7 +1426,7 @@ namespace OE2EmpireTracker
         }
 
         // -----------------------------------------------------------------------
-        // Resources Grid (Tasks 3.5–3.6)
+        // Resources Grid (Tasks 3.5â€“3.6)
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -1541,7 +1555,7 @@ namespace OE2EmpireTracker
         }
 
         // -----------------------------------------------------------------------
-        // Evolution Graph (Tasks 5.1–5.2)
+        // Evolution Graph (Tasks 5.1â€“5.2)
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -1649,7 +1663,7 @@ namespace OE2EmpireTracker
                 {
                     if (i == 0 && points.Count == 1)
                     {
-                        // Single point — create a series with just one data point
+                        // Single point â€” create a series with just one data point
                         var singleSeries = new Series($"{propertyName}_{segmentIndex}")
                         {
                             ChartType = SeriesChartType.Line,
@@ -1890,7 +1904,7 @@ namespace OE2EmpireTracker
         }
 
         // -----------------------------------------------------------------------
-        // Pricing Plan (Tasks 5.3–5.4)
+        // Pricing Plan (Tasks 5.3â€“5.4)
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -1923,7 +1937,7 @@ namespace OE2EmpireTracker
         }
 
         /// <summary>
-        /// Handles pricing plan selection changes — recomputes the displayed price.
+        /// Handles pricing plan selection changes â€” recomputes the displayed price.
         /// </summary>
         private void CmbPricingPlan_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1959,7 +1973,7 @@ namespace OE2EmpireTracker
             }
 
             // Look up mutable entity for PriceCalculator (will be replaced by service in future)
-            Blueprint priceBp = playerContext.FindBlueprint(viewModel.UUID)
+            var priceBp = playerContext.FindBlueprint(viewModel.UUID)
                 ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(viewModel.UUID);
             if (priceBp == null)
             {

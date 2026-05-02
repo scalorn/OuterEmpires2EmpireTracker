@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace OE2EmpireTracker.Services
         public static Dictionary<string, int> ComputeShortfalls(
             BuildItem item,
             ItemBag locationInventory,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             if (locationInventory == null) throw new ArgumentNullException(nameof(locationInventory));
@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Services
                     break;
 
                 case BuildItemType.Mining:
-                    // Mining produces resources — no shortfall check needed
+                    // Mining produces resources â€” no shortfall check needed
                     shortfalls = new Dictionary<string, int>();
                     break;
 
@@ -102,7 +102,7 @@ namespace OE2EmpireTracker.Services
             Func<string, Ship> shipFinder,
             Func<string, Station> stationFinder,
             string currentPlayerUUID,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             if (plan == null) throw new ArgumentNullException(nameof(plan));
             if (colonyFinder == null) throw new ArgumentNullException(nameof(colonyFinder));
@@ -199,11 +199,11 @@ namespace OE2EmpireTracker.Services
         private static Dictionary<string, int> ComputeManufactoryShortfalls(
             BuildItem item,
             ItemBag locationInventory,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             var shortfalls = new Dictionary<string, int>();
 
-            Blueprint bp = blueprintFinder(item.BlueprintUUID);
+            var bp = blueprintFinder(item.BlueprintUUID);
             if (bp == null)
             {
                 Log.Warn(
@@ -341,7 +341,7 @@ namespace OE2EmpireTracker.Services
         private static Dictionary<string, int> ComputeResearchShortfalls(
             BuildItem item,
             ItemBag locationInventory,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             // Research uses the same resource consumption as Manufactory
             return ComputeManufactoryShortfalls(item, locationInventory, blueprintFinder);

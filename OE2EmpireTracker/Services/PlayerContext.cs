@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -535,7 +535,7 @@ namespace OE2EmpireTracker.Services
             InvalidateBlueprintCache();
         }
 
-        public Blueprint FindBlueprint(string id)
+        public ReadOnlyBlueprint FindBlueprint(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
 
@@ -552,11 +552,36 @@ namespace OE2EmpireTracker.Services
                 }
 
                 if (_blueprintCache.TryGetValue(id, out var match))
-                    return match;
+                    return new ReadOnlyBlueprint(match);
             }
 
             // Fall back to global blueprints outside the lock
             return EmpireContext.GetInstance()?.FindGlobalBlueprint(id);
+        }
+
+        /// <summary>
+        /// Returns the mutable Blueprint entity for the given UUID from the player list only.
+        /// Does NOT fall back to global blueprints. Only called by BlueprintService.
+        /// </summary>
+        internal Blueprint FindMutableBlueprint(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_blueprintCache == null)
+                {
+                    _blueprintCache = new Dictionary<string, Blueprint>();
+                    foreach (var bp in _blueprintList)
+                    {
+                        if (bp.UUID != null && !_blueprintCache.ContainsKey(bp.UUID))
+                            _blueprintCache[bp.UUID] = bp;
+                    }
+                }
+
+                _blueprintCache.TryGetValue(uuid, out Blueprint bp2);
+                return bp2;
+            }
         }
 
         public void InvalidateBlueprintCache()
@@ -667,7 +692,7 @@ namespace OE2EmpireTracker.Services
             var list = new List<Colony>(sorted);
 
             // Stamp BuildQueueSequence for existing data where values are all zero (migration).
-            // Don't sort the list — consumers sort by BuildQueueSequence themselves.
+            // Don't sort the list â€” consumers sort by BuildQueueSequence themselves.
             foreach (var colony in list)
             {
                 if (colony.Structures != null && colony.Structures.Count > 0
@@ -2402,8 +2427,7 @@ namespace OE2EmpireTracker.Services
 
         public ReadOnlyBlueprint FindReadOnlyBlueprint(string id)
         {
-            var entity = FindBlueprint(id);
-            return entity != null ? new ReadOnlyBlueprint(entity) : null;
+            return FindBlueprint(id);
         }
 
         public ReadOnlyColony FindReadOnlyColony(string id)

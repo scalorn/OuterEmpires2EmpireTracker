@@ -20,14 +20,14 @@ namespace OE2EmpireTracker.Services
         /// to the Ev0 ancestor. Returns the chain sorted by Evolution ascending.
         /// Terminates on missing UUID or circular reference.
         /// </summary>
-        public static List<Blueprint> ResolveChain(
-            Blueprint start,
-            Func<string, Blueprint> resolver)
+        public static List<ReadOnlyBlueprint> ResolveChain(
+            ReadOnlyBlueprint start,
+            Func<string, ReadOnlyBlueprint> resolver)
         {
             if (start == null)
-                return new List<Blueprint>();
+                return new List<ReadOnlyBlueprint>();
 
-            var chain = new List<Blueprint>();
+            var chain = new List<ReadOnlyBlueprint>();
             var visited = new HashSet<string>();
 
             var current = start;
@@ -44,8 +44,8 @@ namespace OE2EmpireTracker.Services
                 current = resolver(current.BaseBlueprintUUID);
             }
 
-            var sorted = CollectionSortHelper.OrderBlueprintsByEvolution(chain);
-            return new List<Blueprint>(sorted);
+            var sorted = CollectionSortHelper.OrderReadOnlyBlueprintsByEvolution(chain);
+            return new List<ReadOnlyBlueprint>(sorted);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace OE2EmpireTracker.Services
         /// properties that changed, normalizes to percentages, and returns graph data.
         /// </summary>
         public static EvolutionGraphData BuildGraphData(
-            IReadOnlyList<Blueprint> chain,
+            IReadOnlyList<ReadOnlyBlueprint> chain,
             string[] blueprintTypeProperties)
         {
             var result = new EvolutionGraphData();
@@ -164,7 +164,7 @@ namespace OE2EmpireTracker.Services
             return total;
         }
 
-        private static decimal GetNumericValue(Blueprint bp, string propName, PropertyValueType propType)
+        private static decimal GetNumericValue(ReadOnlyBlueprint bp, string propName, PropertyValueType propType)
         {
             if (bp.Properties == null)
                 return 0.0m;

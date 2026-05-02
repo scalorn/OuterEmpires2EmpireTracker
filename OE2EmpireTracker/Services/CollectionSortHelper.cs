@@ -593,6 +593,20 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Sorts ReadOnlyBlueprint by Evolution ascending.
+        /// Used by EvolutionChainService.
+        /// </summary>
+        public static IReadOnlyList<ReadOnlyBlueprint> OrderReadOnlyBlueprintsByEvolution(
+            IEnumerable<ReadOnlyBlueprint> blueprints)
+        {
+            if (blueprints == null) return Array.Empty<ReadOnlyBlueprint>();
+            return blueprints
+                .OrderBy(b => b.Evolution)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
         /// Sorts activity rows by time remaining ascending (soonest first).
         /// Used by ColonyAdminReportBuilder.
         /// </summary>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -64,7 +64,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 {
                     if (!structure.IsBuiltAndOnline) continue;
 
-                    Models.Blueprint bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                    var bp = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                     if (bp == null) continue;
 
                     bool eligible = false;

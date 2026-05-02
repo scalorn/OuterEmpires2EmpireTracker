@@ -85,7 +85,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Bp Resolver(string uuid) =>
                     lookup.TryGetValue(uuid, out var bp) ? bp : null;
 
-                var result = EvolutionChainService.ResolveChain(start, Resolver);
+                var result = EvolutionChainService.ResolveChain(Wrap(start), uuid => Wrap(Resolver(uuid)));
 
                 // Verify: result contains all chain members
                 bool containsAll = chain.All(bp =>
@@ -199,7 +199,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(testDataGen.ToArbitrary(), testData =>
             {
-                var result = EvolutionChainService.BuildGraphData(testData.Chain, testData.SelectedProps);
+                var result = EvolutionChainService.BuildGraphData(WrapChain(testData.Chain), testData.SelectedProps);
 
                 // Every key in Series must exist in the source properties array
                 bool allKeysInSource = result.Series.Keys.All(k =>
@@ -311,7 +311,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(testDataGen.ToArbitrary(), testData =>
             {
-                var result = EvolutionChainService.BuildGraphData(testData.Chain, testData.AllProps);
+                var result = EvolutionChainService.BuildGraphData(WrapChain(testData.Chain), testData.AllProps);
 
                 // Verify: unchanged properties do NOT appear in Series
                 bool noUnchangedInSeries = !testData.UnchangedProps.Any(p => result.Series.ContainsKey(p));
@@ -401,7 +401,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(testDataGen.ToArbitrary(), testData =>
             {
-                var result = EvolutionChainService.BuildGraphData(testData.Chain, testData.Props);
+                var result = EvolutionChainService.BuildGraphData(WrapChain(testData.Chain), testData.Props);
 
                 // All properties should be present (non-zero Ev0, values change)
                 bool allPropsPresent = testData.Props.All(p => result.Series.ContainsKey(p));
@@ -482,7 +482,7 @@ namespace OE2EmpireTracker.Tests.Services
             var bp = MakeBlueprint("bp-0", null, 0);
             Bp Resolver(string uuid) => null;
 
-            var result = EvolutionChainService.ResolveChain(bp, Resolver);
+            var result = EvolutionChainService.ResolveChain(Wrap(bp), uuid => Wrap(Resolver(uuid)));
 
             Assert.That(result, Has.Count.EqualTo(1));
             Assert.That(result[0].UUID, Is.EqualTo("bp-0"));
@@ -511,7 +511,7 @@ namespace OE2EmpireTracker.Tests.Services
                 lookup.TryGetValue(uuid, out var bp) ? bp : null;
 
             // Start from Ev2 -- walks to Ev1, then tries bp-0 which is missing
-            var result = EvolutionChainService.ResolveChain(ev2, Resolver);
+            var result = EvolutionChainService.ResolveChain(Wrap(ev2), uuid => Wrap(Resolver(uuid)));
 
             Assert.That(result, Has.Count.EqualTo(2));
             Assert.That(result[0].UUID, Is.EqualTo("bp-1"));
@@ -538,7 +538,7 @@ namespace OE2EmpireTracker.Tests.Services
             Bp Resolver(string uuid) =>
                 lookup.TryGetValue(uuid, out var bp) ? bp : null;
 
-            var result = EvolutionChainService.ResolveChain(bpA, Resolver);
+            var result = EvolutionChainService.ResolveChain(Wrap(bpA), uuid => Wrap(Resolver(uuid)));
 
             Assert.That(result, Has.Count.LessThanOrEqualTo(2));
         }
@@ -559,14 +559,14 @@ namespace OE2EmpireTracker.Tests.Services
             var chain = new List<Bp> { ev0, ev1 };
             var props = new[] { "Accuracy" };
 
-            var result = EvolutionChainService.BuildGraphData(chain, props);
+            var result = EvolutionChainService.BuildGraphData(WrapChain(chain), props);
 
             Assert.That(result.Series.ContainsKey("Accuracy"), Is.False);
         }
 
         /// <summary>
         /// Time property parsing -- "1d 2h 30m 15s" -> 95415 seconds.
-        /// (1×86400 + 2×3600 + 30×60 + 15 = 95415)
+        /// (1Ã—86400 + 2Ã—3600 + 30Ã—60 + 15 = 95415)
         /// </summary>
         [Test]
         public void ParseTimeToSeconds_FullTimeString_ReturnsCorrectSeconds()
@@ -595,7 +595,7 @@ namespace OE2EmpireTracker.Tests.Services
             var chain = new List<Bp> { ev0, ev1, ev2 };
             var props = new[] { "Accuracy" };
 
-            var result = EvolutionChainService.BuildGraphData(chain, props);
+            var result = EvolutionChainService.BuildGraphData(WrapChain(chain), props);
 
             Assert.That(result.NoChanges, Is.True);
             Assert.That(result.Series, Is.Empty);
@@ -609,5 +609,10 @@ namespace OE2EmpireTracker.Tests.Services
             bp.Evolution = evolution;
             return bp;
         }
+
+        private static ReadOnlyBlueprint Wrap(Bp bp) => bp != null ? new ReadOnlyBlueprint(bp) : null;
+
+        private static List<ReadOnlyBlueprint> WrapChain(List<Bp> chain) =>
+            chain.Select(bp => new ReadOnlyBlueprint(bp)).ToList();
     }
 }

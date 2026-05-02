@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Services
             Func<string, Colony> colonyFinder,
             Func<string, Ship> shipFinder,
             Func<string, Station> stationFinder,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             if (plan == null) throw new ArgumentNullException(nameof(plan));
             if (route == null) throw new ArgumentNullException(nameof(route));
@@ -109,7 +109,7 @@ namespace OE2EmpireTracker.Services
         private static EligibleStructures CollectEligibleStructures(
             DeliveryRoute route,
             Func<string, Colony> colonyFinder,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             var result = new EligibleStructures();
 
@@ -150,7 +150,7 @@ namespace OE2EmpireTracker.Services
                     if (string.IsNullOrEmpty(structure.FlatpackBlueprintUUID))
                         continue;
 
-                    Blueprint bp = blueprintFinder(structure.FlatpackBlueprintUUID);
+                    var bp = blueprintFinder(structure.FlatpackBlueprintUUID);
                     if (bp == null)
                         continue;
 
@@ -195,7 +195,7 @@ namespace OE2EmpireTracker.Services
         private static void AssignManufactoryItems(
             List<BuildItem> unallocated,
             EligibleStructures structures,
-            Func<string, Blueprint> blueprintFinder,
+            Func<string, ReadOnlyBlueprint> blueprintFinder,
             List<AssignmentProposal> proposals)
         {
             var mfgItems = unallocated
@@ -228,7 +228,7 @@ namespace OE2EmpireTracker.Services
                 var items = kvp.Value;
 
                 // Count blueprint copies the player owns
-                Blueprint bp = blueprintFinder(bpUUID);
+                var bp = blueprintFinder(bpUUID);
                 int copyCount = CountBlueprintCopies(bpUUID, blueprintFinder);
                 if (copyCount < 1) copyCount = 1;
 
@@ -331,7 +331,7 @@ namespace OE2EmpireTracker.Services
         /// </remarks>
         private static int CountBlueprintCopies(
             string blueprintUUID,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             // The blueprintFinder resolves by UUID. We can only confirm
             // the blueprint exists. The actual copy count requires scanning
@@ -339,7 +339,7 @@ namespace OE2EmpireTracker.Services
             // For now, return 1 as the minimum ? the caller can provide a
             // blueprintFinder that wraps PlayerContext.CountBlueprintCopies
             // for accurate counts.
-            Blueprint bp = blueprintFinder(blueprintUUID);
+            var bp = blueprintFinder(blueprintUUID);
             if (bp == null) return 1;
             return Math.Max(1, bp.Quantity);
         }

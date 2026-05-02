@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
@@ -93,7 +93,7 @@ namespace OE2EmpireTracker.ViewModels
         // Scanner blueprint lookup
         // -----------------------------------------------------------------------
 
-        public Blueprint FindScannerBlueprint()
+        public ReadOnlyBlueprint FindScannerBlueprint()
         {
             if (string.IsNullOrEmpty(_survey.ScannerBlueprintUUID)) return null;
             return _playerContext.FindBlueprint(_survey.ScannerBlueprintUUID);

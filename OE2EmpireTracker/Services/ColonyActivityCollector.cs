@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Services
 
             foreach (var structure in colony.Structures)
             {
-                Blueprint blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (blueprint == null) continue;
 
                 string sourceName = $"#{structure.DisplaySequence} {blueprint.ExtendedName}";
@@ -157,7 +157,7 @@ namespace OE2EmpireTracker.Services
             if (string.IsNullOrEmpty(structure.ResearchingBlueprintUUID))
                 return string.Empty;
 
-            Blueprint bp = playerContext.FindBlueprint(structure.ResearchingBlueprintUUID);
+            var bp = playerContext.FindBlueprint(structure.ResearchingBlueprintUUID);
             if (bp == null)
                 return string.Empty;
 
@@ -169,12 +169,12 @@ namespace OE2EmpireTracker.Services
             if (string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID))
                 return string.Empty;
 
-            Blueprint bp = playerContext.FindBlueprint(structure.ManufacturingBlueprintUUID);
-            if (bp == null)
+            var bp2 = playerContext.FindBlueprint(structure.ManufacturingBlueprintUUID);
+            if (bp2 == null)
                 return string.Empty;
 
             int displayProgress = Math.Min(structure.ManufacturingCompleted + 1, structure.ManufacturingQuantity);
-            return $"({displayProgress}/{structure.ManufacturingQuantity}) {bp.ExtendedName}";
+            return $"({displayProgress}/{structure.ManufacturingQuantity}) {bp2.ExtendedName}";
         }
 
         private static string GetCommodityManufacturingDetails(ColonyStructure structure)

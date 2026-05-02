@@ -269,7 +269,7 @@ namespace OE2EmpireTracker.ViewModels
             Func<string,
             Colony> colonyFinder,
             Func<string,
-            Blueprint> blueprintFinder,
+            ReadOnlyBlueprint> blueprintFinder,
             Func<string,
             Station> stationFinder = null,
             string currentPlayerUUID = null)

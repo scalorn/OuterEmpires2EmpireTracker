@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -129,7 +129,7 @@ namespace OE2EmpireTracker.Services
         public static int GenerateColonyBuildItems(
             Colony colony,
             BuildPlan targetPlan,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             if (colony == null) throw new ArgumentNullException(nameof(colony));
             if (targetPlan == null) throw new ArgumentNullException(nameof(targetPlan));
@@ -213,7 +213,7 @@ namespace OE2EmpireTracker.Services
             ColonyStructure structure,
             Colony colony,
             BuildPlan targetPlan,
-            Func<string, Blueprint> blueprintFinder,
+            Func<string, ReadOnlyBlueprint> blueprintFinder,
             HashSet<string> existingBlueprintUUIDs)
         {
             if (string.IsNullOrEmpty(structure.FlatpackBlueprintUUID))
@@ -233,7 +233,7 @@ namespace OE2EmpireTracker.Services
                 return false;
             }
 
-            Blueprint bp = blueprintFinder(structure.FlatpackBlueprintUUID);
+            var bp = blueprintFinder(structure.FlatpackBlueprintUUID);
             string itemName = bp != null ? bp.Name : "Unknown Blueprint";
 
             var buildItem = new BuildItem

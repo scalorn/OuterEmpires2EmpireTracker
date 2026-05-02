@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -439,7 +439,7 @@ namespace OE2EmpireTracker.Tests.Services
                 plan.Items.Add(item);
 
                 Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
-                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+                Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => null;
                 Func<string, Ship> shipFinder = uuid => null;
                 Func<string, Station> stationFinder = uuid => null;
 
@@ -579,7 +579,7 @@ namespace OE2EmpireTracker.Tests.Services
                 plan.Items.Add(item);
 
                 Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
-                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+                Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => null;
                 Func<string, Ship> shipFinder = uuid => null;
                 Func<string, Station> stationFinder = uuid => null;
 
@@ -722,7 +722,7 @@ namespace OE2EmpireTracker.Tests.Services
                 plan.Items.Add(item);
 
                 Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
-                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+                Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => null;
                 Func<string, Ship> shipFinder = uuid => null;
                 Func<string, Station> stationFinder = uuid => null;
 
@@ -840,7 +840,7 @@ namespace OE2EmpireTracker.Tests.Services
                 }
 
                 Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
-                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+                Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => null;
                 Func<string, Ship> shipFinder = uuid => null;
                 Func<string, Station> stationFinder = uuid => null;
 
@@ -954,7 +954,7 @@ namespace OE2EmpireTracker.Tests.Services
                 }
 
                 Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
-                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+                Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => null;
                 Func<string, Ship> shipFinder = uuid => null;
                 Func<string, Station> stationFinder = uuid => null;
 
@@ -1061,7 +1061,7 @@ namespace OE2EmpireTracker.Tests.Services
                 plan.Items.Add(item);
 
                 Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
-                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => uuid == blueprintUUID ? blueprint : null;
+                Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => uuid == blueprintUUID ? new ReadOnlyBlueprint(blueprint) : null;
 
                 // Verify CanStartManufacturing returns true
                 bool canStart = BuildPlanExecutionService.CanStartManufacturing(
@@ -1215,7 +1215,7 @@ namespace OE2EmpireTracker.Tests.Services
                 plan.Items.Add(item);
 
                 Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
-                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+                Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => null;
 
                 // CanStartManufacturing should return false for busy structures
                 bool canStart = BuildPlanExecutionService.CanStartManufacturing(
@@ -1366,7 +1366,7 @@ namespace OE2EmpireTracker.Tests.Services
                 blueprint.Properties.SetProperty(BlueprintPropertyKeys.ManufactureRunTime, "1h");
 
                 Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
-                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => blueprint;
+                Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => new ReadOnlyBlueprint(blueprint);
 
                 // Act
                 var batchResult = BuildPlanExecutionService.StartAllReady(plan, colonyFinder, blueprintFinder);
@@ -1580,7 +1580,7 @@ namespace OE2EmpireTracker.Tests.Services
                 }
 
                 Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
-                Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+                Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => null;
                 Func<string, Ship> shipFinder = uuid => null;
                 Func<string, Station> stationFinder = uuid => null;
 
@@ -1625,7 +1625,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             Func<string, Colony> colonyFinder = uuid => null;
-            Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+            Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => null;
             Func<string, Ship> shipFinder = uuid => null;
             Func<string, Station> stationFinder = uuid => null;
 
@@ -1682,7 +1682,7 @@ namespace OE2EmpireTracker.Tests.Services
             plan.Items.Add(item);
 
             Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
-            Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+            Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => null;
             Func<string, Ship> shipFinder = uuid => null;
             Func<string, Station> stationFinder = uuid => null;
 
@@ -1788,7 +1788,7 @@ namespace OE2EmpireTracker.Tests.Services
             plan.Items.Add(item2);
 
             Func<string, Colony> colonyFinder = uuid => uuid == colonyUUID ? colony : null;
-            Func<string, OE2EmpireTracker.Models.Blueprint> blueprintFinder = uuid => null;
+            Func<string, ReadOnlyBlueprint> blueprintFinder = uuid => null;
             Func<string, Ship> shipFinder = uuid => null;
             Func<string, Station> stationFinder = uuid => null;
 

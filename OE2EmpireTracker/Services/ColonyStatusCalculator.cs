@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -121,7 +121,7 @@ namespace OE2EmpireTracker.Services
             var workers = new ActualColonyStructureWorkers(colony);
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
             Dictionary<string, int> structureCounts = new Dictionary<string, int>();
-            var blueprintPassCache = new Dictionary<string, Blueprint>();
+            var blueprintPassCache = new Dictionary<string, ReadOnlyBlueprint>();
 
             // Clear all existing worker locks -- will be rebuilt from current state
             ClearAllWorkerLocks();
@@ -135,18 +135,18 @@ namespace OE2EmpireTracker.Services
                 if (staged && built)
                 {
                     Log.Error(
-                        "INVARIANT VIOLATION in CalculateBuilt: colony {0} structure {1} has Staged=true AND Built=true — auto-fixing to Staged=false",
+                        "INVARIANT VIOLATION in CalculateBuilt: colony {0} structure {1} has Staged=true AND Built=true â€” auto-fixing to Staged=false",
                         colony.UUID, structure.UUID);
                     structure.Properties.SetProperty(GameConstants.PropStaged, false);
                 }
             }
 
-            // Sort by BuildQueueSequence — never trust the raw list order
+            // Sort by BuildQueueSequence â€” never trust the raw list order
             var orderedStructures = CollectionSortHelper.OrderStructures(colony.Structures);
 
             foreach (ColonyStructure structure in orderedStructures)
             {
-                Models.Blueprint flatpackBlueprint = GetCachedBlueprint(structure.FlatpackBlueprintUUID, blueprintPassCache);
+                ReadOnlyBlueprint flatpackBlueprint = GetCachedBlueprint(structure.FlatpackBlueprintUUID, blueprintPassCache);
                 if (flatpackBlueprint != null)
                 {
                     int count = 0;
@@ -208,12 +208,12 @@ namespace OE2EmpireTracker.Services
             var workers = new IdealColonyStructureWorkers();
             ColonyStructureStatus previousStatus = new ColonyStructureStatus();
 
-            // Sort by BuildQueueSequence — never trust the raw list order
+            // Sort by BuildQueueSequence â€” never trust the raw list order
             var orderedStructures = CollectionSortHelper.OrderStructures(colony.Structures);
 
             foreach (ColonyStructure structure in orderedStructures)
             {
-                Models.Blueprint flatpackBlueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                var flatpackBlueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 ColonyStructureStatus currentStatus = new ColonyStructureStatus();
                 CalculateBuilt(structure, previousStatus, currentStatus, workers, flatpackBlueprint);
                 structure.Statuses[GameConstants.StatusIdeal] = currentStatus;
@@ -247,7 +247,7 @@ namespace OE2EmpireTracker.Services
         /// Computes what a single structure contributes to colony totals.
         /// Does not modify any colony state -- pure computation.
         /// </summary>
-        public StructureStatusDelta ComputeStructureDelta(ColonyStructure structure, Blueprint bp)
+        public StructureStatusDelta ComputeStructureDelta(ColonyStructure structure, ReadOnlyBlueprint bp)
         {
             var delta = new StructureStatusDelta();
             if (bp == null) return delta;
@@ -269,7 +269,7 @@ namespace OE2EmpireTracker.Services
             // Food accumulates regardless of online state
             delta.FoodProvision = GetBlueprintDecimal(bp, GameConstants.PropFoodProvision);
 
-            // Count assigned workers — only for built structures
+            // Count assigned workers â€” only for built structures
             int assignedCount = 0;
             if (built)
             {
@@ -293,7 +293,7 @@ namespace OE2EmpireTracker.Services
 
             delta.WorkerCount = assignedCount;
 
-            // Count unallocated workers for this structure — only for built structures.
+            // Count unallocated workers for this structure â€” only for built structures.
             // NOTE: UnallocatedCount is set to 0 here because unallocated workers are
             // a colony-wide concept (one per worker type), not per-structure. The inner
             // CalculateBuilt handles unallocated workers correctly via prevStatus tracking.
@@ -360,7 +360,7 @@ namespace OE2EmpireTracker.Services
 
             var oldDelta = structure.StatusDelta ?? new StructureStatusDelta();
 
-            Blueprint bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+            var bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
             var newDelta = ComputeStructureDelta(structure, bp);
             structure.StatusDelta = newDelta;
 
@@ -404,7 +404,7 @@ namespace OE2EmpireTracker.Services
             }
         }
 
-        public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, Models.Blueprint flatpackBlueprint)
+        public void CalculateBuilt(ColonyStructure structure, ColonyStructureStatus prevStatus, ColonyStructureStatus status, IColonyStructureWorkers workerSource, ReadOnlyBlueprint flatpackBlueprint)
         {
             // Aggregators for resource stats
             decimal builtPowerProvided = prevStatus.PowerProvided;
@@ -534,7 +534,7 @@ namespace OE2EmpireTracker.Services
             status.WarehouseRequired = builtWarehouseRequired;
         }
 
-        private static decimal GetBlueprintDecimal(Models.Blueprint blueprint, string propertyName)
+        private static decimal GetBlueprintDecimal(ReadOnlyBlueprint blueprint, string propertyName)
         {
             decimal value = 0m;
             blueprint.Properties.GetDecimal(propertyName, 0m, out value);
@@ -568,11 +568,11 @@ namespace OE2EmpireTracker.Services
         /// Looks up a blueprint from the per-pass cache, falling back to playerContext.FindBlueprint()
         /// and caching the result for subsequent calls within the same calculation pass.
         /// </summary>
-        private Blueprint GetCachedBlueprint(string uuid, Dictionary<string, Blueprint> cache)
+        private ReadOnlyBlueprint GetCachedBlueprint(string uuid, Dictionary<string, ReadOnlyBlueprint> cache)
         {
             if (string.IsNullOrEmpty(uuid)) return null;
 
-            Blueprint bp;
+            ReadOnlyBlueprint bp;
             if (cache.TryGetValue(uuid, out bp))
                 return bp;
 
@@ -590,12 +590,12 @@ namespace OE2EmpireTracker.Services
         {
             if (colony.Locks == null) return;
 
-            // Clear ALL locks — they will be rebuilt from current state.
+            // Clear ALL locks â€” they will be rebuilt from current state.
             // This handles orphaned locks from deleted structures.
             colony.Locks = new LockTracking();
         }
 
-        private void LockAssignedWorkers(ColonyStructure structure, Models.Blueprint flatpackBlueprint)
+        private void LockAssignedWorkers(ColonyStructure structure, ReadOnlyBlueprint flatpackBlueprint)
         {
             if (colony.Locks == null || string.IsNullOrEmpty(structure.UUID)) return;
 
@@ -607,7 +607,7 @@ namespace OE2EmpireTracker.Services
 
         private void LockWorkerType(
             ColonyStructure structure,
-            Models.Blueprint flatpackBlueprint,
+            ReadOnlyBlueprint flatpackBlueprint,
             Models.WorkerTypeInfo wt)
         {
             if (!flatpackBlueprint.Properties.ContainsKey(wt.PropertyKey)) return;
@@ -685,13 +685,13 @@ namespace OE2EmpireTracker.Services
         // Manufacturing Resource Lock Management
         // -----------------------------------------------------------------------
 
-        private void LockManufacturingResources(ColonyStructure structure, Models.Blueprint flatpackBlueprint)
+        private void LockManufacturingResources(ColonyStructure structure, ReadOnlyBlueprint flatpackBlueprint)
         {
             if (colony.Locks == null || string.IsNullOrEmpty(structure.UUID)) return;
             if (string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)) return;
             if (structure.ProcessCompletionTime == null) return;
 
-            Models.Blueprint mfgBlueprint = playerContext.FindBlueprint(structure.ManufacturingBlueprintUUID);
+            var mfgBlueprint = playerContext.FindBlueprint(structure.ManufacturingBlueprintUUID);
             if (mfgBlueprint == null || mfgBlueprint.Resources == null) return;
 
             int remaining = structure.ManufacturingQuantity - structure.ManufacturingCompleted;

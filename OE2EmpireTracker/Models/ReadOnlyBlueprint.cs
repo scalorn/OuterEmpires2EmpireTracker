@@ -32,6 +32,7 @@ namespace OE2EmpireTracker.Models
         // Computed properties
         public string ExtendedName => _entity.ExtendedName;
         public string OutputItemName => _entity.OutputItemName;
+        public int Quantity => _entity.Quantity;
 
         // Nested utility container - wrapped
         public ReadOnlyPropertyBag Properties => new ReadOnlyPropertyBag(_entity.Properties);

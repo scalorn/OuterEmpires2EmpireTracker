@@ -548,7 +548,7 @@ namespace OE2EmpireTracker.Tests.Services
             for (int i = 0; i < structures.Count; i++)
             {
                 var s = structures[i];
-                OE2EmpireTracker.Models.Blueprint bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                ReadOnlyBlueprint bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
                 var current = new ColonyStructureStatus();
                 calculator.CalculateBuilt(s, prev, current, idealWorkers, bp);
 

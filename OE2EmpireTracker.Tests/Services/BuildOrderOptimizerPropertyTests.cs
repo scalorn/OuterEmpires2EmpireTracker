@@ -73,7 +73,7 @@ namespace OE2EmpireTracker.Tests.Services
         // For any sequence of colony structures, building cumulative status
         // incrementally via CalculateBuilt one-at-a-time produces the same
         // result as building it via a fresh CalculateBuilt loop from scratch.
-        // Both approaches use the same fold — this confirms the fold is
+        // Both approaches use the same fold â€” this confirms the fold is
         // deterministic and order-independent of calculator instance.
         // **Validates: Requirements 1.1, 1.2, 2.1, 2.2, 2.3**
         // -----------------------------------------------------------------------
@@ -95,7 +95,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ColonyStructureStatus incremental = new ColonyStructureStatus();
                 foreach (var s in structures)
                 {
-                    OE2EmpireTracker.Models.Blueprint bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                    ReadOnlyBlueprint bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
                     var next = new ColonyStructureStatus();
                     calc1.CalculateBuilt(s, incremental, next, workers, bp);
                     incremental = next;
@@ -106,7 +106,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ColonyStructureStatus prev = new ColonyStructureStatus();
                 foreach (var s in structures)
                 {
-                    OE2EmpireTracker.Models.Blueprint bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
+                    ReadOnlyBlueprint bp = playerContext.FindBlueprint(s.FlatpackBlueprintUUID);
                     var current = new ColonyStructureStatus();
                     calc2.CalculateBuilt(s, prev, current, workers, bp);
                     prev = current;
@@ -138,7 +138,7 @@ namespace OE2EmpireTracker.Tests.Services
                 var structure = MakeStructure(bpType);
                 var workers = new IdealColonyStructureWorkers();
                 var calculator = new ColonyStatusCalculator(new Colony());
-                OE2EmpireTracker.Models.Blueprint bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                ReadOnlyBlueprint bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
 
                 // Create a status with known non-zero values
                 var inputStatus = new ColonyStructureStatus
@@ -255,7 +255,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                 // (a) No deficits from first primary through last primary.
                 // Leftover support appended after the last primary may have
-                // transient deficits (e.g. Ent Centre needing power) — this is
+                // transient deficits (e.g. Ent Centre needing power) â€” this is
                 // expected behavior per REQ-COL-095g.
                 var calc = new ColonyStatusCalculator(new Colony());
                 var iw = new IdealColonyStructureWorkers();
@@ -280,7 +280,7 @@ namespace OE2EmpireTracker.Tests.Services
                 }
 
                 if (firstPrimaryPos < 0)
-                    return true.Label("OK — no primaries");
+                    return true.Label("OK â€” no primaries");
 
                 for (int i = 0; i < result.Count; i++)
                 {

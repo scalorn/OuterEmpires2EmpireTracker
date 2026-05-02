@@ -403,8 +403,9 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Searches global blueprints by UUID using a dictionary cache for O(1) lookup.
+        /// Returns a ReadOnlyBlueprint wrapper.
         /// </summary>
-        public Blueprint FindGlobalBlueprint(string id)
+        public ReadOnlyBlueprint FindGlobalBlueprint(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
             if (_globalBlueprintList == null) return null;
@@ -420,9 +421,32 @@ namespace OE2EmpireTracker.Services
             }
 
             if (_globalBlueprintCache.TryGetValue(id, out var match))
-                return match;
+                return new ReadOnlyBlueprint(match);
 
             return null;
+        }
+
+        /// <summary>
+        /// Returns the mutable Blueprint entity for the given UUID from the global list only.
+        /// Only called by BlueprintService.
+        /// </summary>
+        internal Blueprint FindMutableGlobalBlueprint(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+            if (_globalBlueprintList == null) return null;
+
+            if (_globalBlueprintCache == null)
+            {
+                _globalBlueprintCache = new Dictionary<string, Blueprint>();
+                foreach (var bp in _globalBlueprintList)
+                {
+                    if (bp.UUID != null && !_globalBlueprintCache.ContainsKey(bp.UUID))
+                        _globalBlueprintCache[bp.UUID] = bp;
+                }
+            }
+
+            _globalBlueprintCache.TryGetValue(uuid, out Blueprint bp2);
+            return bp2;
         }
 
         public void InvalidateGlobalBlueprintCache()
@@ -618,8 +642,7 @@ namespace OE2EmpireTracker.Services
 
         public ReadOnlyBlueprint FindReadOnlyGlobalBlueprint(string id)
         {
-            var entity = FindGlobalBlueprint(id);
-            return entity != null ? new ReadOnlyBlueprint(entity) : null;
+            return FindGlobalBlueprint(id);
         }
     }
 

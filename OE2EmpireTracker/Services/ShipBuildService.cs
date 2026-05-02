@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Services
             int quantity,
             DestinationType assemblyLocationType,
             string assemblyLocationUUID,
-            Func<string, Blueprint> blueprintFinder,
+            Func<string, ReadOnlyBlueprint> blueprintFinder,
             Func<string, int> stockChecker)
         {
             if (template == null) throw new ArgumentNullException(nameof(template));
@@ -103,9 +103,9 @@ namespace OE2EmpireTracker.Services
         /// Computes ship stats from hull blueprint and installed component blueprints.
         /// </summary>
         public static ShipStats ComputeStats(
-            Blueprint hullBlueprint,
+            ReadOnlyBlueprint hullBlueprint,
             IEnumerable<ShipComponentSlot> components,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             if (hullBlueprint == null) throw new ArgumentNullException(nameof(hullBlueprint));
             if (blueprintFinder == null) throw new ArgumentNullException(nameof(blueprintFinder));
@@ -145,9 +145,9 @@ namespace OE2EmpireTracker.Services
         /// Computes station stats from station blueprint and installed components.
         /// </summary>
         public static StationStats ComputeStationStats(
-            Blueprint stationBlueprint,
+            ReadOnlyBlueprint stationBlueprint,
             IEnumerable<ShipComponentSlot> components,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             if (stationBlueprint == null) throw new ArgumentNullException(nameof(stationBlueprint));
             if (blueprintFinder == null) throw new ArgumentNullException(nameof(blueprintFinder));
@@ -192,7 +192,7 @@ namespace OE2EmpireTracker.Services
             };
         }
 
-        private static void AddBlueprintStats(ShipStats stats, Blueprint bp)
+        private static void AddBlueprintStats(ShipStats stats, ReadOnlyBlueprint bp)
         {
             if (bp?.Properties == null) return;
             decimal v;
@@ -217,7 +217,7 @@ namespace OE2EmpireTracker.Services
             if (bp.Properties.GetDecimal(BlueprintPropertyKeys.ScanLevel, 0m, out v)) stats.ScanLevel = Math.Max(stats.ScanLevel, (int)v);
         }
 
-        private static void AddStationBlueprintStats(StationStats stats, Blueprint bp)
+        private static void AddStationBlueprintStats(StationStats stats, ReadOnlyBlueprint bp)
         {
             if (bp?.Properties == null) return;
             decimal v;

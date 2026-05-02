@@ -377,7 +377,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(vol, Is.EqualTo(500m));
         }
 
-        private OE2EmpireTracker.Models.Blueprint MakeBlueprint(
+        private ReadOnlyBlueprint MakeBlueprint(
             string uuid,
             string name,
             decimal cargoVolumeSize = 0m,
@@ -394,13 +394,13 @@ namespace OE2EmpireTracker.Tests.Services
                 bp.Properties.SetProperty("Cargo Volume Size", cargoVolumeSize);
             if (mass > 0)
                 bp.Properties.SetProperty("Mass", mass);
-            return bp;
+            return new ReadOnlyBlueprint(bp);
         }
 
-        private Func<string, OE2EmpireTracker.Models.Blueprint> MakeFinder(
-            params OE2EmpireTracker.Models.Blueprint[] blueprints)
+        private Func<string, ReadOnlyBlueprint> MakeFinder(
+            params ReadOnlyBlueprint[] blueprints)
         {
-            var dict = new Dictionary<string, OE2EmpireTracker.Models.Blueprint>();
+            var dict = new Dictionary<string, ReadOnlyBlueprint>();
             foreach (var bp in blueprints)
                 dict[bp.UUID] = bp;
             return uuid =>

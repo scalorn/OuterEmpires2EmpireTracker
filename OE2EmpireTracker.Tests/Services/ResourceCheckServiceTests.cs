@@ -333,7 +333,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Items = new List<BuildItem> { item1, item2 }
             };
 
-            Func<string, Blueprint> bpFinder = id =>
+            Func<string, ReadOnlyBlueprint> bpFinder = id =>
             {
                 if (id == "bp-1") return bp1;
                 if (id == "bp-2") return bp2;
@@ -394,7 +394,7 @@ namespace OE2EmpireTracker.Tests.Services
                     plan, id => null, id => null, id => null, "p1", id => null));
         }
 
-        private Blueprint CreateBlueprint(
+        private ReadOnlyBlueprint CreateBlueprint(
             string uuid,
             string name,
             Dictionary<string,
@@ -407,7 +407,7 @@ namespace OE2EmpireTracker.Tests.Services
                     bp.Resources[kvp.Key] = kvp.Value;
             }
 
-            return bp;
+            return new ReadOnlyBlueprint(bp);
         }
 
         private ItemBag CreateInventory(params (string name, string purity, int qty)[] items)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -63,7 +63,7 @@ namespace OE2EmpireTracker.Models
 
                 if (ItemType == Models.ItemType.ItemTypeEnum.Blueprint)
                 {
-                    Blueprint blueprint = EmpireContext.PlayerContext?.FindBlueprint(BaseItemTypeID);
+                    var blueprint = EmpireContext.PlayerContext?.FindBlueprint(BaseItemTypeID);
                     if (blueprint != null)
                     {
                         extendedName = string.Empty;

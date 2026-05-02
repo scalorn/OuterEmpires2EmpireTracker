@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -138,7 +138,7 @@ namespace OE2EmpireTracker.Services
             IEnumerable<BuildPlan> buildPlans,
             DeliveryRoute route,
             Func<string, Colony> colonyFinder,
-            Func<string, Blueprint> blueprintFinder,
+            Func<string, ReadOnlyBlueprint> blueprintFinder,
             PlayerContext playerContext,
             string planName)
         {
@@ -412,7 +412,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static Dictionary<string, List<FlatpackInfo>> CollectCompletedFlatpacks(
             IEnumerable<BuildPlan> buildPlans,
-            Func<string, Blueprint> blueprintFinder)
+            Func<string, ReadOnlyBlueprint> blueprintFinder)
         {
             var result = new Dictionary<string, List<FlatpackInfo>>();
 

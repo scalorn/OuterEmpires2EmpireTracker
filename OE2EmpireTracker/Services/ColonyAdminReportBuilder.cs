@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -346,7 +346,7 @@ namespace OE2EmpireTracker.Services
 
             foreach (var structure in colony.Structures)
             {
-                Blueprint blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (blueprint == null || blueprint.BluePrintType != BlueprintTypes.MiningRig) continue;
                 if (structure.ProcessCompletionTime == null || structure.ProcessCompletionTime.TimeRemaining <= 0) continue;
                 if (string.IsNullOrEmpty(structure.MiningSurvey) || string.IsNullOrEmpty(structure.MiningSurveyResource)) continue;
@@ -410,7 +410,7 @@ namespace OE2EmpireTracker.Services
 
             foreach (var structure in colony.Structures)
             {
-                Blueprint blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (blueprint == null || blueprint.BluePrintType != BlueprintTypes.Refinery) continue;
                 if (structure.ProcessCompletionTime == null || structure.ProcessCompletionTime.TimeRemaining <= 0) continue;
                 if (string.IsNullOrEmpty(structure.RefiningResource) || string.IsNullOrEmpty(structure.RefiningResourcePurity)) continue;

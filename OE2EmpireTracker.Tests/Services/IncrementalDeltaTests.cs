@@ -277,7 +277,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(structure);
 
             var calc = new ColonyStatusCalculator(colony);
-            var delta = calc.ComputeStructureDelta(structure, bp);
+            var delta = calc.ComputeStructureDelta(structure, new ReadOnlyBlueprint(bp));
 
             Assert.That(delta.PowerProvided, Is.EqualTo(0m), "Offline should not provide power");
             Assert.That(delta.HabitationProvision, Is.EqualTo(0m), "Offline should not provide habitation");

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
@@ -91,7 +91,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static string BuildSourceName(ColonyStructure structure, PlayerContext playerContext)
         {
-            Blueprint blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+            var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
             if (blueprint == null) return null;
 
             return $"#{structure.DisplaySequence} {blueprint.ExtendedName}";
@@ -111,7 +111,7 @@ namespace OE2EmpireTracker.Services
                 if (!IsBuiltAndOnline(structure)) continue;
                 if (HasActiveProcess(structure)) continue;
 
-                Blueprint blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (blueprint == null) continue;
 
                 string sourceName = $"#{structure.DisplaySequence} {blueprint.ExtendedName}";
@@ -252,7 +252,7 @@ namespace OE2EmpireTracker.Services
                 if (!IsBuiltAndOnline(structure)) continue;
                 if (!HasActiveProcess(structure)) continue;
 
-                Blueprint blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (blueprint == null) continue;
 
                 if (blueprint.BluePrintType == BlueprintTypes.MiningRig)
