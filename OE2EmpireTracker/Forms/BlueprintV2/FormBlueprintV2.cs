@@ -360,7 +360,7 @@ namespace OE2EmpireTracker
         /// <summary>
         /// Populates the ListView with the provided blueprints.
         /// </summary>
-        private void PopulateListView(IReadOnlyList<Blueprint> blueprints)
+        private void PopulateListView(IReadOnlyList<ReadOnlyBlueprint> blueprints)
         {
             if (blueprints == null) return;
 
@@ -370,7 +370,7 @@ namespace OE2EmpireTracker
             lvwBlueprints.BeginUpdate();
             lvwBlueprints.Items.Clear();
 
-            foreach (Blueprint bp in blueprints)
+            foreach (ReadOnlyBlueprint bp in blueprints)
             {
                 var item = new ListViewItem(bp.BluePrintType ?? string.Empty);
                 item.Tag = bp;
@@ -401,7 +401,7 @@ namespace OE2EmpireTracker
         {
             foreach (ListViewItem item in lvwBlueprints.Items)
             {
-                if ((item.Tag as Blueprint)?.UUID == uuid)
+                if ((item.Tag as ReadOnlyBlueprint)?.UUID == uuid)
                 {
                     item.Selected = true;
                     item.EnsureVisible();
@@ -447,12 +447,23 @@ namespace OE2EmpireTracker
         {
             if (lvwBlueprints.SelectedItems.Count == 1)
             {
-                var blueprint = lvwBlueprints.SelectedItems[0].Tag as Blueprint;
-                viewModel.SelectBlueprint(blueprint);
+                var readOnly = lvwBlueprints.SelectedItems[0].Tag as ReadOnlyBlueprint;
+                string uuid = readOnly?.UUID;
+
+                // Temporary bridge: look up the mutable Blueprint for SelectBlueprint
+                // (Task 5 will replace this with viewModel.LoadFrom(readOnly))
+                Blueprint mutable = null;
+                if (!string.IsNullOrEmpty(uuid))
+                {
+                    mutable = playerContext.FindBlueprint(uuid)
+                           ?? EmpireContext.GetInstance()?.FindGlobalBlueprint(uuid);
+                }
+
+                viewModel.SelectBlueprint(mutable ?? new Blueprint());
 
                 // Update delete button state
                 var counter = CreateReferenceCounter();
-                var report = counter.CountReferences(blueprint?.UUID);
+                var report = counter.CountReferences(uuid);
                 var (enabled, text) = GetDeleteButtonState(report);
                 btnDelete.Enabled = enabled;
                 btnDelete.Text = text;

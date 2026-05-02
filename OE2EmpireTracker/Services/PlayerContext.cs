@@ -2703,7 +2703,7 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Returns all blueprints (current player's + global) as read-only wrappers.
         /// </summary>
-        public List<ReadOnlyBlueprint> GetAllReadOnlyBlueprints()
+        public IReadOnlyList<ReadOnlyBlueprint> GetAllReadOnlyBlueprints()
         {
             lock (_listLock)
             {

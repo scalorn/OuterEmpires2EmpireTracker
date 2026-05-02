@@ -162,12 +162,12 @@ namespace OE2EmpireTracker.ViewModels
         // List filtering
         // -----------------------------------------------------------------------
 
-        public IReadOnlyList<Blueprint> GetFilteredBlueprints(string nameFilter)
+        public IReadOnlyList<ReadOnlyBlueprint> GetFilteredBlueprints(string nameFilter)
         {
             return GetFilteredBlueprints(nameFilter, null);
         }
 
-        public IReadOnlyList<Blueprint> GetFilteredBlueprints(string nameFilter, BlueprintFilterCriteria criteria)
+        public IReadOnlyList<ReadOnlyBlueprint> GetFilteredBlueprints(string nameFilter, BlueprintFilterCriteria criteria)
         {
             // Merge global + current player blueprints
             var list = new List<Blueprint>(_playerContext.GetCurrentPlayerBlueprints());
@@ -214,7 +214,7 @@ namespace OE2EmpireTracker.ViewModels
             }
 
             var sorted = CollectionSortHelper.OrderBlueprints(list);
-            return sorted;
+            return sorted.Select(b => new ReadOnlyBlueprint(b)).ToList();
         }
 
         // -----------------------------------------------------------------------

@@ -185,7 +185,7 @@ namespace OE2EmpireTracker.Tests.ViewModels
                 var resultUUIDs = new HashSet<string>(result.Select(b => b.UUID));
 
                 // Soundness: every result satisfies all constraints
-                bool allResultsSatisfy = result.All(b => SatisfiesAll(b, data.TextFilter, data.Criteria));
+                bool allResultsSatisfy = result.All(b => SatisfiesAllReadOnly(b, data.TextFilter, data.Criteria));
 
                 // Completeness: every qualifying blueprint appears in the result
                 bool allExpectedPresent = expectedUUIDs.IsSubsetOf(resultUUIDs);
@@ -217,6 +217,47 @@ namespace OE2EmpireTracker.Tests.ViewModels
         private static bool SatisfiesAll(BP bp, string nameFilter, BlueprintFilterCriteria criteria)
         {
             // Text filter: matches ExtendedName or BluePrintType (case-insensitive)
+            if (!string.IsNullOrEmpty(nameFilter))
+            {
+                bool matchesExtended = bp.ExtendedName != null
+                    && bp.ExtendedName.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0;
+                bool matchesType = !string.IsNullOrEmpty(bp.BluePrintType)
+                    && bp.BluePrintType.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0;
+                if (!matchesExtended && !matchesType)
+                    return false;
+            }
+
+            if (criteria != null)
+            {
+                if (criteria.BlueprintTypeId != null && bp.BluePrintType != criteria.BlueprintTypeId)
+                    return false;
+                if (criteria.ShipClassId.HasValue && bp.Class != criteria.ShipClassId.Value)
+                    return false;
+                if (criteria.TechLevelName != null && bp.TechLevel != criteria.TechLevelName)
+                    return false;
+                if (criteria.Evolution.HasValue)
+                {
+                    if (criteria.EvolutionAndAbove)
+                    {
+                        if (bp.Evolution < criteria.Evolution.Value)
+                            return false;
+                    }
+                    else
+                    {
+                        if (bp.Evolution != criteria.Evolution.Value)
+                            return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// ReadOnlyBlueprint overload of SatisfiesAll for validating filter results.
+        /// </summary>
+        private static bool SatisfiesAllReadOnly(ReadOnlyBlueprint bp, string nameFilter, BlueprintFilterCriteria criteria)
+        {
             if (!string.IsNullOrEmpty(nameFilter))
             {
                 bool matchesExtended = bp.ExtendedName != null
