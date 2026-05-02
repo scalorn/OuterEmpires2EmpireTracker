@@ -34720,7 +34720,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Trans-Metals",
   "Name": "Heavy Trans-Metals",
-  "Quantity": 82,
+  "Quantity": 123,
   "ResourcePurity": "High"
 },
         "3e5f430a-892c-4272-87af-ca1634fae260": {
@@ -34824,7 +34824,7 @@
   "ItemType": "Flatpack",
   "BaseItemTypeID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
   "Name": "Refinery Flatpack",
-  "Quantity": 2
+  "Quantity": 3
 },
         "cdaa40f9-2f2f-4622-861e-8812a14d32a8": {
   "UUID": "cdaa40f9-2f2f-4622-861e-8812a14d32a8",
@@ -35000,8 +35000,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T14:08:37.1524433Z",
-            "EndTime": "2026-05-02T15:08:36.1524433Z",
+            "StartTime": "2026-05-02T15:08:36.1524433Z",
+            "EndTime": "2026-05-02T16:08:35.1524433Z",
             "RepeatIntervalSeconds": 3599,
             "IsRepeating": true
           },
@@ -35009,7 +35009,7 @@
           "MiningSurveyResource": "Strategic Mover",
           "ManufacturingBlueprintUUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
           "ManufacturingQuantity": 168,
-          "ManufacturingCompleted": 2,
+          "ManufacturingCompleted": 3,
           "CurrentAttitude": ""
         },
         {
@@ -35089,14 +35089,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T14:03:29.7703062Z",
-            "EndTime": "2026-05-02T15:03:29.7703062Z",
+            "StartTime": "2026-05-02T15:03:29.7703062Z",
+            "EndTime": "2026-05-02T16:03:29.7703062Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "22fe7b47-47c6-4ecf-ad43-f598103317c4",
           "MiningSurveyResource": "Heavy Trans-Metals",
-          "MiningLeftOvers": 0.7480,
+          "MiningLeftOvers": 0.9964,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -36257,8 +36257,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T14:03:29.7703062Z",
-            "EndTime": "2026-05-02T15:03:29.7703062Z",
+            "StartTime": "2026-05-02T15:03:29.7703062Z",
+            "EndTime": "2026-05-02T16:03:29.7703062Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -58206,7 +58206,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Post-Trans Metals",
   "Name": "Heavy Post-Trans Metals",
-  "Quantity": 2147481460,
+  "Quantity": 2147481468,
   "ResourcePurity": "High"
 },
         "ff7f44c6-5ab7-4e1e-b74f-acad0ece79df": {
@@ -58214,7 +58214,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Inorganics",
   "Name": "Acidic Inorganics",
-  "Quantity": 249233527,
+  "Quantity": 249233557,
   "ResourcePurity": "Medium"
 }
       },
@@ -58329,14 +58329,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T14:02:50.7277849Z",
-            "EndTime": "2026-05-02T15:02:50.7277849Z",
+            "StartTime": "2026-05-02T15:02:50.7277849Z",
+            "EndTime": "2026-05-02T16:02:50.7277849Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "f71640ab-f2f9-4284-97a4-59529cf0f86c",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
-          "MiningLeftOvers": 0.7821,
+          "MiningLeftOvers": 0.2864,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -58605,14 +58605,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T14:02:49.7277849Z",
-            "EndTime": "2026-05-02T15:02:49.7277849Z",
+            "StartTime": "2026-05-02T15:02:49.7277849Z",
+            "EndTime": "2026-05-02T16:02:49.7277849Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "f71640ab-f2f9-4284-97a4-59529cf0f86c",
           "MiningSurveyResource": "Acidic Inorganics",
-          "MiningLeftOvers": 0.9719,
+          "MiningLeftOvers": 0.9689,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -85306,7 +85306,7 @@
   "ItemType": "Flatpack",
   "BaseItemTypeID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
   "Name": "Reactor Core Flatpack",
-  "Quantity": 1
+  "Quantity": 2
 },
         "74994acd-e7a9-41f5-8d58-e429a1727415": {
   "UUID": "74994acd-e7a9-41f5-8d58-e429a1727415",
@@ -85381,14 +85381,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T14:01:17.2559984Z",
-            "EndTime": "2026-05-02T15:01:17.2559984Z",
+            "StartTime": "2026-05-02T15:01:17.2559984Z",
+            "EndTime": "2026-05-02T16:01:17.2559984Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "ManufacturingBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "ManufacturingQuantity": 168,
-          "ManufacturingCompleted": 1,
+          "ManufacturingCompleted": 2,
           "CurrentAttitude": ""
         },
         {
@@ -87010,7 +87010,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Non-Metallics",
   "Name": "Complex Non-Metallics",
-  "Quantity": 2147479869,
+  "Quantity": 2147479819,
   "ResourcePurity": "High"
 },
         "60a83a2f-82c7-4da4-a2b4-43c8700ac0d8": {
@@ -87021,7 +87021,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Non-Metallics",
   "Name": "Complex Non-Metallics",
-  "Quantity": 29922,
+  "Quantity": 30176,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 }
@@ -87424,8 +87424,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T14:01:36.7267848Z",
-            "EndTime": "2026-05-02T15:01:36.7267848Z",
+            "StartTime": "2026-05-02T15:01:36.7267848Z",
+            "EndTime": "2026-05-02T16:01:36.7267848Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -87604,8 +87604,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T14:01:36.7267848Z",
-            "EndTime": "2026-05-02T15:01:36.7267848Z",
+            "StartTime": "2026-05-02T15:01:36.7267848Z",
+            "EndTime": "2026-05-02T16:01:36.7267848Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -91535,7 +91535,7 @@
         {
           "UUID": "1aa806bc-afbc-4bdc-b1b9-8d2a0058745d",
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
-          "displaySequence": 1,
+          "displaySequence": 3,
           "buildingID": 11999,
           "buildQueueSequence": 6,
           "Properties": {
@@ -91575,7 +91575,7 @@
         {
           "UUID": "2add3382-0147-4b7f-a4ae-84ae1c72f30e",
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
-          "displaySequence": 2,
+          "displaySequence": 4,
           "buildingID": 12047,
           "buildQueueSequence": 8,
           "Properties": {
@@ -91634,7 +91634,7 @@
         {
           "UUID": "2c759eb4-cffa-49aa-913e-62dd8fb38f4e",
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
-          "displaySequence": 3,
+          "displaySequence": 5,
           "buildingID": 13484,
           "buildQueueSequence": 11,
           "Properties": {
@@ -91720,7 +91720,7 @@
         {
           "UUID": "3700c1d3-b49a-4cd0-8f10-46a34fe443ab",
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
-          "displaySequence": 4,
+          "displaySequence": 6,
           "buildingID": 13577,
           "buildQueueSequence": 15,
           "Properties": {
@@ -91747,7 +91747,7 @@
         {
           "UUID": "3bbb40ad-0f26-4ecb-b989-3064e1677362",
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
-          "displaySequence": 3,
+          "displaySequence": 7,
           "buildingID": 12655,
           "buildQueueSequence": 16,
           "Properties": {
@@ -91769,7 +91769,7 @@
         {
           "UUID": "3ee8a795-a626-49bc-9ef5-2848a0563201",
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
-          "displaySequence": 4,
+          "displaySequence": 8,
           "buildingID": 14332,
           "buildQueueSequence": 17,
           "Properties": {
@@ -91827,7 +91827,7 @@
         {
           "UUID": "46c55153-fe15-4185-9b37-ac21ca20eaa9",
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
-          "displaySequence": 5,
+          "displaySequence": 9,
           "buildingID": 13781,
           "buildQueueSequence": 20,
           "Properties": {
@@ -91930,7 +91930,7 @@
         {
           "UUID": "58d78004-ea10-4af7-b28f-ef0b93cac31d",
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
-          "displaySequence": 6,
+          "displaySequence": 10,
           "buildingID": 13815,
           "buildQueueSequence": 25,
           "Properties": {
@@ -92130,7 +92130,7 @@
         {
           "UUID": "770b4e0e-98f2-49ca-8d1c-ec104df3fa09",
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
-          "displaySequence": 5,
+          "displaySequence": 11,
           "buildingID": 13069,
           "buildQueueSequence": 32,
           "Properties": {
@@ -92152,7 +92152,7 @@
         {
           "UUID": "77260b08-4441-42dc-82a5-96127e955969",
           "FlatpackBlueprintUUID": "f391b2ae-1c75-58e6-8664-377251f57461",
-          "displaySequence": 1,
+          "displaySequence": 12,
           "buildingID": 10138,
           "buildQueueSequence": 33,
           "Properties": {
@@ -92226,7 +92226,7 @@
         {
           "UUID": "8444b655-176e-434c-a650-da2ebfbfd958",
           "FlatpackBlueprintUUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
-          "displaySequence": 7,
+          "displaySequence": 13,
           "buildingID": 13946,
           "buildQueueSequence": 36,
           "Properties": {
@@ -92339,7 +92339,7 @@
         {
           "UUID": "9be7981f-fc35-4164-a729-47ef9286fc49",
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
-          "displaySequence": 6,
+          "displaySequence": 14,
           "buildingID": 13436,
           "buildQueueSequence": 41,
           "Properties": {
@@ -92360,7 +92360,7 @@
         {
           "UUID": "abce98cf-d6da-4f0d-827b-6718587b8972",
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
-          "displaySequence": 7,
+          "displaySequence": 15,
           "buildingID": 13702,
           "buildQueueSequence": 42,
           "Properties": {
@@ -92475,7 +92475,7 @@
         {
           "UUID": "b79cb6b1-c95f-4f32-83a6-6b0dd5195276",
           "FlatpackBlueprintUUID": "49763d1e-1bcf-5b26-892c-0b87ab8e11b6",
-          "displaySequence": 1,
+          "displaySequence": 16,
           "buildingID": 10475,
           "buildQueueSequence": 47,
           "Properties": {
@@ -92586,7 +92586,7 @@
         {
           "UUID": "d5dc6a3d-83f0-49f6-b525-d032db6a06b5",
           "FlatpackBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
-          "displaySequence": 8,
+          "displaySequence": 17,
           "buildingID": 13743,
           "buildQueueSequence": 52,
           "Properties": {

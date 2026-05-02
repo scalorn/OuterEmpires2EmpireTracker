@@ -389,7 +389,11 @@ namespace OE2EmpireTracker.Services
             // (the game dropped the property).
             // Properties are added in sorted order to maintain deterministic serialization.
             // When incoming has no properties (e.g. resources-only import), preserve existing.
-            if (incoming.Properties != null && incoming.Properties.Count > 0)
+            // Also preserve when incoming only has internal properties (starting with _),
+            // which indicates a partial parse (e.g. resources tab with icon position).
+            bool hasNonInternalProps = incoming.Properties != null
+                && incoming.Properties.Properties.Keys.Any(k => !k.StartsWith("_"));
+            if (incoming.Properties != null && incoming.Properties.Count > 0 && hasNonInternalProps)
             {
                 Log.Info(
                     "UpdateExisting: replacing properties ({0} incoming, was {1} existing) for {2} (hashcode={3})",
@@ -455,9 +459,23 @@ namespace OE2EmpireTracker.Services
             else
             {
                 Log.Info(
-                    "UpdateExisting: incoming has no properties, preserving existing ({0} props) for {1}",
+                    "UpdateExisting: incoming has no non-internal properties ({0} total, {1} internal), preserving existing ({2} props) for {3}",
+                    incoming.Properties?.Count ?? 0,
+                    incoming.Properties?.Properties.Keys.Count(k => k.StartsWith("_")) ?? 0,
                     existing.Properties?.Count ?? 0,
                     existing.Name);
+
+                // Still merge any internal properties from incoming into existing
+                if (incoming.Properties != null && existing.Properties != null)
+                {
+                    foreach (var kvp in incoming.Properties.Properties)
+                    {
+                        if (kvp.Key.StartsWith("_"))
+                        {
+                            existing.Properties.SetProperty(kvp.Key, kvp.Value);
+                        }
+                    }
+                }
             }
 
             // Replace resources -- the incoming blueprint has the definitive resource list.
