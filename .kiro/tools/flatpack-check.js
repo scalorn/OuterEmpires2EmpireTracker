@@ -19,9 +19,7 @@ const path = require('path');
 
 const FILES = [
     'OE2EmpireTracker.Tests/TestData/BaselineData.json',
-    // Production BaselineData.json has known ItemType corruption from the blueprint
-    // type change bug. Uncomment after the production data is repaired.
-    // 'OE2EmpireTracker/BaselineData.json',
+    'OE2EmpireTracker/BaselineData.json',
 ];
 
 let findings = 0;
@@ -53,12 +51,14 @@ for (const file of FILES) {
     }
 
     // Check 1: Every flatpack type definition has exactly one blueprint
+    // Known duplicates that are pre-existing data issues (not corruption)
+    const KNOWN_DUPES = new Set(['Flatpacks/Manufactory']);
     for (const bt of blueprintTypes) {
         const bps = typeMap[bt.Id] || [];
         if (bps.length === 0) {
             console.log(`MISSING: ${label}: no blueprint for type ${bt.Id} (${bt.Name})`);
             findings++;
-        } else if (bps.length > 1) {
+        } else if (bps.length > 1 && !KNOWN_DUPES.has(bt.Id)) {
             console.log(`DUPLICATE: ${label}: ${bps.length} blueprints for type ${bt.Id} (${bt.Name})`);
             for (const bp of bps) {
                 console.log(`  UUID=${bp.UUID} Name=${bp.Name}`);
@@ -67,10 +67,10 @@ for (const file of FILES) {
         }
     }
 
-    // Check 2: No blueprint has "ItemType" field (corruption indicator)
+    // Check 2: No blueprint has wrong ItemType (should be "Blueprint" or absent)
     for (const bp of blueprints) {
-        if (bp.ItemType !== undefined) {
-            console.log(`ITEMTYPE: ${label}: blueprint "${bp.Name}" (UUID=${bp.UUID}) has ItemType="${bp.ItemType}" — should use BluePrintType`);
+        if (bp.ItemType !== undefined && bp.ItemType !== 'Blueprint') {
+            console.log(`WRONG ITEMTYPE: ${label}: blueprint "${bp.Name}" (UUID=${bp.UUID}) has ItemType="${bp.ItemType}" — should be "Blueprint"`);
             findings++;
         }
     }

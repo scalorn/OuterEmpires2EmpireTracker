@@ -5,7 +5,7 @@
     "CommoditiesPerCycle": 10,
     "CommodityCycleSeconds": 600,
     "StructureCap": 65,
-    "WorkerVolume": 50.0
+    "WorkerVolume": 50
   },
   "ShipClass": [
     {
@@ -2607,7 +2607,7 @@
       "OwnerUUID": "",
       "BaseBlueprintUUID": "",
       "LegacyUUID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
-      "BluePrintType": "Flatpacks/CommodityFactory/MiningIndustryCentre",
+      "BluePrintType": "Flatpacks/MiningRig",
       "CopyCost": 1768,
       "Properties": {
         "Blue Collar Detail": "1",
@@ -2630,7 +2630,7 @@
         "Lanthanides": "67"
       },
       "UUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "Mining Rig Flatpack",
       "Description": "Can mine one surveyed resource vein."
     },
@@ -8571,7 +8571,7 @@
       "OwnerUUID": "",
       "BaseBlueprintUUID": "",
       "LegacyUUID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
-      "BluePrintType": "Flatpacks/CommodityFactory/MiningIndustryCentre",
+      "BluePrintType": "Flatpacks/Warehouse",
       "CopyCost": 1745,
       "Properties": {
         "Blue Collar Detail": "1",
@@ -8591,7 +8591,7 @@
         "Metaloids": "190"
       },
       "UUID": "49763d1e-1bcf-5b26-892c-0b87ab8e11b6",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "Warehouse Flatpack",
       "Description": "Colony mass storage facility."
     },
@@ -10660,7 +10660,7 @@
         "Noble Gases": "785"
       },
       "UUID": "5fdb782b-a672-527a-a3b0-ef991a7849da",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "Remote Operations Array Flatpack",
       "Description": "Colony owner can control all colony operations remotely within a set range."
     },
@@ -10827,7 +10827,7 @@
       "OwnerUUID": "",
       "BaseBlueprintUUID": "",
       "LegacyUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
-      "BluePrintType": "Flatpacks/CommodityFactory/MiningIndustryCentre",
+      "BluePrintType": "Flatpacks/EntertainmentCentreFlatpack",
       "CopyCost": 2613,
       "Properties": {
         "Blue Collar Detail": "1",
@@ -10848,7 +10848,7 @@
         "Trans-Metals": "699"
       },
       "UUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "Entertainment Centre Flatpack",
       "Description": "Where colonist go to relax and blow off some steam."
     },
@@ -11683,7 +11683,7 @@
         "Strong Alkali Inorganics": "363"
       },
       "UUID": "6c7a74ff-bfa6-57ed-9bdd-a006b6a15033",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "Manufactory Flatpack",
       "Description": "Manufacturing plant."
     },
@@ -11994,7 +11994,7 @@
     },
     {
       "OwnerUUID": "",
-      "BluePrintType": "Flatpacks/Warehouse",
+      "BluePrintType": "Flatpacks/Manufactory",
       "Properties": {
         "_IconPosition": "-404px -594px"
       },
@@ -12355,7 +12355,7 @@
         "Strong Alkali Organics": "352"
       },
       "UUID": "73821fd8-6114-5722-a7fd-2f61ca77bf15",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "RAK-L MatScan"
     },
     {
@@ -13919,7 +13919,7 @@
         "Trans-Metals": "822"
       },
       "UUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "Reactor Core Flatpack",
       "Description": "Provides 6Mw of power per core."
     },
@@ -15007,7 +15007,7 @@
         "Strong Acidic Inorganics": "59"
       },
       "UUID": "8a78639d-5e80-5aaa-8759-7a8cb4d4b852",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "Research Laboratory Flatpack",
       "Description": "Research & Development facility."
     },
@@ -22938,7 +22938,7 @@
         "Strong Alkali Inorganics": "79"
       },
       "UUID": "db010e53-d097-5d36-8599-89986d570414",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "Hydroponics Bay Flatpack",
       "Description": "Provide food enough for 4 Details."
     },
@@ -23084,7 +23084,7 @@
         "Strong Alkali Organics": "284"
       },
       "UUID": "dc9bcb32-cd25-5f40-b585-8ac895fa6874",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "RAK-LL MatScan"
     },
     {
@@ -23749,7 +23749,7 @@
         "Post-Trans Metals": "450"
       },
       "UUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "Habitation Block Flatpack",
       "Description": "Life support and habitation functions enough for 4 Details."
     },
@@ -24704,7 +24704,7 @@
         "Noble Gases": "683"
       },
       "UUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "Refinery Flatpack",
       "Description": "Process raw materials into refined materials."
     },
@@ -25632,7 +25632,7 @@
         "Strong Acidic Inorganics": "119"
       },
       "UUID": "f391b2ae-1c75-58e6-8664-377251f57461",
-      "ItemType": "Survey",
+      "ItemType": "Blueprint",
       "Name": "Colony Command Centre Flatpack",
       "Description": "The heart of the colony and the absolute minimum structure needed to secure the claim on a colony site."
     },
