@@ -1,1 +1,0 @@
-var fs=require(String.fromCharCode(39)+String.fromCharCode(102,115)+String.fromCharCode(39));console.log(String.fromCharCode(111,107));
