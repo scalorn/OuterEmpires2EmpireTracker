@@ -102,9 +102,9 @@
 ## Phase 4: Verification
 
 ### Task 16: Full Verification
-- [ ] Run all tests -- zero failures
-- [ ] Run audit -- zero findings
-- [ ] Grep for direct Blueprint property sets -- only in BlueprintService, deserialization, migration
-- [ ] Grep for `FindMutableBlueprint` -- only in BlueprintService
-- [ ] Verify form behavior: select, edit, save, import, delete, global toggle all work
-- [ ] Update BL-108 status in BACKLOG.md to Done
+- [x] Run all tests -- zero failures
+- [x] Run audit -- zero findings
+- [x] Grep for direct Blueprint property sets -- only in BlueprintService, deserialization, migration
+- [x] Grep for `FindMutableBlueprint` -- only in BlueprintService
+- [x] Verify form behavior: select, edit, save, import, delete, global toggle all work
+- [x] Update BL-108 status in BACKLOG.md to Done

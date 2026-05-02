@@ -281,7 +281,7 @@ These items migrate individual forms from consuming mutable entity references to
 
 ### BL-108: FormBlueprintV2 — Immutable Data Model, Mutation Through Service Only
 **Dependencies:** readonly-data-wrappers spec (done)
-**Status: New**
+**Status: Done**
 Full immutable data model for the blueprint form. ViewModel becomes a disconnected edit buffer (no write-through). All mutation goes through BlueprintService (Update, Create, Delete, Import, MoveToGlobal/Player). ReadOnly wrappers for all read-only paths. Unsaved changes prompts on selection change, form close, and new. See `.kiro/specs/bl-108-blueprint-readonly/` for full spec.
 
 ### BL-131: FormBlueprintV2 — Statistics Grid Add/Delete and Context Menus
