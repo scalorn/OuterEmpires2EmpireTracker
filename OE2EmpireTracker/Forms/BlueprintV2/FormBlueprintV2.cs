@@ -494,6 +494,13 @@ namespace OE2EmpireTracker
             }
 
             // All data is already in the model via write-through — just persist
+            Log.Info(
+                "BtnSave: persisting bp='{0}' UUID={1} type='{2}' class={3} tech='{4}'",
+                viewModel.Data.Name,
+                viewModel.Data.UUID,
+                viewModel.Data.BluePrintType ?? "(null)",
+                viewModel.Data.Class,
+                viewModel.Data.TechLevel ?? "(null)");
             viewModel.Save(chkGlobalBlueprint.Checked);
 
             RefreshBlueprintList();
@@ -875,7 +882,16 @@ namespace OE2EmpireTracker
         {
             if (_isProgrammaticUpdate > 0) return;
             var bt = cmbBlueprintType.SelectedItem as BlueprintType;
+            string oldType = viewModel?.BluePrintType;
+            string newType = bt?.Id;
             if (bt != null) viewModel.BluePrintType = bt.Id;
+            Log.Info(
+                "CmbBlueprintType changed: old='{0}' new='{1}' selectedIndex={2} bp='{3}' UUID={4}",
+                oldType ?? "(null)",
+                newType ?? "(null)",
+                cmbBlueprintType.SelectedIndex,
+                viewModel?.Data?.Name ?? "(null)",
+                viewModel?.Data?.UUID ?? "(null)");
 
             // Hide ShipClass and TechLevel for Universal types
             UpdateUniversalVisibility(bt);
@@ -1829,8 +1845,17 @@ namespace OE2EmpireTracker
             txtCopyCost.Text = viewModel.Data.CopyCost.ToString();
 
             // Blueprint type
-            cmbBlueprintType.SelectedItem = empireContext.FindBlueprintType(viewModel.Data.BluePrintType);
+            string dataType = viewModel.Data.BluePrintType;
+            var foundBt = empireContext.FindBlueprintType(dataType);
+            cmbBlueprintType.SelectedItem = foundBt;
             var bt = cmbBlueprintType.SelectedItem as BlueprintType;
+            Log.Debug(
+                "PopulateForm type: data='{0}' found={1} comboSelected='{2}' comboIndex={3} bp='{4}'",
+                dataType ?? "(null)",
+                foundBt != null ? foundBt.Id : "(not found)",
+                bt?.Id ?? "(null)",
+                cmbBlueprintType.SelectedIndex,
+                viewModel.Data.Name ?? "(null)");
             UpdateUniversalVisibility(bt);
 
             // Dependent combos

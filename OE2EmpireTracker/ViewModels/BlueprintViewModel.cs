@@ -50,7 +50,22 @@ namespace OE2EmpireTracker.ViewModels
 
         public string Description { get => _blueprint.Description; set => _blueprint.Description = value; }
 
-        public string BluePrintType { get => _blueprint.BluePrintType; set => _blueprint.BluePrintType = value; }
+        public string BluePrintType
+        {
+            get => _blueprint.BluePrintType;
+            set
+            {
+                string old = _blueprint.BluePrintType;
+                _blueprint.BluePrintType = value;
+                if (old != value)
+                {
+                    Log.Info(
+                        "BlueprintViewModel.BluePrintType changed: '{0}' -> '{1}' for '{2}' UUID={3}",
+                        old ?? "(null)", value ?? "(null)",
+                        _blueprint.Name ?? "(null)", _blueprint.UUID ?? "(null)");
+                }
+            }
+        }
 
         public int Class { get => _blueprint.Class; set => _blueprint.Class = value; }
 

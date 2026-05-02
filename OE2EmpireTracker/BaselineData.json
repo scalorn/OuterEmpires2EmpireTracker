@@ -2607,27 +2607,27 @@
       "OwnerUUID": "",
       "BaseBlueprintUUID": "",
       "LegacyUUID": "584616b3-b8c0-4ca5-98d2-66e39587ae57",
-      "BluePrintType": "Flatpacks/MiningRig",
+      "BluePrintType": "Flatpacks/CommodityFactory/MiningIndustryCentre",
       "CopyCost": 1768,
       "Properties": {
         "Blue Collar Detail": "1",
         "Can Research": "No",
         "Extraction Efficiency": "100",
-        "Manufacture Run Time": "1h 0m",
+        "Manufacture Run Time": "4h",
         "Max Per Colony": "999",
         "Power Required": "2",
         "Structural Integrity": "150",
         "Unassigned Specialist Detail": "1",
         "Unassigned White Collar Detail": "1",
-        "_IconClass": "ui_icon_H16",
-        "_IconPosition": "-290px -594px"
+        "_IconPosition": "-290px -594px",
+        "_IconClass": "ui_icon_H16"
       },
       "Resources": {
-        "Acidic Inorganics": "635",
-        "Alkali Organics": "518",
-        "Halogens": "3952",
-        "Heavy Post-Trans Metals": "712",
-        "Lanthanides": "552"
+        "Acidic Inorganics": "77",
+        "Alkali Organics": "63",
+        "Halogens": "476",
+        "Heavy Post-Trans Metals": "86",
+        "Lanthanides": "67"
       },
       "UUID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
       "ItemType": "Survey",
@@ -8504,7 +8504,7 @@
     },
     {
       "OwnerUUID": "",
-      "BluePrintType": "Flatpacks/CommodityFactory/AdministrationBlock",
+      "BluePrintType": "Shield",
       "TechLevel": "Hi-Tech",
       "Properties": {},
       "Resources": {},
@@ -8571,12 +8571,12 @@
       "OwnerUUID": "",
       "BaseBlueprintUUID": "",
       "LegacyUUID": "513b5bc8-db3d-4808-8cc4-a93bc9f65354",
-      "BluePrintType": "Flatpacks/Warehouse",
+      "BluePrintType": "Flatpacks/CommodityFactory/MiningIndustryCentre",
       "CopyCost": 1745,
       "Properties": {
         "Blue Collar Detail": "1",
         "Can Research": "No",
-        "Manufacture Run Time": "1h 0m",
+        "Manufacture Run Time": "4h",
         "Max Per Colony": "999",
         "Power Required": "2",
         "Structural Integrity": "100",
@@ -8586,9 +8586,9 @@
         "_IconPosition": "-442px -594px"
       },
       "Resources": {
-        "Alkali Inorganics": "451",
-        "Halogens": "3401",
-        "Metaloids": "1178"
+        "Alkali Inorganics": "73",
+        "Halogens": "548",
+        "Metaloids": "190"
       },
       "UUID": "49763d1e-1bcf-5b26-892c-0b87ab8e11b6",
       "ItemType": "Survey",
@@ -10827,25 +10827,25 @@
       "OwnerUUID": "",
       "BaseBlueprintUUID": "",
       "LegacyUUID": "2f15fe77-217e-47b4-8846-128d6e32f6a1",
-      "BluePrintType": "Flatpacks/EntertainmentCentreFlatpack",
+      "BluePrintType": "Flatpacks/CommodityFactory/MiningIndustryCentre",
       "CopyCost": 2613,
       "Properties": {
         "Blue Collar Detail": "1",
         "Can Research": "No",
         "Entertainment Provided": "10",
-        "Manufacture Run Time": "1h 0m",
+        "Manufacture Run Time": "4h",
         "Power Required": "2",
         "Structural Integrity": "75",
         "Unassigned Specialist Detail": "1",
-        "_IconClass": "ui_icon_M16",
-        "_IconPosition": "-480px -594px"
+        "_IconPosition": "-480px -594px",
+        "_IconClass": "ui_icon_M16"
       },
       "Resources": {
-        "Acidic Organics": "446",
-        "Alkali Inorganics": "420",
-        "Heavy Alkaline Earth Metals": "431",
-        "Heavy Post-Trans Metals": "421",
-        "Trans-Metals": "2198"
+        "Acidic Organics": "142",
+        "Alkali Inorganics": "134",
+        "Heavy Alkaline Earth Metals": "137",
+        "Heavy Post-Trans Metals": "134",
+        "Trans-Metals": "699"
       },
       "UUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
       "ItemType": "Survey",
@@ -17075,7 +17075,7 @@
     {
       "OwnerUUID": "",
       "LegacyUUID": "d0ba12cc-5eca-4a60-971f-68028a7fcf86",
-      "BluePrintType": "Flatpacks/CommodityFactory/AdministrationBlock",
+      "BluePrintType": "MissileLauncher/Small",
       "Properties": {
         "Mass": "6927",
         "Cargo Volume Size": "3711",
@@ -22903,20 +22903,20 @@
         "Blue Collar Detail": "1",
         "Can Research": "No",
         "Food Provision": "4",
-        "Manufacture Run Time": "1h 0m",
+        "Manufacture Run Time": "3h",
         "Max Per Colony": "999",
         "Power Required": "1",
         "Structural Integrity": "100",
         "Unassigned Specialist Detail": "1",
-        "_IconClass": "ui_icon_D16",
-        "_IconPosition": "-138px -594px"
+        "_IconPosition": "-138px -594px",
+        "_IconClass": "ui_icon_D16"
       },
       "Resources": {
-        "Acidic Inorganics": "465",
-        "Alkali Metals": "2364",
-        "Lanthanides": "534",
-        "Metaloids": "494",
-        "Strong Alkali Inorganics": "385"
+        "Acidic Inorganics": "96",
+        "Alkali Metals": "484",
+        "Lanthanides": "110",
+        "Metaloids": "102",
+        "Strong Alkali Inorganics": "79"
       },
       "UUID": "db010e53-d097-5d36-8599-89986d570414",
       "ItemType": "Survey",
@@ -25586,7 +25586,7 @@
       "OwnerUUID": "",
       "BaseBlueprintUUID": "",
       "LegacyUUID": "49f3198c-292f-4dd0-ab72-9c873b97f8a2",
-      "BluePrintType": "Flatpacks/ColonyCommandCentre",
+      "BluePrintType": "Flatpacks/CommodityFactory/MiningIndustryCentre",
       "CopyCost": 2590,
       "Properties": {
         "Can Research": "No",
