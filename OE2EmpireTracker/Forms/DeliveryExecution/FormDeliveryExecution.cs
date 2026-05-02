@@ -594,6 +594,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             }
 
             playerContext.WriteContext();
+            playerContext.CascadeResourceCheckDirty = true;
 
             // Incrementally update the Complete Stop button for the affected stop
             var affectedStop = selectedPlan?.Stops.FirstOrDefault(s =>
@@ -604,6 +605,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             {
                 selectedPlan.Completed = true;
                 playerContext.WriteContext();
+                playerContext.CascadeResourceCheckDirty = true;
                 Log.Info("Delivery plan '{0}' marked as completed", selectedPlan.Name);
             }
         }
@@ -853,6 +855,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             {
                 selectedPlan.Completed = true;
                 playerContext.WriteContext();
+                playerContext.CascadeResourceCheckDirty = true;
                 Log.Info("Delivery plan '{0}' marked as completed", selectedPlan.Name);
             }
         }
@@ -863,6 +866,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             selectedPlan.Completed = true;
             playerContext.WriteContext();
+            playerContext.CascadeResourceCheckDirty = true;
             Log.Info("Delivery plan '{0}' manually marked as completed", selectedPlan.Name);
 
             ClearExecution();
