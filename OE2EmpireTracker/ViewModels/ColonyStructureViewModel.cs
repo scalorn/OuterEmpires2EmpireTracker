@@ -40,6 +40,17 @@ namespace OE2EmpireTracker.ViewModels
             set
             {
                 _structure.Properties.SetProperty(GameConstants.PropBuilt, value);
+                if (value)
+                {
+                    bool staged;
+                    _structure.Properties.GetBoolean(GameConstants.PropStaged, false, out staged);
+                    if (staged)
+                    {
+                        Log.Error(
+                            "INVARIANT VIOLATION: structure {0} set Built=true while Staged=true (caller should clear Staged first)",
+                            _structure.UUID);
+                    }
+                }
             }
         }
 
@@ -55,6 +66,17 @@ namespace OE2EmpireTracker.ViewModels
             set
             {
                 _structure.Properties.SetProperty(GameConstants.PropStaged, value);
+                if (value)
+                {
+                    bool built;
+                    _structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out built);
+                    if (built)
+                    {
+                        Log.Error(
+                            "INVARIANT VIOLATION: structure {0} set Staged=true while Built=true (already-built structure should not be staged)",
+                            _structure.UUID);
+                    }
+                }
             }
         }
 

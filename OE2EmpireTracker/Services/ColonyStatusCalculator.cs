@@ -126,6 +126,21 @@ namespace OE2EmpireTracker.Services
             // Clear all existing worker locks -- will be rebuilt from current state
             ClearAllWorkerLocks();
 
+            // Invariant check: no structure should have both Staged=true and Built=true
+            foreach (var structure in colony.Structures)
+            {
+                bool staged, built;
+                structure.Properties.GetBoolean(GameConstants.PropStaged, false, out staged);
+                structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out built);
+                if (staged && built)
+                {
+                    Log.Error(
+                        "INVARIANT VIOLATION in CalculateBuilt: colony {0} structure {1} has Staged=true AND Built=true — auto-fixing to Staged=false",
+                        colony.UUID, structure.UUID);
+                    structure.Properties.SetProperty(GameConstants.PropStaged, false);
+                }
+            }
+
             // Sort by BuildQueueSequence — never trust the raw list order
             var orderedStructures = CollectionSortHelper.OrderStructures(colony.Structures);
 

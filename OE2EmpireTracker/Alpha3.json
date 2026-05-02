@@ -55079,7 +55079,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Noble Gases",
   "Name": "Heavy Noble Gases",
-  "Quantity": 2147482847,
+  "Quantity": 2147482865,
   "ResourcePurity": "High"
 },
         "b178e617-758c-4fb8-8fd3-5ff40112d31a": {
@@ -55645,14 +55645,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T12:37:54.7467934Z",
-            "EndTime": "2026-05-02T13:37:54.7467934Z",
+            "StartTime": "2026-05-02T13:37:54.7467934Z",
+            "EndTime": "2026-05-02T14:37:54.7467934Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "72a8d47a-9e53-4905-a69e-008bdea60987",
           "MiningSurveyResource": "Heavy Noble Gases",
-          "MiningLeftOvers": 0.0928,
+          "MiningLeftOvers": 0.8384,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         }
@@ -78858,11 +78858,22 @@
       "SystemName": "Zeh Vazoran",
       "ColonyName": "Zeh Vazoran II M1",
       "Items": {
-        "426fc454-5647-4faa-a978-fb1750cdf418": {
-  "UUID": "426fc454-5647-4faa-a978-fb1750cdf418",
-  "ItemType": "Flatpack",
-  "BaseItemTypeID": "0d9a12c1-5895-5d27-a095-b5be769ca71d",
-  "Name": "Mining Rig Flatpack",
+        "3cfcbf54-5f85-4120-b027-ac936a78a0e4": {
+  "UUID": "3cfcbf54-5f85-4120-b027-ac936a78a0e4",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Metaloids",
+  "Name": "Metaloids",
+  "Quantity": 17136,
+  "ResourcePurity": "Refined",
+  "Volume": 1.0
+},
+        "43d3d950-6df9-4a73-9b22-5c12aa006a7d": {
+  "UUID": "43d3d950-6df9-4a73-9b22-5c12aa006a7d",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Acidic Inorganics",
+  "Name": "Acidic Inorganics",
+  "Quantity": 16128,
+  "ResourcePurity": "Refined",
   "Volume": 1.0
 },
         "5ba29fe3-df79-4c9d-9066-9b52de28f768": {
@@ -78873,11 +78884,21 @@
   "Quantity": 3,
   "Volume": 50.0
 },
-        "5bdba2bb-12a2-4df8-b61e-136b723874b1": {
-  "UUID": "5bdba2bb-12a2-4df8-b61e-136b723874b1",
-  "ItemType": "Flatpack",
-  "BaseItemTypeID": "db010e53-d097-5d36-8599-89986d570414",
-  "Name": "Hydroponics Bay Flatpack",
+        "6f1f6bc1-d397-42a2-b123-b5843210e385": {
+  "UUID": "6f1f6bc1-d397-42a2-b123-b5843210e385",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Post-Trans Metals",
+  "Name": "Post-Trans Metals",
+  "Quantity": 139,
+  "ResourcePurity": "High"
+},
+        "89fbdff8-9c3d-472e-8f55-29fbb98dc99e": {
+  "UUID": "89fbdff8-9c3d-472e-8f55-29fbb98dc99e",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Strong Alkali Inorganics",
+  "Name": "Strong Alkali Inorganics",
+  "Quantity": 13272,
+  "ResourcePurity": "Refined",
   "Volume": 1.0
 },
         "9a2edb66-b714-43c7-86cb-8113f38016ed": {
@@ -78888,6 +78909,15 @@
   "Quantity": 24,
   "Volume": 50.0
 },
+        "9e2a6846-7806-49ea-8b2e-9b1988bf971d": {
+  "UUID": "9e2a6846-7806-49ea-8b2e-9b1988bf971d",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Complex Metallics",
+  "Name": "Complex Metallics",
+  "Quantity": 96,
+  "ResourcePurity": "Refined",
+  "Volume": 1.0
+},
         "bb227467-c8e6-4bcc-ab80-e4058a6f04b7": {
   "UUID": "bb227467-c8e6-4bcc-ab80-e4058a6f04b7",
   "ItemType": "WorkDetail",
@@ -78896,33 +78926,30 @@
   "Quantity": 2,
   "Volume": 50.0
 },
-        "bf6e987c-8880-495a-9223-36f4fc70f1cb": {
-  "UUID": "bf6e987c-8880-495a-9223-36f4fc70f1cb",
-  "ItemType": "Flatpack",
-  "BaseItemTypeID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
-  "Name": "Entertainment Centre Flatpack",
-  "Volume": 1.0
-},
-        "cf9f816f-9bbf-4b51-bc94-51a6faf516a2": {
-  "UUID": "cf9f816f-9bbf-4b51-bc94-51a6faf516a2",
+        "bfcaae60-69d8-4ed7-8f46-523643e8b8b0": {
+  "UUID": "bfcaae60-69d8-4ed7-8f46-523643e8b8b0",
   "ItemType": "Resource",
-  "BaseItemTypeID": "Complex Metallics",
-  "Name": "Complex Metallics",
-  "Quantity": 19,
+  "BaseItemTypeID": "Heavy Alkaline Earth Metals",
+  "Name": "Heavy Alkaline Earth Metals",
+  "Quantity": 4,
   "ResourcePurity": "High"
 },
-        "dc0dd7a8-9199-4dfb-97b5-51dbbeea8a0f": {
-  "UUID": "dc0dd7a8-9199-4dfb-97b5-51dbbeea8a0f",
-  "ItemType": "Flatpack",
-  "BaseItemTypeID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
-  "Name": "Reactor Core Flatpack",
+        "d07228c4-d450-4383-8e7b-6f453bdeb165": {
+  "UUID": "d07228c4-d450-4383-8e7b-6f453bdeb165",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Lanthanides",
+  "Name": "Lanthanides",
+  "Quantity": 18480,
+  "ResourcePurity": "Refined",
   "Volume": 1.0
 },
-        "ee6add97-ad03-43e7-a267-853a689242c6": {
-  "UUID": "ee6add97-ad03-43e7-a267-853a689242c6",
-  "ItemType": "Flatpack",
-  "BaseItemTypeID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
-  "Name": "Refinery Flatpack",
+        "ea484888-4346-4959-8032-26f69b4c4f8b": {
+  "UUID": "ea484888-4346-4959-8032-26f69b4c4f8b",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Alkali Metals",
+  "Name": "Alkali Metals",
+  "Quantity": 81312,
+  "ResourcePurity": "Refined",
   "Volume": 1.0
 }
       },
@@ -79086,8 +79113,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T12:35:48.7693065Z",
-            "EndTime": "2026-05-02T13:35:48.7693065Z",
+            "StartTime": "2026-05-02T13:35:48.7693065Z",
+            "EndTime": "2026-05-02T14:35:48.7693065Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -79164,7 +79191,7 @@
           "buildingID": 12665,
           "buildQueueSequence": 11,
           "Properties": {
-            "Staged": "True",
+            "Staged": "False",
             "Built": "True",
             "Online": "True",
             "Can Research": "0",
@@ -79281,7 +79308,7 @@
           "buildingID": 12077,
           "buildQueueSequence": 17,
           "Properties": {
-            "Staged": "True",
+            "Staged": "False",
             "Built": "True",
             "Online": "True",
             "Can Research": "0",
@@ -79333,14 +79360,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T12:35:50.7693065Z",
-            "EndTime": "2026-05-02T13:35:50.7693065Z",
+            "StartTime": "2026-05-02T13:35:50.7693065Z",
+            "EndTime": "2026-05-02T14:35:50.7693065Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "09117134-86a2-4d42-8030-b0164bdf23f9",
           "MiningSurveyResource": "Post-Trans Metals",
-          "MiningLeftOvers": 0.8016,
+          "MiningLeftOvers": 0.5352,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -79985,7 +80012,7 @@
           "buildingID": 14000,
           "buildQueueSequence": 49,
           "Properties": {
-            "Staged": "True",
+            "Staged": "False",
             "Built": "True",
             "Online": "True",
             "Can Research": "0",
@@ -80216,14 +80243,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T12:35:46.7693065Z",
-            "EndTime": "2026-05-02T13:35:46.7693065Z",
+            "StartTime": "2026-05-02T13:35:46.7693065Z",
+            "EndTime": "2026-05-02T14:35:46.7693065Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "09117134-86a2-4d42-8030-b0164bdf23f9",
           "MiningSurveyResource": "Heavy Alkaline Earth Metals",
-          "MiningLeftOvers": 0.8940,
+          "MiningLeftOvers": 0.6411,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -80273,75 +80300,10 @@
       ],
       "LastImportDateTime": "2026-05-01T21:26:44Z",
       "Locks": {
-        "e5e53052-27e6-4b8e-b284-1038e2652666": {
-          "WorkDetail:BlueCollarDetail": 1,
-          "Flatpack:db010e53-d097-5d36-8599-89986d570414": 1
-        },
-        "6b88b2a9-d08b-40f4-b364-c56e6e3f102e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "d350cbab-35b2-4d3c-8472-2e7cd73e9d3a": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "33924b72-8d5c-466a-96a8-8bdf60409290": {
-          "WorkDetail:BlueCollarDetail": 1,
-          "Flatpack:623b6d38-342d-5ba7-b1fe-376621732aa2": 1
-        },
-        "75404168-efe9-4522-a283-605ffd9edbad": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "f4d81199-e2d1-456e-8af7-ad9936e5c5a5": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "fe0f1dca-0231-4ac1-8a2e-d72e171e7fd2": {
+        "00bd6cde-ed01-48bf-b59c-55c51e902525": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "03bf1b6e-9c09-45e8-bd98-aef786e7ecc3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "c8b63458-85d3-458c-a627-8d8e142370d9": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "b45468e1-a206-405a-bfaa-b3b61f9fe3c8": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "96baa970-e2cb-4417-b0f1-12ac13db144e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "f4406e36-2f65-4cd7-b163-0101095784e2": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "703bf64b-9be7-4ae0-a67c-e815d42d7b82": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "dffaa5c4-cc07-4d24-87f6-f3b74359875c": {
-          "Flatpack:0d9a12c1-5895-5d27-a095-b5be769ca71d": 1
-        },
-        "fc0d2999-4453-4e6e-ae24-35a9972f78d2": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "58830ad7-aaaf-4154-a7e4-d07f42fa8d58": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "5b240866-b483-4a31-b302-8fc654ad00f6": {
-          "Flatpack:ea1ef8d1-3a12-5730-a386-91b5fcd03363": 1
-        },
-        "e8b43215-34f0-403c-81dc-73f45d667fe8": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "9ecbf881-0eac-4bed-8edd-47866270eed3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "a5bf6bbd-9276-4f19-9fa9-59ca03e1c3b4": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "229398ed-35c1-4813-97de-ee895d4f202c": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "77828cdf-c75b-425a-86f5-0a0dc6157250": {
-          "WorkDetail:SpecialistDetail": 1
-        },
-        "18b29e57-c531-4da6-a48a-283df107ffd1": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "0745a1a9-4ccf-4cc8-9f26-7bd0ed574de3": {
@@ -80350,32 +80312,37 @@
         "16b447da-8352-4182-8388-1aa964a73ab2": {
           "WorkDetail:BlueCollarDetail": 1
         },
+        "18b29e57-c531-4da6-a48a-283df107ffd1": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "229398ed-35c1-4813-97de-ee895d4f202c": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
         "24e3c599-6976-4e3f-87af-c7a1a7477e80": {
           "WorkDetail:SpecialistDetail": 1
         },
-        "af515e02-470b-46e2-a6a8-5fb67b2cf632": {
+        "33924b72-8d5c-466a-96a8-8bdf60409290": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "fc735b34-eaa1-4ccf-804c-6b965d8fedad": {
+        "58830ad7-aaaf-4154-a7e4-d07f42fa8d58": {
           "WorkDetail:BlueCollarDetail": 1
+        },
+        "6b88b2a9-d08b-40f4-b364-c56e6e3f102e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "703bf64b-9be7-4ae0-a67c-e815d42d7b82": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "75404168-efe9-4522-a283-605ffd9edbad": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "77828cdf-c75b-425a-86f5-0a0dc6157250": {
+          "WorkDetail:SpecialistDetail": 1
         },
         "8647922f-6cbb-4dfc-9ec3-c3bc4107a8aa": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "dda69c4a-81b0-4d9a-a4fe-4b25684965ef": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "887d86b7-0d40-502e-96d2-1c8a7036bf9e": {
-          "WorkDetail:WhiteCollarDetail": 1,
-          "WorkDetail:SpecialistDetail": 1
-        },
-        "5aa2d84a-dc5a-427c-8015-315596f8ebea": {
-          "Flatpack:80b44a11-d93f-5b3d-8c1e-31c2fc8882ac": 1
-        },
-        "f69baae6-88f9-42c1-9709-df61818c81da": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "c226c5aa-65b6-4190-a2a6-5d9a1d1d3c21": {
+        "96baa970-e2cb-4417-b0f1-12ac13db144e": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "98a3d4d6-1b81-4634-a7f2-9207bc023a05": {
@@ -80384,8 +80351,57 @@
         "9aebe346-2338-4379-89d2-14169891e849": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "00bd6cde-ed01-48bf-b59c-55c51e902525": {
+        "9ecbf881-0eac-4bed-8edd-47866270eed3": {
           "WorkDetail:BlueCollarDetail": 1
+        },
+        "a5bf6bbd-9276-4f19-9fa9-59ca03e1c3b4": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "af515e02-470b-46e2-a6a8-5fb67b2cf632": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "b45468e1-a206-405a-bfaa-b3b61f9fe3c8": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "c226c5aa-65b6-4190-a2a6-5d9a1d1d3c21": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "c8b63458-85d3-458c-a627-8d8e142370d9": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "d350cbab-35b2-4d3c-8472-2e7cd73e9d3a": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "dda69c4a-81b0-4d9a-a4fe-4b25684965ef": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "e5e53052-27e6-4b8e-b284-1038e2652666": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "e8b43215-34f0-403c-81dc-73f45d667fe8": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "f4406e36-2f65-4cd7-b163-0101095784e2": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "f4d81199-e2d1-456e-8af7-ad9936e5c5a5": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "f69baae6-88f9-42c1-9709-df61818c81da": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "fc0d2999-4453-4e6e-ae24-35a9972f78d2": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "fc735b34-eaa1-4ccf-804c-6b965d8fedad": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "fe0f1dca-0231-4ac1-8a2e-d72e171e7fd2": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "887d86b7-0d40-502e-96d2-1c8a7036bf9e": {
+          "WorkDetail:WhiteCollarDetail": 1,
+          "WorkDetail:SpecialistDetail": 1
         }
       }
     },
@@ -93267,95 +93283,80 @@
       ],
       "LastImportDateTime": "2026-05-01T21:11:45Z",
       "Locks": {
-        "33054711-d04c-4eb1-ba91-be7f39cf0f76": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "afe40dbf-46fc-4f34-bee0-a9c2d261c09e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "3bbb40ad-0f26-4ecb-b989-3064e1677362": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "91bd7542-b0c2-40c7-974d-4b259e054fc4": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "b79cb6b1-c95f-4f32-83a6-6b0dd5195276": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "2add3382-0147-4b7f-a4ae-84ae1c72f30e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "d5dc6a3d-83f0-49f6-b525-d032db6a06b5": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "3700c1d3-b49a-4cd0-8f10-46a34fe443ab": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
         "12592c82-bee3-44e1-a921-2545d507f469": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "77260b08-4441-42dc-82a5-96127e955969": {
-          "WorkDetail:WhiteCollarDetail": 1
-        },
-        "7bf0ab79-f380-40d4-8e66-7115d5c514e3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "169a9a58-040c-460e-b82c-c46bd9f69f4c": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "86eae570-e3e9-4c67-a549-488bb4545462": {
-          "WorkDetail:SpecialistDetail": 1
-        },
-        "628f70d5-71d1-4413-a5de-8bd1fd0fe779": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "ce40e1fe-0fd4-4ed8-b8cb-b6a408a52ed3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "664a4617-9ed8-4def-8b01-83a2c39ac4c5": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "13c0e41a-0436-4d45-ba22-e79157153b0b": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "7522d88b-631d-4ee8-8b5e-8d33f6a5eaf9": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "58d78004-ea10-4af7-b28f-ef0b93cac31d": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "68b0dbcd-b712-4051-9302-4ce2ba949ad3": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "59614115-434b-40be-bfcb-f16dc2e046bb": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "97e77460-d014-40d8-929f-3f24db2d215e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "8444b655-176e-434c-a650-da2ebfbfd958": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "3ee8a795-a626-49bc-9ef5-2848a0563201": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "2c759eb4-cffa-49aa-913e-62dd8fb38f4e": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "770b4e0e-98f2-49ca-8d1c-ec104df3fa09": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "46c55153-fe15-4185-9b37-ac21ca20eaa9": {
-          "WorkDetail:BlueCollarDetail": 1
-        },
-        "78cf365b-9116-485e-b16e-f64d3d8b6437": {
+        "169a9a58-040c-460e-b82c-c46bd9f69f4c": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "1aa806bc-afbc-4bdc-b1b9-8d2a0058745d": {
           "WorkDetail:BlueCollarDetail": 1
         },
-        "b927bfb5-e37b-498c-8784-34978eaa3784": {
+        "2add3382-0147-4b7f-a4ae-84ae1c72f30e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "2c759eb4-cffa-49aa-913e-62dd8fb38f4e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "33054711-d04c-4eb1-ba91-be7f39cf0f76": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "3700c1d3-b49a-4cd0-8f10-46a34fe443ab": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "3bbb40ad-0f26-4ecb-b989-3064e1677362": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "3ee8a795-a626-49bc-9ef5-2848a0563201": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "46c55153-fe15-4185-9b37-ac21ca20eaa9": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "58d78004-ea10-4af7-b28f-ef0b93cac31d": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "59614115-434b-40be-bfcb-f16dc2e046bb": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "628f70d5-71d1-4413-a5de-8bd1fd0fe779": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "664a4617-9ed8-4def-8b01-83a2c39ac4c5": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "68b0dbcd-b712-4051-9302-4ce2ba949ad3": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "7522d88b-631d-4ee8-8b5e-8d33f6a5eaf9": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "770b4e0e-98f2-49ca-8d1c-ec104df3fa09": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "77260b08-4441-42dc-82a5-96127e955969": {
+          "WorkDetail:WhiteCollarDetail": 1
+        },
+        "78cf365b-9116-485e-b16e-f64d3d8b6437": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "7bf0ab79-f380-40d4-8e66-7115d5c514e3": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "8444b655-176e-434c-a650-da2ebfbfd958": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "86eae570-e3e9-4c67-a549-488bb4545462": {
           "WorkDetail:SpecialistDetail": 1
+        },
+        "91bd7542-b0c2-40c7-974d-4b259e054fc4": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "97e77460-d014-40d8-929f-3f24db2d215e": {
+          "WorkDetail:BlueCollarDetail": 1
         },
         "9be7981f-fc35-4164-a729-47ef9286fc49": {
           "WorkDetail:BlueCollarDetail": 1
@@ -93363,7 +93364,22 @@
         "abce98cf-d6da-4f0d-827b-6718587b8972": {
           "WorkDetail:BlueCollarDetail": 1
         },
+        "afe40dbf-46fc-4f34-bee0-a9c2d261c09e": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
         "b188548b-6c38-4f5c-ba70-8e028778cc83": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "b79cb6b1-c95f-4f32-83a6-6b0dd5195276": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "b927bfb5-e37b-498c-8784-34978eaa3784": {
+          "WorkDetail:SpecialistDetail": 1
+        },
+        "ce40e1fe-0fd4-4ed8-b8cb-b6a408a52ed3": {
+          "WorkDetail:BlueCollarDetail": 1
+        },
+        "d5dc6a3d-83f0-49f6-b525-d032db6a06b5": {
           "WorkDetail:BlueCollarDetail": 1
         },
         "e0f337fc-f1f9-44c9-98fc-ffe96f4c1a3d": {
@@ -125837,45 +125853,52 @@
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "RouteUUID": "cf4792f9-0985-44d2-a6cb-8f02149d3b06",
       "ShipUUID": "",
+      "Completed": true,
       "Stops": [
         {
           "ColonyUUID": "887d86b7-0d40-502e-96d2-1c8a7036bf9e",
           "Sequence": 2,
+          "StopCompleted": true,
           "DropOff": [
             {
               "ItemType": "Resource",
               "BaseItemTypeID": "Acidic Inorganics",
               "Name": "Acidic Inorganics",
               "ResourcePurity": "Refined",
-              "Quantity": 16128
+              "Quantity": 16128,
+              "Delivered": true
             },
             {
               "ItemType": "Resource",
               "BaseItemTypeID": "Alkali Metals",
               "Name": "Alkali Metals",
               "ResourcePurity": "Refined",
-              "Quantity": 81312
+              "Quantity": 81312,
+              "Delivered": true
             },
             {
               "ItemType": "Resource",
               "BaseItemTypeID": "Lanthanides",
               "Name": "Lanthanides",
               "ResourcePurity": "Refined",
-              "Quantity": 18480
+              "Quantity": 18480,
+              "Delivered": true
             },
             {
               "ItemType": "Resource",
               "BaseItemTypeID": "Metaloids",
               "Name": "Metaloids",
               "ResourcePurity": "Refined",
-              "Quantity": 17136
+              "Quantity": 17136,
+              "Delivered": true
             },
             {
               "ItemType": "Resource",
               "BaseItemTypeID": "Strong Alkali Inorganics",
               "Name": "Strong Alkali Inorganics",
               "ResourcePurity": "Refined",
-              "Quantity": 13272
+              "Quantity": 13272,
+              "Delivered": true
             }
           ],
           "PickUp": [],
@@ -126473,8 +126496,7 @@
       "IsActive": true,
       "Items": [
         {
-          "UUID": "8959b9a9-7fd7-421c-8050-665da9ac77b9",
-          "Status": "Delivering",
+          "UUID": "b8dd72ae-4468-4d03-beb9-d3dc99f60560",
           "BlueprintUUID": "db010e53-d097-5d36-8599-89986d570414",
           "ItemName": "Hydroponics Bay Flatpack",
           "CommodityName": "",

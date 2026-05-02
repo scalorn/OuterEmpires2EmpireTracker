@@ -212,6 +212,16 @@ namespace OE2EmpireTracker.Models
                     structure.Properties.SetProperty(GameConstants.PropBuilt, true);
                     structure.Properties.SetProperty(GameConstants.PropStaged, false);
                     structure.BuildCompletionTime = null;
+
+                    // Invariant check: Staged and Built must never both be true
+                    bool stagedCheck;
+                    structure.Properties.GetBoolean(GameConstants.PropStaged, false, out stagedCheck);
+                    if (stagedCheck)
+                    {
+                        Log.Error(
+                            "INVARIANT VIOLATION: structure {0} has Staged=true AND Built=true after build completion in ProcessColony",
+                            structure.UUID);
+                    }
                 }
             }
 

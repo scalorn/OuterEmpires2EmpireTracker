@@ -89,7 +89,7 @@ Implement the Colony Daily Build feature in incremental steps: first the pure do
     - Layout handlers for resize
     - _Requirements: 1.2, 1.3, 1.4, 1.5, 2.1, 2.2, 2.3, 2.4, 3.1, 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.2, 5.3, 6.1, 6.2, 6.3, 6.4, 6.5, 8.1, 8.2_
 
-  - [~]* 4.4 Write property test for build initiation state transition (Property 5: Build initiation state transition)
+  - [ ]* 4.4 Write property test for build initiation state transition (Property 5: Build initiation state transition)
     - **Property 5: Build initiation state transition**
     - **Validates: Requirements 6.1, 6.2**
     - Generate staged structures with random owner skill levels (0–50)
@@ -120,7 +120,7 @@ Implement the Colony Daily Build feature in incremental steps: first the pure do
     - Fire `ColonyStructureDataChanged`
     - _Requirements: 10.2, 10.7_
 
-  - [~]* 5.4 Write property test for colony form build button visibility (Property 7: Colony form build button visibility)
+  - [ ]* 5.4 Write property test for colony form build button visibility (Property 7: Colony form build button visibility)
     - **Property 7: Colony form build button visibility**
     - **Validates: Requirements 10.1, 10.3, 10.5, 10.6**
     - Generate colonies with various structure state combinations

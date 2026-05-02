@@ -240,10 +240,19 @@ namespace OE2EmpireTracker.Forms.ColonyDailyBuild
 
             // Transition from staged to building
             var vm = new ColonyStructureViewModel(structure, playerContext);
+
+            Log.Debug(
+                "DailyBuild: pre-transition structure {0} Staged={1} Built={2}",
+                structure.UUID, vm.IsStaged, vm.IsBuilt);
+
             vm.IsStaged = false;
 
             structure.BuildCompletionTime = new CountDownTime();
             structure.BuildCompletionTime.TimeRemaining = buildSeconds;
+
+            Log.Debug(
+                "DailyBuild: post-transition structure {0} Staged={1} Built={2} BuildTimer={3}s",
+                structure.UUID, vm.IsStaged, vm.IsBuilt, buildSeconds);
 
             playerContext.WriteContext();
             playerContext.OnColonyDataChanged(colony.UUID);
