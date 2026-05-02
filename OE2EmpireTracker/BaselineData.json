@@ -23716,18 +23716,18 @@
       "Properties": {
         "Can Research": "No",
         "Habitation Provision": "4",
-        "Manufacture Run Time": "1h 0m",
+        "Manufacture Run Time": "3h",
         "Max Per Colony": "999",
         "Power Required": "1",
         "Structural Integrity": "100",
         "Unassigned Specialist Detail": "1",
-        "_IconClass": "ui_icon_C16",
-        "_IconPosition": "-100px -594px"
+        "_IconPosition": "-100px -594px",
+        "_IconClass": "ui_icon_C16"
       },
       "Resources": {
-        "Heavy Post-Trans Metals": "822",
-        "Non-Metallics": "370",
-        "Post-Trans Metals": "2148"
+        "Heavy Post-Trans Metals": "172",
+        "Non-Metallics": "78",
+        "Post-Trans Metals": "450"
       },
       "UUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
       "ItemType": "Survey",

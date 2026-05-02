@@ -60,6 +60,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmsBuildItems = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiSetDependency = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiClearDependency = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDeleteItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmdDeleteItem = new System.Windows.Forms.Button();
 
             this.lblShortfallHeader = new System.Windows.Forms.Label();
             this.dgvShortfalls = new System.Windows.Forms.DataGridView();
@@ -500,6 +502,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItemRow2.Controls.Add(this.txtRecipient);
             this.flpAddItemRow2.Controls.Add(this.lblTargetDuration);
             this.flpAddItemRow2.Controls.Add(this.txtTargetDuration);
+            this.flpAddItemRow2.Controls.Add(this.cmdQueueCalc);
             this.flpAddItemRow2.Controls.Add(this.lblResource);
             this.flpAddItemRow2.Controls.Add(this.cmbResource);
             this.flpAddItemRow2.Controls.Add(this.lblPurity);
@@ -613,7 +616,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             // 
             this.flpAddItemRow3.AutoSize = true;
             this.flpAddItemRow3.Controls.Add(this.cmdAddItem);
-            this.flpAddItemRow3.Controls.Add(this.cmdQueueCalc);
+            this.flpAddItemRow3.Controls.Add(this.cmdDeleteItem);
             this.flpAddItemRow3.Controls.Add(this.cmdAllocate);
             this.flpAddItemRow3.Controls.Add(this.cmdGenerateDelivery);
             this.flpAddItemRow3.Controls.Add(this.cmdAutoAssign);
@@ -631,6 +634,14 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmdAddItem.Size = new System.Drawing.Size(75, 23);
             this.cmdAddItem.Text = "Add Item";
             this.cmdAddItem.UseVisualStyleBackColor = true;
+            // 
+            // cmdDeleteItem
+            // 
+            this.cmdDeleteItem.Location = new System.Drawing.Point(84, 3);
+            this.cmdDeleteItem.Name = "cmdDeleteItem";
+            this.cmdDeleteItem.Size = new System.Drawing.Size(80, 23);
+            this.cmdDeleteItem.Text = "Delete Item";
+            this.cmdDeleteItem.UseVisualStyleBackColor = true;
             // 
             // cmdQueueCalc
             // 
@@ -714,10 +725,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.cmsBuildItems.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiSetDependency,
             this.tsmiClearDependency,
+            this.tsmiDeleteItem,
             this.tsmiStartManufacturing,
             this.tsmiStartAllReady});
             this.cmsBuildItems.Name = "cmsBuildItems";
-            this.cmsBuildItems.Size = new System.Drawing.Size(200, 92);
+            this.cmsBuildItems.Size = new System.Drawing.Size(200, 114);
             // 
             // tsmiSetDependency
             // 
@@ -730,6 +742,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.tsmiClearDependency.Name = "tsmiClearDependency";
             this.tsmiClearDependency.Size = new System.Drawing.Size(199, 22);
             this.tsmiClearDependency.Text = "Clear Dependency";
+            // 
+            // tsmiDeleteItem
+            // 
+            this.tsmiDeleteItem.Name = "tsmiDeleteItem";
+            this.tsmiDeleteItem.Size = new System.Drawing.Size(199, 22);
+            this.tsmiDeleteItem.Text = "Delete Item";
             // 
             // tsmiStartManufacturing
             // 
@@ -849,6 +867,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private System.Windows.Forms.ContextMenuStrip cmsBuildItems;
         private System.Windows.Forms.ToolStripMenuItem tsmiSetDependency;
         private System.Windows.Forms.ToolStripMenuItem tsmiClearDependency;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDeleteItem;
+        private System.Windows.Forms.Button cmdDeleteItem;
         private System.Windows.Forms.Button cmdStartManufacturing;
         private System.Windows.Forms.Button cmdStartAllReady;
         private System.Windows.Forms.ToolStripMenuItem tsmiStartManufacturing;

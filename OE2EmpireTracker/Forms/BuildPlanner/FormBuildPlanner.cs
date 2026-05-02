@@ -84,6 +84,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             cmbItem.SelectedItemChanged += CmbItem_SelectedItemChanged;
             PopulateItemCombo();
             cmdAddItem.Click += CmdAddItem_Click;
+            cmdDeleteItem.Click += CmdDeleteItem_Click;
+            tsmiDeleteItem.Click += CmdDeleteItem_Click;
             cmdQueueCalc.Click += CmdQueueCalc_Click;
             cmdAllocate.Click += CmdAllocate_Click;
             cmdAutoAssign.Click += CmdAutoAssign_Click;
@@ -888,6 +890,28 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 buildItem.ItemName,
                 buildItem.Quantity,
                 _selectedPlan.Name);
+        }
+
+        private void CmdDeleteItem_Click(object sender, EventArgs e)
+        {
+            if (_selectedPlan == null) return;
+            if (dgvBuildItems.CurrentRow == null || dgvBuildItems.CurrentRow.Tag == null) return;
+
+            var buildItem = dgvBuildItems.CurrentRow.Tag as BuildItem;
+            if (buildItem == null) return;
+
+            var result = MessageBox.Show(
+                string.Format("Delete item '{0}'?", buildItem.ItemName),
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (result != DialogResult.Yes) return;
+
+            _selectedPlan.Items.Remove(buildItem);
+            playerContext.WriteContext();
+            playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+            PopulateBuildItemsGrid();
+            Log.Info("Deleted item '{0}' from plan '{1}'", buildItem.ItemName, _selectedPlan.Name);
         }
 
         private void CmdQueueCalc_Click(object sender, EventArgs e)

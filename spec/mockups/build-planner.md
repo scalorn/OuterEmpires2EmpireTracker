@@ -24,8 +24,8 @@ MDI child form. Left-list / right-detail pattern with TableLayoutPanel base.
 â”‚ â”‚                  â”‚ â”‚                                                             â”‚
 â”‚ â”‚                  â”‚ â”‚ Add Item:                                                   â”‚
 â”‚ â”‚                  â”‚ â”‚ Type:[Manufactoryâ–¼] Item:[filter|Reactor Mk3          â–¼] â”‚
-â”‚ â”‚                  â”‚ â”‚ Qty:[10] Target Duration:[2d 12h 0m 0s] Recipient:[______] â”‚
-â”‚ â”‚                  â”‚ â”‚ [Add Item] [Queue Calc]                                     â”‚
+â”‚ â”‚                  â”‚ â”‚ Qty:[10] Recipient:[______] Duration:[2d 12h 0m 0s] [Queue Calc] â”‚
+â”‚ â”‚                  â”‚ â”‚ [Add Item] [Delete Item]                                     â”‚
 â”‚ â”‚                  â”‚ â”‚                                                             â”‚
 â”‚ â”‚                  â”‚ â”‚ Resource Shortfalls (Drive Mk3):                            â”‚
 â”‚ â”‚                  â”‚ â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”        â”‚
@@ -54,7 +54,7 @@ Controls:
 - Multi-plan selection uses a checklist dialog showing all active build plans. The user checks which plans to include.
 - Inactive plans: list view shows plan name in gray italic. Detail panel is read-only (all controls disabled except the Active checkbox). Shortfall panel hidden.
 - `dgvBuildItems` columns: Type, Item, Qty (editable), Location, Structure, Status, Recipient, Notes
-- Add-item panel: `cmbItemType`, `cmbItem` (FilteredTextComboSet — replaces separate filter+combo), `cmbResource`, `cmbPurity`, `cmbSurvey` (FilteredComboBox), `txtQuantity`, `txtTargetDuration`, `txtRecipient`, `cmdAddItem`, `cmdQueueCalc`
+- Add-item panel: `cmbItemType`, `cmbItem` (FilteredTextComboSet), `cmbResource`, `cmbPurity`, `cmbSurvey` (FilteredComboBox), `txtQuantity`, `txtRecipient`, `lblTargetDuration`, `txtTargetDuration`, `cmdQueueCalc` (next to duration), `cmdAddItem`, `cmdDeleteItem`
 - Shortfall panel: `dgvShortfalls` (read-only DataGridView) â€” visible when a build item is selected
 
 Wiring:
