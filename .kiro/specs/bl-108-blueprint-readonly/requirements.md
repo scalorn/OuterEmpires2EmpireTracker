@@ -65,8 +65,8 @@ When the application exits (MainWindow closing) and any open blueprint form has 
 ### REQ-BL108-017: Unsaved Changes Prompt on New Blueprint
 When the user clicks New while the ViewModel is dirty, the form SHALL prompt before clearing the form for the new blueprint.
 
-### REQ-BL108-018: Unsaved Changes Prompt on Import
-When the user imports from clipboard while the ViewModel is dirty and the import targets the currently selected blueprint, the form SHALL prompt before overwriting local changes with imported data.
+### REQ-BL108-018: Import Merges Into Local Edit State
+When the user imports from clipboard while a blueprint is selected, the imported data (stats, resources, or both) SHALL be merged into the ViewModel's local state — not saved directly to the entity. The ViewModel becomes dirty. The user can import stats first, then resources, building up the data across multiple imports before clicking Save. Only Save commits the accumulated changes through the service.
 
 ## Phase 3: BlueprintService
 

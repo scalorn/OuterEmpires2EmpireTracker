@@ -54,7 +54,6 @@
 - [ ] Wire into `LvwBlueprints_ItemSelectionChanged` — prompt before switching
 - [ ] Wire into `OnFormClosing` — prompt before closing, cancel close on Cancel
 - [ ] Wire into `BtnNew_Click` — prompt before clearing for new
-- [ ] Wire into `BtnImport_Click` — prompt if import targets current dirty blueprint
 - [ ] Cancel option in selection change restores the previous list view selection
 
 ## Phase 3: BlueprintService
@@ -72,8 +71,9 @@
 - [ ] On success: refresh list, re-select, `viewModel.LoadFrom(result)`
 
 ### Task 11: Update Form Import Handler
-- [ ] Import calls `blueprintService.Import(temp, selectedTarget)`
-- [ ] On success: refresh list, select imported blueprint
+- [ ] Individual import (with selection): merge parsed stats/resources into ViewModel local state, mark dirty
+- [ ] Full import (no selection or market): call `blueprintService.Import(temp, target)`
+- [ ] Support multi-step import: stats first, resources second, Save commits both
 
 ### Task 12: Update Form Delete Handler
 - [ ] Delete calls `blueprintService.Delete(uuid)`

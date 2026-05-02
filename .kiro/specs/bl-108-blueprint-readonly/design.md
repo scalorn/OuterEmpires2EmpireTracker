@@ -217,22 +217,49 @@ ViewModel.IsDirty = false
 
 ## Import Flow
 
+Two patterns depending on whether a blueprint is selected:
+
+### Import with selection (individual blueprint — stats tab, then resources tab)
 ```
-User pastes clipboard
+User pastes clipboard (stats)
     │
     ▼
-BlueprintScanner parses HTML into temp Blueprint (mutable, temporary)
+BlueprintScanner parses HTML into temp Blueprint
+    │
+    ▼
+Form merges parsed properties into viewModel's local _properties
+ViewModel becomes dirty
+    │
+User pastes clipboard again (resources)
+    │
+    ▼
+BlueprintScanner parses HTML into temp Blueprint
+    │
+    ▼
+Form merges parsed resources into viewModel's local _resources
+ViewModel stays dirty
+    │
+User clicks Save
+    │
+    ▼
+blueprintService.Update(uuid, viewModel.BuildUpdateRequest())
+```
+
+### Import without selection or new blueprint from market
+```
+User pastes clipboard (full blueprint or market listing)
+    │
+    ▼
+BlueprintScanner parses HTML into temp Blueprint
     │
     ▼
 Form calls blueprintService.Import(temp, selectedTarget)
     │
     ▼
-Service handles dedup, UpdateExisting/MergeResourcesOnly
-Service persists
-Service fires BlueprintDataChanged
+Service handles dedup, creates or updates entity, persists
     │
     ▼
-Form refreshes, re-selects
+Form refreshes, selects imported blueprint
 ViewModel.LoadFrom(updated ReadOnlyBlueprint)
 ```
 
