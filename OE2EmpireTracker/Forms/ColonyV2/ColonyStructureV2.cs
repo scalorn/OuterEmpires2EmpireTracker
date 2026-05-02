@@ -1733,6 +1733,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     structureData.ResearchingBlueprintUUID ?? "(none)",
                     value ?? "(none)");
                 structureData.ResearchingBlueprintUUID = string.IsNullOrEmpty(value) ? null : value;
+                if (!string.IsNullOrEmpty(value))
+                    HandleResearchLabControls();
             }
             else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
             {
@@ -1742,6 +1744,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     value ?? "(none)");
                 structureData.ManufacturingBlueprintUUID = string.IsNullOrEmpty(value) ? null : value;
                 structureData.ManufacturingCompleted = 0;
+                HandleManufactoryControls();
             }
             else if (_blueprint.BluePrintType.IsCommodityFactory())
             {
@@ -1751,6 +1754,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     value ?? "(none)");
                 structureData.ManufacturingCommodityName = string.IsNullOrEmpty(value) ? null : value;
                 structureData.ManufacturingCompleted = 0;
+                HandleCommodityFactoryControls();
             }
         }
 
