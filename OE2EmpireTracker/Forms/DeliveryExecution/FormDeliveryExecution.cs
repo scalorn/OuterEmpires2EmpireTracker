@@ -70,6 +70,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             flpBase.Layout += FlpBase_Layout;
             flpSelectors.Layout += FlpSelectors_Layout;
+            pnlLoadList.Layout += PnlLoadList_Layout;
             pnlExecution.Layout += PnlExecution_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
@@ -120,9 +121,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
-            pnlExecution.Size = new Size(
-                flpBase.Size.Width - flpSelectors.Size.Width - flpSelectors.Margin.Right - flpSelectors.Margin.Left - pnlExecution.Margin.Left - pnlExecution.Margin.Right,
-                flpBase.Size.Height - pnlExecution.Margin.Top - pnlExecution.Margin.Bottom);
+            splitExecution.Size = new Size(
+                flpBase.Size.Width - flpSelectors.Size.Width - flpSelectors.Margin.Right - flpSelectors.Margin.Left - splitExecution.Margin.Left - splitExecution.Margin.Right,
+                flpBase.Size.Height - splitExecution.Margin.Top - splitExecution.Margin.Bottom);
             flpSelectors.Size = new Size(
                 flpSelectors.Size.Width,
                 flpBase.Size.Height - flpSelectors.Margin.Top - flpSelectors.Margin.Bottom);
@@ -130,9 +131,25 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void PnlExecution_Layout(object sender, LayoutEventArgs e)
         {
-            int w = pnlExecution.ClientSize.Width - dgvLoadList.Margin.Left - dgvLoadList.Margin.Right;
-            dgvLoadList.Width = w;
+            int w = pnlExecution.ClientSize.Width;
             flpStops.Width = w;
+        }
+
+        private void PnlLoadList_Layout(object sender, LayoutEventArgs e)
+        {
+            int w = pnlLoadList.ClientSize.Width - dgvLoadList.Margin.Left - dgvLoadList.Margin.Right;
+            int h = pnlLoadList.ClientSize.Height;
+            dgvLoadList.Width = w;
+
+            // Fill remaining height with the grid
+            int usedHeight = lblLoadListHeader.Height + lblLoadListHeader.Margin.Vertical
+                + lblCargoVolume.Height + lblCargoVolume.Margin.Vertical
+                + lblCargoMass.Height + lblCargoMass.Margin.Vertical;
+            if (cmdSplitTrips.Visible)
+                usedHeight += cmdSplitTrips.Height + cmdSplitTrips.Margin.Vertical;
+            int gridHeight = h - usedHeight - dgvLoadList.Margin.Vertical - 4;
+            if (gridHeight < 50) gridHeight = 50;
+            dgvLoadList.Height = gridHeight;
         }
 
         private void FlpSelectors_Layout(object sender, LayoutEventArgs e)

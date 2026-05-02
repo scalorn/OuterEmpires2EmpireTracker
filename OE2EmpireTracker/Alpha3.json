@@ -55019,7 +55019,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Noble Gases",
   "Name": "Heavy Noble Gases",
-  "Quantity": 2147482859,
+  "Quantity": 2147482878,
   "ResourcePurity": "High"
 },
         "b178e617-758c-4fb8-8fd3-5ff40112d31a": {
@@ -55585,14 +55585,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-02T10:37:54.7467934Z",
-            "EndTime": "2026-05-02T11:37:54.7467934Z",
+            "StartTime": "2026-05-02T11:37:54.7467934Z",
+            "EndTime": "2026-05-02T12:37:54.7467934Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "72a8d47a-9e53-4905-a69e-008bdea60987",
           "MiningSurveyResource": "Heavy Noble Gases",
-          "MiningLeftOvers": 0.6016,
+          "MiningLeftOvers": 0.3472,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         }
@@ -123037,6 +123037,64 @@
       ]
     },
     {
+      "UUID": "4e014560-d617-46d7-8f4d-0410c1065f06",
+      "Name": "Build: Refinery",
+      "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
+      "RouteUUID": "cf4792f9-0985-44d2-a6cb-8f02149d3b06",
+      "ShipUUID": "",
+      "Stops": [
+        {
+          "ColonyUUID": "8d903707-108e-517c-8d4c-b8e0bf8a2c9f",
+          "DropOff": [],
+          "PickUp": [],
+          "DestinationUUID": "8d903707-108e-517c-8d4c-b8e0bf8a2c9f"
+        },
+        {
+          "ColonyUUID": "14729ce3-eebc-5090-b90b-fdc7dd1eb442",
+          "Sequence": 3,
+          "DropOff": [
+            {
+              "ItemType": "Resource",
+              "BaseItemTypeID": "Alkali Inorganics",
+              "Name": "Alkali Inorganics",
+              "ResourcePurity": "Refined",
+              "Quantity": 17136
+            },
+            {
+              "ItemType": "Resource",
+              "BaseItemTypeID": "Complex Non-Metallics",
+              "Name": "Complex Non-Metallics",
+              "ResourcePurity": "Refined",
+              "Quantity": 20664
+            },
+            {
+              "ItemType": "Resource",
+              "BaseItemTypeID": "Heavy Alkaline Earth Metals",
+              "Name": "Heavy Alkaline Earth Metals",
+              "ResourcePurity": "Refined",
+              "Quantity": 17640
+            },
+            {
+              "ItemType": "Resource",
+              "BaseItemTypeID": "Heavy Post-Trans Metals",
+              "Name": "Heavy Post-Trans Metals",
+              "ResourcePurity": "Refined",
+              "Quantity": 19152
+            },
+            {
+              "ItemType": "Resource",
+              "BaseItemTypeID": "Noble Gases",
+              "Name": "Noble Gases",
+              "ResourcePurity": "Refined",
+              "Quantity": 114744
+            }
+          ],
+          "PickUp": [],
+          "DestinationUUID": "14729ce3-eebc-5090-b90b-fdc7dd1eb442"
+        }
+      ]
+    },
+    {
       "UUID": "5610cd6e-3427-469a-808c-1fd35e3a8b77",
       "Name": "All Colonies - 2026-04-18",
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
@@ -126341,7 +126399,7 @@
       "Name": "Refinery",
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "Description": "Re",
-      "DeliveryPlanUUID": "4ce9687c-58f3-4430-bf20-762ebcd708b5",
+      "DeliveryPlanUUID": "4e014560-d617-46d7-8f4d-0410c1065f06",
       "IsActive": true,
       "Items": [
         {

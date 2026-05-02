@@ -18,7 +18,7 @@ MDI child form. Step-by-step execution of a delivery plan with load summary and 
 │              │  │ Commodity│ Fuel Cells   │ Fuel Cells           │   50 │           │
 │ Ship         │  │ Blueprint│ Reactor Mk3  │ Reactor Mk3 Evo2     │   10 │           │
 │ [Hauler1  ▼] │  └──────────┴──────────────┴──────────────────────┴──────┘           │
-│ Cap: 800 m³  │                                                                     │
+│ Cap: 800 m³  │  ═══════════════════════════ splitter ═══════════════════            │
 │              │  ── Stop 1: Alpha Prime (Colony) ──────────────────────────          │
 │ [Complete]   │  Drop Off:                                                          │
 │ [Delete]     │  ☑ Refined Titanium HP ×200                                         │
@@ -41,12 +41,14 @@ Controls:
   - `lblPlan` (Label, bold), `txtPlanFilter` (ValidatedTextBox), `cmbPlan` (ComboBox)
   - `lblShip` (Label, bold), `cmbShip` (ComboBox), `lblShipCapacity` (Label, dynamic text)
   - `cmdCompletePlan` (Button), `cmdDeletePlan` (Button)
-- `pnlExecution` (FlowLayoutPanel, top-down, AutoScroll, WrapContents=false):
-  - `lblLoadListHeader` (Label, bold "Load Before Departure")
-  - `lblCargoVolume` (Label), `lblCargoMass` (Label) — cargo summary
-  - `cmdSplitTrips` (Button, visible when cargo exceeds ship capacity)
-  - `dgvLoadList` (DataGridView, read-only) — columns: Type, Name, ExtendedName, Qty
-  - `flpStops` (FlowLayoutPanel, top-down, auto-size) — dynamically populated per stop
-    - Each stop: header label, drop-off checkboxes, pick-up checkboxes
+- `splitExecution` (SplitContainer, Horizontal, splitter between load list and stops):
+  - Panel1 → `pnlLoadList` (FlowLayoutPanel, top-down, Dock=Fill):
+    - `lblLoadListHeader` (Label, bold "Load Before Departure")
+    - `lblCargoVolume` (Label), `lblCargoMass` (Label) — cargo summary
+    - `cmdSplitTrips` (Button, visible when cargo exceeds ship capacity)
+    - `dgvLoadList` (DataGridView, read-only, fills remaining height) — columns: Type, Name, ExtendedName, Qty
+  - Panel2 → `pnlExecution` (Panel, Dock=Fill, AutoScroll):
+    - `flpStops` (FlowLayoutPanel, top-down, auto-size) — dynamically populated per stop
+      - Each stop: header label, drop-off checkboxes, pick-up checkboxes
 
 Satisfies: REQ-DEL-030 (delivery execution), REQ-DEL-040 (trip splitting)

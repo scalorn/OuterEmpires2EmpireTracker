@@ -28,7 +28,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.lblShipCapacity = new System.Windows.Forms.Label();
             this.cmdCompletePlan = new System.Windows.Forms.Button();
             this.cmdDeletePlan = new System.Windows.Forms.Button();
-            this.pnlExecution = new System.Windows.Forms.FlowLayoutPanel();
+            this.splitExecution = new System.Windows.Forms.SplitContainer();
+            this.pnlLoadList = new System.Windows.Forms.FlowLayoutPanel();
+            this.pnlExecution = new System.Windows.Forms.Panel();
             this.lblLoadListHeader = new System.Windows.Forms.Label();
             this.dgvLoadList = new System.Windows.Forms.DataGridView();
             this.colLoadType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -41,14 +43,19 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.cmdSplitTrips = new System.Windows.Forms.Button();
             this.flpBase.SuspendLayout();
             this.flpSelectors.SuspendLayout();
+            this.pnlLoadList.SuspendLayout();
             this.pnlExecution.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitExecution)).BeginInit();
+            this.splitExecution.Panel1.SuspendLayout();
+            this.splitExecution.Panel2.SuspendLayout();
+            this.splitExecution.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLoadList)).BeginInit();
             this.SuspendLayout();
             // 
             // flpBase
             // 
             this.flpBase.Controls.Add(this.flpSelectors);
-            this.flpBase.Controls.Add(this.pnlExecution);
+            this.flpBase.Controls.Add(this.splitExecution);
             this.flpBase.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBase.Location = new System.Drawing.Point(0, 0);
             this.flpBase.Name = "flpBase";
@@ -163,21 +170,48 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.cmdDeletePlan.Text = "Delete Plan";
             this.cmdDeletePlan.UseVisualStyleBackColor = true;
             // 
-            // pnlExecution
+            // splitExecution
+            // 
+            this.splitExecution.Location = new System.Drawing.Point(229, 3);
+            this.splitExecution.Name = "splitExecution";
+            this.splitExecution.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.splitExecution.Size = new System.Drawing.Size(768, 594);
+            this.splitExecution.SplitterDistance = 200;
+            this.splitExecution.SplitterWidth = 6;
+            this.splitExecution.TabIndex = 1;
+            // 
+            // splitExecution.Panel1 — load list
+            // 
+            this.splitExecution.Panel1.Controls.Add(this.pnlLoadList);
+            this.splitExecution.Panel1MinSize = 80;
+            // 
+            // splitExecution.Panel2 — stops
+            // 
+            this.splitExecution.Panel2.Controls.Add(this.pnlExecution);
+            this.splitExecution.Panel2MinSize = 80;
+            // 
+            // pnlLoadList
+            // 
+            this.pnlLoadList.Controls.Add(this.lblLoadListHeader);
+            this.pnlLoadList.Controls.Add(this.lblCargoVolume);
+            this.pnlLoadList.Controls.Add(this.lblCargoMass);
+            this.pnlLoadList.Controls.Add(this.cmdSplitTrips);
+            this.pnlLoadList.Controls.Add(this.dgvLoadList);
+            this.pnlLoadList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlLoadList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.pnlLoadList.Location = new System.Drawing.Point(0, 0);
+            this.pnlLoadList.Name = "pnlLoadList";
+            this.pnlLoadList.Size = new System.Drawing.Size(768, 200);
+            this.pnlLoadList.WrapContents = false;
+            // 
+            // pnlExecution — stops scroll container
             // 
             this.pnlExecution.AutoScroll = true;
-            this.pnlExecution.Controls.Add(this.lblLoadListHeader);
-            this.pnlExecution.Controls.Add(this.lblCargoVolume);
-            this.pnlExecution.Controls.Add(this.lblCargoMass);
-            this.pnlExecution.Controls.Add(this.cmdSplitTrips);
-            this.pnlExecution.Controls.Add(this.dgvLoadList);
             this.pnlExecution.Controls.Add(this.flpStops);
-            this.pnlExecution.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.pnlExecution.Location = new System.Drawing.Point(229, 3);
+            this.pnlExecution.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlExecution.Location = new System.Drawing.Point(0, 0);
             this.pnlExecution.Name = "pnlExecution";
-            this.pnlExecution.Size = new System.Drawing.Size(768, 594);
-            this.pnlExecution.TabIndex = 1;
-            this.pnlExecution.WrapContents = false;
+            this.pnlExecution.Size = new System.Drawing.Size(768, 388);
             // 
             // lblLoadListHeader
             // 
@@ -283,8 +317,14 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.flpBase.ResumeLayout(false);
             this.flpSelectors.ResumeLayout(false);
             this.flpSelectors.PerformLayout();
+            this.pnlLoadList.ResumeLayout(false);
+            this.pnlLoadList.PerformLayout();
             this.pnlExecution.ResumeLayout(false);
             this.pnlExecution.PerformLayout();
+            this.splitExecution.Panel1.ResumeLayout(false);
+            this.splitExecution.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitExecution)).EndInit();
+            this.splitExecution.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvLoadList)).EndInit();
             this.ResumeLayout(false);
         }
@@ -301,7 +341,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private System.Windows.Forms.ComboBox cmbPlan;
         private System.Windows.Forms.Button cmdCompletePlan;
         private System.Windows.Forms.Button cmdDeletePlan;
-        private System.Windows.Forms.FlowLayoutPanel pnlExecution;
+        private System.Windows.Forms.SplitContainer splitExecution;
+        private System.Windows.Forms.FlowLayoutPanel pnlLoadList;
+        private System.Windows.Forms.Panel pnlExecution;
         private System.Windows.Forms.Label lblLoadListHeader;
         private System.Windows.Forms.DataGridView dgvLoadList;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLoadType;
