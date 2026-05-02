@@ -25,36 +25,36 @@
 - [x] Create `BlueprintCreateRequest` class for new blueprints
 
 ### Task 5: Refactor BlueprintViewModel to Edit Buffer
-- [-] Replace mutable `_blueprint` reference with local field copies
-- [-] Add `LoadFrom(ReadOnlyBlueprint)` to copy fields from snapshot
-- [-] Add `BuildUpdateRequest()` to collect changes into DTO
-- [-] Add `IsDirty` tracking
-- [-] All property setters write to local state only
-- [-] Remove `SelectBlueprint(Blueprint)` — replace with `LoadFrom(ReadOnlyBlueprint)`
+- [x] Replace mutable `_blueprint` reference with local field copies
+- [x] Add `LoadFrom(ReadOnlyBlueprint)` to copy fields from snapshot
+- [x] Add `BuildUpdateRequest()` to collect changes into DTO
+- [x] Add `IsDirty` tracking
+- [x] All property setters write to local state only
+- [x] Remove `SelectBlueprint(Blueprint)` — replace with `LoadFrom(ReadOnlyBlueprint)`
 
 ### Task 6: Update Form Selection Handler
-- [ ] On blueprint selection: read UUID from ReadOnlyBlueprint Tag
-- [ ] Look up ReadOnlyBlueprint (not mutable)
-- [ ] Call `viewModel.LoadFrom(readOnlyBlueprint)`
-- [ ] Populate form fields from ViewModel local state
+- [x] On blueprint selection: read UUID from ReadOnlyBlueprint Tag
+- [x] Look up ReadOnlyBlueprint (not mutable)
+- [x] Call `viewModel.LoadFrom(readOnlyBlueprint)`
+- [x] Populate form fields from ViewModel local state
 
 ### Task 7: Remove Write-Through from Form
-- [ ] TextChanged handlers write to ViewModel local state (already the case after Task 5)
-- [ ] Statistics grid CellValueChanged writes to ViewModel's local properties dict
-- [ ] Resources grid CellValueChanged writes to ViewModel's local resources dict
-- [ ] cmbBlueprintType/cmbShipClass/cmbTechLevel write to ViewModel local fields
-- [ ] No control writes directly to a Blueprint entity
+- [x] TextChanged handlers write to ViewModel local state (already the case after Task 5)
+- [x] Statistics grid CellValueChanged writes to ViewModel's local properties dict
+- [x] Resources grid CellValueChanged writes to ViewModel's local resources dict
+- [x] cmbBlueprintType/cmbShipClass/cmbTechLevel write to ViewModel local fields
+- [x] No control writes directly to a Blueprint entity
 
 ### Task 8: Wire Dirty Tracking to Save Button
-- [ ] Save button enabled only when `viewModel.IsDirty`
-- [ ] Save button disabled after successful save
+- [x] Save button enabled only when `viewModel.IsDirty`
+- [x] Save button disabled after successful save
 
 ### Task 9: Unsaved Changes Guard
-- [ ] Create `PromptUnsavedChanges()` helper returning Save/Discard/Cancel
-- [ ] Wire into `LvwBlueprints_ItemSelectionChanged` — prompt before switching
-- [ ] Wire into `OnFormClosing` — prompt before closing, cancel close on Cancel
-- [ ] Wire into `BtnNew_Click` — prompt before clearing for new
-- [ ] Cancel option in selection change restores the previous list view selection
+- [x] Create `PromptUnsavedChanges()` helper returning Save/Discard/Cancel
+- [x] Wire into `LvwBlueprints_ItemSelectionChanged` — prompt before switching
+- [x] Wire into `OnFormClosing` — prompt before closing, cancel close on Cancel
+- [x] Wire into `BtnNew_Click` — prompt before clearing for new
+- [x] Cancel option in selection change restores the previous list view selection
 
 ## Phase 3: BlueprintService
 

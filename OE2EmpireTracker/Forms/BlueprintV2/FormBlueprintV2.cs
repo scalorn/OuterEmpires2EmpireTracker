@@ -74,6 +74,9 @@ namespace OE2EmpireTracker
         // Parallel list of ReadOnlyBlueprint objects for base blueprint UUID lookup via SelectedFullIndex
         private List<ReadOnlyBlueprint> _baseBlueprintList = new List<ReadOnlyBlueprint>();
 
+        // Tracks the previously selected blueprint UUID for unsaved-changes cancel/restore
+        private string _previousSelectedUUID;
+
         public FormBlueprintV2()
         {
             InitializeComponent();
@@ -199,6 +202,25 @@ namespace OE2EmpireTracker
                 return (false, $"In Use ({report.TotalCount})");
 
             return (true, "Delete");
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (viewModel.IsDirty)
+            {
+                var result = PromptUnsavedChanges();
+                if (result == DialogResult.Yes)
+                {
+                    viewModel.Save(chkGlobalBlueprint.Checked);
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
+            base.OnFormClosing(e);
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
@@ -440,6 +462,31 @@ namespace OE2EmpireTracker
         }
 
         // -----------------------------------------------------------------------
+        // Dirty Tracking / Unsaved Changes (Tasks 8–9)
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Enables the Save button only when the ViewModel has unsaved changes.
+        /// </summary>
+        private void UpdateSaveButtonState()
+        {
+            btnSave.Enabled = viewModel.IsDirty;
+        }
+
+        /// <summary>
+        /// Prompts the user to save, discard, or cancel when there are unsaved changes.
+        /// Returns Yes (save), No (discard), or Cancel.
+        /// </summary>
+        private DialogResult PromptUnsavedChanges()
+        {
+            return MessageBox.Show(
+                $"Save changes to '{viewModel.Name}'?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+        }
+
+        // -----------------------------------------------------------------------
         // List Selection -> Populate Form
         // -----------------------------------------------------------------------
 
@@ -450,6 +497,39 @@ namespace OE2EmpireTracker
                 var readOnly = lvwBlueprints.SelectedItems[0].Tag as ReadOnlyBlueprint;
                 string uuid = readOnly?.UUID;
 
+                // Prompt for unsaved changes before switching
+                if (viewModel.IsDirty)
+                {
+                    var result = PromptUnsavedChanges();
+                    if (result == DialogResult.Yes)
+                    {
+                        viewModel.Save(chkGlobalBlueprint.Checked);
+                    }
+                    else if (result == DialogResult.Cancel)
+                    {
+                        // Restore previous selection
+                        lvwBlueprints.SelectedIndexChanged -= LvwBlueprints_SelectedIndexChanged;
+                        lvwBlueprints.SelectedItems.Clear();
+                        if (!string.IsNullOrEmpty(_previousSelectedUUID))
+                        {
+                            foreach (ListViewItem item in lvwBlueprints.Items)
+                            {
+                                if ((item.Tag as ReadOnlyBlueprint)?.UUID == _previousSelectedUUID)
+                                {
+                                    item.Selected = true;
+                                    item.EnsureVisible();
+                                    break;
+                                }
+                            }
+                        }
+
+                        lvwBlueprints.SelectedIndexChanged += LvwBlueprints_SelectedIndexChanged;
+                        return;
+                    }
+
+                    // DialogResult.No — discard, fall through to load new
+                }
+
                 if (readOnly != null)
                 {
                     viewModel.LoadFrom(readOnly);
@@ -459,6 +539,8 @@ namespace OE2EmpireTracker
                     viewModel.Reset();
                 }
 
+                _previousSelectedUUID = uuid;
+
                 // Update delete button state
                 var counter = CreateReferenceCounter();
                 var report = counter.CountReferences(uuid);
@@ -467,6 +549,7 @@ namespace OE2EmpireTracker
                 btnDelete.Text = text;
 
                 PopulateForm();
+                UpdateSaveButtonState();
                 RefreshEvolutionGraph();
                 RefreshPriceEvolutionGraph();
             }
@@ -484,8 +567,23 @@ namespace OE2EmpireTracker
 
         private void BtnNew_Click(object sender, EventArgs e)
         {
+            if (viewModel.IsDirty)
+            {
+                var result = PromptUnsavedChanges();
+                if (result == DialogResult.Yes)
+                {
+                    viewModel.Save(chkGlobalBlueprint.Checked);
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+
             ClearForm();
             lvwBlueprints.SelectedItems.Clear();
+            _previousSelectedUUID = null;
+            UpdateSaveButtonState();
         }
 
         private void BtnSave_Click(object sender, EventArgs e)
@@ -514,6 +612,8 @@ namespace OE2EmpireTracker
 
             RefreshBlueprintList();
             SelectBlueprintInList(viewModel.UUID);
+            _previousSelectedUUID = viewModel.UUID;
+            UpdateSaveButtonState();
         }
 
         private void BtnDelete_Click(object sender, EventArgs e)
@@ -894,18 +994,21 @@ namespace OE2EmpireTracker
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.Name = txtName.Text;
+            UpdateSaveButtonState();
         }
 
         private void TxtNickName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.NickName = txtNickName.Text;
+            UpdateSaveButtonState();
         }
 
         private void TxtDescription_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             viewModel.Description = txtDescription.Text;
+            UpdateSaveButtonState();
         }
 
         private void TxtCopyCost_TextChanged(object sender, EventArgs e)
@@ -913,6 +1016,7 @@ namespace OE2EmpireTracker
             if (_isProgrammaticUpdate > 0) return;
             int.TryParse(txtCopyCost.Text, out int copyCost);
             viewModel.CopyCost = copyCost;
+            UpdateSaveButtonState();
         }
 
         private void CmbBlueprintType_SelectedIndexChanged(object sender, EventArgs e)
@@ -935,6 +1039,7 @@ namespace OE2EmpireTracker
 
             // Rebuild statistics grid for the new type
             RefreshStatisticsGrid();
+            UpdateSaveButtonState();
         }
 
         private void CmbShipClass_SelectedIndexChanged(object sender, EventArgs e)
@@ -942,6 +1047,7 @@ namespace OE2EmpireTracker
             if (_isProgrammaticUpdate > 0) return;
             var sc = cmbShipClass.SelectedItem as ShipClass;
             viewModel.Class = sc != null ? sc.Id : 0;
+            UpdateSaveButtonState();
         }
 
         private void CmbTechLevel_SelectedIndexChanged(object sender, EventArgs e)
@@ -949,6 +1055,7 @@ namespace OE2EmpireTracker
             if (_isProgrammaticUpdate > 0) return;
             var tl = cmbTechLevel.SelectedItem as TechLevel;
             viewModel.TechLevel = tl?.Name;
+            UpdateSaveButtonState();
         }
 
         private void CmbEvolution_SelectedIndexChanged(object sender, EventArgs e)
@@ -957,6 +1064,7 @@ namespace OE2EmpireTracker
             string evo = cmbEvolution.SelectedItem as string ?? cmbEvolution.Text ?? "0";
             int.TryParse(evo, out int ev);
             viewModel.Evolution = ev;
+            UpdateSaveButtonState();
         }
 
         private void CmbBaseBlueprint_SelectedItemChanged(object sender, EventArgs e)
@@ -967,6 +1075,7 @@ namespace OE2EmpireTracker
                 viewModel.BaseBlueprintUUID = _baseBlueprintList[fullIndex].UUID ?? string.Empty;
             else
                 viewModel.BaseBlueprintUUID = string.Empty;
+            UpdateSaveButtonState();
         }
 
         private void ChkGlobalBlueprint_CheckedChanged(object sender, EventArgs e)
@@ -1256,6 +1365,8 @@ namespace OE2EmpireTracker
                 viewModel.RemoveProperty(propName);
             else
                 viewModel.SetProperty(propName, strValue);
+
+            UpdateSaveButtonState();
         }
 
         /// <summary>
@@ -1349,6 +1460,8 @@ namespace OE2EmpireTracker
 
             if (!string.IsNullOrEmpty(resourceName))
                 viewModel.SetResource(resourceName, amount ?? "0");
+
+            UpdateSaveButtonState();
         }
 
         /// <summary>
@@ -1390,6 +1503,7 @@ namespace OE2EmpireTracker
         {
             int rowIndex = dgvResources.Rows.Add();
             dgvResources.Rows[rowIndex].Cells["Amount"].Value = "0";
+            UpdateSaveButtonState();
         }
 
         /// <summary>
@@ -1405,6 +1519,7 @@ namespace OE2EmpireTracker
                 viewModel.RemoveResource(resourceName);
 
             dgvResources.Rows.RemoveAt(rowIndex);
+            UpdateSaveButtonState();
         }
 
         /// <summary>
