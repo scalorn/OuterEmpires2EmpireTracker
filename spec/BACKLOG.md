@@ -304,11 +304,6 @@ Migrate read-only data paths in FormColonyV2 to use ReadOnly wrappers. This form
 **Status: New**
 Migrate read-only data paths in FormSurvey to use ReadOnly wrappers. This form uses SurveyReferenceCounter for delete-guard logic, FilteredTextComboSet for scanner blueprint selection, and colony list for reference counting. The SurveyViewModel continues to use mutable Survey for editing. Switch list population to GetReadOnlySurveyList, reference counter inputs to read-only lists, and combo population to ReadOnly types.
 
-### BL-111: FormPlayerProfile — Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
-**Status: New**
-Migrate read-only data paths in FormPlayerProfile to use ReadOnly wrappers. This form displays player profiles in a list view and populates faction combos. The PlayerProfileViewModel continues to use mutable PlayerProfile for editing. Switch list population to GetReadOnlyPlayerProfileList and faction combo to ReadOnly types.
-
 ### BL-112: FormDeliveryRoute — Switch to ReadOnly Data Wrappers
 **Dependencies:** readonly-data-wrappers spec (done)
 **Status: New**

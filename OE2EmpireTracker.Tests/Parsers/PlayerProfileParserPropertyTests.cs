@@ -7,6 +7,7 @@ using NUnit.Framework;
 using OE2EmpireTracker.Forms.PlayerProfile;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -211,7 +212,7 @@ namespace OE2EmpireTracker.Tests.Parsers
                     bool nameMatches = string.Equals(existing.Name, parsed.Name, StringComparison.OrdinalIgnoreCase);
 
                     // Merge
-                    FormPlayerProfile.MergeProfile(existing, parsed);
+                    PlayerProfileService.MergeProfile(existing, parsed);
 
                     return (nameMatches &&
                             existing.UUID == originalUUID &&

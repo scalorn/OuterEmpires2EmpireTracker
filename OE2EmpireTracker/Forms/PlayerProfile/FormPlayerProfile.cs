@@ -28,7 +28,11 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private PlayerContext playerContext;
 
+        private PlayerProfileService _profileService;
+
         private PlayerProfileViewModel viewModel;
+
+        private string _previousSelectedUUID;
 
         private Dictionary<SkillGroupName, CheckBox> _skillGroups = new Dictionary<SkillGroupName, CheckBox>();
 
@@ -41,6 +45,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
             viewModel = new PlayerProfileViewModel(playerContext);
+            _profileService = new PlayerProfileService(playerContext);
 
             _skillGroups[SkillGroupName.ColonyDirector]   = chkColonyDirector;
             _skillGroups[SkillGroupName.ColonyFounder]    = chkColonyFounder;
@@ -87,7 +92,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateListView();
             PopulateForm();
 
-            // Wire write-through handlers
+            // Wire edit buffer handlers
             txtTotalCredits.TextChanged += TxtTotalCredits_TextChanged;
             txtSkillPoints.TextChanged += TxtSkillPoints_TextChanged;
             txtPublicRank.TextChanged += TxtPublicRank_TextChanged;
@@ -173,45 +178,23 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        /// <summary>
-        /// Merges parsed profile data into an existing profile, preserving UUID.
-        /// </summary>
-        internal static void MergeProfile(Models.PlayerProfile existing, Models.PlayerProfile parsed)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            existing.Name = parsed.Name;
-            existing.Faction = parsed.Faction;
-            existing.TotalCredits = parsed.TotalCredits;
-            existing.SkillPoints = parsed.SkillPoints;
-            existing.CitizenId = parsed.CitizenId;
-            existing.RegistrationDate = parsed.RegistrationDate;
-            existing.ActiveTime = parsed.ActiveTime;
-
-            // Merge ranks
-            MergeRank(existing.Public, parsed.Public);
-            MergeRank(existing.Private, parsed.Private);
-            MergeRank(existing.Military, parsed.Military);
-
-            // Merge skill groups and skills
-            foreach (SkillGroupName group in Enum.GetValues(typeof(SkillGroupName)))
+            if (viewModel.IsDirty)
             {
-                existing.SetSkillGroup(group, parsed.GetSkillGroup(group));
+                var result = PromptUnsavedChanges();
+                if (result == DialogResult.Yes)
+                {
+                    SaveCurrentProfile();
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
             }
 
-            foreach (var skillEntry in parsed.Skills)
-            {
-                var existingSkill = existing.GetSkill(skillEntry.Key);
-                existingSkill.Level = skillEntry.Value.Level;
-                existingSkill.TrainingStarted = skillEntry.Value.TrainingStarted;
-                existingSkill.CompletionTime = skillEntry.Value.CompletionTime;
-            }
-        }
-
-        internal static void MergeRank(PlayerRank existing, PlayerRank parsed)
-        {
-            existing.Rank = parsed.Rank;
-            existing.Title = parsed.Title;
-            existing.CurrentXP = parsed.CurrentXP;
-            existing.NextXP = parsed.NextXP;
+            base.OnFormClosing(e);
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
@@ -309,6 +292,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private void TrainingStatusChanged(object sender, EventArgs e)
         {
             PopulateForm();
+            UpdateSaveButtonState();
         }
 
         private void ChkColonyDirector_Click(object sender, EventArgs e)
@@ -398,16 +382,54 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             if (e.IsSelected && lvwPlayerProfiles.SelectedItems.Count == 1)
             {
                 var tag = lvwPlayerProfiles.SelectedItems[0].Tag;
-                if (tag is ReadOnlyPlayerProfile roProfile)
+                var roProfile = tag as ReadOnlyPlayerProfile;
+
+                // Prompt for unsaved changes before switching
+                if (viewModel.IsDirty)
+                {
+                    var result = PromptUnsavedChanges();
+                    if (result == DialogResult.Yes)
+                    {
+                        SaveCurrentProfile();
+                    }
+                    else if (result == DialogResult.Cancel)
+                    {
+                        // Restore previous selection
+                        lvwPlayerProfiles.ItemSelectionChanged -= LvwPlayerProfiles_ItemSelectionChanged;
+                        lvwPlayerProfiles.SelectedItems.Clear();
+                        if (!string.IsNullOrEmpty(_previousSelectedUUID))
+                        {
+                            foreach (ListViewItem item in lvwPlayerProfiles.Items)
+                            {
+                                if ((item.Tag as ReadOnlyPlayerProfile)?.UUID == _previousSelectedUUID)
+                                {
+                                    item.Selected = true;
+                                    item.EnsureVisible();
+                                    break;
+                                }
+                            }
+                        }
+
+                        lvwPlayerProfiles.ItemSelectionChanged += LvwPlayerProfiles_ItemSelectionChanged;
+                        return;
+                    }
+
+                    // DialogResult.No - discard, fall through to load new
+                }
+
+                if (roProfile != null)
                 {
                     viewModel.LoadFrom(roProfile);
+                    _previousSelectedUUID = viewModel.UUID;
                 }
-                else if (tag is Models.PlayerProfile mutableProfile)
+                else
                 {
-                    viewModel.LoadFrom(new ReadOnlyPlayerProfile(mutableProfile));
+                    viewModel.Reset();
+                    _previousSelectedUUID = null;
                 }
 
                 PopulateForm();
+                UpdateSaveButtonState();
             }
         }
 
@@ -420,7 +442,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 return;
             }
 
-            bool duplicate = playerContext.PlayerProfileList
+            bool duplicate = playerContext.GetReadOnlyPlayerProfileList()
                 .Any(p => p.UUID != viewModel.UUID &&
                      string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
             if (duplicate)
@@ -510,15 +532,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void CmdSave_Click(object sender, EventArgs e)
         {
-            string newName = txtPlayerName.Text?.Trim();
-            if (string.IsNullOrEmpty(newName) || !txtPlayerName.IsValid)
-            {
-                return;
-            }
-
-            // TODO: Task 9.4 - Replace with PlayerProfileService.Update/Create
-            SaveProfileDirect();
-            PopulateListView();
+            SaveCurrentProfile();
         }
 
         private void CmdDelete_Click(object sender, EventArgs e)
@@ -533,19 +547,35 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             if (result != DialogResult.Yes) return;
 
-            // TODO: Task 9.5 - Replace with PlayerProfileService.Delete
-            DeleteProfileDirect();
+            _profileService.Delete(viewModel.UUID);
             viewModel.Reset();
+            _previousSelectedUUID = null;
             PopulateListView();
             lvwPlayerProfiles.SelectedItems.Clear();
             PopulateForm();
+            UpdateSaveButtonState();
         }
 
         private void CmdNew_Click(object sender, EventArgs e)
         {
+            if (viewModel.IsDirty)
+            {
+                var result = PromptUnsavedChanges();
+                if (result == DialogResult.Yes)
+                {
+                    SaveCurrentProfile();
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+
             viewModel.Reset();
+            _previousSelectedUUID = null;
             PopulateForm();
             lvwPlayerProfiles.SelectedItems.Clear();
+            UpdateSaveButtonState();
         }
 
         private void CmdImport_Click(object sender, EventArgs e)
@@ -593,29 +623,14 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                     return;
                 }
 
-                // Find existing profile by name (case-insensitive)
-                var existing = playerContext.PlayerProfileList
-                    .FirstOrDefault(p => string.Equals(p.Name, tempProfile.Name, StringComparison.OrdinalIgnoreCase));
-
-                if (existing != null)
-                {
-                    // Update existing profile -- preserve UUID
-                    MergeProfile(existing, tempProfile);
-                    viewModel.LoadFrom(new ReadOnlyPlayerProfile(existing));
-                }
-                else
-                {
-                    // Create new profile with generated UUID
-                    tempProfile.UUID = Guid.NewGuid().ToString();
-                    playerContext.AddPlayerProfile(tempProfile);
-                    viewModel.LoadFrom(new ReadOnlyPlayerProfile(tempProfile));
-                }
-
-                playerContext.WriteContext();
-                playerContext.OnPlayerProfilesChanged();
-                playerContext.OnPlayerProfileDataChanged(viewModel.UUID);
+                // Import via service — merges or creates as needed
+                var imported = _profileService.Import(tempProfile);
+                viewModel.LoadFrom(imported);
+                _previousSelectedUUID = viewModel.UUID;
                 PopulateListView();
+                SelectProfileInList(viewModel.UUID);
                 PopulateForm();
+                UpdateSaveButtonState();
             }
             catch (Exception ex)
             {
@@ -628,98 +643,71 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         }
 
         /// <summary>
-        /// Temporary bridge: applies ViewModel local state to the entity and persists.
-        /// Will be replaced by PlayerProfileService in Task 7/9.
+        /// Saves the current profile via the service. New profiles are created; existing profiles are updated.
         /// </summary>
-        private void SaveProfileDirect()
+        private void SaveCurrentProfile()
         {
-            Models.PlayerProfile profile;
+            string newName = txtPlayerName.Text?.Trim();
+            if (string.IsNullOrEmpty(newName) || !txtPlayerName.IsValid)
+            {
+                return;
+            }
+
+            ReadOnlyPlayerProfile saved;
             if (viewModel.IsNew)
             {
-                profile = new Models.PlayerProfile();
-                profile.UUID = Guid.NewGuid().ToString();
-                playerContext.AddPlayerProfile(profile);
+                saved = _profileService.Create(viewModel.BuildCreateRequest());
             }
             else
             {
-                profile = playerContext.FindMutablePlayerProfile(viewModel.UUID);
-                if (profile == null)
-                {
-                    Log.Error("SaveProfileDirect: could not find profile UUID={0}", viewModel.UUID);
-                    return;
-                }
+                saved = _profileService.Update(viewModel.UUID, viewModel.BuildUpdateRequest());
             }
 
-            // Apply local state to entity
-            var request = viewModel.BuildUpdateRequest();
-            profile.Name = request.Name;
-            profile.Faction = request.Faction;
-            profile.TotalCredits = request.TotalCredits;
-            profile.SkillPoints = request.SkillPoints;
-            profile.CitizenId = request.CitizenId;
-            profile.RegistrationDate = request.RegistrationDate;
-            profile.ActiveTime = request.ActiveTime;
-
-            profile.Public.Rank = request.PublicRank;
-            profile.Public.CurrentXP = request.PublicCurrentXP;
-            profile.Public.NextXP = request.PublicNextXP;
-            profile.Public.Title = request.PublicTitle;
-
-            profile.Private.Rank = request.PrivateRank;
-            profile.Private.CurrentXP = request.PrivateCurrentXP;
-            profile.Private.NextXP = request.PrivateNextXP;
-            profile.Private.Title = request.PrivateTitle;
-
-            profile.Military.Rank = request.MilitaryRank;
-            profile.Military.CurrentXP = request.MilitaryCurrentXP;
-            profile.Military.NextXP = request.MilitaryNextXP;
-            profile.Military.Title = request.MilitaryTitle;
-
-            if (request.Skills != null)
-            {
-                foreach (var kvp in request.Skills)
-                {
-                    var skill = profile.GetSkill(kvp.Key);
-                    skill.Level = kvp.Value.Level;
-                    skill.TrainingStarted = kvp.Value.TrainingStarted;
-                    skill.CompletionTime.StartTime = kvp.Value.CompletionStartTime;
-                    skill.CompletionTime.EndTime = kvp.Value.CompletionEndTime;
-                }
-            }
-
-            if (request.SkillGroups != null)
-            {
-                foreach (var kvp in request.SkillGroups)
-                {
-                    profile.SetSkillGroup(kvp.Key, kvp.Value);
-                }
-            }
-
-            playerContext.WriteContext();
-            playerContext.OnPlayerProfilesChanged();
-            playerContext.OnPlayerProfileDataChanged(profile.UUID);
-
-            // Reload from fresh snapshot so IsDirty resets
-            viewModel.LoadFrom(new ReadOnlyPlayerProfile(profile));
+            viewModel.LoadFrom(saved);
+            _previousSelectedUUID = viewModel.UUID;
+            PopulateListView();
+            SelectProfileInList(viewModel.UUID);
+            PopulateForm();
+            UpdateSaveButtonState();
         }
 
         /// <summary>
-        /// Temporary bridge: deletes the current profile directly.
-        /// Will be replaced by PlayerProfileService in Task 7/9.
+        /// Prompts the user to save, discard, or cancel when there are unsaved changes.
+        /// Returns Yes (save), No (discard), or Cancel.
         /// </summary>
-        private void DeleteProfileDirect()
+        private DialogResult PromptUnsavedChanges()
         {
-            if (string.IsNullOrEmpty(viewModel.UUID)) return;
-            string deletedUUID = viewModel.UUID;
+            return MessageBox.Show(
+                string.Format("Save changes to '{0}'?", viewModel.Name),
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+        }
 
-            var profile = playerContext.FindMutablePlayerProfile(deletedUUID);
-            if (profile == null) return;
+        /// <summary>
+        /// Enables the Save button only when the ViewModel has unsaved changes.
+        /// </summary>
+        private void UpdateSaveButtonState()
+        {
+            cmdSave.Enabled = viewModel.IsDirty;
+        }
 
-            playerContext.RemovePlayerProfile(profile);
-            playerContext.CascadeDeletePlayer(deletedUUID);
-            playerContext.WriteContext();
-            playerContext.OnPlayerProfilesChanged();
-            playerContext.OnPlayerProfileDataChanged(deletedUUID);
+        /// <summary>
+        /// Selects the profile with the given UUID in the list view.
+        /// </summary>
+        private void SelectProfileInList(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return;
+
+            foreach (ListViewItem item in lvwPlayerProfiles.Items)
+            {
+                if ((item.Tag as ReadOnlyPlayerProfile)?.UUID == uuid)
+                {
+                    item.Selected = true;
+                    item.EnsureVisible();
+                    return;
+                }
+            }
         }
     }
 }
