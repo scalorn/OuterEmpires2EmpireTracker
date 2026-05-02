@@ -471,7 +471,19 @@ namespace OE2EmpireTracker.Services
                     existing.Resources?.Count ?? 0,
                     existing.Name);
 
+                if (existing.Resources != null)
+                {
+                    foreach (var kvp in existing.Resources)
+                        Log.Debug("  existing resource: {0} = {1}", kvp.Key, kvp.Value);
+                }
+
+                foreach (var kvp in incoming.Resources)
+                    Log.Debug("  incoming resource: {0} = {1}", kvp.Key, kvp.Value);
+
                 existing.Resources = new Dictionary<string, string>(incoming.Resources);
+
+                foreach (var kvp in existing.Resources)
+                    Log.Debug("  final resource: {0} = {1}", kvp.Key, kvp.Value);
             }
             else
             {
