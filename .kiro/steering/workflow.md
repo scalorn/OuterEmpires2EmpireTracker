@@ -34,6 +34,7 @@
 - Do NOT use `dotnet test` — it is incompatible with this project (see tech.md)
 - Use `vstest.console` against the built test DLL when tests need to run from CLI
 - When the running app locks the exe, use `getDiagnostics` instead of building
+- **ALL tests must pass before committing. Zero exceptions.** If any test fails, you MUST investigate and fix it before proceeding. You may NOT dismiss failures as `pre-existing`, `environment issue`, or `not caused by my changes`. Tests do not randomly break — if they fail, something changed, and it is your responsibility to find out what. If the failure is genuinely unrelated to your work, fix it anyway or explain to the user exactly what broke and why, and get explicit approval before committing with failures.
 
 ## Error Recovery and Tooling
 - **When you encounter a recurring error or friction**, stop and ask: can I write or improve a tool, script, or steering rule to prevent this from happening again? If yes, do it before retrying.

@@ -26,6 +26,12 @@ namespace OE2EmpireTracker.Persistence
 
             lock (WriteLock)
             {
+                string dir = Path.GetDirectoryName(tempPath);
+                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
                 File.WriteAllText(tempPath, content);
 
                 if (File.Exists(fullPath))
