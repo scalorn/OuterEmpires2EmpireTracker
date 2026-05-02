@@ -666,6 +666,8 @@ Read-only wrapper classes provide controlled access to the data model. Each muta
 - **PlayerProfileUpdateRequest** — DTO carrying the original ReadOnlyPlayerProfile snapshot and current local field values for updating an existing profile through PlayerProfileService
 - **PlayerProfileCreateRequest** — DTO carrying field values for creating a new player profile through PlayerProfileService (no Original snapshot, no UUID)
 - **SkillUpdateData** — DTO carrying a single skill's state (Level, TrainingStarted, CompletionStartTime, CompletionEndTime) for profile create/update requests
+- **LocalSkillData** — Local edit buffer copy of a single skill's state in the PlayerProfileViewModel, disconnected from the PlayerSkill entity
+- **LocalRankData** — Local edit buffer copy of a single rank track's state in the PlayerProfileViewModel, disconnected from the PlayerRank entity
 - **ReadOnlyDeliveryPlanStop** — wraps DeliveryPlanStop (DropOff/PickUp as IReadOnlyList of ReadOnlyDeliveryItem)
 - **ReadOnlyDeliveryItem** — wraps DeliveryItem
 - **ReadOnlyBuildItem** — wraps BuildItem

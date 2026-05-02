@@ -49,13 +49,13 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. ViewModel edit buffer
-  - [-] 5.1 Create LocalSkillData and LocalRankData classes
+  - [x] 5.1 Create LocalSkillData and LocalRankData classes
     - LocalSkillData: Level, TrainingStarted, CompletionStartTime, CompletionEndTime, computed TimeRemaining and TimeRemainingString
     - LocalRankData: Rank, CurrentXP, NextXP, Title
     - Place in ViewModels/ folder
     - _Requirements: 5.3, 5.2_
 
-  - [~] 5.2 Rewrite PlayerProfileViewModel as edit buffer
+  - [x] 5.2 Rewrite PlayerProfileViewModel as edit buffer
     - Replace mutable entity reference with local fields: Name, Faction, TotalCredits, SkillPoints, CitizenId, RegistrationDate, ActiveTime
     - Add local rank data (PublicRank, PrivateRank, MilitaryRank as LocalRankData)
     - Add local skills dictionary (Dictionary<string, LocalSkillData>)
@@ -68,14 +68,14 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
     - Implement UUID property
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 6.1, 6.2, 6.3, 7.1, 7.2_
 
-  - [~] 5.3 Implement dirty tracking in PlayerProfileViewModel
+  - [x] 5.3 Implement dirty tracking in PlayerProfileViewModel
     - Implement IsDirty property comparing all local fields against _original snapshot
     - Compare scalar fields, all three rank tracks field-by-field, skills dictionary, skill groups dictionary
     - Handle new profile case: IsDirty true once any field has non-default value
     - Handle loaded profile case: IsDirty false immediately after LoadFrom
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
 
-  - [~] 5.4 Implement BuildUpdateRequest and BuildCreateRequest on ViewModel
+  - [x] 5.4 Implement BuildUpdateRequest and BuildCreateRequest on ViewModel
     - BuildUpdateRequest: builds PlayerProfileUpdateRequest from local state including Original snapshot
     - BuildCreateRequest: builds PlayerProfileCreateRequest from local state
     - _Requirements: 18.1, 18.2_

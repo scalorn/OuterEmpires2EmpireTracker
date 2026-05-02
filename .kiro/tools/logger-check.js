@@ -41,6 +41,14 @@ for (const dir of DIRS) {
         if (!classMatch) continue;
         const className = classMatch[1];
 
+        // Skip pure data containers (DTOs, POCOs with only properties)
+        const DATA_CONTAINERS = new Set([
+            'LocalRankData', 'LocalSkillData', 'SkillUpdateData',
+            'PlayerProfileUpdateRequest', 'PlayerProfileCreateRequest',
+            'BlueprintUpdateRequest', 'BlueprintCreateRequest',
+        ]);
+        if (DATA_CONTAINERS.has(className)) continue;
+
         if (!content.includes('LogManager.GetCurrentClassLogger()')) {
             findings.push(`MISSING: ${className} has no NLog Logger (${relPath})`);
         }
