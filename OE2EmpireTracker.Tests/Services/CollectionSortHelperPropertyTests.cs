@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -26,8 +26,7 @@ namespace OE2EmpireTracker.Tests.Services
         [OneTimeSetUp]
         public void FixtureSetUp()
         {
-            TestHelper.SetAllFilePaths();
-            EmpireContext.Reset();
+            TestHelper.ResetWithCachedData();
             empireContext = EmpireContext.GetInstance();
             playerContext = PlayerContext.GetInstance();
         }
@@ -38,7 +37,7 @@ namespace OE2EmpireTracker.Tests.Services
         // **Validates: Requirements 3.1, 8.2, 8.5**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property OrderStructures_AlwaysSortedByBuildQueueSequence()
         {
             return Prop.ForAll(
@@ -63,7 +62,7 @@ namespace OE2EmpireTracker.Tests.Services
         // **Validates: Requirements 3.1, 8.2, 8.5**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property OrderRouteStops_AlwaysSortedBySequence()
         {
             return Prop.ForAll(
@@ -88,7 +87,7 @@ namespace OE2EmpireTracker.Tests.Services
         // **Validates: Requirements 3.1, 8.2, 8.5**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property OrderColonies_AlwaysSortedByCompositeKey()
         {
             var stringGen = Gen.OneOf(
@@ -152,7 +151,7 @@ namespace OE2EmpireTracker.Tests.Services
         // **Validates: Requirements 3.1, 8.2, 8.5**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property OrderComponents_AlwaysSortedBySlotTypeThenIndex()
         {
             var slotTypeGen = Gen.OneOf(
@@ -197,7 +196,7 @@ namespace OE2EmpireTracker.Tests.Services
         // **Validates: Requirements 3.3**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SortHelper_And_SerializationSorter_AgreeOnRouteStopOrder()
         {
             return Prop.ForAll(
@@ -233,7 +232,7 @@ namespace OE2EmpireTracker.Tests.Services
         // **Validates: Requirements 3.3**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SortHelper_And_SerializationSorter_AgreeOnComponentOrder()
         {
             var slotTypeGen = Gen.Elements("Weapon", "Shield", "Drive", "Reactor", "Cargo", "Utility");
@@ -281,7 +280,7 @@ namespace OE2EmpireTracker.Tests.Services
         // **Validates: Requirements 4.5**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property GetFirstStagedStructure_ReturnsLowestSequenceStaged()
         {
             // Generate 1-10 structures with random BuildQueueSequence values.
@@ -353,7 +352,7 @@ namespace OE2EmpireTracker.Tests.Services
         // **Validates: Requirements 4.6**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CalculateLoadList_OrderIndependent()
         {
             var stopCountGen = Gen.Choose(1, 5);

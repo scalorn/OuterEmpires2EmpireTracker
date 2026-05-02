@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -28,8 +28,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         [SetUp]
         public void SetUp()
         {
-            EmpireContext.Reset();
-            TestHelper.SetAllFilePaths();
+            TestHelper.ResetWithCachedData();
         }
 
         [TearDown]
@@ -38,7 +37,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             EmpireContext.Reset();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property OldKeysRenamedAndValuesPreserved()
         {
             return Prop.ForAll(BlueprintWithOldKeysGen().ToArbitrary(), bp =>

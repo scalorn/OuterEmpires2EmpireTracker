@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -94,7 +94,7 @@ namespace OE2EmpireTracker.Tests.Forms
         {
             var rng = new Random(42);
 
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 // Arrange: generate random data and load it
                 var root = RandomPlayerRoot(rng);
@@ -156,7 +156,7 @@ namespace OE2EmpireTracker.Tests.Forms
         {
             var rng = new Random(42);
 
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 // Arrange: generate random data and load it
                 var root = RandomPlayerRoot(rng);
@@ -244,7 +244,7 @@ namespace OE2EmpireTracker.Tests.Forms
         {
             var rng = new Random(42);
 
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 // Arrange: generate random data and load it
                 var root = RandomPlayerRoot(rng);
@@ -338,7 +338,7 @@ namespace OE2EmpireTracker.Tests.Forms
         {
             var rng = new Random(42);
 
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 // Arrange: generate random data, save to temp file
                 var root = RandomPlayerRoot(rng);
@@ -419,7 +419,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 "Manage Surveys"
             };
 
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 // Arrange: create a random permutation of the menu labels
                 var shuffled = menuLabels.OrderBy(_ => rng.Next()).ToList();

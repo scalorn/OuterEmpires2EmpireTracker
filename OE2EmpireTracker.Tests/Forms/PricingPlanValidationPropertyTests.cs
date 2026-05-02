@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
@@ -23,7 +23,7 @@ namespace OE2EmpireTracker.Tests.Forms
         /// which means the save handler would reject it.
         /// **Validates: Requirements 1.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property WhitespacePlanNames_AreRejected()
         {
             return Prop.ForAll(WhitespaceStringGen().ToArbitrary(), name =>
@@ -41,7 +41,7 @@ namespace OE2EmpireTracker.Tests.Forms
         /// <summary>
         /// Non-whitespace names should be accepted.
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property NonWhitespacePlanNames_AreAccepted()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), nes =>

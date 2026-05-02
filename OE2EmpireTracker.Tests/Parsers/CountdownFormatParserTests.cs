@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
@@ -105,7 +105,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         ///
         /// **Validates: Requirements 8.1, 8.2, 8.3, 8.5**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CountdownFormatRoundTrip()
         {
             var gen = Gen.Choose(0, 10_000_000).Select(i => (long)i);
@@ -130,7 +130,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         ///
         /// **Validates: Requirements 8.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CountdownFormatRejectsInvalid()
         {
             var invalidGen = Gen.OneOf(

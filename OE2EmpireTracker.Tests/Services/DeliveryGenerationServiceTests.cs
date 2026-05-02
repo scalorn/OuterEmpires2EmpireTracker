@@ -16,9 +16,7 @@ namespace OE2EmpireTracker.Tests.Services
         [SetUp]
         public void SetUp()
         {
-            EmpireContext.Reset();
-            PlayerContext.Reset();
-            TestHelper.SetAllFilePaths();
+            TestHelper.ResetWithCachedData();
             _playerContext = PlayerContext.GetInstance();
             EmpireContext.PlayerContext = _playerContext;
         }

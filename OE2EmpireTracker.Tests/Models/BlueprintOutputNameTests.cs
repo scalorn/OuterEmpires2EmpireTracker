@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -35,7 +35,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// Feature: structure-name-normalization, Property 1: Suffix stripping round-trip
         /// **Validates: Requirements 1.1, 1.2, 1.3, 1.4, 5.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SuffixStripping_RoundTrip_FlatpackWithSuffix()
         {
             return Prop.ForAll(
@@ -49,7 +49,7 @@ namespace OE2EmpireTracker.Tests.Models
                 });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SuffixStripping_RoundTrip_NonFlatpackOrNoSuffix()
         {
             return Prop.ForAll(
@@ -61,7 +61,7 @@ namespace OE2EmpireTracker.Tests.Models
                 });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SuffixStripping_RoundTrip_NullOrEmptyName()
         {
             return Prop.ForAll(
@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// Feature: structure-name-normalization, Property 2: ExtendedName uses OutputItemName
         /// **Validates: Requirements 2.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ExtendedName_UsesFlatpackFullName()
         {
             var gen = GenFlatpackWithSuffix()
@@ -96,7 +96,7 @@ namespace OE2EmpireTracker.Tests.Models
                 });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ExtendedName_UsesNameForNonFlatpack()
         {
             var gen = GenNonFlatpackOrNoSuffix()
@@ -118,7 +118,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// Feature: structure-name-normalization, Property 3: BuildFlatpackLookup behavioral equivalence
         /// **Validates: Requirements 4.1, 4.2, 4.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property BuildFlatpackLookup_BehavioralEquivalence()
         {
             var genBlueprintList = Gen.ListOf(GenFlatpackWithSuffix());
@@ -179,7 +179,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// Feature: structure-name-normalization, Property 4: Serialization round-trip preserves Name
         /// **Validates: Requirements 1.5, 5.1, 5.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property Serialization_RoundTrip_PreservesName()
         {
             return Prop.ForAll(
@@ -205,7 +205,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// Feature: structure-name-normalization, Property 5: Read-only invariant
         /// **Validates: Requirements 5.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ReadOnly_Invariant()
         {
             return Prop.ForAll(

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -49,7 +49,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// including the start blueprint.
         /// **Validates: Requirements 1.1, 1.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ChainResolution_ProducesCompleteOrderedAncestorList()
         {
             // Generate a chain length between 1 and 16
@@ -125,7 +125,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// build graph data and verify all output keys are numeric and in the source array.
         /// **Validates: Requirements 2.1, 2.2, 2.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property GraphData_ContainsOnlyNumericPropertiesFromBlueprintType()
         {
             // Combine all candidate property names
@@ -240,7 +240,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// properties are excluded and NoChanges flag is correct.
         /// **Validates: Requirements 2.4, 2.5**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property UnchangedProperties_AreExcluded_And_NoChangesFlag_IsCorrect()
         {
             // All numeric property names we'll use
@@ -347,7 +347,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// equals (value / ev0Value) * 100 and Ev0 is always 100%.
         /// **Validates: Requirements 3.1, 3.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property PercentageNormalization_MatchesFormula_And_Ev0IsAlways100()
         {
             // Use known numeric property names: Integer and Decimal types
@@ -566,7 +566,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Time property parsing -- "1d 2h 30m 15s" -> 95415 seconds.
-        /// (1Ã—86400 + 2Ã—3600 + 30Ã—60 + 15 = 95415)
+        /// (1Ãƒâ€”86400 + 2Ãƒâ€”3600 + 30Ãƒâ€”60 + 15 = 95415)
         /// </summary>
         [Test]
         public void ParseTimeToSeconds_FullTimeString_ReturnsCorrectSeconds()

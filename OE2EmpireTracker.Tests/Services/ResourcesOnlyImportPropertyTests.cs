@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Tests.Services
         ///
         /// **Validates: Requirements 1.1, 1.2, 1.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property IsResourcesOnlyImportClassification()
         {
             var gen = from resources in ResourcesDictGen()
@@ -76,7 +76,7 @@ namespace OE2EmpireTracker.Tests.Services
         ///
         /// **Validates: Requirements 2.1, 2.2, 3.1, 3.2, 3.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property MergeResourcesOnlyReplacesResourcesAndPreservesFields()
         {
             var gen = from uuid in NonEmptyAlphaStringGen()

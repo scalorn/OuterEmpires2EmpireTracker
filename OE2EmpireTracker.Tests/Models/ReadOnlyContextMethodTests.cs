@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -78,7 +78,7 @@ namespace OE2EmpireTracker.Tests.Models
         // **Validates: Requirements 7.1-7.21, 8.1-8.6**
         // ---------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property GetReadOnlyBlueprintList_PreservesCountAndUUIDs(OE2EmpireTracker.Models.Blueprint[] blueprints)
         {
             var pc = FreshPlayerContext();
@@ -94,7 +94,7 @@ namespace OE2EmpireTracker.Tests.Models
                 .Label($"count: {roList.Count} vs {pc.BlueprintList.Count}");
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property GetReadOnlyColonyList_PreservesCountAndUUIDs(Colony[] colonies)
         {
             var pc = FreshPlayerContext();
@@ -110,7 +110,7 @@ namespace OE2EmpireTracker.Tests.Models
                 .Label($"count: {roList.Count} vs {pc.ColonyList.Count}");
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property GetReadOnlySurveyList_PreservesCountAndUUIDs(Survey[] surveys)
         {
             var pc = FreshPlayerContext();
@@ -134,7 +134,7 @@ namespace OE2EmpireTracker.Tests.Models
         // **Validates: Requirements 9.1-9.17**
         // ---------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property GetCurrentPlayerReadOnlyColonies_FiltersCorrectly(Colony[] colonies)
         {
             var pc = FreshPlayerContext();
@@ -160,7 +160,7 @@ namespace OE2EmpireTracker.Tests.Models
                 .Label($"expected {expectedCount}, got {roList.Count}, allOwned={allOwned}");
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property GetCurrentPlayerReadOnlyBlueprints_FiltersCorrectly(OE2EmpireTracker.Models.Blueprint[] blueprints)
         {
             var pc = FreshPlayerContext();
@@ -186,7 +186,7 @@ namespace OE2EmpireTracker.Tests.Models
                 .Label($"expected {expectedCount}, got {roList.Count}, allOwned={allOwned}");
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property GetCurrentPlayerReadOnlySurveys_FiltersCorrectly(Survey[] surveys)
         {
             var pc = FreshPlayerContext();

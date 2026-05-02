@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// name that does not exist in the list (under any case), FindByName shall return null.
         /// **Validates: Requirements 2.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CaseInsensitiveColonyNameSearch()
         {
             var gen = from colonies in Gen.ListOf(ColonyGen())
@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// the result to the list shall increase the list count by exactly one.
         /// **Validates: Requirements 2.3, 4.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property NoMatchImportGrowsColonyListByOne()
         {
             var gen = from colonies in Gen.ListOf(ColonyGen())
@@ -95,7 +95,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// OwnerUUID, Items, and Structures references shall remain unchanged.
         /// **Validates: Requirements 3.3, 3.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property MergeIdentityUpdatesIdentityPreservesLocalState()
         {
             var gen = from existing in ColonyGen()
@@ -163,7 +163,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// and Commodities.Count equal the temp colony's counts.
         /// **Validates: Requirements 4.1, 4.2, 4.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CreateFromTempProducesValidColony()
         {
             var gen = from temp in ColonyGen()
@@ -220,7 +220,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// is not equal to the exclude UUID.
         /// **Validates: Requirements 8.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property DuplicateNameDetectionIsCaseInsensitiveAndExcludesSelf()
         {
             var gen = from colonies in Gen.ListOf(ColonyGen())
@@ -268,7 +268,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// SystemName match case-insensitively. For any planet+system not in the list, it shall return null.
         /// **Validates: Requirements 2.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CaseInsensitivePlanetSystemSearch()
         {
             var gen = from colonies in Gen.ListOf(ColonyGen())

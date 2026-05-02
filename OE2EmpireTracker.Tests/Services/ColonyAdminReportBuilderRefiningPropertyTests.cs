@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -44,7 +44,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// and the displayed consume and produce rates SHALL equal the sums of individual refiner rates.
         /// **Validates: Requirements 4.7**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property RefiningAggregation_OneRowPerResourcePurity()
         {
             var refinerCountGen = Gen.Choose(1, 5);

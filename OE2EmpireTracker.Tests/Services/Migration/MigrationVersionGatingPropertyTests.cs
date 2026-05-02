@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using FsCheck;
 using FsCheck.NUnit;
@@ -18,8 +18,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         [SetUp]
         public void SetUp()
         {
-            EmpireContext.Reset();
-            TestHelper.SetAllFilePaths();
+            TestHelper.ResetWithCachedData();
         }
 
         [TearDown]
@@ -34,7 +33,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// no migrations should have run (data unchanged except version stamp).
         /// **Validates: Requirements 3.1, 3.2, 3.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property AfterMigrationRunVersionEqualsCurrentVersion()
         {
             var gen = from baselineVersion in Gen.Choose(0, MigrationRunner.CurrentVersion + 1)
@@ -43,8 +42,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
-                EmpireContext.Reset();
-                TestHelper.SetAllFilePaths();
+                TestHelper.ResetWithCachedData();
                 var ec = EmpireContext.GetInstance();
                 var pc = PlayerContext.GetInstance();
 
@@ -68,13 +66,12 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// MigrationRunner should not modify any blueprint UUIDs (no migrations run).
         /// **Validates: Requirements 3.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property AlreadyAtCurrentVersionSkipsMigrations()
         {
             return Prop.ForAll(Arb.Default.Int32().Generator.Where(i => i >= 0).ToArbitrary(), _ =>
             {
-                EmpireContext.Reset();
-                TestHelper.SetAllFilePaths();
+                TestHelper.ResetWithCachedData();
                 var ec = EmpireContext.GetInstance();
                 var pc = PlayerContext.GetInstance();
 

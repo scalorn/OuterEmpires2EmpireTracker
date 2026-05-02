@@ -17,9 +17,7 @@ namespace OE2EmpireTracker.Tests.Services
         [SetUp]
         public void SetUp()
         {
-            EmpireContext.Reset();
-            PlayerContext.Reset();
-            TestHelper.SetAllFilePaths();
+            TestHelper.ResetWithCachedData();
             _empireContext = EmpireContext.GetInstance();
             _playerContext = PlayerContext.GetInstance();
         }
@@ -28,8 +26,6 @@ namespace OE2EmpireTracker.Tests.Services
         public void TearDown()
         {
             EmpireContext.Reset();
-            PlayerContext.Reset();
-            TestHelper.SetAllFilePaths();
         }
 
         // ------- StructureViewModels cache -------

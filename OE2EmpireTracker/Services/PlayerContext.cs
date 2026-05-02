@@ -68,6 +68,42 @@ namespace OE2EmpireTracker.Services
         private List<ExternalCharacter> _externalCharacterList = new List<ExternalCharacter>();
         private List<Asteroid> _asteroidList = new List<Asteroid>();
 
+        /// <summary>
+        /// Internal constructor for test infrastructure. Accepts a pre-parsed
+        /// PlayerRoot so tests can skip File.ReadAllText and JsonConvert.
+        /// </summary>
+        internal PlayerContext(PlayerRoot playerRoot) : base()
+        {
+            _instance = this;
+
+            InitPlayerProfiles(playerRoot);
+            InitBlueprints(playerRoot);
+            InitSurveys(playerRoot);
+            InitColonies(playerRoot);
+            InitDeliveryRoutes(playerRoot);
+            InitDeliveryPlans(playerRoot);
+            InitPricingPlans(playerRoot);
+            InitBuildPlans(playerRoot);
+            InitShipTemplates(playerRoot);
+            InitShips(playerRoot);
+            InitStations(playerRoot);
+            InitMarketListings(playerRoot);
+            InitMarketTransactions(playerRoot);
+            InitStockPlans(playerRoot);
+            InitStockProfiles(playerRoot);
+            InitSupplyChains(playerRoot);
+            InitWarehouseOverflowRules(playerRoot);
+            InitFactions(playerRoot);
+            InitExternalCharacters(playerRoot);
+            InitAsteroids(playerRoot);
+            DataVersion = playerRoot.DataVersion;
+
+            // Migrate and restore current player
+            MigrateOwnerUUIDs();
+            CleanupOrphanedData();
+            RestoreCurrentPlayer(playerRoot.CurrentPlayerUUID);
+        }
+
         private PlayerContext() : base()
         {
             _instance = this;

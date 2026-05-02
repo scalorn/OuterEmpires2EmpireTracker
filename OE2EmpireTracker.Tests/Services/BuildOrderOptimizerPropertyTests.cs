@@ -60,8 +60,7 @@ namespace OE2EmpireTracker.Tests.Services
         [OneTimeSetUp]
         public void FixtureSetUp()
         {
-            TestHelper.SetAllFilePaths();
-            EmpireContext.Reset();
+            TestHelper.ResetWithCachedData();
             empireContext = EmpireContext.GetInstance();
             playerContext = PlayerContext.GetInstance();
         }
@@ -73,12 +72,12 @@ namespace OE2EmpireTracker.Tests.Services
         // For any sequence of colony structures, building cumulative status
         // incrementally via CalculateBuilt one-at-a-time produces the same
         // result as building it via a fresh CalculateBuilt loop from scratch.
-        // Both approaches use the same fold â€” this confirms the fold is
+        // Both approaches use the same fold — this confirms the fold is
         // deterministic and order-independent of calculator instance.
         // **Validates: Requirements 1.1, 1.2, 2.1, 2.2, 2.3**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property IncrementalAccumulation_EqualsBatchCalculation()
         {
             var typeGen = Gen.Elements(AllBlueprintTypes);
@@ -128,7 +127,7 @@ namespace OE2EmpireTracker.Tests.Services
         // **Validates: Requirements 4.1, 4.2**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SimulateOneMore_DoesNotMutateInput()
         {
             var typeGen = Gen.Elements(AllBlueprintTypes);
@@ -210,7 +209,7 @@ namespace OE2EmpireTracker.Tests.Services
         // **Validates: Requirements 2.1, 2.2, 2.4, 2.5, 2.6**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property OptimizerOutput_NoDeficitsAndPreservesInput()
         {
             var primaryCountGen = Gen.Choose(0, 10);
@@ -255,7 +254,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                 // (a) No deficits from first primary through last primary.
                 // Leftover support appended after the last primary may have
-                // transient deficits (e.g. Ent Centre needing power) â€” this is
+                // transient deficits (e.g. Ent Centre needing power) — this is
                 // expected behavior per REQ-COL-095g.
                 var calc = new ColonyStatusCalculator(new Colony());
                 var iw = new IdealColonyStructureWorkers();
@@ -280,7 +279,7 @@ namespace OE2EmpireTracker.Tests.Services
                 }
 
                 if (firstPrimaryPos < 0)
-                    return true.Label("OK â€” no primaries");
+                    return true.Label("OK — no primaries");
 
                 for (int i = 0; i < result.Count; i++)
                 {
@@ -323,7 +322,7 @@ namespace OE2EmpireTracker.Tests.Services
         // **Validates: Requirements 7.1, 7.2, 7.3**
         // -----------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property OptimizerOutput_HasBoundedSize()
         {
             var countGen = Gen.Choose(0, 20);

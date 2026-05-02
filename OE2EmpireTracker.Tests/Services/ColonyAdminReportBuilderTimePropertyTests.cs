@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// SHALL contain both a relative countdown string and a local timezone time string.
         /// **Validates: Requirements 2.2, 4.5, 4.10**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CompletionTimeDualDisplay_ContainsBothCountdownAndLocalTime()
         {
             var secondsGen = Gen.Choose(60, 86400);

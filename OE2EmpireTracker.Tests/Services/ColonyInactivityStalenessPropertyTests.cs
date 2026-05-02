@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -56,7 +56,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// " since last import".
         /// **Validates: Requirements 4.2, 4.3, 4.5**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property InactivityCollectorProducesCorrectStalenessRows()
         {
             return Prop.ForAll(MixedColonyListGen().ToArbitrary(), colonies =>

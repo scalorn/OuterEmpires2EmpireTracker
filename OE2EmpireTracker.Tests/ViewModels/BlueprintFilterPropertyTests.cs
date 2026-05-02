@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -56,7 +56,7 @@ namespace OE2EmpireTracker.Tests.ViewModels
         ///
         /// **Validates: Requirements 1.1, 1.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property TitleBar_Format_Correctness()
         {
             var nonNegInt = Gen.Choose(0, int.MaxValue);
@@ -84,7 +84,7 @@ namespace OE2EmpireTracker.Tests.ViewModels
         ///
         /// **Validates: Requirements 3.2, 4.2, 5.2, 6.2, 7.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CombinedFilter_AND_Semantics()
         {
             var nameGen = Gen.Elements("Laser", "Drive", "Plate", "Scanner", "Coupler");

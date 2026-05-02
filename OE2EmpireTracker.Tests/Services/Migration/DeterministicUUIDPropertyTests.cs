@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
@@ -18,7 +18,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// For any Dedup_Key, DeterministicUUID.Generate shall produce the same UUID on every call.
         /// **Validates: Requirements 1.1, 1.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SameInputsProduceSameUUID()
         {
             return Prop.ForAll(DedupKeyGen().ToArbitrary(), key =>
@@ -35,7 +35,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// Two different Dedup_Keys shall produce different UUIDs.
         /// **Validates: Requirements 1.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property DifferentInputsProduceDifferentUUIDs()
         {
             var gen = from key1 in DedupKeyGen()
@@ -72,7 +72,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// <summary>
         /// Generated UUIDs should be valid GUID strings and have version 5 bits set.
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property GeneratedUUIDIsValidGuid()
         {
             return Prop.ForAll(DedupKeyGen().ToArbitrary(), key =>

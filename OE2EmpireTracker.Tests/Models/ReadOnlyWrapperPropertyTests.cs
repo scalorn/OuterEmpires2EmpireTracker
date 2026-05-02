@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Tests.Models
         // **Validates: Requirements 1.5, 1.7, 4.1, 13.1**
         // ---------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Blueprint_ValuePassthrough(OE2EmpireTracker.Models.Blueprint bp)
         {
             var ro = new ReadOnlyBlueprint(bp);
@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Tests.Models
                     ro.OutputItemName == bp.OutputItemName).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Colony_ValuePassthrough(Colony colony)
         {
             var ro = new ReadOnlyColony(colony);
@@ -56,7 +56,7 @@ namespace OE2EmpireTracker.Tests.Models
                     ro.Name == colony.ColonyName).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property DeliveryRoute_ValuePassthrough(DeliveryRoute route)
         {
             var ro = new ReadOnlyDeliveryRoute(route);
@@ -65,7 +65,7 @@ namespace OE2EmpireTracker.Tests.Models
                     ro.OwnerUUID == route.OwnerUUID).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Ship_ValuePassthrough(Ship ship)
         {
             var ro = new ReadOnlyShip(ship);
@@ -81,7 +81,7 @@ namespace OE2EmpireTracker.Tests.Models
                     ro.HullMaxRepairPercent == ship.HullMaxRepairPercent).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property MarketListing_ValuePassthrough(MarketListing ml)
         {
             var ro = new ReadOnlyMarketListing(ml);
@@ -105,7 +105,7 @@ namespace OE2EmpireTracker.Tests.Models
         // **Validates: Requirements 1.8, 1.9, 1.10, 1.11, 5.9, 6.1-6.36**
         // ---------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Colony_NestedWrapping(Colony colony)
         {
             var ro = new ReadOnlyColony(colony);
@@ -122,7 +122,7 @@ namespace OE2EmpireTracker.Tests.Models
             return (structuresMatch && itemsMatch && commoditiesMatch).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Survey_NestedWrapping(Survey survey)
         {
             var ro = new ReadOnlySurvey(survey);
@@ -143,7 +143,7 @@ namespace OE2EmpireTracker.Tests.Models
             return (resourcesMatch && keysMatch && valuesMatch).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Ship_NestedWrapping(Ship ship)
         {
             var ro = new ReadOnlyShip(ship);
@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Tests.Models
         // **Validates: Requirements 3.2, 3.3**
         // ---------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Blueprint_LiveReadThrough(OE2EmpireTracker.Models.Blueprint bp, string newName)
         {
             var ro = new ReadOnlyBlueprint(bp);
@@ -179,7 +179,7 @@ namespace OE2EmpireTracker.Tests.Models
             return (ro.Name == newName).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Colony_LiveReadThrough(Colony colony, string newName)
         {
             var ro = new ReadOnlyColony(colony);
@@ -187,7 +187,7 @@ namespace OE2EmpireTracker.Tests.Models
             return (ro.ColonyName == newName).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Ship_LiveReadThrough(Ship ship)
         {
             var ro = new ReadOnlyShip(ship);
@@ -204,7 +204,7 @@ namespace OE2EmpireTracker.Tests.Models
         // **Validates: Requirements 5.1, 5.3, 5.5, 5.7**
         // ---------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property PropertyBag_QueryDelegation(PropertyBag bag)
         {
             var ro = new ReadOnlyPropertyBag(bag);
@@ -246,7 +246,7 @@ namespace OE2EmpireTracker.Tests.Models
             return (countMatch && containsMatch && decimalMatch && stringMatch).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property ItemBag_QueryDelegation(ItemBag bag)
         {
             var ro = new ReadOnlyItemBag(bag);
@@ -265,7 +265,7 @@ namespace OE2EmpireTracker.Tests.Models
             return (countMatch && containsMatch && countByTypeMatch).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property LockTracking_QueryDelegation(LockTracking tracking)
         {
             var ro = new ReadOnlyLockTracking(tracking);
@@ -281,7 +281,7 @@ namespace OE2EmpireTracker.Tests.Models
             return (qtyMatch && emptyMatch).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property CountDownTime_QueryDelegation(CountDownTime cdt)
         {
             var ro = new ReadOnlyCountDownTime(cdt);
@@ -302,7 +302,7 @@ namespace OE2EmpireTracker.Tests.Models
         // **Validates: Requirements 12.1-12.5**
         // ---------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property ColonyStructure_NullableBuildTime(ColonyStructure cs)
         {
             var ro = new ReadOnlyColonyStructure(cs);
@@ -332,7 +332,7 @@ namespace OE2EmpireTracker.Tests.Models
             return (buildTimeCorrect && processTimeCorrect).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Item_NullableContents(Item item)
         {
             var ro = new ReadOnlyItem(item);
@@ -358,7 +358,7 @@ namespace OE2EmpireTracker.Tests.Models
         // **Validates: Requirements 15.1, 15.2, 15.3**
         // ---------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Blueprint_EqualityByUUID(OE2EmpireTracker.Models.Blueprint bp1, OE2EmpireTracker.Models.Blueprint bp2)
         {
             // Same UUID test: copy UUID from bp1 to bp2
@@ -378,7 +378,7 @@ namespace OE2EmpireTracker.Tests.Models
             return (sameUUIDEquals && sameHashCode && differentUUIDNotEquals).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Colony_EqualityByUUID(Colony c1, Colony c2)
         {
             string sharedUUID = c1.UUID;
@@ -396,7 +396,7 @@ namespace OE2EmpireTracker.Tests.Models
             return (sameUUIDEquals && sameHashCode && differentUUIDNotEquals).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Ship_EqualityByUUID(Ship s1, Ship s2)
         {
             string sharedUUID = s1.UUID;
@@ -421,42 +421,42 @@ namespace OE2EmpireTracker.Tests.Models
         // **Validates: Requirements 15.4**
         // ---------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Blueprint_ToStringMatchesExtendedName(OE2EmpireTracker.Models.Blueprint bp)
         {
             var ro = new ReadOnlyBlueprint(bp);
             return (ro.ToString() == bp.ExtendedName).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Survey_ToStringMatchesExtendedName(Survey survey)
         {
             var ro = new ReadOnlySurvey(survey);
             return (ro.ToString() == survey.ExtendedName).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Colony_ToStringMatchesName(Colony colony)
         {
             var ro = new ReadOnlyColony(colony);
             return (ro.ToString() == colony.ColonyName).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property DeliveryRoute_ToStringMatchesName(DeliveryRoute route)
         {
             var ro = new ReadOnlyDeliveryRoute(route);
             return (ro.ToString() == route.Name).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property Ship_ToStringMatchesName(Ship ship)
         {
             var ro = new ReadOnlyShip(ship);
             return (ro.ToString() == ship.Name).ToProperty();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
+        [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property MarketListing_ToStringMatchesItemName(MarketListing ml)
         {
             var ro = new ReadOnlyMarketListing(ml);

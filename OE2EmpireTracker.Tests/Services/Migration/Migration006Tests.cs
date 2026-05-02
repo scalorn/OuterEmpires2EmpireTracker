@@ -12,8 +12,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         [SetUp]
         public void SetUp()
         {
-            EmpireContext.Reset();
-            TestHelper.SetAllFilePaths();
+            TestHelper.ResetWithCachedData();
         }
 
         [TearDown]

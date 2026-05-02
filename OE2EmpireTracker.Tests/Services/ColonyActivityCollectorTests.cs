@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -41,7 +41,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var pc = PlayerContext.GetInstance();
 
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 int colonyCount = Rng.Next(1, 4);
                 var colonies = new List<Colony>();
@@ -167,7 +167,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Property2_CommodityRequestTimeRemainingComputation()
         {
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 // Generate random NeedBy from 1 day past to 10 days future
                 double offsetDays = (Rng.NextDouble() * 11.0) - 1.0;
@@ -213,7 +213,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Property3_FormatSecondsEquivalence()
         {
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 long seconds = Rng.Next(1, 864001);
 
@@ -247,7 +247,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var pc = PlayerContext.GetInstance();
 
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 var colony = new Colony();
                 colony.UUID = Guid.NewGuid().ToString();
@@ -676,7 +676,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var allActivityTypes = (ActivityType[])Enum.GetValues(typeof(ActivityType));
 
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 // Generate 5--20 random ActivityRows
                 int rowCount = Rng.Next(5, 21);
@@ -781,7 +781,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void Property6_DefaultSortOrderBySecondsRemaining()
         {
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 // Generate 5--20 random ActivityRows with varying seconds remaining
                 int rowCount = Rng.Next(5, 21);

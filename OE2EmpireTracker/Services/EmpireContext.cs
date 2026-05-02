@@ -53,6 +53,47 @@ namespace OE2EmpireTracker.Services
 
         private Dictionary<string, Commodity> _commodityNameCache;
 
+        /// <summary>
+        /// Internal constructor for test infrastructure. Accepts pre-parsed
+        /// BaselineRoot and PlayerRoot so tests can skip disk I/O.
+        /// </summary>
+        internal EmpireContext(BaselineRoot baselineRoot, PlayerRoot playerRoot) : base()
+        {
+            _instance = this;
+
+            // Create PlayerContext from pre-parsed PlayerRoot
+            PlayerContext = new PlayerContext(playerRoot);
+
+            DataVersion = baselineRoot.DataVersion;
+            GameConstants = baselineRoot.GameConstants ?? new BaselineGameConstants();
+
+            InitBlueprintTypes(baselineRoot);
+            InitShipClasses(baselineRoot);
+            InitTechLevels(baselineRoot);
+            InitEvolutions(baselineRoot);
+            InitResources(baselineRoot);
+            InitResourceGroups(baselineRoot);
+            InitResourcePurities(baselineRoot);
+            InitCommodities(baselineRoot);
+            InitRefiningRecipes(baselineRoot);
+            InitResearchTimes(baselineRoot);
+            InitGlobalBlueprints(baselineRoot);
+
+            // Run migrations same as private constructor
+            int prevBaselineVersion = DataVersion;
+            int prevPlayerVersion = PlayerContext.DataVersion;
+            MigrationRunner.Run(this, PlayerContext);
+            if (DataVersion != prevBaselineVersion)
+            {
+                WriteContext();
+            }
+
+            if (PlayerContext.DataVersion != prevPlayerVersion)
+            {
+                PlayerContext.WriteContext();
+            }
+        }
+
         private EmpireContext() : base()
         {
             _instance = this;

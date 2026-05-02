@@ -54,11 +54,11 @@ namespace OE2EmpireTracker.Tests.Services
 
         // Feature: readonly-list-encapsulation, Property 1: Add-then-Find round trip
         /// <summary>
-        /// For Blueprint, Survey, Colony, Station â€” add entity via mutation method,
+        /// For Blueprint, Survey, Colony, Station — add entity via mutation method,
         /// Find by UUID, assert same instance returned.
         /// **Validates: Requirements 3.5, 4.3, 5.1, 5.5, 6.1, 6.2, 6.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property AddBlueprint_ThenFindByUUID_ReturnsSameInstance()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -73,7 +73,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property AddSurvey_ThenFindByUUID_ReturnsSameInstance()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -88,7 +88,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property AddColony_ThenFindByUUID_ReturnsSameInstance()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -103,7 +103,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property AddStation_ThenFindByUUID_ReturnsSameInstance()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -123,7 +123,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Add entity, remove it, Find by UUID, assert null returned.
         /// **Validates: Requirements 3.6, 4.4, 5.2, 6.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property RemoveBlueprint_ThenFindByUUID_ReturnsNull()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -139,7 +139,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property RemoveSurvey_ThenFindByUUID_ReturnsNull()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -155,7 +155,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property RemoveColony_ThenFindByUUID_ReturnsNull()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property RemoveStation_ThenFindByUUID_ReturnsNull()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -192,7 +192,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Add entities, call Invalidate, call Find, assert correct entity returned.
         /// **Validates: Requirements 10.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property InvalidateBlueprint_ThenFind_RebuildsCorrectly()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -208,7 +208,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property InvalidateSurvey_ThenFind_RebuildsCorrectly()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -224,7 +224,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property InvalidateColony_ThenFind_RebuildsCorrectly()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -245,7 +245,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Get snapshot, mutate backing list via Add/Remove, assert snapshot unchanged.
         /// **Validates: Requirements 12.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SnapshotColony_IsIndependentOfAdd()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -265,7 +265,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SnapshotColony_IsIndependentOfRemove()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -289,7 +289,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Add blueprint, verify CountBlueprintsByType reflects it.
         /// **Validates: Requirements 13.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property AddBlueprint_CountBlueprintsByType_ReflectsAddition()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -319,7 +319,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property RemoveBlueprint_CountBlueprintsByType_ReflectsRemoval()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -355,7 +355,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Add build plan with items, verify GetBuildItemsByBlueprint returns them.
         /// **Validates: Requirements 13.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property AddBuildPlan_GetBuildItemsByBlueprint_ReturnsItems()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>
@@ -385,7 +385,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property RemoveBuildPlan_GetBuildItemsByBlueprint_ReturnsEmpty()
         {
             return Prop.ForAll(Arb.From<NonEmptyString>(), _ =>

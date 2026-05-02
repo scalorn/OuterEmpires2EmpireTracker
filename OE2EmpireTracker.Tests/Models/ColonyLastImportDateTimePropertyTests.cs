@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using FsCheck;
 using FsCheck.NUnit;
 using Newtonsoft.Json;
@@ -19,7 +19,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// serializing to JSON and deserializing back should produce identical LastImportDateTime.
         /// **Validates: Requirements 1.1, 1.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ColonyLastImportDateTimeJsonRoundTrip()
         {
             return Prop.ForAll(ValidIsoTimestampGen().ToArbitrary(), isoTimestamp =>

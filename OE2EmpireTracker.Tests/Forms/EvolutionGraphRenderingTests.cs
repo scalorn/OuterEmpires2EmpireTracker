@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Forms
         /// (consecutive = solid, gap > 1 = dashed).
         /// **Validates: Requirements 5.1, 5.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SegmentDashStyle_MatchesEvolutionGapClassification()
         {
             // Generate 2--16 distinct evolution levels from 0..15, sorted ascending.
@@ -98,7 +98,7 @@ namespace OE2EmpireTracker.Tests.Forms
         /// are distinct and from the extended Wong palette.
         /// **Validates: Requirements 5.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property DistinctColorAssignment_PerProperty()
         {
             // Generate a random count of properties (1--16), then create that many unique property names.

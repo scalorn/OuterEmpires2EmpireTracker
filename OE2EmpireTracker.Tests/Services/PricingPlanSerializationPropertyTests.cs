@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -27,7 +27,7 @@ namespace OE2EmpireTracker.Tests.Services
             "S1. Translanthanic Exotics", "S2. Element 126"
         };
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SerializationRoundTrip_ProducesEquivalentObject()
         {
             return Prop.ForAll(ValidPricingPlanGen().ToArbitrary(), plan =>

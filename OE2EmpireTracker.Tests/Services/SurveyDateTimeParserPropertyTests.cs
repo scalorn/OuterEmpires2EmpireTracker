@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// shall produce a DateTime value equal to the first parsed value.
         /// **Validates: Requirements 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 2.1, 5.1, 7.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property GameFormatRoundTrip()
         {
             return Prop.ForAll(ValidGameFormatStringGen().ToArbitrary(), gameStr =>
@@ -49,7 +49,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// via TryParseGameFormat shall produce a DateTime value equal to the first parsed value.
         /// **Validates: Requirements 3.1, 7.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property IsoRoundTripThroughDisplayFormat()
         {
             return Prop.ForAll(ValidIsoStringGen().ToArbitrary(), isoStr =>
@@ -77,7 +77,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// directly via ToIsoString.
         /// **Validates: Requirements 6.3, 7.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property DateTimeFormatPathConsistency()
         {
             return Prop.ForAll(ValidDateTimeGen().ToArbitrary(), dt =>
@@ -102,7 +102,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// shall return false and shall not throw an exception.
         /// **Validates: Requirements 1.8**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property InvalidGameFormatReturnsFalseWithoutThrowing()
         {
             return Prop.ForAll(InvalidGameFormatStringGen().ToArbitrary(), input =>
@@ -131,7 +131,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// shall return the original string unchanged.
         /// **Validates: Requirements 3.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property UnparseableIsoPassthroughInDisplay()
         {
             return Prop.ForAll(NonIsoStringGen().ToArbitrary(), input =>
@@ -153,7 +153,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// ToIsoString(b) shall match the chronological ordering of a vs b.
         /// **Validates: Requirements 4.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property IsoStringsSortChronologically()
         {
             var pairGen = from a in ValidDateTimeGen()

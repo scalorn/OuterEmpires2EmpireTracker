@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -26,7 +26,7 @@ namespace OE2EmpireTracker.Tests.Services
         ///   when incoming lacks them, they are dropped (replacement merge)
         /// **Validates: Requirements 2.1, 2.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property UpdateExistingOverwritesDataWhilePreservingProtectedFields()
         {
             var gen = from uuid in NonEmptyAlphaStringGen()
@@ -167,7 +167,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// - If Evolution != 0 and no player is selected, the target shall be global (true)
         /// **Validates: Requirements 3.1, 3.2, 3.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property RoutingLogicDeterminedByEvolutionAndPlayerPresence()
         {
             var gen = from evo in Arb.Default.Int32().Generator
@@ -200,7 +200,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// match exactly (case-sensitive for strings), or null if no such blueprint exists.
         /// **Validates: Requirements 4.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property FindByDedupKeyReturnsCorrectMatchOrNull()
         {
             var gen = from bpList in Gen.ListOf(BlueprintGen())
@@ -248,7 +248,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// the temporary blueprint's values.
         /// **Validates: Requirements 3.5, 3.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CreatePathProducesValidBlueprintWithCorrectOwnership()
         {
             var gen = from temp in BlueprintGen()

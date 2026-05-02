@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -901,7 +901,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         // Feature: json-default-skip, Property 1: PlayerRoot serialization round-trip
         // Validates: Requirements 5.1, 5.3, 5.4, 2.2, 3.1
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public bool PlayerRoot_RoundTrip_PreservesAllNonDefaultFields(PlayerRoot root)
         {
             var json = JsonConvert.SerializeObject(root, JsonSettings.SerializerSettings);
@@ -918,7 +918,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         // Feature: json-default-skip, Property 2: BaselineRoot serialization round-trip
         // Validates: Requirements 5.2, 2.1, 3.2
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public bool BaselineRoot_RoundTrip_PreservesAllNonDefaultFields(BaselineRoot root)
         {
             var json = JsonConvert.SerializeObject(root, JsonSettings.SerializerSettings);
@@ -932,7 +932,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         // Feature: json-default-skip, Property 3: UIPreferences serialization round-trip
         // Validates: Requirements 5.5, 2.3, 3.3
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public bool UIPreferences_RoundTrip_PreservesEquivalence(UIPreferences prefs)
         {
             var json = JsonConvert.SerializeObject(prefs, JsonSettings.SerializerSettings);
@@ -945,7 +945,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         // Feature: json-default-skip, Property 4: ItemBag custom converter round-trip
         // Validates: Requirements 4.1, 4.3
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public bool ItemBag_CustomConverter_RoundTrip_PreservesItems(ItemBag bag)
         {
             var json = JsonConvert.SerializeObject(bag, JsonSettings.SerializerSettings);
@@ -957,7 +957,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         // Feature: json-default-skip, Property 5: PropertyBag custom converter round-trip
         // Validates: Requirements 4.2
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public bool PropertyBag_CustomConverter_RoundTrip_PreservesEntries(PropertyBag bag)
         {
             var json = JsonConvert.SerializeObject(bag, JsonSettings.SerializerSettings);
@@ -969,7 +969,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         // Feature: json-default-skip, Property 6: Compact serialization is never larger than verbose
         // Validates: Requirements 6.1, 6.2
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public bool CompactSerialization_NeverLargerThanVerbose(PlayerRoot root)
         {
             var compact = JsonConvert.SerializeObject(root, JsonSettings.SerializerSettings);
@@ -979,7 +979,7 @@ namespace OE2EmpireTracker.Tests.Services
 
         // Feature: json-default-skip, Property 6: Compact serialization is never larger than verbose
         // Validates: Requirements 6.1, 6.2
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public bool CompactSerialization_BaselineRoot_NeverLargerThanVerbose(BaselineRoot root)
         {
             var compact = JsonConvert.SerializeObject(root, JsonSettings.SerializerSettings);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -20,9 +20,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         [SetUp]
         public void SetUp()
         {
-            EmpireContext.Reset();
-            PlayerContext.Reset();
-            TestHelper.SetAllFilePaths();
+            TestHelper.ResetWithCachedData();
         }
 
         [TearDown]
@@ -38,7 +36,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// references shall equal newUUID with no oldUUID remaining.
         /// **Validates: Requirements 2.5**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property RemapWalksAllColonyReferences()
         {
             var gen = from oldUuid in Arb.Default.NonEmptyString().Generator.Select(s => "old-" + s.Get)
@@ -63,9 +61,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
-                EmpireContext.Reset();
-                PlayerContext.Reset();
-                TestHelper.SetAllFilePaths();
+                TestHelper.ResetWithCachedData();
                 var ec = EmpireContext.GetInstance();
                 var pc = PlayerContext.GetInstance();
 

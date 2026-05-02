@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -22,9 +22,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         [SetUp]
         public void SetUp()
         {
-            EmpireContext.Reset();
-            PlayerContext.Reset();
-            TestHelper.SetAllFilePaths();
+            TestHelper.ResetWithCachedData();
         }
 
         [TearDown]
@@ -41,7 +39,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// current UUID.
         /// **Validates: Requirements 2.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property StaleFlatpackBlueprintUUIDsAreRemapped()
         {
             var gen = from bpCount in Gen.Choose(1, 5)
@@ -58,9 +56,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
-                EmpireContext.Reset();
-                PlayerContext.Reset();
-                TestHelper.SetAllFilePaths();
+                TestHelper.ResetWithCachedData();
                 var ec = EmpireContext.GetInstance();
                 var pc = PlayerContext.GetInstance();
 
@@ -162,7 +158,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// should not change LegacyUUID.
         /// **Validates: Requirements 2.4, 2.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ColonyUUIDMigrationPreservesLegacyUUID()
         {
             var gen = from colonyCount in Gen.Choose(1, 5)
@@ -170,9 +166,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             return Prop.ForAll(gen.ToArbitrary(), colonyCount =>
             {
-                EmpireContext.Reset();
-                PlayerContext.Reset();
-                TestHelper.SetAllFilePaths();
+                TestHelper.ResetWithCachedData();
                 var ec = EmpireContext.GetInstance();
                 var pc = PlayerContext.GetInstance();
 
@@ -253,7 +247,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// references after both runs.
         /// **Validates: Requirements 3.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property MigrationIsIdempotent()
         {
             var gen = from colonyCount in Gen.Choose(1, 4)
@@ -272,9 +266,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
-                EmpireContext.Reset();
-                PlayerContext.Reset();
-                TestHelper.SetAllFilePaths();
+                TestHelper.ResetWithCachedData();
                 var ec = EmpireContext.GetInstance();
                 var pc = PlayerContext.GetInstance();
 

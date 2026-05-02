@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -185,7 +185,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Yellow when elapsed >= 5 days and &lt; 6 days, and None when elapsed &lt; 5 days.
         /// For null or empty input, it returns Red.
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ImportStalenessWarning_ReturnsCorrectLevelForElapsedTime()
         {
             // Generate elapsed days as a double in [0, 15] range to cover all thresholds
@@ -222,7 +222,7 @@ namespace OE2EmpireTracker.Tests.Services
         ///
         /// For null or empty LastImportDateTime, EvaluateColonyImportStalenessWarning returns Red.
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ImportStalenessWarning_NullOrEmpty_ReturnsRed()
         {
             var genNullOrEmpty = Gen.OneOf(

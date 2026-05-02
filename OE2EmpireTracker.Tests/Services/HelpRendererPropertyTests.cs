@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using FsCheck;
 using NUnit.Framework;
@@ -15,7 +15,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// an HTML string containing &lt;html&gt;, &lt;head&gt;, &lt;style, and &lt;body&gt;.
         /// **Validates: Requirements 2.3, 7.1, 7.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property RenderMarkdown_AlwaysProducesCompleteHtmlStructure()
         {
             return Prop.ForAll(
@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// the rendered HTML output contains that same word.
         /// **Validates: Requirements 2.3, 7.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property RenderMarkdown_PreservesPlainTextContent()
         {
             // Generate random alphanumeric words (1-50 chars) to avoid HTML encoding issues

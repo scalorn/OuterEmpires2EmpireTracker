@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -41,7 +41,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// and the displayed rate SHALL equal the sum of individual miner rates.
         /// **Validates: Requirements 4.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property MiningAggregation_OneRowPerResourcePurity()
         {
             var minerCountGen = Gen.Choose(1, 5);

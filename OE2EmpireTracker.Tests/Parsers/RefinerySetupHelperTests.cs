@@ -21,8 +21,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [SetUp]
         public void SetUp()
         {
-            EmpireContext.Reset();
-            TestHelper.SetAllFilePaths();
+            TestHelper.ResetWithCachedData();
             _empireContext = EmpireContext.GetInstance();
         }
 

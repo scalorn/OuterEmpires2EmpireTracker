@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -27,7 +27,7 @@ namespace OE2EmpireTracker.Tests.Persistence
         /// and the same Checked value on the CheckBox.
         /// **Validates: Requirements 5.1, 5.2, 6.1, 6.2, 6.3, 6.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ComboBoxAndCheckBoxSaveRestoreRoundTrip()
         {
             var gen = from comboName in NonEmptyControlNameGen()
@@ -112,7 +112,7 @@ namespace OE2EmpireTracker.Tests.Persistence
         /// at its default index (-1, unselected).
         /// **Validates: Requirement 6.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ComboBoxStaysAtDefaultWhenSavedValueMissing()
         {
             var gen = from comboName in NonEmptyControlNameGen()

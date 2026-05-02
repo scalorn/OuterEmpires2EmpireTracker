@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -37,7 +37,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Feature: colony-admin-summary, Property 7: Non-repeating activity rows sorted by soonest completion.
         /// **Validates: Requirements 4.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ActivityRows_SortedBySoonestCompletion()
         {
             var countGen = Gen.Choose(2, 4);

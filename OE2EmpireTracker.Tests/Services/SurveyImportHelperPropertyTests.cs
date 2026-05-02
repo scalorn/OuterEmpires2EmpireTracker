@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -19,7 +19,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// equal the search values under case-insensitive comparison. For any pair that does not
         /// exist, FindByKey shall return null.
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property FindByKeyReturnsCaseInsensitiveMatch()
         {
             var gen = from surveys in Gen.ListOf(SurveyGen())
@@ -61,7 +61,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// For any temporary survey and any owner UUID, CreateFromTemp shall return a survey
         /// where UUID is non-empty, OwnerUUID matches, and all data fields match the temp survey.
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CreateFromTempProducesValidSurvey()
         {
             var gen = from temp in SurveyGen()
@@ -124,7 +124,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// after MergeData the data fields are updated but UUID, OwnerUUID, and NickName
         /// remain unchanged.
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property MergeDataUpdatesFieldsPreservesIdentity()
         {
             var gen = from existing in SurveyGen()

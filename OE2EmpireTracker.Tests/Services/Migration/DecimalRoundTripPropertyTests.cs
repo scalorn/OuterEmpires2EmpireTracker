@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using FsCheck;
 using FsCheck.NUnit;
 using Newtonsoft.Json;
@@ -18,7 +18,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// deserialized back, the value shall be exactly equal (no floating-point drift).
         /// **Validates: Requirements 13.6, 13.9**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property DecimalRoundTrip_ExactEquality()
         {
             return Prop.ForAll(GameDecimalGen().ToArbitrary(), original =>

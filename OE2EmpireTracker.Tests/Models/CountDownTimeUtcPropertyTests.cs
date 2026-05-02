@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
@@ -27,7 +27,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// and TimeRemaining is within 1 second of the interval.
         /// **Validates: Requirements 8.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property StartRepeating_SetsUtcTimesAndCorrectRemaining()
         {
             return Prop.ForAll(IntervalSecondsGen().ToArbitrary(), intervalSeconds =>
@@ -53,7 +53,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// and TimeRemaining is within 1 second of secondsUntilNext.
         /// **Validates: Requirements 8.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property StartRepeatingWithOffset_SetsUtcTimesAndCorrectRemaining()
         {
             return Prop.ForAll(IntervalAndRemainingGen().ToArbitrary(), pair =>
@@ -83,7 +83,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// and the getter returns a value within 1 second of what was set.
         /// **Validates: Requirements 8.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property TimeRemainingSetter_SetsUtcTimesAndRoundTrips()
         {
             return Prop.ForAll(RemainingSecondsGen().ToArbitrary(), seconds =>

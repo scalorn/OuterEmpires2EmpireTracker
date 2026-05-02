@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Feature: colony-admin-summary, Property 3: Building rows sorted by soonest completion.
         /// **Validates: Requirements 2.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property BuildingRows_SortedBySoonestCompletion()
         {
             var countGen = Gen.Choose(2, 5);

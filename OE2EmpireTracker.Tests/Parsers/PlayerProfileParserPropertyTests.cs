@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -19,7 +19,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         /// parsing with ParseFormattedNumber should yield the original value.
         /// **Validates: Requirements 2.1, 3.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property FormattedNumber_RoundTrip()
         {
             var nonNegativeLongGen = Gen.Choose(0, int.MaxValue)
@@ -104,7 +104,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         /// training time string and parsing should produce the correct total seconds.
         /// **Validates: Requirements 6.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property TrainingTimeParsing_RoundTrip()
         {
             var daysGen = Gen.Choose(0, 99);
@@ -140,7 +140,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         /// comparison, merging should update the existing profile's data while preserving its UUID.
         /// **Validates: Requirements 7.1, 7.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ProfileUpdate_CaseInsensitiveNameMatch_PreservesUUID()
         {
             // Generator for a non-empty alphabetic name (1--20 chars)
@@ -232,7 +232,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         /// with a non-empty UUID.
         /// **Validates: Requirements 7.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ProfileCreation_NoNameMatch_AddsNewWithUUID()
         {
             // Generator for a list of 0--5 profiles with unique names

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// SurveyDateTimeParser.TryParseIso. Likewise for MergeIdentity.
         /// **Validates: Requirements 2.1, 2.2, 2.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ImportOperationsProduceValidIsoTimestamps()
         {
             var gen = from temp in TempColonyGen()

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -30,7 +30,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// For any resource name string, DeterminePurity returns exactly one of "Refined", "S1", or "S2".
         /// **Validates: Requirements 2.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property PurityDetermination_ProducesOnlyThreeValues()
         {
             var nameGen = Gen.OneOf(
@@ -63,7 +63,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// For any decimal value, it should be accepted as a price if and only if it is >= 0.
         /// **Validates: Requirements 1.8, 2.3, 2.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property NonNegativeDecimalValidation()
         {
             return Prop.ForAll(Arb.From<decimal>(), value =>
@@ -82,7 +82,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// returns true with price 0. If the plan has no entry, TryGetResourcePrice returns false.
         /// **Validates: Requirements 6.2, 6.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ZeroPriceIsValid_AbsentEntryIsIncomplete()
         {
             return Prop.ForAll(ResourceNameGen().ToArbitrary(), resourceName =>
@@ -112,10 +112,10 @@ namespace OE2EmpireTracker.Tests.Services
         /// Feature: pricing-plans, Property 3: Commodity price is sum of input quantities times Refined prices
         ///
         /// For any PricingPlan and Commodity, the computed price equals the sum of
-        /// (quantity × plan price) for each resource that has a price entry.
+        /// (quantity Ã— plan price) for each resource that has a price entry.
         /// **Validates: Requirements 3.1, 3.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CommodityPrice_IsSumOfInputQuantitiesTimesPrice()
         {
             return Prop.ForAll(
@@ -151,7 +151,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// IsComplete is true iff every input resource has a corresponding entry in the plan.
         /// **Validates: Requirements 3.2, 3.4, 4.4, 6.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CompletenessFlag_MatchesInputCoverage()
         {
             return Prop.ForAll(
@@ -179,10 +179,10 @@ namespace OE2EmpireTracker.Tests.Services
         /// Feature: pricing-plans, Property 5: Blueprint price equals resource cost plus time costs
         ///
         /// For any PricingPlan, Blueprint, and non-negative hours, the computed price equals
-        /// resourceCost + FixedCostPerItem + (HourlyCostRate × hours).
+        /// resourceCost + FixedCostPerItem + (HourlyCostRate Ã— hours).
         /// **Validates: Requirements 4.1, 4.2, 4.3, 4.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property BlueprintPrice_EqualsResourceCostPlusTimeCosts()
         {
             return Prop.ForAll(

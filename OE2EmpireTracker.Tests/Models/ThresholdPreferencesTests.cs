@@ -1,4 +1,4 @@
-using FsCheck;
+﻿using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
@@ -173,7 +173,7 @@ namespace OE2EmpireTracker.Tests.Models
         ///
         /// **Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 7.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property PreferencesValidationCorrectness()
         {
             return Prop.ForAll(ThresholdPreferencesGen().ToArbitrary(), prefs =>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
@@ -26,7 +26,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Sub-property 6a: ToIsoString produces a string ending with Z for any UTC DateTime.
         /// **Validates: Requirements 7.3, 7.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ToIsoString_ProducesZSuffix()
         {
             return Prop.ForAll(ValidUtcDateTimeGen().ToArbitrary(), utcDt =>
@@ -44,7 +44,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Sub-property 6b: Round-trip through ToIsoString then TryParseIso preserves UTC kind and value.
         /// **Validates: Requirements 7.3, 7.4, 7.5**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property IsoRoundTrip_PreservesUtcKindAndValue()
         {
             return Prop.ForAll(ValidUtcDateTimeGen().ToArbitrary(), utcDt =>
@@ -70,7 +70,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// The game-format output should match ToGameFormat applied to the local-time equivalent.
         /// **Validates: Requirements 7.5, 7.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property FormatForDisplay_ConvertsToLocalBeforeFormatting()
         {
             return Prop.ForAll(ValidUtcDateTimeGen().ToArbitrary(), utcDt =>

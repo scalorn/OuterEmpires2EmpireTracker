@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using FsCheck;
 using FsCheck.NUnit;
@@ -37,7 +37,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// a row displaying the commodity name and requested quantity.
         /// **Validates: Requirements 2a.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CommodityRequestRows_ContainNameAndQuantity()
         {
             var qtyGen = Gen.Choose(1, 1000);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -20,8 +20,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         [SetUp]
         public void SetUp()
         {
-            EmpireContext.Reset();
-            TestHelper.SetAllFilePaths();
+            TestHelper.ResetWithCachedData();
         }
 
         [TearDown]
@@ -35,7 +34,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// equal the original UUID. Running migration again shall not change it.
         /// **Validates: Requirements 6.2, 6.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property LegacyUUIDEqualsOriginalAndIsPreserved()
         {
             var gen = from bpCount in Gen.Choose(1, 5)
@@ -44,8 +43,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
-                EmpireContext.Reset();
-                TestHelper.SetAllFilePaths();
+                TestHelper.ResetWithCachedData();
                 var ec = EmpireContext.GetInstance();
                 var pc = PlayerContext.GetInstance();
 

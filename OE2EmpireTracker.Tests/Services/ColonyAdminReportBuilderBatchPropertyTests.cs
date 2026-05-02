@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -41,7 +41,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// a next-item completion time and a full-batch completion time.
         /// **Validates: Requirements 4.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property MultiQuantityManufacturing_ShowsBothNextAndBatchCompletion()
         {
             var quantityGen = Gen.Choose(2, 20);

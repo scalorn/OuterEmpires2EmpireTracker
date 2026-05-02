@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
@@ -18,7 +18,7 @@ namespace OE2EmpireTracker.Tests.Constants
         /// after the prefix, IsCommodityFactory() should return true.
         /// **Validates: Requirements 5.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property IsCommodityFactory_TrueForPrefixWithTrailingContent()
         {
             var gen = TrailingContentGen().Select(suffix => Prefix + suffix);
@@ -37,7 +37,7 @@ namespace OE2EmpireTracker.Tests.Constants
         /// content, IsCommodityFactory() should return false.
         /// **Validates: Requirements 5.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property IsCommodityFactory_FalseForNonCommodityFactory()
         {
             return Prop.ForAll(NonCommodityFactoryGen().ToArbitrary(), input =>

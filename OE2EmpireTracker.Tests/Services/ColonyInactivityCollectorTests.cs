@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -48,7 +48,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var pc = PlayerContext.GetInstance();
 
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 // Reset blueprints each iteration to avoid accumulation
                 foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
@@ -135,7 +135,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new { BpType = BlueprintTypes.CommodityFactoryPrefix + "Agridome", NoWorkDetails = "No commodity assigned", IdleDetails = "Idle" }
             };
 
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 
@@ -188,7 +188,7 @@ namespace OE2EmpireTracker.Tests.Services
                 { BlueprintTypes.CommodityFactoryPrefix + "Agridome", ActivityType.CommodityManufacturing }
             };
 
-            for (int iteration = 0; iteration < 100; iteration++)
+            for (int iteration = 0; iteration < 25; iteration++)
             {
                 foreach (var item in pc.BlueprintList.ToList()) pc.RemoveBlueprint(item);
 

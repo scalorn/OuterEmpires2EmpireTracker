@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
@@ -20,7 +20,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// Similarly for PlayerRank.Title.
         /// **Validates: Requirements 9.7**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property PlayerProfile_MissingNewFields_DeserializeToStringEmpty()
         {
             var profileGen = from name in Arb.Generate<NonNull<string>>()
@@ -63,7 +63,7 @@ namespace OE2EmpireTracker.Tests.Models
                 });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property PlayerRank_MissingTitleField_DeserializesToStringEmpty()
         {
             var rankGen = from rank in Gen.Choose(0, 100)

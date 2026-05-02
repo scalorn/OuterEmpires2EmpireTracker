@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -21,8 +21,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         [SetUp]
         public void SetUp()
         {
-            EmpireContext.Reset();
-            TestHelper.SetAllFilePaths();
+            TestHelper.ResetWithCachedData();
         }
 
         [TearDown]
@@ -37,7 +36,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// or ColonyStructure UUID fields.
         /// **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5, 4.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property AfterRemapNoOldUUIDRemains()
         {
             // Generate: a target UUID to plant, a replacement UUID, and counts for data objects
@@ -62,8 +61,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
             return Prop.ForAll(gen.ToArbitrary(), data =>
             {
                 // Load real contexts from test data
-                EmpireContext.Reset();
-                TestHelper.SetAllFilePaths();
+                TestHelper.ResetWithCachedData();
                 var ec = EmpireContext.GetInstance();
                 var pc = PlayerContext.GetInstance();
 

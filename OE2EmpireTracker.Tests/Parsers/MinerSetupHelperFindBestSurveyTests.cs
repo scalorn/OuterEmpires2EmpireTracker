@@ -20,9 +20,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         [SetUp]
         public void SetUp()
         {
-            EmpireContext.Reset();
-            TestHelper.SetAllFilePaths();
-            EmpireContext.GetInstance();
+            TestHelper.ResetWithCachedData();
             _playerContext = EmpireContext.PlayerContext;
 
             // Clear existing surveys so tests start clean

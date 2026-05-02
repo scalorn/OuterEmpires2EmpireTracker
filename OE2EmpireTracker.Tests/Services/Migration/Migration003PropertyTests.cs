@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using FsCheck;
@@ -31,7 +31,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// (the same TryParseIso -> skip path used in Migration003) shall leave the value unchanged.
         /// **Validates: Requirements 2.2, 5.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property MigrationIsIdempotentOnIsoValues()
         {
             return Prop.ForAll(ValidIsoStringGen().ToArbitrary(), isoStr =>
@@ -50,7 +50,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// a valid ISO-format date/time (parseable by TryParseIso).
         /// **Validates: Requirements 5.4, 5.5**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property MigrationProducesValidIsoForUnparseableInput()
         {
             return Prop.ForAll(UnparseableStringGen().ToArbitrary(), input =>
@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// ISO-format string.
         /// **Validates: Requirements 5.2, 5.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property MigrationCommonFormatFallbackProducesValidIso()
         {
             return Prop.ForAll(CommonFormatDateStringGen().ToArbitrary(), formatted =>

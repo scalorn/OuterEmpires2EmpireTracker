@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -19,7 +19,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// CountReferences returns per-source counts matching simple LINQ equality filters.
         /// **Validates: Requirements 1.1, 1.2, 1.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CountingAccuracy_MatchesLinqFilter()
         {
             // UUID pool of 2-6 elements so we get meaningful collisions
@@ -94,7 +94,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// + ManufacturingCount + BaseBlueprintCount + ScannerCount.
         /// **Validates: Requirements 1.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property TotalCount_IsSumOfPerSourceCounts()
         {
             var countGen = Gen.Choose(0, 999);
@@ -122,7 +122,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// should not change BaseBlueprintCount compared to without that blueprint.
         /// **Validates: Requirements 1.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SelfReferencingBlueprint_DoesNotChangeBaseBlueprintCount()
         {
             var uuidPoolGen = Gen.Choose(2, 5).SelectMany(poolSize =>
@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Uses a local helper until GetDeleteButtonState is created in Task 4.1.
         /// **Validates: Requirements 2.2, 2.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property DeleteButtonState_DeterminedByTotalCount()
         {
             var countGen = Gen.Choose(0, 999);

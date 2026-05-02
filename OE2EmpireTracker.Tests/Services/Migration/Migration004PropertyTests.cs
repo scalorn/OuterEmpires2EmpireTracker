@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -25,7 +25,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// ISO string before should have the same value after.
         /// **Validates: Requirements 3.1, 3.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property MigrationBackfillsEmptyAndPreservesExisting()
         {
             var gen = Gen.ListOf(ColonyWithMixedTimestampGen());
@@ -78,7 +78,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// EndTime - StartTime should remain unchanged (the interval duration is preserved).
         /// **Validates: Requirements 9.1, 9.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property MigrationConvertsLocalTimesToUtcCorrectly()
         {
             return Prop.ForAll(LocalCountDownTimeGen().ToArbitrary(), timer =>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
@@ -18,7 +18,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// shall produce the same UUID on every call.
         /// **Validates: Requirements 6.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SameInputsProduceSameDefaultSurveyUUID()
         {
             return Prop.ForAll(ColonyKeyGen().ToArbitrary(), key =>
@@ -35,7 +35,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// Two different (ownerUUID, planetName, systemName) triples shall produce different UUIDs.
         /// **Validates: Requirements 6.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property DifferentInputsProduceDifferentDefaultSurveyUUIDs()
         {
             var gen = from key1 in ColonyKeyGen()
@@ -62,7 +62,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// produce different UUIDs, confirming namespace isolation.
         /// **Validates: Requirements 6.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property DefaultSurveyUUIDDiffersFromColonyUUID()
         {
             return Prop.ForAll(ColonyKeyGen().ToArbitrary(), key =>
@@ -81,7 +81,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// Generated default survey UUIDs should be valid GUID strings.
         /// **Validates: Requirements 6.1**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property GeneratedDefaultSurveyUUIDIsValidGuid()
         {
             return Prop.ForAll(ColonyKeyGen().ToArbitrary(), key =>

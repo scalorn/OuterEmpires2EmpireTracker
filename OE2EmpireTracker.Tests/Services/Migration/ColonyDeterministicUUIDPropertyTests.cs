@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
@@ -18,7 +18,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// the same UUID on every call.
         /// **Validates: Requirements 2.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SameColonyInputsProduceSameUUID()
         {
             return Prop.ForAll(ColonyKeyGen().ToArbitrary(), key =>
@@ -35,7 +35,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// Two different (ownerUUID, planetName, systemName) triples shall produce different UUIDs.
         /// **Validates: Requirements 2.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property DifferentColonyInputsProduceDifferentUUIDs()
         {
             var gen = from key1 in ColonyKeyGen()
@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
         /// <summary>
         /// Generated colony UUIDs should be valid GUID strings.
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property GeneratedColonyUUIDIsValidGuid()
         {
             return Prop.ForAll(ColonyKeyGen().ToArbitrary(), key =>

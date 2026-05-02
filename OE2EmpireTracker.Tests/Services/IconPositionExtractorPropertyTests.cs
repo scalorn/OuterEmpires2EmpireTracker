@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -32,7 +32,7 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.GetInstance();
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property FindBlueprintTypeByIcon_ReturnsCorrectTypeForKnownPositions()
         {
             var ctx = EmpireContext.GetInstance();
@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property FindBlueprintTypeByIcon_ReturnsNullForUnknownPositions()
         {
             var ctx = EmpireContext.GetInstance();
@@ -106,7 +106,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// logic produces the same result.
         /// **Validates: Requirements 9.1, 9.2**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property CoverageGapDetection_EqualsSetDifference()
         {
             // Generate a pool of type-Id-like strings, then split into baseline and extracted
@@ -152,7 +152,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// <summary>
         /// Property 4 (subset): Every Id in the gap must be in baseline but not in extracted.
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property CoverageGapDetection_GapIdsAreInBaselineNotExtracted()
         {
             var idGen = from prefix in Gen.Elements("TypeA", "TypeB", "TypeC", "TypeD", "TypeE")

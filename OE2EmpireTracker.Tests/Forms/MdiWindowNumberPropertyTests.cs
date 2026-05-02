@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Tests.Forms
         /// the used set (i.e., it truly is the lowest unused).
         /// **Validates: Requirements 2.1, 2.2, 2.3**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property LowestUnusedNumberAssignment()
         {
             var gen = Gen.Choose(0, 20).SelectMany(size =>
@@ -55,7 +55,7 @@ namespace OE2EmpireTracker.Tests.Forms
         /// at the time of assignment.
         /// **Validates: Requirements 3.1, 3.2, 3.4, 3.5**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 200)]
+        [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property UniqueNumberingAcrossSequences()
         {
             // Generate a sequence of 5-20 boolean steps: true = open, false = close

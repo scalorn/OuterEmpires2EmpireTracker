@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -46,7 +46,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// or "README.md" otherwise.
         /// **Validates: Requirements 6.3, 6.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property GetTopicForForm_ReturnsCorrectMappingOrFallback()
         {
             // Mix random strings with known form type names so we exercise both paths

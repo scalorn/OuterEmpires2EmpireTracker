@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -38,7 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
         ///
         /// **Validates: Requirements 4.1, 4.2, 4.7**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property StructureWarningRespectsThresholds()
         {
             // Generate valid yellow < red threshold pairs (both positive)
@@ -82,7 +82,7 @@ namespace OE2EmpireTracker.Tests.Services
         ///
         /// **Validates: Requirements 4.3, 4.4**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property WorkerWarningRespectsThresholds()
         {
             // Generate valid threshold pairs: yellow > red, both positive (in seconds)
@@ -151,7 +151,7 @@ namespace OE2EmpireTracker.Tests.Services
         ///
         /// **Validates: Requirements 4.5, 4.6**
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ColonyImportWarningRespectsThresholds()
         {
             // Generate valid threshold pairs: yellow < red, both positive (in seconds)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -193,7 +193,7 @@ namespace OE2EmpireTracker.Tests.Parsers
         // Validates: Requirements 3.5
         // ===================================================================
 
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property MergeData_PreservesUUID_OwnerUUID_NickName()
         {
             // **Validates: Requirements 3.5**

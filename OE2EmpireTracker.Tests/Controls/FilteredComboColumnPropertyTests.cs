@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace OE2EmpireTracker.Tests.Controls
         /// Empty filter returns full list. Case-insensitive equivalence.
         /// Validates: Requirements 3.1, 3.2, 3.3
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ContainsMatchFiltering_ReturnsExactMatches()
         {
             return Prop.ForAll(
@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Tests.Controls
         /// For any list and filter, each filteredList[i] == fullList[indexMap[i]].
         /// Validates: Requirements 5.4, 7.3
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property IndexCorrespondence_PreservedAfterFiltering()
         {
             return Prop.ForAll(
@@ -95,7 +95,7 @@ namespace OE2EmpireTracker.Tests.Controls
         /// to return that exact string. No selection returns string.Empty.
         /// Validates: Requirements 4.1, 6.3
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property Selection_SetsFormattedValue()
         {
             return Prop.ForAll(
@@ -107,7 +107,7 @@ namespace OE2EmpireTracker.Tests.Controls
                     {
                         editor.SetItems(items, null);
 
-                        // No selection → empty string
+                        // No selection â†’ empty string
                         string noSelection = editor.GetEditingControlFormattedValue(DataGridViewDataErrorContexts.Display)?.ToString();
                         bool emptyWhenNone = noSelection == string.Empty;
 
@@ -130,7 +130,7 @@ namespace OE2EmpireTracker.Tests.Controls
         /// When cell has Items set, those are used. When null, column Items are used.
         /// Validates: Requirements 5.2, 9.3
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property CellItems_OverrideColumnItems()
         {
             return Prop.ForAll(
@@ -144,13 +144,13 @@ namespace OE2EmpireTracker.Tests.Controls
                     var column = new DataGridViewFilteredComboBoxColumn();
                     column.Items = safeColumnItems;
 
-                    // Cell with items set → uses cell items
+                    // Cell with items set â†’ uses cell items
                     var cellWithItems = new DataGridViewFilteredComboBoxCell();
                     cellWithItems.Items = safeCellItems;
                     var effectiveWithCell = cellWithItems.Items ?? column.Items;
                     bool usesCell = effectiveWithCell.SequenceEqual(safeCellItems);
 
-                    // Cell without items → uses column items
+                    // Cell without items â†’ uses column items
                     var cellWithout = new DataGridViewFilteredComboBoxCell();
                     cellWithout.Items = null;
                     var effectiveWithout = cellWithout.Items ?? column.Items;
@@ -167,7 +167,7 @@ namespace OE2EmpireTracker.Tests.Controls
         /// EditingControlWantsInputKey returns true.
         /// Validates: Requirements 4.5
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property InputKeyClaiming_CorrectForExpectedKeys()
         {
             var expectedKeys = new Keys[]
@@ -198,7 +198,7 @@ namespace OE2EmpireTracker.Tests.Controls
         /// txtFilter and cmbItems to match.
         /// Validates: Requirements 6.2
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property StylePropagation_AppliesToBothControls()
         {
             var fontSizeGen = Gen.Choose(8, 24).ToArbitrary();

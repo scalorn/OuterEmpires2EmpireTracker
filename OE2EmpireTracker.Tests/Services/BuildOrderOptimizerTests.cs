@@ -31,8 +31,7 @@ namespace OE2EmpireTracker.Tests.Services
         [OneTimeSetUp]
         public void FixtureSetUp()
         {
-            TestHelper.SetAllFilePaths();
-            EmpireContext.Reset();
+            TestHelper.ResetWithCachedData();
             empireContext = EmpireContext.GetInstance();
             playerContext = PlayerContext.GetInstance();
         }
