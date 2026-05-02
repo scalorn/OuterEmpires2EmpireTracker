@@ -40,7 +40,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
-            viewModel = new PlayerProfileViewModel(new Models.PlayerProfile(), playerContext);
+            viewModel = new PlayerProfileViewModel(playerContext);
 
             _skillGroups[SkillGroupName.ColonyDirector]   = chkColonyDirector;
             _skillGroups[SkillGroupName.ColonyFounder]    = chkColonyFounder;
@@ -238,7 +238,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 return;
             }
 
-            if (viewModel.Data.UUID == e.PlayerUUID)
+            if (viewModel.UUID == e.PlayerUUID)
             {
                 PopulateForm();
             }
@@ -302,7 +302,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void UpdateSkillBlock(PlayerSkillBlock skillBlock, SkillName skill)
         {
-            skillBlock.PlayerSkill = viewModel.GetSkill(skill);
+            skillBlock.SkillData = viewModel.GetSkill(skill);
             skillBlock.PopulateForm();
         }
 
@@ -365,7 +365,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             PopulateForm();
         }
 
-        private void PopulateListView(Models.PlayerProfile profileToSelect = null)
+        private void PopulateListView()
         {
             var sw = Stopwatch.StartNew();
             var profiles = viewModel.GetFilteredProfiles(txtNameFilter.Text);
@@ -377,12 +377,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 item.SubItems.Add(profile.Faction);
                 item.Tag = profile;
                 lvwPlayerProfiles.Items.Add(item);
-
-                if (profileToSelect != null && profile.UUID == profileToSelect.UUID)
-                {
-                    item.Selected = true;
-                    item.EnsureVisible();
-                }
             }
 
             sw.Stop();
@@ -403,7 +397,16 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         {
             if (e.IsSelected && lvwPlayerProfiles.SelectedItems.Count == 1)
             {
-                viewModel.SelectProfile(lvwPlayerProfiles.SelectedItems[0].Tag as Models.PlayerProfile);
+                var tag = lvwPlayerProfiles.SelectedItems[0].Tag;
+                if (tag is ReadOnlyPlayerProfile roProfile)
+                {
+                    viewModel.LoadFrom(roProfile);
+                }
+                else if (tag is Models.PlayerProfile mutableProfile)
+                {
+                    viewModel.LoadFrom(new ReadOnlyPlayerProfile(mutableProfile));
+                }
+
                 PopulateForm();
             }
         }
@@ -418,7 +421,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             }
 
             bool duplicate = playerContext.PlayerProfileList
-                .Any(p => p.UUID != viewModel.Data.UUID &&
+                .Any(p => p.UUID != viewModel.UUID &&
                      string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
             if (duplicate)
             {
@@ -513,23 +516,25 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 return;
             }
 
-            viewModel.Save();
-            PopulateListView(viewModel.Data);
+            // TODO: Task 9.4 - Replace with PlayerProfileService.Update/Create
+            SaveProfileDirect();
+            PopulateListView();
         }
 
         private void CmdDelete_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(viewModel.Data.UUID)) return;
+            if (string.IsNullOrEmpty(viewModel.UUID)) return;
 
             var result = MessageBox.Show(
-                $"Delete profile '{viewModel.Name}'?",
+                string.Format("Delete profile '{0}'?", viewModel.Name),
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);
 
             if (result != DialogResult.Yes) return;
 
-            viewModel.Delete();
+            // TODO: Task 9.5 - Replace with PlayerProfileService.Delete
+            DeleteProfileDirect();
             viewModel.Reset();
             PopulateListView();
             lvwPlayerProfiles.SelectedItems.Clear();
@@ -566,7 +571,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 {
                     string found = Parsers.ClipboardContentDetector.GetDescription(detected);
                     MessageBox.Show(
-                        $"The clipboard contains {found}, not player profile data.\n\nCopy the profile panel from the game first.",
+                        string.Format("The clipboard contains {0}, not player profile data.\n\nCopy the profile panel from the game first.", found),
                         "Wrong Content",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
@@ -596,30 +601,125 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 {
                     // Update existing profile -- preserve UUID
                     MergeProfile(existing, tempProfile);
-                    viewModel.SelectProfile(existing);
+                    viewModel.LoadFrom(new ReadOnlyPlayerProfile(existing));
                 }
                 else
                 {
                     // Create new profile with generated UUID
                     tempProfile.UUID = Guid.NewGuid().ToString();
                     playerContext.AddPlayerProfile(tempProfile);
-                    viewModel.SelectProfile(tempProfile);
+                    viewModel.LoadFrom(new ReadOnlyPlayerProfile(tempProfile));
                 }
 
                 playerContext.WriteContext();
                 playerContext.OnPlayerProfilesChanged();
-                playerContext.OnPlayerProfileDataChanged(viewModel.Data.UUID);
-                PopulateListView(viewModel.Data);
+                playerContext.OnPlayerProfileDataChanged(viewModel.UUID);
+                PopulateListView();
                 PopulateForm();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Import failed: {ex.Message}",
+                    string.Format("Import failed: {0}", ex.Message),
                     "Import Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// Temporary bridge: applies ViewModel local state to the entity and persists.
+        /// Will be replaced by PlayerProfileService in Task 7/9.
+        /// </summary>
+        private void SaveProfileDirect()
+        {
+            Models.PlayerProfile profile;
+            if (viewModel.IsNew)
+            {
+                profile = new Models.PlayerProfile();
+                profile.UUID = Guid.NewGuid().ToString();
+                playerContext.AddPlayerProfile(profile);
+            }
+            else
+            {
+                profile = playerContext.FindMutablePlayerProfile(viewModel.UUID);
+                if (profile == null)
+                {
+                    Log.Error("SaveProfileDirect: could not find profile UUID={0}", viewModel.UUID);
+                    return;
+                }
+            }
+
+            // Apply local state to entity
+            var request = viewModel.BuildUpdateRequest();
+            profile.Name = request.Name;
+            profile.Faction = request.Faction;
+            profile.TotalCredits = request.TotalCredits;
+            profile.SkillPoints = request.SkillPoints;
+            profile.CitizenId = request.CitizenId;
+            profile.RegistrationDate = request.RegistrationDate;
+            profile.ActiveTime = request.ActiveTime;
+
+            profile.Public.Rank = request.PublicRank;
+            profile.Public.CurrentXP = request.PublicCurrentXP;
+            profile.Public.NextXP = request.PublicNextXP;
+            profile.Public.Title = request.PublicTitle;
+
+            profile.Private.Rank = request.PrivateRank;
+            profile.Private.CurrentXP = request.PrivateCurrentXP;
+            profile.Private.NextXP = request.PrivateNextXP;
+            profile.Private.Title = request.PrivateTitle;
+
+            profile.Military.Rank = request.MilitaryRank;
+            profile.Military.CurrentXP = request.MilitaryCurrentXP;
+            profile.Military.NextXP = request.MilitaryNextXP;
+            profile.Military.Title = request.MilitaryTitle;
+
+            if (request.Skills != null)
+            {
+                foreach (var kvp in request.Skills)
+                {
+                    var skill = profile.GetSkill(kvp.Key);
+                    skill.Level = kvp.Value.Level;
+                    skill.TrainingStarted = kvp.Value.TrainingStarted;
+                    skill.CompletionTime.StartTime = kvp.Value.CompletionStartTime;
+                    skill.CompletionTime.EndTime = kvp.Value.CompletionEndTime;
+                }
+            }
+
+            if (request.SkillGroups != null)
+            {
+                foreach (var kvp in request.SkillGroups)
+                {
+                    profile.SetSkillGroup(kvp.Key, kvp.Value);
+                }
+            }
+
+            playerContext.WriteContext();
+            playerContext.OnPlayerProfilesChanged();
+            playerContext.OnPlayerProfileDataChanged(profile.UUID);
+
+            // Reload from fresh snapshot so IsDirty resets
+            viewModel.LoadFrom(new ReadOnlyPlayerProfile(profile));
+        }
+
+        /// <summary>
+        /// Temporary bridge: deletes the current profile directly.
+        /// Will be replaced by PlayerProfileService in Task 7/9.
+        /// </summary>
+        private void DeleteProfileDirect()
+        {
+            if (string.IsNullOrEmpty(viewModel.UUID)) return;
+            string deletedUUID = viewModel.UUID;
+
+            var profile = playerContext.FindMutablePlayerProfile(deletedUUID);
+            if (profile == null) return;
+
+            playerContext.RemovePlayerProfile(profile);
+            playerContext.CascadeDeletePlayer(deletedUUID);
+            playerContext.WriteContext();
+            playerContext.OnPlayerProfilesChanged();
+            playerContext.OnPlayerProfileDataChanged(deletedUUID);
         }
     }
 }

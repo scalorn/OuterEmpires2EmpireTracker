@@ -45,11 +45,11 @@ This plan migrates FormPlayerProfile to the immutable data model pattern establi
     - Same fields as update request but without Original or UUID
     - _Requirements: 15.1, 15.3_
 
-- [-] 4. Checkpoint
+- [x] 4. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. ViewModel edit buffer
-  - [~] 5.1 Create LocalSkillData and LocalRankData classes
+  - [-] 5.1 Create LocalSkillData and LocalRankData classes
     - LocalSkillData: Level, TrainingStarted, CompletionStartTime, CompletionEndTime, computed TimeRemaining and TimeRemainingString
     - LocalRankData: Rank, CurrentXP, NextXP, Title
     - Place in ViewModels/ folder

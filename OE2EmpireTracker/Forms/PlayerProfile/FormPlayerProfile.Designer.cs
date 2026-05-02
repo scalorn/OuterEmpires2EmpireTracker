@@ -834,7 +834,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskHumanResources.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskHumanResources.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskHumanResources.Name = "pskHumanResources";
-            this.pskHumanResources.PlayerSkill = null;
+            this.pskHumanResources.SkillData = null;
             this.pskHumanResources.Size = new System.Drawing.Size(424, 24);
             this.pskHumanResources.SkillGroupCheckbox = null;
             this.pskHumanResources.SkillName = "Human Resources";
@@ -848,7 +848,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskForeman.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskForeman.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskForeman.Name = "pskForeman";
-            this.pskForeman.PlayerSkill = null;
+            this.pskForeman.SkillData = null;
             this.pskForeman.Size = new System.Drawing.Size(424, 24);
             this.pskForeman.SkillGroupCheckbox = null;
             this.pskForeman.SkillName = "Foreman";
@@ -910,7 +910,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskFounder.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskFounder.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskFounder.Name = "pskFounder";
-            this.pskFounder.PlayerSkill = null;
+            this.pskFounder.SkillData = null;
             this.pskFounder.Size = new System.Drawing.Size(424, 24);
             this.pskFounder.SkillGroupCheckbox = null;
             this.pskFounder.SkillName = "Founder";
@@ -924,7 +924,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskEnergyEfficiency.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskEnergyEfficiency.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskEnergyEfficiency.Name = "pskEnergyEfficiency";
-            this.pskEnergyEfficiency.PlayerSkill = null;
+            this.pskEnergyEfficiency.SkillData = null;
             this.pskEnergyEfficiency.Size = new System.Drawing.Size(424, 24);
             this.pskEnergyEfficiency.SkillGroupCheckbox = null;
             this.pskEnergyEfficiency.SkillName = "Energy Efficiency";
@@ -938,7 +938,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskBuilder.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskBuilder.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskBuilder.Name = "pskBuilder";
-            this.pskBuilder.PlayerSkill = null;
+            this.pskBuilder.SkillData = null;
             this.pskBuilder.Size = new System.Drawing.Size(424, 24);
             this.pskBuilder.SkillGroupCheckbox = null;
             this.pskBuilder.SkillName = "Builder";
@@ -999,7 +999,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskRefiningFocus.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskRefiningFocus.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskRefiningFocus.Name = "pskRefiningFocus";
-            this.pskRefiningFocus.PlayerSkill = null;
+            this.pskRefiningFocus.SkillData = null;
             this.pskRefiningFocus.Size = new System.Drawing.Size(424, 24);
             this.pskRefiningFocus.SkillGroupCheckbox = null;
             this.pskRefiningFocus.SkillName = "Refining Focus";
@@ -1013,7 +1013,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskProductionFocus.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskProductionFocus.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskProductionFocus.Name = "pskProductionFocus";
-            this.pskProductionFocus.PlayerSkill = null;
+            this.pskProductionFocus.SkillData = null;
             this.pskProductionFocus.Size = new System.Drawing.Size(424, 24);
             this.pskProductionFocus.SkillGroupCheckbox = null;
             this.pskProductionFocus.SkillName = "Production Focus";
@@ -1027,7 +1027,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskExtractionFocus.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskExtractionFocus.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskExtractionFocus.Name = "pskExtractionFocus";
-            this.pskExtractionFocus.PlayerSkill = null;
+            this.pskExtractionFocus.SkillData = null;
             this.pskExtractionFocus.Size = new System.Drawing.Size(424, 24);
             this.pskExtractionFocus.SkillGroupCheckbox = null;
             this.pskExtractionFocus.SkillName = "Extraction Focus";
@@ -1087,7 +1087,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskDamageControl.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskDamageControl.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskDamageControl.Name = "pskDamageControl";
-            this.pskDamageControl.PlayerSkill = null;
+            this.pskDamageControl.SkillData = null;
             this.pskDamageControl.Size = new System.Drawing.Size(424, 24);
             this.pskDamageControl.SkillGroupCheckbox = null;
             this.pskDamageControl.SkillName = "Damage Control";
@@ -1147,7 +1147,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskEngineeringCapacity.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskEngineeringCapacity.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskEngineeringCapacity.Name = "pskEngineeringCapacity";
-            this.pskEngineeringCapacity.PlayerSkill = null;
+            this.pskEngineeringCapacity.SkillData = null;
             this.pskEngineeringCapacity.Size = new System.Drawing.Size(424, 24);
             this.pskEngineeringCapacity.SkillGroupCheckbox = null;
             this.pskEngineeringCapacity.SkillName = "Engineering Capacity";
@@ -1209,7 +1209,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskSoundAsAPound.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskSoundAsAPound.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskSoundAsAPound.Name = "pskSoundAsAPound";
-            this.pskSoundAsAPound.PlayerSkill = null;
+            this.pskSoundAsAPound.SkillData = null;
             this.pskSoundAsAPound.Size = new System.Drawing.Size(424, 24);
             this.pskSoundAsAPound.SkillGroupCheckbox = null;
             this.pskSoundAsAPound.SkillName = "Sounds As A Pound";
@@ -1223,7 +1223,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskSelfMadeMillionaire.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskSelfMadeMillionaire.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskSelfMadeMillionaire.Name = "pskSelfMadeMillionaire";
-            this.pskSelfMadeMillionaire.PlayerSkill = null;
+            this.pskSelfMadeMillionaire.SkillData = null;
             this.pskSelfMadeMillionaire.Size = new System.Drawing.Size(424, 24);
             this.pskSelfMadeMillionaire.SkillGroupCheckbox = null;
             this.pskSelfMadeMillionaire.SkillName = "Self-made Millionaire";
@@ -1237,7 +1237,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskAAAHealthcare.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskAAAHealthcare.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskAAAHealthcare.Name = "pskAAAHealthcare";
-            this.pskAAAHealthcare.PlayerSkill = null;
+            this.pskAAAHealthcare.SkillData = null;
             this.pskAAAHealthcare.Size = new System.Drawing.Size(424, 24);
             this.pskAAAHealthcare.SkillGroupCheckbox = null;
             this.pskAAAHealthcare.SkillName = "AAA Healthcare";
@@ -1298,7 +1298,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskJobOpportunities.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskJobOpportunities.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskJobOpportunities.Name = "pskJobOpportunities";
-            this.pskJobOpportunities.PlayerSkill = null;
+            this.pskJobOpportunities.SkillData = null;
             this.pskJobOpportunities.Size = new System.Drawing.Size(424, 24);
             this.pskJobOpportunities.SkillGroupCheckbox = null;
             this.pskJobOpportunities.SkillName = "Job Opportunities";
@@ -1312,7 +1312,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskContractManagement.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskContractManagement.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskContractManagement.Name = "pskContractManagement";
-            this.pskContractManagement.PlayerSkill = null;
+            this.pskContractManagement.SkillData = null;
             this.pskContractManagement.Size = new System.Drawing.Size(424, 24);
             this.pskContractManagement.SkillGroupCheckbox = null;
             this.pskContractManagement.SkillName = "Contract Management";
@@ -1374,7 +1374,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskResearchReview.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskResearchReview.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskResearchReview.Name = "pskResearchReview";
-            this.pskResearchReview.PlayerSkill = null;
+            this.pskResearchReview.SkillData = null;
             this.pskResearchReview.Size = new System.Drawing.Size(424, 24);
             this.pskResearchReview.SkillGroupCheckbox = null;
             this.pskResearchReview.SkillName = "Research Review";
@@ -1388,7 +1388,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskResearchMethods.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskResearchMethods.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskResearchMethods.Name = "pskResearchMethods";
-            this.pskResearchMethods.PlayerSkill = null;
+            this.pskResearchMethods.SkillData = null;
             this.pskResearchMethods.Size = new System.Drawing.Size(424, 24);
             this.pskResearchMethods.SkillGroupCheckbox = null;
             this.pskResearchMethods.SkillName = "Research Methods";
@@ -1402,7 +1402,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskResearchFocus.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskResearchFocus.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskResearchFocus.Name = "pskResearchFocus";
-            this.pskResearchFocus.PlayerSkill = null;
+            this.pskResearchFocus.SkillData = null;
             this.pskResearchFocus.Size = new System.Drawing.Size(424, 24);
             this.pskResearchFocus.SkillGroupCheckbox = null;
             this.pskResearchFocus.SkillName = "Research Focus";
@@ -1464,7 +1464,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskSurveyingMethods.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskSurveyingMethods.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskSurveyingMethods.Name = "pskSurveyingMethods";
-            this.pskSurveyingMethods.PlayerSkill = null;
+            this.pskSurveyingMethods.SkillData = null;
             this.pskSurveyingMethods.Size = new System.Drawing.Size(424, 24);
             this.pskSurveyingMethods.SkillGroupCheckbox = null;
             this.pskSurveyingMethods.SkillName = "Surveying Methods";
@@ -1478,7 +1478,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskScanningMethods.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskScanningMethods.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskScanningMethods.Name = "pskScanningMethods";
-            this.pskScanningMethods.PlayerSkill = null;
+            this.pskScanningMethods.SkillData = null;
             this.pskScanningMethods.Size = new System.Drawing.Size(424, 24);
             this.pskScanningMethods.SkillGroupCheckbox = null;
             this.pskScanningMethods.SkillName = "Scanning Methods";
@@ -1492,7 +1492,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskQuartermaster.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskQuartermaster.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskQuartermaster.Name = "pskQuartermaster";
-            this.pskQuartermaster.PlayerSkill = null;
+            this.pskQuartermaster.SkillData = null;
             this.pskQuartermaster.Size = new System.Drawing.Size(424, 24);
             this.pskQuartermaster.SkillGroupCheckbox = null;
             this.pskQuartermaster.SkillName = "Quartermaster";
@@ -1552,7 +1552,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskBroker.MaximumSize = new System.Drawing.Size(424, 24);
             this.pskBroker.MinimumSize = new System.Drawing.Size(424, 24);
             this.pskBroker.Name = "pskBroker";
-            this.pskBroker.PlayerSkill = null;
+            this.pskBroker.SkillData = null;
             this.pskBroker.Size = new System.Drawing.Size(424, 24);
             this.pskBroker.SkillGroupCheckbox = null;
             this.pskBroker.SkillName = "Broker";

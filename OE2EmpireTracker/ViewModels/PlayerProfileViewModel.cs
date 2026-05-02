@@ -8,8 +8,8 @@ using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.ViewModels
 {
     /// <summary>
-    /// Wraps a PlayerProfile data object and exposes typed properties,
-    /// hiding all direct data access from the UI layer.
+    /// Edit buffer for player profile data. Holds local field copies disconnected from the entity.
+    /// The form reads/writes these local fields. Only PlayerProfileService mutates the actual entity.
     /// </summary>
     public class PlayerProfileViewModel
     {
@@ -17,136 +17,327 @@ namespace OE2EmpireTracker.ViewModels
 
         private readonly PlayerContext _playerContext;
 
-        private PlayerProfile _profile;
+        private ReadOnlyPlayerProfile _original;
 
-        public PlayerProfileViewModel(PlayerProfile profile, PlayerContext playerContext)
+        private string _uuid;
+        private string _name = string.Empty;
+        private string _faction = string.Empty;
+        private decimal _totalCredits;
+        private int _skillPoints;
+        private string _citizenId = string.Empty;
+        private string _registrationDate = string.Empty;
+        private string _activeTime = string.Empty;
+
+        private LocalRankData _publicRank = new LocalRankData();
+        private LocalRankData _privateRank = new LocalRankData();
+        private LocalRankData _militaryRank = new LocalRankData();
+        private Dictionary<string, LocalSkillData> _skills = new Dictionary<string, LocalSkillData>();
+        private Dictionary<string, bool> _skillGroups = new Dictionary<string, bool>();
+
+        public PlayerProfileViewModel(PlayerContext playerContext)
         {
-            _profile = profile ?? throw new ArgumentNullException(nameof(profile));
             _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
         }
 
-        // -----------------------------------------------------------------------
-        // Identity
-        // -----------------------------------------------------------------------
+        /// <summary>Gets a value indicating whether this is a new profile not yet saved.</summary>
+        public bool IsNew => _original == null;
 
-        public string Name
+        /// <summary>Gets the profile UUID.</summary>
+        public string UUID => _uuid;
+
+        /// <summary>Gets the original snapshot this edit buffer was loaded from.</summary>
+        public ReadOnlyPlayerProfile Original => _original;
+
+        public string Name { get => _name; set => _name = value; }
+
+        public string Faction { get => _faction; set => _faction = value; }
+
+        public decimal TotalCredits { get => _totalCredits; set => _totalCredits = value; }
+
+        public int SkillPoints { get => _skillPoints; set => _skillPoints = value; }
+
+        public string CitizenId { get => _citizenId; set => _citizenId = value; }
+
+        public string RegistrationDate { get => _registrationDate; set => _registrationDate = value; }
+
+        public string ActiveTime { get => _activeTime; set => _activeTime = value; }
+
+        public LocalRankData PublicRank => _publicRank;
+
+        public LocalRankData PrivateRank => _privateRank;
+
+        public LocalRankData MilitaryRank => _militaryRank;
+        /// <summary>
+        /// Gets a value indicating whether any local field differs from the original snapshot.
+        /// </summary>
+        public bool IsDirty
         {
-            get => _profile.Name;
-            set => _profile.Name = value;
+            get
+            {
+                if (_original == null)
+                {
+                    return !string.IsNullOrEmpty(_name)
+                        || !string.IsNullOrEmpty(_faction)
+                        || _totalCredits != 0
+                        || _skillPoints != 0;
+                }
+
+                if (_name != _original.Name) return true;
+                if (_faction != _original.Faction) return true;
+                if (_totalCredits != _original.TotalCredits) return true;
+                if (_skillPoints != _original.SkillPoints) return true;
+                if (_citizenId != _original.CitizenId) return true;
+                if (_registrationDate != _original.RegistrationDate) return true;
+                if (_activeTime != _original.ActiveTime) return true;
+
+                if (IsRankDirty(_publicRank, _original.Public)) return true;
+                if (IsRankDirty(_privateRank, _original.Private)) return true;
+                if (IsRankDirty(_militaryRank, _original.Military)) return true;
+
+                if (IsSkillsDirty()) return true;
+                if (IsSkillGroupsDirty()) return true;
+
+                return false;
+            }
         }
 
-        public string Faction
+        public LocalSkillData GetSkill(string skillName)
         {
-            get => _profile.Faction;
-            set => _profile.Faction = value;
+            if (!_skills.ContainsKey(skillName))
+            {
+                _skills[skillName] = new LocalSkillData();
+            }
+
+            return _skills[skillName];
         }
 
-        public decimal TotalCredits
+        public LocalSkillData GetSkill(SkillName skill) => GetSkill(skill.ToDisplayName());
+
+        public bool GetSkillGroup(SkillGroupName group)
         {
-            get => _profile.TotalCredits;
-            set => _profile.TotalCredits = value;
+            string key = group.ToDisplayName();
+            return _skillGroups.ContainsKey(key) && _skillGroups[key];
         }
 
-        public int SkillPoints
+        public void SetSkillGroup(SkillGroupName group, bool value)
         {
-            get => _profile.SkillPoints;
-            set => _profile.SkillPoints = value;
+            _skillGroups[group.ToDisplayName()] = value;
         }
-
-        public PlayerProfile Data => _profile;
-
-        // -----------------------------------------------------------------------
-        // Ranks
-        // -----------------------------------------------------------------------
-
-        public PlayerRank PublicRank => _profile.Public;
-
-        public PlayerRank PrivateRank => _profile.Private;
-
-        public PlayerRank MilitaryRank => _profile.Military;
-
-        // -----------------------------------------------------------------------
-        // Skill groups
-        // -----------------------------------------------------------------------
-
-        public bool GetSkillGroup(SkillGroupName group) => _profile.GetSkillGroup(group);
-
-        public void SetSkillGroup(SkillGroupName group, bool value) => _profile.SetSkillGroup(group, value);
-
-        // -----------------------------------------------------------------------
-        // Skills
-        // -----------------------------------------------------------------------
-
-        public PlayerSkill GetSkill(SkillName skill) => _profile.GetSkill(skill);
 
         public bool IsAnySkillTraining()
         {
-            foreach (var entry in _profile.Skills)
-            {
-                if (entry.Value.TrainingStarted) return true;
-            }
-
-            return false;
+            return _skills.Values.Any(s => s.TrainingStarted);
         }
 
-        // -----------------------------------------------------------------------
-        // Profile list
-        // -----------------------------------------------------------------------
-
-        public IReadOnlyList<PlayerProfile> GetFilteredProfiles(string nameFilter)
+        public IReadOnlyList<ReadOnlyPlayerProfile> GetFilteredProfiles(string nameFilter)
         {
-            return _playerContext.PlayerProfileList
+            return _playerContext.GetReadOnlyPlayerProfileList()
                 .Where(p => string.IsNullOrEmpty(nameFilter) ||
                             p.Name.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0)
                 .ToList()
                 .AsReadOnly();
         }
 
-        // -----------------------------------------------------------------------
-        // Persistence
-        // -----------------------------------------------------------------------
-
-        public void Save()
+        /// <summary>
+        /// Loads field values from a ReadOnlyPlayerProfile snapshot.
+        /// Retains the original for dirty comparison.
+        /// </summary>
+        public void LoadFrom(ReadOnlyPlayerProfile ro)
         {
-            if (string.IsNullOrEmpty(_profile.UUID))
+            if (ro == null)
             {
-                _profile.UUID = Guid.NewGuid().ToString();
-                _playerContext.AddPlayerProfile(_profile);
+                throw new ArgumentNullException(nameof(ro));
             }
 
-            _playerContext.WriteContext();
-            _playerContext.OnPlayerProfilesChanged();
-            _playerContext.OnPlayerProfileDataChanged(_profile.UUID);
-        }
+            _original = ro;
+            _uuid = ro.UUID;
+            _name = ro.Name;
+            _faction = ro.Faction;
+            _totalCredits = ro.TotalCredits;
+            _skillPoints = ro.SkillPoints;
+            _citizenId = ro.CitizenId;
+            _registrationDate = ro.RegistrationDate;
+            _activeTime = ro.ActiveTime;
 
-        public void Delete()
-        {
-            if (string.IsNullOrEmpty(_profile.UUID)) return;
-            string deletedUUID = _profile.UUID;
-            _playerContext.RemovePlayerProfile(_profile);
+            CopyRank(_publicRank, ro.Public);
+            CopyRank(_privateRank, ro.Private);
+            CopyRank(_militaryRank, ro.Military);
 
-            // Cascade delete: remove all data owned by this player
-            _playerContext.CascadeDeletePlayer(deletedUUID);
+            _skills.Clear();
+            foreach (var kvp in ro.Skills)
+            {
+                var roSkill = kvp.Value;
+                _skills[kvp.Key] = new LocalSkillData
+                {
+                    Level = roSkill.Level,
+                    TrainingStarted = roSkill.TrainingStarted,
+                    CompletionStartTime = roSkill.CompletionStartTime,
+                    CompletionEndTime = roSkill.CompletionEndTime,
+                };
+            }
 
-            _playerContext.WriteContext();
-            _playerContext.OnPlayerProfilesChanged();
-            _playerContext.OnPlayerProfileDataChanged(deletedUUID);
+            _skillGroups.Clear();
+            foreach (SkillGroupName group in Enum.GetValues(typeof(SkillGroupName)))
+            {
+                _skillGroups[group.ToDisplayName()] = ro.GetSkillGroup(group);
+            }
         }
 
         /// <summary>
-        /// Resets the ViewModel to point at a new blank profile.
+        /// Resets to empty state for a new profile.
         /// </summary>
         public void Reset()
         {
-            _profile = new PlayerProfile();
+            _original = null;
+            _uuid = null;
+            _name = string.Empty;
+            _faction = string.Empty;
+            _totalCredits = 0;
+            _skillPoints = 0;
+            _citizenId = string.Empty;
+            _registrationDate = string.Empty;
+            _activeTime = string.Empty;
+            _publicRank = new LocalRankData();
+            _privateRank = new LocalRankData();
+            _militaryRank = new LocalRankData();
+            _skills.Clear();
+            _skillGroups.Clear();
         }
 
         /// <summary>
-        /// Switches the ViewModel to point at a different profile.
+        /// Builds an update request carrying both the original snapshot
+        /// and the current local state.
         /// </summary>
-        public void SelectProfile(PlayerProfile profile)
+        public PlayerProfileUpdateRequest BuildUpdateRequest()
         {
-            _profile = profile ?? new PlayerProfile();
+            return new PlayerProfileUpdateRequest
+            {
+                Original = _original,
+                Name = _name,
+                Faction = _faction,
+                TotalCredits = _totalCredits,
+                SkillPoints = _skillPoints,
+                CitizenId = _citizenId,
+                RegistrationDate = _registrationDate,
+                ActiveTime = _activeTime,
+                PublicRank = _publicRank.Rank,
+                PublicCurrentXP = _publicRank.CurrentXP,
+                PublicNextXP = _publicRank.NextXP,
+                PublicTitle = _publicRank.Title,
+                PrivateRank = _privateRank.Rank,
+                PrivateCurrentXP = _privateRank.CurrentXP,
+                PrivateNextXP = _privateRank.NextXP,
+                PrivateTitle = _privateRank.Title,
+                MilitaryRank = _militaryRank.Rank,
+                MilitaryCurrentXP = _militaryRank.CurrentXP,
+                MilitaryNextXP = _militaryRank.NextXP,
+                MilitaryTitle = _militaryRank.Title,
+                Skills = _skills.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => new SkillUpdateData
+                    {
+                        Level = kvp.Value.Level,
+                        TrainingStarted = kvp.Value.TrainingStarted,
+                        CompletionStartTime = kvp.Value.CompletionStartTime,
+                        CompletionEndTime = kvp.Value.CompletionEndTime,
+                    }),
+                SkillGroups = new Dictionary<string, bool>(_skillGroups),
+            };
+        }
+
+        /// <summary>
+        /// Builds a create request for a new profile.
+        /// </summary>
+        public PlayerProfileCreateRequest BuildCreateRequest()
+        {
+            return new PlayerProfileCreateRequest
+            {
+                Name = _name,
+                Faction = _faction,
+                TotalCredits = _totalCredits,
+                SkillPoints = _skillPoints,
+                CitizenId = _citizenId,
+                RegistrationDate = _registrationDate,
+                ActiveTime = _activeTime,
+                PublicRank = _publicRank.Rank,
+                PublicCurrentXP = _publicRank.CurrentXP,
+                PublicNextXP = _publicRank.NextXP,
+                PublicTitle = _publicRank.Title,
+                PrivateRank = _privateRank.Rank,
+                PrivateCurrentXP = _privateRank.CurrentXP,
+                PrivateNextXP = _privateRank.NextXP,
+                PrivateTitle = _privateRank.Title,
+                MilitaryRank = _militaryRank.Rank,
+                MilitaryCurrentXP = _militaryRank.CurrentXP,
+                MilitaryNextXP = _militaryRank.NextXP,
+                MilitaryTitle = _militaryRank.Title,
+                Skills = _skills.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => new SkillUpdateData
+                    {
+                        Level = kvp.Value.Level,
+                        TrainingStarted = kvp.Value.TrainingStarted,
+                        CompletionStartTime = kvp.Value.CompletionStartTime,
+                        CompletionEndTime = kvp.Value.CompletionEndTime,
+                    }),
+                SkillGroups = new Dictionary<string, bool>(_skillGroups),
+            };
+        }
+
+        private static void CopyRank(LocalRankData local, ReadOnlyPlayerRank ro)
+        {
+            local.Rank = ro.Rank;
+            local.CurrentXP = ro.CurrentXP;
+            local.NextXP = ro.NextXP;
+            local.Title = ro.Title;
+        }
+
+        private static bool IsRankDirty(LocalRankData local, ReadOnlyPlayerRank original)
+        {
+            return local.Rank != original.Rank
+                || local.CurrentXP != original.CurrentXP
+                || local.NextXP != original.NextXP
+                || local.Title != original.Title;
+        }
+
+        private bool IsSkillsDirty()
+        {
+            var originalSkills = _original.Skills;
+            if (_skills.Count != originalSkills.Count)
+            {
+                return true;
+            }
+
+            foreach (var kvp in _skills)
+            {
+                if (!originalSkills.TryGetValue(kvp.Key, out var roSkill))
+                {
+                    return true;
+                }
+
+                if (kvp.Value.Level != roSkill.Level) return true;
+                if (kvp.Value.TrainingStarted != roSkill.TrainingStarted) return true;
+                if (kvp.Value.CompletionStartTime != roSkill.CompletionStartTime) return true;
+                if (kvp.Value.CompletionEndTime != roSkill.CompletionEndTime) return true;
+            }
+
+            return false;
+        }
+
+        private bool IsSkillGroupsDirty()
+        {
+            foreach (SkillGroupName group in Enum.GetValues(typeof(SkillGroupName)))
+            {
+                string key = group.ToDisplayName();
+                bool localVal = _skillGroups.ContainsKey(key) && _skillGroups[key];
+                bool origVal = _original.GetSkillGroup(group);
+                if (localVal != origVal)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

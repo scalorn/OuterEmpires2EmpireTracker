@@ -330,6 +330,8 @@
     <Compile Include="ViewModels\ColonyViewModel.cs" />
     <Compile Include="ViewModels\BlueprintFilterCriteria.cs" />
     <Compile Include="ViewModels\BlueprintViewModel.cs" />
+    <Compile Include="ViewModels\LocalRankData.cs" />
+    <Compile Include="ViewModels\LocalSkillData.cs" />
     <Compile Include="ViewModels\PlayerProfileViewModel.cs" />
     <Compile Include="ViewModels\SurveyViewModel.cs" />
     <Compile Include="Models\Blueprint.cs" />

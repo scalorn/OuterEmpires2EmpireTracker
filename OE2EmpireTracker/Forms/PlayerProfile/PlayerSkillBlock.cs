@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.PlayerProfile
 {
     public partial class PlayerSkillBlock : UserControl
     {
-        private Models.PlayerSkill _playerSkill;
+        private LocalSkillData _skillData;
 
         private bool _canStartTraining;
 
@@ -40,16 +41,16 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             set => lblSkillName.Text = value;
         }
 
-        public Models.PlayerSkill PlayerSkill
+        public LocalSkillData SkillData
         {
             get
             {
-                return _playerSkill;
+                return _skillData;
             }
 
             set
             {
-                _playerSkill = value;
+                _skillData = value;
                 PopulateForm();
             }
         }
@@ -72,15 +73,15 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         public void PopulateForm()
         {
-            if (PlayerSkill == null)
+            if (_skillData == null)
             {
                 return;
             }
 
-            this.txtSkillLevel.Text = PlayerSkill.Level.ToString();
+            this.txtSkillLevel.Text = _skillData.Level.ToString();
 
             bool canStart = CanStartTraining && (SkillGroupCheckbox != null && SkillGroupCheckbox.Checked);
-            if (!PlayerSkill.TrainingStarted)
+            if (!_skillData.TrainingStarted)
             {
                 this.lblCompletion.Visible = false;
                 this.txtCompletion.Visible = false;
@@ -101,14 +102,13 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void UpdateCompletion()
         {
-            if (!completionModification)
+            if (!completionModification && _skillData != null)
             {
-                TimeSpan span = TimeSpan.FromSeconds(PlayerSkill.CompletionTime.TimeRemaining);
-                this.txtCompletion.Text = PlayerSkill.CompletionTime.TimeRemainingString;
-                if (span.TotalSeconds <= 0)
+                this.txtCompletion.Text = _skillData.TimeRemainingString;
+                if (_skillData.TimeRemaining <= 0)
                 {
-                    PlayerSkill.TrainingStarted = false;
-                    PlayerSkill.Level += 1;
+                    _skillData.TrainingStarted = false;
+                    _skillData.Level += 1;
                     PopulateForm();
                     TrainingStatusChanged?.Invoke(this, EventArgs.Empty);
                     timerCountdown.Stop();
@@ -118,10 +118,9 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void CmdStart_Click(object sender, EventArgs e)
         {
-            PlayerSkill.TrainingStarted = true;
-            PlayerSkill.CompletionTime.StartTime = SystemClock.UtcNow;
-            PlayerSkill.CompletionTime.TimeRemaining = (long)TimeSpan.FromDays(PlayerSkill.Level + 1).TotalSeconds;
-            PlayerSkill.CompletionTime.TimeRemaining = 10;
+            _skillData.TrainingStarted = true;
+            _skillData.CompletionStartTime = SystemClock.UtcNow;
+            _skillData.CompletionEndTime = SystemClock.UtcNow.AddSeconds(10);
 
             PopulateForm();
             TrainingStatusChanged?.Invoke(this, e);
@@ -141,7 +140,19 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         {
             completionModification = false;
 
-            PlayerSkill.CompletionTime.TimeRemainingString = txtCompletion.Text;
+            // Parse the edited text and update local CompletionEndTime
+            var match = Regex.Match(
+                txtCompletion.Text,
+                @"(?:(\d+)d\s*)?(?:(\d+)h\s*)?(?:(\d+)m\s*)?(?:(\d+)s)?");
+
+            int days = match.Groups[1].Success ? int.Parse(match.Groups[1].Value) : 0;
+            int hours = match.Groups[2].Success ? int.Parse(match.Groups[2].Value) : 0;
+            int minutes = match.Groups[3].Success ? int.Parse(match.Groups[3].Value) : 0;
+            int seconds = match.Groups[4].Success ? int.Parse(match.Groups[4].Value) : 0;
+
+            long totalSeconds = ((((long)days * 24) + hours) * 60 * 60) + (minutes * 60) + seconds;
+            _skillData.CompletionStartTime = SystemClock.UtcNow;
+            _skillData.CompletionEndTime = SystemClock.UtcNow.AddSeconds(totalSeconds);
         }
     }
 }
