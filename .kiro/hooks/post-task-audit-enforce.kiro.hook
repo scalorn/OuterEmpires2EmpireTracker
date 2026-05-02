@@ -8,6 +8,6 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "Run `node .kiro/tools/audit.js` now. If the audit reports ANY findings (exit code 1), you MUST fix every single one before proceeding to the next task or committing. There is no such thing as a pre-existing or baseline finding — every finding is a real issue that must be resolved. Do not dismiss findings as 'accepted baseline' or 'pre-existing'. Fix them, re-run the audit, and only proceed when the audit exits cleanly with zero findings."
+    "prompt": "Run `node .kiro/tools/audit.js` now. If the audit reports ANY findings (exit code 1), you MUST fix every single one before proceeding to the next task or committing. There is no such thing as a pre-existing or baseline finding — every finding is a real issue that must be resolved. Do not dismiss findings as 'accepted baseline' or 'pre-existing'. Fix them, re-run the audit, and only proceed when the audit exits cleanly with zero findings.\n\nAlso: if this task completes a backlog item (BL-NNN), move the item from `spec/BACKLOG.md` to `spec/COMPLETED.md` with a `**Status: Complete**` summary describing what was done and referencing the spec if one exists."
   }
 }
