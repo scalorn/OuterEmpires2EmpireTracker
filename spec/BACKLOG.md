@@ -279,10 +279,15 @@ Each context menu should mirror the existing button actions for that grid, provi
 
 These items migrate individual forms from consuming mutable entity references to using ReadOnly wrapper types for their read-only data paths (combo box population, list view display, reference counting, status display). Each form retains mutable access for its ViewModel/edit paths. Depends on the readonly-data-wrappers spec (complete).
 
-### BL-108: FormBlueprintV2 — Switch to ReadOnly Data Wrappers
+### BL-108: FormBlueprintV2 — Immutable Data Model, Mutation Through Service Only
 **Dependencies:** readonly-data-wrappers spec (done)
 **Status: New**
-Migrate read-only data paths in FormBlueprintV2 to use ReadOnly wrappers. This form has extensive read-only consumption: blueprint list view with BlueprintReferenceCounter, FilteredTextComboSet combos for colony/survey/blueprint selection, commodity and resource lookups from EmpireContext, and evolution graph data. The BlueprintViewModel continues to use mutable Blueprint for editing. Switch list population to GetReadOnlyBlueprintList/GetCurrentPlayerReadOnlyBlueprints, combo population to ReadOnly types, and reference counter inputs to read-only lists.
+Full immutable data model for the blueprint form. ViewModel becomes a disconnected edit buffer (no write-through). All mutation goes through BlueprintService (Update, Create, Delete, Import, MoveToGlobal/Player). ReadOnly wrappers for all read-only paths. Unsaved changes prompts on selection change, form close, and new. See `.kiro/specs/bl-108-blueprint-readonly/` for full spec.
+
+### BL-131: FormBlueprintV2 — Statistics Grid Add/Delete and Context Menus
+**Dependencies:** None
+**Status: New**
+Add explicit Add/Delete buttons for the statistics grid (dgvStatistics), matching the existing Add/Delete on the resources grid. Delete SHALL be disabled for properties that are part of the BlueprintType's defined property list — only user-added extra properties can be deleted. Add right-click context menus to both the statistics grid and resources grid with Add Row and Delete Row items. Delete Row in the context menu follows the same rules: disabled for type-defined statistics properties, always enabled for resources.
 
 ### BL-109: FormColonyV2 — Switch to ReadOnly Data Wrappers
 **Dependencies:** readonly-data-wrappers spec (done)
