@@ -91,17 +91,6 @@ namespace OE2EmpireTracker.Models
 
         public string BluePrintType { get; set; }
 
-        /// <summary>
-        /// Validates that this blueprint has not been corrupted.
-        /// Returns null if valid, or an error message if corrupted.
-        /// </summary>
-        public string ValidateIntegrity()
-        {
-            if (ItemType != Models.ItemType.ItemTypeEnum.Blueprint)
-                return string.Format("ItemType is {0} (expected Blueprint) on '{1}' UUID={2}", ItemType, Name, UUID);
-            return null;
-        }
-
         public int Evolution { get; set; }
 
         public string TechLevel { get; set; }
@@ -113,5 +102,16 @@ namespace OE2EmpireTracker.Models
         public PropertyBag Properties { get; set; }
 
         public Dictionary<string, string> Resources { get; set; }
+
+        /// <summary>
+        /// Validates that this blueprint has not been corrupted.
+        /// Returns null if valid, or an error message if corrupted.
+        /// </summary>
+        public string ValidateIntegrity()
+        {
+            if (ItemType != Models.ItemType.ItemTypeEnum.Blueprint)
+                return string.Format("ItemType is {0} (expected Blueprint) on '{1}' UUID={2}", ItemType, Name, UUID);
+            return null;
+        }
     }
 }

@@ -30,7 +30,7 @@
 - [x] Add `BuildUpdateRequest()` to collect changes into DTO
 - [x] Add `IsDirty` tracking
 - [x] All property setters write to local state only
-- [x] Remove `SelectBlueprint(Blueprint)` — replace with `LoadFrom(ReadOnlyBlueprint)`
+- [x] Remove `SelectBlueprint(Blueprint)` -- replace with `LoadFrom(ReadOnlyBlueprint)`
 
 ### Task 6: Update Form Selection Handler
 - [x] On blueprint selection: read UUID from ReadOnlyBlueprint Tag
@@ -51,60 +51,60 @@
 
 ### Task 9: Unsaved Changes Guard
 - [x] Create `PromptUnsavedChanges()` helper returning Save/Discard/Cancel
-- [x] Wire into `LvwBlueprints_ItemSelectionChanged` — prompt before switching
-- [x] Wire into `OnFormClosing` — prompt before closing, cancel close on Cancel
-- [x] Wire into `BtnNew_Click` — prompt before clearing for new
+- [x] Wire into `LvwBlueprints_ItemSelectionChanged` -- prompt before switching
+- [x] Wire into `OnFormClosing` -- prompt before closing, cancel close on Cancel
+- [x] Wire into `BtnNew_Click` -- prompt before clearing for new
 - [x] Cancel option in selection change restores the previous list view selection
 
 ## Phase 3: BlueprintService
 
 ### Task 9: Create BlueprintService
-- [ ] `Update(string uuid, BlueprintUpdateRequest)` — applies changes, persists, fires event, returns ReadOnlyBlueprint
-- [ ] `Create(BlueprintCreateRequest)` — creates new, assigns UUID, persists, returns ReadOnlyBlueprint
-- [ ] `Delete(string uuid)` — removes, persists, fires event
-- [ ] `Import(Blueprint temp, ReadOnlyBlueprint selectedTarget)` — handles dedup/merge, persists, returns result
-- [ ] `MoveToGlobal(string uuid)` / `MoveToPlayer(string uuid)` — moves between lists, persists
+- [x] `Update(string uuid, BlueprintUpdateRequest)` -- applies changes, persists, fires event, returns ReadOnlyBlueprint
+- [x] `Create(BlueprintCreateRequest)` -- creates new, assigns UUID, persists, returns ReadOnlyBlueprint
+- [x] `Delete(string uuid)` -- removes, persists, fires event
+- [x] `Import(Blueprint temp, ReadOnlyBlueprint selectedTarget)` -- handles dedup/merge, persists, returns result
+- [x] `MoveToGlobal(string uuid)` / `MoveToPlayer(string uuid)` -- moves between lists, persists
 
 ### Task 10: Update Form Save Handler
-- [ ] Save checks `viewModel.IsNew` to decide Create vs Update
-- [ ] Create: calls `viewModel.BuildCreateRequest()`, then `blueprintService.Create(request, isGlobal)`
-- [ ] Update: calls `viewModel.BuildUpdateRequest()`, then `blueprintService.Update(uuid, request)`
-- [ ] On success: refresh list, select by UUID, `viewModel.LoadFrom(result)`
+- [x] Save checks `viewModel.IsNew` to decide Create vs Update
+- [x] Create: calls `viewModel.BuildCreateRequest()`, then `blueprintService.Create(request, isGlobal)`
+- [x] Update: calls `viewModel.BuildUpdateRequest()`, then `blueprintService.Update(uuid, request)`
+- [x] On success: refresh list, select by UUID, `viewModel.LoadFrom(result)`
 
 ### Task 11: Update Form New Handler
-- [ ] New button prompts if dirty (Save / Discard / Cancel)
-- [ ] Calls `viewModel.Reset()` to clear to empty state
-- [ ] Clears all form controls
-- [ ] Save button disabled until user enters data
+- [x] New button prompts if dirty (Save / Discard / Cancel)
+- [x] Calls `viewModel.Reset()` to clear to empty state
+- [x] Clears all form controls
+- [x] Save button disabled until user enters data
 
 ### Task 11: Update Form Import Handler
-- [ ] Individual import (with selection): merge parsed stats/resources into ViewModel local state, mark dirty
-- [ ] Full import (no selection or market): call `blueprintService.Import(temp, target)`
-- [ ] Support multi-step import: stats first, resources second, Save commits both
+- [x] Individual import (with selection): merge parsed stats/resources into ViewModel local state, mark dirty
+- [x] Full import (no selection or market): call `blueprintService.Import(temp, target)`
+- [x] Support multi-step import: stats first, resources second, Save commits both
 
 ### Task 12: Update Form Delete Handler
-- [ ] Delete calls `blueprintService.Delete(uuid)`
-- [ ] On success: refresh list, clear form
+- [x] Delete calls `blueprintService.Delete(uuid)`
+- [x] On success: refresh list, clear form
 
 ### Task 13: Update Form Global Toggle
-- [ ] Global checkbox save calls `blueprintService.MoveToGlobal/MoveToPlayer(uuid)`
+- [x] Global checkbox save calls `blueprintService.MoveToGlobal/MoveToPlayer(uuid)`
 
 ### Task 14: Add FindMutableBlueprint Internal Methods
-- [ ] `internal Blueprint FindMutableBlueprint(string uuid)` on PlayerContext
-- [ ] `internal Blueprint FindMutableGlobalBlueprint(string uuid)` on EmpireContext
-- [ ] Only called by BlueprintService
+- [x] `internal Blueprint FindMutableBlueprint(string uuid)` on PlayerContext
+- [x] `internal Blueprint FindMutableGlobalBlueprint(string uuid)` on EmpireContext
+- [x] Only called by BlueprintService
 
 ### Task 15: Change FindBlueprint Return Type
-- [ ] `FindBlueprint()` returns `ReadOnlyBlueprint`
-- [ ] `FindGlobalBlueprint()` returns `ReadOnlyBlueprint`
-- [ ] Fix all compile errors across the codebase
+- [x] `FindBlueprint()` returns `ReadOnlyBlueprint`
+- [x] `FindGlobalBlueprint()` returns `ReadOnlyBlueprint`
+- [x] Fix all compile errors across the codebase
 
 ## Phase 4: Verification
 
 ### Task 16: Full Verification
-- [ ] Run all tests — zero failures
-- [ ] Run audit — zero findings
-- [ ] Grep for direct Blueprint property sets — only in BlueprintService, deserialization, migration
-- [ ] Grep for `FindMutableBlueprint` — only in BlueprintService
+- [ ] Run all tests -- zero failures
+- [ ] Run audit -- zero findings
+- [ ] Grep for direct Blueprint property sets -- only in BlueprintService, deserialization, migration
+- [ ] Grep for `FindMutableBlueprint` -- only in BlueprintService
 - [ ] Verify form behavior: select, edit, save, import, delete, global toggle all work
 - [ ] Update BL-108 status in BACKLOG.md to Done

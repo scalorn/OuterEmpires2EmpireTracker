@@ -426,29 +426,6 @@ namespace OE2EmpireTracker.Services
             return null;
         }
 
-        /// <summary>
-        /// Returns the mutable Blueprint entity for the given UUID from the global list only.
-        /// Only called by BlueprintService.
-        /// </summary>
-        internal Blueprint FindMutableGlobalBlueprint(string uuid)
-        {
-            if (string.IsNullOrEmpty(uuid)) return null;
-            if (_globalBlueprintList == null) return null;
-
-            if (_globalBlueprintCache == null)
-            {
-                _globalBlueprintCache = new Dictionary<string, Blueprint>();
-                foreach (var bp in _globalBlueprintList)
-                {
-                    if (bp.UUID != null && !_globalBlueprintCache.ContainsKey(bp.UUID))
-                        _globalBlueprintCache[bp.UUID] = bp;
-                }
-            }
-
-            _globalBlueprintCache.TryGetValue(uuid, out Blueprint bp2);
-            return bp2;
-        }
-
         public void InvalidateGlobalBlueprintCache()
         {
             _globalBlueprintCache = null;
@@ -643,6 +620,29 @@ namespace OE2EmpireTracker.Services
         public ReadOnlyBlueprint FindReadOnlyGlobalBlueprint(string id)
         {
             return FindGlobalBlueprint(id);
+        }
+
+        /// <summary>
+        /// Returns the mutable Blueprint entity for the given UUID from the global list only.
+        /// Only called by BlueprintService.
+        /// </summary>
+        internal Blueprint FindMutableGlobalBlueprint(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+            if (_globalBlueprintList == null) return null;
+
+            if (_globalBlueprintCache == null)
+            {
+                _globalBlueprintCache = new Dictionary<string, Blueprint>();
+                foreach (var bp in _globalBlueprintList)
+                {
+                    if (bp.UUID != null && !_globalBlueprintCache.ContainsKey(bp.UUID))
+                        _globalBlueprintCache[bp.UUID] = bp;
+                }
+            }
+
+            _globalBlueprintCache.TryGetValue(uuid, out Blueprint bp2);
+            return bp2;
         }
     }
 

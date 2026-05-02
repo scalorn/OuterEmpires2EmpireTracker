@@ -90,7 +90,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
         // -----------------------------------------------------------------------
-        // 7.2: Reset() Ã¢â‚¬â€ pool reuse
+        // 7.2: Reset() -- pool reuse
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // 7.3: UpdateData(Blueprint bp) Ã¢â‚¬â€ full repaint
+        // 7.3: UpdateData(ReadOnlyBlueprint bp) -- full repaint
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // 7.4: UpdateBackgroundColor() Ã¢â‚¬â€ lightweight path
+        // 7.4: UpdateBackgroundColor() -- lightweight path
         // -----------------------------------------------------------------------
 
         /// <summary>
@@ -1494,7 +1494,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -----------------------------------------------------------------------
-        // 7.5: State checkboxes Ã¢â‚¬â€ Built, Online, Staged with mutual exclusion
+        // 7.5: State checkboxes -- Built, Online, Staged with mutual exclusion
         // -----------------------------------------------------------------------
 
         private void ChkBuilt_CheckedChanged(object sender, EventArgs e)

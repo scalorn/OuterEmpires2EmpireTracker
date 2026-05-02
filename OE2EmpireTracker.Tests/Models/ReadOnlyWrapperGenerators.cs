@@ -13,27 +13,49 @@ namespace OE2EmpireTracker.Tests.Models
     public static class ReadOnlyWrapperGenerators
     {
         private static readonly string[] SampleNames =
-            { "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet" };
+        {
+            "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet"
+        };
 
         private static readonly string[] SampleDescriptions =
-            { "A test description", "Another description", "Short desc", "Detailed description text", "Placeholder" };
+        {
+            "A test description", "Another description", "Short desc", "Detailed description text", "Placeholder"
+        };
 
-        private static readonly string[] SamplePurities = { "Low", "Medium", "High", "Refined" };
+        private static readonly string[] SamplePurities =
+        {
+            "Low", "Medium", "High", "Refined"
+        };
 
         private static readonly string[] SampleResources =
-            { "Alkali Metals", "Noble Gases", "Halogens", "Trans-Metals", "Metallics" };
+        {
+            "Alkali Metals", "Noble Gases", "Halogens", "Trans-Metals", "Metallics"
+        };
 
-        private static readonly string[] SampleTechLevels = { "LL", "ML", "HL" };
+        private static readonly string[] SampleTechLevels =
+        {
+            "LL", "ML", "HL"
+        };
 
         private static readonly string[] SampleBlueprintTypes =
-            { "Mining Rig", "Refinery", "Manufactory", "Research Laboratory", "Habitation", "Warehouse", "Power Plant" };
+        {
+            "Mining Rig", "Refinery", "Manufactory", "Research Laboratory", "Habitation", "Warehouse", "Power Plant"
+        };
 
         private static readonly string[] SampleSlotTypes =
-            { "Reactor", "Main Drive", "Thrusters", "Nav Comp", "Shields", "Hull Plating", "Weapon", "Mining Laser" };
+        {
+            "Reactor", "Main Drive", "Thrusters", "Nav Comp", "Shields", "Hull Plating", "Weapon", "Mining Laser"
+        };
 
-        private static readonly string[] SamplePropKeys = { "Power", "Workers", "Capacity", "Rate", "Built", "Online" };
+        private static readonly string[] SamplePropKeys =
+        {
+            "Power", "Workers", "Capacity", "Rate", "Built", "Online"
+        };
 
-        private static readonly string[] SamplePropValues = { "100", "True", "50", "1.5", "False", "200" };
+        private static readonly string[] SamplePropValues =
+        {
+            "100", "True", "50", "1.5", "False", "200"
+        };
 
         // --- Primitive generators ---
 

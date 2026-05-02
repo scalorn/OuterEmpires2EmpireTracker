@@ -559,31 +559,6 @@ namespace OE2EmpireTracker.Services
             return EmpireContext.GetInstance()?.FindGlobalBlueprint(id);
         }
 
-        /// <summary>
-        /// Returns the mutable Blueprint entity for the given UUID from the player list only.
-        /// Does NOT fall back to global blueprints. Only called by BlueprintService.
-        /// </summary>
-        internal Blueprint FindMutableBlueprint(string uuid)
-        {
-            if (string.IsNullOrEmpty(uuid)) return null;
-
-            lock (_listLock)
-            {
-                if (_blueprintCache == null)
-                {
-                    _blueprintCache = new Dictionary<string, Blueprint>();
-                    foreach (var bp in _blueprintList)
-                    {
-                        if (bp.UUID != null && !_blueprintCache.ContainsKey(bp.UUID))
-                            _blueprintCache[bp.UUID] = bp;
-                    }
-                }
-
-                _blueprintCache.TryGetValue(uuid, out Blueprint bp2);
-                return bp2;
-            }
-        }
-
         public void InvalidateBlueprintCache()
         {
             lock (_listLock)
@@ -2789,6 +2764,31 @@ namespace OE2EmpireTracker.Services
             }
 
             return countdowns;
+        }
+
+        /// <summary>
+        /// Returns the mutable Blueprint entity for the given UUID from the player list only.
+        /// Does NOT fall back to global blueprints. Only called by BlueprintService.
+        /// </summary>
+        internal Blueprint FindMutableBlueprint(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_blueprintCache == null)
+                {
+                    _blueprintCache = new Dictionary<string, Blueprint>();
+                    foreach (var bp in _blueprintList)
+                    {
+                        if (bp.UUID != null && !_blueprintCache.ContainsKey(bp.UUID))
+                            _blueprintCache[bp.UUID] = bp;
+                    }
+                }
+
+                _blueprintCache.TryGetValue(uuid, out Blueprint bp2);
+                return bp2;
+            }
         }
 
         private void RebuildBuildItemIndexes()
