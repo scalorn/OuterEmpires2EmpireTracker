@@ -51,14 +51,12 @@ for (const file of FILES) {
     }
 
     // Check 1: Every flatpack type definition has exactly one blueprint
-    // Known duplicates that are pre-existing data issues (not corruption)
-    const KNOWN_DUPES = new Set(['Flatpacks/Manufactory']);
     for (const bt of blueprintTypes) {
         const bps = typeMap[bt.Id] || [];
         if (bps.length === 0) {
             console.log(`MISSING: ${label}: no blueprint for type ${bt.Id} (${bt.Name})`);
             findings++;
-        } else if (bps.length > 1 && !KNOWN_DUPES.has(bt.Id)) {
+        } else if (bps.length > 1) {
             console.log(`DUPLICATE: ${label}: ${bps.length} blueprints for type ${bt.Id} (${bt.Name})`);
             for (const bp of bps) {
                 console.log(`  UUID=${bp.UUID} Name=${bp.Name}`);

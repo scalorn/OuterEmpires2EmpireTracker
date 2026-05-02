@@ -11994,25 +11994,6 @@
     },
     {
       "OwnerUUID": "",
-      "BluePrintType": "Flatpacks/Manufactory",
-      "Properties": {
-        "_IconPosition": "-404px -594px"
-      },
-      "Resources": {
-        "Acidic Inorganics": "113",
-        "Heavy Alkaline Earth Metals": "115",
-        "Heavy Noble Gases": "475",
-        "Heavy Trans-Metals": "108",
-        "Strong Alkali Inorganics": "86",
-        "Trans-Metals": "1"
-      },
-      "UUID": "70212cdf-c88e-5b76-bcd0-1c7da7adbb2f",
-      "ItemType": "Blueprint",
-      "Name": "Manufactory Flatpack",
-      "Description": "Manufacturing plant."
-    },
-    {
-      "OwnerUUID": "",
       "BluePrintType": "TorpedoLauncher/Small",
       "Class": 2,
       "Properties": {
