@@ -108,3 +108,25 @@
 - [x] Grep for `FindMutableBlueprint` -- only in BlueprintService
 - [x] Verify form behavior: select, edit, save, import, delete, global toggle all work
 - [x] Update BL-108 status in BACKLOG.md to Done
+
+## Phase 5: Test Backfill (matching BL-111 pattern)
+
+### Task 17: BlueprintViewModel Property Tests
+- [x] `BlueprintViewModelPropertyTests.cs` -- FsCheck property tests
+- [x] LoadFrom_RoundTrip_PreservesAllFields (all scalar fields, properties dict, resources dict)
+- [x] IsDirty_FalseImmediatelyAfterLoadFrom
+- [x] IsDirty_DetectsAnySingleFieldChange (9 scalars + property + resource = 11 cases)
+
+### Task 18: BlueprintService Property Tests
+- [x] `BlueprintServicePropertyTests.cs` -- FsCheck property tests
+- [x] Update_RoundTrip_PreservesAllFields
+- [x] Create_RoundTrip_PreservesAllFields (verifies non-empty UUID)
+- [x] Delete_RemovesBlueprint
+
+### Task 19: BlueprintService Unit Tests (additions)
+- [x] `BlueprintServiceTests.cs` -- added Delete_EmptyUUID_ThrowsArgumentNullException
+
+### Task 20: BlueprintMutationGuard Tests
+- [x] `BlueprintMutationGuardTests.cs` -- source scanning tests
+- [x] Blueprint_NoDirectEntityMutation_InFormOrViewModel (scans FormBlueprintV2.cs and BlueprintViewModel.cs)
+- [x] ViewModel_DoesNotExposeDataProperty

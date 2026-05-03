@@ -418,6 +418,9 @@
     <Compile Include="Services\PlayerProfileServicePropertyTests.cs" />
     <Compile Include="Services\PlayerProfileServiceTests.cs" />
     <Compile Include="Services\PlayerProfileMutationGuardTests.cs" />
+    <Compile Include="ViewModels\BlueprintViewModelPropertyTests.cs" />
+    <Compile Include="Services\BlueprintServicePropertyTests.cs" />
+    <Compile Include="Services\BlueprintMutationGuardTests.cs" />
     <Compile Include="Services\CollectionSortHelperTests.cs" />
     <Compile Include="Services\HelpRendererPropertyTests.cs" />
     <Compile Include="Services\HelpTopicRegistryPropertyTests.cs" />
