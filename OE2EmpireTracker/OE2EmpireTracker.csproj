@@ -251,6 +251,7 @@
     <Compile Include="Services\BlueprintService.cs" />
     <Compile Include="Services\PlayerProfileService.cs" />
     <Compile Include="Services\PricingPlanService.cs" />
+    <Compile Include="Services\SurveyService.cs" />
     <Compile Include="Services\CollectionSortHelper.cs" />
     <Compile Include="Services\SortedDictionaryContractResolver.cs" />
     <Compile Include="Services\TabWarningService.cs" />
@@ -408,6 +409,8 @@
     <Compile Include="Models\PricingPlanUpdateRequest.cs" />
     <Compile Include="Models\PricingPlanCreateRequest.cs" />
     <Compile Include="Models\BlueprintCreateRequest.cs" />
+    <Compile Include="Models\SurveyUpdateRequest.cs" />
+    <Compile Include="Models\SurveyCreateRequest.cs" />
     <Compile Include="Models\SkillUpdateData.cs" />
     <Compile Include="Models\PlayerProfileUpdateRequest.cs" />
     <Compile Include="Models\PlayerProfileCreateRequest.cs" />

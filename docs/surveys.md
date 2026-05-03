@@ -57,8 +57,12 @@ You can manually add or edit resource rows if needed.
 ## Managing Surveys
 
 - **New** — Clear the form to create a new survey manually.
-- **Save** — Save the current survey data.
-- **Delete** — Remove the selected survey after confirmation.
+- **Save** — Save the current survey data. The Save button is only enabled when there are unsaved changes.
+- **Delete** — Remove the selected survey after confirmation. Surveys that are assigned to mining rigs cannot be deleted until the assignments are removed.
+
+### Unsaved Changes
+
+The survey form tracks whether you've made changes since the last save. If you have unsaved edits and try to select a different survey, create a new one, import, or close the form, you'll see a prompt asking whether to **Save**, **Discard**, or **Cancel**. This prevents accidentally losing your work.
 
 ## Default Surveys
 

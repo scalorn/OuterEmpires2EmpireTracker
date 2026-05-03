@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -2879,6 +2879,30 @@ namespace OE2EmpireTracker.Services
                 }
 
                 _pricingPlanCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
+        /// <summary>
+        /// Returns the mutable Survey entity. Only called by SurveyService.
+        /// </summary>
+        internal Survey FindMutableSurvey(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_surveyCache == null)
+                {
+                    _surveyCache = new Dictionary<string, Survey>();
+                    foreach (var s in _surveyList)
+                    {
+                        if (s.UUID != null && !_surveyCache.ContainsKey(s.UUID))
+                            _surveyCache[s.UUID] = s;
+                    }
+                }
+
+                _surveyCache.TryGetValue(uuid, out var match);
                 return match;
             }
         }

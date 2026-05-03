@@ -116,19 +116,22 @@ async function main() {
             const oldStr = fs.readFileSync(oldFile, 'utf8').replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').trimEnd();
             const newStr = fs.readFileSync(newFile, 'utf8').replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').trimEnd();
 
-            const idx = fileContent.indexOf(oldStr);
+            const normalizedContent = fileContent.replace(/\r\n/g, "\n");
+            const idx = normalizedContent.indexOf(oldStr);
             if (idx === -1) {
                 console.error(`Old string not found in ${filePath} (${oldStr.length} chars)`);
                 process.exit(1);
             }
-            const secondIdx = fileContent.indexOf(oldStr, idx + 1);
+            const secondIdx = normalizedContent.indexOf(oldStr, idx + 1);
             if (secondIdx !== -1) {
                 console.error(`Old string found multiple times in ${filePath}`);
                 process.exit(1);
             }
 
-            const result = fileContent.substring(0, idx) + newStr + fileContent.substring(idx + oldStr.length);
-            fs.writeFileSync(filePath, result, 'utf8');
+            const result = normalizedContent.substring(0, idx) + newStr + normalizedContent.substring(idx + oldStr.length);
+            const hasCRLF = fileContent.includes("\r\n");
+            const finalResult = hasCRLF ? result.replace(/(?<!\r)\n/g, "\r\n") : result;
+            fs.writeFileSync(filePath, finalResult, "utf8");
 
             try { fs.unlinkSync(oldFile); } catch(e) {}
             try { fs.unlinkSync(newFile); } catch(e) {}

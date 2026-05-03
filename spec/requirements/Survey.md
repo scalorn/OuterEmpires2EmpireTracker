@@ -200,3 +200,17 @@ flowchart LR
 │                          │  [New] [Save] [Delete] [Import]                  │
 └──────────────────────────┴──────────────────────────────────────────────────┘
 ```
+## Immutable Data Model (BL-110)
+
+**REQ-SRV-070** ReadOnlySurvey SHALL expose all Survey properties as read-only: UUID, Name, OwnerUUID, PlanetName, SystemName, SurveyID, NickName, SurveyType, AsteroidUUID, ExtendedName, Resources, ScannedBy, DateTime, ScannerBlueprintUUID, and Properties.  
+**REQ-SRV-071** ReadOnlySurvey SHALL NOT expose any setters or mutation methods.  
+**REQ-SRV-072** SurveyService SHALL be the sole mutator of Survey entities, providing Update, Create, Delete, and Import methods.  
+**REQ-SRV-073** SurveyService.Update SHALL accept a UUID and SurveyUpdateRequest, apply all fields to the mutable entity, persist via WriteContext, fire SurveyDataChanged, and return ReadOnlySurvey.  
+**REQ-SRV-074** SurveyService.Create SHALL accept a SurveyCreateRequest, create a new Survey with generated UUID and current player OwnerUUID, persist, fire event, and return ReadOnlySurvey.  
+**REQ-SRV-075** SurveyService.Delete SHALL remove the survey from PlayerContext. If UUID is empty or not found, it SHALL return without error.  
+**REQ-SRV-076** SurveyService.Import SHALL deduplicate by PlanetName+SurveyID via SurveyImportHelper.FindByKey, merge or create as appropriate, handle asteroid auto-linking, persist, and return ReadOnlySurvey.  
+**REQ-SRV-077** SurveyUpdateRequest SHALL carry the original ReadOnlySurvey snapshot and all editable fields (PlanetName, SystemName, SurveyID, NickName, ScannedBy, DateTime, ScannerBlueprintUUID, AsteroidUUID, SurveyType, Resources, Properties).  
+**REQ-SRV-078** SurveyCreateRequest SHALL carry all editable fields without UUID or OwnerUUID (the service assigns those).  
+**REQ-SRV-079** SurveyViewModel SHALL be a disconnected edit buffer with LoadFrom, Reset, BuildUpdateRequest, BuildCreateRequest, and IsDirty tracking.  
+**REQ-SRV-080** FormSurvey SHALL NOT directly mutate Survey entities. All mutations SHALL go through SurveyService.  
+**REQ-SRV-081** FormSurvey SHALL prompt for unsaved changes (Save/Discard/Cancel) on selection change, New, Import, form close, and application exit when the ViewModel is dirty.

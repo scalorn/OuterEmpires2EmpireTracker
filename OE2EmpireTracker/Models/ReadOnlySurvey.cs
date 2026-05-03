@@ -26,6 +26,10 @@ namespace OE2EmpireTracker.Models
         public string NickName => _entity.NickName;
         public SurveyType SurveyType => _entity.SurveyType;
         public string AsteroidUUID => _entity.AsteroidUUID;
+        public string ScannedBy => _entity.ScannedBy;
+        public string DateTime => _entity.DateTime;
+        public string ScannerBlueprintUUID => _entity.ScannerBlueprintUUID;
+        public IReadOnlyDictionary<string, string> Properties => _entity.Properties;
 
         // Computed property
         public string ExtendedName => _entity.ExtendedName;
