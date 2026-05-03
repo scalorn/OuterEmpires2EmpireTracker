@@ -2907,6 +2907,30 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        /// <summary>
+        /// Returns the mutable Colony entity. Only called by ColonyService.
+        /// </summary>
+        internal Colony FindMutableColony(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_colonyCache == null)
+                {
+                    _colonyCache = new Dictionary<string, Colony>();
+                    foreach (var c in _colonyList)
+                    {
+                        if (c.UUID != null && !_colonyCache.ContainsKey(c.UUID))
+                            _colonyCache[c.UUID] = c;
+                    }
+                }
+
+                _colonyCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
         private void RebuildBuildItemIndexes()
         {
             _blueprintBuildItemIndex = new Dictionary<string, List<BuildItem>>();

@@ -674,6 +674,8 @@ Read-only wrapper classes provide controlled access to the data model. Each muta
 - **LocalRankData** — Local edit buffer copy of a single rank track's state in the PlayerProfileViewModel, disconnected from the PlayerRank entity
 - **PricingPlanUpdateRequest** — DTO carrying the original ReadOnlyPricingPlan snapshot and current local field values for updating an existing pricing plan through PricingPlanService
 - **PricingPlanCreateRequest** — DTO carrying field values for creating a new pricing plan through PricingPlanService (no Original snapshot, no UUID)
+- **ColonyUpdateRequest** — DTO carrying the original ReadOnlyColony snapshot and current local field values for updating an existing colony through ColonyService
+- **ColonyCreateRequest** — DTO carrying field values for creating a new colony through ColonyService (no Original snapshot, no UUID, no OwnerUUID)
 - **ReadOnlyDeliveryPlanStop** — wraps DeliveryPlanStop (DropOff/PickUp as IReadOnlyList of ReadOnlyDeliveryItem)
 - **ReadOnlyDeliveryItem** — wraps DeliveryItem
 - **ReadOnlyBuildItem** — wraps BuildItem
