@@ -276,11 +276,6 @@ Each context menu should mirror the existing button actions for that grid, provi
 
 These items migrate individual forms from consuming mutable entity references to using ReadOnly wrapper types for their read-only data paths (combo box population, list view display, reference counting, status display). Each form retains mutable access for its ViewModel/edit paths. Depends on the readonly-data-wrappers spec (complete).
 
-### BL-109: FormColonyV2 — Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
-**Status: New**
-Migrate read-only data paths in FormColonyV2 to use ReadOnly wrappers. This form has heavy read-only consumption: colony list view with ColonyReferenceCounter, FilteredTextComboSet combos for flatpacks/items/resources/overflow destinations/routes, survey combos in ColonyStructureV2, and status display via ColonyStatusCalculator. The ColonyViewModel continues to use mutable Colony for editing. Switch list population, combo population, reference counter inputs, and status calculator inputs to read-only types.
-
 ### BL-110: FormSurvey — Switch to ReadOnly Data Wrappers
 **Dependencies:** readonly-data-wrappers spec (done)
 **Status: Complete** — Full immutable data model applied. SurveyViewModel rewritten as disconnected edit buffer, SurveyService created as sole mutator, FormSurvey migrated to ReadOnly wrappers with unsaved changes prompts. 37 new tests (property-based + unit + mutation guard). See spec: .kiro/specs/bl-110-survey-readonly/

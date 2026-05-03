@@ -409,3 +409,7 @@ Added Add/Delete buttons for the statistics grid (dgvStatistics) matching the re
 ### BL-132: FormBlueprintV2 — Switch Type and Pricing Plan Combos to FilteredTextComboSet
 Switched cmbFilterType, cmbBlueprintType, and cmbPricingPlan from standard ComboBox to FilteredTextComboSet. Updated initialization to use SetItems(), event handlers to SelectedItemChanged, and value reads to SelectedFullIndex/SelectedItem. Added _pricingPlanList parallel UUID list for pricing plan lookup.
 **Status: Complete**
+
+### BL-109: FormColonyV2 — Immutable Data Model with Service Layer
+Applied the immutable data model pattern (from BL-108/BL-111/BL-123/BL-110) to FormColonyV2. ColonyViewModel rewritten as disconnected edit buffer for scalar fields (PlanetName, ColonyName, SystemName). ColonyService created as sole mutator with CRUD, import, structure, item, and commodity operations — all with ReaderWriterLockSlim concurrency. DTO request objects (ColonyUpdateRequest, ColonyCreateRequest). FormColonyV2 migrated to use ReadOnly wrappers in list view, ViewModel for all edits, and service for Save/Delete/Import. Structure/item/commodity operations are immediate service calls bypassing the edit buffer. Added unsaved changes prompts (selection change, New, Import, form close, app exit). Property-based tests, unit tests, and mutation guard tests added. See .kiro/specs/bl-109-colony-readonly/.
+**Status: Complete**

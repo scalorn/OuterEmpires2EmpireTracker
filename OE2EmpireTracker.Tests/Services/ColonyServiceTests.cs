@@ -258,9 +258,12 @@ namespace OE2EmpireTracker.Tests.Services
 
             service.AddStructure(colony.UUID, "flatpack-a");
             service.AddStructure(colony.UUID, "flatpack-b");
-            string targetUUID = colony.Structures[0].UUID;
 
-            service.RemoveStructure(colony.UUID, targetUUID);
+            Assert.That(colony.Structures.Count, Is.EqualTo(2), "Should have 2 structures before remove");
+
+            // Find the structure with flatpack-a by its FlatpackBlueprintUUID
+            var structureA = colony.Structures.First(s => s.FlatpackBlueprintUUID == "flatpack-a");
+            service.RemoveStructure(colony.UUID, structureA.UUID);
 
             Assert.That(colony.Structures.Count, Is.EqualTo(1));
             Assert.That(colony.Structures[0].FlatpackBlueprintUUID, Is.EqualTo("flatpack-b"));
@@ -446,23 +449,38 @@ namespace OE2EmpireTracker.Tests.Services
             };
             playerContext.AddColony(colony);
 
-            // Acquire write lock on a separate thread to block the service
-            colony.ColonyLock.EnterWriteLock();
-            try
+            // Hold write lock on a background thread so the main thread's
+            // service.Update() sees a genuine timeout (not LockRecursionException).
+            using (var held = new System.Threading.ManualResetEventSlim(false))
+            using (var release = new System.Threading.ManualResetEventSlim(false))
             {
-                var request = new ColonyUpdateRequest
+                var lockThread = new System.Threading.Thread(() =>
                 {
-                    PlanetName = "Blocked",
-                    ColonyName = "BlockedColony",
-                    SystemName = "BlockedSystem",
-                };
+                    colony.ColonyLock.EnterWriteLock();
+                    held.Set();
+                    release.Wait();
+                    colony.ColonyLock.ExitWriteLock();
+                });
+                lockThread.Start();
+                held.Wait();
 
-                Assert.Throws<TimeoutException>(
-                    () => service.Update(colony.UUID, request));
-            }
-            finally
-            {
-                colony.ColonyLock.ExitWriteLock();
+                try
+                {
+                    var request = new ColonyUpdateRequest
+                    {
+                        PlanetName = "Blocked",
+                        ColonyName = "BlockedColony",
+                        SystemName = "BlockedSystem",
+                    };
+
+                    Assert.Throws<TimeoutException>(
+                        () => service.Update(colony.UUID, request));
+                }
+                finally
+                {
+                    release.Set();
+                    lockThread.Join(5000);
+                }
             }
         }
     }
