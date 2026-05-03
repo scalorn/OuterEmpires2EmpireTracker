@@ -27,7 +27,7 @@ namespace OE2EmpireTracker
             this.flpFilterPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.flpFilterRow1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblFilterType = new System.Windows.Forms.Label();
-            this.cmbFilterType = new System.Windows.Forms.ComboBox();
+            this.cmbFilterType = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.lblFilterClass = new System.Windows.Forms.Label();
             this.cmbFilterClass = new System.Windows.Forms.ComboBox();
             this.flpFilterRow2 = new System.Windows.Forms.FlowLayoutPanel();
@@ -60,7 +60,7 @@ namespace OE2EmpireTracker
             this.txtCopyCost = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpTypeRow = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBlueprintType = new System.Windows.Forms.Label();
-            this.cmbBlueprintType = new System.Windows.Forms.ComboBox();
+            this.cmbBlueprintType = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.flpClassRow = new System.Windows.Forms.FlowLayoutPanel();
             this.lblShipClass = new System.Windows.Forms.Label();
             this.cmbShipClass = new System.Windows.Forms.ComboBox();
@@ -83,6 +83,15 @@ namespace OE2EmpireTracker
             this.btnImport = new System.Windows.Forms.Button();
             this.btnImportMarket = new System.Windows.Forms.Button();
             this.btnImportCrate = new System.Windows.Forms.Button();
+            this.pnlStatisticButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnAddStatistic = new System.Windows.Forms.Button();
+            this.btnDeleteStatistic = new System.Windows.Forms.Button();
+            this.cmsStatistics = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddStatistic = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDeleteStatistic = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsResources = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddResource = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDeleteResource = new System.Windows.Forms.ToolStripMenuItem();
             this.tabDetailedData = new System.Windows.Forms.TabControl();
             this.tabPStatistics = new System.Windows.Forms.TabPage();
             this.dgvStatistics = new DataEntryGridView();
@@ -101,7 +110,7 @@ namespace OE2EmpireTracker
             this.lblNoChanges = new System.Windows.Forms.Label();
             this.flpPricing = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPricingPlan = new System.Windows.Forms.Label();
-            this.cmbPricingPlan = new System.Windows.Forms.ComboBox();
+            this.cmbPricingPlan = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.lblComputedPrice = new System.Windows.Forms.Label();
             this.tabPPriceEvolution = new System.Windows.Forms.TabPage();
             this.chartPriceEvolution = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -132,6 +141,7 @@ namespace OE2EmpireTracker
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).BeginInit();
             this.tabPResources.SuspendLayout();
             this.pnlResourceButtons.SuspendLayout();
+            this.pnlStatisticButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).BeginInit();            this.tabPEvolutionGraph.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartEvolution)).BeginInit();
 
@@ -199,9 +209,7 @@ namespace OE2EmpireTracker
             this.lblFilterType.Text = "Type";
             this.lblFilterType.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // cmbFilterType
-            this.cmbFilterType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFilterType.FormattingEnabled = true;
-            this.cmbFilterType.Location = new System.Drawing.Point(41, 2);
+                        this.cmbFilterType.Location = new System.Drawing.Point(41, 2);
             this.cmbFilterType.Margin = new System.Windows.Forms.Padding(2);
             this.cmbFilterType.Name = "cmbFilterType";
             this.cmbFilterType.Size = new System.Drawing.Size(130, 21);
@@ -455,9 +463,7 @@ namespace OE2EmpireTracker
             this.lblBlueprintType.TabIndex = 0;
             this.lblBlueprintType.Text = "Blueprint Type";
             this.lblBlueprintType.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cmbBlueprintType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbBlueprintType.FormattingEnabled = true;
-            this.cmbBlueprintType.Location = new System.Drawing.Point(106, 2);
+                        this.cmbBlueprintType.Location = new System.Drawing.Point(106, 2);
             this.cmbBlueprintType.Margin = new System.Windows.Forms.Padding(2);
             this.cmbBlueprintType.Name = "cmbBlueprintType";
             this.cmbBlueprintType.Size = new System.Drawing.Size(201, 21);
@@ -643,6 +649,7 @@ namespace OE2EmpireTracker
             this.tabDetailedData.TabIndex = 2;
             // tabPStatistics + dgvStatistics
             this.tabPStatistics.Controls.Add(this.dgvStatistics);
+            this.tabPStatistics.Controls.Add(this.pnlStatisticButtons);
             this.tabPStatistics.Location = new System.Drawing.Point(4, 22);
             this.tabPStatistics.Margin = new System.Windows.Forms.Padding(2);
             this.tabPStatistics.Name = "tabPStatistics";
@@ -656,6 +663,7 @@ namespace OE2EmpireTracker
             this.dgvStatistics.AllowUserToOrderColumns = true;
             this.dgvStatistics.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvStatistics.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { this.colProperty, this.colCurrentValue });
+            this.dgvStatistics.ContextMenuStrip = this.cmsStatistics;
             this.dgvStatistics.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvStatistics.Location = new System.Drawing.Point(2, 2);
             this.dgvStatistics.Name = "dgvStatistics";
@@ -671,6 +679,46 @@ namespace OE2EmpireTracker
             this.colCurrentValue.Name = "CurrentValue";
             this.colCurrentValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.colCurrentValue.Width = 200;
+            // pnlStatisticButtons
+            this.pnlStatisticButtons.Controls.Add(this.btnAddStatistic);
+            this.pnlStatisticButtons.Controls.Add(this.btnDeleteStatistic);
+            this.pnlStatisticButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlStatisticButtons.Location = new System.Drawing.Point(2, 263);
+            this.pnlStatisticButtons.Name = "pnlStatisticButtons";
+            this.pnlStatisticButtons.Size = new System.Drawing.Size(788, 29);
+            this.pnlStatisticButtons.TabIndex = 1;
+            this.btnAddStatistic.Location = new System.Drawing.Point(3, 3);
+            this.btnAddStatistic.Name = "btnAddStatistic";
+            this.btnAddStatistic.Size = new System.Drawing.Size(75, 23);
+            this.btnAddStatistic.TabIndex = 0;
+            this.btnAddStatistic.Text = "Add";
+            this.btnAddStatistic.UseVisualStyleBackColor = true;
+            this.btnDeleteStatistic.Location = new System.Drawing.Point(84, 3);
+            this.btnDeleteStatistic.Name = "btnDeleteStatistic";
+            this.btnDeleteStatistic.Size = new System.Drawing.Size(75, 23);
+            this.btnDeleteStatistic.TabIndex = 1;
+            this.btnDeleteStatistic.Text = "Delete";
+            this.btnDeleteStatistic.UseVisualStyleBackColor = true;
+            // cmsStatistics
+            this.cmsStatistics.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.tsmiAddStatistic, this.tsmiDeleteStatistic });
+            this.cmsStatistics.Name = "cmsStatistics";
+            this.cmsStatistics.Size = new System.Drawing.Size(130, 48);
+            this.tsmiAddStatistic.Name = "tsmiAddStatistic";
+            this.tsmiAddStatistic.Size = new System.Drawing.Size(129, 22);
+            this.tsmiAddStatistic.Text = "Add Row";
+            this.tsmiDeleteStatistic.Name = "tsmiDeleteStatistic";
+            this.tsmiDeleteStatistic.Size = new System.Drawing.Size(129, 22);
+            this.tsmiDeleteStatistic.Text = "Delete Row";
+            // cmsResources
+            this.cmsResources.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.tsmiAddResource, this.tsmiDeleteResource });
+            this.cmsResources.Name = "cmsResources";
+            this.cmsResources.Size = new System.Drawing.Size(130, 48);
+            this.tsmiAddResource.Name = "tsmiAddResource";
+            this.tsmiAddResource.Size = new System.Drawing.Size(129, 22);
+            this.tsmiAddResource.Text = "Add Row";
+            this.tsmiDeleteResource.Name = "tsmiDeleteResource";
+            this.tsmiDeleteResource.Size = new System.Drawing.Size(129, 22);
+            this.tsmiDeleteResource.Text = "Delete Row";
             // tabPResources
             this.tabPResources.Controls.Add(this.dgvResources);
             this.tabPResources.Controls.Add(this.pnlResourceButtons);
@@ -706,6 +754,7 @@ namespace OE2EmpireTracker
             this.dgvResources.AllowUserToOrderColumns = true;
             this.dgvResources.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvResources.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { this.colResource, this.colAmount });
+            this.dgvResources.ContextMenuStrip = this.cmsResources;
             this.dgvResources.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvResources.Location = new System.Drawing.Point(2, 2);
             this.dgvResources.Name = "dgvResources";
@@ -822,9 +871,7 @@ namespace OE2EmpireTracker
             this.lblPricingPlan.TabIndex = 0;
             this.lblPricingPlan.Text = "Pricing Plan";
             this.lblPricingPlan.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cmbPricingPlan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbPricingPlan.FormattingEnabled = true;
-            this.cmbPricingPlan.Location = new System.Drawing.Point(106, 2);
+                        this.cmbPricingPlan.Location = new System.Drawing.Point(106, 2);
             this.cmbPricingPlan.Margin = new System.Windows.Forms.Padding(2);
             this.cmbPricingPlan.Name = "cmbPricingPlan";
             this.cmbPricingPlan.Size = new System.Drawing.Size(150, 21);
@@ -882,6 +929,7 @@ namespace OE2EmpireTracker
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).EndInit();
             this.tabPResources.ResumeLayout(false);
             this.pnlResourceButtons.ResumeLayout(false);
+            this.pnlStatisticButtons.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).EndInit();            this.tabPEvolutionGraph.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartEvolution)).EndInit();
 
@@ -901,7 +949,7 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.FlowLayoutPanel flpFilterPanel;
         private System.Windows.Forms.FlowLayoutPanel flpFilterRow1;
         private System.Windows.Forms.Label lblFilterType;
-        private System.Windows.Forms.ComboBox cmbFilterType;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbFilterType;
         private System.Windows.Forms.Label lblFilterClass;
         private System.Windows.Forms.ComboBox cmbFilterClass;
         private System.Windows.Forms.FlowLayoutPanel flpFilterRow2;
@@ -934,7 +982,7 @@ namespace OE2EmpireTracker
         private OE2EmpireTracker.Controls.ValidatedTextBox txtCopyCost;
         private System.Windows.Forms.FlowLayoutPanel flpTypeRow;
         private System.Windows.Forms.Label lblBlueprintType;
-        private System.Windows.Forms.ComboBox cmbBlueprintType;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbBlueprintType;
         private System.Windows.Forms.FlowLayoutPanel flpClassRow;
         private System.Windows.Forms.Label lblShipClass;
         private System.Windows.Forms.ComboBox cmbShipClass;
@@ -975,10 +1023,19 @@ namespace OE2EmpireTracker
         private System.Windows.Forms.Label lblNoChanges;
         private System.Windows.Forms.FlowLayoutPanel flpPricing;
         private System.Windows.Forms.Label lblPricingPlan;
-        private System.Windows.Forms.ComboBox cmbPricingPlan;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbPricingPlan;
         private System.Windows.Forms.Label lblComputedPrice;
         private System.Windows.Forms.TabPage tabPPriceEvolution;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartPriceEvolution;
         private System.Windows.Forms.Label lblPriceEvoNoPlan;
+        private System.Windows.Forms.FlowLayoutPanel pnlStatisticButtons;
+        private System.Windows.Forms.Button btnAddStatistic;
+        private System.Windows.Forms.Button btnDeleteStatistic;
+        private System.Windows.Forms.ContextMenuStrip cmsStatistics;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddStatistic;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDeleteStatistic;
+        private System.Windows.Forms.ContextMenuStrip cmsResources;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddResource;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDeleteResource;
     }
 }

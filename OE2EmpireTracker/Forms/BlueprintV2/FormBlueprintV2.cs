@@ -76,6 +76,9 @@ namespace OE2EmpireTracker
         // Parallel list of ReadOnlyBlueprint objects for base blueprint UUID lookup via SelectedFullIndex
         private List<ReadOnlyBlueprint> _baseBlueprintList = new List<ReadOnlyBlueprint>();
 
+        // Parallel list of pricing plan UUIDs for SelectedFullIndex lookup
+        private List<string> _pricingPlanList = new List<string>();
+
         // Tracks the previously selected blueprint UUID for unsaved-changes cancel/restore
         private string _previousSelectedUUID;
 
@@ -97,7 +100,7 @@ namespace OE2EmpireTracker
 
             // Wire filter events
             txtFilter.TextChanged += (s, e) => { if (_isProgrammaticUpdate == 0) RefreshBlueprintList(); };
-            cmbFilterType.SelectedIndexChanged += (s, e) => { if (_isProgrammaticUpdate == 0) RefreshBlueprintList(); };
+            cmbFilterType.SelectedItemChanged += (s, e) => { if (_isProgrammaticUpdate == 0) RefreshBlueprintList(); };
             cmbFilterClass.SelectedIndexChanged += (s, e) => { if (_isProgrammaticUpdate == 0) RefreshBlueprintList(); };
             cmbFilterTechLevel.SelectedIndexChanged += (s, e) => { if (_isProgrammaticUpdate == 0) RefreshBlueprintList(); };
             cmbFilterEvolution.SelectedIndexChanged += (s, e) => { if (_isProgrammaticUpdate == 0) RefreshBlueprintList(); };
@@ -112,7 +115,7 @@ namespace OE2EmpireTracker
             txtNickName.TextChanged += TxtNickName_TextChanged;
             txtDescription.TextChanged += TxtDescription_TextChanged;
             txtCopyCost.TextChanged += TxtCopyCost_TextChanged;
-            cmbBlueprintType.SelectedIndexChanged += CmbBlueprintType_SelectedIndexChanged;
+            cmbBlueprintType.SelectedItemChanged += CmbBlueprintType_SelectedItemChanged;
             cmbShipClass.SelectedIndexChanged += CmbShipClass_SelectedIndexChanged;
             cmbTechLevel.SelectedIndexChanged += CmbTechLevel_SelectedIndexChanged;
             cmbEvolution.SelectedIndexChanged += CmbEvolution_SelectedIndexChanged;
@@ -152,12 +155,18 @@ namespace OE2EmpireTracker
             dgvResources.CellValidating += DgvResources_CellValidating;
             btnAddResource.Click += BtnAddResource_Click;
             btnDeleteResource.Click += BtnDeleteResource_Click;
+            btnAddStatistic.Click += BtnAddStatistic_Click;
+            btnDeleteStatistic.Click += BtnDeleteStatistic_Click;
+
+            // Wire context menu events
+            tsmiAddStatistic.Click += BtnAddStatistic_Click;
+            tsmiDeleteStatistic.Click += BtnDeleteStatistic_Click;
+            tsmiAddResource.Click += BtnAddResource_Click;
+            tsmiDeleteResource.Click += BtnDeleteResource_Click;
 
             // Configure pricing plan combo
-            cmbPricingPlan.DisplayMember = "Name";
-            cmbPricingPlan.ValueMember = "UUID";
             PopulatePricingPlanCombo();
-            cmbPricingPlan.SelectedIndexChanged += CmbPricingPlan_SelectedIndexChanged;
+            cmbPricingPlan.SelectedItemChanged += CmbPricingPlan_SelectedItemChanged;
 
             // Subscribe to data events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
@@ -272,10 +281,11 @@ namespace OE2EmpireTracker
             using var guard = new ProgrammaticUpdateGuard(this);
 
             // Type filter
-            cmbFilterType.Items.Add(string.Empty);
+            var filterTypeItems = new List<string>();
+            filterTypeItems.Add(string.Empty);
             foreach (BlueprintType bt in empireContext.BlueprintTypeList)
-                cmbFilterType.Items.Add(bt.Name);
-            cmbFilterType.SelectedIndex = 0;
+                filterTypeItems.Add(bt.Name);
+            cmbFilterType.SetItems(filterTypeItems, string.Empty);
 
             // Class filter
             cmbFilterClass.Items.Add(string.Empty);
@@ -303,10 +313,10 @@ namespace OE2EmpireTracker
         {
             using var guard = new ProgrammaticUpdateGuard(this);
 
-            cmbBlueprintType.DisplayMember = "Name";
-            cmbBlueprintType.ValueMember = "Id";
-            cmbBlueprintType.DataSource = empireContext.BindingSourceBlueprintType;
-            cmbBlueprintType.SelectedIndex = -1;
+            var bpTypeItems = new List<string>();
+            foreach (BlueprintType bt in empireContext.BlueprintTypeList)
+                bpTypeItems.Add(bt.Name);
+            cmbBlueprintType.SetItems(bpTypeItems, null);
 
             cmbShipClass.DisplayMember = "Name";
             cmbShipClass.ValueMember = "Id";
@@ -338,9 +348,10 @@ namespace OE2EmpireTracker
 
             var criteria = new BlueprintFilterCriteria();
 
-            if (cmbFilterType.SelectedIndex > 0)
+            string filterTypeName = cmbFilterType.SelectedItem;
+            if (!string.IsNullOrEmpty(filterTypeName))
             {
-                string typeName = (string)cmbFilterType.SelectedItem;
+                string typeName = filterTypeName;
                 var bt = empireContext.BlueprintTypeList.FirstOrDefault(b => b.Name == typeName);
                 if (bt != null) criteria.BlueprintTypeId = bt.Id;
             }
@@ -454,7 +465,7 @@ namespace OE2EmpireTracker
         {
             using (var guard = new ProgrammaticUpdateGuard(this))
             {
-                cmbFilterType.SelectedIndex = 0;
+                cmbFilterType.SetItems(cmbFilterType.Items, string.Empty);
                 cmbFilterClass.SelectedIndex = 0;
                 cmbFilterTechLevel.SelectedIndex = 0;
                 cmbFilterEvolution.SelectedIndex = 0;
@@ -1030,10 +1041,11 @@ namespace OE2EmpireTracker
             UpdateSaveButtonState();
         }
 
-        private void CmbBlueprintType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbBlueprintType_SelectedItemChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            var bt = cmbBlueprintType.SelectedItem as BlueprintType;
+            string selectedName = cmbBlueprintType.SelectedItem;
+            var bt = selectedName != null ? empireContext.BlueprintTypeList.FirstOrDefault(b => b.Name == selectedName) : null;
             string oldType = viewModel?.BluePrintType;
             string newType = bt?.Id;
             if (bt != null) viewModel.BluePrintType = bt.Id;
@@ -1041,7 +1053,7 @@ namespace OE2EmpireTracker
                 "CmbBlueprintType changed: old='{0}' new='{1}' selectedIndex={2} bp='{3}' UUID={4}",
                 oldType ?? "(null)",
                 newType ?? "(null)",
-                cmbBlueprintType.SelectedIndex,
+                cmbBlueprintType.SelectedFullIndex,
                 viewModel?.Name ?? "(null)",
                 viewModel?.UUID ?? "(null)");
 
@@ -1169,7 +1181,8 @@ namespace OE2EmpireTracker
         private void RefreshStatisticsGrid()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            var bt = cmbBlueprintType.SelectedItem as BlueprintType;
+            string btName = cmbBlueprintType.SelectedItem;
+            var bt = btName != null ? empireContext.BlueprintTypeList.FirstOrDefault(b => b.Name == btName) : null;
             string[] definedProps = bt?.Properties ?? Array.Empty<string>();
 
             Log.Info(
@@ -1263,7 +1276,7 @@ namespace OE2EmpireTracker
                     "Extra property '{0}' on '{1}' (not in {2} type definition)",
                     property,
                     viewModel.Name ?? "(new)",
-                    (cmbBlueprintType.SelectedItem as BlueprintType)?.Id ?? "unknown");
+                    cmbBlueprintType.SelectedItem ?? "unknown");
                 AddStatisticsRow(property);
             }
 
@@ -1537,6 +1550,58 @@ namespace OE2EmpireTracker
         }
 
         /// <summary>
+        /// Adds a new empty row to the statistics grid for a user-defined property.
+        /// </summary>
+        private void BtnAddStatistic_Click(object sender, EventArgs e)
+        {
+            int rowIndex = dgvStatistics.Rows.Add();
+            dgvStatistics.Rows[rowIndex].Cells["Property"].ReadOnly = false;
+            dgvStatistics.Rows[rowIndex].Cells["Property"].Value = string.Empty;
+            dgvStatistics.Rows[rowIndex].Cells["CurrentValue"].Value = string.Empty;
+            _cachedGridKey = null;
+            UpdateSaveButtonState();
+        }
+
+        /// <summary>
+        /// Deletes the selected statistics row. Type-defined properties cannot be deleted.
+        /// </summary>
+        private void BtnDeleteStatistic_Click(object sender, EventArgs e)
+        {
+            if (dgvStatistics.CurrentRow == null) return;
+            int rowIndex = dgvStatistics.CurrentRow.Index;
+
+            string propertyName = dgvStatistics.Rows[rowIndex].Cells["Property"].Value as string;
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                dgvStatistics.Rows.RemoveAt(rowIndex);
+                _cachedGridKey = null;
+                UpdateSaveButtonState();
+                return;
+            }
+
+            // Check if this is a type-defined property
+            string selectedTypeName = cmbBlueprintType.SelectedItem;
+            var bt = selectedTypeName != null
+                ? empireContext.BlueprintTypeList.FirstOrDefault(b => b.Name == selectedTypeName)
+                : null;
+            string[] definedProps = bt?.Properties ?? Array.Empty<string>();
+            if (definedProps.Contains(propertyName))
+            {
+                MessageBox.Show(
+                    string.Format("Cannot delete type-defined property '{0}'", propertyName),
+                    "Delete Property",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            viewModel.RemoveProperty(propertyName);
+            dgvStatistics.Rows.RemoveAt(rowIndex);
+            _cachedGridKey = null;
+            UpdateSaveButtonState();
+        }
+
+        /// <summary>
         /// Clears the resources grid.
         /// </summary>
         private void ClearResourcesGrid()
@@ -1791,7 +1856,8 @@ namespace OE2EmpireTracker
                 return;
             }
 
-            string planUUID = cmbPricingPlan.SelectedValue as string;
+            int planIdx = cmbPricingPlan.SelectedFullIndex;
+            string planUUID = planIdx >= 0 && planIdx < _pricingPlanList.Count ? _pricingPlanList[planIdx] : string.Empty;
             if (string.IsNullOrEmpty(planUUID))
             {
                 chartPriceEvolution.Visible = false;
@@ -1915,23 +1981,20 @@ namespace OE2EmpireTracker
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            string selectedUUID = cmbPricingPlan.SelectedValue as string;
-            cmbPricingPlan.DataSource = null;
+            string selectedName = cmbPricingPlan.SelectedItem;
 
             var plans = playerContext.GetCurrentPlayerPricingPlans();
-            var items = new List<object>();
-            items.Add(new { Name = "(none)", UUID = string.Empty });
+            var planNames = new List<string>();
+            _pricingPlanList = new List<string>();
+            planNames.Add("(none)");
+            _pricingPlanList.Add(string.Empty);
             foreach (var p in CollectionSortHelper.OrderPricingPlans(plans))
-                items.Add(new { Name = p.Name, UUID = p.UUID });
+            {
+                planNames.Add(p.Name);
+                _pricingPlanList.Add(p.UUID);
+            }
 
-            cmbPricingPlan.DisplayMember = "Name";
-            cmbPricingPlan.ValueMember = "UUID";
-            cmbPricingPlan.DataSource = items;
-
-            if (!string.IsNullOrEmpty(selectedUUID) && items.Any(i => ((dynamic)i).UUID == selectedUUID))
-                cmbPricingPlan.SelectedValue = selectedUUID;
-            else
-                cmbPricingPlan.SelectedIndex = 0;
+            cmbPricingPlan.SetItems(planNames, selectedName ?? "(none)");
             sw.Stop();
             Log.Info("PERF PopulatePricingPlanCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -1939,7 +2002,7 @@ namespace OE2EmpireTracker
         /// <summary>
         /// Handles pricing plan selection changes â€” recomputes the displayed price.
         /// </summary>
-        private void CmbPricingPlan_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbPricingPlan_SelectedItemChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             UpdateCalculatedPrice();
@@ -1958,7 +2021,8 @@ namespace OE2EmpireTracker
                 return;
             }
 
-            string planUUID = cmbPricingPlan.SelectedValue as string;
+            int planIdx2 = cmbPricingPlan.SelectedFullIndex;
+            string planUUID = planIdx2 >= 0 && planIdx2 < _pricingPlanList.Count ? _pricingPlanList[planIdx2] : string.Empty;
             if (string.IsNullOrEmpty(planUUID))
             {
                 lblComputedPrice.Text = string.Empty;
@@ -2034,14 +2098,16 @@ namespace OE2EmpireTracker
             // Blueprint type
             string dataType = viewModel.BluePrintType;
             var foundBt = empireContext.FindBlueprintType(dataType);
-            cmbBlueprintType.SelectedItem = foundBt;
-            var bt = cmbBlueprintType.SelectedItem as BlueprintType;
+            if (foundBt != null)
+                cmbBlueprintType.SetItems(cmbBlueprintType.Items, foundBt.Name);
+
+            var bt = foundBt;
             Log.Debug(
                 "PopulateForm type: data='{0}' found={1} comboSelected='{2}' comboIndex={3} bp='{4}'",
                 dataType ?? "(null)",
                 foundBt != null ? foundBt.Id : "(not found)",
                 bt?.Id ?? "(null)",
-                cmbBlueprintType.SelectedIndex,
+                cmbBlueprintType.SelectedFullIndex,
                 viewModel.Name ?? "(null)");
             UpdateUniversalVisibility(bt);
 
@@ -2092,7 +2158,7 @@ namespace OE2EmpireTracker
             txtDescription.Text = string.Empty;
             txtCopyCost.Text = string.Empty;
 
-            cmbBlueprintType.SelectedIndex = -1;
+            cmbBlueprintType.SetItems(cmbBlueprintType.Items, null);
             cmbShipClass.SelectedIndex = -1;
             cmbTechLevel.SelectedIndex = -1;
             cmbEvolution.SelectedIndex = 0;
