@@ -1,0 +1,469 @@
+using System;
+using System.Linq;
+using System.Threading;
+using NUnit.Framework;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
+
+namespace OE2EmpireTracker.Tests.Services
+{
+    /// <summary>
+    /// Unit tests for ColonyService edge cases and event firing.
+    /// Feature: bl-109-colony-readonly
+    /// Validates: Requirements 13.7, 13.8, 14.2, 14.3, 14.7, 14.8, 15.4, 15.5,
+    ///            17.3, 17.4, 18.3, 19.3, 20.3, 21.3, 22.3, 23.3, 24.3
+    /// </summary>
+    [TestFixture]
+    public class ColonyServiceTests
+    {
+        private PlayerContext playerContext;
+        private ColonyService service;
+
+        [SetUp]
+        public void SetUp()
+        {
+            TestHelper.ResetWithCachedData();
+            playerContext = PlayerContext.GetInstance();
+            playerContext.CurrentPlayerUUID = "test-player-uuid";
+            service = new ColonyService(playerContext);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            EmpireContext.Reset();
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 13.8: Update throws InvalidOperationException on unknown UUID
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void Update_NonExistentUUID_ThrowsInvalidOperationException()
+        {
+            var request = new ColonyUpdateRequest
+            {
+                PlanetName = "Test",
+                ColonyName = "TestColony",
+                SystemName = "TestSystem",
+            };
+
+            Assert.Throws<InvalidOperationException>(
+                () => service.Update("nonexistent-uuid", request));
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 15.5: Delete with empty UUID returns without error
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void Delete_EmptyUUID_ReturnsWithoutError()
+        {
+            Assert.DoesNotThrow(() => service.Delete(string.Empty));
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 15.5: Delete with non-existent UUID returns without error
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void Delete_NonExistentUUID_ReturnsWithoutError()
+        {
+            Assert.DoesNotThrow(() => service.Delete("nonexistent-uuid"));
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 14.2: Create assigns non-empty UUID
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void Create_AssignsNonEmptyUUID()
+        {
+            var request = new ColonyCreateRequest
+            {
+                PlanetName = "NewPlanet",
+                ColonyName = "NewColony",
+                SystemName = "NewSystem",
+            };
+
+            var result = service.Create(request);
+
+            Assert.That(result.UUID, Is.Not.Null.And.Not.Empty);
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 14.3: Create sets OwnerUUID to current player UUID
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void Create_SetsOwnerUUID_ToCurrentPlayerUUID()
+        {
+            var request = new ColonyCreateRequest
+            {
+                PlanetName = "OwnerTest",
+                ColonyName = "OwnerColony",
+                SystemName = "OwnerSystem",
+            };
+
+            var result = service.Create(request);
+
+            Assert.That(result.OwnerUUID, Is.EqualTo("test-player-uuid"));
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 13.7: Update fires ColonyDataChanged event
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void Update_FiresColonyDataChangedEvent()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "EventTest",
+                ColonyName = "EventColony",
+                SystemName = "EventSystem",
+            };
+            playerContext.AddColony(colony);
+
+            bool eventFired = false;
+            playerContext.ColonyDataChanged += (s, e) => eventFired = true;
+
+            var request = new ColonyUpdateRequest
+            {
+                PlanetName = "Updated",
+                ColonyName = "UpdatedColony",
+                SystemName = "UpdatedSystem",
+            };
+            service.Update(colony.UUID, request);
+
+            Assert.That(eventFired, Is.True);
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 14.7: Create fires ColonyDataChanged event
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void Create_FiresColonyDataChangedEvent()
+        {
+            bool eventFired = false;
+            playerContext.ColonyDataChanged += (s, e) => eventFired = true;
+
+            var request = new ColonyCreateRequest
+            {
+                PlanetName = "NewPlan",
+                ColonyName = "NewCol",
+                SystemName = "NewSys",
+            };
+            service.Create(request);
+
+            Assert.That(eventFired, Is.True);
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 15.4: Delete fires ColonyDataChanged event
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void Delete_FiresColonyDataChangedEvent()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "DeleteEventTest",
+                ColonyName = "DeleteColony",
+                SystemName = "DeleteSystem",
+            };
+            playerContext.AddColony(colony);
+
+            bool eventFired = false;
+            playerContext.ColonyDataChanged += (s, e) => eventFired = true;
+
+            service.Delete(colony.UUID);
+
+            Assert.That(eventFired, Is.True);
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 17.3: AddStructure creates structure with correct flatpack UUID
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void AddStructure_CreatesStructureWithCorrectFlatpackUUID()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "StructTest",
+                ColonyName = "StructColony",
+                SystemName = "StructSystem",
+            };
+            playerContext.AddColony(colony);
+
+            string flatpackUUID = "flatpack-bp-001";
+            service.AddStructure(colony.UUID, flatpackUUID);
+
+            Assert.That(colony.Structures.Count, Is.EqualTo(1));
+            Assert.That(colony.Structures[0].FlatpackBlueprintUUID, Is.EqualTo(flatpackUUID));
+            Assert.That(colony.Structures[0].UUID, Is.Not.Null.And.Not.Empty);
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 17.4: AddStructure assigns next DisplaySequence for type
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void AddStructure_AssignsNextDisplaySequenceForType()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "SeqTest",
+                ColonyName = "SeqColony",
+                SystemName = "SeqSystem",
+            };
+            playerContext.AddColony(colony);
+
+            string flatpackUUID = "flatpack-bp-002";
+            service.AddStructure(colony.UUID, flatpackUUID);
+            service.AddStructure(colony.UUID, flatpackUUID);
+            service.AddStructure(colony.UUID, "flatpack-bp-other");
+
+            Assert.That(colony.Structures[0].DisplaySequence, Is.EqualTo(1));
+            Assert.That(colony.Structures[1].DisplaySequence, Is.EqualTo(2));
+            Assert.That(colony.Structures[2].DisplaySequence, Is.EqualTo(1));
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 18.3: RemoveStructure removes correct structure by UUID
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void RemoveStructure_RemovesCorrectStructureByUUID()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "RemoveTest",
+                ColonyName = "RemoveColony",
+                SystemName = "RemoveSystem",
+            };
+            playerContext.AddColony(colony);
+
+            service.AddStructure(colony.UUID, "flatpack-a");
+            service.AddStructure(colony.UUID, "flatpack-b");
+            string targetUUID = colony.Structures[0].UUID;
+
+            service.RemoveStructure(colony.UUID, targetUUID);
+
+            Assert.That(colony.Structures.Count, Is.EqualTo(1));
+            Assert.That(colony.Structures[0].FlatpackBlueprintUUID, Is.EqualTo("flatpack-b"));
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 19.3: AddItem adds item to colony ItemBag
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void AddItem_AddsItemToColonyItemBag()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "ItemTest",
+                ColonyName = "ItemColony",
+                SystemName = "ItemSystem",
+            };
+            playerContext.AddColony(colony);
+
+            var item = new Item
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ItemType = ItemType.ItemTypeEnum.Resource,
+                Name = "TestResource",
+                Quantity = 100,
+            };
+            service.AddItem(colony.UUID, item);
+
+            Assert.That(colony.Items.ContainsKey(item.UUID), Is.True);
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 20.3: RemoveItem removes item from colony ItemBag
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void RemoveItem_RemovesItemFromColonyItemBag()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "RemItemTest",
+                ColonyName = "RemItemColony",
+                SystemName = "RemItemSystem",
+            };
+            playerContext.AddColony(colony);
+
+            var item = new Item
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ItemType = ItemType.ItemTypeEnum.Resource,
+                Name = "TestResource",
+                Quantity = 50,
+            };
+            service.AddItem(colony.UUID, item);
+            service.RemoveItem(colony.UUID, item.UUID);
+
+            Assert.That(colony.Items.ContainsKey(item.UUID), Is.False);
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 21.3: UpdateItem changes item quantity
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void UpdateItem_ChangesItemQuantity()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "UpdItemTest",
+                ColonyName = "UpdItemColony",
+                SystemName = "UpdItemSystem",
+            };
+            playerContext.AddColony(colony);
+
+            var item = new Item
+            {
+                UUID = Guid.NewGuid().ToString(),
+                ItemType = ItemType.ItemTypeEnum.Resource,
+                Name = "TestResource",
+                Quantity = 50,
+            };
+            service.AddItem(colony.UUID, item);
+            service.UpdateItem(colony.UUID, item.UUID, 200);
+
+            Assert.That(item.Quantity, Is.EqualTo(200));
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 22.3: AddCommodityRequest adds commodity to colony
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void AddCommodityRequest_AddsCommodityToColony()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "CommTest",
+                ColonyName = "CommColony",
+                SystemName = "CommSystem",
+            };
+            playerContext.AddColony(colony);
+
+            service.AddCommodityRequest(colony.UUID, "Steel", 100, null);
+
+            Assert.That(colony.Commodities.Count, Is.EqualTo(1));
+            Assert.That(colony.Commodities[0].Name, Is.EqualTo("Steel"));
+            Assert.That(colony.Commodities[0].Requested, Is.EqualTo(100));
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 23.3: RemoveCommodityRequest removes commodity from colony
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void RemoveCommodityRequest_RemovesCommodityFromColony()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "RemCommTest",
+                ColonyName = "RemCommColony",
+                SystemName = "RemCommSystem",
+            };
+            playerContext.AddColony(colony);
+
+            service.AddCommodityRequest(colony.UUID, "Steel", 100, null);
+            service.RemoveCommodityRequest(colony.UUID, "Steel");
+
+            Assert.That(colony.Commodities.Count, Is.EqualTo(0));
+        }
+
+        // -------------------------------------------------------------------
+        // Requirement 24.3: UpdateCommodityRequest updates commodity fields
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void UpdateCommodityRequest_UpdatesCommodityFields()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "UpdCommTest",
+                ColonyName = "UpdCommColony",
+                SystemName = "UpdCommSystem",
+            };
+            playerContext.AddColony(colony);
+
+            service.AddCommodityRequest(colony.UUID, "Steel", 100, null);
+
+            var needBy = new DateTime(2025, 12, 31);
+            service.UpdateCommodityRequest(colony.UUID, "Steel", 200, 50, needBy);
+
+            Assert.That(colony.Commodities[0].Requested, Is.EqualTo(200));
+            Assert.That(colony.Commodities[0].Delivered, Is.EqualTo(50));
+            Assert.That(colony.Commodities[0].NeedBy, Is.EqualTo(needBy));
+        }
+
+        // -------------------------------------------------------------------
+        // Write lock timeout throws TimeoutException
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void Update_WriteLockTimeout_ThrowsTimeoutException()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "LockTest",
+                ColonyName = "LockColony",
+                SystemName = "LockSystem",
+            };
+            playerContext.AddColony(colony);
+
+            // Acquire write lock on a separate thread to block the service
+            colony.ColonyLock.EnterWriteLock();
+            try
+            {
+                var request = new ColonyUpdateRequest
+                {
+                    PlanetName = "Blocked",
+                    ColonyName = "BlockedColony",
+                    SystemName = "BlockedSystem",
+                };
+
+                Assert.Throws<TimeoutException>(
+                    () => service.Update(colony.UUID, request));
+            }
+            finally
+            {
+                colony.ColonyLock.ExitWriteLock();
+            }
+        }
+    }
+}

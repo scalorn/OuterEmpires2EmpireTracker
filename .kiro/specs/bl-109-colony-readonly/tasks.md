@@ -183,11 +183,11 @@ Apply the immutable data model pattern (established in BL-108 blueprints, BL-110
     - Handles both form close (X button) and application exit (MainWindow closing)
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 12.1, 12.2_
 
-- [~] 10. Checkpoint --- Verify form migration compiles and existing tests pass
+- [x] 10. Checkpoint --- Verify form migration compiles and existing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Add ViewModel property tests
-  - [~] 11.1 Write property test: LoadFrom round-trip preserves all scalar fields
+- [x] 11. Add ViewModel property tests
+  - [x] 11.1 Write property test: LoadFrom round-trip preserves all scalar fields
     - Create OE2EmpireTracker.Tests/ViewModels/ColonyViewModelPropertyTests.cs
     - Create ValidColonyGen() generator producing random Colony entities with random string scalar fields (PlanetName, ColonyName, SystemName), random UUID and OwnerUUID, empty Structures list, empty ItemBag, empty Commodities list
     - **Property 1: LoadFrom Round-Trip Preserves All Scalar Fields**
@@ -195,26 +195,26 @@ Apply the immutable data model pattern (established in BL-108 blueprints, BL-110
     - **Validates: Requirements 4.1, 4.2, 4.3**
     - Add Compile Include to test csproj
 
-  - [~] 11.2 Write property test: IsDirty false immediately after LoadFrom
+  - [x] 11.2 Write property test: IsDirty false immediately after LoadFrom
     - **Property 2: IsDirty False Immediately After LoadFrom**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 7.1, 7.3**
 
-  - [~] 11.3 Write property test: IsDirty detects any single scalar field change
+  - [x] 11.3 Write property test: IsDirty detects any single scalar field change
     - **Property 3: IsDirty Detects Any Single Scalar Field Change**
     - [FsCheck.NUnit.Property(MaxTest = 50)]
     - Test changing each scalar field (PlanetName, ColonyName, SystemName) individually to a different value
     - **Validates: Requirements 7.1, 7.2**
 
-- [ ] 12. Add ViewModel unit tests
-  - [~] 12.1 Write unit tests for ColonyViewModel
+- [x] 12. Add ViewModel unit tests
+  - [x] 12.1 Write unit tests for ColonyViewModel
     - Create OE2EmpireTracker.Tests/ViewModels/ColonyViewModelTests.cs
     - Tests: Reset clears all fields to defaults, IsNew returns true after Reset, IsNew returns false after LoadFrom, IsDirty returns true for new colony with non-default PlanetName, BuildUpdateRequest copies all scalar fields, BuildCreateRequest copies all scalar fields, UUID and OwnerUUID are preserved from LoadFrom
     - Add Compile Include to test csproj
     - _Requirements: 4.1, 4.2, 7.1, 7.4, 7.5_
 
-- [ ] 13. Add Service property tests
-  - [~] 13.1 Write property test: Service.Update round-trip
+- [-] 13. Add Service property tests
+  - [-] 13.1 Write property test: Service.Update round-trip
     - Create OE2EmpireTracker.Tests/Services/ColonyServicePropertyTests.cs
     - Reuse ValidColonyGen() pattern from ViewModel property tests
     - **Property 4: Service.Update Round-Trip**

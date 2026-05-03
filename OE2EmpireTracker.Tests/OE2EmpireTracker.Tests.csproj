@@ -423,9 +423,13 @@
     <Compile Include="ViewModels\PricingPlanViewModelTests.cs" />
     <Compile Include="ViewModels\SurveyViewModelPropertyTests.cs" />
     <Compile Include="ViewModels\SurveyViewModelTests.cs" />
+    <Compile Include="ViewModels\ColonyViewModelPropertyTests.cs" />
+    <Compile Include="ViewModels\ColonyViewModelTests.cs" />
     <Compile Include="Services\SurveyServicePropertyTests.cs" />
     <Compile Include="Services\SurveyServiceTests.cs" />
     <Compile Include="Services\SurveyMutationGuardTests.cs" />
+    <Compile Include="Services\ColonyServicePropertyTests.cs" />
+    <Compile Include="Services\ColonyServiceTests.cs" />
     <Compile Include="Services\BlueprintServicePropertyTests.cs" />
     <Compile Include="Services\BlueprintMutationGuardTests.cs" />
     <Compile Include="Services\PricingPlanServicePropertyTests.cs" />
