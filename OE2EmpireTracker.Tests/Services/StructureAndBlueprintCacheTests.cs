@@ -28,10 +28,10 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.Reset();
         }
 
-        // ------- StructureViewModels cache -------
+        // ------- ColonyStructureViewModel creation via CollectionSortHelper -------
 
         [Test]
-        public void StructureViewModels_ReturnsCorrectVMs()
+        public void OrderStructures_ReturnsCorrectVMs()
         {
             var colony = new Colony
             {
@@ -57,8 +57,9 @@ namespace OE2EmpireTracker.Tests.Services
                 DisplaySequence = 2
             });
 
-            var vm = new ColonyViewModel(colony, _playerContext);
-            var structureVMs = vm.StructureViewModels;
+            var structureVMs = CollectionSortHelper.OrderStructures(colony.Structures)
+                .Select(s => new ColonyStructureViewModel(s, _playerContext))
+                .ToList();
 
             Assert.That(structureVMs.Count, Is.EqualTo(2));
             Assert.That(structureVMs[0].Data.UUID, Is.EqualTo("str-1"));
@@ -66,75 +67,28 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         [Test]
-        public void StructureViewModels_ReturnsCachedInstance()
-        {
-            var colony = new Colony
-            {
-                UUID = "col-vm-2",
-                PlanetName = "TestPlanet",
-                ColonyName = "TestColony"
-            };
-
-            colony.Structures.Add(new ColonyStructure { UUID = "str-a", DisplaySequence = 1 });
-
-            var vm = new ColonyViewModel(colony, _playerContext);
-            var first = vm.StructureViewModels;
-            var second = vm.StructureViewModels;
-
-            // Same list instance returned (cached)
-            Assert.That(ReferenceEquals(first[0], second[0]), Is.True);
-        }
-
-        [Test]
-        public void StructureViewModels_InvalidatedByAddStructure()
+        public void ColonyService_AddStructure_IncreasesCount()
         {
             var colony = new Colony
             {
                 UUID = "col-vm-3",
                 PlanetName = "TestPlanet",
-                ColonyName = "TestColony"
+                ColonyName = "TestColony",
+                OwnerUUID = "player1"
             };
 
             var bp = new Bp("Mining Rig") { UUID = "bp-mr-1", OwnerUUID = "player1" };
             _playerContext.AddBlueprint(bp);
             _playerContext.InvalidateBlueprintCache();
+            _playerContext.AddColony(colony);
+            _playerContext.InvalidateColonyCache();
 
-            var vm = new ColonyViewModel(colony, _playerContext);
+            Assert.That(colony.Structures.Count, Is.EqualTo(0));
 
-            // Access cache — should be empty
-            Assert.That(vm.StructureViewModels.Count, Is.EqualTo(0));
+            var service = new ColonyService(_playerContext);
+            service.AddStructure("col-vm-3", "bp-mr-1");
 
-            // Add a structure via the ViewModel method
-            vm.AddStructure("bp-mr-1");
-
-            // Cache should now reflect the new structure
-            Assert.That(vm.StructureViewModels.Count, Is.EqualTo(1));
-        }
-
-        [Test]
-        public void StructureViewModels_InvalidatedByManualCall()
-        {
-            var colony = new Colony
-            {
-                UUID = "col-vm-4",
-                PlanetName = "TestPlanet",
-                ColonyName = "TestColony"
-            };
-
-            colony.Structures.Add(new ColonyStructure { UUID = "str-x", DisplaySequence = 1 });
-
-            var vm = new ColonyViewModel(colony, _playerContext);
-
-            // Build the cache
-            Assert.That(vm.StructureViewModels.Count, Is.EqualTo(1));
-
-            // Directly modify the underlying colony (simulating form-layer remove)
-            colony.Structures.Clear();
-
-            // Cache is stale — still shows 1
-            // After invalidation, shows 0
-            vm.InvalidateStructureViewModels();
-            Assert.That(vm.StructureViewModels.Count, Is.EqualTo(0));
+            Assert.That(colony.Structures.Count, Is.EqualTo(1));
         }
 
         // ------- GetAllBlueprints cache -------

@@ -35,11 +35,16 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Structure type filter (9.1)
         private readonly HashSet<string> _uncheckedStructureTypes = new HashSet<string>(StringComparer.Ordinal);
 
+        private readonly ColonyService _colonyService;
+
         private int _isProgrammaticUpdate = 0;
 
-        private Models.Colony selectedColony;
+        private string _selectedColonyUUID;
 
-        private ColonyViewModel colonyViewModel;
+        // Tracks the previously selected colony UUID for unsaved-changes cancel/restore (9.1)
+        private string _previousSelectedUUID;
+
+        private ColonyViewModel _viewModel = new ColonyViewModel();
 
         private ColonyReferenceCounter _referenceCounter;
 
@@ -86,8 +91,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
 
-            selectedColony = new Models.Colony();
-            colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+            _colonyService = new ColonyService(playerContext);
 
             _referenceCounter = new ColonyReferenceCounter(
                 playerContext.DeliveryRouteList,
@@ -102,7 +106,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             lvwColonies.Columns.Add("Refs", 40);
             lvwColonies.ColumnClick += LvwColonies_ColumnClick;
             lvwColonies.ListViewItemSorter = new ListViewItemComparer(_sortColumn, _sortOrder);
-            PopulateListView(playerContext.GetCurrentPlayerColonies());
+            PopulateListView(playerContext.GetCurrentPlayerReadOnlyColonies());
 
             // Wire filter handler
             txtColonyFilter.TextChanged += TxtColonyFilter_TextChanged;
@@ -205,6 +209,40 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         // Event lifecycle
         // -------------------------------------------------------------------
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            // Prompt for unsaved changes before closing (9.4)
+            if (_viewModel.IsDirty)
+            {
+                var result = PromptUnsavedChanges();
+                if (result == DialogResult.Yes)
+                {
+                    try
+                    {
+                        SaveCurrentColony();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error saving during form close");
+                        MessageBox.Show(
+                            "Failed to save: " + ex.Message,
+                            "Save Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
+            base.OnFormClosing(e);
+        }
+
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             // Cancel any in-progress background calculation
@@ -285,11 +323,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             using var guard = new ProgrammaticUpdateGuard(this);
             lvwColonies.Items.Clear();
-            selectedColony = new Models.Colony();
-            colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+            _selectedColonyUUID = null;
+            _previousSelectedUUID = null;
+            _viewModel.Reset();
             _referenceCounter = new ColonyReferenceCounter(
-                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
-            PopulateListView(playerContext.GetCurrentPlayerColonies());
+                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList,
+                playerContext.SupplyChainList, playerContext.WarehouseOverflowRuleList);
+            PopulateListView(playerContext.GetCurrentPlayerReadOnlyColonies());
             txtPlanetName.Text = string.Empty;
             txtColonyName.Text = string.Empty;
             txtSystemName.Text = string.Empty;
@@ -316,9 +356,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             if (_isProgrammaticUpdate > 0) return;
             Log.Debug("V2.OnColonyDataChanged: colonyUUID={0}", e.ColonyUUID);
-            if (selectedColony != null && selectedColony.UUID == e.ColonyUUID)
+            if (!string.IsNullOrEmpty(_selectedColonyUUID) && _selectedColonyUUID == e.ColonyUUID)
             {
-                colonyViewModel.RecalculateStatus();
                 PopulateForm();
                 RefreshAdminReport();
                 UpdateTabWarnings();
@@ -332,42 +371,43 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void TxtPlanetName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            colonyViewModel.PlanetName = txtPlanetName.Text;
+            _viewModel.PlanetName = txtPlanetName.Text;
         }
 
         private void TxtColonyName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            colonyViewModel.ColonyName = txtColonyName.Text;
+            _viewModel.ColonyName = txtColonyName.Text;
         }
 
         private void TxtSystemName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            colonyViewModel.Data.SystemName = txtSystemName.Text;
+            _viewModel.SystemName = txtSystemName.Text;
         }
 
         // -------------------------------------------------------------------
         // Colony list population
         // -------------------------------------------------------------------
 
-        private void PopulateListView(List<Models.Colony> colonies)
+        private void PopulateListView(List<ReadOnlyColony> colonies)
         {
             if (colonies == null) return;
             var sw = System.Diagnostics.Stopwatch.StartNew();
 
             var counter = new ColonyReferenceCounter(
-                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
+                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList,
+                playerContext.SupplyChainList, playerContext.WarehouseOverflowRuleList);
 
             var viewableColonies = new Dictionary<string, ListViewItem>();
             foreach (ListViewItem item in lvwColonies.Items)
             {
-                var col = item.Tag as Models.Colony;
+                var col = item.Tag as ReadOnlyColony;
                 if (col != null)
                     viewableColonies[col.UUID] = item;
             }
 
-            foreach (Models.Colony colony in colonies)
+            foreach (ReadOnlyColony colony in colonies)
             {
                 string refCount = counter.CountReferences(colony.UUID).TotalCount.ToString();
                 ListViewItem item;
@@ -418,7 +458,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void TxtColonyFilter_TextChanged(object sender, EventArgs e)
         {
             string filter = txtColonyFilter.Text;
-            var colonies = playerContext.GetCurrentPlayerColonies();
+            var colonies = playerContext.GetCurrentPlayerReadOnlyColonies();
             if (!string.IsNullOrEmpty(filter))
             {
                 colonies = colonies
@@ -435,8 +475,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (lvwColonies.Items.Count == 0)
             {
                 using var guard = new ProgrammaticUpdateGuard(this);
-                selectedColony = new Models.Colony();
-                colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+                _selectedColonyUUID = null;
+                _previousSelectedUUID = null;
+                _viewModel.Reset();
                 txtPlanetName.Text = string.Empty;
                 txtColonyName.Text = string.Empty;
                 txtSystemName.Text = string.Empty;
@@ -485,53 +526,132 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             if (lvwColonies.SelectedItems.Count == 1)
             {
+                // Prompt for unsaved changes before switching (9.1)
+                if (_viewModel.IsDirty)
+                {
+                    var result = PromptUnsavedChanges();
+                    if (result == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            SaveCurrentColony();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Error saving during unsaved changes prompt");
+                            MessageBox.Show(
+                                "Failed to save: " + ex.Message,
+                                "Save Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+
+                            // Cancel the selection change
+                            lvwColonies.ItemSelectionChanged -= LvwColonies_ItemSelectionChanged;
+                            lvwColonies.SelectedItems.Clear();
+                            if (!string.IsNullOrEmpty(_previousSelectedUUID))
+                            {
+                                foreach (ListViewItem item in lvwColonies.Items)
+                                {
+                                    if ((item.Tag as ReadOnlyColony)?.UUID == _previousSelectedUUID)
+                                    {
+                                        item.Selected = true;
+                                        item.EnsureVisible();
+                                        break;
+                                    }
+                                }
+                            }
+
+                            lvwColonies.ItemSelectionChanged += LvwColonies_ItemSelectionChanged;
+                            return;
+                        }
+                    }
+                    else if (result == DialogResult.Cancel)
+                    {
+                        // Restore previous selection
+                        lvwColonies.ItemSelectionChanged -= LvwColonies_ItemSelectionChanged;
+                        lvwColonies.SelectedItems.Clear();
+                        if (!string.IsNullOrEmpty(_previousSelectedUUID))
+                        {
+                            foreach (ListViewItem item in lvwColonies.Items)
+                            {
+                                if ((item.Tag as ReadOnlyColony)?.UUID == _previousSelectedUUID)
+                                {
+                                    item.Selected = true;
+                                    item.EnsureVisible();
+                                    break;
+                                }
+                            }
+                        }
+
+                        lvwColonies.ItemSelectionChanged += LvwColonies_ItemSelectionChanged;
+                        return;
+                    }
+
+                    // DialogResult.No - discard, fall through to load new
+                }
+
                 // Cancel any in-progress background calculation
                 _calcCts?.Cancel();
                 _calcCts = new CancellationTokenSource();
                 var cts = _calcCts;
                 int generation = Interlocked.Increment(ref _calcGeneration);
 
-                selectedColony = lvwColonies.SelectedItems[0].Tag as Models.Colony;
+                var ro = lvwColonies.SelectedItems[0].Tag as ReadOnlyColony;
+                if (ro == null) return;
+
+                _selectedColonyUUID = ro.UUID;
+                _previousSelectedUUID = ro.UUID;
+                _viewModel.LoadFrom(ro);
+
                 Log.Debug(
                     "V2.LvwColonies_ItemSelectionChanged: colony={0} uuid={1}",
-                    selectedColony?.ColonyName ?? selectedColony?.PlanetName ?? "(null)",
-                    selectedColony?.UUID ?? "(null)");
-
-                colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+                    ro.ColonyName ?? ro.PlanetName ?? "(null)",
+                    ro.UUID ?? "(null)");
 
                 // Immediate: show identity fields on UI thread
                 using (var guard = new ProgrammaticUpdateGuard(this))
                 {
-                    txtPlanetName.Text = colonyViewModel.PlanetName;
-                    txtColonyName.Text = colonyViewModel.ColonyName;
-                    txtSystemName.Text = colonyViewModel.Data.SystemName ?? string.Empty;
+                    txtPlanetName.Text = _viewModel.PlanetName;
+                    txtColonyName.Text = _viewModel.ColonyName;
+                    txtSystemName.Text = _viewModel.SystemName;
                 }
 
                 // Show "Calculating..." indicator
                 SetCalculatingState(true);
 
                 // Queue expensive work on ThreadPool
-                var colony = selectedColony;
-                var vm = colonyViewModel;
+                string colonyUUID = _selectedColonyUUID;
+                var mutableColony = playerContext.FindMutableColony(colonyUUID);
+                if (mutableColony == null)
+                {
+                    SetCalculatingState(false);
+                    PopulateForm();
+                    UpdateDeleteButtonState();
+                    UpdateTitle();
+                    return;
+                }
+
                 ThreadPool.QueueUserWorkItem(_ =>
                 {
                     if (cts.IsCancellationRequested) return;
 
                     // Acquire write lock for RecalculateStatus (mutates Locks, Statuses)
-                    if (!colony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
+                    if (!mutableColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
                     {
-                        Log.Warn("Background calc: write lock timeout on colony {0}", colony.UUID);
+                        Log.Warn("Background calc: write lock timeout on colony {0}", colonyUUID);
                         return;
                     }
 
                     try
                     {
                         if (cts.IsCancellationRequested) return;
-                        vm.RecalculateStatus();
+                        var calc = new ColonyStatusCalculator(mutableColony);
+                        calc.CalculateBuilt();
+                        calc.CalculateIdeal();
                     }
                     finally
                     {
-                        colony.ColonyLock.ExitWriteLock();
+                        mutableColony.ColonyLock.ExitWriteLock();
                     }
 
                     if (cts.IsCancellationRequested) return;
@@ -577,15 +697,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
-            if (selectedColony == null) return;
+            if (string.IsNullOrEmpty(_selectedColonyUUID)) return;
 
             var pfSw = System.Diagnostics.Stopwatch.StartNew();
 
-            Log.Debug("V2.PopulateForm: colony={0}", selectedColony.ColonyName ?? selectedColony.PlanetName ?? "(null)");
+            Log.Debug("V2.PopulateForm: colony={0} uuid={1}", _viewModel.ColonyName ?? _viewModel.PlanetName ?? "(null)", _selectedColonyUUID);
 
-            txtPlanetName.Text = colonyViewModel.PlanetName;
-            txtColonyName.Text = colonyViewModel.ColonyName;
-            txtSystemName.Text = colonyViewModel.Data.SystemName ?? string.Empty;
+            txtPlanetName.Text = _viewModel.PlanetName;
+            txtColonyName.Text = _viewModel.ColonyName;
+            txtSystemName.Text = _viewModel.SystemName;
 
             long t0 = pfSw.ElapsedMilliseconds;
 
@@ -683,14 +803,85 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
+        // Unsaved changes helpers (9.1-9.4)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Prompts the user to save, discard, or cancel when there are unsaved changes.
+        /// Returns Yes (save), No (discard), or Cancel.
+        /// </summary>
+        private DialogResult PromptUnsavedChanges()
+        {
+            return MessageBox.Show(
+                string.Format("Save changes to '{0}'?", _viewModel.PlanetName),
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+        }
+
+        /// <summary>
+        /// Saves the current colony via the service (Create or Update) and reloads the ViewModel.
+        /// </summary>
+        private void SaveCurrentColony()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+
+            ReadOnlyColony saved;
+            if (_viewModel.IsNew)
+            {
+                saved = _colonyService.Create(_viewModel.BuildCreateRequest());
+            }
+            else
+            {
+                saved = _colonyService.Update(_viewModel.UUID, _viewModel.BuildUpdateRequest());
+            }
+
+            _selectedColonyUUID = saved.UUID;
+            _previousSelectedUUID = saved.UUID;
+            _viewModel.LoadFrom(saved);
+
+            // Refresh list with current filter
+            TxtColonyFilter_TextChanged(this, EventArgs.Empty);
+            UpdateTitle();
+        }
+
+        // -------------------------------------------------------------------
         // CRUD operations (6.9)
         // -------------------------------------------------------------------
 
         private void CmdNew_Click(object sender, EventArgs e)
         {
+            // Prompt for unsaved changes before clearing (9.2)
+            if (_viewModel.IsDirty)
+            {
+                var result = PromptUnsavedChanges();
+                if (result == DialogResult.Yes)
+                {
+                    try
+                    {
+                        SaveCurrentColony();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error saving during unsaved changes prompt");
+                        MessageBox.Show(
+                            "Failed to save: " + ex.Message,
+                            "Save Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+
             using var guard = new ProgrammaticUpdateGuard(this);
-            selectedColony = new Models.Colony();
-            colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+            _selectedColonyUUID = null;
+            _previousSelectedUUID = null;
+            _viewModel.Reset();
             txtPlanetName.Text = string.Empty;
             txtColonyName.Text = string.Empty;
             txtSystemName.Text = string.Empty;
@@ -703,29 +894,20 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             using var guard = new ProgrammaticUpdateGuard(this);
 
-            if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
+            ReadOnlyColony saved;
+            if (_viewModel.IsNew)
             {
-                Log.Warn("CmdSave_Click: write lock timeout on colony {0}", selectedColony.UUID);
-                return;
+                saved = _colonyService.Create(_viewModel.BuildCreateRequest());
+            }
+            else
+            {
+                saved = _colonyService.Update(_viewModel.UUID, _viewModel.BuildUpdateRequest());
             }
 
-            try
-            {
-                if (string.IsNullOrEmpty(colonyViewModel.Data.OwnerUUID))
-                {
-                    colonyViewModel.Data.OwnerUUID = playerContext.CurrentPlayerUUID;
-                }
+            _selectedColonyUUID = saved.UUID;
+            _previousSelectedUUID = saved.UUID;
+            _viewModel.LoadFrom(saved);
 
-                colonyViewModel.Save();
-            }
-            finally
-            {
-                selectedColony.ColonyLock.ExitWriteLock();
-            }
-
-            // Fire event and persist OUTSIDE the lock
-            playerContext.OnColonyDataChanged(selectedColony.UUID);
-            playerContext.WriteContext();
             // Refresh list with current filter
             TxtColonyFilter_TextChanged(sender, e);
             UpdateTitle();
@@ -733,46 +915,32 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void CmdDelete_Click(object sender, EventArgs e)
         {
-            if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID)) return;
+            if (string.IsNullOrEmpty(_selectedColonyUUID)) return;
 
             var counter = new ColonyReferenceCounter(
-                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
-            var report = counter.CountReferences(selectedColony.UUID);
+                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList,
+                playerContext.SupplyChainList, playerContext.WarehouseOverflowRuleList);
+            var report = counter.CountReferences(_selectedColonyUUID);
             if (report.TotalCount > 0)
             {
-                var msg = $"Cannot delete '{selectedColony.PlanetName}' -- it is referenced by {report.RouteCount} route(s) and {report.PlanCount} plan(s).";
+                var msg = $"Cannot delete '{_viewModel.PlanetName}' -- it is referenced by {report.RouteCount} route(s), {report.PlanCount} plan(s), {report.BuildItemCount} build item(s), {report.SupplyChainCount} supply chain(s), and {report.OverflowCount} overflow rule(s).";
                 MessageBox.Show(msg, "Colony In Use", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             var result = MessageBox.Show(
-                $"Delete colony '{selectedColony.PlanetName}'?",
+                $"Delete colony '{_viewModel.PlanetName}'?",
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
-            {
-                Log.Warn("CmdDelete_Click: write lock timeout on colony {0}", selectedColony.UUID);
-                return;
-            }
-
-            try
-            {
-                playerContext.RemoveColony(selectedColony);
-            }
-            finally
-            {
-                selectedColony.ColonyLock.ExitWriteLock();
-            }
-
-            // Persist and update UI OUTSIDE the lock
-            playerContext.WriteContext();
+            _colonyService.Delete(_selectedColonyUUID);
 
             using var guard = new ProgrammaticUpdateGuard(this);
-            selectedColony = new Models.Colony();
-            colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
+            _selectedColonyUUID = null;
+            _previousSelectedUUID = null;
+            _viewModel.Reset();
             txtPlanetName.Text = string.Empty;
             txtColonyName.Text = string.Empty;
             txtSystemName.Text = string.Empty;
@@ -786,7 +954,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void UpdateDeleteButtonState()
         {
-            if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
+            if (string.IsNullOrEmpty(_selectedColonyUUID))
             {
                 cmdDelete.Enabled = false;
                 cmdDelete.Text = "Delete";
@@ -794,8 +962,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             var counter = new ColonyReferenceCounter(
-                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList);
-            var report = counter.CountReferences(selectedColony.UUID);
+                playerContext.DeliveryRouteList, playerContext.DeliveryPlanList, playerContext.BuildPlanList,
+                playerContext.SupplyChainList, playerContext.WarehouseOverflowRuleList);
+            var report = counter.CountReferences(_selectedColonyUUID);
             if (report.TotalCount > 0)
             {
                 cmdDelete.Enabled = false;
@@ -814,7 +983,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void PopulateStructures()
         {
-            if (selectedColony == null) return;
+            if (string.IsNullOrEmpty(_selectedColonyUUID)) return;
+
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+            if (colony == null) return;
 
             var sw = System.Diagnostics.Stopwatch.StartNew();
 
@@ -838,7 +1010,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             Log.Info(
                 "V2.PopulateStructures: structureCount={0} filterActive={1} filterTypes={2}",
-                selectedColony.Structures?.Count ?? 0,
+                colony.Structures?.Count ?? 0,
                 checkedTypes.Count > 0,
                 checkedTypes.Count > 0 ? string.Join(", ", checkedTypes) : "(none)");
 
@@ -846,20 +1018,24 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Snapshot structure view models under read lock
             IReadOnlyList<ColonyStructureViewModel> structureVMs;
-            if (!selectedColony.ColonyLock.TryEnterReadLock(Models.Colony.ReadLockTimeoutMs))
+            if (!colony.ColonyLock.TryEnterReadLock(Models.Colony.ReadLockTimeoutMs))
             {
-                Log.Warn("PopulateStructures: read lock timeout on colony {0}, using stale data", selectedColony.UUID);
-                structureVMs = colonyViewModel.StructureViewModels;
+                Log.Warn("PopulateStructures: read lock timeout on colony {0}, using stale data", _selectedColonyUUID);
+                structureVMs = CollectionSortHelper.OrderStructures(colony.Structures)
+                    .Select(s => new ColonyStructureViewModel(s, playerContext))
+                    .ToList();
             }
             else
             {
                 try
                 {
-                    structureVMs = new List<ColonyStructureViewModel>(colonyViewModel.StructureViewModels);
+                    structureVMs = CollectionSortHelper.OrderStructures(colony.Structures)
+                        .Select(s => new ColonyStructureViewModel(s, playerContext))
+                        .ToList();
                 }
                 finally
                 {
-                    selectedColony.ColonyLock.ExitReadLock();
+                    colony.ColonyLock.ExitReadLock();
                 }
             }
 
@@ -903,7 +1079,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     string typeId = bp?.BluePrintType ?? string.Empty;
 
                     ctrl.ViewModel = vm;
-                    ctrl.Colony = selectedColony;
+                    ctrl.Colony = colony;
                     var udSw = System.Diagnostics.Stopwatch.StartNew();
                     ctrl.UpdateData(bp);
                     udSw.Stop();
@@ -988,30 +1164,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             Log.Debug("V2.CmdAddFlatpack_Click: blueprintUUID={0}", uuid);
 
-            if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
-            {
-                Log.Warn("CmdAddFlatpack_Click: write lock timeout on colony {0}", selectedColony.UUID);
-                return;
-            }
-
-            try
-            {
-                colonyViewModel.AddStructure(uuid);
-                colonyViewModel.RecalculateStatus();
-            }
-            finally
-            {
-                selectedColony.ColonyLock.ExitWriteLock();
-            }
-
+            _colonyService.AddStructure(_selectedColonyUUID, uuid);
             PopulateStructures();
-
-            // Save context and fire event OUTSIDE the lock
-            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
-            {
-                playerContext.OnColonyDataChanged(selectedColony.UUID);
-                playerContext.WriteContext();
-            }
         }
 
         // -------------------------------------------------------------------
@@ -1028,9 +1182,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 e.IsStructural,
                 ctrl?.ViewModel?.Data?.UUID ?? "(unknown)");
 
-            if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+            if (colony == null) return;
+
+            if (!colony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
-                Log.Warn("Structures_ColonyStructureDataChanged: write lock timeout on colony {0}", selectedColony.UUID);
+                Log.Warn("Structures_ColonyStructureDataChanged: write lock timeout on colony {0}", _selectedColonyUUID);
                 return;
             }
 
@@ -1039,21 +1196,23 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (e.IsStructural)
                 {
                     // 8.4: Structural change â€” full rebuild
-                    colonyViewModel.InvalidateStructureViewModels();
-                    colonyViewModel.RecalculateStatus();
+                    var calc = new ColonyStatusCalculator(colony);
+                    calc.CalculateBuilt();
+                    calc.CalculateIdeal();
                 }
                 else
                 {
                     // 8.5: Non-structural change â€” O(1) delta update
                     if (ctrl?.ViewModel != null)
                     {
-                        colonyViewModel.Calculator.RecalculateStructure(ctrl.ViewModel.Data);
+                        var calc = new ColonyStatusCalculator(colony);
+                        calc.RecalculateStructure(ctrl.ViewModel.Data);
                     }
                 }
             }
             finally
             {
-                selectedColony.ColonyLock.ExitWriteLock();
+                colony.ColonyLock.ExitWriteLock();
             }
 
             if (e.IsStructural)
@@ -1085,9 +1244,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             _warehouseDirty = true;
 
             // Save context and fire event OUTSIDE the lock
-            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
+            if (!string.IsNullOrEmpty(_selectedColonyUUID) && !string.IsNullOrEmpty(_selectedColonyUUID))
             {
-                playerContext.OnColonyDataChanged(selectedColony.UUID);
+                playerContext.OnColonyDataChanged(_selectedColonyUUID);
                 playerContext.WriteContext();
             }
         }
@@ -1099,7 +1258,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void RefreshStatusSummary()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            var status = colonyViewModel.Calculator.FinalActualStatus;
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+            var calc = colony != null ? new ColonyStatusCalculator(colony) : null;
+            var status = calc?.FinalActualStatus;
             if (status == null)
             {
                 rtbStatusSummary.Text = string.Empty;
@@ -1216,7 +1377,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void RefreshAdminReport()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+            if (string.IsNullOrEmpty(_selectedColonyUUID) || string.IsNullOrEmpty(_selectedColonyUUID))
             {
                 rtbAdminReport.Rtf = string.Empty;
                 return;
@@ -1226,9 +1388,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             try
             {
                 // Acquire read lock to ensure consistent colony data for report
-                if (!selectedColony.ColonyLock.TryEnterReadLock(Models.Colony.ReadLockTimeoutMs))
+                if (!colony.ColonyLock.TryEnterReadLock(Models.Colony.ReadLockTimeoutMs))
                 {
-                    Log.Warn("RefreshAdminReport: read lock timeout on colony {0}, using stale data", selectedColony.UUID);
+                    Log.Warn("RefreshAdminReport: read lock timeout on colony {0}, using stale data", _selectedColonyUUID);
                 }
                 else
                 {
@@ -1238,11 +1400,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     }
                     finally
                     {
-                        selectedColony.ColonyLock.ExitReadLock();
+                        colony.ColonyLock.ExitReadLock();
                     }
                 }
 
-                string rtf = ColonyAdminReportBuilder.BuildReport(selectedColony, playerContext);
+                string rtf = ColonyAdminReportBuilder.BuildReport(colony, playerContext);
                 rtbAdminReport.Rtf = string.IsNullOrEmpty(rtf) ? string.Empty : rtf;
             }
             catch (Exception ex)
@@ -1272,8 +1434,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void CmdBootstrap_Click(object sender, EventArgs e)
         {
-            if (selectedColony == null) return;
-            if (string.IsNullOrEmpty(selectedColony.PlanetName))
+            if (string.IsNullOrEmpty(_selectedColonyUUID)) return;
+
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+            if (colony == null) return;
+            if (string.IsNullOrEmpty(colony.PlanetName))
             {
                 MessageBox.Show(
                     "Set a planet name before bootstrapping.",
@@ -1283,89 +1448,86 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 return;
             }
 
-            if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
+            if (!colony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
-                Log.Warn("CmdBootstrap_Click: write lock timeout on colony {0}", selectedColony.UUID);
+                Log.Warn("CmdBootstrap_Click: write lock timeout on colony {0}", _selectedColonyUUID);
                 return;
             }
 
             try
             {
                 var bootstrap = new ColonyBootstrap(playerContext);
-                bootstrap.Bootstrap(selectedColony);
+                bootstrap.Bootstrap(colony);
 
                 // Refresh via structural change pattern
-                colonyViewModel.InvalidateStructureViewModels();
-                colonyViewModel.RecalculateStatus();
+                var calc = new ColonyStatusCalculator(colony);
+                calc.CalculateBuilt();
+                calc.CalculateIdeal();
             }
             finally
             {
-                selectedColony.ColonyLock.ExitWriteLock();
+                colony.ColonyLock.ExitWriteLock();
             }
 
+            playerContext.WriteContext();
+            playerContext.OnColonyDataChanged(_selectedColonyUUID);
             PopulateStructures();
             RefreshStatusSummary();
             UpdateTabWarnings();
-
-            if (!string.IsNullOrEmpty(selectedColony.UUID))
-            {
-                playerContext.OnColonyDataChanged(selectedColony.UUID);
-                playerContext.WriteContext();
-            }
         }
 
         private void CmdOptimize_Click(object sender, EventArgs e)
         {
-            if (selectedColony == null) return;
+            if (string.IsNullOrEmpty(_selectedColonyUUID)) return;
+
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+            if (colony == null) return;
 
             Log.Info(
                 "CmdOptimize_Click: colony={0} structureCount={1} filterActive={2}",
-                selectedColony.ColonyName ?? selectedColony.PlanetName,
-                selectedColony.Structures?.Count ?? 0,
+                colony.ColonyName ?? colony.PlanetName,
+                colony.Structures?.Count ?? 0,
                 lvwStructureTypes.CheckedItems.Count > 0);
 
-            if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
+            if (!colony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
             {
-                Log.Warn("CmdOptimize_Click: write lock timeout on colony {0}", selectedColony.UUID);
+                Log.Warn("CmdOptimize_Click: write lock timeout on colony {0}", _selectedColonyUUID);
                 return;
             }
 
             try
             {
                 var optimizer = new BuildOrderOptimizer(playerContext);
-                var optimized = optimizer.Optimize(selectedColony);
+                var optimized = optimizer.Optimize(colony);
 
                 Log.Info(
                     "CmdOptimize_Click: optimizer returned {0} structures (input was {1})",
                     optimized.Count,
-                    selectedColony.Structures.Count);
+                    colony.Structures.Count);
 
-                selectedColony.Structures.Clear();
-                selectedColony.Structures.AddRange(optimized);
-                selectedColony.StampBuildQueueSequence();
+                colony.Structures.Clear();
+                colony.Structures.AddRange(optimized);
+                colony.StampBuildQueueSequence();
 
                 Log.Info(
                     "CmdOptimize_Click: colony now has {0} structures after replace",
-                    selectedColony.Structures.Count);
+                    colony.Structures.Count);
 
                 // Refresh via structural change pattern
-                colonyViewModel.InvalidateStructureViewModels();
-                colonyViewModel.RecalculateStatus();
+                var calc = new ColonyStatusCalculator(colony);
+                calc.CalculateBuilt();
+                calc.CalculateIdeal();
             }
             finally
             {
-                selectedColony.ColonyLock.ExitWriteLock();
+                colony.ColonyLock.ExitWriteLock();
             }
 
+            playerContext.WriteContext();
+            playerContext.OnColonyDataChanged(_selectedColonyUUID);
             PopulateStructures();
             RefreshStatusSummary();
             UpdateTabWarnings();
-
-            if (!string.IsNullOrEmpty(selectedColony.UUID))
-            {
-                playerContext.OnColonyDataChanged(selectedColony.UUID);
-                playerContext.WriteContext();
-            }
         }
 
         // -------------------------------------------------------------------
@@ -1374,7 +1536,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void CmdGenerateBuildPlan_Click(object sender, EventArgs e)
         {
-            if (selectedColony == null || string.IsNullOrEmpty(selectedColony.UUID))
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+            if (string.IsNullOrEmpty(_selectedColonyUUID) || string.IsNullOrEmpty(_selectedColonyUUID))
             {
                 MessageBox.Show(
                     "Select a colony first.",
@@ -1386,15 +1549,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             Log.Info(
                 "CmdGenerateBuildPlan_Click: colony={0} uuid={1}",
-                selectedColony.ColonyName ?? selectedColony.PlanetName,
-                selectedColony.UUID);
+                colony.ColonyName ?? colony.PlanetName,
+                _selectedColonyUUID);
 
             // Show plan picker dialog
             BuildPlan targetPlan = ShowBuildPlanPickerDialog();
             if (targetPlan == null) return;
 
             int added = BuildPlanService.GenerateColonyBuildItems(
-                selectedColony, targetPlan, playerContext.FindBlueprint);
+                colony, targetPlan, playerContext.FindBlueprint);
 
             Log.Info(
                 "CmdGenerateBuildPlan_Click: {0} items added to plan '{1}'",
@@ -1487,7 +1650,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 {
                     string planName = string.Format(
                         "{0} - Build Plan",
-                        selectedColony.ColonyName ?? selectedColony.PlanetName ?? "Colony");
+                        _viewModel.ColonyName ?? _viewModel.PlanetName ?? "Colony");
                     return new BuildPlan
                     {
                         UUID = Guid.NewGuid().ToString(),
@@ -1545,18 +1708,18 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void UpdateTabWarnings()
         {
-            int structureCount = selectedColony?.Structures?.Count ?? 0;
+            int structureCount = playerContext.FindMutableColony(_selectedColonyUUID)?.Structures?.Count ?? 0;
             ApplyTabWarning(
                 tabPStructures,
                 TabWarningService.EvaluateStructureWarning(structureCount));
 
             ApplyTabWarning(
                 tabPWorkers,
-                TabWarningService.EvaluateWorkerWarning(selectedColony?.Commodities, SystemClock.UtcNow));
+                TabWarningService.EvaluateWorkerWarning(playerContext.FindMutableColony(_selectedColonyUUID)?.Commodities, SystemClock.UtcNow));
 
             ApplyTabWarning(
                 tabPAdministration,
-                TabWarningService.EvaluateColonyImportStalenessWarning(selectedColony?.LastImportDateTime, SystemClock.UtcNow));
+                TabWarningService.EvaluateColonyImportStalenessWarning(playerContext.FindMutableColony(_selectedColonyUUID)?.LastImportDateTime, SystemClock.UtcNow));
 
             UpdateWorkerTabTitle();
             UpdateStructuresTabTitle();
@@ -1581,12 +1744,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 needBy = ParseCountdownToDateTime(needByText);
             }
 
-            colonyViewModel.AddCommodityRequest(commodity.Name, qty, needBy);
+            _colonyService.AddCommodityRequest(_selectedColonyUUID, commodity.Name, qty, needBy);
             PopulateCommodityRequestGrid();
             UpdateTabWarnings();
-
-            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
-                playerContext.WriteContext();
         }
 
         private void TxtCommodityRequestFilter_TextChanged(object sender, EventArgs e)
@@ -1621,6 +1781,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void PopulateCommodityRequestGrid()
         {
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvCommodityRequests.CellValidating -= DgvCommodityRequests_CellValidating;
@@ -1633,30 +1794,41 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             // Auto-cleanup expired fulfilled requests (19.6)
-            int cleaned = colonyViewModel.CleanupExpiredCommodityRequests();
+            int cleaned = 0;
+            if (colony != null)
+            {
+                var now = SystemClock.UtcNow;
+                var expired = colony.Commodities
+                    .Where(cr => cr.Fulfilled && cr.NeedBy != DateTime.MinValue && (now - cr.NeedBy).TotalDays > 3)
+                    .ToList();
+                foreach (var cr in expired)
+                    colony.Commodities.Remove(cr);
+                cleaned = expired.Count;
+            }
+
             if (cleaned > 0)
             {
                 Log.Debug("Cleaned up {0} expired commodity requests", cleaned);
-                if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
+                if (!string.IsNullOrEmpty(_selectedColonyUUID) && !string.IsNullOrEmpty(_selectedColonyUUID))
                     playerContext.WriteContext();
             }
 
             // Snapshot commodity requests under read lock
             IReadOnlyList<CommodityRequested> requests;
-            if (selectedColony != null && !selectedColony.ColonyLock.TryEnterReadLock(Models.Colony.ReadLockTimeoutMs))
+            if (!string.IsNullOrEmpty(_selectedColonyUUID) && !colony.ColonyLock.TryEnterReadLock(Models.Colony.ReadLockTimeoutMs))
             {
-                Log.Warn("PopulateCommodityRequestGrid: read lock timeout on colony {0}, using stale data", selectedColony?.UUID);
-                requests = colonyViewModel.GetCommodityRequests();
+                Log.Warn("PopulateCommodityRequestGrid: read lock timeout on colony {0}, using stale data", _selectedColonyUUID);
+                requests = colony?.Commodities ?? new List<CommodityRequested>();
             }
             else
             {
                 try
                 {
-                    requests = new List<CommodityRequested>(colonyViewModel.GetCommodityRequests());
+                    requests = new List<CommodityRequested>(colony?.Commodities ?? new List<CommodityRequested>());
                 }
                 finally
                 {
-                    selectedColony?.ColonyLock.ExitReadLock();
+                    colony?.ColonyLock.ExitReadLock();
                 }
             }
 
@@ -1737,20 +1909,17 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 int value;
                 if (int.TryParse(row.Cells[1].Value?.ToString(), out value))
-                    request.Requested = value;
-                playerContext.WriteContext();
+                {
+                    _colonyService.UpdateCommodityRequest(_selectedColonyUUID, request.Name, value, request.Delivered, request.NeedBy);
+                }
             }
 
             // Column 2 = Fulfilled (checkbox) (19.4)
             else if (e.ColumnIndex == 2)
             {
                 bool fulfilled = row.Cells[2].Value is bool b && b;
-                request.Fulfilled = fulfilled;
-                if (fulfilled)
-                    request.Delivered = request.Requested;
-                else
-                    request.Delivered = 0;
-                playerContext.WriteContext();
+                int delivered = fulfilled ? request.Requested : 0;
+                _colonyService.UpdateCommodityRequest(_selectedColonyUUID, request.Name, request.Requested, delivered, request.NeedBy);
                 // Refresh to update strikethrough
                 PopulateCommodityRequestGrid();
             }
@@ -1762,8 +1931,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 DateTime? parsed = ParseCountdownToDateTime(text);
                 if (parsed.HasValue)
                 {
-                    request.NeedBy = parsed.Value;
-                    playerContext.WriteContext();
+                    _colonyService.UpdateCommodityRequest(_selectedColonyUUID, request.Name, request.Requested, request.Delivered, parsed.Value);
                 }
             }
 
@@ -1848,14 +2016,11 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 CommodityRequested request = row.Tag as CommodityRequested;
                 if (request != null)
-                    colonyViewModel.RemoveCommodityRequest(request);
+                    _colonyService.RemoveCommodityRequest(_selectedColonyUUID, request.Name);
             }
 
             PopulateCommodityRequestGrid();
             UpdateTabWarnings();
-
-            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
-                playerContext.WriteContext();
 
             e.Handled = true;
         }
@@ -1866,21 +2031,28 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void UpdateWorkerTabTitle()
         {
-            if (selectedColony == null)
+            if (string.IsNullOrEmpty(_selectedColonyUUID))
+            {
+                tabPWorkers.Text = "Workers";
+                return;
+            }
+
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+            if (colony == null)
             {
                 tabPWorkers.Text = "Workers";
                 return;
             }
 
             var now = SystemClock.UtcNow;
-            int activeCount = selectedColony.Commodities
+            int activeCount = colony.Commodities
                 .Count(r => !r.Fulfilled && (r.NeedBy == DateTime.MinValue || r.NeedBy > now));
             tabPWorkers.Text = activeCount > 0 ? $"Workers : {activeCount}" : "Workers";
         }
 
         private void UpdateStructuresTabTitle()
         {
-            int structureCount = selectedColony?.Structures?.Count ?? 0;
+            int structureCount = playerContext.FindMutableColony(_selectedColonyUUID)?.Structures?.Count ?? 0;
             tabPStructures.Text = structureCount > 0 ? $"Structures : {structureCount}" : "Structures";
         }
 
@@ -1933,6 +2105,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void PopulateItemGrid()
         {
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvItems.CellValidating -= DgvItems_CellValidating;
@@ -1946,20 +2119,20 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             // Snapshot items under read lock
             List<KeyValuePair<string, Item>> itemsSnapshot;
-            if (selectedColony != null && !selectedColony.ColonyLock.TryEnterReadLock(Models.Colony.ReadLockTimeoutMs))
+            if (!string.IsNullOrEmpty(_selectedColonyUUID) && !colony.ColonyLock.TryEnterReadLock(Models.Colony.ReadLockTimeoutMs))
             {
-                Log.Warn("PopulateItemGrid: read lock timeout on colony {0}, using stale data", selectedColony?.UUID);
-                itemsSnapshot = new List<KeyValuePair<string, Item>>(colonyViewModel.GetItems());
+                Log.Warn("PopulateItemGrid: read lock timeout on colony {0}, using stale data", _selectedColonyUUID);
+                itemsSnapshot = colony != null ? new List<KeyValuePair<string, Item>>(colony.Items.Items) : new List<KeyValuePair<string, Item>>();
             }
             else
             {
                 try
                 {
-                    itemsSnapshot = new List<KeyValuePair<string, Item>>(colonyViewModel.GetItems());
+                    itemsSnapshot = colony != null ? new List<KeyValuePair<string, Item>>(colony.Items.Items) : new List<KeyValuePair<string, Item>>();
                 }
                 finally
                 {
-                    selectedColony?.ColonyLock.ExitReadLock();
+                    colony?.ColonyLock.ExitReadLock();
                 }
             }
 
@@ -1995,8 +2168,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     row.Cells[1].Value = itemValue.ExtendedName;
                 }
 
-                int lockedQty = colonyViewModel.Data.Locks != null
-                    ? colonyViewModel.Data.Locks.GetLockedQuantity(itemValue.ItemType, itemValue.BaseItemTypeID)
+                int lockedQty = colony?.Locks != null
+                    ? colony.Locks.GetLockedQuantity(itemValue.ItemType, itemValue.BaseItemTypeID)
                     : 0;
                 row.Cells[2].Value = lockedQty;
                 row.Cells[3].Value = itemValue.Quantity;
@@ -2025,8 +2198,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 Item item = row.Tag as Item;
                 if (item == null) continue;
-                int lockedQty = colonyViewModel.Data.Locks != null
-                    ? colonyViewModel.Data.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
+                var colony2 = playerContext.FindMutableColony(_selectedColonyUUID);
+                int lockedQty = colony2?.Locks != null
+                    ? colony2.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
                     : 0;
                 row.Cells[2].Value = lockedQty;
             }
@@ -2276,28 +2450,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             item.Volume = GetItemVolume(item, playerContext);
 
-            if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
-            {
-                Log.Warn("CmdAddItem_Click: write lock timeout on colony {0}", selectedColony.UUID);
-                return;
-            }
-
-            try
-            {
-                colonyViewModel.AddItem(item);
-            }
-            finally
-            {
-                selectedColony.ColonyLock.ExitWriteLock();
-            }
-
+            _colonyService.AddItem(_selectedColonyUUID, item);
             PopulateItemGrid();
-
-            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
-            {
-                playerContext.OnColonyDataChanged(selectedColony.UUID);
-                playerContext.WriteContext();
-            }
         }
 
         // -------------------------------------------------------------------
@@ -2309,48 +2463,30 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (e.KeyCode != Keys.Delete) return;
             if (dgvItems.SelectedRows.Count == 0) return;
 
-            if (!selectedColony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
+            foreach (DataGridViewRow row in dgvItems.SelectedRows)
             {
-                Log.Warn("DgvItems_KeyDown: write lock timeout on colony {0}", selectedColony.UUID);
-                return;
-            }
-
-            try
-            {
-                foreach (DataGridViewRow row in dgvItems.SelectedRows)
+                Item item = row.Tag as Item;
+                if (item != null)
                 {
-                    Item item = row.Tag as Item;
-                    if (item != null)
+                    var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+                    int locked = colony?.Locks != null
+                        ? colony.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
+                        : 0;
+                    if (locked > 0)
                     {
-                        int locked = colonyViewModel.Data.Locks != null
-                            ? colonyViewModel.Data.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
-                            : 0;
-                        if (locked > 0)
-                        {
-                            MessageBox.Show(
-                                $"Cannot delete '{item.ExtendedName}' -- {locked} locked by structures.",
-                                "Item Locked",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning);
-                            continue;
-                        }
-
-                        colonyViewModel.RemoveItem(item.UUID);
+                        MessageBox.Show(
+                            $"Cannot delete '{item.ExtendedName}' -- {locked} locked by structures.",
+                            "Item Locked",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        continue;
                     }
+
+                    _colonyService.RemoveItem(_selectedColonyUUID, item.UUID);
                 }
-            }
-            finally
-            {
-                selectedColony.ColonyLock.ExitWriteLock();
             }
 
             PopulateItemGrid();
-
-            if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
-            {
-                playerContext.OnColonyDataChanged(selectedColony.UUID);
-                playerContext.WriteContext();
-            }
 
             e.Handled = true;
         }
@@ -2373,14 +2509,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 int qty = 0;
                 int.TryParse(row.Cells[3].Value?.ToString(), out qty);
-                item.Quantity = qty;
-
-                colonyViewModel.RecalculateStatus();
+                _colonyService.UpdateItem(_selectedColonyUUID, item.UUID, qty);
                 RefreshStatusSummary();
                 _structuresDirty = true;
-
-                if (selectedColony != null && !string.IsNullOrEmpty(selectedColony.UUID))
-                    playerContext.WriteContext();
             }
         }
 
@@ -2434,6 +2565,34 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void CmdImportColony_Click(object sender, EventArgs e)
         {
             Log.Debug("V2.CmdImportColony_Click: starting import");
+
+            // Prompt for unsaved changes before import (9.3)
+            if (_viewModel.IsDirty)
+            {
+                var dirtyResult = PromptUnsavedChanges();
+                if (dirtyResult == DialogResult.Yes)
+                {
+                    try
+                    {
+                        SaveCurrentColony();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error saving during unsaved changes prompt");
+                        MessageBox.Show(
+                            "Failed to save: " + ex.Message,
+                            "Save Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else if (dirtyResult == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+
             if (!Clipboard.ContainsText(TextDataFormat.Html))
             {
                 MessageBox.Show(
@@ -2485,68 +2644,25 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
                 if (string.IsNullOrEmpty(tempColony.PlanetName))
                 {
-                    // Fall back to current behavior when no planet name is parsed
-                    parser.ProcessClipboard(selectedColony, empireContext);
-
-                    if (string.IsNullOrEmpty(selectedColony.OwnerUUID))
-                    {
-                        selectedColony.OwnerUUID = playerContext.CurrentPlayerUUID;
-                    }
-
-                    selectedColony.StampBuildQueueSequence();
-                    colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
-                    PopulateForm();
-
-                    Log.Info(
-                        "Colony imported from clipboard (fallback): {0} ({1} structures, {2} commodity requests)",
-                        selectedColony.PlanetName,
-                        selectedColony.Structures.Count,
-                        selectedColony.Commodities.Count);
+                    Log.Warn("Colony import: no planet name parsed, skipping import");
+                    MessageBox.Show(
+                        "Could not determine the planet name from the clipboard data.",
+                        "Import Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                     return;
                 }
 
-                var existingColony = ColonyImportHelper.FindByPlanet(
-                    playerContext.GetCurrentPlayerColonies(), tempColony.PlanetName, tempColony.SystemName);
+                ReadOnlyColony imported = _colonyService.Import(tempColony, extractedHtml, empireContext);
 
                 Log.Info(
-                    "Colony dedup: {0} for planet '{1}'",
-                    existingColony != null ? "found existing colony UUID=" + existingColony.UUID : "no existing colony, creating new",
-                    tempColony.PlanetName);
+                    "Colony imported via service: planet='{0}' uuid={1}",
+                    imported.PlanetName,
+                    imported.UUID);
 
-                if (existingColony != null)
-                {
-                    ColonyImportHelper.MergeIdentity(existingColony, tempColony);
-
-                    // Save ColonyName before ProcessHtml -- the parser's ParsePlanetOverview
-                    // overwrites ColonyName with the game's (potentially truncated) value.
-                    string preservedColonyName = existingColony.ColonyName;
-                    parser.ProcessHtml(existingColony, extractedHtml, empireContext);
-                    existingColony.ColonyName = preservedColonyName;
-
-                    selectedColony = existingColony;
-
-                    Log.Info(
-                        "Colony updated via dedup: {0} ({1} structures, {2} commodity requests)",
-                        existingColony.ColonyName,
-                        existingColony.Structures.Count,
-                        existingColony.Commodities.Count);
-                }
-                else
-                {
-                    var newColony = ColonyImportHelper.CreateFromTemp(tempColony, playerContext.CurrentPlayerUUID);
-                    playerContext.AddColony(newColony);
-                    selectedColony = newColony;
-
-                    Log.Info(
-                        "New colony created via dedup: {0} ({1} structures, {2} commodity requests)",
-                        newColony.ColonyName,
-                        newColony.Structures.Count,
-                        newColony.Commodities.Count);
-                }
-
-                selectedColony.StampBuildQueueSequence();
-                playerContext.WriteContext();
-                playerContext.OnColonyDataChanged(selectedColony.UUID);
+                _selectedColonyUUID = imported.UUID;
+                _previousSelectedUUID = imported.UUID;
+                _viewModel.LoadFrom(imported);
 
                 // Refresh list view
                 TxtColonyFilter_TextChanged(sender, e);
@@ -2554,7 +2670,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 // Select the imported colony in the list view
                 foreach (ListViewItem item in lvwColonies.Items)
                 {
-                    if ((item.Tag as Models.Colony)?.UUID == selectedColony.UUID)
+                    if ((item.Tag as ReadOnlyColony)?.UUID == _selectedColonyUUID)
                     {
                         item.Selected = true;
                         item.EnsureVisible();
@@ -2562,7 +2678,6 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     }
                 }
 
-                colonyViewModel = new ColonyViewModel(selectedColony, playerContext);
                 PopulateForm();
                 UpdateTitle();
             }
@@ -2697,7 +2812,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void LvwStructureTypes_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (selectedColony == null) return;
+            if (string.IsNullOrEmpty(_selectedColonyUUID)) return;
 
             string typeId = e.Item.Tag as string;
             if (typeId != null)
@@ -2717,7 +2832,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         private void ApplyStructureTypeFilter()
         {
-            if (selectedColony == null) return;
+            if (string.IsNullOrEmpty(_selectedColonyUUID)) return;
 
             // Build set of checked types
             var checkedTypes = new HashSet<string>(StringComparer.Ordinal);
@@ -2749,7 +2864,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvOverflowRules.Rows.Clear();
-            if (selectedColony == null) return;
+            if (string.IsNullOrEmpty(_selectedColonyUUID)) return;
+
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+            if (colony == null) return;
 
             PopulateOverflowResourceCombo();
             PopulateOverflowPurityCombo();
@@ -2757,7 +2875,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             PopulateOverflowRouteCombo();
 
             var rules = playerContext.WarehouseOverflowRuleList
-                .Where(r => r.ColonyUUID == selectedColony.UUID)
+                .Where(r => r.ColonyUUID == _selectedColonyUUID)
                 .ToList();
 
             foreach (var rule in rules)
@@ -2771,9 +2889,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
 
                 int currentQty = 0;
-                if (selectedColony.Items != null)
+                if (colony.Items != null)
                 {
-                    var matchingItems = selectedColony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
+                    var matchingItems = colony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
                     currentQty = matchingItems.Sum(i => i.Quantity);
                 }
 
@@ -2920,7 +3038,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void CmdAddOverflowRule_Click(object sender, EventArgs e)
         {
-            if (selectedColony == null) return;
+            if (string.IsNullOrEmpty(_selectedColonyUUID)) return;
             string resource = cmbOverflowResource.SelectedItem?.ToString() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(resource)) return;
             string purity = cmbOverflowPurity.SelectedItem?.ToString() ?? string.Empty;
@@ -2945,7 +3063,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 routeUUID = _overflowRouteUUIDs[routeIdx];
 
             var existing = playerContext.WarehouseOverflowRuleList
-                .FirstOrDefault(r => r.ColonyUUID == selectedColony.UUID &&
+                .FirstOrDefault(r => r.ColonyUUID == _selectedColonyUUID &&
                     r.ResourceName == resource && r.ResourcePurity == purity);
             if (existing != null)
             {
@@ -2961,7 +3079,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 UUID = Guid.NewGuid().ToString(),
                 OwnerUUID = playerContext.CurrentPlayerUUID ?? string.Empty,
-                ColonyUUID = selectedColony.UUID,
+                ColonyUUID = _selectedColonyUUID,
                 ResourceName = resource,
                 ResourcePurity = purity,
                 TriggerThreshold = threshold,
@@ -2979,7 +3097,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void CmdRemoveOverflowRule_Click(object sender, EventArgs e)
         {
-            if (selectedColony == null || dgvOverflowRules.SelectedRows.Count == 0) return;
+            if (string.IsNullOrEmpty(_selectedColonyUUID) || dgvOverflowRules.SelectedRows.Count == 0) return;
             var rule = dgvOverflowRules.SelectedRows[0].Tag as WarehouseOverflowRule;
             if (rule == null) return;
             playerContext.RemoveWarehouseOverflowRule(rule);

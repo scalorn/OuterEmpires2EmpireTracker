@@ -33,6 +33,8 @@ const KNOWN_DUPES = new Set([
     // Small identical layout/player-changed handlers across forms — accepted baseline (BL-082, BL-083)
     'OnCurrentPlayerChanged',
     'flpSearchList_Layout',
+    // Unsaved changes prompt intentionally copied between FormSurvey and FormColonyV2 (BL-109, BL-110)
+    'PromptUnsavedChanges',
 ]);
 
 function findCsFiles(dir, results) {

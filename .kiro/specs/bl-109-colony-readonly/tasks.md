@@ -95,70 +95,70 @@ Apply the immutable data model pattern (established in BL-108 blueprints, BL-110
     - UpdateCommodityRequest(string colonyUUID, string commodityName, int requested, int delivered, DateTime needBy): acquires write lock, updates CommodityRequested fields, releases lock, persists, fires event
     - _Requirements: 24.1, 24.2, 24.3, 24.4, 24.5_
 
-- [-] 7. Checkpoint --- Verify new classes compile cleanly
+- [x] 7. Checkpoint --- Verify new classes compile cleanly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Migrate FormColonyV2 list view to ReadOnly wrappers
-  - [~] 8.1 Replace mutable entity references with ReadOnly wrappers in list view
+- [x] 8. Migrate FormColonyV2 list view to ReadOnly wrappers
+  - [x] 8.1 Replace mutable entity references with ReadOnly wrappers in list view
     - Change PopulateColonyList to store ReadOnlyColony in ListViewItem Tags (from PlayerContext.GetCurrentPlayerReadOnlyColonies())
     - Change filter logic to use ReadOnlyColony properties for filter comparison
     - Remove any direct mutable Colony references from list view code paths
     - _Requirements: 1.1, 1.2, 1.3, 3.1_
 
-  - [~] 8.2 Wire ViewModel as edit buffer
+  - [x] 8.2 Wire ViewModel as edit buffer
     - Add ColonyViewModel _viewModel field and ColonyService _colonyService field
     - Change selection handler to extract ReadOnlyColony from Tag and call _viewModel.LoadFrom()
     - Change PopulateForm to read from _viewModel local fields instead of entity
     - Change ClearForm to call _viewModel.Reset()
     - _Requirements: 1.2, 4.1, 4.2, 4.3, 4.4, 5.1, 5.2, 5.3, 5.4_
 
-  - [~] 8.3 Replace write-through with local-only ViewModel updates
+  - [x] 8.3 Replace write-through with local-only ViewModel updates
     - Change text box TextChanged handlers (txtPlanetName, txtColonyName, txtSystemName) to set _viewModel local fields instead of entity fields
     - Remove any direct WriteContext() calls from control change handlers for scalar fields
     - _Requirements: 6.1, 6.2_
 
-  - [~] 8.4 Wire Save button through service
+  - [x] 8.4 Wire Save button through service
     - Change Save handler: if _viewModel.IsNew, call _colonyService.Create(BuildCreateRequest()); else call _colonyService.Update(uuid, BuildUpdateRequest())
     - After save, refresh list view and reload _viewModel from returned ReadOnlyColony
     - Enable Save button only when _viewModel.IsDirty is true
     - _Requirements: 26.1, 26.2, 26.3, 26.4, 7.5_
 
-  - [~] 8.5 Wire Delete button through service with reference protection
+  - [x] 8.5 Wire Delete button through service with reference protection
     - Check ColonyReferenceCounter for references before delete (delivery routes, delivery plans, build plans, supply chains, overflow rules)
     - If TotalCount > 0, show warning message listing reference counts by type and prevent deletion
     - If no references, prompt for confirmation before calling _colonyService.Delete(uuid)
     - After deletion, clear form and refresh list view
     - _Requirements: 27.1, 27.2, 27.3, 27.4_
 
-  - [~] 8.6 Wire Import button through service
+  - [x] 8.6 Wire Import button through service
     - Validate clipboard content (HTML present, correct content type, player selected)
     - Call ColonyParser.ParseClipboardToTemp to get temporary Colony object
     - Call _colonyService.Import(tempColony, empireContext) instead of directly creating/merging entities
     - After import, refresh list view, select imported colony, load into ViewModel
     - _Requirements: 28.1, 28.2, 28.3, 28.4_
 
-  - [~] 8.7 Wire immediate structure operations through service
+  - [x] 8.7 Wire immediate structure operations through service
     - Change AddStructure handler to call _colonyService.AddStructure(colonyUUID, flatpackUUID)
     - Change RemoveStructure handler to call _colonyService.RemoveStructure(colonyUUID, structureUUID)
     - Remove direct entity mutation for structure operations
     - _Requirements: 17.1, 18.1, 29.1_
 
-  - [~] 8.8 Wire immediate item operations through service
+  - [x] 8.8 Wire immediate item operations through service
     - Change AddItem handler to call _colonyService.AddItem(colonyUUID, item)
     - Change RemoveItem handler to call _colonyService.RemoveItem(colonyUUID, itemUUID)
     - Change UpdateItem handler to call _colonyService.UpdateItem(colonyUUID, itemUUID, newQuantity)
     - Remove direct entity mutation for item operations
     - _Requirements: 19.1, 20.1, 21.1, 29.1_
 
-  - [~] 8.9 Wire immediate commodity request operations through service
+  - [x] 8.9 Wire immediate commodity request operations through service
     - Change AddCommodityRequest handler to call _colonyService.AddCommodityRequest(...)
     - Change RemoveCommodityRequest handler to call _colonyService.RemoveCommodityRequest(...)
     - Change UpdateCommodityRequest handler to call _colonyService.UpdateCommodityRequest(...)
     - Remove direct entity mutation for commodity request operations
     - _Requirements: 22.1, 23.1, 24.1, 29.1_
 
-- [ ] 9. Add unsaved changes prompts
-  - [~] 9.1 Add unsaved changes prompt on selection change
+- [x] 9. Add unsaved changes prompts
+  - [x] 9.1 Add unsaved changes prompt on selection change
     - In colony list selection handler, check _viewModel.IsDirty before loading new selection
     - Show three-button dialog: Save, Discard, Cancel
     - Save: call service Create/Update, then load new selection
@@ -166,17 +166,17 @@ Apply the immutable data model pattern (established in BL-108 blueprints, BL-110
     - Cancel: cancel selection change, keep current colony selected
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-  - [~] 9.2 Add unsaved changes prompt on New button
+  - [x] 9.2 Add unsaved changes prompt on New button
     - In New handler, check _viewModel.IsDirty before clearing form
     - Same three-button dialog: Save, Discard, Cancel
     - _Requirements: 10.1, 10.2, 10.3, 10.4_
 
-  - [~] 9.3 Add unsaved changes prompt on Import button
+  - [x] 9.3 Add unsaved changes prompt on Import button
     - In Import handler, check _viewModel.IsDirty before proceeding with import
     - Same three-button dialog: Save, Discard, Cancel
     - _Requirements: 11.1, 11.2, 11.3, 11.4_
 
-  - [~] 9.4 Add unsaved changes prompt on form close and application exit
+  - [x] 9.4 Add unsaved changes prompt on form close and application exit
     - Override OnFormClosing to check _viewModel.IsDirty
     - Show same three-button dialog
     - Cancel sets e.Cancel = true to prevent close
