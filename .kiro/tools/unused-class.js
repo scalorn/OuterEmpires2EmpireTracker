@@ -39,6 +39,11 @@ const KNOWN_INTERNAL = new Set([
     // BL-111 DTOs — consumed by PlayerProfileViewModel and PlayerProfileService (in-progress refactoring)
     'PlayerProfileUpdateRequest',
     'PlayerProfileCreateRequest',
+    // BL-123 --- consumed by PricingPlanViewModel and PricingPlanService (in-progress refactoring)
+    'PricingPlanUpdateRequest',
+    'PricingPlanCreateRequest',
+    'PricingPlanViewModel',
+    'PricingPlanService',
 ]);
 
 function findCsFiles(dir, results, includeDesigner) {

@@ -496,3 +496,24 @@ Logic:
 - Null-safe: null inputs return empty lists; null sort keys coalesced to empty string or zero.
 
 Satisfies: REQ-DATA-ORDER (see .kiro/specs/data-model-ordering-invariant/requirements.md)
+
+## PricingPlanService
+
+Instance service in `Services/PricingPlanService.cs`. Sole mutator of PricingPlan entities (create, update, delete). Follows the same pattern as BlueprintService and PlayerProfileService from BL-108/BL-111.
+
+```csharp
+public class PricingPlanService
+{
+    public PricingPlanService(PlayerContext playerContext);
+    public ReadOnlyPricingPlan Update(string uuid, PricingPlanUpdateRequest request);
+    public ReadOnlyPricingPlan Create(PricingPlanCreateRequest request);
+    public void Delete(string uuid);
+}
+```
+
+Logic:
+- Update: looks up mutable entity via `FindMutablePricingPlan`, applies all scalar fields and ResourcePrices, persists via `WriteContext()`, fires `PricingDataChanged`, returns `ReadOnlyPricingPlan`.
+- Create: creates new PricingPlan with generated UUID, sets OwnerUUID from current player, populates fields, adds to PlayerContext, persists, fires event.
+- Delete: looks up entity, removes from PlayerContext, persists, fires event. Returns silently if UUID empty or not found.
+
+Satisfies: REQ-PRC (see .kiro/specs/bl-123-pricingplan-readonly/requirements.md)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -2855,6 +2855,30 @@ namespace OE2EmpireTracker.Services
                 }
 
                 _playerProfileCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
+        /// <summary>
+        /// Returns the mutable PricingPlan entity. Only called by PricingPlanService.
+        /// </summary>
+        internal PricingPlan FindMutablePricingPlan(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_pricingPlanCache == null)
+                {
+                    _pricingPlanCache = new Dictionary<string, PricingPlan>();
+                    foreach (var r in _pricingPlanList)
+                    {
+                        if (r.UUID != null && !_pricingPlanCache.ContainsKey(r.UUID))
+                            _pricingPlanCache[r.UUID] = r;
+                    }
+                }
+
+                _pricingPlanCache.TryGetValue(uuid, out var match);
                 return match;
             }
         }

@@ -104,7 +104,7 @@ The user expects that when data changes (via background processing, import, or a
 | Player profile save | PlayerProfileDataChanged | PlayerProfileViewModel.Save() |
 | Player profile import | PlayerProfileDataChanged | PlayerProfileParser |
 | Player add/remove | PlayerProfilesChanged | MainWindow |
-| Pricing plan save | PricingDataChanged | PricingPlanViewModel.Save() |
+| Pricing plan save | PricingDataChanged | PricingPlanService |
 | Build plan save | BuildPlanDataChanged | BuildPlanViewModel.Save() |
 | Market listing/transaction save | MarketDataChanged | MarketViewModel.Save() |
 | Station save | StationDataChanged | StationViewModel.Save() |

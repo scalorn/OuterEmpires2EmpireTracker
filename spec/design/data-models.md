@@ -572,6 +572,10 @@ public Dictionary<string, int> ParsedMaxReserves { get; set; }
 
 `BlueprintViewModel` is the ViewModel for FormBlueprintV2, wrapping a Blueprint model and exposing typed properties for UI binding, computed display values (ExtendedName, property summaries), and edit operations (Save, Delete, Import).
 
+### PricingPlanViewModel
+
+PricingPlanViewModel is the ViewModel for FormPricingPlan, serving as a disconnected edit buffer for PricingPlan entities. Copies all fields from a ReadOnlyPricingPlan into local state, tracks dirty status, and builds PricingPlanUpdateRequest/PricingPlanCreateRequest DTOs for the PricingPlanService. See .kiro/specs/bl-123-pricingplan-readonly/design.md for full design.
+
 ## Colony Status Calculation Models
 
 ### ColonyStructureStatus
@@ -668,6 +672,8 @@ Read-only wrapper classes provide controlled access to the data model. Each muta
 - **SkillUpdateData** — DTO carrying a single skill's state (Level, TrainingStarted, CompletionStartTime, CompletionEndTime) for profile create/update requests
 - **LocalSkillData** — Local edit buffer copy of a single skill's state in the PlayerProfileViewModel, disconnected from the PlayerSkill entity
 - **LocalRankData** — Local edit buffer copy of a single rank track's state in the PlayerProfileViewModel, disconnected from the PlayerRank entity
+- **PricingPlanUpdateRequest** — DTO carrying the original ReadOnlyPricingPlan snapshot and current local field values for updating an existing pricing plan through PricingPlanService
+- **PricingPlanCreateRequest** — DTO carrying field values for creating a new pricing plan through PricingPlanService (no Original snapshot, no UUID)
 - **ReadOnlyDeliveryPlanStop** — wraps DeliveryPlanStop (DropOff/PickUp as IReadOnlyList of ReadOnlyDeliveryItem)
 - **ReadOnlyDeliveryItem** — wraps DeliveryItem
 - **ReadOnlyBuildItem** — wraps BuildItem
