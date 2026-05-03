@@ -213,8 +213,8 @@ Apply the immutable data model pattern (established in BL-108 blueprints, BL-110
     - Add Compile Include to test csproj
     - _Requirements: 4.1, 4.2, 7.1, 7.4, 7.5_
 
-- [-] 13. Add Service property tests
-  - [-] 13.1 Write property test: Service.Update round-trip
+- [x] 13. Add Service property tests
+  - [x] 13.1 Write property test: Service.Update round-trip
     - Create OE2EmpireTracker.Tests/Services/ColonyServicePropertyTests.cs
     - Reuse ValidColonyGen() pattern from ViewModel property tests
     - **Property 4: Service.Update Round-Trip**
@@ -222,35 +222,35 @@ Apply the immutable data model pattern (established in BL-108 blueprints, BL-110
     - **Validates: Requirements 13.4, 13.7**
     - Add Compile Include to test csproj
 
-  - [~] 13.2 Write property test: Service.Create round-trip
+  - [x] 13.2 Write property test: Service.Create round-trip
     - **Property 5: Service.Create Round-Trip**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 14.2, 14.4, 14.8**
 
-  - [~] 13.3 Write property test: Service.Delete removes colony
+  - [x] 13.3 Write property test: Service.Delete removes colony
     - **Property 6: Service.Delete Removes Colony**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 15.1, 15.2**
 
-  - [~] 13.4 Write property test: Service.AddStructure increases structure count
+  - [x] 13.4 Write property test: Service.AddStructure increases structure count
     - **Property 7: Service.AddStructure Increases Structure Count**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 17.3, 17.4**
 
-  - [~] 13.5 Write property test: Service.RemoveStructure decreases structure count
+  - [x] 13.5 Write property test: Service.RemoveStructure decreases structure count
     - **Property 8: Service.RemoveStructure Decreases Structure Count**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 18.3**
 
-- [ ] 14. Add Service unit tests
-  - [~] 14.1 Write unit tests for ColonyService
+- [x] 14. Add Service unit tests
+  - [x] 14.1 Write unit tests for ColonyService
     - Create OE2EmpireTracker.Tests/Services/ColonyServiceTests.cs
     - Tests: Update with non-existent UUID throws InvalidOperationException, Delete with empty UUID returns without error, Delete with non-existent UUID returns without error, Create assigns non-empty UUID, Create sets OwnerUUID to current player UUID, Update fires ColonyDataChanged event, Create fires ColonyDataChanged event, Delete fires ColonyDataChanged event, AddStructure creates structure with correct flatpack UUID, AddStructure assigns next DisplaySequence for type, RemoveStructure removes correct structure by UUID, AddItem adds item to colony ItemBag, RemoveItem removes item from colony ItemBag, UpdateItem changes item quantity, AddCommodityRequest adds commodity to colony, RemoveCommodityRequest removes commodity from colony, UpdateCommodityRequest updates commodity fields, Write lock timeout throws TimeoutException
     - Add Compile Include to test csproj
     - _Requirements: 13.7, 13.8, 14.2, 14.3, 14.7, 14.8, 15.4, 15.5, 17.3, 17.4, 18.3, 19.3, 20.3, 21.3, 22.3, 23.3, 24.3_
 
-- [ ] 15. Add mutation guard test
-  - [~] 15.1 Write mutation guard test for Colony
+- [x] 15. Add mutation guard test
+  - [x] 15.1 Write mutation guard test for Colony
     - Create OE2EmpireTracker.Tests/Services/ColonyMutationGuardTests.cs
     - Follow BlueprintMutationGuardTests, SurveyMutationGuardTests, PlayerProfileMutationGuardTests, and PricingPlanMutationGuardTests pattern
     - First check: scan for direct Colony scalar property sets (PlanetName, ColonyName, SystemName), assert they only appear in ColonyService.cs, ColonyParser.cs, Colony.cs (including ProcessColony), JSON deserialization, migration code, and test code

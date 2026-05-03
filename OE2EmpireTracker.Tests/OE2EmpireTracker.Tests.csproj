@@ -430,6 +430,7 @@
     <Compile Include="Services\SurveyMutationGuardTests.cs" />
     <Compile Include="Services\ColonyServicePropertyTests.cs" />
     <Compile Include="Services\ColonyServiceTests.cs" />
+    <Compile Include="Services\ColonyMutationGuardTests.cs" />
     <Compile Include="Services\BlueprintServicePropertyTests.cs" />
     <Compile Include="Services\BlueprintMutationGuardTests.cs" />
     <Compile Include="Services\PricingPlanServicePropertyTests.cs" />
