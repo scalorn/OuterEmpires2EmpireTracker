@@ -1,0 +1,6 @@
+{
+    "maintainabilityIndexMin": 20,
+    "cyclomaticComplexityMax": 25,
+    "classCouplingMax": 80,
+    "depthOfInheritanceMax": 6
+}

@@ -1,0 +1,208 @@
+{
+    "violations":  [
+                       {
+                           "element":  "OE2EmpireTracker.void FormBlueprintV2.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.Asteroid.void FormAsteroid.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.BuildPlanner.void FormBuildPlanner.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.ColonyV2.void ColonyStructureV2.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.ColonyV2.void FormColonyV2.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.Contacts.void FormContacts.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.DeliveryRoute.void FormDeliveryRoute.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.Market.void FormMarket.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.PlayerProfile.void FormPlayerProfile.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.ShipInstance.void FormShipInstance.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.Station.void FormStation.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.StockTargets.void FormStockTargets.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.SupplyChain.void FormSupplyChain.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.Survey.void FormSurvey.InitializeComponent()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Models.List\u003cCommodity\u003e Commodity.GetCommodities()",
+                           "metric":  "MaintainabilityIndex"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.void FormBlueprintV2.BtnImportMarket_Click(object sender, EventArgs e)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.void FormBlueprintV2.RefreshEvolutionGraph()",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.BuildPlanner.void FormStructureAllocation.PopulateGrid()",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.ColonyV2.void ColonyStructureV2.CmbSelection_SelectedItemChanged(object sender, EventArgs e)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.ColonyV2.void ColonyStructureV2.CmdDone_Click(object sender, EventArgs e)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.DeliveryExecution.void FormDeliveryExecution.BuildExecution()",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.Market.void FormMarket.PopulateTransactionsGrid()",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.Survey.void FormSurvey.PopulateFormFromViewModel()",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Models.void Colony.ProcessColony()",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Parsers.void BlueprintScanner.ProcessHtml(Blueprint blueprint, string htmlFragment)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Parsers.List\u003cMarketBlueprint\u003e BlueprintScanner.ProcessMarketHtml(string htmlFragment)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Parsers.void ColonyParser.ParseColonyBuildingsFromJson(Colony colony, string jsonEncoded, EmpireContext empireContext)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Parsers.ColonyStructure ColonyParser.ParseBuilding(JToken building, Dictionary\u003cstring, string\u003e flatpackLookup, out decimal maxRate)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Persistence.void WindowStateHelper.RestoreControlStates(Control parent, FormControlState formState)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Services.List\u003cstring\u003e BackgroundProcessor.ProcessCascades()",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Services.BlueprintReferenceCounter.BlueprintReferenceCounter(IEnumerable\u003cColony\u003e colonies, IEnumerable\u003cBlueprint\u003e allBlueprints, IEnumerable\u003cSurvey\u003e surveys, IEnumerable\u003cBuildPlan\u003e buildPlans = null, IEnumerable\u003cShipTemplate\u003e shipTemplates = null, IEnumerable\u003cShip\u003e ships = null, IEnumerable\u003cStation\u003e stations = null, IEnumerable\u003cMarketListing\u003e marketListings = null, IEnumerable\u003cMarketTransaction\u003e marketTransactions = null, IEnumerable\u003cStockPlan\u003e stockPlans = null)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Services.bool BuildPlanExecutionService.AdvanceBuildItemStatuses(BuildPlan plan, Func\u003cstring, Colony\u003e colonyFinder, Func\u003cstring, ReadOnlyBlueprint\u003e blueprintFinder, Func\u003cstring, Ship\u003e shipFinder, Func\u003cstring, Station\u003e stationFinder, string currentPlayerUUID)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Services.ColonyReferenceCounter.ColonyReferenceCounter(IEnumerable\u003cDeliveryRoute\u003e routes, IEnumerable\u003cDeliveryPlan\u003e plans, IEnumerable\u003cBuildPlan\u003e buildPlans = null, IEnumerable\u003cSupplyChain\u003e supplyChains = null, IEnumerable\u003cWarehouseOverflowRule\u003e overflowRules = null, IEnumerable\u003cStockPlan\u003e stockPlans = null)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Services.CrateImportEntry CrateImporter.ImportSingleEntry(JObject entry, PlayerContext playerContext, EmpireContext empireContext, IReadOnlyList\u003cBlueprint\u003e preExistingGlobal, IReadOnlyList\u003cBlueprint\u003e preExistingPlayer, HashSet\u003cstring\u003e matchedUUIDs)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Services.void MarketBlueprintImporter.UpdateExisting(Blueprint existing, Blueprint incoming)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Services.void PlayerContext.CleanupOrphanedData()",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Services.PlayerRoot SerializationSorter.SortPlayerRoot(PlayerRoot source)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Services.StationReferenceCounter.StationReferenceCounter(IEnumerable\u003cDeliveryRoute\u003e routes, IEnumerable\u003cDeliveryPlan\u003e plans, IEnumerable\u003cBuildPlan\u003e buildPlans, IEnumerable\u003cMarketListing\u003e marketListings = null, IEnumerable\u003cMarketTransaction\u003e marketTransactions = null, IEnumerable\u003cSupplyChain\u003e supplyChains = null, IEnumerable\u003cStockPlan\u003e stockPlans = null, IEnumerable\u003cWarehouseOverflowRule\u003e overflowRules = null, IEnumerable\u003cShip\u003e ships = null)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.ViewModels.int DeliveryPlanViewModel.AutoFillManufacturingResources(IEnumerable\u003cRouteStop\u003e routeStops, Func\u003cstring, Colony\u003e colonyFinder, Func\u003cstring, ReadOnlyBlueprint\u003e blueprintFinder, Func\u003cstring, Station\u003e stationFinder = null, string currentPlayerUUID = null)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.ViewModels.bool SurveyViewModel.IsDirty.get",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Tests.Services.void BuildPlanExecutionPropertyTests.Property11_CrossPlanContentionDetection()",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Tests.Services.JObject IconPositionExtractorTests.CompareAndUpdateBaselineData(List\u003cExtractedIcon\u003e extracted)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Tests.Services.Property PlayerProfileServicePropertyTests.Update_RoundTrip_PreservesAllFields()",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Tests.Services.Property PlayerProfileServicePropertyTests.Create_RoundTrip_PreservesAllFields()",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Tests.ViewModels.string PlayerProfileViewModelPropertyTests.MutateSingleField(PlayerProfileViewModel vm, ReadOnlyPlayerProfile ro, int fieldIndex)",
+                           "metric":  "CyclomaticComplexity"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.FormBlueprintV2",
+                           "metric":  "ClassCoupling"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.BuildPlanner.FormBuildPlanner",
+                           "metric":  "ClassCoupling"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.ColonyV2.ColonyStructureV2",
+                           "metric":  "ClassCoupling"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.ColonyV2.FormColonyV2",
+                           "metric":  "ClassCoupling"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Forms.Survey.FormSurvey",
+                           "metric":  "ClassCoupling"
+                       },
+                       {
+                           "element":  "OE2EmpireTracker.Tests.Models.ReadOnlyWrapperGenerators",
+                           "metric":  "ClassCoupling"
+                       }
+                   ]
+}

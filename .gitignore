@@ -411,3 +411,6 @@ TestResults/
 
 # Cloned reference repos
 spec-kit/
+
+# Code metrics build artifact
+*.Metrics.xml

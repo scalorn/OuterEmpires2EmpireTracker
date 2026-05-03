@@ -41,6 +41,10 @@ nuget restore OE2EmpireTracker.sln
 
 # Run tests via vstest with TRX output (dotnet test does NOT work with old-style csproj + packages.config)
 "D:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll /Logger:trx
+
+# Generate Code Metrics XML (build artifact, not committed to source control)
+# Output: OE2EmpireTracker/OE2EmpireTracker.Metrics.xml
+"D:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" OE2EmpireTracker.sln /t:Metrics
 ```
 
 ## Important: Testing

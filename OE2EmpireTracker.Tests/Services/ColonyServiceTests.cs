@@ -234,9 +234,21 @@ namespace OE2EmpireTracker.Tests.Services
             service.AddStructure(colony.UUID, flatpackUUID);
             service.AddStructure(colony.UUID, "flatpack-bp-other");
 
-            Assert.That(colony.Structures[0].DisplaySequence, Is.EqualTo(1));
-            Assert.That(colony.Structures[1].DisplaySequence, Is.EqualTo(2));
-            Assert.That(colony.Structures[2].DisplaySequence, Is.EqualTo(1));
+            // Look up by flatpack UUID  WriteContext sorts structures by UUID,
+            // so insertion order is not preserved in the list.
+            var sameType = colony.Structures
+                .Where(s => s.FlatpackBlueprintUUID == flatpackUUID)
+                .OrderBy(s => s.DisplaySequence)
+                .ToList();
+            var otherType = colony.Structures
+                .Where(s => s.FlatpackBlueprintUUID == "flatpack-bp-other")
+                .ToList();
+
+            Assert.That(sameType.Count, Is.EqualTo(2));
+            Assert.That(sameType[0].DisplaySequence, Is.EqualTo(1));
+            Assert.That(sameType[1].DisplaySequence, Is.EqualTo(2));
+            Assert.That(otherType.Count, Is.EqualTo(1));
+            Assert.That(otherType[0].DisplaySequence, Is.EqualTo(1));
         }
 
         // -------------------------------------------------------------------
