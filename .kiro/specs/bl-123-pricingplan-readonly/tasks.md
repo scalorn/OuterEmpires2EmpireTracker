@@ -111,8 +111,8 @@ Apply the immutable data model pattern (established in BL-108 blueprints and BL-
 - [x] 8. Checkpoint --- Verify form migration compiles and existing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Add ViewModel property tests
-  - [~] 9.1 Write property test: LoadFrom round-trip preserves all fields
+- [x] 9. Add ViewModel property tests
+  - [x] 9.1 Write property test: LoadFrom round-trip preserves all fields
     - Create `OE2EmpireTracker.Tests/ViewModels/PricingPlanViewModelPropertyTests.cs`
     - Reuse ValidPricingPlanGen() pattern from PricingPlanSerializationPropertyTests
     - **Property 1: LoadFrom Round-Trip Preserves All Fields**
@@ -120,57 +120,57 @@ Apply the immutable data model pattern (established in BL-108 blueprints and BL-
     - **Validates: Requirements 4.1, 4.2, 4.4**
     - Add `<Compile Include="ViewModels\PricingPlanViewModelPropertyTests.cs" />` to test csproj
 
-  - [~] 9.2 Write property test: IsDirty false immediately after LoadFrom
+  - [x] 9.2 Write property test: IsDirty false immediately after LoadFrom
     - **Property 2: IsDirty False Immediately After LoadFrom**
     - `[FsCheck.NUnit.Property(MaxTest = 25)]`
     - **Validates: Requirements 7.1, 7.4**
 
-  - [~] 9.3 Write property test: IsDirty detects any single field change
+  - [x] 9.3 Write property test: IsDirty detects any single field change
     - **Property 3: IsDirty Detects Any Single Field Change**
     - `[FsCheck.NUnit.Property(MaxTest = 50)]`
     - **Validates: Requirements 7.1, 7.2, 7.3**
 
-- [ ] 10. Add ViewModel unit tests
-  - [~] 10.1 Write unit tests for PricingPlanViewModel
+- [x] 10. Add ViewModel unit tests
+  - [x] 10.1 Write unit tests for PricingPlanViewModel
     - Create `OE2EmpireTracker.Tests/ViewModels/PricingPlanViewModelTests.cs`
     - Tests: Reset clears all fields to defaults, IsNew returns true after Reset, IsNew returns false after LoadFrom, IsDirty returns true for new plan with non-default Name, BuildUpdateRequest copies all fields, BuildCreateRequest copies all fields
     - Add `<Compile Include="ViewModels\PricingPlanViewModelTests.cs" />` to test csproj
     - _Requirements: 4.1, 4.2, 7.1, 7.5_
 
-- [ ] 11. Add Service property tests
-  - [~] 11.1 Write property test: Service.Update round-trip
+- [x] 11. Add Service property tests
+  - [x] 11.1 Write property test: Service.Update round-trip
     - Create `OE2EmpireTracker.Tests/Services/PricingPlanServicePropertyTests.cs`
     - **Property 4: Service.Update Round-Trip**
     - `[FsCheck.NUnit.Property(MaxTest = 25)]`
     - **Validates: Requirements 12.3, 12.4, 12.7**
     - Add `<Compile Include="Services\PricingPlanServicePropertyTests.cs" />` to test csproj
 
-  - [~] 11.2 Write property test: Service.Create round-trip
+  - [x] 11.2 Write property test: Service.Create round-trip
     - **Property 5: Service.Create Round-Trip**
     - `[FsCheck.NUnit.Property(MaxTest = 25)]`
     - **Validates: Requirements 13.2, 13.4, 13.8**
 
-  - [~] 11.3 Write property test: Service.Delete removes plan
+  - [x] 11.3 Write property test: Service.Delete removes plan
     - **Property 6: Service.Delete Removes Plan**
     - `[FsCheck.NUnit.Property(MaxTest = 25)]`
     - **Validates: Requirements 14.1, 14.2**
 
-- [ ] 12. Add Service unit tests
-  - [~] 12.1 Write unit tests for PricingPlanService
+- [x] 12. Add Service unit tests
+  - [x] 12.1 Write unit tests for PricingPlanService
     - Create `OE2EmpireTracker.Tests/Services/PricingPlanServiceTests.cs`
     - Tests: Update with non-existent UUID throws InvalidOperationException, Delete with empty UUID returns without error, Delete with non-existent UUID returns without error, Create assigns non-empty UUID, Create sets OwnerUUID to current player UUID, Update fires PricingDataChanged event, Create fires PricingDataChanged event, Delete fires PricingDataChanged event
     - Add `<Compile Include="Services\PricingPlanServiceTests.cs" />` to test csproj
     - _Requirements: 12.6, 12.8, 13.2, 13.3, 13.7, 14.4, 14.5_
 
-- [ ] 13. Add mutation guard test
-  - [~] 13.1 Write mutation guard test for PricingPlan
+- [x] 13. Add mutation guard test
+  - [x] 13.1 Write mutation guard test for PricingPlan
     - Create `OE2EmpireTracker.Tests/Services/PricingPlanMutationGuardTests.cs`
     - Follow BlueprintMutationGuardTests pattern: scan FormPricingPlan.cs and PricingPlanViewModel.cs for direct entity mutation patterns
     - Verify ViewModel does not expose mutable PricingPlan via public property
     - **Validates: Requirements 17.1, 17.2, 17.3, 20.1**
     - Add `<Compile Include="Services\PricingPlanMutationGuardTests.cs" />` to test csproj
 
-- [~] 14. Final checkpoint --- Full build, all tests pass, audit clean
+- [x] 14. Final checkpoint --- Full build, all tests pass, audit clean
   - Build with zero errors and zero warnings
   - All existing and new tests pass
   - `node .kiro/tools/audit.js` reports no new findings

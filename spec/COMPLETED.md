@@ -389,3 +389,7 @@ Refactored BuildOrderOptimizer.Optimize() to replace O(n²) SimulateAll calls wi
 ### BL-111: FormPlayerProfile — Immutable Data Model with Service Layer
 Migrated FormPlayerProfile to the immutable data model pattern established in BL-108. The form no longer directly mutates PlayerProfile entities. The ViewModel is a disconnected edit buffer with dirty tracking. A new PlayerProfileService is the sole mutator (Update, Create, Delete, Import). Added SuppressUI guards to prevent MessageBox dialogs during tests. Added unsaved changes prompts on selection change, form close, and New button.
 **Status: Complete** — Spec: .kiro/specs/bl-111-playerprofile-readonly/
+
+### BL-123: FormPricingPlan — Immutable Data Model with Service Layer
+Applied the immutable data model pattern (from BL-108/BL-111) to FormPricingPlan. Created PricingPlanViewModel as disconnected edit buffer, PricingPlanService as sole mutator, DTO request objects (PricingPlanUpdateRequest, PricingPlanCreateRequest). Migrated FormPricingPlan to use ReadOnly wrappers in list view, ViewModel for all edits, and service for Save/Delete. Added unsaved changes prompts (selection change, New, form close, app exit). Added 24 new tests: 3 ViewModel property tests, 8 ViewModel unit tests, 3 service property tests, 8 service unit tests, 2 mutation guard tests. See .kiro/specs/bl-123-pricingplan-readonly/.
+**Status: Complete**
