@@ -107,7 +107,6 @@ Build a custom `TreeDataGridView` control extending DataGridView that supports e
 
 Add a cost evolution graph to the Blueprint form, similar to the existing evolution graph but plotting the estimated cost of each blueprint at each evolution level. Cost is computed using a selected pricing plan — sum of (resource quantity × resource price) for each resource in the blueprint, plus any time-based costs from the plan. The graph shows how total manufacturing cost changes as the blueprint evolves, helping players decide which evolution to manufacture based on cost efficiency. Requires a pricing plan selector dropdown on the graph panel. Reuse the charting infrastructure from the evolution graph (System.Windows.Forms.DataVisualization.Charting).
 
-
 ---
 ### BL-045: GitHub MCP Integration
 **Dependencies:** None (blocked by Docker installation issues)
@@ -137,7 +136,6 @@ Bug: When colonies and surveys are imported in the wrong order, duplicate defaul
 All BlueprintTypes now have HTML coverage. No gaps detected (confirmed by IconPositionExtractor coverage gap report in test output).
 
 ---
-
 
 ### BL-073: Code Coverage Tooling
 **Dependencies:** None
@@ -274,20 +272,9 @@ Add right-click context menus to DataGridView grids across all forms. Currently 
 - **FormStation**: dgvHold/dgvComponents — Add/Remove
 Each context menu should mirror the existing button actions for that grid, providing the same functionality via right-click.
 
-
 ## Read-Only Data Wrapper Migration — Per-Form Backlog Items
 
 These items migrate individual forms from consuming mutable entity references to using ReadOnly wrapper types for their read-only data paths (combo box population, list view display, reference counting, status display). Each form retains mutable access for its ViewModel/edit paths. Depends on the readonly-data-wrappers spec (complete).
-
-### BL-131: FormBlueprintV2 — Statistics Grid Add/Delete and Context Menus
-**Dependencies:** None
-**Status: Done**
-Add explicit Add/Delete buttons for the statistics grid (dgvStatistics), matching the existing Add/Delete on the resources grid. Delete SHALL be disabled for properties that are part of the BlueprintType's defined property list — only user-added extra properties can be deleted. Add right-click context menus to both the statistics grid and resources grid with Add Row and Delete Row items. Delete Row in the context menu follows the same rules: disabled for type-defined statistics properties, always enabled for resources.
-
-### BL-132: FormBlueprintV2 — Switch Type and Pricing Plan Combos to FilteredTextComboSet
-**Dependencies:** None
-**Status: Done**
-The blueprint type combo (cmbBlueprintType) has grown long enough to need filtering. Switch it to FilteredTextComboSet on both the filter panel (cmbFilterType) and the edit panel (cmbBlueprintType). Also switch the pricing plan combo (cmbPricingPlan) to FilteredTextComboSet to future-proof it as more plans are added. Follow the same pattern used by cmbItem on the build planner and cmbHull on the ship forms — SetItems with a parallel ID list, SelectedFullIndex for lookup.
 
 ### BL-109: FormColonyV2 — Switch to ReadOnly Data Wrappers
 **Dependencies:** readonly-data-wrappers spec (done)

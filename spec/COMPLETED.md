@@ -397,3 +397,11 @@ Applied the immutable data model pattern (from BL-108/BL-111) to FormPricingPlan
 ### BL-108: FormBlueprintV2 — Immutable Data Model, Mutation Through Service Only
 Full immutable data model for the blueprint form. ViewModel becomes a disconnected edit buffer (no write-through). All mutation goes through BlueprintService (Update, Create, Delete, Import, MoveToGlobal/Player). ReadOnly wrappers for all read-only paths. Unsaved changes prompts on selection change, form close, and new. See .kiro/specs/bl-108-blueprint-readonly/ for full spec.
 **Status: Complete**
+
+### BL-131: FormBlueprintV2 — Statistics Grid Add/Delete and Context Menus
+Added Add/Delete buttons for the statistics grid (dgvStatistics) matching the resources grid pattern. Delete disabled for BlueprintType-defined properties — only user-added extras can be deleted. Added right-click context menus (cmsStatistics, cmsResources) to both statistics and resources grids with Add Row and Delete Row items.
+**Status: Complete**
+
+### BL-132: FormBlueprintV2 — Switch Type and Pricing Plan Combos to FilteredTextComboSet
+Switched cmbFilterType, cmbBlueprintType, and cmbPricingPlan from standard ComboBox to FilteredTextComboSet. Updated initialization to use SetItems(), event handlers to SelectedItemChanged, and value reads to SelectedFullIndex/SelectedItem. Added _pricingPlanList parallel UUID list for pricing plan lookup.
+**Status: Complete**
