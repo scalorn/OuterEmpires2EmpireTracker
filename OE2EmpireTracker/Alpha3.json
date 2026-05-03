@@ -58930,7 +58930,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Post-Trans Metals",
   "Name": "Heavy Post-Trans Metals",
-  "Quantity": 2147481023,
+  "Quantity": 2147481030,
   "ResourcePurity": "High"
 },
         "ff7f44c6-5ab7-4e1e-b74f-acad0ece79df": {
@@ -58938,7 +58938,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Inorganics",
   "Name": "Acidic Inorganics",
-  "Quantity": 249234277,
+  "Quantity": 249234307,
   "ResourcePurity": "Medium"
 }
       },
@@ -59053,14 +59053,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-03T15:02:50.7277849Z",
-            "EndTime": "2026-05-03T16:02:50.7277849Z",
+            "StartTime": "2026-05-03T16:02:50.7277849Z",
+            "EndTime": "2026-05-03T17:02:50.7277849Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "f71640ab-f2f9-4284-97a4-59529cf0f86c",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
-          "MiningLeftOvers": 0.3896,
+          "MiningLeftOvers": 0.8939,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -59329,14 +59329,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-03T15:02:49.7277849Z",
-            "EndTime": "2026-05-03T16:02:49.7277849Z",
+            "StartTime": "2026-05-03T16:02:49.7277849Z",
+            "EndTime": "2026-05-03T17:02:49.7277849Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "f71640ab-f2f9-4284-97a4-59529cf0f86c",
           "MiningSurveyResource": "Acidic Inorganics",
-          "MiningLeftOvers": 0.8969,
+          "MiningLeftOvers": 0.8939,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },

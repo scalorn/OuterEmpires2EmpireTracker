@@ -283,8 +283,7 @@ Migrate read-only data paths in FormColonyV2 to use ReadOnly wrappers. This form
 
 ### BL-110: FormSurvey — Switch to ReadOnly Data Wrappers
 **Dependencies:** readonly-data-wrappers spec (done)
-**Status: New**
-Migrate read-only data paths in FormSurvey to use ReadOnly wrappers. This form uses SurveyReferenceCounter for delete-guard logic, FilteredTextComboSet for scanner blueprint selection, and colony list for reference counting. The SurveyViewModel continues to use mutable Survey for editing. Switch list population to GetReadOnlySurveyList, reference counter inputs to read-only lists, and combo population to ReadOnly types.
+**Status: Complete** — Full immutable data model applied. SurveyViewModel rewritten as disconnected edit buffer, SurveyService created as sole mutator, FormSurvey migrated to ReadOnly wrappers with unsaved changes prompts. 37 new tests (property-based + unit + mutation guard). See spec: .kiro/specs/bl-110-survey-readonly/
 
 ### BL-112: FormDeliveryRoute — Switch to ReadOnly Data Wrappers
 **Dependencies:** readonly-data-wrappers spec (done)

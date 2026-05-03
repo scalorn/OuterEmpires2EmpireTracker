@@ -394,6 +394,10 @@ Migrated FormPlayerProfile to the immutable data model pattern established in BL
 Applied the immutable data model pattern (from BL-108/BL-111) to FormPricingPlan. Created PricingPlanViewModel as disconnected edit buffer, PricingPlanService as sole mutator, DTO request objects (PricingPlanUpdateRequest, PricingPlanCreateRequest). Migrated FormPricingPlan to use ReadOnly wrappers in list view, ViewModel for all edits, and service for Save/Delete. Added unsaved changes prompts (selection change, New, form close, app exit). Added 24 new tests: 3 ViewModel property tests, 8 ViewModel unit tests, 3 service property tests, 8 service unit tests, 2 mutation guard tests. See .kiro/specs/bl-123-pricingplan-readonly/.
 **Status: Complete**
 
+### BL-110: FormSurvey — Immutable Data Model with Service Layer
+Applied the immutable data model pattern (from BL-108/BL-111/BL-123) to FormSurvey. Created SurveyViewModel as disconnected edit buffer, SurveyService as sole mutator with CRUD and Import methods, DTO request objects (SurveyUpdateRequest, SurveyCreateRequest). Migrated FormSurvey to use ReadOnly wrappers in list view, ViewModel for all edits, and service for Save/Delete/Import. Added unsaved changes prompts (selection change, New, Import, form close). Import routes through service with dedup and asteroid auto-linking. Delete checks SurveyReferenceCounter for reference protection. 37 new tests including property-based tests, unit tests, and mutation guard tests. Fixed missing AsteroidUUID comparison in IsDirty (found by property test). See .kiro/specs/bl-110-survey-readonly/ for full spec.
+**Status: Complete**
+
 ### BL-108: FormBlueprintV2 — Immutable Data Model, Mutation Through Service Only
 Full immutable data model for the blueprint form. ViewModel becomes a disconnected edit buffer (no write-through). All mutation goes through BlueprintService (Update, Create, Delete, Import, MoveToGlobal/Player). ReadOnly wrappers for all read-only paths. Unsaved changes prompts on selection change, form close, and new. See .kiro/specs/bl-108-blueprint-readonly/ for full spec.
 **Status: Complete**
