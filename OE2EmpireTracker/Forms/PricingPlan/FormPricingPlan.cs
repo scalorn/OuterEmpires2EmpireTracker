@@ -6,6 +6,7 @@ using NLog;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.PricingPlan
 {
@@ -16,13 +17,17 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         private int _isProgrammaticUpdate = 0;
 
         private PlayerContext playerContext;
+        private PricingPlanViewModel _viewModel = new PricingPlanViewModel();
+        private PricingPlanService _pricingPlanService;
 
-        private Models.PricingPlan _selectedPlan;
+        // Tracks the previously selected plan UUID for unsaved-changes cancel/restore
+        private string _previousSelectedUUID;
 
         public FormPricingPlan()
         {
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
+            _pricingPlanService = new PricingPlanService(playerContext);
 
             lvwPlans.View = View.Details;
             lvwPlans.Columns.Add("Name", 200);
@@ -56,6 +61,25 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
 
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (_viewModel.IsDirty)
+            {
+                var result = PromptUnsavedChanges();
+                if (result == DialogResult.Yes)
+                {
+                    SaveCurrentPlan();
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
+            base.OnFormClosing(e);
+        }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
@@ -97,31 +121,33 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            string selectedUUID = _selectedPlan?.UUID;
+            string selectedUUID = GetSelectedReadOnlyPlan()?.UUID;
             lvwPlans.Items.Clear();
 
-            var plans = playerContext.GetCurrentPlayerPricingPlans();
+            var plans = playerContext.GetCurrentPlayerReadOnlyPricingPlans();
             string filter = txtPlanFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
             {
                 plans = plans.Where(p => p.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
 
-            plans = CollectionSortHelper.OrderPricingPlans(plans).ToList();
+            var sorted = CollectionSortHelper.OrderReadOnlyPricingPlans(plans);
 
-            foreach (var plan in plans)
+            foreach (var plan in sorted)
             {
                 var item = new ListViewItem(plan.Name) { Tag = plan };
                 lvwPlans.Items.Add(item);
                 if (plan.UUID == selectedUUID)
+                {
                     item.Selected = true;
+                }
             }
 
             sw.Stop();
             Log.Info(
                 "PopulatePlanList PERF: total={0}ms items={1}",
                 sw.ElapsedMilliseconds,
-                plans.Count);
+                sorted.Count);
             sw.Stop();
             Log.Info("PERF PopulatePlanList: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -134,16 +160,64 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         private void LvwPlans_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (e.IsSelected && e.Item.Tag is Models.PricingPlan plan)
+            if (e.IsSelected && e.Item.Tag is ReadOnlyPricingPlan plan)
             {
-                _selectedPlan = plan;
+                // Prompt for unsaved changes before switching
+                if (_viewModel.IsDirty)
+                {
+                    var result = PromptUnsavedChanges();
+                    if (result == DialogResult.Yes)
+                    {
+                        SaveCurrentPlan();
+                    }
+                    else if (result == DialogResult.Cancel)
+                    {
+                        // Restore previous selection
+                        lvwPlans.ItemSelectionChanged -= LvwPlans_ItemSelectionChanged;
+                        lvwPlans.SelectedItems.Clear();
+                        if (!string.IsNullOrEmpty(_previousSelectedUUID))
+                        {
+                            foreach (ListViewItem item in lvwPlans.Items)
+                            {
+                                if ((item.Tag as ReadOnlyPricingPlan)?.UUID == _previousSelectedUUID)
+                                {
+                                    item.Selected = true;
+                                    item.EnsureVisible();
+                                    break;
+                                }
+                            }
+                        }
+
+                        lvwPlans.ItemSelectionChanged += LvwPlans_ItemSelectionChanged;
+                        return;
+                    }
+
+                    // DialogResult.No - discard, fall through to load new
+                }
+
+                _viewModel.LoadFrom(plan);
+                _previousSelectedUUID = plan.UUID;
                 PopulateForm();
+                UpdateSaveButtonState();
             }
             else if (!e.IsSelected && lvwPlans.SelectedItems.Count == 0)
             {
-                _selectedPlan = null;
                 ClearForm();
             }
+        }
+
+        /// <summary>
+        /// Returns the ReadOnlyPricingPlan from the currently selected list view item,
+        /// or null if nothing is selected.
+        /// </summary>
+        private ReadOnlyPricingPlan GetSelectedReadOnlyPlan()
+        {
+            if (lvwPlans.SelectedItems.Count == 0)
+            {
+                return null;
+            }
+
+            return lvwPlans.SelectedItems[0].Tag as ReadOnlyPricingPlan;
         }
 
         // -----------------------------------------------------------------------
@@ -154,16 +228,17 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedPlan == null)
+            var selected = GetSelectedReadOnlyPlan();
+            if (selected == null)
             {
                 ClearForm();
                 return;
             }
 
-            txtPlanName.Text = _selectedPlan.Name;
-            txtDescription.Text = _selectedPlan.Description;
-            txtFixedCost.Text = _selectedPlan.FixedCostPerItem == 0m ? string.Empty : _selectedPlan.FixedCostPerItem.ToString();
-            txtHourlyCost.Text = _selectedPlan.HourlyCostRate == 0m ? string.Empty : _selectedPlan.HourlyCostRate.ToString();
+            txtPlanName.Text = _viewModel.Name;
+            txtDescription.Text = _viewModel.Description;
+            txtFixedCost.Text = _viewModel.FixedCostPerItem == 0m ? string.Empty : _viewModel.FixedCostPerItem.ToString();
+            txtHourlyCost.Text = _viewModel.HourlyCostRate == 0m ? string.Empty : _viewModel.HourlyCostRate.ToString();
 
             PopulateResourceGrid();
             SetDetailEnabled(true);
@@ -171,17 +246,20 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             Log.Info("PopulateForm PERF: total={0}ms", sw.ElapsedMilliseconds);
             sw.Stop();
             Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
+            UpdateSaveButtonState();
         }
 
         private void ClearForm()
         {
             using var guard = new ProgrammaticUpdateGuard(this);
+            _viewModel.Reset();
             txtPlanName.Text = string.Empty;
             txtDescription.Text = string.Empty;
             txtFixedCost.Text = string.Empty;
             txtHourlyCost.Text = string.Empty;
             dgvResourcePrices.Rows.Clear();
             SetDetailEnabled(false);
+            UpdateSaveButtonState();
         }
 
         private void SetDetailEnabled(bool enabled)
@@ -190,7 +268,6 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             txtDescription.Enabled = enabled;
             txtFixedCost.Enabled = enabled;
             txtHourlyCost.Enabled = enabled;
-            cmdSave.Enabled = enabled;
             dgvResourcePrices.Enabled = enabled;
         }
 
@@ -203,7 +280,8 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             dgvResourcePrices.Rows.Clear();
             dgvResourcePrices.CellValidating += DgvResourcePrices_CellValidating;
 
-            if (_selectedPlan == null)
+            var selected = GetSelectedReadOnlyPlan();
+            if (selected == null)
             {
                 sw.Stop();
                 return;
@@ -215,7 +293,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 string key = PriceCalculator.MakeResourceKey(resource.Name, purity);
                 string priceText = string.Empty;
                 decimal price;
-                if (_selectedPlan.ResourcePrices.TryGetValue(key, out price))
+                if (_viewModel.ResourcePrices.TryGetValue(key, out price))
                 {
                     priceText = price.ToString();
                 }
@@ -229,106 +307,157 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         }
 
         // -----------------------------------------------------------------------
+        // Dirty Tracking / Unsaved Changes
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Enables the Save button only when the ViewModel has unsaved changes.
+        /// </summary>
+        private void UpdateSaveButtonState()
+        {
+            cmdSave.Enabled = _viewModel.IsDirty;
+        }
+
+        /// <summary>
+        /// Prompts the user to save, discard, or cancel when there are unsaved changes.
+        /// Returns Yes (save), No (discard), or Cancel.
+        /// </summary>
+        private DialogResult PromptUnsavedChanges()
+        {
+            return MessageBox.Show(
+                string.Format("Save changes to '{0}'?", _viewModel.Name),
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+        }
+
+        /// <summary>
+        /// Saves the current plan via the service (Create or Update) and reloads the ViewModel.
+        /// </summary>
+        private void SaveCurrentPlan()
+        {
+            ReadOnlyPricingPlan saved;
+            if (_viewModel.IsNew)
+            {
+                saved = _pricingPlanService.Create(_viewModel.BuildCreateRequest());
+            }
+            else
+            {
+                saved = _pricingPlanService.Update(_viewModel.UUID, _viewModel.BuildUpdateRequest());
+            }
+
+            _viewModel.LoadFrom(saved);
+            _previousSelectedUUID = saved.UUID;
+            PopulatePlanList();
+            SelectPlanInList(saved.UUID);
+            PopulateForm();
+            UpdateSaveButtonState();
+        }
+
+        /// <summary>
+        /// Selects the plan with the given UUID in the list view and scrolls it into view.
+        /// </summary>
+        private void SelectPlanInList(string uuid)
+        {
+            foreach (ListViewItem item in lvwPlans.Items)
+            {
+                if ((item.Tag as ReadOnlyPricingPlan)?.UUID == uuid)
+                {
+                    item.Selected = true;
+                    item.EnsureVisible();
+                    break;
+                }
+            }
+        }
+
+        // -----------------------------------------------------------------------
         // CRUD Operations
         // -----------------------------------------------------------------------
 
         private void CmdNew_Click(object sender, EventArgs e)
         {
-            var plan = new Models.PricingPlan
+            if (_viewModel.IsDirty)
             {
-                UUID = Guid.NewGuid().ToString(),
-                Name = "New Plan",
-                OwnerUUID = playerContext.CurrentPlayerUUID
-            };
+                var result = PromptUnsavedChanges();
+                if (result == DialogResult.Yes)
+                {
+                    SaveCurrentPlan();
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
 
-            playerContext.AddPricingPlan(plan);
-            playerContext.WriteContext();
-            playerContext.OnPricingDataChanged();
-            _selectedPlan = plan;
-            PopulatePlanList();
-            PopulateForm();
+            _viewModel.Reset();
+            _previousSelectedUUID = null;
+            lvwPlans.SelectedItems.Clear();
+            ClearForm();
+            SetDetailEnabled(true);
+            UpdateSaveButtonState();
         }
 
         private void CmdDelete_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null) return;
+            var selected = GetSelectedReadOnlyPlan();
+            if (selected == null)
+            {
+                return;
+            }
+
             var result = MessageBox.Show(
-                $"Delete pricing plan '{_selectedPlan.Name}'?",
+                string.Format("Delete pricing plan '{0}'?", selected.Name),
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
-            if (result != DialogResult.Yes) return;
+            if (result != DialogResult.Yes)
+            {
+                return;
+            }
 
-            playerContext.RemovePricingPlan(_selectedPlan);
-            playerContext.WriteContext();
-            playerContext.OnPricingDataChanged();
-            _selectedPlan = null;
+            _pricingPlanService.Delete(selected.UUID);
+            _previousSelectedUUID = null;
             PopulatePlanList();
             ClearForm();
         }
 
         private void CmdSave_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null) return;
-
-            string name = txtPlanName.Text.Trim();
+            string name = _viewModel.Name?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name))
             {
                 MessageBox.Show("Plan name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            decimal fixedCost;
-            if (!string.IsNullOrEmpty(txtFixedCost.Text) && !decimal.TryParse(txtFixedCost.Text, out fixedCost))
-            {
-                MessageBox.Show("Fixed Cost must be a valid number.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            else if (string.IsNullOrEmpty(txtFixedCost.Text))
-            {
-                fixedCost = 0m;
-            }
-            else
-            {
-                fixedCost = decimal.Parse(txtFixedCost.Text);
-            }
-
-            if (fixedCost < 0m)
+            if (_viewModel.FixedCostPerItem < 0m)
             {
                 MessageBox.Show("Fixed Cost cannot be negative.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            decimal hourlyCost;
-            if (!string.IsNullOrEmpty(txtHourlyCost.Text) && !decimal.TryParse(txtHourlyCost.Text, out hourlyCost))
-            {
-                MessageBox.Show("Hourly Rate must be a valid number.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            else if (string.IsNullOrEmpty(txtHourlyCost.Text))
-            {
-                hourlyCost = 0m;
-            }
-            else
-            {
-                hourlyCost = decimal.Parse(txtHourlyCost.Text);
-            }
-
-            if (hourlyCost < 0m)
+            if (_viewModel.HourlyCostRate < 0m)
             {
                 MessageBox.Show("Hourly Rate cannot be negative.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            _selectedPlan.Name = name;
-            _selectedPlan.Description = txtDescription.Text;
-            _selectedPlan.FixedCostPerItem = fixedCost;
-            _selectedPlan.HourlyCostRate = hourlyCost;
+            ReadOnlyPricingPlan saved;
+            if (_viewModel.IsNew)
+            {
+                saved = _pricingPlanService.Create(_viewModel.BuildCreateRequest());
+            }
+            else
+            {
+                saved = _pricingPlanService.Update(_viewModel.UUID, _viewModel.BuildUpdateRequest());
+            }
 
-            playerContext.WriteContext();
-            playerContext.OnPricingDataChanged();
+            _viewModel.LoadFrom(saved);
+            _previousSelectedUUID = saved.UUID;
             PopulatePlanList();
-            Log.Info("Saved pricing plan '{0}'", _selectedPlan.Name);
+            SelectPlanInList(saved.UUID);
+            PopulateForm();
+            Log.Info("Saved pricing plan '{0}'", saved.Name);
         }
 
         // -----------------------------------------------------------------------
@@ -337,30 +466,46 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         private void TxtPlanName_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
-            _selectedPlan.Name = txtPlanName.Text;
+            if (_isProgrammaticUpdate > 0) return;
+            _viewModel.Name = txtPlanName.Text;
+            UpdateSaveButtonState();
         }
 
         private void TxtDescription_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
-            _selectedPlan.Description = txtDescription.Text;
+            if (_isProgrammaticUpdate > 0) return;
+            _viewModel.Description = txtDescription.Text;
+            UpdateSaveButtonState();
         }
 
         private void TxtFixedCost_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
-            decimal val;
-            if (decimal.TryParse(txtFixedCost.Text, out val) && val >= 0m)
-                _selectedPlan.FixedCostPerItem = val;
+            if (_isProgrammaticUpdate > 0) return;
+            if (decimal.TryParse(txtFixedCost.Text, out decimal val))
+            {
+                _viewModel.FixedCostPerItem = val;
+            }
+            else if (string.IsNullOrEmpty(txtFixedCost.Text))
+            {
+                _viewModel.FixedCostPerItem = 0m;
+            }
+
+            UpdateSaveButtonState();
         }
 
         private void TxtHourlyCost_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
-            decimal val;
-            if (decimal.TryParse(txtHourlyCost.Text, out val) && val >= 0m)
-                _selectedPlan.HourlyCostRate = val;
+            if (_isProgrammaticUpdate > 0) return;
+            if (decimal.TryParse(txtHourlyCost.Text, out decimal val))
+            {
+                _viewModel.HourlyCostRate = val;
+            }
+            else if (string.IsNullOrEmpty(txtHourlyCost.Text))
+            {
+                _viewModel.HourlyCostRate = 0m;
+            }
+
+            UpdateSaveButtonState();
         }
 
         // -----------------------------------------------------------------------
@@ -369,11 +514,21 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         private void DgvResourcePrices_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            if (_isProgrammaticUpdate > 0) return;
-            if (e.ColumnIndex != colPrice.Index) return;
+            if (_isProgrammaticUpdate > 0)
+            {
+                return;
+            }
+
+            if (e.ColumnIndex != colPrice.Index)
+            {
+                return;
+            }
 
             string value = e.FormattedValue?.ToString();
-            if (string.IsNullOrWhiteSpace(value)) return; // blank is valid (clears entry)
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return; // blank is valid (clears entry)
+            }
 
             decimal parsed;
             if (!decimal.TryParse(value, out parsed))
@@ -395,31 +550,33 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         private void DgvResourcePrices_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (_isProgrammaticUpdate > 0) return;
-            if (e.RowIndex < 0 || e.ColumnIndex != colPrice.Index) return;
-            if (_selectedPlan == null) return;
-
-            var row = dgvResourcePrices.Rows[e.RowIndex];
-            string key = row.Tag as string;
-            if (key == null) return;
-
-            string value = row.Cells[colPrice.Index].Value?.ToString();
-            if (string.IsNullOrWhiteSpace(value))
+            if (_isProgrammaticUpdate > 0)
             {
-                // Clear entry -- resource becomes unpriced
-                _selectedPlan.ResourcePrices.Remove(key);
-            }
-            else
-            {
-                decimal parsed;
-                if (decimal.TryParse(value, out parsed) && parsed >= 0m)
-                {
-                    _selectedPlan.ResourcePrices[key] = parsed;
-                }
+                return;
             }
 
-            playerContext.WriteContext();
-            playerContext.OnPricingDataChanged();
+            if (e.RowIndex < 0 || e.ColumnIndex != colPrice.Index)
+            {
+                return;
+            }
+
+            string key = dgvResourcePrices.Rows[e.RowIndex].Tag as string;
+            if (string.IsNullOrEmpty(key))
+            {
+                return;
+            }
+
+            string cellValue = dgvResourcePrices.Rows[e.RowIndex].Cells[colPrice.Index].Value?.ToString();
+            if (string.IsNullOrWhiteSpace(cellValue))
+            {
+                _viewModel.ResourcePrices.Remove(key);
+            }
+            else if (decimal.TryParse(cellValue, out decimal price) && price >= 0m)
+            {
+                _viewModel.ResourcePrices[key] = price;
+            }
+
+            UpdateSaveButtonState();
         }
 
         // -----------------------------------------------------------------------
@@ -428,7 +585,11 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
         {
-            if (IsDisposed) return;
+            if (IsDisposed)
+            {
+                return;
+            }
+
             if (InvokeRequired)
             {
                 try
@@ -442,7 +603,6 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 return;
             }
 
-            _selectedPlan = null;
             PopulatePlanList();
             ClearForm();
         }

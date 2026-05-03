@@ -54,21 +54,21 @@ Apply the immutable data model pattern (established in BL-108 blueprints and BL-
 - [x] 5. Checkpoint --- Verify new classes compile cleanly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Migrate FormPricingPlan to ReadOnly wrappers and ViewModel
-  - [~] 6.1 Replace mutable entity references with ReadOnly wrappers in list view
+- [x] 6. Migrate FormPricingPlan to ReadOnly wrappers and ViewModel
+  - [x] 6.1 Replace mutable entity references with ReadOnly wrappers in list view
     - Change PopulatePlanList to store ReadOnlyPricingPlan in ListViewItem Tags (from PlayerContext.GetCurrentPlayerReadOnlyPricingPlans())
     - Change TxtPlanFilter_TextChanged to use ReadOnlyPricingPlan.Name for filter comparison
     - Remove the `_selectedPlan` mutable PricingPlan field
     - _Requirements: 2.1, 2.3, 3.1_
 
-  - [~] 6.2 Wire ViewModel as edit buffer
+  - [x] 6.2 Wire ViewModel as edit buffer
     - Add `PricingPlanViewModel _viewModel` field and `PricingPlanService _pricingPlanService` field
     - Change LvwPlans_ItemSelectionChanged to extract ReadOnlyPricingPlan from Tag and call _viewModel.LoadFrom()
     - Change PopulateForm to read from _viewModel local fields instead of entity
     - Change ClearForm to call _viewModel.Reset()
     - _Requirements: 2.2, 4.1, 4.2, 4.3, 4.4, 5.1, 5.2_
 
-  - [~] 6.3 Replace write-through with local-only ViewModel updates
+  - [x] 6.3 Replace write-through with local-only ViewModel updates
     - Change TxtPlanName_TextChanged to set _viewModel.Name instead of entity.Name
     - Change TxtDescription_TextChanged to set _viewModel.Description instead of entity.Description
     - Change TxtFixedCost_TextChanged to set _viewModel.FixedCostPerItem instead of entity.FixedCostPerItem
@@ -77,18 +77,18 @@ Apply the immutable data model pattern (established in BL-108 blueprints and BL-
     - Remove any direct WriteContext() calls from cell change handlers
     - _Requirements: 6.1, 6.2, 6.3_
 
-  - [~] 6.4 Wire Save button through service
+  - [x] 6.4 Wire Save button through service
     - Change CmdSave_Click: if _viewModel.IsNew, call _pricingPlanService.Create(BuildCreateRequest()); else call _pricingPlanService.Update(uuid, BuildUpdateRequest())
     - After save, refresh list view and reload _viewModel from returned ReadOnlyPricingPlan
     - Enable Save button only when _viewModel.IsDirty is true
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 7.6_
 
-  - [~] 6.5 Wire Delete button through service
+  - [x] 6.5 Wire Delete button through service
     - Change CmdDelete_Click to call _pricingPlanService.Delete(uuid) instead of direct entity removal
     - _Requirements: 14.1, 14.2, 14.3, 14.4_
 
-- [ ] 7. Add unsaved changes prompts
-  - [~] 7.1 Add unsaved changes prompt on selection change
+- [x] 7. Add unsaved changes prompts
+  - [x] 7.1 Add unsaved changes prompt on selection change
     - In LvwPlans_ItemSelectionChanged, check _viewModel.IsDirty before loading new selection
     - Show three-button dialog: Save, Discard, Cancel
     - Save: call service Create/Update, then load new selection
@@ -96,19 +96,19 @@ Apply the immutable data model pattern (established in BL-108 blueprints and BL-
     - Cancel: cancel selection change, keep current plan selected
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-  - [~] 7.2 Add unsaved changes prompt on New button
+  - [x] 7.2 Add unsaved changes prompt on New button
     - In CmdNew_Click, check _viewModel.IsDirty before clearing form
     - Same three-button dialog: Save, Discard, Cancel
     - _Requirements: 11.1, 11.2, 11.3, 11.4_
 
-  - [~] 7.3 Add unsaved changes prompt on form close and application exit
+  - [x] 7.3 Add unsaved changes prompt on form close and application exit
     - Override OnFormClosing to check _viewModel.IsDirty
     - Show same three-button dialog
     - Cancel sets e.Cancel = true to prevent close
     - Handles both form close (X button) and application exit (MainWindow closing)
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 10.1, 10.2_
 
-- [~] 8. Checkpoint --- Verify form migration compiles and existing tests pass
+- [x] 8. Checkpoint --- Verify form migration compiles and existing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 9. Add ViewModel property tests
