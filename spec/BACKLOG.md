@@ -276,10 +276,6 @@ Each context menu should mirror the existing button actions for that grid, provi
 
 These items migrate individual forms from consuming mutable entity references to using ReadOnly wrapper types for their read-only data paths (combo box population, list view display, reference counting, status display). Each form retains mutable access for its ViewModel/edit paths. Depends on the readonly-data-wrappers spec (complete).
 
-### BL-112: FormDeliveryRoute â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
-**Status: Complete** --- Full immutable data model applied. DeliveryRouteViewModel rewritten as disconnected edit buffer, DeliveryRouteService created as sole mutator, FormDeliveryRoute migrated to ReadOnly wrappers with unsaved changes prompts. 28 new tests. See spec: .kiro/specs/bl-112-deliveryroute-readonly/ to use ReadOnly wrappers. This form has extensive read-only consumption: route list view with DeliveryRouteReferenceCounter, FilteredTextComboSet combos for colony/item selection (drop-off and pick-up), and RouteDropdownHelper for destination combos. The DeliveryRouteViewModel continues to use mutable DeliveryRoute for editing. Switch list population, reference counter inputs, combo population, and RouteDropdownHelper inputs to read-only types.
-
 ### BL-113: FormDeliveryExecution â€” Switch to ReadOnly Data Wrappers
 **Dependencies:** readonly-data-wrappers spec (done)
 **Status: New**
