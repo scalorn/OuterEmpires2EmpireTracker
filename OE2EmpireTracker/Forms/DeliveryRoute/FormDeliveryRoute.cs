@@ -26,6 +26,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private DeliveryRouteViewModel viewModel;
 
+        private DeliveryRouteService _deliveryRouteService;
+
         private DeliveryPlanViewModel planViewModel;
 
         private DeliveryPlanStop selectedPlanStop;
@@ -38,7 +40,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             InitializeComponent();
             empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
-            viewModel = new DeliveryRouteViewModel(new Models.DeliveryRoute(), playerContext);
+            viewModel = new DeliveryRouteViewModel();
+            _deliveryRouteService = new DeliveryRouteService(playerContext);
 
             lvwRoutes.View = View.Details;
             lvwRoutes.Columns.Add("Name", 200);
@@ -111,6 +114,17 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
 
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (!HandleUnsavedChanges())
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            base.OnFormClosing(e);
+        }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
@@ -189,16 +203,27 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         {
             var sw = Stopwatch.StartNew();
             lvwRoutes.Items.Clear();
-            var routes = viewModel.GetFilteredRoutes(txtRouteFilter.Text);
+            string filter = txtRouteFilter.Text ?? string.Empty;
+            var allRoutes = CollectionSortHelper.OrderByName(
+                playerContext.GetCurrentPlayerReadOnlyRoutes(),
+                r => r.Name);
             var counter = new DeliveryRouteReferenceCounter(playerContext.DeliveryPlanList);
             long t1 = sw.ElapsedMilliseconds;
-            foreach (var route in routes)
+            int count = 0;
+            foreach (var route in allRoutes)
             {
+                if (!string.IsNullOrEmpty(filter)
+                    && (route.Name ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    continue;
+                }
+
                 var item = new ListViewItem(route.Name);
                 string refCount = counter.CountReferences(route.UUID).TotalCount.ToString();
                 item.SubItems.Add(refCount);
                 item.Tag = route;
                 lvwRoutes.Items.Add(item);
+                count++;
             }
 
             sw.Stop();
@@ -207,7 +232,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 sw.ElapsedMilliseconds,
                 t1,
                 sw.ElapsedMilliseconds - t1,
-                routes.Count);
+                count);
             sw.Stop();
             Log.Info("PERF PopulateRouteList: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -221,8 +246,29 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         {
             if (lvwRoutes.SelectedItems.Count == 1)
             {
-                var route = lvwRoutes.SelectedItems[0].Tag as Models.DeliveryRoute;
-                viewModel.SelectRoute(route);
+                var readOnlyRoute = lvwRoutes.SelectedItems[0].Tag as ReadOnlyDeliveryRoute;
+                if (readOnlyRoute == null) return;
+
+                if (!HandleUnsavedChanges())
+                {
+                    // Cancel: re-select the previous item
+                    lvwRoutes.ItemSelectionChanged -= LvwRoutes_ItemSelectionChanged;
+                    lvwRoutes.SelectedItems.Clear();
+                    foreach (ListViewItem item in lvwRoutes.Items)
+                    {
+                        var tag = item.Tag as ReadOnlyDeliveryRoute;
+                        if (tag != null && !viewModel.IsNew && tag.UUID == viewModel.UUID)
+                        {
+                            item.Selected = true;
+                            break;
+                        }
+                    }
+
+                    lvwRoutes.ItemSelectionChanged += LvwRoutes_ItemSelectionChanged;
+                    return;
+                }
+
+                viewModel.LoadFrom(readOnlyRoute);
                 PopulateForm();
                 UpdateDeleteButtonState();
 
@@ -234,7 +280,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 // Auto-select the first open (non-completed) plan
                 var firstOpenPlan = CollectionSortHelper.OrderDeliveryPlans(
                     playerContext.GetCurrentPlayerPlans()
-                    .Where(p => p.RouteUUID == route.UUID && !p.Completed))
+                    .Where(p => p.RouteUUID == readOnlyRoute.UUID && !p.Completed))
                     .FirstOrDefault();
                 if (firstOpenPlan != null)
                 {
@@ -571,6 +617,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void CmdNew_Click(object sender, EventArgs e)
         {
+            if (!HandleUnsavedChanges()) return;
+
             ClearForm();
             lvwRoutes.SelectedItems.Clear();
             cmdDelete.Enabled = true;
@@ -579,7 +627,32 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void CmdSave_Click(object sender, EventArgs e)
         {
-            viewModel.Save();
+            if (string.IsNullOrWhiteSpace(viewModel.Name))
+            {
+                MessageBox.Show("Route name is required.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                ReadOnlyDeliveryRoute saved;
+                if (viewModel.IsNew)
+                {
+                    saved = _deliveryRouteService.Create(viewModel.BuildCreateRequest());
+                }
+                else
+                {
+                    saved = _deliveryRouteService.Update(viewModel.UUID, viewModel.BuildUpdateRequest());
+                }
+
+                viewModel.LoadFrom(saved);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to save delivery route");
+                MessageBox.Show("Save failed: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             // Save the plan if a plan is selected
             string selectedPlanUUID = null;
@@ -621,9 +694,62 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            viewModel.Delete();
+            _deliveryRouteService.Delete(viewModel.UUID);
             ClearForm();
             PopulateRouteList();
+        }
+
+        /// <summary>
+        /// Checks for unsaved changes and prompts the user. Returns true if the caller should proceed.
+        /// </summary>
+        private bool HandleUnsavedChanges()
+        {
+            if (!viewModel.IsDirty) return true;
+
+            var result = MessageBox.Show(
+                "You have unsaved changes. Save before continuing?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(viewModel.Name))
+                    {
+                        MessageBox.Show("Route name is required.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return false;
+                    }
+
+                    ReadOnlyDeliveryRoute saved;
+                    if (viewModel.IsNew)
+                    {
+                        saved = _deliveryRouteService.Create(viewModel.BuildCreateRequest());
+                    }
+                    else
+                    {
+                        saved = _deliveryRouteService.Update(viewModel.UUID, viewModel.BuildUpdateRequest());
+                    }
+
+                    viewModel.LoadFrom(saved);
+                    PopulateRouteList();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Failed to save during unsaved changes prompt");
+                    MessageBox.Show("Save failed: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+
+            if (result == DialogResult.No)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void UpdateDeleteButtonState()
@@ -831,7 +957,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 return;
             }
 
-            string name = $"{viewModel.Data.Name} - {SystemClock.UtcNow:yyyy-MM-dd}";
+            string name = $"{viewModel.Name} - {SystemClock.UtcNow:yyyy-MM-dd}";
 
             var plan = new DeliveryPlan
             {

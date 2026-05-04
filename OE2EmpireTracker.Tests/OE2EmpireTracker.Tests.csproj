@@ -425,6 +425,10 @@
     <Compile Include="ViewModels\SurveyViewModelTests.cs" />
     <Compile Include="ViewModels\ColonyViewModelPropertyTests.cs" />
     <Compile Include="ViewModels\ColonyViewModelTests.cs" />
+    <Compile Include="ViewModels\DeliveryRouteViewModelPropertyTests.cs" />
+    <Compile Include="Services\DeliveryRouteServicePropertyTests.cs" />
+    <Compile Include="Services\DeliveryRouteServiceTests.cs" />
+    <Compile Include="Services\DeliveryRouteMutationGuardTests.cs" />
     <Compile Include="Services\SurveyServicePropertyTests.cs" />
     <Compile Include="Services\SurveyServiceTests.cs" />
     <Compile Include="Services\SurveyMutationGuardTests.cs" />

@@ -192,7 +192,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Reset / SelectRoute
+        // Reset / LoadFrom
         // -----------------------------------------------------------------------
 
         [Test]
@@ -206,24 +206,27 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         [Test]
-        public void SelectRoute_SwitchesToNewRoute()
+        public void LoadFrom_SwitchesToNewRoute()
         {
             var vm = CreateViewModel();
             vm.AddStop("c1");
             var newRoute = new DeliveryRoute { UUID = "r2", Name = "New Route" };
             newRoute.Stops.Add(new RouteStop { ColonyUUID = "c9", Sequence = 0 });
-            vm.SelectRoute(newRoute);
+            vm.LoadFrom(new ReadOnlyDeliveryRoute(newRoute));
             Assert.That(vm.Name, Is.EqualTo("New Route"));
             Assert.That(vm.Stops.Count, Is.EqualTo(1));
             Assert.That(vm.Stops[0].ColonyUUID, Is.EqualTo("c9"));
         }
 
         [Test]
-        public void SelectRoute_Null_CreatesEmptyRoute()
+        public void Reset_ClearsToEmpty()
         {
             var vm = CreateViewModel();
-            vm.SelectRoute(null);
+            vm.AddStop("c1");
+            vm.Reset();
             Assert.That(vm.Stops.Count, Is.EqualTo(0));
+            Assert.That(vm.Name, Is.EqualTo(string.Empty));
+            Assert.That(vm.IsNew, Is.True);
         }
 
         // -----------------------------------------------------------------------
@@ -249,10 +252,99 @@ namespace OE2EmpireTracker.Tests.Services
             }
         }
 
+        // -----------------------------------------------------------------------
+        // IsNew
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void IsNew_ReturnsFalse_AfterLoadFrom()
+        {
+            var vm = CreateViewModel();
+            Assert.That(vm.IsNew, Is.False);
+        }
+
+        // -----------------------------------------------------------------------
+        // IsDirty for new routes
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void IsDirty_ReturnsTrue_ForNewRouteWithNonEmptyName()
+        {
+            var vm = new DeliveryRouteViewModel();
+            vm.Reset();
+            vm.Name = "My New Route";
+            Assert.That(vm.IsDirty, Is.True);
+        }
+
+        [Test]
+        public void IsDirty_ReturnsTrue_ForNewRouteWithStops()
+        {
+            var vm = new DeliveryRouteViewModel();
+            vm.Reset();
+            vm.AddStop("colony-1");
+            Assert.That(vm.IsDirty, Is.True);
+        }
+
+        // -----------------------------------------------------------------------
+        // BuildUpdateRequest / BuildCreateRequest
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void BuildUpdateRequest_CopiesNameAndStops()
+        {
+            var vm = CreateViewModel();
+            vm.Name = "Updated Route";
+            vm.AddStop("c2");
+
+            var request = vm.BuildUpdateRequest();
+
+            Assert.That(request.Name, Is.EqualTo("Updated Route"));
+            Assert.That(request.Stops.Count, Is.EqualTo(vm.Stops.Count));
+            for (int i = 0; i < request.Stops.Count; i++)
+            {
+                Assert.That(request.Stops[i].ColonyUUID, Is.EqualTo(vm.Stops[i].ColonyUUID));
+                Assert.That(request.Stops[i].Sequence, Is.EqualTo(vm.Stops[i].Sequence));
+            }
+        }
+
+        [Test]
+        public void BuildCreateRequest_CopiesNameAndStops()
+        {
+            var vm = new DeliveryRouteViewModel();
+            vm.Reset();
+            vm.Name = "Brand New Route";
+            vm.AddStop("c1");
+            vm.AddStop("c2");
+
+            var request = vm.BuildCreateRequest();
+
+            Assert.That(request.Name, Is.EqualTo("Brand New Route"));
+            Assert.That(request.Stops.Count, Is.EqualTo(2));
+            Assert.That(request.Stops[0].ColonyUUID, Is.EqualTo("c1"));
+            Assert.That(request.Stops[1].ColonyUUID, Is.EqualTo("c2"));
+        }
+
+        // -----------------------------------------------------------------------
+        // UUID and OwnerUUID preservation
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void LoadFrom_PreservesUUIDAndOwnerUUID()
+        {
+            var route = new DeliveryRoute { UUID = "route-42", Name = "Test", OwnerUUID = "player-7" };
+            var vm = new DeliveryRouteViewModel();
+            vm.LoadFrom(new ReadOnlyDeliveryRoute(route));
+
+            Assert.That(vm.UUID, Is.EqualTo("route-42"));
+            Assert.That(vm.OwnerUUID, Is.EqualTo("player-7"));
+        }
+
         private DeliveryRouteViewModel CreateViewModel()
         {
             var route = new DeliveryRoute { UUID = "r1", Name = "Test Route", OwnerUUID = "p1" };
-            return new DeliveryRouteViewModel(route, playerContext);
+            var vm = new DeliveryRouteViewModel();
+            vm.LoadFrom(new ReadOnlyDeliveryRoute(route));
+            return vm;
         }
     }
 }

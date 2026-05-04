@@ -231,3 +231,8 @@ The following 13 entity types were added as part of the empire-systems spec. All
 **REQ-DM-146** Find methods (FindBlueprint, FindSurvey, FindColony, etc.) SHALL return results from the UUID cache dictionary lookup only, without fallback linear scans. FindBlueprint SHALL fall back to `EmpireContext.FindGlobalBlueprint` when the local cache misses.  
 **REQ-DM-147** Invalidate methods (InvalidateBlueprintCache, etc.) SHALL remain available for bulk operations during Init and CascadeDeletePlayer. During normal operation, inline cache maintenance via mutation methods SHALL be the primary cache update path.  
 **REQ-DM-148** Any new entity list added to PlayerContext or EmpireContext in the future SHALL follow this same pattern: private backing field, IReadOnlyList property, Add/Remove mutation methods with inline cache maintenance, and a Find method with lazy-init UUID cache.
+
+## Service Request DTOs
+
+**REQ-DM-150** DeliveryRouteUpdateRequest SHALL have Original (ReadOnlyDeliveryRoute), Name (string), and Stops (List of RouteStop). Used by DeliveryRouteService.Update to apply changes to an existing route.
+**REQ-DM-151** DeliveryRouteCreateRequest SHALL have Name (string) and Stops (List of RouteStop). No UUID (service assigns). No OwnerUUID (service sets from current player). Used by DeliveryRouteService.Create.

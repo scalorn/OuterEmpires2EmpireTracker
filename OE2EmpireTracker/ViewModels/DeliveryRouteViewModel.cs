@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.ViewModels
 {
@@ -11,23 +10,135 @@ namespace OE2EmpireTracker.ViewModels
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly PlayerContext _playerContext;
+        private ReadOnlyDeliveryRoute _original;
+        private string _uuid;
+        private string _ownerUUID = string.Empty;
+        private string _name = string.Empty;
+        private List<RouteStop> _stops = new List<RouteStop>();
 
-        private DeliveryRoute _route;
+        public string UUID => _uuid;
 
-        public DeliveryRouteViewModel(DeliveryRoute route, PlayerContext playerContext)
+        public string OwnerUUID => _ownerUUID;
+
+        public ReadOnlyDeliveryRoute Original => _original;
+
+        public bool IsNew => _original == null;
+
+        public bool IsDirty
         {
-            _route = route ?? throw new ArgumentNullException(nameof(route));
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+            get
+            {
+                if (_original == null)
+                {
+                    return !string.IsNullOrEmpty(_name) || _stops.Count > 0;
+                }
+
+                if (_name != (_original.Name ?? string.Empty))
+                {
+                    return true;
+                }
+
+                var originalStops = _original.Stops;
+                if (_stops.Count != originalStops.Count)
+                {
+                    return true;
+                }
+
+                for (int i = 0; i < _stops.Count; i++)
+                {
+                    var local = _stops[i];
+                    var orig = originalStops[i];
+                    if (local.ColonyUUID != orig.ColonyUUID)
+                    {
+                        return true;
+                    }
+
+                    if (local.Sequence != orig.Sequence)
+                    {
+                        return true;
+                    }
+
+                    if (local.DestinationType != orig.DestinationType)
+                    {
+                        return true;
+                    }
+
+                    if (local.DestinationUUID != orig.DestinationUUID)
+                    {
+                        return true;
+                    }
+
+                    if (local.Purpose != orig.Purpose)
+                    {
+                        return true;
+                    }
+
+                    if (local.FuelEstimate != orig.FuelEstimate)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
         }
 
-        public DeliveryRoute Data => _route;
+        public string Name
+        {
+            get => _name;
+            set => _name = value;
+        }
 
-        public string Name { get => _route.Name; set => _route.Name = value; }
+        public List<RouteStop> Stops => _stops;
 
-        public string UUID => _route.UUID;
+        public void LoadFrom(ReadOnlyDeliveryRoute ro)
+        {
+            _original = ro;
+            _uuid = ro.UUID;
+            _ownerUUID = ro.OwnerUUID ?? string.Empty;
+            _name = ro.Name ?? string.Empty;
+            _stops = new List<RouteStop>();
+            foreach (var s in ro.Stops)
+            {
+                _stops.Add(new RouteStop
+                {
+                    ColonyUUID = s.ColonyUUID ?? string.Empty,
+                    Sequence = s.Sequence,
+                    DestinationType = s.DestinationType,
+                    DestinationUUID = s.DestinationUUID ?? string.Empty,
+                    Purpose = s.Purpose,
+                    FuelEstimate = s.FuelEstimate,
+                });
+            }
+        }
 
-        public IReadOnlyList<RouteStop> Stops => _route.Stops.AsReadOnly();
+        public void Reset()
+        {
+            _original = null;
+            _uuid = null;
+            _ownerUUID = string.Empty;
+            _name = string.Empty;
+            _stops = new List<RouteStop>();
+        }
+
+        public DeliveryRouteUpdateRequest BuildUpdateRequest()
+        {
+            return new DeliveryRouteUpdateRequest
+            {
+                Original = _original,
+                Name = _name,
+                Stops = DeepCopyStops(_stops),
+            };
+        }
+
+        public DeliveryRouteCreateRequest BuildCreateRequest()
+        {
+            return new DeliveryRouteCreateRequest
+            {
+                Name = _name,
+                Stops = DeepCopyStops(_stops),
+            };
+        }
 
         public void AddStop(
             string destinationUUID,
@@ -40,18 +151,18 @@ namespace OE2EmpireTracker.ViewModels
                 DestinationType = destType,
                 DestinationUUID = destinationUUID,
                 Purpose = purpose,
-                Sequence = _route.Stops.Count
+                Sequence = _stops.Count,
             };
 
-            _route.Stops.Add(stop);
+            _stops.Add(stop);
             RenumberStops();
         }
 
         public void RemoveStop(int index)
         {
-            if (index >= 0 && index < _route.Stops.Count)
+            if (index >= 0 && index < _stops.Count)
             {
-                _route.Stops.RemoveAt(index);
+                _stops.RemoveAt(index);
                 RenumberStops();
             }
         }
@@ -63,8 +174,10 @@ namespace OE2EmpireTracker.ViewModels
         {
             foreach (int i in indices.OrderByDescending(x => x))
             {
-                if (i >= 0 && i < _route.Stops.Count)
-                    _route.Stops.RemoveAt(i);
+                if (i >= 0 && i < _stops.Count)
+                {
+                    _stops.RemoveAt(i);
+                }
             }
 
             RenumberStops();
@@ -72,11 +185,11 @@ namespace OE2EmpireTracker.ViewModels
 
         public void MoveStopUp(int index)
         {
-            if (index > 0 && index < _route.Stops.Count)
+            if (index > 0 && index < _stops.Count)
             {
-                var stop = _route.Stops[index];
-                _route.Stops.RemoveAt(index);
-                _route.Stops.Insert(index - 1, stop);
+                var stop = _stops[index];
+                _stops.RemoveAt(index);
+                _stops.Insert(index - 1, stop);
                 RenumberStops();
             }
         }
@@ -92,16 +205,16 @@ namespace OE2EmpireTracker.ViewModels
             var newIndices = new List<int>();
             foreach (int i in sorted)
             {
-                if (i > 0 && i < _route.Stops.Count && !newIndices.Contains(i - 1))
+                if (i > 0 && i < _stops.Count && !newIndices.Contains(i - 1))
                 {
-                    var stop = _route.Stops[i];
-                    _route.Stops.RemoveAt(i);
-                    _route.Stops.Insert(i - 1, stop);
+                    var stop = _stops[i];
+                    _stops.RemoveAt(i);
+                    _stops.Insert(i - 1, stop);
                     newIndices.Add(i - 1);
                 }
                 else
                 {
-                    newIndices.Add(i); // can't move, stays in place
+                    newIndices.Add(i);
                 }
             }
 
@@ -111,11 +224,11 @@ namespace OE2EmpireTracker.ViewModels
 
         public void MoveStopDown(int index)
         {
-            if (index >= 0 && index < _route.Stops.Count - 1)
+            if (index >= 0 && index < _stops.Count - 1)
             {
-                var stop = _route.Stops[index];
-                _route.Stops.RemoveAt(index);
-                _route.Stops.Insert(index + 1, stop);
+                var stop = _stops[index];
+                _stops.RemoveAt(index);
+                _stops.Insert(index + 1, stop);
                 RenumberStops();
             }
         }
@@ -131,11 +244,11 @@ namespace OE2EmpireTracker.ViewModels
             var newIndices = new List<int>();
             foreach (int i in sorted)
             {
-                if (i >= 0 && i < _route.Stops.Count - 1 && !newIndices.Contains(i + 1))
+                if (i >= 0 && i < _stops.Count - 1 && !newIndices.Contains(i + 1))
                 {
-                    var stop = _route.Stops[i];
-                    _route.Stops.RemoveAt(i);
-                    _route.Stops.Insert(i + 1, stop);
+                    var stop = _stops[i];
+                    _stops.RemoveAt(i);
+                    _stops.Insert(i + 1, stop);
                     newIndices.Add(i + 1);
                 }
                 else
@@ -148,58 +261,31 @@ namespace OE2EmpireTracker.ViewModels
             return newIndices;
         }
 
-        public IReadOnlyList<DeliveryRoute> GetFilteredRoutes(string nameFilter)
+        private static List<RouteStop> DeepCopyStops(List<RouteStop> source)
         {
-            var list = _playerContext.GetCurrentPlayerRoutes();
-            if (!string.IsNullOrEmpty(nameFilter))
+            var copy = new List<RouteStop>(source.Count);
+            foreach (var s in source)
             {
-                list = list
-                    .Where(r => r.Name.IndexOf(nameFilter, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
+                copy.Add(new RouteStop
+                {
+                    ColonyUUID = s.ColonyUUID ?? string.Empty,
+                    Sequence = s.Sequence,
+                    DestinationType = s.DestinationType,
+                    DestinationUUID = s.DestinationUUID ?? string.Empty,
+                    Purpose = s.Purpose,
+                    FuelEstimate = s.FuelEstimate,
+                });
             }
 
-            return list.AsReadOnly();
-        }
-
-        public void Save()
-        {
-            if (string.IsNullOrEmpty(_route.UUID))
-            {
-                _route.UUID = Guid.NewGuid().ToString();
-                _playerContext.AddDeliveryRoute(_route);
-            }
-
-            if (string.IsNullOrEmpty(_route.OwnerUUID))
-            {
-                _route.OwnerUUID = _playerContext.CurrentPlayerUUID;
-            }
-
-            _playerContext.WriteContext();
-            _playerContext.OnDeliveryDataChanged();
-        }
-
-        public void Delete()
-        {
-            if (string.IsNullOrEmpty(_route.UUID)) return;
-            _playerContext.RemoveDeliveryRoute(_route);
-            _playerContext.WriteContext();
-            _playerContext.OnDeliveryDataChanged();
-        }
-
-        public void Reset()
-        {
-            _route = new DeliveryRoute();
-        }
-
-        public void SelectRoute(DeliveryRoute route)
-        {
-            _route = route ?? new DeliveryRoute();
+            return copy;
         }
 
         private void RenumberStops()
         {
-            for (int i = 0; i < _route.Stops.Count; i++)
-                _route.Stops[i].Sequence = i;
+            for (int i = 0; i < _stops.Count; i++)
+            {
+                _stops[i].Sequence = i;
+            }
         }
     }
 }

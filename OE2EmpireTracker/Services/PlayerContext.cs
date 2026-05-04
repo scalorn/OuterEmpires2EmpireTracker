@@ -2931,6 +2931,30 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        /// <summary>
+        /// Returns the mutable DeliveryRoute entity. Only called by DeliveryRouteService.
+        /// </summary>
+        internal DeliveryRoute FindMutableDeliveryRoute(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_deliveryRouteCache == null)
+                {
+                    _deliveryRouteCache = new Dictionary<string, DeliveryRoute>();
+                    foreach (var r in _deliveryRouteList)
+                    {
+                        if (r.UUID != null && !_deliveryRouteCache.ContainsKey(r.UUID))
+                            _deliveryRouteCache[r.UUID] = r;
+                    }
+                }
+
+                _deliveryRouteCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
         private void RebuildBuildItemIndexes()
         {
             _blueprintBuildItemIndex = new Dictionary<string, List<BuildItem>>();

@@ -253,6 +253,7 @@
     <Compile Include="Services\PricingPlanService.cs" />
     <Compile Include="Services\SurveyService.cs" />
     <Compile Include="Services\ColonyService.cs" />
+    <Compile Include="Services\DeliveryRouteService.cs" />
     <Compile Include="Services\CollectionSortHelper.cs" />
     <Compile Include="Services\SortedDictionaryContractResolver.cs" />
     <Compile Include="Services\TabWarningService.cs" />
@@ -417,6 +418,8 @@
     <Compile Include="Models\SkillUpdateData.cs" />
     <Compile Include="Models\PlayerProfileUpdateRequest.cs" />
     <Compile Include="Models\PlayerProfileCreateRequest.cs" />
+    <Compile Include="Models\DeliveryRouteUpdateRequest.cs" />
+    <Compile Include="Models\DeliveryRouteCreateRequest.cs" />
     <Compile Include="Parsers\BlueprintScanner.cs" />
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>

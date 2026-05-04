@@ -517,3 +517,13 @@ Logic:
 - Delete: looks up entity, removes from PlayerContext, persists, fires event. Returns silently if UUID empty or not found.
 
 Satisfies: REQ-PRC (see .kiro/specs/bl-123-pricingplan-readonly/requirements.md)
+## DeliveryRouteService
+
+Instance service in Services/DeliveryRouteService.cs. Sole mutator of DeliveryRoute entities (create, update, delete). Uses DeliveryRouteCreateRequest and DeliveryRouteUpdateRequest DTOs.
+
+Logic:
+- Update: looks up mutable entity via FindMutableDeliveryRoute, applies Name, replaces Stops list with deep copy, persists via WriteContext(), fires DeliveryDataChanged, returns ReadOnlyDeliveryRoute.
+- Create: creates new DeliveryRoute with generated UUID, sets OwnerUUID from current player, populates Name and Stops from request, adds to PlayerContext, persists, fires event.
+- Delete: looks up entity, removes from PlayerContext, persists, fires event. Returns silently if UUID empty or not found.
+
+Satisfies: REQ-DEL (see .kiro/specs/bl-112-deliveryroute-readonly/requirements.md)
