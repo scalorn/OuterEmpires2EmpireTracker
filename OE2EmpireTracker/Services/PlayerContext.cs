@@ -2979,6 +2979,30 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        /// <summary>
+        /// Returns the mutable MarketListing entity. Only called by MarketListingService.
+        /// </summary>
+        internal MarketListing FindMutableMarketListing(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_marketListingCache == null)
+                {
+                    _marketListingCache = new Dictionary<string, MarketListing>();
+                    foreach (var ml in _marketListingList)
+                    {
+                        if (ml.UUID != null && !_marketListingCache.ContainsKey(ml.UUID))
+                            _marketListingCache[ml.UUID] = ml;
+                    }
+                }
+
+                _marketListingCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
         private void RebuildBuildItemIndexes()
         {
             _blueprintBuildItemIndex = new Dictionary<string, List<BuildItem>>();

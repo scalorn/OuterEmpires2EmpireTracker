@@ -18,10 +18,13 @@ namespace OE2EmpireTracker.Forms.Market
 
         private PlayerContext playerContext;
 
+        private MarketListingService _marketListingService;
+
         public FormMarket()
         {
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
+            _marketListingService = new MarketListingService(playerContext);
 
             // Listings tab
             cmdListingAdd.Click += CmdListingAdd_Click;
@@ -67,10 +70,10 @@ namespace OE2EmpireTracker.Forms.Market
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvListings.Rows.Clear();
 
-            var listings = playerContext.GetCurrentPlayerListings();
+            var listings = playerContext.GetCurrentPlayerReadOnlyListings();
             var refCounter = new MarketListingReferenceCounter(playerContext.MarketTransactionList);
 
-            foreach (var listing in CollectionSortHelper.OrderMarketListings(listings))
+            foreach (var listing in CollectionSortHelper.OrderReadOnlyMarketListings(listings))
             {
                 string stationName = ResolveStationName(listing.StationUUID);
                 string condition = listing.MaxHP > 0
@@ -95,35 +98,41 @@ namespace OE2EmpireTracker.Forms.Market
 
         private void CmdListingAdd_Click(object sender, EventArgs e)
         {
-            var listing = new MarketListing
+            var request = new MarketListingCreateRequest
             {
-                UUID = Guid.NewGuid().ToString(),
-                OwnerUUID = playerContext.CurrentPlayerUUID,
                 ItemName = "New Listing",
                 Quantity = 1,
-                PricePerUnit = 0m
+                PricePerUnit = 0m,
             };
 
-            playerContext.AddMarketListing(listing);
-            playerContext.InvalidateMarketListingCache();
-            playerContext.WriteContext();
-            playerContext.OnMarketDataChanged();
+            _marketListingService.CreateListing(request);
             Log.Info("Added new market listing");
         }
 
         private void CmdListingEdit_Click(object sender, EventArgs e)
         {
             if (dgvListings.SelectedRows.Count == 0) return;
-            var listing = dgvListings.SelectedRows[0].Tag as MarketListing;
+            var listing = dgvListings.SelectedRows[0].Tag as ReadOnlyMarketListing;
             if (listing == null) return;
 
             using (var dlg = new FormListingEdit(listing, playerContext))
             {
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
-                    playerContext.InvalidateMarketListingCache();
-                    playerContext.WriteContext();
-                    playerContext.OnMarketDataChanged();
+                    var request = new MarketListingUpdateRequest
+                    {
+                        ItemName = dlg.EditedItemName,
+                        ItemType = dlg.EditedItemType,
+                        ItemReferenceID = dlg.EditedItemReferenceID,
+                        StationUUID = dlg.EditedStationUUID,
+                        Quantity = dlg.EditedQuantity,
+                        PricePerUnit = dlg.EditedPricePerUnit,
+                        CurrentHP = dlg.EditedCurrentHP,
+                        MaxHP = dlg.EditedMaxHP,
+                        MaxRepairPercent = dlg.EditedMaxRepairPercent,
+                    };
+
+                    _marketListingService.UpdateListing(listing.UUID, request);
                     Log.Info("Edited market listing '{0}'", listing.ItemName);
                 }
             }
@@ -132,7 +141,7 @@ namespace OE2EmpireTracker.Forms.Market
         private void CmdListingDelete_Click(object sender, EventArgs e)
         {
             if (dgvListings.SelectedRows.Count == 0) return;
-            var listing = dgvListings.SelectedRows[0].Tag as MarketListing;
+            var listing = dgvListings.SelectedRows[0].Tag as ReadOnlyMarketListing;
             if (listing == null) return;
 
             var refCounter = new MarketListingReferenceCounter(playerContext.MarketTransactionList);
@@ -157,10 +166,7 @@ namespace OE2EmpireTracker.Forms.Market
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.RemoveMarketListing(listing);
-            playerContext.InvalidateMarketListingCache();
-            playerContext.WriteContext();
-            playerContext.OnMarketDataChanged();
+            _marketListingService.DeleteListing(listing.UUID);
             Log.Info("Deleted market listing '{0}'", listing.ItemName);
         }
 
@@ -170,15 +176,15 @@ namespace OE2EmpireTracker.Forms.Market
         private void CmdRecordSale_Click(object sender, EventArgs e)
         {
             if (dgvListings.SelectedRows.Count == 0) return;
-            var listing = dgvListings.SelectedRows[0].Tag as MarketListing;
+            var listing = dgvListings.SelectedRows[0].Tag as ReadOnlyMarketListing;
             if (listing == null) return;
 
             using (var dlg = new FormRecordSale(listing))
             {
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
-                    var tx = MarketService.RecordSale(
-                        listing,
+                    var tx = _marketListingService.RecordSale(
+                        listing.UUID,
                         dlg.SaleQuantity,
                         dlg.SalePricePerUnit,
                         dlg.Counterparty,
@@ -195,9 +201,6 @@ namespace OE2EmpireTracker.Forms.Market
                         return;
                     }
 
-                    playerContext.AddMarketTransaction(tx);
-                    playerContext.WriteContext();
-                    playerContext.OnMarketDataChanged();
                     Log.Info("Recorded sale: {0}x '{1}' at {2}/unit", dlg.SaleQuantity, listing.ItemName, dlg.SalePricePerUnit);
                 }
             }
@@ -212,7 +215,7 @@ namespace OE2EmpireTracker.Forms.Market
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvTransactions.Rows.Clear();
 
-            var transactions = playerContext.GetCurrentPlayerTransactions();
+            var transactions = playerContext.GetCurrentPlayerReadOnlyTransactions();
 
             // Apply filters
             string typeFilter = cmbTxType.SelectedItem?.ToString() ?? "All";
@@ -226,7 +229,7 @@ namespace OE2EmpireTracker.Forms.Market
             DateTime? fromDate = dtpTxFrom.Checked ? dtpTxFrom.Value.Date : (DateTime?)null;
             DateTime? toDate = dtpTxTo.Checked ? dtpTxTo.Value.Date.AddDays(1) : (DateTime?)null;
 
-            foreach (var tx in CollectionSortHelper.OrderMarketTransactionsByTimestamp(transactions))
+            foreach (var tx in CollectionSortHelper.OrderReadOnlyMarketTransactionsByTimestamp(transactions))
             {
                 if (typeFilter == "Buy" && tx.TransactionType != TransactionType.Buy) continue;
                 if (typeFilter == "Sell" && tx.TransactionType != TransactionType.Sell) continue;

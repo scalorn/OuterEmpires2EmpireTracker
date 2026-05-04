@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Forms.Market
 {
@@ -18,7 +19,7 @@ namespace OE2EmpireTracker.Forms.Market
 
         private Button cmdCancel;
 
-        public FormRecordSale(MarketListing listing)
+        public FormRecordSale(ReadOnlyMarketListing listing)
         {
             this.Text = string.Format("Record Sale - {0}", listing.ItemName);
             this.Size = new System.Drawing.Size(360, 240);

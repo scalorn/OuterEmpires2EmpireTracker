@@ -17,12 +17,10 @@ namespace OE2EmpireTracker.Forms.Market
         private ComboBox cmbStation;
         private Button cmdOK;
         private Button cmdCancel;
-        private MarketListing _listing;
 
-        public FormListingEdit(MarketListing listing, PlayerContext playerContext)
+        public FormListingEdit(ReadOnlyMarketListing listing, PlayerContext playerContext)
         {
-            _listing = listing;
-            this.Text = "Edit Listing";
+            this.Text = listing != null ? "Edit Listing" : "New Listing";
             this.Size = new System.Drawing.Size(380, 320);
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -66,43 +64,82 @@ namespace OE2EmpireTracker.Forms.Market
             this.AcceptButton = cmdOK;
             this.CancelButton = cmdCancel;
 
-            // Populate
-            txtItemName.Text = listing.ItemName;
-            for (int i = 0; i < cmbItemType.Items.Count; i++)
+            // Populate from ReadOnlyMarketListing or defaults
+            if (listing != null)
             {
-                if (cmbItemType.Items[i] is ItemType.ItemTypeEnum t2 && t2 == listing.ItemType)
+                txtItemName.Text = listing.ItemName;
+                for (int i = 0; i < cmbItemType.Items.Count; i++)
                 {
-                    cmbItemType.SelectedIndex = i;
-                    break;
+                    if (cmbItemType.Items[i] is ItemType.ItemTypeEnum t2 && t2 == listing.ItemType)
+                    {
+                        cmbItemType.SelectedIndex = i;
+                        break;
+                    }
                 }
-            }
 
-            for (int i = 0; i < cmbStation.Items.Count; i++)
-            {
-                if (cmbStation.Items[i] is StationItem si && si.UUID == listing.StationUUID)
+                for (int i = 0; i < cmbStation.Items.Count; i++)
                 {
-                    cmbStation.SelectedIndex = i;
-                    break;
+                    if (cmbStation.Items[i] is StationItem si && si.UUID == listing.StationUUID)
+                    {
+                        cmbStation.SelectedIndex = i;
+                        break;
+                    }
                 }
+
+                txtQuantity.Text = listing.Quantity.ToString();
+                txtPricePerUnit.Text = listing.PricePerUnit.ToString();
+                txtCurrentHP.Text = listing.CurrentHP.ToString();
+                txtMaxHP.Text = listing.MaxHP.ToString();
+            }
+            else
+            {
+                txtItemName.Text = "New Listing";
+                txtQuantity.Text = "1";
+                txtPricePerUnit.Text = "0";
+                txtCurrentHP.Text = "0";
+                txtMaxHP.Text = "0";
             }
 
             if (cmbStation.SelectedIndex < 0) cmbStation.SelectedIndex = 0;
-            txtQuantity.Text = listing.Quantity.ToString();
-            txtPricePerUnit.Text = listing.PricePerUnit.ToString();
-            txtCurrentHP.Text = listing.CurrentHP.ToString();
-            txtMaxHP.Text = listing.MaxHP.ToString();
+            if (cmbItemType.SelectedIndex < 0) cmbItemType.SelectedIndex = 0;
 
             cmdOK.Click += (s, ev) =>
             {
-                listing.ItemName = txtItemName.Text.Trim();
-                if (cmbItemType.SelectedItem is ItemType.ItemTypeEnum selType) listing.ItemType = selType;
-                if (cmbStation.SelectedItem is StationItem selStation) listing.StationUUID = selStation.UUID;
-                if (int.TryParse(txtQuantity.Text, out int qty)) listing.Quantity = qty;
-                if (decimal.TryParse(txtPricePerUnit.Text, out decimal ppu)) listing.PricePerUnit = ppu;
-                if (int.TryParse(txtCurrentHP.Text, out int chp)) listing.CurrentHP = chp;
-                if (int.TryParse(txtMaxHP.Text, out int mhp)) listing.MaxHP = mhp;
+                EditedItemName = txtItemName.Text.Trim();
+                if (cmbItemType.SelectedItem is ItemType.ItemTypeEnum selType)
+                    EditedItemType = selType;
+                if (cmbStation.SelectedItem is StationItem selStation)
+                    EditedStationUUID = selStation.UUID;
+                if (int.TryParse(txtQuantity.Text, out int qty))
+                    EditedQuantity = qty;
+                if (decimal.TryParse(txtPricePerUnit.Text, out decimal ppu))
+                    EditedPricePerUnit = ppu;
+                if (int.TryParse(txtCurrentHP.Text, out int chp))
+                    EditedCurrentHP = chp;
+                if (int.TryParse(txtMaxHP.Text, out int mhp))
+                    EditedMaxHP = mhp;
+                EditedItemReferenceID = listing != null ? listing.ItemReferenceID : string.Empty;
+                EditedMaxRepairPercent = listing != null ? listing.MaxRepairPercent : 0m;
             };
         }
+
+        public string EditedItemName { get; private set; } = string.Empty;
+
+        public ItemType.ItemTypeEnum EditedItemType { get; private set; }
+
+        public string EditedItemReferenceID { get; private set; } = string.Empty;
+
+        public string EditedStationUUID { get; private set; } = string.Empty;
+
+        public int EditedQuantity { get; private set; }
+
+        public decimal EditedPricePerUnit { get; private set; }
+
+        public int EditedCurrentHP { get; private set; }
+
+        public int EditedMaxHP { get; private set; }
+
+        public decimal EditedMaxRepairPercent { get; private set; }
 
         private Label AddLabel(string text, int x, int y)
         {

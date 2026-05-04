@@ -254,6 +254,7 @@
     <Compile Include="Services\SurveyService.cs" />
     <Compile Include="Services\ColonyService.cs" />
     <Compile Include="Services\DeliveryRouteService.cs" />
+    <Compile Include="Services\MarketListingService.cs" />
     <Compile Include="Services\DeliveryPlanService.cs" />
     <Compile Include="Services\CollectionSortHelper.cs" />
     <Compile Include="Services\SortedDictionaryContractResolver.cs" />
@@ -353,6 +354,8 @@
     <Compile Include="Models\ExternalCharacter.cs" />
     <Compile Include="Models\Faction.cs" />
     <Compile Include="Models\MarketListing.cs" />
+    <Compile Include="Models\MarketListingCreateRequest.cs" />
+    <Compile Include="Models\MarketListingUpdateRequest.cs" />
     <Compile Include="Models\MarketTransaction.cs" />
     <Compile Include="Models\RouteStopPurpose.cs" />
     <Compile Include="Models\Ship.cs" />

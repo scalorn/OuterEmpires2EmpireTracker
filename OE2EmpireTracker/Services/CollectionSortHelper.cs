@@ -577,6 +577,32 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Sorts read-only market listings by ItemName (ascending, OrdinalIgnoreCase).
+        /// </summary>
+        public static IReadOnlyList<ReadOnlyMarketListing> OrderReadOnlyMarketListings(
+            IEnumerable<ReadOnlyMarketListing> listings)
+        {
+            if (listings == null) return Array.Empty<ReadOnlyMarketListing>();
+            return listings
+                .OrderBy(l => l.ItemName ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
+        /// Sorts read-only market transactions by Timestamp descending (most recent first).
+        /// </summary>
+        public static IReadOnlyList<ReadOnlyMarketTransaction> OrderReadOnlyMarketTransactionsByTimestamp(
+            IEnumerable<ReadOnlyMarketTransaction> transactions)
+        {
+            if (transactions == null) return Array.Empty<ReadOnlyMarketTransaction>();
+            return transactions
+                .OrderByDescending(t => t.Timestamp ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
         /// Sorts blueprints by Evolution descending (highest first).
         /// Used by BlueprintViewModel.GetEvolutionChain().
         /// </summary>

@@ -275,6 +275,23 @@ public static class MarketService
 }
 ```
 
+## MarketListingService (BL-114)
+
+Instance service in `Services/MarketListingService.cs`. Sole mutator of MarketListing entities.
+Uses MarketListingCreateRequest and MarketListingUpdateRequest DTOs for input.
+
+```csharp
+public class MarketListingService
+{
+    public MarketListingService(PlayerContext playerContext);
+    public ReadOnlyMarketListing CreateListing(MarketListingCreateRequest request);
+    public ReadOnlyMarketListing UpdateListing(string uuid, MarketListingUpdateRequest request);
+    public void DeleteListing(string uuid);
+    public MarketTransaction RecordSale(string listingUUID, int quantity,
+        decimal pricePerUnit, string counterparty, string counterpartyFaction, string stationUUID);
+}
+```
+
 ## StockTargetService (Iteration 7)
 
 Static service in `Services/StockTargetService.cs`.

@@ -427,8 +427,11 @@
     <Compile Include="ViewModels\ColonyViewModelTests.cs" />
     <Compile Include="ViewModels\DeliveryRouteViewModelPropertyTests.cs" />
     <Compile Include="Services\DeliveryRouteServicePropertyTests.cs" />
+    <Compile Include="Services\MarketListingServicePropertyTests.cs" />
     <Compile Include="Services\DeliveryRouteServiceTests.cs" />
+    <Compile Include="Services\MarketListingServiceTests.cs" />
     <Compile Include="Services\DeliveryRouteMutationGuardTests.cs" />
+    <Compile Include="Services\MarketListingMutationGuardTests.cs" />
     <Compile Include="ViewModels\DeliveryPlanViewModelPropertyTests.cs" />
     <Compile Include="ViewModels\DeliveryPlanViewModelTests.cs" />
     <Compile Include="Services\DeliveryPlanServicePropertyTests.cs" />
