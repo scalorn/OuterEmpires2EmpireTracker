@@ -428,6 +428,11 @@
     <Compile Include="ViewModels\DeliveryRouteViewModelPropertyTests.cs" />
     <Compile Include="ViewModels\ShipTemplateViewModelPropertyTests.cs" />
     <Compile Include="ViewModels\ShipTemplateViewModelTests.cs" />
+    <Compile Include="ViewModels\ShipViewModelPropertyTests.cs" />
+    <Compile Include="ViewModels\ShipViewModelTests.cs" />
+    <Compile Include="Services\ShipServicePropertyTests.cs" />
+    <Compile Include="Services\ShipServiceTests.cs" />
+    <Compile Include="Services\ShipMutationGuardTests.cs" />
     <Compile Include="Services\ShipTemplateServicePropertyTests.cs" />
     <Compile Include="Services\ShipTemplateServiceTests.cs" />
     <Compile Include="Services\ShipTemplateMutationGuardTests.cs" />

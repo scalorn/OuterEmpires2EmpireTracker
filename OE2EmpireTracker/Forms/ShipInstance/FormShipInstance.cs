@@ -8,6 +8,7 @@ using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.ShipInstance
 {
@@ -19,7 +20,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private PlayerContext playerContext;
 
-        private Ship _selectedShip;
+        private ShipViewModel _viewModel = new ShipViewModel();
+        private ShipService _shipService;
 
         private List<string> _hullUUIDs = new List<string>();
 
@@ -27,6 +29,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
+            _shipService = new ShipService(playerContext);
 
             lvwShips.View = View.Details;
             lvwShips.Columns.Add("Name", 160);
@@ -70,9 +73,40 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
 
+        private enum UnsavedAction
+        {
+            Save,
+            Discard,
+            Cancel,
+        }
+
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
 
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (_viewModel.IsDirty)
+            {
+                var action = PromptUnsavedChanges();
+                if (action == UnsavedAction.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (action == UnsavedAction.Save)
+                {
+                    if (!TrySaveCurrentShip())
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+            }
+
+            base.OnFormClosing(e);
+        }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
@@ -112,30 +146,30 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            string selectedUUID = _selectedShip?.UUID;
+            string selectedUUID = _viewModel.UUID;
             lvwShips.Items.Clear();
 
-            var ships = playerContext.GetCurrentPlayerShips();
+            var roShips = playerContext.GetCurrentPlayerReadOnlyShips();
             string filter = txtFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
-                ships = ships.Where(s => s.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-            ships = CollectionSortHelper.OrderShips(ships).ToList();
+                roShips = roShips.Where(s => s.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            roShips = CollectionSortHelper.OrderReadOnlyShips(roShips).ToList();
 
             var refCounter = new ShipReferenceCounter(
                 playerContext.GetCurrentPlayerPlans(),
                 playerContext.GetCurrentPlayerBuildPlans());
 
-            foreach (var ship in ships)
+            foreach (var roShip in roShips)
             {
-                int refs = refCounter.CountReferences(ship.UUID);
-                var item = new ListViewItem(ship.Name) { Tag = ship };
+                int refs = refCounter.CountReferences(roShip.UUID);
+                var item = new ListViewItem(roShip.Name) { Tag = roShip };
                 item.SubItems.Add(refs.ToString());
                 lvwShips.Items.Add(item);
-                if (ship.UUID == selectedUUID) item.Selected = true;
+                if (roShip.UUID == selectedUUID) item.Selected = true;
             }
 
             sw.Stop();
-            Log.Info("PERF PopulateShipList: {0}ms items={1}", sw.ElapsedMilliseconds, ships.Count);
+            Log.Info("PERF PopulateShipList: {0}ms items={1}", sw.ElapsedMilliseconds, roShips.Count);
         }
 
         private void TxtFilter_TextChanged(object sender, EventArgs e) { PopulateShipList(); }
@@ -143,14 +177,37 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private void LvwShips_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (e.IsSelected && e.Item.Tag is Ship ship)
+            if (e.IsSelected && e.Item.Tag is ReadOnlyShip roShip)
             {
-                _selectedShip = ship;
+                if (_viewModel.IsDirty)
+                {
+                    var action = PromptUnsavedChanges();
+                    if (action == UnsavedAction.Cancel)
+                    {
+                        using var guard = new ProgrammaticUpdateGuard(this);
+                        e.Item.Selected = false;
+                        SelectCurrentShipInList();
+                        return;
+                    }
+
+                    if (action == UnsavedAction.Save)
+                    {
+                        if (!TrySaveCurrentShip())
+                        {
+                            using var guard = new ProgrammaticUpdateGuard(this);
+                            e.Item.Selected = false;
+                            SelectCurrentShipInList();
+                            return;
+                        }
+                    }
+                }
+
+                _viewModel.LoadFrom(roShip);
                 PopulateForm();
             }
             else if (!e.IsSelected && lvwShips.SelectedItems.Count == 0)
             {
-                _selectedShip = null;
+                _viewModel.Reset();
                 ClearForm();
             }
         }
@@ -160,17 +217,17 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedShip == null)
+            if (_viewModel.IsNew)
             {
                 ClearForm();
                 return;
             }
 
-            txtName.Text = _selectedShip.Name;
-            SelectHullInCombo(_selectedShip.HullBlueprintUUID);
-            SelectLocationType(_selectedShip.LocationType);
-            PopulateLocationUUIDCombo(_selectedShip.LocationType);
-            SelectLocationUUID(_selectedShip.LocationUUID);
+            txtName.Text = _viewModel.Name;
+            SelectHullInCombo(_viewModel.HullBlueprintUUID);
+            SelectLocationType(_viewModel.LocationType);
+            PopulateLocationUUIDCombo(_viewModel.LocationType);
+            SelectLocationUUID(_viewModel.LocationUUID);
             PopulateOverviewGrid();
             RefreshStats();
             PopulateCargoGrid();
@@ -230,10 +287,10 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void CmbLocationType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedShip == null) return;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
             if (cmbLocationType.SelectedItem is DestinationType dt)
             {
-                _selectedShip.LocationType = dt;
+                _viewModel.LocationType = dt;
                 PopulateLocationUUIDCombo(dt);
             }
         }
@@ -317,11 +374,11 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void CmbHull_SelectedItemChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedShip == null) return;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
             int idx = cmbHull.SelectedFullIndex;
             string uuid = (idx >= 0 && idx < _hullUUIDs.Count) ? _hullUUIDs[idx] : string.Empty;
-            _selectedShip.HullBlueprintUUID = uuid;
-            _selectedShip.Components.Clear();
+            _viewModel.HullBlueprintUUID = uuid;
+            _viewModel.ClearComponents();
             PopulateOverviewGrid();
             RefreshStats();
         }
@@ -362,13 +419,13 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvComponents.Rows.Clear();
-            if (_selectedShip == null)
+            if (_viewModel.IsNew)
             {
                 sw.Stop();
                 return;
             }
 
-            var hullBp = playerContext.FindBlueprint(_selectedShip.HullBlueprintUUID);
+            var hullBp = playerContext.FindBlueprint(_viewModel.HullBlueprintUUID);
             string hullName = hullBp?.ExtendedName ?? "(no hull)";
 
             // Hull row (first row, component cell read-only)
@@ -376,8 +433,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 "Hull",
                 string.Empty,
                 hullName,
-                _selectedShip.HullCurrentHP.ToString(),
-                _selectedShip.HullMaxRepairPercent.ToString());
+                _viewModel.HullCurrentHP.ToString(),
+                _viewModel.HullMaxRepairPercent.ToString());
             dgvComponents.Rows[hullRow].Tag = "hull";
             dgvComponents.Rows[hullRow].Cells[colSlotType.Index].ReadOnly = true;
             dgvComponents.Rows[hullRow].Cells[colComponent.Index].ReadOnly = true;
@@ -395,7 +452,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             {
                 for (int idx = 0; idx < def.MaxCount; idx++)
                 {
-                    var existing = _selectedShip.Components
+                    var existing = _viewModel.Components
                         .FirstOrDefault(c => c.SlotType == def.SlotType && c.SlotIndex == idx);
 
                     int rowIdx = dgvComponents.Rows.Add(def.SlotType, idx.ToString());
@@ -455,7 +512,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void DgvComponents_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedShip == null || e.RowIndex < 0) return;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew || e.RowIndex < 0) return;
             var row = dgvComponents.Rows[e.RowIndex];
             string valStr = row.Cells[e.ColumnIndex].Value?.ToString() ?? "0";
 
@@ -463,16 +520,16 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             {
                 if (e.ColumnIndex == colCondition.Index)
                 {
-                    if (int.TryParse(valStr, out int hp)) _selectedShip.HullCurrentHP = hp;
+                    if (int.TryParse(valStr, out int hp)) _viewModel.HullCurrentHP = hp;
                 }
                 else if (e.ColumnIndex == colMaxRepair.Index)
                 {
-                    if (decimal.TryParse(valStr, out decimal mr)) _selectedShip.HullMaxRepairPercent = mr;
+                    if (decimal.TryParse(valStr, out decimal mr)) _viewModel.HullMaxRepairPercent = mr;
                 }
             }
             else if (row.Tag is SlotInfo info)
             {
-                var slot = _selectedShip.Components
+                var slot = _viewModel.Components
                     .FirstOrDefault(c => c.SlotType == info.SlotType && c.SlotIndex == info.SlotIndex);
                 if (slot != null)
                 {
@@ -492,7 +549,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             if (_isProgrammaticUpdate > 0 || e.RowIndex < 0) return;
             if (e.ColumnIndex != colComponent.Index) return;
-            if (_selectedShip == null) return;
+            if (_viewModel.IsNew) return;
 
             var row = dgvComponents.Rows[e.RowIndex];
             var info = row.Tag as SlotInfo;
@@ -504,22 +561,15 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             if (selectedIdx > 0 && info.UUIDByIndex != null && selectedIdx < info.UUIDByIndex.Count)
                 bpUUID = info.UUIDByIndex[selectedIdx];
 
-            var existing = _selectedShip.Components
-                .FirstOrDefault(c => c.SlotType == info.SlotType && c.SlotIndex == info.SlotIndex);
-
             if (string.IsNullOrEmpty(bpUUID))
             {
-                if (existing != null) _selectedShip.Components.Remove(existing);
+                _viewModel.RemoveComponent(info.SlotType, info.SlotIndex);
             }
             else
             {
-                if (existing == null)
-                {
-                    existing = new ShipComponentSlot { SlotType = info.SlotType, SlotIndex = info.SlotIndex, CurrentHP = 100, MaxRepairPercent = 100m };
-                    _selectedShip.Components.Add(existing);
-                }
-
-                existing.BlueprintUUID = bpUUID;
+                _viewModel.SetComponent(info.SlotType, info.SlotIndex, bpUUID);
+                var existing = _viewModel.Components
+                    .FirstOrDefault(c => c.SlotType == info.SlotType && c.SlotIndex == info.SlotIndex);
                 row.Cells[colCondition.Index].Value = existing.CurrentHP.ToString();
                 row.Cells[colMaxRepair.Index].Value = existing.MaxRepairPercent.ToString();
             }
@@ -548,14 +598,14 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private void RefreshStats()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            if (_selectedShip == null)
+            if (_viewModel.IsNew)
             {
                 rtbStats.Text = string.Empty;
                 sw.Stop();
                 return;
             }
 
-            var hullBp = playerContext.FindBlueprint(_selectedShip.HullBlueprintUUID);
+            var hullBp = playerContext.FindBlueprint(_viewModel.HullBlueprintUUID);
             if (hullBp == null)
             {
                 rtbStats.Text = "No hull blueprint.";
@@ -565,7 +615,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
             var stats = ShipBuildService.ComputeStats(
                 hullBp,
-                _selectedShip.Components,
+                _viewModel.Components,
                 uuid => playerContext.FindBlueprint(uuid));
 
             rtbStats.Text = string.Format(
@@ -601,8 +651,8 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         // Cargo tab
         private ItemBag GetSelectedBag()
         {
-            if (_selectedShip == null) return null;
-            return rbHopper.Checked ? _selectedShip.Hopper : _selectedShip.Cargo;
+            if (_viewModel.IsNew) return null;
+            return _viewModel.GetSelectedBag(rbHopper.Checked);
         }
 
         private void RbCargo_CheckedChanged(object sender, EventArgs e)
@@ -775,7 +825,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private void CmdAddItem_Click(object sender, EventArgs e)
         {
             var bag = GetSelectedBag();
-            if (bag == null || _selectedShip == null) return;
+            if (bag == null || _viewModel.IsNew) return;
 
             if (!(cmbAddType.SelectedItem is ItemType.ItemTypeEnum itemType)) return;
             string itemName = cmbAddItem.SelectedItem?.ToString() ?? string.Empty;
@@ -865,65 +915,45 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 var tmpl = cmb.SelectedItem as Models.ShipTemplate;
                 if (tmpl == null) return;
 
-                var ship = new Ship
-                {
-                    UUID = Guid.NewGuid().ToString(),
-                    Name = tmpl.Name,
-                    OwnerUUID = playerContext.CurrentPlayerUUID,
-                    TemplateUUID = tmpl.UUID,
-                    HullBlueprintUUID = tmpl.HullBlueprintUUID,
-                    Components = tmpl.Components.Select(c => new ShipComponentSlot
-                    {
-                        SlotType = c.SlotType,
-                        SlotIndex = c.SlotIndex,
-                        BlueprintUUID = c.BlueprintUUID,
-                        CurrentHP = c.CurrentHP,
-                        MaxHP = c.MaxHP,
-                        MaxRepairPercent = c.MaxRepairPercent
-                    }).ToList()
-                };
-
-                playerContext.AddShip(ship);
-                playerContext.WriteContext();
-                _selectedShip = ship;
+                var roShip = _shipService.CreateFromTemplate(tmpl.UUID);
+                _viewModel.LoadFrom(roShip);
                 PopulateShipList();
                 PopulateForm();
-                Log.Info("Created ship \"{0}\" from template \"{1}\"", ship.Name, tmpl.Name);
+                Log.Info("Created ship \"{0}\" from template \"{1}\"", roShip.Name, tmpl.Name);
             }
         }
 
         // CRUD
         private void CmdNew_Click(object sender, EventArgs e)
         {
-            var ship = new Ship
+            if (_viewModel.IsDirty)
             {
-                UUID = Guid.NewGuid().ToString(),
-                Name = "New Ship",
-                OwnerUUID = playerContext.CurrentPlayerUUID
-            };
+                var action = PromptUnsavedChanges();
+                if (action == UnsavedAction.Cancel) return;
+                if (action == UnsavedAction.Save && !TrySaveCurrentShip()) return;
+            }
 
-            playerContext.AddShip(ship);
-            playerContext.WriteContext();
-            _selectedShip = ship;
+            var roShip = _shipService.Create(new ShipCreateRequest { Name = "New Ship" });
+            _viewModel.LoadFrom(roShip);
             PopulateShipList();
             PopulateForm();
-            Log.Info("Created blank ship \"{0}\"", ship.Name);
+            Log.Info("Created blank ship \"{0}\"", roShip.Name);
         }
 
         private void CmdDelete_Click(object sender, EventArgs e)
         {
-            if (_selectedShip == null) return;
+            if (_viewModel.IsNew) return;
 
             var refCounter = new ShipReferenceCounter(
                 playerContext.GetCurrentPlayerPlans(),
                 playerContext.GetCurrentPlayerBuildPlans());
-            int refs = refCounter.CountReferences(_selectedShip.UUID);
+            int refs = refCounter.CountReferences(_viewModel.UUID);
             if (refs > 0)
             {
                 MessageBox.Show(
                     string.Format(
                         "Cannot delete ship \"{0}\" — it is referenced by {1} delivery plan(s) or build item(s).",
-                        _selectedShip.Name,
+                        _viewModel.Name,
                         refs),
                     "Delete Blocked",
                     MessageBoxButtons.OK,
@@ -932,14 +962,13 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             }
 
             var result = MessageBox.Show(
-                string.Format("Delete ship \"{0}\"?", _selectedShip.Name),
+                string.Format("Delete ship \"{0}\"?", _viewModel.Name),
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.RemoveShip(_selectedShip);
-            playerContext.WriteContext();
-            _selectedShip = null;
+            _shipService.Delete(_viewModel.UUID);
+            _viewModel.Reset();
             PopulateShipList();
             ClearForm();
             Log.Info("Deleted ship");
@@ -947,7 +976,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void CmdSave_Click(object sender, EventArgs e)
         {
-            if (_selectedShip == null) return;
+            if (_viewModel.IsNew && string.IsNullOrWhiteSpace(_viewModel.Name)) return;
             string name = txtName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -955,18 +984,29 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 return;
             }
 
-            _selectedShip.Name = name;
             if (cmbLocationUUID.SelectedItem is LocationEntry le)
-                _selectedShip.LocationUUID = le.UUID;
-            playerContext.WriteContext();
+                _viewModel.LocationUUID = le.UUID;
+
+            ReadOnlyShip roShip;
+            if (_viewModel.IsNew)
+            {
+                roShip = _shipService.Create(_viewModel.BuildCreateRequest());
+            }
+            else
+            {
+                roShip = _shipService.Update(_viewModel.UUID, _viewModel.BuildUpdateRequest());
+            }
+
+            _viewModel.LoadFrom(roShip);
             PopulateShipList();
-            Log.Info("Saved ship \"{0}\"", _selectedShip.Name);
+            PopulateForm();
+            Log.Info("Saved ship \"{0}\"", roShip.Name);
         }
 
         private void TxtName_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedShip == null) return;
-            _selectedShip.Name = txtName.Text;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
+            _viewModel.Name = txtName.Text;
         }
 
         // Events
@@ -986,10 +1026,65 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 return;
             }
 
-            _selectedShip = null;
+            _viewModel.Reset();
             PopulateHullCombo();
             PopulateShipList();
             ClearForm();
+        }
+
+        // Unsaved changes helpers
+        private UnsavedAction PromptUnsavedChanges()
+        {
+            var result = MessageBox.Show(
+                "You have unsaved changes. Save before continuing?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            switch (result)
+            {
+                case DialogResult.Yes: return UnsavedAction.Save;
+                case DialogResult.No: return UnsavedAction.Discard;
+                default: return UnsavedAction.Cancel;
+            }
+        }
+
+        private bool TrySaveCurrentShip()
+        {
+            try
+            {
+                if (cmbLocationUUID.SelectedItem is LocationEntry le)
+                    _viewModel.LocationUUID = le.UUID;
+
+                ReadOnlyShip roShip;
+                if (_viewModel.IsNew)
+                    roShip = _shipService.Create(_viewModel.BuildCreateRequest());
+                else
+                    roShip = _shipService.Update(_viewModel.UUID, _viewModel.BuildUpdateRequest());
+
+                _viewModel.LoadFrom(roShip);
+                PopulateShipList();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to save ship");
+                MessageBox.Show("Failed to save: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        private void SelectCurrentShipInList()
+        {
+            if (_viewModel.UUID == null) return;
+            foreach (ListViewItem item in lvwShips.Items)
+            {
+                if (item.Tag is ReadOnlyShip ro && ro.UUID == _viewModel.UUID)
+                {
+                    item.Selected = true;
+                    return;
+                }
+            }
         }
 
         // Inner classes for component grid

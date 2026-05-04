@@ -8,49 +8,65 @@ using NUnit.Framework;
 namespace OE2EmpireTracker.Tests.Services
 {
     /// <summary>
-    /// Verification tests that ensure ShipTemplate entities are only mutated by allowed code.
-    /// Feature: BL-115 ShipTemplate Immutable Data Model
-    /// Validates: Property 9
-    /// Validates: Requirements 17.1, 17.2, 17.3, 20.1, 20.2
+    /// Verification tests that ensure Ship entities are only mutated by allowed code.
+    /// Feature: BL-116 Ship Immutable Data Model
+    /// Validates: Property 11
+    /// Validates: Requirements 18.1, 18.2, 18.3, 21.1, 21.2, 21.3
     /// </summary>
     [TestFixture]
-    public class ShipTemplateMutationGuardTests
+    public class ShipMutationGuardTests
     {
         private static readonly string SourceRoot = Path.GetFullPath(
             Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker"));
 
         private static readonly HashSet<string> AllowedScalarMutators = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "ShipTemplateService.cs",
-            "ShipTemplate.cs",
+            "ShipService.cs",
+            "Ship.cs",
             "PlayerContext.cs",
             "FormShipInstance.cs",
-            "ShipService.cs",
+            "ShipTemplateService.cs",
+            "FormStation.cs",
+            "FormSupplyChain.cs",
+            "DeliveryGenerationService.cs",
         };
 
         private static readonly HashSet<string> AllowedComponentsMutators = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "ShipTemplateService.cs",
-            "ShipTemplate.cs",
+            "ShipService.cs",
+            "Ship.cs",
             "FormShipInstance.cs",
             "SerializationSorter.cs",
+            "ShipTemplateService.cs",
+        };
+
+        private static readonly HashSet<string> AllowedCargoBagMutators = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
             "ShipService.cs",
+            "Ship.cs",
+            "FormShipInstance.cs",
         };
 
         [Test]
-        public void ShipTemplate_HullBlueprintUUIDSets_OnlyInAllowedFiles()
+        public void Ship_ScalarPropertySets_OnlyInAllowedFiles()
         {
             var patterns = new[]
             {
+                new Regex(@"\.TemplateUUID\s*=[^=]", RegexOptions.Compiled),
                 new Regex(@"\.HullBlueprintUUID\s*=[^=]", RegexOptions.Compiled),
+                new Regex(@"\.LocationType\s*=[^=]", RegexOptions.Compiled),
+                new Regex(@"\.LocationUUID\s*=[^=]", RegexOptions.Compiled),
+                new Regex(@"\.HullCurrentHP\s*=[^=]", RegexOptions.Compiled),
+                new Regex(@"\.HullMaxHP\s*=[^=]", RegexOptions.Compiled),
+                new Regex(@"\.HullMaxRepairPercent\s*=[^=]", RegexOptions.Compiled),
             };
-            var violations = ScanForViolations(patterns, AllowedScalarMutators, "HullBlueprintUUID");
+            var violations = ScanForViolations(patterns, AllowedScalarMutators, "Ship");
             Assert.That(violations, Is.Empty,
-                "Found direct ShipTemplate.HullBlueprintUUID sets in non-allowed files:\n" + string.Join("\n", violations));
+                "Found direct Ship property sets in non-allowed files:\n" + string.Join("\n", violations));
         }
 
         [Test]
-        public void ShipTemplate_ComponentsListMutation_OnlyInAllowedFiles()
+        public void Ship_ComponentsListMutation_OnlyInAllowedFiles()
         {
             var patterns = new[]
             {
@@ -60,32 +76,51 @@ namespace OE2EmpireTracker.Tests.Services
                 new Regex(@"\.Components\.Insert\(", RegexOptions.Compiled),
                 new Regex(@"\.Components\s*=[^=]", RegexOptions.Compiled),
             };
-            var violations = ScanForViolations(patterns, AllowedComponentsMutators, "ShipTemplate");
+            var violations = ScanForViolations(patterns, AllowedComponentsMutators, "Ship");
             Assert.That(violations, Is.Empty,
-                "Found direct ShipTemplate.Components list mutation in non-allowed files:\n" + string.Join("\n", violations));
+                "Found direct Ship.Components list mutation in non-allowed files:\n" + string.Join("\n", violations));
         }
 
         [Test]
-        public void FormShipTemplate_NoDirectShipTemplateMutation()
+        public void Ship_CargoBagMutation_OnlyInAllowedFiles()
         {
             var patterns = new[]
             {
-                new Regex(@"_selectedTemplate\.\w+\s*=", RegexOptions.Compiled),
-                new Regex(@"template\.\w+\s*=[^=]", RegexOptions.Compiled),
+                new Regex(@"\.Cargo\.AddItem\(", RegexOptions.Compiled),
+                new Regex(@"\.Cargo\.Remove\(", RegexOptions.Compiled),
+                new Regex(@"\.Cargo\.Clear\(", RegexOptions.Compiled),
+                new Regex(@"\.Cargo\s*=[^=]", RegexOptions.Compiled),
+                new Regex(@"\.Hopper\.AddItem\(", RegexOptions.Compiled),
+                new Regex(@"\.Hopper\.Remove\(", RegexOptions.Compiled),
+                new Regex(@"\.Hopper\.Clear\(", RegexOptions.Compiled),
+                new Regex(@"\.Hopper\s*=[^=]", RegexOptions.Compiled),
             };
-            var filePath = Path.Combine(SourceRoot, "Forms", "ShipTemplate", "FormShipTemplate.cs");
-            var violations = ScanFileForPatterns(filePath, patterns);
+            var violations = ScanForViolations(patterns, AllowedCargoBagMutators, "Ship");
             Assert.That(violations, Is.Empty,
-                "Found direct ShipTemplate entity mutation in FormShipTemplate:\n" + string.Join("\n", violations));
+                "Found direct Ship.Cargo/Hopper mutation in non-allowed files:\n" + string.Join("\n", violations));
         }
 
         [Test]
-        public void ViewModel_DoesNotExposeMutableShipTemplate()
+        public void FormShipInstance_NoDirectShipMutation()
         {
-            var filePath = Path.Combine(SourceRoot, "ViewModels", "ShipTemplateViewModel.cs");
+            var patterns = new[]
+            {
+                new Regex(@"_selectedShip\.\w+\s*=", RegexOptions.Compiled),
+                new Regex(@"ship\.\w+\s*=[^=]", RegexOptions.Compiled),
+            };
+            var filePath = Path.Combine(SourceRoot, "Forms", "ShipInstance", "FormShipInstance.cs");
+            var violations = ScanFileForPatterns(filePath, patterns);
+            Assert.That(violations, Is.Empty,
+                "Found direct Ship entity mutation in FormShipInstance:\n" + string.Join("\n", violations));
+        }
+
+        [Test]
+        public void ViewModel_DoesNotDirectlyMutateShipEntity()
+        {
+            var filePath = Path.Combine(SourceRoot, "ViewModels", "ShipViewModel.cs");
             var content = File.ReadAllText(filePath);
-            Assert.That(content, Does.Not.Contain("public ShipTemplate Data"), "ViewModel still exposes mutable Data property");
-            Assert.That(content, Does.Not.Contain("public ShipTemplate _"), "ViewModel still exposes mutable ShipTemplate field");
+            Assert.That(content, Does.Not.Contain("public Ship Data"), "ViewModel still exposes mutable Data property");
+            Assert.That(content, Does.Not.Contain("public Ship _"), "ViewModel still exposes mutable Ship field");
         }
 
         private List<string> ScanForViolations(Regex[] patterns, HashSet<string> allowedFiles, string entityPrefix)
@@ -106,7 +141,7 @@ namespace OE2EmpireTracker.Tests.Services
                     if (line.StartsWith("//") || line.StartsWith("///") || line.StartsWith("*")) continue;
                     if (line.Contains("{ get;") || line.Contains("{ set;")) continue;
                     if (line.Contains("_viewModel.") || line.Contains("viewModel.")) continue;
-                    if (!line.Contains(entityPrefix) && !line.Contains(".Name") && !line.Contains(".UUID") && !line.Contains(".OwnerUUID") && !line.Contains(".HullBlueprintUUID") && !line.Contains(".Components")) continue;
+                    if (!line.Contains(entityPrefix) && !line.Contains(".Name") && !line.Contains(".UUID") && !line.Contains(".OwnerUUID") && !line.Contains(".HullBlueprintUUID") && !line.Contains(".Components") && !line.Contains(".Cargo") && !line.Contains(".Hopper") && !line.Contains(".LocationType") && !line.Contains(".LocationUUID") && !line.Contains(".HullCurrentHP") && !line.Contains(".HullMaxHP") && !line.Contains(".HullMaxRepairPercent") && !line.Contains(".TemplateUUID")) continue;
                     foreach (var rx in patterns)
                     {
                         if (rx.IsMatch(line))

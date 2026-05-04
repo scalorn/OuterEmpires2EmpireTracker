@@ -28,6 +28,8 @@ The user wants to design ship loadouts (templates) by selecting hulls and compon
 **REQ-SHP-012** Ship.Cargo SHALL be an ItemBag for general cargo. Volume enforcement is in the service layer.  
 **REQ-SHP-013** Ship.Hopper SHALL be a separate ItemBag for unrefined resources (High/Medium/Low purity only). Refined and synthetic purities SHALL NOT be allowed.  
 **REQ-SHP-014** Ship SHALL have hull damage fields (HullCurrentHP, HullMaxHP, HullMaxRepairPercent) defaulting to 0 (undamaged).  
+**REQ-SHP-015** ShipUpdateRequest SHALL carry Original (ReadOnlyShip), Name, TemplateUUID, HullBlueprintUUID, LocationType, LocationUUID, HullCurrentHP, HullMaxHP, HullMaxRepairPercent, Components, Cargo, and Hopper for updating an existing ship via ShipService.  
+**REQ-SHP-016** ShipCreateRequest SHALL carry Name for creating a new ship via ShipService. No UUID or OwnerUUID (service assigns them).  
 
 ## Ship Build Service
 
@@ -43,6 +45,7 @@ The user wants to design ship loadouts (templates) by selecting hulls and compon
 ## Ship Instance Form
 
 **REQ-SHP-040** FormShipInstance SHALL display ship details with an Overview tab (stats, components, damage) and a Cargo tab (items in cargo and hopper).  
+**REQ-SHP-043** FormShipInstance SHALL use ShipViewModel as a disconnected edit buffer. All user edits accumulate in the ViewModel until Save routes them through ShipService.  
 **REQ-SHP-041** The Cargo tab SHALL show used vs total cargo volume and warn when over capacity.  
 **REQ-SHP-042** Components SHALL be swappable after creation. Swapping SHALL trigger stat recomputation.  
 

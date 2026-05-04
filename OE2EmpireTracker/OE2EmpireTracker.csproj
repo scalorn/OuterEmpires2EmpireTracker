@@ -255,6 +255,7 @@
     <Compile Include="Services\ColonyService.cs" />
     <Compile Include="Services\DeliveryRouteService.cs" />
     <Compile Include="Services\ShipTemplateService.cs" />
+    <Compile Include="Services\ShipService.cs" />
     <Compile Include="Services\MarketListingService.cs" />
     <Compile Include="Services\DeliveryPlanService.cs" />
     <Compile Include="Services\CollectionSortHelper.cs" />
@@ -335,6 +336,7 @@
     <Compile Include="ViewModels\ColonyStructureViewModel.cs" />
     <Compile Include="ViewModels\DeliveryRouteViewModel.cs" />
     <Compile Include="ViewModels\ShipTemplateViewModel.cs" />
+    <Compile Include="ViewModels\ShipViewModel.cs" />
     <Compile Include="ViewModels\DeliveryPlanViewModel.cs" />
     <Compile Include="ViewModels\ColonyViewModel.cs" />
     <Compile Include="ViewModels\BlueprintFilterCriteria.cs" />
@@ -428,6 +430,8 @@
     <Compile Include="Models\DeliveryRouteCreateRequest.cs" />
     <Compile Include="Models\ShipTemplateUpdateRequest.cs" />
     <Compile Include="Models\ShipTemplateCreateRequest.cs" />
+    <Compile Include="Models\ShipUpdateRequest.cs" />
+    <Compile Include="Models\ShipCreateRequest.cs" />
     <Compile Include="Models\DeliveryPlanUpdateRequest.cs" />
     <Compile Include="Models\StopDestinationInfo.cs" />
     <Compile Include="Models\DeliveryItemInfo.cs" />

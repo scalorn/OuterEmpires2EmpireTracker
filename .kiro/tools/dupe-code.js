@@ -35,6 +35,12 @@ const KNOWN_DUPES = new Set([
     'flpSearchList_Layout',
     // Unsaved changes prompt intentionally copied between FormSurvey and FormColonyV2 (BL-109, BL-110)
     'PromptUnsavedChanges',
+    // Deep-copy helpers intentionally duplicated between Ship/ShipTemplate services and ViewModels (BL-115, BL-116)
+    'DeepCopyComponents',
+    'DeepCopyItemBag',
+    'DeepCopyItem',
+    'SetComponent',
+    'RemoveComponent',
 ]);
 
 function findCsFiles(dir, results) {

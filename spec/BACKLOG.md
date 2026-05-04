@@ -286,13 +286,12 @@ These items complete the immutable data model migration across all forms. Each f
 
 ### BL-115: ShipTemplate — Immutable Data Model with Service Layer
 **Dependencies:** none
-**Status: New**
+**Status: Complete** — see spec .kiro/specs/bl-115-shiptemplate-readonly/
 Apply the immutable data model pattern to ShipTemplate. Create ShipTemplateService as sole mutator with CRUD methods for templates and component slots. Create ShipTemplateViewModel as disconnected edit buffer. Migrate FormShipTemplate to route all mutations through the service. Currently mutates ShipTemplate and ShipComponentSlot directly (3 WriteContext calls). Includes unsaved changes prompts.
 
 ### BL-116: Ship — Immutable Data Model with Service Layer
 **Dependencies:** BL-115
-**Status: New**
-Apply the immutable data model pattern to Ship (ship instances). Create ShipService as sole mutator with CRUD methods for ships, component slots, cargo, and hopper. Create ShipViewModel as disconnected edit buffer. Migrate FormShipInstance to route all mutations through the service. Currently mutates Ship, ShipComponentSlot, and Item directly (2 WriteContext calls). Includes unsaved changes prompts.
+**Status: In Progress** — tasks 1-7 complete, tests remaining
 
 ### BL-117: Station — Immutable Data Model with Service Layer
 **Dependencies:** none

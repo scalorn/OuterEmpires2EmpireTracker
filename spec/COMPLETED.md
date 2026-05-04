@@ -424,3 +424,6 @@ Applied the immutable data model pattern to DeliveryPlan. DeliveryPlanService cr
 ### BL-114: Market — Immutable Data Model with Service Layer
 Applied the immutable data model pattern to MarketListing and MarketTransaction. Created MarketListingService as sole mutator with CreateListing, UpdateListing, DeleteListing, and RecordSale methods. Migrated FormMarket to use ReadOnly wrappers in grid Tags and route all mutations through the service. Migrated FormListingEdit to accept ReadOnlyMarketListing and expose edited values as properties. Migrated FormRecordSale to accept ReadOnlyMarketListing. Added FindMutableMarketListing to PlayerContext. 21 new tests including 4 property-based tests, 13 unit tests, and 4 mutation guard tests. See .kiro/specs/bl-114-market-readonly/.
 **Status: Complete**
+### BL-115: ShipTemplate — Immutable Data Model with Service Layer
+Applied the immutable data model pattern to ShipTemplate. Created ShipTemplateViewModel as disconnected edit buffer with IsDirty tracking for Name, HullBlueprintUUID, and Components. Created ShipTemplateService with Create/Update/Delete methods. Migrated FormShipTemplate to use ReadOnly wrappers in list view, ViewModel for all edits, and service for Save/Delete. Added unsaved changes prompts. 33 new tests. See .kiro/specs/bl-115-shiptemplate-readonly/.
+**Status: Complete**

@@ -2813,6 +2813,30 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Returns the mutable ShipTemplate entity. Only called by ShipTemplateService.
         /// </summary>
+        /// <summary>
+        /// Returns the mutable Ship entity by UUID. Internal so only the service can access it.
+        /// </summary>
+        internal Ship FindMutableShip(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_shipCache == null)
+                {
+                    _shipCache = new Dictionary<string, Ship>();
+                    foreach (var s in _shipList)
+                    {
+                        if (s.UUID != null && !_shipCache.ContainsKey(s.UUID))
+                            _shipCache[s.UUID] = s;
+                    }
+                }
+
+                _shipCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
         internal ShipTemplate FindMutableShipTemplate(string uuid)
         {
             if (string.IsNullOrEmpty(uuid)) return null;

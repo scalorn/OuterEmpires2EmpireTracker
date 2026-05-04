@@ -6,27 +6,27 @@ Apply the immutable data model pattern to the Ship form (FormShipInstance). Crea
 
 ## Tasks
 
-- [ ] 1. DTO request models and PlayerContext accessors
-  - [ ] 1.1 Create ShipUpdateRequest DTO
+- [x] 1. DTO request models and PlayerContext accessors
+  - [x] 1.1 Create ShipUpdateRequest DTO
     - Create OE2EmpireTracker/Models/ShipUpdateRequest.cs
     - Properties: Original (ReadOnlyShip), Name (string), TemplateUUID (string), HullBlueprintUUID (string), LocationType (DestinationType), LocationUUID (string), HullCurrentHP (int), HullMaxHP (int), HullMaxRepairPercent (decimal), Components (List of ShipComponentSlot), Cargo (ItemBag), Hopper (ItemBag)
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 11.1_
 
-  - [ ] 1.2 Create ShipCreateRequest DTO
+  - [x] 1.2 Create ShipCreateRequest DTO
     - Create OE2EmpireTracker/Models/ShipCreateRequest.cs
     - Properties: Name (string)
     - No UUID (service assigns), no OwnerUUID (service sets from current player)
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 12.1_
 
-  - [ ] 1.3 Add FindMutableShip internal method to PlayerContext
+  - [x] 1.3 Add FindMutableShip internal method to PlayerContext
     - Follow the same cache-based lookup pattern as FindMutableBlueprint, FindMutableColony, and FindMutableDeliveryRoute
     - Reuse existing _shipCache with lock-based lazy initialization
     - Mark method internal so only the service can access it
     - _Requirements: 15.1, 15.2, 15.3_
-- [ ] 2. Create ShipViewModel as disconnected edit buffer
-  - [ ] 2.1 Create ShipViewModel class
+- [x] 2. Create ShipViewModel as disconnected edit buffer
+  - [x] 2.1 Create ShipViewModel class
     - Create OE2EmpireTracker/ViewModels/ShipViewModel.cs
     - Private fields: _original (ReadOnlyShip), _uuid, _ownerUUID, local Name (string), TemplateUUID (string), HullBlueprintUUID (string), LocationType (DestinationType), LocationUUID (string), HullCurrentHP (int), HullMaxHP (int), HullMaxRepairPercent (decimal), _components (List of ShipComponentSlot), _cargo (ItemBag), _hopper (ItemBag)
     - Public properties: Name (get/set), TemplateUUID (get/set), HullBlueprintUUID (get/set), LocationType (get/set), LocationUUID (get/set), HullCurrentHP (get/set), HullMaxHP (get/set), HullMaxRepairPercent (get/set), Components (List of ShipComponentSlot), Cargo (ItemBag), Hopper (ItemBag), UUID, OwnerUUID, Original, IsNew, IsDirty
@@ -50,8 +50,8 @@ Apply the immutable data model pattern to the Ship form (FormShipInstance). Crea
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 2.1, 2.2, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10, 3.11, 3.12, 4.1, 4.2, 4.3, 4.5, 4.9, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 6.10, 6.11, 6.12_
 
-- [ ] 3. Create ShipService with CRUD methods
-  - [ ] 3.1 Create ShipService class
+- [x] 3. Create ShipService with CRUD methods
+  - [x] 3.1 Create ShipService class
     - Create OE2EmpireTracker/Services/ShipService.cs
     - Constructor takes PlayerContext dependency
     - Update(string uuid, ShipUpdateRequest): looks up mutable entity via FindMutableShip, applies Name, TemplateUUID, HullBlueprintUUID, LocationType, LocationUUID, HullCurrentHP, HullMaxHP, HullMaxRepairPercent from request, replaces Components list with deep copy, replaces Cargo and Hopper with deep copies, persists via WriteContext(), fires ShipDataChanged event, returns ReadOnlyShip. Throws InvalidOperationException if UUID not found.
@@ -63,18 +63,18 @@ Apply the immutable data model pattern to the Ship form (FormShipInstance). Crea
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.8, 11.9, 11.10, 12.1, 12.2, 12.3, 12.4, 12.5, 12.6, 12.7, 12.8, 13.1, 13.2, 13.3, 13.4, 13.5, 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 18.1_
 
-- [ ] 4. Checkpoint --- Verify new classes compile cleanly
+- [x] 4. Checkpoint --- Verify new classes compile cleanly
   - Build with zero errors and zero warnings
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Migrate FormShipInstance to ReadOnly wrappers and service
-  - [ ] 5.1 Replace mutable entity references with ReadOnly wrappers in list view
+- [x] 5. Migrate FormShipInstance to ReadOnly wrappers and service
+  - [x] 5.1 Replace mutable entity references with ReadOnly wrappers in list view
     - Change PopulateShipList to store ReadOnlyShip in ListViewItem Tags (from PlayerContext.GetCurrentPlayerReadOnlyShips())
     - Change filter logic to use ReadOnlyShip properties for filter comparison
     - Remove any direct mutable Ship references from list view code paths
     - _Requirements: 1.1, 1.2, 1.3, 2.1_
 
-  - [ ] 5.2 Wire ViewModel as edit buffer
+  - [x] 5.2 Wire ViewModel as edit buffer
     - Add ShipViewModel _viewModel field and ShipService _shipService field
     - Change selection handler to extract ReadOnlyShip from Tag and call _viewModel.LoadFrom()
     - Change PopulateForm to read from _viewModel local fields (Name, HullBlueprintUUID, LocationType, LocationUUID, Components, Cargo, Hopper, HullCurrentHP, HullMaxRepairPercent) instead of entity
@@ -82,7 +82,7 @@ Apply the immutable data model pattern to the Ship form (FormShipInstance). Crea
     - Remove _selectedShip mutable reference field
     - _Requirements: 1.2, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.1, 4.3, 4.5, 4.6, 4.7, 4.9_
 
-  - [ ] 5.3 Replace write-through with local-only ViewModel updates
+  - [x] 5.3 Replace write-through with local-only ViewModel updates
     - Change TxtName_TextChanged handler to set _viewModel.Name instead of entity Name
     - Change CmbHull_SelectedItemChanged handler to set _viewModel.HullBlueprintUUID and call _viewModel.ClearComponents() instead of entity mutation
     - Change CmbLocationType_SelectedIndexChanged handler to set _viewModel.LocationType instead of entity LocationType
@@ -93,24 +93,24 @@ Apply the immutable data model pattern to the Ship form (FormShipInstance). Crea
     - Remove any direct WriteContext() calls from control change handlers
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
 
-  - [ ] 5.4 Wire Save button through service
+  - [x] 5.4 Wire Save button through service
     - Change Save handler: if _viewModel.IsNew, call _shipService.Create(BuildCreateRequest()); else call _shipService.Update(uuid, BuildUpdateRequest())
     - After save, refresh list view and reload _viewModel from returned ReadOnlyShip
     - _Requirements: 16.1, 16.2, 16.3, 16.4_
 
-  - [ ] 5.5 Wire Delete button through service with reference protection
+  - [x] 5.5 Wire Delete button through service with reference protection
     - Check ShipReferenceCounter for references before delete (delivery plans, build items)
     - If CountReferences > 0, show warning message with reference count and prevent deletion
     - If no references, prompt for confirmation before calling _shipService.Delete(uuid)
     - After deletion, clear form and refresh list view
     - _Requirements: 17.1, 17.2, 17.3, 17.4_
 
-  - [ ] 5.6 Wire Create from Template through service
+  - [x] 5.6 Wire Create from Template through service
     - Change CmdFromTemplate_Click to show template selection dialog, then call _shipService.CreateFromTemplate(templateUUID)
     - After creation, refresh list view and reload _viewModel from returned ReadOnlyShip
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5_
-- [ ] 6. Add unsaved changes prompts
-  - [ ] 6.1 Add unsaved changes prompt on selection change
+- [x] 6. Add unsaved changes prompts
+  - [x] 6.1 Add unsaved changes prompt on selection change
     - In ship list selection handler, check _viewModel.IsDirty before loading new selection
     - Show three-button dialog: Save, Discard, Cancel
     - Save: call service Create/Update, then load new selection
@@ -118,25 +118,25 @@ Apply the immutable data model pattern to the Ship form (FormShipInstance). Crea
     - Cancel: cancel selection change, keep current ship selected
     - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-  - [ ] 6.2 Add unsaved changes prompt on New button
+  - [x] 6.2 Add unsaved changes prompt on New button
     - In CmdNew_Click handler, check _viewModel.IsDirty before clearing form
     - Same three-button dialog: Save, Discard, Cancel
     - _Requirements: 9.1, 9.2, 9.3, 9.4_
 
-  - [ ] 6.3 Add unsaved changes prompt on form close and application exit
+  - [x] 6.3 Add unsaved changes prompt on form close and application exit
     - Override OnFormClosing to check _viewModel.IsDirty
     - Show same three-button dialog
     - Cancel sets e.Cancel = true to prevent close
     - Handles both form close (X button) and application exit (MainWindow closing)
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 10.1, 10.2_
 
-- [ ] 7. Checkpoint --- Verify form migration compiles and existing tests pass
+- [x] 7. Checkpoint --- Verify form migration compiles and existing tests pass
   - Build with zero errors and zero warnings
   - All existing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Add ViewModel property tests
-  - [ ] 8.1 Write property test: LoadFrom round-trip preserves all fields
+- [-] 8. Add ViewModel property tests
+  - [-] 8.1 Write property test: LoadFrom round-trip preserves all fields
     - Create OE2EmpireTracker.Tests/ViewModels/ShipViewModelPropertyTests.cs
     - Create ValidShipGen() generator producing random Ship entities with random Name, UUID, OwnerUUID, TemplateUUID, HullBlueprintUUID, LocationType, LocationUUID, HullCurrentHP, HullMaxHP, HullMaxRepairPercent, 0-10 ShipComponentSlot entries, 0-5 Cargo items, 0-5 Hopper items
     - **Property 1: LoadFrom Round-Trip Preserves All Fields**
@@ -179,15 +179,15 @@ Apply the immutable data model pattern to the Ship form (FormShipInstance). Crea
     - Test adding or removing a cargo item causes IsDirty to return true
     - **Validates: Requirements 6.1, 6.9**
 
-- [ ] 9. Add ViewModel unit tests
-  - [ ] 9.1 Write unit tests for ShipViewModel
+- [x] 9. Add ViewModel unit tests
+  - [x] 9.1 Write unit tests for ShipViewModel
     - Create OE2EmpireTracker.Tests/ViewModels/ShipViewModelTests.cs
     - Tests: Reset clears all fields to defaults, IsNew returns true after Reset, IsNew returns false after LoadFrom, IsDirty returns true for new ship with non-empty Name, BuildUpdateRequest copies all fields and collections, BuildCreateRequest copies Name, UUID and OwnerUUID are preserved from LoadFrom, SetComponent adds new component, SetComponent updates existing component, RemoveComponent removes component, ClearComponents empties list, AddCargoItem adds item to Cargo, RemoveCargoItem removes item from Cargo, AddHopperItem adds item to Hopper, RemoveHopperItem removes item from Hopper, LocationType and LocationUUID are preserved from LoadFrom, HullCurrentHP HullMaxHP HullMaxRepairPercent are preserved from LoadFrom
     - Add Compile Include to test csproj
     - _Requirements: 3.1, 3.2, 3.4, 3.5, 3.6, 3.8, 3.9, 6.1, 6.11, 6.12_
 
-- [ ] 10. Add Service property tests
-  - [ ] 10.1 Write property test: Service.Update round-trip
+- [x] 10. Add Service property tests
+  - [x] 10.1 Write property test: Service.Update round-trip
     - Create OE2EmpireTracker.Tests/Services/ShipServicePropertyTests.cs
     - Reuse ValidShipGen() pattern from ViewModel property tests
     - **Property 8: Service.Update Round-Trip**
@@ -195,25 +195,25 @@ Apply the immutable data model pattern to the Ship form (FormShipInstance). Crea
     - **Validates: Requirements 11.3, 11.4, 11.5, 11.6, 11.9**
     - Add Compile Include to test csproj
 
-  - [ ] 10.2 Write property test: Service.Create round-trip
+  - [x] 10.2 Write property test: Service.Create round-trip
     - **Property 9: Service.Create Round-Trip**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 12.2, 12.4, 12.8**
 
-  - [ ] 10.3 Write property test: Service.Delete removes ship
+  - [x] 10.3 Write property test: Service.Delete removes ship
     - **Property 10: Service.Delete Removes Ship**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 13.1, 13.2**
 
-- [ ] 11. Add Service unit tests
-  - [ ] 11.1 Write unit tests for ShipService
+- [x] 11. Add Service unit tests
+  - [x] 11.1 Write unit tests for ShipService
     - Create OE2EmpireTracker.Tests/Services/ShipServiceTests.cs
     - Tests: Update with non-existent UUID throws InvalidOperationException, Delete with empty UUID returns without error, Delete with non-existent UUID returns without error, Create assigns non-empty UUID, Create sets OwnerUUID to current player UUID, Update fires ShipDataChanged event, Create fires ShipDataChanged event, Delete fires ShipDataChanged event, Update replaces Components list, Update replaces Cargo and Hopper, Create populates Name from request, CreateFromTemplate copies fields from template, CreateFromTemplate with non-existent template throws InvalidOperationException
     - Add Compile Include to test csproj
     - _Requirements: 11.9, 11.10, 12.2, 12.3, 12.7, 12.8, 13.4, 13.5, 14.3, 14.6_
 
-- [ ] 12. Add mutation guard test
-  - [ ] 12.1 Write mutation guard test for Ship
+- [x] 12. Add mutation guard test
+  - [x] 12.1 Write mutation guard test for Ship
     - Create OE2EmpireTracker.Tests/Services/ShipMutationGuardTests.cs
     - Follow BlueprintMutationGuardTests, ColonyMutationGuardTests, DeliveryRouteMutationGuardTests, ShipTemplateMutationGuardTests pattern
     - First check: scan for direct Ship property sets (Name, UUID, OwnerUUID, TemplateUUID, HullBlueprintUUID, LocationType, LocationUUID, HullCurrentHP, HullMaxHP, HullMaxRepairPercent), assert they only appear in ShipService.cs, Ship.cs, PlayerContext.cs (deserialization/migration), and test code
@@ -225,7 +225,7 @@ Apply the immutable data model pattern to the Ship form (FormShipInstance). Crea
     - **Validates: Requirements 18.1, 18.2, 18.3, 21.1, 21.2, 21.3**
     - Add Compile Include to test csproj
 
-- [ ] 13. Final checkpoint --- Full build, all tests pass, audit clean
+- [x] 13. Final checkpoint --- Full build, all tests pass, audit clean
   - Build with zero errors and zero warnings
   - All existing and new tests pass
   - node .kiro/tools/audit.js reports no new findings

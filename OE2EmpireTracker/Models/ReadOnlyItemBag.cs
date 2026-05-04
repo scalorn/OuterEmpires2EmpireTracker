@@ -43,6 +43,12 @@ namespace OE2EmpireTracker.Models
 
         public override int GetHashCode() => _entity.GetHashCode();
 
+        /// <summary>Returns all items as ReadOnlyItem instances.</summary>
+        public IReadOnlyList<ReadOnlyItem> GetAllItems()
+            => _entity.Items.Values
+                .Select(i => new ReadOnlyItem(i))
+                .ToList();
+
         public override string ToString() => _entity.ToString();
     }
 }

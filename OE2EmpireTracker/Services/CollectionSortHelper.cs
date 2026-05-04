@@ -327,6 +327,19 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Sorts read-only ships by Name (ascending, OrdinalIgnoreCase).
+        /// </summary>
+        public static IReadOnlyList<ReadOnlyShip> OrderReadOnlyShips(
+            IEnumerable<ReadOnlyShip> ships)
+        {
+            if (ships == null) return Array.Empty<ReadOnlyShip>();
+            return ships
+                .OrderBy(s => s.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
         /// Sorts stations by Name (ascending, OrdinalIgnoreCase).
         /// </summary>
         public static IReadOnlyList<Station> OrderStations(
