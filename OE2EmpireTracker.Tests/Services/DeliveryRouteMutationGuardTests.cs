@@ -60,6 +60,7 @@ namespace OE2EmpireTracker.Tests.Services
             "SurveyImportHelper.cs",
             "SurveyService.cs",
             "BlueprintViewModel.cs",
+            "ShipTemplateService.cs",
             "DeliveryPlanService.cs",
         };
 

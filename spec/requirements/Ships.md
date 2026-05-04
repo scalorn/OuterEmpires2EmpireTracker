@@ -18,6 +18,8 @@ The user wants to design ship loadouts (templates) by selecting hulls and compon
 **REQ-SHP-002** ShipComponentSlot SHALL have SlotType (string), SlotIndex (int, 0-based), and BlueprintUUID.  
 **REQ-SHP-003** ShipComponentSlot SHALL include damage fields (CurrentHP, MaxHP, MaxRepairPercent) defaulting to 0 (undamaged). These fields are unused on templates.  
 **REQ-SHP-004** SlotType SHALL be a string (not enum) to accommodate future game slot types. Valid slot types and counts are defined by the hull blueprint's properties.  
+**REQ-SHP-005** ShipTemplateUpdateRequest SHALL carry Original (ReadOnlyShipTemplate), Name, HullBlueprintUUID, and Components for updating an existing template via ShipTemplateService.  
+**REQ-SHP-006** ShipTemplateCreateRequest SHALL carry Name, HullBlueprintUUID, and Components for creating a new template via ShipTemplateService. No UUID or OwnerUUID (service assigns them).  
 
 ## Ship Instances
 

@@ -2811,6 +2811,30 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Returns the mutable ShipTemplate entity. Only called by ShipTemplateService.
+        /// </summary>
+        internal ShipTemplate FindMutableShipTemplate(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_shipTemplateCache == null)
+                {
+                    _shipTemplateCache = new Dictionary<string, ShipTemplate>();
+                    foreach (var st in _shipTemplateList)
+                    {
+                        if (st.UUID != null && !_shipTemplateCache.ContainsKey(st.UUID))
+                            _shipTemplateCache[st.UUID] = st;
+                    }
+                }
+
+                _shipTemplateCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
+        /// <summary>
         /// Returns the mutable Blueprint entity for the given UUID from the player list only.
         /// Does NOT fall back to global blueprints. Only called by BlueprintService.
         /// </summary>

@@ -7,6 +7,7 @@ using NLog;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.ShipTemplate
 {
@@ -18,7 +19,8 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
         private PlayerContext playerContext;
 
-        private Models.ShipTemplate _selectedTemplate;
+        private ShipTemplateViewModel _viewModel = new ShipTemplateViewModel();
+        private ShipTemplateService _shipTemplateService;
 
         private List<string> _hullUUIDs = new List<string>();
 
@@ -26,6 +28,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
+            _shipTemplateService = new ShipTemplateService(playerContext);
 
             lvwTemplates.View = View.Details;
             lvwTemplates.Columns.Add("Name", 160);
@@ -59,6 +62,13 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
         }
 
+        private enum UnsavedAction
+        {
+            Save,
+            Discard,
+            Cancel,
+        }
+
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
 
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
@@ -67,6 +77,30 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             base.OnFormClosed(e);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (_viewModel.IsDirty)
+            {
+                var action = PromptUnsavedChanges();
+                if (action == UnsavedAction.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (action == UnsavedAction.Save)
+                {
+                    if (!TrySaveCurrentTemplate())
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+            }
+
+            base.OnFormClosing(e);
         }
 
         // Layout
@@ -103,15 +137,13 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            string selectedUUID = _selectedTemplate?.UUID;
+            string selectedUUID = _viewModel.UUID;
             lvwTemplates.Items.Clear();
 
-            var templates = playerContext.ShipTemplateList
-                .Where(t => t.OwnerUUID == playerContext.CurrentPlayerUUID).ToList();
+            var templates = CollectionSortHelper.OrderByName(
+                playerContext.GetCurrentPlayerReadOnlyShipTemplates(),
+                t => t.Name);
             string filter = txtFilter.Text.Trim();
-            if (!string.IsNullOrEmpty(filter))
-                templates = templates.Where(t => t.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-            templates = CollectionSortHelper.OrderShipTemplates(templates).ToList();
 
             var refCounter = new ShipTemplateReferenceCounter(
                 playerContext.SnapshotShipList(),
@@ -119,6 +151,12 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
             foreach (var tmpl in templates)
             {
+                if (!string.IsNullOrEmpty(filter)
+                    && (tmpl.Name ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    continue;
+                }
+
                 int refs = refCounter.CountReferences(tmpl.UUID);
                 var item = new ListViewItem(tmpl.Name) { Tag = tmpl };
                 item.SubItems.Add(refs.ToString());
@@ -127,7 +165,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             }
 
             sw.Stop();
-            Log.Info("PERF PopulateTemplateList: {0}ms items={1}", sw.ElapsedMilliseconds, templates.Count);
+            Log.Info("PERF PopulateTemplateList: {0}ms items={1}", sw.ElapsedMilliseconds, lvwTemplates.Items.Count);
         }
 
         private void TxtFilter_TextChanged(object sender, EventArgs e) { PopulateTemplateList(); }
@@ -135,14 +173,37 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         private void LvwTemplates_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (e.IsSelected && e.Item.Tag is Models.ShipTemplate tmpl)
+            if (e.IsSelected && e.Item.Tag is ReadOnlyShipTemplate roTemplate)
             {
-                _selectedTemplate = tmpl;
+                if (_viewModel.IsDirty)
+                {
+                    var action = PromptUnsavedChanges();
+                    if (action == UnsavedAction.Cancel)
+                    {
+                        using var guard = new ProgrammaticUpdateGuard(this);
+                        e.Item.Selected = false;
+                        SelectCurrentTemplateInList();
+                        return;
+                    }
+
+                    if (action == UnsavedAction.Save)
+                    {
+                        if (!TrySaveCurrentTemplate())
+                        {
+                            using var guard = new ProgrammaticUpdateGuard(this);
+                            e.Item.Selected = false;
+                            SelectCurrentTemplateInList();
+                            return;
+                        }
+                    }
+                }
+
+                _viewModel.LoadFrom(roTemplate);
                 PopulateForm();
             }
             else if (!e.IsSelected && lvwTemplates.SelectedItems.Count == 0)
             {
-                _selectedTemplate = null;
+                _viewModel.Reset();
                 ClearForm();
             }
         }
@@ -152,14 +213,14 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedTemplate == null)
+            if (_viewModel.IsNew && string.IsNullOrEmpty(_viewModel.Name))
             {
                 ClearForm();
                 return;
             }
 
-            txtName.Text = _selectedTemplate.Name;
-            SelectHullInCombo(_selectedTemplate.HullBlueprintUUID);
+            txtName.Text = _viewModel.Name;
+            SelectHullInCombo(_viewModel.HullBlueprintUUID);
             PopulateSlotGrid();
             RefreshStats();
             SetDetailEnabled(true);
@@ -223,11 +284,12 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
         private void CmbHull_SelectedItemChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedTemplate == null) return;
+            if (_isProgrammaticUpdate > 0) return;
+            if (_viewModel.IsNew && string.IsNullOrEmpty(_viewModel.Name)) return;
             int idx = cmbHull.SelectedFullIndex;
             string uuid = (idx >= 0 && idx < _hullUUIDs.Count) ? _hullUUIDs[idx] : string.Empty;
-            _selectedTemplate.HullBlueprintUUID = uuid;
-            _selectedTemplate.Components.Clear();
+            _viewModel.HullBlueprintUUID = uuid;
+            _viewModel.ClearComponents();
             PopulateSlotGrid();
             RefreshStats();
         }
@@ -238,13 +300,13 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvSlots.Rows.Clear();
-            if (_selectedTemplate == null)
+            if (_viewModel.IsNew && string.IsNullOrEmpty(_viewModel.Name))
             {
                 sw.Stop();
                 return;
             }
 
-            var hullBp = playerContext.FindBlueprint(_selectedTemplate.HullBlueprintUUID);
+            var hullBp = playerContext.FindBlueprint(_viewModel.HullBlueprintUUID);
             if (hullBp?.Properties == null) return;
 
             var slotDefs = GetSlotDefinitions(hullBp);
@@ -253,7 +315,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             {
                 for (int idx = 0; idx < def.MaxCount; idx++)
                 {
-                    var existing = _selectedTemplate.Components
+                    var existing = _viewModel.Components
                         .FirstOrDefault(c => c.SlotType == def.SlotType && c.SlotIndex == idx);
 
                     int rowIdx = dgvSlots.Rows.Add(def.SlotType, idx);
@@ -316,7 +378,6 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             if (_isProgrammaticUpdate > 0 || e.RowIndex < 0) return;
             if (e.ColumnIndex != colComponent.Index) return;
-            if (_selectedTemplate == null) return;
 
             var row = dgvSlots.Rows[e.RowIndex];
             var info = row.Tag as SlotInfo;
@@ -328,22 +389,13 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             if (selectedIdx > 0 && info.UUIDByIndex != null && selectedIdx < info.UUIDByIndex.Count)
                 bpUUID = info.UUIDByIndex[selectedIdx];
 
-            var existing = _selectedTemplate.Components
-                .FirstOrDefault(c => c.SlotType == info.SlotType && c.SlotIndex == info.SlotIndex);
-
             if (string.IsNullOrEmpty(bpUUID))
             {
-                if (existing != null) _selectedTemplate.Components.Remove(existing);
+                _viewModel.RemoveComponent(info.SlotType, info.SlotIndex);
             }
             else
             {
-                if (existing == null)
-                {
-                    existing = new ShipComponentSlot { SlotType = info.SlotType, SlotIndex = info.SlotIndex };
-                    _selectedTemplate.Components.Add(existing);
-                }
-
-                existing.BlueprintUUID = bpUUID;
+                _viewModel.SetComponent(info.SlotType, info.SlotIndex, bpUUID);
             }
 
             RefreshStats();
@@ -368,14 +420,14 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         private void RefreshStats()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            if (_selectedTemplate == null)
+            if (_viewModel.IsNew && string.IsNullOrEmpty(_viewModel.Name))
             {
                 rtbStats.Text = string.Empty;
                 sw.Stop();
                 return;
             }
 
-            var hullBp = playerContext.FindBlueprint(_selectedTemplate.HullBlueprintUUID);
+            var hullBp = playerContext.FindBlueprint(_viewModel.HullBlueprintUUID);
             if (hullBp == null)
             {
                 rtbStats.Text = "Select a hull blueprint.";
@@ -385,7 +437,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
             var stats = ShipBuildService.ComputeStats(
                 hullBp,
-                _selectedTemplate.Components,
+                _viewModel.Components,
                 uuid => playerContext.FindBlueprint(uuid));
 
             rtbStats.Text = string.Format(
@@ -421,34 +473,48 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         // CRUD
         private void CmdNew_Click(object sender, EventArgs e)
         {
-            var tmpl = new Models.ShipTemplate
+            if (_viewModel.IsDirty)
             {
-                UUID = Guid.NewGuid().ToString(),
-                Name = "New Template",
-                OwnerUUID = playerContext.CurrentPlayerUUID
-            };
+                var action = PromptUnsavedChanges();
+                if (action == UnsavedAction.Cancel)
+                {
+                    return;
+                }
 
-            playerContext.AddShipTemplate(tmpl);
-            playerContext.WriteContext();
-            _selectedTemplate = tmpl;
-            PopulateTemplateList();
+                if (action == UnsavedAction.Save)
+                {
+                    if (!TrySaveCurrentTemplate())
+                    {
+                        return;
+                    }
+                }
+            }
+
+            _viewModel.Reset();
+            _viewModel.Name = "New Template";
+            using (var guard = new ProgrammaticUpdateGuard(this))
+            {
+                lvwTemplates.SelectedItems.Clear();
+            }
+
             PopulateForm();
+            SetDetailEnabled(true);
         }
 
         private void CmdDelete_Click(object sender, EventArgs e)
         {
-            if (_selectedTemplate == null) return;
+            if (_viewModel.IsNew || string.IsNullOrEmpty(_viewModel.UUID)) return;
 
             var refCounter = new ShipTemplateReferenceCounter(
                 playerContext.SnapshotShipList(),
                 playerContext.GetCurrentPlayerBuildPlans());
-            int refs = refCounter.CountReferences(_selectedTemplate.UUID);
+            int refs = refCounter.CountReferences(_viewModel.UUID);
             if (refs > 0)
             {
                 MessageBox.Show(
                     string.Format(
                         "Cannot delete template '{0}' — it is referenced by {1} ship(s) or build item(s).",
-                        _selectedTemplate.Name,
+                        _viewModel.Name,
                         refs),
                     "Delete Blocked",
                     MessageBoxButtons.OK,
@@ -457,14 +523,14 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             }
 
             var result = MessageBox.Show(
-                string.Format("Delete template '{0}'?", _selectedTemplate.Name),
+                string.Format("Delete template '{0}'?", _viewModel.Name),
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.RemoveShipTemplate(_selectedTemplate);
-            playerContext.WriteContext();
-            _selectedTemplate = null;
+
+            _shipTemplateService.Delete(_viewModel.UUID);
+            _viewModel.Reset();
             PopulateTemplateList();
             ClearForm();
             Log.Info("Deleted template");
@@ -472,24 +538,53 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
         private void CmdSave_Click(object sender, EventArgs e)
         {
-            if (_selectedTemplate == null) return;
-            string name = txtName.Text.Trim();
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            _selectedTemplate.Name = name;
-            playerContext.WriteContext();
-            PopulateTemplateList();
-            Log.Info("Saved template '{0}'", _selectedTemplate.Name);
+            TrySaveCurrentTemplate();
         }
 
         private void TxtName_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedTemplate == null) return;
-            _selectedTemplate.Name = txtName.Text;
+            if (_isProgrammaticUpdate > 0) return;
+            _viewModel.Name = txtName.Text;
+        }
+
+        private bool TrySaveCurrentTemplate()
+        {
+            string name = _viewModel.Name?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            _viewModel.Name = name;
+
+            try
+            {
+                ReadOnlyShipTemplate saved;
+                if (_viewModel.IsNew)
+                {
+                    saved = _shipTemplateService.Create(_viewModel.BuildCreateRequest());
+                }
+                else
+                {
+                    saved = _shipTemplateService.Update(_viewModel.UUID, _viewModel.BuildUpdateRequest());
+                }
+
+                _viewModel.LoadFrom(saved);
+                PopulateTemplateList();
+                Log.Info("Saved template '{0}'", _viewModel.Name);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to save template");
+                MessageBox.Show(
+                    "Failed to save template: " + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
         }
 
         // -------------------------------------------------------------------
@@ -498,8 +593,8 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
         private void CmdOrderBuild_Click(object sender, EventArgs e)
         {
-            if (_selectedTemplate == null) return;
-            if (string.IsNullOrEmpty(_selectedTemplate.HullBlueprintUUID))
+            if (_viewModel.IsNew && string.IsNullOrEmpty(_viewModel.Name)) return;
+            if (string.IsNullOrEmpty(_viewModel.HullBlueprintUUID))
             {
                 MessageBox.Show(
                     "Select a hull blueprint first.",
@@ -511,8 +606,8 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
             Log.Info(
                 "CmdOrderBuild_Click: template={0} uuid={1}",
-                _selectedTemplate.Name,
-                _selectedTemplate.UUID);
+                _viewModel.Name,
+                _viewModel.UUID);
 
             // Prompt for quantity
             int quantity = ShowQuantityDialog();
@@ -523,7 +618,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             if (station == null) return;
 
             // Validate assembly location
-            var hullBp = playerContext.FindBlueprint(_selectedTemplate.HullBlueprintUUID);
+            var hullBp = playerContext.FindBlueprint(_viewModel.HullBlueprintUUID);
             if (hullBp != null)
             {
                 decimal shipClassVal = 0m;
@@ -541,9 +636,16 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 }
             }
 
-            // Generate build items
+            // Generate build items from ViewModel local state
+            var tempTemplate = new Models.ShipTemplate
+            {
+                UUID = _viewModel.UUID,
+                Name = _viewModel.Name,
+                HullBlueprintUUID = _viewModel.HullBlueprintUUID,
+                Components = _viewModel.Components,
+            };
             var items = ShipBuildService.GenerateShipBuildItems(
-                _selectedTemplate,
+                tempTemplate,
                 quantity,
                 DestinationType.Station,
                 station.UUID,
@@ -567,7 +669,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             // Add items to plan
             foreach (var item in items)
             {
-                item.ShipTemplateUUID = _selectedTemplate.UUID;
+                item.ShipTemplateUUID = _viewModel.UUID;
                 targetPlan.Items.Add(item);
             }
 
@@ -587,7 +689,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                     "{0} build items for {1}x '{2}' added to plan '{3}'.",
                     items.Count,
                     quantity,
-                    _selectedTemplate.Name,
+                    _viewModel.Name,
                     targetPlan.Name),
                 "Order Build",
                 MessageBoxButtons.OK,
@@ -754,7 +856,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
                 if (rbNew.Checked)
                 {
-                    string planName = string.Format("{0} - Ship Build", _selectedTemplate.Name ?? "Ship");
+                    string planName = string.Format("{0} - Ship Build", _viewModel.Name ?? "Ship");
                     return new BuildPlan
                     {
                         UUID = Guid.NewGuid().ToString(),
@@ -766,6 +868,43 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 else
                 {
                     return cmbPlans.SelectedItem as BuildPlan;
+                }
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // Unsaved Changes
+        // -------------------------------------------------------------------
+
+        private UnsavedAction PromptUnsavedChanges()
+        {
+            var result = MessageBox.Show(
+                "You have unsaved changes. Save before continuing?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            switch (result)
+            {
+                case DialogResult.Yes:
+                    return UnsavedAction.Save;
+                case DialogResult.No:
+                    return UnsavedAction.Discard;
+                default:
+                    return UnsavedAction.Cancel;
+            }
+        }
+
+        private void SelectCurrentTemplateInList()
+        {
+            if (string.IsNullOrEmpty(_viewModel.UUID)) return;
+            foreach (ListViewItem item in lvwTemplates.Items)
+            {
+                var tag = item.Tag as ReadOnlyShipTemplate;
+                if (tag != null && tag.UUID == _viewModel.UUID)
+                {
+                    item.Selected = true;
+                    return;
                 }
             }
         }
@@ -787,7 +926,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
                 return;
             }
 
-            _selectedTemplate = null;
+            _viewModel.Reset();
             PopulateHullCombo();
             PopulateTemplateList();
             ClearForm();

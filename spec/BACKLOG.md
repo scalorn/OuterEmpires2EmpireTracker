@@ -282,8 +282,7 @@ These items complete the immutable data model migration across all forms. Each f
 
 ### BL-114: Market — Immutable Data Model with Service Layer
 **Dependencies:** none
-**Status: New**
-Apply the immutable data model pattern to MarketListing and MarketTransaction. Create MarketListingService as sole mutator with CRUD for listings and sale recording. Migrate FormMarket, FormListingEdit, and FormRecordSale to route all mutations through the service. FormMarket currently mutates MarketListing directly (4 WriteContext calls). FormListingEdit is a dialog that mutates listing properties. FormRecordSale delegates to MarketService.RecordSale but the parent form persists. Consolidate into a single service. Subsumes the old BL-115 (FormMarket), BL-116 (FormListingEdit), and BL-117 (FormRecordSale) read-only wrapper items.
+**Status: Complete**  see spec .kiro/specs/bl-114-market-readonly/
 
 ### BL-115: ShipTemplate — Immutable Data Model with Service Layer
 **Dependencies:** none
