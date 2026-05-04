@@ -254,6 +254,7 @@
     <Compile Include="Services\SurveyService.cs" />
     <Compile Include="Services\ColonyService.cs" />
     <Compile Include="Services\DeliveryRouteService.cs" />
+    <Compile Include="Services\DeliveryPlanService.cs" />
     <Compile Include="Services\CollectionSortHelper.cs" />
     <Compile Include="Services\SortedDictionaryContractResolver.cs" />
     <Compile Include="Services\TabWarningService.cs" />
@@ -420,6 +421,10 @@
     <Compile Include="Models\PlayerProfileCreateRequest.cs" />
     <Compile Include="Models\DeliveryRouteUpdateRequest.cs" />
     <Compile Include="Models\DeliveryRouteCreateRequest.cs" />
+    <Compile Include="Models\DeliveryPlanUpdateRequest.cs" />
+    <Compile Include="Models\DeliveryPlanCreateRequest.cs" />
+    <Compile Include="Models\StopDestinationInfo.cs" />
+    <Compile Include="Models\DeliveryItemInfo.cs" />
     <Compile Include="Parsers\BlueprintScanner.cs" />
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>

@@ -6,42 +6,42 @@ Apply the immutable data model pattern to DeliveryPlan. Rewrite DeliveryPlanView
 
 ## Tasks
 
-- [ ] 1. DTO request models and PlayerContext accessor
-  - [ ] 1.1 Create DeliveryPlanUpdateRequest DTO
+- [x] 1. DTO request models and PlayerContext accessor
+  - [x] 1.1 Create DeliveryPlanUpdateRequest DTO
     - Create OE2EmpireTracker/Models/DeliveryPlanUpdateRequest.cs
     - Properties: Name (string), Stops (List of DeliveryPlanStop)
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 10.1_
 
-  - [ ] 1.2 Create DeliveryPlanCreateRequest DTO
+  - [x] 1.2 Create DeliveryPlanCreateRequest DTO
     - Create OE2EmpireTracker/Models/DeliveryPlanCreateRequest.cs
     - Properties: Name (string), RouteUUID (string)
     - No UUID (service assigns), no OwnerUUID (service sets from current player)
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 8.1_
 
-  - [ ] 1.3 Create StopDestinationInfo DTO
+  - [x] 1.3 Create StopDestinationInfo DTO
     - Create OE2EmpireTracker/Models/StopDestinationInfo.cs
     - Properties: ColonyUUID (string), Sequence (int), DestinationType (DestinationType), DestinationUUID (string)
     - Used by AddDropOffItem, AddPickUpItem, RemoveDropOffItems, RemovePickUpItems service methods
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 11.1, 12.1_
 
-  - [ ] 1.4 Create DeliveryItemInfo DTO
+  - [x] 1.4 Create DeliveryItemInfo DTO
     - Create OE2EmpireTracker/Models/DeliveryItemInfo.cs
     - Properties: ItemType (ItemType.ItemTypeEnum), BaseItemTypeID (string), Name (string), Quantity (int), ResourcePurity (string)
     - Used by AddDropOffItem, AddPickUpItem service methods
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 11.1_
 
-  - [ ] 1.5 Add FindMutableDeliveryPlan internal method to PlayerContext
+  - [x] 1.5 Add FindMutableDeliveryPlan internal method to PlayerContext
     - Follow the same cache-based lookup pattern as FindMutableDeliveryRoute and FindMutableColony
     - Reuse existing _deliveryPlanCache with lock-based lazy initialization
     - Mark method internal so only the service can access it
     - _Requirements: 18.1, 18.2, 18.3_
 
-- [ ] 2. Rewrite DeliveryPlanViewModel as disconnected edit buffer
-  - [ ] 2.1 Rewrite DeliveryPlanViewModel class
+- [x] 2. Rewrite DeliveryPlanViewModel as disconnected edit buffer
+  - [x] 2.1 Rewrite DeliveryPlanViewModel class
     - Rewrite OE2EmpireTracker/ViewModels/DeliveryPlanViewModel.cs as a disconnected edit buffer
     - Remove mutable DeliveryPlan reference and public Data property
     - Remove PlayerContext dependency from constructor (ViewModel takes ReadOnlyDeliveryPlan)
@@ -57,8 +57,8 @@ Apply the immutable data model pattern to DeliveryPlan. Rewrite DeliveryPlanView
     - Keep NLog Logger declaration
     - _Requirements: 3.3, 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.2, 5.3, 5.4, 6.1, 6.2, 6.3, 7.1, 7.2, 7.3_
 
-- [ ] 3. Create DeliveryPlanService with all methods
-  - [ ] 3.1 Create DeliveryPlanService class
+- [x] 3. Create DeliveryPlanService with all methods
+  - [x] 3.1 Create DeliveryPlanService class
     - Create OE2EmpireTracker/Services/DeliveryPlanService.cs
     - Constructor takes PlayerContext dependency
     - Create(string name, string routeUUID): creates new DeliveryPlan with generated UUID, sets OwnerUUID from current player, sets Name and RouteUUID, adds to PlayerContext, persists via WriteContext(), fires DeliveryDataChanged event, returns ReadOnlyDeliveryPlan
@@ -78,58 +78,58 @@ Apply the immutable data model pattern to DeliveryPlan. Rewrite DeliveryPlanView
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 8.1-8.9, 9.1-9.5, 10.1-10.8, 11.1-11.6, 12.1-12.5, 13.1-13.10, 14.1-14.5, 15.1-15.5, 16.1-16.4, 17.1-17.7, 21.1_
 
-- [ ] 4. Checkpoint --- Verify new classes compile cleanly
+- [-] 4. Checkpoint --- Verify new classes compile cleanly
   - Build with zero errors and zero warnings
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Migrate FormDeliveryRoute Plan tab to service
-  - [ ] 5.1 Replace plan dropdown with ReadOnly wrappers
+- [x] 5. Migrate FormDeliveryRoute Plan tab to service
+  - [x] 5.1 Replace plan dropdown with ReadOnly wrappers
     - Change PopulatePlanDropdown to use PlayerContext.GetCurrentPlayerReadOnlyPlans() for display
     - Change CmbPlan_SelectedIndexChanged to extract ReadOnlyDeliveryPlan UUID and call service or load ViewModel
     - Remove direct mutable DeliveryPlan references from plan dropdown code paths
     - _Requirements: 1.1, 1.2, 1.3, 3.1_
 
-  - [ ] 5.2 Wire ViewModel as edit buffer for plan data
+  - [x] 5.2 Wire ViewModel as edit buffer for plan data
     - Change CmbPlan_SelectedIndexChanged to create DeliveryPlanViewModel from ReadOnlyDeliveryPlan via LoadFrom
     - Change plan name display to read from ViewModel local fields
     - Change plan item grids to read from ViewModel local stops
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-  - [ ] 5.3 Wire CmdNewPlan through service
+  - [x] 5.3 Wire CmdNewPlan through service
     - Replace direct DeliveryPlan creation with DeliveryPlanService.Create(name, routeUUID)
     - After create, refresh plan dropdown and select the new plan
     - _Requirements: 19.1_
 
-  - [ ] 5.4 Wire CmdDeletePlan through service
+  - [x] 5.4 Wire CmdDeletePlan through service
     - Replace direct PlayerContext.RemoveDeliveryPlan with DeliveryPlanService.Delete(uuid)
     - After delete, clear plan state and refresh dropdown
     - _Requirements: 19.2_
 
-  - [ ] 5.5 Wire TxtPlanName through service
+  - [x] 5.5 Wire TxtPlanName through service
     - Replace direct planViewModel.Data.Name = ... with DeliveryPlanService.UpdatePlan
     - Persist name change immediately via service
     - _Requirements: 19.3_
 
-  - [ ] 5.6 Wire item add/remove through service
+  - [x] 5.6 Wire item add/remove through service
     - Replace CmdAddDropOff_Click to call DeliveryPlanService.AddDropOffItem
     - Replace CmdAddPickUp_Click to call DeliveryPlanService.AddPickUpItem
     - Replace CmdRemoveDropOff_Click to call DeliveryPlanService.RemoveDropOffItems
     - Replace CmdRemovePickUp_Click to call DeliveryPlanService.RemovePickUpItems
     - _Requirements: 19.4, 19.5, 19.6, 19.7_
 
-  - [ ] 5.7 Wire AutoFill through ViewModel + service
+  - [x] 5.7 Wire AutoFill through ViewModel + service
     - Keep ViewModel AutoFill methods for local item accumulation
     - After AutoFill, call DeliveryPlanService.UpdatePlan to persist
     - _Requirements: 19.8_
 
-- [ ] 6. Migrate FormDeliveryExecution to service
-  - [ ] 6.1 Replace mutable plan reference with service calls
+- [-] 6. Migrate FormDeliveryExecution to service
+  - [x] 6.1 Replace mutable plan reference with service calls
     - Add DeliveryPlanService _deliveryPlanService field
     - Change CmbPlan_SelectedIndexChanged to store plan UUID instead of mutable DeliveryPlan reference
     - Change BuildExecution to read from ReadOnlyDeliveryPlan (from service return or PlayerContext)
     - _Requirements: 2.1, 2.2, 3.2_
 
-  - [ ] 6.2 Wire DeliveryItem_CheckedChanged through service
+  - [-] 6.2 Wire DeliveryItem_CheckedChanged through service
     - Replace direct item.Delivered = chk.Checked with DeliveryPlanService.MarkItemDelivered
     - Remove direct calls to UpdateCommodityFulfillment, UpdateFlatpackStaging, UpdateWorkerDelivery, UpdateResourceDelivery, UpdateStationHold (service handles side effects)
     - After service call, refresh display from returned ReadOnlyDeliveryPlan

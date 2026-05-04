@@ -12,38 +12,54 @@ namespace OE2EmpireTracker.ViewModels
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private readonly PlayerContext _playerContext;
+        private ReadOnlyDeliveryPlan _original;
+        private string _uuid;
+        private string _ownerUUID = string.Empty;
+        private string _routeUUID = string.Empty;
+        private string _shipUUID = string.Empty;
+        private bool _completed;
+        private string _name = string.Empty;
+        private List<DeliveryPlanStop> _stops = new List<DeliveryPlanStop>();
 
-        private DeliveryPlan _plan;
+        public string UUID => _uuid;
 
-        public DeliveryPlanViewModel(DeliveryPlan plan, PlayerContext playerContext)
+        public string OwnerUUID => _ownerUUID;
+
+        public string RouteUUID => _routeUUID;
+
+        public string ShipUUID => _shipUUID;
+
+        public bool Completed => _completed;
+
+        public ReadOnlyDeliveryPlan Original => _original;
+
+        public string Name
         {
-            _plan = plan ?? throw new ArgumentNullException(nameof(plan));
-            _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+            get => _name;
+            set => _name = value;
         }
 
-        public DeliveryPlan Data => _plan;
+        public List<DeliveryPlanStop> Stops => _stops;
 
-        public string UUID => _plan.UUID;
-
-        /// <summary>
-        /// Finds or creates a DeliveryPlan for the given route.
-        /// </summary>
-        public static DeliveryPlanViewModel FindOrCreateForRoute(string routeUUID, PlayerContext playerContext)
+        public void LoadFrom(ReadOnlyDeliveryPlan ro)
         {
-            var existing = playerContext.DeliveryPlanList
-                .FirstOrDefault(p => p.RouteUUID == routeUUID && p.OwnerUUID == playerContext.CurrentPlayerUUID);
-            if (existing != null)
-                return new DeliveryPlanViewModel(existing, playerContext);
+            _original = ro;
+            _uuid = ro.UUID;
+            _ownerUUID = ro.OwnerUUID ?? string.Empty;
+            _routeUUID = ro.RouteUUID ?? string.Empty;
+            _shipUUID = ro.ShipUUID ?? string.Empty;
+            _completed = ro.Completed;
+            _name = ro.Name ?? string.Empty;
+            _stops = DeepCopyStops(ro);
+        }
 
-            var plan = new DeliveryPlan
+        public DeliveryPlanUpdateRequest BuildUpdateRequest()
+        {
+            return new DeliveryPlanUpdateRequest
             {
-                UUID = Guid.NewGuid().ToString(),
-                OwnerUUID = playerContext.CurrentPlayerUUID,
-                RouteUUID = routeUUID
+                Name = _name,
+                Stops = DeepCopyLocalStops(_stops),
             };
-
-            return new DeliveryPlanViewModel(plan, playerContext);
         }
 
         /// <summary>
@@ -58,9 +74,15 @@ namespace OE2EmpireTracker.ViewModels
             // Match by DestinationUUID first if available, then fall back to ColonyUUID
             DeliveryPlanStop stop = null;
             if (!string.IsNullOrEmpty(destinationUUID))
-                stop = _plan.Stops.FirstOrDefault(s => s.DestinationUUID == destinationUUID);
+            {
+                stop = _stops.FirstOrDefault(s => s.DestinationUUID == destinationUUID);
+            }
+
             if (stop == null)
-                stop = _plan.Stops.FirstOrDefault(s => s.ColonyUUID == colonyUUID && string.IsNullOrEmpty(s.DestinationUUID));
+            {
+                stop = _stops.FirstOrDefault(s => s.ColonyUUID == colonyUUID && string.IsNullOrEmpty(s.DestinationUUID));
+            }
+
             if (stop == null)
             {
                 stop = new DeliveryPlanStop
@@ -71,7 +93,7 @@ namespace OE2EmpireTracker.ViewModels
                     DestinationUUID = destinationUUID ?? string.Empty
                 };
 
-                _plan.Stops.Add(stop);
+                _stops.Add(stop);
             }
 
             return stop;
@@ -135,17 +157,6 @@ namespace OE2EmpireTracker.ViewModels
             }
         }
 
-        public void Save()
-        {
-            if (!_playerContext.DeliveryPlanList.Contains(_plan))
-            {
-                _playerContext.AddDeliveryPlan(_plan);
-            }
-
-            _playerContext.WriteContext();
-            _playerContext.OnDeliveryDataChanged();
-        }
-
         /// <summary>
         /// Scans each stop's colony for unfulfilled CommodityRequested entries
         /// and adds drop-off DeliveryItems for the shortfall quantities.
@@ -159,15 +170,25 @@ namespace OE2EmpireTracker.ViewModels
             foreach (var routeStop in CollectionSortHelper.OrderRouteStops(routeStops))
             {
                 var colony = colonyFinder(routeStop.ColonyUUID);
-                if (colony == null) continue;
+                if (colony == null)
+                {
+                    continue;
+                }
 
                 var stop = GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
 
                 foreach (var cr in colony.Commodities)
                 {
-                    if (cr.Fulfilled) continue;
+                    if (cr.Fulfilled)
+                    {
+                        continue;
+                    }
+
                     int shortfall = cr.Requested - cr.Delivered;
-                    if (shortfall <= 0) continue;
+                    if (shortfall <= 0)
+                    {
+                        continue;
+                    }
 
                     AddDropOffItem(stop, ItemType.ItemTypeEnum.Commodity, cr.Name, cr.Name, shortfall);
                     added++;
@@ -183,8 +204,8 @@ namespace OE2EmpireTracker.ViewModels
         /// </summary>
         public int AutoFillFlatpacks(
             IEnumerable<RouteStop> routeStops,
-            Func<string,
-            Colony> colonyFinder,
+            Func<string, Colony> colonyFinder,
+            Func<string, ReadOnlyBlueprint> blueprintFinder,
             int timeHorizonHours = 0)
         {
             int added = 0;
@@ -205,14 +226,21 @@ namespace OE2EmpireTracker.ViewModels
 
                 foreach (var structure in colony.Structures)
                 {
-                    var vm = new ColonyStructureViewModel(structure, _playerContext);
+                    bool isBuilt;
+                    structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out isBuilt);
+                    bool isStaged;
+                    structure.Properties.GetBoolean(GameConstants.PropStaged, false, out isStaged);
+
                     Log.Debug(
                         "  Structure {0}: IsBuilt={1}, IsStaged={2}, FlatpackBP={3}",
                         structure.UUID,
-                        vm.IsBuilt,
-                        vm.IsStaged,
+                        isBuilt,
+                        isStaged,
                         structure.FlatpackBlueprintUUID);
-                    if (vm.IsBuilt || vm.IsStaged) continue;
+                    if (isBuilt || isStaged)
+                    {
+                        continue;
+                    }
 
                     // Time horizon filter: skip structures that won't complete within the horizon
                     if (timeHorizonHours > 0 && structure.BuildCompletionTime != null)
@@ -225,7 +253,7 @@ namespace OE2EmpireTracker.ViewModels
                         }
                     }
 
-                    var blueprint = _playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                    var blueprint = blueprintFinder(structure.FlatpackBlueprintUUID);
                     if (blueprint == null)
                     {
                         Log.Debug("  Blueprint not found: {0}", structure.FlatpackBlueprintUUID);
@@ -239,7 +267,10 @@ namespace OE2EmpireTracker.ViewModels
                     flatpackNames[bpUUID] = blueprint.ExtendedName;
                 }
 
-                if (flatpackCounts.Count == 0) continue;
+                if (flatpackCounts.Count == 0)
+                {
+                    continue;
+                }
 
                 var stop = GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
                 foreach (var entry in flatpackCounts)
@@ -266,42 +297,62 @@ namespace OE2EmpireTracker.ViewModels
         /// </summary>
         public int AutoFillManufacturingResources(
             IEnumerable<RouteStop> routeStops,
-            Func<string,
-            Colony> colonyFinder,
-            Func<string,
-            ReadOnlyBlueprint> blueprintFinder,
-            Func<string,
-            Station> stationFinder = null,
+            Func<string, Colony> colonyFinder,
+            Func<string, ReadOnlyBlueprint> blueprintFinder,
+            Func<string, Station> stationFinder = null,
             string currentPlayerUUID = null)
         {
             int added = 0;
             foreach (var routeStop in CollectionSortHelper.OrderRouteStops(routeStops))
             {
                 var colony = colonyFinder(routeStop.ColonyUUID);
-                if (colony == null) continue;
+                if (colony == null)
+                {
+                    continue;
+                }
 
                 // Aggregate resource needs per colony
                 var resourceNeeds = new Dictionary<string, int>();
 
                 foreach (var structure in colony.Structures)
                 {
-                    if (!structure.StagingResources) continue;
-                    if (structure.ManufacturingQuantity <= 0) continue;
+                    if (!structure.StagingResources)
+                    {
+                        continue;
+                    }
+
+                    if (structure.ManufacturingQuantity <= 0)
+                    {
+                        continue;
+                    }
 
                     var flatpackBp = blueprintFinder(structure.FlatpackBlueprintUUID);
-                    if (flatpackBp == null) continue;
+                    if (flatpackBp == null)
+                    {
+                        continue;
+                    }
 
                     if (flatpackBp.BluePrintType == BlueprintTypes.Manufactory)
                     {
-                        if (string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)) continue;
+                        if (string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID))
+                        {
+                            continue;
+                        }
+
                         var mfgBp = blueprintFinder(structure.ManufacturingBlueprintUUID);
-                        if (mfgBp == null || mfgBp.Resources == null) continue;
+                        if (mfgBp == null || mfgBp.Resources == null)
+                        {
+                            continue;
+                        }
 
                         foreach (var resource in mfgBp.Resources)
                         {
                             int perUnit = 0;
                             int.TryParse(resource.Value, out perUnit);
-                            if (perUnit <= 0) continue;
+                            if (perUnit <= 0)
+                            {
+                                continue;
+                            }
 
                             int total = perUnit * structure.ManufacturingQuantity;
                             int current = 0;
@@ -311,16 +362,25 @@ namespace OE2EmpireTracker.ViewModels
                     }
                     else if (flatpackBp.BluePrintType.IsCommodityFactory())
                     {
-                        if (string.IsNullOrEmpty(structure.ManufacturingCommodityName)) continue;
+                        if (string.IsNullOrEmpty(structure.ManufacturingCommodityName))
+                        {
+                            continue;
+                        }
+
                         Commodity commodity;
                         if (!Commodity.ResourceMapByString.TryGetValue(structure.ManufacturingCommodityName, out commodity))
+                        {
                             continue;
+                        }
 
                         foreach (var resource in commodity.ConstructionResources)
                         {
                             int perCycle = 0;
                             int.TryParse(resource.Value, out perCycle);
-                            if (perCycle <= 0) continue;
+                            if (perCycle <= 0)
+                            {
+                                continue;
+                            }
 
                             int total = perCycle * structure.ManufacturingQuantity;
                             int current = 0;
@@ -330,7 +390,10 @@ namespace OE2EmpireTracker.ViewModels
                     }
                 }
 
-                if (resourceNeeds.Count == 0) continue;
+                if (resourceNeeds.Count == 0)
+                {
+                    continue;
+                }
 
                 var stop = GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
 
@@ -358,7 +421,10 @@ namespace OE2EmpireTracker.ViewModels
                     }
 
                     int shortfall = need.Value - warehouseQty - stationQty;
-                    if (shortfall <= 0) continue;
+                    if (shortfall <= 0)
+                    {
+                        continue;
+                    }
 
                     AddDropOffItem(
                         stop,
@@ -380,24 +446,36 @@ namespace OE2EmpireTracker.ViewModels
         /// </summary>
         public int AutoFillWorkers(
             IEnumerable<RouteStop> routeStops,
-            Func<string,
-            Colony> colonyFinder,
+            Func<string, Colony> colonyFinder,
             PlayerContext playerContext)
         {
             int added = 0;
             foreach (var routeStop in CollectionSortHelper.OrderRouteStops(routeStops))
             {
                 var colony = colonyFinder(routeStop.ColonyUUID);
-                if (colony == null) continue;
-                if (colony.Structures.Count == 0) continue;
+                if (colony == null)
+                {
+                    continue;
+                }
+
+                if (colony.Structures.Count == 0)
+                {
+                    continue;
+                }
 
                 var calc = new ColonyStatusCalculator(colony);
                 calc.CalculateBuilt();
                 calc.CalculateIdeal();
 
-                if (calc.FinalIdealStatus == null || calc.FinalActualStatus == null) continue;
-                if (calc.FinalIdealStatus.HabitationRequired <= calc.FinalActualStatus.HabitationRequired)
+                if (calc.FinalIdealStatus == null || calc.FinalActualStatus == null)
+                {
                     continue;
+                }
+
+                if (calc.FinalIdealStatus.HabitationRequired <= calc.FinalActualStatus.HabitationRequired)
+                {
+                    continue;
+                }
 
                 var stop = GetOrCreateStop(routeStop.ColonyUUID, routeStop.Sequence);
 
@@ -410,8 +488,15 @@ namespace OE2EmpireTracker.ViewModels
                     foreach (var structure in colony.Structures)
                     {
                         var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
-                        if (blueprint == null) continue;
-                        if (!blueprint.Properties.ContainsKey(wt.PropertyKey)) continue;
+                        if (blueprint == null)
+                        {
+                            continue;
+                        }
+
+                        if (!blueprint.Properties.ContainsKey(wt.PropertyKey))
+                        {
+                            continue;
+                        }
 
                         long slotCount = 0;
                         blueprint.Properties.GetLong(wt.PropertyKey, 0, out slotCount);
@@ -423,16 +508,24 @@ namespace OE2EmpireTracker.ViewModels
                             string key = wt.WorkerPrefix + i;
                             bool assigned = false;
                             structure.AssignedWorkers.GetBoolean(key, false, out assigned);
-                            if (assigned) actualCount++;
+                            if (assigned)
+                            {
+                                actualCount++;
+                            }
                         }
                     }
 
                     int gap = idealCount - actualCount;
-                    if (gap <= 0) continue;
+                    if (gap <= 0)
+                    {
+                        continue;
+                    }
 
                     WorkerDetail workerDetail;
                     if (!WorkerDetail.WorkerDetailMapByID.TryGetValue(wt.DetailKey, out workerDetail))
+                    {
                         continue;
+                    }
 
                     AddDropOffItem(
                         stop,
@@ -445,6 +538,84 @@ namespace OE2EmpireTracker.ViewModels
             }
 
             return added;
+        }
+
+        private static List<DeliveryPlanStop> DeepCopyStops(ReadOnlyDeliveryPlan ro)
+        {
+            var stops = new List<DeliveryPlanStop>();
+            foreach (var s in ro.Stops)
+            {
+                stops.Add(new DeliveryPlanStop
+                {
+                    ColonyUUID = s.ColonyUUID ?? string.Empty,
+                    Sequence = s.Sequence,
+                    StopCompleted = s.StopCompleted,
+                    DestinationType = s.DestinationType,
+                    DestinationUUID = s.DestinationUUID ?? string.Empty,
+                    DropOff = DeepCopyItems(s.DropOff),
+                    PickUp = DeepCopyItems(s.PickUp),
+                });
+            }
+
+            return stops;
+        }
+
+        private static List<DeliveryPlanStop> DeepCopyLocalStops(List<DeliveryPlanStop> stops)
+        {
+            var copy = new List<DeliveryPlanStop>(stops.Count);
+            foreach (var s in stops)
+            {
+                copy.Add(new DeliveryPlanStop
+                {
+                    ColonyUUID = s.ColonyUUID ?? string.Empty,
+                    Sequence = s.Sequence,
+                    StopCompleted = s.StopCompleted,
+                    DestinationType = s.DestinationType,
+                    DestinationUUID = s.DestinationUUID ?? string.Empty,
+                    DropOff = DeepCopyLocalItems(s.DropOff),
+                    PickUp = DeepCopyLocalItems(s.PickUp),
+                });
+            }
+
+            return copy;
+        }
+
+        private static List<DeliveryItem> DeepCopyItems(IReadOnlyList<ReadOnlyDeliveryItem> items)
+        {
+            var copy = new List<DeliveryItem>(items.Count);
+            foreach (var item in items)
+            {
+                copy.Add(new DeliveryItem
+                {
+                    ItemType = item.ItemType,
+                    BaseItemTypeID = item.BaseItemTypeID ?? string.Empty,
+                    Name = item.Name ?? string.Empty,
+                    ResourcePurity = item.ResourcePurity ?? string.Empty,
+                    Quantity = item.Quantity,
+                    Delivered = item.Delivered,
+                });
+            }
+
+            return copy;
+        }
+
+        private static List<DeliveryItem> DeepCopyLocalItems(List<DeliveryItem> items)
+        {
+            var copy = new List<DeliveryItem>(items.Count);
+            foreach (var item in items)
+            {
+                copy.Add(new DeliveryItem
+                {
+                    ItemType = item.ItemType,
+                    BaseItemTypeID = item.BaseItemTypeID ?? string.Empty,
+                    Name = item.Name ?? string.Empty,
+                    ResourcePurity = item.ResourcePurity ?? string.Empty,
+                    Quantity = item.Quantity,
+                    Delivered = item.Delivered,
+                });
+            }
+
+            return copy;
         }
     }
 }

@@ -249,6 +249,19 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Sorts read-only delivery plans by Name (ascending, OrdinalIgnoreCase).
+        /// </summary>
+        public static IReadOnlyList<ReadOnlyDeliveryPlan> OrderDeliveryPlans(
+            IEnumerable<ReadOnlyDeliveryPlan> plans)
+        {
+            if (plans == null) return Array.Empty<ReadOnlyDeliveryPlan>();
+            return plans
+                .OrderBy(p => p.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
         /// Sorts pricing plans by Name (ascending, OrdinalIgnoreCase).
         /// </summary>
         public static IReadOnlyList<PricingPlan> OrderPricingPlans(

@@ -2955,6 +2955,30 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        /// <summary>
+        /// Returns the mutable DeliveryPlan entity. Only called by DeliveryPlanService.
+        /// </summary>
+        internal DeliveryPlan FindMutableDeliveryPlan(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_deliveryPlanCache == null)
+                {
+                    _deliveryPlanCache = new Dictionary<string, DeliveryPlan>();
+                    foreach (var p in _deliveryPlanList)
+                    {
+                        if (p.UUID != null && !_deliveryPlanCache.ContainsKey(p.UUID))
+                            _deliveryPlanCache[p.UUID] = p;
+                    }
+                }
+
+                _deliveryPlanCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
         private void RebuildBuildItemIndexes()
         {
             _blueprintBuildItemIndex = new Dictionary<string, List<BuildItem>>();

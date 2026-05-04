@@ -22,7 +22,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private PlayerContext playerContext;
 
-        private DeliveryPlan selectedPlan;
+        private DeliveryPlanService _deliveryPlanService;
+
+        private string selectedPlanUUID;
 
         private Ship selectedShip;
 
@@ -39,6 +41,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             InitializeComponent();
             empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
+            _deliveryPlanService = new DeliveryPlanService(playerContext);
 
             cmbRoute.DisplayMember = "Display";
             cmbRoute.ValueMember = "UUID";
@@ -181,7 +184,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             var sw = System.Diagnostics.Stopwatch.StartNew();
             string previousUUID = cmbPlan.SelectedValue as string;
             string filter = txtPlanFilter.Text ?? string.Empty;
-            var plans = playerContext.GetCurrentPlayerPlans()
+            var plans = playerContext.GetCurrentPlayerReadOnlyPlans()
                 .Where(p => p.RouteUUID == routeUUID && !p.Completed)
                 .Where(p => string.IsNullOrEmpty(filter) || (p.Name ?? string.Empty).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
                 .ToList();
@@ -209,15 +212,17 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             string planUUID = cmbPlan.SelectedValue as string;
             if (string.IsNullOrEmpty(planUUID))
             {
-                selectedPlan = null;
+                selectedPlanUUID = null;
                 ClearExecution();
                 cmdCompletePlan.Visible = false;
                 cmdDeletePlan.Visible = false;
                 return;
             }
 
-            selectedPlan = playerContext.DeliveryPlanList.FirstOrDefault(p => p.UUID == planUUID);
-            if (selectedPlan != null)
+            selectedPlanUUID = planUUID;
+            var readOnlyPlan = playerContext.GetCurrentPlayerReadOnlyPlans()
+                .FirstOrDefault(p => p.UUID == planUUID);
+            if (readOnlyPlan != null)
             {
                 cmdCompletePlan.Visible = true;
                 cmdDeletePlan.Visible = true;
@@ -249,10 +254,12 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             cmbShip.DataSource = items;
 
             // Pre-select the ship stored on the plan
-            if (selectedPlan != null && !string.IsNullOrEmpty(selectedPlan.ShipUUID)
-                && items.Any(i => i.UUID == selectedPlan.ShipUUID))
+            var currentPlan = playerContext.GetCurrentPlayerReadOnlyPlans()
+                .FirstOrDefault(p => p.UUID == selectedPlanUUID);
+            if (currentPlan != null && !string.IsNullOrEmpty(currentPlan.ShipUUID)
+                && items.Any(i => i.UUID == currentPlan.ShipUUID))
             {
-                cmbShip.SelectedValue = selectedPlan.ShipUUID;
+                cmbShip.SelectedValue = currentPlan.ShipUUID;
             }
 
             cmbShip.SelectedIndexChanged += CmbShip_SelectedIndexChanged;
@@ -266,11 +273,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             string shipUUID = cmbShip.SelectedValue as string ?? string.Empty;
 
             // Persist ship assignment on the plan
-            if (selectedPlan != null)
+            if (!string.IsNullOrEmpty(selectedPlanUUID))
             {
-                selectedPlan.ShipUUID = shipUUID;
-                playerContext.WriteContext();
-                Log.Info("Ship '{0}' assigned to plan '{1}'", shipUUID, selectedPlan.Name);
+                _deliveryPlanService.SetShipUUID(selectedPlanUUID, shipUUID);
+                Log.Info("Ship '{0}' assigned to plan '{1}'", shipUUID, selectedPlanUUID);
             }
 
             UpdateShipSelection();
@@ -322,7 +328,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             flpStops.Controls.Clear();
             _stopCompleteButtons.Clear();
             _refuelCheckboxes.Clear();
-            selectedPlan = null;
+            selectedPlanUUID = null;
             cmdCompletePlan.Visible = false;
             cmdDeletePlan.Visible = false;
             cmdSplitTrips.Visible = false;
@@ -345,7 +351,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             _stopCompleteButtons.Clear();
             _refuelCheckboxes.Clear();
 
-            if (selectedPlan == null)
+            var mutablePlan = playerContext.FindMutableDeliveryPlan(selectedPlanUUID);
+            if (mutablePlan == null)
             {
                 flpStops.ResumeLayout();
                 pnlExecution.ResumeLayout();
@@ -353,10 +360,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 return;
             }
 
-            Log.Debug("BuildExecution: plan={0}, stops={1}", selectedPlan.Name, selectedPlan.Stops.Count);
+            Log.Debug("BuildExecution: plan={0}, stops={1}", mutablePlan.Name, mutablePlan.Stops.Count);
 
-            // Build consolidated load list
-            var loadItems = selectedPlan.CalculateLoadList();
+            // Build consolidated load list (uses mutable plan for CalculateLoadList computation)
+            var loadItems = mutablePlan.CalculateLoadList();
             Log.Debug("BuildExecution: loadItems={0}", loadItems.Count);
             int totalQuantity = 0;
             foreach (var item in loadItems)
@@ -389,10 +396,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             // Look up the route for stop purposes
             var route = playerContext.GetCurrentPlayerRoutes()
-                .FirstOrDefault(r => r.UUID == selectedPlan.RouteUUID);
+                .FirstOrDefault(r => r.UUID == mutablePlan.RouteUUID);
 
             // Build per-stop sections
-            foreach (var stop in CollectionSortHelper.OrderPlanStops(selectedPlan.Stops))
+            foreach (var stop in CollectionSortHelper.OrderPlanStops(mutablePlan.Stops))
             {
                 // Skip completed stops
                 if (stop.StopCompleted) continue;
@@ -449,15 +456,16 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     var lblDrop = new Label { Text = "  Drop Off:", AutoSize = true, Margin = new Padding(10, 2, 3, 2) };
                     flpStops.Controls.Add(lblDrop);
 
-                    foreach (var item in stop.DropOff)
+                    for (int di = 0; di < stop.DropOff.Count; di++)
                     {
+                        var item = stop.DropOff[di];
                         var chk = new CheckBox
                         {
                             Text = $"{item.ExtendedName} x{item.Quantity}",
                             Checked = item.Delivered,
                             AutoSize = true,
                             Margin = new Padding(20, 1, 3, 1),
-                            Tag = item
+                            Tag = new DeliveryItemTag(stop.Sequence, di, "DropOff", stop)
                         };
 
                         chk.CheckedChanged += DeliveryItem_CheckedChanged;
@@ -471,15 +479,16 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     var lblPick = new Label { Text = "  Pick Up:", AutoSize = true, Margin = new Padding(10, 2, 3, 2) };
                     flpStops.Controls.Add(lblPick);
 
-                    foreach (var item in stop.PickUp)
+                    for (int pi = 0; pi < stop.PickUp.Count; pi++)
                     {
+                        var item = stop.PickUp[pi];
                         var chk = new CheckBox
                         {
                             Text = $"{item.ExtendedName} x{item.Quantity}",
                             Checked = item.Delivered,
                             AutoSize = true,
                             Margin = new Padding(20, 1, 3, 1),
-                            Tag = item
+                            Tag = new DeliveryItemTag(stop.Sequence, pi, "PickUp", stop)
                         };
 
                         chk.CheckedChanged += DeliveryItem_CheckedChanged;
@@ -558,220 +567,18 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             var chk = sender as CheckBox;
             if (chk == null) return;
 
-            var item = chk.Tag as DeliveryItem;
-            if (item == null) return;
+            var tag = chk.Tag as DeliveryItemTag;
+            if (tag == null) return;
 
-            item.Delivered = chk.Checked;
+            if (string.IsNullOrEmpty(selectedPlanUUID)) return;
 
-            // Commodity fulfillment: update CommodityRequested on the target colony
-            if (item.ItemType == ItemType.ItemTypeEnum.Commodity && selectedPlan != null)
-            {
-                UpdateCommodityFulfillment(item, chk.Checked);
-            }
+            // Mark item delivered via service (service handles all side effects:
+            // commodity fulfillment, flatpack staging, worker/resource delivery, station holds)
+            _deliveryPlanService.MarkItemDelivered(
+                selectedPlanUUID, tag.StopSequence, tag.ItemIndex, tag.ListType, chk.Checked);
 
-            // Flatpack staging: mark matching colony structure as staged/unstaged
-            if (item.ItemType == ItemType.ItemTypeEnum.Flatpack && selectedPlan != null)
-            {
-                UpdateFlatpackStaging(item, chk.Checked);
-            }
-
-            // Worker delivery: add/remove workers from colony warehouse
-            if (item.ItemType == ItemType.ItemTypeEnum.WorkDetail && selectedPlan != null)
-            {
-                UpdateWorkerDelivery(item, chk.Checked);
-            }
-
-            // Resource delivery: add/remove resources from colony warehouse
-            if (item.ItemType == ItemType.ItemTypeEnum.Resource && selectedPlan != null)
-            {
-                UpdateResourceDelivery(item, chk.Checked);
-            }
-
-            // Station hold operations: add/remove items from station holds
-            if (selectedPlan != null)
-            {
-                UpdateStationHold(item, chk.Checked);
-            }
-
-            playerContext.WriteContext();
-            playerContext.CascadeResourceCheckDirty = true;
-
-            // Incrementally update the Complete Stop button for the affected stop
-            var affectedStop = selectedPlan?.Stops.FirstOrDefault(s =>
-                s.DropOff.Contains(item) || s.PickUp.Contains(item));
-            UpdateStopCompleteButton(affectedStop);
-
-            if (selectedPlan != null && IsAllDelivered(selectedPlan))
-            {
-                selectedPlan.Completed = true;
-                playerContext.WriteContext();
-                playerContext.CascadeResourceCheckDirty = true;
-                Log.Info("Delivery plan '{0}' marked as completed", selectedPlan.Name);
-            }
-        }
-
-        private void UpdateCommodityFulfillment(DeliveryItem item, bool delivered)
-        {
-            // Find the stop containing this item
-            var stop = selectedPlan.Stops.FirstOrDefault(s =>
-                s.DropOff.Contains(item) || s.PickUp.Contains(item));
-            if (stop == null) return;
-
-            var colony = playerContext.FindColony(stop.ColonyUUID);
-            if (colony == null)
-            {
-                Log.Warn("Colony not found for stop {0} during commodity fulfillment", stop.ColonyUUID);
-                return;
-            }
-
-            DeliveryFulfillment.FulfillCommodity(colony, item.BaseItemTypeID, delivered);
-            playerContext.OnColonyDataChanged(stop.ColonyUUID);
-        }
-
-        private void UpdateFlatpackStaging(DeliveryItem item, bool delivered)
-        {
-            var stop = selectedPlan.Stops.FirstOrDefault(s =>
-                s.DropOff.Contains(item) || s.PickUp.Contains(item));
-            if (stop == null) return;
-
-            var colony = playerContext.FindColony(stop.ColonyUUID);
-            if (colony == null)
-            {
-                Log.Warn("Colony not found for stop {0} during flatpack staging", stop.ColonyUUID);
-                return;
-            }
-
-            DeliveryFulfillment.StageFlatpack(colony, item.BaseItemTypeID, delivered);
-            playerContext.OnColonyDataChanged(stop.ColonyUUID);
-        }
-
-        private void UpdateWorkerDelivery(DeliveryItem item, bool delivered)
-        {
-            var stop = selectedPlan.Stops.FirstOrDefault(s =>
-                s.DropOff.Contains(item) || s.PickUp.Contains(item));
-            if (stop == null) return;
-
-            var colony = playerContext.FindColony(stop.ColonyUUID);
-            if (colony == null)
-            {
-                Log.Warn("Colony not found for stop {0} during worker delivery", stop.ColonyUUID);
-                return;
-            }
-
-            DeliveryFulfillment.DeliverWorkers(colony, item.BaseItemTypeID, item.Name, item.Quantity, delivered);
-            playerContext.OnColonyDataChanged(stop.ColonyUUID);
-        }
-
-        private void UpdateResourceDelivery(DeliveryItem item, bool delivered)
-        {
-            var stop = selectedPlan.Stops.FirstOrDefault(s =>
-                s.DropOff.Contains(item) || s.PickUp.Contains(item));
-            if (stop == null) return;
-
-            var colony = playerContext.FindColony(stop.ColonyUUID);
-            if (colony == null)
-            {
-                Log.Warn("Colony not found for stop {0} during resource delivery", stop.ColonyUUID);
-                return;
-            }
-
-            DeliveryFulfillment.DeliverResource(colony, item.BaseItemTypeID, item.ResourcePurity, item.Quantity, delivered);
-            playerContext.OnColonyDataChanged(stop.ColonyUUID);
-        }
-
-        /// <summary>
-        /// Updates station holds when delivery items are checked at station stops.
-        /// Drop-offs add items to the station hold; pick-ups remove items.
-        /// </summary>
-        private void UpdateStationHold(DeliveryItem item, bool delivered)
-        {
-            var stop = selectedPlan.Stops.FirstOrDefault(s =>
-                s.DropOff.Contains(item) || s.PickUp.Contains(item));
-            if (stop == null || stop.DestinationType != DestinationType.Station) return;
-
-            var station = playerContext.FindStation(stop.DestinationUUID);
-            if (station == null)
-            {
-                Log.Warn("Station not found for stop {0} during hold update", stop.DestinationUUID);
-                return;
-            }
-
-            string playerUUID = playerContext.CurrentPlayerUUID;
-            if (string.IsNullOrEmpty(playerUUID)) return;
-
-            ItemBag hold;
-            if (!station.Holds.TryGetValue(playerUUID, out hold))
-            {
-                hold = new ItemBag();
-                station.Holds[playerUUID] = hold;
-            }
-
-            bool isDropOff = stop.DropOff.Contains(item);
-
-            if (isDropOff && delivered)
-            {
-                // Drop-off: add items to station hold
-                var existing = hold.FindByType(item.ItemType, item.BaseItemTypeID);
-                if (existing.Count > 0)
-                {
-                    existing[0].Quantity += item.Quantity;
-                }
-                else
-                {
-                    var newItem = new Item(item.ItemType, item.BaseItemTypeID);
-                    newItem.UUID = Guid.NewGuid().ToString();
-                    newItem.BaseItemTypeID = item.BaseItemTypeID;
-                    newItem.Name = item.Name;
-                    newItem.Quantity = item.Quantity;
-                    newItem.ResourcePurity = item.ResourcePurity;
-                    hold.AddItem(newItem);
-                }
-            }
-            else if (isDropOff && !delivered)
-            {
-                // Undo drop-off: remove items from station hold
-                var existing = hold.FindByType(item.ItemType, item.BaseItemTypeID);
-                if (existing.Count > 0)
-                {
-                    existing[0].Quantity = Math.Max(0, existing[0].Quantity - item.Quantity);
-                }
-            }
-            else if (!isDropOff && delivered)
-            {
-                // Pick-up: remove items from station hold
-                var existing = hold.FindByType(item.ItemType, item.BaseItemTypeID);
-                if (existing.Count > 0)
-                {
-                    existing[0].Quantity = Math.Max(0, existing[0].Quantity - item.Quantity);
-                }
-            }
-            else if (!isDropOff && !delivered)
-            {
-                // Undo pick-up: add items back to station hold
-                var existing = hold.FindByType(item.ItemType, item.BaseItemTypeID);
-                if (existing.Count > 0)
-                {
-                    existing[0].Quantity += item.Quantity;
-                }
-                else
-                {
-                    var newItem = new Item(item.ItemType, item.BaseItemTypeID);
-                    newItem.UUID = Guid.NewGuid().ToString();
-                    newItem.BaseItemTypeID = item.BaseItemTypeID;
-                    newItem.Name = item.Name;
-                    newItem.Quantity = item.Quantity;
-                    newItem.ResourcePurity = item.ResourcePurity;
-                    hold.AddItem(newItem);
-                }
-            }
-
-            Log.Info(
-                "Station hold updated: station={0}, player={1}, item={2}, delivered={3}, isDropOff={4}",
-                station.Name,
-                playerUUID,
-                item.BaseItemTypeID,
-                delivered,
-                isDropOff);
+            // Rebuild execution to reflect updated state
+            BuildExecution();
         }
 
         private void UpdateStopCompleteButton(DeliveryPlanStop stop)
@@ -825,15 +632,18 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private int FindLastControlIndexForStop(DeliveryPlanStop stop)
         {
             int lastIndex = -1;
-            var stopItems = new HashSet<DeliveryItem>(stop.DropOff.Concat(stop.PickUp));
 
             for (int i = 0; i < flpStops.Controls.Count; i++)
             {
                 var ctrl = flpStops.Controls[i];
-                if (ctrl.Tag is DeliveryItem di && stopItems.Contains(di))
+                if (ctrl.Tag is DeliveryItemTag dit && dit.StopSequence == stop.Sequence)
+                {
                     lastIndex = i;
+                }
                 else if (ctrl.Tag == stop)
+                {
                     lastIndex = i;
+                }
             }
 
             return lastIndex;
@@ -845,29 +655,20 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             if (btn == null) return;
 
             var stop = btn.Tag as DeliveryPlanStop;
-            if (stop == null) return;
+            if (stop == null || string.IsNullOrEmpty(selectedPlanUUID)) return;
 
-            stop.StopCompleted = true;
-            playerContext.WriteContext();
+            _deliveryPlanService.MarkStopComplete(selectedPlanUUID, stop.Sequence);
+            playerContext.CascadeResourceCheckDirty = true;
             BuildExecution();
-
-            if (selectedPlan != null && IsAllDelivered(selectedPlan))
-            {
-                selectedPlan.Completed = true;
-                playerContext.WriteContext();
-                playerContext.CascadeResourceCheckDirty = true;
-                Log.Info("Delivery plan '{0}' marked as completed", selectedPlan.Name);
-            }
         }
 
         private void CmdCompletePlan_Click(object sender, EventArgs e)
         {
-            if (selectedPlan == null) return;
+            if (string.IsNullOrEmpty(selectedPlanUUID)) return;
 
-            selectedPlan.Completed = true;
-            playerContext.WriteContext();
+            _deliveryPlanService.MarkPlanComplete(selectedPlanUUID);
             playerContext.CascadeResourceCheckDirty = true;
-            Log.Info("Delivery plan '{0}' manually marked as completed", selectedPlan.Name);
+            Log.Info("Delivery plan '{0}' manually marked as completed", selectedPlanUUID);
 
             ClearExecution();
             string routeUUID = cmbRoute.SelectedValue as string;
@@ -877,38 +678,26 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void CmdDeletePlan_Click(object sender, EventArgs e)
         {
-            if (selectedPlan == null) return;
+            if (string.IsNullOrEmpty(selectedPlanUUID)) return;
+
+            var currentPlan = playerContext.GetCurrentPlayerReadOnlyPlans()
+                .FirstOrDefault(p => p.UUID == selectedPlanUUID);
+            string planName = currentPlan != null ? currentPlan.Name : selectedPlanUUID;
 
             var result = MessageBox.Show(
-                $"Delete plan '{selectedPlan.Name}'?",
+                $"Delete plan '{planName}'?",
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.RemoveDeliveryPlan(selectedPlan);
-            playerContext.WriteContext();
-            string deletedName = selectedPlan.Name;
-            playerContext.OnDeliveryDataChanged();
-            Log.Info("Delivery plan '{0}' deleted", deletedName);
+            _deliveryPlanService.Delete(selectedPlanUUID);
+            Log.Info("Delivery plan '{0}' deleted", planName);
 
             ClearExecution();
             string routeUUID = cmbRoute.SelectedValue as string;
             if (!string.IsNullOrEmpty(routeUUID))
                 PopulatePlanDropdown(routeUUID);
-        }
-
-        private bool IsAllDelivered(DeliveryPlan plan)
-        {
-            foreach (var stop in plan.Stops)
-            {
-                foreach (var item in stop.DropOff)
-                    if (!item.Delivered) return false;
-                foreach (var item in stop.PickUp)
-                    if (!item.Delivered) return false;
-            }
-
-            return true;
         }
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
@@ -953,17 +742,17 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 PopulatePlanDropdown(routeUUID);
 
             // If the selected plan was deleted externally, clear the view (BL-041)
-            if (selectedPlan != null &&
-                !playerContext.DeliveryPlanList.Any(p => p.UUID == selectedPlan.UUID))
+            if (!string.IsNullOrEmpty(selectedPlanUUID) &&
+                !playerContext.DeliveryPlanList.Any(p => p.UUID == selectedPlanUUID))
             {
-                selectedPlan = null;
+                selectedPlanUUID = null;
                 ClearExecution();
                 cmdCompletePlan.Visible = false;
                 cmdDeletePlan.Visible = false;
                 return;
             }
 
-            if (selectedPlan != null)
+            if (!string.IsNullOrEmpty(selectedPlanUUID))
                 BuildExecution();
         }
 
@@ -973,7 +762,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void UpdateCargoDisplay()
         {
-            if (selectedPlan == null)
+            var mutablePlan = playerContext.FindMutableDeliveryPlan(selectedPlanUUID);
+            if (mutablePlan == null)
             {
                 lblCargoVolume.Text = string.Empty;
                 lblCargoMass.Text = string.Empty;
@@ -981,7 +771,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 return;
             }
 
-            var loadItems = selectedPlan.CalculateLoadList();
+            var loadItems = mutablePlan.CalculateLoadList();
             Func<string, ReadOnlyBlueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
             var cargoResult = CargoVolumeService.ComputeLoadVolume(loadItems, bpFinder);
             UpdateCargoDisplayFromResult(cargoResult);
@@ -1040,9 +830,12 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void CmdSplitTrips_Click(object sender, EventArgs e)
         {
-            if (selectedPlan == null || currentCargoCapacity <= 0) return;
+            if (string.IsNullOrEmpty(selectedPlanUUID) || currentCargoCapacity <= 0) return;
 
-            var loadItems = selectedPlan.CalculateLoadList();
+            var splitPlan = playerContext.FindMutableDeliveryPlan(selectedPlanUUID);
+            if (splitPlan == null) return;
+
+            var loadItems = splitPlan.CalculateLoadList();
             Func<string, ReadOnlyBlueprint> bpFinder = uuid => playerContext.FindBlueprint(uuid);
             var trips = CargoVolumeService.SplitIntoTrips(
                 loadItems, currentCargoCapacity, bpFinder);
@@ -1090,88 +883,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 MessageBoxIcon.Question);
             if (result != DialogResult.OK) return;
 
-            CreateSplitTripPlans(trips);
-        }
-
-        private void CreateSplitTripPlans(List<List<DeliveryItem>> trips)
-        {
-            for (int i = 1; i < trips.Count; i++)
-            {
-                var newPlan = new DeliveryPlan
-                {
-                    UUID = Guid.NewGuid().ToString(),
-                    Name = string.Format(
-                        "{0} (Trip {1})",
-                        selectedPlan.Name,
-                        i + 1),
-                    OwnerUUID = selectedPlan.OwnerUUID,
-                    RouteUUID = selectedPlan.RouteUUID,
-                    ShipUUID = selectedPlan.ShipUUID
-                };
-
-                foreach (var stop in CollectionSortHelper.OrderPlanStops(selectedPlan.Stops))
-                {
-                    var newStop = new DeliveryPlanStop
-                    {
-                        ColonyUUID = stop.ColonyUUID,
-                        Sequence = stop.Sequence,
-                        DestinationType = stop.DestinationType,
-                        DestinationUUID = stop.DestinationUUID
-                    };
-
-                    foreach (var dropItem in stop.DropOff)
-                    {
-                        var tripItem = trips[i].FirstOrDefault(t =>
-                            t.ItemType == dropItem.ItemType &&
-                            t.BaseItemTypeID == dropItem.BaseItemTypeID &&
-                            t.ResourcePurity == dropItem.ResourcePurity);
-                        if (tripItem != null && tripItem.Quantity > 0)
-                        {
-                            int qty = Math.Min(
-                                tripItem.Quantity, dropItem.Quantity);
-                            newStop.DropOff.Add(new DeliveryItem
-                            {
-                                ItemType = dropItem.ItemType,
-                                BaseItemTypeID = dropItem.BaseItemTypeID,
-                                Name = dropItem.Name,
-                                ResourcePurity = dropItem.ResourcePurity,
-                                Quantity = qty
-                            });
-                            tripItem.Quantity -= qty;
-                        }
-                    }
-
-                    foreach (var pickItem in stop.PickUp)
-                    {
-                        newStop.PickUp.Add(new DeliveryItem
-                        {
-                            ItemType = pickItem.ItemType,
-                            BaseItemTypeID = pickItem.BaseItemTypeID,
-                            Name = pickItem.Name,
-                            ResourcePurity = pickItem.ResourcePurity,
-                            Quantity = pickItem.Quantity
-                        });
-                    }
-
-                    if (newStop.DropOff.Count > 0 || newStop.PickUp.Count > 0)
-                        newPlan.Stops.Add(newStop);
-                }
-
-                playerContext.AddDeliveryPlan(newPlan);
-                Log.Info(
-                    "Created split trip plan '{0}' (UUID={1})",
-                    newPlan.Name,
-                    newPlan.UUID);
-            }
-
-            if (!selectedPlan.Name.Contains("(Trip"))
-            {
-                selectedPlan.Name = string.Format(
-                    "{0} (Trip 1)", selectedPlan.Name);
-            }
-
-            playerContext.WriteContext();
-            playerContext.OnDeliveryDataChanged();
+            _deliveryPlanService.SplitTrips(selectedPlanUUID, currentCargoCapacity, bpFinder);
 
             string routeUUID = cmbRoute.SelectedValue as string;
             if (!string.IsNullOrEmpty(routeUUID))
@@ -1182,6 +894,28 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         // -----------------------------------------------------------------------
         // Route / Plan Selection
         // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Tag object for delivery item checkboxes, carrying identification info for service calls.
+        /// </summary>
+        private class DeliveryItemTag
+        {
+            public DeliveryItemTag(int stopSequence, int itemIndex, string listType, DeliveryPlanStop stop)
+            {
+                StopSequence = stopSequence;
+                ItemIndex = itemIndex;
+                ListType = listType;
+                Stop = stop;
+            }
+
+            public int StopSequence { get; }
+
+            public int ItemIndex { get; }
+
+            public string ListType { get; }
+
+            public DeliveryPlanStop Stop { get; }
+        }
 
         private class DropdownItem
         {
