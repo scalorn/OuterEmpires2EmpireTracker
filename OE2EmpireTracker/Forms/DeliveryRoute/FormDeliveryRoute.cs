@@ -1006,6 +1006,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         /// </summary>
         private void RefreshSelectedPlanStop()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             if (planViewModel == null || dgvStops.SelectedRows.Count != 1)
             {
                 selectedPlanStop = null;
@@ -1025,6 +1026,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 routeStop.Sequence,
                 routeStop.DestinationType,
                 routeStop.DestinationUUID);
+            sw.Stop();
+            Log.Info("PERF RefreshSelectedPlanStop {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void ClearPlanGrids()

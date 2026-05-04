@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(stop, Is.Not.Null);
             Assert.That(stop.ColonyUUID, Is.EqualTo("c1"));
             Assert.That(stop.Sequence, Is.EqualTo(0));
-            Assert.That(vm.Data.Stops.Count, Is.EqualTo(1));
+            Assert.That(vm.Stops.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace OE2EmpireTracker.Tests.Services
             var stop1 = vm.GetOrCreateStop("c1", 0);
             var stop2 = vm.GetOrCreateStop("c1", 0);
             Assert.That(stop2, Is.SameAs(stop1));
-            Assert.That(vm.Data.Stops.Count, Is.EqualTo(1));
+            Assert.That(vm.Stops.Count, Is.EqualTo(1));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace OE2EmpireTracker.Tests.Services
             var vm = CreateViewModel();
             vm.GetOrCreateStop("c1", 0);
             vm.GetOrCreateStop("c2", 1);
-            Assert.That(vm.Data.Stops.Count, Is.EqualTo(2));
+            Assert.That(vm.Stops.Count, Is.EqualTo(2));
         }
 
         // -----------------------------------------------------------------------
@@ -203,21 +203,15 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Constructor Validation
+        // LoadFrom / UUID
         // -----------------------------------------------------------------------
 
         [Test]
-        public void Constructor_NullPlan_Throws()
+        public void LoadFrom_NullReadOnly_Throws()
         {
-            Assert.Throws<System.ArgumentNullException>(() =>
-                new DeliveryPlanViewModel(null, playerContext));
-        }
-
-        [Test]
-        public void Constructor_NullPlayerContext_Throws()
-        {
-            Assert.Throws<System.ArgumentNullException>(() =>
-                new DeliveryPlanViewModel(new DeliveryPlan(), null));
+            var vm = new DeliveryPlanViewModel();
+            Assert.Throws<System.NullReferenceException>(() =>
+                vm.LoadFrom(null));
         }
 
         [Test]
@@ -239,7 +233,7 @@ namespace OE2EmpireTracker.Tests.Services
             int added = vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
 
             Assert.That(added, Is.EqualTo(1));
-            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
             Assert.That(stop.DropOff.Count, Is.EqualTo(1));
             Assert.That(stop.DropOff[0].Name, Is.EqualTo("Steel Plates"));
             Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Steel Plates"));
@@ -258,7 +252,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             vm.AutoFillCommodities(stops, uuid => uuid == "c1" ? colony : null);
 
-            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
             Assert.That(stop.DropOff[0].Quantity, Is.EqualTo(70));
         }
 
@@ -306,7 +300,7 @@ namespace OE2EmpireTracker.Tests.Services
             int added = vm.AutoFillCommodities(stops, uuid => uuid == "c2" ? colony : null);
 
             Assert.That(added, Is.EqualTo(1));
-            Assert.That(vm.Data.Stops.Any(s => s.ColonyUUID == "c1"), Is.False);
+            Assert.That(vm.Stops.Any(s => s.ColonyUUID == "c1"), Is.False);
         }
 
         [Test]
@@ -384,12 +378,12 @@ namespace OE2EmpireTracker.Tests.Services
             });
 
             Assert.That(added, Is.EqualTo(2));
-            var stop1 = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop1 = vm.Stops.First(s => s.ColonyUUID == "c1");
             Assert.That(stop1.DropOff.Count, Is.EqualTo(1));
             Assert.That(stop1.DropOff[0].Name, Is.EqualTo("Steel Plates"));
             Assert.That(stop1.DropOff[0].Quantity, Is.EqualTo(50));
 
-            var stop2 = vm.Data.Stops.First(s => s.ColonyUUID == "c2");
+            var stop2 = vm.Stops.First(s => s.ColonyUUID == "c2");
             Assert.That(stop2.DropOff.Count, Is.EqualTo(1));
             Assert.That(stop2.DropOff[0].Name, Is.EqualTo("Glass Panels"));
             Assert.That(stop2.DropOff[0].Quantity, Is.EqualTo(15));
@@ -402,7 +396,7 @@ namespace OE2EmpireTracker.Tests.Services
             var colony = new Colony { UUID = "c1" };
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null, uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(0));
         }
@@ -417,7 +411,7 @@ namespace OE2EmpireTracker.Tests.Services
                 MakeStructure("bp1", built: true, staged: false));
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null, uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(0));
         }
@@ -432,7 +426,7 @@ namespace OE2EmpireTracker.Tests.Services
                 MakeStructure("bp2", built: false, staged: true));
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null, uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(0));
         }
@@ -447,10 +441,10 @@ namespace OE2EmpireTracker.Tests.Services
                 MakeStructure("bp-unbuilt", built: false, staged: false));
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null, uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(1));
-            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
             Assert.That(stop.DropOff.Count, Is.EqualTo(1));
             Assert.That(stop.DropOff[0].ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Flatpack));
             Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("bp-unbuilt"));
@@ -469,10 +463,10 @@ namespace OE2EmpireTracker.Tests.Services
                 MakeStructure("bp-stack", built: false, staged: false));
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null, uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(1)); // 1 aggregated item, not 3
-            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
             Assert.That(stop.DropOff.Count, Is.EqualTo(1));
             Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("bp-stack"));
             Assert.That(stop.DropOff[0].Quantity, Is.EqualTo(3));
@@ -492,10 +486,10 @@ namespace OE2EmpireTracker.Tests.Services
                 MakeStructure("bp-c", built: false, staged: false)); // unbuilt+unstaged -- add
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null, uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(1));
-            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
             Assert.That(stop.DropOff.Count, Is.EqualTo(1));
             Assert.That(stop.DropOff[0].ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Flatpack));
             Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("bp-c"));
@@ -515,7 +509,7 @@ namespace OE2EmpireTracker.Tests.Services
                 MakeStructure("bp-d", built: false, staged: false));
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+            vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null, uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(stop.DropOff.Count, Is.EqualTo(2));
             Assert.That(stop.DropOff[0].BaseItemTypeID, Is.EqualTo("Iron"));
@@ -528,7 +522,7 @@ namespace OE2EmpireTracker.Tests.Services
             var vm = CreateViewModel();
             var stops = new[] { new RouteStop { ColonyUUID = "missing", Sequence = 0 } };
 
-            int added = vm.AutoFillFlatpacks(stops, uuid => null);
+            int added = vm.AutoFillFlatpacks(stops, uuid => null, uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(0));
         }
@@ -542,7 +536,7 @@ namespace OE2EmpireTracker.Tests.Services
                 MakeStructure("nonexistent-bp", built: false, staged: false));
             var stops = new[] { new RouteStop { ColonyUUID = "c1", Sequence = 0 } };
 
-            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null);
+            int added = vm.AutoFillFlatpacks(stops, uuid => uuid == "c1" ? colony : null, uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(0));
         }
@@ -597,7 +591,7 @@ namespace OE2EmpireTracker.Tests.Services
                 uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(2));
-            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
             var ironDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Iron");
             var copperDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Copper");
             Assert.That(ironDrop, Is.Not.Null);
@@ -631,7 +625,7 @@ namespace OE2EmpireTracker.Tests.Services
                 uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(2));
-            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
             foreach (var item in stop.DropOff)
             {
                 Assert.That(
@@ -716,7 +710,7 @@ namespace OE2EmpireTracker.Tests.Services
                 uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(2));
-            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
             var ironDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Iron");
             var copperDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Copper");
             Assert.That(ironDrop, Is.Not.Null);
@@ -752,7 +746,7 @@ namespace OE2EmpireTracker.Tests.Services
                 uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(1));
-            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
             Assert.That(stop.DropOff[0].Quantity, Is.EqualTo(10));
         }
 
@@ -775,7 +769,7 @@ namespace OE2EmpireTracker.Tests.Services
                 uuid => playerContext.FindBlueprint(uuid));
 
             Assert.That(added, Is.EqualTo(2)); // 2 resource types
-            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
             var alkali = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Alkali Organics");
             var acidic = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Strong Acidic Inorganics");
             Assert.That(alkali, Is.Not.Null);
@@ -880,7 +874,7 @@ namespace OE2EmpireTracker.Tests.Services
                 playerContext);
 
             Assert.That(added, Is.EqualTo(2)); // 1 BlueCollar gap + 1 WhiteCollar gap
-            var stop = vm.Data.Stops.First(s => s.ColonyUUID == "c1");
+            var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
             var blueDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "BlueCollarDetail");
             var whiteDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "WhiteCollarDetail");
             Assert.That(blueDrop, Is.Not.Null);
@@ -931,7 +925,9 @@ namespace OE2EmpireTracker.Tests.Services
         private DeliveryPlanViewModel CreateViewModel()
         {
             var plan = new DeliveryPlan { UUID = "plan-1", Name = "Test Plan", RouteUUID = "r1" };
-            return new DeliveryPlanViewModel(plan, playerContext);
+            var vm = new DeliveryPlanViewModel();
+            vm.LoadFrom(new ReadOnlyDeliveryPlan(plan));
+            return vm;
         }
 
         // -----------------------------------------------------------------------

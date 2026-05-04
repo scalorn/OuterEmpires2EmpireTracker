@@ -78,7 +78,7 @@ Apply the immutable data model pattern to DeliveryPlan. Rewrite DeliveryPlanView
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 8.1-8.9, 9.1-9.5, 10.1-10.8, 11.1-11.6, 12.1-12.5, 13.1-13.10, 14.1-14.5, 15.1-15.5, 16.1-16.4, 17.1-17.7, 21.1_
 
-- [-] 4. Checkpoint --- Verify new classes compile cleanly
+- [x] 4. Checkpoint --- Verify new classes compile cleanly
   - Build with zero errors and zero warnings
   - Ensure all tests pass, ask the user if questions arise.
 
@@ -122,51 +122,51 @@ Apply the immutable data model pattern to DeliveryPlan. Rewrite DeliveryPlanView
     - After AutoFill, call DeliveryPlanService.UpdatePlan to persist
     - _Requirements: 19.8_
 
-- [-] 6. Migrate FormDeliveryExecution to service
+- [x] 6. Migrate FormDeliveryExecution to service
   - [x] 6.1 Replace mutable plan reference with service calls
     - Add DeliveryPlanService _deliveryPlanService field
     - Change CmbPlan_SelectedIndexChanged to store plan UUID instead of mutable DeliveryPlan reference
     - Change BuildExecution to read from ReadOnlyDeliveryPlan (from service return or PlayerContext)
     - _Requirements: 2.1, 2.2, 3.2_
 
-  - [-] 6.2 Wire DeliveryItem_CheckedChanged through service
+  - [x] 6.2 Wire DeliveryItem_CheckedChanged through service
     - Replace direct item.Delivered = chk.Checked with DeliveryPlanService.MarkItemDelivered
     - Remove direct calls to UpdateCommodityFulfillment, UpdateFlatpackStaging, UpdateWorkerDelivery, UpdateResourceDelivery, UpdateStationHold (service handles side effects)
     - After service call, refresh display from returned ReadOnlyDeliveryPlan
     - _Requirements: 20.1_
 
-  - [ ] 6.3 Wire CompleteStop_Click through service
+  - [x] 6.3 Wire CompleteStop_Click through service
     - Replace direct stop.StopCompleted = true with DeliveryPlanService.MarkStopComplete
     - After service call, rebuild execution display
     - _Requirements: 20.2_
 
-  - [ ] 6.4 Wire CmdCompletePlan_Click through service
+  - [x] 6.4 Wire CmdCompletePlan_Click through service
     - Replace direct selectedPlan.Completed = true with DeliveryPlanService.MarkPlanComplete
     - After service call, clear execution and refresh plan dropdown
     - _Requirements: 20.3_
 
-  - [ ] 6.5 Wire CmbShip_SelectedIndexChanged through service
+  - [x] 6.5 Wire CmbShip_SelectedIndexChanged through service
     - Replace direct selectedPlan.ShipUUID = shipUUID with DeliveryPlanService.SetShipUUID
     - _Requirements: 20.4_
 
-  - [ ] 6.6 Wire CmdSplitTrips_Click through service
+  - [x] 6.6 Wire CmdSplitTrips_Click through service
     - Replace direct CreateSplitTripPlans with DeliveryPlanService.SplitTrips
     - Remove CreateSplitTripPlans method from form
     - After service call, refresh plan dropdown and rebuild execution
     - _Requirements: 20.5_
 
-  - [ ] 6.7 Wire CmdDeletePlan_Click through service
+  - [x] 6.7 Wire CmdDeletePlan_Click through service
     - Replace direct PlayerContext.RemoveDeliveryPlan with DeliveryPlanService.Delete
     - After service call, clear execution and refresh plan dropdown
     - _Requirements: 20.6_
 
-- [ ] 7. Checkpoint --- Verify form migration compiles and existing tests pass
+- [x] 7. Checkpoint --- Verify form migration compiles and existing tests pass
   - Build with zero errors and zero warnings
   - All existing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Add ViewModel property tests
-  - [ ] 8.1 Write property test: LoadFrom round-trip preserves all fields
+- [-] 8. Add ViewModel property tests
+  - [-] 8.1 Write property test: LoadFrom round-trip preserves all fields
     - Create OE2EmpireTracker.Tests/ViewModels/DeliveryPlanViewModelPropertyTests.cs
     - Create ValidDeliveryPlanGen() generator producing random DeliveryPlan entities with random Name, UUID, OwnerUUID, RouteUUID, ShipUUID, Completed, and 0-5 DeliveryPlanStop entries (each with random ColonyUUID, Sequence, StopCompleted, DestinationType, DestinationUUID, and 0-3 DropOff/PickUp DeliveryItem entries)
     - **Property: LoadFrom Round-Trip Preserves All Fields**

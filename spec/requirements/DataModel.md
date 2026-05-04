@@ -236,3 +236,9 @@ The following 13 entity types were added as part of the empire-systems spec. All
 
 **REQ-DM-150** DeliveryRouteUpdateRequest SHALL have Original (ReadOnlyDeliveryRoute), Name (string), and Stops (List of RouteStop). Used by DeliveryRouteService.Update to apply changes to an existing route.
 **REQ-DM-151** DeliveryRouteCreateRequest SHALL have Name (string) and Stops (List of RouteStop). No UUID (service assigns). No OwnerUUID (service sets from current player). Used by DeliveryRouteService.Create.
+
+**REQ-DM-152** DeliveryPlanUpdateRequest SHALL have Name (string) and Stops (List of DeliveryPlanStop). Used by DeliveryPlanService.UpdatePlan to apply changes to an existing plan.
+
+**REQ-DM-153** StopDestinationInfo SHALL have ColonyUUID (string), Sequence (int), DestinationType (DestinationType), and DestinationUUID (string). Used by DeliveryPlanService item operations to identify the target stop.
+
+**REQ-DM-154** DeliveryItemInfo SHALL have ItemType (ItemTypeEnum), BaseItemTypeID (string), Name (string), Quantity (int), and ResourcePurity (string). Used by DeliveryPlanService.AddDropOffItem and AddPickUpItem to specify item details.

@@ -8,25 +8,29 @@ using NUnit.Framework;
 namespace OE2EmpireTracker.Tests.Services
 {
     /// <summary>
-    /// Verification tests that ensure DeliveryRoute entities are only mutated by allowed code.
-    /// Feature: BL-112 DeliveryRoute Immutable Data Model
+    /// Verification tests that ensure DeliveryPlan entities are only mutated by allowed code.
+    /// Feature: BL-113 DeliveryPlan Immutable Data Model
     /// Validates: Property 8
-    /// Validates: Requirements 18.1, 18.2, 18.3, 21.1, 21.2
+    /// Validates: Requirements 21.1, 21.2, 21.3, 21.4, 24.1, 24.2, 24.3
     /// </summary>
     [TestFixture]
-    public class DeliveryRouteMutationGuardTests
+    public class DeliveryPlanMutationGuardTests
     {
         private static readonly string SourceRoot = Path.GetFullPath(
             Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker"));
 
         /// <summary>
-        /// Allowed files for direct DeliveryRoute scalar property sets (Name, UUID, OwnerUUID).
+        /// Allowed files for direct DeliveryPlan scalar property sets (Name, ShipUUID, Completed).
         /// </summary>
         private static readonly HashSet<string> AllowedScalarMutators = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "DeliveryRouteService.cs",
-            "DeliveryRoute.cs",
+            "DeliveryPlanService.cs",
+            "DeliveryPlan.cs",
             "PlayerContext.cs",
+            "DeliveryPlanViewModel.cs",
+            "DeliveryRouteService.cs",
+            "DeliveryGenerationService.cs",
+            "SerializationSorter.cs",
             "FormAsteroid.cs",
             "FormBlueprintV2.cs",
             "FormBuildPlanner.cs",
@@ -53,43 +57,61 @@ namespace OE2EmpireTracker.Tests.Services
             "ColonyStatusCalculator.cs",
             "CrateImporter.cs",
             "DeliveryFulfillment.cs",
-            "DeliveryGenerationService.cs",
             "MarketBlueprintImporter.cs",
             "PlayerProfileService.cs",
             "PricingPlanService.cs",
             "SurveyImportHelper.cs",
             "SurveyService.cs",
             "BlueprintViewModel.cs",
-            "DeliveryPlanService.cs",
         };
 
         /// <summary>
-        /// Allowed files for direct DeliveryRoute.Stops list mutation.
+        /// Allowed files for direct DeliveryPlanStop mutation (StopCompleted =).
         /// </summary>
-        private static readonly HashSet<string> AllowedStopsMutators = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> AllowedStopMutators = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "DeliveryRouteService.cs",
-            "DeliveryRoute.cs",
-            "FormDeliveryExecution.cs",
+            "DeliveryPlanService.cs",
+            "DeliveryPlan.cs",
+            "DeliveryPlanViewModel.cs",
+            "SerializationSorter.cs",
+        };
+
+        /// <summary>
+        /// Allowed files for direct DeliveryItem.Delivered sets.
+        /// </summary>
+        private static readonly HashSet<string> AllowedDeliveredMutators = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "DeliveryPlanService.cs",
+            "DeliveryPlan.cs",
+            "DeliveryPlanViewModel.cs",
+            "ColonyService.cs",
+            "DeliveryFulfillment.cs",
+        };
+
+        /// <summary>
+        /// Allowed files for direct DropOff.Add, PickUp.Add.
+        /// </summary>
+        private static readonly HashSet<string> AllowedListAddMutators = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "DeliveryPlanService.cs",
+            "DeliveryPlan.cs",
+            "DeliveryPlanViewModel.cs",
             "DeliveryGenerationService.cs",
             "SerializationSorter.cs",
-            "DeliveryPlanViewModel.cs",
-            "DeliveryPlanService.cs",
         };
 
         /// <summary>
-        /// Requirement 21.1: Direct DeliveryRoute scalar property sets only appear in allowed files.
-        /// Scans all non-test .cs files for DeliveryRoute-unique property set patterns
-        /// and asserts they only appear in DeliveryRouteService, DeliveryRoute.cs,
-        /// PlayerContext.cs (deserialization/migration), and test code.
+        /// Requirement 21.1: Direct DeliveryPlan scalar property sets only appear in allowed files.
         /// </summary>
         [Test]
-        public void DeliveryRoute_ScalarPropertySets_OnlyInAllowedFiles()
+        public void DeliveryPlan_ScalarPropertySets_OnlyInAllowedFiles()
         {
             var scalarPropertyPatterns = new[]
             {
                 @"\.Name\s*=[^=]",
-                @"\.UUID\s*=[^=]",
+                @"\.ShipUUID\s*=[^=]",
+                @"\.Completed\s*=[^=]",
+                @"\.RouteUUID\s*=[^=]",
                 @"\.OwnerUUID\s*=[^=]",
             };
 
@@ -102,52 +124,98 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(
                 violations,
                 Is.Empty,
-                "Found direct DeliveryRoute scalar property sets in non-allowed files:\n" +
+                "Found direct DeliveryPlan scalar property sets in non-allowed files:\n" +
                 string.Join("\n", violations));
         }
 
         /// <summary>
-        /// Requirement 21.2: Direct DeliveryRoute.Stops list mutation only appears in allowed files.
-        /// Scans all non-test .cs files for Stops list mutation patterns
-        /// (Add, Remove, Clear, Insert, assignment) and asserts they only appear in
-        /// DeliveryRouteService, DeliveryRoute.cs, and test code.
+        /// Requirement 21.2: Direct DeliveryPlanStop mutation only appears in allowed files.
         /// </summary>
         [Test]
-        public void DeliveryRoute_StopsListMutation_OnlyInAllowedFiles()
+        public void DeliveryPlanStop_StopCompletedSets_OnlyInAllowedFiles()
         {
-            var stopsMutationPatterns = new[]
+            var stopMutationPatterns = new[]
             {
-                @"\.Stops\.Add\(",
-                @"\.Stops\.Remove\(",
-                @"\.Stops\.Clear\(",
-                @"\.Stops\.Insert\(",
-                @"\.Stops\s*=[^=]",
+                @"\.StopCompleted\s*=[^=]",
             };
 
-            var compiled = stopsMutationPatterns
+            var compiled = stopMutationPatterns
                 .Select(p => new Regex(p, RegexOptions.Compiled))
                 .ToArray();
 
-            var violations = ScanSourceFilesForPatterns(compiled, AllowedStopsMutators);
+            var violations = ScanSourceFilesForPatterns(compiled, AllowedStopMutators);
 
             Assert.That(
                 violations,
                 Is.Empty,
-                "Found direct DeliveryRoute.Stops list mutation in non-allowed files:\n" +
+                "Found direct DeliveryPlanStop.StopCompleted sets in non-allowed files:\n" +
                 string.Join("\n", violations));
         }
 
         /// <summary>
-        /// Requirement 18.2: FormDeliveryRoute does not directly set properties on DeliveryRoute.
+        /// Requirement 21.3: Direct DeliveryItem.Delivered sets only appear in allowed files.
         /// </summary>
         [Test]
-        public void FormDeliveryRoute_NoDirectDeliveryRouteMutation()
+        public void DeliveryItem_DeliveredSets_OnlyInAllowedFiles()
+        {
+            var deliveredPatterns = new[]
+            {
+                @"\.Delivered\s*=[^=]",
+            };
+
+            var compiled = deliveredPatterns
+                .Select(p => new Regex(p, RegexOptions.Compiled))
+                .ToArray();
+
+            var violations = ScanSourceFilesForPatterns(compiled, AllowedDeliveredMutators);
+
+            Assert.That(
+                violations,
+                Is.Empty,
+                "Found direct DeliveryItem.Delivered sets in non-allowed files:\n" +
+                string.Join("\n", violations));
+        }
+
+        /// <summary>
+        /// Requirement 21.4: Direct DropOff.Add, PickUp.Add only appear in allowed files.
+        /// </summary>
+        [Test]
+        public void DeliveryPlan_ListAddMutation_OnlyInAllowedFiles()
+        {
+            var listAddPatterns = new[]
+            {
+                @"\.DropOff\.Add\(",
+                @"\.PickUp\.Add\(",
+            };
+
+            var compiled = listAddPatterns
+                .Select(p => new Regex(p, RegexOptions.Compiled))
+                .ToArray();
+
+            var violations = ScanSourceFilesForPatterns(compiled, AllowedListAddMutators);
+
+            Assert.That(
+                violations,
+                Is.Empty,
+                "Found direct DropOff.Add/PickUp.Add in non-allowed files:\n" +
+                string.Join("\n", violations));
+        }
+
+        /// <summary>
+        /// Requirement 24.1: FormDeliveryRoute does not directly set properties on DeliveryPlan.
+        /// </summary>
+        [Test]
+        public void FormDeliveryRoute_NoDirectDeliveryPlanMutation()
         {
             var entityMutationPatterns = new[]
             {
-                @"_route\.\w+\s*=",
-                @"route\.\w+\s*=[^=]",
-                @"\.Data\.\w+\s*=[^=]",
+                @"plan\.Name\s*=[^=]",
+                @"plan\.ShipUUID\s*=[^=]",
+                @"plan\.Completed\s*=[^=]",
+                @"plan\.Stops",
+                @"\.Data\.Name\s*=[^=]",
+                @"\.Data\.Completed\s*=[^=]",
+                @"\.Data\.ShipUUID\s*=[^=]",
             };
 
             var filesToScan = new[]
@@ -157,32 +225,30 @@ namespace OE2EmpireTracker.Tests.Services
 
             var violations = ScanSpecificFilesForPatterns(filesToScan, entityMutationPatterns);
 
-            // Exclude DeliveryPlan mutations (plan management is out of scope for BL-112)
-            violations = violations.Where(v => !v.Contains("planViewModel")).ToList();
-
             Assert.That(
                 violations,
                 Is.Empty,
-                "Found direct DeliveryRoute entity mutation in FormDeliveryRoute:\n" +
+                "Found direct DeliveryPlan entity mutation in FormDeliveryRoute:\n" +
                 string.Join("\n", violations));
         }
 
         /// <summary>
-        /// Requirement 18.3: DeliveryRouteViewModel does not directly set properties on DeliveryRoute.
+        /// Requirement 24.2: FormDeliveryExecution does not directly set properties on DeliveryPlan.
         /// </summary>
         [Test]
-        public void DeliveryRouteViewModel_NoDirectDeliveryRouteMutation()
+        public void FormDeliveryExecution_NoDirectDeliveryPlanMutation()
         {
             var entityMutationPatterns = new[]
             {
-                @"_route\.\w+\s*=",
-                @"route\.\w+\s*=[^=]",
-                @"\.Data\.\w+\s*=[^=]",
+                @"\.Delivered\s*=[^=]",
+                @"\.StopCompleted\s*=[^=]",
+                @"\.Completed\s*=[^=]",
+                @"\.ShipUUID\s*=[^=]",
             };
 
             var filesToScan = new[]
             {
-                Path.Combine("ViewModels", "DeliveryRouteViewModel.cs"),
+                Path.Combine("Forms", "DeliveryExecution", "FormDeliveryExecution.cs"),
             };
 
             var violations = ScanSpecificFilesForPatterns(filesToScan, entityMutationPatterns);
@@ -190,23 +256,8 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(
                 violations,
                 Is.Empty,
-                "Found direct DeliveryRoute entity mutation in DeliveryRouteViewModel:\n" +
+                "Found direct DeliveryPlan entity mutation in FormDeliveryExecution:\n" +
                 string.Join("\n", violations));
-        }
-
-        /// <summary>
-        /// Requirement 3.2: ViewModel does not expose mutable DeliveryRoute via public property.
-        /// </summary>
-        [Test]
-        public void ViewModel_DoesNotExposeMutableDeliveryRoute()
-        {
-            var filePath = Path.Combine(SourceRoot, "ViewModels", "DeliveryRouteViewModel.cs");
-            var content = File.ReadAllText(filePath);
-
-            Assert.That(content, Does.Not.Contain("public DeliveryRoute Data"),
-                "ViewModel still exposes mutable Data property");
-            Assert.That(content, Does.Not.Contain("public DeliveryRoute _"),
-                "ViewModel still exposes mutable DeliveryRoute field");
         }
 
         private List<string> ScanSourceFilesForPatterns(Regex[] compiled, HashSet<string> allowedFiles)
@@ -218,19 +269,16 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 var fileName = Path.GetFileName(fullPath);
 
-                // Skip allowed mutator files
                 if (allowedFiles.Contains(fileName))
                 {
                     continue;
                 }
 
-                // Skip Designer.cs files (no hand-written mutation)
                 if (fileName.EndsWith(".Designer.cs", StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
 
-                // Skip migration code
                 var relativePath = fullPath.Substring(SourceRoot.Length + 1);
                 if (relativePath.Contains("Migration"))
                 {
@@ -242,26 +290,27 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     string line = lines[i].Trim();
 
-                    // Skip comments
                     if (line.StartsWith("//") || line.StartsWith("///") || line.StartsWith("*"))
                     {
                         continue;
                     }
 
-                    // Skip JSON deserialization attributes and property declarations
                     if (line.StartsWith("[Json") || line.Contains("JsonProperty"))
                     {
                         continue;
                     }
 
-                    // Skip property declarations (get; set;)
                     if (line.Contains("{ get;") || line.Contains("{ set;"))
                     {
                         continue;
                     }
 
-                    // Skip ViewModel local field sets (edit buffer writes, not entity mutation)
                     if (line.Contains("_viewModel.") || line.Contains("viewModel."))
+                    {
+                        continue;
+                    }
+
+                    if (line.Contains("planViewModel."))
                     {
                         continue;
                     }
