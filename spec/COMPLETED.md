@@ -427,3 +427,6 @@ Applied the immutable data model pattern to MarketListing and MarketTransaction.
 ### BL-115: ShipTemplate — Immutable Data Model with Service Layer
 Applied the immutable data model pattern to ShipTemplate. Created ShipTemplateViewModel as disconnected edit buffer with IsDirty tracking for Name, HullBlueprintUUID, and Components. Created ShipTemplateService with Create/Update/Delete methods. Migrated FormShipTemplate to use ReadOnly wrappers in list view, ViewModel for all edits, and service for Save/Delete. Added unsaved changes prompts. 33 new tests. See .kiro/specs/bl-115-shiptemplate-readonly/.
 **Status: Complete**
+### BL-116: Ship — Immutable Data Model with Service Layer
+Applied the immutable data model pattern to Ship (FormShipInstance). Created ShipViewModel as disconnected edit buffer with IsDirty tracking for all ship fields including Components, Cargo, and Hopper. Created ShipService with Create/Update/Delete/CreateFromTemplate methods. Migrated FormShipInstance to use ReadOnly wrappers in list view, ViewModel for all edits, and service for Save/Delete. Added unsaved changes prompts. 32 new tests. See .kiro/specs/bl-116-ship-readonly/.
+**Status: Complete**

@@ -291,7 +291,7 @@ Apply the immutable data model pattern to ShipTemplate. Create ShipTemplateServi
 
 ### BL-116: Ship — Immutable Data Model with Service Layer
 **Dependencies:** BL-115
-**Status: In Progress** — tasks 1-7 complete, tests remaining
+**Status: Complete** — see spec .kiro/specs/bl-116-ship-readonly/
 
 ### BL-117: Station — Immutable Data Model with Service Layer
 **Dependencies:** none
