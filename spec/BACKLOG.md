@@ -272,91 +272,66 @@ Add right-click context menus to DataGridView grids across all forms. Currently 
 - **FormStation**: dgvHold/dgvComponents â€” Add/Remove
 Each context menu should mirror the existing button actions for that grid, providing the same functionality via right-click.
 
-## Read-Only Data Wrapper Migration â€” Per-Form Backlog Items
+## Immutable Data Model Migration — Per-Form Backlog Items
 
-These items migrate individual forms from consuming mutable entity references to using ReadOnly wrapper types for their read-only data paths (combo box population, list view display, reference counting, status display). Each form retains mutable access for its ViewModel/edit paths. Depends on the readonly-data-wrappers spec (complete).
+These items complete the immutable data model migration across all forms. Each form stops directly mutating entities and routes all changes through a service layer. ViewModels become disconnected edit buffers. List views use ReadOnly wrappers. Unsaved changes prompts are added where applicable. The pattern is established by BL-108 (Blueprint), BL-109 (Colony), BL-110 (Survey), BL-111 (PlayerProfile), BL-112 (DeliveryRoute), and BL-123 (PricingPlan).
 
-### BL-113: FormDeliveryExecution â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-113: DeliveryPlan — Immutable Data Model with Service Layer
+**Dependencies:** BL-112 (done)
 **Status: New**
-Migrate read-only data paths in FormDeliveryExecution to use ReadOnly wrappers. This form populates route combos via RouteDropdownHelper, displays delivery plan stops and items in read-only grids, and shows colony/station names for stop destinations. Switch route combo population, plan list, and destination name lookups to read-only types.
+Apply the immutable data model pattern to DeliveryPlan. Create DeliveryPlanService as sole mutator with CRUD methods for plans and plan items (drop-off/pick-up). Rewrite DeliveryPlanViewModel as a disconnected edit buffer. Migrate FormDeliveryRoute Plan tab and FormDeliveryExecution to route all plan mutations through the service. DeliveryPlan is currently mutated directly by FormDeliveryRoute (plan tab), FormDeliveryExecution (mark delivered, mark complete), and DeliveryPlanViewModel (write-through Save). This is the most complex remaining migration due to cross-form mutation (two forms mutate the same entity type). Includes unsaved changes prompts for plan edits.
 
-### BL-114: FormAutoFill â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-114: Market — Immutable Data Model with Service Layer
+**Dependencies:** none
 **Status: New**
-Migrate read-only data paths in FormAutoFill to use ReadOnly wrappers. This dialog reads colony inventory and commodity data to auto-fill delivery plan items. Switch colony and commodity lookups to read-only types.
+Apply the immutable data model pattern to MarketListing and MarketTransaction. Create MarketListingService as sole mutator with CRUD for listings and sale recording. Migrate FormMarket, FormListingEdit, and FormRecordSale to route all mutations through the service. FormMarket currently mutates MarketListing directly (4 WriteContext calls). FormListingEdit is a dialog that mutates listing properties. FormRecordSale delegates to MarketService.RecordSale but the parent form persists. Consolidate into a single service. Subsumes the old BL-115 (FormMarket), BL-116 (FormListingEdit), and BL-117 (FormRecordSale) read-only wrapper items.
 
-### BL-115: FormMarket â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-115: ShipTemplate — Immutable Data Model with Service Layer
+**Dependencies:** none
 **Status: New**
-Migrate read-only data paths in FormMarket to use ReadOnly wrappers. This form displays market listings in a grid with MarketListingReferenceCounter, shows transaction history, and populates station combos. Switch listing/transaction list population, reference counter inputs, and station combo to read-only types.
+Apply the immutable data model pattern to ShipTemplate. Create ShipTemplateService as sole mutator with CRUD methods for templates and component slots. Create ShipTemplateViewModel as disconnected edit buffer. Migrate FormShipTemplate to route all mutations through the service. Currently mutates ShipTemplate and ShipComponentSlot directly (3 WriteContext calls). Includes unsaved changes prompts.
 
-### BL-116: FormListingEdit â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-116: Ship — Immutable Data Model with Service Layer
+**Dependencies:** BL-115
 **Status: New**
-Migrate read-only data paths in FormListingEdit to use ReadOnly wrappers. This dialog populates station and item type combos for creating/editing market listings. Switch combo population to read-only types.
+Apply the immutable data model pattern to Ship (ship instances). Create ShipService as sole mutator with CRUD methods for ships, component slots, cargo, and hopper. Create ShipViewModel as disconnected edit buffer. Migrate FormShipInstance to route all mutations through the service. Currently mutates Ship, ShipComponentSlot, and Item directly (2 WriteContext calls). Includes unsaved changes prompts.
 
-### BL-117: FormRecordSale â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-117: Station — Immutable Data Model with Service Layer
+**Dependencies:** none
 **Status: New**
-Migrate read-only data paths in FormRecordSale to use ReadOnly wrappers. This dialog displays listing details and records sale transactions. Switch listing display to read-only types.
+Apply the immutable data model pattern to Station. Create StationService as sole mutator with CRUD methods for stations, components, holds, and munitions. Create StationViewModel as disconnected edit buffer. Migrate FormStation to route all mutations through the service. Currently mutates Station, ShipComponentSlot, and Item directly (3 WriteContext calls). Station is one of the more complex entities with components, holds, and munitions hold. Includes unsaved changes prompts.
 
-### BL-118: FormShipTemplate â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-118: BuildPlan — Immutable Data Model with Service Layer
+**Dependencies:** none
 **Status: New**
-Migrate read-only data paths in FormShipTemplate to use ReadOnly wrappers. This form displays ship templates in a list view with ShipTemplateReferenceCounter, and uses FilteredTextComboSet for hull blueprint selection. Switch list population, reference counter inputs, and hull combo to read-only types.
+Apply the immutable data model pattern to BuildPlan and BuildItem. Create BuildPlanMutationService as sole mutator with CRUD methods for plans and build items (status, location, structure assignment, dependencies). Create BuildPlanViewModel as disconnected edit buffer. Migrate FormBuildPlanner and FormStructureAllocation to route all mutations through the service. FormBuildPlanner currently mutates BuildPlan and BuildItem directly (2+ WriteContext calls). FormStructureAllocation mutates BuildItem allocation fields. Subsumes the old BL-121 (FormBuildPlanner) and BL-122 (FormStructureAllocation) read-only wrapper items. Includes unsaved changes prompts.
 
-### BL-119: FormShipInstance â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-119: StockTargets — Immutable Data Model with Service Layer
+**Dependencies:** none
 **Status: New**
-Migrate read-only data paths in FormShipInstance to use ReadOnly wrappers. This form displays ships in a list view with ShipReferenceCounter, uses FilteredTextComboSet for hull blueprint selection, and populates location/template combos. Switch list population, reference counter inputs, and combo population to read-only types.
+Apply the immutable data model pattern to StockPlan and StockProfile. Create StockTargetMutationService as sole mutator with CRUD methods for plans, profiles, and entries. Create StockTargetViewModel as disconnected edit buffer. Migrate FormStockTargets to route all mutations through the service. Currently mutates StockPlan, StockProfile, and BuildItem directly (5 WriteContext calls). Includes unsaved changes prompts.
 
-### BL-120: FormStation â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-120: SupplyChain — Immutable Data Model with Service Layer
+**Dependencies:** none
 **Status: New**
-Migrate read-only data paths in FormStation to use ReadOnly wrappers. This form displays stations in a list view with StationReferenceCounter, populates blueprint/item combos, and displays hold inventory and component grids. Switch list population, reference counter inputs, combo population, and inventory display to read-only types.
+Apply the immutable data model pattern to SupplyChain and SupplyChainStage. Create SupplyChainMutationService as sole mutator with CRUD methods for chains and stages. Create SupplyChainViewModel as disconnected edit buffer. Migrate FormSupplyChain to route all mutations through the service. Currently mutates SupplyChain and SupplyChainStage directly (3 WriteContext calls). Includes unsaved changes prompts.
 
-### BL-121: FormBuildPlanner â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-121: Contacts — Immutable Data Model with Service Layer
+**Dependencies:** none
 **Status: New**
-Migrate read-only data paths in FormBuildPlanner to use ReadOnly wrappers. This form has extensive read-only consumption: build plan list, build item grid, blueprint/colony/station/route/survey combos, and shortfall computation. Switch list population, combo population, and shortfall calculator inputs to read-only types.
+Apply the immutable data model pattern to Faction and ExternalCharacter. Create ContactsService as sole mutator with CRUD methods for factions and characters. Create ContactsViewModel as disconnected edit buffer (dual-entity: faction list + character list). Migrate FormContacts to route all mutations through the service. Currently mutates Faction and ExternalCharacter directly (3 WriteContext calls). Includes unsaved changes prompts and delete reference protection via FactionReferenceCounter.
 
-### BL-122: FormStructureAllocation â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-122: Asteroid — Immutable Data Model with Service Layer
+**Dependencies:** none
 **Status: New**
-Migrate read-only data paths in FormStructureAllocation to use ReadOnly wrappers. This dialog displays colony structures and their allocation status. Switch structure list and blueprint lookups to read-only types.
+Apply the immutable data model pattern to Asteroid and AsteroidReserve. Create AsteroidService as sole mutator with CRUD methods for asteroids and reserves. Create AsteroidViewModel as disconnected edit buffer. Migrate FormAsteroid to route all mutations through the service. Currently mutates Asteroid and AsteroidReserve directly (1+ WriteContext calls). Includes unsaved changes prompts.
 
-### BL-123: FormPricingPlan â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-124: Read-Only Display Forms — Switch to ReadOnly Wrappers
+**Dependencies:** none
 **Status: New**
-Migrate read-only data paths in FormPricingPlan to use ReadOnly wrappers. This form displays pricing plans in a list view and populates resource combos from EmpireContext. Switch list population and resource combo to read-only types.
+Migrate the remaining read-only display forms to use ReadOnly wrappers consistently. These forms do not mutate entities and do not need services or ViewModels, but should consume ReadOnly types for consistency. Covers: FormColonyActivity (BL-128), FormColonyDailyBuild (BL-129), and FormAutoFill (BL-114). FormColonyActivity and FormColonyDailyBuild already partially use ReadOnly wrappers. FormAutoFill is a pure dialog that returns options to its parent. Subsumes the old BL-114, BL-128, and BL-129 items.
 
-### BL-124: FormStockTargets â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
+### BL-125: Final Mutation Audit — Verify No Direct Entity Mutation Outside Services
+**Dependencies:** BL-113 through BL-124
 **Status: New**
-Migrate read-only data paths in FormStockTargets to use ReadOnly wrappers. This form displays stock plans/profiles in list views, uses FilteredTextComboSet for entry selection, and populates item/colony/station combos. Switch list population and combo population to read-only types.
-
-### BL-125: FormSupplyChain â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
-**Status: New**
-Migrate read-only data paths in FormSupplyChain to use ReadOnly wrappers. This form displays supply chains in a list view and populates location/resource/route combos for stage editing. Switch list population and combo population to read-only types.
-
-### BL-126: FormContacts â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
-**Status: New**
-Migrate read-only data paths in FormContacts to use ReadOnly wrappers. This form displays factions and external characters in list views with FactionReferenceCounter. Switch list population, reference counter inputs, and faction combo to read-only types.
-
-### BL-127: FormAsteroid â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
-**Status: New**
-Migrate read-only data paths in FormAsteroid to use ReadOnly wrappers. This form displays asteroids in a list view and shows reserve details. Switch list population and reserve display to read-only types.
-
-### BL-128: FormColonyActivity â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
-**Status: New**
-Migrate read-only data paths in FormColonyActivity to use ReadOnly wrappers. This form displays colony activity data in read-only grids and populates colony combos. Switch colony combo and activity data display to read-only types.
-
-### BL-129: FormColonyDailyBuild â€” Switch to ReadOnly Data Wrappers
-**Dependencies:** readonly-data-wrappers spec (done)
-**Status: New**
-Migrate read-only data paths in FormColonyDailyBuild to use ReadOnly wrappers. This form displays daily build status, populates colony and route combos via RouteDropdownHelper, and reads blueprint data for build time calculations. Switch combo population, route helper inputs, and blueprint lookups to read-only types.
+After all forms are migrated, run a comprehensive mutation audit across the entire codebase. Extend the mutation guard tests to cover every entity type. Verify that no form or ViewModel directly sets properties on any entity. Verify that WriteContext() is only called from service classes, PlayerContext deserialization/migration, and test code. This is the final validation that the immutable data model is fully enforced.
