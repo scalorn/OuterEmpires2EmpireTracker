@@ -165,8 +165,8 @@ Apply the immutable data model pattern to DeliveryPlan. Rewrite DeliveryPlanView
   - All existing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 8. Add ViewModel property tests
-  - [-] 8.1 Write property test: LoadFrom round-trip preserves all fields
+- [x] 8. Add ViewModel property tests
+  - [x] 8.1 Write property test: LoadFrom round-trip preserves all fields
     - Create OE2EmpireTracker.Tests/ViewModels/DeliveryPlanViewModelPropertyTests.cs
     - Create ValidDeliveryPlanGen() generator producing random DeliveryPlan entities with random Name, UUID, OwnerUUID, RouteUUID, ShipUUID, Completed, and 0-5 DeliveryPlanStop entries (each with random ColonyUUID, Sequence, StopCompleted, DestinationType, DestinationUUID, and 0-3 DropOff/PickUp DeliveryItem entries)
     - **Property: LoadFrom Round-Trip Preserves All Fields**
@@ -174,15 +174,15 @@ Apply the immutable data model pattern to DeliveryPlan. Rewrite DeliveryPlanView
     - **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5**
     - Add Compile Include to test csproj
 
-- [ ] 9. Add ViewModel unit tests
-  - [ ] 9.1 Write unit tests for DeliveryPlanViewModel
+- [x] 9. Add ViewModel unit tests
+  - [x] 9.1 Write unit tests for DeliveryPlanViewModel
     - Create OE2EmpireTracker.Tests/ViewModels/DeliveryPlanViewModelTests.cs
     - Tests: LoadFrom copies all scalar fields, LoadFrom deep-copies Stops, GetOrCreateStop finds existing stop, GetOrCreateStop creates new stop, AddDropOffItem adds to DropOff list, AddPickUpItem adds to PickUp list, RemoveDropOffItems removes by index, RemovePickUpItems removes by index, BuildUpdateRequest copies Name and Stops, AutoFill methods add items to local stops only
     - Add Compile Include to test csproj
     - _Requirements: 4.1, 4.2, 5.1, 5.2, 5.3, 5.4, 6.1, 6.2_
 
-- [ ] 10. Add Service property tests
-  - [ ] 10.1 Write property test: Service.Create round-trip
+- [x] 10. Add Service property tests
+  - [x] 10.1 Write property test: Service.Create round-trip
     - Create OE2EmpireTracker.Tests/Services/DeliveryPlanServicePropertyTests.cs
     - Reuse ValidDeliveryPlanGen() pattern from ViewModel property tests
     - **Property 1: Service.Create Round-Trip**
@@ -190,45 +190,45 @@ Apply the immutable data model pattern to DeliveryPlan. Rewrite DeliveryPlanView
     - **Validates: Requirements 8.2, 8.4, 8.5, 8.9**
     - Add Compile Include to test csproj
 
-  - [ ] 10.2 Write property test: Service.UpdatePlan round-trip
+  - [x] 10.2 Write property test: Service.UpdatePlan round-trip
     - **Property 2: Service.UpdatePlan Round-Trip**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 10.3, 10.4, 10.7**
 
-  - [ ] 10.3 Write property test: Service.Delete removes plan
+  - [x] 10.3 Write property test: Service.Delete removes plan
     - **Property 3: Service.Delete Removes Plan**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 9.1, 9.2**
 
-  - [ ] 10.4 Write property test: Service.MarkItemDelivered sets flag
+  - [x] 10.4 Write property test: Service.MarkItemDelivered sets flag
     - **Property 4: Service.MarkItemDelivered Sets Flag**
     - [FsCheck.NUnit.Property(MaxTest = 50)]
     - **Validates: Requirements 13.1, 13.2**
 
-  - [ ] 10.5 Write property test: Service.MarkStopComplete sets flag
+  - [x] 10.5 Write property test: Service.MarkStopComplete sets flag
     - **Property 5: Service.MarkStopComplete Sets Flag**
     - [FsCheck.NUnit.Property(MaxTest = 50)]
     - **Validates: Requirements 14.1, 14.2**
 
-  - [ ] 10.6 Write property test: Service.MarkPlanComplete sets flag
+  - [x] 10.6 Write property test: Service.MarkPlanComplete sets flag
     - **Property 6: Service.MarkPlanComplete Sets Flag**
     - [FsCheck.NUnit.Property(MaxTest = 50)]
     - **Validates: Requirements 15.1, 15.2**
 
-  - [ ] 10.7 Write property test: AddDropOffItem increases item count
+  - [x] 10.7 Write property test: AddDropOffItem increases item count
     - **Property 7: AddDropOffItem Increases Item Count**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 11.2, 11.6**
 
-- [ ] 11. Add Service unit tests
-  - [ ] 11.1 Write unit tests for DeliveryPlanService
+- [x] 11. Add Service unit tests
+  - [x] 11.1 Write unit tests for DeliveryPlanService
     - Create OE2EmpireTracker.Tests/Services/DeliveryPlanServiceTests.cs
     - Tests: UpdatePlan with non-existent UUID throws InvalidOperationException, Delete with empty UUID returns without error, Delete with non-existent UUID returns without error, Create assigns non-empty UUID, Create sets OwnerUUID to current player UUID, Create sets RouteUUID from parameter, UpdatePlan fires DeliveryDataChanged event, Create fires DeliveryDataChanged event, Delete fires DeliveryDataChanged event, MarkItemDelivered sets Delivered flag, MarkStopComplete sets StopCompleted flag, MarkPlanComplete sets Completed flag, SetShipUUID sets ShipUUID field, AddDropOffItem adds item to stop, RemoveDropOffItems removes items from stop
     - Add Compile Include to test csproj
     - _Requirements: 8.2, 8.3, 8.9, 9.2, 9.5, 10.3, 10.7, 10.8, 11.2, 12.2, 13.2, 14.2, 15.2, 16.2_
 
-- [ ] 12. Add mutation guard test
-  - [ ] 12.1 Write mutation guard test for DeliveryPlan
+- [x] 12. Add mutation guard test
+  - [x] 12.1 Write mutation guard test for DeliveryPlan
     - Create OE2EmpireTracker.Tests/Services/DeliveryPlanMutationGuardTests.cs
     - Follow DeliveryRouteMutationGuardTests, BlueprintMutationGuardTests, ColonyMutationGuardTests pattern
     - First check: scan for direct DeliveryPlan property sets (Name, ShipUUID, Completed, Stops), assert they only appear in DeliveryPlanService.cs, DeliveryPlan.cs, PlayerContext.cs (deserialization/migration), and test code
@@ -241,7 +241,7 @@ Apply the immutable data model pattern to DeliveryPlan. Rewrite DeliveryPlanView
     - **Validates: Requirements 21.1, 21.2, 21.3, 21.4, 24.1, 24.2, 24.3**
     - Add Compile Include to test csproj
 
-- [ ] 13. Final checkpoint --- Full build, all tests pass, audit clean
+- [x] 13. Final checkpoint --- Full build, all tests pass, audit clean
   - Build with zero errors and zero warnings
   - All existing and new tests pass
   - node .kiro/tools/audit.js reports no new findings

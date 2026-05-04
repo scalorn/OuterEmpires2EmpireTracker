@@ -278,8 +278,7 @@ These items complete the immutable data model migration across all forms. Each f
 
 ### BL-113: DeliveryPlan — Immutable Data Model with Service Layer
 **Dependencies:** BL-112 (done)
-**Status: New**
-Apply the immutable data model pattern to DeliveryPlan. Create DeliveryPlanService as sole mutator with CRUD methods for plans and plan items (drop-off/pick-up). Rewrite DeliveryPlanViewModel as a disconnected edit buffer. Migrate FormDeliveryRoute Plan tab and FormDeliveryExecution to route all plan mutations through the service. DeliveryPlan is currently mutated directly by FormDeliveryRoute (plan tab), FormDeliveryExecution (mark delivered, mark complete), and DeliveryPlanViewModel (write-through Save). This is the most complex remaining migration due to cross-form mutation (two forms mutate the same entity type). Includes unsaved changes prompts for plan edits.
+**Status: Complete** — see spec .kiro/specs/bl-113-deliveryplan-readonly/
 
 ### BL-114: Market — Immutable Data Model with Service Layer
 **Dependencies:** none
