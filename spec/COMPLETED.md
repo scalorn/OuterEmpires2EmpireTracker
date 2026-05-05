@@ -436,3 +436,35 @@ Audited FormColonyActivity, FormColonyDailyBuild, and FormAutoFill for mutable e
 ### BL-125: Final Mutation Audit — Verify No Direct Entity Mutation Outside Services
 Capstone validation of the immutable data model. Created ComprehensiveMutationAuditTests with 4 tests: AllEntityTypes_HaveMutationGuardCoverage (verifies all 16 entity types have guard tests), WriteContext_OnlyCalledFromServices (verifies WriteContext() only in allowed files), NoFormDirectlyMutatesEntities, and NoViewModelDirectlyMutatesEntities. All 2466 tests pass. See .kiro/specs/bl-125-final-mutation-audit/.
 **Status: Complete**
+
+### BL-117: Station — Immutable Data Model with Service Layer
+Created StationViewModel, StationService, migrated FormStation. See .kiro/specs/bl-117-station-readonly/.
+**Status: Complete**
+
+### BL-118: BuildPlan — Immutable Data Model with Service Layer
+Created BuildPlanViewModel, BuildPlanMutationService, migrated FormBuildPlanner. See .kiro/specs/bl-118-buildplan-readonly/.
+**Status: Complete**
+
+### BL-119: StockTargets — Immutable Data Model with Service Layer
+Created StockTargetViewModel, StockTargetMutationService, migrated FormStockTargets. See .kiro/specs/bl-119-stocktargets-readonly/.
+**Status: Complete**
+
+### BL-120: SupplyChain — Immutable Data Model with Service Layer
+Created SupplyChainViewModel, SupplyChainMutationService, migrated FormSupplyChain. See .kiro/specs/bl-120-supplychain-readonly/.
+**Status: Complete**
+
+### BL-121: Contacts — Immutable Data Model with Service Layer
+Created ContactsViewModel, ContactsService, migrated FormContacts. See .kiro/specs/bl-121-contacts-readonly/.
+**Status: Complete**
+
+### BL-122: Asteroid — Immutable Data Model with Service Layer
+Created AsteroidViewModel, AsteroidService, migrated FormAsteroid. See .kiro/specs/bl-122-asteroid-readonly/.
+**Status: Complete**
+
+### BL-124: Read-Only Display Forms
+Audited FormColonyActivity, FormColonyDailyBuild, FormAutoFill for mutable entity references. Added verification tests. See .kiro/specs/bl-124-readonly-display-forms/.
+**Status: Complete**
+
+### BL-125: Final Mutation Audit
+Created ComprehensiveMutationAuditTests verifying all entity types have mutation guard coverage, WriteContext only in services, no form/ViewModel direct mutation. See .kiro/specs/bl-125-final-mutation-audit/.
+**Status: Complete**

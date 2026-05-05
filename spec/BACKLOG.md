@@ -287,7 +287,6 @@ These items complete the immutable data model migration across all forms. Each f
 ### BL-115: ShipTemplate — Immutable Data Model with Service Layer
 **Dependencies:** none
 **Status: Complete** — see spec .kiro/specs/bl-115-shiptemplate-readonly/
-Apply the immutable data model pattern to ShipTemplate. Create ShipTemplateService as sole mutator with CRUD methods for templates and component slots. Create ShipTemplateViewModel as disconnected edit buffer. Migrate FormShipTemplate to route all mutations through the service. Currently mutates ShipTemplate and ShipComponentSlot directly (3 WriteContext calls). Includes unsaved changes prompts.
 
 ### BL-116: Ship — Immutable Data Model with Service Layer
 **Dependencies:** BL-115
@@ -296,28 +295,22 @@ Apply the immutable data model pattern to ShipTemplate. Create ShipTemplateServi
 ### BL-117: Station — Immutable Data Model with Service Layer
 **Dependencies:** none
 **Status: Complete** — see spec .kiro/specs/bl-117-station-readonly/
-Apply the immutable data model pattern to Station. Create StationService as sole mutator with CRUD methods for stations, components, holds, and munitions. Create StationViewModel as disconnected edit buffer. Migrate FormStation to route all mutations through the service. Currently mutates Station, ShipComponentSlot, and Item directly (3 WriteContext calls). Station is one of the more complex entities with components, holds, and munitions hold. Includes unsaved changes prompts.
 
 ### BL-118: BuildPlan — Immutable Data Model with Service Layer
-**Status: Complete** — see spec .kiro/specs/bl-118-buildplan-readonly/
 **Dependencies:** none
-**Status: New**
-Apply the immutable data model pattern to BuildPlan and BuildItem. Create BuildPlanMutationService as sole mutator with CRUD methods for plans and build items (status, location, structure assignment, dependencies). Create BuildPlanViewModel as disconnected edit buffer. Migrate FormBuildPlanner and FormStructureAllocation to route all mutations through the service. FormBuildPlanner currently mutates BuildPlan and BuildItem directly (2+ WriteContext calls). FormStructureAllocation mutates BuildItem allocation fields. Subsumes the old BL-121 (FormBuildPlanner) and BL-122 (FormStructureAllocation) read-only wrapper items. Includes unsaved changes prompts.
+**Status: Complete** — see spec .kiro/specs/bl-118-buildplan-readonly/
 
 ### BL-119: StockTargets — Immutable Data Model with Service Layer
 **Dependencies:** none
-**Status: New**
-Apply the immutable data model pattern to StockPlan and StockProfile. Create StockTargetMutationService as sole mutator with CRUD methods for plans, profiles, and entries. Create StockTargetViewModel as disconnected edit buffer. Migrate FormStockTargets to route all mutations through the service. Currently mutates StockPlan, StockProfile, and BuildItem directly (5 WriteContext calls). Includes unsaved changes prompts.
+**Status: Complete** — see spec .kiro/specs/bl-119-stocktargets-readonly/
 
 ### BL-120: SupplyChain — Immutable Data Model with Service Layer
 **Dependencies:** none
-**Status: New**
-Apply the immutable data model pattern to SupplyChain and SupplyChainStage. Create SupplyChainMutationService as sole mutator with CRUD methods for chains and stages. Create SupplyChainViewModel as disconnected edit buffer. Migrate FormSupplyChain to route all mutations through the service. Currently mutates SupplyChain and SupplyChainStage directly (3 WriteContext calls). Includes unsaved changes prompts.
+**Status: Complete** — see spec .kiro/specs/bl-120-supplychain-readonly/
 
 ### BL-121: Contacts — Immutable Data Model with Service Layer
 **Dependencies:** none
-**Status: New**
-Apply the immutable data model pattern to Faction and ExternalCharacter. Create ContactsService as sole mutator with CRUD methods for factions and characters. Create ContactsViewModel as disconnected edit buffer (dual-entity: faction list + character list). Migrate FormContacts to route all mutations through the service. Currently mutates Faction and ExternalCharacter directly (3 WriteContext calls). Includes unsaved changes prompts and delete reference protection via FactionReferenceCounter.
+**Status: Complete** — see spec .kiro/specs/bl-121-contacts-readonly/
 
 ### BL-122: Asteroid — Immutable Data Model with Service Layer
 **Dependencies:** none
