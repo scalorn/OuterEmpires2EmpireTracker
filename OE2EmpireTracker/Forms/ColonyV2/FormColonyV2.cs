@@ -249,8 +249,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Cancel any in-progress background calculation
             _calcCts?.Cancel();
 
-            // Save window state including structure type filter (9.3)
+            // Persist the last-selected colony UUID so it can be restored on next open
             int windowNumber = Tag is int n ? n : 1;
+            var store = PreferencesStore.GetInstance();
+            string formTypeKey = GetType().Name;
+            var ws = store.GetWindowState(formTypeKey, windowNumber);
+            if (ws.FormState == null) ws.FormState = new Models.FormControlState();
+            ws.FormState.FilterTexts["__selectedColonyUUID"] = _selectedColonyUUID ?? string.Empty;
+
+            // Save window state including structure type filter (9.3)
             WindowStateHelper.SaveState(this, GetType().Name, windowNumber);
 
             timerAdminRefresh.Stop();
@@ -805,6 +812,33 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         // -------------------------------------------------------------------
+        // Last-selected colony persistence
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Retrieves the last-selected colony UUID from UI preferences.
+        /// Returns null if no saved selection exists.
+        /// </summary>
+        private string GetSavedSelectedColonyUUID()
+        {
+            int windowNumber = Tag is int n ? n : 1;
+            var store = PreferencesStore.GetInstance();
+            string formTypeKey = GetType().Name;
+            string stateKey = windowNumber.ToString();
+
+            if (store.Preferences.Forms.TryGetValue(formTypeKey, out var windows) &&
+                windows.TryGetValue(stateKey, out var windowState) &&
+                windowState.FormState?.FilterTexts != null &&
+                windowState.FormState.FilterTexts.TryGetValue("__selectedColonyUUID", out var uuid) &&
+                !string.IsNullOrEmpty(uuid))
+            {
+                return uuid;
+            }
+
+            return null;
+        }
+
+        // -------------------------------------------------------------------
         // Unsaved changes helpers (9.1-9.4)
         // -------------------------------------------------------------------
 
@@ -1335,11 +1369,25 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 splitMain.Panel2.Visible,
                 splitMain.Visible);
 
-            // Auto-select the first colony if none is selected (e.g. first open, no saved selection)
+            // WindowStateHelper.RestoreState restores ALL TextBox values including
+            // identity fields (txtPlanetName, txtColonyName, txtSystemName). Those
+            // write through to the ViewModel via TextChanged handlers, making it
+            // appear dirty before any colony is loaded. Reset the ViewModel and
+            // clear the identity fields so the first selection doesn't trigger a
+            // spurious "save changes?" prompt.
+            using (var guard = new ProgrammaticUpdateGuard(this))
+            {
+                _viewModel.Reset();
+                txtPlanetName.Text = string.Empty;
+                txtColonyName.Text = string.Empty;
+                txtSystemName.Text = string.Empty;
+            }
+
+            // Restore last-selected colony from preferences, or fall back to first item
             // Clear any restored filter first so the full list is visible
             if (!string.IsNullOrEmpty(txtColonyFilter.Text))
             {
-                using (var guard = new ProgrammaticUpdateGuard(this))
+                using (var guard2 = new ProgrammaticUpdateGuard(this))
                 {
                     txtColonyFilter.Text = string.Empty;
                 }
@@ -1347,7 +1395,23 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 TxtColonyFilter_TextChanged(this, EventArgs.Empty);
             }
 
-            if (lvwColonies.SelectedItems.Count == 0 && lvwColonies.Items.Count > 0)
+            string savedUUID = GetSavedSelectedColonyUUID();
+            bool restored = false;
+            if (!string.IsNullOrEmpty(savedUUID))
+            {
+                foreach (ListViewItem item in lvwColonies.Items)
+                {
+                    if ((item.Tag as ReadOnlyColony)?.UUID == savedUUID)
+                    {
+                        item.Selected = true;
+                        item.EnsureVisible();
+                        restored = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!restored && lvwColonies.SelectedItems.Count == 0 && lvwColonies.Items.Count > 0)
             {
                 lvwColonies.Items[0].Selected = true;
                 lvwColonies.EnsureVisible(0);
