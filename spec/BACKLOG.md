@@ -321,13 +321,11 @@ Apply the immutable data model pattern to Faction and ExternalCharacter. Create 
 
 ### BL-122: Asteroid — Immutable Data Model with Service Layer
 **Dependencies:** none
-**Status: New**
-Apply the immutable data model pattern to Asteroid and AsteroidReserve. Create AsteroidService as sole mutator with CRUD methods for asteroids and reserves. Create AsteroidViewModel as disconnected edit buffer. Migrate FormAsteroid to route all mutations through the service. Currently mutates Asteroid and AsteroidReserve directly (1+ WriteContext calls). Includes unsaved changes prompts.
+**Status: Complete** — see spec .kiro/specs/bl-122-asteroid-readonly/
 
 ### BL-124: Read-Only Display Forms — Switch to ReadOnly Wrappers
 **Dependencies:** none
-**Status: New**
-Migrate the remaining read-only display forms to use ReadOnly wrappers consistently. These forms do not mutate entities and do not need services or ViewModels, but should consume ReadOnly types for consistency. Covers: FormColonyActivity (BL-128), FormColonyDailyBuild (BL-129), and FormAutoFill (BL-114). FormColonyActivity and FormColonyDailyBuild already partially use ReadOnly wrappers. FormAutoFill is a pure dialog that returns options to its parent. Subsumes the old BL-114, BL-128, and BL-129 items.
+**Status: Complete** — see spec .kiro/specs/bl-124-readonly-display-forms/
 
 ### BL-125: Final Mutation Audit — Verify No Direct Entity Mutation Outside Services
 **Dependencies:** BL-113 through BL-124

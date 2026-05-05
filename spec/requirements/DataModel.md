@@ -242,3 +242,7 @@ The following 13 entity types were added as part of the empire-systems spec. All
 **REQ-DM-153** StopDestinationInfo SHALL have ColonyUUID (string), Sequence (int), DestinationType (DestinationType), and DestinationUUID (string). Used by DeliveryPlanService item operations to identify the target stop.
 
 **REQ-DM-154** DeliveryItemInfo SHALL have ItemType (ItemTypeEnum), BaseItemTypeID (string), Name (string), Quantity (int), and ResourcePurity (string). Used by DeliveryPlanService.AddDropOffItem and AddPickUpItem to specify item details.
+
+**REQ-DM-155** AsteroidUpdateRequest SHALL have Original (ReadOnlyAsteroid), Name (string), SystemName (string), and Reserves (List of AsteroidReserve). Used by AsteroidService.Update to apply changes to an existing asteroid.
+**REQ-DM-156** AsteroidCreateRequest SHALL have Name (string), SystemName (string), and Reserves (List of AsteroidReserve). No UUID (service assigns deterministic UUID). Used by AsteroidService.Create.
+**REQ-DM-157** AsteroidService SHALL be the sole mutator of Asteroid entities, providing Update, Create, and Delete methods. Update SHALL apply fields and replace Reserves. Create SHALL generate a deterministic UUID. Delete SHALL remove the entity and persist.

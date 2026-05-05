@@ -38,6 +38,8 @@ const KNOWN_DUPES = new Set([
     // Deep-copy helpers intentionally duplicated between Ship/ShipTemplate services and ViewModels (BL-115, BL-116)
     'DeepCopyComponents',
     'DeepCopyItemBag',
+    // Unsaved changes OnFormClosing pattern intentionally copied between FormAsteroid and FormSupplyChain (BL-122)
+    'OnFormClosing',
     'DeepCopyItem',
     'SetComponent',
     'RemoveComponent',

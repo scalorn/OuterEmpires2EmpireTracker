@@ -468,6 +468,7 @@
     <Compile Include="Services\AsteroidServicePropertyTests.cs" />
     <Compile Include="Services\AsteroidServiceTests.cs" />
     <Compile Include="Services\AsteroidMutationGuardTests.cs" />
+    <Compile Include="Services\ReadOnlyDisplayFormVerificationTests.cs" />
     <Compile Include="Services\BuildPlanMutationServicePropertyTests.cs" />
     <Compile Include="Services\SupplyChainMutationServicePropertyTests.cs" />
     <Compile Include="Services\StockTargetMutationServicePropertyTests.cs" />

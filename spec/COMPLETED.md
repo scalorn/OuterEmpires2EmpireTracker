@@ -429,4 +429,6 @@ Applied the immutable data model pattern to ShipTemplate. Created ShipTemplateVi
 **Status: Complete**
 ### BL-116: Ship — Immutable Data Model with Service Layer
 Applied the immutable data model pattern to Ship (FormShipInstance). Created ShipViewModel as disconnected edit buffer with IsDirty tracking for all ship fields including Components, Cargo, and Hopper. Created ShipService with Create/Update/Delete/CreateFromTemplate methods. Migrated FormShipInstance to use ReadOnly wrappers in list view, ViewModel for all edits, and service for Save/Delete. Added unsaved changes prompts. 32 new tests. See .kiro/specs/bl-116-ship-readonly/.
+**Status: Complete**### BL-124: Read-Only Display Forms ? Verification Audit
+Audited FormColonyActivity, FormColonyDailyBuild, and FormAutoFill for mutable entity references. All three forms are clean: FormColonyActivity passes colonies to collectors without mutation, FormColonyDailyBuild has legitimate mutable access for its Build button, and FormAutoFill only accesses PreferencesStore. Added 3 verification tests confirming no persistent mutable entity fields in display forms. See .kiro/specs/bl-124-readonly-display-forms/.
 **Status: Complete**
