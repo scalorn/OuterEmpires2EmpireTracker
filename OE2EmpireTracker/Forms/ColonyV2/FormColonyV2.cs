@@ -212,6 +212,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             // Prompt for unsaved changes before closing (9.4)
+            Log.Debug("OnFormClosing: checking IsDirty={0} UUID={1}", _viewModel.IsDirty, _viewModel.UUID ?? "(null)");
             if (_viewModel.IsDirty)
             {
                 var result = PromptUnsavedChanges();
@@ -527,6 +528,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (lvwColonies.SelectedItems.Count == 1)
             {
                 // Prompt for unsaved changes before switching (9.1)
+                Log.Debug("LvwColonies_ItemSelectionChanged: checking IsDirty={0} UUID={1} prevUUID={2}", _viewModel.IsDirty, _viewModel.UUID ?? "(null)", _previousSelectedUUID ?? "(null)");
                 if (_viewModel.IsDirty)
                 {
                     var result = PromptUnsavedChanges();
@@ -812,11 +814,26 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         private DialogResult PromptUnsavedChanges()
         {
-            return MessageBox.Show(
+            Log.Info(
+                "PromptUnsavedChanges: IsDirty={0} IsNew={1} UUID={2} PlanetName='{3}' ColonyName='{4}' SystemName='{5}' OrigPlanet='{6}' OrigColony='{7}' OrigSystem='{8}'",
+                _viewModel.IsDirty,
+                _viewModel.IsNew,
+                _viewModel.UUID ?? "(null)",
+                _viewModel.PlanetName ?? "(null)",
+                _viewModel.ColonyName ?? "(null)",
+                _viewModel.SystemName ?? "(null)",
+                _viewModel.Original?.PlanetName ?? "(null)",
+                _viewModel.Original?.ColonyName ?? "(null)",
+                _viewModel.Original?.SystemName ?? "(null)");
+
+            var result = MessageBox.Show(
                 string.Format("Save changes to '{0}'?", _viewModel.PlanetName),
                 "Unsaved Changes",
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Question);
+
+            Log.Info("PromptUnsavedChanges: user chose {0}", result);
+            return result;
         }
 
         /// <summary>
@@ -824,6 +841,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// </summary>
         private void SaveCurrentColony()
         {
+            Log.Info(
+                "SaveCurrentColony: IsNew={0} UUID={1} PlanetName='{2}' ColonyName='{3}' SystemName='{4}'",
+                _viewModel.IsNew,
+                _viewModel.UUID ?? "(null)",
+                _viewModel.PlanetName ?? "(null)",
+                _viewModel.ColonyName ?? "(null)",
+                _viewModel.SystemName ?? "(null)");
+
             using var guard = new ProgrammaticUpdateGuard(this);
 
             ReadOnlyColony saved;
@@ -852,6 +877,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void CmdNew_Click(object sender, EventArgs e)
         {
             // Prompt for unsaved changes before clearing (9.2)
+            Log.Debug("CmdNew_Click: checking IsDirty={0} UUID={1}", _viewModel.IsDirty, _viewModel.UUID ?? "(null)");
             if (_viewModel.IsDirty)
             {
                 var result = PromptUnsavedChanges();
@@ -2567,6 +2593,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             Log.Debug("V2.CmdImportColony_Click: starting import");
 
             // Prompt for unsaved changes before import (9.3)
+            Log.Debug("CmdImportColony_Click: checking IsDirty={0} UUID={1}", _viewModel.IsDirty, _viewModel.UUID ?? "(null)");
             if (_viewModel.IsDirty)
             {
                 var dirtyResult = PromptUnsavedChanges();
