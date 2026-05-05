@@ -32,7 +32,7 @@ Ensure FormColonyActivity, FormColonyDailyBuild, and FormAutoFill consistently u
     - Add Compile Include to test csproj
     - _Requirements: 4.1_
 
-- [-] 6. Final checkpoint --- Full build, all tests pass, audit clean
+- [x] 6. Final checkpoint --- Full build, all tests pass, audit clean
 
 ## Notes
 

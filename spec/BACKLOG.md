@@ -329,5 +329,4 @@ Apply the immutable data model pattern to Faction and ExternalCharacter. Create 
 
 ### BL-125: Final Mutation Audit — Verify No Direct Entity Mutation Outside Services
 **Dependencies:** BL-113 through BL-124
-**Status: New**
-After all forms are migrated, run a comprehensive mutation audit across the entire codebase. Extend the mutation guard tests to cover every entity type. Verify that no form or ViewModel directly sets properties on any entity. Verify that WriteContext() is only called from service classes, PlayerContext deserialization/migration, and test code. This is the final validation that the immutable data model is fully enforced.
+**Status: Complete** — see spec .kiro/specs/bl-125-final-mutation-audit/

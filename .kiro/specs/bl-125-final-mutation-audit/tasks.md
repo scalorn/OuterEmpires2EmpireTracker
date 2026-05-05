@@ -6,8 +6,8 @@ Capstone validation that the immutable data model is fully enforced. No new prod
 
 ## Tasks
 
-- [ ] 1. Create comprehensive mutation audit test
-  - [ ] 1.1 Create ComprehensiveMutationAuditTests class
+- [x] 1. Create comprehensive mutation audit test
+  - [x] 1.1 Create ComprehensiveMutationAuditTests class
     - Create OE2EmpireTracker.Tests/Services/ComprehensiveMutationAuditTests.cs
     - Test: AllEntityTypes_HaveMutationGuardCoverage
     - Test: WriteContext_OnlyCalledFromServices
@@ -16,12 +16,12 @@ Capstone validation that the immutable data model is fully enforced. No new prod
     - Add Compile Include to test csproj
     - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 4.1, 4.2, 4.3_
 
-- [ ] 2. Verify all individual mutation guard tests exist
-  - [ ] 2.1 Confirm mutation guard test files exist for all entity types
+- [x] 2. Verify all individual mutation guard tests exist
+  - [x] 2.1 Confirm mutation guard test files exist for all entity types
     - Blueprint, Colony, Survey, PlayerProfile, DeliveryRoute, PricingPlan, ShipTemplate, Ship, Station, BuildPlan, StockTarget, SupplyChain, Contacts, Asteroid
     - _Requirements: 1.1, 1.2_
 
-- [ ] 3. Run full test suite and verify all pass
+- [x] 3. Run full test suite and verify all pass
   - Build with zero errors and zero warnings
   - All tests pass including new comprehensive audit tests
   - node .kiro/tools/audit.js reports no new findings
