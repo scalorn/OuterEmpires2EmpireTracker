@@ -6,6 +6,7 @@ using NLog;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.Contacts
 {
@@ -14,13 +15,14 @@ namespace OE2EmpireTracker.Forms.Contacts
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private int _isProgrammaticUpdate = 0;
         private PlayerContext playerContext;
-        private Faction _selectedFaction;
-        private ExternalCharacter _selectedCharacter;
+        private ContactsService _service;
+        private ContactsViewModel _viewModel = new ContactsViewModel();
 
         public FormContacts()
         {
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
+            _service = new ContactsService(playerContext);
 
             // Factions ListView setup
             lvwFactions.View = View.Details;
@@ -79,6 +81,20 @@ namespace OE2EmpireTracker.Forms.Contacts
             base.OnFormClosed(e);
         }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (_viewModel.IsFactionDirty || _viewModel.IsCharacterDirty)
+            {
+                if (!PromptUnsavedFactionChanges() || !PromptUnsavedCharacterChanges())
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
+            base.OnFormClosing(e);
+        }
+
         // -----------------------------------------------------------------------
         // Layout
         // -----------------------------------------------------------------------
@@ -125,7 +141,7 @@ namespace OE2EmpireTracker.Forms.Contacts
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            string selectedUUID = _selectedFaction?.UUID;
+            string selectedUUID = _viewModel.FactionUUID;
             lvwFactions.Items.Clear();
 
             var factions = playerContext.FactionList.ToList();
@@ -145,7 +161,8 @@ namespace OE2EmpireTracker.Forms.Contacts
             foreach (var faction in factions)
             {
                 int refs = refCounter.CountReferences(faction.UUID);
-                var item = new ListViewItem(faction.Name) { Tag = faction };
+                var ro = new ReadOnlyFaction(faction);
+                var item = new ListViewItem(faction.Name) { Tag = ro };
                 item.SubItems.Add(faction.Description);
                 item.SubItems.Add(refs.ToString());
                 lvwFactions.Items.Add(item);
@@ -154,12 +171,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             }
 
             sw.Stop();
-            Log.Info(
-                "PopulateFactionList PERF: total={0}ms items={1}",
-                sw.ElapsedMilliseconds,
-                factions.Count);
-            sw.Stop();
-            Log.Info("PERF PopulateFactionList: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info("PERF PopulateFactionList: {0}ms items={1}", sw.ElapsedMilliseconds, factions.Count);
         }
 
         private void TxtFactionFilter_TextChanged(object sender, EventArgs e)
@@ -170,14 +182,15 @@ namespace OE2EmpireTracker.Forms.Contacts
         private void LvwFactions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (e.IsSelected && e.Item.Tag is Faction faction)
+            if (e.IsSelected && e.Item.Tag is ReadOnlyFaction roFaction)
             {
-                _selectedFaction = faction;
+                if (!PromptUnsavedFactionChanges()) return;
+                _viewModel.LoadFactionFrom(roFaction);
                 PopulateFactionForm();
             }
             else if (!e.IsSelected && lvwFactions.SelectedItems.Count == 0)
             {
-                _selectedFaction = null;
+                _viewModel.ResetFaction();
                 ClearFactionForm();
             }
         }
@@ -190,17 +203,15 @@ namespace OE2EmpireTracker.Forms.Contacts
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedFaction == null)
+            if (_viewModel.IsFactionNew)
             {
                 ClearFactionForm();
                 return;
             }
 
-            txtFactionName.Text = _selectedFaction.Name;
-            txtFactionDescription.Text = _selectedFaction.Description;
+            txtFactionName.Text = _viewModel.FactionName;
+            txtFactionDescription.Text = _viewModel.FactionDescription;
             SetFactionDetailEnabled(true);
-            sw.Stop();
-            Log.Info("PopulateFactionForm PERF: total={0}ms", sw.ElapsedMilliseconds);
             sw.Stop();
             Log.Info("PERF PopulateFactionForm: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -221,21 +232,21 @@ namespace OE2EmpireTracker.Forms.Contacts
         }
 
         // -----------------------------------------------------------------------
-        // Faction CRUD
+        // Faction CRUD (through service)
         // -----------------------------------------------------------------------
 
         private void CmdNewFaction_Click(object sender, EventArgs e)
         {
-            var faction = new Faction
+            if (!PromptUnsavedFactionChanges()) return;
+
+            var request = new FactionCreateRequest
             {
-                UUID = Guid.NewGuid().ToString(),
                 Name = "New Faction",
-                Description = string.Empty
+                Description = string.Empty,
             };
 
-            playerContext.AddFaction(faction);
-            playerContext.WriteContext();
-            _selectedFaction = faction;
+            var created = _service.CreateFaction(request);
+            _viewModel.LoadFactionFrom(created);
             PopulateFactionList();
             PopulateFactionForm();
             PopulateCharFactionCombo();
@@ -243,13 +254,13 @@ namespace OE2EmpireTracker.Forms.Contacts
 
         private void CmdDeleteFaction_Click(object sender, EventArgs e)
         {
-            if (_selectedFaction == null) return;
+            if (_viewModel.IsFactionNew) return;
 
             var refCounter = new FactionReferenceCounter(
                 playerContext.ExternalCharacterList,
                 playerContext.PlayerProfileList,
                 playerContext.MarketTransactionList);
-            int refs = refCounter.CountReferences(_selectedFaction.UUID);
+            int refs = refCounter.CountReferences(_viewModel.FactionUUID);
 
             if (refs > 0)
             {
@@ -262,15 +273,14 @@ namespace OE2EmpireTracker.Forms.Contacts
             }
 
             var result = MessageBox.Show(
-                string.Format("Delete faction '{0}'?", _selectedFaction.Name),
+                string.Format("Delete faction '{0}'?", _viewModel.FactionName),
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.RemoveFaction(_selectedFaction);
-            playerContext.WriteContext();
-            _selectedFaction = null;
+            _service.DeleteFaction(_viewModel.FactionUUID);
+            _viewModel.ResetFaction();
             PopulateFactionList();
             ClearFactionForm();
             PopulateCharFactionCombo();
@@ -278,38 +288,39 @@ namespace OE2EmpireTracker.Forms.Contacts
 
         private void CmdSaveFaction_Click(object sender, EventArgs e)
         {
-            if (_selectedFaction == null) return;
+            if (_viewModel.IsFactionNew) return;
 
-            string name = txtFactionName.Text.Trim();
+            string name = _viewModel.FactionName.Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
                 MessageBox.Show("Faction name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            _selectedFaction.Name = name;
-            _selectedFaction.Description = txtFactionDescription.Text;
-            playerContext.WriteContext();
+            _viewModel.FactionName = name;
+            var request = _viewModel.BuildFactionUpdateRequest();
+            var updated = _service.UpdateFaction(_viewModel.FactionUUID, request);
+            _viewModel.LoadFactionFrom(updated);
             PopulateFactionList();
             PopulateCharFactionCombo();
             PopulateCharacterList();
-            Log.Info("Saved faction '{0}'", _selectedFaction.Name);
+            Log.Info("Saved faction '{0}'", _viewModel.FactionName);
         }
 
         // -----------------------------------------------------------------------
-        // Faction Data Model Write-Through
+        // Faction ViewModel Write-Through
         // -----------------------------------------------------------------------
 
         private void TxtFactionName_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedFaction == null) return;
-            _selectedFaction.Name = txtFactionName.Text;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsFactionNew) return;
+            _viewModel.FactionName = txtFactionName.Text;
         }
 
         private void TxtFactionDescription_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedFaction == null) return;
-            _selectedFaction.Description = txtFactionDescription.Text;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsFactionNew) return;
+            _viewModel.FactionDescription = txtFactionDescription.Text;
         }
 
         // -----------------------------------------------------------------------
@@ -320,7 +331,7 @@ namespace OE2EmpireTracker.Forms.Contacts
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            string selectedUUID = _selectedCharacter?.UUID;
+            string selectedUUID = _viewModel.CharacterUUID;
             lvwCharacters.Items.Clear();
 
             var characters = playerContext.ExternalCharacterList.ToList();
@@ -341,7 +352,8 @@ namespace OE2EmpireTracker.Forms.Contacts
                     if (faction != null) factionName = faction.Name;
                 }
 
-                var item = new ListViewItem(character.Name) { Tag = character };
+                var ro = new ReadOnlyExternalCharacter(character);
+                var item = new ListViewItem(character.Name) { Tag = ro };
                 item.SubItems.Add(factionName);
                 lvwCharacters.Items.Add(item);
                 if (character.UUID == selectedUUID)
@@ -349,12 +361,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             }
 
             sw.Stop();
-            Log.Info(
-                "PopulateCharacterList PERF: total={0}ms items={1}",
-                sw.ElapsedMilliseconds,
-                characters.Count);
-            sw.Stop();
-            Log.Info("PERF PopulateCharacterList: {0}ms", sw.ElapsedMilliseconds);
+            Log.Info("PERF PopulateCharacterList: {0}ms items={1}", sw.ElapsedMilliseconds, characters.Count);
         }
 
         private void TxtCharFilter_TextChanged(object sender, EventArgs e)
@@ -365,14 +372,15 @@ namespace OE2EmpireTracker.Forms.Contacts
         private void LvwCharacters_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (e.IsSelected && e.Item.Tag is ExternalCharacter character)
+            if (e.IsSelected && e.Item.Tag is ReadOnlyExternalCharacter roChar)
             {
-                _selectedCharacter = character;
+                if (!PromptUnsavedCharacterChanges()) return;
+                _viewModel.LoadCharacterFrom(roChar);
                 PopulateCharacterForm();
             }
             else if (!e.IsSelected && lvwCharacters.SelectedItems.Count == 0)
             {
-                _selectedCharacter = null;
+                _viewModel.ResetCharacter();
                 ClearCharacterForm();
             }
         }
@@ -385,21 +393,21 @@ namespace OE2EmpireTracker.Forms.Contacts
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedCharacter == null)
+            if (_viewModel.IsCharacterNew)
             {
                 ClearCharacterForm();
                 return;
             }
 
-            txtCharName.Text = _selectedCharacter.Name;
+            txtCharName.Text = _viewModel.CharacterName;
             PopulateCharFactionCombo();
 
             // Select the character's faction in the combo
-            if (!string.IsNullOrEmpty(_selectedCharacter.FactionUUID))
+            if (!string.IsNullOrEmpty(_viewModel.CharacterFactionUUID))
             {
                 for (int i = 0; i < cmbCharFaction.Items.Count; i++)
                 {
-                    if (cmbCharFaction.Items[i] is FactionComboItem fci && fci.UUID == _selectedCharacter.FactionUUID)
+                    if (cmbCharFaction.Items[i] is FactionComboItem fci && fci.UUID == _viewModel.CharacterFactionUUID)
                     {
                         cmbCharFaction.SelectedIndex = i;
                         break;
@@ -408,12 +416,10 @@ namespace OE2EmpireTracker.Forms.Contacts
             }
             else
             {
-                cmbCharFaction.SelectedIndex = 0; // "(none)"
+                cmbCharFaction.SelectedIndex = 0;
             }
 
             SetCharDetailEnabled(true);
-            sw.Stop();
-            Log.Info("PopulateCharacterForm PERF: total={0}ms", sw.ElapsedMilliseconds);
             sw.Stop();
             Log.Info("PERF PopulateCharacterForm: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -436,7 +442,7 @@ namespace OE2EmpireTracker.Forms.Contacts
 
         private void PopulateCharFactionCombo()
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             string selectedUUID = null;
             if (cmbCharFaction.SelectedItem is FactionComboItem selected)
@@ -458,7 +464,7 @@ namespace OE2EmpireTracker.Forms.Contacts
                     if (cmbCharFaction.Items[i] is FactionComboItem fci && fci.UUID == selectedUUID)
                     {
                         cmbCharFaction.SelectedIndex = i;
-                        return;
+                        break;
                     }
                 }
             }
@@ -468,84 +474,121 @@ namespace OE2EmpireTracker.Forms.Contacts
         }
 
         // -----------------------------------------------------------------------
-        // Character CRUD
+        // Character CRUD (through service)
         // -----------------------------------------------------------------------
 
         private void CmdNewChar_Click(object sender, EventArgs e)
         {
-            var character = new ExternalCharacter
+            if (!PromptUnsavedCharacterChanges()) return;
+
+            var request = new ExternalCharacterCreateRequest
             {
-                UUID = Guid.NewGuid().ToString(),
                 Name = "New Character",
-                FactionUUID = string.Empty
+                FactionUUID = string.Empty,
             };
 
-            playerContext.AddExternalCharacter(character);
-            playerContext.WriteContext();
-            _selectedCharacter = character;
+            var created = _service.CreateCharacter(request);
+            _viewModel.LoadCharacterFrom(created);
             PopulateCharacterList();
             PopulateCharacterForm();
+            PopulateFactionList();
         }
 
         private void CmdDeleteChar_Click(object sender, EventArgs e)
         {
-            if (_selectedCharacter == null) return;
+            if (_viewModel.IsCharacterNew) return;
 
             var result = MessageBox.Show(
-                string.Format("Delete character '{0}'?", _selectedCharacter.Name),
+                string.Format("Delete character '{0}'?", _viewModel.CharacterName),
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            playerContext.RemoveExternalCharacter(_selectedCharacter);
-            playerContext.WriteContext();
-            _selectedCharacter = null;
+            _service.DeleteCharacter(_viewModel.CharacterUUID);
+            _viewModel.ResetCharacter();
             PopulateCharacterList();
             ClearCharacterForm();
-            // Refresh faction refs since an external character was removed
             PopulateFactionList();
         }
 
         private void CmdSaveChar_Click(object sender, EventArgs e)
         {
-            if (_selectedCharacter == null) return;
+            if (_viewModel.IsCharacterNew) return;
 
-            string name = txtCharName.Text.Trim();
+            string name = _viewModel.CharacterName.Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
                 MessageBox.Show("Character name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            _selectedCharacter.Name = name;
-
-            if (cmbCharFaction.SelectedItem is FactionComboItem fci)
-                _selectedCharacter.FactionUUID = fci.UUID;
-            else
-                _selectedCharacter.FactionUUID = string.Empty;
-
-            playerContext.WriteContext();
+            _viewModel.CharacterName = name;
+            var request = _viewModel.BuildCharacterUpdateRequest();
+            var updated = _service.UpdateCharacter(_viewModel.CharacterUUID, request);
+            _viewModel.LoadCharacterFrom(updated);
             PopulateCharacterList();
-            PopulateFactionList(); // Refresh refs
-            Log.Info("Saved character '{0}'", _selectedCharacter.Name);
+            PopulateFactionList();
+            Log.Info("Saved character '{0}'", _viewModel.CharacterName);
         }
 
         // -----------------------------------------------------------------------
-        // Character Data Model Write-Through
+        // Character ViewModel Write-Through
         // -----------------------------------------------------------------------
 
         private void TxtCharName_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedCharacter == null) return;
-            _selectedCharacter.Name = txtCharName.Text;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsCharacterNew) return;
+            _viewModel.CharacterName = txtCharName.Text;
         }
 
         private void CmbCharFaction_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedCharacter == null) return;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsCharacterNew) return;
             if (cmbCharFaction.SelectedItem is FactionComboItem fci)
-                _selectedCharacter.FactionUUID = fci.UUID;
+                _viewModel.CharacterFactionUUID = fci.UUID;
+        }
+
+        // -----------------------------------------------------------------------
+        // Unsaved Changes Prompts
+        // -----------------------------------------------------------------------
+
+        private bool PromptUnsavedFactionChanges()
+        {
+            if (!_viewModel.IsFactionDirty) return true;
+
+            var result = MessageBox.Show(
+                "You have unsaved faction changes. Save before continuing?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Cancel) return false;
+            if (result == DialogResult.Yes)
+            {
+                CmdSaveFaction_Click(this, EventArgs.Empty);
+            }
+
+            return true;
+        }
+
+        private bool PromptUnsavedCharacterChanges()
+        {
+            if (!_viewModel.IsCharacterDirty) return true;
+
+            var result = MessageBox.Show(
+                "You have unsaved character changes. Save before continuing?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Cancel) return false;
+            if (result == DialogResult.Yes)
+            {
+                CmdSaveChar_Click(this, EventArgs.Empty);
+            }
+
+            return true;
         }
 
         // -----------------------------------------------------------------------
@@ -568,8 +611,8 @@ namespace OE2EmpireTracker.Forms.Contacts
                 return;
             }
 
-            _selectedFaction = null;
-            _selectedCharacter = null;
+            _viewModel.ResetFaction();
+            _viewModel.ResetCharacter();
             PopulateFactionList();
             ClearFactionForm();
             PopulateCharacterList();
@@ -589,6 +632,7 @@ namespace OE2EmpireTracker.Forms.Contacts
             }
 
             public string DisplayName { get; }
+
             public string UUID { get; }
 
             public override string ToString() => DisplayName;

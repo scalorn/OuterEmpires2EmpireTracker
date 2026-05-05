@@ -31,6 +31,15 @@ The user wants to track factions and external characters (other players, NPCs) t
 **REQ-CON-021** FormContacts SHALL provide an External Characters tab for creating and editing external characters with faction assignment.  
 **REQ-CON-022** Deleting a faction SHALL NOT cascade-delete characters; their FactionUUID SHALL be cleared.
 
+## Service Layer
+
+**REQ-CON-030** ContactsService SHALL be the sole mutator of Faction and ExternalCharacter entities.
+**REQ-CON-031** FactionUpdateRequest SHALL carry Original (ReadOnlyFaction), Name, and Description.
+**REQ-CON-032** FactionCreateRequest SHALL carry Name and Description.
+**REQ-CON-033** ExternalCharacterUpdateRequest SHALL carry Original (ReadOnlyExternalCharacter), Name, and FactionUUID.
+**REQ-CON-034** ExternalCharacterCreateRequest SHALL carry Name and FactionUUID.
+**REQ-CON-035** ContactsViewModel SHALL serve as a disconnected edit buffer for both Faction and ExternalCharacter.
+
 
 ## User Interaction Flows
 

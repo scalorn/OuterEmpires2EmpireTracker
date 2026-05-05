@@ -228,6 +228,7 @@
     <Compile Include="Services\BackgroundProcessor.cs" />
     <Compile Include="Services\SystemClock.cs" />
     <Compile Include="Services\SupplyChainService.cs" />
+    <Compile Include="Services\ContactsService.cs" />
     <Compile Include="Services\StockTargetService.cs" />
     <Compile Include="Models\BaselineGameConstants.cs" />
     <Compile Include="Models\ResearchTimeEntry.cs" />
@@ -342,6 +343,7 @@
     <Compile Include="ViewModels\BuildPlanViewModel.cs" />
     <Compile Include="ViewModels\StockTargetViewModel.cs" />
     <Compile Include="ViewModels\SupplyChainViewModel.cs" />
+    <Compile Include="ViewModels\ContactsViewModel.cs" />
     <Compile Include="ViewModels\ShipTemplateViewModel.cs" />
     <Compile Include="ViewModels\ShipViewModel.cs" />
     <Compile Include="ViewModels\StationViewModel.cs" />
@@ -451,6 +453,10 @@
     <Compile Include="Models\StockProfileCreateRequest.cs" />
     <Compile Include="Models\SupplyChainUpdateRequest.cs" />
     <Compile Include="Models\SupplyChainCreateRequest.cs" />
+    <Compile Include="Models\FactionUpdateRequest.cs" />
+    <Compile Include="Models\FactionCreateRequest.cs" />
+    <Compile Include="Models\ExternalCharacterUpdateRequest.cs" />
+    <Compile Include="Models\ExternalCharacterCreateRequest.cs" />
     <Compile Include="Models\StopDestinationInfo.cs" />
     <Compile Include="Models\DeliveryItemInfo.cs" />
     <Compile Include="Parsers\BlueprintScanner.cs" />

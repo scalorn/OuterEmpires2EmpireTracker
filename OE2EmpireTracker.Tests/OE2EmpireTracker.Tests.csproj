@@ -458,6 +458,11 @@
     <Compile Include="ViewModels\StockTargetViewModelTests.cs" />
     <Compile Include="ViewModels\BuildPlanViewModelTests.cs" />
     <Compile Include="ViewModels\SupplyChainViewModelTests.cs" />
+    <Compile Include="ViewModels\ContactsViewModelPropertyTests.cs" />
+    <Compile Include="ViewModels\ContactsViewModelTests.cs" />
+    <Compile Include="Services\ContactsServicePropertyTests.cs" />
+    <Compile Include="Services\ContactsServiceTests.cs" />
+    <Compile Include="Services\ContactsMutationGuardTests.cs" />
     <Compile Include="Services\BuildPlanMutationServicePropertyTests.cs" />
     <Compile Include="Services\SupplyChainMutationServicePropertyTests.cs" />
     <Compile Include="Services\StockTargetMutationServicePropertyTests.cs" />

@@ -3151,6 +3151,54 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Returns the mutable Faction entity by UUID. Internal so only the service can access it.
+        /// </summary>
+        internal Faction FindMutableFaction(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_factionCache == null)
+                {
+                    _factionCache = new Dictionary<string, Faction>();
+                    foreach (var f in _factionList)
+                    {
+                        if (f.UUID != null && !_factionCache.ContainsKey(f.UUID))
+                            _factionCache[f.UUID] = f;
+                    }
+                }
+
+                _factionCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
+        /// <summary>
+        /// Returns the mutable ExternalCharacter entity by UUID. Internal so only the service can access it.
+        /// </summary>
+        internal ExternalCharacter FindMutableExternalCharacter(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_externalCharacterCache == null)
+                {
+                    _externalCharacterCache = new Dictionary<string, ExternalCharacter>();
+                    foreach (var r in _externalCharacterList)
+                    {
+                        if (r.UUID != null && !_externalCharacterCache.ContainsKey(r.UUID))
+                            _externalCharacterCache[r.UUID] = r;
+                    }
+                }
+
+                _externalCharacterCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
+        /// <summary>
         /// Returns the mutable SupplyChain entity by UUID. Internal so only the service can access it.
         /// </summary>
         internal SupplyChain FindMutableSupplyChain(string uuid)
