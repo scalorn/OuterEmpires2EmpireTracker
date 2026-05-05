@@ -50,6 +50,13 @@ The user wants to plan complex manufacturing projects (ships, station components
 **REQ-BPL-051** For manufactories, runs = ceiling(targetSeconds / manufacturingTimeSeconds).  
 **REQ-BPL-052** For commodity factories, runs = ceiling(targetSeconds / cycleTimeSeconds), with total output = runs × commoditiesPerCycle.  
 
+## Build Plan Mutation Service
+
+**REQ-BPL-080** BuildPlanMutationService SHALL be the sole mutator of BuildPlan entities. It SHALL accept BuildPlanUpdateRequest and BuildPlanCreateRequest DTOs for update and create operations respectively.  
+**REQ-BPL-081** BuildPlanMutationService.Update SHALL apply Name, Description, IsActive, and Items from the request to the mutable entity, persist via WriteContext(), and fire BuildPlanDataChanged.  
+**REQ-BPL-082** BuildPlanMutationService.Create SHALL assign a new UUID, set OwnerUUID from the current player, populate fields from the request, add to PlayerContext, persist, and fire BuildPlanDataChanged.  
+**REQ-BPL-083** BuildPlanMutationService.Delete SHALL remove the plan from PlayerContext, persist, and fire BuildPlanDataChanged. It SHALL be a no-op if UUID is empty or not found.  
+
 ## Auto-Assign Service
 
 **REQ-BPL-060** AutoAssignService.ProposeAssignments SHALL match unallocated build items to available structures across colonies, respecting BuildLocationType.  

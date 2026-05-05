@@ -301,6 +301,19 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Sorts read-only build plans by Name (ascending, OrdinalIgnoreCase).
+        /// </summary>
+        public static IReadOnlyList<ReadOnlyBuildPlan> OrderBuildPlans(
+            IEnumerable<ReadOnlyBuildPlan> plans)
+        {
+            if (plans == null) return Array.Empty<ReadOnlyBuildPlan>();
+            return plans
+                .OrderBy(p => p.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
         /// Sorts ship templates by Name (ascending, OrdinalIgnoreCase).
         /// </summary>
         public static IReadOnlyList<ShipTemplate> OrderShipTemplates(

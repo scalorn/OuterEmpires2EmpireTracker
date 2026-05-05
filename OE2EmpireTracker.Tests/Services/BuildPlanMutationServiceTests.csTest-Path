@@ -1,0 +1,58 @@
+
+        [Test]
+        public void Update_FiresBuildPlanDataChangedEvent()
+        {
+            var plan = new BuildPlan { UUID = "p1", OwnerUUID = "test-player", Name = "P" };
+            playerContext.AddBuildPlan(plan);
+            bool fired = false;
+            playerContext.BuildPlanDataChanged += (s, e) => fired = true;
+            var req = new BuildPlanUpdateRequest { Name = "Updated", Description = "", IsActive = true, Items = new List<BuildItem>() };
+            service.Update("p1", req);
+            Assert.That(fired, Is.True);
+        }
+
+        [Test]
+        public void Create_FiresBuildPlanDataChangedEvent()
+        {
+            bool fired = false;
+            playerContext.BuildPlanDataChanged += (s, e) => fired = true;
+            var req = new BuildPlanCreateRequest { Name = "New", Description = "", IsActive = true, Items = new List<BuildItem>() };
+            service.Create(req);
+            Assert.That(fired, Is.True);
+        }
+
+        [Test]
+        public void Delete_FiresBuildPlanDataChangedEvent()
+        {
+            var plan = new BuildPlan { UUID = "p1", OwnerUUID = "test-player", Name = "P" };
+            playerContext.AddBuildPlan(plan);
+            bool fired = false;
+            playerContext.BuildPlanDataChanged += (s, e) => fired = true;
+            service.Delete("p1");
+            Assert.That(fired, Is.True);
+        }
+
+        [Test]
+        public void Update_ReplacesItemsList()
+        {
+            var plan = new BuildPlan { UUID = "p1", OwnerUUID = "test-player", Name = "P" };
+            plan.Items.Add(new BuildItem { UUID = "old", ItemName = "Old" });
+            playerContext.AddBuildPlan(plan);
+            var newItems = new List<BuildItem> { new BuildItem { UUID = "new1", ItemName = "New1" } };
+            var req = new BuildPlanUpdateRequest { Name = "P", Description = "", IsActive = true, Items = newItems };
+            var result = service.Update("p1", req);
+            Assert.That(result.Items.Count, Is.EqualTo(1));
+            Assert.That(result.Items[0].ItemName, Is.EqualTo("New1"));
+        }
+
+        [Test]
+        public void Create_PopulatesItemsFromRequest()
+        {
+            var items = new List<BuildItem> { new BuildItem { UUID = "i1", ItemName = "Item1" } };
+            var req = new BuildPlanCreateRequest { Name = "P", Description = "", IsActive = true, Items = items };
+            var result = service.Create(req);
+            Assert.That(result.Items.Count, Is.EqualTo(1));
+            Assert.That(result.Items[0].ItemName, Is.EqualTo("Item1"));
+        }
+    }
+}

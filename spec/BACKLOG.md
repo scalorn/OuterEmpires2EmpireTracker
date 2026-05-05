@@ -295,7 +295,7 @@ Apply the immutable data model pattern to ShipTemplate. Create ShipTemplateServi
 
 ### BL-117: Station — Immutable Data Model with Service Layer
 **Dependencies:** none
-**Status: New**
+**Status: Complete** — see spec .kiro/specs/bl-117-station-readonly/
 Apply the immutable data model pattern to Station. Create StationService as sole mutator with CRUD methods for stations, components, holds, and munitions. Create StationViewModel as disconnected edit buffer. Migrate FormStation to route all mutations through the service. Currently mutates Station, ShipComponentSlot, and Item directly (3 WriteContext calls). Station is one of the more complex entities with components, holds, and munitions hold. Includes unsaved changes prompts.
 
 ### BL-118: BuildPlan — Immutable Data Model with Service Layer

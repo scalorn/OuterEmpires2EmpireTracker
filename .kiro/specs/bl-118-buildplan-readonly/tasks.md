@@ -6,27 +6,27 @@ Apply the immutable data model pattern to the BuildPlan form. Create BuildPlanVi
 
 ## Tasks
 
-- [ ] 1. DTO request models and PlayerContext accessors
-  - [ ] 1.1 Create BuildPlanUpdateRequest DTO
+- [x] 1. DTO request models and PlayerContext accessors
+  - [x] 1.1 Create BuildPlanUpdateRequest DTO
     - Create OE2EmpireTracker/Models/BuildPlanUpdateRequest.cs
     - Properties: Original (ReadOnlyBuildPlan), Name (string), Description (string), IsActive (bool), Items (List of BuildItem)
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 11.1_
 
-  - [ ] 1.2 Create BuildPlanCreateRequest DTO
+  - [x] 1.2 Create BuildPlanCreateRequest DTO
     - Create OE2EmpireTracker/Models/BuildPlanCreateRequest.cs
     - Properties: Name (string), Description (string), IsActive (bool), Items (List of BuildItem)
     - No UUID (service assigns), no OwnerUUID (service sets from current player)
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 12.1_
 
-  - [ ] 1.3 Add FindMutableBuildPlan internal method to PlayerContext
+  - [x] 1.3 Add FindMutableBuildPlan internal method to PlayerContext
     - Follow the same cache-based lookup pattern as other FindMutable methods
     - Mark method internal so only the service can access it
     - _Requirements: 14.1, 14.2, 14.3_
 
-- [ ] 2. Create BuildPlanViewModel as disconnected edit buffer
-  - [ ] 2.1 Create BuildPlanViewModel class
+- [x] 2. Create BuildPlanViewModel as disconnected edit buffer
+  - [x] 2.1 Create BuildPlanViewModel class
     - Create OE2EmpireTracker/ViewModels/BuildPlanViewModel.cs
     - Private fields: _original (ReadOnlyBuildPlan), _uuid, _ownerUUID, local Name (string), Description (string), IsActive (bool), local _items (List of BuildItem)
     - Public properties: Name (get/set), Description (get/set), IsActive (get/set), Items (List of BuildItem), UUID, OwnerUUID, Original, IsNew, IsDirty
@@ -42,8 +42,8 @@ Apply the immutable data model pattern to the BuildPlan form. Create BuildPlanVi
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 2.1, 2.2, 3.1, 3.2, 3.3, 3.4, 3.5, 4.1, 4.2, 4.3, 4.4, 5.1, 5.2, 5.3, 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 3. Create BuildPlanMutationService with CRUD methods
-  - [ ] 3.1 Create BuildPlanMutationService class
+- [x] 3. Create BuildPlanMutationService with CRUD methods
+  - [x] 3.1 Create BuildPlanMutationService class
     - Create OE2EmpireTracker/Services/BuildPlanMutationService.cs
     - Constructor takes PlayerContext dependency
     - Update(string uuid, BuildPlanUpdateRequest): looks up mutable entity via FindMutableBuildPlan, applies Name, Description, IsActive from request, replaces Items list with deep copy, persists via WriteContext(), fires BuildPlanDataChanged event, returns ReadOnlyBuildPlan. Throws InvalidOperationException if UUID not found.
@@ -54,18 +54,18 @@ Apply the immutable data model pattern to the BuildPlan form. Create BuildPlanVi
     - Add Compile Include to OE2EmpireTracker.csproj
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.8, 12.1, 12.2, 12.3, 12.4, 12.5, 13.1, 13.2, 13.3, 17.1_
 
-- [ ] 4. Checkpoint --- Verify new classes compile cleanly
+- [x] 4. Checkpoint --- Verify new classes compile cleanly
   - Build with zero errors and zero warnings
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Migrate FormBuildPlanner to ReadOnly wrappers and service
-  - [ ] 5.1 Replace mutable entity references with ReadOnly wrappers in list view
+- [x] 5. Migrate FormBuildPlanner to ReadOnly wrappers and service
+  - [x] 5.1 Replace mutable entity references with ReadOnly wrappers in list view
     - Change PopulatePlanList to store ReadOnlyBuildPlan in ListViewItem Tags
     - Change filter logic to use ReadOnlyBuildPlan properties
     - Remove direct mutable BuildPlan references from list view code paths
     - _Requirements: 1.1, 1.2, 1.3, 2.1_
 
-  - [ ] 5.2 Wire ViewModel as edit buffer
+  - [x] 5.2 Wire ViewModel as edit buffer
     - Add BuildPlanViewModel _viewModel field and BuildPlanMutationService _buildPlanService field
     - Change selection handler to extract ReadOnlyBuildPlan from Tag and call _viewModel.LoadFrom()
     - Change PopulateForm to read from _viewModel local fields instead of entity
@@ -73,7 +73,7 @@ Apply the immutable data model pattern to the BuildPlan form. Create BuildPlanVi
     - Remove _selectedPlan mutable reference field
     - _Requirements: 1.2, 3.1, 3.2, 4.1, 4.3_
 
-  - [ ] 5.3 Replace write-through with local-only ViewModel updates
+  - [x] 5.3 Replace write-through with local-only ViewModel updates
     - Change TxtPlanName_TextChanged to set _viewModel.Name
     - Change TxtDescription_TextChanged to set _viewModel.Description
     - Change ChkIsActive_CheckedChanged to set _viewModel.IsActive
@@ -81,44 +81,44 @@ Apply the immutable data model pattern to the BuildPlan form. Create BuildPlanVi
     - Remove direct WriteContext() calls from control change handlers
     - _Requirements: 5.1, 5.2, 5.3_
 
-  - [ ] 5.4 Wire Save button through service
+  - [x] 5.4 Wire Save button through service
     - Change Save handler: if _viewModel.IsNew, call service.Create; else call service.Update
     - After save, refresh list view and reload _viewModel from returned ReadOnlyBuildPlan
     - _Requirements: 15.1, 15.2, 15.3, 15.4_
 
-  - [ ] 5.5 Wire Delete button through service with reference protection
+  - [x] 5.5 Wire Delete button through service with reference protection
     - Check BuildPlanReferenceCounter for references before delete
     - If references > 0, show warning with count
     - If no references, prompt for confirmation before calling service.Delete
     - After deletion, clear form and refresh list view
     - _Requirements: 16.1, 16.2, 16.3, 16.4_
 
-  - [ ] 5.6 Wire execution features to read from ViewModel
+  - [x] 5.6 Wire execution features to read from ViewModel
     - Change Start Manufacturing, Queue Calc, Generate Delivery, Auto-Assign, Allocate to read from _viewModel instead of _selectedPlan
     - No behavioral change --- these features read from local state, do not mutate BuildPlan
 
-- [ ] 6. Add unsaved changes prompts
-  - [ ] 6.1 Add unsaved changes prompt on selection change
+- [x] 6. Add unsaved changes prompts
+  - [x] 6.1 Add unsaved changes prompt on selection change
     - In plan list selection handler, check _viewModel.IsDirty before loading new selection
     - Show three-button dialog: Save, Discard, Cancel
     - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-  - [ ] 6.2 Add unsaved changes prompt on New button
+  - [x] 6.2 Add unsaved changes prompt on New button
     - In CmdNew_Click handler, check _viewModel.IsDirty before clearing form
     - Same three-button dialog
     - _Requirements: 9.1, 9.2_
 
-  - [ ] 6.3 Add unsaved changes prompt on form close and application exit
+  - [x] 6.3 Add unsaved changes prompt on form close and application exit
     - Override OnFormClosing to check _viewModel.IsDirty
     - Cancel sets e.Cancel = true to prevent close
     - _Requirements: 8.1, 8.2, 10.1, 10.2_
 
-- [ ] 7. Checkpoint --- Verify form migration compiles and existing tests pass
+- [x] 7. Checkpoint --- Verify form migration compiles and existing tests pass
   - Build with zero errors and zero warnings
   - All existing tests pass
 
-- [ ] 8. Add ViewModel property tests
-  - [ ] 8.1 Write property test: LoadFrom round-trip preserves all fields
+- [x] 8. Add ViewModel property tests
+  - [x] 8.1 Write property test: LoadFrom round-trip preserves all fields
     - Create OE2EmpireTracker.Tests/ViewModels/BuildPlanViewModelPropertyTests.cs
     - Create ValidBuildPlanGen() generator producing random BuildPlan entities with random Name, Description, IsActive, UUID, OwnerUUID, and 0-5 BuildItem entries
     - **Property 1: LoadFrom Round-Trip Preserves All Fields**
@@ -126,55 +126,55 @@ Apply the immutable data model pattern to the BuildPlan form. Create BuildPlanVi
     - **Validates: Requirements 3.1, 3.2, 3.3**
     - Add Compile Include to test csproj
 
-  - [ ] 8.2 Write property test: IsDirty false immediately after LoadFrom
+  - [x] 8.2 Write property test: IsDirty false immediately after LoadFrom
     - **Property 2: IsDirty False Immediately After LoadFrom**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 6.1, 6.4**
 
-  - [ ] 8.3 Write property test: IsDirty detects scalar field change
+  - [x] 8.3 Write property test: IsDirty detects scalar field change
     - **Property 3: IsDirty Detects Scalar Field Change**
     - [FsCheck.NUnit.Property(MaxTest = 50)]
     - **Validates: Requirements 6.1, 6.2**
 
-  - [ ] 8.4 Write property test: IsDirty detects Items change
+  - [x] 8.4 Write property test: IsDirty detects Items change
     - **Property 4: IsDirty Detects Items Change**
     - [FsCheck.NUnit.Property(MaxTest = 50)]
     - **Validates: Requirements 6.1, 6.3**
 
-- [ ] 9. Add ViewModel unit tests
-  - [ ] 9.1 Write unit tests for BuildPlanViewModel
+- [x] 9. Add ViewModel unit tests
+  - [x] 9.1 Write unit tests for BuildPlanViewModel
     - Create OE2EmpireTracker.Tests/ViewModels/BuildPlanViewModelTests.cs
     - Tests: Reset clears all fields, IsNew true after Reset, IsNew false after LoadFrom, IsDirty true for new plan with non-empty Name, BuildUpdateRequest copies all fields, BuildCreateRequest copies all fields, UUID and OwnerUUID preserved from LoadFrom, AddItem increases count, RemoveItem decreases count, FindItem returns correct item
     - Add Compile Include to test csproj
     - _Requirements: 3.1, 3.2, 6.1, 6.4, 6.5_
 
-- [ ] 10. Add Service property tests
-  - [ ] 10.1 Write property test: Service.Update round-trip
+- [x] 10. Add Service property tests
+  - [x] 10.1 Write property test: Service.Update round-trip
     - Create OE2EmpireTracker.Tests/Services/BuildPlanMutationServicePropertyTests.cs
     - **Property 5: Service.Update Round-Trip**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 11.3, 11.4, 11.7**
     - Add Compile Include to test csproj
 
-  - [ ] 10.2 Write property test: Service.Create round-trip
+  - [x] 10.2 Write property test: Service.Create round-trip
     - **Property 6: Service.Create Round-Trip**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 12.2, 12.4**
 
-  - [ ] 10.3 Write property test: Service.Delete removes plan
+  - [x] 10.3 Write property test: Service.Delete removes plan
     - **Property 7: Service.Delete Removes Plan**
     - [FsCheck.NUnit.Property(MaxTest = 25)]
     - **Validates: Requirements 13.1, 13.2**
 
-- [ ] 11. Add Service unit tests
-  - [ ] 11.1 Write unit tests for BuildPlanMutationService
+- [x] 11. Add Service unit tests
+  - [x] 11.1 Write unit tests for BuildPlanMutationService
     - Create OE2EmpireTracker.Tests/Services/BuildPlanMutationServiceTests.cs
     - Tests: Update with non-existent UUID throws InvalidOperationException, Delete with empty UUID returns without error, Delete with non-existent UUID returns without error, Create assigns non-empty UUID, Create sets OwnerUUID to current player UUID, Update fires BuildPlanDataChanged event, Create fires BuildPlanDataChanged event, Delete fires BuildPlanDataChanged event, Update replaces Items list, Create populates Items list from request
     - Add Compile Include to test csproj
     - _Requirements: 11.7, 11.8, 12.2, 12.3, 12.5, 13.3_
 
-- [ ] 12. Add mutation guard test
-  - [ ] 12.1 Write mutation guard test for BuildPlan
+- [x] 12. Add mutation guard test
+  - [x] 12.1 Write mutation guard test for BuildPlan
     - Create OE2EmpireTracker.Tests/Services/BuildPlanMutationGuardTests.cs
     - Follow existing MutationGuardTests pattern
     - Scan for direct BuildPlan property sets (Name, UUID, OwnerUUID, Description, IsActive), assert they only appear in BuildPlanMutationService.cs, BuildPlan.cs, PlayerContext.cs, and test code
@@ -184,7 +184,7 @@ Apply the immutable data model pattern to the BuildPlan form. Create BuildPlanVi
     - **Validates: Requirements 17.1, 17.2, 17.3, 20.1, 20.2**
     - Add Compile Include to test csproj
 
-- [ ] 13. Final checkpoint --- Full build, all tests pass, audit clean
+- [-] 13. Final checkpoint --- Full build, all tests pass, audit clean
   - Build with zero errors and zero warnings
   - All existing and new tests pass
   - node .kiro/tools/audit.js reports no new findings

@@ -3057,6 +3057,30 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Returns the mutable MarketListing entity. Only called by MarketListingService.
         /// </summary>
+        /// <summary>
+        /// Returns the mutable BuildPlan entity by UUID. Internal so only the service can access it.
+        /// </summary>
+        internal BuildPlan FindMutableBuildPlan(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_buildPlanCache == null)
+                {
+                    _buildPlanCache = new Dictionary<string, BuildPlan>();
+                    foreach (var bp in _buildPlanList)
+                    {
+                        if (bp.UUID != null && !_buildPlanCache.ContainsKey(bp.UUID))
+                            _buildPlanCache[bp.UUID] = bp;
+                    }
+                }
+
+                _buildPlanCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
         internal MarketListing FindMutableMarketListing(string uuid)
         {
             if (string.IsNullOrEmpty(uuid)) return null;

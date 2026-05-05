@@ -9,6 +9,7 @@ using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.BuildPlanner
 {
@@ -20,7 +21,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private PlayerContext playerContext;
 
-        private BuildPlan _selectedPlan;
+        private BuildPlanViewModel _viewModel = new BuildPlanViewModel();
+        private BuildPlanMutationService _buildPlanService;
 
         /// <summary>Parallel list of IDs matching cmbItem display items, for lookup via SelectedFullIndex.</summary>
         private List<string> _itemPickerIDs = new List<string>();
@@ -41,6 +43,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
+            _buildPlanService = new BuildPlanMutationService(playerContext);
 
             _colonyFinder = uuid =>
             {
@@ -124,6 +127,18 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (_viewModel.IsDirty)
+            {
+                if (!PromptUnsavedChanges())
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+        }
+
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
@@ -173,10 +188,10 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            string selectedUUID = _selectedPlan?.UUID;
+            string selectedUUID = _viewModel.UUID;
             lvwPlans.Items.Clear();
 
-            var plans = playerContext.GetCurrentPlayerBuildPlans();
+            var plans = playerContext.GetCurrentPlayerReadOnlyBuildPlans();
             string filter = txtPlanFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
             {
@@ -215,14 +230,15 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private void LvwPlans_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (e.IsSelected && e.Item.Tag is BuildPlan plan)
+            if (e.IsSelected && e.Item.Tag is ReadOnlyBuildPlan ro)
             {
-                _selectedPlan = plan;
+                if (!PromptUnsavedChanges()) return;
+                _viewModel.LoadFrom(ro);
                 PopulateForm();
             }
             else if (!e.IsSelected && lvwPlans.SelectedItems.Count == 0)
             {
-                _selectedPlan = null;
+                _viewModel.Reset();
                 ClearForm();
             }
         }
@@ -235,15 +251,15 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedPlan == null)
+            if (_viewModel.IsNew)
             {
                 ClearForm();
                 return;
             }
 
-            txtPlanName.Text = _selectedPlan.Name;
-            txtDescription.Text = _selectedPlan.Description;
-            chkIsActive.Checked = _selectedPlan.IsActive;
+            txtPlanName.Text = _viewModel.Name;
+            txtDescription.Text = _viewModel.Description;
+            chkIsActive.Checked = _viewModel.IsActive;
 
             PopulateBuildItemsGrid();
             SetDetailEnabled(true);
@@ -292,13 +308,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvBuildItems.Rows.Clear();
 
-            if (_selectedPlan == null)
+            if (_viewModel.IsNew)
             {
                 sw.Stop();
                 return;
             }
 
-            foreach (var item in _selectedPlan.Items)
+            foreach (var item in _viewModel.Items)
             {
                 string location;
                 if (string.IsNullOrEmpty(item.BuildLocationUUID))
@@ -323,7 +339,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 string dependsOnName = string.Empty;
                 if (!string.IsNullOrEmpty(item.DependsOnUUID))
                 {
-                    var depItem = _selectedPlan.Items.FirstOrDefault(
+                    var depItem = _viewModel.Items.FirstOrDefault(
                         i => i.UUID == item.DependsOnUUID);
                     dependsOnName = depItem?.ItemName ?? item.DependsOnUUID;
                 }
@@ -412,7 +428,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void UpdateStartManufacturingEnabled()
         {
-            if (_selectedPlan == null || dgvBuildItems.CurrentRow == null || dgvBuildItems.CurrentRow.Tag == null)
+            if (_viewModel.IsNew || dgvBuildItems.CurrentRow == null || dgvBuildItems.CurrentRow.Tag == null)
             {
                 cmdStartManufacturing.Enabled = false;
                 tsmiStartManufacturing.Enabled = false;
@@ -429,7 +445,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             bool canStart = BuildPlanExecutionService.CanStartManufacturing(
                 buildItem,
-                _selectedPlan,
+                BuildTemporaryPlan(),
                 uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -607,34 +623,28 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void CmdNew_Click(object sender, EventArgs e)
         {
-            var plan = new BuildPlan
-            {
-                UUID = Guid.NewGuid().ToString(),
-                Name = "New Build Plan",
-                OwnerUUID = playerContext.CurrentPlayerUUID,
-                IsActive = true
-            };
+            if (!PromptUnsavedChanges()) return;
 
-            playerContext.AddBuildPlan(plan);
-            playerContext.WriteContext();
-            playerContext.OnBuildPlanDataChanged(plan.UUID);
-            _selectedPlan = plan;
-            PopulatePlanList();
+            _viewModel.Reset();
+            _viewModel.Name = "New Build Plan";
             PopulateForm();
+            SetDetailEnabled(true);
+            txtPlanName.Focus();
+            txtPlanName.SelectAll();
         }
 
         private void CmdDelete_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null) return;
+            if (_viewModel.IsNew) return;
 
             var refCounter = new BuildPlanReferenceCounter(playerContext.StockPlanList);
-            int refs = refCounter.CountReferences(_selectedPlan.UUID);
+            int refs = refCounter.CountReferences(_viewModel.UUID);
 
             string message;
             if (refs > 0)
                 message = string.Format("This plan is referenced by {0} stock plan(s). Delete anyway?", refs);
             else
-                message = string.Format("Delete build plan '{0}'?", _selectedPlan.Name);
+                message = string.Format("Delete build plan '{0}'?", _viewModel.Name);
 
             var result = MessageBox.Show(
                 message,
@@ -643,18 +653,15 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            string uuid = _selectedPlan.UUID;
-            playerContext.RemoveBuildPlan(_selectedPlan);
-            playerContext.WriteContext();
-            playerContext.OnBuildPlanDataChanged(uuid);
-            _selectedPlan = null;
+            _buildPlanService.Delete(_viewModel.UUID);
+            _viewModel.Reset();
             PopulatePlanList();
             ClearForm();
         }
 
         private void CmdSave_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null) return;
+            if (_viewModel.IsNew && string.IsNullOrWhiteSpace(_viewModel.Name)) return;
 
             string name = txtPlanName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
@@ -667,14 +674,19 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 return;
             }
 
-            _selectedPlan.Name = name;
-            _selectedPlan.Description = txtDescription.Text;
-            _selectedPlan.IsActive = chkIsActive.Checked;
+            ReadOnlyBuildPlan saved;
+            if (_viewModel.IsNew)
+            {
+                saved = _buildPlanService.Create(_viewModel.BuildCreateRequest());
+            }
+            else
+            {
+                saved = _buildPlanService.Update(_viewModel.UUID, _viewModel.BuildUpdateRequest());
+            }
 
-            playerContext.WriteContext();
-            playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+            _viewModel.LoadFrom(saved);
             PopulatePlanList();
-            Log.Info("Saved build plan '{0}'", _selectedPlan.Name);
+            Log.Info("Saved build plan '{0}'", _viewModel.Name);
         }
 
         // -----------------------------------------------------------------------
@@ -683,21 +695,20 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void TxtPlanName_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
-            _selectedPlan.Name = txtPlanName.Text;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
+            _viewModel.Name = txtPlanName.Text;
         }
 
         private void TxtDescription_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
-            _selectedPlan.Description = txtDescription.Text;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
+            _viewModel.Description = txtDescription.Text;
         }
 
         private void ChkIsActive_CheckedChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
-            _selectedPlan.IsActive = chkIsActive.Checked;
-            PopulatePlanList();
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
+            _viewModel.IsActive = chkIsActive.Checked;
         }
 
         // -----------------------------------------------------------------------
@@ -782,7 +793,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void CmdAddItem_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null)
+            if (_viewModel.IsNew && string.IsNullOrWhiteSpace(_viewModel.Name))
             {
                 MessageBox.Show(
                     "Select a build plan first.",
@@ -880,21 +891,19 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 return;
             }
 
-            _selectedPlan.Items.Add(buildItem);
-            playerContext.WriteContext();
-            playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+            _viewModel.AddItem(buildItem);
             PopulateBuildItemsGrid();
             Log.Info(
                 "Added {0} item '{1}' x{2} to plan '{3}'",
                 buildItem.ItemType,
                 buildItem.ItemName,
                 buildItem.Quantity,
-                _selectedPlan.Name);
+                _viewModel.Name);
         }
 
         private void CmdDeleteItem_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null) return;
+            if (_viewModel.IsNew) return;
             if (dgvBuildItems.CurrentRow == null || dgvBuildItems.CurrentRow.Tag == null) return;
 
             var buildItem = dgvBuildItems.CurrentRow.Tag as BuildItem;
@@ -907,11 +916,9 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            _selectedPlan.Items.Remove(buildItem);
-            playerContext.WriteContext();
-            playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+            _viewModel.RemoveItem(buildItem.UUID);
             PopulateBuildItemsGrid();
-            Log.Info("Deleted item '{0}' from plan '{1}'", buildItem.ItemName, _selectedPlan.Name);
+            Log.Info("Deleted item '{0}' from plan '{1}'", buildItem.ItemName, _viewModel.Name);
         }
 
         private void CmdQueueCalc_Click(object sender, EventArgs e)
@@ -1008,7 +1015,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void OpenAllocationDialog()
         {
-            if (_selectedPlan == null) return;
+            if (_viewModel.IsNew) return;
 
             if (dgvBuildItems.CurrentRow == null || dgvBuildItems.CurrentRow.Tag == null)
             {
@@ -1046,14 +1053,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     buildItem.StructureUUID = dlg.SelectedStructureUUID;
 
                     // Set SequenceInStructure: count existing items on this structure
-                    int existingCount = _selectedPlan.Items.Count(i =>
+                    int existingCount = _viewModel.Items.Count(i =>
                         i.UUID != buildItem.UUID &&
                         i.StructureUUID == dlg.SelectedStructureUUID &&
                         !string.IsNullOrEmpty(i.StructureUUID));
                     buildItem.SequenceInStructure = existingCount;
-
-                    playerContext.WriteContext();
-                    playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
                     PopulateBuildItemsGrid();
 
                     Log.Info(
@@ -1071,7 +1075,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void CmdAutoAssign_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null)
+            if (_viewModel.IsNew)
             {
                 MessageBox.Show(
                     "Select a build plan first.",
@@ -1087,7 +1091,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             try
             {
                 var proposals = AutoAssignService.ProposeAssignments(
-                    _selectedPlan,
+                    BuildTemporaryPlan(),
                     route,
                     uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
                     uuid => (Ship)null,
@@ -1111,7 +1115,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error during auto-assign for plan '{0}'", _selectedPlan.Name);
+                Log.Error(ex, "Error during auto-assign for plan '{0}'", _viewModel.Name);
                 MessageBox.Show(
                     "Error during auto-assign: " + ex.Message,
                     "Auto-Assign",
@@ -1157,7 +1161,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
                 foreach (var p in proposals)
                 {
-                    var item = _selectedPlan.Items.FirstOrDefault(i => i.UUID == p.BuildItemUUID);
+                    var item = _viewModel.Items.FirstOrDefault(i => i.UUID == p.BuildItemUUID);
                     string itemName = item?.ItemName ?? p.BuildItemUUID;
                     string colonyName = _colonyFinder(p.BuildLocationUUID) ?? p.BuildLocationUUID;
                     string structureName = _structureFinder(p.BuildLocationUUID, p.StructureUUID)
@@ -1211,7 +1215,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             int applied = 0;
             foreach (var p in proposals)
             {
-                var item = _selectedPlan.Items.FirstOrDefault(i => i.UUID == p.BuildItemUUID);
+                var item = _viewModel.Items.FirstOrDefault(i => i.UUID == p.BuildItemUUID);
                 if (item == null) continue;
 
                 item.BuildLocationType = p.BuildLocationType;
@@ -1221,15 +1225,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 applied++;
             }
 
-            playerContext.WriteContext();
-            playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
             PopulateBuildItemsGrid();
 
             Log.Info(
                 "Auto-assign applied {0} of {1} proposals to plan '{2}'",
                 applied,
                 proposals.Count,
-                _selectedPlan.Name);
+                _viewModel.Name);
         }
 
         // -----------------------------------------------------------------------
@@ -1380,7 +1382,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void TsmiResourceDelivery_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null)
+            if (_viewModel.IsNew)
             {
                 MessageBox.Show(
                     "Select a build plan first.",
@@ -1396,7 +1398,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             try
             {
                 var shortfalls = ResourceCheckService.ComputePlanShortfalls(
-                    _selectedPlan,
+                    BuildTemporaryPlan(),
                     uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
                     uuid => (Ship)null,
                     uuid => (Models.Station)null,
@@ -1414,14 +1416,14 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 }
 
                 var plan = DeliveryGenerationService.GenerateDeliveryPlan(
-                    _selectedPlan,
+                    BuildTemporaryPlan(),
                     route,
                     shortfalls,
                     uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
                     playerContext);
 
                 playerContext.WriteContext();
-                playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+                playerContext.OnBuildPlanDataChanged(_viewModel.UUID);
                 PopulateBuildItemsGrid();
 
                 MessageBox.Show(
@@ -1438,11 +1440,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     plan.Name,
                     plan.UUID,
                     plan.Stops.Count,
-                    _selectedPlan.Name);
+                    _viewModel.Name);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error generating resource delivery for plan '{0}'", _selectedPlan.Name);
+                Log.Error(ex, "Error generating resource delivery for plan '{0}'", _viewModel.Name);
                 MessageBox.Show(
                     "Error generating delivery: " + ex.Message,
                     "Resource Delivery",
@@ -1627,12 +1629,12 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void TsmiSetDependency_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null || dgvBuildItems.CurrentRow == null) return;
+            if (_viewModel.IsNew || dgvBuildItems.CurrentRow == null) return;
 
             var buildItem = dgvBuildItems.CurrentRow.Tag as BuildItem;
             if (buildItem == null) return;
 
-            var otherItems = _selectedPlan.Items
+            var otherItems = _viewModel.Items
                 .Where(i => i.UUID != buildItem.UUID)
                 .OrderBy(i => i.ItemName)
                 .ToList();
@@ -1686,8 +1688,6 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 if (form.ShowDialog(this) == DialogResult.OK && cmb.SelectedItem is ItemEntry entry)
                 {
                     buildItem.DependsOnUUID = entry.ID;
-                    playerContext.WriteContext();
-                    playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
                     PopulateBuildItemsGrid();
                     Log.Info(
                         "Set dependency: '{0}' depends on '{1}'",
@@ -1699,7 +1699,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void TsmiClearDependency_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null || dgvBuildItems.CurrentRow == null) return;
+            if (_viewModel.IsNew || dgvBuildItems.CurrentRow == null) return;
 
             var buildItem = dgvBuildItems.CurrentRow.Tag as BuildItem;
             if (buildItem == null) return;
@@ -1715,8 +1715,6 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
 
             buildItem.DependsOnUUID = string.Empty;
-            playerContext.WriteContext();
-            playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
             PopulateBuildItemsGrid();
             Log.Info("Cleared dependency on item '{0}'", buildItem.ItemName);
         }
@@ -1727,7 +1725,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void CmdStartManufacturing_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null) return;
+            if (_viewModel.IsNew) return;
 
             if (dgvBuildItems.CurrentRow == null || dgvBuildItems.CurrentRow.Tag == null)
             {
@@ -1744,7 +1742,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             bool canStart = BuildPlanExecutionService.CanStartManufacturing(
                 buildItem,
-                _selectedPlan,
+                BuildTemporaryPlan(),
                 uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -1780,7 +1778,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             var result = BuildPlanExecutionService.StartManufacturing(
                 buildItem,
-                _selectedPlan,
+                BuildTemporaryPlan(),
                 uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -1795,17 +1793,17 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
 
             playerContext.WriteContext();
-            playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+            playerContext.OnBuildPlanDataChanged(_viewModel.UUID);
             PopulateBuildItemsGrid();
             Log.Info(
                 "Started manufacturing for item '{0}' in plan '{1}'",
                 buildItem.ItemName,
-                _selectedPlan.Name);
+                _viewModel.Name);
         }
 
         private void CmdStartAllReady_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null)
+            if (_viewModel.IsNew)
             {
                 MessageBox.Show(
                     "Select a build plan first.",
@@ -1816,7 +1814,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
 
             var result = BuildPlanExecutionService.StartAllReady(
-                _selectedPlan,
+                BuildTemporaryPlan(),
                 uuid => playerContext.GetCurrentPlayerColonies().FirstOrDefault(c => c.UUID == uuid),
                 uuid => playerContext.FindBlueprint(uuid));
 
@@ -1851,13 +1849,13 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             if (result.StartedCount > 0)
             {
                 playerContext.WriteContext();
-                playerContext.OnBuildPlanDataChanged(_selectedPlan.UUID);
+                playerContext.OnBuildPlanDataChanged(_viewModel.UUID);
                 PopulateBuildItemsGrid();
             }
 
             Log.Info(
                 "Start All Ready for plan '{0}': {1} started, {2} skipped",
-                _selectedPlan.Name,
+                _viewModel.Name,
                 result.StartedCount,
                 result.SkippedCount);
         }
@@ -1868,23 +1866,23 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
         private void UpdateStatusSummary()
         {
-            if (_selectedPlan == null)
+            if (_viewModel.IsNew)
             {
                 lblStatusSummary.Text = string.Empty;
                 return;
             }
 
-            if (_selectedPlan.Items.Count == 0)
+            if (_viewModel.Items.Count == 0)
             {
                 lblStatusSummary.Text = string.Empty;
                 return;
             }
 
-            var summary = BuildPlanExecutionService.ComputeStatusSummary(_selectedPlan);
+            var summary = BuildPlanExecutionService.ComputeStatusSummary(BuildTemporaryPlan());
 
-            if (BuildPlanExecutionService.IsPlanComplete(_selectedPlan))
+            if (BuildPlanExecutionService.IsPlanComplete(BuildTemporaryPlan()))
             {
-                lblStatusSummary.Text = string.Format("Complete ({0} items)", _selectedPlan.Items.Count);
+                lblStatusSummary.Text = string.Format("Complete ({0} items)", _viewModel.Items.Count);
                 lblStatusSummary.ForeColor = System.Drawing.Color.Green;
             }
             else
@@ -1901,8 +1899,8 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             // Update Start All Ready button enabled state
             bool hasReadyItems = summary[BuildItemStatus.Ready] > 0;
-            cmdStartAllReady.Enabled = _selectedPlan != null && hasReadyItems;
-            tsmiStartAllReady.Enabled = _selectedPlan != null && hasReadyItems;
+            cmdStartAllReady.Enabled = !_viewModel.IsNew && hasReadyItems;
+            tsmiStartAllReady.Enabled = !_viewModel.IsNew && hasReadyItems;
         }
 
         // -----------------------------------------------------------------------
@@ -1925,7 +1923,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 return;
             }
 
-            _selectedPlan = null;
+            _viewModel.Reset();
             PopulatePlanList();
             ClearForm();
         }
@@ -1947,7 +1945,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
 
             PopulatePlanList();
-            if (_selectedPlan != null)
+            if (!_viewModel.IsNew)
             {
                 PopulateForm();
             }
@@ -1970,7 +1968,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
 
             // Refresh shortfall display if a colony changed that affects the selected item
-            if (_selectedPlan != null)
+            if (!_viewModel.IsNew)
             {
                 PopulateShortfallGrid();
             }
@@ -1979,6 +1977,46 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         // -----------------------------------------------------------------------
         // Utility Dialogs
         // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Creates a temporary BuildPlan from the ViewModel for execution service calls.
+        /// The returned plan shares the ViewModel's Items list so mutations are reflected.
+        /// </summary>
+        private BuildPlan BuildTemporaryPlan()
+        {
+            return new BuildPlan
+            {
+                UUID = _viewModel.UUID ?? string.Empty,
+                Name = _viewModel.Name,
+                OwnerUUID = _viewModel.OwnerUUID,
+                Description = _viewModel.Description,
+                IsActive = _viewModel.IsActive,
+                Items = _viewModel.Items,
+            };
+        }
+
+        /// <summary>
+        /// Prompts the user to save or discard unsaved changes.
+        /// Returns true if the caller should proceed, false if cancelled.
+        /// </summary>
+        private bool PromptUnsavedChanges()
+        {
+            if (!_viewModel.IsDirty) return true;
+
+            var result = MessageBox.Show(
+                "You have unsaved changes. Save before continuing?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Cancel) return false;
+            if (result == DialogResult.Yes)
+            {
+                CmdSave_Click(this, EventArgs.Empty);
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// Simple helper class for combo box items with a display name and ID.
