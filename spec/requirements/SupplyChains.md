@@ -38,6 +38,13 @@ The user wants to define end-to-end production pipelines (mine → refine → de
 **REQ-SCH-030** SupplyChainService SHALL evaluate all active supply chains and return stages that have exceeded their thresholds.  
 **REQ-SCH-031** SupplyChainService SHALL integrate with DeliveryGenerationService to create delivery plans for threshold-triggered movements.  
 
+## Supply Chain Mutation Service
+
+**REQ-SCH-032** SupplyChainMutationService SHALL be the sole mutator of SupplyChain entities (aside from deserialization and migration).  
+**REQ-SCH-033** SupplyChainMutationService.Update SHALL accept a SupplyChainUpdateRequest DTO containing the original snapshot, Name, IsActive, and Stages list.  
+**REQ-SCH-034** SupplyChainMutationService.Create SHALL accept a SupplyChainCreateRequest DTO containing Name, IsActive, and Stages list.  
+**REQ-SCH-035** SupplyChainMutationService.Delete SHALL remove the chain by UUID. No-op if not found.  
+
 ## Supply Chain Form
 
 **REQ-SCH-040** FormSupplyChain SHALL allow creating and editing supply chains with an ordered list of stages.  

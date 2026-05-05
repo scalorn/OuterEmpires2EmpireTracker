@@ -8,6 +8,7 @@ using NLog;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.SupplyChain
 {
@@ -18,13 +19,15 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         private int _isProgrammaticUpdate = 0;
 
         private PlayerContext playerContext;
+        private SupplyChainMutationService _mutationService;
+        private SupplyChainViewModel _viewModel = new SupplyChainViewModel();
 
-        private Models.SupplyChain _selectedChain;
-
+        private ReadOnlySupplyChain _selectedChain;
         public FormSupplyChain()
         {
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
+            _mutationService = new SupplyChainMutationService(playerContext);
 
             lvwChains.View = View.Details;
             lvwChains.Columns.Add("Name", 140);
@@ -67,6 +70,30 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
 
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (_viewModel.IsDirty)
+            {
+                var result = MessageBox.Show(
+                    "You have unsaved changes. Save before closing?",
+                    "Unsaved Changes",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
+                if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (result == DialogResult.Yes)
+                {
+                    CmdSave_Click(this, EventArgs.Empty);
+                }
+            }
+
+            base.OnFormClosing(e);
+        }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
@@ -118,16 +145,17 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
             foreach (var chain in chains)
             {
-                var item = new ListViewItem(chain.Name) { Tag = chain };
-                item.SubItems.Add(chain.IsActive ? "Yes" : "No");
-                if (!chain.IsActive)
+                var ro = new ReadOnlySupplyChain(chain);
+                var item = new ListViewItem(ro.Name) { Tag = ro };
+                item.SubItems.Add(ro.IsActive ? "Yes" : "No");
+                if (!ro.IsActive)
                 {
                     item.ForeColor = Color.Gray;
                     item.Font = new Font(lvwChains.Font, FontStyle.Italic);
                 }
 
                 lvwChains.Items.Add(item);
-                if (chain.UUID == selectedUUID) item.Selected = true;
+                if (ro.UUID == selectedUUID) item.Selected = true;
             }
 
             sw.Stop();
@@ -139,14 +167,17 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         private void LvwChains_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (e.IsSelected && e.Item.Tag is Models.SupplyChain chain)
+            if (e.IsSelected && e.Item.Tag is ReadOnlySupplyChain ro)
             {
-                _selectedChain = chain;
+                if (_viewModel.IsDirty && !PromptUnsavedChanges()) return;
+                _selectedChain = ro;
+                _viewModel.LoadFrom(ro);
                 PopulateForm();
             }
             else if (!e.IsSelected && lvwChains.SelectedItems.Count == 0)
             {
                 _selectedChain = null;
+                _viewModel.Reset();
                 ClearForm();
             }
         }
@@ -162,8 +193,8 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 return;
             }
 
-            txtChainName.Text = _selectedChain.Name;
-            chkActive.Checked = _selectedChain.IsActive;
+            txtChainName.Text = _viewModel.Name;
+            chkActive.Checked = _viewModel.IsActive;
             PopulateStagesGrid();
             PopulateRouteCombo();
             UpdateFlowSummary();
@@ -224,7 +255,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         // Combo helpers
         private void PopulateStageTypeCombos()
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             cmbStageType.Items.Clear();
             foreach (var val in Enum.GetValues(typeof(SupplyChainStageType)))
                 cmbStageType.Items.Add(val);
@@ -242,7 +273,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private void PopulateResourceCombo()
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             cmbResource.Items.Clear();
             var resources = EmpireContext.GetInstance()?.ResourceList;
             if (resources != null)
@@ -258,7 +289,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private void PopulatePurityCombo()
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             cmbPurity.Items.Clear();
             foreach (var p in ResourcePurity.Purities)
             {
@@ -273,7 +304,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private void PopulateLocationCombo()
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbLocation.DataSource = null;
             cmbLocation.Items.Clear();
@@ -315,7 +346,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private void PopulateRouteCombo()
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cmbRoute.DataSource = null;
             cmbRoute.Items.Clear();
@@ -342,12 +373,12 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         // Stages grid
         private void PopulateStagesGrid()
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvStages.Rows.Clear();
-            if (_selectedChain == null) return;
+            if (_viewModel.Stages.Count == 0) return;
 
-            foreach (var stage in CollectionSortHelper.OrderSupplyChainStages(_selectedChain.Stages))
+            foreach (var stage in CollectionSortHelper.OrderSupplyChainStages(_viewModel.Stages))
             {
                 string locationName = ResolveLocationName(stage.LocationType, stage.LocationUUID);
                 string resourceDisplay = stage.ResourceName;
@@ -412,7 +443,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private void PopulateStageEditFromStage(SupplyChainStage stage)
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             txtSequence.Text = stage.Sequence.ToString();
             cmbStageType.SelectedItem = stage.StageType;
@@ -452,7 +483,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             Log.Info("PERF PopulateStageEditFromStage: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        // Stage CRUD
+        // Stage CRUD - operates on ViewModel local stages
         private SupplyChainStage BuildStageFromPanel()
         {
             int.TryParse(txtSequence.Text.Trim(), out int seq);
@@ -481,14 +512,14 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private void CmdAddStage_Click(object sender, EventArgs e)
         {
-            if (_selectedChain == null) return;
+            if (_selectedChain == null && !_viewModel.IsNew) return;
             var stage = BuildStageFromPanel();
             // Auto-assign sequence if blank
-            if (stage.Sequence == 0 && _selectedChain.Stages.Count > 0)
-                stage.Sequence = _selectedChain.Stages.Max(s => s.Sequence) + 1;
+            if (stage.Sequence == 0 && _viewModel.Stages.Count > 0)
+                stage.Sequence = _viewModel.Stages.Max(s => s.Sequence) + 1;
             else if (stage.Sequence == 0)
                 stage.Sequence = 1;
-            _selectedChain.Stages.Add(stage);
+            _viewModel.AddStage(stage);
             PopulateStagesGrid();
             UpdateFlowSummary();
             Log.Info("Added stage seq={0} type={1}", stage.Sequence, stage.StageType);
@@ -496,63 +527,46 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private void CmdUpdateStage_Click(object sender, EventArgs e)
         {
-            if (_selectedChain == null || dgvStages.SelectedRows.Count == 0) return;
-            var existing = dgvStages.SelectedRows[0].Tag as SupplyChainStage;
-            if (existing == null) return;
+            if ((_selectedChain == null && !_viewModel.IsNew) || dgvStages.SelectedRows.Count == 0) return;
+            int idx = dgvStages.SelectedRows[0].Index;
+            if (idx < 0 || idx >= _viewModel.Stages.Count) return;
 
             var updated = BuildStageFromPanel();
-            existing.Sequence = updated.Sequence;
-            existing.StageType = updated.StageType;
-            existing.LocationType = updated.LocationType;
-            existing.LocationUUID = updated.LocationUUID;
-            existing.ResourceName = updated.ResourceName;
-            existing.ResourcePurity = updated.ResourcePurity;
-            existing.AccumulationThreshold = updated.AccumulationThreshold;
-            existing.ProductionRatePerHour = updated.ProductionRatePerHour;
-            existing.DeliveryRouteUUID = updated.DeliveryRouteUUID;
-
+            _viewModel.UpdateStage(idx, updated);
             PopulateStagesGrid();
             UpdateFlowSummary();
-            Log.Info("Updated stage seq={0} type={1}", existing.Sequence, existing.StageType);
+            Log.Info("Updated stage seq={0} type={1}", updated.Sequence, updated.StageType);
         }
 
         private void CmdRemoveStage_Click(object sender, EventArgs e)
         {
-            if (_selectedChain == null || dgvStages.SelectedRows.Count == 0) return;
-            var stage = dgvStages.SelectedRows[0].Tag as SupplyChainStage;
-            if (stage == null) return;
-            _selectedChain.Stages.Remove(stage);
+            if ((_selectedChain == null && !_viewModel.IsNew) || dgvStages.SelectedRows.Count == 0) return;
+            int idx = dgvStages.SelectedRows[0].Index;
+            if (idx < 0 || idx >= _viewModel.Stages.Count) return;
+            _viewModel.RemoveStage(idx);
             PopulateStagesGrid();
             UpdateFlowSummary();
-            Log.Info("Removed stage seq={0} type={1}", stage.Sequence, stage.StageType);
+            Log.Info("Removed stage at index={0}", idx);
         }
 
         private void CmdMoveUp_Click(object sender, EventArgs e)
         {
-            if (_selectedChain == null || dgvStages.SelectedRows.Count == 0) return;
-            var stage = dgvStages.SelectedRows[0].Tag as SupplyChainStage;
-            if (stage == null) return;
-            var sorted = CollectionSortHelper.OrderSupplyChainStages(_selectedChain.Stages).ToList();
-            int idx = sorted.IndexOf(stage);
+            if ((_selectedChain == null && !_viewModel.IsNew) || dgvStages.SelectedRows.Count == 0) return;
+            int idx = dgvStages.SelectedRows[0].Index;
             if (idx <= 0) return;
-            int prevSeq = sorted[idx - 1].Sequence;
-            sorted[idx - 1].Sequence = stage.Sequence;
-            stage.Sequence = prevSeq;
+            _viewModel.MoveStageUp(idx);
+            _viewModel.RenumberStages();
             PopulateStagesGrid();
             UpdateFlowSummary();
         }
 
         private void CmdMoveDown_Click(object sender, EventArgs e)
         {
-            if (_selectedChain == null || dgvStages.SelectedRows.Count == 0) return;
-            var stage = dgvStages.SelectedRows[0].Tag as SupplyChainStage;
-            if (stage == null) return;
-            var sorted = CollectionSortHelper.OrderSupplyChainStages(_selectedChain.Stages).ToList();
-            int idx = sorted.IndexOf(stage);
-            if (idx < 0 || idx >= sorted.Count - 1) return;
-            int nextSeq = sorted[idx + 1].Sequence;
-            sorted[idx + 1].Sequence = stage.Sequence;
-            stage.Sequence = nextSeq;
+            if ((_selectedChain == null && !_viewModel.IsNew) || dgvStages.SelectedRows.Count == 0) return;
+            int idx = dgvStages.SelectedRows[0].Index;
+            if (idx >= _viewModel.Stages.Count - 1) return;
+            _viewModel.MoveStageDown(idx);
+            _viewModel.RenumberStages();
             PopulateStagesGrid();
             UpdateFlowSummary();
         }
@@ -560,13 +574,13 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         // Flow Summary
         private void UpdateFlowSummary()
         {
-            if (_selectedChain == null || _selectedChain.Stages.Count == 0)
+            if (_viewModel.Stages.Count == 0)
             {
                 txtFlowSummary.Text = string.Empty;
                 return;
             }
 
-            var sorted = CollectionSortHelper.OrderSupplyChainStages(_selectedChain.Stages).ToList();
+            var sorted = CollectionSortHelper.OrderSupplyChainStages(_viewModel.Stages).ToList();
             var parts = new List<string>();
             foreach (var stage in sorted)
             {
@@ -585,20 +599,17 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         // CRUD
         private void CmdNew_Click(object sender, EventArgs e)
         {
-            var chain = new Models.SupplyChain
-            {
-                UUID = Guid.NewGuid().ToString(),
-                Name = "New Supply Chain",
-                OwnerUUID = playerContext.CurrentPlayerUUID ?? string.Empty,
-                IsActive = true
-            };
-
-            playerContext.AddSupplyChain(chain);
-            playerContext.WriteContext();
-            _selectedChain = chain;
-            PopulateChainList();
-            PopulateForm();
-            Log.Info("Created new supply chain");
+            if (_viewModel.IsDirty && !PromptUnsavedChanges()) return;
+            _selectedChain = null;
+            _viewModel.Reset();
+            _viewModel.Name = "New Supply Chain";
+            using var guard = new ProgrammaticUpdateGuard(this);
+            txtChainName.Text = _viewModel.Name;
+            chkActive.Checked = _viewModel.IsActive;
+            dgvStages.Rows.Clear();
+            txtFlowSummary.Text = string.Empty;
+            SetDetailEnabled(true);
+            Log.Info("New supply chain started");
         }
 
         private void CmdDelete_Click(object sender, EventArgs e)
@@ -610,9 +621,9 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.RemoveSupplyChain(_selectedChain);
-            playerContext.WriteContext();
+            _mutationService.Delete(_selectedChain.UUID);
             _selectedChain = null;
+            _viewModel.Reset();
             PopulateChainList();
             ClearForm();
             Log.Info("Deleted supply chain");
@@ -620,7 +631,6 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private void CmdSave_Click(object sender, EventArgs e)
         {
-            if (_selectedChain == null) return;
             string name = txtChainName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -632,8 +642,11 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 return;
             }
 
+            _viewModel.Name = name;
+            _viewModel.RenumberStages();
+
             // Validate threshold stages have routes
-            foreach (var stage in _selectedChain.Stages)
+            foreach (var stage in _viewModel.Stages)
             {
                 if (stage.AccumulationThreshold > 0 && string.IsNullOrEmpty(stage.DeliveryRouteUUID))
                 {
@@ -654,23 +667,50 @@ namespace OE2EmpireTracker.Forms.SupplyChain
                 }
             }
 
-            _selectedChain.Name = name;
-            playerContext.WriteContext();
+            if (_viewModel.IsNew)
+            {
+                var created = _mutationService.Create(_viewModel.BuildCreateRequest());
+                _selectedChain = created;
+                _viewModel.LoadFrom(created);
+            }
+            else
+            {
+                var updated = _mutationService.Update(_viewModel.UUID, _viewModel.BuildUpdateRequest());
+                _selectedChain = updated;
+                _viewModel.LoadFrom(updated);
+            }
+
             PopulateChainList();
-            Log.Info("Saved supply chain \"{0}\"", _selectedChain.Name);
+            Log.Info("Saved supply chain \"{0}\"", _viewModel.Name);
         }
 
         private void TxtChainName_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedChain == null) return;
-            _selectedChain.Name = txtChainName.Text;
+            if (_isProgrammaticUpdate > 0) return;
+            _viewModel.Name = txtChainName.Text;
         }
 
         private void ChkActive_CheckedChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedChain == null) return;
-            _selectedChain.IsActive = chkActive.Checked;
-            Log.Info("Supply chain \"{0}\" IsActive={1}", _selectedChain.Name, _selectedChain.IsActive);
+            if (_isProgrammaticUpdate > 0) return;
+            _viewModel.IsActive = chkActive.Checked;
+        }
+
+        // Unsaved changes prompt
+        private bool PromptUnsavedChanges()
+        {
+            var result = MessageBox.Show(
+                "You have unsaved changes. Save before continuing?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+            if (result == DialogResult.Cancel) return false;
+            if (result == DialogResult.Yes)
+            {
+                CmdSave_Click(this, EventArgs.Empty);
+            }
+
+            return true;
         }
 
         // Events
@@ -691,6 +731,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             }
 
             _selectedChain = null;
+            _viewModel.Reset();
             PopulateChainList();
             ClearForm();
         }

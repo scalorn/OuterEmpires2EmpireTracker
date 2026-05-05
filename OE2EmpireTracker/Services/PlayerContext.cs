@@ -3150,6 +3150,30 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        /// <summary>
+        /// Returns the mutable SupplyChain entity by UUID. Internal so only the service can access it.
+        /// </summary>
+        internal SupplyChain FindMutableSupplyChain(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_supplyChainCache == null)
+                {
+                    _supplyChainCache = new Dictionary<string, SupplyChain>();
+                    foreach (var sc in _supplyChainList)
+                    {
+                        if (sc.UUID != null && !_supplyChainCache.ContainsKey(sc.UUID))
+                            _supplyChainCache[sc.UUID] = sc;
+                    }
+                }
+
+                _supplyChainCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
         private void RebuildBuildItemIndexes()
         {
             _blueprintBuildItemIndex = new Dictionary<string, List<BuildItem>>();

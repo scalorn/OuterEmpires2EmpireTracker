@@ -33,6 +33,7 @@ namespace OE2EmpireTracker.Tests.Services
             "FormStockTargets.cs",
             "FormSupplyChain.cs",
             "StockTargetMutationService.cs",
+            "SupplyChainMutationService.cs",
         };
 
         private static readonly HashSet<string> AllowedItemMutators = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
