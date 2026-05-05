@@ -353,6 +353,19 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Sorts read-only stations by Name (ascending, OrdinalIgnoreCase).
+        /// </summary>
+        public static IReadOnlyList<ReadOnlyStation> OrderReadOnlyStations(
+            IEnumerable<ReadOnlyStation> stations)
+        {
+            if (stations == null) return Array.Empty<ReadOnlyStation>();
+            return stations
+                .OrderBy(s => s.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
         /// Sorts market listings by ItemName (ascending, OrdinalIgnoreCase).
         /// </summary>
         public static IReadOnlyList<MarketListing> OrderMarketListings(

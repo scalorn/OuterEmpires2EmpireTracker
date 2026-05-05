@@ -7,6 +7,7 @@ using NLog;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.Station
 {
@@ -17,13 +18,14 @@ namespace OE2EmpireTracker.Forms.Station
         private int _isProgrammaticUpdate = 0;
 
         private PlayerContext playerContext;
-
-        private Models.Station _selectedStation;
+        private StationViewModel _viewModel = new StationViewModel();
+        private StationService _stationService;
 
         public FormStation()
         {
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
+            _stationService = new StationService(playerContext);
 
             lvwStations.View = View.Details;
             lvwStations.Columns.Add("Name", 120);
@@ -71,6 +73,29 @@ namespace OE2EmpireTracker.Forms.Station
 
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (_viewModel.IsDirty)
+            {
+                var result = ShowUnsavedChangesDialog();
+                if (result == DialogResult.Yes)
+                {
+                    if (!TrySave())
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
+            base.OnFormClosing(e);
+        }
+
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
@@ -109,14 +134,14 @@ namespace OE2EmpireTracker.Forms.Station
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            string selectedUUID = _selectedStation?.UUID;
+            string selectedUUID = _viewModel.UUID;
             lvwStations.Items.Clear();
 
-            var stations = playerContext.GetCurrentPlayerStations();
+            var stations = playerContext.GetCurrentPlayerReadOnlyStations();
             string filter = txtFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
                 stations = stations.Where(s => s.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-            stations = CollectionSortHelper.OrderStations(stations).ToList();
+            stations = CollectionSortHelper.OrderReadOnlyStations(stations).ToList();
 
             var refCounter = new StationReferenceCounter(
                 playerContext.DeliveryRouteList.ToList(),
@@ -142,14 +167,32 @@ namespace OE2EmpireTracker.Forms.Station
         private void LvwStations_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (e.IsSelected && e.Item.Tag is Models.Station station)
+            if (e.IsSelected && e.Item.Tag is ReadOnlyStation roStation)
             {
-                _selectedStation = station;
+                if (_viewModel.IsDirty)
+                {
+                    var result = ShowUnsavedChangesDialog();
+                    if (result == DialogResult.Yes)
+                    {
+                        if (!TrySave())
+                        {
+                            RestoreSelection();
+                            return;
+                        }
+                    }
+                    else if (result == DialogResult.Cancel)
+                    {
+                        RestoreSelection();
+                        return;
+                    }
+                }
+
+                _viewModel.LoadFrom(roStation, playerContext.CurrentPlayerUUID);
                 PopulateForm();
             }
             else if (!e.IsSelected && lvwStations.SelectedItems.Count == 0)
             {
-                _selectedStation = null;
+                _viewModel.Reset();
                 ClearForm();
             }
         }
@@ -159,16 +202,16 @@ namespace OE2EmpireTracker.Forms.Station
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedStation == null)
+            if (_viewModel.IsNew)
             {
                 ClearForm();
                 return;
             }
 
-            txtName.Text = _selectedStation.Name;
-            SelectComboEnum(cmbStationType, _selectedStation.StationType);
-            SelectComboEnum(cmbOwnership, _selectedStation.Ownership);
-            bool isPlayerOwned = _selectedStation.Ownership == StationOwnership.PlayerOwned;
+            txtName.Text = _viewModel.Name;
+            SelectComboEnum(cmbStationType, _viewModel.StationType);
+            SelectComboEnum(cmbOwnership, _viewModel.Ownership);
+            bool isPlayerOwned = _viewModel.Ownership == StationOwnership.PlayerOwned;
             tabComponents.Enabled = isPlayerOwned;
             UpdateMunitionsTabVisibility();
             PopulateHoldGrid();
@@ -244,17 +287,17 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void CmbStationType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedStation == null) return;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
             if (cmbStationType.SelectedItem is StationType st)
-                _selectedStation.StationType = st;
+                _viewModel.StationType = st;
         }
 
         private void CmbOwnership_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedStation == null) return;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
             if (cmbOwnership.SelectedItem is StationOwnership so)
             {
-                _selectedStation.Ownership = so;
+                _viewModel.Ownership = so;
                 bool isPlayerOwned = so == StationOwnership.PlayerOwned;
                 tabComponents.Enabled = isPlayerOwned;
                 UpdateMunitionsTabVisibility();
@@ -262,20 +305,6 @@ namespace OE2EmpireTracker.Forms.Station
         }
 
         // Hold tab
-        private ItemBag GetStationHold()
-        {
-            if (_selectedStation == null) return null;
-            string playerUUID = playerContext.CurrentPlayerUUID;
-            if (string.IsNullOrEmpty(playerUUID)) return null;
-            if (!_selectedStation.Holds.TryGetValue(playerUUID, out ItemBag bag))
-            {
-                bag = new ItemBag();
-                _selectedStation.Holds[playerUUID] = bag;
-            }
-
-            return bag;
-        }
-
         private void PopulateHoldGrid()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
@@ -285,7 +314,7 @@ namespace OE2EmpireTracker.Forms.Station
             lblHoldCrateContents.Text = string.Empty;
             dgvHoldCrateContents.Visible = false;
             lblHoldCrateContents.Visible = false;
-            var bag = GetStationHold();
+            var bag = _viewModel.Hold;
             if (bag == null)
             {
                 sw.Stop();
@@ -367,7 +396,7 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void DgvHold_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedStation == null || e.RowIndex < 0) return;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew || e.RowIndex < 0) return;
             var row = dgvHold.Rows[e.RowIndex];
             if (!(row.Tag is Item item)) return;
             string valStr = row.Cells[e.ColumnIndex].Value?.ToString() ?? "0";
@@ -453,8 +482,7 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void CmdHoldAdd_Click(object sender, EventArgs e)
         {
-            var bag = GetStationHold();
-            if (bag == null || _selectedStation == null) return;
+            if (_viewModel.IsNew) return;
             if (!(cmbHoldType.SelectedItem is ItemType.ItemTypeEnum itemType)) return;
             string itemName = cmbHoldItem.SelectedItem?.ToString() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(itemName)) return;
@@ -477,18 +505,17 @@ namespace OE2EmpireTracker.Forms.Station
                 BaseItemTypeID = itemName
             };
 
-            bag.AddItem(newItem);
+            _viewModel.AddHoldItem(newItem);
             PopulateHoldGrid();
             Log.Info("Added hold item: {0} x{1}", itemName, qty);
         }
 
         private void CmdHoldRemove_Click(object sender, EventArgs e)
         {
-            var bag = GetStationHold();
-            if (bag == null || dgvHold.SelectedRows.Count == 0) return;
+            if (_viewModel.IsNew || dgvHold.SelectedRows.Count == 0) return;
             var item = dgvHold.SelectedRows[0].Tag as Item;
             if (item == null) return;
-            bag.Remove(item.UUID);
+            _viewModel.RemoveHoldItem(item.UUID);
             PopulateHoldGrid();
             Log.Info("Removed hold item: {0}", item.Name);
         }
@@ -499,32 +526,32 @@ namespace OE2EmpireTracker.Forms.Station
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvComponents.Rows.Clear();
-            if (_selectedStation == null)
+            if (_viewModel.IsNew)
             {
                 sw.Stop();
                 return;
             }
 
-            if (_selectedStation.Ownership != StationOwnership.PlayerOwned)
+            if (_viewModel.Ownership != StationOwnership.PlayerOwned)
             {
                 sw.Stop();
                 return;
             }
 
             // Hull row first
-            var hullBp = playerContext.FindBlueprint(_selectedStation.StationBlueprintUUID);
+            var hullBp = playerContext.FindBlueprint(_viewModel.StationBlueprintUUID);
             string hullName = hullBp?.ExtendedName ?? "(no hull)";
             int hullRow = dgvComponents.Rows.Add(
                 "Hull",
                 hullName,
-                _selectedStation.HullCurrentHP.ToString(),
-                _selectedStation.HullMaxRepairPercent.ToString());
+                _viewModel.HullCurrentHP.ToString(),
+                _viewModel.HullMaxRepairPercent.ToString());
             dgvComponents.Rows[hullRow].Tag = "hull";
             dgvComponents.Rows[hullRow].Cells[colSlotType.Index].ReadOnly = true;
             dgvComponents.Rows[hullRow].Cells[colComponentName.Index].ReadOnly = true;
 
             // Component rows
-            foreach (var slot in _selectedStation.Components)
+            foreach (var slot in _viewModel.Components)
             {
                 var compBp = playerContext.FindBlueprint(slot.BlueprintUUID);
                 string compName = compBp?.ExtendedName ?? "(unknown)";
@@ -549,7 +576,6 @@ namespace OE2EmpireTracker.Forms.Station
             cmbStationBlueprint.DataSource = null;
             cmbStationBlueprint.Items.Clear();
 
-            // Station hull blueprints
             var blueprints = CollectionSortHelper.OrderBlueprints(
                 playerContext.GetAllBlueprints()
                 .Where(bp => !string.IsNullOrEmpty(bp.Name)))
@@ -564,17 +590,18 @@ namespace OE2EmpireTracker.Forms.Station
             cmbStationBlueprint.DisplayMember = "Value";
             cmbStationBlueprint.ValueMember = "Key";
 
-            if (_selectedStation != null && !string.IsNullOrEmpty(_selectedStation.StationBlueprintUUID))
-                cmbStationBlueprint.SelectedValue = _selectedStation.StationBlueprintUUID;
+            if (!_viewModel.IsNew && !string.IsNullOrEmpty(_viewModel.StationBlueprintUUID))
+                cmbStationBlueprint.SelectedValue = _viewModel.StationBlueprintUUID;
             sw.Stop();
             Log.Info("PERF PopulateStationBlueprintCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CmbStationBlueprint_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedStation == null) return;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
             string uuid = cmbStationBlueprint.SelectedValue?.ToString() ?? string.Empty;
-            _selectedStation.StationBlueprintUUID = uuid;
+            _viewModel.StationBlueprintUUID = uuid;
+            _viewModel.ClearComponents();
             PopulateComponentsGrid();
             RefreshStationStats();
         }
@@ -582,14 +609,14 @@ namespace OE2EmpireTracker.Forms.Station
         private void RefreshStationStats()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            if (_selectedStation == null)
+            if (_viewModel.IsNew)
             {
                 rtbStationStats.Text = string.Empty;
                 sw.Stop();
                 return;
             }
 
-            var hullBp = playerContext.FindBlueprint(_selectedStation.StationBlueprintUUID);
+            var hullBp = playerContext.FindBlueprint(_viewModel.StationBlueprintUUID);
             if (hullBp == null)
             {
                 rtbStationStats.Text = "No station blueprint selected.";
@@ -599,7 +626,7 @@ namespace OE2EmpireTracker.Forms.Station
 
             var stats = ShipBuildService.ComputeStationStats(
                 hullBp,
-                _selectedStation.Components,
+                _viewModel.Components,
                 uuid => playerContext.FindBlueprint(uuid));
 
             rtbStationStats.Text = string.Format(
@@ -626,7 +653,7 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void DgvComponents_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedStation == null || e.RowIndex < 0) return;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew || e.RowIndex < 0) return;
             var row = dgvComponents.Rows[e.RowIndex];
             string valStr = row.Cells[e.ColumnIndex].Value?.ToString() ?? "0";
 
@@ -634,22 +661,26 @@ namespace OE2EmpireTracker.Forms.Station
             {
                 if (e.ColumnIndex == colCondition.Index)
                 {
-                    if (int.TryParse(valStr, out int hp)) _selectedStation.HullCurrentHP = hp;
+                    if (int.TryParse(valStr, out int hp))
+                        _viewModel.SetHullComponent(hp, _viewModel.HullMaxRepairPercent);
                 }
                 else if (e.ColumnIndex == colMaxRepair.Index)
                 {
-                    if (decimal.TryParse(valStr, out decimal mr)) _selectedStation.HullMaxRepairPercent = mr;
+                    if (decimal.TryParse(valStr, out decimal mr))
+                        _viewModel.SetHullComponent(_viewModel.HullCurrentHP, mr);
                 }
             }
             else if (row.Tag is ShipComponentSlot slot)
             {
                 if (e.ColumnIndex == colCondition.Index)
                 {
-                    if (int.TryParse(valStr, out int hp)) slot.CurrentHP = hp;
+                    if (int.TryParse(valStr, out int hp))
+                        _viewModel.SetComponentCondition(slot.SlotType, slot.SlotIndex, hp, slot.MaxRepairPercent);
                 }
                 else if (e.ColumnIndex == colMaxRepair.Index)
                 {
-                    if (decimal.TryParse(valStr, out decimal mr)) slot.MaxRepairPercent = mr;
+                    if (decimal.TryParse(valStr, out decimal mr))
+                        _viewModel.SetComponentCondition(slot.SlotType, slot.SlotIndex, slot.CurrentHP, mr);
                 }
             }
         }
@@ -657,14 +688,14 @@ namespace OE2EmpireTracker.Forms.Station
         // Munitions tab
         private void UpdateMunitionsTabVisibility()
         {
-            if (_selectedStation == null)
+            if (_viewModel.IsNew)
             {
                 tabMunitions.Enabled = false;
                 return;
             }
 
-            bool isPlayerOwned = _selectedStation.Ownership == StationOwnership.PlayerOwned;
-            bool hasWeapons = _selectedStation.Components.Any(c =>
+            bool isPlayerOwned = _viewModel.Ownership == StationOwnership.PlayerOwned;
+            bool hasWeapons = _viewModel.Components.Any(c =>
                 c.SlotType == OE2EmpireTracker.Constants.SlotTypes.WeaponSmall ||
                 c.SlotType == OE2EmpireTracker.Constants.SlotTypes.WeaponMedium ||
                 c.SlotType == OE2EmpireTracker.Constants.SlotTypes.WeaponLarge);
@@ -676,10 +707,10 @@ namespace OE2EmpireTracker.Forms.Station
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvMunitions.Rows.Clear();
-            if (_selectedStation == null) return;
+            if (_viewModel.IsNew) return;
             if (!tabMunitions.Enabled) return;
 
-            foreach (var kvp in CollectionSortHelper.OrderItemBagEntries(_selectedStation.MunitionsHold.Items))
+            foreach (var kvp in CollectionSortHelper.OrderItemBagEntries(_viewModel.MunitionsHold.Items))
             {
                 var item = kvp.Value;
                 int rowIdx = dgvMunitions.Rows.Add(item.ExtendedName, item.Quantity.ToString());
@@ -692,7 +723,7 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void CmdMunAdd_Click(object sender, EventArgs e)
         {
-            if (_selectedStation == null) return;
+            if (_viewModel.IsNew) return;
             string itemName = cmbMunItem.SelectedItem?.ToString() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(itemName)) return;
             if (!int.TryParse(txtMunQty.Text.Trim(), out int qty) || qty <= 0)
@@ -712,17 +743,17 @@ namespace OE2EmpireTracker.Forms.Station
                 BaseItemTypeID = itemName
             };
 
-            _selectedStation.MunitionsHold.AddItem(newItem);
+            _viewModel.AddMunitionsItem(newItem);
             PopulateMunitionsGrid();
             Log.Info("Added munition: {0} x{1}", itemName, qty);
         }
 
         private void CmdMunRemove_Click(object sender, EventArgs e)
         {
-            if (_selectedStation == null || dgvMunitions.SelectedRows.Count == 0) return;
+            if (_viewModel.IsNew || dgvMunitions.SelectedRows.Count == 0) return;
             var item = dgvMunitions.SelectedRows[0].Tag as Item;
             if (item == null) return;
-            _selectedStation.MunitionsHold.Remove(item.UUID);
+            _viewModel.RemoveMunitionsItem(item.UUID);
             PopulateMunitionsGrid();
             Log.Info("Removed munition: {0}", item.Name);
         }
@@ -730,36 +761,52 @@ namespace OE2EmpireTracker.Forms.Station
         // CRUD
         private void CmdNew_Click(object sender, EventArgs e)
         {
-            var station = new Models.Station
+            if (_viewModel.IsDirty)
             {
-                UUID = Guid.NewGuid().ToString(),
-                Name = "New Station",
-                OwnerUUID = playerContext.CurrentPlayerUUID
-            };
+                var result = ShowUnsavedChangesDialog();
+                if (result == DialogResult.Yes)
+                {
+                    if (!TrySave()) return;
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
 
-            playerContext.AddStation(station);
-            playerContext.WriteContext();
-            _selectedStation = station;
-            PopulateStationList();
-            PopulateForm();
-            Log.Info("Created new station");
+            _viewModel.Reset();
+            _viewModel.Name = "New Station";
+            using (var guard = new ProgrammaticUpdateGuard(this))
+            {
+                txtName.Text = _viewModel.Name;
+                cmbStationType.SelectedIndex = -1;
+                cmbOwnership.SelectedIndex = -1;
+                dgvHold.Rows.Clear();
+                dgvComponents.Rows.Clear();
+                rtbStationStats.Text = string.Empty;
+                dgvMunitions.Rows.Clear();
+            }
+
+            SetDetailEnabled(true);
+            txtName.Focus();
+            Log.Info("New station form prepared");
         }
 
         private void CmdDelete_Click(object sender, EventArgs e)
         {
-            if (_selectedStation == null) return;
+            if (_viewModel.IsNew || string.IsNullOrEmpty(_viewModel.UUID)) return;
 
             var refCounter = new StationReferenceCounter(
                 playerContext.DeliveryRouteList.ToList(),
                 playerContext.GetCurrentPlayerPlans(),
                 playerContext.GetCurrentPlayerBuildPlans());
-            int refs = refCounter.CountReferences(_selectedStation.UUID);
+            int refs = refCounter.CountReferences(_viewModel.UUID);
             if (refs > 0)
             {
                 MessageBox.Show(
                     string.Format(
                         "Cannot delete station \"{0}\" \u2014 it is referenced by {1} route stop(s), delivery plan(s), or build item(s).",
-                        _selectedStation.Name,
+                        _viewModel.Name,
                         refs),
                     "Delete Blocked",
                     MessageBoxButtons.OK,
@@ -767,15 +814,15 @@ namespace OE2EmpireTracker.Forms.Station
                 return;
             }
 
-            var result = MessageBox.Show(
-                string.Format("Delete station \"{0}\"?", _selectedStation.Name),
+            var confirmResult = MessageBox.Show(
+                string.Format("Delete station \"{0}\"?", _viewModel.Name),
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
-            if (result != DialogResult.Yes) return;
-            playerContext.RemoveStation(_selectedStation);
-            playerContext.WriteContext();
-            _selectedStation = null;
+            if (confirmResult != DialogResult.Yes) return;
+
+            _stationService.Delete(_viewModel.UUID);
+            _viewModel.Reset();
             PopulateStationList();
             ClearForm();
             Log.Info("Deleted station");
@@ -783,24 +830,76 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void CmdSave_Click(object sender, EventArgs e)
         {
-            if (_selectedStation == null) return;
+            TrySave();
+        }
+
+        private bool TrySave()
+        {
             string name = txtName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
                 MessageBox.Show("Name cannot be empty.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                return false;
             }
 
-            _selectedStation.Name = name;
-            playerContext.WriteContext();
-            PopulateStationList();
-            Log.Info("Saved station \"{0}\"", _selectedStation.Name);
+            _viewModel.Name = name;
+
+            try
+            {
+                ReadOnlyStation result;
+                if (_viewModel.IsNew)
+                {
+                    result = _stationService.Create(_viewModel.BuildCreateRequest());
+                }
+                else
+                {
+                    result = _stationService.Update(_viewModel.UUID, _viewModel.BuildUpdateRequest());
+                }
+
+                _viewModel.LoadFrom(result, playerContext.CurrentPlayerUUID);
+                PopulateStationList();
+                PopulateForm();
+                Log.Info("Saved station \"{0}\"", _viewModel.Name);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to save station");
+                MessageBox.Show("Failed to save: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
 
         private void TxtName_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedStation == null) return;
-            _selectedStation.Name = txtName.Text;
+            if (_isProgrammaticUpdate > 0) return;
+            _viewModel.Name = txtName.Text;
+        }
+
+        // Unsaved changes dialog
+        private DialogResult ShowUnsavedChangesDialog()
+        {
+            return MessageBox.Show(
+                "You have unsaved changes. Save before continuing?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+        }
+
+        private void RestoreSelection()
+        {
+            using var guard = new ProgrammaticUpdateGuard(this);
+            if (!string.IsNullOrEmpty(_viewModel.UUID))
+            {
+                foreach (ListViewItem item in lvwStations.Items)
+                {
+                    if (item.Tag is ReadOnlyStation ro && ro.UUID == _viewModel.UUID)
+                    {
+                        item.Selected = true;
+                        return;
+                    }
+                }
+            }
         }
 
         // Events
@@ -820,7 +919,7 @@ namespace OE2EmpireTracker.Forms.Station
                 return;
             }
 
-            _selectedStation = null;
+            _viewModel.Reset();
             PopulateStationList();
             ClearForm();
         }

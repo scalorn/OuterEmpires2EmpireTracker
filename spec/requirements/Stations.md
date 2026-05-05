@@ -31,6 +31,11 @@ The user wants to track space stations (government and player-owned), manage per
 **REQ-STN-020** Station SHALL have hull damage fields (HullCurrentHP, HullMaxHP, HullMaxRepairPercent) defaulting to 0 (undamaged).  
 **REQ-STN-021** Component damage SHALL be tracked per-slot via ShipComponentSlot damage fields.  
 
+## Station Service DTOs
+
+**REQ-STN-025** StationUpdateRequest SHALL carry Original (ReadOnlyStation), Name, StationType, Ownership, StationBlueprintUUID, HullCurrentHP, HullMaxHP, HullMaxRepairPercent, Components, Hold, and MunitionsHold for updating an existing station via StationService.  
+**REQ-STN-026** StationCreateRequest SHALL carry Name for creating a new station via StationService. No UUID or OwnerUUID (service assigns them).  
+
 ## Station Form
 
 **REQ-STN-030** FormStation SHALL be an MDI child form for creating and managing stations.  

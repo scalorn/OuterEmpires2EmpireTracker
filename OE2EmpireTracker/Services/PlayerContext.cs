@@ -2816,6 +2816,33 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Returns the mutable Ship entity by UUID. Internal so only the service can access it.
         /// </summary>
+        /// <summary>
+        /// Returns the mutable Station entity by UUID. Internal so only the service can access it.
+        /// </summary>
+        internal Station FindMutableStation(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_stationCache == null)
+                {
+                    _stationCache = new Dictionary<string, Station>();
+                    foreach (var s in _stationList)
+                    {
+                        if (s.UUID != null && !_stationCache.ContainsKey(s.UUID))
+                            _stationCache[s.UUID] = s;
+                    }
+                }
+
+                _stationCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
+        /// <summary>
+        /// Returns the mutable Ship entity by UUID. Internal so only the service can access it.
+        /// </summary>
         internal Ship FindMutableShip(string uuid)
         {
             if (string.IsNullOrEmpty(uuid)) return null;

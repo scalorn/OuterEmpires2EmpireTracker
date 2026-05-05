@@ -63,6 +63,7 @@ namespace OE2EmpireTracker.Tests.Services
             "ShipTemplateService.cs",
             "DeliveryPlanService.cs",
             "ShipService.cs",
+            "StationService.cs",
         };
 
         /// <summary>

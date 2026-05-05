@@ -35,6 +35,7 @@ namespace OE2EmpireTracker.Tests.Services
             "FormShipInstance.cs",
             "SerializationSorter.cs",
             "ShipService.cs",
+            "StationService.cs",
         };
 
         [Test]

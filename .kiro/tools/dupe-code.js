@@ -41,6 +41,10 @@ const KNOWN_DUPES = new Set([
     'DeepCopyItem',
     'SetComponent',
     'RemoveComponent',
+    // Deep-copy helpers intentionally duplicated between Station/Ship ViewModels (BL-117)
+    'DeepCopyReadOnlyItemBag',
+    'DeepCopyReadOnlyItem',
+    'SetComponentCondition',
 ]);
 
 function findCsFiles(dir, results) {

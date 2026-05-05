@@ -65,6 +65,7 @@ namespace OE2EmpireTracker.Tests.Services
             "BlueprintViewModel.cs",
             "ShipTemplateService.cs",
             "ShipService.cs",
+            "StationService.cs",
         };
 
         /// <summary>

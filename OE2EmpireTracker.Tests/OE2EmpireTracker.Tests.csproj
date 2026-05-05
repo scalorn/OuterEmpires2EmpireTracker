@@ -430,9 +430,14 @@
     <Compile Include="ViewModels\ShipTemplateViewModelTests.cs" />
     <Compile Include="ViewModels\ShipViewModelPropertyTests.cs" />
     <Compile Include="ViewModels\ShipViewModelTests.cs" />
+    <Compile Include="ViewModels\StationViewModelPropertyTests.cs" />
+    <Compile Include="ViewModels\StationViewModelTests.cs" />
     <Compile Include="Services\ShipServicePropertyTests.cs" />
     <Compile Include="Services\ShipServiceTests.cs" />
     <Compile Include="Services\ShipMutationGuardTests.cs" />
+    <Compile Include="Services\StationServicePropertyTests.cs" />
+    <Compile Include="Services\StationServiceTests.cs" />
+    <Compile Include="Services\StationMutationGuardTests.cs" />
     <Compile Include="Services\ShipTemplateServicePropertyTests.cs" />
     <Compile Include="Services\ShipTemplateServiceTests.cs" />
     <Compile Include="Services\ShipTemplateMutationGuardTests.cs" />

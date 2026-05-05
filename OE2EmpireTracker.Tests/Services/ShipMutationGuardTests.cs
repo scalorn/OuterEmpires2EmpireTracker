@@ -26,6 +26,7 @@ namespace OE2EmpireTracker.Tests.Services
             "PlayerContext.cs",
             "FormShipInstance.cs",
             "ShipTemplateService.cs",
+            "StationService.cs",
             "FormStation.cs",
             "FormSupplyChain.cs",
             "DeliveryGenerationService.cs",
@@ -38,6 +39,7 @@ namespace OE2EmpireTracker.Tests.Services
             "FormShipInstance.cs",
             "SerializationSorter.cs",
             "ShipTemplateService.cs",
+            "StationService.cs",
         };
 
         private static readonly HashSet<string> AllowedCargoBagMutators = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
