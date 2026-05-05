@@ -255,6 +255,7 @@
     <Compile Include="Services\ColonyService.cs" />
     <Compile Include="Services\DeliveryRouteService.cs" />
     <Compile Include="Services\BuildPlanMutationService.cs" />
+    <Compile Include="Services\StockTargetMutationService.cs" />
     <Compile Include="Services\ShipTemplateService.cs" />
     <Compile Include="Services\ShipService.cs" />
     <Compile Include="Services\StationService.cs" />
@@ -338,6 +339,7 @@
     <Compile Include="ViewModels\ColonyStructureViewModel.cs" />
     <Compile Include="ViewModels\DeliveryRouteViewModel.cs" />
     <Compile Include="ViewModels\BuildPlanViewModel.cs" />
+    <Compile Include="ViewModels\StockTargetViewModel.cs" />
     <Compile Include="ViewModels\ShipTemplateViewModel.cs" />
     <Compile Include="ViewModels\ShipViewModel.cs" />
     <Compile Include="ViewModels\StationViewModel.cs" />
@@ -441,6 +443,10 @@
     <Compile Include="Models\DeliveryPlanUpdateRequest.cs" />
     <Compile Include="Models\BuildPlanUpdateRequest.cs" />
     <Compile Include="Models\BuildPlanCreateRequest.cs" />
+    <Compile Include="Models\StockPlanUpdateRequest.cs" />
+    <Compile Include="Models\StockPlanCreateRequest.cs" />
+    <Compile Include="Models\StockProfileUpdateRequest.cs" />
+    <Compile Include="Models\StockProfileCreateRequest.cs" />
     <Compile Include="Models\StopDestinationInfo.cs" />
     <Compile Include="Models\DeliveryItemInfo.cs" />
     <Compile Include="Parsers\BlueprintScanner.cs" />

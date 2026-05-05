@@ -431,6 +431,32 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Sorts read-only stock plans by Name (ascending, OrdinalIgnoreCase).
+        /// </summary>
+        public static IReadOnlyList<ReadOnlyStockPlan> OrderStockPlans(
+            IEnumerable<ReadOnlyStockPlan> plans)
+        {
+            if (plans == null) return Array.Empty<ReadOnlyStockPlan>();
+            return plans
+                .OrderBy(p => p.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
+        /// Sorts read-only stock profiles by Name (ascending, OrdinalIgnoreCase).
+        /// </summary>
+        public static IReadOnlyList<ReadOnlyStockProfile> OrderStockProfiles(
+            IEnumerable<ReadOnlyStockProfile> profiles)
+        {
+            if (profiles == null) return Array.Empty<ReadOnlyStockProfile>();
+            return profiles
+                .OrderBy(p => p.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        /// <summary>
         /// Sorts supply chains by Name (ascending, OrdinalIgnoreCase).
         /// </summary>
         public static IReadOnlyList<SupplyChain> OrderSupplyChains(

@@ -38,6 +38,7 @@ namespace OE2EmpireTracker.Tests.Services
             "FormShipTemplate.cs",
             "FormStation.cs",
             "FormStockTargets.cs",
+            "StockTargetMutationService.cs",
             "FormSupplyChain.cs",
             "FormSurvey.cs",
             "Colony.cs",

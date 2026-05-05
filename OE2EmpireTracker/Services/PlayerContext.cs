@@ -3102,6 +3102,54 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        /// <summary>
+        /// Returns the mutable StockPlan entity by UUID. Internal so only the service can access it.
+        /// </summary>
+        internal StockPlan FindMutableStockPlan(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_stockPlanCache == null)
+                {
+                    _stockPlanCache = new Dictionary<string, StockPlan>();
+                    foreach (var sp in _stockPlanList)
+                    {
+                        if (sp.UUID != null && !_stockPlanCache.ContainsKey(sp.UUID))
+                            _stockPlanCache[sp.UUID] = sp;
+                    }
+                }
+
+                _stockPlanCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
+        /// <summary>
+        /// Returns the mutable StockProfile entity by UUID. Internal so only the service can access it.
+        /// </summary>
+        internal StockProfile FindMutableStockProfile(string uuid)
+        {
+            if (string.IsNullOrEmpty(uuid)) return null;
+
+            lock (_listLock)
+            {
+                if (_stockProfileCache == null)
+                {
+                    _stockProfileCache = new Dictionary<string, StockProfile>();
+                    foreach (var sp in _stockProfileList)
+                    {
+                        if (sp.UUID != null && !_stockProfileCache.ContainsKey(sp.UUID))
+                            _stockProfileCache[sp.UUID] = sp;
+                    }
+                }
+
+                _stockProfileCache.TryGetValue(uuid, out var match);
+                return match;
+            }
+        }
+
         private void RebuildBuildItemIndexes()
         {
             _blueprintBuildItemIndex = new Dictionary<string, List<BuildItem>>();

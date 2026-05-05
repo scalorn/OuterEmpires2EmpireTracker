@@ -8,6 +8,7 @@ using NLog;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.StockTargets
 {
@@ -19,9 +20,13 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
         private PlayerContext playerContext;
 
-        private StockPlan _selectedPlan;
+        private StockTargetViewModel _viewModel = new StockTargetViewModel();
 
-        private StockProfile _selectedProfile;
+        private StockTargetMutationService _mutationService;
+
+        private ReadOnlyStockPlan _selectedPlan;
+
+        private ReadOnlyStockProfile _selectedProfile;
 
         private List<string> _entryPlanUUIDs = new List<string>();
 
@@ -29,6 +34,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
         {
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
+            _mutationService = new StockTargetMutationService(playerContext);
 
             lvwPlans.View = View.Details;
             lvwPlans.Columns.Add("Name", 140);
@@ -94,6 +100,41 @@ namespace OE2EmpireTracker.Forms.StockTargets
             base.OnFormClosed(e);
         }
 
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (_viewModel.IsPlanDirty)
+            {
+                var result = PromptUnsavedChanges("plan");
+                if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (result == DialogResult.Yes)
+                {
+                    SavePlan();
+                }
+            }
+
+            if (_viewModel.IsProfileDirty)
+            {
+                var result = PromptUnsavedChanges("profile");
+                if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (result == DialogResult.Yes)
+                {
+                    SaveProfile();
+                }
+            }
+
+            base.OnFormClosing(e);
+        }
+
         // Layout
         private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
@@ -126,7 +167,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
             string selectedUUID = _selectedPlan?.UUID;
             lvwPlans.Items.Clear();
 
-            var plans = playerContext.GetCurrentPlayerStockPlans();
+            var plans = playerContext.GetReadOnlyStockPlanList()
+                .Where(p => p.OwnerUUID == playerContext.CurrentPlayerUUID).ToList();
             string filter = txtFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
             {
@@ -159,14 +201,17 @@ namespace OE2EmpireTracker.Forms.StockTargets
         private void LvwPlans_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (e.IsSelected && e.Item.Tag is StockPlan plan)
+            if (e.IsSelected && e.Item.Tag is ReadOnlyStockPlan plan)
             {
+                if (!CheckPlanDirtyBeforeSwitch()) return;
                 _selectedPlan = plan;
+                _viewModel.LoadPlanFrom(plan);
                 PopulateForm();
             }
             else if (!e.IsSelected && lvwPlans.SelectedItems.Count == 0)
             {
                 _selectedPlan = null;
+                _viewModel.ResetPlan();
                 ClearForm();
             }
         }
@@ -182,8 +227,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 return;
             }
 
-            txtPlanName.Text = _selectedPlan.Name;
-            chkActive.Checked = _selectedPlan.IsActive;
+            txtPlanName.Text = _viewModel.PlanName;
+            chkActive.Checked = _viewModel.PlanIsActive;
             PopulateReplenishmentCombo();
             PopulateTargetsGrid();
             SetDetailEnabled(true);
@@ -257,8 +302,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
             cmbReplenishmentPlan.DisplayMember = "Value";
             cmbReplenishmentPlan.ValueMember = "Key";
 
-            if (_selectedPlan != null && !string.IsNullOrEmpty(_selectedPlan.ReplenishmentBuildPlanUUID))
-                cmbReplenishmentPlan.SelectedValue = _selectedPlan.ReplenishmentBuildPlanUUID;
+            if (_selectedPlan != null && !string.IsNullOrEmpty(_viewModel.ReplenishmentBuildPlanUUID))
+                cmbReplenishmentPlan.SelectedValue = _viewModel.ReplenishmentBuildPlanUUID;
             sw.Stop();
             Log.Info("PERF PopulateReplenishmentCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -379,7 +424,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             dgvTargets.Rows.Clear();
             if (_selectedPlan == null) return;
 
-            foreach (var target in _selectedPlan.Targets)
+            foreach (var target in _viewModel.Targets)
             {
                 string typeName = target.ItemType.ToString();
                 if (!string.IsNullOrEmpty(target.ShipTemplateUUID))
@@ -421,34 +466,32 @@ namespace OE2EmpireTracker.Forms.StockTargets
         // CRUD
         private void CmdNew_Click(object sender, EventArgs e)
         {
-            var plan = new StockPlan
+            if (!CheckPlanDirtyBeforeSwitch()) return;
+            _viewModel.ResetPlan();
+            _selectedPlan = null;
+            using (var guard = new ProgrammaticUpdateGuard(this))
             {
-                UUID = Guid.NewGuid().ToString(),
-                Name = "New Stock Plan",
-                OwnerUUID = playerContext.CurrentPlayerUUID ?? string.Empty,
-                IsActive = true
-            };
+                ClearForm();
+            }
 
-            playerContext.AddStockPlan(plan);
-            playerContext.WriteContext();
-            _selectedPlan = plan;
-            PopulatePlanList();
-            PopulateForm();
-            Log.Info("Created new stock plan");
+            SetDetailEnabled(true);
+            txtPlanName.Text = "New Stock Plan";
+            _viewModel.PlanName = "New Stock Plan";
+            Log.Info("New stock plan started");
         }
 
         private void CmdDelete_Click(object sender, EventArgs e)
         {
             if (_selectedPlan == null) return;
             var result = MessageBox.Show(
-                string.Format("Delete stock plan \"{0}\"?", _selectedPlan.Name),
+                string.Format("Delete stock plan \"{0}\"?", _viewModel.PlanName),
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.RemoveStockPlan(_selectedPlan);
-            playerContext.WriteContext();
+            _mutationService.DeletePlan(_selectedPlan.UUID);
             _selectedPlan = null;
+            _viewModel.ResetPlan();
             PopulatePlanList();
             ClearForm();
             Log.Info("Deleted stock plan");
@@ -456,40 +499,26 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
         private void CmdSave_Click(object sender, EventArgs e)
         {
-            if (_selectedPlan == null) return;
-            string name = txtPlanName.Text.Trim();
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                MessageBox.Show(
-                    "Name cannot be empty.",
-                    "Validation",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
-            }
-
-            _selectedPlan.Name = name;
-            playerContext.WriteContext();
-            PopulatePlanList();
-            Log.Info("Saved stock plan \"{0}\"", _selectedPlan.Name);
+            if (_selectedPlan == null && !_viewModel.IsPlanNew) return;
+            SavePlan();
         }
 
         private void TxtPlanName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
-            _selectedPlan.Name = txtPlanName.Text;
+            _viewModel.PlanName = txtPlanName.Text;
         }
 
         private void ChkActive_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
-            _selectedPlan.IsActive = chkActive.Checked;
+            _viewModel.PlanIsActive = chkActive.Checked;
         }
 
         private void CmbReplenishmentPlan_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedPlan == null) return;
-            _selectedPlan.ReplenishmentBuildPlanUUID = cmbReplenishmentPlan.SelectedValue?.ToString() ?? string.Empty;
+            _viewModel.ReplenishmentBuildPlanUUID = cmbReplenishmentPlan.SelectedValue?.ToString() ?? string.Empty;
         }
 
         private void CmdAddTarget_Click(object sender, EventArgs e)
@@ -529,7 +558,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 LocationUUID = locationUUID
             };
 
-            _selectedPlan.Targets.Add(target);
+            _viewModel.AddTarget(target);
             PopulateTargetsGrid();
             Log.Info("Added target: {0} qty={1}", itemName, qty);
         }
@@ -552,7 +581,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             if (_selectedPlan == null || dgvTargets.SelectedRows.Count == 0) return;
             var target = dgvTargets.SelectedRows[0].Tag as StockTarget;
             if (target == null) return;
-            _selectedPlan.Targets.Remove(target);
+            _viewModel.RemoveTarget(target.UUID);
             PopulateTargetsGrid();
             Log.Info("Removed target: {0}", target.ItemName);
         }
@@ -577,7 +606,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             foreach (var r in resources.OrderBy(x => x.Name))
             {
                 // Skip if already exists
-                if (_selectedPlan.Targets.Any(t => t.ItemName == r.Name && t.ItemType == ItemType.ItemTypeEnum.Resource))
+                if (_viewModel.Targets.Any(t => t.ItemName == r.Name && t.ItemType == ItemType.ItemTypeEnum.Resource))
                     continue;
                 var target = new StockTarget
                 {
@@ -589,7 +618,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                     Scope = StockTargetScope.EmpireWide
                 };
 
-                _selectedPlan.Targets.Add(target);
+                _viewModel.AddTarget(target);
                 added++;
             }
 
@@ -669,8 +698,17 @@ namespace OE2EmpireTracker.Forms.StockTargets
             var stations = playerContext.StationList.ToList();
             string playerUUID = playerContext.CurrentPlayerUUID ?? string.Empty;
 
+            var tempPlan = new StockPlan
+            {
+                UUID = _selectedPlan.UUID,
+                Name = _viewModel.PlanName,
+                OwnerUUID = _selectedPlan.OwnerUUID,
+                IsActive = _viewModel.PlanIsActive,
+                ReplenishmentBuildPlanUUID = _viewModel.ReplenishmentBuildPlanUUID,
+                Targets = _viewModel.Targets,
+            };
             var shortfalls = StockTargetService.CheckTargets(
-                new[] { _selectedPlan },
+                new[] { tempPlan },
                 playerUUID,
                 uuid => playerContext.FindColony(uuid),
                 uuid => playerContext.StationList.FirstOrDefault(st => st.UUID == uuid),
@@ -713,7 +751,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             }
 
             // Generate replenishment items if a build plan is assigned
-            if (string.IsNullOrEmpty(_selectedPlan.ReplenishmentBuildPlanUUID))
+            if (string.IsNullOrEmpty(_viewModel.ReplenishmentBuildPlanUUID))
             {
                 MessageBox.Show(
                     string.Format(
@@ -726,7 +764,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             }
 
             var buildPlan = playerContext.BuildPlanList
-                .FirstOrDefault(bp => bp.UUID == _selectedPlan.ReplenishmentBuildPlanUUID);
+                .FirstOrDefault(bp => bp.UUID == _viewModel.ReplenishmentBuildPlanUUID);
             if (buildPlan == null)
             {
                 MessageBox.Show(
@@ -784,7 +822,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
             string selectedUUID = _selectedProfile?.UUID;
             lvwProfiles.Items.Clear();
 
-            var profiles = playerContext.GetCurrentPlayerStockProfiles();
+            var profiles = playerContext.GetReadOnlyStockProfileList()
+                .Where(p => p.OwnerUUID == playerContext.CurrentPlayerUUID).ToList();
             string filter = txtProfileFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
             {
@@ -817,14 +856,17 @@ namespace OE2EmpireTracker.Forms.StockTargets
         private void LvwProfiles_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (e.IsSelected && e.Item.Tag is StockProfile profile)
+            if (e.IsSelected && e.Item.Tag is ReadOnlyStockProfile profile)
             {
+                if (!CheckProfileDirtyBeforeSwitch()) return;
                 _selectedProfile = profile;
+                _viewModel.LoadProfileFrom(profile);
                 PopulateProfileForm();
             }
             else if (!e.IsSelected && lvwProfiles.SelectedItems.Count == 0)
             {
                 _selectedProfile = null;
+                _viewModel.ResetProfile();
                 ClearProfileForm();
             }
         }
@@ -839,8 +881,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 return;
             }
 
-            txtProfileName.Text = _selectedProfile.Name;
-            chkProfileActive.Checked = _selectedProfile.IsActive;
+            txtProfileName.Text = _viewModel.ProfileName;
+            chkProfileActive.Checked = _viewModel.ProfileIsActive;
             PopulateEntriesGrid();
             PopulateEntryCombo();
             SetProfileDetailEnabled(true);
@@ -880,7 +922,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             dgvEntries.Rows.Clear();
             if (_selectedProfile == null) return;
 
-            foreach (var entry in _selectedProfile.Entries)
+            foreach (var entry in _viewModel.Entries)
             {
                 string planName = ResolvePlanName(entry.StockPlanUUID);
                 int rowIdx = dgvEntries.Rows.Add(entry.GroupID, planName);
@@ -903,12 +945,14 @@ namespace OE2EmpireTracker.Forms.StockTargets
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
 
-            var plans = playerContext.GetCurrentPlayerStockPlans();
-            plans = CollectionSortHelper.OrderStockPlans(plans).ToList();
+            var roPlans = playerContext.GetReadOnlyStockPlanList()
+                .Where(p => p.OwnerUUID == playerContext.CurrentPlayerUUID)
+                .ToList();
+            roPlans = CollectionSortHelper.OrderStockPlans(roPlans).ToList();
 
             var planNames = new List<string>();
             _entryPlanUUIDs = new List<string>();
-            foreach (var plan in plans)
+            foreach (var plan in roPlans)
             {
                 planNames.Add(plan.Name);
                 _entryPlanUUIDs.Add(plan.UUID);
@@ -922,13 +966,13 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
         private void UpdateLogicSummary()
         {
-            if (_selectedProfile == null || _selectedProfile.Entries.Count == 0)
+            if (_selectedProfile == null || _viewModel.Entries.Count == 0)
             {
                 lblLogicSummary.Text = string.Empty;
                 return;
             }
 
-            var groups = _selectedProfile.Entries
+            var groups = _viewModel.Entries
                 .GroupBy(e => e.GroupID)
                 .OrderBy(g => g.Key);
 
@@ -950,34 +994,32 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
         private void CmdNewProfile_Click(object sender, EventArgs e)
         {
-            var profile = new StockProfile
+            if (!CheckProfileDirtyBeforeSwitch()) return;
+            _viewModel.ResetProfile();
+            _selectedProfile = null;
+            using (var guard = new ProgrammaticUpdateGuard(this))
             {
-                UUID = Guid.NewGuid().ToString(),
-                Name = "New Profile",
-                OwnerUUID = playerContext.CurrentPlayerUUID ?? string.Empty,
-                IsActive = true
-            };
+                ClearProfileForm();
+            }
 
-            playerContext.AddStockProfile(profile);
-            playerContext.WriteContext();
-            _selectedProfile = profile;
-            PopulateProfileList();
-            PopulateProfileForm();
-            Log.Info("Created new stock profile");
+            SetProfileDetailEnabled(true);
+            txtProfileName.Text = "New Profile";
+            _viewModel.ProfileName = "New Profile";
+            Log.Info("New stock profile started");
         }
 
         private void CmdDeleteProfile_Click(object sender, EventArgs e)
         {
             if (_selectedProfile == null) return;
             var result = MessageBox.Show(
-                string.Format("Delete profile \"{0}\"?", _selectedProfile.Name),
+                string.Format("Delete profile \"{0}\"?", _viewModel.ProfileName),
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.RemoveStockProfile(_selectedProfile);
-            playerContext.WriteContext();
+            _mutationService.DeleteProfile(_selectedProfile.UUID);
             _selectedProfile = null;
+            _viewModel.ResetProfile();
             PopulateProfileList();
             ClearProfileForm();
             Log.Info("Deleted stock profile");
@@ -985,34 +1027,20 @@ namespace OE2EmpireTracker.Forms.StockTargets
 
         private void CmdSaveProfile_Click(object sender, EventArgs e)
         {
-            if (_selectedProfile == null) return;
-            string name = txtProfileName.Text.Trim();
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                MessageBox.Show(
-                    "Name cannot be empty.",
-                    "Validation",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
-            }
-
-            _selectedProfile.Name = name;
-            playerContext.WriteContext();
-            PopulateProfileList();
-            Log.Info("Saved stock profile \"{0}\"", _selectedProfile.Name);
+            if (_selectedProfile == null && !_viewModel.IsProfileNew) return;
+            SaveProfile();
         }
 
         private void TxtProfileName_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedProfile == null) return;
-            _selectedProfile.Name = txtProfileName.Text;
+            _viewModel.ProfileName = txtProfileName.Text;
         }
 
         private void ChkProfileActive_CheckedChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _selectedProfile == null) return;
-            _selectedProfile.IsActive = chkProfileActive.Checked;
+            _viewModel.ProfileIsActive = chkProfileActive.Checked;
         }
 
         private void CmdAddEntry_Click(object sender, EventArgs e)
@@ -1030,7 +1058,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 StockPlanUUID = planUUID
             };
 
-            _selectedProfile.Entries.Add(entry);
+            _viewModel.AddEntry(entry);
             PopulateEntriesGrid();
             UpdateLogicSummary();
             Log.Info("Added profile entry: group={0} plan={1}", groupID, ResolvePlanName(planUUID));
@@ -1041,10 +1069,101 @@ namespace OE2EmpireTracker.Forms.StockTargets
             if (_selectedProfile == null || dgvEntries.SelectedRows.Count == 0) return;
             var entry = dgvEntries.SelectedRows[0].Tag as StockProfileEntry;
             if (entry == null) return;
-            _selectedProfile.Entries.Remove(entry);
+            _viewModel.RemoveEntry(entry);
             PopulateEntriesGrid();
             UpdateLogicSummary();
             Log.Info("Removed profile entry: group={0}", entry.GroupID);
+        }
+
+        // === Save and Dirty Helpers ===
+
+        private void SavePlan()
+        {
+            string name = _viewModel.PlanName?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                MessageBox.Show(
+                    "Name cannot be empty.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            _viewModel.PlanName = name;
+            if (_viewModel.IsPlanNew)
+            {
+                var created = _mutationService.CreatePlan(_viewModel.BuildPlanCreateRequest());
+                _selectedPlan = created;
+                _viewModel.LoadPlanFrom(created);
+            }
+            else
+            {
+                var updated = _mutationService.UpdatePlan(_selectedPlan.UUID, _viewModel.BuildPlanUpdateRequest());
+                _selectedPlan = updated;
+                _viewModel.LoadPlanFrom(updated);
+            }
+
+            PopulatePlanList();
+            Log.Info("Saved stock plan");
+        }
+
+        private void SaveProfile()
+        {
+            string name = _viewModel.ProfileName?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                MessageBox.Show(
+                    "Name cannot be empty.",
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            _viewModel.ProfileName = name;
+            if (_viewModel.IsProfileNew)
+            {
+                var created = _mutationService.CreateProfile(_viewModel.BuildProfileCreateRequest());
+                _selectedProfile = created;
+                _viewModel.LoadProfileFrom(created);
+            }
+            else
+            {
+                var updated = _mutationService.UpdateProfile(_selectedProfile.UUID, _viewModel.BuildProfileUpdateRequest());
+                _selectedProfile = updated;
+                _viewModel.LoadProfileFrom(updated);
+            }
+
+            PopulateProfileList();
+            Log.Info("Saved stock profile");
+        }
+
+        private bool CheckPlanDirtyBeforeSwitch()
+        {
+            if (!_viewModel.IsPlanDirty) return true;
+            var result = PromptUnsavedChanges("plan");
+            if (result == DialogResult.Cancel) return false;
+            if (result == DialogResult.Yes) SavePlan();
+            return true;
+        }
+
+        private bool CheckProfileDirtyBeforeSwitch()
+        {
+            if (!_viewModel.IsProfileDirty) return true;
+            var result = PromptUnsavedChanges("profile");
+            if (result == DialogResult.Cancel) return false;
+            if (result == DialogResult.Yes) SaveProfile();
+            return true;
+        }
+
+        private DialogResult PromptUnsavedChanges(string entityType)
+        {
+            return MessageBox.Show(
+                string.Format("You have unsaved changes to the current {0}. Save before continuing?", entityType),
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Warning);
         }
 
         // Events
@@ -1065,9 +1184,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
             }
 
             _selectedPlan = null;
+            _viewModel.ResetPlan();
             PopulatePlanList();
             ClearForm();
             _selectedProfile = null;
+            _viewModel.ResetProfile();
             PopulateProfileList();
             ClearProfileForm();
         }

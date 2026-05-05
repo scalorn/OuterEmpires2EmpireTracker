@@ -299,6 +299,7 @@ Apply the immutable data model pattern to ShipTemplate. Create ShipTemplateServi
 Apply the immutable data model pattern to Station. Create StationService as sole mutator with CRUD methods for stations, components, holds, and munitions. Create StationViewModel as disconnected edit buffer. Migrate FormStation to route all mutations through the service. Currently mutates Station, ShipComponentSlot, and Item directly (3 WriteContext calls). Station is one of the more complex entities with components, holds, and munitions hold. Includes unsaved changes prompts.
 
 ### BL-118: BuildPlan — Immutable Data Model with Service Layer
+**Status: Complete** — see spec .kiro/specs/bl-118-buildplan-readonly/
 **Dependencies:** none
 **Status: New**
 Apply the immutable data model pattern to BuildPlan and BuildItem. Create BuildPlanMutationService as sole mutator with CRUD methods for plans and build items (status, location, structure assignment, dependencies). Create BuildPlanViewModel as disconnected edit buffer. Migrate FormBuildPlanner and FormStructureAllocation to route all mutations through the service. FormBuildPlanner currently mutates BuildPlan and BuildItem directly (2+ WriteContext calls). FormStructureAllocation mutates BuildItem allocation fields. Subsumes the old BL-121 (FormBuildPlanner) and BL-122 (FormStructureAllocation) read-only wrapper items. Includes unsaved changes prompts.

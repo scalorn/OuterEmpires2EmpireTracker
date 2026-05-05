@@ -453,8 +453,13 @@
     <Compile Include="Services\DeliveryPlanServiceTests.cs" />
     <Compile Include="Services\DeliveryPlanMutationGuardTests.cs" />
     <Compile Include="ViewModels\BuildPlanViewModelPropertyTests.cs" />
+    <Compile Include="ViewModels\StockTargetViewModelPropertyTests.cs" />
+    <Compile Include="ViewModels\StockTargetViewModelTests.cs" />
     <Compile Include="ViewModels\BuildPlanViewModelTests.cs" />
     <Compile Include="Services\BuildPlanMutationServicePropertyTests.cs" />
+    <Compile Include="Services\StockTargetMutationServicePropertyTests.cs" />
+    <Compile Include="Services\StockTargetMutationServiceTests.cs" />
+    <Compile Include="Services\StockTargetMutationGuardTests.cs" />
     <Compile Include="Services\BuildPlanMutationServiceTests.cs" />
     <Compile Include="Services\BuildPlanMutationGuardTests.cs" />
     <Compile Include="Services\SurveyServicePropertyTests.cs" />
