@@ -463,6 +463,11 @@
     <Compile Include="Services\ContactsServicePropertyTests.cs" />
     <Compile Include="Services\ContactsServiceTests.cs" />
     <Compile Include="Services\ContactsMutationGuardTests.cs" />
+    <Compile Include="ViewModels\AsteroidViewModelPropertyTests.cs" />
+    <Compile Include="ViewModels\AsteroidViewModelTests.cs" />
+    <Compile Include="Services\AsteroidServicePropertyTests.cs" />
+    <Compile Include="Services\AsteroidServiceTests.cs" />
+    <Compile Include="Services\AsteroidMutationGuardTests.cs" />
     <Compile Include="Services\BuildPlanMutationServicePropertyTests.cs" />
     <Compile Include="Services\SupplyChainMutationServicePropertyTests.cs" />
     <Compile Include="Services\StockTargetMutationServicePropertyTests.cs" />

@@ -521,6 +521,19 @@ namespace OE2EmpireTracker.Services
                 .AsReadOnly();
         }
 
+        /// <summary>
+        /// Sorts read-only asteroids by Name (ascending, OrdinalIgnoreCase).
+        /// </summary>
+        public static IReadOnlyList<ReadOnlyAsteroid> OrderReadOnlyAsteroids(
+            IEnumerable<ReadOnlyAsteroid> asteroids)
+        {
+            if (asteroids == null) return Array.Empty<ReadOnlyAsteroid>();
+            return asteroids
+                .OrderBy(a => a.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
+
         // ----------------------------------------------------------------
         //  Nested Collections
         // ----------------------------------------------------------------

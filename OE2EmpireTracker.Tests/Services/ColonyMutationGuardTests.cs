@@ -31,6 +31,7 @@ namespace OE2EmpireTracker.Tests.Services
             "SurveyImportHelper.cs",
             "SurveyService.cs",
             "FormAsteroid.cs",
+            "AsteroidService.cs",
         };
 
         /// <summary>

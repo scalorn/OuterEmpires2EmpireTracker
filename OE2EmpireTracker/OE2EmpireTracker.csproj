@@ -229,6 +229,7 @@
     <Compile Include="Services\SystemClock.cs" />
     <Compile Include="Services\SupplyChainService.cs" />
     <Compile Include="Services\ContactsService.cs" />
+    <Compile Include="Services\AsteroidService.cs" />
     <Compile Include="Services\StockTargetService.cs" />
     <Compile Include="Models\BaselineGameConstants.cs" />
     <Compile Include="Models\ResearchTimeEntry.cs" />
@@ -341,6 +342,7 @@
     <Compile Include="ViewModels\ColonyStructureViewModel.cs" />
     <Compile Include="ViewModels\DeliveryRouteViewModel.cs" />
     <Compile Include="ViewModels\BuildPlanViewModel.cs" />
+    <Compile Include="ViewModels\AsteroidViewModel.cs" />
     <Compile Include="ViewModels\StockTargetViewModel.cs" />
     <Compile Include="ViewModels\SupplyChainViewModel.cs" />
     <Compile Include="ViewModels\ContactsViewModel.cs" />
@@ -447,6 +449,8 @@
     <Compile Include="Models\DeliveryPlanUpdateRequest.cs" />
     <Compile Include="Models\BuildPlanUpdateRequest.cs" />
     <Compile Include="Models\BuildPlanCreateRequest.cs" />
+    <Compile Include="Models\AsteroidUpdateRequest.cs" />
+    <Compile Include="Models\AsteroidCreateRequest.cs" />
     <Compile Include="Models\StockPlanUpdateRequest.cs" />
     <Compile Include="Models\StockPlanCreateRequest.cs" />
     <Compile Include="Models\StockProfileUpdateRequest.cs" />

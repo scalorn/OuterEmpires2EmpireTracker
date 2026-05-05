@@ -7,6 +7,7 @@ using NLog;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using OE2EmpireTracker.ViewModels;
 
 namespace OE2EmpireTracker.Forms.Asteroid
 {
@@ -17,13 +18,14 @@ namespace OE2EmpireTracker.Forms.Asteroid
         private int _isProgrammaticUpdate = 0;
 
         private PlayerContext playerContext;
-
-        private Models.Asteroid _selectedAsteroid;
+        private AsteroidService _asteroidService;
+        private AsteroidViewModel _viewModel = new AsteroidViewModel();
 
         public FormAsteroid()
         {
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
+            _asteroidService = new AsteroidService(playerContext);
 
             lvwAsteroids.View = View.Details;
             lvwAsteroids.Columns.Add("Name", 100);
@@ -62,6 +64,31 @@ namespace OE2EmpireTracker.Forms.Asteroid
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
 
         public void EndProgrammaticUpdate() { _isProgrammaticUpdate--; }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (_viewModel.IsDirty)
+            {
+                var result = MessageBox.Show(
+                    "You have unsaved changes. Save before closing?",
+                    "Unsaved Changes",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
+
+                if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (result == DialogResult.Yes)
+                {
+                    CmdSave_Click(this, EventArgs.Empty);
+                }
+            }
+
+            base.OnFormClosing(e);
+        }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
@@ -102,37 +129,37 @@ namespace OE2EmpireTracker.Forms.Asteroid
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            string selectedUUID = _selectedAsteroid?.UUID;
+            string selectedUUID = _viewModel.UUID;
             lvwAsteroids.Items.Clear();
 
-            var asteroids = playerContext.AsteroidList.ToList();
+            var readOnlyAsteroids = playerContext.GetReadOnlyAsteroidList();
             string filter = txtFilter.Text.Trim();
             if (!string.IsNullOrEmpty(filter))
             {
-                asteroids = asteroids.Where(a =>
+                readOnlyAsteroids = readOnlyAsteroids.Where(a =>
                     a.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0 ||
                     a.SystemName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
 
-            asteroids = CollectionSortHelper.OrderAsteroids(asteroids).ToList();
+            readOnlyAsteroids = CollectionSortHelper.OrderReadOnlyAsteroids(readOnlyAsteroids).ToList();
 
             var refCounter = new AsteroidReferenceCounter(
                 playerContext.SurveyList.ToList(),
                 playerContext.GetCurrentPlayerBuildPlans(),
                 playerContext.DeliveryRouteList.ToList());
 
-            foreach (var asteroid in asteroids)
+            foreach (var roAsteroid in readOnlyAsteroids)
             {
-                var report = refCounter.CountReferences(asteroid.UUID);
-                var item = new ListViewItem(asteroid.Name) { Tag = asteroid };
-                item.SubItems.Add(asteroid.SystemName);
+                var report = refCounter.CountReferences(roAsteroid.UUID);
+                var item = new ListViewItem(roAsteroid.Name) { Tag = roAsteroid };
+                item.SubItems.Add(roAsteroid.SystemName);
                 item.SubItems.Add(report.TotalCount.ToString());
                 lvwAsteroids.Items.Add(item);
-                if (asteroid.UUID == selectedUUID) item.Selected = true;
+                if (roAsteroid.UUID == selectedUUID) item.Selected = true;
             }
 
             sw.Stop();
-            Log.Info("PERF PopulateAsteroidList: {0}ms items={1}", sw.ElapsedMilliseconds, asteroids.Count);
+            Log.Info("PERF PopulateAsteroidList: {0}ms items={1}", sw.ElapsedMilliseconds, readOnlyAsteroids.Count);
         }
 
         private void TxtFilter_TextChanged(object sender, EventArgs e) { PopulateAsteroidList(); }
@@ -140,14 +167,21 @@ namespace OE2EmpireTracker.Forms.Asteroid
         private void LvwAsteroids_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            if (e.IsSelected && e.Item.Tag is Models.Asteroid asteroid)
+            if (e.IsSelected && e.Item.Tag is ReadOnlyAsteroid roAsteroid)
             {
-                _selectedAsteroid = asteroid;
+                if (!PromptUnsavedChanges())
+                {
+                    using var guard = new ProgrammaticUpdateGuard(this);
+                    e.Item.Selected = false;
+                    return;
+                }
+
+                _viewModel.LoadFrom(roAsteroid);
                 PopulateForm();
             }
             else if (!e.IsSelected && lvwAsteroids.SelectedItems.Count == 0)
             {
-                _selectedAsteroid = null;
+                _viewModel.Reset();
                 ClearForm();
             }
         }
@@ -157,14 +191,14 @@ namespace OE2EmpireTracker.Forms.Asteroid
         {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            if (_selectedAsteroid == null)
+            if (_viewModel.IsNew)
             {
                 ClearForm();
                 return;
             }
 
-            txtAsteroidName.Text = _selectedAsteroid.Name;
-            txtSystemName.Text = _selectedAsteroid.SystemName;
+            txtAsteroidName.Text = _viewModel.Name;
+            txtSystemName.Text = _viewModel.SystemName;
             PopulateReservesGrid();
             PopulateLinkedSurveys();
             SetDetailEnabled(true);
@@ -234,9 +268,9 @@ namespace OE2EmpireTracker.Forms.Asteroid
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvReserves.Rows.Clear();
-            if (_selectedAsteroid == null) return;
+            if (_viewModel.IsNew) return;
 
-            foreach (var reserve in _selectedAsteroid.Reserves)
+            foreach (var reserve in _viewModel.Reserves)
             {
                 int rowIdx = dgvReserves.Rows.Add(
                     reserve.ResourceName,
@@ -256,9 +290,10 @@ namespace OE2EmpireTracker.Forms.Asteroid
 
         private void DgvReserves_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedAsteroid == null || e.RowIndex < 0) return;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew || e.RowIndex < 0) return;
+            if (e.RowIndex >= _viewModel.Reserves.Count) return;
+            var reserve = _viewModel.Reserves[e.RowIndex];
             var row = dgvReserves.Rows[e.RowIndex];
-            if (!(row.Tag is AsteroidReserve reserve)) return;
             string valStr = row.Cells[e.ColumnIndex].Value?.ToString() ?? string.Empty;
 
             if (e.ColumnIndex == colCurrentReserve.Index)
@@ -273,7 +308,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
 
         private void CmdAddReserve_Click(object sender, EventArgs e)
         {
-            if (_selectedAsteroid == null) return;
+            if (_viewModel.IsNew) return;
             string resourceName = cmbReserveResource.SelectedItem?.ToString() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(resourceName)) return;
             string purity = cmbReservePurity.SelectedItem?.ToString() ?? string.Empty;
@@ -297,19 +332,18 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 CurrentReserve = currentReserve
             };
 
-            _selectedAsteroid.Reserves.Add(reserve);
+            _viewModel.AddReserve(reserve);
             PopulateReservesGrid();
             Log.Info("Added reserve: {0} ({1}) max={2}", resourceName, purity, maxReserve);
         }
 
         private void CmdRemoveReserve_Click(object sender, EventArgs e)
         {
-            if (_selectedAsteroid == null || dgvReserves.SelectedRows.Count == 0) return;
-            var reserve = dgvReserves.SelectedRows[0].Tag as AsteroidReserve;
-            if (reserve == null) return;
-            _selectedAsteroid.Reserves.Remove(reserve);
+            if (_viewModel.IsNew || dgvReserves.SelectedRows.Count == 0) return;
+            int index = dgvReserves.SelectedRows[0].Index;
+            _viewModel.RemoveReserve(index);
             PopulateReservesGrid();
-            Log.Info("Removed reserve: {0} ({1})", reserve.ResourceName, reserve.Purity);
+            Log.Info("Removed reserve at index {0}", index);
         }
 
         // Linked Surveys grid
@@ -318,10 +352,10 @@ namespace OE2EmpireTracker.Forms.Asteroid
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvLinkedSurveys.Rows.Clear();
-            if (_selectedAsteroid == null) return;
+            if (_viewModel.IsNew) return;
 
             var linkedSurveys = playerContext.SurveyList
-                .Where(s => s.AsteroidUUID == _selectedAsteroid.UUID)
+                .Where(s => s.AsteroidUUID == _viewModel.UUID)
                 .ToList();
 
             foreach (var survey in linkedSurveys)
@@ -347,15 +381,12 @@ namespace OE2EmpireTracker.Forms.Asteroid
         // CRUD
         private void CmdNew_Click(object sender, EventArgs e)
         {
-            var asteroid = new Models.Asteroid
-            {
-                UUID = Guid.NewGuid().ToString(),
-                Name = "New Asteroid"
-            };
+            if (!PromptUnsavedChanges()) return;
 
-            playerContext.AddAsteroid(asteroid);
-            playerContext.WriteContext();
-            _selectedAsteroid = asteroid;
+            _viewModel.Reset();
+            _viewModel.Name = "New Asteroid";
+            var created = _asteroidService.Create(_viewModel.BuildCreateRequest());
+            _viewModel.LoadFrom(created);
             PopulateAsteroidList();
             PopulateForm();
             Log.Info("Created new asteroid");
@@ -363,19 +394,19 @@ namespace OE2EmpireTracker.Forms.Asteroid
 
         private void CmdDelete_Click(object sender, EventArgs e)
         {
-            if (_selectedAsteroid == null) return;
+            if (_viewModel.IsNew) return;
 
             var refCounter = new AsteroidReferenceCounter(
                 playerContext.SurveyList.ToList(),
                 playerContext.GetCurrentPlayerBuildPlans(),
                 playerContext.DeliveryRouteList.ToList());
-            var report = refCounter.CountReferences(_selectedAsteroid.UUID);
+            var report = refCounter.CountReferences(_viewModel.UUID);
             if (report.TotalCount > 0)
             {
                 MessageBox.Show(
                     string.Format(
                         "Cannot delete asteroid \"{0}\" \u2014 it is referenced by {1} survey(s), build item(s), or route stop(s).",
-                        _selectedAsteroid.Name,
+                        _viewModel.Name,
                         report.TotalCount),
                     "Delete Blocked",
                     MessageBoxButtons.OK,
@@ -384,14 +415,13 @@ namespace OE2EmpireTracker.Forms.Asteroid
             }
 
             var result = MessageBox.Show(
-                string.Format("Delete asteroid \"{0}\"?", _selectedAsteroid.Name),
+                string.Format("Delete asteroid \"{0}\"?", _viewModel.Name),
                 "Confirm Delete",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
-            playerContext.RemoveAsteroid(_selectedAsteroid);
-            playerContext.WriteContext();
-            _selectedAsteroid = null;
+            _asteroidService.Delete(_viewModel.UUID);
+            _viewModel.Reset();
             PopulateAsteroidList();
             ClearForm();
             Log.Info("Deleted asteroid");
@@ -399,7 +429,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
 
         private void CmdSave_Click(object sender, EventArgs e)
         {
-            if (_selectedAsteroid == null) return;
+            if (_viewModel.IsNew) return;
             string name = txtAsteroidName.Text.Trim();
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -407,23 +437,44 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 return;
             }
 
-            _selectedAsteroid.Name = name;
-            _selectedAsteroid.SystemName = txtSystemName.Text.Trim();
-            playerContext.WriteContext();
+            _viewModel.Name = name;
+            _viewModel.SystemName = txtSystemName.Text.Trim();
+            var updated = _asteroidService.Update(_viewModel.UUID, _viewModel.BuildUpdateRequest());
+            _viewModel.LoadFrom(updated);
             PopulateAsteroidList();
-            Log.Info("Saved asteroid \"{0}\"", _selectedAsteroid.Name);
+            Log.Info("Saved asteroid \"{0}\"", _viewModel.Name);
         }
 
         private void TxtAsteroidName_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedAsteroid == null) return;
-            _selectedAsteroid.Name = txtAsteroidName.Text;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
+            _viewModel.Name = txtAsteroidName.Text;
         }
 
         private void TxtSystemName_TextChanged(object sender, EventArgs e)
         {
-            if (_isProgrammaticUpdate > 0 || _selectedAsteroid == null) return;
-            _selectedAsteroid.SystemName = txtSystemName.Text;
+            if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
+            _viewModel.SystemName = txtSystemName.Text;
+        }
+
+        // Unsaved changes prompt
+        private bool PromptUnsavedChanges()
+        {
+            if (!_viewModel.IsDirty) return true;
+
+            var result = MessageBox.Show(
+                "You have unsaved changes. Save before continuing?",
+                "Unsaved Changes",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Cancel) return false;
+            if (result == DialogResult.Yes)
+            {
+                CmdSave_Click(this, EventArgs.Empty);
+            }
+
+            return true;
         }
 
         // Events
@@ -443,7 +494,7 @@ namespace OE2EmpireTracker.Forms.Asteroid
                 return;
             }
 
-            _selectedAsteroid = null;
+            _viewModel.Reset();
             PopulateAsteroidList();
             ClearForm();
         }
@@ -465,8 +516,16 @@ namespace OE2EmpireTracker.Forms.Asteroid
             }
 
             PopulateAsteroidList();
-            if (_selectedAsteroid != null && _selectedAsteroid.UUID == e.AsteroidUUID)
-                PopulateForm();
+            if (!_viewModel.IsNew && _viewModel.UUID == e.AsteroidUUID)
+            {
+                var refreshed = playerContext.GetReadOnlyAsteroidList()
+                    .FirstOrDefault(a => a.UUID == e.AsteroidUUID);
+                if (refreshed != null)
+                {
+                    _viewModel.LoadFrom(refreshed);
+                    PopulateForm();
+                }
+            }
         }
     }
 }
