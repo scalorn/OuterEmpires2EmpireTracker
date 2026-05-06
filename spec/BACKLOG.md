@@ -131,12 +131,6 @@ Bug: When colonies and surveys are imported in the wrong order, duplicate defaul
 
 ---
 
-## ~~MarketSample Coverage Gaps~~ â€” RESOLVED
-
-All BlueprintTypes now have HTML coverage. No gaps detected (confirmed by IconPositionExtractor coverage gap report in test output).
-
----
-
 ### BL-073: Code Coverage Tooling
 **Dependencies:** None
 **Status: Blocked**  AltCover (both global tool and NuGet package) fails with .NET Framework 4.8.1 + NUnit + vstest.console. The global tool crashes with a CLR assertion (net8.0 runtime vs net4.8.1 assemblies). The NuGet package instruments successfully but the NUnit test adapter can't discover tests in the instrumented assemblies. OpenCover is unmaintained (last release 2021). VS Community doesn't include the Enterprise code coverage collector.
