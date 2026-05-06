@@ -472,3 +472,23 @@ Audited FormColonyActivity, FormColonyDailyBuild, FormAutoFill for mutable entit
 ### BL-125: Final Mutation Audit
 Created ComprehensiveMutationAuditTests verifying all entity types have mutation guard coverage, WriteContext only in services, no form/ViewModel direct mutation. See .kiro/specs/bl-125-final-mutation-audit/.
 **Status: Complete**
+
+### BL-102: FormStation — cmbStationBlueprint FilteredTextComboSet Adoption
+Converted cmbStationBlueprint from standard ComboBox with BindingSource to FilteredTextComboSet with parallel value list. Users can now type-ahead filter the station blueprint list (50+ items). Spec: `.kiro/specs/filtered-combo-adoption/`.
+**Status: Complete**
+
+### BL-103: FormStation — cmbHoldItem and cmbMunItem FilteredTextComboSet Adoption
+Converted cmbHoldItem and cmbMunItem from standard ComboBoxes to FilteredTextComboSet. Improves item selection UX for large item lists (50+ resources, commodities, blueprints). Type-cascade pattern preserved (cmbHoldType/cmbMunType controls which items appear). Spec: `.kiro/specs/filtered-combo-adoption/`.
+**Status: Complete**
+
+### BL-104: FormShipInstance — cmbAddItem FilteredTextComboSet Adoption
+Converted cmbAddItem from standard ComboBox to FilteredTextComboSet. Same type-cascade pattern as FormStation hold items. Spec: `.kiro/specs/filtered-combo-adoption/`.
+**Status: Complete**
+
+### BL-105: FormSupplyChain — cmbLocation, cmbResource, cmbRoute FilteredTextComboSet Adoption
+Converted three ComboBoxes (cmbLocation, cmbResource, cmbRoute) in FormSupplyChain's stage editor to FilteredTextComboSet with parallel value lists. Type-cascade pattern preserved. Spec: `.kiro/specs/filtered-combo-adoption/`.
+**Status: Complete**
+
+### BL-106: FormBuildPlanner — FilteredTextComboSet Adoption for Item Pickers
+Converted multiple ComboBoxes (cmbItem, cmbResource, cmbSurvey) in FormBuildPlanner to FilteredTextComboSet with parallel value lists. Blueprint and resource pickers now support inline filtering for large item lists (50-100+ items). Spec: `.kiro/specs/filtered-combo-adoption/`.
+**Status: Complete**
