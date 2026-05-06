@@ -257,21 +257,6 @@ Three ComboBoxes in FormSupplyChain's stage editor are populated dynamically but
 **Status: New**
 FormBuildPlanner has multiple ComboBoxes for selecting blueprints, resources, commodities, routes, plans, and surveys. None have paired filter TextBoxes â€” the form uses cascading type selectors instead. The blueprint and resource pickers have large item lists (50-100+ items) that would benefit from inline filtering. This is a larger conversion since the form has no existing filter pattern to replace â€” FilteredTextComboSet controls would need to be added fresh rather than replacing existing TextBox+ComboBox pairs.
 
-### BL-107: Right-Click Context Menus for DataGridView Grids
-**Dependencies:** None
-**Status: New**
-Add right-click context menus to DataGridView grids across all forms. Currently no form uses right-click context menus on grids â€” all actions are via buttons in command bars. Context menus provide faster access to common actions without moving the mouse to the button bar. The build-plan-execution spec introduces the first grid context menu (`cmsBuildItems` on FormBuildPlanner). This backlog item extends the pattern to other forms:
-- **FormColonyV2**: dgvItems (Warehousing tab) â€” Add/Remove items, dgvCommodityRequests (Workers tab) â€” Add/Remove requests, dgvOverflowRules (Overflow tab) â€” Add/Remove rules
-- **FormDeliveryRoute**: dgvStops â€” Add/Up/Down/Remove stops, dgvDropOff/dgvPickUp â€” Add/Remove items
-- **FormDeliveryExecution**: load list and stop items â€” Mark delivered/undelivered
-- **FormSurvey**: dgvResources â€” Add/Remove resources
-- **FormBlueprintV2**: dgvResources â€” Add/Remove resources, dgvStatistics â€” Edit properties
-- **FormStockTargets**: dgvTargets â€” Add/Remove targets
-- **FormMarket**: dgvListings â€” Record sale, dgvTransactions â€” view details
-- **FormShipTemplate/FormShipInstance**: dgvSlots/dgvComponents â€” Add/Remove
-- **FormStation**: dgvHold/dgvComponents â€” Add/Remove
-Each context menu should mirror the existing button actions for that grid, providing the same functionality via right-click.
-
 ## Immutable Data Model Migration — Per-Form Backlog Items
 
 These items complete the immutable data model migration across all forms. Each form stops directly mutating entities and routes all changes through a service layer. ViewModels become disconnected edit buffers. List views use ReadOnly wrappers. Unsaved changes prompts are added where applicable. The pattern is established by BL-108 (Blueprint), BL-109 (Colony), BL-110 (Survey), BL-111 (PlayerProfile), BL-112 (DeliveryRoute), and BL-123 (PricingPlan).

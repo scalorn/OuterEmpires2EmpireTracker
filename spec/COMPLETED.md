@@ -4,6 +4,10 @@ Items moved here from BACKLOG.md after implementation, plus completed specs that
 
 ---
 
+### BL-107: Right-Click Context Menus for DataGridView Grids
+Added right-click context menus to all DataGridView grids across 9 forms (17 grids total). Each menu mirrors existing button actions, with CellMouseClick row selection and Opening handler enable/disable logic. FormDeliveryRoute includes positional constraints for Move Up/Down. Spec: .kiro/specs/grid-context-menus/
+**Status: Complete**
+
 ### BL-069: Migrate Existing BindingList Fields to List on PlayerContext
 Replaced all `BindingList<T>` fields with `List<T>` on PlayerContext and EmpireContext for consistency with newer entity lists. Removed `ListChanged` auto-invalidation handlers; added fallback linear scans to `FindBlueprint`, `FindSurvey`, and `FindColony` so cache misses from post-cache additions self-heal. Added explicit cache invalidation to `CleanupOrphanedData`. Updated `FindByDedupKey` signature to `IList<T>`, fixed `FilteredComboBox` cast, updated test helpers.
 **Status: Complete**

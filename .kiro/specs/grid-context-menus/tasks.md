@@ -133,7 +133,7 @@ Implementation proceeds form-by-form, starting with the simplest cases (single g
     - Test that all items are enabled when a middle row is selected
     - _Requirements: 5.6, 5.7, 5.8, 20.1, 20.2, 20.3_
 
-- [-] 12. Final checkpoint - Full build and test verification
+- [x] 12. Final checkpoint - Full build and test verification
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
