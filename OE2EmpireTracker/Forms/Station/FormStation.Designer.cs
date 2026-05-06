@@ -57,7 +57,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.lblHoldType = new System.Windows.Forms.Label();
             this.cmbHoldType = new System.Windows.Forms.ComboBox();
             this.lblHoldItem = new System.Windows.Forms.Label();
-            this.cmbHoldItem = new System.Windows.Forms.ComboBox();
+            this.cmbHoldItem = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.lblHoldPurity = new System.Windows.Forms.Label();
             this.cmbHoldPurity = new System.Windows.Forms.ComboBox();
             this.lblHoldQty = new System.Windows.Forms.Label();
@@ -73,7 +73,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.tabComponents = new System.Windows.Forms.TabPage();
             this.flpBlueprintRow = new System.Windows.Forms.FlowLayoutPanel();
             this.lblBlueprint = new System.Windows.Forms.Label();
-            this.cmbStationBlueprint = new System.Windows.Forms.ComboBox();
+            this.cmbStationBlueprint = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.dgvComponents = new System.Windows.Forms.DataGridView();
             this.rtbStationStats = new System.Windows.Forms.RichTextBox();
             this.colSlotType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -86,7 +86,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.colMunQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flpMunAdd = new System.Windows.Forms.FlowLayoutPanel();
             this.lblMunItem = new System.Windows.Forms.Label();
-            this.cmbMunItem = new System.Windows.Forms.ComboBox();
+            this.cmbMunItem = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.lblMunQty = new System.Windows.Forms.Label();
             this.txtMunQty = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdMunAdd = new System.Windows.Forms.Button();
@@ -389,7 +389,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.lblHoldItem.Name = "lblHoldItem";
 
             // cmbHoldItem
-            this.cmbHoldItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+
             this.cmbHoldItem.Size = new System.Drawing.Size(150, 21);
             this.cmbHoldItem.Name = "cmbHoldItem";
 
@@ -453,7 +453,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.lblBlueprint.Text = "Station Blueprint:";
             this.lblBlueprint.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblBlueprint.Name = "lblBlueprint";
-            this.cmbStationBlueprint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+
             this.cmbStationBlueprint.Size = new System.Drawing.Size(300, 21);
             this.cmbStationBlueprint.Name = "cmbStationBlueprint";
             // dgvComponents
@@ -542,7 +542,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.lblMunItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMunItem.Name = "lblMunItem";
 
-            this.cmbMunItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+
             this.cmbMunItem.Size = new System.Drawing.Size(200, 21);
             this.cmbMunItem.Name = "cmbMunItem";
 
@@ -679,7 +679,7 @@ namespace OE2EmpireTracker.Forms.Station
         private System.Windows.Forms.Label lblHoldType;
         private System.Windows.Forms.ComboBox cmbHoldType;
         private System.Windows.Forms.Label lblHoldItem;
-        private System.Windows.Forms.ComboBox cmbHoldItem;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbHoldItem;
         private System.Windows.Forms.Label lblHoldPurity;
         private System.Windows.Forms.ComboBox cmbHoldPurity;
         private System.Windows.Forms.Label lblHoldQty;
@@ -695,7 +695,7 @@ namespace OE2EmpireTracker.Forms.Station
         private System.Windows.Forms.TabPage tabComponents;
         private System.Windows.Forms.FlowLayoutPanel flpBlueprintRow;
         private System.Windows.Forms.Label lblBlueprint;
-        private System.Windows.Forms.ComboBox cmbStationBlueprint;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbStationBlueprint;
         private System.Windows.Forms.DataGridView dgvComponents;
         private System.Windows.Forms.RichTextBox rtbStationStats;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSlotType;
@@ -708,7 +708,7 @@ namespace OE2EmpireTracker.Forms.Station
         private System.Windows.Forms.DataGridViewTextBoxColumn colMunQty;
         private System.Windows.Forms.FlowLayoutPanel flpMunAdd;
         private System.Windows.Forms.Label lblMunItem;
-        private System.Windows.Forms.ComboBox cmbMunItem;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbMunItem;
         private System.Windows.Forms.Label lblMunQty;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtMunQty;
         private System.Windows.Forms.Button cmdMunAdd;

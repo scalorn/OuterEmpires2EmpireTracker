@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Forms.Station
             dgvHold.SelectionChanged += DgvHold_SelectionChanged;
 
             dgvComponents.CellEndEdit += DgvComponents_CellEndEdit;
-            cmbStationBlueprint.SelectedIndexChanged += CmbStationBlueprint_SelectedIndexChanged;
+            cmbStationBlueprint.SelectedItemChanged += CmbStationBlueprint_SelectedItemChanged;
 
             cmdMunAdd.Click += CmdMunAdd_Click;
             cmdMunRemove.Click += CmdMunRemove_Click;
@@ -72,6 +72,7 @@ namespace OE2EmpireTracker.Forms.Station
             PopulateStationTypeCombo();
             PopulateOwnershipCombo();
             PopulateHoldTypeCombo();
+            PopulateMunItemCombo();
             PopulateStationList();
             ClearForm();
 
@@ -231,6 +232,7 @@ namespace OE2EmpireTracker.Forms.Station
             PopulateStationBlueprintCombo();
             PopulateComponentsGrid();
             RefreshStationStats();
+            PopulateMunItemCombo();
             PopulateMunitionsGrid();
             SetDetailEnabled(true);
             sw.Stop();
@@ -246,8 +248,9 @@ namespace OE2EmpireTracker.Forms.Station
             dgvHold.Rows.Clear();
             dgvComponents.Rows.Clear();
             rtbStationStats.Text = string.Empty;
-            cmbStationBlueprint.DataSource = null;
-            cmbStationBlueprint.Items.Clear();
+            cmbStationBlueprint.SetItems(new List<string>(), string.Empty);
+            cmbHoldItem.SetItems(new List<string>(), string.Empty);
+            cmbMunItem.SetItems(new List<string>(), string.Empty);
             dgvMunitions.Rows.Clear();
             SetDetailEnabled(false);
         }
@@ -448,8 +451,14 @@ namespace OE2EmpireTracker.Forms.Station
         private void PopulateHoldItemCombo()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            cmbHoldItem.Items.Clear();
-            if (!(cmbHoldType.SelectedItem is ItemType.ItemTypeEnum selectedType)) return;
+            var names = new List<string>();
+            if (!(cmbHoldType.SelectedItem is ItemType.ItemTypeEnum selectedType))
+            {
+                cmbHoldItem.SetItems(names, string.Empty);
+                sw.Stop();
+                Log.Info("PERF PopulateHoldItemCombo: {0}ms", sw.ElapsedMilliseconds);
+                return;
+            }
 
             if (selectedType == ItemType.ItemTypeEnum.Resource)
             {
@@ -457,16 +466,16 @@ namespace OE2EmpireTracker.Forms.Station
                 if (resources != null)
                 {
                     foreach (var r in resources.OrderBy(r => r.Name))
-                        cmbHoldItem.Items.Add(r.Name);
+                        names.Add(r.Name);
                 }
             }
             else if (selectedType == ItemType.ItemTypeEnum.Commodity)
             {
                 foreach (var c in Commodity.ResourceMapByEnum.Values.OrderBy(c => c.ExtendedName))
-                    cmbHoldItem.Items.Add(c.ExtendedName);
+                    names.Add(c.ExtendedName);
             }
 
-            if (cmbHoldItem.Items.Count > 0) cmbHoldItem.SelectedIndex = 0;
+            cmbHoldItem.SetItems(names, string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateHoldItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -497,7 +506,7 @@ namespace OE2EmpireTracker.Forms.Station
         {
             if (_viewModel.IsNew) return;
             if (!(cmbHoldType.SelectedItem is ItemType.ItemTypeEnum itemType)) return;
-            string itemName = cmbHoldItem.SelectedItem?.ToString() ?? string.Empty;
+            string itemName = cmbHoldItem.SelectedItem ?? string.Empty;
             if (string.IsNullOrWhiteSpace(itemName)) return;
             if (!int.TryParse(txtHoldQty.Text.Trim(), out int qty) || qty <= 0)
             {
@@ -584,35 +593,34 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void PopulateStationBlueprintCombo()
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            cmbStationBlueprint.DataSource = null;
-            cmbStationBlueprint.Items.Clear();
 
             var blueprints = CollectionSortHelper.OrderBlueprints(
                 playerContext.GetAllBlueprints()
                 .Where(bp => !string.IsNullOrEmpty(bp.Name)))
                 .ToList();
 
-            var items = new List<KeyValuePair<string, string>>();
-            items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
+            var displayNames = new List<string>();
+            var valueUUIDs = new List<string>();
+            displayNames.Add("(none)");
+            valueUUIDs.Add(string.Empty);
             foreach (var bp in blueprints)
-                items.Add(new KeyValuePair<string, string>(bp.UUID, bp.ExtendedName));
+            {
+                displayNames.Add(bp.ExtendedName);
+                valueUUIDs.Add(bp.UUID);
+            }
 
-            cmbStationBlueprint.DataSource = items;
-            cmbStationBlueprint.DisplayMember = "Value";
-            cmbStationBlueprint.ValueMember = "Key";
-
-            if (!_viewModel.IsNew && !string.IsNullOrEmpty(_viewModel.StationBlueprintUUID))
-                cmbStationBlueprint.SelectedValue = _viewModel.StationBlueprintUUID;
+            string currentValue = _viewModel.IsNew ? string.Empty : _viewModel.StationBlueprintUUID;
+            cmbStationBlueprint.SetItems(displayNames, valueUUIDs, currentValue);
             sw.Stop();
             Log.Info("PERF PopulateStationBlueprintCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void CmbStationBlueprint_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbStationBlueprint_SelectedItemChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0 || _viewModel.IsNew) return;
-            string uuid = cmbStationBlueprint.SelectedValue?.ToString() ?? string.Empty;
+            string uuid = cmbStationBlueprint.SelectedValue ?? string.Empty;
             _viewModel.StationBlueprintUUID = uuid;
             _viewModel.ClearComponents();
             PopulateComponentsGrid();
@@ -734,10 +742,37 @@ namespace OE2EmpireTracker.Forms.Station
             Log.Info("PERF PopulateMunitionsGrid: {0}ms", sw.ElapsedMilliseconds);
         }
 
+        private void PopulateMunItemCombo()
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var names = new List<string>();
+            var empireContext = EmpireContext.GetInstance();
+            if (empireContext != null)
+            {
+                string outputTypeName = ItemType.ItemTypeEnum.Munition.ToString();
+                var munitionBlueprints = playerContext.GetAllBlueprints()
+                    .Where(bp => bp.UUID != null)
+                    .Where(bp =>
+                    {
+                        var bpType = empireContext.FindBlueprintType(bp.BluePrintType);
+                        return bpType != null && bpType.OutputItemType == outputTypeName;
+                    });
+
+                foreach (var bp in CollectionSortHelper.OrderBlueprints(munitionBlueprints))
+                {
+                    names.Add(bp.ExtendedName);
+                }
+            }
+
+            cmbMunItem.SetItems(names, string.Empty);
+            sw.Stop();
+            Log.Info("PERF PopulateMunItemCombo: {0}ms", sw.ElapsedMilliseconds);
+        }
+
         private void CmdMunAdd_Click(object sender, EventArgs e)
         {
             if (_viewModel.IsNew) return;
-            string itemName = cmbMunItem.SelectedItem?.ToString() ?? string.Empty;
+            string itemName = cmbMunItem.SelectedItem ?? string.Empty;
             if (string.IsNullOrWhiteSpace(itemName)) return;
             if (!int.TryParse(txtMunQty.Text.Trim(), out int qty) || qty <= 0)
             {

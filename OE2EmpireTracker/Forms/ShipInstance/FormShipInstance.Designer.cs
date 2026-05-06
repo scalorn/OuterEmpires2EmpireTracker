@@ -66,7 +66,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.lblAddType = new System.Windows.Forms.Label();
             this.cmbAddType = new System.Windows.Forms.ComboBox();
             this.lblAddItem = new System.Windows.Forms.Label();
-            this.cmbAddItem = new System.Windows.Forms.ComboBox();
+            this.cmbAddItem = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.lblAddPurity = new System.Windows.Forms.Label();
             this.cmbAddPurity = new System.Windows.Forms.ComboBox();
             this.lblAddQty = new System.Windows.Forms.Label();
@@ -527,7 +527,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             //
             // cmbAddItem
             //
-            this.cmbAddItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+
             this.cmbAddItem.Location = new System.Drawing.Point(185, 3);
             this.cmbAddItem.Name = "cmbAddItem";
             this.cmbAddItem.Size = new System.Drawing.Size(150, 21);
@@ -696,7 +696,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private System.Windows.Forms.Label lblAddType;
         private System.Windows.Forms.ComboBox cmbAddType;
         private System.Windows.Forms.Label lblAddItem;
-        private System.Windows.Forms.ComboBox cmbAddItem;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbAddItem;
         private System.Windows.Forms.Label lblAddPurity;
         private System.Windows.Forms.ComboBox cmbAddPurity;
         private System.Windows.Forms.Label lblAddQty;

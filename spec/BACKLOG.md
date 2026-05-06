@@ -257,6 +257,3 @@ Three ComboBoxes in FormSupplyChain's stage editor are populated dynamically but
 **Status: New**
 FormBuildPlanner has multiple ComboBoxes for selecting blueprints, resources, commodities, routes, plans, and surveys. None have paired filter TextBoxes â€” the form uses cascading type selectors instead. The blueprint and resource pickers have large item lists (50-100+ items) that would benefit from inline filtering. This is a larger conversion since the form has no existing filter pattern to replace â€” FilteredTextComboSet controls would need to be added fresh rather than replacing existing TextBox+ComboBox pairs.
 
-## Immutable Data Model Migration — Per-Form Backlog Items
-
-These items complete the immutable data model migration across all forms. Each form stops directly mutating entities and routes all changes through a service layer. ViewModels become disconnected edit buffers. List views use ReadOnly wrappers. Unsaved changes prompts are added where applicable. The pattern is established by BL-108 (Blueprint), BL-109 (Colony), BL-110 (Survey), BL-111 (PlayerProfile), BL-112 (DeliveryRoute), and BL-123 (PricingPlan).

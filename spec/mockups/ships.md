@@ -101,4 +101,4 @@ Controls:
 - "From Template" opens a dialog to create a ship from an existing template
 - Cargo tab: `rbCargoHold` / `rbHopper` (RadioButtons) to switch views. Hopper radio only enabled when ship has Ore Hopper components.
   - Cargo Hold view: `dgvCargo` (DataGridView -- flat item list). `dgvCrateContents` crate detail grid shown when a crate is selected.
-  - Hopper view: uses the same `dgvCargo` grid with radio toggle. Hopper only accepts unrefined resources (High, Medium, Low purity). Add panel (`cmbAddType`, `cmbAddItem`, `cmbAddPurity`, `txtAddQty`, `cmdAddItem`, `cmdRemoveItem`) with resource filter/combo, purity combo (restricted to High/Medium/Low), quantity, and Add button.
+  - Hopper view: uses the same `dgvCargo` grid with radio toggle. Hopper only accepts unrefined resources (High, Medium, Low purity). Add panel (`cmbAddType`, `cmbAddItem` (FilteredTextComboSet), `cmbAddPurity`, `txtAddQty`, `cmdAddItem`, `cmdRemoveItem`) with resource filter/combo, purity combo (restricted to High/Medium/Low), quantity, and Add button.

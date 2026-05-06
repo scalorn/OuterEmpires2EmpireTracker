@@ -15,6 +15,8 @@ namespace OE2EmpireTracker.Controls
     {
         private List<string> _fullItems = new List<string>();
 
+        private List<string> _fullValues = null;
+
         private List<int> _filteredIndexMap = new List<int>();
 
         private bool _suppressFilterEvent;
@@ -65,6 +67,29 @@ namespace OE2EmpireTracker.Controls
         public string SelectedItem => CmbItems.SelectedItem?.ToString();
 
         /// <summary>
+        /// Gets the value string corresponding to the currently selected item from the
+        /// parallel value list, or null if nothing is selected or no value list was provided.
+        /// </summary>
+        public string SelectedValue
+        {
+            get
+            {
+                if (_fullValues == null)
+                {
+                    return null;
+                }
+
+                int fullIdx = SelectedFullIndex;
+                if (fullIdx < 0 || fullIdx >= _fullValues.Count)
+                {
+                    return null;
+                }
+
+                return _fullValues[fullIdx];
+            }
+        }
+
+        /// <summary>
         /// Gets the full (unfiltered) item list.
         /// </summary>
         public List<string> Items => _fullItems;
@@ -107,6 +132,7 @@ namespace OE2EmpireTracker.Controls
         /// </summary>
         public void SetItems(List<string> items, string currentValue)
         {
+            _fullValues = null;
             _fullItems = items ?? new List<string>();
 
             if (IsEditing)
@@ -135,6 +161,59 @@ namespace OE2EmpireTracker.Controls
             {
                 int idx = CmbItems.Items.IndexOf(currentValue);
                 if (idx >= 0) CmbItems.SelectedIndex = idx;
+            }
+
+            SuppressSelectionEvent = false;
+        }
+
+        /// <summary>
+        /// Sets the item list with a parallel value list and optionally pre-selects a value.
+        /// The currentValue is matched against the value list to pre-select the corresponding item.
+        /// </summary>
+        public void SetItems(List<string> items, List<string> values, string currentValue)
+        {
+            _fullItems = items ?? new List<string>();
+            _fullValues = values;
+
+            if (IsEditing)
+            {
+                string previousValue = SelectedValue ?? CmbItems.SelectedItem?.ToString();
+                string restoreValue = currentValue ?? previousValue;
+                SuppressSelectionEvent = true;
+                RebuildFilteredList();
+                if (!string.IsNullOrEmpty(restoreValue) && _fullValues != null)
+                {
+                    int valueIdx = _fullValues.IndexOf(restoreValue);
+                    if (valueIdx >= 0)
+                    {
+                        int filteredIdx = _filteredIndexMap.IndexOf(valueIdx);
+                        if (filteredIdx >= 0)
+                        {
+                            CmbItems.SelectedIndex = filteredIdx;
+                        }
+                    }
+                }
+
+                SuppressSelectionEvent = false;
+                return;
+            }
+
+            _suppressFilterEvent = true;
+            SuppressSelectionEvent = true;
+            TxtFilter.Text = string.Empty;
+            _suppressFilterEvent = false;
+            RebuildFilteredList();
+            if (!string.IsNullOrEmpty(currentValue) && _fullValues != null)
+            {
+                int valueIdx = _fullValues.IndexOf(currentValue);
+                if (valueIdx >= 0)
+                {
+                    int filteredIdx = _filteredIndexMap.IndexOf(valueIdx);
+                    if (filteredIdx >= 0)
+                    {
+                        CmbItems.SelectedIndex = filteredIdx;
+                    }
+                }
             }
 
             SuppressSelectionEvent = false;
@@ -190,11 +269,12 @@ namespace OE2EmpireTracker.Controls
         {
             var (filtered, indexMap) = ApplyFilter(_fullItems, TxtFilter.Text);
             _filteredIndexMap = indexMap;
+            bool previousSuppress = SuppressSelectionEvent;
             SuppressSelectionEvent = true;
             CmbItems.Items.Clear();
             foreach (var item in filtered)
                 CmbItems.Items.Add(item);
-            SuppressSelectionEvent = false;
+            SuppressSelectionEvent = previousSuppress;
             if (filtered.Count > 0 && !string.IsNullOrEmpty(TxtFilter.Text))
             {
                 try

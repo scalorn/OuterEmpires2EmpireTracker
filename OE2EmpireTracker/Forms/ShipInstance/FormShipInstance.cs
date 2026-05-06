@@ -827,8 +827,14 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private void PopulateAddItemCombo()
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            cmbAddItem.Items.Clear();
-            if (!(cmbAddType.SelectedItem is ItemType.ItemTypeEnum selectedType)) return;
+            var names = new List<string>();
+            if (!(cmbAddType.SelectedItem is ItemType.ItemTypeEnum selectedType))
+            {
+                cmbAddItem.SetItems(names, string.Empty);
+                sw.Stop();
+                Log.Info("PERF PopulateAddItemCombo: {0}ms", sw.ElapsedMilliseconds);
+                return;
+            }
 
             if (selectedType == ItemType.ItemTypeEnum.Resource)
             {
@@ -836,16 +842,16 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 if (resources != null)
                 {
                     foreach (var r in resources.OrderBy(r => r.Name))
-                        cmbAddItem.Items.Add(r.Name);
+                        names.Add(r.Name);
                 }
             }
             else if (selectedType == ItemType.ItemTypeEnum.Commodity)
             {
                 foreach (var c in Commodity.ResourceMapByEnum.Values.OrderBy(c => c.ExtendedName))
-                    cmbAddItem.Items.Add(c.ExtendedName);
+                    names.Add(c.ExtendedName);
             }
 
-            if (cmbAddItem.Items.Count > 0) cmbAddItem.SelectedIndex = 0;
+            cmbAddItem.SetItems(names, string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateAddItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -890,7 +896,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             if (bag == null || _viewModel.IsNew) return;
 
             if (!(cmbAddType.SelectedItem is ItemType.ItemTypeEnum itemType)) return;
-            string itemName = cmbAddItem.SelectedItem?.ToString() ?? string.Empty;
+            string itemName = cmbAddItem.SelectedItem ?? string.Empty;
             if (string.IsNullOrWhiteSpace(itemName)) return;
             if (!int.TryParse(txtAddQty.Text.Trim(), out int qty) || qty <= 0)
             {

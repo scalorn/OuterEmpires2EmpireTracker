@@ -48,10 +48,10 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             this.lblLocationType = new System.Windows.Forms.Label();
             this.cmbLocationType = new System.Windows.Forms.ComboBox();
             this.lblLocation = new System.Windows.Forms.Label();
-            this.cmbLocation = new System.Windows.Forms.ComboBox();
+            this.cmbLocation = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.flpStageEdit2 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblResource = new System.Windows.Forms.Label();
-            this.cmbResource = new System.Windows.Forms.ComboBox();
+            this.cmbResource = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.lblPurity = new System.Windows.Forms.Label();
             this.cmbPurity = new System.Windows.Forms.ComboBox();
             this.lblThreshold = new System.Windows.Forms.Label();
@@ -60,7 +60,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             this.txtRate = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.flpStageEdit3 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRoute = new System.Windows.Forms.Label();
-            this.cmbRoute = new System.Windows.Forms.ComboBox();
+            this.cmbRoute = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.flpStageButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddStage = new System.Windows.Forms.Button();
             this.cmdUpdateStage = new System.Windows.Forms.Button();
@@ -294,7 +294,6 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             this.lblLocation.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblLocation.Name = "lblLocation";
             // cmbLocation
-            this.cmbLocation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLocation.Size = new System.Drawing.Size(180, 21);
             this.cmbLocation.Name = "cmbLocation";            // flpStageEdit2 - row 2: Resource, Purity, Threshold, Rate
             this.flpStageEdit2.AutoSize = true;
@@ -316,7 +315,6 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             this.lblResource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblResource.Name = "lblResource";
             // cmbResource
-            this.cmbResource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbResource.Size = new System.Drawing.Size(130, 21);
             this.cmbResource.Name = "cmbResource";
             // lblPurity
@@ -357,7 +355,6 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             this.lblRoute.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblRoute.Name = "lblRoute";
             // cmbRoute
-            this.cmbRoute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRoute.Size = new System.Drawing.Size(300, 21);
             this.cmbRoute.Name = "cmbRoute";
             // flpStageButtons
@@ -470,10 +467,10 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         private System.Windows.Forms.Label lblLocationType;
         private System.Windows.Forms.ComboBox cmbLocationType;
         private System.Windows.Forms.Label lblLocation;
-        private System.Windows.Forms.ComboBox cmbLocation;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbLocation;
         private System.Windows.Forms.FlowLayoutPanel flpStageEdit2;
         private System.Windows.Forms.Label lblResource;
-        private System.Windows.Forms.ComboBox cmbResource;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbResource;
         private System.Windows.Forms.Label lblPurity;
         private System.Windows.Forms.ComboBox cmbPurity;
         private System.Windows.Forms.Label lblThreshold;
@@ -482,7 +479,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         private OE2EmpireTracker.Controls.ValidatedTextBox txtRate;
         private System.Windows.Forms.FlowLayoutPanel flpStageEdit3;
         private System.Windows.Forms.Label lblRoute;
-        private System.Windows.Forms.ComboBox cmbRoute;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbRoute;
         private System.Windows.Forms.FlowLayoutPanel flpStageButtons;
         private System.Windows.Forms.Button cmdAddStage;
         private System.Windows.Forms.Button cmdUpdateStage;

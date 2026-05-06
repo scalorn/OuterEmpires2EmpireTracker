@@ -47,11 +47,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.colSequence = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDependsOn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblResource = new System.Windows.Forms.Label();
-            this.cmbResource = new System.Windows.Forms.ComboBox();
+            this.cmbResource = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.lblPurity = new System.Windows.Forms.Label();
             this.cmbPurity = new System.Windows.Forms.ComboBox();
             this.lblSurvey = new System.Windows.Forms.Label();
-            this.cmbSurvey = new System.Windows.Forms.ComboBox();
+            this.cmbSurvey = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.cmdStartManufacturing = new System.Windows.Forms.Button();
             this.cmdStartAllReady = new System.Windows.Forms.Button();
             this.tsmiStartManufacturing = new System.Windows.Forms.ToolStripMenuItem();
@@ -570,7 +570,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             // 
             // cmbResource
             // 
-            this.cmbResource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+
             this.cmbResource.Location = new System.Drawing.Point(380, 3);
             this.cmbResource.Name = "cmbResource";
             this.cmbResource.Size = new System.Drawing.Size(180, 21);
@@ -606,7 +606,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             // 
             // cmbSurvey
             // 
-            this.cmbSurvey.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+
             this.cmbSurvey.Location = new System.Drawing.Point(367, 3);
             this.cmbSurvey.Name = "cmbSurvey";
             this.cmbSurvey.Size = new System.Drawing.Size(200, 21);
@@ -859,11 +859,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private System.Windows.Forms.DataGridViewTextBoxColumn colSequence;
         private System.Windows.Forms.DataGridViewTextBoxColumn colDependsOn;
         private System.Windows.Forms.Label lblResource;
-        private System.Windows.Forms.ComboBox cmbResource;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbResource;
         private System.Windows.Forms.Label lblPurity;
         private System.Windows.Forms.ComboBox cmbPurity;
         private System.Windows.Forms.Label lblSurvey;
-        private System.Windows.Forms.ComboBox cmbSurvey;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbSurvey;
         private System.Windows.Forms.ContextMenuStrip cmsBuildItems;
         private System.Windows.Forms.ToolStripMenuItem tsmiSetDependency;
         private System.Windows.Forms.ToolStripMenuItem tsmiClearDependency;

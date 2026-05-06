@@ -54,7 +54,7 @@ Controls:
 - Multi-plan selection uses a checklist dialog showing all active build plans. The user checks which plans to include.
 - Inactive plans: list view shows plan name in gray italic. Detail panel is read-only (all controls disabled except the Active checkbox). Shortfall panel hidden.
 - `dgvBuildItems` columns: Type, Item, Qty (editable), Location, Structure, Status, Recipient, Notes
-- Add-item panel: `cmbItemType`, `cmbItem` (FilteredTextComboSet), `cmbResource`, `cmbPurity`, `cmbSurvey` (FilteredComboBox), `txtQuantity`, `txtRecipient`, `lblTargetDuration`, `txtTargetDuration`, `cmdQueueCalc` (next to duration), `cmdAddItem`, `cmdDeleteItem`
+- Add-item panel: `cmbItemType`, `cmbItem` (FilteredTextComboSet), `cmbResource` (FilteredTextComboSet), `cmbPurity`, `cmbSurvey` (FilteredTextComboSet, parallel value list: Survey UUID), `txtQuantity`, `txtRecipient`, `lblTargetDuration`, `txtTargetDuration`, `cmdQueueCalc` (next to duration), `cmdAddItem`, `cmdDeleteItem`
 - Shortfall panel: `dgvShortfalls` (read-only DataGridView) â€” visible when a build item is selected
 
 Wiring:

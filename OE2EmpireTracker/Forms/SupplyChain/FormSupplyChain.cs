@@ -242,14 +242,12 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             txtSequence.Text = string.Empty;
             if (cmbStageType.Items.Count > 0) cmbStageType.SelectedIndex = 0;
             if (cmbLocationType.Items.Count > 0) cmbLocationType.SelectedIndex = 0;
-            cmbLocation.DataSource = null;
-            cmbLocation.Items.Clear();
-            if (cmbResource.Items.Count > 0) cmbResource.SelectedIndex = 0;
+            cmbLocation.SetItems(new List<string>(), new List<string>(), string.Empty);
+            cmbResource.SetItems(new List<string>(), string.Empty);
             if (cmbPurity.Items.Count > 0) cmbPurity.SelectedIndex = 0;
             txtThreshold.Text = string.Empty;
             txtRate.Text = string.Empty;
-            cmbRoute.DataSource = null;
-            cmbRoute.Items.Clear();
+            cmbRoute.SetItems(new List<string>(), new List<string>(), string.Empty);
         }
 
         // Combo helpers
@@ -273,16 +271,23 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private void PopulateResourceCombo()
         {
+            PopulateResourceCombo(string.Empty);
+        }
+
+        private void PopulateResourceCombo(string currentResourceName)
+        {
             var sw = Stopwatch.StartNew();
-            cmbResource.Items.Clear();
+            var names = new List<string>();
             var resources = EmpireContext.GetInstance()?.ResourceList;
             if (resources != null)
             {
                 foreach (var r in resources.OrderBy(r => r.Name))
-                    cmbResource.Items.Add(r.Name);
+                {
+                    names.Add(r.Name);
+                }
             }
 
-            if (cmbResource.Items.Count > 0) cmbResource.SelectedIndex = 0;
+            cmbResource.SetItems(names, currentResourceName);
             sw.Stop();
             Log.Info("PERF PopulateResourceCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -304,62 +309,89 @@ namespace OE2EmpireTracker.Forms.SupplyChain
 
         private void PopulateLocationCombo()
         {
+            PopulateLocationCombo(string.Empty);
+        }
+
+        private void PopulateLocationCombo(string currentLocationUUID)
+        {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            cmbLocation.DataSource = null;
-            cmbLocation.Items.Clear();
 
-            if (cmbLocationType.SelectedItem == null) return;
+            if (cmbLocationType.SelectedItem == null)
+            {
+                cmbLocation.SetItems(new List<string>(), new List<string>(), string.Empty);
+                sw.Stop();
+                Log.Info("PERF PopulateLocationCombo: {0}ms", sw.ElapsedMilliseconds);
+                return;
+            }
+
             var locType = (DestinationType)cmbLocationType.SelectedItem;
 
-            var items = new List<KeyValuePair<string, string>>();
+            var displayNames = new List<string>();
+            var valueUUIDs = new List<string>();
             switch (locType)
             {
                 case DestinationType.Colony:
                     foreach (var c in CollectionSortHelper.OrderColonies(playerContext.ColonyList))
-                        items.Add(new KeyValuePair<string, string>(c.UUID, c.ColonyName));
+                    {
+                        displayNames.Add(c.ColonyName);
+                        valueUUIDs.Add(c.UUID);
+                    }
+
                     break;
                 case DestinationType.Station:
                     foreach (var s in CollectionSortHelper.OrderStations(playerContext.StationList))
-                        items.Add(new KeyValuePair<string, string>(s.UUID, s.Name));
+                    {
+                        displayNames.Add(s.Name);
+                        valueUUIDs.Add(s.UUID);
+                    }
+
                     break;
                 case DestinationType.Asteroid:
                     foreach (var a in CollectionSortHelper.OrderAsteroids(playerContext.AsteroidList))
-                        items.Add(new KeyValuePair<string, string>(a.UUID, a.Name));
+                    {
+                        displayNames.Add(a.Name);
+                        valueUUIDs.Add(a.UUID);
+                    }
+
                     break;
                 case DestinationType.Ship:
                     foreach (var sh in CollectionSortHelper.OrderShips(playerContext.ShipList))
-                        items.Add(new KeyValuePair<string, string>(sh.UUID, sh.Name));
+                    {
+                        displayNames.Add(sh.Name);
+                        valueUUIDs.Add(sh.UUID);
+                    }
+
                     break;
             }
 
-            if (items.Count > 0)
-            {
-                cmbLocation.DataSource = items;
-                cmbLocation.DisplayMember = "Value";
-                cmbLocation.ValueMember = "Key";
-            }
-
+            cmbLocation.SetItems(displayNames, valueUUIDs, currentLocationUUID);
             sw.Stop();
             Log.Info("PERF PopulateLocationCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateRouteCombo()
         {
+            PopulateRouteCombo(string.Empty);
+        }
+
+        private void PopulateRouteCombo(string currentRouteUUID)
+        {
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            cmbRoute.DataSource = null;
-            cmbRoute.Items.Clear();
 
             var routes = CollectionSortHelper.OrderDeliveryRoutes(playerContext.DeliveryRouteList).ToList();
-            var items = new List<KeyValuePair<string, string>>();
-            items.Add(new KeyValuePair<string, string>(string.Empty, "(none)"));
+            var displayNames = new List<string>();
+            var valueUUIDs = new List<string>();
+            displayNames.Add("(none)");
+            valueUUIDs.Add(string.Empty);
             foreach (var r in routes)
-                items.Add(new KeyValuePair<string, string>(r.UUID, r.Name));
+            {
+                displayNames.Add(r.Name);
+                valueUUIDs.Add(r.UUID);
+            }
 
-            cmbRoute.DataSource = items;
-            cmbRoute.DisplayMember = "Value";
-            cmbRoute.ValueMember = "Key";
+            cmbRoute.SetItems(displayNames, valueUUIDs, currentRouteUUID);
             sw.Stop();
             Log.Info("PERF PopulateRouteCombo: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -448,21 +480,10 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             txtSequence.Text = stage.Sequence.ToString();
             cmbStageType.SelectedItem = stage.StageType;
             cmbLocationType.SelectedItem = stage.LocationType;
-            PopulateLocationCombo();
-
-            // Select the location
-            if (!string.IsNullOrEmpty(stage.LocationUUID) && cmbLocation.DataSource != null)
-                cmbLocation.SelectedValue = stage.LocationUUID;
+            PopulateLocationCombo(stage.LocationUUID ?? string.Empty);
 
             // Resource and purity
-            for (int i = 0; i < cmbResource.Items.Count; i++)
-            {
-                if (cmbResource.Items[i].ToString() == stage.ResourceName)
-                {
-                    cmbResource.SelectedIndex = i;
-                    break;
-                }
-            }
+            PopulateResourceCombo(stage.ResourceName ?? string.Empty);
 
             for (int i = 0; i < cmbPurity.Items.Count; i++)
             {
@@ -476,9 +497,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             txtThreshold.Text = stage.AccumulationThreshold > 0 ? stage.AccumulationThreshold.ToString() : string.Empty;
             txtRate.Text = stage.ProductionRatePerHour > 0 ? stage.ProductionRatePerHour.ToString("F1") : string.Empty;
 
-            PopulateRouteCombo();
-            if (!string.IsNullOrEmpty(stage.DeliveryRouteUUID))
-                cmbRoute.SelectedValue = stage.DeliveryRouteUUID;
+            PopulateRouteCombo(stage.DeliveryRouteUUID ?? string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateStageEditFromStage: {0}ms", sw.ElapsedMilliseconds);
         }
@@ -489,12 +508,12 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             int.TryParse(txtSequence.Text.Trim(), out int seq);
             var stageType = cmbStageType.SelectedItem is SupplyChainStageType st ? st : SupplyChainStageType.Mine;
             var locType = cmbLocationType.SelectedItem is DestinationType dt ? dt : DestinationType.Colony;
-            string locUUID = cmbLocation.SelectedValue?.ToString() ?? string.Empty;
-            string resource = cmbResource.SelectedItem?.ToString() ?? string.Empty;
+            string locUUID = cmbLocation.SelectedValue ?? string.Empty;
+            string resource = cmbResource.SelectedItem ?? string.Empty;
             string purity = cmbPurity.SelectedItem?.ToString() ?? string.Empty;
             int.TryParse(txtThreshold.Text.Trim(), out int threshold);
             decimal.TryParse(txtRate.Text.Trim(), out decimal rate);
-            string routeUUID = cmbRoute.SelectedValue?.ToString() ?? string.Empty;
+            string routeUUID = cmbRoute.SelectedValue ?? string.Empty;
 
             return new SupplyChainStage
             {

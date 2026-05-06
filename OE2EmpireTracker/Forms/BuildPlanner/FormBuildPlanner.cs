@@ -24,8 +24,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private BuildPlanViewModel _viewModel = new BuildPlanViewModel();
         private BuildPlanMutationService _buildPlanService;
 
-        /// <summary>Parallel list of IDs matching cmbItem display items, for lookup via SelectedFullIndex.</summary>
-        private List<string> _itemPickerIDs = new List<string>();
+
 
         /// <summary>
         /// Delegate to resolve a colony name from its UUID.
@@ -734,7 +733,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
 
             string itemType = cmbItemType.SelectedItem as string ?? string.Empty;
             var names = new List<string>();
-            _itemPickerIDs = new List<string>();
+            var ids = new List<string>();
 
             if (itemType == "Manufactory")
             {
@@ -750,7 +749,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 foreach (var bp in CollectionSortHelper.OrderBlueprints(blueprints))
                 {
                     names.Add(bp.ExtendedName);
-                    _itemPickerIDs.Add(bp.UUID);
+                    ids.Add(bp.UUID);
                 }
             }
             else if (itemType == "Commodity")
@@ -759,7 +758,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     Commodity.ResourceMapByString.Keys, n => n))
                 {
                     names.Add(name);
-                    _itemPickerIDs.Add(name);
+                    ids.Add(name);
                 }
             }
             else if (itemType == "Mining" || itemType == "Refining")
@@ -769,7 +768,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                     r => r.Name))
                 {
                     names.Add(r.Name);
-                    _itemPickerIDs.Add(r.Name);
+                    ids.Add(r.Name);
                 }
             }
             else if (itemType == "Research")
@@ -780,11 +779,11 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 foreach (var bp in CollectionSortHelper.OrderBlueprints(blueprints))
                 {
                     names.Add(bp.ExtendedName);
-                    _itemPickerIDs.Add(bp.UUID);
+                    ids.Add(bp.UUID);
                 }
             }
 
-            cmbItem.SetItems(names, string.Empty);
+            cmbItem.SetItems(names, ids, string.Empty);
 
             UpdateMiningRefiningFieldVisibility();
             sw.Stop();
@@ -804,9 +803,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             }
 
             string itemType = cmbItemType.SelectedItem as string ?? string.Empty;
-            int selectedIdx = cmbItem.SelectedFullIndex;
-            string selectedID = (selectedIdx >= 0 && selectedIdx < _itemPickerIDs.Count)
-                ? _itemPickerIDs[selectedIdx] : null;
+            string selectedID = cmbItem.SelectedValue;
             string selectedDisplay = cmbItem.SelectedItem;
             if (string.IsNullOrEmpty(selectedID))
             {
@@ -855,10 +852,9 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
                 buildItem.ItemType = BuildItemType.Mining;
                 buildItem.MiningResource = selectedID;
                 buildItem.ItemName = "Mine: " + selectedDisplay;
-                if (cmbSurvey.Visible && cmbSurvey.SelectedItem is ItemEntry surveyEntry
-                    && !string.IsNullOrEmpty(surveyEntry.ID))
+                if (cmbSurvey.Visible && !string.IsNullOrEmpty(cmbSurvey.SelectedValue))
                 {
-                    buildItem.MiningSurveyUUID = surveyEntry.ID;
+                    buildItem.MiningSurveyUUID = cmbSurvey.SelectedValue;
                 }
             }
             else if (itemType == "Refining")
@@ -924,9 +920,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private void CmdQueueCalc_Click(object sender, EventArgs e)
         {
             string itemType = cmbItemType.SelectedItem as string ?? string.Empty;
-            int selectedIdx = cmbItem.SelectedFullIndex;
-            string selectedID = (selectedIdx >= 0 && selectedIdx < _itemPickerIDs.Count)
-                ? _itemPickerIDs[selectedIdx] : null;
+            string selectedID = cmbItem.SelectedValue;
             string selectedDisplay = cmbItem.SelectedItem;
             if (string.IsNullOrEmpty(selectedID))
             {
@@ -1598,13 +1592,17 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
-            cmbSurvey.Items.Clear();
-            cmbSurvey.Items.Add(new ItemEntry { Display = "(none)", ID = string.Empty });
+            var displayNames = new List<string> { "(none)" };
+            var valueUUIDs = new List<string> { string.Empty };
 
             var surveys = playerContext.GetCurrentPlayerSurveys();
             foreach (var s in CollectionSortHelper.OrderSurveys(surveys))
-                cmbSurvey.Items.Add(new ItemEntry { Display = s.Name, ID = s.UUID });
-            cmbSurvey.SelectedIndex = 0;
+            {
+                displayNames.Add(s.Name);
+                valueUUIDs.Add(s.UUID);
+            }
+
+            cmbSurvey.SetItems(displayNames, valueUUIDs, string.Empty);
             sw.Stop();
             Log.Info("PERF PopulateSurveyCombo: {0}ms", sw.ElapsedMilliseconds);
         }
