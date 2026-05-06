@@ -48,7 +48,7 @@ For each .cs file in the main project:
 - [ ] Service has requirements in spec/requirements/
 - [ ] Form has a mockup in spec/mockups/
 - [ ] Form has a help doc in docs/
-- [ ] Data model has field definitions in spec/design/data-models.md
+- [ ] Data model has field definitions in spec/design/data-models/
 - [ ] Data model has requirements in spec/requirements/DataModel.md or domain file
 
 ### Magic Numbers/Strings

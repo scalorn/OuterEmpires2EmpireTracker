@@ -1,0 +1,226 @@
+<!-- Extracted from spec/design/services.md — Build Planner domain -->
+# Services — Build Planner
+
+## BuildPlanService (Iteration 1)
+
+Static service in `Services/BuildPlanService.cs`.
+
+```csharp
+public static class BuildPlanService
+{
+    public static bool ValidatePlanName(string name);
+    public static bool ValidateBuildItem(BuildItem item);
+
+    /// <summary>
+    /// Scans colony structures for unstaged entries and generates Manufactory
+    /// build items for their flatpack blueprints. Skips structures already
+    /// covered by existing items in the target plan. Items are created
+    /// unallocated (empty BuildLocationUUID). Returns count of items added.
+    /// </summary>
+    public static int GenerateColonyBuildItems(
+        Colony colony, BuildPlan targetPlan,
+        Func<string, Blueprint> blueprintFinder);
+}
+```
+
+- Unstaged = `IsStaged == false && IsBuilt == false`.
+- Each produces one Manufactory BuildItem with `Quantity = 1`.
+- Colony UUID stored in Notes for traceability.
+
+## ResourceCheckService (Iteration 1)
+
+Static service in `Services/ResourceCheckService.cs`.
+
+```csharp
+public static class ResourceCheckService
+{
+    /// <summary>
+    /// Computes resource shortfalls for a build item at its allocated location.
+    /// Returns resource name → shortfall quantity. Empty = all available.
+    /// </summary>
+    public static Dictionary<string, int> ComputeShortfalls(
+        BuildItem item, ItemBag locationInventory,
+        Func<string, Blueprint> blueprintFinder);
+
+    /// <summary>
+    /// Computes shortfalls for all allocated items in a build plan.
+    /// Returns per-item shortfall maps keyed by BuildItem UUID.
+    /// </summary>
+    public static Dictionary<string, Dictionary<string, int>> ComputePlanShortfalls(
+        BuildPlan plan, Func<string, Colony> colonyFinder,
+        Func<string, Ship> shipFinder,
+        Func<string, Station> stationFinder,
+        string currentPlayerUUID,
+        Func<string, Blueprint> blueprintFinder);
+}
+```
+
+Logic:
+- Resolves inventory by BuildLocationType: Colony → `colony.Items`, Ship → `ship.Cargo`, Station → `station.Holds[currentPlayerUUID]`.
+- Manufactory: iterate blueprint.Resources, multiply by Quantity, subtract inventory stock.
+- Commodity: iterate commodity.ConstructionResources, multiply by Quantity (runs).
+- Research: no resource shortfall (time + lab only).
+- Returns only positive shortfalls.
+
+## BuildPlanExecutionService
+
+Static service in `Services/BuildPlanExecutionService.cs`.
+
+```csharp
+public static class BuildPlanExecutionService
+{
+    // Status helpers
+    public static Dictionary<BuildItemStatus, int> ComputeStatusSummary(BuildPlan plan);
+    public static bool IsPlanComplete(BuildPlan plan);
+    public static List<ContentionInfo> DetectContention(BuildItem item, IEnumerable<BuildPlan> allPlans);
+
+    // Status detection (called by BackgroundProcessor cascade)
+    public static bool AdvanceBuildItemStatuses(
+        BuildPlan plan, Func<string, Colony> colonyFinder,
+        Func<string, Blueprint> blueprintFinder,
+        Func<string, Ship> shipFinder,
+        Func<string, Station> stationFinder,
+        string currentPlayerUUID);
+
+    // Manufacturing pre-configuration
+    public static bool CanStartManufacturing(
+        BuildItem item, BuildPlan plan,
+        Func<string, Colony> colonyFinder,
+        Func<string, Blueprint> blueprintFinder);
+    public static StartManufacturingResult StartManufacturing(
+        BuildItem item, BuildPlan plan,
+        Func<string, Colony> colonyFinder,
+        Func<string, Blueprint> blueprintFinder);
+    public static BatchStartResult StartAllReady(
+        BuildPlan plan, Func<string, Colony> colonyFinder,
+        Func<string, Blueprint> blueprintFinder);
+
+    // Nested result types
+    public class StartManufacturingResult { bool Success; string ErrorMessage; }
+    public class BatchStartResult { int StartedCount; int SkippedCount; List<string> SkippedReasons; }
+    public class ContentionInfo { string PlanName; string ItemName; string ItemUUID; }
+}
+```
+
+Logic:
+- Stateless service following the same pattern as ResourceCheckService.
+- ComputeStatusSummary returns counts per BuildItemStatus for a plan. All enum values present, defaulting to zero.
+- IsPlanComplete returns true only when all items are Completed (false for empty plans).
+- DetectContention finds items from other active plans assigned to the same StructureUUID.
+- AdvanceBuildItemStatuses handles three detection phases: Staged+allocated→Ready (zero shortfalls), Ready→InProgress (matching active job on structure), InProgress→Completed (job finished).
+- CanStartManufacturing checks eligibility: Ready status, valid structure, structure idle, lowest sequence, dependency satisfied.
+- StartManufacturing pre-configures ColonyStructure fields and advances item to InProgress.
+- StartAllReady batch-starts first eligible Ready item per structure.
+
+Satisfies: REQ-BPL-EXE (see .kiro/specs/build-plan-execution/requirements.md)
+
+## DeliveryGenerationService (Iteration 1)
+
+Static service in `Services/DeliveryGenerationService.cs`.
+
+```csharp
+public static class DeliveryGenerationService
+{
+    /// <summary>
+    /// Creates/updates delivery plan for a single build plan's shortfalls.
+    /// </summary>
+    public static DeliveryPlan GenerateDeliveryPlan(
+        BuildPlan buildPlan, DeliveryRoute route,
+        Dictionary<string, Dictionary<string, int>> shortfalls,
+        Func<string, Colony> colonyFinder,
+        PlayerContext playerContext);
+
+    /// <summary>
+    /// Consolidates shortfalls across multiple plans into one delivery plan.
+    /// Merges duplicate resources by destination.
+    /// </summary>
+    public static DeliveryPlan GenerateConsolidatedDeliveryPlan(
+        IEnumerable<BuildPlan> buildPlans, DeliveryRoute route,
+        Func<BuildPlan, Dictionary<string, Dictionary<string, int>>> shortfallProvider,
+        Func<string, Colony> colonyFinder,
+        PlayerContext playerContext, string planName);
+
+    /// <summary>
+    /// Generates flatpack delivery plan for completed build items.
+    /// Groups by destination colony on the route.
+    /// </summary>
+    public static DeliveryPlan GenerateFlatpackDeliveryPlan(
+        IEnumerable<BuildPlan> buildPlans, DeliveryRoute route,
+        Func<string, Colony> colonyFinder,
+        Func<string, Blueprint> blueprintFinder,
+        PlayerContext playerContext, string planName);
+}
+```
+
+Two-phase delivery workflow:
+1. Consolidated Resource Delivery — merge resource shortfalls across plans
+2. Flatpack Delivery — deliver completed flatpacks to destination colonies
+
+## QueueCalculator (Iteration 1)
+
+Static service in `Services/QueueCalculator.cs`.
+
+```csharp
+public static class QueueCalculator
+{
+    /// <summary>
+    /// Computes manufacturing runs to fill target duration. Returns -1 if time unknown.
+    /// </summary>
+    public static int ComputeManufactoryRuns(Blueprint blueprint, int targetDurationSeconds);
+
+    /// <summary>
+    /// Computes commodity runs to fill target duration.
+    /// </summary>
+    public static int ComputeCommodityRuns(int targetDurationSeconds);
+
+    /// <summary>
+    /// Total items produced for N manufactory runs (accounts for items-per-run).
+    /// </summary>
+    public static int ManufactoryRunsToItems(Blueprint blueprint, int runs);
+
+    /// <summary>
+    /// Total items produced for N commodity runs.
+    /// </summary>
+    public static int CommodityRunsToItems(int runs);
+}
+```
+
+- Manufactory: `ceiling(targetSeconds / mfgSeconds)`.
+- Commodity: `ceiling(targetSeconds / CommodityCycleSeconds)`.
+
+## AutoAssignService (Iteration 1)
+
+Static service in `Services/AutoAssignService.cs`.
+
+```csharp
+public static class AutoAssignService
+{
+    /// <summary>
+    /// Proposes structure assignments for unallocated build items,
+    /// minimizing total completion time while respecting blueprint copy limits.
+    /// </summary>
+    public static List<AssignmentProposal> ProposeAssignments(
+        BuildPlan plan, DeliveryRoute route,
+        Func<string, Colony> colonyFinder,
+        Func<string, Ship> shipFinder,
+        Func<string, Station> stationFinder,
+        Func<string, Blueprint> blueprintFinder);
+}
+
+public class AssignmentProposal
+{
+    public string BuildItemUUID { get; set; }
+    public DestinationType BuildLocationType { get; set; } = DestinationType.Colony;
+    public string BuildLocationUUID { get; set; }
+    public string StructureUUID { get; set; }
+    public int SequenceInStructure { get; set; }
+    public string Reason { get; set; }
+}
+```
+
+Logic:
+1. Collect idle structures at locations on the delivery route.
+2. Count blueprint copies per type (max parallelism).
+3. Distribute runs across `min(structures, copies)`, splitting evenly.
+4. Stack on existing assignments if more items than capacity.
+5. Sort to minimize longest completion time.

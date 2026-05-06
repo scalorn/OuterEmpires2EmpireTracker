@@ -34,7 +34,7 @@ GitHub's spec-kit and our project take fundamentally different approaches to spe
 | Data models | specs/NNN/data-model.md (per-feature) | spec/design/data-models.md (centralized) |
 | API contracts | specs/NNN/contracts/ | N/A (WinForms app, no API) |
 | Research notes | specs/NNN/research.md | spec/decisions/ |
-| User flows | Embedded in spec user stories | spec/flows/user-flows.md (Mermaid diagrams) |
+| User flows | Embedded in spec user stories | spec/flows/ (domain-specific Mermaid diagrams) |
 | Mockups | No built-in support | spec/mockups/feature.md (ASCII wireframes) |
 | Constitution | memory/constitution.md | .kiro/steering/ (multiple rule files) |
 | Backlog/tracking | Uses git branches per feature | spec/BACKLOG.md, spec/COMPLETED.md |

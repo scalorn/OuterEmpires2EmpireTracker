@@ -48,9 +48,9 @@ Requirements (spec/requirements/)
 |----------|----------|---------|
 | Requirements | spec/requirements/{Domain}.md | SHALL statements, verifiable behaviors |
 | Architecture | spec/design/architecture.md | System-level diagrams, layer descriptions |
-| Data Models | spec/design/data-models.md | Entity definitions, field specs, relationships |
-| Services | spec/design/services.md | Service APIs, logic descriptions |
-| User Flows | spec/flows/user-flows.md | Mermaid sequence diagrams for user interactions |
+| Data Models | spec/design/data-models/ | Entity definitions, field specs, relationships |
+| Services | spec/design/services/ | Service APIs, logic descriptions (split by domain) |
+| User Flows | spec/flows/ | Mermaid sequence diagrams for user interactions |
 | Mockups | spec/mockups/{feature}.md | ASCII wireframes, control descriptions |
 | Design Decisions | spec/decisions/ | Resolved questions, rationale |
 | Help Docs | docs/{topic}.md | User-facing documentation (embedded in app) |
