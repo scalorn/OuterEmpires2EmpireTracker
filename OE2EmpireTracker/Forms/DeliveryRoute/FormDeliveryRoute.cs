@@ -86,6 +86,22 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             cmdAddPickUp.Click += CmdAddPickUp_Click;
             cmdRemoveDropOff.Click += CmdRemoveDropOff_Click;
             cmdRemovePickUp.Click += CmdRemovePickUp_Click;
+
+            // Context menu event wiring
+            tsmiAddStop.Click += CmdAddStop_Click;
+            tsmiMoveUpStop.Click += CmdUp_Click;
+            tsmiMoveDownStop.Click += CmdDown_Click;
+            tsmiRemoveStop.Click += CmdRemoveStop_Click;
+            tsmiAddDropOff.Click += CmdAddDropOff_Click;
+            tsmiRemoveDropOff.Click += CmdRemoveDropOff_Click;
+            tsmiAddPickUp.Click += CmdAddPickUp_Click;
+            tsmiRemovePickUp.Click += CmdRemovePickUp_Click;
+            dgvStops.CellMouseClick += DgvStops_CellMouseClick;
+            dgvDropOff.CellMouseClick += DgvDropOff_CellMouseClick;
+            dgvPickUp.CellMouseClick += DgvPickUp_CellMouseClick;
+            cmsStops.Opening += CmsStops_Opening;
+            cmsDropOff.Opening += CmsDropOff_Opening;
+            cmsPickUp.Opening += CmsPickUp_Opening;
             dgvStops.SelectionChanged += DgvStops_SelectionChanged;
 
             // Plan selector wiring
@@ -1395,12 +1411,6 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulatePlanDropdown();
         }
 
-        private class ColonyPickerItem
-        {
-            public string UUID { get; set; }
-            public string Display { get; set; }
-        }
-
         // -----------------------------------------------------------------------
         // Plan Tab
         // -----------------------------------------------------------------------
@@ -1408,6 +1418,82 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         // -----------------------------------------------------------------------
         // Plan Selector
         // -----------------------------------------------------------------------
+
+        // -----------------------------------------------------------------------
+        // Context Menu Handlers
+        // -----------------------------------------------------------------------
+
+        private void DgvStops_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvStops.ClearSelection();
+                dgvStops.Rows[e.RowIndex].Selected = true;
+                dgvStops.CurrentCell = dgvStops.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvStops.ClearSelection();
+            }
+        }
+
+        private void DgvDropOff_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvDropOff.ClearSelection();
+                dgvDropOff.Rows[e.RowIndex].Selected = true;
+                dgvDropOff.CurrentCell = dgvDropOff.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvDropOff.ClearSelection();
+            }
+        }
+
+        private void DgvPickUp_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvPickUp.ClearSelection();
+                dgvPickUp.Rows[e.RowIndex].Selected = true;
+                dgvPickUp.CurrentCell = dgvPickUp.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvPickUp.ClearSelection();
+            }
+        }
+
+        private void CmsStops_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvStops.CurrentRow != null;
+            tsmiAddStop.Enabled = true;
+            tsmiRemoveStop.Enabled = hasSelection;
+            tsmiMoveUpStop.Enabled = hasSelection && dgvStops.CurrentRow.Index > 0;
+            tsmiMoveDownStop.Enabled = hasSelection && dgvStops.CurrentRow.Index < dgvStops.RowCount - 1;
+        }
+
+        private void CmsDropOff_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvDropOff.CurrentRow != null;
+            tsmiRemoveDropOff.Enabled = hasSelection;
+        }
+
+        private void CmsPickUp_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvPickUp.CurrentRow != null;
+            tsmiRemovePickUp.Enabled = hasSelection;
+        }
+
+        private class ColonyPickerItem
+        {
+            public string UUID { get; set; }
+            public string Display { get; set; }
+        }
 
         private class PlanDropdownItem
         {

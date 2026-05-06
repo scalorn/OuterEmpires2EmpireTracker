@@ -75,6 +75,11 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             flpSelectors.Layout += FlpSelectors_Layout;
             pnlLoadList.Layout += PnlLoadList_Layout;
 
+            // Wire context menu events (grid-context-menus spec, task 5.2)
+            tsmiMarkAllDelivered.Click += TsmiMarkAllDelivered_Click;
+            tsmiMarkAllUndelivered.Click += TsmiMarkAllUndelivered_Click;
+            dgvLoadList.CellMouseClick += DgvLoadList_CellMouseClick;
+
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.DeliveryDataChanged += OnDeliveryDataChanged;
         }
@@ -889,6 +894,87 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             if (!string.IsNullOrEmpty(routeUUID))
                 PopulatePlanDropdown(routeUUID);
             BuildExecution();
+        }
+
+        // -----------------------------------------------------------------------
+        // Context Menu Handlers (grid-context-menus spec, task 5.2)
+        // -----------------------------------------------------------------------
+
+        private void TsmiMarkAllDelivered_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(selectedPlanUUID)) return;
+
+            var mutablePlan = playerContext.FindMutableDeliveryPlan(selectedPlanUUID);
+            if (mutablePlan == null) return;
+
+            foreach (var stop in mutablePlan.Stops)
+            {
+                for (int i = 0; i < stop.DropOff.Count; i++)
+                {
+                    if (!stop.DropOff[i].Delivered)
+                    {
+                        _deliveryPlanService.MarkItemDelivered(
+                            selectedPlanUUID, stop.Sequence, i, "DropOff", true);
+                    }
+                }
+
+                for (int i = 0; i < stop.PickUp.Count; i++)
+                {
+                    if (!stop.PickUp[i].Delivered)
+                    {
+                        _deliveryPlanService.MarkItemDelivered(
+                            selectedPlanUUID, stop.Sequence, i, "PickUp", true);
+                    }
+                }
+            }
+
+            BuildExecution();
+        }
+
+        private void TsmiMarkAllUndelivered_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(selectedPlanUUID)) return;
+
+            var mutablePlan = playerContext.FindMutableDeliveryPlan(selectedPlanUUID);
+            if (mutablePlan == null) return;
+
+            foreach (var stop in mutablePlan.Stops)
+            {
+                for (int i = 0; i < stop.DropOff.Count; i++)
+                {
+                    if (stop.DropOff[i].Delivered)
+                    {
+                        _deliveryPlanService.MarkItemDelivered(
+                            selectedPlanUUID, stop.Sequence, i, "DropOff", false);
+                    }
+                }
+
+                for (int i = 0; i < stop.PickUp.Count; i++)
+                {
+                    if (stop.PickUp[i].Delivered)
+                    {
+                        _deliveryPlanService.MarkItemDelivered(
+                            selectedPlanUUID, stop.Sequence, i, "PickUp", false);
+                    }
+                }
+            }
+
+            BuildExecution();
+        }
+
+        private void DgvLoadList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvLoadList.ClearSelection();
+                dgvLoadList.Rows[e.RowIndex].Selected = true;
+                dgvLoadList.CurrentCell = dgvLoadList.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvLoadList.ClearSelection();
+            }
         }
 
         // -----------------------------------------------------------------------

@@ -60,6 +60,15 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             dgvComponents.DataError += DgvComponents_DataError;
             dgvComponents.CellClick += DgvComponents_CellClick;
 
+            // Context menu event wiring
+            tsmiClearSlotComponent.Click += TsmiClearSlotComponent_Click;
+            tsmiAddCargo.Click += CmdAddItem_Click;
+            tsmiRemoveCargo.Click += CmdRemoveItem_Click;
+            dgvComponents.CellMouseClick += DgvComponents_CellMouseClick;
+            dgvCargo.CellMouseClick += DgvCargo_CellMouseClick;
+            cmsComponents.Opening += CmsComponents_Opening;
+            cmsCargo.Opening += CmsCargo_Opening;
+
             PopulateLocationTypeCombo();
             PopulateHullCombo();
             PopulateAddTypeCombo();
@@ -593,6 +602,59 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         {
             if (e.RowIndex >= 0 && e.ColumnIndex == colComponent.Index)
                 dgvComponents.BeginEdit(true);
+        }
+
+        private void DgvComponents_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvComponents.ClearSelection();
+                dgvComponents.Rows[e.RowIndex].Selected = true;
+                dgvComponents.CurrentCell = dgvComponents.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvComponents.ClearSelection();
+            }
+        }
+
+        private void DgvCargo_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvCargo.ClearSelection();
+                dgvCargo.Rows[e.RowIndex].Selected = true;
+                dgvCargo.CurrentCell = dgvCargo.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvCargo.ClearSelection();
+            }
+        }
+
+        private void CmsComponents_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvComponents.CurrentRow != null;
+            tsmiClearSlotComponent.Enabled = hasSelection;
+        }
+
+        private void CmsCargo_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvCargo.CurrentRow != null;
+            tsmiRemoveCargo.Enabled = hasSelection;
+        }
+
+        private void TsmiClearSlotComponent_Click(object sender, EventArgs e)
+        {
+            if (dgvComponents.CurrentRow == null) return;
+            var row = dgvComponents.CurrentRow;
+            var comboCell = row.Cells[colComponent.Index] as Controls.DataGridViewFilteredComboBoxCell;
+            if (comboCell != null && comboCell.Items != null && comboCell.Items.Count > 0)
+            {
+                comboCell.Value = comboCell.Items[0];
+            }
         }
 
         private void RefreshStats()

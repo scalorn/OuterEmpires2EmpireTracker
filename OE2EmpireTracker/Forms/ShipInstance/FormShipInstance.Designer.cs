@@ -17,6 +17,11 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void InitializeComponent()
         {
+            this.cmsComponents = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiClearSlotComponent = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsCargo = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiAddCargo = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRemoveCargo = new System.Windows.Forms.ToolStripMenuItem();
             this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.flpFilter = new System.Windows.Forms.FlowLayoutPanel();
@@ -312,6 +317,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             //
             // dgvComponents — Task 1.2: new columns, CellSelect mode, EditOnEnter
             //
+            this.dgvComponents.ContextMenuStrip = this.cmsComponents;
             this.dgvComponents.AllowUserToAddRows = false;
             this.dgvComponents.AllowUserToDeleteRows = false;
             this.dgvComponents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -412,6 +418,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             //
             // dgvCargo
             //
+            this.dgvCargo.ContextMenuStrip = this.cmsCargo;
             this.dgvCargo.AllowUserToAddRows = false;
             this.dgvCargo.AllowUserToDeleteRows = false;
             this.dgvCargo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -572,6 +579,39 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             this.cmdRemoveItem.Text = "Remove";
             this.cmdRemoveItem.UseVisualStyleBackColor = true;
             //
+            // cmsComponents
+            //
+            this.cmsComponents.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiClearSlotComponent});
+            this.cmsComponents.Name = "cmsComponents";
+            this.cmsComponents.Size = new System.Drawing.Size(126, 26);
+            //
+            // tsmiClearSlotComponent
+            //
+            this.tsmiClearSlotComponent.Name = "tsmiClearSlotComponent";
+            this.tsmiClearSlotComponent.Size = new System.Drawing.Size(125, 22);
+            this.tsmiClearSlotComponent.Text = "Clear Slot";
+            //
+            // cmsCargo
+            //
+            this.cmsCargo.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiAddCargo,
+            this.tsmiRemoveCargo});
+            this.cmsCargo.Name = "cmsCargo";
+            this.cmsCargo.Size = new System.Drawing.Size(142, 48);
+            //
+            // tsmiAddCargo
+            //
+            this.tsmiAddCargo.Name = "tsmiAddCargo";
+            this.tsmiAddCargo.Size = new System.Drawing.Size(141, 22);
+            this.tsmiAddCargo.Text = "Add Item";
+            //
+            // tsmiRemoveCargo
+            //
+            this.tsmiRemoveCargo.Name = "tsmiRemoveCargo";
+            this.tsmiRemoveCargo.Size = new System.Drawing.Size(141, 22);
+            this.tsmiRemoveCargo.Text = "Remove Item";
+            //
             // FormShipInstance
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -663,6 +703,11 @@ namespace OE2EmpireTracker.Forms.ShipInstance
         private OE2EmpireTracker.Controls.ValidatedTextBox txtAddQty;
         private System.Windows.Forms.Button cmdAddItem;
         private System.Windows.Forms.Button cmdRemoveItem;
+        private System.Windows.Forms.ContextMenuStrip cmsComponents;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClearSlotComponent;
+        private System.Windows.Forms.ContextMenuStrip cmsCargo;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddCargo;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRemoveCargo;
         private System.Windows.Forms.Label lblCrateContents;
         private System.Windows.Forms.DataGridView dgvCrateContents;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCrateType;

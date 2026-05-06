@@ -144,6 +144,12 @@ namespace OE2EmpireTracker.Forms.Survey
             flpSearchList.Layout += FlpSearchList_Layout;
             flpSurveyData.Layout += FlpSurveyData_Layout;
 
+            // Context menu event wiring
+            tsmiAddResource.Click += TsmiAddResource_Click;
+            tsmiRemoveResource.Click += TsmiRemoveResource_Click;
+            dgvResources.CellMouseClick += DgvResources_CellMouseClick;
+            cmsResources.Opening += CmsResources_Opening;
+
             UpdateSaveButtonState();
         }
 
@@ -892,6 +898,50 @@ namespace OE2EmpireTracker.Forms.Survey
                 dgvResources.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.White;
                 dgvResources.Rows[e.RowIndex].ErrorText = string.Empty;
             }
+        }
+
+        // -----------------------------------------------------------------------
+        // Context Menu Handlers
+        // -----------------------------------------------------------------------
+
+        private void TsmiAddResource_Click(object sender, EventArgs e)
+        {
+            dgvResources.Rows.Add();
+        }
+
+        private void TsmiRemoveResource_Click(object sender, EventArgs e)
+        {
+            if (dgvResources.CurrentRow == null || dgvResources.CurrentRow.IsNewRow)
+            {
+                return;
+            }
+
+            dgvResources.Rows.RemoveAt(dgvResources.CurrentRow.Index);
+        }
+
+        private void DgvResources_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right)
+            {
+                return;
+            }
+
+            if (e.RowIndex >= 0)
+            {
+                dgvResources.ClearSelection();
+                dgvResources.Rows[e.RowIndex].Selected = true;
+                dgvResources.CurrentCell = dgvResources.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvResources.ClearSelection();
+            }
+        }
+
+        private void CmsResources_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvResources.CurrentRow != null && !dgvResources.CurrentRow.IsNewRow;
+            tsmiRemoveResource.Enabled = hasSelection;
         }
 
         // -----------------------------------------------------------------------

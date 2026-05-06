@@ -92,6 +92,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpOverflowButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddOverflowRule = new System.Windows.Forms.Button();
             this.cmdRemoveOverflowRule = new System.Windows.Forms.Button();
+            this.cmsItems = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRemoveItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsCommodityRequests = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddCommodityRequest = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRemoveCommodityRequest = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsOverflowRules = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddOverflowRule = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRemoveOverflowRule = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvItems = new DataEntryGridView();
             this.colItemType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colItemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -522,6 +531,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.colCRAmount,
             this.colCRFulfilled,
             this.colCRNeedBy});
+            this.dgvCommodityRequests.ContextMenuStrip = this.cmsCommodityRequests;
             this.dgvCommodityRequests.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvCommodityRequests.Location = new System.Drawing.Point(2, 2);
             this.dgvCommodityRequests.Name = "dgvCommodityRequests";
@@ -644,6 +654,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.dgvOverflowRules.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colOverflowResource, this.colOverflowPurity, this.colOverflowThreshold, this.colOverflowCurrent,
             this.colOverflowDest, this.colOverflowRoute, this.colOverflowActive});
+            this.dgvOverflowRules.ContextMenuStrip = this.cmsOverflowRules;
             this.dgvOverflowRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvOverflowRules.Location = new System.Drawing.Point(2, 2);
             this.dgvOverflowRules.Name = "dgvOverflowRules";
@@ -757,6 +768,36 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdRemoveOverflowRule.Text = "Remove Rule";
             this.cmdRemoveOverflowRule.UseVisualStyleBackColor = true;
             this.cmdRemoveOverflowRule.Name = "cmdRemoveOverflowRule";
+            // cmsItems
+            this.cmsItems.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.tsmiAddItem, this.tsmiRemoveItem });
+            this.cmsItems.Name = "cmsItems";
+            this.cmsItems.Size = new System.Drawing.Size(130, 48);
+            this.tsmiAddItem.Name = "tsmiAddItem";
+            this.tsmiAddItem.Size = new System.Drawing.Size(129, 22);
+            this.tsmiAddItem.Text = "Add Item";
+            this.tsmiRemoveItem.Name = "tsmiRemoveItem";
+            this.tsmiRemoveItem.Size = new System.Drawing.Size(129, 22);
+            this.tsmiRemoveItem.Text = "Remove Item";
+            // cmsCommodityRequests
+            this.cmsCommodityRequests.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.tsmiAddCommodityRequest, this.tsmiRemoveCommodityRequest });
+            this.cmsCommodityRequests.Name = "cmsCommodityRequests";
+            this.cmsCommodityRequests.Size = new System.Drawing.Size(170, 48);
+            this.tsmiAddCommodityRequest.Name = "tsmiAddCommodityRequest";
+            this.tsmiAddCommodityRequest.Size = new System.Drawing.Size(169, 22);
+            this.tsmiAddCommodityRequest.Text = "Add Request";
+            this.tsmiRemoveCommodityRequest.Name = "tsmiRemoveCommodityRequest";
+            this.tsmiRemoveCommodityRequest.Size = new System.Drawing.Size(169, 22);
+            this.tsmiRemoveCommodityRequest.Text = "Remove Request";
+            // cmsOverflowRules
+            this.cmsOverflowRules.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.tsmiAddOverflowRule, this.tsmiRemoveOverflowRule });
+            this.cmsOverflowRules.Name = "cmsOverflowRules";
+            this.cmsOverflowRules.Size = new System.Drawing.Size(150, 48);
+            this.tsmiAddOverflowRule.Name = "tsmiAddOverflowRule";
+            this.tsmiAddOverflowRule.Size = new System.Drawing.Size(149, 22);
+            this.tsmiAddOverflowRule.Text = "Add Rule";
+            this.tsmiRemoveOverflowRule.Name = "tsmiRemoveOverflowRule";
+            this.tsmiRemoveOverflowRule.Size = new System.Drawing.Size(149, 22);
+            this.tsmiRemoveOverflowRule.Text = "Remove Rule";
             // 
             // dgvItems
             // 
@@ -769,6 +810,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.colItemName,
             this.colItemLocked,
             this.colItemAmount});
+            this.dgvItems.ContextMenuStrip = this.cmsItems;
             this.dgvItems.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvItems.Location = new System.Drawing.Point(2, 2);
             this.dgvItems.Name = "dgvItems";
@@ -1064,5 +1106,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.FlowLayoutPanel flpOverflowButtons;
         private System.Windows.Forms.Button cmdAddOverflowRule;
         private System.Windows.Forms.Button cmdRemoveOverflowRule;
+        private System.Windows.Forms.ContextMenuStrip cmsItems;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRemoveItem;
+        private System.Windows.Forms.ContextMenuStrip cmsCommodityRequests;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddCommodityRequest;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRemoveCommodityRequest;
+        private System.Windows.Forms.ContextMenuStrip cmsOverflowRules;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddOverflowRule;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRemoveOverflowRule;
     }
 }

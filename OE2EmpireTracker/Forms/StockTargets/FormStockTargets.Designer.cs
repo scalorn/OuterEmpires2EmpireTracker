@@ -67,6 +67,9 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.cmdRemoveTarget = new System.Windows.Forms.Button();
             this.cmdQuickAdd = new System.Windows.Forms.Button();
             this.cmdCheckGenerate = new System.Windows.Forms.Button();
+            this.cmsTargets = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddTarget = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRemoveTarget = new System.Windows.Forms.ToolStripMenuItem();
             this.lblExpandedComponents = new System.Windows.Forms.Label();
             this.dgvExpandedComponents = new System.Windows.Forms.DataGridView();
             this.colExpComponent = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -273,6 +276,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.dgvTargets.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colTargetType, this.colTargetItem, this.colTargetQty, this.colCritical,
             this.colScope, this.colLocation, this.colCurrentQty, this.colShortfall});
+            this.dgvTargets.ContextMenuStrip = this.cmsTargets;
             this.dgvTargets.Name = "dgvTargets";
             this.dgvTargets.ReadOnly = true;
             this.dgvTargets.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -446,6 +450,18 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.cmdRemoveEntry.Size = new System.Drawing.Size(95, 23); this.cmdRemoveEntry.Text = "Remove Entry"; this.cmdRemoveEntry.UseVisualStyleBackColor = true; this.cmdRemoveEntry.Name = "cmdRemoveEntry";
             // lblLogicSummary
             this.lblLogicSummary.AutoSize = true; this.lblLogicSummary.Name = "lblLogicSummary"; this.lblLogicSummary.Text = ""; this.lblLogicSummary.MaximumSize = new System.Drawing.Size(560, 0);
+            // cmsTargets
+            this.cmsTargets.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.tsmiAddTarget, this.tsmiRemoveTarget });
+            this.cmsTargets.Name = "cmsTargets";
+            this.cmsTargets.Size = new System.Drawing.Size(155, 48);
+            // tsmiAddTarget
+            this.tsmiAddTarget.Name = "tsmiAddTarget";
+            this.tsmiAddTarget.Size = new System.Drawing.Size(154, 22);
+            this.tsmiAddTarget.Text = "Add Target";
+            // tsmiRemoveTarget
+            this.tsmiRemoveTarget.Name = "tsmiRemoveTarget";
+            this.tsmiRemoveTarget.Size = new System.Drawing.Size(154, 22);
+            this.tsmiRemoveTarget.Text = "Remove Target";
             // FormStockTargets
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -574,5 +590,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
         private System.Windows.Forms.Button cmdAddEntry;
         private System.Windows.Forms.Button cmdRemoveEntry;
         private System.Windows.Forms.Label lblLogicSummary;
+        private System.Windows.Forms.ContextMenuStrip cmsTargets;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddTarget;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRemoveTarget;
     }
 }

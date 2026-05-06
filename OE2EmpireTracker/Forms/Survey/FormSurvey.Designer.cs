@@ -89,6 +89,9 @@ namespace OE2EmpireTracker.Forms.Survey
             this.btnSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdImport = new System.Windows.Forms.Button();
+            this.cmsResources = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddResource = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRemoveResource = new System.Windows.Forms.ToolStripMenuItem();
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
             this.flpSurveyFilter.SuspendLayout();
@@ -690,6 +693,7 @@ namespace OE2EmpireTracker.Forms.Survey
             this.Resource,
             this.Purity,
             this.Amount});
+            this.dgvResources.ContextMenuStrip = this.cmsResources;
             this.dgvResources.Location = new System.Drawing.Point(3, 263);
             this.dgvResources.Name = "dgvResources";
             this.dgvResources.Size = new System.Drawing.Size(825, 303);
@@ -773,6 +777,24 @@ namespace OE2EmpireTracker.Forms.Survey
             this.cmdImport.Text = "Import";
             this.cmdImport.UseVisualStyleBackColor = true;
             this.cmdImport.Click += new System.EventHandler(this.CmdImport_Click);
+            // 
+            // cmsResources
+            // 
+            this.cmsResources.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.tsmiAddResource, this.tsmiRemoveResource });
+            this.cmsResources.Name = "cmsResources";
+            this.cmsResources.Size = new System.Drawing.Size(165, 48);
+            // 
+            // tsmiAddResource
+            // 
+            this.tsmiAddResource.Name = "tsmiAddResource";
+            this.tsmiAddResource.Size = new System.Drawing.Size(164, 22);
+            this.tsmiAddResource.Text = "Add Resource";
+            // 
+            // tsmiRemoveResource
+            // 
+            this.tsmiRemoveResource.Name = "tsmiRemoveResource";
+            this.tsmiRemoveResource.Size = new System.Drawing.Size(164, 22);
+            this.tsmiRemoveResource.Text = "Remove Resource";
             // 
             // FormSurvey
             // 
@@ -880,5 +902,8 @@ namespace OE2EmpireTracker.Forms.Survey
         private System.Windows.Forms.DataGridViewComboBoxColumn Purity;
         private OE2EmpireTracker.Controls.DataGridViewValidatedTextBoxColumn Amount;
         private System.Windows.Forms.DateTimePicker dtpScanDateTime;
+        private System.Windows.Forms.ContextMenuStrip cmsResources;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddResource;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRemoveResource;
     }
 }

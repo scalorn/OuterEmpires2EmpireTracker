@@ -33,6 +33,8 @@ const KNOWN_DUPES = new Set([
     // Small identical layout/player-changed handlers across forms — accepted baseline (BL-082, BL-083)
     'OnCurrentPlayerChanged',
     'flpSearchList_Layout',
+    // Context menu CellMouseClick handlers intentionally identical across forms (grid-context-menus spec)
+    'DgvComponents_CellMouseClick',
     // Unsaved changes prompt intentionally copied between FormSurvey and FormColonyV2 (BL-109, BL-110)
     'PromptUnsavedChanges',
     // Deep-copy helpers intentionally duplicated between Ship/ShipTemplate services and ViewModels (BL-115, BL-116)

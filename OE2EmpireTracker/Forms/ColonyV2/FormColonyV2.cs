@@ -198,6 +198,20 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             this.Shown += FormColonyV2_Shown;
 
+            // Wire context menu events (grid-context-menus spec, task 1.2)
+            tsmiAddItem.Click += CmdAddItem_Click;
+            tsmiRemoveItem.Click += TsmiRemoveItem_Click;
+            tsmiAddCommodityRequest.Click += CmdAddCommodityRequest_Click;
+            tsmiRemoveCommodityRequest.Click += TsmiRemoveCommodityRequest_Click;
+            tsmiAddOverflowRule.Click += CmdAddOverflowRule_Click;
+            tsmiRemoveOverflowRule.Click += CmdRemoveOverflowRule_Click;
+            dgvItems.CellMouseClick += DgvItems_CellMouseClick;
+            dgvCommodityRequests.CellMouseClick += DgvCommodityRequests_CellMouseClick;
+            dgvOverflowRules.CellMouseClick += DgvOverflowRules_CellMouseClick;
+            cmsItems.Opening += CmsItems_Opening;
+            cmsCommodityRequests.Opening += CmsCommodityRequests_Opening;
+            cmsOverflowRules.Opening += CmsOverflowRules_Opening;
+
             UpdateTitle();
         }
 
@@ -3214,6 +3228,120 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             rule.IsActive = val is bool b && b;
             Log.Info("Overflow rule \"{0}\" IsActive={1}", rule.ResourceName, rule.IsActive);
             PopulateOverflowGrid();
+        }
+
+        // -------------------------------------------------------------------
+        // Context Menu Handlers (grid-context-menus spec, task 1.2)
+        // -------------------------------------------------------------------
+
+        private void TsmiRemoveItem_Click(object sender, EventArgs e)
+        {
+            if (dgvItems.SelectedRows.Count == 0) return;
+
+            foreach (DataGridViewRow row in dgvItems.SelectedRows)
+            {
+                Item item = row.Tag as Item;
+                if (item != null)
+                {
+                    var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+                    int locked = colony?.Locks != null
+                        ? colony.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
+                        : 0;
+                    if (locked > 0)
+                    {
+                        MessageBox.Show(
+                            $"Cannot delete '{item.ExtendedName}' -- {locked} locked by structures.",
+                            "Item Locked",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        continue;
+                    }
+
+                    _colonyService.RemoveItem(_selectedColonyUUID, item.UUID);
+                }
+            }
+
+            PopulateItemGrid();
+        }
+
+        private void TsmiRemoveCommodityRequest_Click(object sender, EventArgs e)
+        {
+            if (dgvCommodityRequests.SelectedRows.Count == 0) return;
+
+            foreach (DataGridViewRow row in dgvCommodityRequests.SelectedRows)
+            {
+                CommodityRequested request = row.Tag as CommodityRequested;
+                if (request != null)
+                {
+                    _colonyService.RemoveCommodityRequest(_selectedColonyUUID, request.Name);
+                }
+            }
+
+            PopulateCommodityRequestGrid();
+            UpdateTabWarnings();
+        }
+
+        private void DgvItems_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvItems.ClearSelection();
+                dgvItems.Rows[e.RowIndex].Selected = true;
+                dgvItems.CurrentCell = dgvItems.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvItems.ClearSelection();
+            }
+        }
+
+        private void DgvCommodityRequests_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvCommodityRequests.ClearSelection();
+                dgvCommodityRequests.Rows[e.RowIndex].Selected = true;
+                dgvCommodityRequests.CurrentCell = dgvCommodityRequests.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvCommodityRequests.ClearSelection();
+            }
+        }
+
+        private void DgvOverflowRules_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvOverflowRules.ClearSelection();
+                dgvOverflowRules.Rows[e.RowIndex].Selected = true;
+                dgvOverflowRules.CurrentCell = dgvOverflowRules.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvOverflowRules.ClearSelection();
+            }
+        }
+
+        private void CmsItems_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvItems.CurrentRow != null;
+            tsmiRemoveItem.Enabled = hasSelection;
+        }
+
+        private void CmsCommodityRequests_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvCommodityRequests.CurrentRow != null;
+            tsmiRemoveCommodityRequest.Enabled = hasSelection;
+        }
+
+        private void CmsOverflowRules_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvOverflowRules.CurrentRow != null;
+            tsmiRemoveOverflowRule.Enabled = hasSelection;
         }
     }
 }

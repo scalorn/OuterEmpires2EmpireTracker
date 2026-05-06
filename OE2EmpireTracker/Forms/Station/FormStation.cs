@@ -56,6 +56,19 @@ namespace OE2EmpireTracker.Forms.Station
             cmdMunAdd.Click += CmdMunAdd_Click;
             cmdMunRemove.Click += CmdMunRemove_Click;
 
+            // Context menu event wiring
+            tsmiAddHold.Click += CmdHoldAdd_Click;
+            tsmiRemoveHold.Click += CmdHoldRemove_Click;
+            tsmiClearSlotStation.Click += TsmiClearSlotStation_Click;
+            tsmiAddMunition.Click += CmdMunAdd_Click;
+            tsmiRemoveMunition.Click += CmdMunRemove_Click;
+            dgvHold.CellMouseClick += DgvHold_CellMouseClick;
+            dgvComponents.CellMouseClick += DgvComponents_CellMouseClick;
+            dgvMunitions.CellMouseClick += DgvMunitions_CellMouseClick;
+            cmsHold.Opening += CmsHold_Opening;
+            cmsStationComponents.Opening += CmsStationComponents_Opening;
+            cmsMunitions.Opening += CmsMunitions_Opening;
+
             PopulateStationTypeCombo();
             PopulateOwnershipCombo();
             PopulateHoldTypeCombo();
@@ -756,6 +769,82 @@ namespace OE2EmpireTracker.Forms.Station
             _viewModel.RemoveMunitionsItem(item.UUID);
             PopulateMunitionsGrid();
             Log.Info("Removed munition: {0}", item.Name);
+        }
+
+        // Context menu handlers
+        private void TsmiClearSlotStation_Click(object sender, EventArgs e)
+        {
+            if (dgvComponents.CurrentRow == null) return;
+            var row = dgvComponents.CurrentRow;
+            if (row.Tag is ShipComponentSlot slot)
+            {
+                slot.BlueprintUUID = string.Empty;
+                row.Cells[colComponentName.Index].Value = "(empty)";
+                RefreshStationStats();
+            }
+        }
+
+        private void DgvHold_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvHold.ClearSelection();
+                dgvHold.Rows[e.RowIndex].Selected = true;
+                dgvHold.CurrentCell = dgvHold.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvHold.ClearSelection();
+            }
+        }
+
+        private void DgvComponents_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvComponents.ClearSelection();
+                dgvComponents.Rows[e.RowIndex].Selected = true;
+                dgvComponents.CurrentCell = dgvComponents.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvComponents.ClearSelection();
+            }
+        }
+
+        private void DgvMunitions_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvMunitions.ClearSelection();
+                dgvMunitions.Rows[e.RowIndex].Selected = true;
+                dgvMunitions.CurrentCell = dgvMunitions.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvMunitions.ClearSelection();
+            }
+        }
+
+        private void CmsHold_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvHold.CurrentRow != null;
+            tsmiRemoveHold.Enabled = hasSelection;
+        }
+
+        private void CmsStationComponents_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvComponents.CurrentRow != null;
+            tsmiClearSlotStation.Enabled = hasSelection;
+        }
+
+        private void CmsMunitions_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvMunitions.CurrentRow != null;
+            tsmiRemoveMunition.Enabled = hasSelection;
         }
 
         // CRUD

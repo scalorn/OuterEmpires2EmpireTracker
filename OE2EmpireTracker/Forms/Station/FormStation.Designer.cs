@@ -17,6 +17,14 @@ namespace OE2EmpireTracker.Forms.Station
 
         private void InitializeComponent()
         {
+            this.cmsHold = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddHold = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRemoveHold = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsStationComponents = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiClearSlotStation = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsMunitions = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddMunition = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRemoveMunition = new System.Windows.Forms.ToolStripMenuItem();
             this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.flpFilter = new System.Windows.Forms.FlowLayoutPanel();
@@ -286,6 +294,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.dgvHold.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colHoldType, this.colHoldName, this.colHoldPurity, this.colHoldQty, this.colHoldCondition, this.colHoldMaxRepair});
             this.dgvHold.Location = new System.Drawing.Point(3, 3);
+            this.dgvHold.ContextMenuStrip = this.cmsHold;
             this.dgvHold.Name = "dgvHold";
             this.dgvHold.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvHold.Size = new System.Drawing.Size(698, 200);
@@ -454,6 +463,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.dgvComponents.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colSlotType, this.colComponentName, this.colCondition, this.colMaxRepair});
             this.dgvComponents.Location = new System.Drawing.Point(3, 33);
+            this.dgvComponents.ContextMenuStrip = this.cmsStationComponents;
             this.dgvComponents.Name = "dgvComponents";
             this.dgvComponents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvComponents.Size = new System.Drawing.Size(698, 250);
@@ -501,6 +511,7 @@ namespace OE2EmpireTracker.Forms.Station
             this.dgvMunitions.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colMunName, this.colMunQty});
             this.dgvMunitions.Location = new System.Drawing.Point(3, 3);
+            this.dgvMunitions.ContextMenuStrip = this.cmsMunitions;
             this.dgvMunitions.Name = "dgvMunitions";
             this.dgvMunitions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvMunitions.Size = new System.Drawing.Size(698, 350);
@@ -553,6 +564,51 @@ namespace OE2EmpireTracker.Forms.Station
             this.cmdMunRemove.Text = "Remove";
             this.cmdMunRemove.UseVisualStyleBackColor = true;
             this.cmdMunRemove.Name = "cmdMunRemove";
+
+            // cmsHold
+            this.cmsHold.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiAddHold,
+            this.tsmiRemoveHold});
+            this.cmsHold.Name = "cmsHold";
+            this.cmsHold.Size = new System.Drawing.Size(142, 48);
+
+            // tsmiAddHold
+            this.tsmiAddHold.Name = "tsmiAddHold";
+            this.tsmiAddHold.Size = new System.Drawing.Size(141, 22);
+            this.tsmiAddHold.Text = "Add Item";
+
+            // tsmiRemoveHold
+            this.tsmiRemoveHold.Name = "tsmiRemoveHold";
+            this.tsmiRemoveHold.Size = new System.Drawing.Size(141, 22);
+            this.tsmiRemoveHold.Text = "Remove Item";
+
+            // cmsStationComponents
+            this.cmsStationComponents.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiClearSlotStation});
+            this.cmsStationComponents.Name = "cmsStationComponents";
+            this.cmsStationComponents.Size = new System.Drawing.Size(126, 26);
+
+            // tsmiClearSlotStation
+            this.tsmiClearSlotStation.Name = "tsmiClearSlotStation";
+            this.tsmiClearSlotStation.Size = new System.Drawing.Size(125, 22);
+            this.tsmiClearSlotStation.Text = "Clear Slot";
+
+            // cmsMunitions
+            this.cmsMunitions.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiAddMunition,
+            this.tsmiRemoveMunition});
+            this.cmsMunitions.Name = "cmsMunitions";
+            this.cmsMunitions.Size = new System.Drawing.Size(168, 48);
+
+            // tsmiAddMunition
+            this.tsmiAddMunition.Name = "tsmiAddMunition";
+            this.tsmiAddMunition.Size = new System.Drawing.Size(167, 22);
+            this.tsmiAddMunition.Text = "Add Munition";
+
+            // tsmiRemoveMunition
+            this.tsmiRemoveMunition.Name = "tsmiRemoveMunition";
+            this.tsmiRemoveMunition.Size = new System.Drawing.Size(167, 22);
+            this.tsmiRemoveMunition.Text = "Remove Munition";
 
             // FormStation
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -657,5 +713,13 @@ namespace OE2EmpireTracker.Forms.Station
         private OE2EmpireTracker.Controls.ValidatedTextBox txtMunQty;
         private System.Windows.Forms.Button cmdMunAdd;
         private System.Windows.Forms.Button cmdMunRemove;
+        private System.Windows.Forms.ContextMenuStrip cmsHold;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddHold;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRemoveHold;
+        private System.Windows.Forms.ContextMenuStrip cmsStationComponents;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClearSlotStation;
+        private System.Windows.Forms.ContextMenuStrip cmsMunitions;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddMunition;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRemoveMunition;
     }
 }

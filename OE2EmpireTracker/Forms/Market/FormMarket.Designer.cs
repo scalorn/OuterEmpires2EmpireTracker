@@ -36,6 +36,12 @@ namespace OE2EmpireTracker.Forms.Market
             this.cmdListingEdit = new System.Windows.Forms.Button();
             this.cmdListingDelete = new System.Windows.Forms.Button();
             this.cmdRecordSale = new System.Windows.Forms.Button();
+            this.cmsListings = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiRecordSale = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEditListing = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDeleteListing = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsTransactions = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiViewDetails = new System.Windows.Forms.ToolStripMenuItem();
 
             // Transactions tab controls
             this.flpTxFilters = new System.Windows.Forms.FlowLayoutPanel();
@@ -130,6 +136,7 @@ namespace OE2EmpireTracker.Forms.Market
             this.dgvListings.Location = new System.Drawing.Point(3, 3);
             this.dgvListings.Name = "dgvListings";
             this.dgvListings.ReadOnly = true;
+            this.dgvListings.ContextMenuStrip = this.cmsListings;
             this.dgvListings.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvListings.Size = new System.Drawing.Size(936, 530);
 
@@ -155,6 +162,26 @@ namespace OE2EmpireTracker.Forms.Market
             this.cmdListingEdit.Size = new System.Drawing.Size(55, 23); this.cmdListingEdit.Text = "Edit"; this.cmdListingEdit.UseVisualStyleBackColor = true; this.cmdListingEdit.Name = "cmdListingEdit";
             this.cmdListingDelete.Size = new System.Drawing.Size(55, 23); this.cmdListingDelete.Text = "Delete"; this.cmdListingDelete.UseVisualStyleBackColor = true; this.cmdListingDelete.Name = "cmdListingDelete";
             this.cmdRecordSale.Size = new System.Drawing.Size(85, 23); this.cmdRecordSale.Text = "Record Sale"; this.cmdRecordSale.UseVisualStyleBackColor = true; this.cmdRecordSale.Name = "cmdRecordSale";
+            // cmsListings
+            this.cmsListings.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.tsmiRecordSale, this.tsmiEditListing, this.tsmiDeleteListing });
+            this.cmsListings.Name = "cmsListings";
+            this.cmsListings.Size = new System.Drawing.Size(155, 70);
+            this.tsmiRecordSale.Name = "tsmiRecordSale";
+            this.tsmiRecordSale.Size = new System.Drawing.Size(154, 22);
+            this.tsmiRecordSale.Text = "Record Sale";
+            this.tsmiEditListing.Name = "tsmiEditListing";
+            this.tsmiEditListing.Size = new System.Drawing.Size(154, 22);
+            this.tsmiEditListing.Text = "Edit Listing";
+            this.tsmiDeleteListing.Name = "tsmiDeleteListing";
+            this.tsmiDeleteListing.Size = new System.Drawing.Size(154, 22);
+            this.tsmiDeleteListing.Text = "Delete Listing";
+            // cmsTransactions
+            this.cmsTransactions.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.tsmiViewDetails });
+            this.cmsTransactions.Name = "cmsTransactions";
+            this.cmsTransactions.Size = new System.Drawing.Size(135, 26);
+            this.tsmiViewDetails.Name = "tsmiViewDetails";
+            this.tsmiViewDetails.Size = new System.Drawing.Size(134, 22);
+            this.tsmiViewDetails.Text = "View Details";
             // tabTransactions
             this.tabTransactions.Controls.Add(this.flpTxFilters);
             this.tabTransactions.Controls.Add(this.dgvTransactions);
@@ -207,6 +234,7 @@ namespace OE2EmpireTracker.Forms.Market
             this.dgvTransactions.Location = new System.Drawing.Point(3, 65);
             this.dgvTransactions.Name = "dgvTransactions";
             this.dgvTransactions.ReadOnly = true;
+            this.dgvTransactions.ContextMenuStrip = this.cmsTransactions;
             this.dgvTransactions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTransactions.Size = new System.Drawing.Size(936, 526);
 
@@ -383,5 +411,11 @@ namespace OE2EmpireTracker.Forms.Market
         private System.Windows.Forms.DataGridViewTextBoxColumn colSumNet;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSumPlanValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSumMargin;
+        private System.Windows.Forms.ContextMenuStrip cmsListings;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRecordSale;
+        private System.Windows.Forms.ToolStripMenuItem tsmiEditListing;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDeleteListing;
+        private System.Windows.Forms.ContextMenuStrip cmsTransactions;
+        private System.Windows.Forms.ToolStripMenuItem tsmiViewDetails;
     }
 }

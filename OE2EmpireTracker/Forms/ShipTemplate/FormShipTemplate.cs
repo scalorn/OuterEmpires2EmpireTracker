@@ -47,6 +47,11 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             cmdOrderBuild.Click += CmdOrderBuild_Click;
 
             dgvSlots.CellValueChanged += DgvSlots_CellValueChanged;
+            dgvSlots.CellMouseClick += DgvSlots_CellMouseClick;
+
+            // Context menu event wiring
+            tsmiClearSlot.Click += TsmiClearSlot_Click;
+            cmsSlots.Opening += CmsSlots_Opening;
             dgvSlots.CurrentCellDirtyStateChanged += DgvSlots_CurrentCellDirtyStateChanged;
             dgvSlots.DataError += DgvSlots_DataError;
             dgvSlots.CellClick += DgvSlots_CellClick;
@@ -413,6 +418,38 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             if (e.ColumnIndex == colComponent.Index)
             {
                 dgvSlots.BeginEdit(true);
+            }
+        }
+
+        private void DgvSlots_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvSlots.ClearSelection();
+                dgvSlots.Rows[e.RowIndex].Selected = true;
+                dgvSlots.CurrentCell = dgvSlots.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvSlots.ClearSelection();
+            }
+        }
+
+        private void CmsSlots_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvSlots.CurrentRow != null;
+            tsmiClearSlot.Enabled = hasSelection;
+        }
+
+        private void TsmiClearSlot_Click(object sender, EventArgs e)
+        {
+            if (dgvSlots.CurrentRow == null) return;
+            var row = dgvSlots.CurrentRow;
+            var comboCell = (DataGridViewFilteredComboBoxCell)row.Cells[colComponent.Index];
+            if (comboCell.Items != null && comboCell.Items.Count > 0)
+            {
+                comboCell.Value = comboCell.Items[0];
             }
         }
 

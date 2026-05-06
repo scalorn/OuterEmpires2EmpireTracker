@@ -32,6 +32,16 @@ namespace OE2EmpireTracker.Forms.Market
             cmdListingDelete.Click += CmdListingDelete_Click;
             cmdRecordSale.Click += CmdRecordSale_Click;
 
+            // Context menu events (grid-context-menus spec, task 6.2)
+            tsmiRecordSale.Click += CmdRecordSale_Click;
+            tsmiEditListing.Click += CmdListingEdit_Click;
+            tsmiDeleteListing.Click += CmdListingDelete_Click;
+            tsmiViewDetails.Click += TsmiViewDetails_Click;
+            dgvListings.CellMouseClick += DgvListings_CellMouseClick;
+            dgvTransactions.CellMouseClick += DgvTransactions_CellMouseClick;
+            cmsListings.Opening += CmsListings_Opening;
+            cmsTransactions.Opening += CmsTransactions_Opening;
+
             // Transactions tab
             cmbTxType.Items.AddRange(new object[] { "All", "Buy", "Sell" });
             cmbTxType.SelectedIndex = 0;
@@ -471,6 +481,58 @@ namespace OE2EmpireTracker.Forms.Market
 
             PopulateListingsGrid();
             PopulateTransactionsGrid();
+        }
+
+        // -----------------------------------------------------------------------
+        // Context Menu Handlers (grid-context-menus spec, task 6.2)
+        // -----------------------------------------------------------------------
+        private void TsmiViewDetails_Click(object sender, EventArgs e)
+        {
+            if (dgvTransactions.SelectedRows.Count == 0) return;
+        }
+
+        private void DgvListings_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvListings.ClearSelection();
+                dgvListings.Rows[e.RowIndex].Selected = true;
+                dgvListings.CurrentCell = dgvListings.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvListings.ClearSelection();
+            }
+        }
+
+        private void DgvTransactions_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvTransactions.ClearSelection();
+                dgvTransactions.Rows[e.RowIndex].Selected = true;
+                dgvTransactions.CurrentCell = dgvTransactions.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvTransactions.ClearSelection();
+            }
+        }
+
+        private void CmsListings_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvListings.CurrentRow != null;
+            tsmiRecordSale.Enabled = hasSelection;
+            tsmiEditListing.Enabled = hasSelection;
+            tsmiDeleteListing.Enabled = hasSelection;
+        }
+
+        private void CmsTransactions_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvTransactions.CurrentRow != null;
+            tsmiViewDetails.Enabled = hasSelection;
         }
 
         // -----------------------------------------------------------------------

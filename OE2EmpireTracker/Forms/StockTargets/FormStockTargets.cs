@@ -60,6 +60,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
             cmbTargetType.SelectedIndexChanged += CmbTargetType_SelectedIndexChanged;
             dgvTargets.SelectionChanged += DgvTargets_SelectionChanged;
 
+            tsmiAddTarget.Click += CmdAddTarget_Click;
+            tsmiRemoveTarget.Click += CmdRemoveTarget_Click;
+            dgvTargets.CellMouseClick += DgvTargets_CellMouseClick;
+            cmsTargets.Opening += CmsTargets_Opening;
+
             PopulateTargetTypeCombos();
             PopulatePlanList();
             ClearForm();
@@ -629,6 +634,27 @@ namespace OE2EmpireTracker.Forms.StockTargets
                 "Quick Add",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
+        }
+
+        private void DgvTargets_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvTargets.ClearSelection();
+                dgvTargets.Rows[e.RowIndex].Selected = true;
+                dgvTargets.CurrentCell = dgvTargets.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvTargets.ClearSelection();
+            }
+        }
+
+        private void CmsTargets_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvTargets.CurrentRow != null;
+            tsmiRemoveTarget.Enabled = hasSelection;
         }
 
         private void DgvTargets_SelectionChanged(object sender, EventArgs e)

@@ -17,6 +17,17 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void InitializeComponent()
         {
+            this.cmsStops = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddStop = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiMoveUpStop = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiMoveDownStop = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRemoveStop = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsDropOff = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddDropOff = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRemoveDropOff = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsPickUp = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiAddPickUp = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRemovePickUp = new System.Windows.Forms.ToolStripMenuItem();
             this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRouteFilter = new System.Windows.Forms.FlowLayoutPanel();
@@ -195,6 +206,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // 
             // dgvStops
             // 
+            this.dgvStops.ContextMenuStrip = this.cmsStops;
             this.dgvStops.AllowUserToAddRows = false;
             this.dgvStops.AllowUserToDeleteRows = false;
             this.dgvStops.AllowUserToOrderColumns = true;
@@ -429,6 +441,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // 
             // dgvDropOff
             // 
+            this.dgvDropOff.ContextMenuStrip = this.cmsDropOff;
             this.dgvDropOff.AllowUserToAddRows = false;
             this.dgvDropOff.AllowUserToDeleteRows = false;
             this.dgvDropOff.AllowUserToOrderColumns = true;
@@ -533,6 +546,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // 
             // dgvPickUp
             // 
+            this.dgvPickUp.ContextMenuStrip = this.cmsPickUp;
             this.dgvPickUp.AllowUserToAddRows = false;
             this.dgvPickUp.AllowUserToDeleteRows = false;
             this.dgvPickUp.AllowUserToOrderColumns = true;
@@ -758,6 +772,69 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
             // 
+            // cmsStops
+            this.cmsStops.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiAddStop,
+            this.tsmiMoveUpStop,
+            this.tsmiMoveDownStop,
+            this.tsmiRemoveStop});
+            this.cmsStops.Name = "cmsStops";
+            this.cmsStops.Size = new System.Drawing.Size(154, 92);
+
+            // tsmiAddStop
+            this.tsmiAddStop.Name = "tsmiAddStop";
+            this.tsmiAddStop.Size = new System.Drawing.Size(153, 22);
+            this.tsmiAddStop.Text = "Add Stop";
+
+            // tsmiMoveUpStop
+            this.tsmiMoveUpStop.Name = "tsmiMoveUpStop";
+            this.tsmiMoveUpStop.Size = new System.Drawing.Size(153, 22);
+            this.tsmiMoveUpStop.Text = "Move Up";
+
+            // tsmiMoveDownStop
+            this.tsmiMoveDownStop.Name = "tsmiMoveDownStop";
+            this.tsmiMoveDownStop.Size = new System.Drawing.Size(153, 22);
+            this.tsmiMoveDownStop.Text = "Move Down";
+
+            // tsmiRemoveStop
+            this.tsmiRemoveStop.Name = "tsmiRemoveStop";
+            this.tsmiRemoveStop.Size = new System.Drawing.Size(153, 22);
+            this.tsmiRemoveStop.Text = "Remove Stop";
+
+            // cmsDropOff
+            this.cmsDropOff.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiAddDropOff,
+            this.tsmiRemoveDropOff});
+            this.cmsDropOff.Name = "cmsDropOff";
+            this.cmsDropOff.Size = new System.Drawing.Size(142, 48);
+
+            // tsmiAddDropOff
+            this.tsmiAddDropOff.Name = "tsmiAddDropOff";
+            this.tsmiAddDropOff.Size = new System.Drawing.Size(141, 22);
+            this.tsmiAddDropOff.Text = "Add Item";
+
+            // tsmiRemoveDropOff
+            this.tsmiRemoveDropOff.Name = "tsmiRemoveDropOff";
+            this.tsmiRemoveDropOff.Size = new System.Drawing.Size(141, 22);
+            this.tsmiRemoveDropOff.Text = "Remove Item";
+
+            // cmsPickUp
+            this.cmsPickUp.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiAddPickUp,
+            this.tsmiRemovePickUp});
+            this.cmsPickUp.Name = "cmsPickUp";
+            this.cmsPickUp.Size = new System.Drawing.Size(142, 48);
+
+            // tsmiAddPickUp
+            this.tsmiAddPickUp.Name = "tsmiAddPickUp";
+            this.tsmiAddPickUp.Size = new System.Drawing.Size(141, 22);
+            this.tsmiAddPickUp.Text = "Add Item";
+
+            // tsmiRemovePickUp
+            this.tsmiRemovePickUp.Name = "tsmiRemovePickUp";
+            this.tsmiRemovePickUp.Size = new System.Drawing.Size(141, 22);
+            this.tsmiRemovePickUp.Text = "Remove Item";
+
             // FormDeliveryRoute
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -853,5 +930,16 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;
+        private System.Windows.Forms.ContextMenuStrip cmsStops;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddStop;
+        private System.Windows.Forms.ToolStripMenuItem tsmiMoveUpStop;
+        private System.Windows.Forms.ToolStripMenuItem tsmiMoveDownStop;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRemoveStop;
+        private System.Windows.Forms.ContextMenuStrip cmsDropOff;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddDropOff;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRemoveDropOff;
+        private System.Windows.Forms.ContextMenuStrip cmsPickUp;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddPickUp;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRemovePickUp;
     }
 }

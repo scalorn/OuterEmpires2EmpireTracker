@@ -17,6 +17,8 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
         private void InitializeComponent()
         {
+            this.cmsSlots = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiClearSlot = new System.Windows.Forms.ToolStripMenuItem();
             this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSearchList = new System.Windows.Forms.FlowLayoutPanel();
             this.flpFilter = new System.Windows.Forms.FlowLayoutPanel();
@@ -216,6 +218,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             //
             // dgvSlots
             //
+            this.dgvSlots.ContextMenuStrip = this.cmsSlots;
             this.dgvSlots.AllowUserToAddRows = false;
             this.dgvSlots.AllowUserToDeleteRows = false;
             this.dgvSlots.AllowUserToOrderColumns = true;
@@ -258,6 +261,19 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             this.rtbStats.Size = new System.Drawing.Size(662, 185);
             this.rtbStats.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.rtbStats.BackColor = System.Drawing.SystemColors.Window;
+            //
+            // cmsSlots
+            //
+            this.cmsSlots.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiClearSlot});
+            this.cmsSlots.Name = "cmsSlots";
+            this.cmsSlots.Size = new System.Drawing.Size(126, 26);
+            //
+            // tsmiClearSlot
+            //
+            this.tsmiClearSlot.Name = "tsmiClearSlot";
+            this.tsmiClearSlot.Size = new System.Drawing.Size(125, 22);
+            this.tsmiClearSlot.Text = "Clear Slot";
             //
             // FormShipTemplate
             //
@@ -308,5 +324,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         private System.Windows.Forms.DataGridViewTextBoxColumn colSlotIndex;
         private OE2EmpireTracker.Controls.DataGridViewFilteredComboBoxColumn colComponent;
         private System.Windows.Forms.RichTextBox rtbStats;
+        private System.Windows.Forms.ContextMenuStrip cmsSlots;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClearSlot;
     }
 }

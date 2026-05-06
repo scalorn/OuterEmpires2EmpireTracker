@@ -41,6 +41,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.lblCargoVolume = new System.Windows.Forms.Label();
             this.lblCargoMass = new System.Windows.Forms.Label();
             this.cmdSplitTrips = new System.Windows.Forms.Button();
+            this.cmsLoadList = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiMarkAllDelivered = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiMarkAllUndelivered = new System.Windows.Forms.ToolStripMenuItem();
             this.flpBase.SuspendLayout();
             this.flpSelectors.SuspendLayout();
             this.pnlLoadList.SuspendLayout();
@@ -251,10 +254,23 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             this.cmdSplitTrips.UseVisualStyleBackColor = true;
             this.cmdSplitTrips.Visible = false;
             // 
+            // cmsLoadList
+            // 
+            this.cmsLoadList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.tsmiMarkAllDelivered, this.tsmiMarkAllUndelivered });
+            this.cmsLoadList.Name = "cmsLoadList";
+            this.cmsLoadList.Size = new System.Drawing.Size(190, 48);
+            this.tsmiMarkAllDelivered.Name = "tsmiMarkAllDelivered";
+            this.tsmiMarkAllDelivered.Size = new System.Drawing.Size(189, 22);
+            this.tsmiMarkAllDelivered.Text = "Mark All Delivered";
+            this.tsmiMarkAllUndelivered.Name = "tsmiMarkAllUndelivered";
+            this.tsmiMarkAllUndelivered.Size = new System.Drawing.Size(189, 22);
+            this.tsmiMarkAllUndelivered.Text = "Mark All Undelivered";
+            // 
             // dgvLoadList
             // 
             this.dgvLoadList.AllowUserToAddRows = false;
             this.dgvLoadList.AllowUserToDeleteRows = false;
+            this.dgvLoadList.ContextMenuStrip = this.cmsLoadList;
             this.dgvLoadList.AllowUserToOrderColumns = true;
             this.dgvLoadList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLoadList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -356,5 +372,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
         private System.Windows.Forms.Label lblCargoVolume;
         private System.Windows.Forms.Label lblCargoMass;
         private System.Windows.Forms.Button cmdSplitTrips;
+        private System.Windows.Forms.ContextMenuStrip cmsLoadList;
+        private System.Windows.Forms.ToolStripMenuItem tsmiMarkAllDelivered;
+        private System.Windows.Forms.ToolStripMenuItem tsmiMarkAllUndelivered;
     }
 }
