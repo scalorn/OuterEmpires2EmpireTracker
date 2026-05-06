@@ -221,9 +221,3 @@ Declared on StationStats but never set or read. Always zero. Same pattern as Shi
 **Dependencies:** None
 **Status: New**
 Declared on StationStats but never set or read. Always empty string. Same pattern as ShipStats.SlotSummary (BL-098). Remove or wire into station stat display.
-
----
-
-## Empire-Systems Audit Gaps
-
-The following items were designed in the empire-systems spec and marked complete in tasks.md, but the UI controls were either not implemented or implemented differently than the mockup specified. Discovered during the April 2026 mockup-controls audit.
