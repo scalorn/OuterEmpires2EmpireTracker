@@ -492,3 +492,7 @@ Converted three ComboBoxes (cmbLocation, cmbResource, cmbRoute) in FormSupplyCha
 ### BL-106: FormBuildPlanner — FilteredTextComboSet Adoption for Item Pickers
 Converted multiple ComboBoxes (cmbItem, cmbResource, cmbSurvey) in FormBuildPlanner to FilteredTextComboSet with parallel value lists. Blueprint and resource pickers now support inline filtering for large item lists (50-100+ items). Spec: `.kiro/specs/filtered-combo-adoption/`.
 **Status: Complete**
+
+### BL-133: Blueprint Cost Evolution Graph
+Added a Price Evolution tab to the Blueprint form (FormBlueprintV2) plotting estimated manufacturing cost at each evolution level using a selected pricing plan. Chart uses System.Windows.Forms.DataVisualization.Charting, reusing the evolution graph infrastructure. Pricing plan selector (FilteredTextComboSet) on the pricing panel controls which plan is used for cost computation. Graph updates on blueprint selection, pricing plan change, and pricing data changes. Spec: `.kiro/specs/bl-108-blueprint-readonly/`.
+**Status: Complete**

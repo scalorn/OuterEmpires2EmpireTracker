@@ -1,6 +1,6 @@
 ﻿# Feature Backlog
 
-**Next available ID: BL-133** (check COMPLETED.md before assigning â€” IDs are shared across both files)
+**Next available ID: BL-134** (check COMPLETED.md before assigning â€” IDs are shared across both files)
 
 Open features and enhancements to be worked on.
 
@@ -102,12 +102,6 @@ Build a custom `TreeDataGridView` control extending DataGridView that supports e
 
 **Decision point:** Try master-detail first during Iteration 4 (Stations). If vertical space is a problem in practice, build this control as a replacement. Design the control with depth support from the start so nesting is incremental if it comes.
 
-###  : Blueprint Cost Evolution Graph
-**Dependencies:** None
-
-Add a cost evolution graph to the Blueprint form, similar to the existing evolution graph but plotting the estimated cost of each blueprint at each evolution level. Cost is computed using a selected pricing plan â€” sum of (resource quantity Ã— resource price) for each resource in the blueprint, plus any time-based costs from the plan. The graph shows how total manufacturing cost changes as the blueprint evolves, helping players decide which evolution to manufacture based on cost efficiency. Requires a pricing plan selector dropdown on the graph panel. Reuse the charting infrastructure from the evolution graph (System.Windows.Forms.DataVisualization.Charting).
-
----
 ### BL-045: GitHub MCP Integration
 **Dependencies:** None (blocked by Docker installation issues)
 
