@@ -169,24 +169,24 @@ Enhance FilteredTextComboSet with parallel value list support, then convert 9 Co
 - [x] 11. Checkpoint - FormBuildPlanner conversions verified
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 12. Update mockups for converted forms
-  - [-] 12.1 Update FormStation mockup
+- [x] 12. Update mockups for converted forms
+  - [x] 12.1 Update FormStation mockup
     - Change cmbStationBlueprint, cmbHoldItem, cmbMunItem control types to FilteredTextComboSet
     - Note parallel value list pattern on cmbStationBlueprint
     - _Requirements: 14.1, 14.2, 14.3_
-  - [~] 12.2 Update FormShipInstance mockup
+  - [x] 12.2 Update FormShipInstance mockup
     - Change cmbAddItem control type to FilteredTextComboSet
     - _Requirements: 14.1, 14.3_
-  - [~] 12.3 Update FormSupplyChain mockup
+  - [x] 12.3 Update FormSupplyChain mockup
     - Change cmbLocation, cmbResource, cmbRoute control types to FilteredTextComboSet
     - Note parallel value list pattern on cmbLocation and cmbRoute
     - _Requirements: 14.1, 14.2, 14.3_
-  - [~] 12.4 Update FormBuildPlanner mockup
+  - [x] 12.4 Update FormBuildPlanner mockup
     - Change cmbResource, cmbSurvey control types to FilteredTextComboSet
     - Note parallel value list pattern on cmbSurvey
     - _Requirements: 14.1, 14.2, 14.3_
 
-- [ ] 13. Final checkpoint - All conversions and mockups verified
+- [x] 13. Final checkpoint - All conversions and mockups verified
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

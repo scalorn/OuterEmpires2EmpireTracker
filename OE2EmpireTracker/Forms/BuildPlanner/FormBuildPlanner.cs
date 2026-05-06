@@ -24,8 +24,6 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
         private BuildPlanViewModel _viewModel = new BuildPlanViewModel();
         private BuildPlanMutationService _buildPlanService;
 
-
-
         /// <summary>
         /// Delegate to resolve a colony name from its UUID.
         /// Returns the colony name or null if not found.
