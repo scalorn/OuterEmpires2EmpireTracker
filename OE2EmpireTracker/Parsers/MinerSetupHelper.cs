@@ -58,8 +58,15 @@ namespace OE2EmpireTracker.Parsers
 
             foreach (var structure in colony.Structures)
             {
-                // Identify mining rigs by non-empty MiningSurveyResource
+                // Only process actual mining rigs (skip structures where the parser
+                // incorrectly set MiningSurveyResource from the game's resourceName field)
                 if (string.IsNullOrEmpty(structure.MiningSurveyResource))
+                {
+                    continue;
+                }
+
+                var structureBp = empireContext?.FindGlobalBlueprint(structure.FlatpackBlueprintUUID);
+                if (structureBp != null && structureBp.BluePrintType != BlueprintTypes.MiningRig)
                 {
                     continue;
                 }

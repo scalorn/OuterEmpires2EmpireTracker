@@ -303,6 +303,14 @@ namespace OE2EmpireTracker.Parsers
                                     parsed.FlatpackBlueprintUUID,
                                     parsed.RefiningResource);
                             }
+                            else if (bp != null && bp.BluePrintType != BlueprintTypes.MiningRig)
+                            {
+                                // Game JSON includes resourceName on all structure types
+                                // (e.g. the item being manufactured). Only mining rigs and
+                                // refineries should retain it as MiningSurveyResource.
+                                parsed.MiningSurveyResource = null;
+                                parsed.RefiningResourcePurity = null;
+                            }
                         }
 
                         parsedMaxRates[parsedBuildings.Count] = maxRate;
