@@ -28,7 +28,10 @@ namespace OE2EmpireTracker.Tests.Services
 
         private static Gen<string> SafeStringGen()
         {
-            return Arb.Generate<NonEmptyString>().Select(s => s.Get);
+            return Gen.Elements("abcdefghijklmnopqrstuvwxyz0123456789 -_".ToCharArray())
+                .ArrayOf()
+                .Where(a => a.Length > 0)
+                .Select(a => new string(a));
         }
 
         /// <summary>

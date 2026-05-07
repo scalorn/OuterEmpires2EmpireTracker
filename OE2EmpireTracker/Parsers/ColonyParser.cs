@@ -525,10 +525,34 @@ namespace OE2EmpireTracker.Parsers
                 existing.RefiningResource = parsed.RefiningResource;
             }
 
-            // Update manufacturing quantity from game
-            if (parsed.ManufacturingQuantity > 0)
+            // Reconcile manufacturing state from game.
+            // Game JSON reports remaining runs (manufactureNumber). The tracker stores
+            // total (ManufacturingQuantity) and completed (ManufacturingCompleted).
+            // Derive completed from: total - gameRemaining.
+            int gameRemaining = parsed.ManufacturingQuantity;
+            if (gameRemaining > 0 && existing.ManufacturingQuantity > 0)
             {
-                existing.ManufacturingQuantity = parsed.ManufacturingQuantity;
+                if (gameRemaining > existing.ManufacturingQuantity)
+                {
+                    // User added more runs in-game — update total to match
+                    existing.ManufacturingQuantity = gameRemaining;
+                    existing.ManufacturingCompleted = 0;
+                }
+                else
+                {
+                    // Normal progress — derive completed from total minus remaining
+                    existing.ManufacturingCompleted = existing.ManufacturingQuantity - gameRemaining;
+                }
+            }
+            else if (gameRemaining == 0 && existing.ManufacturingQuantity > 0)
+            {
+                // Manufacturing finished or cancelled in-game — clear state
+                existing.ManufacturingBlueprintUUID = null;
+                existing.ManufacturingCommodityName = null;
+                existing.ManufacturingQuantity = 0;
+                existing.ManufacturingCompleted = 0;
+                existing.StagingResources = false;
+                existing.ProcessCompletionTime = null;
             }
 
             // Update worker assignments from game
