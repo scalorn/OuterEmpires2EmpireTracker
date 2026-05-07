@@ -55,6 +55,22 @@ flowchart TD
 **REQ-CI-021** The parser SHALL preserve any locally-set data (nicknames, manual overrides) that is not present in the game HTML.
 **REQ-CI-022** SystemName SHALL be extracted from the location bar data when available.
 
+## Manufacturing Reconciliation
+
+**REQ-CI-025** On colony reimport, the parser SHALL reconcile the game's manufacturing state (remaining runs) with the tracker's model (total + completed). The game JSON field `manufactureNumber` represents remaining runs, not total.
+
+**REQ-CI-025a** When the game reports remaining > 0 and the tracker has an active manufacturing batch (ManufacturingQuantity > 0):
+- If gameRemaining > ManufacturingQuantity: the user added more runs in-game. The tracker SHALL update ManufacturingQuantity to gameRemaining and reset ManufacturingCompleted to 0.
+- Otherwise: set ManufacturingCompleted = ManufacturingQuantity - gameRemaining (normal progress).
+
+**REQ-CI-025b** When the game reports remaining == 0 and the tracker has an active manufacturing batch: manufacturing was finished or cancelled in-game. The tracker SHALL clear all manufacturing state (ManufacturingBlueprintUUID, ManufacturingCommodityName, ManufacturingQuantity, ManufacturingCompleted, StagingResources, ProcessCompletionTime).
+
+**REQ-CI-025c** The parser SHALL NOT overwrite ManufacturingQuantity directly with the game's `manufactureNumber` value. The game value is remaining, not total.
+
+## Resource Name Filtering
+
+**REQ-CI-026** The game JSON `resourceName` field SHALL only be applied to MiningSurveyResource for MiningRig and Refinery blueprint types. For all other structure types (Manufactory, CommodityManufactory, ResearchLab, etc.), the parser SHALL discard the resourceName value because it represents the item being produced, not a mining resource.
+
 ## Flatpack Lookup
 
 **REQ-CI-030** ColonyParser.BuildFlatpackLookup SHALL use Blueprint.OutputItemName as the design name key when building the lookup dictionary, rather than inline suffix stripping.

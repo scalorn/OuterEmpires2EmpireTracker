@@ -62,6 +62,18 @@ Each step's output feeds the next step's input within the same cycle.
 **REQ-GM-031** Manufacturing display shows 1-based progress: `(completed+1)/(total)` so the user sees "1/3" instead of "0/3" when starting.
 **REQ-GM-032** ProductionFocus skill multiplier: manufacture time × `(1 - level × 0.03)`, minimum 1 second.
 
+### Data Model Difference: Manufacturing Quantity
+
+The game and the tracker model manufacturing batch progress differently:
+
+| Aspect | Game (JSON) | Tracker |
+|--------|-------------|---------|
+| Field | `manufactureNumber` | `ManufacturingQuantity` + `ManufacturingCompleted` |
+| Semantics | Remaining runs (decreases as items complete) | Total runs + completed count |
+| Example: 5 total, 2 done | `manufactureNumber: 3` | `Quantity: 5, Completed: 2` |
+
+The tracker's model is richer: it preserves the user's original intent (total queued) and tracks progress separately. The game only exposes remaining. On colony reimport, the parser reconciles these two models (see REQ-CI-025 in ColonyImport.md).
+
 ## Commodity Manufacturing
 
 **REQ-GM-040** Commodity factories produce 10 commodities per cycle (`GameConstants.CommoditiesPerCycle`).
