@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -155,8 +155,9 @@ namespace OE2EmpireTracker.Services
                     structureCounts[flatpackBlueprint.BluePrintType] = count;
                     structure.DisplaySequence = count;
 
-                    // Lock assigned workers for this structure
-                    LockAssignedWorkers(structure, flatpackBlueprint);
+                    // Assigned workers are NOT locked — the game removes them from
+                    // the warehouse and stores them in the structure. Only unassigned
+                    // workers are locked (see LockUnallocatedWorkers).
 
                     // Lock manufacturing resources for active manufactories
                     LockManufacturingResources(structure, flatpackBlueprint);
@@ -396,7 +397,6 @@ namespace OE2EmpireTracker.Services
                 colony.Locks.ClearLocksForProcess(structure.UUID);
                 if (bp != null)
                 {
-                    LockAssignedWorkers(structure, bp);
                     LockManufacturingResources(structure, bp);
                     LockCommodityFactoryResources(structure);
                     LockStagedFlatpack(structure);
@@ -595,43 +595,6 @@ namespace OE2EmpireTracker.Services
             colony.Locks = new LockTracking();
         }
 
-        private void LockAssignedWorkers(ColonyStructure structure, ReadOnlyBlueprint flatpackBlueprint)
-        {
-            if (colony.Locks == null || string.IsNullOrEmpty(structure.UUID)) return;
-
-            foreach (var wt in Models.WorkerDetail.WorkerTypes)
-            {
-                LockWorkerType(structure, flatpackBlueprint, wt);
-            }
-        }
-
-        private void LockWorkerType(
-            ColonyStructure structure,
-            ReadOnlyBlueprint flatpackBlueprint,
-            Models.WorkerTypeInfo wt)
-        {
-            if (!flatpackBlueprint.Properties.ContainsKey(wt.PropertyKey)) return;
-
-            long count = 0;
-            flatpackBlueprint.Properties.GetLong(wt.PropertyKey, 0, out count);
-
-            for (int i = 1; i <= count; i++)
-            {
-                string key = wt.WorkerPrefix + i;
-                bool assigned = false;
-                structure.AssignedWorkers.GetBoolean(key, false, out assigned);
-                if (assigned)
-                {
-                    EnsureWorkerItemExists(wt.DetailKey);
-                    colony.Locks.LockItem(
-                        structure.UUID,
-                        Models.ItemType.ItemTypeEnum.WorkDetail,
-                        wt.DetailKey,
-                        1);
-                }
-            }
-        }
-
         private void LockUnallocatedWorkers(ColonyStructureStatus finalStatus)
         {
             if (colony.Locks == null || string.IsNullOrEmpty(colony.UUID)) return;
@@ -697,6 +660,11 @@ namespace OE2EmpireTracker.Services
             int remaining = structure.ManufacturingQuantity - structure.ManufacturingCompleted;
             if (remaining <= 0) return;
 
+            // Lock resources for (remaining - 1) runs. The current run's resources
+            // are consumed from the warehouse when the cycle starts, matching game behavior.
+            int runsToLock = remaining - 1;
+            if (runsToLock <= 0) return;
+
             foreach (var resource in mfgBlueprint.Resources)
             {
                 string resourceName = resource.Key;
@@ -704,7 +672,7 @@ namespace OE2EmpireTracker.Services
                 int.TryParse(resource.Value, out perItem);
                 if (perItem <= 0) continue;
 
-                int totalToLock = perItem * remaining;
+                int totalToLock = perItem * runsToLock;
 
                 // Ensure the resource item exists in the warehouse
                 var existing = colony.Items.FindResource(resourceName, GameConstants.PurityRefined);
@@ -740,6 +708,11 @@ namespace OE2EmpireTracker.Services
             int remaining = structure.ManufacturingQuantity - structure.ManufacturingCompleted;
             if (remaining <= 0) return;
 
+            // Lock resources for (remaining - 1) cycles. The current cycle's resources
+            // are consumed from the warehouse when the cycle starts, matching game behavior.
+            int cyclesToLock = remaining - 1;
+            if (cyclesToLock <= 0) return;
+
             foreach (var resource in commodity.ConstructionResources)
             {
                 string resourceName = resource.Key;
@@ -747,7 +720,7 @@ namespace OE2EmpireTracker.Services
                 int.TryParse(resource.Value, out perCycle);
                 if (perCycle <= 0) continue;
 
-                int totalToLock = perCycle * remaining;
+                int totalToLock = perCycle * cyclesToLock;
 
                 var existing = colony.Items.FindResource(resourceName, GameConstants.PurityRefined);
                 if (existing.Count == 0)

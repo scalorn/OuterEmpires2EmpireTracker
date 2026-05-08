@@ -243,7 +243,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void LockCommodityFactoryResources_LocksCorrectQuantity()
         {
             // Advanced Biolubricants: Alkali Organics x2, Strong Acidic Inorganics x2 per cycle
-            // 3 remaining cycles => lock 6 of each
+            // 3 remaining cycles, lock (3-1)=2 future cycles => lock 4 of each
             var colony = new Colony();
             colony.UUID = Guid.NewGuid().ToString();
 
@@ -287,14 +287,14 @@ namespace OE2EmpireTracker.Tests.Models
             var calc = new ColonyStatusCalculator(colony);
             calc.CalculateBuilt();
 
-            // Remaining = 5 - 2 = 3 cycles. Each cycle costs 2 per resource => lock 6
+            // Remaining = 5 - 2 = 3 cycles. Lock (3-1)=2 future cycles. Each costs 2 per resource => lock 4
             int lockedAlkali = colony.Locks.GetLockedQuantity(
                 ItemType.ItemTypeEnum.Resource, "Alkali Organics");
             int lockedAcidic = colony.Locks.GetLockedQuantity(
                 ItemType.ItemTypeEnum.Resource, "Strong Acidic Inorganics");
 
-            Assert.That(lockedAlkali, Is.EqualTo(6));
-            Assert.That(lockedAcidic, Is.EqualTo(6));
+            Assert.That(lockedAlkali, Is.EqualTo(4));
+            Assert.That(lockedAcidic, Is.EqualTo(4));
         }
 
         [Test]
@@ -312,7 +312,7 @@ namespace OE2EmpireTracker.Tests.Models
             structure.UUID = Guid.NewGuid().ToString();
             structure.FlatpackBlueprintUUID = bp.UUID;
             structure.ManufacturingCommodityName = "Advanced Biolubricants";
-            structure.ManufacturingQuantity = 1;
+            structure.ManufacturingQuantity = 2;
             structure.ManufacturingCompleted = 0;
             structure.Properties.SetProperty("Built", true);
             structure.Properties.SetProperty("Online", true);
@@ -327,7 +327,7 @@ namespace OE2EmpireTracker.Tests.Models
             var calc = new ColonyStatusCalculator(colony);
             calc.CalculateBuilt();
 
-            // Resources should be created with 0 quantity
+            // Resources should be created with 0 quantity (locking 1 future cycle creates items)
             var alkali = colony.Items.FindResource("Alkali Organics", GameConstants.PurityRefined);
             Assert.That(
                 alkali.Count,
