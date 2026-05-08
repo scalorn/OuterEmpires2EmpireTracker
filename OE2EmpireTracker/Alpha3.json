@@ -85749,7 +85749,7 @@
   "ItemType": "Flatpack",
   "BaseItemTypeID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
   "Name": "Reactor Core Flatpack",
-  "Quantity": 7
+  "Quantity": 8
 },
         "74994acd-e7a9-41f5-8d58-e429a1727415": {
   "UUID": "74994acd-e7a9-41f5-8d58-e429a1727415",
@@ -85831,8 +85831,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-08T14:44:06.1855529Z",
-            "EndTime": "2026-05-08T16:44:05.1855529Z",
+            "StartTime": "2026-05-08T16:44:05.1855529Z",
+            "EndTime": "2026-05-08T18:44:04.1855529Z",
             "RepeatIntervalSeconds": 7199,
             "IsRepeating": true
           },
@@ -85840,7 +85840,7 @@
           "MiningSurveyResource": "Reactor Core Flatpack",
           "ManufacturingBlueprintUUID": "80b44a11-d93f-5b3d-8c1e-31c2fc8882ac",
           "ManufacturingQuantity": 120,
-          "ManufacturingCompleted": 7,
+          "ManufacturingCompleted": 8,
           "StagingResources": true,
           "CurrentAttitude": ""
         },

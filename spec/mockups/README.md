@@ -21,4 +21,5 @@
 | [preferences.md](preferences.md) | FormPreferences | — |
 | [pricing-plans.md](pricing-plans.md) | FormPricingPlan | — |
 | [surveys.md](surveys.md) | FormSurvey | — |
+| [helper-dialogs.md](helper-dialogs.md) | FormAutoFill, FormRecordSale, FormListingEdit, FormStructureAllocation | — |
 | [blueprints.md](blueprints.md) | FormBlueprintV2 | — |
