@@ -856,7 +856,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             {
                 planViewModel = new DeliveryPlanViewModel();
                 planViewModel.LoadFrom(readOnlyPlan);
-                txtPlanName.Text = planViewModel.Name ?? string.Empty;
+                using (new ProgrammaticUpdateGuard(this))
+                {
+                    txtPlanName.Text = planViewModel.Name ?? string.Empty;
+                }
+
                 cmdAutoFill.Visible = true;
 
                 // Load plan items for the currently selected stop

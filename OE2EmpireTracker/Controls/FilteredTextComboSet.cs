@@ -263,6 +263,7 @@ namespace OE2EmpireTracker.Controls
             {
                 Visible = true;
             }
+
             if (IsEditing)
             {
                 int filterWidth = (int)(Width * 0.35);

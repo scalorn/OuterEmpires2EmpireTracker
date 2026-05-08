@@ -2297,7 +2297,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         /// (e.g. "Iron|Refined") because manufacturing only locks refined resources.
         /// Other item types use BaseItemTypeID directly.
         /// </summary>
-        private static string GetLockKey(Item item)
+        private string GetLockKey(Item item)
         {
             if (item.ItemType == ItemType.ItemTypeEnum.Resource && !string.IsNullOrEmpty(item.ResourcePurity))
             {
