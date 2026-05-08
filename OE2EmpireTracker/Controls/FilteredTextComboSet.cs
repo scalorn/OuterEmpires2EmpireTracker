@@ -23,6 +23,10 @@ namespace OE2EmpireTracker.Controls
 
         public FilteredTextComboSet()
         {
+            // Suppress initial rendering at (0,0) before parent layout positions us
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            Visible = false;
+
             TxtFilter = new TextBox { Dock = DockStyle.None, BorderStyle = BorderStyle.FixedSingle };
             CmbItems = new ComboBox { Dock = DockStyle.None, DropDownStyle = ComboBoxStyle.DropDownList, FlatStyle = FlatStyle.Flat };
             BorderStyle = BorderStyle.FixedSingle;
@@ -253,6 +257,12 @@ namespace OE2EmpireTracker.Controls
         protected override void OnLayout(LayoutEventArgs e)
         {
             base.OnLayout(e);
+
+            // Make visible once we have a parent and valid bounds
+            if (!Visible && Parent != null)
+            {
+                Visible = true;
+            }
             if (IsEditing)
             {
                 int filterWidth = (int)(Width * 0.35);
