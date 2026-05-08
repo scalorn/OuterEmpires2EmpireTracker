@@ -137,6 +137,24 @@ Options:
 
 The tool writes the message to a temp file and uses `git commit -F`, bypassing all shell escaping issues. Always run backup script after.
 
+## Dependency Graph — Use depgraph.js
+
+**Before making changes to a class**, use depgraph.js to assess blast radius:
+``powershell
+# Who depends on this class? (assess impact of changes)
+node .kiro/tools/depgraph.js dependents ColonyStructure
+
+# What does this class depend on? (understand context)
+node .kiro/tools/depgraph.js dependencies ColonyService
+
+# Both directions at once
+node .kiro/tools/depgraph.js blast-radius LockTracking
+
+# Find unreferenced types (dead code candidates)
+node .kiro/tools/depgraph.js orphans
+```r
+Runs in ~2-3 seconds. Use before refactoring, renaming, or deleting classes to understand what will be affected.
+
 ## Command Execution — Timeouts
 
 **ALWAYS set a `timeout` on `executePwsh` calls** to prevent commands from appearing to hang:
