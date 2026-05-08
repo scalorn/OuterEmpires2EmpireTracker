@@ -1,9 +1,0 @@
-﻿# Implementation Plan: Grid Context Menus
-
-## Overview
-
-Add right-click context menus to all DataGridView grids that have command-bar buttons, following the established pattern from FormBlueprintV2 and FormBuildPlanner. Each form receives: Designer declarations (ContextMenuStrip + ToolStripMenuItems), event wiring in the constructor (Click handlers delegating to existing button handlers), CellMouseClick handlers for row selection on right-click, and Opening handlers for enable/disable state management.
-
-Implementation proceeds form-by-form, starting with the simplest cases (single grid, Add/Remove only) and progressing to more complex forms (multiple grids, positional constraints). FormDeliveryRoute is implemented last among the multi-grid forms because it has the most complex Opening logic (Move Up/Down positional constraints).
-
-## Tasks
