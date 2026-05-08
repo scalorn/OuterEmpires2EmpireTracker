@@ -147,7 +147,7 @@ Renamed all camelCase methods to PascalCase across the codebase:
 - `ColonyStructure.UpdateData`: Replaced 6 near-identical blocks (3 assigned + 3 unallocated) with 2 `foreach` loops over `WorkerTypes`
 - `ColonyStatusCalculator.CalculateBuilt`: Replaced 6 near-identical blocks (3 assignment parsing + 3 unassigned checks) with 1 `foreach` loop, plus refactored unallocated availability check into a loop
 - Added `GetUnallocatedPresent`/`SetUnallocatedPresent` helpers on `ColonyStructureStatus` to access per-type booleans by key
-- `LockAssignedWorkers` already used the shared pattern via `LockWorkerType` — no change needed
+- `LockAssignedWorkers` removed — assigned workers are no longer locked (game removes them from warehouse)
 
 ### 12g. Large file splitting (Medium-High risk)
 **Status: Complete**
