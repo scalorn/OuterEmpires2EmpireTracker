@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -2273,7 +2273,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
 
                 int lockedQty = colony?.Locks != null
-                    ? colony.Locks.GetLockedQuantity(itemValue.ItemType, itemValue.BaseItemTypeID)
+                    ? colony.Locks.GetLockedQuantity(itemValue.ItemType, GetLockKey(itemValue))
                     : 0;
                 row.Cells[2].Value = lockedQty;
                 row.Cells[3].Value = itemValue.Quantity;
@@ -2293,6 +2293,21 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         }
 
         /// <summary>
+        /// Returns the lock key for an item. Resources include purity in the key
+        /// (e.g. "Iron|Refined") because manufacturing only locks refined resources.
+        /// Other item types use BaseItemTypeID directly.
+        /// </summary>
+        private static string GetLockKey(Item item)
+        {
+            if (item.ItemType == ItemType.ItemTypeEnum.Resource && !string.IsNullOrEmpty(item.ResourcePurity))
+            {
+                return item.BaseItemTypeID + "|" + item.ResourcePurity;
+            }
+
+            return item.BaseItemTypeID;
+        }
+
+                /// <summary>
         /// Refreshes only the Locked column (index 2) without rebuilding the grid.
         /// </summary>
         private void RefreshItemGridLocks()
@@ -2304,7 +2319,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 if (item == null) continue;
                 var colony2 = playerContext.FindMutableColony(_selectedColonyUUID);
                 int lockedQty = colony2?.Locks != null
-                    ? colony2.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
+                    ? colony2.Locks.GetLockedQuantity(item.ItemType, GetLockKey(item))
                     : 0;
                 row.Cells[2].Value = lockedQty;
             }
@@ -2574,7 +2589,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 {
                     var colony = playerContext.FindMutableColony(_selectedColonyUUID);
                     int locked = colony?.Locks != null
-                        ? colony.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
+                        ? colony.Locks.GetLockedQuantity(item.ItemType, GetLockKey(item))
                         : 0;
                     if (locked > 0)
                     {
@@ -3245,7 +3260,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 {
                     var colony = playerContext.FindMutableColony(_selectedColonyUUID);
                     int locked = colony?.Locks != null
-                        ? colony.Locks.GetLockedQuantity(item.ItemType, item.BaseItemTypeID)
+                        ? colony.Locks.GetLockedQuantity(item.ItemType, GetLockKey(item))
                         : 0;
                     if (locked > 0)
                     {

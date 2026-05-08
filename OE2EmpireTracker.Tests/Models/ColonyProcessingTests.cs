@@ -289,9 +289,9 @@ namespace OE2EmpireTracker.Tests.Models
 
             // Remaining = 5 - 2 = 3 cycles. Lock (3-1)=2 future cycles. Each costs 2 per resource => lock 4
             int lockedAlkali = colony.Locks.GetLockedQuantity(
-                ItemType.ItemTypeEnum.Resource, "Alkali Organics");
+                ItemType.ItemTypeEnum.Resource, "Alkali Organics|Refined");
             int lockedAcidic = colony.Locks.GetLockedQuantity(
-                ItemType.ItemTypeEnum.Resource, "Strong Acidic Inorganics");
+                ItemType.ItemTypeEnum.Resource, "Strong Acidic Inorganics|Refined");
 
             Assert.That(lockedAlkali, Is.EqualTo(4));
             Assert.That(lockedAcidic, Is.EqualTo(4));
@@ -399,7 +399,7 @@ namespace OE2EmpireTracker.Tests.Models
             calc.CalculateBuilt();
 
             int lockedAlkali = colony.Locks.GetLockedQuantity(
-                ItemType.ItemTypeEnum.Resource, "Alkali Organics");
+                ItemType.ItemTypeEnum.Resource, "Alkali Organics|Refined");
             Assert.That(lockedAlkali, Is.EqualTo(0));
         }
 

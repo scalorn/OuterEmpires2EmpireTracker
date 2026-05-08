@@ -690,7 +690,7 @@ namespace OE2EmpireTracker.Services
                 colony.Locks.LockItem(
                     structure.UUID,
                     Models.ItemType.ItemTypeEnum.Resource,
-                    resourceName,
+                    resourceName + "|" + GameConstants.PurityRefined,
                     totalToLock);
             }
         }
@@ -737,7 +737,7 @@ namespace OE2EmpireTracker.Services
                 colony.Locks.LockItem(
                     structure.UUID,
                     Models.ItemType.ItemTypeEnum.Resource,
-                    resourceName,
+                    resourceName + "|" + GameConstants.PurityRefined,
                     totalToLock);
             }
         }
