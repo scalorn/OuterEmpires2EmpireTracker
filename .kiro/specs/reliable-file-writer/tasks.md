@@ -134,34 +134,34 @@ Replace the existing `.kiro/tools/fwrite.js` with a comprehensive, atomic file w
 - [x] 7. Checkpoint - Full integration verification
   - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 8. Write remaining tests
-  - [-] 8.1 Write property test for BOM stripping universality (Property 7)
+- [x] 8. Write remaining tests
+  - [x] 8.1 Write property test for BOM stripping universality (Property 7)
     - **Property 7: BOM stripping is universal**
     - For any content file starting with UTF-8 BOM (EF BB BF), written output never contains BOM regardless of operation type
     - **Validates: Requirements 1.6, 2.6, 3.12, 5.3**
 
-  - [~] 8.2 Write unit tests for atomic write crash safety (Property 6)
+  - [x] 8.2 Write unit tests for atomic write crash safety (Property 6)
     - **Property 6: Atomic write crash safety**
     - Use mock fs to simulate crash after temp write but before rename; verify original file unchanged
     - **Validates: Requirements 4.1, 4.2, 4.5**
 
-  - [~] 8.3 Write unit tests for verification mismatch detection (Property 9)
+  - [x] 8.3 Write unit tests for verification mismatch detection (Property 9)
     - **Property 9: Verification detects corruption**
     - Use mock fs where read-back returns different byte length; verify exit code 6 and mismatch report
     - **Validates: Requirements 8.1, 8.2**
 
-  - [~] 8.4 Write unit tests for lock retry behavior (Property 10)
+  - [x] 8.4 Write unit tests for lock retry behavior (Property 10)
     - **Property 10: Lock retry convergence**
     - Use mock fs with timed unlock; verify retry succeeds and reports which attempt
     - **Validates: Requirements 6.1, 6.3**
 
-  - [~] 8.5 Write unit tests for stdin timeout, error formatting, and CLI parsing
+  - [x] 8.5 Write unit tests for stdin timeout, error formatting, and CLI parsing
     - Test stdin timeout (mock stdin with no data, verify exit code 5 after 5s)
     - Test error message formatting (verify structured output format with all fields)
     - Test CLI argument parsing (verify command routing for all commands)
     - _Requirements: 10.2, 10.3, 9.1, 9.2, 9.3_
 
-  - [~] 8.6 Write integration tests for end-to-end operations
+  - [x] 8.6 Write integration tests for end-to-end operations
     - Test PowerShell invocation with real files (write, append, replace)
     - Test large file performance (100KB < 2s, 500KB < 5s)
     - Test real file lock scenarios
@@ -169,7 +169,7 @@ Replace the existing `.kiro/tools/fwrite.js` with a comprehensive, atomic file w
     - Test path handling with forward and backslashes
     - _Requirements: 11.1, 11.2, 11.3, 11.5, 12.1, 12.2, 12.3, 12.4_
 
-- [~] 9. Final checkpoint - Complete test suite verification
+- [-] 9. Final checkpoint - Complete test suite verification
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
