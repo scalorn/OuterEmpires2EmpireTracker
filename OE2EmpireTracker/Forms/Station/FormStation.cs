@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
 
@@ -23,6 +24,9 @@ namespace OE2EmpireTracker.Forms.Station
 
         public FormStation()
         {
+            // Guard against WindowStateHelper.RestoreState setting control values.
+            _isProgrammaticUpdate++;
+
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
             _stationService = new StationService(playerContext);
@@ -81,6 +85,26 @@ namespace OE2EmpireTracker.Forms.Station
             flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+
+            // Clear guard and restore selection by matching restored txtName.
+            Shown += (s, ev) =>
+            {
+                _isProgrammaticUpdate--;
+                string restoredName = txtName.Text?.Trim();
+                if (!string.IsNullOrEmpty(restoredName))
+                {
+                    foreach (ListViewItem item in lvwStations.Items)
+                    {
+                        if (item.Tag is ReadOnlyStation station &&
+                            string.Equals(station.Name, restoredName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            item.Selected = true;
+                            item.EnsureVisible();
+                            break;
+                        }
+                    }
+                }
+            };
         }
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
@@ -112,6 +136,7 @@ namespace OE2EmpireTracker.Forms.Station
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             base.OnFormClosed(e);
         }
