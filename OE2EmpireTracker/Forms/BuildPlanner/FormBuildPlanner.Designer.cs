@@ -448,7 +448,7 @@ namespace OE2EmpireTracker.Forms.BuildPlanner
             this.flpAddItem.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpAddItem.Location = new System.Drawing.Point(3, 591);
             this.flpAddItem.Name = "flpAddItem";
-            this.flpAddItem.Size = new System.Drawing.Size(662, 100);
+            this.flpAddItem.Size = new System.Drawing.Size(662, 112);
             this.flpAddItem.WrapContents = false;
             // 
             // lblAddItemHeader
