@@ -40,6 +40,10 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         public FormPlayerProfile()
         {
+            // Guard against WindowStateHelper.RestoreState setting control values
+            // (called by MainWindow between constructor and Show). Cleared in Shown event.
+            _isProgrammaticUpdate++;
+
             InitializeComponent();
 
             empireContext = EmpireContext.GetInstance();
@@ -112,6 +116,9 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.PlayerProfileDataChanged += OnPlayerProfileDataChanged;
+
+            // Clear the programmatic guard set at constructor start.
+            Shown += (s, ev) => _isProgrammaticUpdate--;
         }
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
@@ -435,6 +442,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
         private void TxtPlayerName_TextChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+
             string name = txtPlayerName.Text?.Trim();
             if (string.IsNullOrEmpty(name))
             {
@@ -455,7 +464,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 txtPlayerName.ClearError();
             }
 
-            if (_isProgrammaticUpdate > 0) return;
             viewModel.Name = txtPlayerName.Text?.Trim() ?? string.Empty;
             UpdateSaveButtonState();
         }
