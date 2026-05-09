@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
 
@@ -25,6 +26,10 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         public FormPricingPlan()
         {
+            // Guard against WindowStateHelper.RestoreState setting control values
+            // (called by MainWindow between constructor and Show). Cleared in Shown event.
+            _isProgrammaticUpdate++;
+
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
             _pricingPlanService = new PricingPlanService(playerContext);
@@ -59,6 +64,9 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+
+            // Clear the programmatic guard set at constructor start.
+            Shown += (s, ev) => _isProgrammaticUpdate--;
         }
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
@@ -86,6 +94,7 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             base.OnFormClosed(e);
         }
