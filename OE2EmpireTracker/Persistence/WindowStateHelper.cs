@@ -146,6 +146,14 @@ namespace OE2EmpireTracker.Persistence
                         SelectedIndex = combo.SelectedIndex
                     };
                 }
+                else if (control is OE2EmpireTracker.Controls.FilteredTextComboSet filteredCombo && !string.IsNullOrEmpty(filteredCombo.Name))
+                {
+                    formState.ComboSelections[filteredCombo.Name] = new ComboState
+                    {
+                        SelectedValue = filteredCombo.SelectedItem,
+                        SelectedIndex = -1
+                    };
+                }
                 else if (control is SplitContainer splitter && !string.IsNullOrEmpty(splitter.Name))
                 {
                     formState.SplitterDistances[splitter.Name] = splitter.SplitterDistance;
@@ -192,6 +200,17 @@ namespace OE2EmpireTracker.Persistence
                 else if (control is ComboBox combo && !string.IsNullOrEmpty(combo.Name))
                 {
                     RestoreComboState(combo, formState);
+                }
+                else if (control is OE2EmpireTracker.Controls.FilteredTextComboSet filteredCombo && !string.IsNullOrEmpty(filteredCombo.Name))
+                {
+                    if (formState.ComboSelections.ContainsKey(filteredCombo.Name))
+                    {
+                        var saved = formState.ComboSelections[filteredCombo.Name];
+                        if (saved.SelectedValue != null)
+                        {
+                            filteredCombo.SetItems(filteredCombo.Items, saved.SelectedValue);
+                        }
+                    }
                 }
                 else if (control is SplitContainer splitter && !string.IsNullOrEmpty(splitter.Name))
                 {
