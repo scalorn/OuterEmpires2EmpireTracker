@@ -193,9 +193,9 @@ namespace OE2EmpireTracker
         /// <summary>
         /// Formats the title bar text with global and player blueprint counts.
         /// </summary>
-        public static string FormatTitleBar(int globalCount, int playerCount)
+        public static string FormatTitleBar(int windowNumber, int globalCount, int playerCount)
         {
-            return $"Blueprints - Global: {globalCount} Player: {playerCount}";
+            return $"#{windowNumber} - Blueprints - Global: {globalCount} Player: {playerCount}";
         }
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
@@ -1166,7 +1166,8 @@ namespace OE2EmpireTracker
                 playerCount = playerContext.GetCurrentPlayerBlueprints().Count;
             }
 
-            this.Text = FormatTitleBar(globalCount, playerCount);
+            int windowNumber = this.Tag is int n ? n : 0;
+            this.Text = FormatTitleBar(windowNumber, globalCount, playerCount);
         }
 
         // -----------------------------------------------------------------------

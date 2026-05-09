@@ -51,8 +51,8 @@ namespace OE2EmpireTracker.Tests.ViewModels
         /// <summary>
         /// Feature: blueprint-form-filters, Property 1: Title bar format correctness
         ///
-        /// For any pair of non-negative integers (globalCount, playerCount),
-        /// FormatTitleBar returns "Blueprints - Global: {globalCount} Player: {playerCount}".
+        /// For any triple of non-negative integers (windowNumber, globalCount, playerCount),
+        /// FormatTitleBar returns "#{windowNumber} - Blueprints - Global: {globalCount} Player: {playerCount}".
         ///
         /// **Validates: Requirements 1.1, 1.4**
         /// </summary>
@@ -61,14 +61,15 @@ namespace OE2EmpireTracker.Tests.ViewModels
         {
             var nonNegInt = Gen.Choose(0, int.MaxValue);
 
-            var inputGen = from g in nonNegInt
+            var inputGen = from w in Gen.Choose(1, 100)
+                           from g in nonNegInt
                            from p in nonNegInt
-                           select new { Global = g, Player = p };
+                           select new { Window = w, Global = g, Player = p };
 
             return Prop.ForAll(inputGen.ToArbitrary(), data =>
             {
-                var result = FormBP.FormatTitleBar(data.Global, data.Player);
-                var expected = $"Blueprints - Global: {data.Global} Player: {data.Player}";
+                var result = FormBP.FormatTitleBar(data.Window, data.Global, data.Player);
+                var expected = $"#{data.Window} - Blueprints - Global: {data.Global} Player: {data.Player}";
                 return (result == expected)
                     .Label($"Expected: \"{expected}\" but got: \"{result}\"");
             });
