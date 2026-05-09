@@ -1,4 +1,10 @@
 {
   "mcpServers": {
+    "fwrite": {
+      "command": "node",
+      "args": [".kiro/tools/fwrite-mcp.js"],
+      "disabled": false,
+      "autoApprove": ["write_file", "append_file", "replace_in_file", "batch_write"]
+    }
   }
 }
