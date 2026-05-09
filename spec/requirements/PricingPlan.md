@@ -57,6 +57,12 @@ Pricing Plans assign monetary values (in credits) to resources, commodities, and
 **REQ-PRC-044** A Blueprint with empty Resources SHALL return price equal to FixedCostPerItem + (HourlyCostRate x hours), IsComplete = true.  
 **REQ-PRC-045** All three cost components (resource cost, fixed per item, hourly rate) SHALL be additive.
 
+## Per-Unit Cost Display
+
+**REQ-PRC-046** The Blueprint form SHALL divide the computed total price by the blueprint's "Amount Manufactured" property to display a per-unit cost suitable for market listing.  
+**REQ-PRC-047** IF "Amount Manufactured" is absent or less than 1, the divisor SHALL default to 1 (total price equals per-unit price).  
+**REQ-PRC-048** IF "Amount Manufactured" is greater than 1, the display SHALL show both the per-unit price and the total batch cost in the format: `{perUnit} (x{amount} = {total})`.
+
 ## Incomplete Price Flagging
 
 **REQ-PRC-050** ComputedPrice SHALL have Price (decimal) and IsComplete (bool) fields.  

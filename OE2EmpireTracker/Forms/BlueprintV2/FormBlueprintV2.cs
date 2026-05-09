@@ -2055,7 +2055,16 @@ namespace OE2EmpireTracker
             }
 
             var result = PriceCalculator.ComputeBlueprintPrice(plan, priceBp, mfgHours);
-            string priceText = result.Price.ToString("N2");
+
+            // Divide by Amount Manufactured to get per-unit cost (for munitions, etc.)
+            decimal amountMfg = 1m;
+            priceBp.Properties.GetDecimal(BlueprintPropertyKeys.AmountManufactured, 1m, out amountMfg);
+            if (amountMfg < 1m) amountMfg = 1m;
+
+            decimal perUnitPrice = result.Price / amountMfg;
+            string priceText = perUnitPrice.ToString("N2");
+            if (amountMfg > 1m)
+                priceText += " (x" + amountMfg.ToString("G0") + " = " + result.Price.ToString("N2") + ")";
             if (!result.IsComplete)
                 priceText += " *";
             lblComputedPrice.Text = priceText;
