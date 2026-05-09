@@ -67,54 +67,73 @@ nuget restore OE2EmpireTracker.sln
 - Call `Reset()` on context singletons in test setup to ensure clean state
 - WinForms data binding via `BindingList<T>` and `BindingSource`
 
-## File Writing — MANDATORY: Use fwrite.js for ALL Edits
+## File Writing — MANDATORY: Use fwrite MCP Server
 
-**NEVER use the built-in `fsWrite`, `fsAppend`, or `strReplace` tools. ALWAYS use `.kiro/tools/fwrite.js` for every file write, append, and replace operation — no exceptions, no size thresholds, no "small edit" carve-outs.**
+**NEVER use the built-in `fsWrite`, `fsAppend`, or `strReplace` tools. ALWAYS use the `mcp_fwrite_*` MCP tools for every file write, append, and replace operation — no exceptions.**
 
-The built-in tools have size limits that cause silent failures. fwrite.js does not. Use it for everything: one-line changes, full file rewrites, string replacements. There is no case where the built-in tools are acceptable.
+The built-in tools have size limits that cause silent failures. The fwrite MCP server does not. Use it for everything.
 
-### Replace (single string replacement — most common operation)
-```powershell
-@"
-old text to find
-"@ | Out-File -NoNewline -Encoding utf8 _old.tmp
-@"
-new text to replace with
-"@ | Out-File -NoNewline -Encoding utf8 _new.tmp
-node .kiro/tools/fwrite.js replace path/to/file.cs _old.tmp _new.tmp
+### Available MCP Tools
+
+| Tool | Purpose |
+|------|---------|
+| `mcp_fwrite_write_file` | Write/overwrite a file (atomic write with verification) |
+| `mcp_fwrite_append_file` | Append to a file (creates if missing) |
+| `mcp_fwrite_replace_in_file` | Replace a unique string in a file |
+| `mcp_fwrite_batch_write` | Multiple operations atomically (all-or-nothing) |
+
+### Path Convention
+
+All paths are **relative to the workspace root** (`D:\projects\OuterEmpires2\OE2EmpireTracker`). Use forward slashes.
+
+- Main project files: `OE2EmpireTracker/path/to/file.cs`
+- Test project files: `OE2EmpireTracker.Tests/path/to/file.cs`
+- Spec files: `spec/requirements/Feature.md`
+- Tools: `.kiro/tools/script.js`
+- Steering: `.kiro/steering/file.md`
+
+### write_file — Write or overwrite entire file
 ```
-The replace mode checks for uniqueness (fails if old string appears more than once) and auto-deletes the temp files after replacement.
-
-### Write entire file
-```powershell
-@"
-file content here
-"@ | Out-File -NoNewline -Encoding utf8 _content.tmp
-node .kiro/tools/fwrite.js writefile path/to/file.md _content.tmp
-```
-
-### Append to file
-```powershell
-@"
-content to append
-"@ | Out-File -NoNewline -Encoding utf8 _content.tmp
-node .kiro/tools/fwrite.js appendfile path/to/file.md _content.tmp
+mcp_fwrite_write_file(path="OE2EmpireTracker/Models/NewFile.cs", content="file content here")
 ```
 
-### Stdin pipe (small content, under ~20 lines)
+### append_file — Append to end of file
+```
+mcp_fwrite_append_file(path="OE2EmpireTracker/Models/File.cs", content="\n// appended content")
+```
+
+### replace_in_file — Find and replace unique string
+```
+mcp_fwrite_replace_in_file(path="OE2EmpireTracker/Models/File.cs", old_text="text to find", new_text="replacement text")
+```
+- `old_text` must appear exactly once in the file (fails otherwise)
+- Idempotent: if `new_text` is already present, succeeds without changes
+- Normalizes line endings for matching
+
+### batch_write — Atomic multi-file operations
+```
+mcp_fwrite_batch_write(operations=[
+  {"op": "write", "path": "path/to/file1.cs", "content": "full content"},
+  {"op": "append", "path": "path/to/file2.cs", "content": "appended"},
+  {"op": "replace", "path": "path/to/file3.cs", "old_text": "old", "new_text": "new"}
+])
+```
+All operations succeed or all are rolled back.
+
+### Legacy CLI (fallback only)
+
+The CLI tool (`node .kiro/tools/fwrite.js`) still works for edge cases where MCP is unavailable:
 ```powershell
 @"
-small content
+content
 "@ | node .kiro/tools/fwrite.js write path/to/file.md
 ```
 
-**For content larger than ~20 lines, ALWAYS use the temp file approach** (`writefile`/`appendfile`/`replace`) instead of piping through stdin. Piping large heredocs through PowerShell stdin causes the shell to hang due to pipe buffering.
-
 ## Banned Tools
-- **Do NOT use `fsWrite`** — silent failures on large content. Use fwrite.js writefile instead.
-- **Do NOT use `fsAppend`** — silent failures on large content. Use fwrite.js appendfile instead.
-- **Do NOT use `strReplace`** — silent failures on large content, parameter ordering bugs. Use fwrite.js replace instead.
-- **Do NOT use `semanticRename`** — does not work with old-style csproj / .NET Framework 4.8.1. Use fwrite.js replace for manual find-and-replace.
+- **Do NOT use `fsWrite`** — silent failures on large content. Use `mcp_fwrite_write_file` instead.
+- **Do NOT use `fsAppend`** — silent failures on large content. Use `mcp_fwrite_append_file` instead.
+- **Do NOT use `strReplace`** — silent failures on large content, parameter ordering bugs. Use `mcp_fwrite_replace_in_file` instead.
+- **Do NOT use `semanticRename`** — does not work with old-style csproj / .NET Framework 4.8.1. Use `mcp_fwrite_replace_in_file` for manual find-and-replace.
 
 ## Test Results — Use trxparse.js
 

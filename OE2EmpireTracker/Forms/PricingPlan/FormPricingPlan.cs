@@ -47,6 +47,9 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
             dgvResourcePrices.CellValueChanged += DgvResourcePrices_CellValueChanged;
             dgvResourcePrices.CellValidating += DgvResourcePrices_CellValidating;
+            dgvResourcePrices.CellMouseClick += DgvResourcePrices_CellMouseClick;
+            cmsResourcePrices.Opening += CmsResourcePrices_Opening;
+            tsmiClearPrice.Click += TsmiClearPrice_Click;
 
             PopulatePlanList();
             ClearForm();
@@ -101,14 +104,20 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
         private void FlpSearchList_Layout(object sender, LayoutEventArgs e)
         {
-            LayoutHelper.SizeListToFillPanel(flpSearchList, flpPlanFilter, flpCommands, lvwPlans);
+            int availHeight = flpSearchList.ClientSize.Height
+                - flpPlanFilter.Height - flpPlanFilter.Margin.Top - flpPlanFilter.Margin.Bottom
+                - lvwPlans.Margin.Top - lvwPlans.Margin.Bottom;
+            if (availHeight < 50) availHeight = 50;
+            lvwPlans.Size = new System.Drawing.Size(
+                flpSearchList.ClientSize.Width - lvwPlans.Margin.Left - lvwPlans.Margin.Right,
+                availHeight);
         }
 
         private void FlpDetail_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpDetail.ClientSize.Width;
             int h = flpDetail.ClientSize.Height;
-            int gridHeight = h - flpPlanName.Height - flpDescription.Height - flpCosts.Height - cmdSave.Height - 30;
+            int gridHeight = h - flpPlanName.Height - flpDescription.Height - flpCosts.Height - flpCommands.Height - 30;
             if (gridHeight < 50) gridHeight = 50;
             dgvResourcePrices.Size = new System.Drawing.Size(w - 6, gridHeight);
         }
@@ -576,6 +585,40 @@ namespace OE2EmpireTracker.Forms.PricingPlan
                 _viewModel.ResourcePrices[key] = price;
             }
 
+            UpdateSaveButtonState();
+        }
+
+        private void DgvResourcePrices_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            if (e.RowIndex >= 0)
+            {
+                dgvResourcePrices.ClearSelection();
+                dgvResourcePrices.Rows[e.RowIndex].Selected = true;
+                dgvResourcePrices.CurrentCell = dgvResourcePrices.Rows[e.RowIndex].Cells[0];
+            }
+            else
+            {
+                dgvResourcePrices.ClearSelection();
+            }
+        }
+
+        private void CmsResourcePrices_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool hasSelection = dgvResourcePrices.CurrentRow != null;
+            tsmiClearPrice.Enabled = hasSelection;
+        }
+
+        private void TsmiClearPrice_Click(object sender, EventArgs e)
+        {
+            if (dgvResourcePrices.CurrentRow == null) return;
+
+            int rowIndex = dgvResourcePrices.CurrentRow.Index;
+            string key = dgvResourcePrices.Rows[rowIndex].Tag as string;
+            if (string.IsNullOrEmpty(key)) return;
+
+            dgvResourcePrices.Rows[rowIndex].Cells[colPrice.Index].Value = string.Empty;
+            _viewModel.ResourcePrices.Remove(key);
             UpdateSaveButtonState();
         }
 

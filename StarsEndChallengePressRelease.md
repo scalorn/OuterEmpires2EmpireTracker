@@ -23,8 +23,8 @@ To celebrate this achievement and encourage exploration across the galaxy, we're
 Here's how it works:
 
 1. **Travel to Stars End Outpost** in Lystarix-Mu (Bahzad Cluster)
-2. **Purchase 1 share** in Stars End Outpost - listed at 1 credit
-3. **Deliver that share** to **Scalorn Scorpus** at Alef Hestrixia Station in Ahurani Void
+2. **Scan a planet** in Lystarix-Mu (Bahzad Cluster)
+3. **Deliver that scan** to **Scalorn Scorpus** at Alef Hestrixia Station in Ahurani Void
 
 First pilot to complete all three steps collects **3 million credits**. No tricks, no lottery - just you, your ship, and a whole lot of empty space between here and there.
 
@@ -32,14 +32,16 @@ First pilot to complete all three steps collects **3 million credits**. No trick
 
 ## Refuelling Stations Along the Way
 
-We're not completely heartless. NEC has established two waypoints to help you survive the trip:
+NEC has established two waypoints that could help you survive the trip:
 
 | Station | System | Region |
 |---------|--------|--------|
 | **The Outward Reach Outpost** | Myrianth-Xi | Eranvej Cloud |
 | **Void's Pilgrimage** | Xolos M3875 | Simurgh |
 
-Plan your fuel carefully. These are the only friendly ports between civilized space and Stars End.
+Plan your trip carefully.
+These are the only existing friendly ports between civilized space and Stars End.
+You may have to build more ports to make the trip.
 
 ---
 
@@ -48,7 +50,7 @@ Plan your fuel carefully. These are the only friendly ports between civilized sp
 This is not a casual trip. The route to Lystarix-Mu crosses dozens of uncharted systems with no stations, no repairs, and no rescue. You will need:
 
 - A ship with serious fuel range and very careful jump planning
-- Enough credits to cover cloning if things go sideways
+- Enough credits to cover cloning and a new ship if things go sideways
 - Patience - this journey takes real time and real commitment
 
 **NEC is not responsible for ship loss, cargo loss, piracy, navigation errors, fuel miscalculations, existential dread in deep space, or cloning costs incurred during your attempt.**
@@ -63,7 +65,7 @@ Now it's your turn to prove you can too.
 
 ---
 
-**The challenge is open. The share is listed. The clock is ticking.**
+**The challenge is open. The clock is ticking.**
 
 Good luck, pilots. You're going to need it.
 

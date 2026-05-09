@@ -1,9 +1,9 @@
 {
   "mcpServers": {
     "fwrite": {
-      "command": "node",
-      "args": ["D:/projects/OuterEmpires2/OE2EmpireTracker/.kiro/tools/fwrite-mcp.js"],
-      "cwd": "D:/projects/OuterEmpires2/OE2EmpireTracker",
+      "command": "D:\\Program Files\\nodejs\\node.exe",
+      "args": [".kiro/tools/fwrite-mcp.js"],
+      "cwd": "D:\\projects\\OuterEmpires2\\OE2EmpireTracker",
       "disabled": false,
       "autoApprove": ["write_file", "append_file", "replace_in_file", "batch_write"]
     }

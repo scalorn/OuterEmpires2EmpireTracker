@@ -39,6 +39,10 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         public FormDeliveryRoute()
         {
+            // Guard against WindowStateHelper.RestoreState setting control values
+            // (called by MainWindow between constructor and Show). Cleared in Shown event.
+            _isProgrammaticUpdate++;
+
             InitializeComponent();
             empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
@@ -128,6 +132,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.DeliveryDataChanged += OnDeliveryDataChanged;
+
+            // Clear the programmatic guard set at constructor start.
+            // By this point, WindowStateHelper.RestoreState has already run
+            // (MainWindow calls it between constructor and Show), so any
+            // TextBox.Text changes from state restore were suppressed.
+            Shown += (s, ev) => _isProgrammaticUpdate--;
         }
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
@@ -467,8 +477,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void PopulateForm()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            using var guard = new ProgrammaticUpdateGuard(this);
             txtRouteName.Text = viewModel.Name ?? string.Empty;
             PopulateStopsGrid();
+            sw.Stop();
+            Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void PopulateStopsGrid()
@@ -526,6 +540,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
         private void ClearForm()
         {
+            using var guard = new ProgrammaticUpdateGuard(this);
             viewModel.Reset();
             txtRouteName.Text = string.Empty;
             dgvStops.Rows.Clear();

@@ -23,9 +23,6 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             this.lblPlanFilter = new System.Windows.Forms.Label();
             this.txtPlanFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lvwPlans = new System.Windows.Forms.ListView();
-            this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdNew = new System.Windows.Forms.Button();
-            this.cmdDelete = new System.Windows.Forms.Button();
             this.flpDetail = new System.Windows.Forms.FlowLayoutPanel();
             this.flpPlanName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPlanName = new System.Windows.Forms.Label();
@@ -38,11 +35,16 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             this.txtFixedCost = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lblHourlyCost = new System.Windows.Forms.Label();
             this.txtHourlyCost = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.cmdSave = new System.Windows.Forms.Button();
             this.dgvResourcePrices = new DataEntryGridView();
             this.colResourceName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPurity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdNew = new System.Windows.Forms.Button();
+            this.cmdSave = new System.Windows.Forms.Button();
+            this.cmdDelete = new System.Windows.Forms.Button();
+            this.cmsResourcePrices = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmiClearPrice = new System.Windows.Forms.ToolStripMenuItem();
 
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
@@ -69,7 +71,6 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             // 
             this.flpSearchList.Controls.Add(this.flpPlanFilter);
             this.flpSearchList.Controls.Add(this.lvwPlans);
-            this.flpSearchList.Controls.Add(this.flpCommands);
             this.flpSearchList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
@@ -116,10 +117,11 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             // 
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.cmdNew);
+            this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Location = new System.Drawing.Point(3, 511);
             this.flpCommands.Name = "flpCommands";
-            this.flpCommands.Size = new System.Drawing.Size(214, 29);
+            this.flpCommands.Size = new System.Drawing.Size(612, 29);
 
             // 
             // cmdNew
@@ -130,9 +132,17 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             this.cmdNew.Text = "New";
             this.cmdNew.UseVisualStyleBackColor = true;
             // 
+            // cmdSave
+            // 
+            this.cmdSave.Location = new System.Drawing.Point(84, 3);
+            this.cmdSave.Name = "cmdSave";
+            this.cmdSave.Size = new System.Drawing.Size(75, 23);
+            this.cmdSave.Text = "Save";
+            this.cmdSave.UseVisualStyleBackColor = true;
+            // 
             // cmdDelete
             // 
-            this.cmdDelete.Location = new System.Drawing.Point(84, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(165, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(75, 23);
             this.cmdDelete.Text = "Delete";
@@ -143,8 +153,8 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             this.flpDetail.Controls.Add(this.flpPlanName);
             this.flpDetail.Controls.Add(this.flpDescription);
             this.flpDetail.Controls.Add(this.flpCosts);
-            this.flpDetail.Controls.Add(this.cmdSave);
             this.flpDetail.Controls.Add(this.dgvResourcePrices);
+            this.flpDetail.Controls.Add(this.flpCommands);
             this.flpDetail.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDetail.Location = new System.Drawing.Point(229, 3);
             this.flpDetail.Name = "flpDetail";
@@ -244,14 +254,6 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             this.txtHourlyCost.Name = "txtHourlyCost";
             this.txtHourlyCost.Size = new System.Drawing.Size(100, 20);
             // 
-            // cmdSave
-            // 
-            this.cmdSave.Location = new System.Drawing.Point(3, 99);
-            this.cmdSave.Name = "cmdSave";
-            this.cmdSave.Size = new System.Drawing.Size(75, 23);
-            this.cmdSave.Text = "Save";
-            this.cmdSave.UseVisualStyleBackColor = true;
-            // 
             // dgvResourcePrices
             // 
             this.dgvResourcePrices.AllowUserToAddRows = false;
@@ -264,8 +266,9 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             this.colPrice});
             this.dgvResourcePrices.Location = new System.Drawing.Point(3, 128);
             this.dgvResourcePrices.Name = "dgvResourcePrices";
-            this.dgvResourcePrices.Size = new System.Drawing.Size(612, 410);
+            this.dgvResourcePrices.Size = new System.Drawing.Size(612, 380);
             this.dgvResourcePrices.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvResourcePrices.ContextMenuStrip = this.cmsResourcePrices;
             // 
             // colResourceName
             // 
@@ -286,6 +289,19 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             this.colPrice.HeaderText = "Price";
             this.colPrice.Name = "colPrice";
             this.colPrice.Width = 120;
+            // 
+            // cmsResourcePrices
+            // 
+            this.cmsResourcePrices.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiClearPrice});
+            this.cmsResourcePrices.Name = "cmsResourcePrices";
+            this.cmsResourcePrices.Size = new System.Drawing.Size(140, 26);
+            // 
+            // tsmiClearPrice
+            // 
+            this.tsmiClearPrice.Name = "tsmiClearPrice";
+            this.tsmiClearPrice.Size = new System.Drawing.Size(139, 22);
+            this.tsmiClearPrice.Text = "Clear Price";
             // 
             // FormPricingPlan
             // 
@@ -320,9 +336,6 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         private System.Windows.Forms.Label lblPlanFilter;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPlanFilter;
         private System.Windows.Forms.ListView lvwPlans;
-        private System.Windows.Forms.FlowLayoutPanel flpCommands;
-        private System.Windows.Forms.Button cmdNew;
-        private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.FlowLayoutPanel flpDetail;
         private System.Windows.Forms.FlowLayoutPanel flpPlanName;
         private System.Windows.Forms.Label lblPlanName;
@@ -335,10 +348,15 @@ namespace OE2EmpireTracker.Forms.PricingPlan
         private OE2EmpireTracker.Controls.ValidatedTextBox txtFixedCost;
         private System.Windows.Forms.Label lblHourlyCost;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtHourlyCost;
-        private System.Windows.Forms.Button cmdSave;
         private DataEntryGridView dgvResourcePrices;
         private System.Windows.Forms.DataGridViewTextBoxColumn colResourceName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPurity;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPrice;
+        private System.Windows.Forms.FlowLayoutPanel flpCommands;
+        private System.Windows.Forms.Button cmdNew;
+        private System.Windows.Forms.Button cmdSave;
+        private System.Windows.Forms.Button cmdDelete;
+        private System.Windows.Forms.ContextMenuStrip cmsResourcePrices;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClearPrice;
     }
 }
