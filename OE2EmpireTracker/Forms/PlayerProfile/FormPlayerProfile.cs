@@ -439,6 +439,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             if (string.IsNullOrEmpty(name))
             {
                 txtPlayerName.SetError("Name cannot be empty");
+                UpdateSaveButtonState();
                 return;
             }
 
@@ -456,6 +457,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             if (_isProgrammaticUpdate > 0) return;
             viewModel.Name = txtPlayerName.Text?.Trim() ?? string.Empty;
+            UpdateSaveButtonState();
         }
 
         private void TxtTotalCredits_TextChanged(object sender, EventArgs e)
