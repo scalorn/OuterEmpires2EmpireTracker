@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
 
@@ -26,6 +27,10 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
         public FormShipTemplate()
         {
+            // Guard against WindowStateHelper.RestoreState setting control values
+            // (called by MainWindow between constructor and Show). Cleared in Shown event.
+            _isProgrammaticUpdate++;
+
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
             _shipTemplateService = new ShipTemplateService(playerContext);
@@ -65,6 +70,27 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+
+            // Clear the programmatic guard. Then restore selection by matching
+            // the plan name that WindowStateHelper put into txtName.
+            Shown += (s, ev) =>
+            {
+                _isProgrammaticUpdate--;
+                string restoredName = txtName.Text?.Trim();
+                if (!string.IsNullOrEmpty(restoredName))
+                {
+                    foreach (ListViewItem item in lvwTemplates.Items)
+                    {
+                        if (item.Tag is ReadOnlyShipTemplate tmpl &&
+                            string.Equals(tmpl.Name, restoredName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            item.Selected = true;
+                            item.EnsureVisible();
+                            break;
+                        }
+                    }
+                }
+            };
         }
 
         private enum UnsavedAction
@@ -80,6 +106,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             base.OnFormClosed(e);
         }
