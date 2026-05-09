@@ -409,14 +409,24 @@ namespace OE2EmpireTracker.Tests.Forms
             // The actual Manage menu labels from the Designer
             var menuLabels = new List<string>
             {
+                "Asteroids",
+                "Blueprints",
+                "Build Planner",
+                "Colonies",
                 "Colony Activity",
                 "Colony Daily Build",
+                "Contacts",
                 "Delivery Execution",
                 "Delivery Routes",
-                "Manage Blueprints",
-                "Manage Colonies",
-                "Manage Player Profiles",
-                "Manage Surveys"
+                "Market",
+                "Player Profiles",
+                "Pricing Plans",
+                "Ship Templates",
+                "Ships",
+                "Stations",
+                "Stock Targets",
+                "Supply Chains",
+                "Surveys"
             };
 
             for (int iteration = 0; iteration < 25; iteration++)
@@ -505,34 +515,34 @@ namespace OE2EmpireTracker.Tests.Forms
         [Test]
         public void ManageMenu_SurveyLabelIsManageSurveys()
         {
-            string expected = "Manage Surveys";
-            string actual = "Manage Surveys"; // From Designer: this.addSurveyToolStripMenuItem.Text = "Manage Surveys";
+            string expected = "Surveys";
+            string actual = "Surveys"; // From Designer: this.addSurveyToolStripMenuItem.Text = "Surveys";
             Assert.That(
                 actual,
                 Is.EqualTo(expected),
-                "Survey menu item should be labeled 'Manage Surveys'");
+                "Survey menu item should be labeled 'Surveys'");
         }
 
         [Test]
         public void ManageMenu_ColonyLabelIsManageColonies()
         {
-            string expected = "Manage Colonies";
-            string actual = "Manage Colonies"; // From Designer: this.addColonyToolStripMenuItem.Text = "Manage Colonies";
+            string expected = "Colonies";
+            string actual = "Colonies"; // From Designer: this.addColonyToolStripMenuItem.Text = "Colonies";
             Assert.That(
                 actual,
                 Is.EqualTo(expected),
-                "Colony menu item should be labeled 'Manage Colonies'");
+                "Colony menu item should be labeled 'Colonies'");
         }
 
         [Test]
         public void ManageMenu_BlueprintLabelIsManageBlueprints()
         {
-            string expected = "Manage Blueprints";
-            string actual = "Manage Blueprints"; // From Designer: this.addBlueprintToolStripMenuItem.Text = "Manage Blueprints";
+            string expected = "Blueprints";
+            string actual = "Blueprints"; // From Designer: this.addBlueprintToolStripMenuItem.Text = "Blueprints";
             Assert.That(
                 actual,
                 Is.EqualTo(expected),
-                "Blueprint menu item should be labeled 'Manage Blueprints'");
+                "Blueprint menu item should be labeled 'Blueprints'");
         }
 
         // --- Manage menu alphabetical order verification (Req 7.5) ---
@@ -542,14 +552,24 @@ namespace OE2EmpireTracker.Tests.Forms
             // The Designer defines Manage menu items in this order (alphabetical):
             var manageItems = new[]
             {
+                "Asteroids",
+                "Blueprints",
+                "Build Planner",
+                "Colonies",
                 "Colony Activity",
                 "Colony Daily Build",
+                "Contacts",
                 "Delivery Execution",
                 "Delivery Routes",
-                "Manage Blueprints",
-                "Manage Colonies",
-                "Manage Player Profiles",
-                "Manage Surveys"
+                "Market",
+                "Player Profiles",
+                "Pricing Plans",
+                "Ship Templates",
+                "Ships",
+                "Stations",
+                "Stock Targets",
+                "Supply Chains",
+                "Surveys"
             };
 
             for (int i = 0; i < manageItems.Length - 1; i++)

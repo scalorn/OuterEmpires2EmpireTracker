@@ -158,23 +158,23 @@
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.asteroidsToolStripMenuItem,
+            this.addBlueprintV2ToolStripMenuItem,
+            this.buildPlannerToolStripMenuItem,
+            this.addColonyV2ToolStripMenuItem,
             this.colonyActivityToolStripMenuItem,
             this.colonyDailyBuildToolStripMenuItem,
             this.contactsToolStripMenuItem,
             this.deliveryExecutionToolStripMenuItem,
             this.deliveryRoutesToolStripMenuItem,
+            this.marketToolStripMenuItem,
+            this.managePlayerProfiles,
             this.pricingPlansToolStripMenuItem,
-            this.buildPlannerToolStripMenuItem,
             this.shipTemplatesToolStripMenuItem,
             this.shipsToolStripMenuItem,
             this.stationsToolStripMenuItem,
-            this.marketToolStripMenuItem,
-            this.asteroidsToolStripMenuItem,
-            this.supplyChainsToolStripMenuItem,
             this.stockTargetsToolStripMenuItem,
-            this.addBlueprintV2ToolStripMenuItem,
-            this.addColonyV2ToolStripMenuItem,
-            this.managePlayerProfiles,
+            this.supplyChainsToolStripMenuItem,
             this.addSurveyToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(62, 22);
@@ -184,14 +184,14 @@
             // 
             this.addSurveyToolStripMenuItem.Name = "addSurveyToolStripMenuItem";
             this.addSurveyToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.addSurveyToolStripMenuItem.Text = "Manage Surveys";
+            this.addSurveyToolStripMenuItem.Text = "Surveys";
             this.addSurveyToolStripMenuItem.Click += new System.EventHandler(this.AddSurveyToolStripMenuItem_Click);
             // 
             // addBlueprintV2ToolStripMenuItem
             // 
             this.addBlueprintV2ToolStripMenuItem.Name = "addBlueprintV2ToolStripMenuItem";
             this.addBlueprintV2ToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.addBlueprintV2ToolStripMenuItem.Text = "Manage Blueprints";
+            this.addBlueprintV2ToolStripMenuItem.Text = "Blueprints";
             this.addBlueprintV2ToolStripMenuItem.Click += new System.EventHandler(this.AddBlueprintV2ToolStripMenuItem_Click);
             // 
             //
@@ -199,7 +199,7 @@
             // 
             this.addColonyV2ToolStripMenuItem.Name = "addColonyV2ToolStripMenuItem";
             this.addColonyV2ToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.addColonyV2ToolStripMenuItem.Text = "Manage Colonies";
+            this.addColonyV2ToolStripMenuItem.Text = "Colonies";
             this.addColonyV2ToolStripMenuItem.Click += new System.EventHandler(this.AddColonyV2ToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
@@ -236,7 +236,7 @@
             // 
             this.managePlayerProfiles.Name = "managePlayerProfiles";
             this.managePlayerProfiles.Size = new System.Drawing.Size(194, 22);
-            this.managePlayerProfiles.Text = "Manage Player Profiles";
+            this.managePlayerProfiles.Text = "Player Profiles";
             this.managePlayerProfiles.Click += new System.EventHandler(this.ManagePlayerProfiles_Click);
             // 
             // deliveryRoutesToolStripMenuItem
