@@ -17,6 +17,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cmsComponents = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiClearSlotComponent = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsCargo = new System.Windows.Forms.ContextMenuStrip(this.components);
