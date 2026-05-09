@@ -1,4 +1,4 @@
-namespace OE2EmpireTracker.Forms.ShipTemplate
+﻿namespace OE2EmpireTracker.Forms.ShipTemplate
 {
     partial class FormShipTemplate
     {
@@ -17,6 +17,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cmsSlots = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiClearSlot = new System.Windows.Forms.ToolStripMenuItem();
             this.flpBase = new System.Windows.Forms.FlowLayoutPanel();
