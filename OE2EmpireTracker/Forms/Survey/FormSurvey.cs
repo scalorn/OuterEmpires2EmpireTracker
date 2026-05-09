@@ -438,38 +438,42 @@ namespace OE2EmpireTracker.Forms.Survey
                     .ToList();
             }
 
-            if (!string.IsNullOrEmpty(resourceFilter))
-            {
-                list = list
-                    .Where(s => s.Resources.Values.Any(r =>
-                        string.Equals(r.Resource, resourceFilter, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
-            }
-
             if (typeFilter.HasValue)
             {
                 list = list.Where(s => s.SurveyType == typeFilter.Value).ToList();
             }
 
-            if (!string.IsNullOrEmpty(purityFilter))
-            {
-                list = list
-                    .Where(s => s.Resources.Values.Any(r =>
-                        string.Equals(r.Purity, purityFilter, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
-            }
+            // Resource, purity, and amount filters must match the SAME resource record
+            bool hasResourceFilter = !string.IsNullOrEmpty(resourceFilter);
+            bool hasPurityFilter = !string.IsNullOrEmpty(purityFilter);
+            bool hasAmountFilter = minAmount > 0;
 
-            if (minAmount > 0)
+            if (hasResourceFilter || hasPurityFilter || hasAmountFilter)
             {
                 list = list
                     .Where(s => s.Resources.Values.Any(r =>
                     {
-                        if (decimal.TryParse(r.Amount, out decimal amt))
+                        if (hasResourceFilter &&
+                            !string.Equals(r.Resource, resourceFilter, StringComparison.OrdinalIgnoreCase))
                         {
-                            return amt >= minAmount;
+                            return false;
                         }
 
-                        return false;
+                        if (hasPurityFilter &&
+                            !string.Equals(r.Purity, purityFilter, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return false;
+                        }
+
+                        if (hasAmountFilter)
+                        {
+                            if (!decimal.TryParse(r.Amount, out decimal amt) || amt < minAmount)
+                            {
+                                return false;
+                            }
+                        }
+
+                        return true;
                     }))
                     .ToList();
             }
