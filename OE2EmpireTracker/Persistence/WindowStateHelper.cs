@@ -148,9 +148,19 @@ namespace OE2EmpireTracker.Persistence
                 }
                 else if (control is OE2EmpireTracker.Controls.FilteredTextComboSet filteredCombo && !string.IsNullOrEmpty(filteredCombo.Name))
                 {
+                    string selectedValue = null;
+                    try
+                    {
+                        selectedValue = filteredCombo.SelectedItem;
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        // combo in empty/cleared state
+                    }
+
                     formState.ComboSelections[filteredCombo.Name] = new ComboState
                     {
-                        SelectedValue = filteredCombo.SelectedItem,
+                        SelectedValue = selectedValue,
                         SelectedIndex = -1
                     };
                 }
