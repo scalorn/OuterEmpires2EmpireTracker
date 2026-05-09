@@ -66,7 +66,26 @@ namespace OE2EmpireTracker.Forms.PricingPlan
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
 
             // Clear the programmatic guard set at constructor start.
-            Shown += (s, ev) => _isProgrammaticUpdate--;
+            // WindowStateHelper restores txtPlanName.Text but not the ListView selection,
+            // so find and select the matching plan to fully load it.
+            Shown += (s, ev) =>
+            {
+                _isProgrammaticUpdate--;
+                string restoredName = txtPlanName.Text?.Trim();
+                if (!string.IsNullOrEmpty(restoredName))
+                {
+                    foreach (ListViewItem item in lvwPlans.Items)
+                    {
+                        if (item.Tag is ReadOnlyPricingPlan plan &&
+                            string.Equals(plan.Name, restoredName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            item.Selected = true;
+                            item.EnsureVisible();
+                            break;
+                        }
+                    }
+                }
+            };
         }
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
