@@ -154,7 +154,7 @@ namespace OE2EmpireTracker.Forms.Station
         {
             int w2 = flpSearchList.ClientSize.Width;
             int h = flpSearchList.ClientSize.Height;
-            int listHeight = h - flpFilter.Height - flpCommands.Height - 18;
+            int listHeight = h - flpFilter.Height - 12;
             if (listHeight < 50) listHeight = 50;
             lvwStations.Size = new System.Drawing.Size(w2 - 6, listHeight);
         }
@@ -163,7 +163,7 @@ namespace OE2EmpireTracker.Forms.Station
         {
             int w2 = flpDetail.ClientSize.Width;
             int h = flpDetail.ClientSize.Height;
-            int tabHeight = h - flpName.Height - flpStationType.Height - cmdSave.Height - 24;
+            int tabHeight = h - flpName.Height - flpStationType.Height - flpCommands.Height - 24;
             if (tabHeight < 100) tabHeight = 100;
             tabControl.Size = new System.Drawing.Size(w2 - 6, tabHeight);
         }

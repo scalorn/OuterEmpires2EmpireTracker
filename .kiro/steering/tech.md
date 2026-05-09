@@ -80,11 +80,14 @@ The built-in tools have size limits that cause silent failures. The fwrite MCP s
 | `mcp_fwrite_write_file` | Write/overwrite a file (atomic write with verification) |
 | `mcp_fwrite_append_file` | Append to a file (creates if missing) |
 | `mcp_fwrite_replace_in_file` | Replace a unique string in a file |
+| `mcp_fwrite_delete_file` | Delete a file |
+| `mcp_fwrite_delete_directory` | Delete a directory recursively |
+| `mcp_fwrite_create_directory` | Create a directory (and parents) |
 | `mcp_fwrite_batch_write` | Multiple operations atomically (all-or-nothing) |
 
 ### Path Convention
 
-All paths are **relative to the workspace root** (`D:\projects\OuterEmpires2\OE2EmpireTracker`). Use forward slashes.
+All paths are **relative to the workspace root** (`D:\projects\OuterEmpires2\OE2EmpireTracker`). Use forward slashes. Error messages include the resolved absolute path for debugging.
 
 - Main project files: `OE2EmpireTracker/path/to/file.cs`
 - Test project files: `OE2EmpireTracker.Tests/path/to/file.cs`
@@ -110,6 +113,21 @@ mcp_fwrite_replace_in_file(path="OE2EmpireTracker/Models/File.cs", old_text="tex
 - Idempotent: if `new_text` is already present, succeeds without changes
 - Normalizes line endings for matching
 
+### delete_file — Delete a single file
+```
+mcp_fwrite_delete_file(path="path/to/unwanted-file.tmp")
+```
+
+### delete_directory — Delete a directory recursively
+```
+mcp_fwrite_delete_directory(path="path/to/unwanted-dir")
+```
+
+### create_directory — Create directory (and parents)
+```
+mcp_fwrite_create_directory(path="path/to/new/dir")
+```
+
 ### batch_write — Atomic multi-file operations
 ```
 mcp_fwrite_batch_write(operations=[
@@ -120,19 +138,11 @@ mcp_fwrite_batch_write(operations=[
 ```
 All operations succeed or all are rolled back.
 
-### Legacy CLI (fallback only)
-
-The CLI tool (`node .kiro/tools/fwrite.js`) still works for edge cases where MCP is unavailable:
-```powershell
-@"
-content
-"@ | node .kiro/tools/fwrite.js write path/to/file.md
-```
-
 ## Banned Tools
 - **Do NOT use `fsWrite`** — silent failures on large content. Use `mcp_fwrite_write_file` instead.
 - **Do NOT use `fsAppend`** — silent failures on large content. Use `mcp_fwrite_append_file` instead.
 - **Do NOT use `strReplace`** — silent failures on large content, parameter ordering bugs. Use `mcp_fwrite_replace_in_file` instead.
+- **Do NOT use `deleteFile`** — Use `mcp_fwrite_delete_file` instead for consistent error reporting.
 - **Do NOT use `semanticRename`** — does not work with old-style csproj / .NET Framework 4.8.1. Use `mcp_fwrite_replace_in_file` for manual find-and-replace.
 
 ## Test Results — Use trxparse.js

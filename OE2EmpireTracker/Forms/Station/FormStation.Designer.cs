@@ -124,7 +124,6 @@ namespace OE2EmpireTracker.Forms.Station
             // flpSearchList
             this.flpSearchList.Controls.Add(this.flpFilter);
             this.flpSearchList.Controls.Add(this.lvwStations);
-            this.flpSearchList.Controls.Add(this.flpCommands);
             this.flpSearchList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
@@ -166,30 +165,39 @@ namespace OE2EmpireTracker.Forms.Station
             // flpCommands
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.cmdNew);
+            this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Location = new System.Drawing.Point(3, 561);
             this.flpCommands.Name = "flpCommands";
-            this.flpCommands.Size = new System.Drawing.Size(214, 29);
+            this.flpCommands.Size = new System.Drawing.Size(712, 29);
+            this.flpCommands.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
 
             // cmdNew
             this.cmdNew.Location = new System.Drawing.Point(3, 3);
             this.cmdNew.Name = "cmdNew";
-            this.cmdNew.Size = new System.Drawing.Size(55, 23);
+            this.cmdNew.Size = new System.Drawing.Size(75, 23);
             this.cmdNew.Text = "New";
             this.cmdNew.UseVisualStyleBackColor = true;
 
+            // cmdSave
+            this.cmdSave.Location = new System.Drawing.Point(84, 3);
+            this.cmdSave.Name = "cmdSave";
+            this.cmdSave.Size = new System.Drawing.Size(75, 23);
+            this.cmdSave.Text = "Save";
+            this.cmdSave.UseVisualStyleBackColor = true;
+
             // cmdDelete
-            this.cmdDelete.Location = new System.Drawing.Point(64, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(165, 3);
             this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(55, 23);
+            this.cmdDelete.Size = new System.Drawing.Size(75, 23);
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
 
             // flpDetail
             this.flpDetail.Controls.Add(this.flpName);
             this.flpDetail.Controls.Add(this.flpStationType);
-            this.flpDetail.Controls.Add(this.cmdSave);
             this.flpDetail.Controls.Add(this.tabControl);
+            this.flpDetail.Controls.Add(this.flpCommands);
             this.flpDetail.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDetail.Location = new System.Drawing.Point(229, 3);
             this.flpDetail.Name = "flpDetail";
@@ -256,13 +264,6 @@ namespace OE2EmpireTracker.Forms.Station
             this.cmbOwnership.Location = new System.Drawing.Point(237, 3);
             this.cmbOwnership.Name = "cmbOwnership";
             this.cmbOwnership.Size = new System.Drawing.Size(120, 21);
-
-            // cmdSave
-            this.cmdSave.Location = new System.Drawing.Point(3, 68);
-            this.cmdSave.Name = "cmdSave";
-            this.cmdSave.Size = new System.Drawing.Size(75, 23);
-            this.cmdSave.Text = "Save";
-            this.cmdSave.UseVisualStyleBackColor = true;
 
             // tabControl
             this.tabControl.Controls.Add(this.tabHold);
@@ -438,8 +439,9 @@ namespace OE2EmpireTracker.Forms.Station
             this.tabComponents.Padding = new System.Windows.Forms.Padding(3);
             this.tabComponents.Size = new System.Drawing.Size(704, 484);
             this.tabComponents.TabIndex = 1;
-            this.tabComponents.Text = "Components";
+            this.tabComponents.Text = "Components (not yet in game)";
             this.tabComponents.UseVisualStyleBackColor = true;
+            this.tabComponents.Enabled = false;
 
             // flpBlueprintRow
             this.flpBlueprintRow.AutoSize = true;
@@ -501,8 +503,9 @@ namespace OE2EmpireTracker.Forms.Station
             this.tabMunitions.Padding = new System.Windows.Forms.Padding(3);
             this.tabMunitions.Size = new System.Drawing.Size(704, 484);
             this.tabMunitions.TabIndex = 2;
-            this.tabMunitions.Text = "Munitions";
+            this.tabMunitions.Text = "Munitions (not yet in game)";
             this.tabMunitions.UseVisualStyleBackColor = true;
+            this.tabMunitions.Enabled = false;
 
             // dgvMunitions
             this.dgvMunitions.AllowUserToAddRows = false;
