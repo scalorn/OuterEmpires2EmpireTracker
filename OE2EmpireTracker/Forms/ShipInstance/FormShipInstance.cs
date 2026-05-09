@@ -7,6 +7,7 @@ using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
 
@@ -27,6 +28,9 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         public FormShipInstance()
         {
+            // Guard against WindowStateHelper.RestoreState setting control values.
+            _isProgrammaticUpdate++;
+
             InitializeComponent();
             playerContext = EmpireContext.PlayerContext;
             _shipService = new ShipService(playerContext);
@@ -80,6 +84,26 @@ namespace OE2EmpireTracker.Forms.ShipInstance
             flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+
+            // Clear guard and restore selection by matching restored txtName.
+            Shown += (s, ev) =>
+            {
+                _isProgrammaticUpdate--;
+                string restoredName = txtName.Text?.Trim();
+                if (!string.IsNullOrEmpty(restoredName))
+                {
+                    foreach (ListViewItem item in lvwShips.Items)
+                    {
+                        if (item.Tag is ReadOnlyShip ship &&
+                            string.Equals(ship.Name, restoredName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            item.Selected = true;
+                            item.EnsureVisible();
+                            break;
+                        }
+                    }
+                }
+            };
         }
 
         private enum UnsavedAction
@@ -119,6 +143,7 @@ namespace OE2EmpireTracker.Forms.ShipInstance
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             base.OnFormClosed(e);
         }
