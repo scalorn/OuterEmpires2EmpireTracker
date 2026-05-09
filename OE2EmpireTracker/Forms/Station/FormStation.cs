@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
@@ -459,18 +460,25 @@ namespace OE2EmpireTracker.Forms.Station
             cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Resource);
             cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Commodity);
             cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Flatpack);
-            cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Crate);
             cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Munition);
+            cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Blueprint);
+            cmbHoldType.Items.Add(ItemType.ItemTypeEnum.ShipPart);
+            cmbHoldType.Items.Add(ItemType.ItemTypeEnum.WorkDetail);
+            cmbHoldType.Items.Add(ItemType.ItemTypeEnum.Crate);
             cmbHoldType.SelectedIndex = 0;
             sw.Stop();
             Log.Info("PERF PopulateHoldTypeCombo: {0}ms", sw.ElapsedMilliseconds);
+
+            // Populate item combo for the initial selection (guard may be active during constructor)
+            PopulateHoldItemCombo();
+            UpdateHoldPurityVisibility();
         }
 
         private void CmbHoldType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
             PopulateHoldItemCombo();
-            UpdateHoldPurityCombo();
+            UpdateHoldPurityVisibility();
         }
 
         private void PopulateHoldItemCombo()
@@ -485,19 +493,108 @@ namespace OE2EmpireTracker.Forms.Station
                 return;
             }
 
-            if (selectedType == ItemType.ItemTypeEnum.Resource)
+            switch (selectedType)
             {
-                var resources = EmpireContext.GetInstance()?.ResourceList;
-                if (resources != null)
-                {
-                    foreach (var r in resources.OrderBy(r => r.Name))
-                        names.Add(r.Name);
-                }
-            }
-            else if (selectedType == ItemType.ItemTypeEnum.Commodity)
-            {
-                foreach (var c in Commodity.ResourceMapByEnum.Values.OrderBy(c => c.ExtendedName))
-                    names.Add(c.ExtendedName);
+                case ItemType.ItemTypeEnum.Resource:
+                    var resources = EmpireContext.GetInstance()?.ResourceList;
+                    if (resources != null)
+                    {
+                        foreach (var r in resources.OrderBy(r => r.Name))
+                        {
+                            if (!string.IsNullOrEmpty(r.Name))
+                                names.Add(r.Name);
+                        }
+                    }
+
+                    break;
+
+                case ItemType.ItemTypeEnum.Commodity:
+                    foreach (var c in Commodity.ResourceMapByEnum.Values.OrderBy(c => c.ExtendedName))
+                    {
+                        if (!string.IsNullOrEmpty(c.ExtendedName))
+                            names.Add(c.ExtendedName);
+                    }
+
+                    break;
+
+                case ItemType.ItemTypeEnum.Flatpack:
+                    var empireCtx = EmpireContext.GetInstance();
+                    if (empireCtx?.GlobalBlueprintList != null)
+                    {
+                        foreach (var bp in CollectionSortHelper.OrderByName(
+                            empireCtx.GlobalBlueprintList
+                            .Where(b => !string.IsNullOrEmpty(b.BluePrintType) && b.BluePrintType.IsFlatpack()),
+                            b => b.Name))
+                        {
+                            if (!string.IsNullOrEmpty(bp.Name) && !names.Contains(bp.Name))
+                                names.Add(bp.Name);
+                        }
+                    }
+
+                    break;
+
+                case ItemType.ItemTypeEnum.Munition:
+                    var empireCtx2 = EmpireContext.GetInstance();
+                    if (empireCtx2?.GlobalBlueprintList != null)
+                    {
+                        foreach (var bp in CollectionSortHelper.OrderByName(
+                            empireCtx2.GlobalBlueprintList
+                            .Where(b => !string.IsNullOrEmpty(b.BluePrintType) &&
+                                        b.BluePrintType.StartsWith("Munitions/", StringComparison.OrdinalIgnoreCase)),
+                            b => b.Name))
+                        {
+                            if (!string.IsNullOrEmpty(bp.Name) && !names.Contains(bp.Name))
+                                names.Add(bp.Name);
+                        }
+                    }
+
+                    break;
+
+                case ItemType.ItemTypeEnum.Blueprint:
+                    var empireCtx3 = EmpireContext.GetInstance();
+                    if (empireCtx3?.GlobalBlueprintList != null)
+                    {
+                        foreach (var bp in CollectionSortHelper.OrderByName(
+                            empireCtx3.GlobalBlueprintList,
+                            b => b.Name))
+                        {
+                            if (!string.IsNullOrEmpty(bp.Name) && !names.Contains(bp.Name))
+                                names.Add(bp.Name);
+                        }
+                    }
+
+                    break;
+
+                case ItemType.ItemTypeEnum.ShipPart:
+                    var empireCtx4 = EmpireContext.GetInstance();
+                    if (empireCtx4?.GlobalBlueprintList != null)
+                    {
+                        foreach (var bp in CollectionSortHelper.OrderByName(
+                            empireCtx4.GlobalBlueprintList
+                            .Where(b => !string.IsNullOrEmpty(b.BluePrintType) &&
+                                        !b.BluePrintType.IsFlatpack() &&
+                                        !b.BluePrintType.StartsWith("Munitions/", StringComparison.OrdinalIgnoreCase)),
+                            b => b.Name))
+                        {
+                            if (!string.IsNullOrEmpty(bp.Name) && !names.Contains(bp.Name))
+                                names.Add(bp.Name);
+                        }
+                    }
+
+                    break;
+
+                case ItemType.ItemTypeEnum.WorkDetail:
+                    foreach (var wd in Models.WorkerDetail.WorkerDetails)
+                    {
+                        if (!string.IsNullOrEmpty(wd.Name))
+                            names.Add(wd.Name);
+                    }
+
+                    break;
+
+                case ItemType.ItemTypeEnum.Crate:
+                    // Crates use a free-text name, no predefined list
+                    break;
             }
 
             cmbHoldItem.SetItems(names, string.Empty);
@@ -505,13 +602,19 @@ namespace OE2EmpireTracker.Forms.Station
             Log.Info("PERF PopulateHoldItemCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
-        private void UpdateHoldPurityCombo()
+        private void UpdateHoldPurityVisibility()
         {
-            cmbHoldPurity.Items.Clear();
             bool isResource = cmbHoldType.SelectedItem is ItemType.ItemTypeEnum t
                 && t == ItemType.ItemTypeEnum.Resource;
+            bool isCrate = cmbHoldType.SelectedItem is ItemType.ItemTypeEnum t2
+                && t2 == ItemType.ItemTypeEnum.Crate;
+
+            // Purity: only for resources
+            cmbHoldPurity.Visible = isResource;
+            lblHoldPurity.Visible = isResource;
             if (isResource)
             {
+                cmbHoldPurity.Items.Clear();
                 foreach (var p in ResourcePurity.Purities)
                 {
                     if (p.ID != ResourcePurity.PurityEnum.None)
@@ -519,12 +622,13 @@ namespace OE2EmpireTracker.Forms.Station
                 }
 
                 if (cmbHoldPurity.Items.Count > 0) cmbHoldPurity.SelectedIndex = 0;
-                cmbHoldPurity.Enabled = true;
             }
-            else
-            {
-                cmbHoldPurity.Enabled = false;
-            }
+
+            // Crates: hide item combo, qty, purity — just need a name typed in
+            cmbHoldItem.Visible = !isCrate;
+            lblHoldItem.Visible = !isCrate;
+            txtHoldQty.Visible = !isCrate;
+            lblHoldQty.Visible = !isCrate;
         }
 
         private void CmdHoldAdd_Click(object sender, EventArgs e)
