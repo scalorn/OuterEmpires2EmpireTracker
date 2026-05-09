@@ -289,72 +289,44 @@ async function handleMessage(msg) {
 // Message Framing (Content-Length header protocol)
 // ============================================================================
 
-var contentLength = -1;
-var headerBuffer = "";
-var bodyBuffer = Buffer.alloc(0);
-var inBody = false;
+let rawBuffer = Buffer.alloc(0);
 
 process.stdin.on("data", function(chunk) {
-    if (!inBody) {
-        headerBuffer += chunk.toString();
-        while (true) {
-            var headerEnd = headerBuffer.indexOf("\r\n\r\n");
-            if (headerEnd === -1) break;
-            var header = headerBuffer.slice(0, headerEnd);
-            var match = header.match(/Content-Length:\s*(\d+)/i);
-            if (match) {
-                contentLength = parseInt(match[1], 10);
-                var remaining = headerBuffer.slice(headerEnd + 4);
-                headerBuffer = "";
-                bodyBuffer = Buffer.from(remaining, "utf8");
-                inBody = true;
-                checkBody();
-                break;
-            } else {
-                headerBuffer = headerBuffer.slice(headerEnd + 4);
-            }
-        }
-    } else {
-        bodyBuffer = Buffer.concat([bodyBuffer, Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)]);
-        checkBody();
-    }
+    rawBuffer = Buffer.concat([rawBuffer, Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)]);
+    processBuffer();
 });
 
-function checkBody() {
-    if (bodyBuffer.length >= contentLength) {
-        var msgStr = bodyBuffer.slice(0, contentLength).toString("utf8");
-        var leftover = bodyBuffer.slice(contentLength);
-        bodyBuffer = Buffer.alloc(0);
-        inBody = false;
-        headerBuffer = leftover.toString("utf8");
-        contentLength = -1;
+function processBuffer() {
+    while (true) {
+        var headerStr = rawBuffer.toString("utf8", 0, Math.min(rawBuffer.length, 512));
+        var headerEnd = headerStr.indexOf("\r\n\r\n");
+        if (headerEnd === -1) return;
+
+        var header = headerStr.slice(0, headerEnd);
+        var match = header.match(/Content-Length:\s*(\d+)/i);
+        if (!match) {
+            rawBuffer = rawBuffer.slice(headerEnd + 4);
+            continue;
+        }
+
+        var contentLength = parseInt(match[1], 10);
+        var bodyStartBytes = Buffer.byteLength(headerStr.slice(0, headerEnd + 4), "utf8");
+        var totalNeeded = bodyStartBytes + contentLength;
+
+        if (rawBuffer.length < totalNeeded) return;
+
+        var bodyBytes = rawBuffer.slice(bodyStartBytes, bodyStartBytes + contentLength);
+        rawBuffer = rawBuffer.slice(totalNeeded);
 
         try {
-            var msg = JSON.parse(msgStr);
+            var msg = JSON.parse(bodyBytes.toString("utf8"));
             handleMessage(msg).catch(function(err) {
                 if (msg.id !== undefined) {
                     sendError(msg.id, -32603, "Internal error: " + err.message);
                 }
             });
         } catch (e) {
-            // Invalid JSON - ignore
-        }
-
-        // Check if there are more messages in the leftover
-        if (headerBuffer.length > 0) {
-            var headerEnd = headerBuffer.indexOf("\r\n\r\n");
-            if (headerEnd !== -1) {
-                var header = headerBuffer.slice(0, headerEnd);
-                var match = header.match(/Content-Length:\s*(\d+)/i);
-                if (match) {
-                    contentLength = parseInt(match[1], 10);
-                    var remaining = headerBuffer.slice(headerEnd + 4);
-                    headerBuffer = "";
-                    bodyBuffer = Buffer.from(remaining, "utf8");
-                    inBody = true;
-                    checkBody();
-                }
-            }
+            // Invalid JSON - skip
         }
     }
 }
