@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Discussion
+    url: https://github.com/OWNER/OE2EmpireTracker/discussions
+    about: Ask questions, share ideas, or discuss the project
+  - name: Contributing Guide
+    url: https://github.com/OWNER/OE2EmpireTracker/blob/main/CONTRIBUTING.md
+    about: Read the contributing guide before submitting a feature proposal
