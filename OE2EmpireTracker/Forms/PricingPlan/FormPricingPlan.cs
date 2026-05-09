@@ -298,6 +298,8 @@ namespace OE2EmpireTracker.Forms.PricingPlan
 
             foreach (var resource in Resource.Resources.OrderBy(r => r.Name))
             {
+                if (string.IsNullOrEmpty(resource.Name)) continue;
+
                 string purity = PriceCalculator.DeterminePurity(resource.Name);
                 string key = PriceCalculator.MakeResourceKey(resource.Name, purity);
                 string priceText = string.Empty;
