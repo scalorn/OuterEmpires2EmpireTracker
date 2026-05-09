@@ -776,7 +776,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// FsCheck Arbitrary class that registers all entity generators.
         /// Use with [Property(Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })].
         /// </summary>
-        public class ReadOnlyWrapperArbitraries
+        public static class ReadOnlyWrapperArbitraries
         {
             public static Arbitrary<PropertyBag> PropertyBagArb() => Arb.From(GenPropertyBag());
 

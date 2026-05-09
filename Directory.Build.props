@@ -5,4 +5,15 @@
     <Analyzer Include="$(MSBuildThisFileDirectory)packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" />
   </ItemGroup>
+
+  <!-- Roslynator Analyzers: CLI builds only -->
+  <ItemGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
+    <Analyzer Include="$(MSBuildThisFileDirectory)packages\Roslynator.Analyzers.4.12.9\analyzers\dotnet\roslyn4.7\cs\Roslynator.CSharp.Analyzers.dll" />
+    <Analyzer Include="$(MSBuildThisFileDirectory)packages\Roslynator.Analyzers.4.12.9\analyzers\dotnet\roslyn4.7\cs\Roslynator.CSharp.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="$(MSBuildThisFileDirectory)packages\Roslynator.Analyzers.4.12.9\analyzers\dotnet\roslyn4.7\cs\Roslynator_Analyzers_Roslynator.Common.dll" />
+    <Analyzer Include="$(MSBuildThisFileDirectory)packages\Roslynator.Analyzers.4.12.9\analyzers\dotnet\roslyn4.7\cs\Roslynator_Analyzers_Roslynator.Core.dll" />
+    <Analyzer Include="$(MSBuildThisFileDirectory)packages\Roslynator.Analyzers.4.12.9\analyzers\dotnet\roslyn4.7\cs\Roslynator_Analyzers_Roslynator.CSharp.dll" />
+    <Analyzer Include="$(MSBuildThisFileDirectory)packages\Roslynator.Analyzers.4.12.9\analyzers\dotnet\roslyn4.7\cs\Roslynator_Analyzers_Roslynator.CSharp.Workspaces.dll" />
+    <Analyzer Include="$(MSBuildThisFileDirectory)packages\Roslynator.Analyzers.4.12.9\analyzers\dotnet\roslyn4.7\cs\Roslynator_Analyzers_Roslynator.Workspaces.Common.dll" />
+  </ItemGroup>
 </Project>
