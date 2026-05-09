@@ -34,8 +34,8 @@ Replace the existing `.kiro/tools/fwrite.js` with a comprehensive, atomic file w
     - On success: include [verified] indicator in output
     - _Requirements: 8.1, 8.2, 8.3_
 
-- [-] 2. Implement write and append command handlers
-  - [-] 2.1 Implement the write/writefile command handlers
+- [x] 2. Implement write and append command handlers
+  - [x] 2.1 Implement the write/writefile command handlers
     - `write <target>`: read content from stdin, overwrite target
     - `writefile <target> <content_file>`: read content from file, overwrite target
     - Create parent directories if they don't exist
@@ -44,13 +44,13 @@ Replace the existing `.kiro/tools/fwrite.js` with a comprehensive, atomic file w
     - Output: OK: Wrote N chars to <path> [verified]
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 10.1_
 
-  - [~] 2.2 Write property test for write round-trip (Property 1)
+  - [x] 2.2 Write property test for write round-trip (Property 1)
     - **Property 1: Write round-trip preserves content**
     - For any valid UTF-8 string, writefile then readback produces identical content (after BOM strip)
     - Use fast-check arbitrary strings including multi-byte characters, empty strings, embedded newlines
     - **Validates: Requirements 1.1, 5.1, 5.2, 5.4**
 
-  - [~] 2.3 Implement the append/appendfile command handlers
+  - [x] 2.3 Implement the append/appendfile command handlers
     - `append <target>`: read content from stdin, append to target
     - `appendfile <target> <content_file>`: read content from file, append to target
     - Create file + parent dirs if target doesn't exist
@@ -58,13 +58,13 @@ Replace the existing `.kiro/tools/fwrite.js` with a comprehensive, atomic file w
     - Output: OK: Appended N chars to <path> [verified]
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 10.1_
 
-  - [~] 2.4 Write property test for append preserves existing content (Property 2)
+  - [x] 2.4 Write property test for append preserves existing content (Property 2)
     - **Property 2: Append preserves existing content**
     - For any existing file content and any append content, file contains original + appended with no modification
     - **Validates: Requirements 2.1, 2.3**
 
-- [~] 3. Implement replace command handler
-  - [~] 3.1 Implement the replace command handler
+- [x] 3. Implement replace command handler
+  - [x] 3.1 Implement the replace command handler
     - `replace <target> <old_file> <new_file>`: read old_text and new_text from content files
     - Strip BOM from both content files
     - Normalize target file and old_text to LF for matching
@@ -75,33 +75,33 @@ Replace the existing `.kiro/tools/fwrite.js` with a comprehensive, atomic file w
     - Output: OK: Replaced N chars with M chars in <path> [verified]
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10, 3.11, 3.12_
 
-  - [~] 3.2 Write property test for replace idempotency (Property 3)
+  - [x] 3.2 Write property test for replace idempotency (Property 3)
     - **Property 3: Replace is idempotent when new_text already present**
     - For any file containing new_text but not old_text, replace succeeds with exit 0 and file unchanged
     - **Validates: Requirements 3.8, 3.9**
 
-  - [~] 3.3 Write property test for replace uniqueness enforcement (Property 4)
+  - [x] 3.3 Write property test for replace uniqueness enforcement (Property 4)
     - **Property 4: Replace uniqueness enforcement**
     - For any file where old_text appears N times (N != 1), replace fails without modifying file
     - **Validates: Requirements 3.4, 3.10, 3.11**
 
-  - [~] 3.4 Write property test for line ending normalization round-trip (Property 5)
+  - [x] 3.4 Write property test for line ending normalization round-trip (Property 5)
     - **Property 5: Line ending normalization round-trip**
     - For any CRLF file with old_text appearing once, after replacement file still has consistent CRLF
     - **Validates: Requirements 3.2, 3.3, 3.5**
 
-- [~] 4. Checkpoint - Verify core operations
+- [x] 4. Checkpoint - Verify core operations
   - Ensure all tests pass, ask the user if questions arise.
 
-- [~] 5. Implement batch operations
-  - [~] 5.1 Implement the Backup Manager
+- [x] 5. Implement batch operations
+  - [x] 5.1 Implement the Backup Manager
     - createBackup: copy target file to target.bak.{timestamp}, track in BackupEntry array
     - restoreBackups: restore all backed-up files from BackupEntry array (reverse order)
     - cleanupBackups: delete all backup files after successful batch
     - Handle case where target didn't exist before operation (delete on rollback)
     - _Requirements: 7.3, 7.4_
 
-  - [~] 5.2 Implement the batch command handler
+  - [x] 5.2 Implement the batch command handler
     - `batch <manifest_file>`: read and parse JSON manifest
     - validateBatch: verify all content files exist, target files writable, manifest well-formed before executing any operations
     - executeBatch: create backups before each operation, execute in sequence, rollback all on any failure
@@ -111,13 +111,13 @@ Replace the existing `.kiro/tools/fwrite.js` with a comprehensive, atomic file w
     - Manifest format: { "operations": [{ "op": "write"|"append"|"replace", "target": "...", "content_file": "...", "old_file": "...", "new_file": "..." }] }
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
 
-  - [~] 5.3 Write property test for batch atomicity (Property 8)
+  - [x] 5.3 Write property test for batch atomicity (Property 8)
     - **Property 8: Batch atomicity**
     - For any batch where operation K fails, operations 1..K-1 are rolled back and files match pre-batch state
     - **Validates: Requirements 7.3, 7.4**
 
-- [~] 6. Implement CLI parser and main entry point
-  - [~] 6.1 Implement the CLI Parser and command routing
+- [x] 6. Implement CLI parser and main entry point
+  - [x] 6.1 Implement the CLI Parser and command routing
     - Parse command-line arguments: command, target, content files
     - Route to appropriate handler: write, writefile, append, appendfile, replace, batch
     - Validate required arguments per command
@@ -125,17 +125,17 @@ Replace the existing `.kiro/tools/fwrite.js` with a comprehensive, atomic file w
     - Normalize file paths (support forward and backslashes on Windows)
     - _Requirements: 11.5, 9.5_
 
-  - [~] 6.2 Wire all components together in main entry point
+  - [x] 6.2 Wire all components together in main entry point
     - Top-level error boundary (catch unhandled errors, format as ERROR:)
     - Process exit code management
     - Ensure content files are NOT deleted on error (caller can retry)
     - _Requirements: 9.1, 9.5, 9.6_
 
-- [~] 7. Checkpoint - Full integration verification
+- [x] 7. Checkpoint - Full integration verification
   - Ensure all tests pass, ask the user if questions arise.
 
-- [~] 8. Write remaining tests
-  - [~] 8.1 Write property test for BOM stripping universality (Property 7)
+- [-] 8. Write remaining tests
+  - [-] 8.1 Write property test for BOM stripping universality (Property 7)
     - **Property 7: BOM stripping is universal**
     - For any content file starting with UTF-8 BOM (EF BB BF), written output never contains BOM regardless of operation type
     - **Validates: Requirements 1.6, 2.6, 3.12, 5.3**

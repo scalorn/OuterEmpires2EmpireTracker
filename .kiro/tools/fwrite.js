@@ -482,6 +482,113 @@ function verifyAppend(targetPath, expectedTotalBytes) {
 }
 
 // ============================================================================
+// Section 6b: Replace Engine
+// ============================================================================
+
+async function replaceInFile(targetPath, oldText, newText) {
+    var resolvedPath = path.resolve(targetPath);
+    var rawTarget;
+    try {
+        rawTarget = fs.readFileSync(resolvedPath, 'utf8');
+    } catch (err) {
+        return { success: false, exitCode: 1, message: formatError({
+            operation: 'replace', path: targetPath,
+            reason: 'Cannot read target file: ' + mapFsError(err),
+            remediation: 'Ensure the target file exists and is accessible.'
+        }) };
+    }
+    var isCRLF = detectCRLF(rawTarget);
+    var normalizedTarget = normalizeToLF(rawTarget);
+    var normalizedOld = normalizeToLF(oldText);
+    var count = 0;
+    var positions = [];
+    var searchFrom = 0;
+    while (true) {
+        var idx = normalizedTarget.indexOf(normalizedOld, searchFrom);
+        if (idx === -1) break;
+        count++;
+        positions.push(idx);
+        searchFrom = idx + 1;
+    }
+    if (count === 1) {
+        var before = normalizedTarget.slice(0, positions[0]);
+        var after = normalizedTarget.slice(positions[0] + normalizedOld.length);
+        var result = before + newText + after;
+        if (isCRLF) { result = restoreCRLF(result); }
+        var writeResult = await atomicWrite(targetPath, result);
+        verifyWrite(targetPath, writeResult.bytesWritten);
+        return { success: true, oldLen: oldText.length, newLen: newText.length, idempotent: false };
+    } else if (count === 0) {
+        var normalizedNew = normalizeToLF(newText);
+        if (normalizedNew.length > 0 && normalizedTarget.indexOf(normalizedNew) !== -1) {
+            return { success: true, oldLen: 0, newLen: 0, idempotent: true };
+        }
+        var preview = oldText.slice(0, 80);
+        return { success: false, exitCode: 2, message: formatError({
+            operation: 'replace', path: targetPath,
+            reason: 'Old string not found (' + oldText.length + ' chars, starts with: ' + JSON.stringify(preview) + ')',
+            remediation: 'Verify the old text matches the current file content exactly.'
+        }) };
+    } else {
+        var lineNumbers = [];
+        for (var i = 0; i < positions.length; i++) {
+            var textBefore = normalizedTarget.slice(0, positions[i]);
+            var lineNum = (textBefore.match(/\n/g) || []).length + 1;
+            lineNumbers.push(lineNum);
+        }
+        return { success: false, exitCode: 3, message: formatError({
+            operation: 'replace', path: targetPath,
+            reason: 'Old string found ' + count + ' times (lines ' + lineNumbers.join(', ') + ')',
+            remediation: 'Include more surrounding context to make the match unique.'
+        }), count: count, lineNumbers: lineNumbers };
+    }
+}
+
+// ============================================================================
+// Section 7b: Backup Manager
+// ============================================================================
+
+function createBackup(targetPath) {
+    var resolvedPath = path.resolve(targetPath);
+    var existed = false;
+    try {
+        fs.accessSync(resolvedPath, fs.constants.F_OK);
+        existed = true;
+    } catch (e) {
+        existed = false;
+    }
+    var timestamp = Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    var backupPath = resolvedPath + '.bak.' + timestamp;
+    if (existed) {
+        fs.copyFileSync(resolvedPath, backupPath);
+    }
+    return { targetPath: resolvedPath, backupPath: backupPath, existed: existed };
+}
+
+function restoreBackups(backups) {
+    for (var i = backups.length - 1; i >= 0; i--) {
+        var entry = backups[i];
+        try {
+            if (entry.existed) {
+                fs.copyFileSync(entry.backupPath, entry.targetPath);
+            } else {
+                try { fs.unlinkSync(entry.targetPath); } catch (e) { /* ignore */ }
+            }
+        } catch (e) {
+            // Best effort restore
+        }
+    }
+}
+
+function cleanupBackups(backups) {
+    for (var i = 0; i < backups.length; i++) {
+        if (backups[i].existed) {
+            try { fs.unlinkSync(backups[i].backupPath); } catch (e) { /* ignore */ }
+        }
+    }
+}
+
+// ============================================================================
 // Section 7: Command Handlers
 // ============================================================================
 
@@ -633,6 +740,149 @@ async function handleAppendFile(targetPath, contentFile) {
     process.exit(EXIT_CODES.SUCCESS);
 }
 
+
+async function handleReplace(targetPath, oldFile, newFile) {
+    if (!targetPath) {
+        console.log(formatError({ operation: 'replace', path: '-', reason: 'No target file specified', remediation: 'Usage: fwrite.js replace <target> <old_file> <new_file>' }));
+        process.exit(EXIT_CODES.GENERAL_ERROR);
+    }
+    if (!oldFile || !newFile) {
+        console.log(formatError({ operation: 'replace', path: targetPath, reason: 'Missing content file arguments', remediation: 'Usage: fwrite.js replace <target> <old_file> <new_file>' }));
+        process.exit(EXIT_CODES.GENERAL_ERROR);
+    }
+    var oldResult = readContentFile(oldFile, false);
+    var newResult = readContentFile(newFile, false);
+    var oldText = oldResult.content;
+    var newText = newResult.content;
+    var result = await replaceInFile(targetPath, oldText, newText);
+    if (result.success) {
+        try { fs.unlinkSync(path.resolve(oldFile)); } catch (e) { /* ignore */ }
+        try { fs.unlinkSync(path.resolve(newFile)); } catch (e) { /* ignore */ }
+        if (result.idempotent) {
+            console.log(formatSuccess('Idempotent match in ' + targetPath));
+        } else {
+            console.log(formatSuccess('Replaced ' + result.oldLen + ' chars with ' + result.newLen + ' chars in ' + targetPath));
+        }
+        process.exit(EXIT_CODES.SUCCESS);
+    } else {
+        console.log(result.message);
+        process.exit(result.exitCode);
+    }
+}
+
+// ============================================================================
+// Section 8b: Batch Handler
+// ============================================================================
+
+function validateBatch(manifest) {
+    var errors = [];
+    if (!manifest || !Array.isArray(manifest.operations)) {
+        errors.push('Manifest must have an "operations" array');
+        return { valid: false, errors: errors };
+    }
+    var validOps = ['write', 'append', 'replace'];
+    for (var i = 0; i < manifest.operations.length; i++) {
+        var op = manifest.operations[i];
+        var prefix = 'Operation ' + (i + 1) + ': ';
+        if (!op.op || validOps.indexOf(op.op) === -1) {
+            errors.push(prefix + 'invalid op "' + (op.op || '') + '" (must be write, append, or replace)');
+            continue;
+        }
+        if (!op.target) {
+            errors.push(prefix + 'missing "target" field');
+        }
+        if (op.op === 'write' || op.op === 'append') {
+            if (!op.content_file) {
+                errors.push(prefix + 'missing "content_file" for ' + op.op + ' operation');
+            } else {
+                try { fs.accessSync(path.resolve(op.content_file), fs.constants.R_OK); }
+                catch (e) { errors.push(prefix + 'content_file "' + op.content_file + '" does not exist or is not readable'); }
+            }
+        }
+        if (op.op === 'replace') {
+            if (!op.old_file) {
+                errors.push(prefix + 'missing "old_file" for replace operation');
+            } else {
+                try { fs.accessSync(path.resolve(op.old_file), fs.constants.R_OK); }
+                catch (e) { errors.push(prefix + 'old_file "' + op.old_file + '" does not exist or is not readable'); }
+            }
+            if (!op.new_file) {
+                errors.push(prefix + 'missing "new_file" for replace operation');
+            } else {
+                try { fs.accessSync(path.resolve(op.new_file), fs.constants.R_OK); }
+                catch (e) { errors.push(prefix + 'new_file "' + op.new_file + '" does not exist or is not readable'); }
+            }
+        }
+    }
+    return { valid: errors.length === 0, errors: errors };
+}
+
+async function executeBatch(manifest) {
+    var backups = [];
+    var completed = 0;
+    for (var i = 0; i < manifest.operations.length; i++) {
+        var op = manifest.operations[i];
+        var backup = createBackup(op.target);
+        backups.push(backup);
+        try {
+            if (op.op === 'write') {
+                var contentResult = readContentFile(op.content_file, false);
+                await atomicWrite(op.target, contentResult.content);
+            } else if (op.op === 'append') {
+                var appendContentResult = readContentFile(op.content_file, false);
+                await appendToFile(op.target, appendContentResult.content);
+            } else if (op.op === 'replace') {
+                var oldResult = readContentFile(op.old_file, false);
+                var newResult = readContentFile(op.new_file, false);
+                var replaceResult = await replaceInFile(op.target, oldResult.content, newResult.content);
+                if (!replaceResult.success) {
+                    throw new Error(replaceResult.message);
+                }
+            }
+            completed++;
+        } catch (err) {
+            restoreBackups(backups);
+            cleanupBackups(backups);
+            return { completed: completed, rolledBack: true, failedOp: i + 1, error: err.message || String(err) };
+        }
+    }
+    cleanupBackups(backups);
+    return { completed: completed, rolledBack: false };
+}
+
+async function handleBatch(manifestFile) {
+    if (!manifestFile) {
+        console.log(formatError({ operation: 'batch', path: '-', reason: 'No manifest file specified', remediation: 'Usage: fwrite.js batch <manifest_file>' }));
+        process.exit(EXIT_CODES.GENERAL_ERROR);
+    }
+    var rawManifest;
+    try {
+        rawManifest = fs.readFileSync(path.resolve(manifestFile), 'utf8');
+    } catch (err) {
+        console.log(formatError({ operation: 'batch', path: manifestFile, reason: 'Cannot read manifest file: ' + mapFsError(err), remediation: 'Ensure the manifest file exists and is accessible.' }));
+        process.exit(EXIT_CODES.BATCH_VALIDATION);
+    }
+    var manifest;
+    try {
+        manifest = JSON.parse(stripBom(rawManifest));
+    } catch (err) {
+        console.log(formatError({ operation: 'batch', path: manifestFile, reason: 'Invalid JSON in manifest: ' + err.message, remediation: 'Fix the JSON syntax in the manifest file.' }));
+        process.exit(EXIT_CODES.BATCH_VALIDATION);
+    }
+    var validation = validateBatch(manifest);
+    if (!validation.valid) {
+        console.log(formatError({ operation: 'batch', path: manifestFile, reason: 'Validation failed: ' + validation.errors.join('; '), remediation: 'Fix the manifest and ensure all content files exist.' }));
+        process.exit(EXIT_CODES.BATCH_VALIDATION);
+    }
+    var result = await executeBatch(manifest);
+    if (result.rolledBack) {
+        console.log(formatError({ operation: 'batch', path: manifestFile, reason: 'Operation ' + result.failedOp + ' failed: ' + result.error + '. Rolled back ' + result.completed + ' prior operations.', remediation: 'Fix the failing operation and retry the batch.' }));
+        process.exit(EXIT_CODES.BATCH_EXECUTION);
+    }
+    console.log(formatSuccess('Batch completed: ' + result.completed + ' operations'));
+    process.exit(EXIT_CODES.SUCCESS);
+}
+
 // ============================================================================
 // Section 8: Main Entry Point
 // ============================================================================
@@ -669,12 +919,18 @@ async function main() {
             case 'appendfile':
                 await handleAppendFile(target, args[2]);
                 break;
+            case 'replace':
+                await handleReplace(target, args[2], args[3]);
+                break;
+            case 'batch':
+                await handleBatch(target);
+                break;
             default:
                 console.log(formatError({
                     operation: command,
                     path: target || '-',
-                    reason: 'Command "' + command + '" not yet implemented',
-                    remediation: 'Available commands: write, writefile, append, appendfile. Replace and batch coming in later tasks.'
+                    reason: 'Unknown command "' + command + '"',
+                    remediation: 'Available commands: write, writefile, append, appendfile, replace, batch.'
                 }));
                 process.exit(EXIT_CODES.GENERAL_ERROR);
         }
@@ -724,6 +980,15 @@ module.exports = {
     handleWriteFile: handleWriteFile,
     handleAppend: handleAppend,
     handleAppendFile: handleAppendFile,
+    handleReplace: handleReplace,
+    handleBatch: handleBatch,
+    replaceInFile: replaceInFile,
+
+    createBackup: createBackup,
+    restoreBackups: restoreBackups,
+    cleanupBackups: cleanupBackups,
+    validateBatch: validateBatch,
+    executeBatch: executeBatch,
 
     main: main
 };
