@@ -569,6 +569,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
         private void DeliveryItem_CheckedChanged(object sender, EventArgs e)
         {
+            if (_isProgrammaticUpdate > 0) return;
+
             var chk = sender as CheckBox;
             if (chk == null) return;
 
