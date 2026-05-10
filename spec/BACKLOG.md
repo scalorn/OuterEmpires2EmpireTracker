@@ -1,6 +1,6 @@
-﻿# Feature Backlog
+# Feature Backlog
 
-**Next available ID: BL-134** (check COMPLETED.md before assigning â€” IDs are shared across both files)
+**Next available ID: BL-135** (check COMPLETED.md before assigning — IDs are shared across both files)
 
 Open features and enhancements to be worked on.
 
@@ -9,8 +9,8 @@ Items in the "New" section have dependency annotations. Work them in an order th
 ## Dependency Graph
 
 ```
-Systems & Planets Model â”€â”€â”€â”€â”€â”€ (standalone)
-Systems & Planets Model â”€â”€â”€â”€â”€ Route Auto-Sequencing (depends on coordinates)
+Systems & Planets Model ────── (standalone)
+Systems & Planets Model ───── Route Auto-Sequencing (depends on coordinates)
 ```
 
 Suggested build order:
@@ -45,7 +45,7 @@ With coordinate data for systems and planets, automatically sequence delivery ro
 ### BL-023: Explore OE2 Wiki as Data Source
 **Dependencies:** None
 
-Explore whether AI can read the OE2 wiki at https://atlasgamingcorp.com/outer-empires-2/ and pull useful game information from it. Could be a good source of data to enrich the spec and tool â€” game mechanics, structure types, resource details, etc.
+Explore whether AI can read the OE2 wiki at https://atlasgamingcorp.com/outer-empires-2/ and pull useful game information from it. Could be a good source of data to enrich the spec and tool — game mechanics, structure types, resource details, etc.
 
 ### BL-025: Read Game Status Updates
 **Dependencies:** None
@@ -55,7 +55,7 @@ Explore whether AI can read the game status/dev updates at https://game.dev.oute
 ### BL-026: Read outerempires.net for Game Information
 **Dependencies:** None
 
-Explore whether AI can read https://outerempires.net/ to pull in additional game information â€” lore, mechanics, community resources, etc.
+Explore whether AI can read https://outerempires.net/ to pull in additional game information — lore, mechanics, community resources, etc.
 
 ### BL-027: Read Discord Channels for Game Info
 **Dependencies:** None
@@ -64,17 +64,17 @@ Explore whether AI can read the Discord channels for the game. Discord is often 
 
 ### BL-028: Organize Completed Specs into Subdirectories
 **Dependencies:** None
-**Status: Deprioritized** â€” Kiro's spec tooling references specs by path under `.kiro/specs/{feature_name}/`. Moving into subdirectories (`completed/`, `in-progress/`) would change paths and likely break `.config.kiro` references, task status tracking, and subagent delegation. Currently 16 spec folders â€” manageable. Revisit if count exceeds 30+ or Kiro adds explicit subdirectory support. The backlog already tracks completion status; no need to duplicate that via folder structure.
+**Status: Deprioritized** — Kiro's spec tooling references specs by path under `.kiro/specs/{feature_name}/`. Moving into subdirectories (`completed/`, `in-progress/`) would change paths and likely break `.config.kiro` references, task status tracking, and subagent delegation. Currently 16 spec folders — manageable. Revisit if count exceeds 30+ or Kiro adds explicit subdirectory support. The backlog already tracks completion status; no need to duplicate that via folder structure.
 
-### BL-029: BaselineData.json â€” Separate User File with Merge Strategy
+### BL-029: BaselineData.json — Separate User File with Merge Strategy
 **Dependencies:** None
-**Status: Rejected** â€” The split-file approach adds merge-on-load complexity, "which file wins" ambiguity, and user confusion. With deterministic UUIDs + versioned migrations + idempotent renames (see `spec/discussions/baseline-data-stability.md`), a single BaselineData.json handles upgrades cleanly without a separate user file.
+**Status: Rejected** — The split-file approach adds merge-on-load complexity, "which file wins" ambiguity, and user confusion. With deterministic UUIDs + versioned migrations + idempotent renames (see `spec/discussions/baseline-data-stability.md`), a single BaselineData.json handles upgrades cleanly without a separate user file.
 
 ### BL-033: RtfBuilder Font Style Support
 **Dependencies:** None
-**Status: Deprioritized** â€” Current consumers (ColonyStatusCalculator, ColonyStructure control, ColonyAdminReportBuilder) use color effectively to distinguish headers, values, and status. No current feature is limited by the lack of font styles.
+**Status: Deprioritized** — Current consumers (ColonyStatusCalculator, ColonyStructure control, ColonyAdminReportBuilder) use color effectively to distinguish headers, values, and status. No current feature is limited by the lack of font styles.
 
-Add support for font styles to RtfBuilder â€” bold, italics, strikethrough, etc.
+Add support for font styles to RtfBuilder — bold, italics, strikethrough, etc.
 
 **Implementation notes:** Add an overload `Append(string text, Color color, FontStyle style = FontStyle.Regular)` using `System.Drawing.FontStyle` flags. Wrap text in RTF control words (`\b...\b0`, `\i...\i0`, `\strike...\strike0`). Backward compatible via default parameter. ~30 minutes of work when a specific need arises.
 
@@ -83,29 +83,29 @@ Add support for font styles to RtfBuilder â€” bold, italics, strikethrough,
 
 Add a chart to the Colony form showing mining and refining production over time. Use `System.Windows.Forms.DataVisualization.Charting`. Visualize resource output rates from mining rigs and refineries, helping players see production throughput at a glance and identify bottlenecks or underperforming structures.
 
-### BL-070: Blueprint Evolution â€” Capped Property Ranges
+### BL-070: Blueprint Evolution — Capped Property Ranges
 **Dependencies:** None
 
-Some blueprint properties evolve with +/- 50% of the base value, but others are capped to a range of 0â€“100 (e.g. Max Repair â€” you wouldn't want more than 100% max repair). The evolution graph and any future evolution prediction need to account for both modes. Per the game developer: "sometimes it's +/- 50%, sometimes it's the +/- 50% of game to 100." Need to identify which properties use which mode and adjust the evolution graph normalization accordingly.
+Some blueprint properties evolve with +/- 50% of the base value, but others are capped to a range of 0–100 (e.g. Max Repair — you wouldn't want more than 100% max repair). The evolution graph and any future evolution prediction need to account for both modes. Per the game developer: "sometimes it's +/- 50%, sometimes it's the +/- 50% of game to 100." Need to identify which properties use which mode and adjust the evolution graph normalization accordingly.
 
-### BL-071: TreeDataGridView â€” Tree-in-Grid Custom Control for Inventory
+### BL-071: TreeDataGridView — Tree-in-Grid Custom Control for Inventory
 **Dependencies:** None
-**Status: Under consideration** â€” may or may not implement depending on how the master-detail crate UI pattern works out in practice.
+**Status: Under consideration** — may or may not implement depending on how the master-detail crate UI pattern works out in practice.
 
 Build a custom `TreeDataGridView` control extending DataGridView that supports expandable/collapsible parent-child rows. Primary use case: displaying crate contents inline in inventory grids instead of using a separate master-detail panel (which eats vertical space).
 
 **Discussion:** The master-detail pattern (select a crate, see contents in a grid below) works but doubles the vertical space needed. A tree-in-grid keeps everything in one grid with expand/collapse glyphs on crate rows. WinForms DataGridView is fundamentally flat, so this requires manual bookkeeping: child rows are hidden/shown on expand/collapse, indented via cell padding, and grouped under their parent during sort/filter.
 
-**Complexity:** ~200-300 lines for one-level deep (current crate model â€” no nesting). Crate rows get â–¶/â–¼ glyph via CellPainting, child rows track their parent via tag/index, expand/collapse toggles Visible on children. Sorting must keep children grouped under parents. Filtering a parent hides its children.
+**Complexity:** ~200-300 lines for one-level deep (current crate model — no nesting). Crate rows get ▶/▼ glyph via CellPainting, child rows track their parent via tag/index, expand/collapse toggles Visible on children. Sorting must keep children grouped under parents. Filtering a parent hides its children.
 
-**Future-proofing for nested crates:** If crates ever support nesting, use a `Depth` integer per row instead of a boolean IsChild flag. Indentation = depth Ã— indent pixels. Expand/collapse hides all descendants recursively. Adds ~50 lines over the flat version. The game doesn't support nested crates today but the dev hasn't ruled it out.
+**Future-proofing for nested crates:** If crates ever support nesting, use a `Depth` integer per row instead of a boolean IsChild flag. Indentation = depth × indent pixels. Expand/collapse hides all descendants recursively. Adds ~50 lines over the flat version. The game doesn't support nested crates today but the dev hasn't ruled it out.
 
 **Decision point:** Try master-detail first during Iteration 4 (Stations). If vertical space is a problem in practice, build this control as a replacement. Design the control with depth support from the start so nesting is incremental if it comes.
 
 ### BL-045: GitHub MCP Integration
 **Dependencies:** None (blocked by Docker installation issues)
 
-Set up the GitHub MCP server so Kiro can read/write GitHub issues, PRs, and wiki pages directly. Enables intake of external issues, PR review, and maintaining user documentation in the repo wiki. Requires Docker Desktop (or the standalone Go binary from github/github-mcp-server releases) plus a fine-grained GitHub Personal Access Token scoped to the repo with Issues, Pull Requests, Contents, and Metadata permissions. Configuration goes in `.kiro/settings/mcp.json`. Currently blocked â€” Docker won't install on the dev machine. Revisit when Docker is available or try the standalone binary approach.
+Set up the GitHub MCP server so Kiro can read/write GitHub issues, PRs, and wiki pages directly. Enables intake of external issues, PR review, and maintaining user documentation in the repo wiki. Requires Docker Desktop (or the standalone Go binary from github/github-mcp-server releases) plus a fine-grained GitHub Personal Access Token scoped to the repo with Issues, Pull Requests, Contents, and Metadata permissions. Configuration goes in `.kiro/settings/mcp.json`. Currently blocked — Docker won't install on the dev machine. Revisit when Docker is available or try the standalone binary approach.
 
 ### BL-047: Game API Integration Planning
 **Dependencies:** None
@@ -129,13 +129,13 @@ Bug: When colonies and surveys are imported in the wrong order, duplicate defaul
 **Dependencies:** None
 **Status: Blocked**  AltCover (both global tool and NuGet package) fails with .NET Framework 4.8.1 + NUnit + vstest.console. The global tool crashes with a CLR assertion (net8.0 runtime vs net4.8.1 assemblies). The NuGet package instruments successfully but the NUnit test adapter can't discover tests in the instrumented assemblies. OpenCover is unmaintained (last release 2021). VS Community doesn't include the Enterprise code coverage collector.
 
-### BL-074: Immutable Data Model â€” Mutation Through Interface Only
+### BL-074: Immutable Data Model — Mutation Through Interface Only
 **Dependencies:** BL-069 (done), readonly-list-encapsulation spec (in progress)
 **Status: New**
 
-Before we can move to a database or SOA we need to protect the data model from in-memory editing and make all mutation go through an interface. Currently entity POCOs (Blueprint, Colony, Survey, etc.) have public setters on all properties â€” any code can mutate any field at any time without going through a controlled path. This makes it impossible to track dirty state, emit change events, or swap the persistence layer.
+Before we can move to a database or SOA we need to protect the data model from in-memory editing and make all mutation go through an interface. Currently entity POCOs (Blueprint, Colony, Survey, etc.) have public setters on all properties — any code can mutate any field at any time without going through a controlled path. This makes it impossible to track dirty state, emit change events, or swap the persistence layer.
 
-Phase 1 (readonly-list-encapsulation) protects the *collections* â€” you can't add/remove entities without going through PlayerContext. Phase 2 (this item) protects the *entities themselves* â€” you can't mutate a Blueprint's Name or a Colony's OwnerUUID without going through a controlled update path. This likely means read-only public properties with internal/private setters, plus Update methods or a unit-of-work pattern that tracks changes and persists them atomically.
+Phase 1 (readonly-list-encapsulation) protects the *collections* — you can't add/remove entities without going through PlayerContext. Phase 2 (this item) protects the *entities themselves* — you can't mutate a Blueprint's Name or a Colony's OwnerUUID without going through a controlled update path. This likely means read-only public properties with internal/private setters, plus Update methods or a unit-of-work pattern that tracks changes and persists them atomically.
 
 Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat Code Coverage"` works natively. In the meantime, use the file-level coverage analysis tool (`node .kiro/tools/spec-coverage.js`) and the reference counter completeness tests as proxies for coverage.
 
@@ -143,69 +143,93 @@ Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat
 
 Fields on model classes that exist in the data model (persisted in JSON) but are never read by production code. Discovered during the April 2026 model field audit. Each item is a candidate for either wiring into production logic or removing.
 
-### BL-086: ColonyStructure.CurrentAttitude â€” Not Wired to Production Code
+### BL-086: ColonyStructure.CurrentAttitude — Not Wired to Production Code
 **Dependencies:** None
-**Status: Deferred** â€” Known incomplete feature (AMB-004/REQ-COL-001b). Deserialized from PlayerData.json but no production code reads the value. Will be needed when worker morale is implemented. Leave as-is until morale feature is built.
+**Status: Deferred** — Known incomplete feature (AMB-004/REQ-COL-001b). Deserialized from PlayerData.json but no production code reads the value. Will be needed when worker morale is implemented. Leave as-is until morale feature is built.
 
-### BL-087: ColonyStructure.ContentmentIndex â€” Not Wired to Production Code
+### BL-087: ColonyStructure.ContentmentIndex — Not Wired to Production Code
 **Dependencies:** None
-**Status: Deferred** â€” Same incomplete feature group as CurrentAttitude (AMB-004). Deserialized from JSON, never consumed by production code. Leave as-is until morale feature is built.
+**Status: Deferred** — Same incomplete feature group as CurrentAttitude (AMB-004). Deserialized from JSON, never consumed by production code. Leave as-is until morale feature is built.
 
-### BL-088: ColonyStructure.WageLevel â€” Not Wired to Production Code
+### BL-088: ColonyStructure.WageLevel — Not Wired to Production Code
 **Dependencies:** None
-**Status: Deferred** â€” Same incomplete feature group as CurrentAttitude (AMB-004). Deserialized from JSON, never consumed by production code. Leave as-is until morale feature is built.
+**Status: Deferred** — Same incomplete feature group as CurrentAttitude (AMB-004). Deserialized from JSON, never consumed by production code. Leave as-is until morale feature is built.
 
-### BL-089: BlueprintType.ResearchableProperties â€” Not Wired to Production Code
+### BL-089: BlueprintType.ResearchableProperties — Not Wired to Production Code
 **Dependencies:** None
 **Status: New**
 Deserialized from BaselineData.json but no production code ever reads the value after loading. Potential future feature for research lab UI (showing which properties can be researched on a blueprint type). Either wire it into the Research Lab UI or remove it from the model.
 
-### BL-090: BuildItem.ParentBuildItemUUID â€” Never Set or Read
+### BL-090: BuildItem.ParentBuildItemUUID — Never Set or Read
 **Dependencies:** None
 **Status: New**
 Declared on BuildItem but never set by any code and never read. Appears to be a planned feature for hierarchical build item dependencies (e.g. "build this after that") that was never implemented. Remove or implement.
 
-### BL-092: ShipStats.CrewSupported â€” Never Set or Read
+### BL-092: ShipStats.CrewSupported — Never Set or Read
 **Dependencies:** None
 **Status: New**
 Declared on ShipStats but never set by `ShipBuildService.AddBlueprintStats()` and never displayed in any form. Always zero. Remove or wire into ship stat computation.
 
-### BL-093: ShipStats.EngCapacityAvailable â€” Never Set or Read
+### BL-093: ShipStats.EngCapacityAvailable — Never Set or Read
 **Dependencies:** None
 **Status: New**
 Declared on ShipStats but never set or read. Always zero. Remove or wire into ship stat computation.
 
-### BL-094: ShipStats.EngCapacityUsed â€” Never Set or Read
+### BL-094: ShipStats.EngCapacityUsed — Never Set or Read
 **Dependencies:** None
 **Status: New**
-Declared on ShipStats but never set or read. Always zero. Same field exists on StationStats (BL-099) â€” also unused.
+Declared on ShipStats but never set or read. Always zero. Same field exists on StationStats (BL-099) — also unused.
 
-### BL-095: ShipStats.MiningYieldIncrease â€” Never Set or Read
+### BL-095: ShipStats.MiningYieldIncrease — Never Set or Read
 **Dependencies:** None
 **Status: New**
-Declared on ShipStats but never set by `AddBlueprintStats()` and never displayed. Note: `MiningYield` IS used â€” `MiningYieldIncrease` is a separate unused field. Remove or wire into ship stat computation.
+Declared on ShipStats but never set by `AddBlueprintStats()` and never displayed. Note: `MiningYield` IS used — `MiningYieldIncrease` is a separate unused field. Remove or wire into ship stat computation.
 
-### BL-096: ShipStats.SensorAbundanceFactor â€” Never Set or Read
+### BL-096: ShipStats.SensorAbundanceFactor — Never Set or Read
 **Dependencies:** None
 **Status: New**
 Declared on ShipStats but never set or read. Always zero. Remove or wire into ship stat computation.
 
-### BL-097: ShipStats.PurityModifier â€” Never Set or Read
+### BL-097: ShipStats.PurityModifier — Never Set or Read
 **Dependencies:** None
 **Status: New**
-Declared on ShipStats but never set or read. Always zero. Note: `SurveyViewModel.PurityModifier` IS used â€” that's a different property on a different class. Remove or wire into ship stat computation.
+Declared on ShipStats but never set or read. Always zero. Note: `SurveyViewModel.PurityModifier` IS used — that's a different property on a different class. Remove or wire into ship stat computation.
 
-### BL-098: ShipStats.SlotSummary â€” Never Set or Read
+### BL-098: ShipStats.SlotSummary — Never Set or Read
 **Dependencies:** None
 **Status: New**
-Declared on ShipStats but never set or read. Always empty string. Same field exists on StationStats (BL-100) â€” also unused. Remove or wire into ship stat display.
+Declared on ShipStats but never set or read. Always empty string. Same field exists on StationStats (BL-100) — also unused. Remove or wire into ship stat display.
 
-### BL-099: StationStats.EngCapacityUsed â€” Never Set or Read
+### BL-099: StationStats.EngCapacityUsed — Never Set or Read
 **Dependencies:** None
 **Status: New**
 Declared on StationStats but never set or read. Always zero. Same pattern as ShipStats.EngCapacityUsed (BL-094). Remove or wire into station stat computation.
 
-### BL-100: StationStats.SlotSummary â€” Never Set or Read
+### BL-100: StationStats.SlotSummary — Never Set or Read
 **Dependencies:** None
 **Status: New**
 Declared on StationStats but never set or read. Always empty string. Same pattern as ShipStats.SlotSummary (BL-098). Remove or wire into station stat display.
+
+### BL-134: FlaUI Integration Testing for WinForms
+**Dependencies:** None
+**Status: New**
+
+Investigate FlaUI (https://github.com/FlaUI/FlaUI) for automated integration testing of the WinForms UI. FlaUI wraps the Windows UI Automation framework and lets you find controls by name/type, click buttons, read grid values, and assert UI state. Works with NUnit.
+
+**Motivation:** Several recent bugs (survey form dirty-on-open, commodity checkbox not persisting, layout issues) are UI lifecycle bugs that unit tests can't catch because they depend on the full form lifecycle � WindowStateHelper.RestoreState, MDI child behavior, event wiring order, and control interaction sequences. A small smoke test suite that opens each form, verifies no dirty prompt on immediate close, and checks that key controls exist would catch these regressions automatically.
+
+**Options to evaluate:**
+1. **FlaUI** � Most actively maintained Windows UI Automation wrapper for .NET. Supports .NET Framework 4.8.1. Launch app as a process, attach to window, drive controls programmatically. Tests are slower (real app launch) but catch real lifecycle bugs.
+2. **WinAppDriver** � Microsoft's Appium/WebDriver for desktop apps. Functional but deprecated (no active development). FlaUI is the better bet.
+3. **In-process form testing** � Already used in the project (e.g. MainMenuOverhaulTests). Fast but doesn't test full lifecycle (no WindowStateHelper restore, no MDI behavior).
+
+**Evaluation criteria:**
+- Compatibility with .NET Framework 4.8.1 and NUnit 4.x
+- Can it run in CI (headless or with a display)?
+- Test execution speed (acceptable for a small smoke suite, not full regression)
+- Stability � are tests brittle when layout changes?
+- Can it verify: form opens without dirty prompt, checkbox persists on click, grid fills area, command bar position
+
+**Suggested first test:** Open FormSurvey, immediately close it, assert no MessageBox appeared (the exact bug that was just fixed).
+
+**Research deliverable:** A spike in `spec/decisions/` documenting findings, with a working prototype test if FlaUI is viable.
