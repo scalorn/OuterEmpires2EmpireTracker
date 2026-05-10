@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
@@ -38,6 +40,9 @@ namespace OE2EmpireTracker.Forms.Survey
 
         // Tracks the previously selected survey UUID for unsaved-changes cancel/restore
         private string _previousSelectedUUID;
+
+        private List<(ResourcePurityCombo Combo, int ColorIndex)> _activeSeries = new List<(ResourcePurityCombo, int)>();
+        private int _nextColorIndex;
         public FormSurvey()
         {
             InitializeComponent();
@@ -144,6 +149,12 @@ namespace OE2EmpireTracker.Forms.Survey
             flpSearchList.Layout += FlpSearchList_Layout;
             flpSurveyData.Layout += FlpSurveyData_Layout;
 
+            // Distribution tab event wiring
+            btnAddSeries.Click += BtnAddSeries_Click;
+            btnRemoveSeries.Click += BtnRemoveSeries_Click;
+            nudBinWidth.ValueChanged += NudBinWidth_ValueChanged;
+            cmbDistResource.SelectedIndexChanged += CmbDistResource_SelectedIndexChanged;
+
             // Context menu event wiring
             tsmiAddResource.Click += TsmiAddResource_Click;
             tsmiRemoveResource.Click += TsmiRemoveResource_Click;
@@ -195,9 +206,9 @@ namespace OE2EmpireTracker.Forms.Survey
 
         private void FlpBase_Layout(object sender, LayoutEventArgs e)
         {
-            flpSurveyData.Size = new Size(
-                flpBase.Size.Width - flpSearchList.Size.Width - flpSearchList.Margin.Right - flpSearchList.Margin.Left - flpSurveyData.Margin.Left - flpSurveyData.Margin.Right,
-                flpBase.Size.Height - flpSurveyData.Margin.Top - flpSurveyData.Margin.Bottom);
+            tabSurveyContent.Size = new Size(
+                flpBase.Size.Width - flpSearchList.Size.Width - flpSearchList.Margin.Right - flpSearchList.Margin.Left - tabSurveyContent.Margin.Left - tabSurveyContent.Margin.Right,
+                flpBase.Size.Height - tabSurveyContent.Margin.Top - tabSurveyContent.Margin.Bottom);
             flpSearchList.Size = new Size(
                 flpSearchList.Size.Width,
                 flpBase.Size.Height - flpSearchList.Margin.Top - flpSearchList.Margin.Bottom);
@@ -235,6 +246,192 @@ namespace OE2EmpireTracker.Forms.Survey
             dgvResources.Size = new Size(
                 flpSurveyDetails.Size.Width - dgvResources.Margin.Left - dgvResources.Margin.Right,
                 gridHeight);
+        }
+
+        // -----------------------------------------------------------------------
+        // Yield Distribution
+        // -----------------------------------------------------------------------
+
+        private void RefreshDistributionGraph()
+        {
+            var sw = Stopwatch.StartNew();
+            chartDistribution.Series.Clear();
+
+            var filteredSurveys = GetFilteredSurveys();
+            SurveyType? surveyType = GetSelectedSurveyType();
+
+            if (!surveyType.HasValue)
+            {
+                ShowDistributionMessage("Select Planet or Asteroid survey type to view distributions.");
+                sw.Stop();
+                Log.Info("PERF RefreshDistributionGraph: {0}ms (no type)", sw.ElapsedMilliseconds);
+                return;
+            }
+
+            if (filteredSurveys.Count == 0)
+            {
+                ShowDistributionMessage("No surveys match the current filter criteria.");
+                sw.Stop();
+                Log.Info("PERF RefreshDistributionGraph: {0}ms (no surveys)", sw.ElapsedMilliseconds);
+                return;
+            }
+
+            if (_activeSeries.Count == 0)
+            {
+                ShowDistributionMessage("Add a resource + purity combination to view its yield distribution.");
+                sw.Stop();
+                Log.Info("PERF RefreshDistributionGraph: {0}ms (no series)", sw.ElapsedMilliseconds);
+                return;
+            }
+
+            HideDistributionMessage();
+            int binWidth = (int)nudBinWidth.Value;
+
+            var chartArea = chartDistribution.ChartAreas[0];
+            chartArea.AxisX.Title = surveyType == SurveyType.Asteroid ? "Yield/cycle" : "Yield";
+
+            foreach (var (combo, colorIndex) in _activeSeries)
+            {
+                var result = YieldDistributionService.ComputeDistribution(
+                    filteredSurveys, combo.ResourceName, combo.Purity, binWidth);
+
+                if (result.InsufficientData)
+                {
+                    continue;
+                }
+
+                var series = new Series(combo.DisplayName)
+                {
+                    ChartType = SeriesChartType.Spline,
+                    BorderWidth = 2,
+                    Color = ChartColors.WongPalette[colorIndex % ChartColors.WongPalette.Length],
+                };
+
+                foreach (var point in result.Points)
+                {
+                    series.Points.AddXY((double)point.BinMidpoint, (double)point.Percentage);
+                }
+
+                chartDistribution.Series.Add(series);
+            }
+
+            sw.Stop();
+            Log.Info("PERF RefreshDistributionGraph: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void ShowDistributionMessage(string msg)
+        {
+            lblDistMessage.Text = msg;
+            lblDistMessage.Visible = true;
+            chartDistribution.Visible = false;
+        }
+
+        private void HideDistributionMessage()
+        {
+            lblDistMessage.Visible = false;
+            chartDistribution.Visible = true;
+        }
+
+        private void PopulateDistResourceCombo()
+        {
+            var sw = Stopwatch.StartNew();
+            var filteredSurveys = GetFilteredSurveys();
+            var combos = YieldDistributionService.GetAvailableCombos(filteredSurveys);
+
+            string previousSelection = cmbDistResource.SelectedItem?.ToString();
+            cmbDistResource.Items.Clear();
+
+            var resources = combos.Select(c => c.ResourceName).Distinct().OrderBy(r => r);
+            foreach (var r in resources)
+            {
+                cmbDistResource.Items.Add(r);
+            }
+
+            if (!string.IsNullOrEmpty(previousSelection) && cmbDistResource.Items.Contains(previousSelection))
+            {
+                cmbDistResource.SelectedItem = previousSelection;
+            }
+            else if (cmbDistResource.Items.Count > 0)
+            {
+                cmbDistResource.SelectedIndex = 0;
+            }
+
+            sw.Stop();
+            Log.Info("PERF PopulateDistResourceCombo: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void PopulateDistPurityCombo()
+        {
+            var sw = Stopwatch.StartNew();
+            var filteredSurveys = GetFilteredSurveys();
+            var combos = YieldDistributionService.GetAvailableCombos(filteredSurveys);
+            string selectedResource = cmbDistResource.SelectedItem?.ToString();
+
+            cmbDistPurity.Items.Clear();
+            var purities = combos
+                .Where(c => string.Equals(c.ResourceName, selectedResource, StringComparison.OrdinalIgnoreCase))
+                .Select(c => c.Purity)
+                .Distinct()
+                .OrderBy(p => p);
+
+            foreach (var p in purities)
+            {
+                cmbDistPurity.Items.Add(p);
+            }
+
+            if (cmbDistPurity.Items.Count > 0)
+            {
+                cmbDistPurity.SelectedIndex = 0;
+            }
+
+            sw.Stop();
+            Log.Info("PERF PopulateDistPurityCombo: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void BtnAddSeries_Click(object sender, EventArgs e)
+        {
+            string resource = cmbDistResource.SelectedItem?.ToString();
+            string purity = cmbDistPurity.SelectedItem?.ToString();
+
+            if (string.IsNullOrEmpty(resource) || string.IsNullOrEmpty(purity))
+            {
+                return;
+            }
+
+            var combo = new ResourcePurityCombo { ResourceName = resource, Purity = purity };
+
+            if (_activeSeries.Any(s => s.Combo.Equals(combo)))
+            {
+                return;
+            }
+
+            int colorIndex = _nextColorIndex++;
+            _activeSeries.Add((combo, colorIndex));
+            lstDistSeries.Items.Add(combo.DisplayName);
+            RefreshDistributionGraph();
+        }
+
+        private void BtnRemoveSeries_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = lstDistSeries.SelectedIndex;
+            if (selectedIndex < 0 || selectedIndex >= _activeSeries.Count)
+            {
+                return;
+            }
+
+            _activeSeries.RemoveAt(selectedIndex);
+            lstDistSeries.Items.RemoveAt(selectedIndex);
+            RefreshDistributionGraph();
+        }
+
+        private void NudBinWidth_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshDistributionGraph();
+        }
+
+        private void CmbDistResource_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PopulateDistPurityCombo();
         }
 
         // -----------------------------------------------------------------------
@@ -485,12 +682,16 @@ namespace OE2EmpireTracker.Forms.Survey
         {
             lvwSurveys.Items.Clear();
             PopulateListView(GetFilteredSurveys());
+            PopulateDistResourceCombo();
+            RefreshDistributionGraph();
         }
 
         private void CmbResource_SelectedIndexChanged(object sender, EventArgs e)
         {
             lvwSurveys.Items.Clear();
             PopulateListView(GetFilteredSurveys());
+            PopulateDistResourceCombo();
+            RefreshDistributionGraph();
         }
 
         private string GetSelectedResourceName()
@@ -544,6 +745,8 @@ namespace OE2EmpireTracker.Forms.Survey
             }
 
             RefreshSurveyList();
+            PopulateDistResourceCombo();
+            RefreshDistributionGraph();
         }
 
         private void CmbPurityFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -554,6 +757,8 @@ namespace OE2EmpireTracker.Forms.Survey
             }
 
             RefreshSurveyList();
+            PopulateDistResourceCombo();
+            RefreshDistributionGraph();
         }
 
         private void TxtMinAmount_TextChanged(object sender, EventArgs e)
@@ -564,6 +769,8 @@ namespace OE2EmpireTracker.Forms.Survey
             }
 
             RefreshSurveyList();
+            PopulateDistResourceCombo();
+            RefreshDistributionGraph();
         }
 
         // -----------------------------------------------------------------------

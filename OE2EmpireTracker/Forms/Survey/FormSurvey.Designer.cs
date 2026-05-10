@@ -44,6 +44,8 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lblMinAmount = new System.Windows.Forms.Label();
             this.txtMinAmount = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lvwSurveys = new System.Windows.Forms.ListView();
+            this.tabSurveyContent = new System.Windows.Forms.TabControl();
+            this.tabSurveyDetails = new System.Windows.Forms.TabPage();
             this.flpSurveyData = new System.Windows.Forms.FlowLayoutPanel();
             this.flpSurveyDetails = new System.Windows.Forms.FlowLayoutPanel();
             this.flpPlanetName = new System.Windows.Forms.FlowLayoutPanel();
@@ -89,6 +91,19 @@ namespace OE2EmpireTracker.Forms.Survey
             this.btnSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdImport = new System.Windows.Forms.Button();
+            this.tabDistribution = new System.Windows.Forms.TabPage();
+            this.pnlDistControls = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblDistResource = new System.Windows.Forms.Label();
+            this.cmbDistResource = new System.Windows.Forms.ComboBox();
+            this.lblDistPurity = new System.Windows.Forms.Label();
+            this.cmbDistPurity = new System.Windows.Forms.ComboBox();
+            this.btnAddSeries = new System.Windows.Forms.Button();
+            this.btnRemoveSeries = new System.Windows.Forms.Button();
+            this.lblBinWidth = new System.Windows.Forms.Label();
+            this.nudBinWidth = new System.Windows.Forms.NumericUpDown();
+            this.lstDistSeries = new System.Windows.Forms.ListBox();
+            this.chartDistribution = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.lblDistMessage = new System.Windows.Forms.Label();
             this.cmsResources = new System.Windows.Forms.ContextMenuStrip();
             this.tsmiAddResource = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiRemoveResource = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,6 +111,8 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpSearchList.SuspendLayout();
             this.flpSurveyFilter.SuspendLayout();
             this.flpResource.SuspendLayout();
+            this.tabSurveyContent.SuspendLayout();
+            this.tabSurveyDetails.SuspendLayout();
             this.flpSurveyData.SuspendLayout();
             this.flpSurveyDetails.SuspendLayout();
             this.flpPlanetName.SuspendLayout();
@@ -109,13 +126,17 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScanLevel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).BeginInit();
             this.flpCommands.SuspendLayout();
+            this.tabDistribution.SuspendLayout();
+            this.pnlDistControls.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBinWidth)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartDistribution)).BeginInit();
             this.SuspendLayout();
             // 
             // flpBase
             // 
             this.flpBase.AutoSize = true;
             this.flpBase.Controls.Add(this.flpSearchList);
-            this.flpBase.Controls.Add(this.flpSurveyData);
+            this.flpBase.Controls.Add(this.tabSurveyContent);
             this.flpBase.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBase.Location = new System.Drawing.Point(0, 0);
             this.flpBase.Name = "flpBase";
@@ -257,14 +278,36 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lvwSurveys.UseCompatibleStateImageBehavior = false;
             this.lvwSurveys.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.LvwSurveys_ItemSelectionChanged);
             // 
+            // tabSurveyContent
+            // 
+            this.tabSurveyContent.Controls.Add(this.tabSurveyDetails);
+            this.tabSurveyContent.Controls.Add(this.tabDistribution);
+            this.tabSurveyContent.Location = new System.Drawing.Point(436, 3);
+            this.tabSurveyContent.Name = "tabSurveyContent";
+            this.tabSurveyContent.SelectedIndex = 0;
+            this.tabSurveyContent.Size = new System.Drawing.Size(661, 641);
+            this.tabSurveyContent.TabIndex = 3;
+            // 
+            // tabSurveyDetails
+            // 
+            this.tabSurveyDetails.Controls.Add(this.flpSurveyData);
+            this.tabSurveyDetails.Location = new System.Drawing.Point(4, 22);
+            this.tabSurveyDetails.Name = "tabSurveyDetails";
+            this.tabSurveyDetails.Padding = new System.Windows.Forms.Padding(3);
+            this.tabSurveyDetails.Size = new System.Drawing.Size(653, 615);
+            this.tabSurveyDetails.TabIndex = 0;
+            this.tabSurveyDetails.Text = "Survey Details";
+            this.tabSurveyDetails.UseVisualStyleBackColor = true;
+            // 
             // flpSurveyData
             // 
             this.flpSurveyData.Controls.Add(this.flpSurveyDetails);
             this.flpSurveyData.Controls.Add(this.flpCommands);
+            this.flpSurveyData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpSurveyData.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpSurveyData.Location = new System.Drawing.Point(436, 3);
+            this.flpSurveyData.Location = new System.Drawing.Point(3, 3);
             this.flpSurveyData.Name = "flpSurveyData";
-            this.flpSurveyData.Size = new System.Drawing.Size(661, 641);
+            this.flpSurveyData.Size = new System.Drawing.Size(647, 609);
             this.flpSurveyData.TabIndex = 3;
             // 
             // flpSurveyDetails
@@ -422,9 +465,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpNickName.Size = new System.Drawing.Size(310, 26);
             this.flpNickName.TabIndex = 3;
             this.flpNickName.WrapContents = false;
-            // 
-            // lblNickName
-            // 
             this.lblNickName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblNickName.Location = new System.Drawing.Point(2, 4);
             this.lblNickName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -433,9 +473,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lblNickName.TabIndex = 2;
             this.lblNickName.Text = "Nick Name";
             this.lblNickName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtNickName
-            // 
             this.txtNickName.AllowSpaces = true;
             this.txtNickName.AutoFormat = true;
             this.txtNickName.ErrorMessage = "";
@@ -459,9 +496,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScannerBlueprint.Size = new System.Drawing.Size(415, 26);
             this.flpScannerBlueprint.TabIndex = 3;
             this.flpScannerBlueprint.WrapContents = false;
-            // 
-            // lblScannerBlueprint
-            // 
             this.lblScannerBlueprint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblScannerBlueprint.Location = new System.Drawing.Point(2, 4);
             this.lblScannerBlueprint.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -470,9 +504,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lblScannerBlueprint.TabIndex = 2;
             this.lblScannerBlueprint.Text = "Scanner Blueprint";
             this.lblScannerBlueprint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmbScannerBlueprint
-            // 
             this.cmbScannerBlueprint.Location = new System.Drawing.Point(107, 2);
             this.cmbScannerBlueprint.Margin = new System.Windows.Forms.Padding(2);
             this.cmbScannerBlueprint.Name = "cmbScannerBlueprint";
@@ -491,9 +522,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScannedBy.Size = new System.Drawing.Size(827, 24);
             this.flpScannedBy.TabIndex = 4;
             this.flpScannedBy.WrapContents = false;
-            // 
-            // lblScannedBy
-            // 
             this.lblScannedBy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblScannedBy.Location = new System.Drawing.Point(2, 3);
             this.lblScannedBy.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -502,9 +530,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lblScannedBy.TabIndex = 2;
             this.lblScannedBy.Text = "Scanned By";
             this.lblScannedBy.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtScannedBy
-            // 
             this.txtScannedBy.AllowSpaces = true;
             this.txtScannedBy.AutoFormat = true;
             this.txtScannedBy.ErrorMessage = "";
@@ -520,7 +545,6 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             // flpScanDateTime
             // 
-            this.flpScanDateTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.flpScanDateTime.AutoSize = true;
             this.flpScanDateTime.Controls.Add(this.lblScanDateTime);
             this.flpScanDateTime.Controls.Add(this.txtScanDateTime);
@@ -531,9 +555,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScanDateTime.Size = new System.Drawing.Size(827, 24);
             this.flpScanDateTime.TabIndex = 5;
             this.flpScanDateTime.WrapContents = false;
-            // 
-            // lblScanDateTime
-            // 
             this.lblScanDateTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblScanDateTime.Location = new System.Drawing.Point(2, 3);
             this.lblScanDateTime.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -542,9 +563,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lblScanDateTime.TabIndex = 2;
             this.lblScanDateTime.Text = "Scan DateTime";
             this.lblScanDateTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtScanDateTime
-            // 
             this.txtScanDateTime.AllowSpaces = true;
             this.txtScanDateTime.AutoFormat = true;
             this.txtScanDateTime.ErrorMessage = "";
@@ -558,9 +576,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.txtScanDateTime.TabIndex = 7;
             this.txtScanDateTime.ValidationPattern = null;
             this.txtScanDateTime.ValidColor = System.Drawing.Color.White;
-            // 
-            // dtpScanDateTime
-            // 
             this.dtpScanDateTime.CustomFormat = "yyyy-MM-dd HH:mm";
             this.dtpScanDateTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpScanDateTime.Location = new System.Drawing.Point(311, 2);
@@ -580,9 +595,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpSensorAbundance.Size = new System.Drawing.Size(827, 24);
             this.flpSensorAbundance.TabIndex = 6;
             this.flpSensorAbundance.WrapContents = false;
-            // 
-            // lblSensorAbundance
-            // 
             this.lblSensorAbundance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSensorAbundance.Location = new System.Drawing.Point(2, 3);
             this.lblSensorAbundance.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -591,9 +603,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lblSensorAbundance.TabIndex = 2;
             this.lblSensorAbundance.Text = "Sensor Abundance Factor";
             this.lblSensorAbundance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtSensorAbundance
-            // 
             this.txtSensorAbundance.AllowSpaces = true;
             this.txtSensorAbundance.AutoFormat = true;
             this.txtSensorAbundance.ErrorMessage = "";
@@ -619,9 +628,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpPurityModifier.Size = new System.Drawing.Size(827, 24);
             this.flpPurityModifier.TabIndex = 7;
             this.flpPurityModifier.WrapContents = false;
-            // 
-            // lblPurityModifier
-            // 
             this.lblPurityModifier.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblPurityModifier.Location = new System.Drawing.Point(2, 3);
             this.lblPurityModifier.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -630,9 +636,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lblPurityModifier.TabIndex = 2;
             this.lblPurityModifier.Text = "Purity Modifier";
             this.lblPurityModifier.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtPurityModifier
-            // 
             this.txtPurityModifier.AllowSpaces = true;
             this.txtPurityModifier.AutoFormat = true;
             this.txtPurityModifier.ErrorMessage = "";
@@ -658,9 +661,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScanLevel.Size = new System.Drawing.Size(827, 24);
             this.flpScanLevel.TabIndex = 8;
             this.flpScanLevel.WrapContents = false;
-            // 
-            // lblScanLevel
-            // 
             this.lblScanLevel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblScanLevel.Location = new System.Drawing.Point(2, 3);
             this.lblScanLevel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -669,9 +669,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.lblScanLevel.TabIndex = 2;
             this.lblScanLevel.Text = "Scan Level";
             this.lblScanLevel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtScanLevel
-            // 
             this.txtScanLevel.AllowSpaces = true;
             this.txtScanLevel.AutoFormat = true;
             this.txtScanLevel.ErrorMessage = "";
@@ -689,33 +686,21 @@ namespace OE2EmpireTracker.Forms.Survey
             // 
             this.dgvResources.AllowUserToOrderColumns = true;
             this.dgvResources.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvResources.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Resource,
-            this.Purity,
-            this.Amount});
+            this.dgvResources.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { this.Resource, this.Purity, this.Amount });
             this.dgvResources.ContextMenuStrip = this.cmsResources;
             this.dgvResources.Location = new System.Drawing.Point(3, 263);
             this.dgvResources.Name = "dgvResources";
             this.dgvResources.Size = new System.Drawing.Size(825, 303);
             this.dgvResources.TabIndex = 9;
             this.dgvResources.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.DgvResources_CellValidating);
-            // 
-            // Resource
-            // 
             this.Resource.FillWeight = 250F;
             this.Resource.HeaderText = "Resource";
             this.Resource.Name = "Resource";
             this.Resource.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.Resource.Width = 250;
-            // 
-            // Purity
-            // 
             this.Purity.HeaderText = "Purity";
             this.Purity.Name = "Purity";
             this.Purity.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // Amount
-            // 
             this.Amount.AllowSpaces = false;
             this.Amount.HeaderText = "Amount";
             this.Amount.InvalidColor = System.Drawing.Color.LightCoral;
@@ -737,9 +722,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpCommands.Name = "flpCommands";
             this.flpCommands.Size = new System.Drawing.Size(831, 29);
             this.flpCommands.TabIndex = 1;
-            // 
-            // cmdNew
-            // 
             this.cmdNew.Location = new System.Drawing.Point(3, 3);
             this.cmdNew.Name = "cmdNew";
             this.cmdNew.Size = new System.Drawing.Size(75, 23);
@@ -747,9 +729,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.cmdNew.Text = "New";
             this.cmdNew.UseVisualStyleBackColor = true;
             this.cmdNew.Click += new System.EventHandler(this.CmdNew_Click);
-            // 
-            // btnSave
-            // 
             this.btnSave.Location = new System.Drawing.Point(84, 3);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
@@ -757,9 +736,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
-            // 
-            // cmdDelete
-            // 
             this.cmdDelete.Location = new System.Drawing.Point(165, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(75, 23);
@@ -767,9 +743,6 @@ namespace OE2EmpireTracker.Forms.Survey
             this.cmdDelete.Text = "Delete";
             this.cmdDelete.UseVisualStyleBackColor = true;
             this.cmdDelete.Click += new System.EventHandler(this.CmdDelete_Click);
-            // 
-            // cmdImport
-            // 
             this.cmdImport.Location = new System.Drawing.Point(246, 3);
             this.cmdImport.Name = "cmdImport";
             this.cmdImport.Size = new System.Drawing.Size(75, 23);
@@ -778,20 +751,129 @@ namespace OE2EmpireTracker.Forms.Survey
             this.cmdImport.UseVisualStyleBackColor = true;
             this.cmdImport.Click += new System.EventHandler(this.CmdImport_Click);
             // 
+            // tabDistribution
+            // 
+            this.tabDistribution.Controls.Add(this.pnlDistControls);
+            this.tabDistribution.Controls.Add(this.lstDistSeries);
+            this.tabDistribution.Controls.Add(this.chartDistribution);
+            this.tabDistribution.Controls.Add(this.lblDistMessage);
+            this.tabDistribution.Location = new System.Drawing.Point(4, 22);
+            this.tabDistribution.Name = "tabDistribution";
+            this.tabDistribution.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDistribution.Size = new System.Drawing.Size(653, 615);
+            this.tabDistribution.TabIndex = 1;
+            this.tabDistribution.Text = "Yield Distribution";
+            this.tabDistribution.UseVisualStyleBackColor = true;
+            // 
+            // pnlDistControls
+            // 
+            this.pnlDistControls.Controls.Add(this.lblDistResource);
+            this.pnlDistControls.Controls.Add(this.cmbDistResource);
+            this.pnlDistControls.Controls.Add(this.lblDistPurity);
+            this.pnlDistControls.Controls.Add(this.cmbDistPurity);
+            this.pnlDistControls.Controls.Add(this.btnAddSeries);
+            this.pnlDistControls.Controls.Add(this.btnRemoveSeries);
+            this.pnlDistControls.Controls.Add(this.lblBinWidth);
+            this.pnlDistControls.Controls.Add(this.nudBinWidth);
+            this.pnlDistControls.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlDistControls.Location = new System.Drawing.Point(3, 3);
+            this.pnlDistControls.Name = "pnlDistControls";
+            this.pnlDistControls.Size = new System.Drawing.Size(647, 30);
+            this.pnlDistControls.TabIndex = 0;
+            this.lblDistResource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDistResource.AutoSize = true;
+            this.lblDistResource.Location = new System.Drawing.Point(3, 8);
+            this.lblDistResource.Name = "lblDistResource";
+            this.lblDistResource.Size = new System.Drawing.Size(56, 13);
+            this.lblDistResource.Text = "Resource:";
+            this.cmbDistResource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDistResource.Location = new System.Drawing.Point(65, 4);
+            this.cmbDistResource.Name = "cmbDistResource";
+            this.cmbDistResource.Size = new System.Drawing.Size(130, 21);
+            this.cmbDistResource.TabIndex = 1;
+            this.lblDistPurity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDistPurity.AutoSize = true;
+            this.lblDistPurity.Location = new System.Drawing.Point(201, 8);
+            this.lblDistPurity.Name = "lblDistPurity";
+            this.lblDistPurity.Size = new System.Drawing.Size(36, 13);
+            this.lblDistPurity.Text = "Purity:";
+            this.cmbDistPurity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDistPurity.Location = new System.Drawing.Point(243, 4);
+            this.cmbDistPurity.Name = "cmbDistPurity";
+            this.cmbDistPurity.Size = new System.Drawing.Size(90, 21);
+            this.cmbDistPurity.TabIndex = 2;
+            this.btnAddSeries.Location = new System.Drawing.Point(339, 3);
+            this.btnAddSeries.Name = "btnAddSeries";
+            this.btnAddSeries.Size = new System.Drawing.Size(75, 23);
+            this.btnAddSeries.TabIndex = 3;
+            this.btnAddSeries.Text = "Add Series";
+            this.btnAddSeries.UseVisualStyleBackColor = true;
+            this.btnRemoveSeries.Location = new System.Drawing.Point(420, 3);
+            this.btnRemoveSeries.Name = "btnRemoveSeries";
+            this.btnRemoveSeries.Size = new System.Drawing.Size(90, 23);
+            this.btnRemoveSeries.TabIndex = 4;
+            this.btnRemoveSeries.Text = "Remove Series";
+            this.btnRemoveSeries.UseVisualStyleBackColor = true;
+            this.lblBinWidth.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblBinWidth.AutoSize = true;
+            this.lblBinWidth.Location = new System.Drawing.Point(516, 8);
+            this.lblBinWidth.Name = "lblBinWidth";
+            this.lblBinWidth.Size = new System.Drawing.Size(55, 13);
+            this.lblBinWidth.Text = "Bin Width:";
+            this.nudBinWidth.Location = new System.Drawing.Point(577, 5);
+            this.nudBinWidth.Maximum = new decimal(new int[] { 100, 0, 0, 0 });
+            this.nudBinWidth.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudBinWidth.Name = "nudBinWidth";
+            this.nudBinWidth.Size = new System.Drawing.Size(55, 20);
+            this.nudBinWidth.TabIndex = 5;
+            this.nudBinWidth.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            // 
+            // lstDistSeries
+            // 
+            this.lstDistSeries.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lstDistSeries.FormattingEnabled = true;
+            this.lstDistSeries.Location = new System.Drawing.Point(3, 33);
+            this.lstDistSeries.Name = "lstDistSeries";
+            this.lstDistSeries.Size = new System.Drawing.Size(200, 579);
+            this.lstDistSeries.TabIndex = 1;
+            // 
+            // chartDistribution
+            // 
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            chartArea1.Name = "DistributionArea";
+            chartArea1.AxisX.Title = "Yield";
+            chartArea1.AxisY.Title = "% of Surveys";
+            chartArea1.AxisY.Minimum = 0;
+            this.chartDistribution.ChartAreas.Add(chartArea1);
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend1.Name = "Default";
+            this.chartDistribution.Legends.Add(legend1);
+            this.chartDistribution.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chartDistribution.Location = new System.Drawing.Point(203, 33);
+            this.chartDistribution.Name = "chartDistribution";
+            this.chartDistribution.Size = new System.Drawing.Size(447, 579);
+            this.chartDistribution.TabIndex = 2;
+            // 
+            // lblDistMessage
+            // 
+            this.lblDistMessage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblDistMessage.Location = new System.Drawing.Point(203, 33);
+            this.lblDistMessage.Name = "lblDistMessage";
+            this.lblDistMessage.Size = new System.Drawing.Size(447, 579);
+            this.lblDistMessage.TabIndex = 3;
+            this.lblDistMessage.Text = "Select Planet or Asteroid survey type to view distributions.";
+            this.lblDistMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblDistMessage.Visible = false;
+            // 
             // cmsResources
             // 
             this.cmsResources.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.tsmiAddResource, this.tsmiRemoveResource });
             this.cmsResources.Name = "cmsResources";
             this.cmsResources.Size = new System.Drawing.Size(165, 48);
-            // 
-            // tsmiAddResource
-            // 
             this.tsmiAddResource.Name = "tsmiAddResource";
             this.tsmiAddResource.Size = new System.Drawing.Size(164, 22);
             this.tsmiAddResource.Text = "Add Resource";
-            // 
-            // tsmiRemoveResource
-            // 
             this.tsmiRemoveResource.Name = "tsmiRemoveResource";
             this.tsmiRemoveResource.Size = new System.Drawing.Size(164, 22);
             this.tsmiRemoveResource.Text = "Remove Resource";
@@ -810,6 +892,8 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpSurveyFilter.ResumeLayout(false);
             this.flpSurveyFilter.PerformLayout();
             this.flpResource.ResumeLayout(false);
+            this.tabSurveyContent.ResumeLayout(false);
+            this.tabSurveyDetails.ResumeLayout(false);
             this.flpSurveyData.ResumeLayout(false);
             this.flpSurveyData.PerformLayout();
             this.flpSurveyDetails.ResumeLayout(false);
@@ -834,6 +918,11 @@ namespace OE2EmpireTracker.Forms.Survey
             this.flpScanLevel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResources)).EndInit();
             this.flpCommands.ResumeLayout(false);
+            this.tabDistribution.ResumeLayout(false);
+            this.pnlDistControls.ResumeLayout(false);
+            this.pnlDistControls.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBinWidth)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartDistribution)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -857,6 +946,8 @@ namespace OE2EmpireTracker.Forms.Survey
         private System.Windows.Forms.Label lblMinAmount;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtMinAmount;
         private System.Windows.Forms.ListView lvwSurveys;
+        private System.Windows.Forms.TabControl tabSurveyContent;
+        private System.Windows.Forms.TabPage tabSurveyDetails;
         private System.Windows.Forms.FlowLayoutPanel flpSurveyData;
         private System.Windows.Forms.FlowLayoutPanel flpSurveyDetails;
         private System.Windows.Forms.FlowLayoutPanel flpPlanetName;
@@ -905,5 +996,18 @@ namespace OE2EmpireTracker.Forms.Survey
         private System.Windows.Forms.ContextMenuStrip cmsResources;
         private System.Windows.Forms.ToolStripMenuItem tsmiAddResource;
         private System.Windows.Forms.ToolStripMenuItem tsmiRemoveResource;
+        private System.Windows.Forms.TabPage tabDistribution;
+        private System.Windows.Forms.FlowLayoutPanel pnlDistControls;
+        private System.Windows.Forms.Label lblDistResource;
+        private System.Windows.Forms.ComboBox cmbDistResource;
+        private System.Windows.Forms.Label lblDistPurity;
+        private System.Windows.Forms.ComboBox cmbDistPurity;
+        private System.Windows.Forms.Button btnAddSeries;
+        private System.Windows.Forms.Button btnRemoveSeries;
+        private System.Windows.Forms.Label lblBinWidth;
+        private System.Windows.Forms.NumericUpDown nudBinWidth;
+        private System.Windows.Forms.ListBox lstDistSeries;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartDistribution;
+        private System.Windows.Forms.Label lblDistMessage;
     }
 }

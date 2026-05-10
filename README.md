@@ -60,6 +60,8 @@ Create pricing plans to assign credit values to resources and see what your comm
 ### Surveys
 Paste survey HTML and the tracker extracts planet name, resources, purities, and abundance data. Works for both planet and asteroid surveys — the parser auto-detects asteroid surveys from the "/cycle" rate format and MaxReserve fields. Duplicate surveys are merged automatically. Filter the survey list by type (Planet/Asteroid/All), resource, purity, and minimum amount per hour or cycle. Scan dates are displayed in the game's format but stored internally as proper dates, so the survey list sorts chronologically when you click the DateTime column.
 
+The **Yield Distribution** tab shows how resource yields are spread across your surveys as smooth frequency curves. Select a resource+purity combination, add it as a series, and see what percentage of your surveys fall into each yield range. Overlay multiple series to compare distributions side by side — useful for spotting which resources have consistent yields vs. high variance. Adjust the bin width to control curve granularity.
+
 ### Player Profiles & Skills
 Track multiple characters with their skills, ranks, and faction. Import your profile directly from the game — copy the profile panel HTML and click Import. The tracker extracts your name, faction, credits, all three rank tracks, skill points, skill group states, individual skill levels, and training status. Skills like Builder, Extraction Focus, and Research Focus affect colony operations — the tracker accounts for them. Switch between players with a dropdown and all your data follows.
 

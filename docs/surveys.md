@@ -87,6 +87,37 @@ Additional filters below the text filter:
 
 Asteroid surveys are auto-detected when you import them — the parser recognizes the "/cycle" rate format and MaxReserve fields. When imported, the tracker extracts each resource's max reserve value and stores it on the linked asteroid entity. The Max Reserve column in the resource grid shows these values so you can see how much of each resource the asteroid holds. Asteroid surveys are stored alongside planet surveys with a SurveyType of Asteroid. Use the Type filter to view only asteroid or planet surveys.
 
+## Yield Distribution
+
+The **Yield Distribution** tab (next to Survey Details) shows how resource yields are distributed across your surveys as smooth frequency curves.
+
+### How to Use
+
+1. Set the **Type** filter to Planet or Asteroid (the distribution tab requires a specific type — "All" won't work).
+2. Switch to the **Yield Distribution** tab.
+3. Select a **Resource** and **Purity** from the dropdowns at the top.
+4. Click **Add Series** to plot that combination on the graph.
+5. Repeat to overlay multiple resource+purity combinations for comparison.
+6. Use **Remove Series** to remove the selected series from the graph.
+
+### Reading the Graph
+
+- **X-axis** — Yield values (or Yield/cycle for asteroids), grouped into bins.
+- **Y-axis** — Percentage of surveys that fall into each bin.
+- Each colored line represents one resource+purity combination.
+- A narrow, tall peak means consistent yields. A wide, flat curve means high variance.
+
+### Bin Width
+
+Adjust the **Bin Width** control (1–100, default 10) to change how finely the yields are grouped. Smaller bins give more detail but noisier curves; larger bins smooth things out.
+
+### Empty States
+
+- If no survey type is selected, you'll see a prompt to choose Planet or Asteroid.
+- If no surveys match the current filters, a message tells you so.
+- If no series have been added, you'll be prompted to add one.
+- If a series has fewer than 2 matching surveys, it's skipped (insufficient data).
+
 ## Related Topics
 
 - [Colonies](colonies.md) — Use survey data to decide where to place colonies

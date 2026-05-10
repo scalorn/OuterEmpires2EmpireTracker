@@ -38,38 +38,38 @@
 
 ## Task 5: UI — Add TabControl and Yield Distribution tab to FormSurvey
 
-- [ ] 5.1 Add TabControl to FormSurvey.Designer.cs wrapping flpSurveyData
-  - [~] 5.1.1 Create tabSurveyContent TabControl
-  - [~] 5.1.2 Move existing flpSurveyData into "Survey Details" tab
-  - [~] 5.1.3 Create "Yield Distribution" tab with chart and controls
-- [ ] 5.2 Add distribution tab controls in Designer.cs
-  - [~] 5.2.1 pnlDistControls FlowLayoutPanel with resource/purity combos and buttons
-  - [~] 5.2.2 lstDistSeries ListBox for series legend
-  - [~] 5.2.3 nudBinWidth NumericUpDown (min=1, max=100, default=10)
-  - [~] 5.2.4 chartDistribution Chart control with Spline ChartArea
-  - [~] 5.2.5 lblDistMessage Label for empty state messages
+- [x] 5.1 Add TabControl to FormSurvey.Designer.cs wrapping flpSurveyData
+  - [x] 5.1.1 Create tabSurveyContent TabControl
+  - [x] 5.1.2 Move existing flpSurveyData into "Survey Details" tab
+  - [x] 5.1.3 Create "Yield Distribution" tab with chart and controls
+- [x] 5.2 Add distribution tab controls in Designer.cs
+  - [x] 5.2.1 pnlDistControls FlowLayoutPanel with resource/purity combos and buttons
+  - [x] 5.2.2 lstDistSeries ListBox for series legend
+  - [x] 5.2.3 nudBinWidth NumericUpDown (min=1, max=100, default=10)
+  - [x] 5.2.4 chartDistribution Chart control with Spline ChartArea
+  - [x] 5.2.5 lblDistMessage Label for empty state messages
 
 ## Task 6: UI — FormSurvey distribution logic and event wiring
 
-- [ ] 6.1 Implement RefreshDistributionGraph method
-  - [~] 6.1.1 Empty state checks (no survey type, no surveys, no series)
-  - [~] 6.1.2 Iterate active series, call service, add Chart Series
-  - [~] 6.1.3 X-axis label conditional on SurveyType (Yield vs Yield/cycle)
-  - [~] 6.1.4 PERF timing with Stopwatch
-- [ ] 6.2 Implement series management
-  - [~] 6.2.1 PopulateDistResourceCombo — populate from GetAvailableCombos
-  - [~] 6.2.2 PopulateDistPurityCombo — filter purities by selected resource
-  - [~] 6.2.3 BtnAddSeries_Click — add combo to _activeSeries, assign color, refresh
-  - [~] 6.2.4 BtnRemoveSeries_Click — remove selected from _activeSeries, refresh
-- [ ] 6.3 Wire existing filter events to also call RefreshDistributionGraph
-  - [~] 6.3.1 cmbSurveyType, txtSurveyFilter, cmbResource, cmbPurityFilter, txtMinAmount
-- [ ] 6.4 Wire new distribution control events
-  - [~] 6.4.1 nudBinWidth.ValueChanged → RefreshDistributionGraph
-  - [~] 6.4.2 cmbDistResource.SelectedIndexChanged → PopulateDistPurityCombo
+- [x] 6.1 Implement RefreshDistributionGraph method
+  - [x] 6.1.1 Empty state checks (no survey type, no surveys, no series)
+  - [x] 6.1.2 Iterate active series, call service, add Chart Series
+  - [x] 6.1.3 X-axis label conditional on SurveyType (Yield vs Yield/cycle)
+  - [x] 6.1.4 PERF timing with Stopwatch
+- [x] 6.2 Implement series management
+  - [x] 6.2.1 PopulateDistResourceCombo — populate from GetAvailableCombos
+  - [x] 6.2.2 PopulateDistPurityCombo — filter purities by selected resource
+  - [x] 6.2.3 BtnAddSeries_Click — add combo to _activeSeries, assign color, refresh
+  - [x] 6.2.4 BtnRemoveSeries_Click — remove selected from _activeSeries, refresh
+- [x] 6.3 Wire existing filter events to also call RefreshDistributionGraph
+  - [x] 6.3.1 cmbSurveyType, txtSurveyFilter, cmbResource, cmbPurityFilter, txtMinAmount
+- [x] 6.4 Wire new distribution control events
+  - [x] 6.4.1 nudBinWidth.ValueChanged → RefreshDistributionGraph
+  - [x] 6.4.2 cmbDistResource.SelectedIndexChanged → PopulateDistPurityCombo
 
 ## Task 7: Build verification and commit
 
-- [~] 7.1 Build solution with zero errors and zero warnings
-- [~] 7.2 Run all tests and verify pass
-- [~] 7.3 Run audit (node .kiro/tools/audit.js)
-- [~] 7.4 Commit all changes
+- [x] 7.1 Build solution with zero errors and zero warnings
+- [x] 7.2 Run all tests and verify pass
+- [x] 7.3 Run audit (node .kiro/tools/audit.js)
+- [-] 7.4 Commit all changes

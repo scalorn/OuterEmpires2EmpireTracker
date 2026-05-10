@@ -40,18 +40,25 @@ Controls:
   - `cmbResource` (ComboBox, DropDownList) — filter by resource type
   - `flpTypeFilter`: `cmbSurveyType` (ComboBox), `cmbPurityFilter` (ComboBox), `txtMinAmount` (ValidatedTextBox)
   - `lvwSurveys` (ListView, full-row select)
-- Right: `flpSurveyData` (top-down, AutoScroll, WrapContents=false):
-  - `flpSurveyDetails` (top-down) — survey identity fields:
-    - `cmbSurveyTypeEdit` (Planet/Asteroid dropdown — label changes to "Asteroid Name" when Asteroid selected), `txtSystemName`, `txtPlanetName`, `txtSurveyID`, `txtNickName`
-    - `cmbScannerBlueprint` (FilteredTextComboSet) — scanner blueprint picker with inline filtering
-    - `txtScannedBy` — player who performed the scan
-    - `txtScanDateTime` + `dtpScanDateTime` (DateTimePicker) — scan timestamp
-    - `txtSensorAbundance`, `txtPurityModifier`, `txtScanLevel`
-  - `dgvResources` (DataEntryGridView, editable, Tab-navigates between editable cells):
-    - `Resource` (DataGridViewFilteredComboBoxColumn) — resource name with inline filtering
-    - `Purity` (ComboBoxColumn) — purity level
-    - `Amount` (ValidatedTextBoxColumn) — quantity
-    - `MaxReserve` (TextBoxColumn, read-only) — max reserve from linked asteroid (asteroid surveys only; empty for planet surveys)
-  - `flpCommands`: `cmdNew`, `btnSave`, `cmdDelete`, `cmdImport`
+- Right: `tabSurveyContent` (TabControl wrapping survey details and distribution):
+  - Tab "Survey Details" (`tabSurveyDetails`):
+    - `flpSurveyData` (top-down, Dock=Fill):
+      - `flpSurveyDetails` (top-down) — survey identity fields:
+        - `cmbSurveyTypeEdit` (Planet/Asteroid dropdown — label changes to "Asteroid Name" when Asteroid selected), `txtSystemName`, `txtPlanetName`, `txtSurveyID`, `txtNickName`
+        - `cmbScannerBlueprint` (FilteredTextComboSet) — scanner blueprint picker with inline filtering
+        - `txtScannedBy` — player who performed the scan
+        - `txtScanDateTime` + `dtpScanDateTime` (DateTimePicker) — scan timestamp
+        - `txtSensorAbundance`, `txtPurityModifier`, `txtScanLevel`
+      - `dgvResources` (DataEntryGridView, editable, Tab-navigates between editable cells):
+        - `Resource` (DataGridViewFilteredComboBoxColumn) — resource name with inline filtering
+        - `Purity` (ComboBoxColumn) — purity level
+        - `Amount` (ValidatedTextBoxColumn) — quantity
+        - `MaxReserve` (TextBoxColumn, read-only) — max reserve from linked asteroid (asteroid surveys only; empty for planet surveys)
+      - `flpCommands`: `cmdNew`, `btnSave`, `cmdDelete`, `cmdImport`
+  - Tab "Yield Distribution" (`tabDistribution`):
+    - `pnlDistControls` (FlowLayoutPanel, Dock=Top): `cmbDistResource`, `cmbDistPurity`, `btnAddSeries`, `btnRemoveSeries`, `lblBinWidth`, `nudBinWidth`
+    - `lstDistSeries` (ListBox, Dock=Left, Width=200) — series legend
+    - `chartDistribution` (Chart, Dock=Fill) — Spline chart with distribution curves
+    - `lblDistMessage` (Label, Dock=Fill, centered) — empty state messages (hidden when chart has data)
 
 Satisfies: REQ-SRV-010 (survey management), REQ-SRV-020 (survey import)

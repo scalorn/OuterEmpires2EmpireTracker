@@ -169,6 +169,10 @@ const EXEMPT_PATTERNS = [
     /dataPoints\.Sort/,
     /points\.Sort\s*\(\s*\(\s*a\s*,\s*b\s*\)\s*=>\s*a\.Evolution/,
 
+    // FormSurvey distribution — sorting projected string lists (resource names, purities) for combo population
+    /\.Distinct\(\)\s*\n?\s*\.OrderBy\s*\(\s*r\s*=>\s*r\s*\)/,
+    /\.Distinct\(\)\s*\n?\s*\.OrderBy\s*\(\s*p\s*=>\s*p\s*\)/,
+
     // FormColonyActivity — refactored to CollectionSortHelper.OrderActivityRowsByTimeRemaining
 ];
 
