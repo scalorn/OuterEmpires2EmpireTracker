@@ -4,6 +4,7 @@ using System.Linq;
 using FsCheck;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 using static OE2EmpireTracker.Tests.Models.ReadOnlyWrapperGenerators;
 
 namespace OE2EmpireTracker.Tests.Models
@@ -284,15 +285,26 @@ namespace OE2EmpireTracker.Tests.Models
         [FsCheck.NUnit.Property(MaxTest = 25, Arbitrary = new[] { typeof(ReadOnlyWrapperArbitraries) })]
         public Property CountDownTime_QueryDelegation(CountDownTime cdt)
         {
-            var ro = new ReadOnlyCountDownTime(cdt);
+            // Freeze the clock so time-sensitive properties (TimeRemaining, IntervalsPassed)
+            // return identical values on both the wrapper and the entity.
+            var frozen = SystemClock.UtcNow;
+            SystemClock.UtcNowFunc = () => frozen;
+            try
+            {
+                var ro = new ReadOnlyCountDownTime(cdt);
 
-            return (ro.TimeRemaining == cdt.TimeRemaining &&
-                    ro.TimeRemainingString == cdt.TimeRemainingString &&
-                    ro.IntervalsPassed == cdt.IntervalsPassed &&
-                    ro.IsRepeating == cdt.IsRepeating &&
-                    ro.RepeatIntervalSeconds == cdt.RepeatIntervalSeconds &&
-                    ro.StartTime == cdt.StartTime &&
-                    ro.EndTime == cdt.EndTime).ToProperty();
+                return (ro.TimeRemaining == cdt.TimeRemaining &&
+                        ro.TimeRemainingString == cdt.TimeRemainingString &&
+                        ro.IntervalsPassed == cdt.IntervalsPassed &&
+                        ro.IsRepeating == cdt.IsRepeating &&
+                        ro.RepeatIntervalSeconds == cdt.RepeatIntervalSeconds &&
+                        ro.StartTime == cdt.StartTime &&
+                        ro.EndTime == cdt.EndTime).ToProperty();
+            }
+            finally
+            {
+                SystemClock.Reset();
+            }
         }
 
         // ---------------------------------------------------------------
