@@ -71,16 +71,17 @@ namespace OE2EmpireTracker.ViewModels
             DestinationType destType = DestinationType.Colony,
             string destinationUUID = "")
         {
-            // Match by DestinationUUID first if available, then fall back to ColonyUUID
+            // Match by DestinationUUID first if available
             DeliveryPlanStop stop = null;
             if (!string.IsNullOrEmpty(destinationUUID))
             {
                 stop = _stops.FirstOrDefault(s => s.DestinationUUID == destinationUUID);
             }
 
-            if (stop == null)
+            // Fall back to ColonyUUID match (regardless of whether the existing stop has a DestinationUUID)
+            if (stop == null && !string.IsNullOrEmpty(colonyUUID))
             {
-                stop = _stops.FirstOrDefault(s => s.ColonyUUID == colonyUUID && string.IsNullOrEmpty(s.DestinationUUID));
+                stop = _stops.FirstOrDefault(s => s.ColonyUUID == colonyUUID);
             }
 
             if (stop == null)
