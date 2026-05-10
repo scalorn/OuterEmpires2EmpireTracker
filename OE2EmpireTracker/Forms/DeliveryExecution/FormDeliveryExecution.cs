@@ -577,6 +577,33 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             if (string.IsNullOrEmpty(selectedPlanUUID)) return;
 
+            // Validate the tag's index is still valid — the plan may have been
+            // modified externally (items removed) since the UI was built.
+            var plan = playerContext.FindMutableDeliveryPlan(selectedPlanUUID);
+            if (plan == null) return;
+
+            var stop = plan.Stops.FirstOrDefault(s => s.Sequence == tag.StopSequence);
+            if (stop == null)
+            {
+                BuildExecution();
+                return;
+            }
+
+            var itemList = string.Equals(tag.ListType, "DropOff", StringComparison.OrdinalIgnoreCase)
+                ? stop.DropOff
+                : stop.PickUp;
+
+            if (tag.ItemIndex < 0 || tag.ItemIndex >= itemList.Count)
+            {
+                Log.Warn(
+                    "DeliveryItem_CheckedChanged: stale index {0} for {1} list (count={2}), rebuilding UI",
+                    tag.ItemIndex,
+                    tag.ListType,
+                    itemList.Count);
+                BuildExecution();
+                return;
+            }
+
             // Mark item delivered via service (service handles all side effects:
             // commodity fulfillment, flatpack staging, worker/resource delivery, station holds)
             _deliveryPlanService.MarkItemDelivered(
