@@ -367,6 +367,9 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             Log.Debug("BuildExecution: plan={0}, stops={1}", mutablePlan.Name, mutablePlan.Stops.Count);
 
+            // Repair any duplicate stops (legacy data from autofill bug)
+            _deliveryPlanService.RepairDuplicateStops(selectedPlanUUID);
+
             // Build consolidated load list (uses mutable plan for CalculateLoadList computation)
             var loadItems = mutablePlan.CalculateLoadList();
             Log.Debug("BuildExecution: loadItems={0}", loadItems.Count);

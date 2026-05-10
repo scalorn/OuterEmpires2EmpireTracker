@@ -493,6 +493,76 @@ namespace OE2EmpireTracker.Services
         }
 
         // -------------------------------------------------------------------
+        // Plan Repair
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Detects and repairs duplicate stops (same Sequence) in a plan by merging
+        /// their items into a single stop. Call on plan load to fix legacy data.
+        /// Returns true if repairs were made.
+        /// </summary>
+        public bool RepairDuplicateStops(string uuid)
+        {
+            var plan = _playerContext.FindMutableDeliveryPlan(uuid);
+            if (plan == null)
+            {
+                return false;
+            }
+
+            var duplicateGroups = plan.Stops
+                .GroupBy(s => s.Sequence)
+                .Where(g => g.Count() > 1)
+                .ToList();
+
+            if (duplicateGroups.Count == 0)
+            {
+                return false;
+            }
+
+            foreach (var group in duplicateGroups)
+            {
+                var stops = group.ToList();
+                var primary = stops[0];
+
+                for (int i = 1; i < stops.Count; i++)
+                {
+                    var duplicate = stops[i];
+
+                    foreach (var item in duplicate.DropOff)
+                    {
+                        primary.DropOff.Add(item);
+                    }
+
+                    foreach (var item in duplicate.PickUp)
+                    {
+                        primary.PickUp.Add(item);
+                    }
+
+                    if (string.IsNullOrEmpty(primary.DestinationUUID) && !string.IsNullOrEmpty(duplicate.DestinationUUID))
+                    {
+                        primary.DestinationUUID = duplicate.DestinationUUID;
+                    }
+
+                    if (string.IsNullOrEmpty(primary.ColonyUUID) && !string.IsNullOrEmpty(duplicate.ColonyUUID))
+                    {
+                        primary.ColonyUUID = duplicate.ColonyUUID;
+                    }
+
+                    plan.Stops.Remove(duplicate);
+                }
+
+                Log.Info(
+                    "RepairDuplicateStops: merged {0} duplicate stop(s) at sequence {1} in plan '{2}'",
+                    stops.Count - 1,
+                    group.Key,
+                    plan.Name);
+            }
+
+            _playerContext.WriteContext();
+            return true;
+        }
+
+        // -------------------------------------------------------------------
         // Private Helpers
         // -------------------------------------------------------------------
 
