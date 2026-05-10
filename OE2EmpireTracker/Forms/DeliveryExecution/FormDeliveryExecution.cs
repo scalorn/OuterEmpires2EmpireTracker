@@ -453,7 +453,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     Text = stopTitle,
                     Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold),
                     AutoSize = true,
-                    Margin = new Padding(3, 10, 3, 3)
+                    Margin = new Padding(3, 10, 3, 3),
+                    Tag = stop
                 };
 
                 flpStops.Controls.Add(lblStop);
@@ -461,7 +462,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 // Drop-off items
                 if (stop.DropOff.Count > 0)
                 {
-                    var lblDrop = new Label { Text = "  Drop Off:", AutoSize = true, Margin = new Padding(10, 2, 3, 2) };
+                    var lblDrop = new Label { Text = "  Drop Off:", AutoSize = true, Margin = new Padding(10, 2, 3, 2), Tag = stop };
                     flpStops.Controls.Add(lblDrop);
 
                     for (int di = 0; di < stop.DropOff.Count; di++)
@@ -484,7 +485,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 // Pick-up items
                 if (stop.PickUp.Count > 0)
                 {
-                    var lblPick = new Label { Text = "  Pick Up:", AutoSize = true, Margin = new Padding(10, 2, 3, 2) };
+                    var lblPick = new Label { Text = "  Pick Up:", AutoSize = true, Margin = new Padding(10, 2, 3, 2), Tag = stop };
                     flpStops.Controls.Add(lblPick);
 
                     for (int pi = 0; pi < stop.PickUp.Count; pi++)
@@ -507,7 +508,7 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 // Refuel checklist item for Refuel or CargoAndRefuel stops
                 if (isRefuelStop)
                 {
-                    var lblRefuel = new Label { Text = "  Refuel:", AutoSize = true, Margin = new Padding(10, 2, 3, 2) };
+                    var lblRefuel = new Label { Text = "  Refuel:", AutoSize = true, Margin = new Padding(10, 2, 3, 2), Tag = stop };
                     flpStops.Controls.Add(lblRefuel);
 
                     var chkRefuel = new CheckBox
@@ -669,7 +670,58 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
 
             _deliveryPlanService.MarkStopComplete(selectedPlanUUID, stop.Sequence);
             playerContext.CascadeResourceCheckDirty = true;
-            BuildExecution();
+
+            // Remove just this stop's controls from the panel instead of full rebuild
+            RemoveStopControls(stop);
+        }
+
+        /// <summary>
+        /// Removes all controls belonging to a specific stop from flpStops.
+        /// Controls are identified by their Tag (DeliveryPlanStop reference or DeliveryItemTag.Stop).
+        /// </summary>
+        private void RemoveStopControls(DeliveryPlanStop stop)
+        {
+            flpStops.SuspendLayout();
+
+            var toRemove = new List<Control>();
+
+            for (int i = 0; i < flpStops.Controls.Count; i++)
+            {
+                var ctrl = flpStops.Controls[i];
+
+                // Header and section labels have the stop directly as Tag
+                if (ctrl.Tag is DeliveryPlanStop tagStop && tagStop == stop)
+                {
+                    toRemove.Add(ctrl);
+                    continue;
+                }
+
+                // Delivery item checkboxes have DeliveryItemTag with Stop reference
+                if (ctrl.Tag is DeliveryItemTag dit && dit.Stop == stop)
+                {
+                    toRemove.Add(ctrl);
+                    continue;
+                }
+            }
+
+            // Also remove the Complete Stop button
+            if (_stopCompleteButtons.TryGetValue(stop, out var completeBtn))
+            {
+                toRemove.Add(completeBtn);
+                completeBtn.Click -= CompleteStop_Click;
+                _stopCompleteButtons.Remove(stop);
+            }
+
+            foreach (var ctrl in toRemove)
+            {
+                flpStops.Controls.Remove(ctrl);
+                ctrl.Dispose();
+            }
+
+            // Clean up refuel checkbox reference
+            _refuelCheckboxes.Remove(stop);
+
+            flpStops.ResumeLayout();
         }
 
         private void CmdCompletePlan_Click(object sender, EventArgs e)
