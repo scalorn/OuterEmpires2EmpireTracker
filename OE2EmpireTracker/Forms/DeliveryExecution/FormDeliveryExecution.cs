@@ -587,8 +587,8 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
             _deliveryPlanService.MarkItemDelivered(
                 selectedPlanUUID, tag.StopSequence, tag.ItemIndex, tag.ListType, chk.Checked);
 
-            // Rebuild execution to reflect updated state
-            BuildExecution();
+            // Update the Complete Stop button for the affected stop (show when all items checked)
+            UpdateStopCompleteButton(tag.Stop);
         }
 
         private void UpdateStopCompleteButton(DeliveryPlanStop stop)
