@@ -161,7 +161,33 @@ namespace OE2EmpireTracker.Forms.StockTargets
         private void FlpDetail_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpDetail.ClientSize.Width;
+            int h = flpDetail.ClientSize.Height;
             dgvTargets.Width = w - 6;
+            pnlDetailSeparator.Width = w - 6;
+
+            // Calculate remaining height for the grid to fill
+            int usedHeight = flpNameRow.Height + flpNameRow.Margin.Vertical
+                + flpReplenishment.Height + flpReplenishment.Margin.Vertical
+                + lblTargets.Height + lblTargets.Margin.Vertical
+                + flpTargetAdd.Height + flpTargetAdd.Margin.Vertical
+                + flpTargetAdd2.Height + flpTargetAdd2.Margin.Vertical
+                + flpTargetButtons.Height + flpTargetButtons.Margin.Vertical
+                + pnlDetailSeparator.Height + pnlDetailSeparator.Margin.Vertical
+                + flpCommands.Height + flpCommands.Margin.Vertical;
+
+            if (dgvExpandedComponents.Visible)
+            {
+                usedHeight += lblExpandedComponents.Height + lblExpandedComponents.Margin.Vertical
+                    + dgvExpandedComponents.Height + dgvExpandedComponents.Margin.Vertical;
+            }
+
+            int gridHeight = h - usedHeight - 10;
+            if (gridHeight < 100)
+            {
+                gridHeight = 100;
+            }
+
+            dgvTargets.Height = gridHeight;
         }
 
         // Plan List

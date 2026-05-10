@@ -122,7 +122,29 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         private void FlpDetail_Layout(object sender, LayoutEventArgs e)
         {
             int w = flpDetail.ClientSize.Width;
+            int h = flpDetail.ClientSize.Height;
             dgvStages.Width = w - 6;
+            pnlDetailSeparator.Width = w - 6;
+
+            // Calculate remaining height for the grid to fill
+            int usedHeight = flpNameRow.Height + flpNameRow.Margin.Vertical
+                + lblStages.Height + lblStages.Margin.Vertical
+                + flpStageEdit.Height + flpStageEdit.Margin.Vertical
+                + flpStageEdit2.Height + flpStageEdit2.Margin.Vertical
+                + flpStageEdit3.Height + flpStageEdit3.Margin.Vertical
+                + flpStageButtons.Height + flpStageButtons.Margin.Vertical
+                + lblFlowSummary.Height + lblFlowSummary.Margin.Vertical
+                + txtFlowSummary.Height + txtFlowSummary.Margin.Vertical
+                + pnlDetailSeparator.Height + pnlDetailSeparator.Margin.Vertical
+                + flpCommands.Height + flpCommands.Margin.Vertical;
+
+            int gridHeight = h - usedHeight - 10;
+            if (gridHeight < 100)
+            {
+                gridHeight = 100;
+            }
+
+            dgvStages.Height = gridHeight;
         }
 
         // Chain List

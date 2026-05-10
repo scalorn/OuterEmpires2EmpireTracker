@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [-] 1. Write bug condition exploration test
+- [x] 1. Write bug condition exploration test
   - **Property 1: Bug Condition** - Fulfilled Checkbox Not Persisted
   - **CRITICAL**: This test MUST FAIL on unfixed code - failure confirms the bug exists
   - **DO NOT attempt to fix the test or the code when it fails**
@@ -15,7 +15,7 @@
   - Mark task complete when test is written, run, and failure is documented
   - _Requirements: 1.1, 1.2, 2.1, 2.2_
 
-- [~] 2. Write preservation property tests (BEFORE implementing fix)
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
   - **Property 2: Preservation** - Non-Fulfilled Column Edits Unchanged
   - **IMPORTANT**: Follow observation-first methodology
   - Observe behavior on UNFIXED code: editing Amount (column 1) or NeedBy (column 3) calls `UpdateCommodityRequest` and does not modify `Fulfilled`
@@ -29,9 +29,9 @@
   - Mark task complete when tests are written, run, and passing
   - _Requirements: 3.1, 3.2, 3.3_
 
-- [ ] 3. Fix for Fulfilled checkbox not persisting user value
+- [x] 3. Fix for Fulfilled checkbox not persisting user value
 
-  - [-] 3.1 Implement the fix
+  - [x] 3.1 Implement the fix
     - Add `bool fulfilled` parameter to `ColonyService.UpdateCommodityRequest` after `DateTime needBy`
     - Set `existing.Fulfilled = fulfilled;` inside the `if (existing != null)` block after setting `existing.NeedBy`
     - Update log statement to include `fulfilled` value for traceability
@@ -43,7 +43,7 @@
     - _Preservation: Amount/NeedBy edits pass existing Fulfilled value through unchanged; DeliveryFulfillment.FulfillCommodity continues to work independently_
     - _Requirements: 1.1, 1.2, 2.1, 2.2, 3.1, 3.2, 3.3_
 
-  - [~] 3.2 Verify bug condition exploration test now passes
+  - [x] 3.2 Verify bug condition exploration test now passes
     - **Property 1: Expected Behavior** - Fulfilled Checkbox Persists User Value
     - **IMPORTANT**: Re-run the SAME test from task 1 - do NOT write a new test
     - The test from task 1 encodes the expected behavior: `UpdateCommodityRequest` sets `existing.Fulfilled` to the passed value
@@ -52,7 +52,7 @@
     - **EXPECTED OUTCOME**: Test PASSES (confirms bug is fixed)
     - _Requirements: 2.1, 2.2_
 
-  - [~] 3.3 Verify preservation tests still pass
+  - [x] 3.3 Verify preservation tests still pass
     - **Property 2: Preservation** - Non-Fulfilled Column Edits Unchanged
     - **IMPORTANT**: Re-run the SAME tests from task 2 - do NOT write new tests
     - Run preservation property tests from step 2
@@ -60,7 +60,7 @@
     - Confirm Amount/NeedBy edits still preserve existing Fulfilled state after fix
     - _Requirements: 3.1, 3.2_
 
-- [~] 4. Checkpoint - Ensure all tests pass
+- [x] 4. Checkpoint - Ensure all tests pass
   - Build solution with zero errors and zero warnings (including StyleCop SA* warnings)
   - Run full test suite via vstest.console and verify all tests pass
   - Run `node .kiro/tools/audit.js` and verify no new findings

@@ -74,6 +74,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.dgvExpandedComponents = new System.Windows.Forms.DataGridView();
             this.colExpComponent = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colExpQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pnlDetailSeparator = new System.Windows.Forms.Panel();
             // Profiles tab controls
             this.flpProfilesTab = new System.Windows.Forms.FlowLayoutPanel();
             this.flpProfileList = new System.Windows.Forms.FlowLayoutPanel();
@@ -138,7 +139,6 @@ namespace OE2EmpireTracker.Forms.StockTargets
             // flpSearchList
             this.flpSearchList.Controls.Add(this.flpFilter);
             this.flpSearchList.Controls.Add(this.lvwPlans);
-            this.flpSearchList.Controls.Add(this.flpCommands);
             this.flpSearchList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
@@ -171,10 +171,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
             // flpCommands
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.cmdNew);
+            this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Location = new System.Drawing.Point(3, 641);
             this.flpCommands.Name = "flpCommands";
-            this.flpCommands.Size = new System.Drawing.Size(214, 29);
+            this.flpCommands.Size = new System.Drawing.Size(798, 29);
             this.cmdNew.Location = new System.Drawing.Point(3, 3);
             this.cmdNew.Name = "cmdNew";
             this.cmdNew.Size = new System.Drawing.Size(75, 23);
@@ -209,7 +210,6 @@ namespace OE2EmpireTracker.Forms.StockTargets
             // flpDetail (existing targets content, now inside tabTargets)
             this.flpDetail.Controls.Add(this.flpNameRow);
             this.flpDetail.Controls.Add(this.flpReplenishment);
-            this.flpDetail.Controls.Add(this.cmdSave);
             this.flpDetail.Controls.Add(this.lblTargets);
             this.flpDetail.Controls.Add(this.dgvTargets);
             this.flpDetail.Controls.Add(this.flpTargetAdd);
@@ -217,6 +217,8 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.flpDetail.Controls.Add(this.flpTargetButtons);
             this.flpDetail.Controls.Add(this.lblExpandedComponents);
             this.flpDetail.Controls.Add(this.dgvExpandedComponents);
+            this.flpDetail.Controls.Add(this.pnlDetailSeparator);
+            this.flpDetail.Controls.Add(this.flpCommands);
             this.flpDetail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpDetail.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDetail.Name = "flpDetail";
@@ -258,6 +260,11 @@ namespace OE2EmpireTracker.Forms.StockTargets
             this.cmbReplenishmentPlan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbReplenishmentPlan.Size = new System.Drawing.Size(300, 21);
             this.cmbReplenishmentPlan.Name = "cmbReplenishmentPlan";
+            // pnlDetailSeparator
+            this.pnlDetailSeparator.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pnlDetailSeparator.Name = "pnlDetailSeparator";
+            this.pnlDetailSeparator.Size = new System.Drawing.Size(798, 4);
+            this.pnlDetailSeparator.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             // cmdSave
             this.cmdSave.Name = "cmdSave";
             this.cmdSave.Size = new System.Drawing.Size(75, 23);
@@ -593,5 +600,6 @@ namespace OE2EmpireTracker.Forms.StockTargets
         private System.Windows.Forms.ContextMenuStrip cmsTargets;
         private System.Windows.Forms.ToolStripMenuItem tsmiAddTarget;
         private System.Windows.Forms.ToolStripMenuItem tsmiRemoveTarget;
+        private System.Windows.Forms.Panel pnlDetailSeparator;
     }
 }

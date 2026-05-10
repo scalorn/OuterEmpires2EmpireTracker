@@ -69,6 +69,7 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             this.cmdMoveDown = new System.Windows.Forms.Button();
             this.lblFlowSummary = new System.Windows.Forms.Label();
             this.txtFlowSummary = new System.Windows.Forms.Label();
+            this.pnlDetailSeparator = new System.Windows.Forms.Panel();
 
             this.flpBase.SuspendLayout();
             this.flpSearchList.SuspendLayout();
@@ -92,7 +93,6 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             // flpSearchList
             this.flpSearchList.Controls.Add(this.flpFilter);
             this.flpSearchList.Controls.Add(this.lvwChains);
-            this.flpSearchList.Controls.Add(this.flpCommands);
             this.flpSearchList.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpSearchList.Location = new System.Drawing.Point(3, 3);
             this.flpSearchList.Name = "flpSearchList";
@@ -129,10 +129,11 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             // flpCommands
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.cmdNew);
+            this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
             this.flpCommands.Location = new System.Drawing.Point(3, 641);
             this.flpCommands.Name = "flpCommands";
-            this.flpCommands.Size = new System.Drawing.Size(214, 29);            // cmdNew
+            this.flpCommands.Size = new System.Drawing.Size(812, 29);            // cmdNew
             this.cmdNew.Location = new System.Drawing.Point(3, 3);
             this.cmdNew.Name = "cmdNew";
             this.cmdNew.Size = new System.Drawing.Size(55, 23);
@@ -146,7 +147,6 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             this.cmdDelete.UseVisualStyleBackColor = true;
             // flpDetail
             this.flpDetail.Controls.Add(this.flpNameRow);
-            this.flpDetail.Controls.Add(this.cmdSave);
             this.flpDetail.Controls.Add(this.lblStages);
             this.flpDetail.Controls.Add(this.dgvStages);
             this.flpDetail.Controls.Add(this.flpStageEdit);
@@ -155,6 +155,8 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             this.flpDetail.Controls.Add(this.flpStageButtons);
             this.flpDetail.Controls.Add(this.lblFlowSummary);
             this.flpDetail.Controls.Add(this.txtFlowSummary);
+            this.flpDetail.Controls.Add(this.pnlDetailSeparator);
+            this.flpDetail.Controls.Add(this.flpCommands);
             this.flpDetail.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDetail.Location = new System.Drawing.Point(229, 3);
             this.flpDetail.Name = "flpDetail";
@@ -189,7 +191,12 @@ namespace OE2EmpireTracker.Forms.SupplyChain
             this.chkActive.Name = "chkActive";
             this.chkActive.Size = new System.Drawing.Size(56, 17);
             this.chkActive.Text = "Active";
-            this.chkActive.UseVisualStyleBackColor = true;            // cmdSave
+            this.chkActive.UseVisualStyleBackColor = true;            // pnlDetailSeparator
+            this.pnlDetailSeparator.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pnlDetailSeparator.Name = "pnlDetailSeparator";
+            this.pnlDetailSeparator.Size = new System.Drawing.Size(812, 4);
+            this.pnlDetailSeparator.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            // cmdSave
             this.cmdSave.Location = new System.Drawing.Point(3, 35);
             this.cmdSave.Name = "cmdSave";
             this.cmdSave.Size = new System.Drawing.Size(75, 23);
@@ -488,5 +495,6 @@ namespace OE2EmpireTracker.Forms.SupplyChain
         private System.Windows.Forms.Button cmdMoveDown;
         private System.Windows.Forms.Label lblFlowSummary;
         private System.Windows.Forms.Label txtFlowSummary;
+        private System.Windows.Forms.Panel pnlDetailSeparator;
     }
 }

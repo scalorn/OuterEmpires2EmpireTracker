@@ -44,6 +44,9 @@ namespace OE2EmpireTracker.ViewModels
         /// <summary>Gets a value indicating whether this is a new survey not yet saved.</summary>
         public bool IsNew => _original == null;
 
+        /// <summary>Gets the number of entries in the properties dictionary (diagnostic).</summary>
+        public int PropertiesCount => _properties.Count;
+
         /// <summary>Gets the survey UUID.</summary>
         public string UUID => _uuid;
 

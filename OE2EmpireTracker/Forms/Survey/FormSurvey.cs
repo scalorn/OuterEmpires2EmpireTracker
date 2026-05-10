@@ -45,7 +45,12 @@ namespace OE2EmpireTracker.Forms.Survey
         private int _nextColorIndex;
         public FormSurvey()
         {
+            // Guard against WindowStateHelper.RestoreState setting control values
+            // (called by MainWindow between constructor and Show). Cleared in Shown event.
+            _isProgrammaticUpdate++;
+
             InitializeComponent();
+            Log.Debug("FormSurvey constructor: InitializeComponent complete, wiring events...");
             empireContext = EmpireContext.GetInstance();
             playerContext = EmpireContext.PlayerContext;
             _surveyService = new SurveyService(playerContext);
@@ -161,7 +166,15 @@ namespace OE2EmpireTracker.Forms.Survey
             dgvResources.CellMouseClick += DgvResources_CellMouseClick;
             cmsResources.Opening += CmsResources_Opening;
 
+            // Clear the programmatic guard set at constructor start.
+            // By this point, WindowStateHelper.RestoreState has already run
+            // (MainWindow calls it between constructor and Show), so any
+            // combo/text changes from state restore were suppressed.
+            Shown += (s, ev) => _isProgrammaticUpdate--;
+
             UpdateSaveButtonState();
+            Log.Debug("FormSurvey constructor COMPLETE. IsDirty={0}, IsNew={1}, Properties.Count={2}",
+                _viewModel.IsDirty, _viewModel.IsNew, _viewModel.PropertiesCount);
         }
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
@@ -174,6 +187,8 @@ namespace OE2EmpireTracker.Forms.Survey
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            Log.Debug("OnFormClosing: IsDirty={0}, IsNew={1}, PlanetName='{2}', Properties.Count={3}",
+                _viewModel.IsDirty, _viewModel.IsNew, _viewModel.PlanetName, _viewModel.PropertiesCount);
             if (_viewModel.IsDirty)
             {
                 var result = PromptUnsavedChanges();
@@ -794,6 +809,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private void CmbSurveyTypeEdit_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
+            Log.Debug("CmbSurveyTypeEdit_SelectedIndexChanged FIRED (not suppressed). SelectedItem={0}", cmbSurveyTypeEdit.SelectedItem);
             if (cmbSurveyTypeEdit.SelectedItem is SurveyType st)
             {
                 _viewModel.SurveyTypeValue = st;
@@ -831,6 +847,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private void DtpScanDateTime_ValueChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
+            Log.Debug("DtpScanDateTime_ValueChanged FIRED (not suppressed). Value={0}", dtpScanDateTime.Value);
             _viewModel.DateTime = SurveyDateTimeParser.ToIsoString(dtpScanDateTime.Value.ToUniversalTime());
             using var guard = new ProgrammaticUpdateGuard(this);
             txtScanDateTime.Text = SurveyDateTimeParser.ToGameFormat(dtpScanDateTime.Value);
@@ -840,6 +857,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private void TxtSensorAbundance_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
+            Log.Debug("TxtSensorAbundance_TextChanged FIRED (not suppressed). Text='{0}'", txtSensorAbundance.Text);
             _viewModel.SensorAbundance = txtSensorAbundance.Text;
             UpdateSaveButtonState();
         }
@@ -847,6 +865,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private void TxtPurityModifier_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
+            Log.Debug("TxtPurityModifier_TextChanged FIRED (not suppressed). Text='{0}'", txtPurityModifier.Text);
             _viewModel.PurityModifier = txtPurityModifier.Text;
             UpdateSaveButtonState();
         }
@@ -854,6 +873,7 @@ namespace OE2EmpireTracker.Forms.Survey
         private void TxtScanLevel_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
+            Log.Debug("TxtScanLevel_TextChanged FIRED (not suppressed). Text='{0}'", txtScanLevel.Text);
             _viewModel.ScanLevel = txtScanLevel.Text;
             UpdateSaveButtonState();
         }
