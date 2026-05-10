@@ -524,25 +524,24 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                     _refuelCheckboxes[stop] = chkRefuel;
                 }
 
-                // Show "Complete Stop" button if all items at this stop are delivered
+                // Always show "Complete Stop" button — enabled only when all items delivered
                 bool hasItems = stop.DropOff.Count > 0 || stop.PickUp.Count > 0 || isRefuelStop;
                 bool allDelivered = stop.DropOff.All(i => i.Delivered) && stop.PickUp.All(i => i.Delivered)
                     && (!isRefuelStop || (_refuelCheckboxes.TryGetValue(stop, out var refChk) && refChk.Checked))
                     && hasItems;
-                if (allDelivered)
-                {
-                    var btnComplete = new Button
-                    {
-                        Text = "Complete Stop",
-                        AutoSize = true,
-                        Margin = new Padding(20, 3, 3, 3),
-                        Tag = stop
-                    };
 
-                    btnComplete.Click += CompleteStop_Click;
-                    flpStops.Controls.Add(btnComplete);
-                    _stopCompleteButtons[stop] = btnComplete;
-                }
+                var btnComplete = new Button
+                {
+                    Text = "Complete Stop",
+                    AutoSize = true,
+                    Margin = new Padding(20, 3, 3, 3),
+                    Tag = stop,
+                    Enabled = allDelivered
+                };
+
+                btnComplete.Click += CompleteStop_Click;
+                flpStops.Controls.Add(btnComplete);
+                _stopCompleteButtons[stop] = btnComplete;
             }
 
             flpStops.ResumeLayout();
@@ -602,62 +601,10 @@ namespace OE2EmpireTracker.Forms.DeliveryExecution
                 && (!isRefuelStop || (_refuelCheckboxes.TryGetValue(stop, out var refChk) && refChk.Checked))
                 && hasItems;
 
-            if (allDelivered && !_stopCompleteButtons.ContainsKey(stop))
+            if (_stopCompleteButtons.TryGetValue(stop, out var btn))
             {
-                // Find insert position before adding the button
-                int insertAfter = FindLastControlIndexForStop(stop);
-
-                var btnComplete = new Button
-                {
-                    Text = "Complete Stop",
-                    AutoSize = true,
-                    Margin = new Padding(20, 3, 3, 3),
-                    Tag = stop
-                };
-
-                btnComplete.Click += CompleteStop_Click;
-
-                flpStops.Controls.Add(btnComplete);
-
-                // Position the button right after the last control for this stop
-                if (insertAfter >= 0)
-                    flpStops.Controls.SetChildIndex(btnComplete, insertAfter + 1);
-
-                _stopCompleteButtons[stop] = btnComplete;
+                btn.Enabled = allDelivered;
             }
-            else if (!allDelivered && _stopCompleteButtons.ContainsKey(stop))
-            {
-                // Remove the Complete Stop button
-                var btn = _stopCompleteButtons[stop];
-                flpStops.Controls.Remove(btn);
-                btn.Click -= CompleteStop_Click;
-                btn.Dispose();
-                _stopCompleteButtons.Remove(stop);
-            }
-        }
-
-        /// <summary>
-        /// Finds the index of the last control in flpStops that belongs to the given stop.
-        /// Checks checkbox Tags (DeliveryItem) against the stop's DropOff/PickUp lists.
-        /// </summary>
-        private int FindLastControlIndexForStop(DeliveryPlanStop stop)
-        {
-            int lastIndex = -1;
-
-            for (int i = 0; i < flpStops.Controls.Count; i++)
-            {
-                var ctrl = flpStops.Controls[i];
-                if (ctrl.Tag is DeliveryItemTag dit && dit.StopSequence == stop.Sequence)
-                {
-                    lastIndex = i;
-                }
-                else if (ctrl.Tag == stop)
-                {
-                    lastIndex = i;
-                }
-            }
-
-            return lastIndex;
         }
 
         private void CompleteStop_Click(object sender, EventArgs e)
