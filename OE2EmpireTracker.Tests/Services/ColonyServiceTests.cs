@@ -437,11 +437,85 @@ namespace OE2EmpireTracker.Tests.Services
             service.AddCommodityRequest(colony.UUID, "Steel", 100, null);
 
             var needBy = new DateTime(2025, 12, 31);
-            service.UpdateCommodityRequest(colony.UUID, "Steel", 200, 50, needBy);
+            service.UpdateCommodityRequest(colony.UUID, "Steel", 200, 50, needBy, false);
 
             Assert.That(colony.Commodities[0].Requested, Is.EqualTo(200));
             Assert.That(colony.Commodities[0].Delivered, Is.EqualTo(50));
             Assert.That(colony.Commodities[0].NeedBy, Is.EqualTo(needBy));
+        }
+
+        // -------------------------------------------------------------------
+        // Bug condition: Fulfilled checkbox not persisted
+        // Validates: Requirements 1.1, 1.2, 2.1, 2.2
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void UpdateCommodityRequest_SetsFulfilledTrue_WhenFulfilledParameterIsTrue()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "FulfilledTest",
+                ColonyName = "FulfilledColony",
+                SystemName = "FulfilledSystem",
+            };
+            playerContext.AddColony(colony);
+            service.AddCommodityRequest(colony.UUID, "Steel", 100, null);
+
+            var needBy = new DateTime(2025, 12, 31);
+            service.UpdateCommodityRequest(colony.UUID, "Steel", 100, 100, needBy, true);
+
+            Assert.That(colony.Commodities[0].Fulfilled, Is.True);
+        }
+
+        [Test]
+        public void UpdateCommodityRequest_SetsFulfilledFalse_WhenFulfilledParameterIsFalse()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "UnfulfillTest",
+                ColonyName = "UnfulfillColony",
+                SystemName = "UnfulfillSystem",
+            };
+            playerContext.AddColony(colony);
+            service.AddCommodityRequest(colony.UUID, "Steel", 100, null);
+            colony.Commodities[0].Fulfilled = true; // Pre-set to true
+
+            var needBy = new DateTime(2025, 12, 31);
+            service.UpdateCommodityRequest(colony.UUID, "Steel", 100, 0, needBy, false);
+
+            Assert.That(colony.Commodities[0].Fulfilled, Is.False);
+        }
+
+        // -------------------------------------------------------------------
+        // Preservation: Non-Fulfilled column edits unchanged
+        // Validates: Requirements 3.1, 3.2, 3.3
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void UpdateCommodityRequest_PreservesFulfilled_WhenPassingExistingValue()
+        {
+            var colony = new Colony
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = "test-player-uuid",
+                PlanetName = "PreserveTest",
+                ColonyName = "PreserveColony",
+                SystemName = "PreserveSystem",
+            };
+            playerContext.AddColony(colony);
+            service.AddCommodityRequest(colony.UUID, "Steel", 100, null);
+            colony.Commodities[0].Fulfilled = true; // Pre-set to true
+
+            // Simulate Amount edit (column 1) — passes existing Fulfilled value
+            var needBy = new DateTime(2025, 12, 31);
+            service.UpdateCommodityRequest(colony.UUID, "Steel", 200, 100, needBy, true);
+
+            Assert.That(colony.Commodities[0].Fulfilled, Is.True, "Fulfilled should be preserved when passing existing value");
+            Assert.That(colony.Commodities[0].Requested, Is.EqualTo(200), "Requested should be updated");
         }
 
         // -------------------------------------------------------------------

@@ -463,7 +463,7 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Updates a commodity request in the colony by name (case-insensitive).
         /// </summary>
-        public void UpdateCommodityRequest(string colonyUUID, string commodityName, int requested, int delivered, DateTime needBy)
+        public void UpdateCommodityRequest(string colonyUUID, string commodityName, int requested, int delivered, DateTime needBy, bool fulfilled)
         {
             var colony = GetMutableColonyOrThrow(colonyUUID);
 
@@ -482,12 +482,14 @@ namespace OE2EmpireTracker.Services
                     existing.Requested = requested;
                     existing.Delivered = delivered;
                     existing.NeedBy = needBy;
+                    existing.Fulfilled = fulfilled;
                     Log.Info(
-                        "ColonyService.UpdateCommodityRequest: colony={0} commodity='{1}' requested={2} delivered={3}",
+                        "ColonyService.UpdateCommodityRequest: colony={0} commodity='{1}' requested={2} delivered={3} fulfilled={4}",
                         colonyUUID,
                         commodityName,
                         requested,
-                        delivered);
+                        delivered,
+                        fulfilled);
                 }
                 else
                 {

@@ -2014,7 +2014,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 int value;
                 if (int.TryParse(row.Cells[1].Value?.ToString(), out value))
                 {
-                    _colonyService.UpdateCommodityRequest(_selectedColonyUUID, request.Name, value, request.Delivered, request.NeedBy);
+                    _colonyService.UpdateCommodityRequest(_selectedColonyUUID, request.Name, value, request.Delivered, request.NeedBy, request.Fulfilled);
                 }
             }
 
@@ -2023,7 +2023,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             {
                 bool fulfilled = row.Cells[2].Value is bool b && b;
                 int delivered = fulfilled ? request.Requested : 0;
-                _colonyService.UpdateCommodityRequest(_selectedColonyUUID, request.Name, request.Requested, delivered, request.NeedBy);
+                _colonyService.UpdateCommodityRequest(_selectedColonyUUID, request.Name, request.Requested, delivered, request.NeedBy, fulfilled);
                 // Refresh to update strikethrough
                 PopulateCommodityRequestGrid();
             }
@@ -2035,7 +2035,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 DateTime? parsed = ParseCountdownToDateTime(text);
                 if (parsed.HasValue)
                 {
-                    _colonyService.UpdateCommodityRequest(_selectedColonyUUID, request.Name, request.Requested, request.Delivered, parsed.Value);
+                    _colonyService.UpdateCommodityRequest(_selectedColonyUUID, request.Name, request.Requested, request.Delivered, parsed.Value, request.Fulfilled);
                 }
             }
 
