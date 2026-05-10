@@ -30,6 +30,18 @@ namespace OE2EmpireTracker.Tests.Services
             EmpireContext.Reset();
         }
 
+        [SetUp]
+        public void SetUp()
+        {
+            SystemClock.UtcNowFunc = () => new DateTime(2026, 5, 10, 12, 0, 0, DateTimeKind.Utc);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            SystemClock.Reset();
+        }
+
         // -----------------------------------------------------------------------
         // Property 1: Activity collection completeness and classification
         // Feature: colony-activity-form, Property 1: Activity collection completeness and classification
@@ -224,15 +236,14 @@ namespace OE2EmpireTracker.Tests.Services
                 cdt.TimeRemaining = seconds;
                 string cdtString = cdt.TimeRemainingString;
 
-                // Allow +/-1s tolerance due to clock drift between set and read
-                // Parse both strings back to seconds for comparison
+                // Clock is frozen so no drift between set and read
                 long formattedSeconds = ParseTimeString(formatted);
                 long cdtSeconds = ParseTimeString(cdtString);
 
                 Assert.That(
-                    Math.Abs(formattedSeconds - cdtSeconds),
-                    Is.LessThanOrEqualTo(1),
-                    $"Iteration {iteration}: FormatSeconds({seconds})='{formatted}' vs CDT='{cdtString}' differ by more than 1s");
+                    formattedSeconds,
+                    Is.EqualTo(cdtSeconds),
+                    $"Iteration {iteration}: FormatSeconds({seconds})='{formatted}' vs CDT='{cdtString}'");
             }
         }
 

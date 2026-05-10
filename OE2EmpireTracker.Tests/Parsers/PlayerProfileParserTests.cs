@@ -3,6 +3,7 @@ using System.IO;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Parsers
 {
@@ -14,7 +15,14 @@ namespace OE2EmpireTracker.Tests.Parsers
         [SetUp]
         public void SetUp()
         {
+            SystemClock.UtcNowFunc = () => new DateTime(2026, 5, 10, 12, 0, 0, DateTimeKind.Utc);
             _parser = new PlayerProfileParser();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            SystemClock.Reset();
         }
 
         // -------------------------------------------------------------------
@@ -291,10 +299,9 @@ namespace OE2EmpireTracker.Tests.Parsers
             var profile = ParseScalorn();
             var skill = profile.GetSkill(SkillName.ContractManagement);
             // 22 days, 9 hours = (22*24 + 9) * 3600 = 537 * 3600 = 1933200 seconds
-            // Allow +/-5s tolerance because TimeRemaining is computed from DateTime.UtcNow
             Assert.That(
                 skill.CompletionTime.TimeRemaining,
-                Is.InRange(1933200L - 5, 1933200L));
+                Is.EqualTo(1933200L));
         }
 
         // Requirement 9.1: CitizenId

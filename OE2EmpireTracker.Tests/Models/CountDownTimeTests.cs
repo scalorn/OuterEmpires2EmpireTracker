@@ -1,12 +1,27 @@
 using System;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Models
 {
     [TestFixture]
     public class CountDownTimeTests
     {
+        private static readonly DateTime FrozenNow = new DateTime(2026, 5, 10, 12, 0, 0, DateTimeKind.Utc);
+
+        [SetUp]
+        public void SetUp()
+        {
+            SystemClock.UtcNowFunc = () => FrozenNow;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            SystemClock.Reset();
+        }
+
         // -----------------------------------------------------------------------
         // Constructor
         // -----------------------------------------------------------------------
@@ -33,25 +48,24 @@ namespace OE2EmpireTracker.Tests.Models
         public void TimeRemaining_FutureEndTime_ReturnsPositiveSeconds()
         {
             var cdt = new CountDownTime();
-            cdt.EndTime = DateTime.UtcNow.AddSeconds(100);
-            Assert.That(cdt.TimeRemaining, Is.GreaterThan(0));
+            cdt.EndTime = FrozenNow.AddSeconds(100);
+            Assert.That(cdt.TimeRemaining, Is.EqualTo(100));
         }
 
         [Test]
         public void TimeRemaining_PastEndTime_ReturnsNegativeSeconds()
         {
             var cdt = new CountDownTime();
-            cdt.EndTime = DateTime.UtcNow.AddSeconds(-100);
-            Assert.That(cdt.TimeRemaining, Is.LessThan(0));
+            cdt.EndTime = FrozenNow.AddSeconds(-100);
+            Assert.That(cdt.TimeRemaining, Is.EqualTo(-100));
         }
 
         [Test]
         public void TimeRemaining_ApproximatelyCorrect()
         {
             var cdt = new CountDownTime();
-            cdt.EndTime = DateTime.UtcNow.AddSeconds(3600);
-            // Allow 2 second tolerance for test execution time
-            Assert.That(cdt.TimeRemaining, Is.InRange(3598L, 3600L));
+            cdt.EndTime = FrozenNow.AddSeconds(3600);
+            Assert.That(cdt.TimeRemaining, Is.EqualTo(3600));
         }
 
         // -----------------------------------------------------------------------
@@ -63,7 +77,7 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var cdt = new CountDownTime();
             cdt.TimeRemaining = 3600;
-            Assert.That(cdt.EndTime, Is.GreaterThan(DateTime.UtcNow));
+            Assert.That(cdt.EndTime, Is.EqualTo(FrozenNow.AddSeconds(3600)));
         }
 
         [Test]
@@ -71,7 +85,7 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var cdt = new CountDownTime();
             cdt.TimeRemaining = 500;
-            Assert.That(cdt.TimeRemaining, Is.InRange(498L, 500L));
+            Assert.That(cdt.TimeRemaining, Is.EqualTo(500));
         }
 
         [Test]
@@ -79,7 +93,7 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var cdt = new CountDownTime();
             cdt.TimeRemaining = 0;
-            Assert.That(cdt.EndTime, Is.EqualTo(DateTime.UtcNow).Within(TimeSpan.FromSeconds(2)));
+            Assert.That(cdt.EndTime, Is.EqualTo(FrozenNow));
         }
 
         // -----------------------------------------------------------------------
