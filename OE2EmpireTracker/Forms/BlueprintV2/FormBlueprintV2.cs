@@ -30,28 +30,9 @@ namespace OE2EmpireTracker
     {
         /// <summary>
         /// Extended 16-color Wong palette (8 base + 8 lighter tints) for colorblind-friendly chart lines.
+        /// Delegates to the shared <see cref="ChartColors.WongPalette"/> constant.
         /// </summary>
-        internal static readonly Color[] WongPalette = new Color[]
-        {
-            // Base Wong palette (8 colors)
-            ColorTranslator.FromHtml("#000000"), // black
-            ColorTranslator.FromHtml("#E69F00"), // orange
-            ColorTranslator.FromHtml("#56B4E9"), // sky blue
-            ColorTranslator.FromHtml("#009E73"), // bluish green
-            ColorTranslator.FromHtml("#B8860B"), // dark goldenrod
-            ColorTranslator.FromHtml("#0072B2"), // blue
-            ColorTranslator.FromHtml("#D55E00"), // vermillion
-            ColorTranslator.FromHtml("#CC79A7"), // reddish purple
-            // 50% lighter tints for properties 9-16
-            ColorTranslator.FromHtml("#808080"), // light black (grey)
-            ColorTranslator.FromHtml("#F2CF80"), // light orange
-            ColorTranslator.FromHtml("#ABD9F4"), // light sky blue
-            ColorTranslator.FromHtml("#80CEB9"), // light bluish green
-            ColorTranslator.FromHtml("#DAA520"), // goldenrod
-            ColorTranslator.FromHtml("#80B8D8"), // light blue
-            ColorTranslator.FromHtml("#EAAF80"), // light vermillion
-            ColorTranslator.FromHtml("#E5BCD3"), // light reddish purple
-        };
+        internal static readonly Color[] WongPalette = ChartColors.WongPalette;
 
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 

@@ -763,5 +763,24 @@ namespace OE2EmpireTracker.Services
                 .ToList()
                 .AsReadOnly();
         }
+
+        // ----------------------------------------------------------------
+        //  Yield Distribution
+        // ----------------------------------------------------------------
+
+        /// <summary>
+        /// Orders ResourcePurityCombo items by ResourceName then Purity (ascending, case-insensitive).
+        /// Used by YieldDistributionService.GetAvailableCombos.
+        /// </summary>
+        public static IReadOnlyList<ResourcePurityCombo> OrderResourcePurityCombos(
+            IEnumerable<ResourcePurityCombo> combos)
+        {
+            if (combos == null) return Array.Empty<ResourcePurityCombo>();
+            return combos
+                .OrderBy(c => c.ResourceName, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(c => c.Purity, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .AsReadOnly();
+        }
     }
 }

@@ -44,6 +44,8 @@ const KNOWN_INTERNAL = new Set([
     'PricingPlanCreateRequest',
     'PricingPlanViewModel',
     'PricingPlanService',
+    // Yield Distribution — consumed by FormSurvey (Task 5/6 pending)
+    'YieldDistributionService',
 ]);
 
 function findCsFiles(dir, results, includeDesigner) {

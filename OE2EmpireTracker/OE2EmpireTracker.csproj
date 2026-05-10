@@ -221,6 +221,7 @@
     <Compile Include="Forms\ShipInstance\FormShipInstance.Designer.cs">
       <DependentUpon>FormShipInstance.cs</DependentUpon>
     </Compile>
+    <Compile Include="Services\YieldDistributionService.cs" />
     <Compile Include="Services\EvolutionChainService.cs" />
     <Compile Include="Services\HelpTopicRegistry.cs" />
     <Compile Include="Services\HelpRenderer.cs" />
@@ -231,6 +232,9 @@
     <Compile Include="Services\ContactsService.cs" />
     <Compile Include="Services\AsteroidService.cs" />
     <Compile Include="Services\StockTargetService.cs" />
+    <Compile Include="Models\ResourcePurityCombo.cs" />
+    <Compile Include="Models\DistributionPoint.cs" />
+    <Compile Include="Models\YieldDistributionResult.cs" />
     <Compile Include="Models\BaselineGameConstants.cs" />
     <Compile Include="Models\ResearchTimeEntry.cs" />
     <Compile Include="Models\RefiningRecipe.cs" />
@@ -299,6 +303,7 @@
     <Compile Include="Models\TechLevel.cs" />
     <Compile Include="Services\EmpireContext.cs" />
     <Compile Include="Services\JsonSettings.cs" />
+    <Compile Include="Constants\ChartColors.cs" />
     <Compile Include="Constants\BlueprintTypes.cs" />
     <Compile Include="Constants\ResearchTimeLookup.cs" />
     <Compile Include="Constants\RefiningRecipes.cs" />

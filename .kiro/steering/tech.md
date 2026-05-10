@@ -91,9 +91,21 @@ All paths are **relative to the workspace root** (`D:\projects\OuterEmpires2\OE2
 
 - Main project files: `OE2EmpireTracker/path/to/file.cs`
 - Test project files: `OE2EmpireTracker.Tests/path/to/file.cs`
-- Spec files: `spec/requirements/Feature.md`
+- Spec files (external): `spec/requirements/Feature.md`
+- Kiro specs: `.kiro/specs/feature-name/design.md`
 - Tools: `.kiro/tools/script.js`
 - Steering: `.kiro/steering/file.md`
+
+**CRITICAL**: `.kiro/` and `spec/` live at the workspace root. Do NOT prefix them with `OE2EmpireTracker/`. Only source code files under the `OE2EmpireTracker/` and `OE2EmpireTracker.Tests/` project folders get that prefix.
+
+### Large File Writes — MANDATORY chunking
+
+**Tool calls with very large `content` parameters will be aborted by the platform.** If the content exceeds ~2000 characters, split the write into multiple calls:
+
+1. `mcp_fwrite_write_file` with the first chunk (header/first section)
+2. `mcp_fwrite_append_file` for each subsequent chunk
+
+Keep each chunk under 2000 characters to stay safely within limits. This applies to all file writes — source code, spec documents, test files, etc.
 
 ### write_file — Write or overwrite entire file
 ```

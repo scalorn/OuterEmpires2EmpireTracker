@@ -12,6 +12,9 @@
         "append_file",
         "replace_in_file",
         "batch_write",
+        "delete_file",
+        "create_directory",
+        "delete_directory",
         "delete_file"
       ]
     }

@@ -214,3 +214,17 @@ flowchart LR
 **REQ-SRV-079** SurveyViewModel SHALL be a disconnected edit buffer with LoadFrom, Reset, BuildUpdateRequest, BuildCreateRequest, and IsDirty tracking.  
 **REQ-SRV-080** FormSurvey SHALL NOT directly mutate Survey entities. All mutations SHALL go through SurveyService.  
 **REQ-SRV-081** FormSurvey SHALL prompt for unsaved changes (Save/Discard/Cancel) on selection change, New, Import, form close, and application exit when the ViewModel is dirty.
+
+## Yield Distribution (BL-xxx)
+
+**REQ-SRV-090** YieldDistributionService SHALL be a static service class (no UI dependencies) that computes yield distribution data from surveys.  
+**REQ-SRV-091** YieldDistributionService.ComputeDistribution SHALL accept a list of ReadOnlySurvey, a resource name, a purity, and a bin width, and return a YieldDistributionResult.  
+**REQ-SRV-092** YieldDistributionService SHALL clamp bin width to [1, 100].  
+**REQ-SRV-093** YieldDistributionService SHALL extract yields by matching Resource and Purity (case-insensitive) and parsing Amount with decimal.TryParse.  
+**REQ-SRV-094** YieldDistributionService SHALL align bins to bin-width boundaries: binStart = Floor(minYield / binWidth) * binWidth.  
+**REQ-SRV-095** YieldDistributionService SHALL use upper-bound exclusive binning: y >= lower && y < upper.  
+**REQ-SRV-096** YieldDistributionResult SHALL report InsufficientData when fewer than 2 matching yields exist.  
+**REQ-SRV-097** YieldDistributionService.GetAvailableCombos SHALL return distinct ResourcePurityCombo pairs ordered by ResourceName then Purity.  
+**REQ-SRV-098** ResourcePurityCombo SHALL identify a unique resource+purity combination with case-insensitive equality.  
+**REQ-SRV-099** DistributionPoint SHALL represent a single (BinMidpoint, Percentage) point on a distribution curve.  
+**REQ-SRV-100** ChartColors SHALL provide a shared 16-color Wong palette array for colorblind-friendly chart rendering, used by both evolution graphs and yield distribution graphs.
