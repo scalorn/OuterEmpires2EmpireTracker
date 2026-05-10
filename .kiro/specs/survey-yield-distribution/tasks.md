@@ -19,22 +19,22 @@
 
 ## Task 4: Property-Based Tests for YieldDistributionService
 
-- [ ] 4.1 Create `YieldDistributionServiceTests.cs` with FsCheck generators for surveys
-  - [~] 4.1.1 Property 1: Type Filtering Correctness — filtered surveys only contain the specified SurveyType
-  - [~] 4.1.2 Property 2: Resource+Purity Extraction Accuracy — MatchingSurveyCount equals expected count
-  - [~] 4.1.3 Property 3: Percentage Sum Invariant — sum of all bin percentages equals 100% (±0.01%)
-  - [~] 4.1.4 Property 4: Bin Midpoint Correctness — midpoint equals lower + binWidth/2
-  - [~] 4.1.5 Property 5: Bin Coverage Completeness — every yield maps to exactly one bin
-  - [~] 4.1.6 Property 6: Bin Width Clamping — effective width always in [1, 100]
-  - [~] 4.1.7 Property 7: Insufficient Data Detection — InsufficientData true and Points empty when < 2 matches
-  - [~] 4.1.8 Property 8: Axis Range Coverage — all yields fall within bin range
-  - [~] 4.1.9 Property 9: GetAvailableCombos Completeness — returns exact distinct set of resource+purity pairs
-- [ ] 4.2 Example-based edge-case tests
-  - [~] 4.2.1 Empty survey list returns empty result
-  - [~] 4.2.2 Single survey returns InsufficientData
-  - [~] 4.2.3 All yields identical produces single bin at 100%
-  - [~] 4.2.4 Non-numeric Amount values are skipped gracefully
-  - [~] 4.2.5 Yields at bin boundaries assigned correctly
+- [x] 4.1 Create `YieldDistributionServiceTests.cs` with FsCheck generators for surveys
+  - [x] 4.1.1 Property 1: Type Filtering Correctness — filtered surveys only contain the specified SurveyType
+  - [x] 4.1.2 Property 2: Resource+Purity Extraction Accuracy — MatchingSurveyCount equals expected count
+  - [x] 4.1.3 Property 3: Percentage Sum Invariant — sum of all bin percentages equals 100% (±0.01%)
+  - [x] 4.1.4 Property 4: Bin Midpoint Correctness — midpoint equals lower + binWidth/2
+  - [x] 4.1.5 Property 5: Bin Coverage Completeness — every yield maps to exactly one bin
+  - [x] 4.1.6 Property 6: Bin Width Clamping — effective width always in [1, 100]
+  - [x] 4.1.7 Property 7: Insufficient Data Detection — InsufficientData true and Points empty when < 2 matches
+  - [x] 4.1.8 Property 8: Axis Range Coverage — all yields fall within bin range
+  - [x] 4.1.9 Property 9: GetAvailableCombos Completeness — returns exact distinct set of resource+purity pairs
+- [x] 4.2 Example-based edge-case tests
+  - [x] 4.2.1 Empty survey list returns empty result
+  - [x] 4.2.2 Single survey returns InsufficientData
+  - [x] 4.2.3 All yields identical produces single bin at 100%
+  - [x] 4.2.4 Non-numeric Amount values are skipped gracefully
+  - [x] 4.2.5 Yields at bin boundaries assigned correctly
 
 ## Task 5: UI — Add TabControl and Yield Distribution tab to FormSurvey
 

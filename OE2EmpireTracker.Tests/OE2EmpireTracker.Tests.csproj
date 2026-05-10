@@ -378,6 +378,7 @@
     <Compile Include="Services\ColonyAdminReportBuilderBuildSortPropertyTests.cs" />
     <Compile Include="Services\ColonyAdminReportBuilderInactivityOrderPropertyTests.cs" />
     <Compile Include="Services\ColonyAdminReportBuilderInactivityContentPropertyTests.cs" />
+    <Compile Include="Services\YieldDistributionServiceTests.cs" />
     <Compile Include="Services\ColonyAdminReportBuilderExcludePropertyTests.cs" />
     <Compile Include="Services\ColonyAdminReportBuilderActivitySortPropertyTests.cs" />
     <Compile Include="Services\ColonyAdminReportBuilderCommodityPropertyTests.cs" />
