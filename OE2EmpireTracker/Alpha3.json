@@ -76367,14 +76367,6 @@
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
-        "3e109ec4-1e25-46a3-a2d1-ea41e67a4042": {
-  "UUID": "3e109ec4-1e25-46a3-a2d1-ea41e67a4042",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Lanthanide Volatiles",
-  "Name": "Lanthanide Volatiles",
-  "Quantity": 4,
-  "ResourcePurity": "High"
-},
         "43d3d950-6df9-4a73-9b22-5c12aa006a7d": {
   "UUID": "43d3d950-6df9-4a73-9b22-5c12aa006a7d",
   "ItemType": "Resource",
@@ -76388,7 +76380,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Lanthanide Volatiles",
   "Name": "Lanthanide Volatiles",
-  "Quantity": 1728,
+  "Quantity": 1748,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -76457,14 +76449,6 @@
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
-        "e3dae5f6-f5a3-4f70-89b1-328e47c0de12": {
-  "UUID": "e3dae5f6-f5a3-4f70-89b1-328e47c0de12",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Heavy Alkaline Earth Metals",
-  "Name": "Heavy Alkaline Earth Metals",
-  "Quantity": 4,
-  "ResourcePurity": "High"
-},
         "ea484888-4346-4959-8032-26f69b4c4f8b": {
   "UUID": "ea484888-4346-4959-8032-26f69b4c4f8b",
   "ItemType": "Resource",
@@ -76478,7 +76462,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkaline Earth Metals",
   "Name": "Heavy Alkaline Earth Metals",
-  "Quantity": 1728,
+  "Quantity": 1748,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 }
@@ -76994,8 +76978,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T22:30:19.7693065Z",
-            "EndTime": "2026-05-11T23:30:19.7693065Z",
+            "StartTime": "2026-05-11T23:30:19.7693065Z",
+            "EndTime": "2026-05-12T00:30:19.7693065Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -77750,8 +77734,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T22:30:19.7693065Z",
-            "EndTime": "2026-05-11T23:30:19.7693065Z",
+            "StartTime": "2026-05-11T23:30:19.7693065Z",
+            "EndTime": "2026-05-12T00:30:19.7693065Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
