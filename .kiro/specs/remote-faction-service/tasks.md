@@ -94,7 +94,7 @@
 ## Phase 5: Faction Membership (Mutual Consent)
 
 - [ ] 5.1 Join requests
-  - [-] 5.1.1 POST /api/v1/factions/{uuid}/requests — character requests to join
+  - [x] 5.1.1 POST /api/v1/factions/{uuid}/requests — character requests to join
   - [ ] 5.1.2 GET /api/v1/factions/{uuid}/requests — list pending requests (Leader/Owner)
   - [ ] 5.1.3 POST /api/v1/factions/{uuid}/requests/{id}/accept — leader accepts, sets FactionUUID
 
@@ -110,7 +110,7 @@
 ## Phase 6: Central Data Storage Endpoints
 
 - [ ] 6.1 Character data CRUD
-  - [ ] 6.1.1 GET /api/v1/characters/{uuid}/data/{dataType} — get collection
+  - [-] 6.1.1 GET /api/v1/characters/{uuid}/data/{dataType} — get collection
   - [ ] 6.1.2 POST /api/v1/characters/{uuid}/data/{dataType} — create entity
   - [ ] 6.1.3 GET /api/v1/characters/{uuid}/data/{dataType}/{entityUuid} — get entity
   - [ ] 6.1.4 PUT /api/v1/characters/{uuid}/data/{dataType}/{entityUuid} — update entity

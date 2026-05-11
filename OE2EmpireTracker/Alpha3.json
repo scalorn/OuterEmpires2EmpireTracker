@@ -43444,7 +43444,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Post-Trans Metals",
   "Name": "Post-Trans Metals",
-  "Quantity": 2147478962,
+  "Quantity": 2147478937,
   "ResourcePurity": "High"
 },
         "b47b9fa3-5851-44c9-b87e-21aca658a866": {
@@ -43481,7 +43481,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Post-Trans Metals",
   "Name": "Post-Trans Metals",
-  "Quantity": 46097,
+  "Quantity": 46224,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 }
@@ -43551,8 +43551,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:51:59.7407913Z",
-            "EndTime": "2026-05-11T21:51:59.7407913Z",
+            "StartTime": "2026-05-11T21:51:59.7407913Z",
+            "EndTime": "2026-05-11T22:51:59.7407913Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },

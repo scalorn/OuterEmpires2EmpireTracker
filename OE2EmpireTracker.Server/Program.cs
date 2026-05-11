@@ -105,6 +105,8 @@ app.MapTokenEndpoints();
 app.MapFactionEndpoints();
 app.MapCharacterEndpoints();
 app.MapMembershipEndpoints();
+app.MapDataEndpoints();
+app.MapSharingEndpoints();
 
 app.Lifetime.ApplicationStarted.Register(() =>
 {
