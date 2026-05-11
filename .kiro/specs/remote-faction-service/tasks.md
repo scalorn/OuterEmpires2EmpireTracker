@@ -3,7 +3,7 @@
 ## Phase 1: Project Scaffolding and Health Endpoint
 
 - [ ] 1.1 Create OE2EmpireTracker.Server .NET 8 project
-  - [ ] 1.1.1 Create the project directory and .csproj (ASP.NET Core Minimal API, net8.0)
+  - [x] 1.1.1 Create the project directory and .csproj (ASP.NET Core Minimal API, net8.0)
   - [ ] 1.1.2 Add project to OE2EmpireTracker.sln
   - [ ] 1.1.3 Add NuGet packages: Microsoft.AspNetCore.App (implicit), Serilog, Newtonsoft.Json
   - [ ] 1.1.4 Create Program.cs with minimal API host builder, HTTPS/Kestrel config, graceful shutdown
@@ -17,7 +17,7 @@
   - [ ] 1.2.3 Verify tests pass
 
 - [ ] 1.3 TLS / Certificate support
-  - [ ] 1.3.1 Implement CertificateManager — generate self-signed cert on first run, persist to configured path
+  - [-] 1.3.1 Implement CertificateManager — generate self-signed cert on first run, persist to configured path
   - [ ] 1.3.2 Support custom PFX/PEM certificate via configuration
   - [ ] 1.3.3 Log certificate thumbprint on startup
   - [ ] 1.3.4 Support X-Forwarded-For/Proto headers for reverse proxy mode

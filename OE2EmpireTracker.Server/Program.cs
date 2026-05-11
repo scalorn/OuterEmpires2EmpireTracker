@@ -1,18 +1,38 @@
 using System.Reflection;
+using Microsoft.AspNetCore.HttpOverrides;
+using OE2EmpireTracker.Server.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel for HTTPS
-builder.WebHost.ConfigureKestrel(options =>
+// Support reverse proxy headers
+var useForwardedHeaders = builder.Configuration.GetValue<bool>("Server:UseForwardedHeaders", false);
+if (useForwardedHeaders)
 {
-    var port = builder.Configuration.GetValue<int>("Server:Port", 5443);
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    });
+}
+
+// Configure Kestrel for HTTPS with certificate
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    var port = context.Configuration.GetValue<int>("Server:Port", 5443);
+    var logger = LoggerFactory.Create(b => b.AddConsole()).CreateLogger("Startup");
+    var cert = CertificateManager.GetOrCreateCertificate(context.Configuration, logger);
+
     options.ListenAnyIP(port, listenOptions =>
     {
-        listenOptions.UseHttps();
+        listenOptions.UseHttps(cert);
     });
 });
 
 var app = builder.Build();
+
+if (useForwardedHeaders)
+{
+    app.UseForwardedHeaders();
+}
 
 // Health endpoint (no auth required)
 app.MapGet("/health", () =>

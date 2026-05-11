@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>OE2EmpireTracker.Server</RootNamespace>
     <AssemblyName>OE2EmpireTracker.Server</AssemblyName>
+    <NoWarn>SA1516;SA1200;SA1633;SA1101;SA1309;SA1600;SA1602</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
