@@ -136,7 +136,7 @@
 ## Phase 7: WebSocket Real-Time Push
 
 - [ ] 7.1 WebSocket infrastructure
-  - [-] 7.1.1 WebSocket endpoint at /ws with Bearer token auth
+  - [x] 7.1.1 WebSocket endpoint at /ws with Bearer token auth
   - [ ] 7.1.2 Connection management (track connected clients, heartbeat, timeout)
   - [ ] 7.1.3 Reconnection support with exponential backoff (client-side)
 
@@ -161,7 +161,7 @@
 ## Phase 9: Server-Side Background Processing
 
 - [ ] 9.1 Processing engine
-  - [ ] 9.1.1 ServerBackgroundProcessor — wraps Common's processing logic
+  - [-] 9.1.1 ServerBackgroundProcessor — wraps Common's processing logic
   - [ ] 9.1.2 Only processes opted-in characters
   - [ ] 9.1.3 Configurable tick interval (default 60s)
   - [ ] 9.1.4 Enable/disable via config and runtime API

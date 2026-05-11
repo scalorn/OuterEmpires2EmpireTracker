@@ -7,6 +7,7 @@ using OE2EmpireTracker.Server.Auth;
 using OE2EmpireTracker.Server.Config;
 using OE2EmpireTracker.Server.Endpoints;
 using OE2EmpireTracker.Server.Middleware;
+using OE2EmpireTracker.Server.Processing;
 using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
@@ -45,6 +46,10 @@ builder.Services.AddSingleton<IStorageBackend, JsonFileStorageBackend>();
 // Register WebSocket hub and event dispatcher
 builder.Services.AddSingleton<WebSocketHub>();
 builder.Services.AddSingleton<EventDispatcher>();
+
+// Register background processor as hosted service
+builder.Services.AddSingleton<ServerBackgroundProcessor>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<ServerBackgroundProcessor>());
 
 // Authentication
 builder.Services.AddAuthentication(TokenAuthHandler.SchemeName)
@@ -125,6 +130,7 @@ app.MapMembershipEndpoints();
 app.MapDataEndpoints();
 app.MapSharingEndpoints();
 app.MapRateLimitEndpoints();
+app.MapAdminEndpoints();
 
 // WebSocket endpoint
 var heartbeatTimeout = builder.Configuration.GetValue<int>(

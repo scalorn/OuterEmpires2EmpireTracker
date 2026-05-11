@@ -28406,7 +28406,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Lanthanides",
   "Name": "Lanthanides",
-  "Quantity": 2147479640,
+  "Quantity": 2147479653,
   "ResourcePurity": "High"
 },
         "34b29d24-3ceb-433e-b7bf-96422c470b4d": {
@@ -28430,7 +28430,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Noble Gases",
   "Name": "Noble Gases",
-  "Quantity": 2147477809,
+  "Quantity": 2147477791,
   "ResourcePurity": "High"
 },
         "565c9e7d-faba-47d0-9ff5-ba68bb6f9ed5": {
@@ -28473,7 +28473,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Organics",
   "Name": "Acidic Organics",
-  "Quantity": 2147476853,
+  "Quantity": 2147476856,
   "ResourcePurity": "Low"
 },
         "e032b31f-f6d1-42a9-92f9-247650d24ff8": {
@@ -28481,7 +28481,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Superheavy Exotics",
   "Name": "Superheavy Exotics",
-  "Quantity": 2147476853,
+  "Quantity": 2147476856,
   "ResourcePurity": "Low"
 },
         "e2a68c95-d617-4e19-9bcd-318245f28ed0": {
@@ -28489,7 +28489,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Noble Gases",
   "Name": "Noble Gases",
-  "Quantity": 45385,
+  "Quantity": 45512,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 }
@@ -28739,14 +28739,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6519543Z",
-            "EndTime": "2026-05-11T21:59:59.6519543Z",
+            "StartTime": "2026-05-11T21:59:59.6519543Z",
+            "EndTime": "2026-05-11T22:59:59.6519543Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "d038e40a-5a9a-4803-a8e8-bab9bf2d703d",
           "MiningSurveyResource": "Lanthanides",
-          "MiningLeftOvers": 0.420,
+          "MiningLeftOvers": 0.752,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -28876,14 +28876,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6519543Z",
-            "EndTime": "2026-05-11T21:59:59.6519543Z",
+            "StartTime": "2026-05-11T21:59:59.6519543Z",
+            "EndTime": "2026-05-11T22:59:59.6519543Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "d038e40a-5a9a-4803-a8e8-bab9bf2d703d",
           "MiningSurveyResource": "Superheavy Exotics",
-          "MiningLeftOvers": 0.355,
+          "MiningLeftOvers": 0.688,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -29027,14 +29027,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6519543Z",
-            "EndTime": "2026-05-11T21:59:59.6519543Z",
+            "StartTime": "2026-05-11T21:59:59.6519543Z",
+            "EndTime": "2026-05-11T22:59:59.6519543Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "d038e40a-5a9a-4803-a8e8-bab9bf2d703d",
           "MiningSurveyResource": "Noble Gases",
-          "MiningLeftOvers": 0.710,
+          "MiningLeftOvers": 0.376,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -29160,14 +29160,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6519543Z",
-            "EndTime": "2026-05-11T21:59:59.6519543Z",
+            "StartTime": "2026-05-11T21:59:59.6519543Z",
+            "EndTime": "2026-05-11T22:59:59.6519543Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "d038e40a-5a9a-4803-a8e8-bab9bf2d703d",
           "MiningSurveyResource": "Acidic Organics",
-          "MiningLeftOvers": 0.355,
+          "MiningLeftOvers": 0.688,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -29193,8 +29193,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:48.721784Z",
-            "EndTime": "2026-05-11T21:59:48.721784Z",
+            "StartTime": "2026-05-11T21:59:48.721784Z",
+            "EndTime": "2026-05-11T22:59:48.721784Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -29581,7 +29581,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkaline Earth Metals",
   "Name": "Heavy Alkaline Earth Metals",
-  "Quantity": 2147478349,
+  "Quantity": 2147478352,
   "ResourcePurity": "High"
 },
         "4521cf63-1b53-4c5a-b605-dbd48fdb360c": {
@@ -29589,7 +29589,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Organics",
   "Name": "Acidic Organics",
-  "Quantity": 9277,
+  "Quantity": 9302,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -29621,7 +29621,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Organics",
   "Name": "Acidic Organics",
-  "Quantity": 165917971,
+  "Quantity": 165917950,
   "ResourcePurity": "Low"
 },
         "ec0edf9d-6ffc-4b0b-b255-ddcafa0e23f6": {
@@ -29629,7 +29629,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Light Halogens",
   "Name": "Light Halogens",
-  "Quantity": 2147479665,
+  "Quantity": 2147479653,
   "ResourcePurity": "High"
 },
         "f511f084-770e-40a4-a6ea-a27d68499d44": {
@@ -29637,7 +29637,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Transuranic Volatiles",
   "Name": "Transuranic Volatiles",
-  "Quantity": 2147476828,
+  "Quantity": 2147476831,
   "ResourcePurity": "High"
 },
         "fb9e444e-16be-45ce-92f2-382bc6861c4d": {
@@ -29645,7 +29645,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Light Halogens",
   "Name": "Light Halogens",
-  "Quantity": 44504,
+  "Quantity": 44631,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 }
@@ -29715,14 +29715,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4110501Z",
-            "EndTime": "2026-05-11T21:59:59.4110501Z",
+            "StartTime": "2026-05-11T21:59:59.4110501Z",
+            "EndTime": "2026-05-11T22:59:59.4110501Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "b8ec8742-4e5a-47b3-bb99-759a30d50e73",
           "MiningSurveyResource": "Light Halogens",
-          "MiningLeftOvers": 0.336,
+          "MiningLeftOvers": 0.668,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -29748,8 +29748,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9617459Z",
-            "EndTime": "2026-05-11T21:59:59.9617459Z",
+            "StartTime": "2026-05-11T21:59:59.9617459Z",
+            "EndTime": "2026-05-11T22:59:59.9617459Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -29782,14 +29782,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4110501Z",
-            "EndTime": "2026-05-11T21:59:59.4110501Z",
+            "StartTime": "2026-05-11T21:59:59.4110501Z",
+            "EndTime": "2026-05-11T22:59:59.4110501Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "b8ec8742-4e5a-47b3-bb99-759a30d50e73",
           "MiningSurveyResource": "Heavy Alkaline Earth Metals",
-          "MiningLeftOvers": 0.439,
+          "MiningLeftOvers": 0.772,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -29995,8 +29995,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6173678Z",
-            "EndTime": "2026-05-11T21:59:59.6173678Z",
+            "StartTime": "2026-05-11T21:59:59.6173678Z",
+            "EndTime": "2026-05-11T22:59:59.6173678Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -30092,14 +30092,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4110501Z",
-            "EndTime": "2026-05-11T21:59:59.4110501Z",
+            "StartTime": "2026-05-11T21:59:59.4110501Z",
+            "EndTime": "2026-05-11T22:59:59.4110501Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "b8ec8742-4e5a-47b3-bb99-759a30d50e73",
           "MiningSurveyResource": "Transuranic Volatiles",
-          "MiningLeftOvers": 0.555,
+          "MiningLeftOvers": 0.888,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -30331,14 +30331,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4110501Z",
-            "EndTime": "2026-05-11T21:59:59.4110501Z",
+            "StartTime": "2026-05-11T21:59:59.4110501Z",
+            "EndTime": "2026-05-11T22:59:59.4110501Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "b8ec8742-4e5a-47b3-bb99-759a30d50e73",
           "MiningSurveyResource": "Acidic Organics",
-          "MiningLeftOvers": 0.795,
+          "MiningLeftOvers": 0.128,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -30722,7 +30722,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Halogens",
   "Name": "Halogens",
-  "Quantity": 2147477965,
+  "Quantity": 2147477978,
   "ResourcePurity": "High"
 },
         "37e03e00-4c85-4ff6-8419-55ed4f6cf1e2": {
@@ -30730,7 +30730,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Inorganics",
   "Name": "Alkali Inorganics",
-  "Quantity": 49250,
+  "Quantity": 49325,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -30784,7 +30784,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Inorganics",
   "Name": "Alkali Inorganics",
-  "Quantity": 2147483497,
+  "Quantity": 2147483572,
   "ResourcePurity": "Low"
 },
         "df229f6d-0514-4f4b-9a6b-515054cb79e8": {
@@ -30896,14 +30896,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8846719Z",
-            "EndTime": "2026-05-11T21:59:59.8846719Z",
+            "StartTime": "2026-05-11T21:59:59.8846719Z",
+            "EndTime": "2026-05-11T22:59:59.8846719Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e24dff37-7da2-4453-a3e8-1db1754d4cee",
           "MiningSurveyResource": "Acidic Organics",
-          "MiningLeftOvers": 0.220,
+          "MiningLeftOvers": 0.552,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -30930,14 +30930,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8856717Z",
-            "EndTime": "2026-05-11T21:59:59.8856717Z",
+            "StartTime": "2026-05-11T21:59:59.8856717Z",
+            "EndTime": "2026-05-11T22:59:59.8856717Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e24dff37-7da2-4453-a3e8-1db1754d4cee",
           "MiningSurveyResource": "Alkali Inorganics",
-          "MiningLeftOvers": 0.105,
+          "MiningLeftOvers": 0.752,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -30964,14 +30964,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8856717Z",
-            "EndTime": "2026-05-11T21:59:59.8856717Z",
+            "StartTime": "2026-05-11T21:59:59.8856717Z",
+            "EndTime": "2026-05-11T22:59:59.8856717Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e24dff37-7da2-4453-a3e8-1db1754d4cee",
           "MiningSurveyResource": "Alkali Organics",
-          "MiningLeftOvers": 0.953,
+          "MiningLeftOvers": 0.952,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -31284,14 +31284,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8856717Z",
-            "EndTime": "2026-05-11T21:59:59.8856717Z",
+            "StartTime": "2026-05-11T21:59:59.8856717Z",
+            "EndTime": "2026-05-11T22:59:59.8856717Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e24dff37-7da2-4453-a3e8-1db1754d4cee",
           "MiningSurveyResource": "Halogens",
-          "MiningLeftOvers": 0.276,
+          "MiningLeftOvers": 0.608,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -31318,8 +31318,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.2227299Z",
-            "EndTime": "2026-05-11T21:59:59.2227299Z",
+            "StartTime": "2026-05-11T21:59:59.2227299Z",
+            "EndTime": "2026-05-11T22:59:59.2227299Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -31760,8 +31760,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.2237298Z",
-            "EndTime": "2026-05-11T21:59:59.2237298Z",
+            "StartTime": "2026-05-11T21:59:59.2237298Z",
+            "EndTime": "2026-05-11T22:59:59.2237298Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -31815,14 +31815,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8856717Z",
-            "EndTime": "2026-05-11T21:59:59.8856717Z",
+            "StartTime": "2026-05-11T21:59:59.8856717Z",
+            "EndTime": "2026-05-11T22:59:59.8856717Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e24dff37-7da2-4453-a3e8-1db1754d4cee",
           "MiningSurveyResource": "Heavy Trans-Metals",
-          "MiningLeftOvers": 0.851,
+          "MiningLeftOvers": 0.184,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -31849,14 +31849,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8856717Z",
-            "EndTime": "2026-05-11T21:59:59.8856717Z",
+            "StartTime": "2026-05-11T21:59:59.8856717Z",
+            "EndTime": "2026-05-11T22:59:59.8856717Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e24dff37-7da2-4453-a3e8-1db1754d4cee",
           "MiningSurveyResource": "Lanthanides",
-          "MiningLeftOvers": 0.555,
+          "MiningLeftOvers": 0.888,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -31882,8 +31882,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4143612Z",
-            "EndTime": "2026-05-11T21:59:59.4143612Z",
+            "StartTime": "2026-05-11T21:59:59.4143612Z",
+            "EndTime": "2026-05-11T22:59:59.4143612Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -32064,14 +32064,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8856717Z",
-            "EndTime": "2026-05-11T21:59:59.8856717Z",
+            "StartTime": "2026-05-11T21:59:59.8856717Z",
+            "EndTime": "2026-05-11T22:59:59.8856717Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e24dff37-7da2-4453-a3e8-1db1754d4cee",
           "MiningSurveyResource": "Noble Gases",
-          "MiningLeftOvers": 0.555,
+          "MiningLeftOvers": 0.888,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -36407,7 +36407,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkaline Earth Metals",
   "Name": "Heavy Alkaline Earth Metals",
-  "Quantity": 2147476853,
+  "Quantity": 2147476856,
   "ResourcePurity": "High"
 }
       },
@@ -36531,8 +36531,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:48.7407913Z",
-            "EndTime": "2026-05-11T21:59:48.7407913Z",
+            "StartTime": "2026-05-11T21:59:48.7407913Z",
+            "EndTime": "2026-05-11T22:59:48.7407913Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -36744,14 +36744,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4025751Z",
-            "EndTime": "2026-05-11T21:59:59.4025751Z",
+            "StartTime": "2026-05-11T21:59:59.4025751Z",
+            "EndTime": "2026-05-11T22:59:59.4025751Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "bc5b860d-2493-45e6-9c3f-3f1f08bd8804",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
-          "MiningLeftOvers": 0.355,
+          "MiningLeftOvers": 0.688,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -36965,14 +36965,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4025751Z",
-            "EndTime": "2026-05-11T21:59:59.4025751Z",
+            "StartTime": "2026-05-11T21:59:59.4025751Z",
+            "EndTime": "2026-05-11T22:59:59.4025751Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "bc5b860d-2493-45e6-9c3f-3f1f08bd8804",
           "MiningSurveyResource": "Heavy Alkaline Earth Metals",
-          "MiningLeftOvers": 0.435,
+          "MiningLeftOvers": 0.768,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -37159,14 +37159,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4025751Z",
-            "EndTime": "2026-05-11T21:59:59.4025751Z",
+            "StartTime": "2026-05-11T21:59:59.4025751Z",
+            "EndTime": "2026-05-11T22:59:59.4025751Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "bc5b860d-2493-45e6-9c3f-3f1f08bd8804",
           "MiningSurveyResource": "Acidic Organics",
-          "MiningLeftOvers": 0.630,
+          "MiningLeftOvers": 0.296,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -44425,7 +44425,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Superheavy Exotics",
   "Name": "Superheavy Exotics",
-  "Quantity": 3380,
+  "Quantity": 3395,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -44449,7 +44449,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Non-Metallics",
   "Name": "Complex Non-Metallics",
-  "Quantity": 6699,
+  "Quantity": 6733,
   "ResourcePurity": "Low"
 },
         "a97565a9-5cff-4036-94dc-a4fca9e872b4": {
@@ -44457,7 +44457,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Inorganics",
   "Name": "Strong Alkali Inorganics",
-  "Quantity": 44188,
+  "Quantity": 44437,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -44466,7 +44466,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Lanthanide Volatiles",
   "Name": "Lanthanide Volatiles",
-  "Quantity": 753,
+  "Quantity": 757,
   "ResourcePurity": "Low"
 },
         "b5cb3481-3c42-4075-bdb7-fdb5b69ff68f": {
@@ -44474,7 +44474,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Metallics",
   "Name": "Complex Metallics",
-  "Quantity": 13609,
+  "Quantity": 13675,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -44483,15 +44483,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkali Metals",
   "Name": "Heavy Alkali Metals",
-  "Quantity": 2262,
-  "ResourcePurity": "High"
-},
-        "d2c8cd7a-aaa5-4a75-9618-29ae6e254326": {
-  "UUID": "d2c8cd7a-aaa5-4a75-9618-29ae6e254326",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Strong Alkali Inorganics",
-  "Name": "Strong Alkali Inorganics",
-  "Quantity": 5,
+  "Quantity": 2273,
   "ResourcePurity": "High"
 },
         "e28d35d2-739e-4143-95d8-f89e567cdad9": {
@@ -44499,7 +44491,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Organics",
   "Name": "Acidic Organics",
-  "Quantity": 3015,
+  "Quantity": 3030,
   "ResourcePurity": "Medium"
 },
         "fb088501-b547-439f-897e-4a4d1933a15b": {
@@ -44615,14 +44607,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6416165Z",
-            "EndTime": "2026-05-11T21:59:59.6416165Z",
+            "StartTime": "2026-05-11T21:59:59.6416165Z",
+            "EndTime": "2026-05-11T22:59:59.6416165Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "64f87db0-2b48-40bc-b329-2cc587d9e606",
           "MiningSurveyResource": "Strong Alkali Inorganics",
-          "MiningLeftOvers": 0.775,
+          "MiningLeftOvers": 0.104,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -44649,8 +44641,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6416165Z",
-            "EndTime": "2026-05-11T21:59:59.6416165Z",
+            "StartTime": "2026-05-11T21:59:59.6416165Z",
+            "EndTime": "2026-05-11T22:59:59.6416165Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -44682,14 +44674,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6416165Z",
-            "EndTime": "2026-05-11T21:59:59.6416165Z",
+            "StartTime": "2026-05-11T21:59:59.6416165Z",
+            "EndTime": "2026-05-11T22:59:59.6416165Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "1a7ca0e7-0a18-400a-aad9-24817467db0e",
           "MiningSurveyResource": "Heavy Alkali Metals",
-          "MiningLeftOvers": 0.1774,
+          "MiningLeftOvers": 0.4288,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -44716,8 +44708,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6416165Z",
-            "EndTime": "2026-05-11T21:59:59.6416165Z",
+            "StartTime": "2026-05-11T21:59:59.6416165Z",
+            "EndTime": "2026-05-11T22:59:59.6416165Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -44793,8 +44785,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.235416Z",
-            "EndTime": "2026-05-11T21:59:59.235416Z",
+            "StartTime": "2026-05-11T21:59:59.235416Z",
+            "EndTime": "2026-05-11T22:59:59.235416Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -45003,8 +44995,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4691227Z",
-            "EndTime": "2026-05-11T21:59:59.4691227Z",
+            "StartTime": "2026-05-11T21:59:59.4691227Z",
+            "EndTime": "2026-05-11T22:59:59.4691227Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -45357,14 +45349,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6416165Z",
-            "EndTime": "2026-05-11T21:59:59.6416165Z",
+            "StartTime": "2026-05-11T21:59:59.6416165Z",
+            "EndTime": "2026-05-11T22:59:59.6416165Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "64f87db0-2b48-40bc-b329-2cc587d9e606",
           "MiningSurveyResource": "Complex Metallics",
-          "MiningLeftOvers": 0.140,
+          "MiningLeftOvers": 0.472,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -45432,14 +45424,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6416165Z",
-            "EndTime": "2026-05-11T21:59:59.6416165Z",
+            "StartTime": "2026-05-11T21:59:59.6416165Z",
+            "EndTime": "2026-05-11T22:59:59.6416165Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "64f87db0-2b48-40bc-b329-2cc587d9e606",
           "MiningSurveyResource": "Complex Non-Metallics",
-          "MiningLeftOvers": 0.870,
+          "MiningLeftOvers": 0.200,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -45466,8 +45458,8 @@
             "BlueCollar1": "False"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6552606Z",
-            "EndTime": "2026-05-11T21:59:59.6552606Z",
+            "StartTime": "2026-05-11T21:59:59.6552606Z",
+            "EndTime": "2026-05-11T22:59:59.6552606Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -45499,14 +45491,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6416165Z",
-            "EndTime": "2026-05-11T21:59:59.6416165Z",
+            "StartTime": "2026-05-11T21:59:59.6416165Z",
+            "EndTime": "2026-05-11T22:59:59.6416165Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "1a7ca0e7-0a18-400a-aad9-24817467db0e",
           "MiningSurveyResource": "Acidic Organics",
-          "MiningLeftOvers": 0.0217,
+          "MiningLeftOvers": 0.0202,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -45551,14 +45543,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6416165Z",
-            "EndTime": "2026-05-11T21:59:59.6416165Z",
+            "StartTime": "2026-05-11T21:59:59.6416165Z",
+            "EndTime": "2026-05-11T22:59:59.6416165Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "64f87db0-2b48-40bc-b329-2cc587d9e606",
           "MiningSurveyResource": "Superheavy Exotics",
-          "MiningLeftOvers": 0.125,
+          "MiningLeftOvers": 0.458,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -45703,14 +45695,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6416165Z",
-            "EndTime": "2026-05-11T21:59:59.6416165Z",
+            "StartTime": "2026-05-11T21:59:59.6416165Z",
+            "EndTime": "2026-05-11T22:59:59.6416165Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "1a7ca0e7-0a18-400a-aad9-24817467db0e",
           "MiningSurveyResource": "Lanthanide Volatiles",
-          "MiningLeftOvers": 0.6151,
+          "MiningLeftOvers": 0.3622,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -47566,7 +47558,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Organics",
   "Name": "Strong Alkali Organics",
-  "Quantity": 8400,
+  "Quantity": 8425,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -47591,7 +47583,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Transuranic Volatiles",
   "Name": "Transuranic Volatiles",
-  "Quantity": 2147476852,
+  "Quantity": 2147476856,
   "ResourcePurity": "High"
 },
         "7d859996-d4b7-4201-b6d1-9e12316446e6": {
@@ -47608,7 +47600,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Metaloids",
   "Name": "Metaloids",
-  "Quantity": 2147478717,
+  "Quantity": 2147478727,
   "ResourcePurity": "High"
 },
         "d1043a7e-e8ad-47e5-8236-5881dc3ec934": {
@@ -47619,7 +47611,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Organics",
   "Name": "Alkali Organics",
-  "Quantity": 2147476853,
+  "Quantity": 2147476856,
   "ResourcePurity": "High"
 },
         "e9fb6e8c-e0c0-439f-b3e5-af08764494dc": {
@@ -47636,7 +47628,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Organics",
   "Name": "Strong Alkali Organics",
-  "Quantity": 2147476853,
+  "Quantity": 2147476831,
   "ResourcePurity": "Low"
 },
         "fb69ef3a-2a13-46e9-9dbe-27b005a2feef": {
@@ -47694,14 +47686,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3066325Z",
-            "EndTime": "2026-05-11T21:59:59.3066325Z",
+            "StartTime": "2026-05-11T21:59:59.3066325Z",
+            "EndTime": "2026-05-11T22:59:59.3066325Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "60e32ba0-c015-4f87-88f3-5137d1c0c794",
           "MiningSurveyResource": "Metaloids",
-          "MiningLeftOvers": 0.249,
+          "MiningLeftOvers": 0.248,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -47745,14 +47737,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3066325Z",
-            "EndTime": "2026-05-11T21:59:59.3066325Z",
+            "StartTime": "2026-05-11T21:59:59.3066325Z",
+            "EndTime": "2026-05-11T22:59:59.3066325Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "60e32ba0-c015-4f87-88f3-5137d1c0c794",
           "MiningSurveyResource": "Strong Alkali Organics",
-          "MiningLeftOvers": 0.555,
+          "MiningLeftOvers": 0.888,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -47797,14 +47789,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3066325Z",
-            "EndTime": "2026-05-11T21:59:59.3066325Z",
+            "StartTime": "2026-05-11T21:59:59.3066325Z",
+            "EndTime": "2026-05-11T22:59:59.3066325Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "60e32ba0-c015-4f87-88f3-5137d1c0c794",
           "MiningSurveyResource": "Alkali Organics",
-          "MiningLeftOvers": 0.555,
+          "MiningLeftOvers": 0.888,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -47935,14 +47927,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3066325Z",
-            "EndTime": "2026-05-11T21:59:59.3066325Z",
+            "StartTime": "2026-05-11T21:59:59.3066325Z",
+            "EndTime": "2026-05-11T22:59:59.3066325Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "60e32ba0-c015-4f87-88f3-5137d1c0c794",
           "MiningSurveyResource": "Transuranic Volatiles",
-          "MiningLeftOvers": 0.971,
+          "MiningLeftOvers": 0.304,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -48453,8 +48445,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.5303543Z",
-            "EndTime": "2026-05-11T21:59:59.5303543Z",
+            "StartTime": "2026-05-11T21:59:59.5303543Z",
+            "EndTime": "2026-05-11T22:59:59.5303543Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -48747,7 +48739,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Non-Metallics",
   "Name": "Complex Non-Metallics",
-  "Quantity": 2147479091,
+  "Quantity": 2147479081,
   "ResourcePurity": "High"
 },
         "2361d058-338c-4332-be8d-368593896fa2": {
@@ -48755,7 +48747,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Inorganics",
   "Name": "Strong Alkali Inorganics",
-  "Quantity": 2147478296,
+  "Quantity": 2147478329,
   "ResourcePurity": "Low"
 },
         "2e53df3b-48a3-494b-9bf6-9e0898111377": {
@@ -48796,7 +48788,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Organics",
   "Name": "Strong Alkali Organics",
-  "Quantity": 41021,
+  "Quantity": 41148,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -48805,7 +48797,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Non-Metallics",
   "Name": "Complex Non-Metallics",
-  "Quantity": 93555,
+  "Quantity": 93809,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -48814,7 +48806,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Post-Trans Metals",
   "Name": "Heavy Post-Trans Metals",
-  "Quantity": 2147481332,
+  "Quantity": 2147481352,
   "ResourcePurity": "Low"
 },
         "9a513dc9-1c46-4d65-a063-345417316c43": {
@@ -48822,7 +48814,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Organics",
   "Name": "Strong Alkali Organics",
-  "Quantity": 2147476853,
+  "Quantity": 2147476831,
   "ResourcePurity": "High"
 },
         "aaa8ceec-d84b-43de-9a65-2deece094159": {
@@ -48830,7 +48822,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkali Metals",
   "Name": "Heavy Alkali Metals",
-  "Quantity": 2147476878,
+  "Quantity": 2147476856,
   "ResourcePurity": "High"
 },
         "cf818955-3f06-400f-86a5-88bdbe213819": {
@@ -48838,7 +48830,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkali Metals",
   "Name": "Heavy Alkali Metals",
-  "Quantity": 40894,
+  "Quantity": 41021,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -48847,7 +48839,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Halogens",
   "Name": "Halogens",
-  "Quantity": 46471,
+  "Quantity": 46598,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -48856,7 +48848,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Halogens",
   "Name": "Halogens",
-  "Quantity": 2147479665,
+  "Quantity": 2147479654,
   "ResourcePurity": "High"
 },
         "ebca109a-f255-43e0-91a7-8dce69ca712b": {
@@ -48977,14 +48969,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4501188Z",
-            "EndTime": "2026-05-11T21:59:59.4501188Z",
+            "StartTime": "2026-05-11T21:59:59.4501188Z",
+            "EndTime": "2026-05-11T22:59:59.4501188Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "1037d211-c62b-4642-b367-8d10ceb0cc71",
           "MiningSurveyResource": "Complex Non-Metallics",
-          "MiningLeftOvers": 0.180,
+          "MiningLeftOvers": 0.176,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -49153,8 +49145,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:49.7237848Z",
-            "EndTime": "2026-05-11T21:59:49.7237848Z",
+            "StartTime": "2026-05-11T21:59:49.7237848Z",
+            "EndTime": "2026-05-11T22:59:49.7237848Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -49186,8 +49178,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8123495Z",
-            "EndTime": "2026-05-11T21:59:59.8123495Z",
+            "StartTime": "2026-05-11T21:59:59.8123495Z",
+            "EndTime": "2026-05-11T22:59:59.8123495Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -49242,8 +49234,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.504985Z",
-            "EndTime": "2026-05-11T21:59:59.504985Z",
+            "StartTime": "2026-05-11T21:59:59.504985Z",
+            "EndTime": "2026-05-11T22:59:59.504985Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -49457,14 +49449,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4501188Z",
-            "EndTime": "2026-05-11T21:59:59.4501188Z",
+            "StartTime": "2026-05-11T21:59:59.4501188Z",
+            "EndTime": "2026-05-11T22:59:59.4501188Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "1037d211-c62b-4642-b367-8d10ceb0cc71",
           "MiningSurveyResource": "Halogens",
-          "MiningLeftOvers": 0.820,
+          "MiningLeftOvers": 0.152,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -49637,14 +49629,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4501188Z",
-            "EndTime": "2026-05-11T21:59:59.4501188Z",
+            "StartTime": "2026-05-11T21:59:59.4501188Z",
+            "EndTime": "2026-05-11T22:59:59.4501188Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "1037d211-c62b-4642-b367-8d10ceb0cc71",
           "MiningSurveyResource": "Heavy Alkali Metals",
-          "MiningLeftOvers": 0.035,
+          "MiningLeftOvers": 0.368,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -49787,14 +49779,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4501188Z",
-            "EndTime": "2026-05-11T21:59:59.4501188Z",
+            "StartTime": "2026-05-11T21:59:59.4501188Z",
+            "EndTime": "2026-05-11T22:59:59.4501188Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "1037d211-c62b-4642-b367-8d10ceb0cc71",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
-          "MiningLeftOvers": 0.130,
+          "MiningLeftOvers": 0.128,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -49838,8 +49830,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9805012Z",
-            "EndTime": "2026-05-11T21:59:59.9805012Z",
+            "StartTime": "2026-05-11T21:59:59.9805012Z",
+            "EndTime": "2026-05-11T22:59:59.9805012Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -49872,14 +49864,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4501188Z",
-            "EndTime": "2026-05-11T21:59:59.4501188Z",
+            "StartTime": "2026-05-11T21:59:59.4501188Z",
+            "EndTime": "2026-05-11T22:59:59.4501188Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "1037d211-c62b-4642-b367-8d10ceb0cc71",
           "MiningSurveyResource": "Strong Alkali Inorganics",
-          "MiningLeftOvers": 0.35,
+          "MiningLeftOvers": 0.68,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -49923,8 +49915,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8103493Z",
-            "EndTime": "2026-05-11T21:59:59.8103493Z",
+            "StartTime": "2026-05-11T21:59:59.8103493Z",
+            "EndTime": "2026-05-11T22:59:59.8103493Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -50189,14 +50181,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4501188Z",
-            "EndTime": "2026-05-11T21:59:59.4501188Z",
+            "StartTime": "2026-05-11T21:59:59.4501188Z",
+            "EndTime": "2026-05-11T22:59:59.4501188Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "1037d211-c62b-4642-b367-8d10ceb0cc71",
           "MiningSurveyResource": "Strong Alkali Organics",
-          "MiningLeftOvers": 0.555,
+          "MiningLeftOvers": 0.888,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -50355,7 +50347,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Halogens",
   "Name": "Halogens",
-  "Quantity": 27650,
+  "Quantity": 27700,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -50378,7 +50370,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Inorganics",
   "Name": "Acidic Inorganics",
-  "Quantity": 2147471965,
+  "Quantity": 2147471953,
   "ResourcePurity": "High"
 },
         "6db70b99-d5c3-4554-a649-dbb5ffd229ed": {
@@ -50386,7 +50378,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Inorganics",
   "Name": "Acidic Inorganics",
-  "Quantity": 81788,
+  "Quantity": 81915,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -50402,7 +50394,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Acidic Inorganics",
   "Name": "Strong Acidic Inorganics",
-  "Quantity": 2147482157,
+  "Quantity": 2147482155,
   "ResourcePurity": "Low"
 },
         "cb6670c7-140e-462e-baf0-29a97cbfa1b7": {
@@ -50428,7 +50420,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Acidic Inorganics",
   "Name": "Strong Acidic Inorganics",
-  "Quantity": 8900,
+  "Quantity": 8925,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -50437,7 +50429,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Halogens",
   "Name": "Halogens",
-  "Quantity": 2147481340,
+  "Quantity": 2147481370,
   "ResourcePurity": "Low"
 }
       },
@@ -50502,14 +50494,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9788324Z",
-            "EndTime": "2026-05-11T21:59:59.9788324Z",
+            "StartTime": "2026-05-11T21:59:59.9788324Z",
+            "EndTime": "2026-05-11T22:59:59.9788324Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "8502f4aa-3126-4785-b15d-ec97be5b6d62",
           "MiningSurveyResource": "Acidic Inorganics",
-          "MiningLeftOvers": 0.620,
+          "MiningLeftOvers": 0.952,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -50658,8 +50650,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.5797696Z",
-            "EndTime": "2026-05-11T21:59:59.5797696Z",
+            "StartTime": "2026-05-11T21:59:59.5797696Z",
+            "EndTime": "2026-05-11T22:59:59.5797696Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -50715,14 +50707,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9788324Z",
-            "EndTime": "2026-05-11T21:59:59.9788324Z",
+            "StartTime": "2026-05-11T21:59:59.9788324Z",
+            "EndTime": "2026-05-11T22:59:59.9788324Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "8502f4aa-3126-4785-b15d-ec97be5b6d62",
           "MiningSurveyResource": "Halogens",
-          "MiningLeftOvers": 0.360,
+          "MiningLeftOvers": 0.352,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -50864,8 +50856,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:49.7523021Z",
-            "EndTime": "2026-05-11T21:59:49.7523021Z",
+            "StartTime": "2026-05-11T21:59:49.7523021Z",
+            "EndTime": "2026-05-11T22:59:49.7523021Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -50957,8 +50949,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.180444Z",
-            "EndTime": "2026-05-11T21:59:59.180444Z",
+            "StartTime": "2026-05-11T21:59:59.180444Z",
+            "EndTime": "2026-05-11T22:59:59.180444Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -51348,14 +51340,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9788324Z",
-            "EndTime": "2026-05-11T21:59:59.9788324Z",
+            "StartTime": "2026-05-11T21:59:59.9788324Z",
+            "EndTime": "2026-05-11T22:59:59.9788324Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "8502f4aa-3126-4785-b15d-ec97be5b6d62",
           "MiningSurveyResource": "Strong Acidic Inorganics",
-          "MiningLeftOvers": 0.445,
+          "MiningLeftOvers": 0.776,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -51411,14 +51403,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9788324Z",
-            "EndTime": "2026-05-11T21:59:59.9788324Z",
+            "StartTime": "2026-05-11T21:59:59.9788324Z",
+            "EndTime": "2026-05-11T22:59:59.9788324Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "8502f4aa-3126-4785-b15d-ec97be5b6d62",
           "MiningSurveyResource": "Lanthanide Volatiles",
-          "MiningLeftOvers": 0.555,
+          "MiningLeftOvers": 0.888,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -51444,8 +51436,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.5837703Z",
-            "EndTime": "2026-05-11T21:59:59.5837703Z",
+            "StartTime": "2026-05-11T21:59:59.5837703Z",
+            "EndTime": "2026-05-11T22:59:59.5837703Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -51735,7 +51727,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Organics",
   "Name": "Alkali Organics",
-  "Quantity": 2147482132,
+  "Quantity": 2147482155,
   "ResourcePurity": "High"
 },
         "4a41b031-13df-43f6-9f0f-a0597dc8c347": {
@@ -51753,7 +51745,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Inorganics",
   "Name": "Strong Alkali Inorganics",
-  "Quantity": 2147479066,
+  "Quantity": 2147479106,
   "ResourcePurity": "Low"
 },
         "7e5d046a-f2d0-47e6-8c62-6a6cb2e82959": {
@@ -51775,7 +51767,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Light Halogens",
   "Name": "Light Halogens",
-  "Quantity": 26539,
+  "Quantity": 26615,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -51784,7 +51776,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Light Halogens",
   "Name": "Light Halogens",
-  "Quantity": 2147477809,
+  "Quantity": 2147477791,
   "ResourcePurity": "Medium"
 },
         "d27ab5c6-610d-4160-88dc-101ed550d519": {
@@ -52323,14 +52315,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9504684Z",
-            "EndTime": "2026-05-11T21:59:59.9504684Z",
+            "StartTime": "2026-05-11T21:59:59.9504684Z",
+            "EndTime": "2026-05-11T22:59:59.9504684Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "882b1e64-5fcc-4baa-b68c-b79966019cd4",
           "MiningSurveyResource": "Strong Alkali Inorganics",
-          "MiningLeftOvers": 0.460,
+          "MiningLeftOvers": 0.456,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -52470,8 +52462,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:48.7297855Z",
-            "EndTime": "2026-05-11T21:59:48.7297855Z",
+            "StartTime": "2026-05-11T21:59:48.7297855Z",
+            "EndTime": "2026-05-11T22:59:48.7297855Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -52584,14 +52576,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9514681Z",
-            "EndTime": "2026-05-11T21:59:59.9514681Z",
+            "StartTime": "2026-05-11T21:59:59.9514681Z",
+            "EndTime": "2026-05-11T22:59:59.9514681Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "882b1e64-5fcc-4baa-b68c-b79966019cd4",
           "MiningSurveyResource": "Alkali Organics",
-          "MiningLeftOvers": 0.485,
+          "MiningLeftOvers": 0.816,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -52640,14 +52632,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9514681Z",
-            "EndTime": "2026-05-11T21:59:59.9514681Z",
+            "StartTime": "2026-05-11T21:59:59.9514681Z",
+            "EndTime": "2026-05-11T22:59:59.9514681Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "882b1e64-5fcc-4baa-b68c-b79966019cd4",
           "MiningSurveyResource": "Light Halogens",
-          "MiningLeftOvers": 0.510,
+          "MiningLeftOvers": 0.176,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -52788,7 +52780,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Metaloids",
   "Name": "Metaloids",
-  "Quantity": 5328,
+  "Quantity": 5398,
   "ResourcePurity": "High"
 },
         "4be6eb77-bbfd-49a8-bb43-9de77396e205": {
@@ -53463,14 +53455,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9023167Z",
-            "EndTime": "2026-05-11T21:59:59.9023167Z",
+            "StartTime": "2026-05-11T21:59:59.9023167Z",
+            "EndTime": "2026-05-11T22:59:59.9023167Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "ed75de86-9d53-46ce-901b-d14448b9aae8",
           "MiningSurveyResource": "Metaloids",
-          "MiningLeftOvers": 0.593,
+          "MiningLeftOvers": 0.586,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -53874,7 +53866,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Noble Gases",
   "Name": "Heavy Noble Gases",
-  "Quantity": 2147481033,
+  "Quantity": 2147481052,
   "ResourcePurity": "High"
 },
         "b178e617-758c-4fb8-8fd3-5ff40112d31a": {
@@ -54437,14 +54429,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4358462Z",
-            "EndTime": "2026-05-11T21:59:59.4358462Z",
+            "StartTime": "2026-05-11T21:59:59.4358462Z",
+            "EndTime": "2026-05-11T22:59:59.4358462Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "72a8d47a-9e53-4905-a69e-008bdea60987",
           "MiningSurveyResource": "Heavy Noble Gases",
-          "MiningLeftOvers": 0.7040,
+          "MiningLeftOvers": 0.4496,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         }
@@ -54491,6 +54483,14 @@
   "Quantity": 35,
   "Volume": 50.0
 },
+        "0ea064f5-0a15-45fd-a9b2-2f5d0de66c18": {
+  "UUID": "0ea064f5-0a15-45fd-a9b2-2f5d0de66c18",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Transuranic Volatiles",
+  "Name": "Transuranic Volatiles",
+  "Quantity": 4,
+  "ResourcePurity": "High"
+},
         "17d637f4-b181-4de2-8169-4e955f919e06": {
   "UUID": "17d637f4-b181-4de2-8169-4e955f919e06",
   "ItemType": "Resource",
@@ -54512,7 +54512,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkaline Earth Metals",
   "Name": "Heavy Alkaline Earth Metals",
-  "Quantity": 341,
+  "Quantity": 345,
   "ResourcePurity": "Low"
 },
         "2b7fc004-4d4f-462d-a0a9-0a152e6cb6d6": {
@@ -54529,7 +54529,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Superheavy Exotics",
   "Name": "Superheavy Exotics",
-  "Quantity": 341,
+  "Quantity": 345,
   "ResourcePurity": "High"
 },
         "49cd27d2-c6da-441d-baa5-3cb891388c49": {
@@ -54540,6 +54540,14 @@
   "Quantity": 1708,
   "ResourcePurity": "Refined",
   "Volume": 1.0
+},
+        "568be644-e608-4e97-ad66-c64dee07b545": {
+  "UUID": "568be644-e608-4e97-ad66-c64dee07b545",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Trans-Metals",
+  "Name": "Trans-Metals",
+  "Quantity": 30,
+  "ResourcePurity": "High"
 },
         "683192e1-c841-44b7-9a23-514668141f16": {
   "UUID": "683192e1-c841-44b7-9a23-514668141f16",
@@ -54570,7 +54578,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Noble Gases",
   "Name": "Noble Gases",
-  "Quantity": 340,
+  "Quantity": 493,
   "ResourcePurity": "High"
 },
         "bd4ec3b4-faca-4dcf-a8e1-a11870faf6bf": {
@@ -54732,14 +54740,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6615776Z",
-            "EndTime": "2026-05-11T21:59:59.6615776Z",
+            "StartTime": "2026-05-11T21:59:59.6615776Z",
+            "EndTime": "2026-05-11T22:59:59.6615776Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e471ab37-f46d-473f-b4e5-8924648bea98",
           "MiningSurveyResource": "Heavy Alkaline Earth Metals",
-          "MiningLeftOvers": 0.6515,
+          "MiningLeftOvers": 0.3986,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -54838,14 +54846,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6615776Z",
-            "EndTime": "2026-05-11T21:59:59.6615776Z",
+            "StartTime": "2026-05-11T21:59:59.6615776Z",
+            "EndTime": "2026-05-11T22:59:59.6615776Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e471ab37-f46d-473f-b4e5-8924648bea98",
           "MiningSurveyResource": "Superheavy Exotics",
-          "MiningLeftOvers": 0.3327,
+          "MiningLeftOvers": 0.0798,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -54961,14 +54969,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6615776Z",
-            "EndTime": "2026-05-11T21:59:59.6615776Z",
+            "StartTime": "2026-05-11T21:59:59.6615776Z",
+            "EndTime": "2026-05-11T22:59:59.6615776Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e471ab37-f46d-473f-b4e5-8924648bea98",
           "MiningSurveyResource": "Transuranic Volatiles",
-          "MiningLeftOvers": 0.3895,
+          "MiningLeftOvers": 0.1366,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -55745,14 +55753,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6615776Z",
-            "EndTime": "2026-05-11T21:59:59.6615776Z",
+            "StartTime": "2026-05-11T21:59:59.6615776Z",
+            "EndTime": "2026-05-11T22:59:59.6615776Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e471ab37-f46d-473f-b4e5-8924648bea98",
           "MiningSurveyResource": "Noble Gases",
-          "MiningLeftOvers": 0.0968,
+          "MiningLeftOvers": 0.8289,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -55778,14 +55786,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6615776Z",
-            "EndTime": "2026-05-11T21:59:59.6615776Z",
+            "StartTime": "2026-05-11T21:59:59.6615776Z",
+            "EndTime": "2026-05-11T22:59:59.6615776Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e471ab37-f46d-473f-b4e5-8924648bea98",
           "MiningSurveyResource": "Trans-Metals",
-          "MiningLeftOvers": 0.9077,
+          "MiningLeftOvers": 0.9047,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -57152,7 +57160,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Post-Trans Metals",
   "Name": "Heavy Post-Trans Metals",
-  "Quantity": 2147477559,
+  "Quantity": 2147477566,
   "ResourcePurity": "High"
 },
         "ff7f44c6-5ab7-4e1e-b74f-acad0ece79df": {
@@ -57160,7 +57168,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Inorganics",
   "Name": "Acidic Inorganics",
-  "Quantity": 249240217,
+  "Quantity": 249240247,
   "ResourcePurity": "Medium"
 }
       },
@@ -57275,14 +57283,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T21:02:50.7277849Z",
-            "EndTime": "2026-05-11T22:02:50.7277849Z",
+            "StartTime": "2026-05-11T22:02:50.7277849Z",
+            "EndTime": "2026-05-11T23:02:50.7277849Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "f71640ab-f2f9-4284-97a4-59529cf0f86c",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
-          "MiningLeftOvers": 0.2410,
+          "MiningLeftOvers": 0.7453,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -57551,14 +57559,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T21:02:49.7277849Z",
-            "EndTime": "2026-05-11T22:02:49.7277849Z",
+            "StartTime": "2026-05-11T22:02:49.7277849Z",
+            "EndTime": "2026-05-11T23:02:49.7277849Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "f71640ab-f2f9-4284-97a4-59529cf0f86c",
           "MiningSurveyResource": "Acidic Inorganics",
-          "MiningLeftOvers": 0.3029,
+          "MiningLeftOvers": 0.2999,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -61233,7 +61241,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Noble Gases",
   "Name": "Heavy Noble Gases",
-  "Quantity": 6760,
+  "Quantity": 6795,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -61250,7 +61258,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Noble Gases",
   "Name": "Noble Gases",
-  "Quantity": 1340,
+  "Quantity": 1346,
   "ResourcePurity": "Low"
 },
         "1bf4544b-4c2a-4b79-bdb8-a7b3a43ef330": {
@@ -61266,7 +61274,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Superheavy Exotics",
   "Name": "Superheavy Exotics",
-  "Quantity": 753,
+  "Quantity": 756,
   "ResourcePurity": "High"
 },
         "34ed03f2-7cf9-478d-a0b7-4a095e48317f": {
@@ -61282,7 +61290,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Lanthanide Volatiles",
   "Name": "Lanthanide Volatiles",
-  "Quantity": 753,
+  "Quantity": 757,
   "ResourcePurity": "High"
 },
         "60a6bc36-dec0-4e8d-bb48-f0fbfcb240fa": {
@@ -61292,12 +61300,20 @@
   "Name": "Noble Gases",
   "ResourcePurity": "Medium"
 },
+        "68380652-0a7e-43f2-8fce-61876a207fae": {
+  "UUID": "68380652-0a7e-43f2-8fce-61876a207fae",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Alkaline Earth Metals",
+  "Name": "Alkaline Earth Metals",
+  "Quantity": 53,
+  "ResourcePurity": "High"
+},
         "9da7fe14-a90e-4cea-a45f-4406dfd2d6ce": {
   "UUID": "9da7fe14-a90e-4cea-a45f-4406dfd2d6ce",
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkaline Earth Metals",
   "Name": "Alkaline Earth Metals",
-  "Quantity": 53451,
+  "Quantity": 53588,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -61306,16 +61322,8 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Lanthanides",
   "Name": "Lanthanides",
-  "Quantity": 1509,
+  "Quantity": 1516,
   "ResourcePurity": "Medium"
-},
-        "bf878b16-b9b6-4db1-a3df-0d409f504449": {
-  "UUID": "bf878b16-b9b6-4db1-a3df-0d409f504449",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Alkaline Earth Metals",
-  "Name": "Alkaline Earth Metals",
-  "Quantity": 27,
-  "ResourcePurity": "High"
 },
         "c056d308-2a51-48fc-9971-c45808a97dab": {
   "UUID": "c056d308-2a51-48fc-9971-c45808a97dab",
@@ -61338,7 +61346,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Halogens",
   "Name": "Halogens",
-  "Quantity": 670,
+  "Quantity": 674,
   "ResourcePurity": "High"
 },
         "e51ccce9-d5fe-45ff-a740-68b38247dba1": {
@@ -61346,7 +61354,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Organics",
   "Name": "Strong Alkali Organics",
-  "Quantity": 753,
+  "Quantity": 757,
   "ResourcePurity": "Medium"
 },
         "fdc5960e-2c29-43a0-b027-bedc174f5d83": {
@@ -61354,7 +61362,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkaline Earth Metals",
   "Name": "Heavy Alkaline Earth Metals",
-  "Quantity": 670,
+  "Quantity": 673,
   "ResourcePurity": "High"
 }
       },
@@ -61382,8 +61390,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.831856Z",
-            "EndTime": "2026-05-11T21:59:59.831856Z",
+            "StartTime": "2026-05-11T21:59:59.831856Z",
+            "EndTime": "2026-05-11T22:59:59.831856Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -61415,8 +61423,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.0968711Z",
-            "EndTime": "2026-05-11T21:59:59.0968711Z",
+            "StartTime": "2026-05-11T21:59:59.0968711Z",
+            "EndTime": "2026-05-11T22:59:59.0968711Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -61731,14 +61739,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.831856Z",
-            "EndTime": "2026-05-11T21:59:59.831856Z",
+            "StartTime": "2026-05-11T21:59:59.831856Z",
+            "EndTime": "2026-05-11T22:59:59.831856Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "9c4a2c1f-ac44-4b65-b844-e7d7d0beea40",
           "MiningSurveyResource": "Heavy Noble Gases",
-          "MiningLeftOvers": 0.430,
+          "MiningLeftOvers": 0.096,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -61880,8 +61888,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.1505705Z",
-            "EndTime": "2026-05-11T21:59:59.1505705Z",
+            "StartTime": "2026-05-11T21:59:59.1505705Z",
+            "EndTime": "2026-05-11T22:59:59.1505705Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -62074,14 +62082,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.831856Z",
-            "EndTime": "2026-05-11T21:59:59.831856Z",
+            "StartTime": "2026-05-11T21:59:59.831856Z",
+            "EndTime": "2026-05-11T22:59:59.831856Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "90e7aa99-1702-42fa-9cfe-2db67362f1dd",
           "MiningSurveyResource": "Alkaline Earth Metals",
-          "MiningLeftOvers": 0.6842,
+          "MiningLeftOvers": 0.1840,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -62255,14 +62263,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.831856Z",
-            "EndTime": "2026-05-11T21:59:59.831856Z",
+            "StartTime": "2026-05-11T21:59:59.831856Z",
+            "EndTime": "2026-05-11T22:59:59.831856Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "90e7aa99-1702-42fa-9cfe-2db67362f1dd",
           "MiningSurveyResource": "Superheavy Exotics",
-          "MiningLeftOvers": 0.1673,
+          "MiningLeftOvers": 0.9144,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -62413,14 +62421,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.831856Z",
-            "EndTime": "2026-05-11T21:59:59.831856Z",
+            "StartTime": "2026-05-11T21:59:59.831856Z",
+            "EndTime": "2026-05-11T22:59:59.831856Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "9c4a2c1f-ac44-4b65-b844-e7d7d0beea40",
           "MiningSurveyResource": "Halogens",
-          "MiningLeftOvers": 0.885,
+          "MiningLeftOvers": 0.218,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -62447,14 +62455,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.831856Z",
-            "EndTime": "2026-05-11T21:59:59.831856Z",
+            "StartTime": "2026-05-11T21:59:59.831856Z",
+            "EndTime": "2026-05-11T22:59:59.831856Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "9c4a2c1f-ac44-4b65-b844-e7d7d0beea40",
           "MiningSurveyResource": "Heavy Alkaline Earth Metals",
-          "MiningLeftOvers": 0.405,
+          "MiningLeftOvers": 0.738,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -62554,14 +62562,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.831856Z",
-            "EndTime": "2026-05-11T21:59:59.831856Z",
+            "StartTime": "2026-05-11T21:59:59.831856Z",
+            "EndTime": "2026-05-11T22:59:59.831856Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "90e7aa99-1702-42fa-9cfe-2db67362f1dd",
           "MiningSurveyResource": "Lanthanide Volatiles",
-          "MiningLeftOvers": 0.6839,
+          "MiningLeftOvers": 0.4310,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -62606,14 +62614,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.831856Z",
-            "EndTime": "2026-05-11T21:59:59.831856Z",
+            "StartTime": "2026-05-11T21:59:59.831856Z",
+            "EndTime": "2026-05-11T22:59:59.831856Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "90e7aa99-1702-42fa-9cfe-2db67362f1dd",
           "MiningSurveyResource": "Lanthanides",
-          "MiningLeftOvers": 0.1499,
+          "MiningLeftOvers": 0.6542,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -62697,14 +62705,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.831856Z",
-            "EndTime": "2026-05-11T21:59:59.831856Z",
+            "StartTime": "2026-05-11T21:59:59.831856Z",
+            "EndTime": "2026-05-11T22:59:59.831856Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "9c4a2c1f-ac44-4b65-b844-e7d7d0beea40",
           "MiningSurveyResource": "Noble Gases",
-          "MiningLeftOvers": 0.010,
+          "MiningLeftOvers": 0.676,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -62748,14 +62756,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.831856Z",
-            "EndTime": "2026-05-11T21:59:59.831856Z",
+            "StartTime": "2026-05-11T21:59:59.831856Z",
+            "EndTime": "2026-05-11T22:59:59.831856Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "90e7aa99-1702-42fa-9cfe-2db67362f1dd",
           "MiningSurveyResource": "Strong Alkali Organics",
-          "MiningLeftOvers": 0.4535,
+          "MiningLeftOvers": 0.2006,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         }
@@ -71031,7 +71039,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Light Halogens",
   "Name": "Light Halogens",
-  "Quantity": 2147479640,
+  "Quantity": 2147479653,
   "ResourcePurity": "High"
 },
         "4651946c-aac4-440f-8e25-15ad787f79dc": {
@@ -71067,7 +71075,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Trans-Metals",
   "Name": "Heavy Trans-Metals",
-  "Quantity": 2147481356,
+  "Quantity": 2147481376,
   "ResourcePurity": "High"
 },
         "83b38212-276b-40e5-89fb-5d9a6ff97003": {
@@ -71075,7 +71083,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Organics",
   "Name": "Acidic Organics",
-  "Quantity": 8075,
+  "Quantity": 8100,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -71084,7 +71092,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Noble Gases",
   "Name": "Heavy Noble Gases",
-  "Quantity": 2147477793,
+  "Quantity": 2147477800,
   "ResourcePurity": "Low"
 },
         "9081090a-4b65-4f76-8fc1-36332c24085e": {
@@ -71108,7 +71116,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Organics",
   "Name": "Acidic Organics",
-  "Quantity": 2147476853,
+  "Quantity": 2147476831,
   "ResourcePurity": "Low"
 },
         "ac346a58-0c16-4c1a-92bb-50b2cea38aaf": {
@@ -71116,7 +71124,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Metaloids",
   "Name": "Metaloids",
-  "Quantity": 2147476853,
+  "Quantity": 2147476857,
   "ResourcePurity": "High"
 },
         "cff58353-f9b6-4f20-93ce-6b243fa657ac": {
@@ -71416,14 +71424,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9961449Z",
-            "EndTime": "2026-05-11T21:59:59.9961449Z",
+            "StartTime": "2026-05-11T21:59:59.9961449Z",
+            "EndTime": "2026-05-11T22:59:59.9961449Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "256b1ab6-70d9-4e43-ad99-53c8e50867c7",
           "MiningSurveyResource": "Heavy Trans-Metals",
-          "MiningLeftOvers": 0.990,
+          "MiningLeftOvers": 0.988,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -71925,14 +71933,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9961449Z",
-            "EndTime": "2026-05-11T21:59:59.9961449Z",
+            "StartTime": "2026-05-11T21:59:59.9961449Z",
+            "EndTime": "2026-05-11T22:59:59.9961449Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "256b1ab6-70d9-4e43-ad99-53c8e50867c7",
           "MiningSurveyResource": "Light Halogens",
-          "MiningLeftOvers": 0.420,
+          "MiningLeftOvers": 0.752,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -72172,14 +72180,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9961449Z",
-            "EndTime": "2026-05-11T21:59:59.9961449Z",
+            "StartTime": "2026-05-11T21:59:59.9961449Z",
+            "EndTime": "2026-05-11T22:59:59.9961449Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "256b1ab6-70d9-4e43-ad99-53c8e50867c7",
           "MiningSurveyResource": "Heavy Noble Gases",
-          "MiningLeftOvers": 0.422,
+          "MiningLeftOvers": 0.088,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -72205,8 +72213,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6469586Z",
-            "EndTime": "2026-05-11T21:59:59.6469586Z",
+            "StartTime": "2026-05-11T21:59:59.6469586Z",
+            "EndTime": "2026-05-11T22:59:59.6469586Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -72280,14 +72288,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9961449Z",
-            "EndTime": "2026-05-11T21:59:59.9961449Z",
+            "StartTime": "2026-05-11T21:59:59.9961449Z",
+            "EndTime": "2026-05-11T22:59:59.9961449Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "256b1ab6-70d9-4e43-ad99-53c8e50867c7",
           "MiningSurveyResource": "Metaloids",
-          "MiningLeftOvers": 0.783,
+          "MiningLeftOvers": 0.116,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -72314,14 +72322,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9961449Z",
-            "EndTime": "2026-05-11T21:59:59.9961449Z",
+            "StartTime": "2026-05-11T21:59:59.9961449Z",
+            "EndTime": "2026-05-11T22:59:59.9961449Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "256b1ab6-70d9-4e43-ad99-53c8e50867c7",
           "MiningSurveyResource": "Superheavy Exotics",
-          "MiningLeftOvers": 0.355,
+          "MiningLeftOvers": 0.688,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -72442,14 +72450,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9961449Z",
-            "EndTime": "2026-05-11T21:59:59.9961449Z",
+            "StartTime": "2026-05-11T21:59:59.9961449Z",
+            "EndTime": "2026-05-11T22:59:59.9961449Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "256b1ab6-70d9-4e43-ad99-53c8e50867c7",
           "MiningSurveyResource": "Acidic Organics",
-          "MiningLeftOvers": 0.355,
+          "MiningLeftOvers": 0.688,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -72529,7 +72537,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkaline Earth Metals",
   "Name": "Alkaline Earth Metals",
-  "Quantity": 97410,
+  "Quantity": 97664,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -72538,7 +72546,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Trans-Metals",
   "Name": "Heavy Trans-Metals",
-  "Quantity": 2147477802,
+  "Quantity": 2147477784,
   "ResourcePurity": "High"
 },
         "c98dd99c-21cd-428d-9e13-9302d844731a": {
@@ -72546,7 +72554,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkaline Earth Metals",
   "Name": "Alkaline Earth Metals",
-  "Quantity": 201616588,
+  "Quantity": 201616568,
   "ResourcePurity": "High"
 },
         "ce24a895-8861-4582-a177-906e8e2d238c": {
@@ -72561,7 +72569,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Trans-Metals",
   "Name": "Heavy Trans-Metals",
-  "Quantity": 44875,
+  "Quantity": 45002,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 }
@@ -72861,8 +72869,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:48.721784Z",
-            "EndTime": "2026-05-11T21:59:48.721784Z",
+            "StartTime": "2026-05-11T21:59:48.721784Z",
+            "EndTime": "2026-05-11T22:59:48.721784Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -73043,14 +73051,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.7076105Z",
-            "EndTime": "2026-05-11T21:59:59.7076105Z",
+            "StartTime": "2026-05-11T21:59:59.7076105Z",
+            "EndTime": "2026-05-11T22:59:59.7076105Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "a81687ea-d5ea-4bbe-9b7d-0c36e7b0f2ec",
           "MiningSurveyResource": "Heavy Trans-Metals",
-          "MiningLeftOvers": 0.934,
+          "MiningLeftOvers": 0.600,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -73155,8 +73163,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:48.721784Z",
-            "EndTime": "2026-05-11T21:59:48.721784Z",
+            "StartTime": "2026-05-11T21:59:48.721784Z",
+            "EndTime": "2026-05-11T22:59:48.721784Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -73267,14 +73275,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.7076105Z",
-            "EndTime": "2026-05-11T21:59:59.7076105Z",
+            "StartTime": "2026-05-11T21:59:59.7076105Z",
+            "EndTime": "2026-05-11T22:59:59.7076105Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "a81687ea-d5ea-4bbe-9b7d-0c36e7b0f2ec",
           "MiningSurveyResource": "Alkaline Earth Metals",
-          "MiningLeftOvers": 0.491,
+          "MiningLeftOvers": 0.488,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -73301,8 +73309,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:48.721784Z",
-            "EndTime": "2026-05-11T21:59:48.721784Z",
+            "StartTime": "2026-05-11T21:59:48.721784Z",
+            "EndTime": "2026-05-11T22:59:48.721784Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -73451,7 +73459,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Metals",
   "Name": "Alkali Metals",
-  "Quantity": 312264,
+  "Quantity": 312391,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -73460,7 +73468,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Organics",
   "Name": "Alkali Organics",
-  "Quantity": 2147479640,
+  "Quantity": 2147479653,
   "ResourcePurity": "High"
 },
         "a42e3c38-5e86-412d-abd9-67c20be827a7": {
@@ -73485,7 +73493,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Metals",
   "Name": "Alkali Metals",
-  "Quantity": 2147472933,
+  "Quantity": 2147473068,
   "ResourcePurity": "High"
 }
       },
@@ -74008,14 +74016,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.917995Z",
-            "EndTime": "2026-05-11T21:59:59.917995Z",
+            "StartTime": "2026-05-11T21:59:59.917995Z",
+            "EndTime": "2026-05-11T22:59:59.917995Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "c24aecf9-1406-409b-8495-c7adef054b23",
           "MiningSurveyResource": "Alkali Metals",
-          "MiningLeftOvers": 0.640,
+          "MiningLeftOvers": 0.624,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -74534,8 +74542,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3251606Z",
-            "EndTime": "2026-05-11T21:59:59.3251606Z",
+            "StartTime": "2026-05-11T21:59:59.3251606Z",
+            "EndTime": "2026-05-11T22:59:59.3251606Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -74568,14 +74576,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9189946Z",
-            "EndTime": "2026-05-11T21:59:59.9189946Z",
+            "StartTime": "2026-05-11T21:59:59.9189946Z",
+            "EndTime": "2026-05-11T22:59:59.9189946Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "c24aecf9-1406-409b-8495-c7adef054b23",
           "MiningSurveyResource": "Alkali Organics",
-          "MiningLeftOvers": 0.220,
+          "MiningLeftOvers": 0.552,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -76352,6 +76360,14 @@
       "SystemName": "Zeh Vazoran",
       "ColonyName": "Zeh Vazoran II M1",
       "Items": {
+        "038e12d5-f794-4398-b386-5f893dd37a99": {
+  "UUID": "038e12d5-f794-4398-b386-5f893dd37a99",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Lanthanide Volatiles",
+  "Name": "Lanthanide Volatiles",
+  "Quantity": 4,
+  "ResourcePurity": "High"
+},
         "179a68cd-7981-4c91-88de-ceb364671e42": {
   "UUID": "179a68cd-7981-4c91-88de-ceb364671e42",
   "ItemType": "Flatpack",
@@ -76406,7 +76422,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Post-Trans Metals",
   "Name": "Post-Trans Metals",
-  "Quantity": 1249,
+  "Quantity": 1388,
   "ResourcePurity": "High"
 },
         "89fbdff8-9c3d-472e-8f55-29fbb98dc99e": {
@@ -76450,6 +76466,14 @@
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
+        "de1c2476-f33b-41e9-9385-677527d3581a": {
+  "UUID": "de1c2476-f33b-41e9-9385-677527d3581a",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Complex Metallics",
+  "Name": "Complex Metallics",
+  "Quantity": 18,
+  "ResourcePurity": "High"
+},
         "ea484888-4346-4959-8032-26f69b4c4f8b": {
   "UUID": "ea484888-4346-4959-8032-26f69b4c4f8b",
   "ItemType": "Resource",
@@ -76466,6 +76490,14 @@
   "Quantity": 1708,
   "ResourcePurity": "Refined",
   "Volume": 1.0
+},
+        "f62daeb9-6487-469c-b22f-6aebfecc285d": {
+  "UUID": "f62daeb9-6487-469c-b22f-6aebfecc285d",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Heavy Alkaline Earth Metals",
+  "Name": "Heavy Alkaline Earth Metals",
+  "Quantity": 4,
+  "ResourcePurity": "High"
 }
       },
       "Structures": [
@@ -76875,14 +76907,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.1337973Z",
-            "EndTime": "2026-05-11T21:59:59.1337973Z",
+            "StartTime": "2026-05-11T21:59:59.1337973Z",
+            "EndTime": "2026-05-11T22:59:59.1337973Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "09117134-86a2-4d42-8030-b0164bdf23f9",
           "MiningSurveyResource": "Post-Trans Metals",
-          "MiningLeftOvers": 0.9888,
+          "MiningLeftOvers": 0.7224,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -76946,14 +76978,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.1337973Z",
-            "EndTime": "2026-05-11T21:59:59.1337973Z",
+            "StartTime": "2026-05-11T21:59:59.1337973Z",
+            "EndTime": "2026-05-11T22:59:59.1337973Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "09117134-86a2-4d42-8030-b0164bdf23f9",
           "MiningSurveyResource": "Complex Metallics",
-          "MiningLeftOvers": 0.0176,
+          "MiningLeftOvers": 0.7632,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -77635,14 +77667,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.1347972Z",
-            "EndTime": "2026-05-11T21:59:59.1347972Z",
+            "StartTime": "2026-05-11T21:59:59.1347972Z",
+            "EndTime": "2026-05-11T22:59:59.1347972Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "09117134-86a2-4d42-8030-b0164bdf23f9",
           "MiningSurveyResource": "Lanthanide Volatiles",
-          "MiningLeftOvers": 0.5121,
+          "MiningLeftOvers": 0.2592,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -77768,14 +77800,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.1347972Z",
-            "EndTime": "2026-05-11T21:59:59.1347972Z",
+            "StartTime": "2026-05-11T21:59:59.1347972Z",
+            "EndTime": "2026-05-11T22:59:59.1347972Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "09117134-86a2-4d42-8030-b0164bdf23f9",
           "MiningSurveyResource": "Heavy Alkaline Earth Metals",
-          "MiningLeftOvers": 0.8082,
+          "MiningLeftOvers": 0.5553,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -77881,7 +77913,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Light Halogens",
   "Name": "Light Halogens",
-  "Quantity": 2147480547,
+  "Quantity": 2147480539,
   "ResourcePurity": "High"
 },
         "3bb64689-c78b-49cb-a148-f4bb83cfacc5": {
@@ -77910,7 +77942,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Noble Gases",
   "Name": "Heavy Noble Gases",
-  "Quantity": 265893935,
+  "Quantity": 265893913,
   "ResourcePurity": "Medium"
 },
         "78e85017-2e80-4f9f-8ae4-e37c72418668": {
@@ -77918,7 +77950,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Metallics",
   "Name": "Complex Metallics",
-  "Quantity": 2147475156,
+  "Quantity": 2147475136,
   "ResourcePurity": "High"
 },
         "852590de-a19a-4b9a-8981-37c366fc8d9c": {
@@ -77926,7 +77958,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Light Halogens",
   "Name": "Light Halogens",
-  "Quantity": 45466,
+  "Quantity": 45593,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -77935,7 +77967,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Organics",
   "Name": "Alkali Organics",
-  "Quantity": 177617,
+  "Quantity": 178125,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -77962,7 +77994,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Metallics",
   "Name": "Complex Metallics",
-  "Quantity": 94488,
+  "Quantity": 94742,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -77971,7 +78003,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Organics",
   "Name": "Alkali Organics",
-  "Quantity": 2147472866,
+  "Quantity": 2147472839,
   "ResourcePurity": "High"
 },
         "ff96ce66-3810-4428-9654-bb09bdf21a66": {
@@ -77979,7 +78011,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Noble Gases",
   "Name": "Heavy Noble Gases",
-  "Quantity": 10868,
+  "Quantity": 10944,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 }
@@ -78008,14 +78040,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.0421182Z",
-            "EndTime": "2026-05-11T21:59:59.0421182Z",
+            "StartTime": "2026-05-11T21:59:59.0421182Z",
+            "EndTime": "2026-05-11T22:59:59.0421182Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "b27dae88-fc27-4346-a12a-3ff831ee5fb6",
           "MiningSurveyResource": "Alkali Organics",
-          "MiningLeftOvers": 0.130,
+          "MiningLeftOvers": 0.456,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -78063,8 +78095,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3791058Z",
-            "EndTime": "2026-05-11T21:59:59.3791058Z",
+            "StartTime": "2026-05-11T21:59:59.3791058Z",
+            "EndTime": "2026-05-11T22:59:59.3791058Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -78115,8 +78147,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3820936Z",
-            "EndTime": "2026-05-11T21:59:59.3820936Z",
+            "StartTime": "2026-05-11T21:59:59.3820936Z",
+            "EndTime": "2026-05-11T22:59:59.3820936Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -78274,8 +78306,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3810938Z",
-            "EndTime": "2026-05-11T21:59:59.3810938Z",
+            "StartTime": "2026-05-11T21:59:59.3810938Z",
+            "EndTime": "2026-05-11T22:59:59.3810938Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -78428,8 +78460,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3800937Z",
-            "EndTime": "2026-05-11T21:59:59.3800937Z",
+            "StartTime": "2026-05-11T21:59:59.3800937Z",
+            "EndTime": "2026-05-11T22:59:59.3800937Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -78578,14 +78610,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.0421182Z",
-            "EndTime": "2026-05-11T21:59:59.0421182Z",
+            "StartTime": "2026-05-11T21:59:59.0421182Z",
+            "EndTime": "2026-05-11T22:59:59.0421182Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "b27dae88-fc27-4346-a12a-3ff831ee5fb6",
           "MiningSurveyResource": "Complex Metallics",
-          "MiningLeftOvers": 0.195,
+          "MiningLeftOvers": 0.192,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -78723,8 +78755,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3820936Z",
-            "EndTime": "2026-05-11T21:59:59.3820936Z",
+            "StartTime": "2026-05-11T21:59:59.3820936Z",
+            "EndTime": "2026-05-11T22:59:59.3820936Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -78756,14 +78788,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.0421182Z",
-            "EndTime": "2026-05-11T21:59:59.0421182Z",
+            "StartTime": "2026-05-11T21:59:59.0421182Z",
+            "EndTime": "2026-05-11T22:59:59.0421182Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "b27dae88-fc27-4346-a12a-3ff831ee5fb6",
           "MiningSurveyResource": "Heavy Noble Gases",
-          "MiningLeftOvers": 0.003,
+          "MiningLeftOvers": 0.336,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -78808,8 +78840,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.0461193Z",
-            "EndTime": "2026-05-11T21:59:59.0461193Z",
+            "StartTime": "2026-05-11T21:59:59.0461193Z",
+            "EndTime": "2026-05-11T22:59:59.0461193Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -79028,8 +79060,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3810938Z",
-            "EndTime": "2026-05-11T21:59:59.3810938Z",
+            "StartTime": "2026-05-11T21:59:59.3810938Z",
+            "EndTime": "2026-05-11T22:59:59.3810938Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -79080,14 +79112,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.0461193Z",
-            "EndTime": "2026-05-11T21:59:59.0461193Z",
+            "StartTime": "2026-05-11T21:59:59.0461193Z",
+            "EndTime": "2026-05-11T22:59:59.0461193Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "b27dae88-fc27-4346-a12a-3ff831ee5fb6",
           "MiningSurveyResource": "Lanthanide Volatiles",
-          "MiningLeftOvers": 0.355,
+          "MiningLeftOvers": 0.688,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -79300,14 +79332,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.0461193Z",
-            "EndTime": "2026-05-11T21:59:59.0461193Z",
+            "StartTime": "2026-05-11T21:59:59.0461193Z",
+            "EndTime": "2026-05-11T22:59:59.0461193Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "b27dae88-fc27-4346-a12a-3ff831ee5fb6",
           "MiningSurveyResource": "Light Halogens",
-          "MiningLeftOvers": 0.535,
+          "MiningLeftOvers": 0.200,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -79369,8 +79401,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.3800937Z",
-            "EndTime": "2026-05-11T21:59:59.3800937Z",
+            "StartTime": "2026-05-11T21:59:59.3800937Z",
+            "EndTime": "2026-05-11T22:59:59.3800937Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -82703,7 +82735,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkaline Earth Metals",
   "Name": "Heavy Alkaline Earth Metals",
-  "Quantity": 683,
+  "Quantity": 691,
   "ResourcePurity": "High"
 },
         "2a38b528-883a-46f2-a1bb-39df0554f5d5": {
@@ -82737,7 +82769,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Halogens",
   "Name": "Halogens",
-  "Quantity": 683,
+  "Quantity": 690,
   "ResourcePurity": "High"
 },
         "5fc32aeb-09f8-4f5c-ab43-0a4b65e70b9d": {
@@ -82785,7 +82817,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Post-Trans Metals",
   "Name": "Heavy Post-Trans Metals",
-  "Quantity": 114,
+  "Quantity": 140,
   "ResourcePurity": "Medium"
 },
         "95bc7b90-e309-44f7-a717-182ea597d2f1": {
@@ -82793,7 +82825,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Noble Gases",
   "Name": "Noble Gases",
-  "Quantity": 341,
+  "Quantity": 345,
   "ResourcePurity": "High"
 },
         "a3ebdb2f-82bb-4325-bd4d-eba001338662": {
@@ -82801,8 +82833,16 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Organics",
   "Name": "Alkali Organics",
-  "Quantity": 3754,
+  "Quantity": 3795,
   "ResourcePurity": "Low"
+},
+        "b34fec1a-f172-41e3-8d3a-a5aecc7b3a4d": {
+  "UUID": "b34fec1a-f172-41e3-8d3a-a5aecc7b3a4d",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Heavy Alkali Metals",
+  "Name": "Heavy Alkali Metals",
+  "Quantity": 11,
+  "ResourcePurity": "High"
 },
         "c6ab3b8a-6f6e-486a-8552-77d78d23b910": {
   "UUID": "c6ab3b8a-6f6e-486a-8552-77d78d23b910",
@@ -82827,6 +82867,14 @@
   "Name": "BlueCollarDetail",
   "Quantity": 35,
   "Volume": 50.0
+},
+        "f88445f0-4f17-445b-9aac-0f382c4661fb": {
+  "UUID": "f88445f0-4f17-445b-9aac-0f382c4661fb",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Alkaline Earth Metals",
+  "Name": "Alkaline Earth Metals",
+  "Quantity": 78,
+  "ResourcePurity": "High"
 }
       },
       "Structures": [
@@ -82886,14 +82934,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9762205Z",
-            "EndTime": "2026-05-11T21:59:59.9762205Z",
+            "StartTime": "2026-05-11T21:59:59.9762205Z",
+            "EndTime": "2026-05-11T22:59:59.9762205Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Alkaline Earth Metals",
-          "MiningLeftOvers": 0.1160,
+          "MiningLeftOvers": 0.8556,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -83079,14 +83127,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9762205Z",
-            "EndTime": "2026-05-11T21:59:59.9762205Z",
+            "StartTime": "2026-05-11T21:59:59.9762205Z",
+            "EndTime": "2026-05-11T22:59:59.9762205Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Heavy Alkaline Earth Metals",
-          "MiningLeftOvers": 0.7686,
+          "MiningLeftOvers": 0.2729,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -83112,14 +83160,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9762205Z",
-            "EndTime": "2026-05-11T21:59:59.9762205Z",
+            "StartTime": "2026-05-11T21:59:59.9762205Z",
+            "EndTime": "2026-05-11T22:59:59.9762205Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Heavy Alkali Metals",
-          "MiningLeftOvers": 0.6430,
+          "MiningLeftOvers": 0.8944,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -83167,14 +83215,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9762205Z",
-            "EndTime": "2026-05-11T21:59:59.9762205Z",
+            "StartTime": "2026-05-11T21:59:59.9762205Z",
+            "EndTime": "2026-05-11T22:59:59.9762205Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
-          "MiningLeftOvers": 0.2347,
+          "MiningLeftOvers": 0.4846,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -83334,14 +83382,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9762205Z",
-            "EndTime": "2026-05-11T21:59:59.9762205Z",
+            "StartTime": "2026-05-11T21:59:59.9762205Z",
+            "EndTime": "2026-05-11T22:59:59.9762205Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Alkali Organics",
-          "MiningLeftOvers": 0.4404,
+          "MiningLeftOvers": 0.6888,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -83611,14 +83659,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9762205Z",
-            "EndTime": "2026-05-11T21:59:59.9762205Z",
+            "StartTime": "2026-05-11T21:59:59.9762205Z",
+            "EndTime": "2026-05-11T22:59:59.9762205Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Halogens",
-          "MiningLeftOvers": 0.2494,
+          "MiningLeftOvers": 0.7537,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -83810,14 +83858,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.9762205Z",
-            "EndTime": "2026-05-11T21:59:59.9762205Z",
+            "StartTime": "2026-05-11T21:59:59.9762205Z",
+            "EndTime": "2026-05-11T22:59:59.9762205Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "605c8f0f-d3e3-4299-9121-8ba43550a912",
           "MiningSurveyResource": "Noble Gases",
-          "MiningLeftOvers": 0.3143,
+          "MiningLeftOvers": 0.0614,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -84385,7 +84433,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Non-Metallics",
   "Name": "Complex Non-Metallics",
-  "Quantity": 2147470206,
+  "Quantity": 2147470156,
   "ResourcePurity": "High"
 },
         "60a83a2f-82c7-4da4-a2b4-43c8700ac0d8": {
@@ -84396,7 +84444,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Non-Metallics",
   "Name": "Complex Non-Metallics",
-  "Quantity": 86564,
+  "Quantity": 86818,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 }
@@ -84799,8 +84847,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T21:01:36.7267848Z",
-            "EndTime": "2026-05-11T22:01:36.7267848Z",
+            "StartTime": "2026-05-11T22:01:36.7267848Z",
+            "EndTime": "2026-05-11T23:01:36.7267848Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -84979,8 +85027,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T21:01:36.7267848Z",
-            "EndTime": "2026-05-11T22:01:36.7267848Z",
+            "StartTime": "2026-05-11T22:01:36.7267848Z",
+            "EndTime": "2026-05-11T23:01:36.7267848Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -85145,7 +85193,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Noble Gases",
   "Name": "Noble Gases",
-  "Quantity": 1106,
+  "Quantity": 1120,
   "ResourcePurity": "High"
 },
         "286292c2-24d0-4987-8829-6919df1b289e": {
@@ -85153,7 +85201,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkaline Earth Metals",
   "Name": "Alkaline Earth Metals",
-  "Quantity": 8160,
+  "Quantity": 8246,
   "ResourcePurity": "High"
 },
         "36de5729-ece6-4242-b2c5-45112806b1c1": {
@@ -85178,7 +85226,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Inorganics",
   "Name": "Strong Alkali Inorganics",
-  "Quantity": 276,
+  "Quantity": 280,
   "ResourcePurity": "High"
 },
         "5984d460-a6be-4aec-b14c-182feef61164": {
@@ -85266,7 +85314,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Non-Metallics",
   "Name": "Complex Non-Metallics",
-  "Quantity": 1106,
+  "Quantity": 1113,
   "ResourcePurity": "High"
 },
         "e532b516-8f0b-4bc0-9bb7-8be66d2c6292": {
@@ -85274,7 +85322,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Metaloids",
   "Name": "Metaloids",
-  "Quantity": 691,
+  "Quantity": 708,
   "ResourcePurity": "Low"
 }
       },
@@ -85627,14 +85675,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6056907Z",
-            "EndTime": "2026-05-11T21:59:59.6056907Z",
+            "StartTime": "2026-05-11T21:59:59.6056907Z",
+            "EndTime": "2026-05-11T22:59:59.6056907Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "d40e9056-10fd-49cf-9d88-51c6dd14f31f",
           "MiningSurveyResource": "Noble Gases",
-          "MiningLeftOvers": 0.732,
+          "MiningLeftOvers": 0.064,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -85948,14 +85996,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6056907Z",
-            "EndTime": "2026-05-11T21:59:59.6056907Z",
+            "StartTime": "2026-05-11T21:59:59.6056907Z",
+            "EndTime": "2026-05-11T22:59:59.6056907Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "d40e9056-10fd-49cf-9d88-51c6dd14f31f",
           "MiningSurveyResource": "Strong Alkali Inorganics",
-          "MiningLeftOvers": 0.933,
+          "MiningLeftOvers": 0.266,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -86408,14 +86456,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6056907Z",
-            "EndTime": "2026-05-11T21:59:59.6056907Z",
+            "StartTime": "2026-05-11T21:59:59.6056907Z",
+            "EndTime": "2026-05-11T22:59:59.6056907Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "d40e9056-10fd-49cf-9d88-51c6dd14f31f",
           "MiningSurveyResource": "Alkaline Earth Metals",
-          "MiningLeftOvers": 0.258,
+          "MiningLeftOvers": 0.916,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -86441,14 +86489,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6056907Z",
-            "EndTime": "2026-05-11T21:59:59.6056907Z",
+            "StartTime": "2026-05-11T21:59:59.6056907Z",
+            "EndTime": "2026-05-11T22:59:59.6056907Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "d40e9056-10fd-49cf-9d88-51c6dd14f31f",
           "MiningSurveyResource": "Complex Non-Metallics",
-          "MiningLeftOvers": 0.866,
+          "MiningLeftOvers": 0.532,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -86572,14 +86620,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.6056907Z",
-            "EndTime": "2026-05-11T21:59:59.6056907Z",
+            "StartTime": "2026-05-11T21:59:59.6056907Z",
+            "EndTime": "2026-05-11T22:59:59.6056907Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "d40e9056-10fd-49cf-9d88-51c6dd14f31f",
           "MiningSurveyResource": "Metaloids",
-          "MiningLeftOvers": 0.665,
+          "MiningLeftOvers": 0.330,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -88663,7 +88711,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Superheavy Exotics",
   "Name": "Superheavy Exotics",
-  "Quantity": 223,
+  "Quantity": 230,
   "ResourcePurity": "Low"
 },
         "33366783-66bd-4e02-ae09-6f9ec2952e59": {
@@ -88671,7 +88719,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkali Metals",
   "Name": "Heavy Alkali Metals",
-  "Quantity": 565,
+  "Quantity": 580,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -88724,7 +88772,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkaline Earth Metals",
   "Name": "Alkaline Earth Metals",
-  "Quantity": 4191,
+  "Quantity": 4318,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -88733,7 +88781,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Transuranic Volatiles",
   "Name": "Transuranic Volatiles",
-  "Quantity": 565,
+  "Quantity": 585,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -88742,7 +88790,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Lanthanides",
   "Name": "Lanthanides",
-  "Quantity": 110,
+  "Quantity": 113,
   "ResourcePurity": "Low"
 },
         "a353ef3d-a8d1-4441-8f8d-6837ab244a0f": {
@@ -88750,7 +88798,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkaline Earth Metals",
   "Name": "Alkaline Earth Metals",
-  "Quantity": 309,
+  "Quantity": 317,
   "ResourcePurity": "High"
 },
         "b51d9d10-1a23-496e-a561-b5d77487ea3e": {
@@ -88765,7 +88813,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Lanthanides",
   "Name": "Lanthanides",
-  "Quantity": 127,
+  "Quantity": 131,
   "ResourcePurity": "Medium"
 },
         "d2e90c9b-795b-4874-bb5c-ae4428173b71": {
@@ -88865,14 +88913,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8754521Z",
-            "EndTime": "2026-05-11T21:59:59.8754521Z",
+            "StartTime": "2026-05-11T21:59:59.8754521Z",
+            "EndTime": "2026-05-11T22:59:59.8754521Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e56ec2a9-2658-4584-8a3d-304b9f2d8c03",
           "MiningSurveyResource": "Superheavy Exotics",
-          "MiningLeftOvers": 0.773,
+          "MiningLeftOvers": 0.106,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -88899,14 +88947,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8764524Z",
-            "EndTime": "2026-05-11T21:59:59.8764524Z",
+            "StartTime": "2026-05-11T21:59:59.8764524Z",
+            "EndTime": "2026-05-11T22:59:59.8764524Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e56ec2a9-2658-4584-8a3d-304b9f2d8c03",
           "MiningSurveyResource": "Alkaline Earth Metals",
-          "MiningLeftOvers": 0.108,
+          "MiningLeftOvers": 0.438,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -89054,14 +89102,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8764524Z",
-            "EndTime": "2026-05-11T21:59:59.8764524Z",
+            "StartTime": "2026-05-11T21:59:59.8764524Z",
+            "EndTime": "2026-05-11T22:59:59.8764524Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e56ec2a9-2658-4584-8a3d-304b9f2d8c03",
           "MiningSurveyResource": "Lanthanides",
-          "MiningLeftOvers": 0.081,
+          "MiningLeftOvers": 0.414,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -89146,14 +89194,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8764524Z",
-            "EndTime": "2026-05-11T21:59:59.8764524Z",
+            "StartTime": "2026-05-11T21:59:59.8764524Z",
+            "EndTime": "2026-05-11T22:59:59.8764524Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e56ec2a9-2658-4584-8a3d-304b9f2d8c03",
           "MiningSurveyResource": "Heavy Alkali Metals",
-          "MiningLeftOvers": 0.355,
+          "MiningLeftOvers": 0.688,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -89260,14 +89308,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8764524Z",
-            "EndTime": "2026-05-11T21:59:59.8764524Z",
+            "StartTime": "2026-05-11T21:59:59.8764524Z",
+            "EndTime": "2026-05-11T22:59:59.8764524Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e56ec2a9-2658-4584-8a3d-304b9f2d8c03",
           "MiningSurveyResource": "Transuranic Volatiles",
-          "MiningLeftOvers": 0.923,
+          "MiningLeftOvers": 0.256,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -89369,14 +89417,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8764524Z",
-            "EndTime": "2026-05-11T21:59:59.8764524Z",
+            "StartTime": "2026-05-11T21:59:59.8764524Z",
+            "EndTime": "2026-05-11T22:59:59.8764524Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e56ec2a9-2658-4584-8a3d-304b9f2d8c03",
           "MiningSurveyResource": "Superheavy Exotics",
-          "MiningLeftOvers": 0.491,
+          "MiningLeftOvers": 0.824,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -89402,8 +89450,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4773958Z",
-            "EndTime": "2026-05-11T21:59:59.4773958Z",
+            "StartTime": "2026-05-11T21:59:59.4773958Z",
+            "EndTime": "2026-05-11T22:59:59.4773958Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -89435,8 +89483,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4783966Z",
-            "EndTime": "2026-05-11T21:59:59.4783966Z",
+            "StartTime": "2026-05-11T21:59:59.4783966Z",
+            "EndTime": "2026-05-11T22:59:59.4783966Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -89468,8 +89516,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.1681087Z",
-            "EndTime": "2026-05-11T21:59:59.1681087Z",
+            "StartTime": "2026-05-11T21:59:59.1681087Z",
+            "EndTime": "2026-05-11T22:59:59.1681087Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -89670,14 +89718,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8764524Z",
-            "EndTime": "2026-05-11T21:59:59.8764524Z",
+            "StartTime": "2026-05-11T21:59:59.8764524Z",
+            "EndTime": "2026-05-11T22:59:59.8764524Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "64a739f9-9247-4198-a302-7d1fe3f8bf67",
           "MiningSurveyResource": "Lanthanides",
-          "MiningLeftOvers": 0.9425,
+          "MiningLeftOvers": 0.6896,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -89973,8 +90021,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8592041Z",
-            "EndTime": "2026-05-11T21:59:59.8592041Z",
+            "StartTime": "2026-05-11T21:59:59.8592041Z",
+            "EndTime": "2026-05-11T22:59:59.8592041Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -90185,8 +90233,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.8602043Z",
-            "EndTime": "2026-05-11T21:59:59.8602043Z",
+            "StartTime": "2026-05-11T21:59:59.8602043Z",
+            "EndTime": "2026-05-11T22:59:59.8602043Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -94352,7 +94400,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Non-Metallics",
   "Name": "Non-Metallics",
-  "Quantity": 165171,
+  "Quantity": 165425,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -94371,7 +94419,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Non-Metallics",
   "Name": "Non-Metallics",
-  "Quantity": 2147477695,
+  "Quantity": 2147477729,
   "ResourcePurity": "High"
 },
         "bcfbad91-9175-4148-bc42-8390d1334c4a": {
@@ -94386,7 +94434,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Light Halogens",
   "Name": "Light Halogens",
-  "Quantity": 2147470748,
+  "Quantity": 2147470860,
   "ResourcePurity": "High"
 },
         "fc6b9fd0-67d7-4ca2-a3fe-984741c1938c": {
@@ -94394,7 +94442,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Light Halogens",
   "Name": "Light Halogens",
-  "Quantity": 359691,
+  "Quantity": 360072,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -94508,14 +94556,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.7429786Z",
-            "EndTime": "2026-05-11T21:59:59.7429786Z",
+            "StartTime": "2026-05-11T21:59:59.7429786Z",
+            "EndTime": "2026-05-11T22:59:59.7429786Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e856df98-27b1-4dda-8209-06b6bd18985d",
           "MiningSurveyResource": "Light Halogens",
-          "MiningLeftOvers": 0.880,
+          "MiningLeftOvers": 0.528,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -94587,14 +94635,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.7429786Z",
-            "EndTime": "2026-05-11T21:59:59.7429786Z",
+            "StartTime": "2026-05-11T21:59:59.7429786Z",
+            "EndTime": "2026-05-11T22:59:59.7429786Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "e856df98-27b1-4dda-8209-06b6bd18985d",
           "MiningSurveyResource": "Non-Metallics",
-          "MiningLeftOvers": 0.875,
+          "MiningLeftOvers": 0.200,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -94853,8 +94901,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4501758Z",
-            "EndTime": "2026-05-11T21:59:59.4501758Z",
+            "StartTime": "2026-05-11T21:59:59.4501758Z",
+            "EndTime": "2026-05-11T22:59:59.4501758Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -95037,8 +95085,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.439163Z",
-            "EndTime": "2026-05-11T21:59:59.439163Z",
+            "StartTime": "2026-05-11T21:59:59.439163Z",
+            "EndTime": "2026-05-11T22:59:59.439163Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -95332,8 +95380,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.7439788Z",
-            "EndTime": "2026-05-11T21:59:59.7439788Z",
+            "StartTime": "2026-05-11T21:59:59.7439788Z",
+            "EndTime": "2026-05-11T22:59:59.7439788Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -95365,8 +95413,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:48.7237848Z",
-            "EndTime": "2026-05-11T21:59:48.7237848Z",
+            "StartTime": "2026-05-11T21:59:48.7237848Z",
+            "EndTime": "2026-05-11T22:59:48.7237848Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -95853,8 +95901,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4878189Z",
-            "EndTime": "2026-05-11T21:59:59.4878189Z",
+            "StartTime": "2026-05-11T21:59:59.4878189Z",
+            "EndTime": "2026-05-11T22:59:59.4878189Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -96628,7 +96676,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Lanthanides",
   "Name": "Lanthanides",
-  "Quantity": 2147476292,
+  "Quantity": 2147476302,
   "ResourcePurity": "High"
 },
         "73bf8e01-6283-4cc5-8b78-97e8e3948a5f": {
@@ -96656,7 +96704,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Halogens",
   "Name": "Halogens",
-  "Quantity": 2147479665,
+  "Quantity": 2147479653,
   "ResourcePurity": "High"
 },
         "b34e8c07-e5ff-4a2b-bca2-3afc5a3d6c8a": {
@@ -96680,7 +96728,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkali Metals",
   "Name": "Heavy Alkali Metals",
-  "Quantity": 2147480441,
+  "Quantity": 2147480444,
   "ResourcePurity": "High"
 },
         "e6bcd092-9875-4009-a8db-8200ac1d3ad2": {
@@ -96688,7 +96736,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Halogens",
   "Name": "Halogens",
-  "Quantity": 40767,
+  "Quantity": 40894,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -96697,7 +96745,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Light Halogens",
   "Name": "Light Halogens",
-  "Quantity": 2147479640,
+  "Quantity": 2147479653,
   "ResourcePurity": "High"
 },
         "ef3c8da1-1ba8-493c-8829-aca89121e118": {
@@ -96840,8 +96888,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.2252635Z",
-            "EndTime": "2026-05-11T21:59:59.2252635Z",
+            "StartTime": "2026-05-11T21:59:59.2252635Z",
+            "EndTime": "2026-05-11T22:59:59.2252635Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -96931,14 +96979,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.5980305Z",
-            "EndTime": "2026-05-11T21:59:59.5980305Z",
+            "StartTime": "2026-05-11T21:59:59.5980305Z",
+            "EndTime": "2026-05-11T22:59:59.5980305Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "755c8a83-316d-46ae-8742-23a4e6758957",
           "MiningSurveyResource": "Halogens",
-          "MiningLeftOvers": 0.580,
+          "MiningLeftOvers": 0.912,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -96965,14 +97013,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.5980305Z",
-            "EndTime": "2026-05-11T21:59:59.5980305Z",
+            "StartTime": "2026-05-11T21:59:59.5980305Z",
+            "EndTime": "2026-05-11T22:59:59.5980305Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "755c8a83-316d-46ae-8742-23a4e6758957",
           "MiningSurveyResource": "Heavy Alkali Metals",
-          "MiningLeftOvers": 0.203,
+          "MiningLeftOvers": 0.536,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -97116,8 +97164,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.102265Z",
-            "EndTime": "2026-05-11T21:59:59.102265Z",
+            "StartTime": "2026-05-11T21:59:59.102265Z",
+            "EndTime": "2026-05-11T22:59:59.102265Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -97210,14 +97258,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.5980305Z",
-            "EndTime": "2026-05-11T21:59:59.5980305Z",
+            "StartTime": "2026-05-11T21:59:59.5980305Z",
+            "EndTime": "2026-05-11T22:59:59.5980305Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "755c8a83-316d-46ae-8742-23a4e6758957",
           "MiningSurveyResource": "Lanthanides",
-          "MiningLeftOvers": 0.057,
+          "MiningLeftOvers": 0.056,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -97338,14 +97386,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.5980305Z",
-            "EndTime": "2026-05-11T21:59:59.5980305Z",
+            "StartTime": "2026-05-11T21:59:59.5980305Z",
+            "EndTime": "2026-05-11T22:59:59.5980305Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "755c8a83-316d-46ae-8742-23a4e6758957",
           "MiningSurveyResource": "Light Halogens",
-          "MiningLeftOvers": 0.332,
+          "MiningLeftOvers": 0.664,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -97371,8 +97419,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.2272643Z",
-            "EndTime": "2026-05-11T21:59:59.2272643Z",
+            "StartTime": "2026-05-11T21:59:59.2272643Z",
+            "EndTime": "2026-05-11T22:59:59.2272643Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -97642,8 +97690,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4471554Z",
-            "EndTime": "2026-05-11T21:59:59.4471554Z",
+            "StartTime": "2026-05-11T21:59:59.4471554Z",
+            "EndTime": "2026-05-11T22:59:59.4471554Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -97694,14 +97742,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.5980305Z",
-            "EndTime": "2026-05-11T21:59:59.5980305Z",
+            "StartTime": "2026-05-11T21:59:59.5980305Z",
+            "EndTime": "2026-05-11T22:59:59.5980305Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "755c8a83-316d-46ae-8742-23a4e6758957",
           "MiningSurveyResource": "Strong Alkali Inorganics",
-          "MiningLeftOvers": 0.437,
+          "MiningLeftOvers": 0.432,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -98042,14 +98090,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.5980305Z",
-            "EndTime": "2026-05-11T21:59:59.5980305Z",
+            "StartTime": "2026-05-11T21:59:59.5980305Z",
+            "EndTime": "2026-05-11T22:59:59.5980305Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "755c8a83-316d-46ae-8742-23a4e6758957",
           "MiningSurveyResource": "Strong Alkali Organics",
-          "MiningLeftOvers": 0.331,
+          "MiningLeftOvers": 0.664,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -105212,7 +105260,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Lanthanides",
   "Name": "Lanthanides",
-  "Quantity": 311,
+  "Quantity": 314,
   "ResourcePurity": "Medium"
 },
         "14cb854b-7a43-4f88-985a-31559839b1ef": {
@@ -105291,7 +105339,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Post-Trans Metals",
   "Name": "Heavy Post-Trans Metals",
-  "Quantity": 4356,
+  "Quantity": 4383,
   "ResourcePurity": "Medium"
 },
         "ac16a654-8691-4c85-a4fe-bfca4160eabb": {
@@ -105314,7 +105362,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Metallics",
   "Name": "Metallics",
-  "Quantity": 21163,
+  "Quantity": 21291,
   "ResourcePurity": "Low"
 },
         "f2afa877-1d08-41bf-834d-a34848a7a3b9": {
@@ -105322,7 +105370,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Transuranic Volatiles",
   "Name": "Transuranic Volatiles",
-  "Quantity": 311,
+  "Quantity": 314,
   "ResourcePurity": "High"
 }
       },
@@ -105725,14 +105773,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4117313Z",
-            "EndTime": "2026-05-11T21:59:59.4117313Z",
+            "StartTime": "2026-05-11T21:59:59.4117313Z",
+            "EndTime": "2026-05-11T22:59:59.4117313Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "07f98aa4-dca4-4032-9734-efc004450bbd",
           "MiningSurveyResource": "Transuranic Volatiles",
-          "MiningLeftOvers": 0.1671,
+          "MiningLeftOvers": 0.9142,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -105882,14 +105930,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4117313Z",
-            "EndTime": "2026-05-11T21:59:59.4117313Z",
+            "StartTime": "2026-05-11T21:59:59.4117313Z",
+            "EndTime": "2026-05-11T22:59:59.4117313Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "07f98aa4-dca4-4032-9734-efc004450bbd",
           "MiningSurveyResource": "Lanthanides",
-          "MiningLeftOvers": 0.1671,
+          "MiningLeftOvers": 0.9142,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -106106,14 +106154,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4117313Z",
-            "EndTime": "2026-05-11T21:59:59.4117313Z",
+            "StartTime": "2026-05-11T21:59:59.4117313Z",
+            "EndTime": "2026-05-11T22:59:59.4117313Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "07f98aa4-dca4-4032-9734-efc004450bbd",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
-          "MiningLeftOvers": 0.8567,
+          "MiningLeftOvers": 0.1066,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -106902,14 +106950,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.4117313Z",
-            "EndTime": "2026-05-11T21:59:59.4117313Z",
+            "StartTime": "2026-05-11T21:59:59.4117313Z",
+            "EndTime": "2026-05-11T22:59:59.4117313Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "07f98aa4-dca4-4032-9734-efc004450bbd",
           "MiningSurveyResource": "Metallics",
-          "MiningLeftOvers": 0.9523,
+          "MiningLeftOvers": 0.4446,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
@@ -110264,7 +110312,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkaline Earth Metals",
   "Name": "Alkaline Earth Metals",
-  "Quantity": 4129,
+  "Quantity": 4180,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -110292,14 +110340,6 @@
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
-        "ba438341-84b9-45e8-831a-d7dde1282246": {
-  "UUID": "ba438341-84b9-45e8-831a-d7dde1282246",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Alkaline Earth Metals",
-  "Name": "Alkaline Earth Metals",
-  "Quantity": 10,
-  "ResourcePurity": "High"
-},
         "bd71dfc3-f42f-4dff-82f9-f22526907ec7": {
   "UUID": "bd71dfc3-f42f-4dff-82f9-f22526907ec7"
 },
@@ -110316,6 +110356,14 @@
   "BaseItemTypeID": "BlueCollarDetail",
   "Name": "BlueCollarDetail",
   "Volume": 50.0
+},
+        "f3752d2c-6f04-4817-81f5-11d000f0ed59": {
+  "UUID": "f3752d2c-6f04-4817-81f5-11d000f0ed59",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Alkaline Earth Metals",
+  "Name": "Alkaline Earth Metals",
+  "Quantity": 10,
+  "ResourcePurity": "High"
 },
         "fa93d313-d4a8-4b0f-985b-8072529c19de": {
   "UUID": "fa93d313-d4a8-4b0f-985b-8072529c19de",
@@ -111265,8 +111313,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:52.7723066Z",
-            "EndTime": "2026-05-11T21:59:52.7723066Z",
+            "StartTime": "2026-05-11T21:59:52.7723066Z",
+            "EndTime": "2026-05-11T22:59:52.7723066Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -111416,14 +111464,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:59:59.5830645Z",
-            "EndTime": "2026-05-11T21:59:59.5830645Z",
+            "StartTime": "2026-05-11T21:59:59.5830645Z",
+            "EndTime": "2026-05-11T22:59:59.5830645Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "5b856ea4-c9c8-439e-ba30-1bf7fbf309ad",
           "MiningSurveyResource": "Alkaline Earth Metals",
-          "MiningLeftOvers": 0.665,
+          "MiningLeftOvers": 0.664,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
