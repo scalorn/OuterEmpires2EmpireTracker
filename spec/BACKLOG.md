@@ -1,6 +1,6 @@
 # Feature Backlog
 
-**Next available ID: BL-135** (check COMPLETED.md before assigning — IDs are shared across both files)
+**Next available ID: BL-138** (check COMPLETED.md before assigning — IDs are shared across both files)
 
 Open features and enhancements to be worked on.
 
@@ -233,3 +233,29 @@ Investigate FlaUI (https://github.com/FlaUI/FlaUI) for automated integration tes
 **Suggested first test:** Open FormSurvey, immediately close it, assert no MessageBox appeared (the exact bug that was just fixed).
 
 **Research deliverable:** A spike in `spec/decisions/` documenting findings, with a working prototype test if FlaUI is viable.
+
+### BL-135: Remote Faction Service — Faction Logistics Coordination (OI-001)
+**Dependencies:** Remote Faction Service core implementation
+**Status: New — deferred until core service is operational**
+
+Factions need to coordinate logistics among members — requesting resources, manufacturing jobs, and deliveries. The current design supports data sharing (read-only visibility) but has no mechanism for members to make requests of each other or track fulfillment. Scenarios include posting resource requests, offering surplus materials, requesting manufacturing runs, and planning delivery routes to fulfill pending requests.
+
+Key design questions: backing data model (Request entity?), request targeting (faction-wide vs directed), relationship to DeliveryRoutes/Plans, state machine (Open → Claimed → In Transit → Fulfilled → Closed), who can create requests, fulfillment confirmation mechanism, UI integration, priority/urgency, expiry.
+
+Requires the core sharing and membership model to be implemented first.
+
+### BL-136: Remote Faction Service — Game API Integration Specifics (OI-002)
+**Dependencies:** Remote Faction Service core implementation, game API documentation
+**Status: Blocked — waiting on game API documentation from developers**
+
+The server needs to call the game API on behalf of characters (for background processing, data import). The credential storage mechanism is designed (Requirement 17/Section 25 of the spec), but the actual API endpoints, authentication flow, rate limits, and data formats are unknown.
+
+Key questions: authentication method (OAuth2, API key, session cookie?), available endpoints, rate limits (per-account, per-IP, global?), webhook/push vs polling, token refresh handling, credential expiry notification.
+
+### BL-137: Remote Faction Service — Audit Log Detailed Design (OI-004)
+**Dependencies:** Remote Faction Service core CRUD endpoints
+**Status: New — requirements clarified, needs detailed API design**
+
+For faction governance and future write-delegation scenarios, all mutations need a full audit trail with diffs. Resolved: every mutation logged with full diff, configurable retention (Owner max >= Faction Leader >= Character), viewable by anyone who can view the entity, includes character UUID and token ID.
+
+Remaining questions: diff format (JSON Patch RFC 6902 vs full snapshots vs both?), API shape for querying audit records, whether audit records are included in data exports, storage impact of full diffs on every colony tick (60s) — should timer ticks be batched/summarized differently from user-initiated mutations?

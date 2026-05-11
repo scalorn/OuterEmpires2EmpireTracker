@@ -1,6 +1,8 @@
 # Remote Faction Service — Open Items
 
-Items that need further design and discussion before implementation.
+All open items have been moved to the project backlog (spec/BACKLOG.md) as BL-135, BL-136, and BL-137. OI-003 (Multi-Server Federation) is a future consideration not tracked as a backlog item. OI-005 was already closed.
+
+None of these items block initial implementation of the core service (Requirements 1–20).
 
 ## OI-001: Faction Logistics Coordination
 
