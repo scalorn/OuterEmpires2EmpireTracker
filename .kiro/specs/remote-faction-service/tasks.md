@@ -25,7 +25,7 @@
 ## Phase 2: Storage Abstraction and JSON File Backend
 
 - [ ] 2.1 Define storage interfaces
-  - [-] 2.1.1 Create IStorageBackend interface with all methods from design Section 3.1
+  - [x] 2.1.1 Create IStorageBackend interface with all methods from design Section 3.1
   - [ ] 2.1.2 Create server-side model classes: ApiToken, TokenRole, RateLimitConfig, MembershipAction, SharingRule, CharacterPreferences, EntityMetadata, ServerFaction
 
 - [ ] 2.2 Implement JsonFileStorageBackend
@@ -47,7 +47,7 @@
 ## Phase 3: Token Authentication
 
 - [ ] 3.1 Token generation and storage
-  - [ ] 3.1.1 Generate Owner token on first startup, display in console, persist hash
+  - [-] 3.1.1 Generate Owner token on first startup, display in console, persist hash
   - [ ] 3.1.2 Implement token hashing (SHA-256) and lookup
   - [ ] 3.1.3 Implement --regenerate-owner-token CLI command
 
