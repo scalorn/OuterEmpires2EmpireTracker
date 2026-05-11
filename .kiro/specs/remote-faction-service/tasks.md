@@ -110,7 +110,7 @@
 ## Phase 6: Central Data Storage Endpoints
 
 - [ ] 6.1 Character data CRUD
-  - [-] 6.1.1 GET /api/v1/characters/{uuid}/data/{dataType} — get collection
+  - [x] 6.1.1 GET /api/v1/characters/{uuid}/data/{dataType} — get collection
   - [ ] 6.1.2 POST /api/v1/characters/{uuid}/data/{dataType} — create entity
   - [ ] 6.1.3 GET /api/v1/characters/{uuid}/data/{dataType}/{entityUuid} — get entity
   - [ ] 6.1.4 PUT /api/v1/characters/{uuid}/data/{dataType}/{entityUuid} — update entity
@@ -136,7 +136,7 @@
 ## Phase 7: WebSocket Real-Time Push
 
 - [ ] 7.1 WebSocket infrastructure
-  - [ ] 7.1.1 WebSocket endpoint at /ws with Bearer token auth
+  - [-] 7.1.1 WebSocket endpoint at /ws with Bearer token auth
   - [ ] 7.1.2 Connection management (track connected clients, heartbeat, timeout)
   - [ ] 7.1.3 Reconnection support with exponential backoff (client-side)
 

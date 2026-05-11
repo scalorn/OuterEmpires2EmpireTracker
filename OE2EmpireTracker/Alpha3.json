@@ -37984,7 +37984,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Organics",
   "Name": "Strong Alkali Organics",
-  "Quantity": 2147477078,
+  "Quantity": 2147477053,
   "ResourcePurity": "Low"
 },
         "ab7c7046-fe9c-4280-b5b2-9b401eeb8bd1": {
@@ -38003,7 +38003,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Organics",
   "Name": "Strong Alkali Organics",
-  "Quantity": 8532,
+  "Quantity": 8557,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -38798,8 +38798,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:55:29.7487932Z",
-            "EndTime": "2026-05-11T21:55:29.7487932Z",
+            "StartTime": "2026-05-11T21:55:29.7487932Z",
+            "EndTime": "2026-05-11T22:55:29.7487932Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -42161,7 +42161,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Trans-Metals",
   "Name": "Trans-Metals",
-  "Quantity": 17988610,
+  "Quantity": 17988585,
   "ResourcePurity": "High"
 },
         "d3747de2-e24c-43b1-9579-5bbb7b96a8ac": {
@@ -42176,7 +42176,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Trans-Metals",
   "Name": "Trans-Metals",
-  "Quantity": 350256,
+  "Quantity": 350383,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 }
@@ -42337,8 +42337,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:55:30.7497952Z",
-            "EndTime": "2026-05-11T21:55:30.7497952Z",
+            "StartTime": "2026-05-11T21:55:30.7497952Z",
+            "EndTime": "2026-05-11T22:55:30.7497952Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -43415,7 +43415,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Acidic Inorganics",
   "Name": "Strong Acidic Inorganics",
-  "Quantity": 2147478962,
+  "Quantity": 2147478937,
   "ResourcePurity": "High"
 },
         "140bd0e3-d33b-4975-8e89-6b93a6d29410": {
@@ -43435,7 +43435,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Acidic Inorganics",
   "Name": "Strong Acidic Inorganics",
-  "Quantity": 45192,
+  "Quantity": 45319,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -43676,8 +43676,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:55:28.7407913Z",
-            "EndTime": "2026-05-11T21:55:28.7407913Z",
+            "StartTime": "2026-05-11T21:55:28.7407913Z",
+            "EndTime": "2026-05-11T22:55:28.7407913Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -51295,8 +51295,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:55:30.7523021Z",
-            "EndTime": "2026-05-11T21:55:30.7523021Z",
+            "StartTime": "2026-05-11T21:55:30.7523021Z",
+            "EndTime": "2026-05-11T22:55:30.7523021Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -76364,7 +76364,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Post-Trans Metals",
   "Name": "Post-Trans Metals",
-  "Quantity": 57531,
+  "Quantity": 57785,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -76406,7 +76406,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Post-Trans Metals",
   "Name": "Post-Trans Metals",
-  "Quantity": 1299,
+  "Quantity": 1249,
   "ResourcePurity": "High"
 },
         "89fbdff8-9c3d-472e-8f55-29fbb98dc99e": {
@@ -76574,8 +76574,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:55:31.7693065Z",
-            "EndTime": "2026-05-11T21:55:31.7693065Z",
+            "StartTime": "2026-05-11T21:55:31.7693065Z",
+            "EndTime": "2026-05-11T22:55:31.7693065Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -77668,8 +77668,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:55:31.7693065Z",
-            "EndTime": "2026-05-11T21:55:31.7693065Z",
+            "StartTime": "2026-05-11T21:55:31.7693065Z",
+            "EndTime": "2026-05-11T22:55:31.7693065Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -94352,7 +94352,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Non-Metallics",
   "Name": "Non-Metallics",
-  "Quantity": 165044,
+  "Quantity": 165171,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -94371,7 +94371,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Non-Metallics",
   "Name": "Non-Metallics",
-  "Quantity": 2147477720,
+  "Quantity": 2147477695,
   "ResourcePurity": "High"
 },
         "bcfbad91-9175-4148-bc42-8390d1334c4a": {
@@ -94698,8 +94698,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:55:29.7237848Z",
-            "EndTime": "2026-05-11T21:55:29.7237848Z",
+            "StartTime": "2026-05-11T21:55:29.7237848Z",
+            "EndTime": "2026-05-11T22:55:29.7237848Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -96611,7 +96611,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkali Metals",
   "Name": "Heavy Alkali Metals",
-  "Quantity": 18161,
+  "Quantity": 18288,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -96680,7 +96680,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Alkali Metals",
   "Name": "Heavy Alkali Metals",
-  "Quantity": 2147480466,
+  "Quantity": 2147480441,
   "ResourcePurity": "High"
 },
         "e6bcd092-9875-4009-a8db-8200ac1d3ad2": {
@@ -98075,8 +98075,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:55:30.7437922Z",
-            "EndTime": "2026-05-11T21:55:30.7437922Z",
+            "StartTime": "2026-05-11T21:55:30.7437922Z",
+            "EndTime": "2026-05-11T22:55:30.7437922Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -111719,7 +111719,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkaline Earth Metals",
   "Name": "Alkaline Earth Metals",
-  "Quantity": 203144,
+  "Quantity": 203271,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -111779,7 +111779,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkaline Earth Metals",
   "Name": "Alkaline Earth Metals",
-  "Quantity": 7415249,
+  "Quantity": 7415224,
   "ResourcePurity": "High"
 },
         "f9019a1b-5da8-45c1-a622-8a87901a2b6a": {
@@ -112731,8 +112731,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T20:55:30.7457927Z",
-            "EndTime": "2026-05-11T21:55:30.7457927Z",
+            "StartTime": "2026-05-11T21:55:30.7457927Z",
+            "EndTime": "2026-05-11T22:55:30.7457927Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
