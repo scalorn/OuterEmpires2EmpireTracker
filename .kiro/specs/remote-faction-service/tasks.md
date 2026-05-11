@@ -17,7 +17,7 @@
   - [ ] 1.2.3 Verify tests pass
 
 - [ ] 1.3 TLS / Certificate support
-  - [-] 1.3.1 Implement CertificateManager — generate self-signed cert on first run, persist to configured path
+  - [x] 1.3.1 Implement CertificateManager — generate self-signed cert on first run, persist to configured path
   - [ ] 1.3.2 Support custom PFX/PEM certificate via configuration
   - [ ] 1.3.3 Log certificate thumbprint on startup
   - [ ] 1.3.4 Support X-Forwarded-For/Proto headers for reverse proxy mode
@@ -25,7 +25,7 @@
 ## Phase 2: Storage Abstraction and JSON File Backend
 
 - [ ] 2.1 Define storage interfaces
-  - [ ] 2.1.1 Create IStorageBackend interface with all methods from design Section 3.1
+  - [-] 2.1.1 Create IStorageBackend interface with all methods from design Section 3.1
   - [ ] 2.1.2 Create server-side model classes: ApiToken, TokenRole, RateLimitConfig, MembershipAction, SharingRule, CharacterPreferences, EntityMetadata, ServerFaction
 
 - [ ] 2.2 Implement JsonFileStorageBackend
