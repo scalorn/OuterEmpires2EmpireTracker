@@ -34,6 +34,7 @@ const tools = [
     { name: 'Flatpack Integrity', script: 'flatpack-check.js' },
     { name: 'Code Metrics', script: 'code-metrics.js' },
     { name: 'Mutation Audit', script: 'mutation-audit.js' },
+    { name: 'Server Build', script: 'server-build-check.js' },
 ];
 
 let totalFindings = 0;

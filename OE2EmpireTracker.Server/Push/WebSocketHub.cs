@@ -15,7 +15,7 @@ public class WebSocketConnection
     public string? CharacterUUID { get; set; }
     public TokenRole Role { get; set; }
     public string? FactionUUID { get; set; }
-    public CancellationTokenSource Cts { get; set; } = new();
+    public CancellationTokenSource Cts { get; set; } = new CancellationTokenSource();
 }
 
 /// <summary>
@@ -23,7 +23,7 @@ public class WebSocketConnection
 /// </summary>
 public class WebSocketHub
 {
-    private readonly ConcurrentDictionary<string, WebSocketConnection> _connections = new();
+    private readonly ConcurrentDictionary<string, WebSocketConnection> _connections = new ConcurrentDictionary<string, WebSocketConnection>();
     private readonly ILogger<WebSocketHub> _logger;
 
     public WebSocketHub(ILogger<WebSocketHub> logger)

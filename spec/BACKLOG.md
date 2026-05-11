@@ -1,4 +1,4 @@
-# Feature Backlog
+ï»¿# Feature Backlog
 
 **Next available ID: BL-138** (check COMPLETED.md before assigning â€” IDs are shared across both files)
 
@@ -216,18 +216,18 @@ Declared on StationStats but never set or read. Always empty string. Same patter
 
 Investigate FlaUI (https://github.com/FlaUI/FlaUI) for automated integration testing of the WinForms UI. FlaUI wraps the Windows UI Automation framework and lets you find controls by name/type, click buttons, read grid values, and assert UI state. Works with NUnit.
 
-**Motivation:** Several recent bugs (survey form dirty-on-open, commodity checkbox not persisting, layout issues) are UI lifecycle bugs that unit tests can't catch because they depend on the full form lifecycle — WindowStateHelper.RestoreState, MDI child behavior, event wiring order, and control interaction sequences. A small smoke test suite that opens each form, verifies no dirty prompt on immediate close, and checks that key controls exist would catch these regressions automatically.
+**Motivation:** Several recent bugs (survey form dirty-on-open, commodity checkbox not persisting, layout issues) are UI lifecycle bugs that unit tests can't catch because they depend on the full form lifecycle â€” WindowStateHelper.RestoreState, MDI child behavior, event wiring order, and control interaction sequences. A small smoke test suite that opens each form, verifies no dirty prompt on immediate close, and checks that key controls exist would catch these regressions automatically.
 
 **Options to evaluate:**
-1. **FlaUI** — Most actively maintained Windows UI Automation wrapper for .NET. Supports .NET Framework 4.8.1. Launch app as a process, attach to window, drive controls programmatically. Tests are slower (real app launch) but catch real lifecycle bugs.
-2. **WinAppDriver** — Microsoft's Appium/WebDriver for desktop apps. Functional but deprecated (no active development). FlaUI is the better bet.
-3. **In-process form testing** — Already used in the project (e.g. MainMenuOverhaulTests). Fast but doesn't test full lifecycle (no WindowStateHelper restore, no MDI behavior).
+1. **FlaUI** â€” Most actively maintained Windows UI Automation wrapper for .NET. Supports .NET Framework 4.8.1. Launch app as a process, attach to window, drive controls programmatically. Tests are slower (real app launch) but catch real lifecycle bugs.
+2. **WinAppDriver** â€” Microsoft's Appium/WebDriver for desktop apps. Functional but deprecated (no active development). FlaUI is the better bet.
+3. **In-process form testing** â€” Already used in the project (e.g. MainMenuOverhaulTests). Fast but doesn't test full lifecycle (no WindowStateHelper restore, no MDI behavior).
 
 **Evaluation criteria:**
 - Compatibility with .NET Framework 4.8.1 and NUnit 4.x
 - Can it run in CI (headless or with a display)?
 - Test execution speed (acceptable for a small smoke suite, not full regression)
-- Stability — are tests brittle when layout changes?
+- Stability â€” are tests brittle when layout changes?
 - Can it verify: form opens without dirty prompt, checkbox persists on click, grid fills area, command bar position
 
 **Suggested first test:** Open FormSurvey, immediately close it, assert no MessageBox appeared (the exact bug that was just fixed).

@@ -249,5 +249,5 @@ app.Lifetime.ApplicationStopping.Register(() =>
 
 app.Run();
 
-// Make Program class accessible for integration tests
+/// <summary>Make Program class accessible for integration tests.</summary>
 public partial class Program { }

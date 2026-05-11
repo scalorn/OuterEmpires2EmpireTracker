@@ -34652,7 +34652,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Trans-Metals",
   "Name": "Heavy Trans-Metals",
-  "Quantity": 3465,
+  "Quantity": 3506,
   "ResourcePurity": "High"
 },
         "3e5f430a-892c-4272-87af-ca1634fae260": {
@@ -34756,7 +34756,7 @@
   "ItemType": "Flatpack",
   "BaseItemTypeID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
   "Name": "Refinery Flatpack",
-  "Quantity": 84
+  "Quantity": 85
 },
         "cdaa40f9-2f2f-4622-861e-8812a14d32a8": {
   "UUID": "cdaa40f9-2f2f-4622-861e-8812a14d32a8",
@@ -34932,8 +34932,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T21:04:54.1524433Z",
-            "EndTime": "2026-05-11T22:04:53.1524433Z",
+            "StartTime": "2026-05-11T22:04:53.1524433Z",
+            "EndTime": "2026-05-11T23:04:52.1524433Z",
             "RepeatIntervalSeconds": 3599,
             "IsRepeating": true
           },
@@ -34941,7 +34941,7 @@
           "MiningSurveyResource": "Refinery Flatpack",
           "ManufacturingBlueprintUUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
           "ManufacturingQuantity": 148,
-          "ManufacturingCompleted": 52,
+          "ManufacturingCompleted": 53,
           "CurrentAttitude": ""
         },
         {
@@ -35021,14 +35021,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T21:03:29.7703062Z",
-            "EndTime": "2026-05-11T22:03:29.7703062Z",
+            "StartTime": "2026-05-11T22:03:29.7703062Z",
+            "EndTime": "2026-05-11T23:03:29.7703062Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "22fe7b47-47c6-4ecf-ad43-f598103317c4",
           "MiningSurveyResource": "Heavy Trans-Metals",
-          "MiningLeftOvers": 0.1412,
+          "MiningLeftOvers": 0.3896,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -36189,8 +36189,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T21:03:29.7703062Z",
-            "EndTime": "2026-05-11T22:03:29.7703062Z",
+            "StartTime": "2026-05-11T22:03:29.7703062Z",
+            "EndTime": "2026-05-11T23:03:29.7703062Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -105355,7 +105355,7 @@
   "ItemType": "Flatpack",
   "BaseItemTypeID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
   "Name": "Entertainment Centre Flatpack",
-  "Quantity": 20
+  "Quantity": 21
 },
         "edbd1103-7c21-463c-ad81-3c35e1d48cad": {
   "UUID": "edbd1103-7c21-463c-ad81-3c35e1d48cad",
@@ -105986,8 +105986,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-11T18:12:58.2972804Z",
-            "EndTime": "2026-05-11T22:12:57.2972804Z",
+            "StartTime": "2026-05-11T22:12:57.2972804Z",
+            "EndTime": "2026-05-12T02:12:56.2972804Z",
             "RepeatIntervalSeconds": 14399,
             "IsRepeating": true
           },
@@ -105995,7 +105995,7 @@
           "MiningSurveyResource": "Entertainment Centre Flatpack",
           "ManufacturingBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
           "ManufacturingQuantity": 149,
-          "ManufacturingCompleted": 28,
+          "ManufacturingCompleted": 29,
           "CurrentAttitude": ""
         },
         {

@@ -10,7 +10,7 @@ namespace OE2EmpireTracker.Server.Storage;
 /// </summary>
 public class JsonFileStorageBackend : IStorageBackend
 {
-    private static readonly JsonSerializerSettings SerializerSettings = new()
+    private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings()
     {
         Formatting = Formatting.Indented,
         NullValueHandling = NullValueHandling.Ignore,
@@ -18,7 +18,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     private readonly string _dataPath;
     private readonly ILogger<JsonFileStorageBackend> _logger;
-    private readonly SemaphoreSlim _lock = new(1, 1);
+    private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
 
     public JsonFileStorageBackend(IConfiguration configuration, ILogger<JsonFileStorageBackend> logger)
     {

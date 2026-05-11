@@ -14,7 +14,7 @@ public class ServerBackgroundProcessor : BackgroundService
     private readonly EventDispatcher _eventDispatcher;
     private readonly ILogger<ServerBackgroundProcessor> _logger;
     private readonly IConfiguration _configuration;
-    private readonly object _lock = new();
+    private readonly object _lock = new object();
 
     private volatile bool _isEnabled;
     private DateTime? _lastTickUtc;

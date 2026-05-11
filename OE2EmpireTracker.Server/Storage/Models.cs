@@ -25,7 +25,7 @@ public class ApiToken
     public DateTime CreatedUtc { get; set; }
     public DateTime? LastUsedUtc { get; set; }
     public bool IsRevoked { get; set; }
-    public RateLimitConfig RateLimits { get; set; } = new();
+    public RateLimitConfig RateLimits { get; set; } = new RateLimitConfig();
 }
 
 /// <summary>Membership action type.</summary>
@@ -84,8 +84,8 @@ public class ServerFaction
     public string UUID { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public List<string> LeaderCharacterUUIDs { get; set; } = new();
-    public EntityMetadata Metadata { get; set; } = new();
+    public List<string> LeaderCharacterUUIDs { get; set; } = new List<string>();
+    public EntityMetadata Metadata { get; set; } = new EntityMetadata();
 }
 
 /// <summary>Server-side character with metadata.</summary>
@@ -94,5 +94,5 @@ public class ServerCharacter
     public string UUID { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string? FactionUUID { get; set; }
-    public EntityMetadata Metadata { get; set; } = new();
+    public EntityMetadata Metadata { get; set; } = new EntityMetadata();
 }

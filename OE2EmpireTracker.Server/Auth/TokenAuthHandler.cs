@@ -58,8 +58,8 @@ public class TokenAuthHandler : AuthenticationHandler<AuthenticationSchemeOption
 
         var claims = new List<Claim>
         {
-            new("TokenId", apiToken.Id),
-            new(ClaimTypes.Role, apiToken.Role.ToString()),
+            new Claim("TokenId", apiToken.Id),
+            new Claim(ClaimTypes.Role, apiToken.Role.ToString()),
         };
 
         if (!string.IsNullOrEmpty(apiToken.CharacterUUID))

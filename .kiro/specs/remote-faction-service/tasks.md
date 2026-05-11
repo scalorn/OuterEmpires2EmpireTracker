@@ -161,7 +161,7 @@
 ## Phase 9: Server-Side Background Processing
 
 - [ ] 9.1 Processing engine
-  - [-] 9.1.1 ServerBackgroundProcessor — wraps Common's processing logic
+  - [x] 9.1.1 ServerBackgroundProcessor — wraps Common's processing logic
   - [ ] 9.1.2 Only processes opted-in characters
   - [ ] 9.1.3 Configurable tick interval (default 60s)
   - [ ] 9.1.4 Enable/disable via config and runtime API

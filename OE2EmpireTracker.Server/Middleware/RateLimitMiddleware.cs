@@ -8,8 +8,8 @@ namespace OE2EmpireTracker.Server.Middleware;
 /// </summary>
 internal sealed class TokenBucket
 {
-    private readonly object _lock = new();
-    private readonly List<DateTime> _timestamps = new();
+    private readonly object _lock = new object();
+    private readonly List<DateTime> _timestamps = new List<DateTime>();
 
     public int MaxRequestsPerMinute { get; set; } = 60;
 
@@ -60,7 +60,7 @@ public class RateLimitMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<RateLimitMiddleware> _logger;
-    private readonly ConcurrentDictionary<string, TokenBucket> _buckets = new();
+    private readonly ConcurrentDictionary<string, TokenBucket> _buckets = new ConcurrentDictionary<string, TokenBucket>();
 
     public RateLimitMiddleware(
         RequestDelegate next,

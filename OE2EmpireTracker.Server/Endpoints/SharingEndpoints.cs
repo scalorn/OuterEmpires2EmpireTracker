@@ -9,7 +9,7 @@ namespace OE2EmpireTracker.Server.Endpoints;
 /// </summary>
 public static class SharingEndpoints
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
+    private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions()
     {
         PropertyNameCaseInsensitive = true,
     };
