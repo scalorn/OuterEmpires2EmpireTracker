@@ -1,5 +1,9 @@
 # Remote Faction Service — Requirements
 
+> **This is the umbrella spec.** Project-specific specs are in:
+> - `OE2EmpireTracker.Server/spec/` (server — Req 1–10, 12–15, 17–20)
+> - Future: `OE2EmpireTracker/Client/` (client connectivity — Req 11, 16)
+
 ## User Goal
 
 Faction members want a shared, always-on service that holds ALL player and game data so that multiple OE2 Empire Tracker instances can read and write from a central source. The service replaces local JSON files as the primary data store, with local files serving only as an offline cache.
