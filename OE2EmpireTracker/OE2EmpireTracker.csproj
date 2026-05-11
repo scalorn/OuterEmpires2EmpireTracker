@@ -743,6 +743,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\OE2EmpireTracker.Common\OE2EmpireTracker.Common.csproj">
+      <Project>{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}</Project>
+      <Name>OE2EmpireTracker.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

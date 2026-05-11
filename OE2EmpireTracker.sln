@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OE2EmpireTracker.Server", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OE2EmpireTracker.Server.Tests", "OE2EmpireTracker.Server.Tests\OE2EmpireTracker.Server.Tests.csproj", "{2433BE4A-AF2C-4D65-A242-BC8EA70C14DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OE2EmpireTracker.Common", "OE2EmpireTracker.Common\OE2EmpireTracker.Common.csproj", "{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{2433BE4A-AF2C-4D65-A242-BC8EA70C14DF}.Release|x64.Build.0 = Release|Any CPU
 		{2433BE4A-AF2C-4D65-A242-BC8EA70C14DF}.Release|x86.ActiveCfg = Release|Any CPU
 		{2433BE4A-AF2C-4D65-A242-BC8EA70C14DF}.Release|x86.Build.0 = Release|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Debug|x64.Build.0 = Debug|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Debug|x86.Build.0 = Debug|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Release|x64.ActiveCfg = Release|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Release|x64.Build.0 = Release|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Release|x86.ActiveCfg = Release|Any CPU
+		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
