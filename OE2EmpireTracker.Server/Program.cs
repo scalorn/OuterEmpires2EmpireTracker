@@ -104,6 +104,7 @@ app.MapGet("/health", () =>
 app.MapTokenEndpoints();
 app.MapFactionEndpoints();
 app.MapCharacterEndpoints();
+app.MapMembershipEndpoints();
 
 app.Lifetime.ApplicationStarted.Register(() =>
 {

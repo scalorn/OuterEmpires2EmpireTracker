@@ -71,7 +71,7 @@
 ## Phase 4: Faction and Character CRUD Endpoints
 
 - [ ] 4.1 Faction endpoints
-  - [-] 4.1.1 POST /api/v1/factions — create with deterministic UUID
+  - [x] 4.1.1 POST /api/v1/factions — create with deterministic UUID
   - [ ] 4.1.2 GET /api/v1/factions — list all
   - [ ] 4.1.3 GET /api/v1/factions/{uuid} — get one or 404
   - [ ] 4.1.4 PUT /api/v1/factions/{uuid} — update name/description
@@ -94,7 +94,7 @@
 ## Phase 5: Faction Membership (Mutual Consent)
 
 - [ ] 5.1 Join requests
-  - [ ] 5.1.1 POST /api/v1/factions/{uuid}/requests — character requests to join
+  - [-] 5.1.1 POST /api/v1/factions/{uuid}/requests — character requests to join
   - [ ] 5.1.2 GET /api/v1/factions/{uuid}/requests — list pending requests (Leader/Owner)
   - [ ] 5.1.3 POST /api/v1/factions/{uuid}/requests/{id}/accept — leader accepts, sets FactionUUID
 
