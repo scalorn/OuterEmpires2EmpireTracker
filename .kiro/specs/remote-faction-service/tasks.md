@@ -47,7 +47,7 @@
 ## Phase 3: Token Authentication
 
 - [ ] 3.1 Token generation and storage
-  - [-] 3.1.1 Generate Owner token on first startup, display in console, persist hash
+  - [x] 3.1.1 Generate Owner token on first startup, display in console, persist hash
   - [ ] 3.1.2 Implement token hashing (SHA-256) and lookup
   - [ ] 3.1.3 Implement --regenerate-owner-token CLI command
 
@@ -71,7 +71,7 @@
 ## Phase 4: Faction and Character CRUD Endpoints
 
 - [ ] 4.1 Faction endpoints
-  - [ ] 4.1.1 POST /api/v1/factions — create with deterministic UUID
+  - [-] 4.1.1 POST /api/v1/factions — create with deterministic UUID
   - [ ] 4.1.2 GET /api/v1/factions — list all
   - [ ] 4.1.3 GET /api/v1/factions/{uuid} — get one or 404
   - [ ] 4.1.4 PUT /api/v1/factions/{uuid} — update name/description

@@ -102,6 +102,8 @@ app.MapGet("/health", () =>
 
 // Token management endpoints (Owner only)
 app.MapTokenEndpoints();
+app.MapFactionEndpoints();
+app.MapCharacterEndpoints();
 
 app.Lifetime.ApplicationStarted.Register(() =>
 {
