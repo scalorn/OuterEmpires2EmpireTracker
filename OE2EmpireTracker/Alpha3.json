@@ -41322,7 +41322,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Strong Alkali Organics",
   "Name": "Strong Alkali Organics",
-  "Quantity": 862,
+  "Quantity": 871,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -41355,7 +41355,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Metaloids",
   "Name": "Metaloids",
-  "Quantity": 2875,
+  "Quantity": 2910,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -41484,8 +41484,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-12T01:32:43.7743076Z",
-            "EndTime": "2026-05-12T02:32:43.7743076Z",
+            "StartTime": "2026-05-12T02:32:43.7743076Z",
+            "EndTime": "2026-05-12T03:32:43.7743076Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -41701,14 +41701,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-12T01:32:43.7733063Z",
-            "EndTime": "2026-05-12T02:32:43.7733063Z",
+            "StartTime": "2026-05-12T02:32:43.7733063Z",
+            "EndTime": "2026-05-12T03:32:43.7733063Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "1b9a6a12-8b5b-4c8a-b7a9-941df8cfd5c3",
           "MiningSurveyResource": "Metaloids",
-          "MiningLeftOvers": 0.794,
+          "MiningLeftOvers": 0.460,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -41799,14 +41799,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-12T01:32:43.7733063Z",
-            "EndTime": "2026-05-12T02:32:43.7733063Z",
+            "StartTime": "2026-05-12T02:32:43.7733063Z",
+            "EndTime": "2026-05-12T03:32:43.7733063Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "1b9a6a12-8b5b-4c8a-b7a9-941df8cfd5c3",
           "MiningSurveyResource": "Strong Alkali Organics",
-          "MiningLeftOvers": 0.397,
+          "MiningLeftOvers": 0.730,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -42021,8 +42021,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-12T01:32:43.7733063Z",
-            "EndTime": "2026-05-12T02:32:43.7733063Z",
+            "StartTime": "2026-05-12T02:32:43.7733063Z",
+            "EndTime": "2026-05-12T03:32:43.7733063Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -82694,7 +82694,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Post-Trans Metals",
   "Name": "Heavy Post-Trans Metals",
-  "Quantity": 7220,
+  "Quantity": 7296,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -82768,7 +82768,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Post-Trans Metals",
   "Name": "Heavy Post-Trans Metals",
-  "Quantity": 145,
+  "Quantity": 120,
   "ResourcePurity": "Medium"
 },
         "95bc7b90-e309-44f7-a717-182ea597d2f1": {
@@ -83246,8 +83246,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-12T01:32:42.7683064Z",
-            "EndTime": "2026-05-12T02:32:42.7683064Z",
+            "StartTime": "2026-05-12T02:32:42.7683064Z",
+            "EndTime": "2026-05-12T03:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -83561,8 +83561,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-12T01:32:42.7683064Z",
-            "EndTime": "2026-05-12T02:32:42.7683064Z",
+            "StartTime": "2026-05-12T02:32:42.7683064Z",
+            "EndTime": "2026-05-12T03:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -83867,8 +83867,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-12T01:32:42.7683064Z",
-            "EndTime": "2026-05-12T02:32:42.7683064Z",
+            "StartTime": "2026-05-12T02:32:42.7683064Z",
+            "EndTime": "2026-05-12T03:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -83956,8 +83956,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-12T01:32:42.7683064Z",
-            "EndTime": "2026-05-12T02:32:42.7683064Z",
+            "StartTime": "2026-05-12T02:32:42.7683064Z",
+            "EndTime": "2026-05-12T03:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -84130,8 +84130,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-12T01:32:42.7683064Z",
-            "EndTime": "2026-05-12T02:32:42.7683064Z",
+            "StartTime": "2026-05-12T02:32:42.7683064Z",
+            "EndTime": "2026-05-12T03:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -84204,8 +84204,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-12T01:32:42.7683064Z",
-            "EndTime": "2026-05-12T02:32:42.7683064Z",
+            "StartTime": "2026-05-12T02:32:42.7683064Z",
+            "EndTime": "2026-05-12T03:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -84256,8 +84256,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-12T01:32:42.7683064Z",
-            "EndTime": "2026-05-12T02:32:42.7683064Z",
+            "StartTime": "2026-05-12T02:32:42.7683064Z",
+            "EndTime": "2026-05-12T03:32:42.7683064Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },

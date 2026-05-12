@@ -18,9 +18,20 @@ if (args.Contains("--regenerate-owner-token"))
     var cliConfig = cliBuilder.Configuration;
     var cliLoggerFactory = LoggerFactory.Create(b => b.AddConsole());
     var cliLogger = cliLoggerFactory.CreateLogger("CLI");
-    var storageLogger = cliLoggerFactory.CreateLogger<JsonFileStorageBackend>();
 
-    var storage = new JsonFileStorageBackend(cliConfig, storageLogger);
+    var cliBackendType = cliConfig.GetValue<string>("Storage:Backend", "JsonFile");
+    IStorageBackend storage;
+    if (cliBackendType == "Sqlite")
+    {
+        var sqliteLogger = cliLoggerFactory.CreateLogger<SqliteStorageBackend>();
+        storage = new SqliteStorageBackend(cliConfig, sqliteLogger);
+    }
+    else
+    {
+        var storageLogger = cliLoggerFactory.CreateLogger<JsonFileStorageBackend>();
+        storage = new JsonFileStorageBackend(cliConfig, storageLogger);
+    }
+
     await storage.InitializeAsync();
     await TokenService.RegenerateOwnerTokenAsync(storage, cliLogger);
 
@@ -41,7 +52,16 @@ if (useForwardedHeaders)
 }
 
 // Register storage backend
-builder.Services.AddSingleton<IStorageBackend, JsonFileStorageBackend>();
+var backendType = builder.Configuration.GetValue<string>("Storage:Backend", "JsonFile");
+switch (backendType)
+{
+    case "Sqlite":
+        builder.Services.AddSingleton<IStorageBackend, SqliteStorageBackend>();
+        break;
+    default:
+        builder.Services.AddSingleton<IStorageBackend, JsonFileStorageBackend>();
+        break;
+}
 
 // Register WebSocket hub and event dispatcher
 builder.Services.AddSingleton<WebSocketHub>();
