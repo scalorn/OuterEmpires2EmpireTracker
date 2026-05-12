@@ -1,6 +1,6 @@
 ﻿# Feature Backlog
 
-**Next available ID: BL-138** (check COMPLETED.md before assigning — IDs are shared across both files)
+**Next available ID: BL-142** (check COMPLETED.md before assigning — IDs are shared across both files)
 
 Open features and enhancements to be worked on.
 
@@ -11,11 +11,13 @@ Items in the "New" section have dependency annotations. Work them in an order th
 ```
 Systems & Planets Model ────── (standalone)
 Systems & Planets Model ───── Route Auto-Sequencing (depends on coordinates)
+Route Auto-Sequencing ──────── Fuel-Constrained Route Optimization (depends on sequencing + coordinates)
 ```
 
 Suggested build order:
 1. Systems & Planets Model (independent)
 2. Route Auto-Sequencing (depends on Systems & Planets Model)
+3. Fuel-Constrained Route Optimization (depends on Route Auto-Sequencing)
 
 ---
 
@@ -259,3 +261,89 @@ Key questions: authentication method (OAuth2, API key, session cookie?), availab
 For faction governance and future write-delegation scenarios, all mutations need a full audit trail with diffs. Resolved: every mutation logged with full diff, configurable retention (Owner max >= Faction Leader >= Character), viewable by anyone who can view the entity, includes character UUID and token ID.
 
 Remaining questions: diff format (JSON Patch RFC 6902 vs full snapshots vs both?), API shape for querying audit records, whether audit records are included in data exports, storage impact of full diffs on every colony tick (60s) — should timer ticks be batched/summarized differently from user-initiated mutations?
+
+### BL-138: Colony Primary Activity Classification
+**Dependencies:** None
+**Status: New**
+**Origin:** DarkCrusader analysis — the original OE management tool let users classify colonies by primary activity (mining, manufacturing, research, refining, processing) for filtering and grouping.
+
+Add a user-defined "Primary Activity" label to each colony. The label is a simple enum (Mining, Manufacturing, Research, Refining, Commodity Production, Mixed, Unclassified) stored on the Colony model. The Colony form gets a dropdown to set it, and the colony list/combo boxes can filter by activity type.
+
+**Rationale:** As empires grow to 20+ colonies, finding "my refining colonies" or "my manufacturing colonies" in a flat list becomes tedious. DarkCrusader solved this with a classification field that users set manually. OE2 could infer a default from the dominant structure type but allow manual override.
+
+**Implementation notes:**
+- Add `PrimaryActivity` string property to Colony model (persisted in JSON)
+- Add a combo box to FormColonyV2 for setting the classification
+- Add a filter combo to the colony selector in MainWindow (optional — "Show: All / Mining / Manufacturing / ...")
+- ColonyService.Update handles the mutation
+- Auto-suggest based on structure composition (>50% of one type = suggest that classification)
+- ~2-3 hours of work
+
+### BL-139: Operating Cost Calculator — Worker Wages vs. Market Income
+**Dependencies:** None
+**Status: New**
+**Origin:** DarkCrusader analysis — computed `workerCostsLastWeek` vs `marketSalesLastWeek` for profit/loss analysis. OE2 tracks market transactions but doesn't compute colony operating costs.
+
+Add an "Empire Economics" summary that calculates total worker wages across all colonies and compares to market income over configurable periods (7 days, 30 days, all time). Display net profit/loss.
+
+**Rationale:** Players need to know if their empire is profitable. DarkCrusader computed this by summing "Worker" type bank transactions. OE2 can compute it from colony data (population × wage rate per cycle) since we track colony populations and the game's wage formula is known (6 credits per worker per 25-hour cycle per DarkCrusader's `get_worker_costs_per_25_hours()`).
+
+**Implementation notes:**
+- Worker cost formula: `colony.Population * WageRatePerCycle * CyclesPerPeriod`
+- Market income: sum of MarketTransaction amounts where TransactionType = Sale, filtered by date range
+- Market expenses: sum of MarketTransaction amounts where TransactionType = Purchase, filtered by date range
+- Net = Market income - Market expenses - Worker costs
+- Display on a new "Economics" tab in MainWindow or as a summary panel on the Market form
+- Need to confirm OE2's wage formula (may differ from OE1's 6cr/worker/25h)
+- ~4-6 hours of work (model + service + UI)
+
+### BL-140: Market Counterparty Analysis — Top Buyers and Sellers
+**Dependencies:** None
+**Status: New**
+**Origin:** DarkCrusader analysis — `getTopCustomers()` aggregated sales by buyer name with period filtering (forever, 30 days, 7 days, 24 hours), showing total sales volume and transaction count per customer.
+
+Add a "Counterparties" tab or summary to the Market form that aggregates transactions by counterparty name. Show top buyers (by total credits received) and top sellers (by total credits spent), with period filtering.
+
+**Rationale:** Knowing who your best customers are helps players focus trading relationships. DarkCrusader proved this was one of the most-used premium features. OE2 already stores `CounterpartyName` on MarketTransaction — the data is there, just needs aggregation and display.
+
+**Implementation notes:**
+- Group MarketTransactions by CounterpartyName
+- For each counterparty: sum TotalPrice (sales to them), count transactions, compute average transaction size
+- Sort by total volume descending
+- Period filter: All Time, Last 30 Days, Last 7 Days
+- Display as a DataGridView with columns: Rank, Name, Total Volume, # Transactions, Avg Size
+- Optionally show a "Faction" column if counterparty has a known faction (via Contacts/ExternalCharacter lookup)
+- Static service method: `MarketService.GetTopCounterparties(transactions, period, direction, limit)`
+- ~3-4 hours of work (service method + UI tab)
+
+### BL-141: Fuel-Constrained Route Optimization (extends BL-019/BL-020)
+**Dependencies:** BL-019 (Systems & Planets Model), BL-020 (Route Auto-Sequencing)
+**Status: New — deferred until BL-019 is implemented**
+**Origin:** DarkCrusader analysis — `calculateOptimalManufacturingRoute()` implemented a greedy nearest-first algorithm with fuel constraints, refueling stops, and cargo capacity limits. The most complex feature in the original tool.
+
+Once system coordinates are available (BL-019), extend route auto-sequencing (BL-020) with fuel-aware pathfinding:
+- Given a ship's fuel capacity and consumption rate, determine if each leg of a route is reachable
+- Insert refueling stops at the nearest station when fuel is insufficient for the next leg
+- Consider cargo capacity as a constraint on how many resources can be collected per trip
+- Generate step-by-step travel instructions (jump to X, dock at Y, collect Z, refuel at W)
+
+**Rationale:** DarkCrusader's route planner was described as "the most complex feature I have ever coded" in the changelog. It solved a real player pain point: manually planning multi-stop resource collection routes while managing fuel. OE2's delivery routes already model multi-stop logistics — adding fuel awareness makes them actionable travel plans rather than abstract resource lists.
+
+**DarkCrusader's algorithm (for reference):**
+1. Determine max items craftable = min(available resources, ship cargo, manufacturing colony storage)
+2. Identify bottleneck (which constraint limits production)
+3. Subtract resources already at destination
+4. For each needed resource, find all colonies with sufficient quantity
+5. Greedy loop: visit nearest colony with needed resources, check fuel for leg + return-to-station
+6. If insufficient fuel: insert refuel stop at nearest reachable station
+7. After all resources collected: route to manufacturing colony, drop off, return to station
+
+**OE2 adaptation:**
+- Ship model already has cargo capacity (ShipStats)
+- Fuel capacity/consumption would need to be added to ShipTemplate or Ship (new properties)
+- Station locations already modeled
+- DeliveryRoute stops already have sequence numbers
+- The algorithm becomes: given a DeliveryRoute, reorder stops by distance, insert refuel stops where needed, compute trip splits if cargo exceeds capacity
+- Integrates with existing `CargoVolumeService.SplitIntoTrips()` for multi-trip planning
+- ~8-12 hours of work (coordinate model + distance service + route optimizer + UI integration)
+
