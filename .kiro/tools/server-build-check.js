@@ -46,4 +46,31 @@ if (warningLines.length > 0) {
     process.exit(1);
 }
 
+// Also check the Common library
+const COMMON_CSPROJ = path.join('OE2EmpireTracker.Common', 'OE2EmpireTracker.Common.csproj');
+
+if (fs.existsSync(COMMON_CSPROJ)) {
+    let commonOutput;
+    try {
+        commonOutput = execSync(`dotnet build "${COMMON_CSPROJ}" /v:minimal 2>&1`, {
+            encoding: 'utf8',
+            timeout: 60000,
+        });
+    } catch (err) {
+        console.error('Common library build FAILED:');
+        console.error(err.stdout || err.message);
+        process.exit(1);
+    }
+
+    const commonWarnings = commonOutput.split('\n').filter(line =>
+        line.includes(': warning ') && !line.includes('NETSDK1')
+    );
+
+    if (commonWarnings.length > 0) {
+        console.error(`Common library build has ${commonWarnings.length} warning(s):`);
+        commonWarnings.forEach(line => console.error('  ' + line.trim()));
+        process.exit(1);
+    }
+}
+
 process.exit(0);

@@ -68,6 +68,10 @@ Track multiple characters with their skills, ranks, and faction. Import your pro
 ### Window State Persistence
 Every form remembers its position, size, column widths, sort order, and filter state. Open multiple instances of the same form with different layouts. Your workspace is exactly how you left it next time you launch.
 
+### Remote Faction Server (Optional)
+
+Run a shared server so your faction can coordinate. The server stores all player data centrally, syncs between multiple tracker instances, and runs colony processing even when your PC is off. Supports self-hosted (single file, no dependencies) or cloud deployment (PostgreSQL, DynamoDB). See `OE2EmpireTracker.Server/README.md` for setup.
+
 ## Why Not a Spreadsheet?
 
 | Spreadsheet | Empire Tracker |
