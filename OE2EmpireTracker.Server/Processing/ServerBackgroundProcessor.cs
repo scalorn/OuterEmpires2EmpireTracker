@@ -12,6 +12,7 @@ public class ServerBackgroundProcessor : BackgroundService
 {
     private readonly IStorageBackend _storage;
     private readonly EventDispatcher _eventDispatcher;
+    private readonly ServerColonyProcessor _colonyProcessor;
     private readonly ILogger<ServerBackgroundProcessor> _logger;
     private readonly IConfiguration _configuration;
     private readonly object _lock = new object();
@@ -23,11 +24,13 @@ public class ServerBackgroundProcessor : BackgroundService
     public ServerBackgroundProcessor(
         IStorageBackend storage,
         EventDispatcher eventDispatcher,
+        ServerColonyProcessor colonyProcessor,
         ILogger<ServerBackgroundProcessor> logger,
         IConfiguration configuration)
     {
         _storage = storage;
         _eventDispatcher = eventDispatcher;
+        _colonyProcessor = colonyProcessor;
         _logger = logger;
         _configuration = configuration;
         _isEnabled = configuration.GetValue<bool>("Server:ProcessingEnabled", false);
@@ -122,18 +125,52 @@ public class ServerBackgroundProcessor : BackgroundService
 
                 // Load colony data for the opted-in character
                 var colonyData = await _storage.GetCharacterDataAsync(character.UUID, "colonies");
+                if (string.IsNullOrEmpty(colonyData))
+                {
+                    _logger.LogDebug(
+                        "Processing character {Name} ({UUID}) — no colony data",
+                        character.Name,
+                        character.UUID);
+                    processedCount++;
+                    continue;
+                }
 
-                _logger.LogDebug(
-                    "Processing character {Name} ({UUID}) — colony data {Status}",
-                    character.Name,
-                    character.UUID,
-                    colonyData != null ? "loaded" : "empty");
+                // Check if there are active timers before processing
+                if (!_colonyProcessor.HasActiveTimers(colonyData))
+                {
+                    _logger.LogDebug(
+                        "Processing character {Name} ({UUID}) — no active timers",
+                        character.Name,
+                        character.UUID);
+                    processedCount++;
+                    continue;
+                }
 
-                // Placeholder: actual colony processing logic will come from Common library
+                // Advance colony timers
+                if (_colonyProcessor.ProcessColonies(colonyData, out var updatedJson))
+                {
+                    await _storage.UpsertCharacterDataAsync(character.UUID, "colonies", updatedJson);
+
+                    _logger.LogDebug(
+                        "Processed character {Name} ({UUID}) — timers advanced",
+                        character.Name,
+                        character.UUID);
+
+                    // Notify connected clients that colony data was updated
+                    await _eventDispatcher.DispatchEvent(new ServerEvent
+                    {
+                        EventType = ServerEventType.TimerTick,
+                        EntityType = "colonies",
+                        EntityUUID = character.UUID,
+                        Timestamp = DateTime.UtcNow,
+                        OwnerCharacterUUID = character.UUID,
+                    });
+                }
+
                 processedCount++;
             }
 
-            // Dispatch TimerTick event
+            // Dispatch global TimerTick event
             await _eventDispatcher.DispatchEvent(new ServerEvent
             {
                 EventType = ServerEventType.TimerTick,

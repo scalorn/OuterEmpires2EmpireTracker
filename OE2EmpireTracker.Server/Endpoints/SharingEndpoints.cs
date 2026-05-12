@@ -98,12 +98,6 @@ public static class SharingEndpoints
         HttpContext httpContext,
         IStorageBackend storage)
     {
-        // TODO: Cross-reference filtering (spec requirement): When serving shared data that
-        // contains cross-references to other entities, the server should filter out any
-        // referenced entities that the viewer does not have access to. This requires parsing
-        // the domain model JSON to identify UUID references and checking access for each.
-        // Not yet implemented — shared data is returned as-is without cross-reference filtering.
-
         // Caller must be in the faction
         var callerCharUUID = httpContext.User.FindFirstValue("CharacterUUID");
         if (string.IsNullOrEmpty(callerCharUUID) && !IsOwner(httpContext))
@@ -164,7 +158,11 @@ public static class SharingEndpoints
             }
         }
 
-        return Results.Ok(aggregated);
+        // Apply cross-reference filtering (Req 15): null out UUID references
+        // to entities the viewer cannot access.
+        var viewerUUID = callerCharUUID ?? string.Empty;
+        var filtered = await CrossReferenceFilter.FilterAsync(aggregated, viewerUUID, storage);
+        return Results.Ok(filtered);
     }
 
     private static async Task<IResult> GetSharedWithMe(
@@ -173,10 +171,6 @@ public static class SharingEndpoints
         HttpContext httpContext,
         IStorageBackend storage)
     {
-        // TODO: Cross-reference filtering — same limitation as GetFactionSharedData.
-        // Shared data is returned without filtering cross-referenced entity UUIDs
-        // that the viewer may not have access to.
-
         // Caller must be the target character (or Owner)
         if (!IsOwner(httpContext))
         {
@@ -232,7 +226,10 @@ public static class SharingEndpoints
             }
         }
 
-        return Results.Ok(aggregated);
+        // Apply cross-reference filtering (Req 15): null out UUID references
+        // to entities the viewer cannot access.
+        var filtered = await CrossReferenceFilter.FilterAsync(aggregated, uuid, storage);
+        return Results.Ok(filtered);
     }
 
     // --- Helpers ---
