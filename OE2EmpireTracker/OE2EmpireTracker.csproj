@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -227,17 +227,13 @@
     <Compile Include="Services\HelpRenderer.cs" />
     <Compile Include="Services\SurveyDateTimeParser.cs" />
     <Compile Include="Services\BackgroundProcessor.cs" />
-    <Compile Include="Services\SystemClock.cs" />
     <Compile Include="Services\SupplyChainService.cs" />
     <Compile Include="Services\ContactsService.cs" />
     <Compile Include="Services\AsteroidService.cs" />
     <Compile Include="Services\StockTargetService.cs" />
-    <Compile Include="Models\ResourcePurityCombo.cs" />
     <Compile Include="Models\DistributionPoint.cs" />
     <Compile Include="Models\YieldDistributionResult.cs" />
     <Compile Include="Models\BaselineGameConstants.cs" />
-    <Compile Include="Models\ResearchTimeEntry.cs" />
-    <Compile Include="Models\RefiningRecipe.cs" />
     <Compile Include="Models\BlueprintType.cs" />
     <Compile Include="Services\BuildPlanService.cs" />
     <Compile Include="Services\BuildPlanExecutionService.cs" />
@@ -249,7 +245,6 @@
     <Compile Include="Services\AutoAssignService.cs" />
     <Compile Include="Services\MarketService.cs" />
     <Compile Include="Models\ProfitLossSummary.cs" />
-    <Compile Include="Services\BuildTimeCalculator.cs" />
     <Compile Include="Services\ColonyActivityCollector.cs" />
     <Compile Include="Services\MarketBlueprintImporter.cs" />
     <Compile Include="Services\CrateImporter.cs" />
@@ -269,11 +264,23 @@
     <Compile Include="Services\MarketListingService.cs" />
     <Compile Include="Services\DeliveryPlanService.cs" />
     <Compile Include="Services\CollectionSortHelper.cs" />
-    <Compile Include="Services\SortedDictionaryContractResolver.cs" />
     <Compile Include="Services\TabWarningService.cs" />
     <Compile Include="Services\ColonyInactivityCollector.cs" />
     <Compile Include="Services\ColonyAdminReportBuilder.cs" />
     <Compile Include="Models\Colony.cs" />
+    <Compile Include="Models\Resource.cs" />
+    <Compile Include="Models\ResourceClass.cs" />
+    <Compile Include="Models\ReadOnlyResource.cs" />
+    <Compile Include="Models\ResourcePurityCombo.cs" />
+    <Compile Include="Constants\BlueprintPropertyValidation.cs" />
+    <Compile Include="Constants\RefiningRecipes.cs" />
+    <Compile Include="Models\ResourcePurity.cs" />
+    <Compile Include="Services\BuildTimeCalculator.cs" />
+    <Compile Include="Models\DeliveryPlanUpdateRequest.cs" />
+    <Compile Include="Models\DeliveryRouteCreateRequest.cs" />
+    <Compile Include="Models\DeliveryRouteUpdateRequest.cs" />
+    <Compile Include="Models\ReadOnlySupplyChain.cs" />
+    <Compile Include="Models\SupplyChainCreateRequest.cs" />
     <Compile Include="Services\ColonyBuildEligibility.cs" />
     <Compile Include="Models\ColonyStructure.cs" />
     <Compile Include="Models\CommodityRequested.cs" />
@@ -289,7 +296,6 @@
     <Compile Include="Models\DeliveryRoute.cs" />
     <Compile Include="Models\DeliveryPlan.cs" />
     <Compile Include="Models\PricingPlan.cs" />
-    <Compile Include="Models\ComputedPrice.cs" />
     <Compile Include="Services\DeliveryFulfillment.cs" />
     <Compile Include="Services\PriceCalculator.cs" />
     <Compile Include="Models\ColonyStructureStatus.cs" />
@@ -302,13 +308,7 @@
     <Compile Include="Persistence\WindowStateHelper.cs" />
     <Compile Include="Models\TechLevel.cs" />
     <Compile Include="Services\EmpireContext.cs" />
-    <Compile Include="Services\JsonSettings.cs" />
     <Compile Include="Constants\ChartColors.cs" />
-    <Compile Include="Constants\BlueprintTypes.cs" />
-    <Compile Include="Constants\ResearchTimeLookup.cs" />
-    <Compile Include="Constants\RefiningRecipes.cs" />
-    <Compile Include="Constants\BlueprintPropertyValidation.cs" />
-    <Compile Include="Constants\BlueprintPropertyKeys.cs" />
     <Compile Include="Constants\GameConstants.cs" />
     <Compile Include="Constants\SlotTypes.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
@@ -322,12 +322,7 @@
     <Compile Include="Models\CountDownTime.cs" />
     <Compile Include="Models\ItemBag.cs" />
     <Compile Include="Models\PlayerProfile.cs" />
-    <Compile Include="Models\PlayerRank.cs" />
     <Compile Include="Models\PlayerSkill.cs" />
-    <Compile Include="Models\ResourceClass.cs" />
-    <Compile Include="Models\ResourceGroup.cs" />
-    <Compile Include="Models\ResourcePurity.cs" />
-    <Compile Include="Models\ShipClass.cs" />
     <Compile Include="Parsers\CountdownFormatParser.cs" />
     <Compile Include="Parsers\SurveyParser.cs" />
     <Compile Include="Models\Survey.cs" />
@@ -367,31 +362,23 @@
     <Compile Include="Models\ItemType.cs" />
     <Compile Include="Models\PropertyBag.cs" />
     <Compile Include="Models\Item.cs" />
-    <Compile Include="Models\Resource.cs" />
-    <Compile Include="Models\Asteroid.cs" />
     <Compile Include="Models\BuildItem.cs" />
     <Compile Include="Models\BuildPlan.cs" />
     <Compile Include="Models\DestinationType.cs" />
-    <Compile Include="Models\ExternalCharacter.cs" />
-    <Compile Include="Models\Faction.cs" />
     <Compile Include="Models\MarketListing.cs" />
     <Compile Include="Models\MarketListingCreateRequest.cs" />
     <Compile Include="Models\MarketListingUpdateRequest.cs" />
     <Compile Include="Models\MarketTransaction.cs" />
-    <Compile Include="Models\RouteStopPurpose.cs" />
     <Compile Include="Models\Ship.cs" />
     <Compile Include="Models\ShipStats.cs" />
     <Compile Include="Models\ShipTemplate.cs" />
     <Compile Include="Models\Station.cs" />
     <Compile Include="Models\StationStats.cs" />
     <Compile Include="Models\StockPlan.cs" />
-    <Compile Include="Models\StockProfile.cs" />
     <Compile Include="Models\StockTarget.cs" />
     <Compile Include="Models\SupplyChain.cs" />
     <Compile Include="Models\SurveyType.cs" />
     <Compile Include="Models\WarehouseOverflowRule.cs" />
-    <Compile Include="Models\ReadOnlyAsteroid.cs" />
-    <Compile Include="Models\ReadOnlyAsteroidReserve.cs" />
     <Compile Include="Models\ReadOnlyBlueprint.cs" />
     <Compile Include="Models\ReadOnlyBuildItem.cs" />
     <Compile Include="Models\ReadOnlyBuildPlan.cs" />
@@ -405,29 +392,22 @@
     <Compile Include="Models\ReadOnlyDeliveryPlan.cs" />
     <Compile Include="Models\ReadOnlyDeliveryPlanStop.cs" />
     <Compile Include="Models\ReadOnlyDeliveryRoute.cs" />
-    <Compile Include="Models\ReadOnlyExternalCharacter.cs" />
-    <Compile Include="Models\ReadOnlyFaction.cs" />
     <Compile Include="Models\ReadOnlyItem.cs" />
     <Compile Include="Models\ReadOnlyItemBag.cs" />
     <Compile Include="Models\ReadOnlyLockTracking.cs" />
     <Compile Include="Models\ReadOnlyMarketListing.cs" />
     <Compile Include="Models\ReadOnlyMarketTransaction.cs" />
     <Compile Include="Models\ReadOnlyPlayerProfile.cs" />
-    <Compile Include="Models\ReadOnlyPlayerRank.cs" />
     <Compile Include="Models\ReadOnlyPlayerSkill.cs" />
     <Compile Include="Models\ReadOnlyPricingPlan.cs" />
     <Compile Include="Models\ReadOnlyPropertyBag.cs" />
-    <Compile Include="Models\ReadOnlyResource.cs" />
     <Compile Include="Models\ReadOnlyRouteStop.cs" />
     <Compile Include="Models\ReadOnlyShip.cs" />
     <Compile Include="Models\ReadOnlyShipComponentSlot.cs" />
     <Compile Include="Models\ReadOnlyShipTemplate.cs" />
     <Compile Include="Models\ReadOnlyStation.cs" />
     <Compile Include="Models\ReadOnlyStockPlan.cs" />
-    <Compile Include="Models\ReadOnlyStockProfile.cs" />
-    <Compile Include="Models\ReadOnlyStockProfileEntry.cs" />
     <Compile Include="Models\ReadOnlyStockTarget.cs" />
-    <Compile Include="Models\ReadOnlySupplyChain.cs" />
     <Compile Include="Models\ReadOnlySupplyChainStage.cs" />
     <Compile Include="Models\ReadOnlySurvey.cs" />
     <Compile Include="Models\ReadOnlySurveyResource.cs" />
@@ -440,32 +420,19 @@
     <Compile Include="Models\SurveyCreateRequest.cs" />
     <Compile Include="Models\ColonyUpdateRequest.cs" />
     <Compile Include="Models\ColonyCreateRequest.cs" />
-    <Compile Include="Models\SkillUpdateData.cs" />
     <Compile Include="Models\PlayerProfileUpdateRequest.cs" />
     <Compile Include="Models\PlayerProfileCreateRequest.cs" />
-    <Compile Include="Models\DeliveryRouteUpdateRequest.cs" />
-    <Compile Include="Models\DeliveryRouteCreateRequest.cs" />
     <Compile Include="Models\ShipTemplateUpdateRequest.cs" />
     <Compile Include="Models\ShipTemplateCreateRequest.cs" />
     <Compile Include="Models\ShipUpdateRequest.cs" />
     <Compile Include="Models\ShipCreateRequest.cs" />
     <Compile Include="Models\StationUpdateRequest.cs" />
     <Compile Include="Models\StationCreateRequest.cs" />
-    <Compile Include="Models\DeliveryPlanUpdateRequest.cs" />
     <Compile Include="Models\BuildPlanUpdateRequest.cs" />
     <Compile Include="Models\BuildPlanCreateRequest.cs" />
-    <Compile Include="Models\AsteroidUpdateRequest.cs" />
-    <Compile Include="Models\AsteroidCreateRequest.cs" />
     <Compile Include="Models\StockPlanUpdateRequest.cs" />
     <Compile Include="Models\StockPlanCreateRequest.cs" />
-    <Compile Include="Models\StockProfileUpdateRequest.cs" />
-    <Compile Include="Models\StockProfileCreateRequest.cs" />
     <Compile Include="Models\SupplyChainUpdateRequest.cs" />
-    <Compile Include="Models\SupplyChainCreateRequest.cs" />
-    <Compile Include="Models\FactionUpdateRequest.cs" />
-    <Compile Include="Models\FactionCreateRequest.cs" />
-    <Compile Include="Models\ExternalCharacterUpdateRequest.cs" />
-    <Compile Include="Models\ExternalCharacterCreateRequest.cs" />
     <Compile Include="Models\StopDestinationInfo.cs" />
     <Compile Include="Models\DeliveryItemInfo.cs" />
     <Compile Include="Parsers\BlueprintScanner.cs" />
@@ -762,3 +729,6 @@
   <!-- StyleCop analyzers loaded via Directory.Build.props for CLI builds only -->
   <!-- stylecop.json loaded via Directory.Build.props -->
 </Project>
+
+
+

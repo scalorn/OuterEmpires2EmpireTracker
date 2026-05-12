@@ -246,6 +246,10 @@
       <Project>{2154AFDC-2D45-4ACA-B292-79A97A1EC6FE}</Project>
       <Name>OE2EmpireTracker</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OE2EmpireTracker.Common\OE2EmpireTracker.Common.csproj">
+      <Project>{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}</Project>
+      <Name>OE2EmpireTracker.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Services\BackgroundProcessorTests.cs" />
