@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -123,7 +123,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = Guid.NewGuid().ToString(),
                 SystemName = "TestSystem",
                 ColonyName = "TestColony",
-                LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow)
+                LastImportDateTime = SurveyDateTimeParser.ToIsoString(SystemClock.UtcNow)
             };
         }
 

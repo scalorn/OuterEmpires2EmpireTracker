@@ -533,8 +533,8 @@ namespace OE2EmpireTracker.Tests.Models
             colonyA.ColonyName = "ColonyA";
             var structA = MakeStructure(bpA.UUID, built: false, online: false);
             structA.BuildCompletionTime = new CountDownTime();
-            structA.BuildCompletionTime.StartTime = DateTime.UtcNow.AddMinutes(-10);
-            structA.BuildCompletionTime.EndTime = DateTime.UtcNow.AddMinutes(-5);
+            structA.BuildCompletionTime.StartTime = SystemClock.UtcNow.AddMinutes(-10);
+            structA.BuildCompletionTime.EndTime = SystemClock.UtcNow.AddMinutes(-5);
             colonyA.Structures.Add(structA);
             pc.AddColony(colonyA);
 
@@ -551,8 +551,8 @@ namespace OE2EmpireTracker.Tests.Models
             colonyB.ColonyName = "ColonyB";
             var structB = MakeStructure(bpB.UUID, built: false, online: false);
             structB.BuildCompletionTime = new CountDownTime();
-            structB.BuildCompletionTime.StartTime = DateTime.UtcNow.AddMinutes(-10);
-            structB.BuildCompletionTime.EndTime = DateTime.UtcNow.AddMinutes(-5);
+            structB.BuildCompletionTime.StartTime = SystemClock.UtcNow.AddMinutes(-10);
+            structB.BuildCompletionTime.EndTime = SystemClock.UtcNow.AddMinutes(-5);
             colonyB.Structures.Add(structB);
             pc.AddColony(colonyB);
 
@@ -639,8 +639,8 @@ namespace OE2EmpireTracker.Tests.Models
             // Structure with an expired build timer so HasExpiredTimers() returns true
             var miner = MakeStructure(minerBp.UUID, built: false, online: false);
             miner.BuildCompletionTime = new CountDownTime();
-            miner.BuildCompletionTime.StartTime = DateTime.UtcNow.AddMinutes(-10);
-            miner.BuildCompletionTime.EndTime = DateTime.UtcNow.AddMinutes(-5);
+            miner.BuildCompletionTime.StartTime = SystemClock.UtcNow.AddMinutes(-10);
+            miner.BuildCompletionTime.EndTime = SystemClock.UtcNow.AddMinutes(-5);
             colony.Structures.Add(miner);
 
             // Add an item so the colony has some data

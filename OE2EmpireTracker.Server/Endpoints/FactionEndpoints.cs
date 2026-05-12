@@ -4,6 +4,7 @@ using System.Text;
 using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
+using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Server.Endpoints;
 
 /// <summary>
@@ -66,7 +67,7 @@ public static class FactionEndpoints
             UUID = uuid,
             Name = request.Name,
             Description = request.Description ?? string.Empty,
-            Metadata = new EntityMetadata { LastModifiedUtc = DateTime.UtcNow },
+            Metadata = new EntityMetadata { LastModifiedUtc = SystemClock.UtcNow },
         };
 
         await storage.UpsertFactionAsync(faction);
@@ -121,7 +122,7 @@ public static class FactionEndpoints
             faction.Description = request.Description;
         }
 
-        faction.Metadata.LastModifiedUtc = DateTime.UtcNow;
+        faction.Metadata.LastModifiedUtc = SystemClock.UtcNow;
         await storage.UpsertFactionAsync(faction);
 
         LogMutation(httpContext, "Updated", "Faction", uuid);
@@ -151,7 +152,7 @@ public static class FactionEndpoints
         foreach (var character in characters.Where(c => c.FactionUUID == uuid))
         {
             character.FactionUUID = null;
-            character.Metadata.LastModifiedUtc = DateTime.UtcNow;
+            character.Metadata.LastModifiedUtc = SystemClock.UtcNow;
             await storage.UpsertCharacterAsync(character);
         }
 
@@ -199,7 +200,7 @@ public static class FactionEndpoints
         if (!faction.LeaderCharacterUUIDs.Contains(request.CharacterUUID))
         {
             faction.LeaderCharacterUUIDs.Add(request.CharacterUUID);
-            faction.Metadata.LastModifiedUtc = DateTime.UtcNow;
+            faction.Metadata.LastModifiedUtc = SystemClock.UtcNow;
             await storage.UpsertFactionAsync(faction);
 
             LogMutation(httpContext, "AddedLeader", "Faction", uuid);
@@ -234,7 +235,7 @@ public static class FactionEndpoints
         }
 
         faction.LeaderCharacterUUIDs.Remove(charUUID);
-        faction.Metadata.LastModifiedUtc = DateTime.UtcNow;
+        faction.Metadata.LastModifiedUtc = SystemClock.UtcNow;
         await storage.UpsertFactionAsync(faction);
 
         LogMutation(httpContext, "RemovedLeader", "Faction", uuid);

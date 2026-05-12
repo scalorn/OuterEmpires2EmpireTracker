@@ -444,7 +444,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             var timer = new CountDownTime();
             timer.StartRepeating(3600);
-            timer.StartTime = DateTime.UtcNow.AddSeconds(-3600); // 1 interval passed
+            timer.StartTime = SystemClock.UtcNow.AddSeconds(-3600); // 1 interval passed
             structure.ProcessCompletionTime = timer;
 
             colony.Structures.Add(structure);
@@ -497,7 +497,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             var timer = new CountDownTime();
             timer.StartRepeating(3600);
-            timer.StartTime = DateTime.UtcNow.AddSeconds(-3600); // 1 interval passed
+            timer.StartTime = SystemClock.UtcNow.AddSeconds(-3600); // 1 interval passed
             structure.ProcessCompletionTime = timer;
 
             colony.Structures.Add(structure);
@@ -548,7 +548,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             var timer = new CountDownTime();
             timer.StartRepeating(3600);
-            timer.StartTime = DateTime.UtcNow.AddSeconds(-3600);
+            timer.StartTime = SystemClock.UtcNow.AddSeconds(-3600);
             structure.ProcessCompletionTime = timer;
 
             colony.Structures.Add(structure);
@@ -594,7 +594,7 @@ namespace OE2EmpireTracker.Tests.Models
 
             var timer = new CountDownTime();
             timer.StartRepeating(3600);
-            timer.StartTime = DateTime.UtcNow.AddSeconds(-3600);
+            timer.StartTime = SystemClock.UtcNow.AddSeconds(-3600);
             structure.ProcessCompletionTime = timer;
 
             colony.Structures.Add(structure);
@@ -643,7 +643,7 @@ namespace OE2EmpireTracker.Tests.Models
             var timer = new CountDownTime();
             timer.StartRepeating(GameConstants.CommodityCycleSeconds);
             // Move StartTime back so IntervalsPassed returns the desired count
-            timer.StartTime = DateTime.UtcNow.AddSeconds(-intervalsPassed * GameConstants.CommodityCycleSeconds);
+            timer.StartTime = SystemClock.UtcNow.AddSeconds(-intervalsPassed * GameConstants.CommodityCycleSeconds);
             structure.ProcessCompletionTime = timer;
 
             colony.Structures.Add(structure);

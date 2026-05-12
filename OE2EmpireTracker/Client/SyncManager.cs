@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using NLog;
 
+using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Client
 {
     /// <summary>
@@ -113,7 +114,7 @@ namespace OE2EmpireTracker.Client
                 CharacterUUID = characterUUID,
                 DataType = dataType,
                 Json = json,
-                QueuedUtc = DateTime.UtcNow,
+                QueuedUtc = SystemClock.UtcNow,
             };
 
             _offlineQueue.Enqueue(change);

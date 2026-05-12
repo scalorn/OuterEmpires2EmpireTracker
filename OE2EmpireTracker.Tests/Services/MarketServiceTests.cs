@@ -417,7 +417,7 @@ namespace OE2EmpireTracker.Tests.Services
                 PricePerUnit = pricePerUnit,
                 TotalPrice = pricePerUnit * qty,
                 StationUUID = stationUUID,
-                Timestamp = timestamp ?? DateTime.UtcNow.ToString("o")
+                Timestamp = timestamp ?? SystemClock.UtcNow.ToString("o")
             };
         }
     }

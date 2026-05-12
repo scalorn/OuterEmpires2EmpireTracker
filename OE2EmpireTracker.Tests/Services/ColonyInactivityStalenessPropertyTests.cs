@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -76,7 +76,7 @@ namespace OE2EmpireTracker.Tests.Services
                         // Null/empty/unparseable -- should produce a row
                         expectedStaleColonies.Add(colony);
                     }
-                    else if ((DateTime.UtcNow - parsed).TotalSeconds > 86400)
+                    else if ((SystemClock.UtcNow - parsed).TotalSeconds > 86400)
                     {
                         // Older than 1 day -- should produce a row
                         expectedStaleColonies.Add(colony);
@@ -151,7 +151,7 @@ namespace OE2EmpireTracker.Tests.Services
                        ColonyName = colonyName,
                        SystemName = systemName,
                        LastImportDateTime = SurveyDateTimeParser.ToIsoString(
-                           DateTime.UtcNow.AddDays(-daysOld))
+                           SystemClock.UtcNow.AddDays(-daysOld))
                    };
         }
 
@@ -168,7 +168,7 @@ namespace OE2EmpireTracker.Tests.Services
                        ColonyName = colonyName,
                        SystemName = systemName,
                        LastImportDateTime = SurveyDateTimeParser.ToIsoString(
-                           DateTime.UtcNow.AddSeconds(-secondsOld))
+                           SystemClock.UtcNow.AddSeconds(-secondsOld))
                    };
         }
 

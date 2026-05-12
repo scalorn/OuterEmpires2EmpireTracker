@@ -64,7 +64,7 @@ public class TestServerFactory : WebApplicationFactory<Program>
             Id = "test-owner-id",
             TokenHash = hash,
             Role = TokenRole.Owner,
-            CreatedUtc = DateTime.UtcNow,
+            CreatedUtc = SystemClock.UtcNow,
         };
         storage.UpsertTokenAsync(ownerToken).GetAwaiter().GetResult();
     }
@@ -151,7 +151,7 @@ public class AuthTests
             TokenHash = hash,
             Role = TokenRole.Character,
             CharacterUUID = "test-char-uuid",
-            CreatedUtc = DateTime.UtcNow,
+            CreatedUtc = SystemClock.UtcNow,
             IsRevoked = true,
         };
         await storage.UpsertTokenAsync(token);

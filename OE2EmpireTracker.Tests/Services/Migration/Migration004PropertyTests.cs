@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
@@ -42,7 +42,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 {
                     if (string.IsNullOrEmpty(colony.LastImportDateTime))
                     {
-                        colony.LastImportDateTime = SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
+                        colony.LastImportDateTime = SurveyDateTimeParser.ToIsoString(SystemClock.UtcNow);
                     }
                 }
 

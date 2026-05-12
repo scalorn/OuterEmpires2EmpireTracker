@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using OE2EmpireTracker.Server.Storage;
 
+using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Server.Auth;
 
 /// <summary>
@@ -53,7 +54,7 @@ public class TokenAuthHandler : AuthenticationHandler<AuthenticationSchemeOption
         }
 
         // Update last-used timestamp (fire-and-forget)
-        apiToken.LastUsedUtc = DateTime.UtcNow;
+        apiToken.LastUsedUtc = OE2EmpireTracker.Services.SystemClock.UtcNow;
         _ = _storage.UpsertTokenAsync(apiToken);
 
         var claims = new List<Claim>

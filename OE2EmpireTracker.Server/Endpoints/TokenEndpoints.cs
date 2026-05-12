@@ -1,6 +1,7 @@
 using OE2EmpireTracker.Server.Auth;
 using OE2EmpireTracker.Server.Storage;
 
+using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Server.Endpoints;
 
 /// <summary>
@@ -33,7 +34,7 @@ public static class TokenEndpoints
         {
             UUID = characterUUID,
             Name = request.CharacterName,
-            Metadata = new EntityMetadata { LastModifiedUtc = DateTime.UtcNow },
+            Metadata = new EntityMetadata { LastModifiedUtc = SystemClock.UtcNow },
         };
 
         await storage.UpsertCharacterAsync(character);
@@ -48,7 +49,7 @@ public static class TokenEndpoints
             TokenHash = hash,
             CharacterUUID = characterUUID,
             Role = TokenRole.Character,
-            CreatedUtc = DateTime.UtcNow,
+            CreatedUtc = SystemClock.UtcNow,
         };
 
         await storage.UpsertTokenAsync(apiToken);
@@ -117,7 +118,7 @@ public static class TokenEndpoints
             CharacterUUID = existing.CharacterUUID,
             Role = existing.Role,
             FactionUUID = existing.FactionUUID,
-            CreatedUtc = DateTime.UtcNow,
+            CreatedUtc = SystemClock.UtcNow,
         };
 
         await storage.UpsertTokenAsync(newToken);

@@ -205,7 +205,7 @@ public class ServerBackgroundProcessor : BackgroundService
                         EventType = ServerEventType.TimerTick,
                         EntityType = "Colonies",
                         EntityUUID = character.UUID,
-                        Timestamp = DateTime.UtcNow,
+                        Timestamp = SystemClock.UtcNow,
                         OwnerCharacterUUID = character.UUID,
                     });
                 }
@@ -219,12 +219,12 @@ public class ServerBackgroundProcessor : BackgroundService
                 EventType = ServerEventType.TimerTick,
                 EntityType = "processing",
                 EntityUUID = string.Empty,
-                Timestamp = DateTime.UtcNow,
+                Timestamp = SystemClock.UtcNow,
             });
 
             lock (_lock)
             {
-                _lastTickUtc = DateTime.UtcNow;
+                _lastTickUtc = SystemClock.UtcNow;
                 _lastCharactersProcessed = processedCount;
             }
 

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Server.Push;
 
 /// <summary>Event types dispatched to WebSocket clients.</summary>
@@ -22,7 +23,7 @@ public record ServerEvent
     public ServerEventType EventType { get; init; }
     public string EntityType { get; init; } = string.Empty;
     public string EntityUUID { get; init; } = string.Empty;
-    public DateTime Timestamp { get; init; } = DateTime.UtcNow;
+    public DateTime Timestamp { get; init; } = SystemClock.UtcNow;
     public string? OwnerCharacterUUID { get; init; }
 }
 

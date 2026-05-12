@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -714,7 +714,7 @@ namespace OE2EmpireTracker.Tests.Forms
                 PlanetName = RandomString(rng),
                 SystemName = RandomString(rng),
                 SurveyID = RandomString(rng, 6),
-                DateTime = System.DateTime.UtcNow.ToString()
+                DateTime = OE2EmpireTracker.Services.SystemClock.UtcNow.ToString()
             };
         }
 

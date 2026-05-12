@@ -3,6 +3,7 @@ using System.Text.Json;
 using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
+using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Server.Endpoints;
 
 /// <summary>
@@ -297,7 +298,7 @@ public static class DataEndpoints
         {
             factions,
             characters,
-            serverTimestamp = DateTime.UtcNow,
+            serverTimestamp = SystemClock.UtcNow,
         };
 
         return Results.Ok(result);

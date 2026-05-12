@@ -2,6 +2,7 @@ using System.Security.Claims;
 using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
+using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Server.Endpoints;
 
 /// <summary>
@@ -42,7 +43,7 @@ public static class MembershipEndpoints
         IStorageBackend storage)
     {
         // Clean up expired actions first
-        await storage.DeleteExpiredActionsAsync(DateTime.UtcNow);
+        await storage.DeleteExpiredActionsAsync(SystemClock.UtcNow);
 
         var faction = await storage.GetFactionAsync(uuid);
         if (faction == null)
@@ -84,8 +85,8 @@ public static class MembershipEndpoints
             FactionUUID = uuid,
             CharacterUUID = callerCharUUID,
             Type = MembershipActionType.JoinRequest,
-            CreatedUtc = DateTime.UtcNow,
-            ExpiresUtc = DateTime.UtcNow.Add(DefaultExpiry),
+            CreatedUtc = SystemClock.UtcNow,
+            ExpiresUtc = SystemClock.UtcNow.Add(DefaultExpiry),
         };
 
         await storage.UpsertMembershipActionAsync(action);
@@ -99,7 +100,7 @@ public static class MembershipEndpoints
         IStorageBackend storage)
     {
         // Clean up expired actions first
-        await storage.DeleteExpiredActionsAsync(DateTime.UtcNow);
+        await storage.DeleteExpiredActionsAsync(SystemClock.UtcNow);
 
         var faction = await storage.GetFactionAsync(uuid);
         if (faction == null)
@@ -125,7 +126,7 @@ public static class MembershipEndpoints
         IStorageBackend storage)
     {
         // Clean up expired actions first
-        await storage.DeleteExpiredActionsAsync(DateTime.UtcNow);
+        await storage.DeleteExpiredActionsAsync(SystemClock.UtcNow);
 
         var faction = await storage.GetFactionAsync(uuid);
         if (faction == null)
@@ -156,7 +157,7 @@ public static class MembershipEndpoints
         }
 
         character.FactionUUID = uuid;
-        character.Metadata.LastModifiedUtc = DateTime.UtcNow;
+        character.Metadata.LastModifiedUtc = SystemClock.UtcNow;
         await storage.UpsertCharacterAsync(character);
 
         // Delete the action
@@ -177,7 +178,7 @@ public static class MembershipEndpoints
         IStorageBackend storage)
     {
         // Clean up expired actions first
-        await storage.DeleteExpiredActionsAsync(DateTime.UtcNow);
+        await storage.DeleteExpiredActionsAsync(SystemClock.UtcNow);
 
         var faction = await storage.GetFactionAsync(uuid);
         if (faction == null)
@@ -224,8 +225,8 @@ public static class MembershipEndpoints
             FactionUUID = uuid,
             CharacterUUID = request.CharacterUUID,
             Type = MembershipActionType.Invitation,
-            CreatedUtc = DateTime.UtcNow,
-            ExpiresUtc = DateTime.UtcNow.Add(DefaultExpiry),
+            CreatedUtc = SystemClock.UtcNow,
+            ExpiresUtc = SystemClock.UtcNow.Add(DefaultExpiry),
         };
 
         await storage.UpsertMembershipActionAsync(action);
@@ -239,7 +240,7 @@ public static class MembershipEndpoints
         IStorageBackend storage)
     {
         // Clean up expired actions first
-        await storage.DeleteExpiredActionsAsync(DateTime.UtcNow);
+        await storage.DeleteExpiredActionsAsync(SystemClock.UtcNow);
 
         var faction = await storage.GetFactionAsync(uuid);
         if (faction == null)
@@ -265,7 +266,7 @@ public static class MembershipEndpoints
         IStorageBackend storage)
     {
         // Clean up expired actions first
-        await storage.DeleteExpiredActionsAsync(DateTime.UtcNow);
+        await storage.DeleteExpiredActionsAsync(SystemClock.UtcNow);
 
         var faction = await storage.GetFactionAsync(uuid);
         if (faction == null)
@@ -297,7 +298,7 @@ public static class MembershipEndpoints
         }
 
         character.FactionUUID = uuid;
-        character.Metadata.LastModifiedUtc = DateTime.UtcNow;
+        character.Metadata.LastModifiedUtc = SystemClock.UtcNow;
         await storage.UpsertCharacterAsync(character);
 
         // Delete the action
@@ -338,7 +339,7 @@ public static class MembershipEndpoints
         }
 
         character.FactionUUID = null;
-        character.Metadata.LastModifiedUtc = DateTime.UtcNow;
+        character.Metadata.LastModifiedUtc = SystemClock.UtcNow;
         await storage.UpsertCharacterAsync(character);
 
         LogMutation(httpContext, "LeftFaction", "Membership", $"{uuid}");

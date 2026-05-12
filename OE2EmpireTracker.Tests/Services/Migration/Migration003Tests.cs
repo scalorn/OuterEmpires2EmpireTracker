@@ -151,7 +151,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 return SurveyDateTimeParser.ToIsoString(fallback);
 
             // Unparseable or null/empty -- replace with now
-            return SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
+            return SurveyDateTimeParser.ToIsoString(SystemClock.UtcNow);
         }
     }
 }

@@ -1,17 +1,18 @@
-﻿using System;
+using System;
 using System.Linq;
 using FsCheck;
 using FsCheck.NUnit;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 
+using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Tests.Models
 {
     /// <summary>
     /// Feature: colony-import-timestamp, Property 7: CountDownTime uses UTC consistently
     ///
     /// For any CountDownTime initialized via StartRepeating or TimeRemaining setter using
-    /// DateTime.UtcNow, the TimeRemaining getter (which also uses DateTime.UtcNow internally)
+    /// SystemClock.UtcNow, the TimeRemaining getter (which also uses SystemClock.UtcNow internally)
     /// should return a value within 1 second of the expected remaining time. The StartTime and
     /// EndTime stored on the object should have Kind == DateTimeKind.Utc (or be DateTime.MinValue).
     ///

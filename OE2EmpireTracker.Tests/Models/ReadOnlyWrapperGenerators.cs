@@ -4,6 +4,7 @@ using System.Linq;
 using FsCheck;
 using OE2EmpireTracker.Models;
 
+using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Tests.Models
 {
     /// <summary>
@@ -136,8 +137,8 @@ namespace OE2EmpireTracker.Tests.Models
         private static CountDownTime MakeCountDownTime(int elapsed, int remaining, bool repeating)
         {
             var cdt = new CountDownTime();
-            cdt.StartTime = DateTime.UtcNow.AddSeconds(-elapsed);
-            cdt.EndTime = DateTime.UtcNow.AddSeconds(remaining);
+            cdt.StartTime = SystemClock.UtcNow.AddSeconds(-elapsed);
+            cdt.EndTime = SystemClock.UtcNow.AddSeconds(remaining);
             cdt.RepeatIntervalSeconds = repeating ? (long)Math.Max(60, remaining) : 0;
             return cdt;
         }
@@ -311,7 +312,7 @@ namespace OE2EmpireTracker.Tests.Models
                 Name = name,
                 Requested = requested,
                 Delivered = delivered,
-                NeedBy = DateTime.UtcNow.AddDays(requested % 30),
+                NeedBy = SystemClock.UtcNow.AddDays(requested % 30),
                 Fulfilled = fulfilled
             };
 

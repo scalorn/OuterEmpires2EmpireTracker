@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Linq;
 using FsCheck;
@@ -115,7 +115,7 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 return SurveyDateTimeParser.ToIsoString(fallback);
 
             // Unparseable or null/empty -- replace with now
-            return SurveyDateTimeParser.ToIsoString(DateTime.UtcNow);
+            return SurveyDateTimeParser.ToIsoString(SystemClock.UtcNow);
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using OE2EmpireTracker.Server.Storage;
 
+using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Server.Middleware;
 
 /// <summary>
@@ -20,7 +21,7 @@ internal sealed class TokenBucket
     {
         lock (_lock)
         {
-            var cutoff = DateTime.UtcNow.AddMinutes(-1);
+            var cutoff = SystemClock.UtcNow.AddMinutes(-1);
             _timestamps.RemoveAll(t => t < cutoff);
 
             if (_timestamps.Count >= MaxRequestsPerMinute)
@@ -28,7 +29,7 @@ internal sealed class TokenBucket
                 return false;
             }
 
-            _timestamps.Add(DateTime.UtcNow);
+            _timestamps.Add(SystemClock.UtcNow);
             return true;
         }
     }
@@ -46,7 +47,7 @@ internal sealed class TokenBucket
             }
 
             var oldest = _timestamps[0];
-            var available = oldest.AddMinutes(1) - DateTime.UtcNow;
+            var available = oldest.AddMinutes(1) - SystemClock.UtcNow;
             return Math.Max(1, (int)Math.Ceiling(available.TotalSeconds));
         }
     }

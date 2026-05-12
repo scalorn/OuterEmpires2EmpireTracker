@@ -976,8 +976,8 @@ namespace OE2EmpireTracker.Tests.Services
         private static CountDownTime CreateExpiredOneShot()
         {
             var timer = new CountDownTime();
-            timer.StartTime = DateTime.UtcNow.AddSeconds(-120);
-            timer.EndTime = DateTime.UtcNow.AddSeconds(-60);
+            timer.StartTime = SystemClock.UtcNow.AddSeconds(-120);
+            timer.EndTime = SystemClock.UtcNow.AddSeconds(-60);
             timer.RepeatIntervalSeconds = 0;
             return timer;
         }
@@ -1069,8 +1069,8 @@ namespace OE2EmpireTracker.Tests.Services
                     var timer = new CountDownTime();
                     // Set EndTime in the past so TimeRemaining is negative
                     int secondsAgo = rng.Next(1, 3600);
-                    timer.StartTime = DateTime.UtcNow.AddSeconds(-secondsAgo - 10);
-                    timer.EndTime = DateTime.UtcNow.AddSeconds(-secondsAgo);
+                    timer.StartTime = SystemClock.UtcNow.AddSeconds(-secondsAgo - 10);
+                    timer.EndTime = SystemClock.UtcNow.AddSeconds(-secondsAgo);
                     timer.RepeatIntervalSeconds = 0;
                     return timer;
                 }
@@ -1079,8 +1079,8 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     var timer = new CountDownTime();
                     int secondsLeft = rng.Next(1, 7200);
-                    timer.StartTime = DateTime.UtcNow;
-                    timer.EndTime = DateTime.UtcNow.AddSeconds(secondsLeft);
+                    timer.StartTime = SystemClock.UtcNow;
+                    timer.EndTime = SystemClock.UtcNow.AddSeconds(secondsLeft);
                     timer.RepeatIntervalSeconds = 0;
                     return timer;
                 }
@@ -1092,7 +1092,7 @@ namespace OE2EmpireTracker.Tests.Services
                     int passedIntervals = rng.Next(1, 10);
                     timer.RepeatIntervalSeconds = intervalSeconds;
                     // Move StartTime far enough back that passedIntervals have elapsed
-                    timer.StartTime = DateTime.UtcNow.AddSeconds(-(passedIntervals * intervalSeconds) - rng.Next(1, (int)intervalSeconds));
+                    timer.StartTime = SystemClock.UtcNow.AddSeconds(-(passedIntervals * intervalSeconds) - rng.Next(1, (int)intervalSeconds));
                     timer.EndTime = timer.StartTime.AddSeconds(intervalSeconds);
                     return timer;
                 }
@@ -1104,7 +1104,7 @@ namespace OE2EmpireTracker.Tests.Services
                     timer.RepeatIntervalSeconds = intervalSeconds;
                     // StartTime is recent enough that no full interval has elapsed
                     int partialSeconds = rng.Next(1, (int)intervalSeconds - 1);
-                    timer.StartTime = DateTime.UtcNow.AddSeconds(-partialSeconds);
+                    timer.StartTime = SystemClock.UtcNow.AddSeconds(-partialSeconds);
                     timer.EndTime = timer.StartTime.AddSeconds(intervalSeconds);
                     return timer;
                 }

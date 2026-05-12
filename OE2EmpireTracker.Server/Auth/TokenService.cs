@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using OE2EmpireTracker.Server.Storage;
 
+using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Server.Auth;
 
 /// <summary>
@@ -52,7 +53,7 @@ public static class TokenService
             Id = Guid.NewGuid().ToString("N")[..12],
             TokenHash = hash,
             Role = TokenRole.Owner,
-            CreatedUtc = DateTime.UtcNow,
+            CreatedUtc = SystemClock.UtcNow,
         };
 
         await storage.UpsertTokenAsync(token);
@@ -84,7 +85,7 @@ public static class TokenService
             Id = Guid.NewGuid().ToString("N")[..12],
             TokenHash = hash,
             Role = TokenRole.Owner,
-            CreatedUtc = DateTime.UtcNow,
+            CreatedUtc = SystemClock.UtcNow,
         };
 
         await storage.UpsertTokenAsync(token);
