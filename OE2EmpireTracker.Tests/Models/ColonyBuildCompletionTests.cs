@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Tests;
@@ -62,7 +63,7 @@ namespace OE2EmpireTracker.Tests.Models
                         activeStructures.Add(s);
                     }
 
-                    colony.ProcessColony();
+                    colony.ProcessColony(MakeContext());
 
                     // Expired timers: Built=true, BuildCompletionTime=null
                     foreach (var s in expiredStructures)
@@ -111,7 +112,7 @@ namespace OE2EmpireTracker.Tests.Models
             var structure = MakeStructure(false, false, MakeExpiredTimer());
             colony.Structures.Add(structure);
 
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             var vm = new ColonyStructureViewModel(structure, playerContext);
             Assert.That(vm.IsBuilt, Is.True);
@@ -126,7 +127,7 @@ namespace OE2EmpireTracker.Tests.Models
             var structure = MakeStructure(false, false, MakeActiveTimer());
             colony.Structures.Add(structure);
 
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             var vm = new ColonyStructureViewModel(structure, playerContext);
             Assert.That(vm.IsBuilt, Is.False);
@@ -139,7 +140,7 @@ namespace OE2EmpireTracker.Tests.Models
             var colony = new Colony();
             colony.UUID = Guid.NewGuid().ToString();
 
-            Assert.DoesNotThrow(() => colony.ProcessColony());
+            Assert.DoesNotThrow(() => colony.ProcessColony(MakeContext()));
         }
 
         [Test]
@@ -186,7 +187,7 @@ namespace OE2EmpireTracker.Tests.Models
             structure.ProcessCompletionTime = processTimer;
 
             colony.Structures.Add(structure);
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             // Build completion should have run first, setting Built=true
             var vm = new ColonyStructureViewModel(structure, playerContext);
@@ -239,6 +240,12 @@ namespace OE2EmpireTracker.Tests.Models
             var t = new CountDownTime();
             t.TimeRemaining = secondsRemaining;
             return t;
+        }
+
+        private static IColonyProcessingContext MakeContext()
+        {
+            return new ColonyProcessingContextAdapter(
+                PlayerContext.GetInstance(), EmpireContext.GetInstance());
         }
     }
 }

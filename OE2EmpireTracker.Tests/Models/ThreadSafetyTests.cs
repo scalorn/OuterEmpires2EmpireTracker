@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -83,7 +84,7 @@ namespace OE2EmpireTracker.Tests.Models
                     {
                         try
                         {
-                            colony.ProcessColony();
+                            colony.ProcessColony(MakeContext());
                         }
                         finally
                         {
@@ -652,6 +653,12 @@ namespace OE2EmpireTracker.Tests.Models
             colony.Items.AddItem(item);
 
             return colony;
+        }
+
+        private static IColonyProcessingContext MakeContext()
+        {
+            return new ColonyProcessingContextAdapter(
+                PlayerContext.GetInstance(), EmpireContext.GetInstance());
         }
     }
 }

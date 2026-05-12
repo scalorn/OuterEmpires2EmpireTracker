@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 namespace OE2EmpireTracker.Models
 {
     public class PlayerProfile

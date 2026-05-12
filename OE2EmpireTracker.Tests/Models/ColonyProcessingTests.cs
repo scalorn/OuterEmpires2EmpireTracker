@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.Tests;
@@ -38,7 +39,7 @@ namespace OE2EmpireTracker.Tests.Models
                     { "Strong Acidic Inorganics", 100 }
                 });
 
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             var commodities = colony.Items.FindByType(ItemType.ItemTypeEnum.Commodity, "Advanced Biolubricants");
             Assert.That(commodities.Count, Is.EqualTo(1));
@@ -63,7 +64,7 @@ namespace OE2EmpireTracker.Tests.Models
                     { "Strong Acidic Inorganics", 100 }
                 });
 
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             var commodities = colony.Items.FindByType(ItemType.ItemTypeEnum.Commodity, "Advanced Biolubricants");
             Assert.That(commodities.Count, Is.EqualTo(1));
@@ -96,7 +97,7 @@ namespace OE2EmpireTracker.Tests.Models
             existing.Volume = 10;
             colony.Items.AddItem(existing);
 
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             var commodities = colony.Items.FindByType(ItemType.ItemTypeEnum.Commodity, "Advanced Biolubricants");
             Assert.That(commodities.Count, Is.EqualTo(1));
@@ -122,7 +123,7 @@ namespace OE2EmpireTracker.Tests.Models
                     { "Strong Acidic Inorganics", 100 }
                 });
 
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             var alkali = colony.Items.FindResource("Alkali Organics", GameConstants.PurityRefined);
             Assert.That(alkali.Count, Is.EqualTo(1));
@@ -152,7 +153,7 @@ namespace OE2EmpireTracker.Tests.Models
                     { "Strong Acidic Inorganics", 2 }
                 });
 
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             var alkali = colony.Items.FindResource("Alkali Organics", GameConstants.PurityRefined);
             Assert.That(
@@ -185,7 +186,7 @@ namespace OE2EmpireTracker.Tests.Models
                     { "Strong Acidic Inorganics", 100 }
                 });
 
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             Assert.That(colony.Structures[0].ManufacturingCompleted, Is.EqualTo(2));
         }
@@ -207,7 +208,7 @@ namespace OE2EmpireTracker.Tests.Models
                     { "Alkali Organics", 100 }
                 });
 
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             // No commodities should be produced
             Assert.That(colony.Structures[0].ManufacturingCompleted, Is.EqualTo(0));
@@ -230,7 +231,7 @@ namespace OE2EmpireTracker.Tests.Models
                     { "Alkali Organics", 100 }
                 });
 
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             Assert.That(colony.Structures[0].ManufacturingCompleted, Is.EqualTo(0));
         }
@@ -447,7 +448,7 @@ namespace OE2EmpireTracker.Tests.Models
             structure.ProcessCompletionTime = timer;
 
             colony.Structures.Add(structure);
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             // Base output = 100, with 10% bonus = 110
             var items = colony.Items.FindResource("TestOre", "Low");
@@ -500,7 +501,7 @@ namespace OE2EmpireTracker.Tests.Models
             structure.ProcessCompletionTime = timer;
 
             colony.Structures.Add(structure);
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             // Base: consume 25, Low multiplier = 1, produce 25. With 10% bonus = (int)(25 * 1 * 1.10) = 27
             var refined = colony.Items.FindResource("TestMineral", GameConstants.PurityRefined);
@@ -551,7 +552,7 @@ namespace OE2EmpireTracker.Tests.Models
             structure.ProcessCompletionTime = timer;
 
             colony.Structures.Add(structure);
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             // Base: consume 25, Low multiplier = 1, produce 25. Multiplier = 1.0 (0 skill)
             var refined = colony.Items.FindResource("TestMineral2", GameConstants.PurityRefined);
@@ -597,7 +598,7 @@ namespace OE2EmpireTracker.Tests.Models
             structure.ProcessCompletionTime = timer;
 
             colony.Structures.Add(structure);
-            colony.ProcessColony();
+            colony.ProcessColony(MakeContext());
 
             // No owner => skill level 0 => multiplier 1.0 => base output 25
             var refined = colony.Items.FindResource("TestMineral3", GameConstants.PurityRefined);
@@ -681,6 +682,12 @@ namespace OE2EmpireTracker.Tests.Models
 
             PlayerContext.GetInstance().AddPlayerProfile(profile);
             return profile;
+        }
+
+        private static IColonyProcessingContext MakeContext()
+        {
+            return new ColonyProcessingContextAdapter(
+                PlayerContext.GetInstance(), EmpireContext.GetInstance());
         }
     }
 }

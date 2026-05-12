@@ -6,7 +6,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Interfaces;
 
 namespace OE2EmpireTracker.Models
 {
@@ -91,7 +91,7 @@ namespace OE2EmpireTracker.Models
                 UUID ?? "(no UUID)");
         }
 
-        public void ProcessColony()
+        public void ProcessColony(IColonyProcessingContext context)
         {
             // Processing order per REQ-COL-100 / REQ-ARCH-080:
             // 1. Structure Building
@@ -104,14 +104,12 @@ namespace OE2EmpireTracker.Models
             // This ordering ensures mined resources are available for refining,
             // and refined resources are available for manufacturing in the same cycle.
 
-            var pc = PlayerContext.GetInstance();
-
             // Step 0: Clean up orphaned manufacturing state on structures whose
             // blueprint type doesn't support it (e.g. mining rig with stale
             // ManufacturingBlueprintUUID from a data import or prior bug)
             foreach (ColonyStructure structure in Structures)
             {
-                var bp = pc.FindBlueprint(structure.FlatpackBlueprintUUID);
+                var bp = context.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (bp == null) continue;
 
                 bool isManufactory = bp.BluePrintType == BlueprintTypes.Manufactory;
@@ -132,7 +130,7 @@ namespace OE2EmpireTracker.Models
 
                 // Also clear if the referenced manufacturing blueprint doesn't exist
                 if (isManufactory && !string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID)
-                    && pc.FindBlueprint(structure.ManufacturingBlueprintUUID) == null)
+                    && context.FindBlueprint(structure.ManufacturingBlueprintUUID) == null)
                 {
                     Log.Warn(
                         "Clearing ManufacturingBlueprintUUID on {0} (blueprint {1} not found)",
@@ -168,7 +166,7 @@ namespace OE2EmpireTracker.Models
                 }
 
                 if (isResearchLab && !string.IsNullOrEmpty(structure.ResearchingBlueprintUUID)
-                    && pc.FindBlueprint(structure.ResearchingBlueprintUUID) == null)
+                    && context.FindBlueprint(structure.ResearchingBlueprintUUID) == null)
                 {
                     Log.Warn(
                         "Clearing ResearchingBlueprintUUID on {0} (blueprint {1} not found)",
@@ -233,7 +231,7 @@ namespace OE2EmpireTracker.Models
                     (structure.ProcessCompletionTime.IntervalsPassed > 0 ||
                      (!structure.ProcessCompletionTime.IsRepeating && structure.ProcessCompletionTime.TimeRemaining <= 0)))
                 {
-                    var bp = pc.FindBlueprint(structure.FlatpackBlueprintUUID);
+                    var bp = context.FindBlueprint(structure.FlatpackBlueprintUUID);
                     if (bp == null)
                     {
                         Log.Warn(
@@ -258,18 +256,18 @@ namespace OE2EmpireTracker.Models
             // Step 2: Mining
             foreach (var (structure, bp) in ready)
                 if (bp.BluePrintType == BlueprintTypes.MiningRig)
-                    ProcessMiningRig(structure);
+                    ProcessMiningRig(context, structure);
 
             // Steps 3-5: Refining in tier order (base=0, S1=1, S2=2)
             foreach (var (structure, bp) in ready
                 .Where(r => r.blueprint.BluePrintType == BlueprintTypes.Refinery)
                 .OrderBy(r => RefiningRecipes.GetTier(r.structure.RefiningResource, r.structure.RefiningResourcePurity)))
-                ProcessRefinery(structure);
+                ProcessRefinery(context, structure);
 
             // Step 6: Manufacturing and Commodity Manufacturing
             foreach (var (structure, bp) in ready)
                 if (bp.BluePrintType == BlueprintTypes.Manufactory)
-                    ProcessManufactory(structure);
+                    ProcessManufactory(context, structure);
             foreach (var (structure, bp) in ready)
                 if (bp.BluePrintType.IsCommodityFactory())
                     ProcessCommodityFactory(structure);
@@ -277,24 +275,23 @@ namespace OE2EmpireTracker.Models
             // Step 7: Research
             foreach (var (structure, bp) in ready)
                 if (bp.BluePrintType == BlueprintTypes.ResearchLaboratory)
-                    ProcessResearchLab(structure);
+                    ProcessResearchLab(context, structure);
         }
 
         /// <summary>
         /// Returns the owner's skill level for the given skill, or 0 if no owner.
         /// </summary>
-        private int GetOwnerSkillLevel(SkillName skill)
+        private int GetOwnerSkillLevel(IColonyProcessingContext context, SkillName skill)
         {
             if (string.IsNullOrEmpty(OwnerUUID)) return 0;
-            PlayerContext pc = PlayerContext.GetInstance();
-            var owner = pc.PlayerProfileList.FirstOrDefault(p => p.UUID == OwnerUUID);
+            var owner = context.FindPlayerProfile(OwnerUUID);
             if (owner == null) return 0;
             return owner.GetSkill(skill).Level;
         }
 
-        private void ProcessMiningRig(ColonyStructure structure)
+        private void ProcessMiningRig(IColonyProcessingContext context, ColonyStructure structure)
         {
-            Survey survey = PlayerContext.GetInstance().FindSurvey(structure.MiningSurvey);
+            Survey survey = context.FindSurvey(structure.MiningSurvey);
             if (survey == null)
             {
                 Log.Warn(
@@ -336,7 +333,7 @@ namespace OE2EmpireTracker.Models
             }
 
             // ExtractionFocus: +1% per level
-            decimal extractionMultiplier = 1.0m + (GetOwnerSkillLevel(SkillName.ExtractionFocus) * GameConstants.ExtractionFocusRatePerLevel);
+            decimal extractionMultiplier = 1.0m + (GetOwnerSkillLevel(context, SkillName.ExtractionFocus) * GameConstants.ExtractionFocusRatePerLevel);
 
             long intervals = structure.ProcessCompletionTime.IntervalsPassed;
             if (intervals <= 0)
@@ -363,7 +360,7 @@ namespace OE2EmpireTracker.Models
                 leftOver);
         }
 
-        private void ProcessRefinery(ColonyStructure structure)
+        private void ProcessRefinery(IColonyProcessingContext context, ColonyStructure structure)
         {
             if (string.IsNullOrEmpty(structure.RefiningResource) ||
                 string.IsNullOrEmpty(structure.RefiningResourcePurity))
@@ -374,19 +371,19 @@ namespace OE2EmpireTracker.Models
 
             if (recipe != null)
             {
-                ProcessSyntheticRefinery(structure, recipe);
+                ProcessSyntheticRefinery(context, structure, recipe);
             }
             else
             {
-                ProcessNormalRefinery(structure);
+                ProcessNormalRefinery(context, structure);
             }
         }
 
-        private void ProcessNormalRefinery(ColonyStructure structure)
+        private void ProcessNormalRefinery(IColonyProcessingContext context, ColonyStructure structure)
         {
             int baseRate = GameConstants.RefiningBaseRate;
             // RefiningFocus: +2% per level
-            decimal refiningMultiplier = 1.0m + (GetOwnerSkillLevel(SkillName.RefiningFocus) * GameConstants.RefiningFocusRatePerLevel);
+            decimal refiningMultiplier = 1.0m + (GetOwnerSkillLevel(context, SkillName.RefiningFocus) * GameConstants.RefiningFocusRatePerLevel);
             int outputMultiplier;
             switch (structure.RefiningResourcePurity)
             {
@@ -458,14 +455,14 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        private void ProcessSyntheticRefinery(ColonyStructure structure, RefiningRecipe recipe)
+        private void ProcessSyntheticRefinery(IColonyProcessingContext context, ColonyStructure structure, RefiningRecipe recipe)
         {
             List<Item> sourceItems = Items.FindResource(recipe.InputResource, recipe.InputPurity);
 
             // Per-unit cost: how many input resources per 1 output unit
             int perUnitCost = recipe.ConsumeRate / recipe.ProduceRate;
             // RefiningFocus: +2% per level
-            decimal refiningMultiplier = 1.0m + (GetOwnerSkillLevel(SkillName.RefiningFocus) * GameConstants.RefiningFocusRatePerLevel);
+            decimal refiningMultiplier = 1.0m + (GetOwnerSkillLevel(context, SkillName.RefiningFocus) * GameConstants.RefiningFocusRatePerLevel);
 
             while (structure.ProcessCompletionTime.IntervalsPassed > 0)
             {
@@ -534,13 +531,12 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        private void ProcessResearchLab(ColonyStructure structure)
+        private void ProcessResearchLab(IColonyProcessingContext context, ColonyStructure structure)
         {
             if (string.IsNullOrEmpty(structure.ResearchingBlueprintUUID))
                 return;
 
-            PlayerContext pc = PlayerContext.GetInstance();
-            var sourceBp = pc.FindBlueprint(structure.ResearchingBlueprintUUID);
+            var sourceBp = context.FindBlueprint(structure.ResearchingBlueprintUUID);
             if (sourceBp == null)
                 return;
 
@@ -569,7 +565,7 @@ namespace OE2EmpireTracker.Models
             // Resources intentionally empty / user imports via Blueprint Form
 
             // Add to player's blueprint list
-            pc.AddBlueprint(newBp);
+            context.AddBlueprint(newBp);
 
             // Add an item to the colony warehouse
             Item bpItem = new Item(ItemType.ItemTypeEnum.Blueprint, newBp.Name);
@@ -590,19 +586,17 @@ namespace OE2EmpireTracker.Models
             structure.ProcessCompletionTime.ConsumeIntervals(1);
         }
 
-        private void ProcessManufactory(ColonyStructure structure)
+        private void ProcessManufactory(IColonyProcessingContext context, ColonyStructure structure)
         {
             if (string.IsNullOrEmpty(structure.ManufacturingBlueprintUUID))
                 return;
 
-            PlayerContext pc = PlayerContext.GetInstance();
-            var sourceBp = pc.FindBlueprint(structure.ManufacturingBlueprintUUID);
+            var sourceBp = context.FindBlueprint(structure.ManufacturingBlueprintUUID);
             if (sourceBp == null)
                 return;
 
             // Find the output item type from the BlueprintType
-            EmpireContext ec = EmpireContext.GetInstance();
-            BlueprintType bpType = ec.FindBlueprintType(sourceBp.BluePrintType);
+            BlueprintType bpType = context.FindBlueprintType(sourceBp.BluePrintType);
             ItemType.ItemTypeEnum outputType = ItemType.ItemTypeEnum.None;
             if (bpType != null && !string.IsNullOrEmpty(bpType.OutputItemType))
             {

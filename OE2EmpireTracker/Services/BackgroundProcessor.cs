@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using NLog;
+using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -15,6 +16,8 @@ namespace OE2EmpireTracker.Services
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly PlayerContext _playerContext;
+
+        private readonly IColonyProcessingContext _colonyProcessingContext;
 
         private readonly ManualResetEventSlim _stopping = new ManualResetEventSlim(false);
 
@@ -29,6 +32,8 @@ namespace OE2EmpireTracker.Services
         public BackgroundProcessor(PlayerContext playerContext)
         {
             _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+            _colonyProcessingContext = new ColonyProcessingContextAdapter(
+                playerContext, EmpireContext.GetInstance());
         }
 
         /// <summary>
@@ -196,7 +201,7 @@ namespace OE2EmpireTracker.Services
 
                         try
                         {
-                            colony.ProcessColony();
+                            colony.ProcessColony(_colonyProcessingContext);
                         }
                         finally
                         {

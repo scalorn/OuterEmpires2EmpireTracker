@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
+using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 using OE2EmpireTracker.ViewModels;
@@ -2002,7 +2003,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                         structureData.BuildCompletionTime.TimeRemaining = 0;
                     }
 
-                    Colony.ProcessColony();
+                    Colony.ProcessColony(new ColonyProcessingContextAdapter(
+                        PlayerContext.GetInstance(), EmpireContext.GetInstance()));
                 }
                 finally
                 {
@@ -2060,7 +2062,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                         structureData.ProcessCompletionTime.StartTime);
                 }
 
-                Colony.ProcessColony();
+                Colony.ProcessColony(new ColonyProcessingContextAdapter(
+                    PlayerContext.GetInstance(), EmpireContext.GetInstance()));
             }
             finally
             {

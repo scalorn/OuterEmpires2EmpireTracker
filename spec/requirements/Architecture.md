@@ -115,6 +115,7 @@ flowchart TD
 7. Research
 
 **REQ-ARCH-081** All 7 processing steps are implemented in Colony.ProcessColony().  
+**REQ-ARCH-081a** Colony.ProcessColony() SHALL accept an IColonyProcessingContext parameter for data lookups (blueprints, surveys, player profiles, blueprint types). ColonyProcessingContextAdapter adapts PlayerContext/EmpireContext to this interface.  
 **REQ-ARCH-082** Structure Building (step 1): when BuildCompletionTime.TimeRemaining <= 0, the structure SHALL be marked Built=true, Staged=false, and BuildCompletionTime SHALL be cleared.  
 **REQ-ARCH-083** Refining uses RefiningRecipes for tier-based processing (base, S1, S2). Manufacturing consumes blueprint resources. Commodity manufacturing uses Commodity.ConstructionResources. Research uses ResearchTimeLookup for evolution-based timing.
 

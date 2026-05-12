@@ -163,6 +163,7 @@
     <Compile Include="Services\Migration\Migrations\Migration006_DisplaySequenceJsonKey.cs" />
     <Compile Include="Services\Migration\Migrations\Migration007_RemoveClassFromProperties.cs" />
     <Compile Include="Services\Migration\Migrations\Migration008_RouteStopDestinationMigration.cs" />
+    <Compile Include="Services\ColonyProcessingContextAdapter.cs" />
     <Compile Include="Services\ColonyImportHelper.cs" />
     <Compile Include="Services\SurveyImportHelper.cs" />
     <Compile Include="Services\BlueprintReferenceCounter.cs" />
@@ -244,9 +245,6 @@
     <Compile Include="Services\CollectionSortHelper.cs" />
     <Compile Include="Services\ColonyInactivityCollector.cs" />
     <Compile Include="Services\ColonyAdminReportBuilder.cs" />
-    <Compile Include="Models\Colony.cs" />
-    <Compile Include="Models\ReadOnlyColony.cs" />
-    <Compile Include="Models\IColonyStructureWorkers.cs" />
     <Compile Include="Services\ColonyBuildEligibility.cs" />
     <Compile Include="Services\ColonyStatusCalculator.cs" />
     <Compile Include="Services\BuildOrderOptimizer.cs" />
@@ -258,13 +256,11 @@
     <Compile Include="Parsers\RefinerySetupHelper.cs" />
     <Compile Include="Parsers\PlayerProfileParser.cs" />
     <Compile Include="Services\DeliveryFulfillment.cs" />
-    <Compile Include="Models\IColonyStructureWorkers.cs" />
     <Compile Include="Services\HelpRenderer.cs" />
     <Compile Include="Services\PreferencesStore.cs" />
     <Compile Include="Services\TabWarningService.cs" />
     <Compile Include="Services\EvolutionChainService.cs" />
     <Compile Include="Services\QueueCalculator.cs" />
-    <Compile Include="Models\ColonyUpdateRequest.cs" />
     <Compile Include="Services\PlayerContext.cs" />
     <Compile Include="Persistence\SafeFileWriter.cs" />
     <Compile Include="Persistence\BoundsValidator.cs" />
@@ -306,7 +302,6 @@
     <Compile Include="ViewModels\PlayerProfileViewModel.cs" />
     <Compile Include="ViewModels\SurveyViewModel.cs" />
     <Compile Include="ViewModels\PricingPlanViewModel.cs" />
-    <Compile Include="Models\ReadOnlyColony.cs" />
     <Compile Include="Parsers\BlueprintScanner.cs" />
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>
