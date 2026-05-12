@@ -1,10 +1,15 @@
+using Newtonsoft.Json;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Server.Processing;
 
 /// <summary>
 /// Background service that periodically processes opted-in characters.
+/// Uses the Common library's <see cref="Colony.ProcessColony"/> method with
+/// domain models instead of raw JSON manipulation.
 /// Configurable via Server:ProcessingIntervalSeconds and Server:ProcessingEnabled.
 /// Can be enabled/disabled at runtime via <see cref="IsEnabled"/>.
 /// </summary>
@@ -12,7 +17,6 @@ public class ServerBackgroundProcessor : BackgroundService
 {
     private readonly IStorageBackend _storage;
     private readonly EventDispatcher _eventDispatcher;
-    private readonly ServerColonyProcessor _colonyProcessor;
     private readonly ILogger<ServerBackgroundProcessor> _logger;
     private readonly IConfiguration _configuration;
     private readonly object _lock = new object();
@@ -24,13 +28,11 @@ public class ServerBackgroundProcessor : BackgroundService
     public ServerBackgroundProcessor(
         IStorageBackend storage,
         EventDispatcher eventDispatcher,
-        ServerColonyProcessor colonyProcessor,
         ILogger<ServerBackgroundProcessor> logger,
         IConfiguration configuration)
     {
         _storage = storage;
         _eventDispatcher = eventDispatcher;
-        _colonyProcessor = colonyProcessor;
         _logger = logger;
         _configuration = configuration;
         _isEnabled = configuration.GetValue<bool>("Server:ProcessingEnabled", false);
@@ -124,7 +126,7 @@ public class ServerBackgroundProcessor : BackgroundService
                 }
 
                 // Load colony data for the opted-in character
-                var colonyData = await _storage.GetCharacterDataAsync(character.UUID, "colonies");
+                var colonyData = await _storage.GetCharacterDataAsync(character.UUID, "Colonies");
                 if (string.IsNullOrEmpty(colonyData))
                 {
                     _logger.LogDebug(
@@ -135,8 +137,33 @@ public class ServerBackgroundProcessor : BackgroundService
                     continue;
                 }
 
-                // Check if there are active timers before processing
-                if (!_colonyProcessor.HasActiveTimers(colonyData))
+                // Deserialize into actual Colony domain models
+                List<Colony>? colonies;
+                try
+                {
+                    colonies = JsonConvert.DeserializeObject<List<Colony>>(colonyData);
+                }
+                catch (JsonException ex)
+                {
+                    _logger.LogWarning(
+                        ex,
+                        "Failed to deserialize colony data for character {Name} ({UUID})",
+                        character.Name,
+                        character.UUID);
+                    processedCount++;
+                    continue;
+                }
+
+                if (colonies == null || colonies.Count == 0)
+                {
+                    processedCount++;
+                    continue;
+                }
+
+                // Check if any colony has expired timers worth processing
+                bool hasTimers = colonies.Any(c => c.HasExpiredTimers());
+
+                if (!hasTimers)
                 {
                     _logger.LogDebug(
                         "Processing character {Name} ({UUID}) — no active timers",
@@ -146,13 +173,29 @@ public class ServerBackgroundProcessor : BackgroundService
                     continue;
                 }
 
-                // Advance colony timers
-                if (_colonyProcessor.ProcessColonies(colonyData, out var updatedJson))
+                // Load context data for colony processing
+                var context = new ServerColonyProcessingContext(_storage, character.UUID);
+                await context.LoadDataAsync();
+
+                // Process each colony using the domain model
+                bool anyProcessed = false;
+                foreach (var colony in colonies)
                 {
-                    await _storage.UpsertCharacterDataAsync(character.UUID, "colonies", updatedJson);
+                    if (colony.HasExpiredTimers())
+                    {
+                        colony.ProcessColony(context);
+                        anyProcessed = true;
+                    }
+                }
+
+                if (anyProcessed)
+                {
+                    var updatedJson = JsonConvert.SerializeObject(colonies, JsonSettings.SerializerSettings);
+                    await _storage.UpsertCharacterDataAsync(character.UUID, "Colonies", updatedJson);
+                    await context.SaveBlueprintsIfModifiedAsync();
 
                     _logger.LogDebug(
-                        "Processed character {Name} ({UUID}) — timers advanced",
+                        "Processed character {Name} ({UUID}) — timers advanced via Colony.ProcessColony()",
                         character.Name,
                         character.UUID);
 
@@ -160,7 +203,7 @@ public class ServerBackgroundProcessor : BackgroundService
                     await _eventDispatcher.DispatchEvent(new ServerEvent
                     {
                         EventType = ServerEventType.TimerTick,
-                        EntityType = "colonies",
+                        EntityType = "Colonies",
                         EntityUUID = character.UUID,
                         Timestamp = DateTime.UtcNow,
                         OwnerCharacterUUID = character.UUID,

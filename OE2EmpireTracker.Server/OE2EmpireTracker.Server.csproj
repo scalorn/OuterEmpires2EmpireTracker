@@ -20,4 +20,8 @@
     <PackageReference Include="Npgsql" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\OE2EmpireTracker.Common\OE2EmpireTracker.Common.csproj" />
+  </ItemGroup>
+
 </Project>

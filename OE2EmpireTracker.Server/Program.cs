@@ -83,7 +83,6 @@ builder.Services.AddSingleton<WebSocketHub>();
 builder.Services.AddSingleton<EventDispatcher>();
 
 // Register background processor as hosted service
-builder.Services.AddSingleton<ServerColonyProcessor>();
 builder.Services.AddSingleton<ServerBackgroundProcessor>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<ServerBackgroundProcessor>());
 
