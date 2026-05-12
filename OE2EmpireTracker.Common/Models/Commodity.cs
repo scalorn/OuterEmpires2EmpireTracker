@@ -1,22 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Drawing;
 using System.Linq;
-using System.Reflection;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Amazon.Auth.AccessControlPolicy;
-using Amazon.Runtime.Documents;
 using Newtonsoft.Json;
 using NLog;
-using Sgml;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using static OE2EmpireTracker.Models.Resource;
 
 namespace OE2EmpireTracker.Models

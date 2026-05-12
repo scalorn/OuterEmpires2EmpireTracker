@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Models
 {
@@ -24,6 +17,12 @@ namespace OE2EmpireTracker.Models
         public Item()
         {
         }
+
+        /// <summary>
+        /// Optional display name resolver for items that reference other entities.
+        /// Set by the application at startup. Returns display name for a given item type and UUID, or null.
+        /// </summary>
+        public static Func<ItemType.ItemTypeEnum, string, string> DisplayNameResolver { get; set; }
 
         [JsonIgnore]
         public virtual string ExtendedName
@@ -50,45 +49,19 @@ namespace OE2EmpireTracker.Models
 
                 if (ItemType == Models.ItemType.ItemTypeEnum.Survey)
                 {
-                    Survey survey = EmpireContext.PlayerContext?.FindSurvey(BaseItemTypeID);
-                    if (survey != null)
+                    var resolvedName = DisplayNameResolver?.Invoke(ItemType, BaseItemTypeID);
+                    if (resolvedName != null)
                     {
-                        extendedName = $"{survey.PlanetName} ({survey.SurveyID})";
-                        if (!string.IsNullOrEmpty(survey.NickName))
-                        {
-                            extendedName += $" [{survey.NickName}]";
-                        }
+                        extendedName = resolvedName;
                     }
                 }
 
                 if (ItemType == Models.ItemType.ItemTypeEnum.Blueprint)
                 {
-                    var blueprint = EmpireContext.PlayerContext?.FindBlueprint(BaseItemTypeID);
-                    if (blueprint != null)
+                    var resolvedName = DisplayNameResolver?.Invoke(ItemType, BaseItemTypeID);
+                    if (resolvedName != null)
                     {
-                        extendedName = string.Empty;
-                        if (blueprint.Class > 0)
-                        {
-                            extendedName += $"C{blueprint.Class} ";
-                        }
-
-                        if (blueprint.Evolution > 0)
-                        {
-                            extendedName += $"(Ev{blueprint.Evolution}) ";
-                        }
-
-                        extendedName += blueprint.Name + " ";
-                        if (!string.IsNullOrEmpty(blueprint.TechLevel))
-                        {
-                            extendedName += $"({blueprint.TechLevel}) ";
-                        }
-
-                        if (!string.IsNullOrEmpty(blueprint.NickName))
-                        {
-                            extendedName += $"[{blueprint.NickName}] ";
-                        }
-
-                        extendedName = extendedName.Trim();
+                        extendedName = resolvedName;
                     }
                 }
 

@@ -15,6 +15,7 @@ using Amazon;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
 using OE2EmpireTracker.Services.Migration;
@@ -79,6 +80,10 @@ namespace OE2EmpireTracker.Services
             InitResearchTimes(baselineRoot);
             InitGlobalBlueprints(baselineRoot);
 
+            // Wire up static dependencies for Common-portable models
+            Constants.GameConstants.SetGameConfig(GameConstants);
+            WireDisplayNameResolver();
+
             // Run migrations same as private constructor
             int prevBaselineVersion = DataVersion;
             int prevPlayerVersion = PlayerContext.DataVersion;
@@ -122,6 +127,10 @@ namespace OE2EmpireTracker.Services
             InitRefiningRecipes(baselineRoot);
             InitResearchTimes(baselineRoot);
             InitGlobalBlueprints(baselineRoot);
+
+            // Wire up static dependencies for Common-portable models
+            Constants.GameConstants.SetGameConfig(GameConstants);
+            WireDisplayNameResolver();
 
             // Run migrations after both contexts are loaded
             int prevBaselineVersion = DataVersion;
@@ -692,6 +701,64 @@ namespace OE2EmpireTracker.Services
 
             _globalBlueprintCache.TryGetValue(uuid, out Blueprint bp2);
             return bp2;
+        }
+
+        /// <summary>
+        /// Wires up Item.DisplayNameResolver so Item.ExtendedName can resolve
+        /// Survey and Blueprint display names without a direct singleton reference.
+        /// </summary>
+        private static void WireDisplayNameResolver()
+        {
+            Item.DisplayNameResolver = (itemType, uuid) =>
+            {
+                if (itemType == ItemType.ItemTypeEnum.Survey)
+                {
+                    var survey = PlayerContext?.FindSurvey(uuid);
+                    if (survey != null)
+                    {
+                        string name = $"{survey.PlanetName} ({survey.SurveyID})";
+                        if (!string.IsNullOrEmpty(survey.NickName))
+                        {
+                            name += $" [{survey.NickName}]";
+                        }
+
+                        return name;
+                    }
+                }
+
+                if (itemType == ItemType.ItemTypeEnum.Blueprint)
+                {
+                    var blueprint = PlayerContext?.FindBlueprint(uuid);
+                    if (blueprint != null)
+                    {
+                        string name = string.Empty;
+                        if (blueprint.Class > 0)
+                        {
+                            name += $"C{blueprint.Class} ";
+                        }
+
+                        if (blueprint.Evolution > 0)
+                        {
+                            name += $"(Ev{blueprint.Evolution}) ";
+                        }
+
+                        name += blueprint.Name + " ";
+                        if (!string.IsNullOrEmpty(blueprint.TechLevel))
+                        {
+                            name += $"({blueprint.TechLevel}) ";
+                        }
+
+                        if (!string.IsNullOrEmpty(blueprint.NickName))
+                        {
+                            name += $"[{blueprint.NickName}] ";
+                        }
+
+                        return name.Trim();
+                    }
+                }
+
+                return null;
+            };
         }
     }
 

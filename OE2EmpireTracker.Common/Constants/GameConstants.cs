@@ -1,4 +1,4 @@
-using OE2EmpireTracker.Services;
+using OE2EmpireTracker.Interfaces;
 
 namespace OE2EmpireTracker.Constants
 {
@@ -132,33 +132,43 @@ namespace OE2EmpireTracker.Constants
         /// <summary>Base structure build time in seconds (1 day).</summary>
         public const long BaseBuildTimeSeconds = 86400L;
 
+        private static IGameConfig _gameConfig;
+
         // --- Refining ---
 
         /// <summary>Base refining rate per cycle (units consumed from source).</summary>
         public static int RefiningBaseRate =>
-            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.RefiningBaseRate ?? 25;
+            _gameConfig?.RefiningBaseRate ?? 25;
 
         // --- Workers ---
 
         /// <summary>Cargo volume per worker detail item.</summary>
         public static decimal WorkerVolume =>
-            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.WorkerVolume ?? 50m;
+            _gameConfig?.WorkerVolume ?? 50m;
 
         // --- Commodity Manufacturing ---
 
         /// <summary>Number of commodities produced per cycle.</summary>
         public static int CommoditiesPerCycle =>
-            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.CommoditiesPerCycle ?? 10;
+            _gameConfig?.CommoditiesPerCycle ?? 10;
 
         /// <summary>Commodity manufacturing cycle time in seconds (10 minutes).</summary>
         public static long CommodityCycleSeconds =>
-            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.CommodityCycleSeconds ?? 600;
+            _gameConfig?.CommodityCycleSeconds ?? 600;
 
         // --- Structures ---
 
         /// <summary>Maximum structures per colony (game cap).</summary>
         public static int StructureCap =>
-            EmpireContext.GetInstanceIfLoaded()?.GameConstants?.StructureCap ?? 65;
+            _gameConfig?.StructureCap ?? 65;
+
+        /// <summary>
+        /// Sets the game config provider. Called once at startup by EmpireContext.
+        /// </summary>
+        public static void SetGameConfig(IGameConfig config)
+        {
+            _gameConfig = config;
+        }
 
         /// <summary>
         /// Computes the refining output rate for a given purity and base rate.
