@@ -84,6 +84,25 @@ builder.WebHost.ConfigureKestrel((context, options) =>
 
 var app = builder.Build();
 
+// --- Startup Configuration Validation ---
+{
+    var startupLogger = app.Services.GetRequiredService<ILogger<Program>>();
+    var port = builder.Configuration.GetValue<int>("Server:Port", 5443);
+    var dataPath = builder.Configuration.GetValue<string>("Storage:DataPath", "./data");
+
+    if (port < 1 || port > 65535)
+    {
+        startupLogger.LogCritical("Invalid port {Port}. Must be between 1 and 65535.", port);
+        throw new InvalidOperationException($"Invalid port configuration: {port}");
+    }
+
+    startupLogger.LogInformation(
+        "Configuration: Port={Port}, DataPath={DataPath}, UseForwardedHeaders={UseForwardedHeaders}",
+        port,
+        dataPath,
+        useForwardedHeaders);
+}
+
 // Initialize storage on startup
 var appStorage = app.Services.GetRequiredService<IStorageBackend>();
 await appStorage.InitializeAsync();

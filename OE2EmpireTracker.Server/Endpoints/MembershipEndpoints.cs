@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints;
@@ -161,6 +162,9 @@ public static class MembershipEndpoints
         // Delete the action
         await storage.DeleteMembershipActionAsync(id);
 
+        LogMutation(httpContext, "AcceptedJoinRequest", "Membership", $"{uuid}/{request.CharacterUUID}");
+        await DispatchMembershipEvent(httpContext, uuid, request.CharacterUUID);
+
         return Results.Ok(character);
     }
 
@@ -299,6 +303,9 @@ public static class MembershipEndpoints
         // Delete the action
         await storage.DeleteMembershipActionAsync(id);
 
+        LogMutation(httpContext, "AcceptedInvitation", "Membership", $"{uuid}/{invitation.CharacterUUID}");
+        await DispatchMembershipEvent(httpContext, uuid, invitation.CharacterUUID);
+
         return Results.Ok(character);
     }
 
@@ -334,6 +341,9 @@ public static class MembershipEndpoints
         character.Metadata.LastModifiedUtc = DateTime.UtcNow;
         await storage.UpsertCharacterAsync(character);
 
+        LogMutation(httpContext, "LeftFaction", "Membership", $"{uuid}");
+        await DispatchEntityEvent(httpContext, ServerEventType.MembershipChanged, "Character", uuid);
+
         return Results.NoContent();
     }
 
@@ -353,6 +363,63 @@ public static class MembershipEndpoints
 
         var callerCharUUID = httpContext.User.FindFirstValue("CharacterUUID");
         return callerCharUUID != null && faction.LeaderCharacterUUIDs.Contains(callerCharUUID);
+    }
+
+    private static void LogMutation(HttpContext httpContext, string action, string entityType, string uuid)
+    {
+        var tokenId = httpContext.User.FindFirstValue("TokenId") ?? "unknown";
+        var remoteIp = httpContext.Connection.RemoteIpAddress;
+        var logger = httpContext.RequestServices.GetRequiredService<ILoggerFactory>()
+            .CreateLogger("MembershipEndpoints");
+
+        logger.LogInformation(
+            "Mutation: {Action} {EntityType}/{UUID} by token {TokenId} from {IP}",
+            action,
+            entityType,
+            uuid,
+            tokenId,
+            remoteIp);
+    }
+
+    private static async Task DispatchMembershipEvent(
+        HttpContext httpContext,
+        string factionUuid,
+        string characterUuid)
+    {
+        var dispatcher = httpContext.RequestServices.GetRequiredService<EventDispatcher>();
+        var evt = new ServerEvent
+        {
+            EventType = ServerEventType.MembershipChanged,
+            EntityType = "Faction",
+            EntityUUID = factionUuid,
+        };
+
+        // Notify the faction members
+        await dispatcher.DispatchToFaction(factionUuid, evt);
+
+        // Notify the character who joined
+        await dispatcher.DispatchEvent(new ServerEvent
+        {
+            EventType = ServerEventType.MembershipChanged,
+            EntityType = "Character",
+            EntityUUID = characterUuid,
+            OwnerCharacterUUID = characterUuid,
+        });
+    }
+
+    private static async Task DispatchEntityEvent(
+        HttpContext httpContext,
+        ServerEventType eventType,
+        string entityType,
+        string entityUuid)
+    {
+        var dispatcher = httpContext.RequestServices.GetRequiredService<EventDispatcher>();
+        await dispatcher.DispatchEvent(new ServerEvent
+        {
+            EventType = eventType,
+            EntityType = entityType,
+            EntityUUID = entityUuid,
+        });
     }
 
     // --- Request DTOs ---

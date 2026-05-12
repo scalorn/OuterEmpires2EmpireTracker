@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json;
+using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints;
@@ -99,6 +100,9 @@ public static class DataEndpoints
 
         await storage.UpsertCharacterEntityAsync(uuid, dataType, entityUuid, body);
 
+        LogMutation(httpContext, "Created", dataType, entityUuid);
+        await DispatchDataEvent(httpContext, ServerEventType.Created, dataType, entityUuid, uuid);
+
         return Results.Created(
             $"/api/v1/characters/{uuid}/data/{dataType}/{entityUuid}",
             JsonDocument.Parse(body).RootElement);
@@ -155,6 +159,9 @@ public static class DataEndpoints
 
         await storage.UpsertCharacterEntityAsync(uuid, dataType, entityUuid, body);
 
+        LogMutation(httpContext, "Updated", dataType, entityUuid);
+        await DispatchDataEvent(httpContext, ServerEventType.Updated, dataType, entityUuid, uuid);
+
         return Results.Ok(JsonDocument.Parse(body).RootElement);
     }
 
@@ -171,6 +178,9 @@ public static class DataEndpoints
         }
 
         await storage.DeleteCharacterEntityAsync(uuid, dataType, entityUuid);
+
+        LogMutation(httpContext, "Deleted", dataType, entityUuid);
+        await DispatchDataEvent(httpContext, ServerEventType.Deleted, dataType, entityUuid, uuid);
 
         return Results.NoContent();
     }
@@ -222,6 +232,9 @@ public static class DataEndpoints
 
         await storage.PutAllCharacterDataAsync(uuid, body);
 
+        LogMutation(httpContext, "BulkUpdated", "AllData", uuid);
+        await DispatchDataEvent(httpContext, ServerEventType.Updated, "AllData", uuid, uuid);
+
         return Results.Ok(JsonDocument.Parse(body).RootElement);
     }
 
@@ -267,6 +280,8 @@ public static class DataEndpoints
         }
 
         await storage.UpsertGlobalDataAsync(dataType, body);
+
+        LogMutation(httpContext, "Updated", $"Global/{dataType}", dataType);
 
         return Results.Ok(JsonDocument.Parse(body).RootElement);
     }
@@ -331,5 +346,38 @@ public static class DataEndpoints
     {
         using var reader = new StreamReader(httpContext.Request.Body);
         return await reader.ReadToEndAsync();
+    }
+
+    private static void LogMutation(HttpContext httpContext, string action, string entityType, string uuid)
+    {
+        var tokenId = httpContext.User.FindFirstValue("TokenId") ?? "unknown";
+        var remoteIp = httpContext.Connection.RemoteIpAddress;
+        var logger = httpContext.RequestServices.GetRequiredService<ILoggerFactory>()
+            .CreateLogger("DataEndpoints");
+
+        logger.LogInformation(
+            "Mutation: {Action} {EntityType}/{UUID} by token {TokenId} from {IP}",
+            action,
+            entityType,
+            uuid,
+            tokenId,
+            remoteIp);
+    }
+
+    private static async Task DispatchDataEvent(
+        HttpContext httpContext,
+        ServerEventType eventType,
+        string dataType,
+        string entityUuid,
+        string ownerCharacterUuid)
+    {
+        var dispatcher = httpContext.RequestServices.GetRequiredService<EventDispatcher>();
+        await dispatcher.DispatchEvent(new ServerEvent
+        {
+            EventType = eventType,
+            EntityType = dataType,
+            EntityUUID = entityUuid,
+            OwnerCharacterUUID = ownerCharacterUuid,
+        });
     }
 }

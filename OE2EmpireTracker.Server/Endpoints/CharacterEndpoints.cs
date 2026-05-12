@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints;
@@ -50,6 +51,9 @@ public static class CharacterEndpoints
         };
 
         await storage.UpsertCharacterAsync(character);
+
+        LogMutation(httpContext, "Created", "Character", uuid);
+        await DispatchEntityEvent(httpContext, ServerEventType.Created, "Character", uuid);
 
         return Results.Created($"/api/v1/characters/{uuid}", character);
     }
@@ -121,6 +125,9 @@ public static class CharacterEndpoints
         character.Metadata.LastModifiedUtc = DateTime.UtcNow;
         await storage.UpsertCharacterAsync(character);
 
+        LogMutation(httpContext, "Updated", "Character", uuid);
+        await DispatchEntityEvent(httpContext, ServerEventType.Updated, "Character", uuid);
+
         return Results.Ok(character);
     }
 
@@ -142,12 +149,46 @@ public static class CharacterEndpoints
 
         await storage.DeleteCharacterAsync(uuid);
 
+        LogMutation(httpContext, "Deleted", "Character", uuid);
+        await DispatchEntityEvent(httpContext, ServerEventType.Deleted, "Character", uuid);
+
         return Results.NoContent();
     }
 
     private static bool IsOwner(HttpContext httpContext)
     {
         return httpContext.User.IsInRole(TokenRole.Owner.ToString());
+    }
+
+    private static void LogMutation(HttpContext httpContext, string action, string entityType, string uuid)
+    {
+        var tokenId = httpContext.User.FindFirstValue("TokenId") ?? "unknown";
+        var remoteIp = httpContext.Connection.RemoteIpAddress;
+        var logger = httpContext.RequestServices.GetRequiredService<ILoggerFactory>()
+            .CreateLogger("CharacterEndpoints");
+
+        logger.LogInformation(
+            "Mutation: {Action} {EntityType}/{UUID} by token {TokenId} from {IP}",
+            action,
+            entityType,
+            uuid,
+            tokenId,
+            remoteIp);
+    }
+
+    private static async Task DispatchEntityEvent(
+        HttpContext httpContext,
+        ServerEventType eventType,
+        string entityType,
+        string entityUuid)
+    {
+        var dispatcher = httpContext.RequestServices.GetRequiredService<EventDispatcher>();
+        await dispatcher.DispatchEvent(new ServerEvent
+        {
+            EventType = eventType,
+            EntityType = entityType,
+            EntityUUID = entityUuid,
+        });
     }
 
     // --- Request DTOs ---

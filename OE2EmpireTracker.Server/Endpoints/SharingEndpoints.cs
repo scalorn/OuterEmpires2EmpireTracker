@@ -98,6 +98,12 @@ public static class SharingEndpoints
         HttpContext httpContext,
         IStorageBackend storage)
     {
+        // TODO: Cross-reference filtering (spec requirement): When serving shared data that
+        // contains cross-references to other entities, the server should filter out any
+        // referenced entities that the viewer does not have access to. This requires parsing
+        // the domain model JSON to identify UUID references and checking access for each.
+        // Not yet implemented — shared data is returned as-is without cross-reference filtering.
+
         // Caller must be in the faction
         var callerCharUUID = httpContext.User.FindFirstValue("CharacterUUID");
         if (string.IsNullOrEmpty(callerCharUUID) && !IsOwner(httpContext))
@@ -167,6 +173,10 @@ public static class SharingEndpoints
         HttpContext httpContext,
         IStorageBackend storage)
     {
+        // TODO: Cross-reference filtering — same limitation as GetFactionSharedData.
+        // Shared data is returned without filtering cross-referenced entity UUIDs
+        // that the viewer may not have access to.
+
         // Caller must be the target character (or Owner)
         if (!IsOwner(httpContext))
         {

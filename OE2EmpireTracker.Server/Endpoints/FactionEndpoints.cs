@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints;
@@ -70,6 +71,9 @@ public static class FactionEndpoints
 
         await storage.UpsertFactionAsync(faction);
 
+        LogMutation(httpContext, "Created", "Faction", uuid);
+        await DispatchEntityEvent(httpContext, ServerEventType.Created, "Faction", uuid);
+
         return Results.Created($"/api/v1/factions/{uuid}", faction);
     }
 
@@ -120,6 +124,9 @@ public static class FactionEndpoints
         faction.Metadata.LastModifiedUtc = DateTime.UtcNow;
         await storage.UpsertFactionAsync(faction);
 
+        LogMutation(httpContext, "Updated", "Faction", uuid);
+        await DispatchEntityEvent(httpContext, ServerEventType.Updated, "Faction", uuid);
+
         return Results.Ok(faction);
     }
 
@@ -149,6 +156,9 @@ public static class FactionEndpoints
         }
 
         await storage.DeleteFactionAsync(uuid);
+
+        LogMutation(httpContext, "Deleted", "Faction", uuid);
+        await DispatchEntityEvent(httpContext, ServerEventType.Deleted, "Faction", uuid);
 
         return Results.NoContent();
     }
@@ -191,6 +201,9 @@ public static class FactionEndpoints
             faction.LeaderCharacterUUIDs.Add(request.CharacterUUID);
             faction.Metadata.LastModifiedUtc = DateTime.UtcNow;
             await storage.UpsertFactionAsync(faction);
+
+            LogMutation(httpContext, "AddedLeader", "Faction", uuid);
+            await DispatchEntityEvent(httpContext, ServerEventType.Updated, "Faction", uuid);
         }
 
         return Results.Ok(faction.LeaderCharacterUUIDs);
@@ -224,6 +237,9 @@ public static class FactionEndpoints
         faction.Metadata.LastModifiedUtc = DateTime.UtcNow;
         await storage.UpsertFactionAsync(faction);
 
+        LogMutation(httpContext, "RemovedLeader", "Faction", uuid);
+        await DispatchEntityEvent(httpContext, ServerEventType.Updated, "Faction", uuid);
+
         return Results.Ok(faction.LeaderCharacterUUIDs);
     }
 
@@ -241,6 +257,37 @@ public static class FactionEndpoints
 
         var callerCharUUID = httpContext.User.FindFirstValue("CharacterUUID");
         return callerCharUUID != null && faction.LeaderCharacterUUIDs.Contains(callerCharUUID);
+    }
+
+    private static void LogMutation(HttpContext httpContext, string action, string entityType, string uuid)
+    {
+        var tokenId = httpContext.User.FindFirstValue("TokenId") ?? "unknown";
+        var remoteIp = httpContext.Connection.RemoteIpAddress;
+        var logger = httpContext.RequestServices.GetRequiredService<ILoggerFactory>()
+            .CreateLogger("FactionEndpoints");
+
+        logger.LogInformation(
+            "Mutation: {Action} {EntityType}/{UUID} by token {TokenId} from {IP}",
+            action,
+            entityType,
+            uuid,
+            tokenId,
+            remoteIp);
+    }
+
+    private static async Task DispatchEntityEvent(
+        HttpContext httpContext,
+        ServerEventType eventType,
+        string entityType,
+        string entityUuid)
+    {
+        var dispatcher = httpContext.RequestServices.GetRequiredService<EventDispatcher>();
+        await dispatcher.DispatchEvent(new ServerEvent
+        {
+            EventType = eventType,
+            EntityType = entityType,
+            EntityUUID = entityUuid,
+        });
     }
 
     /// <summary>Request body for faction create/update.</summary>
