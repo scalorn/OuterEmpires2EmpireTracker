@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using OE2EmpireTracker.Server.Auth;
 using OE2EmpireTracker.Server.Storage;
+using OE2EmpireTracker.Services;
 
 #pragma warning disable SA1009 // Closing parenthesis should be followed by a space (false positive with generics)
 

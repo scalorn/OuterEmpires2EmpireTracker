@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using OE2EmpireTracker.Server.Storage;
 
-using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Server.Auth;
 
 /// <summary>
