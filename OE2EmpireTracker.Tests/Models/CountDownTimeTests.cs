@@ -104,7 +104,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void TimeRemainingString_IncludesDays_WhenDaysPresent()
         {
             var cdt = new CountDownTime();
-            cdt.EndTime = DateTime.UtcNow.AddDays(2).AddHours(3);
+            cdt.EndTime = FrozenNow.AddDays(2).AddHours(3);
             Assert.That(cdt.TimeRemainingString, Does.Contain("d"));
         }
 
@@ -112,7 +112,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void TimeRemainingString_NoDaySegment_WhenLessThanOneDay()
         {
             var cdt = new CountDownTime();
-            cdt.EndTime = DateTime.UtcNow.AddHours(5);
+            cdt.EndTime = FrozenNow.AddHours(5);
             Assert.That(cdt.TimeRemainingString, Does.Not.Contain("d"));
         }
 
@@ -120,7 +120,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void TimeRemainingString_ContainsHoursMinutesSeconds()
         {
             var cdt = new CountDownTime();
-            cdt.EndTime = DateTime.UtcNow.AddHours(1).AddMinutes(30).AddSeconds(45);
+            cdt.EndTime = FrozenNow.AddHours(1).AddMinutes(30).AddSeconds(45);
             string s = cdt.TimeRemainingString;
             Assert.That(s, Does.Contain("h"));
             Assert.That(s, Does.Contain("m"));
@@ -132,7 +132,7 @@ namespace OE2EmpireTracker.Tests.Models
         {
             // 1h 0m 30s -- the 0m segment must appear because hours was shown
             var cdt = new CountDownTime();
-            cdt.EndTime = DateTime.UtcNow.AddHours(1).AddSeconds(30);
+            cdt.EndTime = FrozenNow.AddHours(1).AddSeconds(30);
             string s = cdt.TimeRemainingString;
             Assert.That(s, Does.Contain("1h"));
             Assert.That(s, Does.Contain("0m"));
@@ -144,7 +144,7 @@ namespace OE2EmpireTracker.Tests.Models
         {
             // 0h 30m 45s -- hours should not appear since it is a leading zero
             var cdt = new CountDownTime();
-            cdt.EndTime = DateTime.UtcNow.AddMinutes(30).AddSeconds(45);
+            cdt.EndTime = FrozenNow.AddMinutes(30).AddSeconds(45);
             string s = cdt.TimeRemainingString;
             Assert.That(s, Does.Not.Contain("h"));
             Assert.That(s, Does.Contain("30m"));
@@ -155,7 +155,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void TimeRemainingString_Expired_ReturnsZeroSeconds()
         {
             var cdt = new CountDownTime();
-            cdt.EndTime = DateTime.UtcNow.AddSeconds(-10); // already expired
+            cdt.EndTime = FrozenNow.AddSeconds(-10); // already expired
             Assert.That(cdt.TimeRemainingString, Is.EqualTo("0s"));
         }
 
@@ -163,7 +163,7 @@ namespace OE2EmpireTracker.Tests.Models
         public void TimeRemainingString_OnlySeconds_WhenLessThanOneMinute()
         {
             var cdt = new CountDownTime();
-            cdt.EndTime = DateTime.UtcNow.AddSeconds(30);
+            cdt.EndTime = FrozenNow.AddSeconds(30);
             string s = cdt.TimeRemainingString;
             Assert.That(s, Does.Contain("s"));
             Assert.That(s, Does.Not.Contain("m"));
@@ -245,7 +245,7 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var cdt = new CountDownTime();
             cdt.StartRepeating(60);
-            cdt.StartTime = DateTime.UtcNow.AddSeconds(-300);
+            cdt.StartTime = FrozenNow.AddSeconds(-300);
 
             Assert.That(cdt.IntervalsPassed, Is.EqualTo(5));
         }
@@ -255,7 +255,7 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var cdt = new CountDownTime();
             cdt.StartRepeating(60);
-            cdt.StartTime = DateTime.UtcNow.AddSeconds(-300);
+            cdt.StartTime = FrozenNow.AddSeconds(-300);
 
             Assert.That(cdt.IntervalsPassed, Is.EqualTo(5));
             cdt.ConsumeIntervals(2);
@@ -267,7 +267,7 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var cdt = new CountDownTime();
             cdt.StartRepeating(60);
-            cdt.StartTime = DateTime.UtcNow.AddSeconds(-90);
+            cdt.StartTime = FrozenNow.AddSeconds(-90);
 
             Assert.That(cdt.IntervalsPassed, Is.EqualTo(1));
             cdt.ConsumeIntervals(5);
