@@ -21,15 +21,24 @@ if (args.Contains("--regenerate-owner-token"))
 
     var cliBackendType = cliConfig.GetValue<string>("Storage:Backend", "JsonFile");
     IStorageBackend storage;
-    if (cliBackendType == "Sqlite")
+    switch (cliBackendType)
     {
-        var sqliteLogger = cliLoggerFactory.CreateLogger<SqliteStorageBackend>();
-        storage = new SqliteStorageBackend(cliConfig, sqliteLogger);
-    }
-    else
-    {
-        var storageLogger = cliLoggerFactory.CreateLogger<JsonFileStorageBackend>();
-        storage = new JsonFileStorageBackend(cliConfig, storageLogger);
+        case "Sqlite":
+            var sqliteLogger = cliLoggerFactory.CreateLogger<SqliteStorageBackend>();
+            storage = new SqliteStorageBackend(cliConfig, sqliteLogger);
+            break;
+        case "Postgres":
+            var pgLogger = cliLoggerFactory.CreateLogger<PostgresStorageBackend>();
+            storage = new PostgresStorageBackend(cliConfig, pgLogger);
+            break;
+        case "DynamoDB":
+            var dynamoLogger = cliLoggerFactory.CreateLogger<DynamoStorageBackend>();
+            storage = new DynamoStorageBackend(cliConfig, dynamoLogger);
+            break;
+        default:
+            var storageLogger = cliLoggerFactory.CreateLogger<JsonFileStorageBackend>();
+            storage = new JsonFileStorageBackend(cliConfig, storageLogger);
+            break;
     }
 
     await storage.InitializeAsync();
@@ -57,6 +66,12 @@ switch (backendType)
 {
     case "Sqlite":
         builder.Services.AddSingleton<IStorageBackend, SqliteStorageBackend>();
+        break;
+    case "Postgres":
+        builder.Services.AddSingleton<IStorageBackend, PostgresStorageBackend>();
+        break;
+    case "DynamoDB":
+        builder.Services.AddSingleton<IStorageBackend, DynamoStorageBackend>();
         break;
     default:
         builder.Services.AddSingleton<IStorageBackend, JsonFileStorageBackend>();

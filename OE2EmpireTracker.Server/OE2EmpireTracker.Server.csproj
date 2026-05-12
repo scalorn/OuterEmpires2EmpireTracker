@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>OE2EmpireTracker.Server</RootNamespace>
     <AssemblyName>OE2EmpireTracker.Server</AssemblyName>
+    <NoWarn>NU1903</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -13,8 +14,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.400" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Npgsql" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
