@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -166,19 +166,9 @@
     <Compile Include="Services\ColonyImportHelper.cs" />
     <Compile Include="Services\SurveyImportHelper.cs" />
     <Compile Include="Services\BlueprintReferenceCounter.cs" />
-    <Compile Include="Services\BuildPlanReferenceCounter.cs" />
     <Compile Include="Services\BlueprintImportHandler.cs" />
     <Compile Include="Services\ColonyReferenceCounter.cs" />
     <Compile Include="Services\SurveyReferenceCounter.cs" />
-    <Compile Include="Services\DeliveryRouteReferenceCounter.cs" />
-    <Compile Include="Services\FactionReferenceCounter.cs" />
-    <Compile Include="Services\ShipTemplateReferenceCounter.cs" />
-    <Compile Include="Services\ShipReferenceCounter.cs" />
-    <Compile Include="Services\StationReferenceCounter.cs" />
-    <Compile Include="Services\AsteroidReferenceCounter.cs" />
-    <Compile Include="Services\MarketListingReferenceCounter.cs" />
-    <Compile Include="Services\DeliveryPlanReferenceCounter.cs" />
-    <Compile Include="Services\StockPlanReferenceCounter.cs" />
     <Compile Include="Forms\Market\FormMarket.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -222,29 +212,17 @@
       <DependentUpon>FormShipInstance.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\YieldDistributionService.cs" />
-    <Compile Include="Services\EvolutionChainService.cs" />
     <Compile Include="Services\HelpTopicRegistry.cs" />
-    <Compile Include="Services\HelpRenderer.cs" />
-    <Compile Include="Services\SurveyDateTimeParser.cs" />
     <Compile Include="Services\BackgroundProcessor.cs" />
     <Compile Include="Services\SupplyChainService.cs" />
     <Compile Include="Services\ContactsService.cs" />
     <Compile Include="Services\AsteroidService.cs" />
     <Compile Include="Services\StockTargetService.cs" />
-    <Compile Include="Models\DistributionPoint.cs" />
-    <Compile Include="Models\YieldDistributionResult.cs" />
-    <Compile Include="Models\BaselineGameConstants.cs" />
-    <Compile Include="Models\BlueprintType.cs" />
     <Compile Include="Services\BuildPlanService.cs" />
     <Compile Include="Services\BuildPlanExecutionService.cs" />
-    <Compile Include="Services\ShipBuildService.cs" />
-    <Compile Include="Services\CargoVolumeService.cs" />
     <Compile Include="Services\ResourceCheckService.cs" />
     <Compile Include="Services\DeliveryGenerationService.cs" />
-    <Compile Include="Services\QueueCalculator.cs" />
     <Compile Include="Services\AutoAssignService.cs" />
-    <Compile Include="Services\MarketService.cs" />
-    <Compile Include="Models\ProfitLossSummary.cs" />
     <Compile Include="Services\ColonyActivityCollector.cs" />
     <Compile Include="Services\MarketBlueprintImporter.cs" />
     <Compile Include="Services\CrateImporter.cs" />
@@ -264,23 +242,12 @@
     <Compile Include="Services\MarketListingService.cs" />
     <Compile Include="Services\DeliveryPlanService.cs" />
     <Compile Include="Services\CollectionSortHelper.cs" />
-    <Compile Include="Services\TabWarningService.cs" />
     <Compile Include="Services\ColonyInactivityCollector.cs" />
     <Compile Include="Services\ColonyAdminReportBuilder.cs" />
     <Compile Include="Models\Colony.cs" />
-    <Compile Include="Models\ReadOnlyResource.cs" />
-    <Compile Include="Models\ResourcePurityCombo.cs" />
-    <Compile Include="Constants\BlueprintPropertyValidation.cs" />
-    <Compile Include="Constants\RefiningRecipes.cs" />
-    <Compile Include="Services\BuildTimeCalculator.cs" />
-    <Compile Include="Models\DeliveryPlanUpdateRequest.cs" />
-    <Compile Include="Models\DeliveryRouteCreateRequest.cs" />
-    <Compile Include="Models\DeliveryRouteUpdateRequest.cs" />
-    <Compile Include="Models\ReadOnlySupplyChain.cs" />
-    <Compile Include="Models\SupplyChainCreateRequest.cs" />
+    <Compile Include="Models\ReadOnlyColony.cs" />
+    <Compile Include="Models\IColonyStructureWorkers.cs" />
     <Compile Include="Services\ColonyBuildEligibility.cs" />
-    <Compile Include="Models\ColonyStructure.cs" />
-    <Compile Include="Models\CommodityRequested.cs" />
     <Compile Include="Services\ColonyStatusCalculator.cs" />
     <Compile Include="Services\BuildOrderOptimizer.cs" />
     <Compile Include="Services\ColonyBootstrap.cs" />
@@ -290,34 +257,27 @@
     <Compile Include="Parsers\MinerSetupHelper.cs" />
     <Compile Include="Parsers\RefinerySetupHelper.cs" />
     <Compile Include="Parsers\PlayerProfileParser.cs" />
-    <Compile Include="Models\DeliveryRoute.cs" />
-    <Compile Include="Models\DeliveryPlan.cs" />
-    <Compile Include="Models\PricingPlan.cs" />
     <Compile Include="Services\DeliveryFulfillment.cs" />
-    <Compile Include="Services\PriceCalculator.cs" />
-    <Compile Include="Models\ColonyStructureStatus.cs" />
     <Compile Include="Models\IColonyStructureWorkers.cs" />
+    <Compile Include="Services\HelpRenderer.cs" />
+    <Compile Include="Services\PreferencesStore.cs" />
+    <Compile Include="Services\TabWarningService.cs" />
+    <Compile Include="Services\EvolutionChainService.cs" />
+    <Compile Include="Services\QueueCalculator.cs" />
+    <Compile Include="Models\ColonyUpdateRequest.cs" />
     <Compile Include="Services\PlayerContext.cs" />
     <Compile Include="Persistence\SafeFileWriter.cs" />
     <Compile Include="Persistence\BoundsValidator.cs" />
-    <Compile Include="Services\PreferencesStore.cs" />
-    <Compile Include="Models\UIPreferences.cs" />
     <Compile Include="Persistence\WindowStateHelper.cs" />
-    <Compile Include="Models\TechLevel.cs" />
     <Compile Include="Services\EmpireContext.cs" />
     <Compile Include="Constants\ChartColors.cs" />
-    <Compile Include="Constants\SlotTypes.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
     <Compile Include="Controls\ListViewItemComparer.cs" />
     <Compile Include="Controls\LayoutHelper.cs" />
     <Compile Include="Controls\RtfBuilder.cs" />
     <Compile Include="Controls\ProgrammaticUpdateGuard.cs" />
-    <Compile Include="Models\CountDownTime.cs" />
-    <Compile Include="Models\PlayerProfile.cs" />
-    <Compile Include="Models\PlayerSkill.cs" />
     <Compile Include="Parsers\CountdownFormatParser.cs" />
     <Compile Include="Parsers\SurveyParser.cs" />
-    <Compile Include="Models\Survey.cs" />
     <Compile Include="Controls\DataEntryGridView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -327,10 +287,6 @@
     <Compile Include="Controls\ValidatedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Models\LockTracking.cs" />
-    <Compile Include="Models\StructureStatusDelta.cs" />
-    <Compile Include="Models\ReferenceReport.cs" />
-    <Compile Include="Models\WorkerDetail.cs" />
     <Compile Include="ViewModels\ColonyStructureViewModel.cs" />
     <Compile Include="ViewModels\DeliveryRouteViewModel.cs" />
     <Compile Include="ViewModels\BuildPlanViewModel.cs" />
@@ -350,81 +306,7 @@
     <Compile Include="ViewModels\PlayerProfileViewModel.cs" />
     <Compile Include="ViewModels\SurveyViewModel.cs" />
     <Compile Include="ViewModels\PricingPlanViewModel.cs" />
-    <Compile Include="Models\Blueprint.cs" />
-    <Compile Include="Models\PropertyBag.cs" />
-    <Compile Include="Models\BuildItem.cs" />
-    <Compile Include="Models\BuildPlan.cs" />
-    <Compile Include="Models\DestinationType.cs" />
-    <Compile Include="Models\MarketListing.cs" />
-    <Compile Include="Models\MarketListingCreateRequest.cs" />
-    <Compile Include="Models\MarketListingUpdateRequest.cs" />
-    <Compile Include="Models\MarketTransaction.cs" />
-    <Compile Include="Models\Ship.cs" />
-    <Compile Include="Models\ShipStats.cs" />
-    <Compile Include="Models\ShipTemplate.cs" />
-    <Compile Include="Models\Station.cs" />
-    <Compile Include="Models\StationStats.cs" />
-    <Compile Include="Models\StockPlan.cs" />
-    <Compile Include="Models\StockTarget.cs" />
-    <Compile Include="Models\SupplyChain.cs" />
-    <Compile Include="Models\SurveyType.cs" />
-    <Compile Include="Models\WarehouseOverflowRule.cs" />
-    <Compile Include="Models\ReadOnlyBlueprint.cs" />
-    <Compile Include="Models\ReadOnlyBuildItem.cs" />
-    <Compile Include="Models\ReadOnlyBuildPlan.cs" />
     <Compile Include="Models\ReadOnlyColony.cs" />
-    <Compile Include="Models\ReadOnlyColonyStructure.cs" />
-    <Compile Include="Models\ReadOnlyColonyStructureStatus.cs" />
-    <Compile Include="Models\ReadOnlyCommodity.cs" />
-    <Compile Include="Models\ReadOnlyCommodityRequested.cs" />
-    <Compile Include="Models\ReadOnlyCountDownTime.cs" />
-    <Compile Include="Models\ReadOnlyDeliveryItem.cs" />
-    <Compile Include="Models\ReadOnlyDeliveryPlan.cs" />
-    <Compile Include="Models\ReadOnlyDeliveryPlanStop.cs" />
-    <Compile Include="Models\ReadOnlyDeliveryRoute.cs" />
-    <Compile Include="Models\ReadOnlyItem.cs" />
-    <Compile Include="Models\ReadOnlyItemBag.cs" />
-    <Compile Include="Models\ReadOnlyLockTracking.cs" />
-    <Compile Include="Models\ReadOnlyMarketListing.cs" />
-    <Compile Include="Models\ReadOnlyMarketTransaction.cs" />
-    <Compile Include="Models\ReadOnlyPlayerProfile.cs" />
-    <Compile Include="Models\ReadOnlyPlayerSkill.cs" />
-    <Compile Include="Models\ReadOnlyPricingPlan.cs" />
-    <Compile Include="Models\ReadOnlyPropertyBag.cs" />
-    <Compile Include="Models\ReadOnlyRouteStop.cs" />
-    <Compile Include="Models\ReadOnlyShip.cs" />
-    <Compile Include="Models\ReadOnlyShipComponentSlot.cs" />
-    <Compile Include="Models\ReadOnlyShipTemplate.cs" />
-    <Compile Include="Models\ReadOnlyStation.cs" />
-    <Compile Include="Models\ReadOnlyStockPlan.cs" />
-    <Compile Include="Models\ReadOnlyStockTarget.cs" />
-    <Compile Include="Models\ReadOnlySupplyChainStage.cs" />
-    <Compile Include="Models\ReadOnlySurvey.cs" />
-    <Compile Include="Models\ReadOnlySurveyResource.cs" />
-    <Compile Include="Models\ReadOnlyWarehouseOverflowRule.cs" />
-    <Compile Include="Models\BlueprintUpdateRequest.cs" />
-    <Compile Include="Models\PricingPlanUpdateRequest.cs" />
-    <Compile Include="Models\PricingPlanCreateRequest.cs" />
-    <Compile Include="Models\BlueprintCreateRequest.cs" />
-    <Compile Include="Models\SurveyUpdateRequest.cs" />
-    <Compile Include="Models\SurveyCreateRequest.cs" />
-    <Compile Include="Models\ColonyUpdateRequest.cs" />
-    <Compile Include="Models\ColonyCreateRequest.cs" />
-    <Compile Include="Models\PlayerProfileUpdateRequest.cs" />
-    <Compile Include="Models\PlayerProfileCreateRequest.cs" />
-    <Compile Include="Models\ShipTemplateUpdateRequest.cs" />
-    <Compile Include="Models\ShipTemplateCreateRequest.cs" />
-    <Compile Include="Models\ShipUpdateRequest.cs" />
-    <Compile Include="Models\ShipCreateRequest.cs" />
-    <Compile Include="Models\StationUpdateRequest.cs" />
-    <Compile Include="Models\StationCreateRequest.cs" />
-    <Compile Include="Models\BuildPlanUpdateRequest.cs" />
-    <Compile Include="Models\BuildPlanCreateRequest.cs" />
-    <Compile Include="Models\StockPlanUpdateRequest.cs" />
-    <Compile Include="Models\StockPlanCreateRequest.cs" />
-    <Compile Include="Models\SupplyChainUpdateRequest.cs" />
-    <Compile Include="Models\StopDestinationInfo.cs" />
-    <Compile Include="Models\DeliveryItemInfo.cs" />
     <Compile Include="Parsers\BlueprintScanner.cs" />
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>

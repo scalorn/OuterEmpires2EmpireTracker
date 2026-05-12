@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Models
 {
@@ -43,7 +42,7 @@ namespace OE2EmpireTracker.Models
             var pickedUp = new Dictionary<string, int>();
             var needed = new Dictionary<string, DeliveryItem>();
 
-            foreach (var stop in CollectionSortHelper.OrderPlanStops(Stops))
+            foreach (var stop in (Stops ?? Enumerable.Empty<DeliveryPlanStop>()).OrderBy(s => s.Sequence))
             {
                 foreach (var dropItem in stop.DropOff)
                 {

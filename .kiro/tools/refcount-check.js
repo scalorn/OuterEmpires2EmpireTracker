@@ -16,7 +16,10 @@ const fs = require('fs');
 const path = require('path');
 
 const SPEC_FILE = path.join('spec', 'design', 'reference-counting.md');
-const SERVICES_DIR = path.join('OE2EmpireTracker', 'Services');
+const SERVICES_DIRS = [
+    path.join('OE2EmpireTracker', 'Services'),
+    path.join('OE2EmpireTracker.Common', 'Services')
+];
 
 // Parse the reference graph table from the spec
 function parseReferenceTable(content) {
@@ -123,9 +126,17 @@ function getSearchPatterns(source) {
 }
 
 for (const entry of entries) {
-    const counterFile = path.join(SERVICES_DIR, entry.counterClass + '.cs');
+    // Search for the counter file in all service directories
+    let counterFile = null;
+    for (const dir of SERVICES_DIRS) {
+        const candidate = path.join(dir, entry.counterClass + '.cs');
+        if (fs.existsSync(candidate)) {
+            counterFile = candidate;
+            break;
+        }
+    }
 
-    if (!fs.existsSync(counterFile)) {
+    if (!counterFile) {
         findings.push('MISSING FILE: ' + entry.counterClass + '.cs not found in Services/');
         continue;
     }
