@@ -152,23 +152,23 @@
 
 ## Phase 13: Sync and Offline Behavior
 
-- [~] 13.1 On startup (if connected): call SyncManager.SyncOnStartupAsync() to pull full sync from server
+- [x] 13.1 On startup (if connected): call SyncManager.SyncOnStartupAsync() to pull full sync from server
   - _Satisfies: Req 12 ("client SHALL use this endpoint on startup")_
   - _Satisfies: Req 15 Sync/Offline ("tracker client SHALL sync all data with service on startup")_
-- [~] 13.2 Write-through: when data changes locally and mode is Server Only or DualWrite, push to server immediately via SyncManager
+- [x] 13.2 Write-through: when data changes locally and mode is Server Only or DualWrite, push to server immediately via SyncManager
   - _Satisfies: Req 15 Sync/Offline ("write changes to service immediately when connected")_
   - _Satisfies: Design §9.3 ("On data change if connected: push to server immediately")_
-- [~] 13.3 Offline queuing: when disconnected, queue mutations via OfflineQueue, persist to disk
+- [x] 13.3 Offline queuing: when disconnected, queue mutations via OfflineQueue, persist to disk
   - _Satisfies: Req 15 Sync/Offline ("queue changes locally and sync on reconnection")_
   - _Satisfies: Design §9.4 (OfflineQueue persisted to offline-queue.json)_
-- [~] 13.4 On reconnection: flush offline queue, detect divergence if server also changed
+- [x] 13.4 On reconnection: flush offline queue, detect divergence if server also changed
   - _Satisfies: Req 15 Sync/Offline ("on reconnection after offline changes, IF server data also changed, prompt user")_
   - _Satisfies: Design §9.3 (HandleReconnectionAsync)_
-- [~] 13.5 Divergence resolution UI: show what diverged, let user choose upload-local or download-server
+- [x] 13.5 Divergence resolution UI: show what diverged, let user choose upload-local or download-server
   - _Satisfies: Req 15 Sync/Offline ("client SHALL clearly show what has diverged before user makes choice")_
-- [~] 13.6 Fallback to local data when server unreachable
+- [x] 13.6 Fallback to local data when server unreachable
   - _Satisfies: Req 11 ("fall back to local faction/character data if service is unreachable")_
-- [~] 13.7 Disable local BackgroundProcessor when server-side processing is active for the character
+- [x] 13.7 Disable local BackgroundProcessor when server-side processing is active for the character
   - _Satisfies: Req 17 ("client SHALL NOT run its own background processor to avoid double-processing")_
   - _Satisfies: Design §8.2 ("Client disables its local BackgroundProcessor")_
 

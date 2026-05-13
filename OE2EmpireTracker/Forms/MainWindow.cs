@@ -88,6 +88,9 @@ namespace OE2EmpireTracker
             UpdateConnectionStatusIndicator();
             SubscribeToConnectionStatus();
 
+            // Perform initial sync with server (async, fire-and-forget on startup)
+            StartupSyncAsync().ConfigureAwait(false);
+
             timerNextProcess.Tick += OnTimerNextProcessTick;
             int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.CountdownRefreshRateSeconds * 1000);
             timerNextProcess.Interval = Math.Max(intervalMs, 1000);
@@ -331,11 +334,31 @@ namespace OE2EmpireTracker
         {
             if (InvokeRequired)
             {
-                Invoke((Action)(() => UpdateConnectionStatusIndicator()));
+                Invoke((Action)(() => HandleConnectionStatusChange(e)));
             }
             else
             {
-                UpdateConnectionStatusIndicator();
+                HandleConnectionStatusChange(e);
+            }
+        }
+
+        /// <summary>
+        /// Handles connection status changes: updates UI and triggers reconnection logic.
+        /// When reconnecting, checks for divergence and disables/enables local processing.
+        /// </summary>
+        private void HandleConnectionStatusChange(Client.ConnectionStatusChangedEventArgs e)
+        {
+            UpdateConnectionStatusIndicator();
+
+            if (e.IsConnected)
+            {
+                // Reconnected — handle offline queue and divergence detection
+                HandleReconnectionAsync().ConfigureAwait(false);
+            }
+            else
+            {
+                // Disconnected — re-enable local processing if it was disabled
+                ReEnableLocalProcessing();
             }
         }
 
@@ -599,6 +622,133 @@ namespace OE2EmpireTracker
         private void ContentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FormHelp().ShowDialog(this);
+        }
+
+        // -----------------------------------------------------------------------
+        // Sync and Server Coordination Methods
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Performs initial sync with the remote server on startup.
+        /// If the server reports processing is active, disables local BackgroundProcessor.
+        /// If divergence is detected, shows the resolution dialog.
+        /// </summary>
+        private async Task StartupSyncAsync()
+        {
+            var ctx = Client.ServerContext.Instance;
+            if (ctx?.SyncManager == null)
+            {
+                return;
+            }
+
+            await ctx.SyncManager.SyncOnStartupAsync().ConfigureAwait(false);
+
+            // Check if server-side processing is active — disable local processor
+            if (ctx.SyncManager.ServerProcessingActive)
+            {
+                DisableLocalProcessing();
+            }
+        }
+
+        /// <summary>
+        /// Handles reconnection: flushes offline queue, detects divergence, and shows resolution UI.
+        /// </summary>
+        private async Task HandleReconnectionAsync()
+        {
+            var ctx = Client.ServerContext.Instance;
+            if (ctx?.SyncManager == null)
+            {
+                return;
+            }
+
+            await ctx.SyncManager.HandleReconnectionAsync().ConfigureAwait(false);
+
+            if (ctx.SyncManager.DivergenceDetected)
+            {
+                ShowDivergenceResolutionDialog(ctx.SyncManager);
+            }
+
+            // Check server processing state after reconnection
+            if (ctx.SyncManager.ServerProcessingActive)
+            {
+                DisableLocalProcessing();
+            }
+        }
+
+        /// <summary>
+        /// Shows the divergence resolution dialog and applies the user's choice.
+        /// </summary>
+        private void ShowDivergenceResolutionDialog(Client.SyncManager syncManager)
+        {
+            if (InvokeRequired)
+            {
+                Invoke((Action)(() => ShowDivergenceResolutionDialog(syncManager)));
+                return;
+            }
+
+            string message = string.Format(
+                "Server data has changed while you were offline.\n\n" +
+                "{0} local change(s) were queued.\n\n" +
+                "Choose how to resolve:\n" +
+                "• Yes = Upload your local changes to the server\n" +
+                "• No = Download server data (discard local changes)\n" +
+                "• Cancel = Do nothing (resolve later)",
+                syncManager.QueuedChangeCount);
+
+            var result = MessageBox.Show(
+                this,
+                message,
+                "Sync Conflict Detected",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Warning);
+
+            if (result == DialogResult.Yes)
+            {
+                syncManager.ResolveUploadLocalAsync().ConfigureAwait(false);
+            }
+            else if (result == DialogResult.No)
+            {
+                syncManager.ResolveDownloadServerAsync().ConfigureAwait(false);
+            }
+
+            // Cancel = do nothing, user can resolve later
+        }
+
+        /// <summary>
+        /// Disables the local BackgroundProcessor when server-side processing is active.
+        /// Prevents double-processing of colony timers.
+        /// </summary>
+        private void DisableLocalProcessing()
+        {
+            if (_backgroundProcessor != null && _backgroundProcessor.NextProcessTime != default(DateTime))
+            {
+                _backgroundProcessor.Stop();
+                Log.Info("Local BackgroundProcessor disabled — server-side processing is active");
+                if (InvokeRequired)
+                {
+                    Invoke((Action)(() => toolStripNextProcess.Text = "Processing: Server"));
+                }
+                else
+                {
+                    toolStripNextProcess.Text = "Processing: Server";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Re-enables the local BackgroundProcessor when disconnected from the server.
+        /// Ensures local processing resumes when the server is unreachable.
+        /// </summary>
+        private void ReEnableLocalProcessing()
+        {
+            var ctx = Client.ServerContext.Instance;
+            bool wasServerProcessing = ctx?.SyncManager?.ServerProcessingActive ?? false;
+
+            if (wasServerProcessing && _backgroundProcessor != null)
+            {
+                _backgroundProcessor.Start();
+                Log.Info("Local BackgroundProcessor re-enabled — disconnected from server");
+            }
         }
 
         // -----------------------------------------------------------------------

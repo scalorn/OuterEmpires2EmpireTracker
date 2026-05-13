@@ -556,6 +556,9 @@ namespace OE2EmpireTracker.Services
 
             SafeFileWriter.WriteAllText(FilePath, jsonContent);
             Log.Info("Player data saved to {0}", FilePath);
+
+            // Write-through: push data to server when mode is ServerOnly or DualWrite
+            PushToServerAsync(jsonContent).ConfigureAwait(false);
         }
 
         public void InitPlayerProfiles(PlayerRoot playerRoot)
@@ -3243,6 +3246,41 @@ namespace OE2EmpireTracker.Services
 
                 _supplyChainCache.TryGetValue(uuid, out var match);
                 return match;
+            }
+        }
+
+        /// <summary>
+        /// Pushes the serialized player data to the remote server via SyncManager.
+        /// Only pushes when operating mode is ServerOnly or ServerAndLocal and the server is reachable.
+        /// Queues the change offline if the server is unreachable.
+        /// </summary>
+        private async Task PushToServerAsync(string jsonContent)
+        {
+            try
+            {
+                var serverContext = Client.ServerContext.Instance;
+                if (serverContext == null)
+                {
+                    return;
+                }
+
+                var syncManager = serverContext.SyncManager;
+                if (syncManager == null || syncManager.Mode == Client.OperatingMode.LocalOnly)
+                {
+                    return;
+                }
+
+                string characterUUID = _currentPlayerUUID;
+                if (string.IsNullOrEmpty(characterUUID))
+                {
+                    return;
+                }
+
+                await syncManager.WriteToServerAsync(characterUUID, "player-data", jsonContent).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex, "PushToServerAsync failed — data saved locally only");
             }
         }
 
