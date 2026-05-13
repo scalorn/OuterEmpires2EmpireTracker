@@ -76606,8 +76606,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-13T20:35:48.7693065Z",
-            "EndTime": "2026-05-13T21:35:48.7693065Z",
+            "StartTime": "2026-05-13T21:35:48.7693065Z",
+            "EndTime": "2026-05-13T22:35:48.7693065Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },

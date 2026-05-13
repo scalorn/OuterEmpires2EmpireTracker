@@ -262,6 +262,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             SelectHullInCombo(_viewModel.HullBlueprintUUID);
             PopulateSlotGrid();
             RefreshStats();
+            UpdateTemplatePrice();
             SetDetailEnabled(true);
             sw.Stop();
             Log.Info("PERF PopulateForm: {0}ms", sw.ElapsedMilliseconds);

@@ -12,6 +12,14 @@ Patterns that have caused bugs in this project. Check this list before writing c
 
 **Rule:** When adding any combo box or dropdown to a form, it MUST be populated in the constructor (or Load handler) in addition to any refresh-on-event logic. Look at how existing combos on the same form are initialized and follow the same pattern.
 
+### PopulateForm must call all display-update methods
+
+**What went wrong:** The pricing label disappeared when switching templates because `PopulateForm()` set the hull and slots but never called `UpdateTemplatePrice()`. The hull-change handler that normally triggers price recalculation was suppressed by the ProgrammaticUpdateGuard.
+
+**Root cause:** The agent added recalculation triggers to individual change handlers but missed that `PopulateForm()` runs inside a ProgrammaticUpdateGuard, which suppresses those handlers.
+
+**Rule:** When adding a computed display (label, stats panel, etc.) that depends on form state, ensure `PopulateForm()` explicitly calls the update method. Do NOT rely on change handlers firing during `PopulateForm()` — they are suppressed by the programmatic update guard.
+
 ## Library Versions
 
 ### FsCheck is version 2.16.6 — no 3.x APIs
