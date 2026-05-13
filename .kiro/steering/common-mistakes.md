@@ -47,17 +47,19 @@ Patterns that have caused bugs in this project. Check this list before writing c
 
 ## Hook Commands
 
-### PowerShell requires & operator for paths with spaces
+### Hook runCommand uses CMD, not PowerShell
 
-**What went wrong:** A postTaskExecution hook command used `"D:\Program Files\...\MSBuild.exe" OE2EmpireTracker.sln` which PowerShell treated as a string expression, not a command invocation. The hook silently failed with exit code 1 and no output.
+**What went wrong:** A postTaskExecution hook used `& 'path'` syntax (PowerShell) but hooks execute in CMD. CMD reported `& was unexpected at this time`.
 
-**Root cause:** PowerShell doesn't execute quoted paths as commands — it evaluates them as string expressions. You need the call operator `&`.
+**Root cause:** The agent assumed hooks run in PowerShell because `executePwsh` uses PowerShell. Hook `runCommand` uses CMD.
 
-**Rule:** When a hook `runCommand` invokes an executable with spaces in the path, use `& 'path'` syntax:
+**Rule:** Hook commands must use CMD syntax:
 ```
-WRONG: "D:\Program Files\...\MSBuild.exe" args
-RIGHT: & 'D:\Program Files\...\MSBuild.exe' args
+WRONG (PowerShell): & 'D:\Program Files\...\MSBuild.exe' args
+WRONG (PowerShell): & "D:\Program Files\...\MSBuild.exe" args
+RIGHT (CMD):        "D:\Program Files\...\MSBuild.exe" args
 ```
+In CMD, just double-quote the path directly — no call operator needed.
 
 ## StyleCop
 

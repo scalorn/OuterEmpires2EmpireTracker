@@ -133,21 +133,21 @@
 
 ## Phase 12: Client UI — Server Preferences and Connection Status
 
-- [-] 12.1 Add "Server" tab/section to Preferences UI with fields: Server URL, Certificate Thumbprint, Bearer Token, Operating Mode dropdown (Local Only / Server Only / Server + Local)
+- [x] 12.1 Add "Server" tab/section to Preferences UI with fields: Server URL, Certificate Thumbprint, Bearer Token, Operating Mode dropdown (Local Only / Server Only / Server + Local)
   - _Satisfies: Req 11 ("allow configuring the service URL and certificate thumbprint in preferences")_
   - _Satisfies: Req 16 ("operating mode SHALL be configurable in preferences and changeable at any time")_
-- [~] 12.2 Add "Test Connection" button in preferences that calls /health and reports success/failure
+- [x] 12.2 Add "Test Connection" button in preferences that calls /health and reports success/failure
   - _Satisfies: Req 11 (verifiable connectivity)_
   - _Satisfies: Req 2 ("client SHALL allow user to trust a specific server certificate thumbprint")_
-- [~] 12.3 On first connect with untrusted cert, prompt user to trust the thumbprint
+- [x] 12.3 On first connect with untrusted cert, prompt user to trust the thumbprint
   - _Satisfies: Req 2 ("client SHALL allow user to trust a specific server certificate thumbprint")_
   - _Satisfies: Design §6.3 ("Server certificate thumbprint: ... Trust this server?")_
-- [~] 12.4 Add connection status indicator to MainWindow (Connected/Disconnected/Connecting)
+- [x] 12.4 Add connection status indicator to MainWindow (Connected/Disconnected/Connecting)
   - _Satisfies: Req 11 ("indicate connection status (connected/disconnected) in the UI")_
   - _Satisfies: Design §9.2 (ConnectionStatus enum, StatusChanged event)_
-- [~] 12.5 Add real-time vs polling indicator in status bar
+- [x] 12.5 Add real-time vs polling indicator in status bar
   - _Satisfies: Req 18 Fallback ("client SHALL indicate whether receiving real-time updates or polling")_
-- [~] 12.6 When switching from Server Only to Local Only, prompt user to export data first
+- [x] 12.6 When switching from Server Only to Local Only, prompt user to export data first
   - _Satisfies: Req 16 ("switching from Server Only to Local Only SHALL prompt user to export first")_
 
 ## Phase 13: Sync and Offline Behavior
