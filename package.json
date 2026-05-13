@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "neurodivergent-memory": "^0.1.8"
+    "neurodivergent-memory": "^0.3.9"
   },
   "devDependencies": {
     "fast-check": "^3.22.0"
