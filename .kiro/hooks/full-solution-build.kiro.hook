@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Full Solution Build Check",
+  "description": "After every spec task completes, builds the entire solution (all projects including tests) and fails if there are any errors or warnings. Prevents the scenario where only the main project is verified but test projects have compilation failures.",
+  "version": "1",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "\"D:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe\" OE2EmpireTracker.sln /p:Configuration=Debug /v:minimal /warnaserror"
+  }
+}

@@ -124,7 +124,7 @@ Add a pricing plan selector and aggregate cost display to FormShipTemplate. The 
     - Verify SetDetailEnabled(false) disables cmbPricingPlan
     - **Validates: Requirements 1.6**
 
-- [-] 7. Final checkpoint - Ensure all tests pass and audit is clean
+- [x] 7. Final checkpoint - Ensure all tests pass and audit is clean
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

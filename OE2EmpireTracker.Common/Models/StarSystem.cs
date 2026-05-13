@@ -40,22 +40,28 @@ namespace OE2EmpireTracker.Models
 
         // Mutable properties (editable by user)
 
-        [JsonProperty("fid"), DefaultValue(0)]
+        [JsonProperty("fid")]
+        [DefaultValue(0)]
         public int FactionId { get; set; }
 
-        [JsonProperty("fn"), DefaultValue("")]
+        [JsonProperty("fn")]
+        [DefaultValue("")]
         public string FactionName { get; set; } = string.Empty;
 
-        [JsonProperty("fc"), DefaultValue("")]
+        [JsonProperty("fc")]
+        [DefaultValue("")]
         public string FactionColor { get; set; } = string.Empty;
 
-        [JsonProperty("o"), DefaultValue(false)]
+        [JsonProperty("o")]
+        [DefaultValue(false)]
         public bool HasOrbital { get; set; }
 
-        [JsonProperty("sp"), DefaultValue(false)]
+        [JsonProperty("sp")]
+        [DefaultValue(false)]
         public bool HasSpaceport { get; set; }
 
-        [JsonProperty("sb"), DefaultValue(false)]
+        [JsonProperty("sb")]
+        [DefaultValue(false)]
         public bool HasStarbase { get; set; }
     }
 }

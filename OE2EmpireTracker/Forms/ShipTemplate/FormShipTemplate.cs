@@ -66,6 +66,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             dgvSlots.CellClick += DgvSlots_CellClick;
 
             PopulateHullCombo();
+            PopulatePricingPlanCombo();
             PopulateTemplateList();
             ClearForm();
 
