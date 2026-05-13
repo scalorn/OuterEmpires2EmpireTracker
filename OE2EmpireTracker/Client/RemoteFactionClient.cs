@@ -4,7 +4,9 @@
 
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Security;
+using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,28 +16,30 @@ namespace OE2EmpireTracker.Client
 {
     /// <summary>
     /// HTTP client that communicates with the Remote Faction Service.
-    /// Handles bearer-token auth and optional self-signed certificate pinning.
+    /// Handles bearer-token auth (via SecureString) and optional self-signed certificate pinning.
+    /// Implements <see cref="IDisposable"/> to securely dispose the bearer token.
     /// </summary>
-    public class RemoteFactionClient
+    public class RemoteFactionClient : IDisposable
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly string _serverUrl;
-        private readonly string _bearerToken;
+        private readonly SecureString _bearerToken;
         private readonly string _trustedThumbprint;
 
         private HttpClient _httpClient;
+        private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteFactionClient"/> class.
         /// </summary>
         /// <param name="serverUrl">Base URL of the remote faction server.</param>
-        /// <param name="bearerToken">Bearer token for API authentication.</param>
+        /// <param name="bearerToken">SecureString bearer token for API authentication.</param>
         /// <param name="trustedThumbprint">Certificate thumbprint for self-signed cert pinning (may be empty).</param>
-        public RemoteFactionClient(string serverUrl, string bearerToken, string trustedThumbprint)
+        public RemoteFactionClient(string serverUrl, SecureString bearerToken, string trustedThumbprint)
         {
             _serverUrl = (serverUrl ?? string.Empty).TrimEnd('/');
-            _bearerToken = bearerToken ?? string.Empty;
+            _bearerToken = bearerToken;
             _trustedThumbprint = (trustedThumbprint ?? string.Empty).Replace(" ", string.Empty);
             InitializeHttpClient();
         }
@@ -183,6 +187,34 @@ namespace OE2EmpireTracker.Client
             return await GetStringAsync(path).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Releases all resources used by the <see cref="RemoteFactionClient"/>.
+        /// Disposes the SecureString bearer token and the underlying HttpClient.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and (optionally) managed resources.
+        /// </summary>
+        /// <param name="disposing">True to release both managed and unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _bearerToken?.Dispose();
+                    _httpClient?.Dispose();
+                }
+
+                _disposed = true;
+            }
+        }
+
         private void InitializeHttpClient()
         {
             var handler = new HttpClientHandler();
@@ -193,9 +225,13 @@ namespace OE2EmpireTracker.Client
             }
 
             _httpClient = new HttpClient(handler);
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _bearerToken);
             _httpClient.Timeout = TimeSpan.FromSeconds(30);
+
+            // Set the Authorization header using the SecureString token.
+            // The plain text is only in memory briefly during this call.
+            string token = CredentialStore.SecureStringToString(_bearerToken);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
         }
 
         private bool ValidateCertificate(

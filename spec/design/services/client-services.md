@@ -49,6 +49,15 @@ Settings POCO for the remote server connection:
 - ServerUrl, BearerToken, TrustedThumbprint
 - Mode (OperatingMode), DualWriteEnabled flag
 
+### CredentialStore
+
+Static utility class providing DPAPI-based encryption for sensitive credentials:
+- `Protect(string)` — encrypts plain text using DPAPI (CurrentUser scope), returns base64 blob
+- `Unprotect(string)` — decrypts DPAPI blob to SecureString
+- `SecureStringToString(SecureString)` — briefly converts SecureString to plain text for HTTP header use
+
+Uses `System.Security.Cryptography.ProtectedData` with `DataProtectionScope.CurrentUser` so only the current Windows user can decrypt stored tokens. Addresses CodeQL alert cs/cleartext-storage-of-sensitive-information.
+
 ### ConnectionStatusChangedEventArgs
 
 Event args for connection status change notifications:
