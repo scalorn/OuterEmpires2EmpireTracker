@@ -133,7 +133,7 @@
 
 ## Phase 12: Client UI — Server Preferences and Connection Status
 
-- [~] 12.1 Add "Server" tab/section to Preferences UI with fields: Server URL, Certificate Thumbprint, Bearer Token, Operating Mode dropdown (Local Only / Server Only / Server + Local)
+- [-] 12.1 Add "Server" tab/section to Preferences UI with fields: Server URL, Certificate Thumbprint, Bearer Token, Operating Mode dropdown (Local Only / Server Only / Server + Local)
   - _Satisfies: Req 11 ("allow configuring the service URL and certificate thumbprint in preferences")_
   - _Satisfies: Req 16 ("operating mode SHALL be configurable in preferences and changeable at any time")_
 - [~] 12.2 Add "Test Connection" button in preferences that calls /health and reports success/failure

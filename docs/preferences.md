@@ -1,10 +1,10 @@
 # Preferences
 
-The Preferences form lets you customize warning thresholds, processing intervals, and display refresh rates. Open it from **File → Preferences** in the main menu.
+The Preferences form lets you customize warning thresholds, processing intervals, display refresh rates, and server connection settings. Open it from **File → Preferences** in the main menu.
 
 Changes take effect immediately — no restart required.
 
-## Settings
+## Thresholds Tab
 
 ### Structure Count Thresholds
 Controls when the Structures tab turns yellow or red based on how many structures a colony has.
@@ -46,4 +46,27 @@ How often countdown timers update across all forms — colony structures, colony
 
 ## Reset to Defaults
 
-Click the **Reset** button to restore all values to their original defaults.
+Click the **Reset** button to restore all threshold values to their original defaults. Server settings are not affected by Reset.
+
+## Server Tab
+
+### Server URL
+The base URL of the Remote Faction Service (e.g. `https://192.168.1.50:5443`). Leave empty for local-only operation.
+
+### Certificate Thumbprint
+The SHA-1 thumbprint of the server's TLS certificate. Used for self-signed certificate pinning. On first connection to a server with an untrusted certificate, you will be prompted to trust it — the thumbprint is then stored automatically.
+
+### Bearer Token
+The authentication token for the server. Displayed masked (●●●●). Enter a new token to replace the stored one, or leave as-is to keep the existing token. Tokens are encrypted with DPAPI before storage.
+
+### Operating Mode
+Controls how the tracker reads and writes data:
+
+- **Local Only** — No server connection. All data is read from and written to local JSON files (default behavior).
+- **Server Only** — All reads/writes go to the remote server. No local file is maintained.
+- **Server + Local** — Dual-write mode. Server is primary, local file is kept as backup.
+
+When switching from Server Only to Local Only, you will be prompted to export your data from the server first.
+
+### Test Connection
+Click to verify connectivity to the configured server. Shows success/failure status below the button.

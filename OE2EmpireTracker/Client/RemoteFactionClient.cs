@@ -215,6 +215,54 @@ namespace OE2EmpireTracker.Client
             }
         }
 
+        private static bool PromptTrustCertificate(string thumbprint)
+        {
+            bool result = false;
+
+            if (System.Windows.Forms.Application.OpenForms.Count > 0)
+            {
+                var mainForm = System.Windows.Forms.Application.OpenForms[0];
+                if (mainForm.InvokeRequired)
+                {
+                    mainForm.Invoke((Action)(() =>
+                    {
+                        result = ShowTrustDialog(thumbprint);
+                    }));
+                }
+                else
+                {
+                    result = ShowTrustDialog(thumbprint);
+                }
+            }
+            else
+            {
+                result = ShowTrustDialog(thumbprint);
+            }
+
+            return result;
+        }
+
+        private static bool ShowTrustDialog(string thumbprint)
+        {
+            var dialogResult = System.Windows.Forms.MessageBox.Show(
+                "The server presented an untrusted certificate.\n\n" +
+                "Thumbprint: " + thumbprint + "\n\n" +
+                "Do you want to trust this server?",
+                "Trust Server Certificate?",
+                System.Windows.Forms.MessageBoxButtons.YesNo,
+                System.Windows.Forms.MessageBoxIcon.Warning);
+
+            if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+            {
+                var store = Services.PreferencesStore.GetInstance();
+                store.Preferences.ServerConnection.TrustedThumbprint = thumbprint;
+                store.Save();
+                return true;
+            }
+
+            return false;
+        }
+
         private void InitializeHttpClient()
         {
             var handler = new HttpClientHandler();
@@ -251,10 +299,28 @@ namespace OE2EmpireTracker.Client
             }
 
             string thumbprint = certificate.GetCertHashString();
+
+            // If no thumbprint is stored, prompt the user to trust this certificate
+            if (string.IsNullOrEmpty(_trustedThumbprint))
+            {
+                bool trusted = PromptTrustCertificate(thumbprint);
+                if (trusted)
+                {
+                    Log.Info("User trusted new certificate thumbprint: {0}", thumbprint);
+                    return true;
+                }
+
+                Log.Warn("User rejected certificate thumbprint: {0}", thumbprint);
+                return false;
+            }
+
             bool match = string.Equals(thumbprint, _trustedThumbprint, StringComparison.OrdinalIgnoreCase);
             if (!match)
             {
-                Log.Warn("Certificate thumbprint mismatch. Expected={0}, Actual={1}", _trustedThumbprint, thumbprint);
+                Log.Warn(
+                    "Certificate thumbprint mismatch. Expected={0}, Actual={1}",
+                    _trustedThumbprint,
+                    thumbprint);
             }
 
             return match;

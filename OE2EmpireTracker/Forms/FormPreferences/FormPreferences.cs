@@ -1,36 +1,68 @@
+// <copyright file="FormPreferences.cs" company="OE2EmpireTracker">
+// Copyright (c) OE2EmpireTracker. All rights reserved.
+// </copyright>
+
 using System;
+using System.Drawing;
+using System.Security;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
+using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Forms
 {
+    /// <summary>
+    /// Preferences dialog with Thresholds and Server tabs.
+    /// </summary>
     public partial class FormPreferences : Form
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Tracks the operating mode at form open to detect mode changes on save.
+        /// </summary>
+        private OperatingMode _originalMode;
+
         public FormPreferences()
         {
             InitializeComponent();
 
             btnOK.Click += BtnOK_Click;
             btnResetDefaults.Click += BtnResetDefaults_Click;
+            btnTestConnection.Click += BtnTestConnection_Click;
+
+            // Populate operating mode dropdown
+            cmbOperatingMode.Items.Add("Local Only");
+            cmbOperatingMode.Items.Add("Server Only");
+            cmbOperatingMode.Items.Add("Server + Local");
 
             LoadPreferences();
         }
 
-        private void LoadPreferences()
+        private static void ShowValidationError(string message)
         {
-            var thresholds = PreferencesStore.GetInstance().Preferences.Thresholds;
-            PopulateFields(thresholds);
+            MessageBox.Show(
+                message,
+                "Validation Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
         }
 
-        private void PopulateFields(ThresholdPreferences thresholds)
+        private void LoadPreferences()
         {
-            // Structure count fields -- plain integer display
+            var prefs = PreferencesStore.GetInstance().Preferences;
+            PopulateThresholdFields(prefs.Thresholds);
+            PopulateServerFields(prefs.ServerConnection);
+        }
+
+        private void PopulateThresholdFields(ThresholdPreferences thresholds)
+        {
             txtStructureYellow.Text = thresholds.StructureCountYellow.ToString();
             txtStructureRed.Text = thresholds.StructureCountRed.ToString();
-
-            // Time-based fields -- countdown format display
             txtWorkerYellow.Text = ActivityRow.FormatSeconds(thresholds.WorkerRequestYellowSeconds);
             txtWorkerRed.Text = ActivityRow.FormatSeconds(thresholds.WorkerRequestRedSeconds);
             txtColonyImportYellow.Text = ActivityRow.FormatSeconds(thresholds.ColonyImportStalenessYellowSeconds);
@@ -40,101 +72,226 @@ namespace OE2EmpireTracker.Forms
             txtCountdownRefresh.Text = ActivityRow.FormatSeconds(thresholds.CountdownRefreshRateSeconds);
         }
 
+        private void PopulateServerFields(ServerConnectionSettings settings)
+        {
+            txtServerUrl.Text = settings.ServerUrl ?? string.Empty;
+            txtThumbprint.Text = settings.TrustedThumbprint ?? string.Empty;
+
+            // Display masked placeholder if a token is stored; otherwise leave empty
+            if (!string.IsNullOrEmpty(settings.ProtectedBearerToken))
+            {
+                txtBearerToken.Text = "stored-token";
+            }
+            else
+            {
+                txtBearerToken.Text = string.Empty;
+            }
+
+            _originalMode = settings.Mode;
+            cmbOperatingMode.SelectedIndex = (int)settings.Mode;
+        }
+
         private void BtnOK_Click(object sender, EventArgs e)
         {
-            // Parse structure count fields as integers
-            if (!int.TryParse(txtStructureYellow.Text.Trim(), out int structureYellow) || structureYellow <= 0)
+            if (!TryParseThresholds(out ThresholdPreferences thresholds))
             {
-                MessageBox.Show(
-                    "Structure Count Yellow threshold must be a positive integer.",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
                 return;
             }
 
-            if (!int.TryParse(txtStructureRed.Text.Trim(), out int structureRed) || structureRed <= 0)
+            // Detect mode change for export prompt (Task 12.6)
+            OperatingMode newMode = (OperatingMode)cmbOperatingMode.SelectedIndex;
+            if (_originalMode == OperatingMode.ServerOnly && newMode == OperatingMode.LocalOnly)
             {
-                MessageBox.Show(
-                    "Structure Count Red threshold must be a positive integer.",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
+                var result = MessageBox.Show(
+                    "You are switching from Server Only to Local Only.\n\n" +
+                    "Local data may be stale or empty. Would you like to export " +
+                    "your data from the server first?\n\n" +
+                    "Click Yes to export before switching, No to switch without " +
+                    "exporting, or Cancel to abort.",
+                    "Export Data?",
+                    MessageBoxButtons.YesNoCancel,
                     MessageBoxIcon.Warning);
+
+                if (result == DialogResult.Cancel)
+                {
+                    return;
+                }
+
+                if (result == DialogResult.Yes)
+                {
+                    MessageBox.Show(
+                        "Export functionality will be available in a future update.\n" +
+                        "The mode change will proceed without export.",
+                        "Export Not Yet Available",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+            }
+
+            // Save server connection settings
+            var store = PreferencesStore.GetInstance();
+            var serverSettings = store.Preferences.ServerConnection;
+            serverSettings.ServerUrl = txtServerUrl.Text.Trim();
+            serverSettings.TrustedThumbprint = txtThumbprint.Text.Trim();
+            serverSettings.Mode = newMode;
+
+            // Only update the token if the user changed it from the placeholder
+            string tokenText = txtBearerToken.Text;
+            if (tokenText != "stored-token" && !string.IsNullOrEmpty(tokenText))
+            {
+                serverSettings.ProtectedBearerToken = CredentialStore.Protect(tokenText);
+            }
+            else if (string.IsNullOrEmpty(tokenText))
+            {
+                serverSettings.ProtectedBearerToken = string.Empty;
+            }
+
+            // Save thresholds
+            store.Preferences.Thresholds = thresholds;
+            store.Save();
+
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private void BtnResetDefaults_Click(object sender, EventArgs e)
+        {
+            PopulateThresholdFields(new ThresholdPreferences());
+        }
+
+        /// <summary>
+        /// Task 12.2: Test Connection button — creates a temporary client and calls /health.
+        /// </summary>
+        private async void BtnTestConnection_Click(object sender, EventArgs e)
+        {
+            string url = txtServerUrl.Text.Trim();
+            if (string.IsNullOrEmpty(url))
+            {
+                lblConnectionStatus.ForeColor = Color.Red;
+                lblConnectionStatus.Text = "Please enter a server URL.";
                 return;
             }
 
-            // Parse time-based fields via CountdownFormatParser
+            btnTestConnection.Enabled = false;
+            lblConnectionStatus.ForeColor = SystemColors.ControlText;
+            lblConnectionStatus.Text = "Testing...";
+
+            try
+            {
+                string tokenText = txtBearerToken.Text;
+                SecureString token;
+
+                if (tokenText == "stored-token")
+                {
+                    var stored = PreferencesStore.GetInstance()
+                        .Preferences.ServerConnection.ProtectedBearerToken;
+                    token = CredentialStore.Unprotect(stored);
+                }
+                else
+                {
+                    token = new SecureString();
+                    foreach (char c in tokenText ?? string.Empty)
+                    {
+                        token.AppendChar(c);
+                    }
+
+                    token.MakeReadOnly();
+                }
+
+                string thumbprint = txtThumbprint.Text.Trim();
+
+                using (var client = new RemoteFactionClient(url, token, thumbprint))
+                {
+                    bool healthy = await client.CheckHealthAsync().ConfigureAwait(true);
+                    if (healthy)
+                    {
+                        lblConnectionStatus.ForeColor = Color.Green;
+                        lblConnectionStatus.Text = "Connection successful.";
+                    }
+                    else
+                    {
+                        lblConnectionStatus.ForeColor = Color.Red;
+                        lblConnectionStatus.Text = "Health check failed.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex, "Test connection failed");
+                lblConnectionStatus.ForeColor = Color.Red;
+                lblConnectionStatus.Text = "Failed: " + ex.Message;
+            }
+            finally
+            {
+                btnTestConnection.Enabled = true;
+            }
+        }
+
+        private bool TryParseThresholds(out ThresholdPreferences result)
+        {
+            result = null;
+
+            if (!int.TryParse(txtStructureYellow.Text.Trim(), out int structureYellow)
+                || structureYellow <= 0)
+            {
+                ShowValidationError("Structure Count Yellow threshold must be a positive integer.");
+                return false;
+            }
+
+            if (!int.TryParse(txtStructureRed.Text.Trim(), out int structureRed)
+                || structureRed <= 0)
+            {
+                ShowValidationError("Structure Count Red threshold must be a positive integer.");
+                return false;
+            }
+
             if (!CountdownFormatParser.TryParse(txtWorkerYellow.Text.Trim(), out long workerYellow))
             {
-                MessageBox.Show(
-                    "Worker Request Yellow threshold must be a valid countdown format (e.g. \"2d 0h 0m 0s\").",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                ShowValidationError("Worker Request Yellow must be a valid countdown format.");
+                return false;
             }
 
             if (!CountdownFormatParser.TryParse(txtWorkerRed.Text.Trim(), out long workerRed))
             {
-                MessageBox.Show(
-                    "Worker Request Red threshold must be a valid countdown format (e.g. \"1d 0h 0m 0s\").",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                ShowValidationError("Worker Request Red must be a valid countdown format.");
+                return false;
             }
 
-            if (!CountdownFormatParser.TryParse(txtColonyImportYellow.Text.Trim(), out long colonyImportYellow))
+            if (!CountdownFormatParser.TryParse(
+                txtColonyImportYellow.Text.Trim(), out long colonyImportYellow))
             {
-                MessageBox.Show(
-                    "Colony Import Staleness Yellow threshold must be a valid countdown format (e.g. \"5d 0h 0m 0s\").",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                ShowValidationError("Colony Import Yellow must be a valid countdown format.");
+                return false;
             }
 
-            if (!CountdownFormatParser.TryParse(txtColonyImportRed.Text.Trim(), out long colonyImportRed))
+            if (!CountdownFormatParser.TryParse(
+                txtColonyImportRed.Text.Trim(), out long colonyImportRed))
             {
-                MessageBox.Show(
-                    "Colony Import Staleness Red threshold must be a valid countdown format (e.g. \"6d 0h 0m 0s\").",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                ShowValidationError("Colony Import Red must be a valid countdown format.");
+                return false;
             }
 
-            if (!CountdownFormatParser.TryParse(txtBackgroundInterval.Text.Trim(), out long backgroundInterval))
+            if (!CountdownFormatParser.TryParse(
+                txtBackgroundInterval.Text.Trim(), out long backgroundInterval))
             {
-                MessageBox.Show(
-                    "Background Processing Interval must be a valid countdown format (e.g. \"1m 0s\").",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                ShowValidationError("Background Interval must be a valid countdown format.");
+                return false;
             }
 
-            if (!CountdownFormatParser.TryParse(txtAdminRefresh.Text.Trim(), out long adminRefresh))
+            if (!CountdownFormatParser.TryParse(
+                txtAdminRefresh.Text.Trim(), out long adminRefresh))
             {
-                MessageBox.Show(
-                    "Admin Refresh Interval must be a valid countdown format (e.g. \"1m 0s\").",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                ShowValidationError("Admin Refresh must be a valid countdown format.");
+                return false;
             }
 
-            if (!CountdownFormatParser.TryParse(txtCountdownRefresh.Text.Trim(), out long countdownRefresh))
+            if (!CountdownFormatParser.TryParse(
+                txtCountdownRefresh.Text.Trim(), out long countdownRefresh))
             {
-                MessageBox.Show(
-                    "Countdown Refresh Rate must be a valid countdown format (e.g. \"1s\").",
-                    "Validation Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                ShowValidationError("Countdown Refresh must be a valid countdown format.");
+                return false;
             }
 
-            // Build ThresholdPreferences from parsed values
             var prefs = new ThresholdPreferences
             {
                 StructureCountYellow = structureYellow,
@@ -145,27 +302,17 @@ namespace OE2EmpireTracker.Forms
                 ColonyImportStalenessRedSeconds = colonyImportRed,
                 BackgroundProcessingIntervalSeconds = backgroundInterval,
                 AdminRefreshIntervalSeconds = adminRefresh,
-                CountdownRefreshRateSeconds = countdownRefresh
+                CountdownRefreshRateSeconds = countdownRefresh,
             };
 
-            // Validate using ThresholdPreferences.Validate()
             if (!ThresholdPreferences.Validate(prefs, out string error))
             {
-                MessageBox.Show(error, "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                ShowValidationError(error);
+                return false;
             }
 
-            // Write to PreferencesStore and save
-            PreferencesStore.GetInstance().Preferences.Thresholds = prefs;
-            PreferencesStore.GetInstance().Save();
-
-            DialogResult = DialogResult.OK;
-            Close();
-        }
-
-        private void BtnResetDefaults_Click(object sender, EventArgs e)
-        {
-            PopulateFields(new ThresholdPreferences());
+            result = prefs;
+            return true;
         }
     }
 }

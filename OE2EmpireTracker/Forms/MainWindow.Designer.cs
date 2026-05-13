@@ -71,8 +71,12 @@
             this.toolStripPerformance = new System.Windows.Forms.ToolStripLabel();
             this.toolStripPlayerLabel = new System.Windows.Forms.ToolStripLabel();
             this.cmbCurrentPlayer = new System.Windows.Forms.ToolStripComboBox();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.tslConnectionStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tslRealtimeIndicator = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerNextProcess = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -416,11 +420,32 @@
             // 
             this.timerNextProcess.Interval = 1000;
             // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tslConnectionStatus,
+            this.tslRealtimeIndicator});
+            this.statusStrip.Location = new System.Drawing.Point(0, 707);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(1064, 22);
+            this.statusStrip.TabIndex = 2;
+            // 
+            // tslConnectionStatus
+            // 
+            this.tslConnectionStatus.Name = "tslConnectionStatus";
+            this.tslConnectionStatus.Size = new System.Drawing.Size(0, 17);
+            // 
+            // tslRealtimeIndicator
+            // 
+            this.tslRealtimeIndicator.Name = "tslRealtimeIndicator";
+            this.tslRealtimeIndicator.Size = new System.Drawing.Size(0, 17);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1064, 729);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
@@ -429,6 +454,8 @@
             this.Text = "OE2 Empire Tracker";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -479,6 +506,9 @@
         private System.Windows.Forms.ToolStripLabel toolStripNextProcess;
         private System.Windows.Forms.ToolStripLabel toolStripPerformance;
         private System.Windows.Forms.Timer timerNextProcess;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel tslConnectionStatus;
+        private System.Windows.Forms.ToolStripStatusLabel tslRealtimeIndicator;
     }
 }
 

@@ -45,6 +45,20 @@ Patterns that have caused bugs in this project. Check this list before writing c
 
 **Rule:** Always build `OE2EmpireTracker.sln` (the full solution). Never build individual .csproj files in isolation. The postTaskExecution hook enforces this, but do it proactively too.
 
+## Hook Commands
+
+### PowerShell requires & operator for paths with spaces
+
+**What went wrong:** A postTaskExecution hook command used `"D:\Program Files\...\MSBuild.exe" OE2EmpireTracker.sln` which PowerShell treated as a string expression, not a command invocation. The hook silently failed with exit code 1 and no output.
+
+**Root cause:** PowerShell doesn't execute quoted paths as commands — it evaluates them as string expressions. You need the call operator `&`.
+
+**Rule:** When a hook `runCommand` invokes an executable with spaces in the path, use `& 'path'` syntax:
+```
+WRONG: "D:\Program Files\...\MSBuild.exe" args
+RIGHT: & 'D:\Program Files\...\MSBuild.exe' args
+```
+
 ## StyleCop
 
 ### SA1133: Each attribute on its own line

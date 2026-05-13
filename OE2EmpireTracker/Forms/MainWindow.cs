@@ -85,6 +85,8 @@ namespace OE2EmpireTracker
 
             // Initialize remote server infrastructure (no-op if LocalOnly)
             Client.ServerContext.Initialize();
+            UpdateConnectionStatusIndicator();
+            SubscribeToConnectionStatus();
 
             timerNextProcess.Tick += OnTimerNextProcessTick;
             int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.CountdownRefreshRateSeconds * 1000);
@@ -147,6 +149,7 @@ namespace OE2EmpireTracker
                 _backgroundProcessor = null;
             }
 
+            UnsubscribeFromConnectionStatus();
             playerContext.PlayerProfilesChanged -= OnPlayerProfilesChanged;
             base.OnFormClosed(e);
         }
@@ -298,6 +301,76 @@ namespace OE2EmpireTracker
         {
             PopulatePlayerDropdown();
             UpdateNoPlayerGuard();
+        }
+
+        /// <summary>
+        /// Subscribes to the ServerContext client's ConnectionStatusChanged event.
+        /// </summary>
+        private void SubscribeToConnectionStatus()
+        {
+            var ctx = Client.ServerContext.Instance;
+            if (ctx?.Client != null)
+            {
+                ctx.Client.ConnectionStatusChanged += OnConnectionStatusChanged;
+            }
+        }
+
+        /// <summary>
+        /// Unsubscribes from the ServerContext client's ConnectionStatusChanged event.
+        /// </summary>
+        private void UnsubscribeFromConnectionStatus()
+        {
+            var ctx = Client.ServerContext.Instance;
+            if (ctx?.Client != null)
+            {
+                ctx.Client.ConnectionStatusChanged -= OnConnectionStatusChanged;
+            }
+        }
+
+        private void OnConnectionStatusChanged(object sender, Client.ConnectionStatusChangedEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke((Action)(() => UpdateConnectionStatusIndicator()));
+            }
+            else
+            {
+                UpdateConnectionStatusIndicator();
+            }
+        }
+
+        /// <summary>
+        /// Updates the status bar connection indicator based on current state.
+        /// Shows nothing if mode is LocalOnly.
+        /// </summary>
+        private void UpdateConnectionStatusIndicator()
+        {
+            var settings = PreferencesStore.GetInstance().Preferences.ServerConnection;
+            if (settings.Mode == Client.OperatingMode.LocalOnly)
+            {
+                tslConnectionStatus.Text = string.Empty;
+                tslRealtimeIndicator.Text = string.Empty;
+                return;
+            }
+
+            var ctx = Client.ServerContext.Instance;
+            if (ctx?.Client == null)
+            {
+                tslConnectionStatus.Text = "Disconnected";
+                tslConnectionStatus.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            if (ctx.Client.IsConnected)
+            {
+                tslConnectionStatus.Text = "Connected";
+                tslConnectionStatus.ForeColor = System.Drawing.Color.Green;
+            }
+            else
+            {
+                tslConnectionStatus.Text = "Disconnected";
+                tslConnectionStatus.ForeColor = System.Drawing.Color.Red;
+            }
         }
 
         /// <summary>

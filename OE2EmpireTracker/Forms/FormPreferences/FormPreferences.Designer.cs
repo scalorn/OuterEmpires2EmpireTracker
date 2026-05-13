@@ -15,6 +15,9 @@ namespace OE2EmpireTracker.Forms
 
         private void InitializeComponent()
         {
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabThresholds = new System.Windows.Forms.TabPage();
+            this.tabServer = new System.Windows.Forms.TabPage();
             this.grpStructureCount = new System.Windows.Forms.GroupBox();
             this.lblStructureYellow = new System.Windows.Forms.Label();
             this.txtStructureYellow = new System.Windows.Forms.TextBox();
@@ -39,16 +42,69 @@ namespace OE2EmpireTracker.Forms
             this.grpCountdownDisplay = new System.Windows.Forms.GroupBox();
             this.lblCountdownRefresh = new System.Windows.Forms.Label();
             this.txtCountdownRefresh = new System.Windows.Forms.TextBox();
+            this.grpServerConnection = new System.Windows.Forms.GroupBox();
+            this.lblServerUrl = new System.Windows.Forms.Label();
+            this.txtServerUrl = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.btnTestConnection = new System.Windows.Forms.Button();
+            this.lblThumbprint = new System.Windows.Forms.Label();
+            this.txtThumbprint = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblBearerToken = new System.Windows.Forms.Label();
+            this.txtBearerToken = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblOperatingMode = new System.Windows.Forms.Label();
+            this.cmbOperatingMode = new System.Windows.Forms.ComboBox();
+            this.lblConnectionStatus = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnResetDefaults = new System.Windows.Forms.Button();
+            this.tabControl.SuspendLayout();
+            this.tabThresholds.SuspendLayout();
+            this.tabServer.SuspendLayout();
             this.grpStructureCount.SuspendLayout();
             this.grpWorkerRequest.SuspendLayout();
             this.grpColonyImport.SuspendLayout();
             this.grpBackgroundProcessing.SuspendLayout();
             this.grpAdminReport.SuspendLayout();
             this.grpCountdownDisplay.SuspendLayout();
+            this.grpServerConnection.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // tabControl
+            // 
+            this.tabControl.Controls.Add(this.tabThresholds);
+            this.tabControl.Controls.Add(this.tabServer);
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tabControl.Location = new System.Drawing.Point(0, 0);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(498, 470);
+            this.tabControl.TabIndex = 0;
+            // 
+            // tabThresholds
+            // 
+            this.tabThresholds.Controls.Add(this.grpStructureCount);
+            this.tabThresholds.Controls.Add(this.grpWorkerRequest);
+            this.tabThresholds.Controls.Add(this.grpColonyImport);
+            this.tabThresholds.Controls.Add(this.grpBackgroundProcessing);
+            this.tabThresholds.Controls.Add(this.grpAdminReport);
+            this.tabThresholds.Controls.Add(this.grpCountdownDisplay);
+            this.tabThresholds.Location = new System.Drawing.Point(4, 22);
+            this.tabThresholds.Name = "tabThresholds";
+            this.tabThresholds.Padding = new System.Windows.Forms.Padding(3);
+            this.tabThresholds.Size = new System.Drawing.Size(490, 444);
+            this.tabThresholds.TabIndex = 0;
+            this.tabThresholds.Text = "Thresholds";
+            this.tabThresholds.UseVisualStyleBackColor = true;
+            // 
+            // tabServer
+            // 
+            this.tabServer.Controls.Add(this.grpServerConnection);
+            this.tabServer.Location = new System.Drawing.Point(4, 22);
+            this.tabServer.Name = "tabServer";
+            this.tabServer.Padding = new System.Windows.Forms.Padding(3);
+            this.tabServer.Size = new System.Drawing.Size(490, 444);
+            this.tabServer.TabIndex = 1;
+            this.tabServer.Text = "Server";
+            this.tabServer.UseVisualStyleBackColor = true;
             // 
             // grpStructureCount
             // 
@@ -257,9 +313,108 @@ namespace OE2EmpireTracker.Forms
             this.txtCountdownRefresh.Size = new System.Drawing.Size(100, 20);
             this.txtCountdownRefresh.TabIndex = 9;
             // 
+            // grpServerConnection
+            // 
+            this.grpServerConnection.Controls.Add(this.lblServerUrl);
+            this.grpServerConnection.Controls.Add(this.txtServerUrl);
+            this.grpServerConnection.Controls.Add(this.btnTestConnection);
+            this.grpServerConnection.Controls.Add(this.lblThumbprint);
+            this.grpServerConnection.Controls.Add(this.txtThumbprint);
+            this.grpServerConnection.Controls.Add(this.lblBearerToken);
+            this.grpServerConnection.Controls.Add(this.txtBearerToken);
+            this.grpServerConnection.Controls.Add(this.lblOperatingMode);
+            this.grpServerConnection.Controls.Add(this.cmbOperatingMode);
+            this.grpServerConnection.Controls.Add(this.lblConnectionStatus);
+            this.grpServerConnection.Location = new System.Drawing.Point(12, 12);
+            this.grpServerConnection.Name = "grpServerConnection";
+            this.grpServerConnection.Size = new System.Drawing.Size(460, 220);
+            this.grpServerConnection.TabIndex = 0;
+            this.grpServerConnection.TabStop = false;
+            this.grpServerConnection.Text = "Server Connection";
+            // 
+            // lblServerUrl
+            // 
+            this.lblServerUrl.AutoSize = true;
+            this.lblServerUrl.Location = new System.Drawing.Point(15, 28);
+            this.lblServerUrl.Name = "lblServerUrl";
+            this.lblServerUrl.Size = new System.Drawing.Size(63, 13);
+            this.lblServerUrl.Text = "Server URL:";
+            // 
+            // txtServerUrl
+            // 
+            this.txtServerUrl.Location = new System.Drawing.Point(130, 25);
+            this.txtServerUrl.Name = "txtServerUrl";
+            this.txtServerUrl.Size = new System.Drawing.Size(220, 20);
+            this.txtServerUrl.TabIndex = 1;
+            // 
+            // btnTestConnection
+            // 
+            this.btnTestConnection.Location = new System.Drawing.Point(360, 23);
+            this.btnTestConnection.Name = "btnTestConnection";
+            this.btnTestConnection.Size = new System.Drawing.Size(90, 23);
+            this.btnTestConnection.TabIndex = 2;
+            this.btnTestConnection.Text = "Test Connection";
+            this.btnTestConnection.UseVisualStyleBackColor = true;
+            // 
+            // lblThumbprint
+            // 
+            this.lblThumbprint.AutoSize = true;
+            this.lblThumbprint.Location = new System.Drawing.Point(15, 63);
+            this.lblThumbprint.Name = "lblThumbprint";
+            this.lblThumbprint.Size = new System.Drawing.Size(109, 13);
+            this.lblThumbprint.Text = "Certificate Thumbprint:";
+            // 
+            // txtThumbprint
+            // 
+            this.txtThumbprint.Location = new System.Drawing.Point(130, 60);
+            this.txtThumbprint.Name = "txtThumbprint";
+            this.txtThumbprint.Size = new System.Drawing.Size(320, 20);
+            this.txtThumbprint.TabIndex = 3;
+            // 
+            // lblBearerToken
+            // 
+            this.lblBearerToken.AutoSize = true;
+            this.lblBearerToken.Location = new System.Drawing.Point(15, 98);
+            this.lblBearerToken.Name = "lblBearerToken";
+            this.lblBearerToken.Size = new System.Drawing.Size(72, 13);
+            this.lblBearerToken.Text = "Bearer Token:";
+            // 
+            // txtBearerToken
+            // 
+            this.txtBearerToken.Location = new System.Drawing.Point(130, 95);
+            this.txtBearerToken.Name = "txtBearerToken";
+            this.txtBearerToken.Size = new System.Drawing.Size(320, 20);
+            this.txtBearerToken.TabIndex = 4;
+            this.txtBearerToken.UseSystemPasswordChar = true;
+            // 
+            // lblOperatingMode
+            // 
+            this.lblOperatingMode.AutoSize = true;
+            this.lblOperatingMode.Location = new System.Drawing.Point(15, 133);
+            this.lblOperatingMode.Name = "lblOperatingMode";
+            this.lblOperatingMode.Size = new System.Drawing.Size(88, 13);
+            this.lblOperatingMode.Text = "Operating Mode:";
+            // 
+            // cmbOperatingMode
+            // 
+            this.cmbOperatingMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOperatingMode.FormattingEnabled = true;
+            this.cmbOperatingMode.Location = new System.Drawing.Point(130, 130);
+            this.cmbOperatingMode.Name = "cmbOperatingMode";
+            this.cmbOperatingMode.Size = new System.Drawing.Size(180, 21);
+            this.cmbOperatingMode.TabIndex = 5;
+            // 
+            // lblConnectionStatus
+            // 
+            this.lblConnectionStatus.AutoSize = true;
+            this.lblConnectionStatus.Location = new System.Drawing.Point(15, 175);
+            this.lblConnectionStatus.Name = "lblConnectionStatus";
+            this.lblConnectionStatus.Size = new System.Drawing.Size(0, 13);
+            this.lblConnectionStatus.TabIndex = 6;
+            // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(216, 445);
+            this.btnOK.Location = new System.Drawing.Point(230, 480);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 10;
@@ -269,7 +424,7 @@ namespace OE2EmpireTracker.Forms
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(297, 445);
+            this.btnCancel.Location = new System.Drawing.Point(311, 480);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 11;
@@ -278,7 +433,7 @@ namespace OE2EmpireTracker.Forms
             // 
             // btnResetDefaults
             // 
-            this.btnResetDefaults.Location = new System.Drawing.Point(397, 445);
+            this.btnResetDefaults.Location = new System.Drawing.Point(411, 480);
             this.btnResetDefaults.Name = "btnResetDefaults";
             this.btnResetDefaults.Size = new System.Drawing.Size(75, 23);
             this.btnResetDefaults.TabIndex = 12;
@@ -291,13 +446,8 @@ namespace OE2EmpireTracker.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(484, 481);
-            this.Controls.Add(this.grpStructureCount);
-            this.Controls.Add(this.grpWorkerRequest);
-            this.Controls.Add(this.grpColonyImport);
-            this.Controls.Add(this.grpBackgroundProcessing);
-            this.Controls.Add(this.grpAdminReport);
-            this.Controls.Add(this.grpCountdownDisplay);
+            this.ClientSize = new System.Drawing.Size(498, 515);
+            this.Controls.Add(this.tabControl);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnResetDefaults);
@@ -307,6 +457,9 @@ namespace OE2EmpireTracker.Forms
             this.Name = "FormPreferences";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Preferences";
+            this.tabControl.ResumeLayout(false);
+            this.tabThresholds.ResumeLayout(false);
+            this.tabServer.ResumeLayout(false);
             this.grpStructureCount.ResumeLayout(false);
             this.grpStructureCount.PerformLayout();
             this.grpWorkerRequest.ResumeLayout(false);
@@ -319,11 +472,16 @@ namespace OE2EmpireTracker.Forms
             this.grpAdminReport.PerformLayout();
             this.grpCountdownDisplay.ResumeLayout(false);
             this.grpCountdownDisplay.PerformLayout();
+            this.grpServerConnection.ResumeLayout(false);
+            this.grpServerConnection.PerformLayout();
             this.ResumeLayout(false);
         }
 
         #endregion
 
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tabThresholds;
+        private System.Windows.Forms.TabPage tabServer;
         private System.Windows.Forms.GroupBox grpStructureCount;
         private System.Windows.Forms.Label lblStructureYellow;
         internal System.Windows.Forms.TextBox txtStructureYellow;
@@ -348,6 +506,17 @@ namespace OE2EmpireTracker.Forms
         private System.Windows.Forms.GroupBox grpCountdownDisplay;
         private System.Windows.Forms.Label lblCountdownRefresh;
         internal System.Windows.Forms.TextBox txtCountdownRefresh;
+        private System.Windows.Forms.GroupBox grpServerConnection;
+        private System.Windows.Forms.Label lblServerUrl;
+        internal OE2EmpireTracker.Controls.ValidatedTextBox txtServerUrl;
+        internal System.Windows.Forms.Button btnTestConnection;
+        private System.Windows.Forms.Label lblThumbprint;
+        internal OE2EmpireTracker.Controls.ValidatedTextBox txtThumbprint;
+        private System.Windows.Forms.Label lblBearerToken;
+        internal OE2EmpireTracker.Controls.ValidatedTextBox txtBearerToken;
+        private System.Windows.Forms.Label lblOperatingMode;
+        internal System.Windows.Forms.ComboBox cmbOperatingMode;
+        internal System.Windows.Forms.Label lblConnectionStatus;
         internal System.Windows.Forms.Button btnOK;
         internal System.Windows.Forms.Button btnCancel;
         internal System.Windows.Forms.Button btnResetDefaults;
