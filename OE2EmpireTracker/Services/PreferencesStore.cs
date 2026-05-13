@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Newtonsoft.Json;
 using NLog;
+using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
 
@@ -103,6 +104,11 @@ namespace OE2EmpireTracker.Services
                 if (_preferences.Thresholds == null)
                 {
                     _preferences.Thresholds = new ThresholdPreferences();
+                }
+
+                if (_preferences.ServerConnection == null)
+                {
+                    _preferences.ServerConnection = new Client.ServerConnectionSettings();
                 }
 
                 Log.Info("Loaded UI preferences from {0}", _filePath);

@@ -46,8 +46,17 @@ Enum defining data access modes:
 ### ServerConnectionSettings
 
 Settings POCO for the remote server connection:
-- ServerUrl, BearerToken, TrustedThumbprint
-- Mode (OperatingMode), DualWriteEnabled flag
+- ServerUrl, ProtectedBearerToken (DPAPI base64 blob), TrustedThumbprint
+- Mode (OperatingMode)
+
+### ServerContext
+
+Singleton that holds the remote server infrastructure instances on application startup:
+- Provides access to RemoteFactionClient, SyncManager, and OfflineQueue
+- Initialized via `ServerContext.Initialize()` in MainWindow constructor
+- No-op when OperatingMode is LocalOnly or ServerUrl is empty
+- If connection fails on startup, logs warning and continues offline
+- Implements IDisposable to clean up RemoteFactionClient resources
 
 ### CredentialStore
 

@@ -115,101 +115,101 @@
 
 ## Phase 11: Client Infrastructure — Preferences and Connection
 
-- [ ] 11.1 Add server connection settings to PreferencesStore (ServerUrl, TrustedThumbprint, BearerToken reference, OperatingMode)
+- [-] 11.1 Add server connection settings to PreferencesStore (ServerUrl, TrustedThumbprint, BearerToken reference, OperatingMode)
   - _Satisfies: Req 11 ("allow configuring the service URL and certificate thumbprint in preferences")_
   - _Satisfies: Req 16 ("operating mode SHALL be configurable in preferences")_
-- [ ] 11.2 Instantiate RemoteFactionClient on application startup using stored preferences
+- [~] 11.2 Instantiate RemoteFactionClient on application startup using stored preferences
   - _Satisfies: Req 11 ("tracker client SHALL fall back to local data if service unreachable")_
   - _Satisfies: Design §9.2 (RemoteFactionClient lifecycle)_
-- [ ] 11.3 Instantiate SyncManager on application startup, wire to RemoteFactionClient and OfflineQueue
+- [~] 11.3 Instantiate SyncManager on application startup, wire to RemoteFactionClient and OfflineQueue
   - _Satisfies: Req 15 Sync/Offline ("tracker client SHALL sync all data on startup when connected")_
   - _Satisfies: Design §9.3 (SyncManager coordinates data flow)_
-- [ ] 11.4 Instantiate OfflineQueue on application startup, load persisted queue
+- [~] 11.4 Instantiate OfflineQueue on application startup, load persisted queue
   - _Satisfies: Req 15 Sync/Offline ("queue changes locally and sync on reconnection")_
   - _Satisfies: Design §9.4 (OfflineQueue persisted to local file)_
-- [ ] 11.5 Store bearer token securely via CredentialStore (DPAPI)
+- [~] 11.5 Store bearer token securely via CredentialStore (DPAPI)
   - _Satisfies: Req 2 ("client SHALL allow user to trust a specific server certificate thumbprint")_
   - _Satisfies: Design §9.2 (SecureString bearer token)_
 
 ## Phase 12: Client UI — Server Preferences and Connection Status
 
-- [ ] 12.1 Add "Server" tab/section to Preferences UI with fields: Server URL, Certificate Thumbprint, Bearer Token, Operating Mode dropdown (Local Only / Server Only / Server + Local)
+- [~] 12.1 Add "Server" tab/section to Preferences UI with fields: Server URL, Certificate Thumbprint, Bearer Token, Operating Mode dropdown (Local Only / Server Only / Server + Local)
   - _Satisfies: Req 11 ("allow configuring the service URL and certificate thumbprint in preferences")_
   - _Satisfies: Req 16 ("operating mode SHALL be configurable in preferences and changeable at any time")_
-- [ ] 12.2 Add "Test Connection" button in preferences that calls /health and reports success/failure
+- [~] 12.2 Add "Test Connection" button in preferences that calls /health and reports success/failure
   - _Satisfies: Req 11 (verifiable connectivity)_
   - _Satisfies: Req 2 ("client SHALL allow user to trust a specific server certificate thumbprint")_
-- [ ] 12.3 On first connect with untrusted cert, prompt user to trust the thumbprint
+- [~] 12.3 On first connect with untrusted cert, prompt user to trust the thumbprint
   - _Satisfies: Req 2 ("client SHALL allow user to trust a specific server certificate thumbprint")_
   - _Satisfies: Design §6.3 ("Server certificate thumbprint: ... Trust this server?")_
-- [ ] 12.4 Add connection status indicator to MainWindow (Connected/Disconnected/Connecting)
+- [~] 12.4 Add connection status indicator to MainWindow (Connected/Disconnected/Connecting)
   - _Satisfies: Req 11 ("indicate connection status (connected/disconnected) in the UI")_
   - _Satisfies: Design §9.2 (ConnectionStatus enum, StatusChanged event)_
-- [ ] 12.5 Add real-time vs polling indicator in status bar
+- [~] 12.5 Add real-time vs polling indicator in status bar
   - _Satisfies: Req 18 Fallback ("client SHALL indicate whether receiving real-time updates or polling")_
-- [ ] 12.6 When switching from Server Only to Local Only, prompt user to export data first
+- [~] 12.6 When switching from Server Only to Local Only, prompt user to export data first
   - _Satisfies: Req 16 ("switching from Server Only to Local Only SHALL prompt user to export first")_
 
 ## Phase 13: Sync and Offline Behavior
 
-- [ ] 13.1 On startup (if connected): call SyncManager.SyncOnStartupAsync() to pull full sync from server
+- [~] 13.1 On startup (if connected): call SyncManager.SyncOnStartupAsync() to pull full sync from server
   - _Satisfies: Req 12 ("client SHALL use this endpoint on startup")_
   - _Satisfies: Req 15 Sync/Offline ("tracker client SHALL sync all data with service on startup")_
-- [ ] 13.2 Write-through: when data changes locally and mode is Server Only or DualWrite, push to server immediately via SyncManager
+- [~] 13.2 Write-through: when data changes locally and mode is Server Only or DualWrite, push to server immediately via SyncManager
   - _Satisfies: Req 15 Sync/Offline ("write changes to service immediately when connected")_
   - _Satisfies: Design §9.3 ("On data change if connected: push to server immediately")_
-- [ ] 13.3 Offline queuing: when disconnected, queue mutations via OfflineQueue, persist to disk
+- [~] 13.3 Offline queuing: when disconnected, queue mutations via OfflineQueue, persist to disk
   - _Satisfies: Req 15 Sync/Offline ("queue changes locally and sync on reconnection")_
   - _Satisfies: Design §9.4 (OfflineQueue persisted to offline-queue.json)_
-- [ ] 13.4 On reconnection: flush offline queue, detect divergence if server also changed
+- [~] 13.4 On reconnection: flush offline queue, detect divergence if server also changed
   - _Satisfies: Req 15 Sync/Offline ("on reconnection after offline changes, IF server data also changed, prompt user")_
   - _Satisfies: Design §9.3 (HandleReconnectionAsync)_
-- [ ] 13.5 Divergence resolution UI: show what diverged, let user choose upload-local or download-server
+- [~] 13.5 Divergence resolution UI: show what diverged, let user choose upload-local or download-server
   - _Satisfies: Req 15 Sync/Offline ("client SHALL clearly show what has diverged before user makes choice")_
-- [ ] 13.6 Fallback to local data when server unreachable
+- [~] 13.6 Fallback to local data when server unreachable
   - _Satisfies: Req 11 ("fall back to local faction/character data if service is unreachable")_
-- [ ] 13.7 Disable local BackgroundProcessor when server-side processing is active for the character
+- [~] 13.7 Disable local BackgroundProcessor when server-side processing is active for the character
   - _Satisfies: Req 17 ("client SHALL NOT run its own background processor to avoid double-processing")_
   - _Satisfies: Design §8.2 ("Client disables its local BackgroundProcessor")_
 
 ## Phase 14: WebSocket Client
 
-- [ ] 14.1 Implement WebSocket client in RemoteFactionClient (connect to wss://server/ws?token=...)
+- [~] 14.1 Implement WebSocket client in RemoteFactionClient (connect to wss://server/ws?token=...)
   - _Satisfies: Req 18 ("authenticate WebSocket using same Bearer token")_
   - _Satisfies: Design §7.1 (connection lifecycle)_
-- [ ] 14.2 Automatic reconnection with exponential backoff (1s, 2s, 4s, 8s, max 60s)
+- [~] 14.2 Automatic reconnection with exponential backoff (1s, 2s, 4s, 8s, max 60s)
   - _Satisfies: Req 18 ("automatically reconnect on disconnection with exponential backoff")_
   - _Satisfies: Design §7.1 ("Client reconnects with exponential backoff")_
-- [ ] 14.3 Send heartbeat/ping every 30s to keep connection alive
+- [~] 14.3 Send heartbeat/ping every 30s to keep connection alive
   - _Satisfies: Req 18 ("client SHALL send heartbeat/ping to keep connection alive")_
   - _Satisfies: Design §7.1 ("Client sends ping every 30s")_
-- [ ] 14.4 Handle incoming push events (Created, Updated, Deleted, TimerTick, MembershipChanged, etc.)
+- [~] 14.4 Handle incoming push events (Created, Updated, Deleted, TimerTick, MembershipChanged, etc.)
   - _Satisfies: Req 18 ("on receiving a push event, client SHALL fetch updated data via REST API")_
   - _Satisfies: Design §7.2 (push event schema)_
-- [ ] 14.5 Fallback to periodic REST polling when WebSocket unavailable (configurable interval, default 60s)
+- [~] 14.5 Fallback to periodic REST polling when WebSocket unavailable (configurable interval, default 60s)
   - _Satisfies: Req 18 Fallback ("IF WebSocket fails, client SHALL fall back to periodic polling")_
-- [ ] 14.6 Self-throttle based on server-communicated rate limits (from WebSocket handshake)
+- [~] 14.6 Self-throttle based on server-communicated rate limits (from WebSocket handshake)
   - _Satisfies: Req 19 ("client SHALL respect communicated limits to self-throttle")_
   - _Satisfies: Req 19 ("service SHALL inform client of rate limits on WebSocket connection")_
 
 ## Phase 15: Data Portability and Operating Modes
 
-- [ ] 15.1 Implement dual-write mode: every server write also writes to local PlayerData.json
+- [~] 15.1 Implement dual-write mode: every server write also writes to local PlayerData.json
   - _Satisfies: Req 16 ("in dual-write mode, every change written to server SHALL also be written to local file")_
   - _Satisfies: Req 16 ("local file format SHALL remain identical to current PlayerData.json format")_
-- [ ] 15.2 Implement Server Only mode: all reads/writes go to server, no local file maintained
+- [~] 15.2 Implement Server Only mode: all reads/writes go to server, no local file maintained
   - _Satisfies: Req 16 ("Server Only: all reads/writes go to server, no local file maintained")_
-- [ ] 15.3 Implement Local Only mode: no server connection (current behavior preserved)
+- [~] 15.3 Implement Local Only mode: no server connection (current behavior preserved)
   - _Satisfies: Req 16 ("Local Only: no server connection, reads/writes local JSON files")_
   - Note: This is the existing behavior — task is to ensure mode switching works correctly.
-- [ ] 15.4 "Export from Server" UI function — download all character data, save as local JSON
+- [~] 15.4 "Export from Server" UI function — download all character data, save as local JSON
   - _Satisfies: Req 16 ("provide an Export from Server function")_
   - _Satisfies: Req 16 ("export SHALL produce file identical in format to current PlayerData.json")_
-- [ ] 15.5 Ensure disconnecting from server allows continued local operation with zero data loss
+- [~] 15.5 Ensure disconnecting from server allows continued local operation with zero data loss
   - _Satisfies: Req 16 ("disconnect from server and continue using tracker with local file with zero data loss")_
-- [ ] 15.6 Use server as primary storage when connected (services read from server, not local file)
+- [~] 15.6 Use server as primary storage when connected (services read from server, not local file)
   - _Satisfies: Req 15 ("tracker client SHALL use service as primary storage when connected")_
-- [ ] 15.7 Prompt sharing preferences configuration when character first joins a faction
+- [~] 15.7 Prompt sharing preferences configuration when character first joins a faction
   - _Satisfies: Req 15 Sharing ("when character first joins faction, client SHALL prompt to configure sharing")_
 
 ---

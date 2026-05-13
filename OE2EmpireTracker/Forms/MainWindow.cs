@@ -82,6 +82,10 @@ namespace OE2EmpireTracker
 
             _backgroundProcessor = new BackgroundProcessor(playerContext);
             _backgroundProcessor.Start();
+
+            // Initialize remote server infrastructure (no-op if LocalOnly)
+            Client.ServerContext.Initialize();
+
             timerNextProcess.Tick += OnTimerNextProcessTick;
             int intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.CountdownRefreshRateSeconds * 1000);
             timerNextProcess.Interval = Math.Max(intervalMs, 1000);

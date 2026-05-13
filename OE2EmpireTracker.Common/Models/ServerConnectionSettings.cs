@@ -15,9 +15,11 @@ namespace OE2EmpireTracker.Client
         public string ServerUrl { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the bearer token for API authentication.
+        /// Gets or sets the DPAPI-protected bearer token (base64 blob).
+        /// Never stores plaintext — use CredentialStore.Protect to set
+        /// and CredentialStore.Unprotect to read.
         /// </summary>
-        public string BearerToken { get; set; } = string.Empty;
+        public string ProtectedBearerToken { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the trusted certificate thumbprint for self-signed cert pinning.
@@ -28,10 +30,5 @@ namespace OE2EmpireTracker.Client
         /// Gets or sets the operating mode for data access.
         /// </summary>
         public OperatingMode Mode { get; set; } = OperatingMode.LocalOnly;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether dual-write (server + local) is enabled.
-        /// </summary>
-        public bool DualWriteEnabled { get; set; }
     }
 }

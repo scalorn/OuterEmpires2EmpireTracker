@@ -1,0 +1,158 @@
+// <copyright file="ServerContext.cs" company="OE2EmpireTracker">
+// Copyright (c) OE2EmpireTracker. All rights reserved.
+// </copyright>
+
+using System;
+using System.Security;
+using NLog;
+using OE2EmpireTracker.Services;
+
+namespace OE2EmpireTracker.Client
+{
+    /// <summary>
+    /// Singleton that holds the remote server infrastructure instances
+    /// (RemoteFactionClient, SyncManager, OfflineQueue).
+    /// Initialized on application startup when operating mode is not LocalOnly.
+    /// </summary>
+    public class ServerContext : IDisposable
+    {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        private static ServerContext _instance;
+
+        private bool _disposed;
+
+        private ServerContext(
+            RemoteFactionClient client,
+            SyncManager syncManager,
+            OfflineQueue offlineQueue,
+            OperatingMode mode)
+        {
+            Client = client;
+            SyncManager = syncManager;
+            OfflineQueue = offlineQueue;
+            Mode = mode;
+        }
+
+        /// <summary>
+        /// Gets the singleton instance, or null if not initialized.
+        /// </summary>
+        public static ServerContext Instance => _instance;
+
+        /// <summary>
+        /// Gets the remote faction client (null if LocalOnly).
+        /// </summary>
+        public RemoteFactionClient Client { get; }
+
+        /// <summary>
+        /// Gets the sync manager.
+        /// </summary>
+        public SyncManager SyncManager { get; }
+
+        /// <summary>
+        /// Gets the offline queue.
+        /// </summary>
+        public OfflineQueue OfflineQueue { get; }
+
+        /// <summary>
+        /// Gets the current operating mode.
+        /// </summary>
+        public OperatingMode Mode { get; }
+
+        /// <summary>
+        /// Initializes the server context from stored preferences.
+        /// If operating mode is LocalOnly or server URL is empty, no client is created.
+        /// If connection fails on startup, logs a warning and continues in offline mode.
+        /// </summary>
+        public static void Initialize()
+        {
+            if (_instance != null)
+            {
+                return;
+            }
+
+            var prefs = PreferencesStore.GetInstance().Preferences;
+            var settings = prefs.ServerConnection;
+
+            if (settings.Mode == OperatingMode.LocalOnly)
+            {
+                Log.Info("ServerContext: Operating in LocalOnly mode, no server connection");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(settings.ServerUrl))
+            {
+                Log.Warn("ServerContext: Mode is {0} but ServerUrl is empty, staying offline", settings.Mode);
+                return;
+            }
+
+            SecureString token = CredentialStore.Unprotect(settings.ProtectedBearerToken);
+
+            RemoteFactionClient client = null;
+            try
+            {
+                client = new RemoteFactionClient(
+                    settings.ServerUrl,
+                    token,
+                    settings.TrustedThumbprint);
+                Log.Info("ServerContext: Created RemoteFactionClient for {0}", settings.ServerUrl);
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex, "ServerContext: Failed to create RemoteFactionClient, continuing offline");
+                token?.Dispose();
+                return;
+            }
+
+            var offlineQueue = new OfflineQueue();
+            offlineQueue.Load();
+
+            var syncManager = new SyncManager(client, offlineQueue);
+            syncManager.Mode = settings.Mode;
+
+            _instance = new ServerContext(client, syncManager, offlineQueue, settings.Mode);
+            Log.Info(
+                "ServerContext: Initialized (Mode={0}, QueuedChanges={1})",
+                settings.Mode,
+                offlineQueue.Count);
+        }
+
+        /// <summary>
+        /// Resets the singleton (disposes resources). Used for testing and shutdown.
+        /// </summary>
+        public static void Reset()
+        {
+            if (_instance != null)
+            {
+                _instance.Dispose();
+                _instance = null;
+            }
+        }
+
+        /// <summary>
+        /// Releases all resources used by the server context.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and (optionally) managed resources.
+        /// </summary>
+        /// <param name="disposing">True to release both managed and unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    Client?.Dispose();
+                }
+
+                _disposed = true;
+            }
+        }
+    }
+}

@@ -155,10 +155,9 @@
     <Compile Include="Client\ConnectionStatusChangedEventArgs.cs" />
     <Compile Include="Client\CredentialStore.cs" />
     <Compile Include="Client\OfflineQueue.cs" />
-    <Compile Include="Client\OperatingMode.cs" />
     <Compile Include="Client\QueuedChange.cs" />
     <Compile Include="Client\RemoteFactionClient.cs" />
-    <Compile Include="Client\ServerConnectionSettings.cs" />
+    <Compile Include="Client\ServerContext.cs" />
     <Compile Include="Client\SyncManager.cs" />
     <Compile Include="Services\Migration\DeterministicUUID.cs" />
     <Compile Include="Services\Migration\RemapUUID.cs" />

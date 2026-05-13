@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using OE2EmpireTracker.Client;
 
 namespace OE2EmpireTracker.Models
 {
@@ -12,6 +13,11 @@ namespace OE2EmpireTracker.Models
         public List<OpenFormEntry> OpenFormEntries { get; set; } = new List<OpenFormEntry>();
 
         public ThresholdPreferences Thresholds { get; set; } = new ThresholdPreferences();
+
+        /// <summary>
+        /// Gets or sets the server connection settings (URL, token, thumbprint, mode).
+        /// </summary>
+        public ServerConnectionSettings ServerConnection { get; set; } = new ServerConnectionSettings();
 
         /// <summary>
         /// Time horizon in hours for flatpack auto-fill. 0 = include all unbuilt structures.
