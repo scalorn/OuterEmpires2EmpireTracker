@@ -60,6 +60,7 @@ The user expects that when data changes (via background processing, import, or a
 | FormColonyActivity | Yes | ColonyDataChanged |
 | FormColonyDailyBuild | Yes | ColonyDataChanged |
 | FormBlueprintV2 | Yes | BlueprintDataChanged, PricingDataChanged |
+| FormShipTemplate | Yes | PricingDataChanged |
 | FormSurvey | Yes | SurveyDataChanged, ColonyDataChanged |
 | FormPlayerProfile | Yes | PlayerProfileDataChanged |
 | FormDeliveryRoute | Yes | DeliveryDataChanged |
@@ -68,7 +69,6 @@ The user expects that when data changes (via background processing, import, or a
 | FormMarket | Yes | MarketDataChanged |
 | FormStation | Yes | (CurrentPlayerChanged only) |
 | FormAsteroid | Yes | AsteroidDataChanged |
-| FormShipTemplate | Yes | (CurrentPlayerChanged only) |
 | FormShipInstance | Yes | (CurrentPlayerChanged only) |
 | FormStockTargets | Yes | (CurrentPlayerChanged only) |
 | FormSupplyChain | Yes | (CurrentPlayerChanged only) |

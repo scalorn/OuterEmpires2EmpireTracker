@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
@@ -25,6 +26,8 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
         private List<string> _hullUUIDs = new List<string>();
 
+        private List<string> _pricingPlanUUIDs = new List<string>();
+
         public FormShipTemplate()
         {
             // Guard against WindowStateHelper.RestoreState setting control values
@@ -45,6 +48,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             txtFilter.TextChanged += TxtFilter_TextChanged;
             txtName.TextChanged += TxtName_TextChanged;
             cmbHull.SelectedItemChanged += CmbHull_SelectedItemChanged;
+            cmbPricingPlan.SelectedItemChanged += CmbPricingPlan_SelectedItemChanged;
 
             cmdNew.Click += CmdNew_Click;
             cmdDelete.Click += CmdDelete_Click;
@@ -70,6 +74,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             flpDetail.Layout += FlpDetail_Layout;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
+            playerContext.PricingDataChanged += OnPricingDataChanged;
 
             // Clear the programmatic guard. Then restore selection by matching
             // the plan name that WindowStateHelper put into txtName.
@@ -108,6 +113,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
+            playerContext.PricingDataChanged -= OnPricingDataChanged;
             base.OnFormClosed(e);
         }
 
@@ -158,7 +164,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             int w = flpDetail.ClientSize.Width;
             int h = flpDetail.ClientSize.Height;
             int statsHeight = 185;
-            int gridHeight = h - flpName.Height - flpHull.Height - cmdSave.Height - statsHeight - 30;
+            int gridHeight = h - flpName.Height - flpHull.Height - flpPricing.Height - cmdSave.Height - statsHeight - 36;
             if (gridHeight < 50) gridHeight = 50;
             dgvSlots.Size = new System.Drawing.Size(w - 6, gridHeight);
             rtbStats.Size = new System.Drawing.Size(w - 6, statsHeight);
@@ -267,6 +273,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             cmbHull.SetItems(cmbHull.Items, null);
             dgvSlots.Rows.Clear();
             rtbStats.Text = string.Empty;
+            lblComputedPrice.Text = string.Empty;
             SetDetailEnabled(false);
         }
 
@@ -274,6 +281,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
         {
             txtName.Enabled = enabled;
             cmbHull.Enabled = enabled;
+            cmbPricingPlan.Enabled = enabled;
             cmdSave.Enabled = enabled;
             dgvSlots.Enabled = enabled;
         }
@@ -324,6 +332,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             _viewModel.ClearComponents();
             PopulateSlotGrid();
             RefreshStats();
+            UpdateTemplatePrice();
         }
 
         // Slot Grid
@@ -431,6 +440,7 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
             }
 
             RefreshStats();
+            UpdateTemplatePrice();
         }
 
         private void DgvSlots_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -992,8 +1002,163 @@ namespace OE2EmpireTracker.Forms.ShipTemplate
 
             _viewModel.Reset();
             PopulateHullCombo();
+            PopulatePricingPlanCombo();
             PopulateTemplateList();
             ClearForm();
+        }
+
+        // -------------------------------------------------------------------
+        // Pricing
+        // -------------------------------------------------------------------
+
+        private void PopulatePricingPlanCombo()
+        {
+            var sw = Stopwatch.StartNew();
+            using var guard = new ProgrammaticUpdateGuard(this);
+            string selectedName = cmbPricingPlan.SelectedItem;
+
+            var plans = playerContext.GetCurrentPlayerPricingPlans();
+            var planNames = new List<string>();
+            _pricingPlanUUIDs = new List<string>();
+            planNames.Add("(none)");
+            _pricingPlanUUIDs.Add(string.Empty);
+            foreach (var p in CollectionSortHelper.OrderPricingPlans(plans))
+            {
+                planNames.Add(p.Name);
+                _pricingPlanUUIDs.Add(p.UUID);
+            }
+
+            cmbPricingPlan.SetItems(planNames, selectedName ?? "(none)");
+            sw.Stop();
+            Log.Info("PERF PopulatePricingPlanCombo: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void UpdateTemplatePrice()
+        {
+            var sw = Stopwatch.StartNew();
+
+            if (_viewModel.IsNew && string.IsNullOrEmpty(_viewModel.Name))
+            {
+                lblComputedPrice.Text = string.Empty;
+                sw.Stop();
+                return;
+            }
+
+            if (string.IsNullOrEmpty(_viewModel.HullBlueprintUUID))
+            {
+                lblComputedPrice.Text = string.Empty;
+                sw.Stop();
+                return;
+            }
+
+            int planIdx = cmbPricingPlan.SelectedFullIndex;
+            string planUUID = planIdx >= 0 && planIdx < _pricingPlanUUIDs.Count ? _pricingPlanUUIDs[planIdx] : string.Empty;
+            if (string.IsNullOrEmpty(planUUID))
+            {
+                lblComputedPrice.Text = string.Empty;
+                sw.Stop();
+                return;
+            }
+
+            var plan = playerContext.PricingPlanList.FirstOrDefault(p => p.UUID == planUUID);
+            if (plan == null)
+            {
+                lblComputedPrice.Text = string.Empty;
+                sw.Stop();
+                return;
+            }
+
+            var hullBp = playerContext.FindBlueprint(_viewModel.HullBlueprintUUID);
+            if (hullBp == null)
+            {
+                lblComputedPrice.Text = string.Empty;
+                sw.Stop();
+                return;
+            }
+
+            decimal aggregatePrice = 0m;
+            bool isComplete = true;
+
+            // Hull price
+            decimal hullMfgHours = 0m;
+            string hullMfgTimeStr;
+            hullBp.Properties.GetString(BlueprintPropertyKeys.ManufactureRunTime, string.Empty, out hullMfgTimeStr);
+            if (!string.IsNullOrEmpty(hullMfgTimeStr))
+            {
+                decimal seconds = EvolutionChainService.ParseTimeToSeconds(hullMfgTimeStr);
+                hullMfgHours = seconds / 3600m;
+            }
+
+            var hullResult = PriceCalculator.ComputeBlueprintPrice(plan, hullBp, hullMfgHours);
+            aggregatePrice += hullResult.Price;
+            isComplete = isComplete && hullResult.IsComplete;
+
+            // Component prices
+            foreach (var slot in _viewModel.Components)
+            {
+                if (string.IsNullOrEmpty(slot.BlueprintUUID)) continue;
+
+                var compBp = playerContext.FindBlueprint(slot.BlueprintUUID);
+                if (compBp == null)
+                {
+                    isComplete = false;
+                    continue;
+                }
+
+                decimal compMfgHours = 0m;
+                string compMfgTimeStr;
+                compBp.Properties.GetString(BlueprintPropertyKeys.ManufactureRunTime, string.Empty, out compMfgTimeStr);
+                if (!string.IsNullOrEmpty(compMfgTimeStr))
+                {
+                    decimal seconds = EvolutionChainService.ParseTimeToSeconds(compMfgTimeStr);
+                    compMfgHours = seconds / 3600m;
+                }
+
+                var compResult = PriceCalculator.ComputeBlueprintPrice(plan, compBp, compMfgHours);
+                aggregatePrice += compResult.Price;
+                isComplete = isComplete && compResult.IsComplete;
+            }
+
+            string priceText = aggregatePrice.ToString("N2");
+            if (!isComplete)
+            {
+                priceText += " *";
+            }
+
+            lblComputedPrice.Text = priceText;
+            sw.Stop();
+            Log.Info("PERF UpdateTemplatePrice: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void RefreshPricing()
+        {
+            PopulatePricingPlanCombo();
+            UpdateTemplatePrice();
+        }
+
+        private void CmbPricingPlan_SelectedItemChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            UpdateTemplatePrice();
+        }
+
+        private void OnPricingDataChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try
+                {
+                    BeginInvoke(new Action(() => OnPricingDataChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+
+                return;
+            }
+
+            RefreshPricing();
         }
 
         // Helpers

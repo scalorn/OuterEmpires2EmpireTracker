@@ -40,10 +40,11 @@ MDI child form. Left-list / right-detail pattern.
 
 Controls:
 - Left: `flpSearchList` -> `txtFilter` (ValidatedTextBox) + `lvwTemplates` (ListView)
-- Right: `flpDetail` -> `txtName` (ValidatedTextBox), `cmbHull` (FilteredTextComboSet), `dgvSlots` (DataGridView), `rtbStats` (RichTextBox), `flpCommands` (New/Save/Delete/Order Build)
+- Right: `flpDetail` -> `txtName` (ValidatedTextBox), `cmbHull` (FilteredTextComboSet), `flpPricing` (`cmbPricingPlan` FilteredTextComboSet + `lblComputedPrice` Label), `dgvSlots` (DataGridView), `rtbStats` (RichTextBox), `flpCommands` (New/Save/Delete/Order Build)
 - `dgvSlots` columns: SlotType (text, read-only), SlotIndex (text, read-only), Component (`DataGridViewFilteredComboBoxColumn` -- inline filter TextBox + ComboBox on cell edit)
 - Component column uses `DataGridViewFilteredComboBoxCell` with per-cell item lists. UUID resolution via parallel `SlotInfo.UUIDByIndex` on row Tag.
 - Hull combo uses `FilteredTextComboSet` with parallel `_hullUUIDs` list for UUID resolution. Shows full-width combo when unfocused, splits into filter + combo on focus.
+- Pricing row: `flpPricing` (FlowLayoutPanel, LeftToRight) contains `lblPricingPlan` ("Pricing Plan:"), `cmbPricingPlan` (FilteredTextComboSet with parallel `_pricingPlanUUIDs`), `lblComputedPrice` (computed aggregate price). Plan selection persists across template changes.
 - Stats panel: `rtbStats` (RichTextBox) -- computed from hull + components via ShipBuildService.ComputeStats. Shows all stat groups in compact multi-line format.
 - Buttons at bottom of detail panel in `flpCommands`: `cmdNew`, `cmdSave`, `cmdDelete`, `cmdOrderBuild`
 - "Order Build" opens a dialog to select/create a build plan and specify assembly location

@@ -1,4 +1,4 @@
-﻿namespace OE2EmpireTracker.Forms.ShipTemplate
+namespace OE2EmpireTracker.Forms.ShipTemplate
 {
     partial class FormShipTemplate
     {
@@ -10,6 +10,7 @@
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -38,7 +39,10 @@
             this.flpHull = new System.Windows.Forms.FlowLayoutPanel();
             this.lblHull = new System.Windows.Forms.Label();
             this.cmbHull = new OE2EmpireTracker.Controls.FilteredTextComboSet();
-            this.cmdSave = new System.Windows.Forms.Button();
+            this.flpPricing = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblPricingPlan = new System.Windows.Forms.Label();
+            this.cmbPricingPlan = new OE2EmpireTracker.Controls.FilteredTextComboSet();
+            this.lblComputedPrice = new System.Windows.Forms.Label();
             this.dgvSlots = new System.Windows.Forms.DataGridView();
             this.colSlotType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSlotIndex = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -52,6 +56,7 @@
             this.flpDetail.SuspendLayout();
             this.flpName.SuspendLayout();
             this.flpHull.SuspendLayout();
+            this.flpPricing.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSlots)).BeginInit();
             this.SuspendLayout();
             //
@@ -130,9 +135,17 @@
             this.cmdNew.Text = "New";
             this.cmdNew.UseVisualStyleBackColor = true;
             //
+            // cmdSave
+            //
+            this.cmdSave.Location = new System.Drawing.Point(84, 3);
+            this.cmdSave.Name = "cmdSave";
+            this.cmdSave.Size = new System.Drawing.Size(75, 23);
+            this.cmdSave.Text = "Save";
+            this.cmdSave.UseVisualStyleBackColor = true;
+            //
             // cmdDelete
             //
-            this.cmdDelete.Location = new System.Drawing.Point(84, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(165, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(75, 23);
             this.cmdDelete.Text = "Delete";
@@ -140,7 +153,7 @@
             //
             // cmdOrderBuild
             //
-            this.cmdOrderBuild.Location = new System.Drawing.Point(165, 3);
+            this.cmdOrderBuild.Location = new System.Drawing.Point(246, 3);
             this.cmdOrderBuild.Name = "cmdOrderBuild";
             this.cmdOrderBuild.Size = new System.Drawing.Size(85, 23);
             this.cmdOrderBuild.Text = "Order Build";
@@ -150,6 +163,7 @@
             //
             this.flpDetail.Controls.Add(this.flpName);
             this.flpDetail.Controls.Add(this.flpHull);
+            this.flpDetail.Controls.Add(this.flpPricing);
             this.flpDetail.Controls.Add(this.dgvSlots);
             this.flpDetail.Controls.Add(this.rtbStats);
             this.flpDetail.Controls.Add(this.flpCommands);
@@ -209,13 +223,50 @@
             this.cmbHull.Name = "cmbHull";
             this.cmbHull.Size = new System.Drawing.Size(350, 25);
             //
-            // cmdSave
+            // flpPricing
             //
-            this.cmdSave.Location = new System.Drawing.Point(84, 3);
-            this.cmdSave.Name = "cmdSave";
-            this.cmdSave.Size = new System.Drawing.Size(75, 23);
-            this.cmdSave.Text = "Save";
-            this.cmdSave.UseVisualStyleBackColor = true;
+            this.flpPricing.AutoSize = true;
+            this.flpPricing.Controls.Add(this.lblPricingPlan);
+            this.flpPricing.Controls.Add(this.cmbPricingPlan);
+            this.flpPricing.Controls.Add(this.lblComputedPrice);
+            this.flpPricing.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            this.flpPricing.Location = new System.Drawing.Point(3, 68);
+            this.flpPricing.Margin = new System.Windows.Forms.Padding(3);
+            this.flpPricing.Name = "flpPricing";
+            this.flpPricing.Size = new System.Drawing.Size(662, 25);
+            this.flpPricing.TabIndex = 3;
+            //
+            // lblPricingPlan
+            //
+            this.lblPricingPlan.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblPricingPlan.AutoSize = true;
+            this.lblPricingPlan.Location = new System.Drawing.Point(2, 4);
+            this.lblPricingPlan.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPricingPlan.Name = "lblPricingPlan";
+            this.lblPricingPlan.Size = new System.Drawing.Size(72, 13);
+            this.lblPricingPlan.TabIndex = 0;
+            this.lblPricingPlan.Text = "Pricing Plan:";
+            this.lblPricingPlan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            //
+            // cmbPricingPlan
+            //
+            this.cmbPricingPlan.Location = new System.Drawing.Point(78, 2);
+            this.cmbPricingPlan.Margin = new System.Windows.Forms.Padding(2);
+            this.cmbPricingPlan.Name = "cmbPricingPlan";
+            this.cmbPricingPlan.Size = new System.Drawing.Size(200, 21);
+            this.cmbPricingPlan.TabIndex = 1;
+            //
+            // lblComputedPrice
+            //
+            this.lblComputedPrice.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblComputedPrice.AutoSize = true;
+            this.lblComputedPrice.Location = new System.Drawing.Point(282, 4);
+            this.lblComputedPrice.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblComputedPrice.Name = "lblComputedPrice";
+            this.lblComputedPrice.Size = new System.Drawing.Size(0, 13);
+            this.lblComputedPrice.TabIndex = 2;
+            this.lblComputedPrice.Text = "";
+            this.lblComputedPrice.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             //
             // dgvSlots
             //
@@ -228,7 +279,7 @@
             this.colSlotType,
             this.colSlotIndex,
             this.colComponent});
-            this.dgvSlots.Location = new System.Drawing.Point(3, 68);
+            this.dgvSlots.Location = new System.Drawing.Point(3, 99);
             this.dgvSlots.Name = "dgvSlots";
             this.dgvSlots.Size = new System.Drawing.Size(662, 300);
             this.dgvSlots.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
@@ -256,10 +307,10 @@
             //
             // rtbStats
             //
-            this.rtbStats.Location = new System.Drawing.Point(3, 403);
+            this.rtbStats.Location = new System.Drawing.Point(3, 405);
             this.rtbStats.Name = "rtbStats";
             this.rtbStats.ReadOnly = true;
-            this.rtbStats.Size = new System.Drawing.Size(662, 185);
+            this.rtbStats.Size = new System.Drawing.Size(662, 150);
             this.rtbStats.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.rtbStats.BackColor = System.Drawing.SystemColors.Window;
             //
@@ -296,6 +347,8 @@
             this.flpName.PerformLayout();
             this.flpHull.ResumeLayout(false);
             this.flpHull.PerformLayout();
+            this.flpPricing.ResumeLayout(false);
+            this.flpPricing.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSlots)).EndInit();
             this.ResumeLayout(false);
         }
@@ -310,6 +363,7 @@
         private System.Windows.Forms.ListView lvwTemplates;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button cmdNew;
+        private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Button cmdOrderBuild;
         private System.Windows.Forms.FlowLayoutPanel flpDetail;
@@ -319,7 +373,10 @@
         private System.Windows.Forms.FlowLayoutPanel flpHull;
         private System.Windows.Forms.Label lblHull;
         private OE2EmpireTracker.Controls.FilteredTextComboSet cmbHull;
-        private System.Windows.Forms.Button cmdSave;
+        private System.Windows.Forms.FlowLayoutPanel flpPricing;
+        private System.Windows.Forms.Label lblPricingPlan;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbPricingPlan;
+        private System.Windows.Forms.Label lblComputedPrice;
         private System.Windows.Forms.DataGridView dgvSlots;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSlotType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSlotIndex;
