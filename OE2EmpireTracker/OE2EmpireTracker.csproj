@@ -195,6 +195,12 @@
     <Compile Include="Forms\Station\FormStation.Designer.cs">
       <DependentUpon>FormStation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\System\FormSystem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\System\FormSystem.Designer.cs">
+      <DependentUpon>FormSystem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Asteroid\FormAsteroid.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -273,6 +279,9 @@
     <Compile Include="Persistence\BoundsValidator.cs" />
     <Compile Include="Persistence\WindowStateHelper.cs" />
     <Compile Include="Services\EmpireContext.cs" />
+    <Compile Include="Services\SystemRepository.cs" />
+    <Compile Include="Services\DistanceCalculator.cs" />
+    <Compile Include="Services\SystemImporter.cs" />
     <Compile Include="Constants\ChartColors.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
     <Compile Include="Controls\ListViewItemComparer.cs" />
@@ -309,6 +318,7 @@
     <Compile Include="ViewModels\PlayerProfileViewModel.cs" />
     <Compile Include="ViewModels\SurveyViewModel.cs" />
     <Compile Include="ViewModels\PricingPlanViewModel.cs" />
+    <Compile Include="ViewModels\SystemViewModel.cs" />
     <Compile Include="Parsers\BlueprintScanner.cs" />
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>
@@ -453,6 +463,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\System\FormSystem.resx">
+      <DependentUpon>FormSystem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PlayerProfile\FormPlayerProfile.resx">
       <DependentUpon>FormPlayerProfile.cs</DependentUpon>

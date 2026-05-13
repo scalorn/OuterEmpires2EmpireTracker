@@ -270,6 +270,11 @@ namespace OE2EmpireTracker
             OpenMdiChild<Forms.StockTargets.FormStockTargets>();
         }
 
+        private void SystemsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMdiChild<FormSystem>();
+        }
+
         private void DeliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.DeliveryExecution.FormDeliveryExecution>();

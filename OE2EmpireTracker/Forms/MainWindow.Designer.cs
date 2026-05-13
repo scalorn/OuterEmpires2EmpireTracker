@@ -61,6 +61,7 @@
             this.asteroidsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.supplyChainsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockTargetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.systemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cascadeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tileHorizontalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -175,7 +176,8 @@
             this.stationsToolStripMenuItem,
             this.stockTargetsToolStripMenuItem,
             this.supplyChainsToolStripMenuItem,
-            this.addSurveyToolStripMenuItem});
+            this.addSurveyToolStripMenuItem,
+            this.systemsToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(62, 22);
             this.editToolStripMenuItem.Text = "Manage";
@@ -315,6 +317,13 @@
             this.stockTargetsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.stockTargetsToolStripMenuItem.Text = "Stock Targets";
             this.stockTargetsToolStripMenuItem.Click += new System.EventHandler(this.StockTargetsToolStripMenuItem_Click);
+            // 
+            // systemsToolStripMenuItem
+            // 
+            this.systemsToolStripMenuItem.Name = "systemsToolStripMenuItem";
+            this.systemsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.systemsToolStripMenuItem.Text = "Systems";
+            this.systemsToolStripMenuItem.Click += new System.EventHandler(this.SystemsToolStripMenuItem_Click);
             // 
             // deliveryExecutionToolStripMenuItem
             // 
@@ -456,6 +465,7 @@
         private System.Windows.Forms.ToolStripMenuItem asteroidsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem supplyChainsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stockTargetsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem systemsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deliveryExecutionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyDailyBuildToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyActivityToolStripMenuItem;

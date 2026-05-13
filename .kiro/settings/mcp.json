@@ -15,6 +15,7 @@
         "delete_file",
         "create_directory",
         "delete_directory",
+        "delete_file",
         "delete_file"
       ]
     }

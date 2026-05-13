@@ -514,6 +514,11 @@
     <Compile Include="Models\ReadOnlyWrapperStructuralTests.cs" />
     <Compile Include="Models\ReadOnlyPlayerProfileGapFillTests.cs" />
     <Compile Include="Models\SerializationBackwardCompatibilityTests.cs" />
+    <Compile Include="Models\StarSystemTests.cs" />
+    <Compile Include="Services\SystemRepositoryTests.cs" />
+    <Compile Include="Services\EmpireContextSystemRepositoryTests.cs" />
+    <Compile Include="Services\SystemImporterTests.cs" />
+    <Compile Include="Services\DistanceCalculatorTests.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />
     <None Include="app.config" />

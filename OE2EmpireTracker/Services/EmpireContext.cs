@@ -54,6 +54,8 @@ namespace OE2EmpireTracker.Services
 
         private Dictionary<string, Commodity> _commodityNameCache;
 
+        private SystemRepository _systemRepository;
+
         /// <summary>
         /// Internal constructor for test infrastructure. Accepts pre-parsed
         /// BaselineRoot and PlayerRoot so tests can skip disk I/O.
@@ -83,6 +85,9 @@ namespace OE2EmpireTracker.Services
             // Wire up static dependencies for Common-portable models
             Constants.GameConstants.SetGameConfig(GameConstants);
             WireDisplayNameResolver();
+
+            _systemRepository = new SystemRepository();
+            _systemRepository.Load(SystemRepository.FilePath);
 
             // Run migrations same as private constructor
             int prevBaselineVersion = DataVersion;
@@ -131,6 +136,9 @@ namespace OE2EmpireTracker.Services
             // Wire up static dependencies for Common-portable models
             Constants.GameConstants.SetGameConfig(GameConstants);
             WireDisplayNameResolver();
+
+            _systemRepository = new SystemRepository();
+            _systemRepository.Load(SystemRepository.FilePath);
 
             // Run migrations after both contexts are loaded
             int prevBaselineVersion = DataVersion;
@@ -191,6 +199,8 @@ namespace OE2EmpireTracker.Services
         public IReadOnlyList<Blueprint> GlobalBlueprintList => _globalBlueprintList;
 
         public IReadOnlyList<Commodity> CommodityList => _commodityList;
+
+        public SystemRepository SystemRepository => _systemRepository;
 
         public static EmpireContext GetInstance()
         {
