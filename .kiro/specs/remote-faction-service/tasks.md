@@ -115,19 +115,19 @@
 
 ## Phase 11: Client Infrastructure — Preferences and Connection
 
-- [-] 11.1 Add server connection settings to PreferencesStore (ServerUrl, TrustedThumbprint, BearerToken reference, OperatingMode)
+- [x] 11.1 Add server connection settings to PreferencesStore (ServerUrl, TrustedThumbprint, BearerToken reference, OperatingMode)
   - _Satisfies: Req 11 ("allow configuring the service URL and certificate thumbprint in preferences")_
   - _Satisfies: Req 16 ("operating mode SHALL be configurable in preferences")_
-- [~] 11.2 Instantiate RemoteFactionClient on application startup using stored preferences
+- [x] 11.2 Instantiate RemoteFactionClient on application startup using stored preferences
   - _Satisfies: Req 11 ("tracker client SHALL fall back to local data if service unreachable")_
   - _Satisfies: Design §9.2 (RemoteFactionClient lifecycle)_
-- [~] 11.3 Instantiate SyncManager on application startup, wire to RemoteFactionClient and OfflineQueue
+- [x] 11.3 Instantiate SyncManager on application startup, wire to RemoteFactionClient and OfflineQueue
   - _Satisfies: Req 15 Sync/Offline ("tracker client SHALL sync all data on startup when connected")_
   - _Satisfies: Design §9.3 (SyncManager coordinates data flow)_
-- [~] 11.4 Instantiate OfflineQueue on application startup, load persisted queue
+- [x] 11.4 Instantiate OfflineQueue on application startup, load persisted queue
   - _Satisfies: Req 15 Sync/Offline ("queue changes locally and sync on reconnection")_
   - _Satisfies: Design §9.4 (OfflineQueue persisted to local file)_
-- [~] 11.5 Store bearer token securely via CredentialStore (DPAPI)
+- [x] 11.5 Store bearer token securely via CredentialStore (DPAPI)
   - _Satisfies: Req 2 ("client SHALL allow user to trust a specific server certificate thumbprint")_
   - _Satisfies: Design §9.2 (SecureString bearer token)_
 
