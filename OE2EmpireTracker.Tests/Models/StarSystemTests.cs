@@ -5,7 +5,6 @@
 using System;
 using System.Linq;
 using FsCheck;
-using FsCheck.Fluent;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
@@ -33,7 +32,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// <summary>
         /// Provides a custom FsCheck Arbitrary for StarSystem generation.
         /// </summary>
-        public class StarSystemArbitraries
+        public static class StarSystemArbitraries
         {
             /// <summary>
             /// Generates arbitrary StarSystem instances with valid field values.

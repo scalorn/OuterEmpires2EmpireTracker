@@ -46,6 +46,12 @@ You can create as many plans as you want per player profile. Common scenarios:
 
 Select a plan and click **Delete**. You'll be asked to confirm. All resource prices in that plan are removed.
 
+## Where Pricing Plans Are Used
+
+- **Blueprint form** — Select a plan to see the manufacturing cost of a single blueprint.
+- **Ship Template form** — Select a plan to see the total build cost of an entire ship design (hull + all components).
+- **Stock Targets** — Pricing data feeds into cost estimates for replenishment planning.
+
 ## Player Ownership
 
 Each pricing plan belongs to a specific player profile. When you switch players, the plan list updates to show only that player's plans.

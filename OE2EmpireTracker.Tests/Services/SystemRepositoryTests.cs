@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FsCheck;
-using FsCheck.Fluent;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
@@ -67,7 +66,7 @@ namespace OE2EmpireTracker.Tests.Services
         private static Gen<List<StarSystem>> GenUniqueIdSystems()
         {
             return Gen.Choose(1, 20).SelectMany(count =>
-                Gen.ListOf(count, Arb.From(StarSystemTests.StarSystemArbitraries.StarSystemArbitrary()).Generator)
+                Gen.ListOf(count, StarSystemTests.StarSystemArbitraries.StarSystemArbitrary().Generator)
                    .Select(systems =>
                    {
                        var list = systems.ToList();
@@ -83,7 +82,7 @@ namespace OE2EmpireTracker.Tests.Services
         private static Gen<List<StarSystem>> GenUniqueNameSystems()
         {
             return Gen.Choose(1, 15).SelectMany(count =>
-                Gen.ListOf(count, Arb.From(StarSystemTests.StarSystemArbitraries.StarSystemArbitrary()).Generator)
+                Gen.ListOf(count, StarSystemTests.StarSystemArbitraries.StarSystemArbitrary().Generator)
                    .Select(systems =>
                    {
                        var list = systems.ToList();

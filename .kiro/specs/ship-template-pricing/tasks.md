@@ -15,13 +15,13 @@ Add a pricing plan selector and aggregate cost display to FormShipTemplate. The 
     - Update flpDetail.Controls collection ordering to insert flpPricing after flpHull
     - _Requirements: 1.1, 1.5, 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 2. Add pricing fields, methods, and event wiring to FormShipTemplate.cs
-  - [-] 2.1 Add _pricingPlanUUIDs field and PopulatePricingPlanCombo() method
+- [x] 2. Add pricing fields, methods, and event wiring to FormShipTemplate.cs
+  - [x] 2.1 Add _pricingPlanUUIDs field and PopulatePricingPlanCombo() method
     - Declare `private List<string> _pricingPlanUUIDs = new List<string>()`
     - Implement PopulatePricingPlanCombo(): get plans via playerContext.GetCurrentPlayerPricingPlans(), sort via CollectionSortHelper.OrderPricingPlans(), build name list with "(none)" default, build parallel UUID list, set items on cmbPricingPlan with ProgrammaticUpdateGuard and PERF timing
     - _Requirements: 1.2, 1.4, 7.1_
 
-  - [~] 2.2 Add UpdateTemplatePrice() method
+  - [x] 2.2 Add UpdateTemplatePrice() method
     - Implement price computation: resolve hull blueprint, iterate filled component slots, call PriceCalculator.ComputeBlueprintPrice for each, sum prices, AND IsComplete flags
     - Parse ManufactureRunTime via EvolutionChainService.ParseTimeToSeconds / 3600 (default 0 if missing)
     - Format result as N2, append " *" if incomplete
@@ -29,49 +29,49 @@ Add a pricing plan selector and aggregate cost display to FormShipTemplate. The 
     - Include PERF timing
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 3.3, 3.4, 7.3, 7.4_
 
-  - [~] 2.3 Add RefreshPricing(), CmbPricingPlan_SelectedItemChanged, and OnPricingDataChanged handlers
+  - [x] 2.3 Add RefreshPricing(), CmbPricingPlan_SelectedItemChanged, and OnPricingDataChanged handlers
     - RefreshPricing(): calls PopulatePricingPlanCombo() + UpdateTemplatePrice()
     - CmbPricingPlan_SelectedItemChanged: calls UpdateTemplatePrice() (with programmatic update guard check)
     - OnPricingDataChanged: IsDisposed check, InvokeRequired + BeginInvoke marshal, calls RefreshPricing()
     - _Requirements: 1.3, 4.1, 4.4, 6.3, 7.2_
 
-  - [~] 2.4 Wire event subscriptions and unsubscriptions
+  - [x] 2.4 Wire event subscriptions and unsubscriptions
     - In constructor: subscribe cmbPricingPlan.SelectedItemChanged += CmbPricingPlan_SelectedItemChanged
     - In constructor: subscribe playerContext.PricingDataChanged += OnPricingDataChanged
     - In OnFormClosed: unsubscribe playerContext.PricingDataChanged -= OnPricingDataChanged
     - _Requirements: 6.1, 6.2_
 
-- [ ] 3. Wire recalculation triggers into existing handlers
-  - [~] 3.1 Add UpdateTemplatePrice() call to CmbHull_SelectedItemChanged
+- [x] 3. Wire recalculation triggers into existing handlers
+  - [x] 3.1 Add UpdateTemplatePrice() call to CmbHull_SelectedItemChanged
     - Call UpdateTemplatePrice() after existing hull-change logic
     - _Requirements: 4.2_
 
-  - [~] 3.2 Add UpdateTemplatePrice() call to DgvSlots_CellValueChanged
+  - [x] 3.2 Add UpdateTemplatePrice() call to DgvSlots_CellValueChanged
     - Call UpdateTemplatePrice() after existing RefreshStats() call
     - _Requirements: 4.3_
 
-  - [~] 3.3 Add PopulatePricingPlanCombo() call to OnCurrentPlayerChanged handler
+  - [x] 3.3 Add PopulatePricingPlanCombo() call to OnCurrentPlayerChanged handler
     - Price clears via ClearForm() which is already called
     - _Requirements: 4.5_
 
-  - [~] 3.4 Update ClearForm() to clear lblComputedPrice.Text but preserve cmbPricingPlan selection
+  - [x] 3.4 Update ClearForm() to clear lblComputedPrice.Text but preserve cmbPricingPlan selection
     - Add `lblComputedPrice.Text = string.Empty;` to ClearForm()
     - Do NOT reset cmbPricingPlan selection
     - _Requirements: 7.5_
 
-  - [~] 3.5 Update SetDetailEnabled() to include cmbPricingPlan.Enabled
+  - [x] 3.5 Update SetDetailEnabled() to include cmbPricingPlan.Enabled
     - Add `cmbPricingPlan.Enabled = enabled;` to SetDetailEnabled()
     - _Requirements: 1.6_
 
-  - [~] 3.6 Update FlpDetail_Layout() grid height calculation to account for flpPricing
+  - [x] 3.6 Update FlpDetail_Layout() grid height calculation to account for flpPricing
     - Subtract flpPricing.Height from available grid height
     - _Requirements: 5.2_
 
-- [~] 4. Checkpoint - Ensure build compiles and audit passes
+- [x] 4. Checkpoint - Ensure build compiles and audit passes
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Write property-based tests (FsCheck + NUnit)
-  - [~] 5.1 Write property test: Template price equals sum of individual blueprint prices
+  - [-] 5.1 Write property test: Template price equals sum of individual blueprint prices
     - **Property 1: Template price aggregation equals sum of individual ComputeBlueprintPrice calls**
     - Generate random PricingPlan, hull blueprint, and 0-8 component blueprints with random Resources and ManufactureRunTime
     - Assert aggregate price == sum of individual PriceCalculator.ComputeBlueprintPrice results

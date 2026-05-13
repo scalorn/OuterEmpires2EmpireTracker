@@ -25,6 +25,16 @@ The stats panel updates live as you install components. At a glance you can see:
 
 This lets you experiment with loadouts without doing the math yourself.
 
+### Pricing
+
+Select a **Pricing Plan** from the dropdown below the hull selector to see the total estimated cost of building the ship. The price sums the individual blueprint costs (hull + all filled component slots) using the selected plan's resource prices and time-cost parameters.
+
+- The price updates automatically when you change the hull, swap components, or modify the pricing plan externally.
+- An asterisk (**\***) after the price means one or more blueprints have missing resource prices in the selected plan — the total is incomplete.
+- Select "(none)" to hide the price display.
+
+This lets you compare ship designs by cost before committing to a build order.
+
 ### Order Build
 
 When you're happy with a template, click **Order Build**. This generates manufacturing items for the hull and every installed component, feeding them directly into the Build Planner. One click and your entire ship is queued for production.

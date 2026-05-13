@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FsCheck;
-using FsCheck.Fluent;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -84,14 +83,14 @@ namespace OE2EmpireTracker.Tests.Services
                 from l in Gen.Choose(1, 4)
                 from st in Gen.Elements("M", "K", "G", "F", "W", "X")
                 from fid in Gen.Choose(0, 50)
-                from fn in Gen.Elements("", "Galactic", "Empire", "Rebels")
-                from fc in Gen.Elements("", "#FF0000", "#00FF00", "#0000FF")
+                from fn in Gen.Elements(string.Empty, "Galactic", "Empire", "Rebels")
+                from fc in Gen.Elements(string.Empty, "#FF0000", "#00FF00", "#0000FF")
                 from o in Gen.Elements(0, 1)
                 from sp in Gen.Elements(0, 1)
                 from sb in Gen.Elements(0, 1)
                 select new { id, name, x, y, q, s, r, l, st, fid, fn, fc, o, sp, sb };
 
-            var arb = Arb.From(sourceGen, Shrink.Default<object>());
+            var arb = Arb.From(sourceGen);
 
             var prop = Prop.ForAll(arb, record =>
             {
@@ -176,8 +175,8 @@ namespace OE2EmpireTracker.Tests.Services
                     from l in Gen.Choose(1, 4)
                     from st in Gen.Elements("M", "K", "G", "F", "W", "X")
                     from fid in Gen.Choose(0, 50)
-                    from fn in Gen.Elements("", "Galactic", "Empire")
-                    from fc in Gen.Elements("", "#FF0000", "#00FF00")
+                    from fn in Gen.Elements(string.Empty, "Galactic", "Empire")
+                    from fc in Gen.Elements(string.Empty, "#FF0000", "#00FF00")
                     from o in Gen.Elements(0, 1)
                     from sp in Gen.Elements(0, 1)
                     from sb in Gen.Elements(0, 1)
@@ -201,7 +200,7 @@ namespace OE2EmpireTracker.Tests.Services
                     })
                 select new JArray(records.ToArray());
 
-            var arb = Arb.From(sourceGen, Shrink.Default<JArray>());
+            var arb = Arb.From<JArray>(sourceGen);
 
             var prop = Prop.ForAll(arb, sourceArray =>
             {

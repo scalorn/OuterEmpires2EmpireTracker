@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FsCheck;
-using FsCheck.Fluent;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
@@ -119,7 +118,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void Property9_RouteDistance_EqualsSumOfLegs()
         {
             var systemsGen = Gen.Choose(2, 10).SelectMany(count =>
-                Gen.ListOf(count, Arb.From(StarSystemTests.StarSystemArbitraries.StarSystemArbitrary()).Generator)
+                Gen.ListOf(count, StarSystemTests.StarSystemArbitraries.StarSystemArbitrary().Generator)
                    .Select(systems =>
                    {
                        var list = systems.ToList();
@@ -132,7 +131,7 @@ namespace OE2EmpireTracker.Tests.Services
                        return list;
                    }));
 
-            var arb = Arb.From(systemsGen, Shrink.Default<List<StarSystem>>());
+            var arb = Arb.From<List<StarSystem>>(systemsGen);
 
             var prop = Prop.ForAll(arb, systems =>
             {
