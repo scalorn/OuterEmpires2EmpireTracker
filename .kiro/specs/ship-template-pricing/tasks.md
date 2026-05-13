@@ -70,61 +70,61 @@ Add a pricing plan selector and aggregate cost display to FormShipTemplate. The 
 - [x] 4. Checkpoint - Ensure build compiles and audit passes
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Write property-based tests (FsCheck + NUnit)
-  - [-] 5.1 Write property test: Template price equals sum of individual blueprint prices
+- [x] 5. Write property-based tests (FsCheck + NUnit)
+  - [x] 5.1 Write property test: Template price equals sum of individual blueprint prices
     - **Property 1: Template price aggregation equals sum of individual ComputeBlueprintPrice calls**
     - Generate random PricingPlan, hull blueprint, and 0-8 component blueprints with random Resources and ManufactureRunTime
     - Assert aggregate price == sum of individual PriceCalculator.ComputeBlueprintPrice results
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.5**
 
-  - [~] 5.2 Write property test: Incomplete flag propagation
+  - [x] 5.2 Write property test: Incomplete flag propagation
     - **Property 2: Any incomplete individual price makes aggregate incomplete**
     - Generate scenarios where some blueprints have missing resource prices
     - Assert aggregate IsComplete == AND of all individual IsComplete flags
     - **Validates: Requirements 2.6**
 
-  - [~] 5.3 Write property test: Pricing plan dropdown ordering
+  - [x] 5.3 Write property test: Pricing plan dropdown ordering
     - **Property 3: Dropdown always sorted with "(none)" first and parallel UUID list aligned**
     - Generate random sets of pricing plans with random names
     - Assert first item is "(none)" with empty UUID, remaining sorted ordinal case-insensitive, UUIDs match
     - **Validates: Requirements 1.2**
 
-  - [~] 5.4 Write property test: Price display formatting
+  - [x] 5.4 Write property test: Price display formatting
     - **Property 4: Display matches N2 format with asterisk when incomplete**
     - Generate random decimal prices >= 0 and random IsComplete booleans
     - Assert formatted text == Price.ToString("N2") when complete, Price.ToString("N2") + " *" when incomplete
     - **Validates: Requirements 3.1, 3.2**
 
-- [ ] 6. Write unit tests (NUnit example-based)
-  - [~] 6.1 Write unit test: UpdateTemplatePrice_NoHull_ClearsLabel
+- [x] 6. Write unit tests (NUnit example-based)
+  - [x] 6.1 Write unit test: UpdateTemplatePrice_NoHull_ClearsLabel
     - Verify price label is empty when no hull is selected
     - **Validates: Requirements 3.3**
 
-  - [~] 6.2 Write unit test: UpdateTemplatePrice_NoPlan_ClearsLabel
+  - [x] 6.2 Write unit test: UpdateTemplatePrice_NoPlan_ClearsLabel
     - Verify price label is empty when "(none)" plan is selected
     - **Validates: Requirements 3.4**
 
-  - [~] 6.3 Write unit test: UpdateTemplatePrice_HullOnly_ShowsHullPrice
+  - [x] 6.3 Write unit test: UpdateTemplatePrice_HullOnly_ShowsHullPrice
     - Verify hull-only template shows just the hull blueprint price
     - **Validates: Requirements 7.4**
 
-  - [~] 6.4 Write unit test: UpdateTemplatePrice_UnresolvableComponent_FlagsIncomplete
+  - [x] 6.4 Write unit test: UpdateTemplatePrice_UnresolvableComponent_FlagsIncomplete
     - Verify unresolvable component contributes 0 and flags incomplete
     - **Validates: Requirements 7.3**
 
-  - [~] 6.5 Write unit test: ClearForm_PreservesPricingPlanSelection
+  - [x] 6.5 Write unit test: ClearForm_PreservesPricingPlanSelection
     - Verify ClearForm() does not reset cmbPricingPlan selection
     - **Validates: Requirements 7.5**
 
-  - [~] 6.6 Write unit test: OnPricingDataChanged_PlanDeleted_RevertsToNone
+  - [x] 6.6 Write unit test: OnPricingDataChanged_PlanDeleted_RevertsToNone
     - Verify deleted plan causes revert to "(none)" on next refresh
     - **Validates: Requirements 7.2**
 
-  - [~] 6.7 Write unit test: SetDetailEnabled_False_DisablesPricingCombo
+  - [x] 6.7 Write unit test: SetDetailEnabled_False_DisablesPricingCombo
     - Verify SetDetailEnabled(false) disables cmbPricingPlan
     - **Validates: Requirements 1.6**
 
-- [~] 7. Final checkpoint - Ensure all tests pass and audit is clean
+- [-] 7. Final checkpoint - Ensure all tests pass and audit is clean
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
