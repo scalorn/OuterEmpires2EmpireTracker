@@ -65,6 +65,9 @@ The **Yield Distribution** tab shows how resource yields are spread across your 
 ### Player Profiles & Skills
 Track multiple characters with their skills, ranks, and faction. Import your profile directly from the game — copy the profile panel HTML and click Import. The tracker extracts your name, faction, credits, all three rank tracks, skill points, skill group states, individual skill levels, and training status. Skills like Builder, Extraction Focus, and Research Focus affect colony operations — the tracker accounts for them. Switch between players with a dropdown and all your data follows.
 
+### Star Systems
+Browse and search the galaxy's 23,631 star systems. Each system has coordinates, a grid location (Quadrant/Sector/Region/Locality), spectral class, faction ownership, and infrastructure flags (orbital, spaceport, starbase). Edit faction and infrastructure data as the game evolves. The tracker uses system coordinates to calculate distances between colonies — a foundation for future route optimization. Open from **Manage → Systems**.
+
 ### Window State Persistence
 Every form remembers its position, size, column widths, sort order, and filter state. Open multiple instances of the same form with different layouts. Your workspace is exactly how you left it next time you launch.
 
@@ -106,6 +109,7 @@ Press **F1** on any form for context-sensitive help, or use **Help → Contents*
 - [Delivery Routes](docs/delivery-routes.md)
 - [Build Planner](docs/build-planner.md)
 - [Pricing Plans](docs/pricing-plans.md)
+- [Systems](docs/systems.md)
 - [Player Profiles](docs/player-profiles.md)
 - [Background Processing](docs/background-processing.md)
 - [Window State](docs/window-state.md)

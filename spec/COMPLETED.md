@@ -4,6 +4,10 @@ Items moved here from BACKLOG.md after implementation, plus completed specs that
 
 ---
 
+### BL-019: Systems & Planets Model
+Implemented star system coordinate data for the galaxy (23,631 systems). StarSystem model with 15 properties, SystemRepository with O(1) lookups by Id/Name, DistanceCalculator for Euclidean distance, SystemImporter for galaxy extract import, and FormSystem MDI child for viewing/editing system data (faction ownership, infrastructure flags). 14 FsCheck property-based tests + unit tests. Spec: `.kiro/specs/systems-model/`.
+**Status: Complete**
+
 ### BL-107: Right-Click Context Menus for DataGridView Grids
 Added right-click context menus to all DataGridView grids across 9 forms (17 grids total). Each menu mirrors existing button actions, with CellMouseClick row selection and Opening handler enable/disable logic. FormDeliveryRoute includes positional constraints for Move Up/Down. Spec: .kiro/specs/grid-context-menus/
 **Status: Complete**

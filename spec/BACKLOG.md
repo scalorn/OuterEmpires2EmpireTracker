@@ -34,13 +34,8 @@ From Recommendations.md #13: UI for transferring colonies/blueprints/surveys bet
 
 ## New
 
-### BL-019: Systems & Planets Model
-**Dependencies:** None (but enables Route Auto-Sequencing)
-
-Model star systems and planets more completely with coordinate data. Planet and jump point coordinates are available in the game UI. System-level coordinates may not be directly visible but could potentially be parsed from game JSON data. Once modeled, this enables travel time approximation and automatic delivery route sequencing.
-
 ### BL-020: Route Auto-Sequencing
-**Dependencies:** Systems & Planets Model (BL-019)
+**Dependencies:** Systems & Planets Model (BL-019 — Complete)
 
 With coordinate data for systems and planets, automatically sequence delivery route stops to minimize travel time. Approximate travel distances from coordinates and optimize stop order.
 

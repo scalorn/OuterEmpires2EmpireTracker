@@ -20,6 +20,7 @@ Welcome to the OE2 Empire Tracker documentation. This application helps you mana
 - [Stations](stations.md) — Station inventory, components, munitions, and delivery integration
 - [Market](market.md) — Listings, sales, purchases, transactions, and profit/loss tracking
 - [Stock Targets](stock-targets.md) — Inventory goals, shortfall detection, and replenishment orders
+- [Systems](systems.md) — Star system data, distance calculations, faction ownership, and infrastructure
 - [Contacts](contacts.md) — Factions, external characters, and app-wide lookups
 - [Player Profiles](player-profiles.md) — Skills, ranks, and profile management
 - [Background Processing](background-processing.md) — Automatic timer processing and status bar indicators
