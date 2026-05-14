@@ -150,7 +150,7 @@ DarkCrusader logged all user actions via `LoggedActionBean`. For a permission sy
 
 ### Acceptance Criteria
 
-- [ ] Every permission change (capability grant/revoke, group assignment, clearance level change, feature flag change) SHALL be logged.
+- [ ] Every permission change (capability grant/revoke, group assignment, clearance level change) SHALL be logged.
 - [ ] The audit log SHALL record: timestamp, actor (who made the change), target (who was affected), action type, old value, new value.
 - [ ] GET /api/audit/permissions SHALL return permission change history (Owner only, or Faction Leader for their faction's changes).
 - [ ] Audit records SHALL be retained for a configurable period (default: 90 days).
@@ -166,6 +166,6 @@ DarkCrusader logged all user actions via `LoggedActionBean`. For a permission sy
 
 3. **Sharing template complexity** — Group sharing templates could become complex. Should they support the full sharing rule syntax (per-entity, per-category, per-clearance-level) or a simplified subset?
 
-4. **Intel comment scope** — Should intel comments be faction-scoped (only your faction's comments on a player) or global (all factions' comments visible if you have clearance)? DarkCrusader was single-faction so this wasn't an issue.
+4. ~~**Intel comment scope**~~ — **RESOLVED:** Intel comments are faction-scoped when shared (visible to faction members with sufficient clearance), private when not shared (visible only to submitter). There is no cross-faction intel visibility.
 
 5. ~~**Feature flag vs. capability**~~ — **RESOLVED:** Collapsed into a single system. Capabilities now cover both action permissions and server behavior opt-ins. No separate FeatureFlag table.
