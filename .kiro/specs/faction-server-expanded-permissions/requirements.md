@@ -165,12 +165,12 @@ DarkCrusader logged all user actions via `LoggedActionBean`. For a permission sy
 
 ## Open Questions
 
-1. **Capability inheritance** — Should capabilities be strictly additive, or should groups be able to DENY capabilities that the role would normally grant? DarkCrusader supported deny (value=0) in addition to grant (value=1) and inherit (value=-1).
+1. ~~**Capability inheritance**~~ — **RESOLVED:** No deny. Capabilities are strictly additive (grant-only). Everything starts as denied — you need an explicit grant to do anything. This eliminates ambiguity about conflicting rules. If you have the capability from any source (role, group, or individual grant), you can do the thing.
 
-2. **Cross-faction clearance** — If a character is in multiple factions (alliance scenario), should clearance levels be independent per faction? (Current spec says yes — faction-scoped.)
+2. ~~**Cross-faction clearance**~~ — **RESOLVED:** Clearance is per-faction. Each faction defines its own `FactionClearanceLevel` table independently. A character's clearance in Faction A has no bearing on their clearance in Faction B.
 
-3. **Sharing template complexity** — Group sharing templates could become complex. Should they support the full sharing rule syntax (per-entity, per-category, per-clearance-level) or a simplified subset?
+3. ~~**Sharing template complexity**~~ — **RESOLVED:** Full syntax. Faction side: per-entity, per-category, per-clearance-level (via MinClearanceLevelUUID). Character side: per-entity, per-category (no clearance — sharing outward is unconditional).
 
-4. ~~**Intel comment scope**~~ — **RESOLVED:** Intel comments are faction-scoped when shared (visible to faction members with sufficient clearance), private when not shared (visible only to submitter). There is no cross-faction intel visibility.
+4. ~~**Intel comment scope**~~ — **RESOLVED:** Intel comments are faction-scoped when shared (visible to faction members with sufficient clearance), private when not shared (visible only to submitter). No cross-faction intel visibility. Multi-faction sharing via IntelCommentFactionShare junction table.
 
 5. ~~**Feature flag vs. capability**~~ — **RESOLVED:** Collapsed into a single system. Capabilities now cover both action permissions and server behavior opt-ins. No separate FeatureFlag table.

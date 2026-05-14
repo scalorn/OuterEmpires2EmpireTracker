@@ -185,15 +185,19 @@ CharacterGroupSharingRule (sharing template — defines WHAT the character share
   - EntityUUID (nullable — item-level rule)
   NOTE: No MinClearanceLevelUUID — sharing outward is unconditional to the target.
 
-CharacterGranteePermissions (per grantee — links another character to a group + clearance)
-  - GranteeCharacterUUID → Character.UUID (who is receiving access)
+CharacterGranteePermissions (per grantee — links a character OR faction to a group + clearance)
   - OwnerCharacterUUID → Character.UUID (who is granting access)
+  - GranteeType (enum: Character, Faction)
+  - GranteeUUID (CharacterUUID or FactionUUID — who is receiving access)
   - GroupUUID → CharacterPermissionGroup.UUID (nullable — at most one group per granting character)
   - ClearanceLevelUUID → CharacterClearanceLevel.UUID (nullable — grantee's assigned clearance)
+  NOTE: When GranteeType=Faction, all members of that faction receive the shared data.
+        When GranteeType=Character, only that specific character receives it.
 
 CharacterGranteeCapability (individual capability grants, outside of groups)
-  - GranteeCharacterUUID → Character.UUID (who is receiving the capability)
   - OwnerCharacterUUID → Character.UUID (who is granting it)
+  - GranteeType (enum: Character, Faction)
+  - GranteeUUID (CharacterUUID or FactionUUID — who is receiving the capability)
   - CapabilityUUID → CharacterCapability.UUID
 ```
 
@@ -607,8 +611,9 @@ erDiagram
     CharacterCapability ||--o{ CharacterGroupCapability : "granted via"
 
     CharacterGranteePermissions {
-        string GranteeCharacterUUID FK "the grantee"
         string OwnerCharacterUUID FK "the granter"
+        string GranteeType "Character | Faction"
+        string GranteeUUID "CharacterUUID or FactionUUID"
         string GroupUUID FK "nullable"
         string ClearanceLevelUUID FK "nullable"
     }
@@ -617,8 +622,9 @@ erDiagram
     CharacterGranteePermissions }o--o| CharacterClearanceLevel : "assigned level"
 
     CharacterGranteeCapability {
-        string GranteeCharacterUUID FK "the grantee"
         string OwnerCharacterUUID FK "the granter"
+        string GranteeType "Character | Faction"
+        string GranteeUUID "CharacterUUID or FactionUUID"
         string CapabilityUUID FK
     }
 
