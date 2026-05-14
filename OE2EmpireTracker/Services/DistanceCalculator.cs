@@ -11,6 +11,8 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class DistanceCalculator
     {
+        private const decimal JasScalingFactor = 1.5625m;
+
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
@@ -85,6 +87,38 @@ namespace OE2EmpireTracker.Services
             }
 
             return total;
+        }
+
+        /// <summary>
+        /// Calculates the JAS (Jump Assist System) distance between two star systems.
+        /// Applies the empirically-determined scaling factor (25/16) to the Euclidean distance.
+        /// Returns -1 if either argument is null.
+        /// </summary>
+        public static int CalculateJas(StarSystem a, StarSystem b)
+        {
+            decimal euclidean = Calculate(a, b);
+            if (euclidean < 0)
+            {
+                return -1;
+            }
+
+            return (int)Math.Round(euclidean / JasScalingFactor, MidpointRounding.AwayFromZero);
+        }
+
+        /// <summary>
+        /// Calculates the JAS (Jump Assist System) distance between two systems identified by ID.
+        /// Applies the empirically-determined scaling factor (25/16) to the Euclidean distance.
+        /// Returns -1 if either system cannot be resolved via the repository.
+        /// </summary>
+        public static int CalculateJas(int idA, int idB, SystemRepository repo)
+        {
+            decimal euclidean = Calculate(idA, idB, repo);
+            if (euclidean < 0)
+            {
+                return -1;
+            }
+
+            return (int)Math.Round(euclidean / JasScalingFactor, MidpointRounding.AwayFromZero);
         }
     }
 }

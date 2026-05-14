@@ -274,5 +274,121 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(result, Is.EqualTo(0m));
         }
+
+        // ---------------------------------------------------------------
+        // Calibration: CalculateJas matches in-game JAS measurements
+        // These values were manually measured in-game from Alef Hestrixia.
+        // If the game API provides exact coordinates later, update expected.
+        // ---------------------------------------------------------------
+
+        /// <summary>
+        /// Calibration test: verifies CalculateJas matches in-game JAS measurements.
+        /// These values were manually measured in-game from Alef Hestrixia.
+        /// If the game API provides exact coordinates later, update the expected values.
+        /// </summary>
+        [TestCase("Alef Hestrixia", "Zeh Vazoran", 9)]
+        [TestCase("Alef Hestrixia", "Alef Wynthoril", 13)]
+        [TestCase("Alef Hestrixia", "Kystaria H5044", 31)]
+        [TestCase("Alef Hestrixia", "Qaf Loxion", 32)]
+        [TestCase("Alef Hestrixia", "Seh Tythorin", 58)]
+        [TestCase("Alef Hestrixia", "Ecerixia-Iota", 91)]
+        [TestCase("Alef Hestrixia", "Zareth-Rho", 129)]
+        [TestCase("Alef Hestrixia", "Rynar-Psi", 129)]
+        [TestCase("Alef Hestrixia", "Raldix-Alpha", 103)]
+        public void CalculateJas_KnownPairs_MatchesInGameMeasurement(string nameA, string nameB, int expectedJas)
+        {
+            var repo = LoadGalaxyRepository();
+            var systemA = repo.FindByName(nameA);
+            var systemB = repo.FindByName(nameB);
+            Assert.That(systemA, Is.Not.Null, $"System not found: {nameA}");
+            Assert.That(systemB, Is.Not.Null, $"System not found: {nameB}");
+
+            int actual = DistanceCalculator.CalculateJas(systemA, systemB);
+            Assert.That(actual, Is.InRange(expectedJas - 1, expectedJas + 1),
+                $"JAS distance {nameA} -> {nameB}: expected ~{expectedJas}, got {actual}");
+        }
+
+        // ---------------------------------------------------------------
+        // Unit tests: CalculateJas error cases
+        // ---------------------------------------------------------------
+
+        [Test]
+        public void CalculateJas_NullSystemA_ReturnsNegativeOne()
+        {
+            var b = new StarSystem { Id = 2, Name = "Beta", X = 5m, Y = 5m };
+
+            int result = DistanceCalculator.CalculateJas(null, b);
+
+            Assert.That(result, Is.EqualTo(-1));
+        }
+
+        [Test]
+        public void CalculateJas_NullSystemB_ReturnsNegativeOne()
+        {
+            var a = new StarSystem { Id = 1, Name = "Alpha", X = 5m, Y = 5m };
+
+            int result = DistanceCalculator.CalculateJas(a, null);
+
+            Assert.That(result, Is.EqualTo(-1));
+        }
+
+        [Test]
+        public void CalculateJas_UnresolvableSystemId_ReturnsNegativeOne()
+        {
+            var systems = new List<StarSystem>
+            {
+                new StarSystem { Id = 1, Name = "Alpha", X = 10m, Y = 20m },
+            };
+            var repo = LoadRepo(systems);
+
+            int result = DistanceCalculator.CalculateJas(1, 999, repo);
+
+            Assert.That(result, Is.EqualTo(-1));
+        }
+
+        [Test]
+        public void CalculateJas_KnownDistance_ReturnsScaledValue()
+        {
+            // 3-4-5 triangle: Euclidean = 5, JAS = 5 / 1.5625 = 3.2 -> rounds to 3
+            var a = new StarSystem { Id = 1, Name = "A", X = 0m, Y = 0m };
+            var b = new StarSystem { Id = 2, Name = "B", X = 3m, Y = 4m };
+
+            int result = DistanceCalculator.CalculateJas(a, b);
+
+            Assert.That(result, Is.EqualTo(3));
+        }
+
+        // ---------------------------------------------------------------
+        // Helper: Load the galaxy SystemRepository from oe2-galaxy-systems.json
+        // ---------------------------------------------------------------
+
+        private SystemRepository LoadGalaxyRepository()
+        {
+            string solutionDir = TestContext.CurrentContext.TestDirectory;
+
+            // Walk up from bin/Debug to the solution root
+            while (!string.IsNullOrEmpty(solutionDir) &&
+                   !File.Exists(Path.Combine(solutionDir, "OE2EmpireTracker.sln")))
+            {
+                solutionDir = Path.GetDirectoryName(solutionDir);
+            }
+
+            Assert.That(solutionDir, Is.Not.Null.And.Not.Empty,
+                "Could not locate solution root from test directory");
+
+            string galaxyPath = Path.Combine(solutionDir, "oe2-galaxy-systems.json");
+            Assert.That(File.Exists(galaxyPath), Is.True,
+                $"Galaxy data file not found: {galaxyPath}");
+
+            // Import to a temp file and load
+            string tempOutput = Path.GetTempFileName();
+            _tempFiles.Add(tempOutput);
+            int count = SystemImporter.Import(galaxyPath, tempOutput);
+            Assert.That(count, Is.GreaterThan(0), "SystemImporter returned 0 systems");
+
+            var repo = new SystemRepository();
+            repo.Load(tempOutput);
+            return repo;
+        }
     }
 }
