@@ -26,7 +26,7 @@ Owner (all permissions)
             + Feature Flags (server behavior toggles)
 ```
 
-## Data Model Sketch
+## Data Model
 
 ```
 Capability
@@ -43,31 +43,50 @@ PermissionGroup
   - ScopeType (enum: Faction, Character)
   - ScopeUUID (FactionUUID or CharacterUUID — who owns this group)
   - DefaultClearanceLevel (int, 1-5)
-  - Capabilities (List<string> — capability names)
-  - SharingTemplate (List<SharingRule>)
 
-CharacterPermissions (per character, per faction)
-  - CharacterUUID
-  - FactionUUID
-  - GroupUUID (nullable — at most one group)
-  - ClearanceLevel (int, 1-5)
-  - IndividualCapabilities (List<string>)
-  - FeatureFlags (Dictionary<string, bool>)
+GroupCapability (junction: which capabilities a group grants)
+  - GroupUUID → PermissionGroup.UUID
+  - CapabilityUUID → Capability.UUID
+
+GroupSharingRule (sharing template applied to group members)
+  - UUID
+  - GroupUUID → PermissionGroup.UUID
+  - DataType (nullable — category-level rule)
+  - EntityUUID (nullable — item-level rule)
+  - MinClearanceLevel (int, 1-5, default 1)
+
+CharacterPermissions (per character, per scope — links character to a group + clearance)
+  - CharacterUUID → Character.UUID
+  - ScopeType (enum: Faction, Character)
+  - ScopeUUID (FactionUUID or CharacterUUID — whose group they're in)
+  - GroupUUID → PermissionGroup.UUID (nullable — at most one group per scope)
+  - ClearanceLevel (int, 1-5, default 1)
+
+CharacterCapability (individual capability grants, outside of groups)
+  - CharacterUUID → Character.UUID
+  - ScopeType (enum: Faction, Character)
+  - ScopeUUID (FactionUUID or CharacterUUID — who granted it)
+  - CapabilityUUID → Capability.UUID
+
+FeatureFlag (per character, boolean toggles)
+  - CharacterUUID → Character.UUID
+  - FlagName (string)
+  - Enabled (bool)
 
 IntelComment
   - UUID
-  - TargetCharacterUUID (the external character this is about)
-  - SubmitterCharacterUUID
-  - FactionUUID (which faction's intel this belongs to)
+  - TargetCharacterUUID → Character.UUID (the external character this is about)
+  - SubmitterCharacterUUID → Character.UUID
+  - FactionUUID → Faction.UUID (which faction's intel this belongs to)
   - ClassificationLevel (int, 1-5)
   - Text
   - CreatedUtc
 
-PermissionAuditEntry
+PermissionAuditEntry (append-only log)
   - UUID
   - Timestamp
-  - ActorCharacterUUID
-  - TargetCharacterUUID
+  - ActorCharacterUUID → Character.UUID
+  - TargetCharacterUUID → Character.UUID
   - ActionType (enum: CapabilityGranted, CapabilityRevoked, GroupAssigned, GroupRemoved, ClearanceChanged, FeatureFlagChanged)
   - OldValue
   - NewValue
@@ -93,14 +112,20 @@ erDiagram
 
     Character ||--o{ Capability : "defines (scope=Character)"
     Character ||--o{ PermissionGroup : "defines (scope=Character)"
-    Character ||--o{ CharacterPermissions : "has per-faction"
+    Character ||--o{ CharacterPermissions : "has per-scope"
+    Character ||--o{ CharacterCapability : "individual grants"
     Character ||--o{ IntelComment : "submits"
+    Character ||--o{ FeatureFlag : "has"
+    Character ||--o{ PermissionAuditEntry : "actor or target"
 
     PermissionGroup ||--o{ GroupCapability : "grants"
     PermissionGroup ||--o{ GroupSharingRule : "templates"
     PermissionGroup ||--o{ CharacterPermissions : "assigned via"
 
-    CharacterPermissions ||--o{ CharacterCapability : "individual grants"
+    Capability ||--o{ GroupCapability : "referenced by"
+    Capability ||--o{ CharacterCapability : "referenced by"
+
+    IntelComment }o--|| Character : "about (target)"
 
     Capability {
         string UUID PK
@@ -134,14 +159,16 @@ erDiagram
 
     CharacterPermissions {
         string CharacterUUID FK
-        string FactionUUID FK
+        string ScopeType "Faction | Character"
+        string ScopeUUID FK "FactionUUID or CharacterUUID"
         string GroupUUID FK "nullable"
         int ClearanceLevel "1-5, default 1"
     }
 
     CharacterCapability {
         string CharacterUUID FK
-        string FactionUUID FK
+        string ScopeType "Faction | Character"
+        string ScopeUUID FK "FactionUUID or CharacterUUID"
         string CapabilityUUID FK
     }
 
@@ -170,10 +197,4 @@ erDiagram
         string OldValue
         string NewValue
     }
-
-    Character ||--o{ FeatureFlag : "has"
-    Character ||--o{ PermissionAuditEntry : "actor or target"
-    Capability ||--o{ GroupCapability : "referenced by"
-    Capability ||--o{ CharacterCapability : "referenced by"
-    IntelComment }o--|| Character : "about (target)"
 ```
