@@ -539,6 +539,23 @@ namespace OE2EmpireTracker.Services
 
         public void AddGlobalBlueprint(Blueprint item)
         {
+            if (!string.IsNullOrEmpty(item.UUID))
+            {
+                if (_globalBlueprintCache != null)
+                {
+                    if (_globalBlueprintCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in GlobalBlueprint collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+                else if (_globalBlueprintList.Any(x => x.UUID == item.UUID))
+                {
+                    throw new InvalidOperationException(
+                        string.Format("Duplicate UUID in GlobalBlueprint collection: {0} (Name: {1})", item.UUID, item.Name));
+                }
+            }
+
             _globalBlueprintList.Add(item);
             if (_globalBlueprintCache != null && item.UUID != null)
                 _globalBlueprintCache[item.UUID] = item;
@@ -557,6 +574,23 @@ namespace OE2EmpireTracker.Services
         {
             lock (_commodityLock)
             {
+                if (!string.IsNullOrEmpty(item.Name))
+                {
+                    if (_commodityNameCache != null)
+                    {
+                        if (_commodityNameCache.ContainsKey(item.Name))
+                        {
+                            throw new InvalidOperationException(
+                                string.Format("Duplicate Name in Commodity collection: {0}", item.Name));
+                        }
+                    }
+                    else if (_commodityList.Any(x => string.Equals(x.Name, item.Name, StringComparison.Ordinal)))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate Name in Commodity collection: {0}", item.Name));
+                    }
+                }
+
                 _commodityList.Add(item);
                 if (_commodityNameCache != null && !string.IsNullOrEmpty(item.Name))
                     _commodityNameCache[item.Name] = item;
@@ -577,6 +611,12 @@ namespace OE2EmpireTracker.Services
 
         public void AddBlueprintType(BlueprintType item)
         {
+            if (!string.IsNullOrEmpty(item.Name) && _blueprintTypeList.Any(x => string.Equals(x.Name, item.Name, StringComparison.Ordinal)))
+            {
+                throw new InvalidOperationException(
+                    string.Format("Duplicate Name in BlueprintType collection: {0}", item.Name));
+            }
+
             _blueprintTypeList.Add(item);
             BindingSourceBlueprintType?.ResetBindings(false);
         }
@@ -589,6 +629,12 @@ namespace OE2EmpireTracker.Services
 
         public void AddShipClass(ShipClass item)
         {
+            if (!string.IsNullOrEmpty(item.Name) && _shipClassList.Any(x => string.Equals(x.Name, item.Name, StringComparison.Ordinal)))
+            {
+                throw new InvalidOperationException(
+                    string.Format("Duplicate Name in ShipClass collection: {0}", item.Name));
+            }
+
             _shipClassList.Add(item);
             BindingSourceShipClass?.ResetBindings(false);
         }
@@ -601,6 +647,12 @@ namespace OE2EmpireTracker.Services
 
         public void AddTechLevel(TechLevel item)
         {
+            if (!string.IsNullOrEmpty(item.Name) && _techLevelList.Any(x => string.Equals(x.Name, item.Name, StringComparison.Ordinal)))
+            {
+                throw new InvalidOperationException(
+                    string.Format("Duplicate Name in TechLevel collection: {0}", item.Name));
+            }
+
             _techLevelList.Add(item);
             BindingSourceTechLevel?.ResetBindings(false);
         }
@@ -625,6 +677,12 @@ namespace OE2EmpireTracker.Services
 
         public void AddResource(Resource item)
         {
+            if (!string.IsNullOrEmpty(item.Name) && _resourceList.Any(x => string.Equals(x.Name, item.Name, StringComparison.Ordinal)))
+            {
+                throw new InvalidOperationException(
+                    string.Format("Duplicate Name in Resource collection: {0}", item.Name));
+            }
+
             _resourceList.Add(item);
             BindingSourceResource?.ResetBindings(false);
         }
@@ -637,6 +695,12 @@ namespace OE2EmpireTracker.Services
 
         public void AddResourceGroup(ResourceGroup item)
         {
+            if (!string.IsNullOrEmpty(item.Name) && _resourceGroupList.Any(x => string.Equals(x.Name, item.Name, StringComparison.Ordinal)))
+            {
+                throw new InvalidOperationException(
+                    string.Format("Duplicate Name in ResourceGroup collection: {0}", item.Name));
+            }
+
             _resourceGroupList.Add(item);
             BindingSourceResourceGroup?.ResetBindings(false);
         }
@@ -649,6 +713,12 @@ namespace OE2EmpireTracker.Services
 
         public void AddResourcePurity(ResourcePurity item)
         {
+            if (!string.IsNullOrEmpty(item.Name) && _resourcePurityList.Any(x => string.Equals(x.Name, item.Name, StringComparison.Ordinal)))
+            {
+                throw new InvalidOperationException(
+                    string.Format("Duplicate Name in ResourcePurity collection: {0}", item.Name));
+            }
+
             _resourcePurityList.Add(item);
             BindingSourceResourcePurity?.ResetBindings(false);
         }

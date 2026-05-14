@@ -719,6 +719,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_blueprintCache != null && _blueprintCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Blueprint collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_blueprintCache == null && _blueprintList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Blueprint collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _blueprintList.Add(item);
                 if (_blueprintCache != null && item.UUID != null)
                     _blueprintCache[item.UUID] = item;
@@ -787,6 +801,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_surveyCache != null && _surveyCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Survey collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_surveyCache == null && _surveyList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Survey collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _surveyList.Add(item);
                 if (_surveyCache != null && item.UUID != null)
                     _surveyCache[item.UUID] = item;
@@ -947,6 +975,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_colonyCache != null && _colonyCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Colony collection: {0} (ColonyName: {1})", item.UUID, item.ColonyName));
+                    }
+                    else if (_colonyCache == null && _colonyList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Colony collection: {0} (ColonyName: {1})", item.UUID, item.ColonyName));
+                    }
+                }
+
                 _colonyList.Add(item);
                 if (_colonyCache != null && item.UUID != null)
                     _colonyCache[item.UUID] = item;
@@ -973,6 +1015,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_playerProfileCache != null && _playerProfileCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in PlayerProfile collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_playerProfileCache == null && _playerProfileList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in PlayerProfile collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _playerProfileList.Add(item);
                 if (_playerProfileCache != null && item.UUID != null)
                     _playerProfileCache[item.UUID] = item;
@@ -999,6 +1055,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_buildPlanCache != null && _buildPlanCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in BuildPlan collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_buildPlanCache == null && _buildPlanList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in BuildPlan collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _buildPlanList.Add(item);
                 if (_buildPlanCache != null && item.UUID != null)
                     _buildPlanCache[item.UUID] = item;
@@ -1025,6 +1095,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_stationCache != null && _stationCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Station collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_stationCache == null && _stationList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Station collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _stationList.Add(item);
                 if (_stationCache != null && item.UUID != null)
                     _stationCache[item.UUID] = item;
@@ -1045,6 +1129,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_shipTemplateCache != null && _shipTemplateCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in ShipTemplate collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_shipTemplateCache == null && _shipTemplateList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in ShipTemplate collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _shipTemplateList.Add(item);
                 if (_shipTemplateCache != null && item.UUID != null)
                     _shipTemplateCache[item.UUID] = item;
@@ -1065,6 +1163,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_shipCache != null && _shipCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Ship collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_shipCache == null && _shipList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Ship collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _shipList.Add(item);
                 if (_shipCache != null && item.UUID != null)
                     _shipCache[item.UUID] = item;
@@ -1085,6 +1197,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_asteroidCache != null && _asteroidCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Asteroid collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_asteroidCache == null && _asteroidList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Asteroid collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _asteroidList.Add(item);
                 if (_asteroidCache != null && item.UUID != null)
                     _asteroidCache[item.UUID] = item;
@@ -1105,6 +1231,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_factionCache != null && _factionCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Faction collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_factionCache == null && _factionList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in Faction collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _factionList.Add(item);
                 if (_factionCache != null && item.UUID != null)
                     _factionCache[item.UUID] = item;
@@ -1125,6 +1265,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_marketListingCache != null && _marketListingCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in MarketListing collection: {0} (ItemName: {1})", item.UUID, item.ItemName));
+                    }
+                    else if (_marketListingCache == null && _marketListingList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in MarketListing collection: {0} (ItemName: {1})", item.UUID, item.ItemName));
+                    }
+                }
+
                 _marketListingList.Add(item);
                 if (_marketListingCache != null && item.UUID != null)
                     _marketListingCache[item.UUID] = item;
@@ -1147,6 +1301,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_deliveryRouteCache != null && _deliveryRouteCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in DeliveryRoute collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_deliveryRouteCache == null && _deliveryRouteList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in DeliveryRoute collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _deliveryRouteList.Add(item);
                 if (_deliveryRouteCache != null && item.UUID != null)
                     _deliveryRouteCache[item.UUID] = item;
@@ -1167,6 +1335,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_deliveryPlanCache != null && _deliveryPlanCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in DeliveryPlan collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_deliveryPlanCache == null && _deliveryPlanList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in DeliveryPlan collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _deliveryPlanList.Add(item);
                 if (_deliveryPlanCache != null && item.UUID != null)
                     _deliveryPlanCache[item.UUID] = item;
@@ -1187,6 +1369,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_pricingPlanCache != null && _pricingPlanCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in PricingPlan collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_pricingPlanCache == null && _pricingPlanList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in PricingPlan collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _pricingPlanList.Add(item);
                 if (_pricingPlanCache != null && item.UUID != null)
                     _pricingPlanCache[item.UUID] = item;
@@ -1207,6 +1403,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_marketTransactionCache != null && _marketTransactionCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in MarketTransaction collection: {0} (ItemName: {1})", item.UUID, item.ItemName));
+                    }
+                    else if (_marketTransactionCache == null && _marketTransactionList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in MarketTransaction collection: {0} (ItemName: {1})", item.UUID, item.ItemName));
+                    }
+                }
+
                 _marketTransactionList.Add(item);
                 if (_marketTransactionCache != null && item.UUID != null)
                     _marketTransactionCache[item.UUID] = item;
@@ -1227,6 +1437,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_stockPlanCache != null && _stockPlanCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in StockPlan collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_stockPlanCache == null && _stockPlanList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in StockPlan collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _stockPlanList.Add(item);
                 if (_stockPlanCache != null && item.UUID != null)
                     _stockPlanCache[item.UUID] = item;
@@ -1247,6 +1471,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_stockProfileCache != null && _stockProfileCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in StockProfile collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_stockProfileCache == null && _stockProfileList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in StockProfile collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _stockProfileList.Add(item);
                 if (_stockProfileCache != null && item.UUID != null)
                     _stockProfileCache[item.UUID] = item;
@@ -1267,6 +1505,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_supplyChainCache != null && _supplyChainCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in SupplyChain collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_supplyChainCache == null && _supplyChainList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in SupplyChain collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _supplyChainList.Add(item);
                 if (_supplyChainCache != null && item.UUID != null)
                     _supplyChainCache[item.UUID] = item;
@@ -1287,6 +1539,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_warehouseOverflowRuleCache != null && _warehouseOverflowRuleCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in WarehouseOverflowRule collection: {0}", item.UUID));
+                    }
+                    else if (_warehouseOverflowRuleCache == null && _warehouseOverflowRuleList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in WarehouseOverflowRule collection: {0}", item.UUID));
+                    }
+                }
+
                 _warehouseOverflowRuleList.Add(item);
                 if (_warehouseOverflowRuleCache != null && item.UUID != null)
                     _warehouseOverflowRuleCache[item.UUID] = item;
@@ -1307,6 +1573,20 @@ namespace OE2EmpireTracker.Services
         {
             lock (_listLock)
             {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_externalCharacterCache != null && _externalCharacterCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in ExternalCharacter collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                    else if (_externalCharacterCache == null && _externalCharacterList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in ExternalCharacter collection: {0} (Name: {1})", item.UUID, item.Name));
+                    }
+                }
+
                 _externalCharacterList.Add(item);
                 if (_externalCharacterCache != null && item.UUID != null)
                     _externalCharacterCache[item.UUID] = item;

@@ -112,6 +112,30 @@ namespace OE2EmpireTracker.Services
                         bp.OwnerUUID = playerContext.CurrentPlayerUUID;
                     }
 
+                    // Check for UUID collision on global blueprints (deterministic UUID may already exist)
+                    if (isGlobal)
+                    {
+                        var alreadyExists = empireContext.FindMutableGlobalBlueprint(bp.UUID);
+                        if (alreadyExists != null)
+                        {
+                            UpdateExisting(alreadyExists, bp);
+                            entry.Action = ImportAction.Updated;
+                            entry.UUID = alreadyExists.UUID;
+                            Log.Info(
+                                "UUID collision — updated existing {0} blueprint: {1} Ev{2} {3} C{4} TL={5} UUID={6}",
+                                entry.Storage,
+                                bp.Name,
+                                bp.Evolution,
+                                bp.BluePrintType,
+                                bp.Class,
+                                bp.TechLevel,
+                                alreadyExists.UUID);
+                            globalChanged = true;
+                            result.Entries.Add(entry);
+                            continue;
+                        }
+                    }
+
                     if (isGlobal)
                         empireContext.AddGlobalBlueprint(bp);
                     else

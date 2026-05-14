@@ -68,16 +68,22 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 int bitIndex = 0;
                 int plantedCount = 0;
 
-                // Add colonies -- some with UUID == oldUuid
+                // Add colonies -- at most one with UUID == oldUuid (uniqueness guard)
+                bool colonyPlanted = false;
                 for (int i = 0; i < data.ColonyCount; i++)
                 {
                     var colony = new Colony();
                     bool plant = ((data.PlantMask >> (bitIndex++ % 8)) & 1) == 1;
-                    colony.UUID = plant ? data.OldUuid : Guid.NewGuid().ToString();
+                    colony.UUID = (plant && !colonyPlanted) ? data.OldUuid : Guid.NewGuid().ToString();
                     colony.PlanetName = $"Planet_{i}";
                     colony.SystemName = $"System_{i}";
                     colony.ColonyName = $"Colony_{i}";
-                    if (plant) plantedCount++;
+                    if (plant && !colonyPlanted)
+                    {
+                        plantedCount++;
+                        colonyPlanted = true;
+                    }
+
                     pc.AddColony(colony);
                 }
 

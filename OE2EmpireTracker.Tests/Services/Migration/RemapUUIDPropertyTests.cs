@@ -67,22 +67,28 @@ namespace OE2EmpireTracker.Tests.Services.Migration
 
                 // Add synthetic global blueprints
                 int bitIndex = 0;
+                bool globalPlanted = false;
                 for (int i = 0; i < data.GlobalCount; i++)
                 {
                     var bp = new OE2EmpireTracker.Models.Blueprint($"Global_{i}");
-                    bp.UUID = ((data.PlantMask >> (bitIndex++ % 7)) & 1) == 1
+                    bool wantPlant = ((data.PlantMask >> (bitIndex++ % 7)) & 1) == 1;
+                    bp.UUID = (wantPlant && !globalPlanted)
                         ? data.OldUuid : Guid.NewGuid().ToString();
+                    if (wantPlant && !globalPlanted) globalPlanted = true;
                     bp.BaseBlueprintUUID = ((data.PlantMask >> (bitIndex++ % 7)) & 1) == 1
                         ? data.OldUuid : null;
                     ec.AddGlobalBlueprint(bp);
                 }
 
                 // Add synthetic player blueprints
+                bool playerPlanted = false;
                 for (int i = 0; i < data.PlayerCount; i++)
                 {
                     var bp = new OE2EmpireTracker.Models.Blueprint($"Player_{i}");
-                    bp.UUID = ((data.PlantMask >> (bitIndex++ % 7)) & 1) == 1
+                    bool wantPlant = ((data.PlantMask >> (bitIndex++ % 7)) & 1) == 1;
+                    bp.UUID = (wantPlant && !playerPlanted)
                         ? data.OldUuid : Guid.NewGuid().ToString();
+                    if (wantPlant && !playerPlanted) playerPlanted = true;
                     bp.BaseBlueprintUUID = ((data.PlantMask >> (bitIndex++ % 7)) & 1) == 1
                         ? data.OldUuid : null;
                     pc.AddBlueprint(bp);
