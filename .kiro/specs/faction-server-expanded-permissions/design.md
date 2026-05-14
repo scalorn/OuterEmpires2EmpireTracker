@@ -249,6 +249,175 @@ Awaiting requirements iteration. Key decisions needed:
 3. Effective permission computation — computed on every request or cached?
 4. Sharing template application — eager (copy rules on assignment) or lazy (resolve at query time)?
 
+## Sequence Diagrams
+
+### Character Sets Up Sharing Permissions
+
+A character configures what data they share and with whom:
+
+```mermaid
+sequenceDiagram
+    participant C as Character (Alice)
+    participant S as Server
+    participant DB as Database
+
+    C->>S: POST /characters/{alice}/groups<br/>{ name: "Faction Sharing" }
+    S->>DB: Insert CharacterPermissionGroup
+    S-->>C: 201 { groupUUID }
+
+    C->>S: POST /characters/{alice}/groups/{groupId}/sharing-rules<br/>{ dataType: "colonies" }
+    S->>DB: Insert CharacterGroupSharingRule
+    S-->>C: 201 (share all colonies)
+
+    C->>S: POST /characters/{alice}/groups/{groupId}/sharing-rules<br/>{ dataType: "build-plans", entityUUID: "plan-123" }
+    S->>DB: Insert CharacterGroupSharingRule
+    S-->>C: 201 (share specific build plan)
+
+    Note over C,S: Now assign faction members to this group
+    C->>S: PUT /characters/{alice}/groups/{groupId}/members<br/>{ characterUUID: "bob" }
+    S->>DB: Insert CharacterGranteePermissions (Bob → Alice's group)
+    S-->>C: 200 (Bob can now see Alice's colonies + plan-123)
+```
+
+### Faction Leader Sets Up Internal Distribution
+
+A faction leader configures who inside the faction sees what:
+
+```mermaid
+sequenceDiagram
+    participant L as Faction Leader
+    participant S as Server
+    participant DB as Database
+
+    L->>S: POST /factions/{factionId}/clearance-levels<br/>{ level: 3, name: "Officer" }
+    S->>DB: Insert FactionClearanceLevel
+    S-->>L: 201
+
+    L->>S: POST /factions/{factionId}/groups<br/>{ name: "Officers", defaultClearanceLevelUUID: "lvl-3" }
+    S->>DB: Insert FactionPermissionGroup
+    S-->>L: 201 { groupUUID }
+
+    L->>S: POST /factions/{factionId}/groups/{groupId}/sharing-rules<br/>{ dataType: "colonies", minClearanceLevelUUID: "lvl-3" }
+    S->>DB: Insert FactionGroupSharingRule
+    S-->>L: 201 (Officers can see shared colonies)
+
+    L->>S: POST /factions/{factionId}/groups/{groupId}/sharing-rules<br/>{ dataType: "build-plans", minClearanceLevelUUID: "lvl-4" }
+    S->>DB: Insert FactionGroupSharingRule
+    S-->>L: 201 (Only Command+ can see shared build plans)
+
+    L->>S: PUT /factions/{factionId}/groups/{groupId}/members<br/>{ characterUUID: "bob" }
+    S->>DB: Insert FactionMemberPermissions (Bob → Officers, clearance 3)
+    S-->>L: 200
+```
+
+### Intel Comment Lifecycle
+
+A character creates intel, shares with factions, faction reviews and classifies:
+
+```mermaid
+sequenceDiagram
+    participant A as Alice (submitter)
+    participant S as Server
+    participant R as Bob (has classify_intel)
+    participant M as Charlie (clearance 2)
+
+    A->>S: POST /characters/{target}/intel<br/>{ text: "Seen trading with enemy faction" }
+    S-->>A: 201 { commentUUID } (private)
+
+    A->>S: POST /characters/{target}/intel/{commentId}/share<br/>{ factionUUID: "faction-1" }
+    S-->>A: 201 (shared, unclassified)
+
+    Note over S: Comment is pending review
+
+    M->>S: GET /characters/{target}/intel
+    S-->>M: [] (Charlie can't see unclassified intel)
+
+    R->>S: GET /characters/{target}/intel
+    S-->>R: [{ comment, status: "unclassified" }] (Bob has classify_intel)
+
+    R->>S: PUT /factions/{faction-1}/intel/{shareId}/classify<br/>{ classificationLevelUUID: "lvl-2" }
+    S-->>R: 200 (classified at level 2)
+
+    M->>S: GET /characters/{target}/intel
+    S-->>M: [{ comment, classification: "Member" }] (Charlie clearance 2 >= level 2)
+```
+
+### Resolving What a Character Can See (Visibility Query)
+
+The server determines what shared data a faction member can access:
+
+```mermaid
+sequenceDiagram
+    participant M as Member (Bob, clearance 3)
+    participant S as Server
+    participant DB as Database
+
+    M->>S: GET /factions/{factionId}/shared/colonies
+
+    S->>DB: Get Bob's FactionMemberPermissions<br/>(clearance level = 3, group = "Officers")
+    DB-->>S: { clearanceLevel: 3, groupUUID: "officers" }
+
+    S->>DB: Get FactionGroupSharingRules for "Officers"<br/>WHERE dataType = "colonies"
+    DB-->>S: { minClearanceLevel: 3 }
+
+    Note over S: Bob's clearance (3) >= min required (3) ✓
+
+    S->>DB: Get all CharacterGroupSharingRules<br/>WHERE dataType = "colonies"<br/>AND grantee includes faction members
+    DB-->>S: [Alice shares colonies, Dave shares colonies]
+
+    S->>DB: Fetch Alice's colonies + Dave's colonies
+    DB-->>S: [colony data]
+
+    S-->>M: 200 [Alice's colonies, Dave's colonies]
+
+    Note over S: If Bob had clearance 2, the faction rule<br/>(min 3) would block access → empty result
+```
+
+### Granting Individual Capabilities
+
+A faction leader grants a specific capability to a member outside of groups:
+
+```mermaid
+sequenceDiagram
+    participant L as Faction Leader
+    participant S as Server
+    participant DB as Database
+
+    L->>S: POST /factions/{factionId}/capabilities<br/>{ name: "classify_intel", description: "Review and classify intel" }
+    S->>DB: Insert FactionCapability
+    S-->>L: 201 { capabilityUUID }
+
+    L->>S: PUT /factions/{factionId}/members/{bob}/capabilities<br/>{ capabilityUUID: "cap-classify" }
+    S->>DB: Insert FactionMemberCapability
+    S->>DB: Insert PermissionAuditEntry (CapabilityGranted)
+    S-->>L: 200 (Bob now has classify_intel)
+
+    Note over S: Bob's effective capabilities =<br/>role permissions + group capabilities + classify_intel
+```
+
+### Character Revokes Sharing
+
+A character removes data visibility from a faction:
+
+```mermaid
+sequenceDiagram
+    participant A as Alice
+    participant S as Server
+    participant M as Faction Members
+
+    Note over A,M: Alice previously shared colonies with Faction X
+
+    A->>S: DELETE /characters/{alice}/groups/{groupId}/sharing-rules/{ruleId}
+    S-->>A: 204 (colonies no longer shared)
+
+    M->>S: GET /factions/{factionX}/shared/colonies
+    S-->>M: [] (Alice's colonies no longer visible)
+
+    Note over A,S: Alice can also revoke intel shares
+    A->>S: DELETE /characters/{target}/intel/{commentId}/share/{factionX}
+    S-->>A: 204 (intel comment removed from faction)
+```
+
 ## Database Schema
 
 ### Faction-Scoped Relationships
