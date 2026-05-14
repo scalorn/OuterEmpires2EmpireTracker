@@ -111,11 +111,16 @@ namespace OE2EmpireTracker.Services
 
             Log.Info("ContactsService.UpdateCharacter: UUID={0} name='{1}' -> '{2}'", uuid, character.Name, request.Name);
 
+            string previousFactionUUID = character.FactionUUID ?? string.Empty;
             character.Name = request.Name;
             character.FactionUUID = request.FactionUUID;
 
             _playerContext.WriteContext();
             _playerContext.OnContactDataChanged(uuid);
+
+            // Prompt sharing preferences when character first joins a faction
+            PromptSharingPreferencesIfJoinedFaction(previousFactionUUID, request.FactionUUID);
+
             return new ReadOnlyExternalCharacter(character);
         }
 
@@ -159,6 +164,45 @@ namespace OE2EmpireTracker.Services
             _playerContext.RemoveExternalCharacter(character);
             _playerContext.WriteContext();
             _playerContext.OnContactDataChanged(uuid);
+        }
+
+        /// <summary>
+        /// Prompts the user to configure sharing preferences when a character first joins a faction.
+        /// Triggered when FactionUUID changes from empty to non-empty.
+        /// </summary>
+        private static void PromptSharingPreferencesIfJoinedFaction(string previousFactionUUID, string newFactionUUID)
+        {
+            bool wasInFaction = !string.IsNullOrEmpty(previousFactionUUID);
+            bool isNowInFaction = !string.IsNullOrEmpty(newFactionUUID);
+
+            if (wasInFaction || !isNowInFaction)
+            {
+                return;
+            }
+
+            // Character just joined a faction — prompt sharing preferences
+            if (PlayerContext.SuppressUI)
+            {
+                return;
+            }
+
+            Log.Info("Character joined faction {0} — prompting sharing preferences", newFactionUUID);
+
+            var result = System.Windows.Forms.MessageBox.Show(
+                "You've joined a faction. Would you like to configure what data to share with faction members?",
+                "Sharing Preferences",
+                System.Windows.Forms.MessageBoxButtons.YesNo,
+                System.Windows.Forms.MessageBoxIcon.Question);
+
+            if (result == System.Windows.Forms.DialogResult.Yes)
+            {
+                System.Windows.Forms.MessageBox.Show(
+                    "Sharing configuration will be available in a future update.\n\n" +
+                    "By default, your data is private. You can configure sharing later in Preferences.",
+                    "Sharing Preferences",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Information);
+            }
         }
     }
 }

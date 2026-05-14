@@ -554,11 +554,110 @@ namespace OE2EmpireTracker.Services
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
 
-            SafeFileWriter.WriteAllText(FilePath, jsonContent);
-            Log.Info("Player data saved to {0}", FilePath);
+            // In ServerOnly mode, skip local file write — data lives on the server only.
+            // In LocalOnly or DualWrite (ServerAndLocal) mode, always write locally.
+            var serverContext = Client.ServerContext.Instance;
+            bool isServerOnly = serverContext != null && serverContext.Mode == Client.OperatingMode.ServerOnly;
+
+            if (!isServerOnly)
+            {
+                SafeFileWriter.WriteAllText(FilePath, jsonContent);
+                Log.Info("Player data saved to {0}", FilePath);
+            }
+            else
+            {
+                Log.Debug("WriteContext: ServerOnly mode — local file write skipped");
+            }
 
             // Write-through: push data to server when mode is ServerOnly or DualWrite
             PushToServerAsync(jsonContent).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Loads player data from the remote server instead of the local file.
+        /// Used in ServerOnly mode when connected. Falls back to local file with a warning
+        /// if the server is unreachable.
+        /// </summary>
+        /// <returns>True if data was loaded from server; false if fell back to local.</returns>
+        public async Task<bool> LoadFromServerAsync()
+        {
+            var serverContext = Client.ServerContext.Instance;
+            if (serverContext?.Client == null)
+            {
+                Log.Debug("LoadFromServerAsync: no server context, using local data");
+                return false;
+            }
+
+            if (serverContext.Mode != Client.OperatingMode.ServerOnly)
+            {
+                Log.Debug("LoadFromServerAsync: not in ServerOnly mode, using local data");
+                return false;
+            }
+
+            if (!serverContext.Client.IsConnected)
+            {
+                Log.Warn("LoadFromServerAsync: server unreachable in ServerOnly mode, using local data");
+                return false;
+            }
+
+            string characterUUID = _currentPlayerUUID;
+            if (string.IsNullOrEmpty(characterUUID))
+            {
+                Log.Debug("LoadFromServerAsync: no current player UUID, skipping server load");
+                return false;
+            }
+
+            try
+            {
+                string exportJson = await serverContext.Client.ExportCharacterDataAsync(characterUUID).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(exportJson))
+                {
+                    Log.Warn("LoadFromServerAsync: server returned empty data, using local data");
+                    return false;
+                }
+
+                var playerRoot = JsonConvert.DeserializeObject<PlayerRoot>(exportJson);
+                if (playerRoot == null)
+                {
+                    Log.Warn("LoadFromServerAsync: failed to deserialize server data, using local data");
+                    return false;
+                }
+
+                // Reinitialize in-memory state from server data
+                lock (_listLock)
+                {
+                    InitPlayerProfiles(playerRoot);
+                    InitBlueprints(playerRoot);
+                    InitSurveys(playerRoot);
+                    InitColonies(playerRoot);
+                    InitDeliveryRoutes(playerRoot);
+                    InitDeliveryPlans(playerRoot);
+                    InitPricingPlans(playerRoot);
+                    InitBuildPlans(playerRoot);
+                    InitShipTemplates(playerRoot);
+                    InitShips(playerRoot);
+                    InitStations(playerRoot);
+                    InitMarketListings(playerRoot);
+                    InitMarketTransactions(playerRoot);
+                    InitStockPlans(playerRoot);
+                    InitStockProfiles(playerRoot);
+                    InitSupplyChains(playerRoot);
+                    InitWarehouseOverflowRules(playerRoot);
+                    InitFactions(playerRoot);
+                    InitExternalCharacters(playerRoot);
+                    InitAsteroids(playerRoot);
+                    DataVersion = playerRoot.DataVersion;
+                }
+
+                RestoreCurrentPlayer(playerRoot.CurrentPlayerUUID);
+                Log.Info("LoadFromServerAsync: loaded data from server for character {0}", characterUUID);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex, "LoadFromServerAsync: failed to load from server, using local data");
+                return false;
+            }
         }
 
         public void InitPlayerProfiles(PlayerRoot playerRoot)
@@ -3253,6 +3352,8 @@ namespace OE2EmpireTracker.Services
         /// Pushes the serialized player data to the remote server via SyncManager.
         /// Only pushes when operating mode is ServerOnly or ServerAndLocal and the server is reachable.
         /// Queues the change offline if the server is unreachable.
+        /// In ServerOnly mode, if the server is unreachable, falls back to writing locally
+        /// to prevent data loss (graceful degradation).
         /// </summary>
         private async Task PushToServerAsync(string jsonContent)
         {
@@ -3281,6 +3382,18 @@ namespace OE2EmpireTracker.Services
             catch (Exception ex)
             {
                 Log.Warn(ex, "PushToServerAsync failed — data saved locally only");
+
+                // Graceful degradation: if in ServerOnly mode and server is unreachable,
+                // write to local file to prevent data loss.
+                var serverContext = Client.ServerContext.Instance;
+                if (serverContext != null && serverContext.Mode == Client.OperatingMode.ServerOnly)
+                {
+                    if (!string.IsNullOrEmpty(FilePath))
+                    {
+                        SafeFileWriter.WriteAllText(FilePath, jsonContent);
+                        Log.Info("Graceful degradation: saved to local file {0} (server unreachable in ServerOnly mode)", FilePath);
+                    }
+                }
             }
         }
 

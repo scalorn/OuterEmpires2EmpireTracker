@@ -35,6 +35,8 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparatorExport = new System.Windows.Forms.ToolStripSeparator();
+            this.exportFromServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparatorFileExit = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,6 +108,8 @@
             this.openToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
+            this.toolStripSeparatorExport,
+            this.exportFromServerToolStripMenuItem,
             this.preferencesToolStripMenuItem,
             this.toolStripSeparatorFileExit,
             this.exitToolStripMenuItem});
@@ -140,6 +144,18 @@
             this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.saveAsToolStripMenuItem.Text = "Save As";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparatorExport
+            // 
+            this.toolStripSeparatorExport.Name = "toolStripSeparatorExport";
+            this.toolStripSeparatorExport.Size = new System.Drawing.Size(173, 6);
+            // 
+            // exportFromServerToolStripMenuItem
+            // 
+            this.exportFromServerToolStripMenuItem.Name = "exportFromServerToolStripMenuItem";
+            this.exportFromServerToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.exportFromServerToolStripMenuItem.Text = "Export from Server...";
+            this.exportFromServerToolStripMenuItem.Click += new System.EventHandler(this.ExportFromServerToolStripMenuItem_Click);
             // 
             // preferencesToolStripMenuItem
             // 
@@ -469,6 +485,8 @@
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparatorExport;
+        private System.Windows.Forms.ToolStripMenuItem exportFromServerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparatorFileExit;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;

@@ -194,22 +194,22 @@
 
 ## Phase 15: Data Portability and Operating Modes
 
-- [~] 15.1 Implement dual-write mode: every server write also writes to local PlayerData.json
+- [x] 15.1 Implement dual-write mode: every server write also writes to local PlayerData.json
   - _Satisfies: Req 16 ("in dual-write mode, every change written to server SHALL also be written to local file")_
   - _Satisfies: Req 16 ("local file format SHALL remain identical to current PlayerData.json format")_
-- [~] 15.2 Implement Server Only mode: all reads/writes go to server, no local file maintained
+- [x] 15.2 Implement Server Only mode: all reads/writes go to server, no local file maintained
   - _Satisfies: Req 16 ("Server Only: all reads/writes go to server, no local file maintained")_
-- [~] 15.3 Implement Local Only mode: no server connection (current behavior preserved)
+- [x] 15.3 Implement Local Only mode: no server connection (current behavior preserved)
   - _Satisfies: Req 16 ("Local Only: no server connection, reads/writes local JSON files")_
   - Note: This is the existing behavior — task is to ensure mode switching works correctly.
-- [~] 15.4 "Export from Server" UI function — download all character data, save as local JSON
+- [x] 15.4 "Export from Server" UI function — download all character data, save as local JSON
   - _Satisfies: Req 16 ("provide an Export from Server function")_
   - _Satisfies: Req 16 ("export SHALL produce file identical in format to current PlayerData.json")_
-- [~] 15.5 Ensure disconnecting from server allows continued local operation with zero data loss
+- [x] 15.5 Ensure disconnecting from server allows continued local operation with zero data loss
   - _Satisfies: Req 16 ("disconnect from server and continue using tracker with local file with zero data loss")_
-- [~] 15.6 Use server as primary storage when connected (services read from server, not local file)
+- [x] 15.6 Use server as primary storage when connected (services read from server, not local file)
   - _Satisfies: Req 15 ("tracker client SHALL use service as primary storage when connected")_
-- [~] 15.7 Prompt sharing preferences configuration when character first joins a faction
+- [x] 15.7 Prompt sharing preferences configuration when character first joins a faction
   - _Satisfies: Req 15 Sharing ("when character first joins faction, client SHALL prompt to configure sharing")_
 
 ---

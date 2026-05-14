@@ -645,6 +645,76 @@ namespace OE2EmpireTracker
             }
         }
 
+        private async void ExportFromServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var ctx = Client.ServerContext.Instance;
+            if (ctx?.Client == null || !ctx.Client.IsConnected)
+            {
+                MessageBox.Show(
+                    "Not connected to a server. Please configure and connect to a server first.",
+                    "Export from Server",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            string characterUUID = playerContext.CurrentPlayerUUID;
+            if (string.IsNullOrEmpty(characterUUID))
+            {
+                MessageBox.Show(
+                    "No player selected. Please select a player profile first.",
+                    "Export from Server",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (var dlg = new SaveFileDialog())
+            {
+                dlg.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
+                dlg.DefaultExt = "json";
+                dlg.FileName = "PlayerData-Export.json";
+                dlg.Title = "Export from Server — Save As";
+
+                if (dlg.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                try
+                {
+                    string exportJson = await ctx.Client.ExportCharacterDataAsync(characterUUID).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(exportJson))
+                    {
+                        Invoke((Action)(() => MessageBox.Show(
+                            "Server returned no data for this character.",
+                            "Export from Server",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning)));
+                        return;
+                    }
+
+                    File.WriteAllText(dlg.FileName, exportJson);
+                    Log.Info("Exported character data from server to {0}", dlg.FileName);
+
+                    Invoke((Action)(() => MessageBox.Show(
+                        "Character data exported successfully to:\n" + dlg.FileName,
+                        "Export from Server",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information)));
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Failed to export character data from server");
+                    Invoke((Action)(() => MessageBox.Show(
+                        "Failed to export from server:\n" + ex.Message,
+                        "Export from Server",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error)));
+                }
+            }
+        }
+
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new FormAbout().ShowDialog(this);
@@ -673,6 +743,29 @@ namespace OE2EmpireTracker
             }
 
             await ctx.SyncManager.SyncOnStartupAsync().ConfigureAwait(false);
+
+            // In ServerOnly mode, use server as primary storage — load data from server
+            if (ctx.Mode == Client.OperatingMode.ServerOnly && ctx.Client.IsConnected)
+            {
+                bool loaded = await playerContext.LoadFromServerAsync().ConfigureAwait(false);
+                if (loaded)
+                {
+                    Log.Info("Loaded player data from server (ServerOnly mode)");
+                    if (InvokeRequired)
+                    {
+                        Invoke((Action)(() =>
+                        {
+                            PopulatePlayerDropdown();
+                            UpdateNoPlayerGuard();
+                        }));
+                    }
+                    else
+                    {
+                        PopulatePlayerDropdown();
+                        UpdateNoPlayerGuard();
+                    }
+                }
+            }
 
             // Check if server-side processing is active — disable local processor
             if (ctx.SyncManager.ServerProcessingActive)
