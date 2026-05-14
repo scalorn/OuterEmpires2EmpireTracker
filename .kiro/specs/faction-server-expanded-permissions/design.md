@@ -274,36 +274,52 @@ PermissionAuditEntry (append-only log)
 
 **Reversibility:** If a future requirement genuinely needs deny (e.g., "block this specific person from a capability their group grants without moving them to a different group"), it can be added later as a separate `FactionMemberDeny` table without breaking the existing grant-only model. But we start simple.
 
-1. **Storage location** — Separate tables (already done — FactionCapability, FactionClearanceLevel, etc. are distinct from CharacterCapability, CharacterClearanceLevel, etc.). No polymorphic scope columns.
+### Decision 2: Separate Tables per Scope
 
-2. **API surface** — New endpoints. These are new objects that don't fit into the existing faction/character CRUD. Endpoint groups:
-   - `/api/v1/factions/{uuid}/capabilities` — CRUD
-   - `/api/v1/factions/{uuid}/clearance-levels` — CRUD
-   - `/api/v1/factions/{uuid}/groups` — CRUD + member management
-   - `/api/v1/factions/{uuid}/members/{charUUID}/clearance` — set clearance
-   - `/api/v1/factions/{uuid}/members/{charUUID}/capabilities` — individual grants
-   - `/api/v1/factions/{uuid}/intel/{shareId}/classify` — classify intel
-   - `/api/v1/characters/{uuid}/capabilities` — CRUD
-   - `/api/v1/characters/{uuid}/clearance-levels` — CRUD
-   - `/api/v1/characters/{uuid}/groups` — CRUD + grantee management
-   - `/api/v1/characters/{uuid}/intel` — CRUD + share/revoke
-   - `/api/v1/audit/permissions` — read-only log
+**Decision:** Faction-scoped and character-scoped entities use separate tables (FactionCapability vs CharacterCapability, etc.). No polymorphic scope columns.
 
-3. **Effective permission computation** — Cached with invalidation. The server resolves a member's effective permissions (role + group capabilities + individual capabilities + clearance) at query time by walking the group membership chain, then caches the result. Cache is invalidated when:
-   - A group's capabilities or sharing rules change
-   - A member's group assignment changes
-   - A member's clearance level changes
-   - An individual capability is granted or revoked
-   - A clearance level definition is modified or deleted
+**Rationale:** Enables proper referential integrity at the DB level, eliminates nullable fields that only apply in one scope, and makes each scope independently traceable (see the two ER diagrams above).
 
-4. **Sharing template application** — Lazy (resolve at query time). When determining what a faction member can see:
-   - Look up their `FactionMemberPermissions` → get GroupUUID + ClearanceLevelUUID
-   - Read the group's `FactionGroupSharingRules` live (not copied per-member)
-   - Compare member's clearance against each rule's MinClearanceLevelUUID
-   - Intersect with what characters have actually shared inward (CharacterGroupSharingRules)
-   - Cache the computed visibility set; invalidate on any change to the inputs above
-   
-   No per-member copies of group rules are created. The group rules ARE the source of truth. This keeps the data model simple and eliminates stale-copy risks.
+### Decision 3: New API Endpoints
+
+**Decision:** All permission entities get new dedicated endpoints. These are new objects that don't fit into the existing faction/character CRUD.
+
+**Endpoint groups:**
+- `/api/v1/factions/{uuid}/capabilities` — CRUD
+- `/api/v1/factions/{uuid}/clearance-levels` — CRUD
+- `/api/v1/factions/{uuid}/groups` — CRUD + member management
+- `/api/v1/factions/{uuid}/members/{charUUID}/clearance` — set clearance
+- `/api/v1/factions/{uuid}/members/{charUUID}/capabilities` — individual grants
+- `/api/v1/factions/{uuid}/intel/{shareId}/classify` — classify intel
+- `/api/v1/characters/{uuid}/capabilities` — CRUD
+- `/api/v1/characters/{uuid}/clearance-levels` — CRUD
+- `/api/v1/characters/{uuid}/groups` — CRUD + grantee management
+- `/api/v1/characters/{uuid}/intel` — CRUD + share/revoke
+- `/api/v1/audit/permissions` — read-only log
+
+### Decision 4: Cached Permission Computation with Invalidation
+
+**Decision:** The server resolves a member's effective permissions (role + group capabilities + individual capabilities + clearance) at query time by walking the group membership chain, then caches the result.
+
+**Cache is invalidated when:**
+- A group's capabilities or sharing rules change
+- A member's group assignment changes
+- A member's clearance level changes
+- An individual capability is granted or revoked
+- A clearance level definition is modified or deleted
+
+### Decision 5: Lazy Sharing Template Application
+
+**Decision:** When determining what a faction member can see, resolve live from FactionGroupSharingRule — no per-member copies.
+
+**Resolution flow:**
+- Look up their `FactionMemberPermissions` → get GroupUUID + ClearanceLevelUUID
+- Read the group's `FactionGroupSharingRules` live (not copied per-member)
+- Compare member's clearance against each rule's MinClearanceLevelUUID
+- Intersect with what characters have actually shared inward (CharacterGroupSharingRules)
+- Cache the computed visibility set; invalidate on any change to the inputs above
+
+No per-member copies of group rules are created. The group rules ARE the source of truth. This keeps the data model simple and eliminates stale-copy risks.
 
 ## Sequence Diagrams
 
