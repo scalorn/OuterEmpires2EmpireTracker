@@ -44,3 +44,59 @@ Logic:
 - Does not affect `ItemBag` which has its own `[JsonConverter]` attribute.
 
 Satisfies: REQ-JSON-ORDER (see .kiro/specs/json-deterministic-order/requirements.md)
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class SerializationSorter {
+        <<static>>
+        -Logger Log
+        +SortPlayerRoot(source) PlayerRoot
+        +SortBaselineRoot(source) BaselineRoot
+        ~SortByString~T~(source, keySelector) T[]
+        ~SortByInt~T~(source, keySelector) T[]
+        ~SortByStringThenInt~T~(source, key1, key2) T[]
+        ~SortByStringThenString~T~(source, key1, key2) T[]
+    }
+
+    class SortedDictionaryContractResolver {
+        +CreateDictionaryContract(objectType) JsonDictionaryContract
+        -HasStringKey(type)$ bool
+    }
+
+    class SortedDictionaryConverter {
+        +bool CanRead
+        +CanConvert(objectType) bool
+        +WriteJson(writer, value, serializer) void
+        +ReadJson(reader, objectType, existingValue, serializer) object
+    }
+
+    class PlayerRoot {
+        +int DataVersion
+        +string CurrentPlayerUUID
+        +PlayerProfile[] PlayerProfile
+        +Blueprint[] Blueprint
+        +Colony[] Colony
+        +DeliveryRoute[] DeliveryRoute
+        +Ship[] Ship
+        +Station[] Station
+    }
+
+    class BaselineRoot {
+        +int DataVersion
+        +BlueprintType[] BlueprintType
+        +ShipClass[] ShipClass
+        +TechLevel[] TechLevel
+        +Commodity[] Commodity
+        +RefiningRecipe[] RefiningRecipe
+        +ResearchTimeEntry[] ResearchTime
+    }
+
+    SortedDictionaryContractResolver --|> DefaultContractResolver : inherits
+    SortedDictionaryContractResolver --> SortedDictionaryConverter : creates
+    SortedDictionaryConverter --|> JsonConverter : inherits
+    SerializationSorter --> PlayerRoot : sorts
+    SerializationSorter --> BaselineRoot : sorts
+```

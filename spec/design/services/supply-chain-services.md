@@ -32,3 +32,53 @@ public class SupplyChainDeliveryRequest
 - Filters to `IsActive` chains only.
 - Inventory resolution: Colony → `colony.Items`, Station → `station.Holds[currentPlayerUUID]`, Ship → `ship.Cargo`.
 - ExcessQuantity = quantity - threshold.
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class SupplyChainService {
+        <<static>>
+        -Logger Log
+        +CheckThresholds(chains, colonyFinder, stationFinder, shipFinder, currentPlayerUUID) List~SupplyChainDeliveryRequest~
+        -ResolveInventory(stage, colonyFinder, stationFinder, shipFinder, currentPlayerUUID) int
+    }
+
+    class SupplyChainMutationService {
+        -Logger Log
+        -PlayerContext _playerContext
+        +SupplyChainMutationService(playerContext)
+        +Update(uuid, request) ReadOnlySupplyChain
+        +Create(request) ReadOnlySupplyChain
+        +Delete(uuid) void
+    }
+
+    class SupplyChainDeliveryRequest {
+        +string SupplyChainUUID
+        +int StageSequence
+        +string ResourceName
+        +string ResourcePurity
+        +int ExcessQuantity
+        +string DeliveryRouteUUID
+        +string SourceLocationUUID
+        +DestinationType SourceLocationType
+    }
+
+    class ReadOnlySupplyChain {
+        +string UUID
+        +string Name
+        +bool IsActive
+    }
+
+    class DestinationType {
+        <<enum>>
+        Colony
+        Station
+        Ship
+    }
+
+    SupplyChainService --> SupplyChainDeliveryRequest : creates
+    SupplyChainDeliveryRequest --> DestinationType : uses
+    SupplyChainMutationService --> PlayerContext : uses
+    SupplyChainMutationService --> ReadOnlySupplyChain : returns
+```

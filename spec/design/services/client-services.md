@@ -83,3 +83,148 @@ Event args for push events received via WebSocket (Req 18):
 
 Event args for real-time mode changes (Req 18 Fallback):
 - IsRealtime flag (true = WebSocket, false = polling)
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class RemoteFactionClient {
+        -Logger Log
+        -string _serverUrl
+        -SecureString _bearerToken
+        -string _trustedThumbprint
+        -HttpClient _httpClient
+        -ClientWebSocket _webSocket
+        +bool IsConnected
+        +bool IsRealtimeMode
+        +int PollingIntervalSeconds
+        +event ConnectionStatusChanged
+        +event EventReceived
+        +event RealtimeModeChanged
+        +RemoteFactionClient(serverUrl, bearerToken, trustedThumbprint)
+        +TryConnectAsync() Task~bool~
+        +Disconnect() void
+        +CheckHealthAsync() Task~bool~
+        +ConnectWebSocketAsync() Task
+        +DisconnectWebSocketAsync() Task
+        +GetFactionsAsync() Task~string~
+        +GetCharactersAsync() Task~string~
+        +GetCharacterDataAsync(characterUUID, dataType) Task~string~
+        +UploadCharacterDataAsync(characterUUID, dataType, json) Task
+        +GetSyncSnapshotAsync() Task~string~
+        +ExportCharacterDataAsync(characterUUID) Task~string~
+        +Dispose() void
+    }
+
+    class SyncManager {
+        -Logger Log
+        -RemoteFactionClient _client
+        -OfflineQueue _offlineQueue
+        +OperatingMode Mode
+        +bool IsOnline
+        +bool DivergenceDetected
+        +int QueuedChangeCount
+        +bool ServerProcessingActive
+        +string LastSyncTimestamp
+        +SyncManager(client, offlineQueue)
+        +SyncOnStartupAsync() Task
+        +PullFullSyncAsync() Task
+        +WriteToServerAsync(characterUUID, dataType, json) Task
+        +QueueOfflineChange(characterUUID, dataType, json) void
+        +HandleReconnectionAsync() Task
+        +ResolveUploadLocalAsync() Task
+        +ResolveDownloadServerAsync() Task
+        +FlushOfflineQueueAsync() Task
+    }
+
+    class OfflineQueue {
+        -Logger Log
+        -string _queueFilePath
+        -List~QueuedChange~ _changes
+        +int Count
+        +OfflineQueue()
+        +OfflineQueue(queueFilePath)
+        +Enqueue(change) void
+        +GetAll() IReadOnlyList~QueuedChange~
+        +Remove(change) void
+        +Clear() void
+        +Save() void
+        +Load() void
+    }
+
+    class QueuedChange {
+        +string CharacterUUID
+        +string DataType
+        +string Json
+        +DateTime QueuedUtc
+    }
+
+    class ServerContext {
+        -Logger Log
+        -ServerContext _instance$
+        +RemoteFactionClient Client
+        +SyncManager SyncManager
+        +OfflineQueue OfflineQueue
+        +OperatingMode Mode
+        +ServerContext Instance$
+        +Initialize()$ void
+        +Reset()$ void
+        +Dispose() void
+    }
+
+    class CredentialStore {
+        <<static>>
+        +Protect(plainText) string
+        +Unprotect(protectedBase64) SecureString
+        +SecureStringToString(value) string
+    }
+
+    class ServerConnectionSettings {
+        +string ServerUrl
+        +string ProtectedBearerToken
+        +string TrustedThumbprint
+        +OperatingMode Mode
+    }
+
+    class OperatingMode {
+        <<enum>>
+        LocalOnly
+        ServerOnly
+        ServerAndLocal
+    }
+
+    class ConnectionStatusChangedEventArgs {
+        +bool IsConnected
+        +string Message
+    }
+
+    class PushEventArgs {
+        +string EventType
+        +string EntityType
+        +string EntityUUID
+        +string CharacterUUID
+        +string Timestamp
+    }
+
+    class RealtimeModeChangedEventArgs {
+        +bool IsRealtime
+    }
+
+    ServerContext --o RemoteFactionClient : holds
+    ServerContext --o SyncManager : holds
+    ServerContext --o OfflineQueue : holds
+    ServerContext --> OperatingMode : uses
+    SyncManager --> RemoteFactionClient : uses
+    SyncManager --> OfflineQueue : uses
+    SyncManager --> OperatingMode : uses
+    OfflineQueue --o QueuedChange : contains
+    RemoteFactionClient --> ConnectionStatusChangedEventArgs : fires
+    RemoteFactionClient --> PushEventArgs : fires
+    RemoteFactionClient --> RealtimeModeChangedEventArgs : fires
+    ServerConnectionSettings --> OperatingMode : uses
+    ServerContext ..> CredentialStore : uses
+    ServerContext ..> ServerConnectionSettings : reads
+    RemoteFactionClient --|> IDisposable : implements
+    ServerContext --|> IDisposable : implements
+```

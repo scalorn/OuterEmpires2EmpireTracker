@@ -39,3 +39,79 @@ public class MarketListingService
         decimal pricePerUnit, string counterparty, string counterpartyFaction, string stationUUID);
 }
 ```
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class MarketService {
+        <<static>>
+        +RecordSale(listing, quantitySold, pricePerUnit, counterpartyName, counterpartyFactionName, stationUUID) MarketTransaction
+        +RecordPurchase(itemType, itemName, itemReferenceID, quantity, pricePerUnit, stationUUID, counterpartyName, counterpartyFactionName, ownerUUID, stationFinder) MarketTransaction
+        +ComputeProfitLoss(transactions, startDate, endDate, itemNameFilter, stationUUIDFilter) ProfitLossSummary
+    }
+
+    class MarketListingService {
+        -Logger Log
+        -PlayerContext _playerContext
+        +MarketListingService(playerContext)
+        +CreateListing(request) ReadOnlyMarketListing
+        +UpdateListing(uuid, request) ReadOnlyMarketListing
+        +DeleteListing(uuid) void
+        +RecordSale(listingUUID, quantity, pricePerUnit, counterparty, counterpartyFaction, stationUUID) MarketTransaction
+    }
+
+    class MarketListingCreateRequest {
+        +string ItemName
+        +ItemTypeEnum ItemType
+        +string ItemReferenceID
+        +string StationUUID
+        +int Quantity
+        +decimal PricePerUnit
+        +int CurrentHP
+        +int MaxHP
+        +int MaxRepairPercent
+    }
+
+    class MarketListingUpdateRequest {
+        +string ItemName
+        +ItemTypeEnum ItemType
+        +string ItemReferenceID
+        +string StationUUID
+        +int Quantity
+        +decimal PricePerUnit
+        +int CurrentHP
+        +int MaxHP
+        +int MaxRepairPercent
+    }
+
+    class ReadOnlyMarketListing {
+        +string UUID
+        +string ItemName
+        +decimal PricePerUnit
+        +int Quantity
+    }
+
+    class MarketTransaction {
+        +string UUID
+        +string ItemName
+        +int Quantity
+        +decimal PricePerUnit
+        +DateTime Timestamp
+    }
+
+    class ProfitLossSummary {
+        +decimal TotalRevenue
+        +decimal TotalCost
+        +decimal NetProfit
+    }
+
+    MarketListingService --> PlayerContext : uses
+    MarketListingService --> MarketService : delegates RecordSale
+    MarketListingService --> ReadOnlyMarketListing : returns
+    MarketListingService --> MarketTransaction : returns
+    MarketService --> MarketTransaction : creates
+    MarketService --> ProfitLossSummary : creates
+    MarketListingService ..> MarketListingCreateRequest : accepts
+    MarketListingService ..> MarketListingUpdateRequest : accepts
+```

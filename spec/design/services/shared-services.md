@@ -52,3 +52,58 @@ Logic:
 - Delete: looks up entity, removes from PlayerContext, persists, fires event. Returns silently if UUID empty or not found.
 
 Satisfies: REQ-PRC (see .kiro/specs/bl-123-pricingplan-readonly/requirements.md)
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class CollectionSortHelper {
+        <<static>>
+        +OrderByName~T~(items) IReadOnlyList~T~
+        +OrderStructures(items) IReadOnlyList~ColonyStructure~
+        +OrderRouteStops(items) IReadOnlyList~RouteStop~
+        +OrderPlanStops(items) IReadOnlyList~DeliveryPlanStop~
+        +OrderSupplyChainStages(items) IReadOnlyList~SupplyChainStage~
+        +OrderColonies(items) IReadOnlyList~Colony~
+        +OrderSurveys(items) IReadOnlyList~Survey~
+        +OrderComponents(items) IReadOnlyList~ShipComponentSlot~
+        +OrderBlueprints(items) IReadOnlyList~Blueprint~
+        +OrderPlayerProfiles(items) IReadOnlyList~PlayerProfile~
+        +OrderDeliveryRoutes(items) IReadOnlyList~DeliveryRoute~
+        +OrderDeliveryPlans(items) IReadOnlyList~DeliveryPlan~
+        +OrderPricingPlans(items) IReadOnlyList~PricingPlan~
+        +OrderBuildPlans(items) IReadOnlyList~BuildPlan~
+        +OrderShipTemplates(items) IReadOnlyList~ShipTemplate~
+        +OrderShips(items) IReadOnlyList~Ship~
+        +OrderStations(items) IReadOnlyList~Station~
+        +OrderMarketListings(items) IReadOnlyList~MarketListing~
+        +OrderMarketTransactions(items) IReadOnlyList~MarketTransaction~
+        +OrderStockPlans(items) IReadOnlyList~StockPlan~
+        +OrderSupplyChains(items) IReadOnlyList~SupplyChain~
+        +OrderFactions(items) IReadOnlyList~Faction~
+        +OrderAsteroids(items) IReadOnlyList~Asteroid~
+        +OrderBuildItems(items) IReadOnlyList~BuildItem~
+    }
+
+    class PricingPlanService {
+        -Logger Log
+        -PlayerContext _playerContext
+        +PricingPlanService(playerContext)
+        +Update(uuid, request) ReadOnlyPricingPlan
+        +Create(request) ReadOnlyPricingPlan
+        +Delete(uuid) void
+    }
+
+    class ReadOnlyPricingPlan {
+        +string UUID
+        +string Name
+        +string Description
+        +decimal FixedCostPerItem
+        +decimal HourlyCostRate
+        +Dictionary~string, decimal~ ResourcePrices
+    }
+
+    PricingPlanService --> PlayerContext : uses
+    PricingPlanService --> ReadOnlyPricingPlan : returns
+```
