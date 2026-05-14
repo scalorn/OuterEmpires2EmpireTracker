@@ -1,6 +1,6 @@
 ﻿# Feature Backlog
 
-**Next available ID: BL-142** (check COMPLETED.md before assigning — IDs are shared across both files)
+**Next available ID: BL-143** (check COMPLETED.md before assigning — IDs are shared across both files)
 
 Open features and enhancements to be worked on.
 
@@ -342,3 +342,46 @@ Once system coordinates are available (BL-019), extend route auto-sequencing (BL
 - Integrates with existing `CargoVolumeService.SplitIntoTrips()` for multi-trip planning
 - ~8-12 hours of work (coordinate model + distance service + route optimizer + UI integration)
 
+
+### BL-142: Web UI Frontend for Faction Server
+**Dependencies:** remote-faction-service (complete), faction-server-expanded-permissions (in progress)
+**Status: New — future consideration**
+
+Add a web-based UI to the faction server so faction members can access the system without installing the desktop application. The server already has a full REST API with token auth, WebSocket push, and all CRUD endpoints — a web frontend is purely a presentation layer on top of existing infrastructure.
+
+**Use cases:**
+- Check faction status, permissions, and shared data from any device (phone, tablet, work PC)
+- Post and review intel comments
+- Manage permission groups and clearance levels (faction leaders)
+- View shared colony/blueprint/build plan data
+- Not a replacement for the desktop app — the desktop app remains the power-user tool for offline support, background processing, data import, and full empire management
+
+**Technology options evaluated:**
+
+| Option | Approach | Pros | Cons |
+|--------|----------|------|------|
+| **Blazor Server** | C# server-rendered, SignalR for interactivity | One language, shared Common types, ships inside existing server, no JS build toolchain | Requires persistent SignalR connection per user — if connection drops, UI freezes. Cannot horizontally scale (sticky sessions required). Server holds per-user circuit state in memory. |
+| **Blazor WebAssembly** | C# compiled to WASM, runs in browser | Shared C# types from Common, offline-capable, stateless server, horizontally scalable | Large initial download (~5-10MB), slower startup, WASM debugging is harder |
+| **React/Vue/Svelte SPA** | JavaScript/TypeScript frontend | Smallest bundle, fastest UI, huge ecosystem, fully stateless, horizontally scalable, easy to find contributors | Different language from server, can't share Common models (need generated TypeScript types), separate build toolchain |
+| **Server-rendered HTML (Razor Pages)** | Traditional request/response | Simplest, works everywhere, no JS framework, fast to build | Less interactive, full page reloads, feels dated for a management tool |
+
+**Scalability analysis:**
+
+Blazor Server is ruled out for anything beyond single-server deployment:
+- Each user maintains a persistent SignalR connection holding UI state on the server
+- Load balancing requires sticky sessions (user pinned to one server)
+- If that server goes down, all connected users lose their sessions
+- Cannot horizontally scale the frontend independently of the API
+
+Blazor WASM and JavaScript SPAs are both stateless — the UI runs in the browser, any API request can hit any server behind a load balancer. These scale horizontally without constraint.
+
+**Recommendation:** Blazor WASM or a JavaScript SPA (React/Vue). Both are stateless and horizontally scalable. Blazor WASM has the advantage of sharing C# types from Common (no type duplication). A JS SPA has the advantage of a smaller bundle and larger contributor pool.
+
+**Decision deferred** — not needed until the faction server is deployed and in active use. The desktop app covers all functionality. The web UI is a convenience layer for mobile/remote access.
+
+**Scope when implemented:**
+- Permission management (FormPermissionManager equivalent)
+- Intel comments (FormIntelComments equivalent)
+- Shared data viewing (read-only views of colonies, blueprints, build plans shared with the faction)
+- Audit log (FormAuditLog equivalent)
+- NOT: data import (HTML paste), background processing config, local file management, window state
