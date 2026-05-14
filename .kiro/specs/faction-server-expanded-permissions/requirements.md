@@ -35,6 +35,10 @@ DarkCrusader defined permissions as named strings (`access_empire`, `access_fact
   - `server_processing_admin` — Can enable/disable server-side processing
   - `export_any_character` — Can export any character's data (normally Owner-only)
   - `manage_faction_members` — Can accept/reject join requests and remove members (normally Leader-only)
+  - `server_side_processing` — Character's colonies are processed server-side (opt-in behavior)
+  - `real_time_push` — Character receives WebSocket push events (opt-in behavior)
+  - `bulk_export` — Character can use the bulk export endpoint
+  - `market_analytics` — Character can access aggregated market analytics endpoints
 - [ ] Faction Leaders SHALL be able to delete, rename, or recreate any capability — including the starting set. There are no undeletable capabilities.
 - [ ] Custom capabilities SHALL be usable in sharing rules (e.g., "share this data with anyone who has capability X").
 - [ ] GET /api/factions/{uuid}/capabilities SHALL return all capabilities defined by that faction.
@@ -127,32 +131,7 @@ DarkCrusader had an intelligence system where faction members could post classif
 - [ ] DELETE /api/characters/{uuid}/intel/{commentId} SHALL remove a comment (submitter, Faction Leader, or Owner only).
 - [ ] Intel comments SHALL be included in faction shared data views (filtered by clearance).
 
-## Requirement 5: Feature Gating / Premium Tiers
-
-### Background (from DarkCrusader)
-
-DarkCrusader had a `premium` boolean on user groups that unlocked advanced features (market analytics, personal bank history, detailed transaction tracking). This gated expensive-to-compute or sensitive features behind a tier.
-
-### User Stories
-
-- As a server owner, I want to gate resource-intensive features (e.g., server-side processing, bulk exports) behind a flag so I can control server load.
-- As a faction leader, I want to offer advanced analytics only to active/contributing members.
-
-### Acceptance Criteria
-
-- [ ] The service SHALL support feature flags that can be enabled/disabled per character.
-- [ ] Feature flags SHALL be distinct from capabilities — capabilities gate API operations, feature flags gate optional behaviors.
-- [ ] Built-in feature flags:
-  - `server_side_processing` — Character's colonies are processed server-side (already in Req 17 of base spec)
-  - `real_time_push` — Character receives WebSocket push events (already in Req 18 of base spec)
-  - `bulk_export` — Character can use the bulk export endpoint
-  - `market_analytics` — Character can access aggregated market analytics endpoints
-- [ ] The Owner SHALL be able to set feature flags per character via PUT /api/characters/{uuid}/features.
-- [ ] Faction Leaders SHALL be able to set feature flags for their faction members (within limits set by the Owner).
-- [ ] The Owner SHALL be able to set server-wide defaults for feature flags (e.g., "all new characters get real_time_push enabled").
-- [ ] GET /api/characters/{uuid}/features SHALL return the character's active feature flags.
-
-## Requirement 6: Audit Trail for Permission Changes
+## Requirement 5: Audit Trail for Permission Changes
 
 ### Background (from DarkCrusader)
 
@@ -183,4 +162,4 @@ DarkCrusader logged all user actions via `LoggedActionBean`. For a permission sy
 
 4. **Intel comment scope** — Should intel comments be faction-scoped (only your faction's comments on a player) or global (all factions' comments visible if you have clearance)? DarkCrusader was single-faction so this wasn't an issue.
 
-5. **Feature flag vs. capability** — The line between "feature flag" and "capability" is blurry. Should they be unified into a single permission system, or kept separate (capabilities = what you CAN do, features = what the server WILL do for you)?
+5. ~~**Feature flag vs. capability**~~ — **RESOLVED:** Collapsed into a single system. Capabilities now cover both action permissions and server behavior opt-ins. No separate FeatureFlag table.
