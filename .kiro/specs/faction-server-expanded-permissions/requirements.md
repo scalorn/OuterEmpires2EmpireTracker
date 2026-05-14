@@ -41,7 +41,7 @@ DarkCrusader defined permissions as named strings (`access_empire`, `access_fact
 - [ ] GET /api/characters/{uuid}/capabilities SHALL return all capabilities granted to or defined by a specific character.
 - [ ] There SHALL be full parity between faction-level and character-level capability operations — anything a faction can do with capabilities, a character can do with their own.
 
-## Requirement 2: User Groups / Permission Sets
+## Requirement 2: Permission Groups
 
 ### Background (from DarkCrusader)
 
@@ -52,22 +52,24 @@ DarkCrusader organized users into groups (e.g., "Root Admin", "Premium Member", 
 - As a faction leader, I want to define roles like "Officer", "Logistics", "Scout" that automatically grant the right permissions and sharing access.
 - As a faction leader, I want to assign a new member to a role and have them immediately get the correct access level.
 - As a faction leader, I want to change a role's permissions and have all members in that role updated automatically.
+- As a character, I want to define my own permission groups for people I share data with (e.g., "Trusted Traders", "Alliance Contacts").
 
 ### Acceptance Criteria
 
-- [ ] The service SHALL support user-defined groups (roles) within a faction.
+- [ ] The service SHALL support permission groups that can be defined by either a faction or a character (same dual-scope pattern as capabilities).
+- [ ] Faction-scoped groups are assignable to faction members. Character-scoped groups are assignable to anyone the character shares with.
 - [ ] Each group SHALL have a name, description, and a set of granted capabilities.
 - [ ] Each group SHALL have a sharing template — a set of sharing rules that are automatically applied to members of the group.
-- [ ] A character SHALL belong to at most one group within their faction.
-- [ ] Group membership SHALL be managed by Faction Leaders (or Owner).
+- [ ] A character SHALL belong to at most one group within a given scope (one faction group, one character group per granting character).
+- [ ] Group membership SHALL be managed by the group's owner (Faction Leader for faction groups, character for their own groups, Owner for any).
 - [ ] When a character is assigned to a group, they SHALL inherit the group's capabilities AND sharing template.
 - [ ] When a group's capabilities or sharing template change, all members SHALL be updated.
-- [ ] Groups SHALL be faction-scoped (each faction defines its own groups independently).
-- [ ] CRUD endpoints: POST/GET/PUT/DELETE /api/factions/{uuid}/groups.
-- [ ] Assign character to group: PUT /api/factions/{uuid}/groups/{groupId}/members.
-- [ ] Remove character from group: DELETE /api/factions/{uuid}/groups/{groupId}/members/{characterUUID}.
+- [ ] CRUD endpoints: POST/GET/PUT/DELETE /api/factions/{uuid}/groups AND /api/characters/{uuid}/groups.
+- [ ] Assign character to group: PUT /api/{scope}/{uuid}/groups/{groupId}/members.
+- [ ] Remove character from group: DELETE /api/{scope}/{uuid}/groups/{groupId}/members/{characterUUID}.
 - [ ] A character's effective permissions SHALL be: role permissions + group capabilities + individual capabilities.
 - [ ] A character's effective sharing access SHALL be: individual sharing rules + group sharing template.
+- [ ] There SHALL be full parity between faction-level and character-level group operations.
 
 ## Requirement 3: Intelligence Clearance Levels
 

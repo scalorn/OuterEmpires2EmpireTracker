@@ -7,7 +7,7 @@
 This spec extends the base faction server permission model (Requirement 13 of `remote-faction-service`) with concepts from DarkCrusader:
 
 1. **Named Capabilities** — Fine-grained permission strings beyond the three-role hierarchy
-2. **User Groups** — Faction-scoped roles with inherited permissions and sharing templates
+2. **Permission Groups** — Faction or character-scoped roles with inherited permissions and sharing templates
 3. **Clearance Levels** — Numeric tiered visibility for sensitive shared data
 4. **Intelligence Comments** — Classified notes on external players
 5. **Feature Flags** — Server-side behavior toggles per character
@@ -36,11 +36,12 @@ Capability
   - ScopeType (enum: Faction, Character)
   - ScopeUUID (FactionUUID or CharacterUUID — who owns/defined this capability)
 
-FactionGroup
+PermissionGroup
   - UUID
-  - FactionUUID
   - Name
   - Description
+  - ScopeType (enum: Faction, Character)
+  - ScopeUUID (FactionUUID or CharacterUUID — who owns this group)
   - DefaultClearanceLevel (int, 1-5)
   - Capabilities (List<string> — capability names)
   - SharingTemplate (List<SharingRule>)
@@ -86,17 +87,18 @@ Awaiting requirements iteration. Key decisions needed:
 ```mermaid
 erDiagram
     Faction ||--o{ Capability : "defines (scope=Faction)"
-    Faction ||--o{ FactionGroup : "has"
+    Faction ||--o{ PermissionGroup : "defines (scope=Faction)"
     Faction ||--o{ CharacterPermissions : "scopes"
     Faction ||--o{ IntelComment : "owns"
 
     Character ||--o{ Capability : "defines (scope=Character)"
+    Character ||--o{ PermissionGroup : "defines (scope=Character)"
     Character ||--o{ CharacterPermissions : "has per-faction"
     Character ||--o{ IntelComment : "submits"
 
-    FactionGroup ||--o{ GroupCapability : "grants"
-    FactionGroup ||--o{ GroupSharingRule : "templates"
-    FactionGroup ||--o{ CharacterPermissions : "assigned via"
+    PermissionGroup ||--o{ GroupCapability : "grants"
+    PermissionGroup ||--o{ GroupSharingRule : "templates"
+    PermissionGroup ||--o{ CharacterPermissions : "assigned via"
 
     CharacterPermissions ||--o{ CharacterCapability : "individual grants"
 
@@ -108,11 +110,12 @@ erDiagram
         string ScopeUUID FK "FactionUUID or CharacterUUID"
     }
 
-    FactionGroup {
+    PermissionGroup {
         string UUID PK
-        string FactionUUID FK
         string Name
         string Description
+        string ScopeType "Faction | Character"
+        string ScopeUUID FK "FactionUUID or CharacterUUID"
         int DefaultClearanceLevel "1-5"
     }
 
