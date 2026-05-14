@@ -205,18 +205,29 @@ IntelComment
   - UUID
   - TargetCharacterUUID → Character.UUID (the external character this is about)
   - SubmitterCharacterUUID → Character.UUID (who wrote it)
-  - FactionUUID → Faction.UUID (nullable — which faction can see it, null = private to submitter)
-  - ClassificationLevelUUID → FactionClearanceLevel.UUID (nullable — minimum clearance to view within faction, null when private)
   - Text
   - CreatedUtc
   Notes:
-    - When FactionUUID is null, only the submitter can see the comment (private note).
-    - The submitter can share a private comment with their faction by setting FactionUUID.
-    - The submitter can remove faction visibility by clearing FactionUUID back to null.
-    - ClassificationLevelUUID references FactionClearanceLevel (faction-scoped) because
-      intel comments are only visible within a faction context when shared.
-    - Open Question 4 RESOLVED: Intel comments are faction-scoped when shared (visible to
-      faction members with clearance), private when not shared (visible only to submitter).
+    - A comment starts private (visible only to submitter).
+    - The submitter shares it with factions via IntelCommentFactionShare.
+    - The comment text is immutable after creation.
+
+IntelCommentFactionShare (junction: which factions a comment is shared with)
+  - UUID
+  - IntelCommentUUID → IntelComment.UUID
+  - FactionUUID → Faction.UUID
+  - ClassificationLevelUUID → FactionClearanceLevel.UUID (nullable — null = pending review/unclassified)
+  - ClassifiedByCharacterUUID → Character.UUID (nullable — who classified it, null until reviewed)
+  - SharedUtc (when the submitter shared it with this faction)
+  - ClassifiedUtc (nullable — when it was classified)
+  Notes:
+    - When ClassificationLevelUUID is null, the comment is "pending review" — not yet visible
+      to general faction members. Only members with the `classify_intel` capability can see
+      unclassified comments.
+    - A member with `classify_intel` reviews and assigns a classification level.
+    - Once classified, the comment becomes visible to faction members whose clearance >= the level.
+    - The submitter can remove a faction share (revoke visibility) at any time.
+    - A comment can be shared with multiple factions independently (each with its own classification).
 
 PermissionAuditEntry (append-only log)
   - UUID
@@ -256,7 +267,6 @@ erDiagram
     Faction ||--o{ FactionCapability : "defines capabilities"
     Faction ||--o{ FactionPermissionGroup : "defines groups"
     Faction ||--o{ FactionMemberPermissions : "members have"
-    Faction ||--o{ IntelComment : "shared intel (nullable)"
 
     FactionClearanceLevel {
         string UUID PK
@@ -323,13 +333,23 @@ erDiagram
         string UUID PK
         string TargetCharacterUUID FK
         string SubmitterCharacterUUID FK
-        string FactionUUID FK "nullable"
-        string ClassificationLevelUUID FK "nullable"
         string Text
         datetime CreatedUtc
     }
 
-    IntelComment }o--o| FactionClearanceLevel : "classification"
+    IntelCommentFactionShare {
+        string UUID PK
+        string IntelCommentUUID FK
+        string FactionUUID FK
+        string ClassificationLevelUUID FK "nullable (null=pending)"
+        string ClassifiedByCharacterUUID FK "nullable"
+        datetime SharedUtc
+        datetime ClassifiedUtc "nullable"
+    }
+
+    Faction ||--o{ IntelCommentFactionShare : "receives intel"
+    IntelComment ||--o{ IntelCommentFactionShare : "shared with"
+    IntelCommentFactionShare }o--o| FactionClearanceLevel : "classification"
 ```
 
 
@@ -415,8 +435,6 @@ erDiagram
         string UUID PK
         string TargetCharacterUUID FK "about"
         string SubmitterCharacterUUID FK "author"
-        string FactionUUID FK "nullable (null=private)"
-        string ClassificationLevelUUID FK "nullable"
         string Text
         datetime CreatedUtc
     }

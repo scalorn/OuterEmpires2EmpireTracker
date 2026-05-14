@@ -35,6 +35,7 @@ DarkCrusader defined permissions as named strings (`access_empire`, `access_fact
   - `server_processing_admin` — Can enable/disable server-side processing
   - `export_any_character` — Can export any character's data (normally Owner-only)
   - `manage_faction_members` — Can accept/reject join requests and remove members (normally Leader-only)
+  - `classify_intel` — Can review and classify unclassified intel comments shared with the faction
   - `server_side_processing` — Character's colonies are processed server-side (opt-in behavior)
   - `real_time_push` — Character receives WebSocket push events (opt-in behavior)
   - `bulk_export` — Character can use the bulk export endpoint
@@ -116,26 +117,30 @@ DarkCrusader had an intelligence system where faction members could post classif
 ### User Stories
 
 - As a faction member, I want to record private notes about external players that only I can see.
-- As a faction member, I want to share a note with my faction so other members can see it.
-- As a faction leader, I want to classify shared intel at a higher clearance level so only officers see it.
-- As a faction member, I want to remove a comment from faction visibility (make it private again).
-- As a faction member, I want to see all intel about a player when I encounter them in-game.
+- As a faction member, I want to share a note with one or more factions so their members can see it.
+- As a faction intel officer, I want to review incoming intel and classify it before the rest of the faction sees it.
+- As a faction member, I want to see all classified intel about a player when I encounter them in-game.
+- As a faction member, I want to remove a comment from faction visibility (revoke the share).
 
 ### Acceptance Criteria
 
 - [ ] The service SHALL support intelligence comments attached to ExternalCharacter entities.
-- [ ] Each comment SHALL have: submitter character UUID, timestamp, text content, and optionally a faction UUID and classification level.
-- [ ] POST /api/characters/{uuid}/intel SHALL add a comment to the specified external character.
-- [ ] By default, a new comment SHALL be private (FactionUUID = null) — visible only to the submitter.
-- [ ] The submitter SHALL be able to share a comment with their faction by setting FactionUUID via PUT /api/characters/{uuid}/intel/{commentId}/share.
-- [ ] The submitter SHALL be able to remove faction visibility by clearing FactionUUID via DELETE /api/characters/{uuid}/intel/{commentId}/share.
-- [ ] When a comment has a FactionUUID set, it SHALL be visible to faction members with sufficient clearance (classification level <= viewer's clearance).
-- [ ] When a comment has no FactionUUID (private), it SHALL only be visible to the submitter.
-- [ ] GET /api/characters/{uuid}/intel SHALL return: the requester's own private comments + faction-shared comments they have clearance to see.
+- [ ] Each comment SHALL have: submitter character UUID, timestamp, and text content.
+- [ ] POST /api/characters/{uuid}/intel SHALL add a comment (private by default — visible only to submitter).
+- [ ] The submitter SHALL be able to share a comment with one or more factions via POST /api/characters/{uuid}/intel/{commentId}/share with a target FactionUUID.
+- [ ] A comment can be shared with multiple factions independently — each faction has its own classification state.
+- [ ] When shared with a faction, the comment SHALL arrive in an "unclassified" state (ClassificationLevelUUID = null).
+- [ ] Unclassified comments SHALL only be visible to faction members who hold the `classify_intel` capability.
+- [ ] A member with `classify_intel` SHALL be able to assign a classification level via PUT /api/factions/{uuid}/intel/{shareId}/classify.
+- [ ] Once classified, the comment SHALL become visible to faction members whose clearance level >= the assigned classification.
+- [ ] The classifier's identity and timestamp SHALL be recorded on the share record.
+- [ ] The submitter SHALL be able to revoke a faction share via DELETE /api/characters/{uuid}/intel/{commentId}/share/{factionUUID}.
+- [ ] When a share is revoked, the comment becomes invisible to that faction immediately.
+- [ ] GET /api/characters/{uuid}/intel SHALL return: the requester's own private comments + faction-shared comments they have clearance to see (classified only, unless they have `classify_intel`).
 - [ ] The submitter's name SHALL be included in the response.
-- [ ] Comments SHALL be immutable once created (no edit to text, only visibility changes and delete).
-- [ ] DELETE /api/characters/{uuid}/intel/{commentId} SHALL remove a comment (submitter, Faction Leader, or Owner only).
-- [ ] Intel comments shared with a faction SHALL be included in faction shared data views (filtered by clearance).
+- [ ] Comment text SHALL be immutable after creation (no edit, only share/revoke/classify/delete).
+- [ ] DELETE /api/characters/{uuid}/intel/{commentId} SHALL remove a comment and all its faction shares (submitter, Faction Leader, or Owner only).
+- [ ] `classify_intel` SHALL be included in the starting capability set for new factions.
 
 ## Requirement 5: Audit Trail for Permission Changes
 
