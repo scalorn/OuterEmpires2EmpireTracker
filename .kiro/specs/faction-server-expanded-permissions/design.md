@@ -618,3 +618,124 @@ erDiagram
         string NewValue
     }
 ```
+
+
+## UI Forms
+
+### FormPermissionManager (main entry point)
+
+Accessed from **Manage → Permissions** menu. Tab-based layout with context switching between "My Permissions" (character-scoped) and faction-scoped (one tab per faction the character belongs to).
+
+**Tabs:**
+- **My Sharing** — character-scoped: what I share outward
+- **[Faction Name]** — one tab per faction membership: faction-level permission management (Leader/Owner only see management controls; regular members see their own status)
+
+---
+
+### My Sharing Tab (Character-Scoped)
+
+Manages what the character shares with others.
+
+**Sections:**
+
+1. **Permission Groups** (left panel — list + CRUD)
+   - ListView of CharacterPermissionGroups (Name, member count)
+   - New / Rename / Delete buttons
+   - Selecting a group shows its details in the right panel
+
+2. **Group Detail** (right panel — when a group is selected)
+   - **Sharing Rules** grid: DataType dropdown + EntityUUID (optional, with picker) + Add/Remove
+   - **Capabilities Granted** grid: list of CharacterCapabilities this group grants + Add/Remove
+   - **Members** grid: list of grantees assigned to this group + Add/Remove (character picker)
+
+3. **Clearance Levels** (bottom section)
+   - Editable grid: Level (int), Name (text), Description (text)
+   - Add / Remove / Reorder buttons
+   - Used by CharacterGranteePermissions to assign clearance to grantees
+
+4. **Capabilities** (collapsible section)
+   - List of CharacterCapabilities defined by this character
+   - New / Rename / Delete
+
+---
+
+### Faction Tab (Faction-Scoped)
+
+Manages internal distribution within the faction. Visible to all members; editing restricted by role/capability.
+
+**Sections:**
+
+1. **Permission Groups** (left panel — list + CRUD, Leader/Owner only for editing)
+   - ListView of FactionPermissionGroups (Name, member count, default clearance)
+   - New / Rename / Delete buttons (Leader/Owner)
+   - Selecting a group shows its details in the right panel
+
+2. **Group Detail** (right panel)
+   - **Sharing Rules** grid: DataType dropdown + EntityUUID (optional) + MinClearanceLevel dropdown + Add/Remove
+   - **Capabilities Granted** grid: list of FactionCapabilities this group grants + Add/Remove
+   - **Members** grid: list of faction members assigned to this group + Add/Remove (member picker)
+
+3. **Clearance Levels** (bottom section, Leader/Owner only for editing)
+   - Editable grid: Level (int), Name (text), Description (text)
+   - Add / Remove / Reorder buttons
+   - Members see their own assigned level (read-only)
+
+4. **Capabilities** (collapsible section, Leader/Owner only for editing)
+   - List of FactionCapabilities defined for this faction
+   - New / Rename / Delete
+   - Individual grant: select a member → grant/revoke specific capabilities
+
+5. **Members Overview** (collapsible section)
+   - Grid showing all faction members: Name, Group, Clearance Level, Individual Capabilities count
+   - Click a member to edit their group assignment and clearance (Leader/Owner)
+
+---
+
+### FormIntelComments
+
+Accessed from the **ExternalCharacter detail view** (Contacts form) or via **Manage → Intel**.
+
+**Layout:**
+
+1. **Target Character** selector at top (filtered combo)
+
+2. **My Private Notes** section
+   - List of IntelComments submitted by the current character where no faction share exists
+   - New comment: text box + Submit button
+   - Per-comment actions: Share with Faction (dropdown of factions) / Delete
+
+3. **Faction Intel** section (one per faction the character belongs to)
+   - **Pending Review** subsection (only visible if character has `classify_intel`)
+     - List of unclassified IntelCommentFactionShares for this faction
+     - Per-comment: text, submitter name, shared date
+     - Classify button → dropdown of FactionClearanceLevels → Confirm
+   - **Classified Intel** subsection
+     - List of classified comments the character has clearance to see
+     - Shows: text, submitter, classification level name, classified by, date
+   - Filter by classification level (dropdown)
+
+---
+
+### FormAuditLog
+
+Accessed from **Manage → Permissions → Audit** (or a button on the Faction tab). Owner and Faction Leaders only.
+
+**Layout:**
+- Date range filter (from/to)
+- Action type filter (dropdown: All, CapabilityGranted, CapabilityRevoked, GroupAssigned, GroupRemoved, ClearanceChanged)
+- Actor filter (character picker)
+- Target filter (character picker)
+- Results grid: Timestamp, Actor, Target, Action, Old Value, New Value
+- Pagination (audit logs can be large)
+
+---
+
+### Integration Points with Existing Forms
+
+| Existing Form | Addition |
+|---------------|----------|
+| FormContacts | "Intel" button on ExternalCharacter detail → opens FormIntelComments for that target |
+| FormPreferences (Server tab) | No changes — server connection is already there |
+| MainWindow | "Manage → Permissions" menu item → opens FormPermissionManager |
+| MainWindow | "Manage → Intel" menu item → opens FormIntelComments (no target pre-selected) |
+| MainWindow status bar | Show current clearance level in faction (if connected to server) |
