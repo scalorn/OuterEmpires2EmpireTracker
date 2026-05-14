@@ -71,3 +71,15 @@ Uses `System.Security.Cryptography.ProtectedData` with `DataProtectionScope.Curr
 
 Event args for connection status change notifications:
 - IsConnected flag, human-readable Message
+
+### PushEventArgs
+
+Event args for push events received via WebSocket (Req 18):
+- EventType (Created, Updated, Deleted, TimerTick, MembershipChanged, etc.)
+- EntityType (Colony, Blueprint, Character, etc.)
+- EntityUUID, CharacterUUID, Timestamp
+
+### RealtimeModeChangedEventArgs
+
+Event args for real-time mode changes (Req 18 Fallback):
+- IsRealtime flag (true = WebSocket, false = polling)

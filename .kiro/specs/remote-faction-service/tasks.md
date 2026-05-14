@@ -174,7 +174,7 @@
 
 ## Phase 14: WebSocket Client
 
-- [~] 14.1 Implement WebSocket client in RemoteFactionClient (connect to wss://server/ws?token=...)
+- [-] 14.1 Implement WebSocket client in RemoteFactionClient (connect to wss://server/ws?token=...)
   - _Satisfies: Req 18 ("authenticate WebSocket using same Bearer token")_
   - _Satisfies: Design §7.1 (connection lifecycle)_
 - [~] 14.2 Automatic reconnection with exponential backoff (1s, 2s, 4s, 8s, max 60s)

@@ -315,6 +315,7 @@ namespace OE2EmpireTracker
             if (ctx?.Client != null)
             {
                 ctx.Client.ConnectionStatusChanged += OnConnectionStatusChanged;
+                ctx.Client.RealtimeModeChanged += OnRealtimeModeChanged;
             }
         }
 
@@ -327,6 +328,7 @@ namespace OE2EmpireTracker
             if (ctx?.Client != null)
             {
                 ctx.Client.ConnectionStatusChanged -= OnConnectionStatusChanged;
+                ctx.Client.RealtimeModeChanged -= OnRealtimeModeChanged;
             }
         }
 
@@ -339,6 +341,35 @@ namespace OE2EmpireTracker
             else
             {
                 HandleConnectionStatusChange(e);
+            }
+        }
+
+        private void OnRealtimeModeChanged(object sender, Client.RealtimeModeChangedEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke((Action)(() => UpdateRealtimeIndicator(e.IsRealtime)));
+            }
+            else
+            {
+                UpdateRealtimeIndicator(e.IsRealtime);
+            }
+        }
+
+        /// <summary>
+        /// Updates the real-time vs polling indicator in the status bar.
+        /// </summary>
+        private void UpdateRealtimeIndicator(bool isRealtime)
+        {
+            if (isRealtime)
+            {
+                tslRealtimeIndicator.Text = "Real-time";
+                tslRealtimeIndicator.ForeColor = System.Drawing.Color.Green;
+            }
+            else
+            {
+                tslRealtimeIndicator.Text = "Polling";
+                tslRealtimeIndicator.ForeColor = System.Drawing.Color.Orange;
             }
         }
 
