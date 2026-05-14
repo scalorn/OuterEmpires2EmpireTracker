@@ -23,3 +23,49 @@ Reorders colony structures so Power, Habitation, Food, and Entertainment constra
 - `SimulateOneMore(prev, structure, blueprint, workers)` → `ColonyStructureStatus` — O(1) delta computation (private)
 
 Satisfies: REQ-COL-095 through REQ-COL-095g
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class BuildOrderOptimizer {
+        -Logger Log
+        -PlayerContext _playerContext
+        +BuildOrderOptimizer(playerContext)
+        +IsSupportStructure(blueprint) bool
+        +Optimize(colony) List~ColonyStructure~
+        -FixDeficits(result, pool, targetStatus, workers, accumulator) void
+        -PlaceSupportSafe(result, pool, deficitType, workers, accumulator) void
+        -GetHighestPriorityDeficit(status) string
+        -TakeFromPool(pool, provisionProperty) ColonyStructure
+        -SimulateOneMore(prev, structure, blueprint, workers) ColonyStructureStatus
+        -HasDeficit(status) bool
+    }
+
+    class ColonyStructureStatus {
+        <<value object>>
+        +decimal PowerBalance
+        +decimal HabitationBalance
+        +decimal FoodBalance
+        +decimal EntertainmentBalance
+    }
+
+    class Colony {
+        +string UUID
+        +string ColonyName
+        +List~ColonyStructure~ Structures
+    }
+
+    class ColonyStructure {
+        +string UUID
+        +string BlueprintUUID
+        +string FlatpackBlueprintUUID
+        +PropertyBag Properties
+    }
+
+    BuildOrderOptimizer --> PlayerContext : uses
+    BuildOrderOptimizer --> Colony : optimizes
+    BuildOrderOptimizer --> ColonyStructure : reorders
+    BuildOrderOptimizer --> ColonyStructureStatus : simulates
+```

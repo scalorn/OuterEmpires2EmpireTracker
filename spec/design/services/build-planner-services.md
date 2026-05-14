@@ -224,3 +224,108 @@ Logic:
 3. Distribute runs across `min(structures, copies)`, splitting evenly.
 4. Stack on existing assignments if more items than capacity.
 5. Sort to minimize longest completion time.
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class BuildPlanService {
+        <<static>>
+        -Logger Log
+        +ValidatePlanName(name) bool
+        +ValidateBuildItem(item) bool
+        +GenerateColonyBuildItems(colony, targetPlan, blueprintFinder) int
+        -BuildExistingBlueprintSet(plan, colonyUUID) HashSet~string~
+        -IsUnstagedUnbuilt(structure) bool
+        -TryCreateBuildItem(structure, colony, targetPlan, blueprintFinder, existing) bool
+    }
+
+    class ResourceCheckService {
+        <<static>>
+        -Logger Log
+        +ComputeShortfalls(item, locationInventory, blueprintFinder) Dictionary~string_int~
+        +ComputePlanShortfalls(plan, colonyFinder, shipFinder, stationFinder, playerUUID, blueprintFinder) Dictionary~string_Dictionary~
+        -ResolveLocationInventory(item, colonyFinder, shipFinder, stationFinder, playerUUID) ItemBag
+        -ComputeManufactoryShortfalls(item, inventory, blueprintFinder) Dictionary~string_int~
+        -ComputeCommodityShortfalls(item, inventory) Dictionary~string_int~
+        -ComputeRefiningShortfalls(item, inventory) Dictionary~string_int~
+    }
+
+    class BuildPlanExecutionService {
+        <<static>>
+        -Logger Log
+        +ComputeStatusSummary(plan) Dictionary~BuildItemStatus_int~
+        +IsPlanComplete(plan) bool
+        +DetectContention(item, allPlans) List~ContentionInfo~
+        +AdvanceBuildItemStatuses(plan, colonyFinder, blueprintFinder, shipFinder, stationFinder, playerUUID) bool
+        +CanStartManufacturing(item, plan, colonyFinder, blueprintFinder) bool
+        +StartManufacturing(item, plan, colonyFinder, blueprintFinder) StartManufacturingResult
+        +StartAllReady(plan, colonyFinder, blueprintFinder) BatchStartResult
+    }
+
+    class StartManufacturingResult {
+        +bool Success
+        +string ErrorMessage
+    }
+
+    class BatchStartResult {
+        +int StartedCount
+        +int SkippedCount
+        +List~string~ SkippedReasons
+    }
+
+    class ContentionInfo {
+        +string PlanName
+        +string ItemName
+        +string ItemUUID
+    }
+
+    class DeliveryGenerationService {
+        <<static>>
+        -Logger Log
+        +GenerateDeliveryPlan(buildPlan, route, shortfalls, colonyFinder, playerContext) DeliveryPlan
+        +GenerateConsolidatedDeliveryPlan(buildPlans, route, shortfallProvider, colonyFinder, playerContext, planName) DeliveryPlan
+        +GenerateFlatpackDeliveryPlan(buildPlans, route, colonyFinder, blueprintFinder, playerContext, planName) DeliveryPlan
+    }
+
+    class QueueCalculator {
+        <<static>>
+        -Logger Log
+        +ComputeManufactoryRuns(blueprint, targetDurationSeconds) int
+        +ComputeCommodityRuns(targetDurationSeconds) int
+        +ManufactoryRunsToItems(blueprint, runs) int
+        +CommodityRunsToItems(runs) int
+    }
+
+    class AutoAssignService {
+        <<static>>
+        -Logger Log
+        +ProposeAssignments(plan, route, colonyFinder, shipFinder, stationFinder, blueprintFinder) List~AssignmentProposal~
+        -CollectUnallocatedItems(plan) List~BuildItem~
+        -CollectEligibleStructures(route, colonyFinder) EligibleStructures
+        -AssignManufactoryItems(items, structures, blueprintFinder, proposals) void
+        -AssignCommodityItems(items, structures, proposals) void
+        -CountBlueprintCopies(colonyFinder, route, blueprintUUID) int
+    }
+
+    class AssignmentProposal {
+        +string BuildItemUUID
+        +DestinationType BuildLocationType
+        +string BuildLocationUUID
+        +string StructureUUID
+        +int SequenceInStructure
+        +string Reason
+    }
+
+    BuildPlanExecutionService --> StartManufacturingResult
+    BuildPlanExecutionService --> BatchStartResult
+    BuildPlanExecutionService --> ContentionInfo
+    BuildPlanExecutionService --> BuildPlan : operates on
+    AutoAssignService --> AssignmentProposal
+    AutoAssignService --> DeliveryRoute : reads stops
+    DeliveryGenerationService --> DeliveryPlan : creates
+    DeliveryGenerationService --> BuildPlan : reads shortfalls
+    ResourceCheckService --> BuildPlan : computes shortfalls
+    BuildPlanService --> BuildPlan : validates/generates items
+    QueueCalculator --> Blueprint : reads timing
+```

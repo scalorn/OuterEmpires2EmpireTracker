@@ -34,3 +34,68 @@ Logic:
 - Delete: looks up entity, removes from PlayerContext, persists, fires event. Returns silently if UUID empty or not found.
 
 Satisfies: REQ-DEL (see .kiro/specs/bl-112-deliveryroute-readonly/requirements.md)
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class CargoVolumeService {
+        <<static>>
+        -Logger Log
+        +ComputeLoadVolume(loadList, blueprintFinder) CargoLoadResult
+        +GetItemVolume(item, blueprintFinder) decimal
+        +GetItemMass(item, blueprintFinder) decimal
+        +SplitIntoTrips(loadList, cargoCapacity, blueprintFinder) List~List~DeliveryItem~~
+        -IsCrateType(bp) bool
+        -GetCrateContentsVolume(crateBp, blueprintFinder) decimal
+    }
+
+    class CargoLoadResult {
+        +decimal TotalVolume
+        +decimal TotalMass
+    }
+
+    class DeliveryRouteService {
+        -Logger Log
+        -PlayerContext _playerContext
+        +DeliveryRouteService(playerContext)
+        +Update(uuid, request) ReadOnlyDeliveryRoute
+        +Create(request) ReadOnlyDeliveryRoute
+        +Delete(uuid) void
+        -DeepCopyStops(source) List~RouteStop~
+        -RenumberStops(stops) void
+    }
+
+    class DeliveryRouteCreateRequest {
+        +string Name
+        +List~RouteStop~ Stops
+    }
+
+    class DeliveryRouteUpdateRequest {
+        +string Name
+        +List~RouteStop~ Stops
+    }
+
+    class DeliveryRoute {
+        +string UUID
+        +string OwnerUUID
+        +string Name
+        +List~RouteStop~ Stops
+    }
+
+    class ReadOnlyDeliveryRoute {
+        +string UUID
+        +string OwnerUUID
+        +string Name
+        +IReadOnlyList~RouteStop~ Stops
+    }
+
+    CargoVolumeService --> CargoLoadResult
+    CargoVolumeService --> DeliveryItem : computes volume for
+    DeliveryRouteService --> PlayerContext : uses
+    DeliveryRouteService --> DeliveryRoute : mutates
+    DeliveryRouteService --> ReadOnlyDeliveryRoute : returns
+    DeliveryRouteService --> DeliveryRouteCreateRequest : accepts
+    DeliveryRouteService --> DeliveryRouteUpdateRequest : accepts
+    ReadOnlyDeliveryRoute --|> DeliveryRoute : wraps
+```

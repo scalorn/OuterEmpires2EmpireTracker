@@ -39,3 +39,74 @@ Logic:
 - Dedup via MarketBlueprintImporter.FindByDedupKey; updates existing or creates new.
 - Persists once at the end (batch save), fires BlueprintDataChanged event.
 - Blueprint type resolved via name-based classification (ReclassifyByName). Icon CSS class stored as `_IconClass` property for future mapping.
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class BlueprintImportHandler {
+        <<static>>
+        -Logger Log
+        +ClassifyImport(tempBP) ImportType
+        +LogParsedBlueprint(tempBP) void
+        +FindTarget(tempBP, selected, pc, ec) FindTargetResult
+        +MergeAndPersist(findResult, tempBP, pc, ec) Blueprint
+    }
+
+    class ImportType {
+        <<enum>>
+        ResourcesOnly
+        Full
+        NoName
+    }
+
+    class FindTargetResult {
+        +Blueprint Target
+        +bool IsNew
+        +bool IsGlobal
+        +bool IsSelectedMatch
+    }
+
+    class CrateImporter {
+        <<static>>
+        -Logger Log
+        +ImportFromFile(filePath, pc, ec) CrateImportResult
+        +ImportFromJson(json, pc, ec) CrateImportResult
+        -ImportSingleEntry(entry, pc, ec) CrateImportEntry
+        -FindTypeByName(blueprintName, ec) string
+        -FindTypeByDescription(description, ec) string
+        -NormalizePropertyValue(key, value) string
+        -ReclassifyByName(resolvedType, blueprintName) string
+    }
+
+    class CrateImportResult {
+        +int TotalInFile
+        +int Created
+        +int Updated
+        +int Skipped
+        +int Failed
+        +List~string~ Errors
+        +List~CrateImportEntry~ Entries
+    }
+
+    class CrateImportEntry {
+        +string Name
+        +int Evolution
+        +string TechLevel
+        +ImportAction Action
+        +string Storage
+        +string SkipReason
+    }
+
+    BlueprintImportHandler --> ImportType
+    BlueprintImportHandler --> FindTargetResult
+    BlueprintImportHandler --> PlayerContext
+    BlueprintImportHandler --> EmpireContext
+    BlueprintImportHandler --> MarketBlueprintImporter
+    CrateImporter --> CrateImportResult
+    CrateImportResult --o CrateImportEntry
+    CrateImporter --> PlayerContext
+    CrateImporter --> EmpireContext
+    CrateImporter --> MarketBlueprintImporter
+```
