@@ -451,9 +451,9 @@ namespace OE2EmpireTracker.Client
             if (!match)
             {
                 Log.Warn(
-                    "Certificate thumbprint mismatch. Expected={0}, Actual={1}",
-                    _trustedThumbprint,
-                    thumbprint);
+                    "Certificate thumbprint mismatch. Expected={0}..., Actual={1}...",
+                    _trustedThumbprint.Substring(0, Math.Min(8, _trustedThumbprint.Length)),
+                    thumbprint.Substring(0, Math.Min(8, thumbprint.Length)));
             }
 
             return match;
@@ -486,9 +486,9 @@ namespace OE2EmpireTracker.Client
             if (!match)
             {
                 Log.Warn(
-                    "WebSocket certificate thumbprint mismatch. Expected={0}, Actual={1}",
-                    _trustedThumbprint,
-                    thumbprint);
+                    "WebSocket certificate thumbprint mismatch. Expected={0}..., Actual={1}...",
+                    _trustedThumbprint.Substring(0, Math.Min(8, _trustedThumbprint.Length)),
+                    thumbprint.Substring(0, Math.Min(8, thumbprint.Length)));
             }
 
             return match;
