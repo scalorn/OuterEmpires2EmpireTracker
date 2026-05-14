@@ -825,7 +825,7 @@ Accessed from **Manage → Permissions → Audit** (or a button on the Faction t
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ Permissions                                                          [X]    │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ [ My Sharing ] [ Galactic Empire ] [ Rebel Alliance ]                       │
+│ [ My Sharing ] [▶Galactic Empire ]                                          │
 ├────────────────────┬────────────────────────────────────────────────────────┤
 │ Permission Groups  │ Group: Faction Sharing                                 │
 │                    │                                                        │
@@ -878,7 +878,7 @@ Accessed from **Manage → Permissions → Audit** (or a button on the Faction t
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ Permissions                                                          [X]    │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ [ My Sharing ] [▶Galactic Empire ] [ Rebel Alliance ]                       │
+│ [ My Sharing ] [▶Galactic Empire ]                                          │
 ├────────────────────┬────────────────────────────────────────────────────────┤
 │ Permission Groups  │ Group: Officers                                        │
 │                    │                                                        │
