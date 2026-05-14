@@ -24,6 +24,53 @@ Owner (all permissions)
             + Clearance Level (tiered data visibility)
 ```
 
+## Data Visibility Flow
+
+Data visibility is a two-layer system. The character controls what leaves their possession; the faction controls who inside the faction sees what was shared.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ LAYER 1: Character decides WHAT to share (data owner sovereignty)│
+│                                                                   │
+│ Character-scoped PermissionGroup + GroupSharingRules:             │
+│   "Share my colonies with Faction X"                             │
+│   "Share my build-plans with Faction X"                          │
+│   "Don't share my market transactions"                           │
+│                                                                   │
+│ Granularity: category-level (DataType) or entity-level (UUID)    │
+│ The character is the ceiling — no one can see more than shared.  │
+└──────────────────────────────┬────────────────────────────────────┘
+                               │ shared data flows to faction
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ LAYER 2: Faction decides WHO sees it (clearance-based distribution)│
+│                                                                   │
+│ Faction-scoped PermissionGroup + GroupSharingRules:              │
+│   "Officers (clearance 3+) can see shared colonies"              │
+│   "Command (clearance 4+) can see shared build-plans"            │
+│   "Recruits (clearance 1) see nothing beyond blueprints"         │
+│                                                                   │
+│ MinClearanceLevelUUID gates visibility within the faction.        │
+│ The faction cannot exceed what the character shared.              │
+└──────────────────────────────┬────────────────────────────────────┘
+                               │ filtered by member's clearance
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ RESULT: Individual member sees intersection of:                  │
+│   • What the data owner shared (Layer 1)                         │
+│   • What their clearance level permits (Layer 2)                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Same Table, Different Meaning by Scope
+
+`GroupSharingRule` is used in both layers — the scope determines its role:
+
+| Scope | PermissionGroup Owner | GroupSharingRule Means | MinClearanceLevelUUID |
+|-------|----------------------|----------------------|----------------------|
+| Character | The data owner | "I'm sharing this data outward" | null (not applicable — sharing is unconditional to the target) |
+| Faction | The faction leader | "Members at this clearance can see received data" | Required — gates who inside the faction sees it |
+
 ## Data Model
 
 ```
