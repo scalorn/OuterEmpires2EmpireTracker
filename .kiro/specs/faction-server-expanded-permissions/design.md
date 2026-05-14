@@ -27,6 +27,26 @@ Owner (all permissions)
 ## Data Model
 
 ```
+DataType (fixed enum — maps to storage collections and API endpoints)
+  Values:
+    - blueprints
+    - colonies
+    - surveys
+    - delivery-routes
+    - delivery-plans
+    - build-plans
+    - ships
+    - ship-templates
+    - stations
+    - asteroids
+    - market-listings
+    - market-transactions
+    - pricing-plans
+    - stock-plans
+    - stock-profiles
+    - supply-chains
+  Not user-extensible — adding new types requires code changes.
+
 Capability (gates what you can DO — operations, actions, and server behavior opt-ins)
   - UUID
   - Name (string, unique within scope)
