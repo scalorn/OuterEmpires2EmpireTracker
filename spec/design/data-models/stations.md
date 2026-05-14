@@ -37,3 +37,43 @@ public class Station
 
 - UUID deterministic from station name. Holds keyed by player UUID. Missing key = empty hold.
 - Player-owned stations reuse ShipComponentSlot for components.
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class Station {
+        +string UUID
+        +string Name
+        +StationType StationType
+        +StationOwnership Ownership
+        +string OwnerUUID
+        +Dictionary~string, ItemBag~ Holds
+        +List~ShipComponentSlot~ Components
+        +string StationBlueprintUUID
+        +ItemBag MunitionsHold
+        +int HullCurrentHP
+        +int HullMaxHP
+        +decimal HullMaxRepairPercent
+    }
+
+    class StationType {
+        <<enum>>
+        Outpost
+        Station
+        Starbase
+    }
+
+    class StationOwnership {
+        <<enum>>
+        Government
+        PlayerOwned
+    }
+
+    Station --> StationType
+    Station --> StationOwnership
+    Station *-- ShipComponentSlot : Components
+    Station *-- ItemBag : Holds
+    Station *-- ItemBag : MunitionsHold
+```

@@ -54,3 +54,56 @@ public class StockProfileEntry
 ```
 
 - Same GroupID = ORed (max). Different GroupIDs = ANDed (summed).
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class StockPlan {
+        +string UUID
+        +string Name
+        +string OwnerUUID
+        +string ReplenishmentBuildPlanUUID
+        +bool IsActive
+        +List~StockTarget~ Targets
+    }
+
+    class StockTarget {
+        +string UUID
+        +ItemTypeEnum ItemType
+        +string ItemReferenceID
+        +string ItemName
+        +string ShipTemplateUUID
+        +int TargetQuantity
+        +int CriticalThreshold
+        +StockTargetScope Scope
+        +string LocationUUID
+    }
+
+    class StockProfile {
+        +string UUID
+        +string Name
+        +string OwnerUUID
+        +bool IsActive
+        +List~StockProfileEntry~ Entries
+    }
+
+    class StockProfileEntry {
+        +string GroupID
+        +string StockPlanUUID
+    }
+
+    class StockTargetScope {
+        <<enum>>
+        EmpireWide
+        Colony
+        Station
+    }
+
+    StockPlan *-- StockTarget : Targets
+    StockTarget --> StockTargetScope
+    StockProfile *-- StockProfileEntry : Entries
+    StockProfileEntry --> StockPlan : StockPlanUUID
+    StockPlan --> BuildPlan : ReplenishmentBuildPlanUUID
+```

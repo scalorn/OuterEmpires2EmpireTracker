@@ -59,3 +59,52 @@ public class MarketTransaction
 
 - CounterpartyFaction is a snapshot (people change factions).
 - Condition fields are snapshots preserved even after listing deletion.
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class MarketListing {
+        +string UUID
+        +string OwnerUUID
+        +string StationUUID
+        +ItemTypeEnum ItemType
+        +string ItemReferenceID
+        +string ItemName
+        +int Quantity
+        +decimal PricePerUnit
+        +int CurrentHP
+        +int MaxHP
+        +decimal MaxRepairPercent
+    }
+
+    class MarketTransaction {
+        +string UUID
+        +string OwnerUUID
+        +TransactionType TransactionType
+        +ItemTypeEnum ItemType
+        +string ItemReferenceID
+        +string ItemName
+        +int Quantity
+        +decimal PricePerUnit
+        +decimal TotalPrice
+        +string Counterparty
+        +string CounterpartyFaction
+        +string StationUUID
+        +string Timestamp
+        +string ListingUUID
+        +int CurrentHP
+        +int MaxHP
+        +decimal MaxRepairPercent
+    }
+
+    class TransactionType {
+        <<enum>>
+        Buy
+        Sell
+    }
+
+    MarketTransaction --> TransactionType
+    MarketTransaction --> MarketListing : ListingUUID
+```

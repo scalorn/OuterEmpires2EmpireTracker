@@ -56,3 +56,57 @@ public class WarehouseOverflowRule
     public string DeliveryRouteUUID { get; set; } = string.Empty;
 }
 ```
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class SupplyChain {
+        +string UUID
+        +string Name
+        +string OwnerUUID
+        +bool IsActive
+        +List~SupplyChainStage~ Stages
+    }
+
+    class SupplyChainStage {
+        +int Sequence
+        +SupplyChainStageType StageType
+        +DestinationType LocationType
+        +string LocationUUID
+        +string ResourceName
+        +string ResourcePurity
+        +int AccumulationThreshold
+        +decimal ProductionRatePerHour
+        +string DeliveryRouteUUID
+    }
+
+    class SupplyChainStageType {
+        <<enum>>
+        Mine
+        AsteroidMine
+        PickUp
+        Refine
+        Deliver
+        Research
+    }
+
+    class WarehouseOverflowRule {
+        +string UUID
+        +string OwnerUUID
+        +bool IsActive
+        +string ColonyUUID
+        +string ResourceName
+        +string ResourcePurity
+        +int TriggerThreshold
+        +DestinationType DestinationType
+        +string DestinationUUID
+        +string DeliveryRouteUUID
+    }
+
+    SupplyChain *-- SupplyChainStage : Stages
+    SupplyChainStage --> SupplyChainStageType
+    SupplyChainStage --> DestinationType : LocationType
+    WarehouseOverflowRule --> DestinationType : DestinationType
+```

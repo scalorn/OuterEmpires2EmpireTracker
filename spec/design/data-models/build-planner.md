@@ -91,3 +91,63 @@ public class BuildItem
 - Quantity is always runs. Service layer computes total output.
 - BuildLocationType future-proofs for factory ships.
 - Status is string enum for readable JSON.
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class BuildPlan {
+        +string UUID
+        +string Name
+        +string OwnerUUID
+        +string Description
+        +string DeliveryPlanUUID
+        +bool IsActive
+        +List~BuildItem~ Items
+    }
+
+    class BuildItem {
+        +string UUID
+        +BuildItemType ItemType
+        +BuildItemStatus Status
+        +string BlueprintUUID
+        +string ItemName
+        +string CommodityName
+        +string ShipTemplateUUID
+        +int Quantity
+        +DestinationType BuildLocationType
+        +string BuildLocationUUID
+        +string StructureUUID
+        +DestinationType AssemblyLocationType
+        +string AssemblyLocationUUID
+        +string ParentBuildItemUUID
+        +string DependsOnUUID
+        +int SequenceInStructure
+    }
+
+    class BuildItemType {
+        <<enum>>
+        Manufactory
+        Commodity
+        ShipTemplate
+        Mining
+        Refining
+        Research
+    }
+
+    class BuildItemStatus {
+        <<enum>>
+        Staged
+        Delivering
+        Ready
+        InProgress
+        Completed
+    }
+
+    BuildPlan *-- BuildItem : Items
+    BuildItem --> BuildItemType
+    BuildItem --> BuildItemStatus
+    BuildItem --> DestinationType : BuildLocationType
+    BuildItem --> DestinationType : AssemblyLocationType
+```

@@ -44,3 +44,43 @@ public Dictionary<string, int> ParsedMaxReserves { get; set; }
 - For asteroid surveys, `Amount` means "rate per mining cycle" (vs "rate per hour" for planet).
 - When importing asteroid survey, auto-creates Asteroid entity if not found.
 - `ParsedMaxReserves` is populated by `SurveyParser.ProcessHtml` when `ScanDetailOutputMaxReserve` HTML nodes are present. It carries per-resource max reserve values transiently during import — `LinkOrCreateAsteroid` reads it to populate `Asteroid.Reserves`. Not persisted to JSON.
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class Asteroid {
+        +string UUID
+        +string Name
+        +string SystemName
+        +List~AsteroidReserve~ Reserves
+    }
+
+    class AsteroidReserve {
+        +string ResourceName
+        +string Purity
+        +int MaxReserve
+        +int CurrentReserve
+        +string ResetTimestamp
+    }
+
+    class Survey {
+        +string OwnerUUID
+        +SurveyType SurveyType
+        +string AsteroidUUID
+        +string PlanetName
+        +string SystemName
+        +Dictionary Resources
+    }
+
+    class SurveyType {
+        <<enum>>
+        Planet
+        Asteroid
+    }
+
+    Asteroid *-- AsteroidReserve : Reserves
+    Survey --> Asteroid : AsteroidUUID
+    Survey --> SurveyType
+```

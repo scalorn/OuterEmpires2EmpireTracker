@@ -72,3 +72,93 @@ Read-only wrapper classes provide controlled access to the data model. Each muta
 - **ReadOnlyStockProfileEntry** — wraps StockProfileEntry
 - **ReadOnlyAsteroidReserve** — wraps AsteroidReserve
 - **ReadOnlySupplyChainStage** — wraps SupplyChainStage
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class ReadOnlyBlueprint {
+        +string UUID
+        +ReadOnlyPropertyBag Properties
+        +IReadOnlyDictionary Resources
+    }
+    class ReadOnlyColony {
+        +string UUID
+        +ReadOnlyItemBag Items
+        +IReadOnlyList~ReadOnlyColonyStructure~ Structures
+        +ReadOnlyLockTracking Locks
+    }
+    class ReadOnlyShipTemplate {
+        +string UUID
+        +IReadOnlyList~ReadOnlyShipComponentSlot~ Components
+    }
+    class ReadOnlyShip {
+        +string UUID
+        +IReadOnlyList~ReadOnlyShipComponentSlot~ Components
+        +ReadOnlyItemBag Cargo
+        +ReadOnlyItemBag Hopper
+    }
+    class ReadOnlyStation {
+        +string UUID
+        +IReadOnlyDictionary~string, ReadOnlyItemBag~ Holds
+        +IReadOnlyList~ReadOnlyShipComponentSlot~ Components
+        +ReadOnlyItemBag MunitionsHold
+    }
+    class ReadOnlyDeliveryRoute {
+        +string UUID
+        +IReadOnlyList~ReadOnlyRouteStop~ Stops
+    }
+    class ReadOnlyDeliveryPlan {
+        +string UUID
+        +IReadOnlyList~ReadOnlyDeliveryPlanStop~ Stops
+    }
+    class ReadOnlyBuildPlan {
+        +string UUID
+        +IReadOnlyList~ReadOnlyBuildItem~ Items
+    }
+    class ReadOnlyStockPlan {
+        +string UUID
+        +IReadOnlyList~ReadOnlyStockTarget~ Targets
+    }
+    class ReadOnlySupplyChain {
+        +string UUID
+        +IReadOnlyList~ReadOnlySupplyChainStage~ Stages
+    }
+
+    %% Utility wrappers
+    class ReadOnlyPropertyBag {
+        +GetDecimal(string) decimal
+        +GetString(string) string
+        +ContainsKey(string) bool
+    }
+    class ReadOnlyItemBag {
+        +CountByType(ItemTypeEnum, string) int
+        +FindByType(ItemTypeEnum, string) List
+        +Count() int
+    }
+    class ReadOnlyLockTracking {
+        +GetLockedQuantity(string) int
+        +GetLocksForProcess(string) List
+    }
+    class ReadOnlyCountDownTime {
+        +TimeRemaining TimeSpan
+        +IsRepeating bool
+    }
+
+    %% Wrapper pattern: ReadOnly wraps Mutable
+    ReadOnlyBlueprint ..> Blueprint : wraps
+    ReadOnlyColony ..> Colony : wraps
+    ReadOnlyShipTemplate ..> ShipTemplate : wraps
+    ReadOnlyShip ..> Ship : wraps
+    ReadOnlyStation ..> Station : wraps
+    ReadOnlyDeliveryRoute ..> DeliveryRoute : wraps
+    ReadOnlyDeliveryPlan ..> DeliveryPlan : wraps
+    ReadOnlyBuildPlan ..> BuildPlan : wraps
+    ReadOnlyStockPlan ..> StockPlan : wraps
+    ReadOnlySupplyChain ..> SupplyChain : wraps
+    ReadOnlyPropertyBag ..> PropertyBag : wraps
+    ReadOnlyItemBag ..> ItemBag : wraps
+    ReadOnlyLockTracking ..> LockTracking : wraps
+    ReadOnlyCountDownTime ..> CountDownTime : wraps
+```

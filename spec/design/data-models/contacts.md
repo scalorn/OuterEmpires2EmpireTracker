@@ -20,3 +20,23 @@ public class ExternalCharacter
 
 - Factions are shared (no OwnerUUID). UUID deterministic from name.
 - ExternalCharacters are shared. UUID deterministic from name.
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class Faction {
+        +string UUID
+        +string Name
+        +string Description
+    }
+
+    class ExternalCharacter {
+        +string UUID
+        +string Name
+        +string FactionUUID
+    }
+
+    ExternalCharacter --> Faction : FactionUUID
+```

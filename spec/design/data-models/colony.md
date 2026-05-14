@@ -39,3 +39,52 @@ Maps a blueprint evolution level to its research duration. Serialized in Baselin
 Fields:
 - Evolution (int)  the current evolution level (0-14)
 - ResearchTimeSeconds (long)  duration in seconds to research from this level to the next
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class ColonyStructureStatus {
+        +decimal PowerProvided
+        +decimal PowerRequired
+        +decimal HabitationProvision
+        +decimal HabitationRequired
+        +decimal FoodProvision
+        +decimal FoodRequired
+        +decimal EntertainmentProvided
+        +decimal EntertainmentRequired
+        +decimal WarehouseCapacity
+        +decimal WarehouseRequired
+        +bool UnallocatedBlueCollarPresent
+        +bool UnallocatedWhiteCollarPresent
+        +bool UnallocatedSpecialistPresent
+        +GetUnallocatedPresent(string) bool
+        +SetUnallocatedPresent(string, bool) void
+    }
+
+    class StructureStatusDelta {
+        +decimal PowerProvided
+        +decimal PowerRequired
+        +decimal HabitationProvision
+        +decimal FoodProvision
+        +decimal EntertainmentProvided
+        +decimal WarehouseCapacity
+        +int WorkerCount
+        +int UnallocatedCount
+    }
+
+    class ColonyWorker {
+        +ColonyStructure Structure
+        +string WorkerType
+        +bool Assigned
+    }
+
+    class ResearchTimeEntry {
+        +int Evolution
+        +long ResearchTimeSeconds
+    }
+
+    ColonyWorker --> ColonyStructure : Structure
+    ColonyStructureStatus ..> StructureStatusDelta : aggregates deltas
+```

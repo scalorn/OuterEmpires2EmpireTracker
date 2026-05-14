@@ -96,3 +96,82 @@ public void RemoveEntity(T item) { ... }              // controlled mutation + i
 ```
 
 All 20 PlayerContext lists and all 9 EmpireContext lists follow this pattern. See `spec/design/code-standards.md` for the full pattern specification and mutation method variants.
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class DestinationType {
+        <<enum>>
+        Colony
+        Station
+        Asteroid
+        Ship
+    }
+
+    class Item {
+        +string UUID
+        +ItemTypeEnum ItemType
+        +string BaseItemTypeID
+        +string Name
+        +string NickName
+        +string Description
+        +int Quantity
+        +string ResourcePurity
+        +decimal Volume
+        +ItemBag Contents
+        +int CurrentHP
+        +int MaxHP
+        +decimal MaxRepairPercent
+    }
+
+    class ItemBag {
+        +Dictionary~string, Item~ Items
+        +AddItem(Item) void
+        +Remove(string) bool
+        +Count() int
+        +CountByType(ItemTypeEnum, string) int
+        +FindByType(ItemTypeEnum, string) List~Item~
+        +FindResource(string, string) List~Item~
+    }
+
+    class PlayerProfile {
+        +string UUID
+        +string Name
+        +string Faction
+        +string FactionUUID
+        +decimal TotalCredits
+        +PlayerRank Public
+        +PlayerRank Private
+        +PlayerRank Military
+        +int SkillPoints
+        +Dictionary~string, PlayerSkill~ Skills
+        +GetSkill(string) PlayerSkill
+    }
+
+    class PlayerRoot {
+        +int DataVersion
+        +string CurrentPlayerUUID
+        +PlayerProfile[] PlayerProfile
+        +Blueprint[] Blueprint
+        +Survey[] Survey
+        +Colony[] Colony
+        +DeliveryRoute[] DeliveryRoute
+        +DeliveryPlan[] DeliveryPlan
+        +BuildPlan[] BuildPlan
+        +Ship[] Ship
+        +Station[] Station
+        +MarketListing[] MarketListing
+        +StockPlan[] StockPlan
+        +SupplyChain[] SupplyChain
+        +Faction[] Faction
+        +Asteroid[] Asteroid
+    }
+
+    Item *-- ItemBag : Contents (Crate)
+    ItemBag *-- Item : Items
+    PlayerProfile *-- PlayerRank : Public/Private/Military
+    PlayerProfile *-- PlayerSkill : Skills
+    PlayerProfile --> Faction : FactionUUID
+```

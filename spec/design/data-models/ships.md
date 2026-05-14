@@ -57,3 +57,49 @@ public class Ship
 - Ship duplicates hull/components from template (independent entity — template can change without affecting ship).
 - Hopper: separate ItemBag for unrefined resources (High/Medium/Low purity only). Capacity from hull `Raw Material Capacity` + sum(Ore Hopper `Raw Material Capacity`).
 - Hull damage: same three-field pattern as components. All default to 0 (undamaged, omitted from JSON).
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class ShipTemplate {
+        +string UUID
+        +string Name
+        +string OwnerUUID
+        +string HullBlueprintUUID
+        +List~ShipComponentSlot~ Components
+    }
+
+    class ShipComponentSlot {
+        +string SlotType
+        +int SlotIndex
+        +string BlueprintUUID
+        +int CurrentHP
+        +int MaxHP
+        +decimal MaxRepairPercent
+    }
+
+    class Ship {
+        +string UUID
+        +string Name
+        +string OwnerUUID
+        +string TemplateUUID
+        +string HullBlueprintUUID
+        +List~ShipComponentSlot~ Components
+        +DestinationType LocationType
+        +string LocationUUID
+        +ItemBag Cargo
+        +ItemBag Hopper
+        +int HullCurrentHP
+        +int HullMaxHP
+        +decimal HullMaxRepairPercent
+    }
+
+    ShipTemplate *-- ShipComponentSlot : Components
+    Ship *-- ShipComponentSlot : Components
+    Ship --> ShipTemplate : TemplateUUID
+    Ship *-- ItemBag : Cargo
+    Ship *-- ItemBag : Hopper
+    Ship --> DestinationType : LocationType
+```

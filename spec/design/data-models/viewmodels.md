@@ -15,3 +15,58 @@
 ### PricingPlanViewModel
 
 PricingPlanViewModel is the ViewModel for FormPricingPlan, serving as a disconnected edit buffer for PricingPlan entities. Copies all fields from a ReadOnlyPricingPlan into local state, tracks dirty status, and builds PricingPlanUpdateRequest/PricingPlanCreateRequest DTOs for the PricingPlanService. See .kiro/specs/bl-123-pricingplan-readonly/design.md for full design.
+
+
+## Class Diagram
+
+```mermaid
+classDiagram
+    class BlueprintViewModel {
+        +string UUID
+        +string Name
+        +string BlueprintType
+        +bool IsNew
+        +bool IsDirty
+        +LoadFrom(ReadOnlyBlueprint) void
+        +Reset() void
+        +Save() void
+        +Delete() void
+        +BuildUpdateRequest() BlueprintUpdateRequest
+        +BuildCreateRequest() BlueprintCreateRequest
+        +GetFilteredBlueprints(string, BlueprintFilterCriteria) IReadOnlyList
+    }
+
+    class BlueprintFilterCriteria {
+        +string BlueprintTypeId
+        +int? ShipClassId
+        +string TechLevelName
+        +int? Evolution
+        +bool EvolutionAndAbove
+    }
+
+    class PricingPlanViewModel {
+        +string UUID
+        +string OwnerUUID
+        +string Name
+        +string Description
+        +decimal FixedCostPerItem
+        +decimal HourlyCostRate
+        +Dictionary~string, decimal~ ResourcePrices
+        +bool IsNew
+        +bool IsDirty
+        +ReadOnlyPricingPlan Original
+        +LoadFrom(ReadOnlyPricingPlan) void
+        +Reset() void
+        +BuildUpdateRequest() PricingPlanUpdateRequest
+        +BuildCreateRequest() PricingPlanCreateRequest
+    }
+
+    %% ViewModel → ReadOnly → Mutable chain
+    BlueprintViewModel --> ReadOnlyBlueprint : reads from
+    ReadOnlyBlueprint ..> Blueprint : wraps
+
+    PricingPlanViewModel --> ReadOnlyPricingPlan : reads from
+    ReadOnlyPricingPlan ..> PricingPlan : wraps
+
+    BlueprintViewModel --> BlueprintFilterCriteria : uses
+```
