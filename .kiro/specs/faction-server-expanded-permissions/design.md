@@ -246,6 +246,34 @@ PermissionAuditEntry (append-only log)
 
 ## Design Decisions
 
+### Decision 1: No Deny — Grant-Only Permission Model
+
+**Decision:** Capabilities are strictly additive (grant-only). There is no deny mechanism. Everything starts as denied — you need an explicit grant to do anything.
+
+**Why this was considered:** DarkCrusader (the OE1 predecessor) supported three permission states per capability per group: grant (value=1), deny (value=0), and inherit (value=-1). This allowed a group to explicitly block a capability that might be granted elsewhere.
+
+**Why deny was rejected:**
+
+1. **Ambiguity in conflict resolution.** If a group grants `classify_intel` but an individual deny rule blocks it, which wins? You need a precedence rule (individual > group? deny > grant? most-specific wins?). Every system that adds deny ends up with a precedence table that users struggle to understand. With grant-only: if you have it from any source, you have it. No conflicts possible.
+
+2. **Multi-source conflicts.** If a character is in a group that grants a capability, and an admin individually denies it, the system needs a resolution chain. If you ever allow multiple group memberships (future), Group A granting and Group B denying creates an unresolvable conflict without arbitrary precedence rules.
+
+3. **Cross-scope ambiguity.** Our model has two independent scopes (faction and character). If a faction denies a capability but the character's own scope grants it, which scope wins? Grant-only avoids this entirely — each scope is independent and additive.
+
+4. **Debugging difficulty.** "Why can't Bob see this?" becomes a multi-step investigation with deny: check his group grants, check group denies, check individual grants, check individual denies, check precedence rules. With grant-only: "Bob doesn't have it" means nobody granted it. One check.
+
+5. **Accidental lockout risk.** An admin denies `access_site` on a group, forgets, then wonders why 20 people can't log in. With grant-only, removing a grant is explicit and visible — you either have it or you don't.
+
+6. **Cache invalidation complexity.** Deny means the cache must track not just "what you have" but "what you're blocked from." A deny removal can re-enable something that was granted elsewhere, requiring broader cache invalidation.
+
+7. **UI complexity.** The permission management UI needs three states per capability per group (grant/deny/unset) instead of two (granted/not granted). This triples the cognitive load for faction leaders managing permissions.
+
+8. **DarkCrusader barely used it.** Looking at the actual DarkCrusader source code, the install script only ever grants (value=1). Deny existed architecturally but was never used in practice. It was complexity without demonstrated value.
+
+**How to achieve "restriction" without deny:** Move the character to a different group that doesn't grant the capability. The group IS the restriction mechanism. If "Officers" has `classify_intel` and you don't want Bob to have it, don't put Bob in "Officers." Create a "Junior Officers" group without that capability. This is explicit, visible, and unambiguous.
+
+**Reversibility:** If a future requirement genuinely needs deny (e.g., "block this specific person from a capability their group grants without moving them to a different group"), it can be added later as a separate `FactionMemberDeny` table without breaking the existing grant-only model. But we start simple.
+
 1. **Storage location** — Separate tables (already done — FactionCapability, FactionClearanceLevel, etc. are distinct from CharacterCapability, CharacterClearanceLevel, etc.). No polymorphic scope columns.
 
 2. **API surface** — New endpoints. These are new objects that don't fit into the existing faction/character CRUD. Endpoint groups:
