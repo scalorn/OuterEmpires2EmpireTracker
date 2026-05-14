@@ -174,21 +174,21 @@
 
 ## Phase 14: WebSocket Client
 
-- [-] 14.1 Implement WebSocket client in RemoteFactionClient (connect to wss://server/ws?token=...)
+- [x] 14.1 Implement WebSocket client in RemoteFactionClient (connect to wss://server/ws?token=...)
   - _Satisfies: Req 18 ("authenticate WebSocket using same Bearer token")_
   - _Satisfies: Design §7.1 (connection lifecycle)_
-- [~] 14.2 Automatic reconnection with exponential backoff (1s, 2s, 4s, 8s, max 60s)
+- [x] 14.2 Automatic reconnection with exponential backoff (1s, 2s, 4s, 8s, max 60s)
   - _Satisfies: Req 18 ("automatically reconnect on disconnection with exponential backoff")_
   - _Satisfies: Design §7.1 ("Client reconnects with exponential backoff")_
-- [~] 14.3 Send heartbeat/ping every 30s to keep connection alive
+- [x] 14.3 Send heartbeat/ping every 30s to keep connection alive
   - _Satisfies: Req 18 ("client SHALL send heartbeat/ping to keep connection alive")_
   - _Satisfies: Design §7.1 ("Client sends ping every 30s")_
-- [~] 14.4 Handle incoming push events (Created, Updated, Deleted, TimerTick, MembershipChanged, etc.)
+- [x] 14.4 Handle incoming push events (Created, Updated, Deleted, TimerTick, MembershipChanged, etc.)
   - _Satisfies: Req 18 ("on receiving a push event, client SHALL fetch updated data via REST API")_
   - _Satisfies: Design §7.2 (push event schema)_
-- [~] 14.5 Fallback to periodic REST polling when WebSocket unavailable (configurable interval, default 60s)
+- [x] 14.5 Fallback to periodic REST polling when WebSocket unavailable (configurable interval, default 60s)
   - _Satisfies: Req 18 Fallback ("IF WebSocket fails, client SHALL fall back to periodic polling")_
-- [~] 14.6 Self-throttle based on server-communicated rate limits (from WebSocket handshake)
+- [x] 14.6 Self-throttle based on server-communicated rate limits (from WebSocket handshake)
   - _Satisfies: Req 19 ("client SHALL respect communicated limits to self-throttle")_
   - _Satisfies: Req 19 ("service SHALL inform client of rate limits on WebSocket connection")_
 
