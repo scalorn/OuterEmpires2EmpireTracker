@@ -79,11 +79,16 @@ CharacterCapability (individual capability grants, outside of groups)
 IntelComment
   - UUID
   - TargetCharacterUUID → Character.UUID (the external character this is about)
-  - SubmitterCharacterUUID → Character.UUID
-  - FactionUUID → Faction.UUID (which faction's intel this belongs to)
-  - ClassificationLevelUUID → ClearanceLevel.UUID (minimum clearance to view)
+  - SubmitterCharacterUUID → Character.UUID (who wrote it)
+  - FactionUUID → Faction.UUID (nullable — which faction can see it, null = private to submitter)
+  - ClassificationLevelUUID → ClearanceLevel.UUID (nullable — minimum clearance to view within faction, null when private)
   - Text
   - CreatedUtc
+  Notes:
+    - When FactionUUID is null, only the submitter can see the comment (private note).
+    - The submitter can share a private comment with their faction by setting FactionUUID.
+    - The submitter can remove faction visibility by clearing FactionUUID back to null.
+    - ClassificationLevelUUID only applies when FactionUUID is set (faction-visible comments).
 
 PermissionAuditEntry (append-only log)
   - UUID
@@ -108,11 +113,24 @@ Awaiting requirements iteration. Key decisions needed:
 
 ```mermaid
 erDiagram
+    Faction {
+        string UUID PK
+        string Name
+        string Description
+    }
+
+    Character {
+        string UUID PK
+        string Name
+        string FactionUUID FK "nullable"
+    }
+
+    Faction ||--o{ Character : "members"
     Faction ||--o{ Capability : "defines (scope=Faction)"
     Faction ||--o{ ClearanceLevel : "defines (scope=Faction)"
     Faction ||--o{ PermissionGroup : "defines (scope=Faction)"
     Faction ||--o{ CharacterPermissions : "scopes"
-    Faction ||--o{ IntelComment : "owns"
+    Faction ||--o{ IntelComment : "visible to (nullable)"
 
     Character ||--o{ Capability : "defines (scope=Character)"
     Character ||--o{ ClearanceLevel : "defines (scope=Character)"
@@ -192,10 +210,10 @@ erDiagram
 
     IntelComment {
         string UUID PK
-        string TargetCharacterUUID FK
-        string SubmitterCharacterUUID FK
-        string FactionUUID FK
-        string ClassificationLevelUUID FK
+        string TargetCharacterUUID FK "about"
+        string SubmitterCharacterUUID FK "author"
+        string FactionUUID FK "nullable (null=private)"
+        string ClassificationLevelUUID FK "nullable"
         string Text
         datetime CreatedUtc
     }
