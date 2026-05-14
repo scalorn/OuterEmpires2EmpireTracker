@@ -22,17 +22,24 @@ DarkCrusader defined permissions as named strings (`access_empire`, `access_fact
 
 - [ ] The service SHALL support named capability permissions (strings) that can be granted to individual characters.
 - [ ] Capabilities SHALL be additive — a character has their role permissions PLUS any explicitly granted capabilities.
-- [ ] The Owner SHALL be able to define new capability names via POST /api/capabilities.
-- [ ] The Owner SHALL be able to grant/revoke capabilities to characters via PUT /api/characters/{uuid}/capabilities.
-- [ ] Faction Leaders SHALL be able to grant/revoke capabilities to members of their faction (but not capabilities they don't hold themselves).
-- [ ] The following built-in capabilities SHALL exist:
+- [ ] Capabilities SHALL be scoped to either a faction OR a character — both can define, grant, and revoke capabilities with full parity.
+- [ ] A faction SHALL be able to define capabilities via POST /api/factions/{uuid}/capabilities.
+- [ ] A character SHALL be able to define capabilities via POST /api/characters/{uuid}/capabilities.
+- [ ] Faction-scoped capabilities are grantable to any member of that faction.
+- [ ] Character-scoped capabilities are grantable to any character the granting character has a sharing relationship with.
+- [ ] Faction Leaders SHALL be able to create, delete, rename, grant, and revoke any capability within their faction.
+- [ ] Characters SHALL be able to create, delete, rename, grant, and revoke any capability they own.
+- [ ] The Owner SHALL be able to manage all capabilities regardless of scope.
+- [ ] The following capabilities SHALL be created as a starting set when a faction is first created:
   - `global_data_write` — Can write to global/baseline data (normally Owner-only)
   - `server_processing_admin` — Can enable/disable server-side processing
   - `export_any_character` — Can export any character's data (normally Owner-only)
   - `manage_faction_members` — Can accept/reject join requests and remove members (normally Leader-only)
+- [ ] Faction Leaders SHALL be able to delete, rename, or recreate any capability — including the starting set. There are no undeletable capabilities.
 - [ ] Custom capabilities SHALL be usable in sharing rules (e.g., "share this data with anyone who has capability X").
-- [ ] GET /api/capabilities SHALL return all defined capabilities.
-- [ ] GET /api/characters/{uuid}/capabilities SHALL return capabilities granted to a specific character.
+- [ ] GET /api/factions/{uuid}/capabilities SHALL return all capabilities defined by that faction.
+- [ ] GET /api/characters/{uuid}/capabilities SHALL return all capabilities granted to or defined by a specific character.
+- [ ] There SHALL be full parity between faction-level and character-level capability operations — anything a faction can do with capabilities, a character can do with their own.
 
 ## Requirement 2: User Groups / Permission Sets
 

@@ -31,9 +31,10 @@ Owner (all permissions)
 ```
 Capability
   - UUID
-  - Name (string, unique)
+  - Name (string, unique within scope)
   - Description
-  - BuiltIn (bool — cannot be deleted if true)
+  - ScopeType (enum: Faction, Character)
+  - ScopeUUID (FactionUUID or CharacterUUID — who owns/defined this capability)
 
 FactionGroup
   - UUID
