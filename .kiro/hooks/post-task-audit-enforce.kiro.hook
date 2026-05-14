@@ -1,13 +1,13 @@
 {
   "enabled": true,
   "name": "Enforce Audit After Task",
-  "description": "After completing a spec task, runs the full audit suite. If any findings are reported, the agent MUST fix them before moving on. There is no such thing as a pre-existing or accepted finding — all audit output must be clean.",
-  "version": "1",
+  "description": "After completing a spec task, runs the full audit suite. Exit code 1 means findings exist and the agent MUST fix them before proceeding.",
+  "version": "2",
   "when": {
     "type": "postTaskExecution"
   },
   "then": {
-    "type": "askAgent",
-    "prompt": "Run `node .kiro/tools/audit.js` now. If the audit reports ANY findings (exit code 1), you MUST fix every single one before proceeding to the next task or committing. There is no such thing as a pre-existing or baseline finding — every finding is a real issue that must be resolved. Do not dismiss findings as 'accepted baseline' or 'pre-existing'. Fix them, re-run the audit, and only proceed when the audit exits cleanly with zero findings.\n\nAlso: if this task completes a backlog item (BL-NNN), move the item from `spec/BACKLOG.md` to `spec/COMPLETED.md` with a `**Status: Complete**` summary describing what was done and referencing the spec if one exists."
+    "type": "runCommand",
+    "command": "node .kiro/tools/audit.js"
   }
 }

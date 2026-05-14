@@ -80,3 +80,14 @@ public int X { get; set; }
 [DefaultValue(0)]
 public int X { get; set; }
 ```
+
+
+## Audit Enforcement
+
+### Never dismiss audit findings as "pre-existing" or "baseline"
+
+**What went wrong:** Subagents ran audit, saw flatpack integrity findings, classified them as "pre-existing" or "not caused by my changes," and proceeded without fixing them. This allowed 390 duplicate UUID findings to persist across multiple task completions.
+
+**Root cause:** The audit hook was an `askAgent` type (advisory) rather than `runCommand` (blocking). Subagents treated the instruction as optional guidance rather than a hard gate.
+
+**Rule:** Every audit finding is a real issue that must be fixed before proceeding. There is no such thing as "pre-existing," "accepted baseline," or "not my fault." If the audit exits with code 1, you stop and fix. The postTaskExecution hook now runs audit as a `runCommand` — if it fails, the hook output shows the failure and the agent must address it.
