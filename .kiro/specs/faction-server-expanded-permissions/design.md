@@ -780,7 +780,7 @@ Accessed from the **ExternalCharacter detail view** (Contacts form) or via **Man
    - New comment: text box + Submit button
    - Per-comment actions: Share with Faction (dropdown of factions) / Delete
 
-3. **Faction Intel** section (one per faction the character belongs to)
+3. **Faction Intel** section (for the character's current faction, if any)
    - **Pending Review** subsection (only visible if character has `classify_intel`)
      - List of unclassified IntelCommentFactionShares for this faction
      - Per-comment: text, submitter name, shared date
