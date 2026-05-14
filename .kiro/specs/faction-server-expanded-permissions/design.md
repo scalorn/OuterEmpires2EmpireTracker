@@ -702,7 +702,9 @@ Accessed from **Manage → Permissions** menu. Tab-based layout with context swi
 
 **Tabs:**
 - **My Sharing** — character-scoped: what I share outward
-- **[Faction Name]** — one tab per faction membership: faction-level permission management (Leader/Owner only see management controls; regular members see their own status)
+- **[Faction Name]** — faction tab for the character's current faction (if any): faction-level permission management (Leader/Owner only see management controls; regular members see their own status)
+
+Note: The current membership model supports one faction per character. The permission data model (FactionMemberPermissions keyed by CharacterUUID + FactionUUID) is designed to support multiple faction memberships if that's added in a future spec — at which point this becomes one tab per faction.
 
 ---
 
