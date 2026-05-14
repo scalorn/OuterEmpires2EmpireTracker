@@ -71,7 +71,7 @@ DarkCrusader organized users into groups (e.g., "Root Admin", "Premium Member", 
 - [ ] A character's effective sharing access SHALL be: individual sharing rules + group sharing template.
 - [ ] There SHALL be full parity between faction-level and character-level group operations.
 
-## Requirement 3: Intelligence Clearance Levels
+## Requirement 3: Clearance Levels (Data Visibility Tiers)
 
 ### Background (from DarkCrusader)
 
@@ -80,22 +80,28 @@ DarkCrusader had a numeric `classification_level` on intelligence comments and a
 ### User Stories
 
 - As a faction leader, I want to classify shared data by sensitivity level so that new recruits see less than trusted officers.
+- As a faction leader, I want to define my own clearance tier names (e.g., "Recruit", "Trusted", "Inner Circle") rather than just numbers.
 - As a faction leader, I want to share strategic information (build plans, supply chains) only with high-clearance members.
 - As a character, I want to see all data I'm cleared for without needing individual sharing rules for each item.
+- As a character, I want to define my own clearance tiers for people I share data with.
 
 ### Acceptance Criteria
 
-- [ ] The service SHALL support numeric clearance levels (1–5, where 5 is highest).
-- [ ] Each character SHALL have an effective clearance level within their faction (default: 1).
+- [ ] Clearance levels SHALL be stored as a user-definable table, owned by either a faction or a character (same dual-scope pattern as Capability and PermissionGroup).
+- [ ] Each clearance level SHALL have: a numeric Level (int, for ordering — higher = more access), a Name (display text), and an optional Description.
+- [ ] The following starting set SHALL be created when a faction or character first needs clearance levels: 1=Recruit, 2=Member, 3=Officer, 4=Command, 5=Leader.
+- [ ] Faction Leaders and characters SHALL be able to delete, rename, reorder, or recreate clearance levels however they want — including wiping the starting set entirely.
+- [ ] CRUD endpoints: POST/GET/PUT/DELETE /api/factions/{uuid}/clearance-levels AND /api/characters/{uuid}/clearance-levels.
+- [ ] Each character SHALL have an assigned clearance level within each scope they participate in.
 - [ ] Faction Leaders SHALL be able to set a character's clearance level via PUT /api/factions/{uuid}/members/{characterUUID}/clearance.
 - [ ] Each sharing rule SHALL optionally specify a minimum clearance level required to access the shared data.
-- [ ] A character SHALL only see shared data where their clearance level >= the sharing rule's minimum level.
-- [ ] If no clearance level is specified on a sharing rule, it SHALL default to 1 (visible to all faction members with any clearance).
-- [ ] Clearance levels SHALL be faction-scoped (a character's level in Faction A is independent of their level in Faction B).
-- [ ] Groups (Requirement 2) SHALL have a default clearance level assigned to members.
-- [ ] The Owner SHALL always have effective clearance level 5 (maximum) in all factions.
-- [ ] Faction Leaders SHALL always have effective clearance level >= 4 in their faction.
-- [ ] GET /api/factions/{uuid}/members SHALL include each member's clearance level in the response.
+- [ ] A character SHALL only see shared data where their assigned clearance level's numeric value >= the sharing rule's minimum level's numeric value.
+- [ ] If no clearance level is specified on a sharing rule, it SHALL default to the lowest defined level (visible to everyone).
+- [ ] Groups (Requirement 2) SHALL have a default clearance level assigned to members on join.
+- [ ] The Owner SHALL always have effective clearance at the highest defined level in all scopes.
+- [ ] Faction Leaders SHALL always have effective clearance at or above the second-highest defined level in their faction.
+- [ ] GET /api/factions/{uuid}/members SHALL include each member's clearance level (name + numeric value) in the response.
+- [ ] There SHALL be full parity between faction-level and character-level clearance level operations.
 
 ## Requirement 4: Intelligence Comments System
 

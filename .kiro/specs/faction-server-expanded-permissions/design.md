@@ -29,12 +29,22 @@ Owner (all permissions)
 ## Data Model
 
 ```
-Capability
+Capability (gates what you can DO — operations/actions)
   - UUID
   - Name (string, unique within scope)
   - Description
   - ScopeType (enum: Faction, Character)
   - ScopeUUID (FactionUUID or CharacterUUID — who owns/defined this capability)
+
+ClearanceLevel (gates what you can SEE — tiered data visibility)
+  - UUID
+  - ScopeType (enum: Faction, Character)
+  - ScopeUUID (FactionUUID or CharacterUUID — who owns this level definition)
+  - Level (int — numeric ordering, higher = more access)
+  - Name (string — display name, e.g. "Recruit", "Member", "Officer", "Command", "Leader")
+  - Description (string, optional)
+  Starting set on creation: 1=Recruit, 2=Member, 3=Officer, 4=Command, 5=Leader
+  Owners can wipe and rebuild with any levels/names they want.
 
 PermissionGroup
   - UUID
@@ -42,7 +52,7 @@ PermissionGroup
   - Description
   - ScopeType (enum: Faction, Character)
   - ScopeUUID (FactionUUID or CharacterUUID — who owns this group)
-  - DefaultClearanceLevel (int, 1-5)
+  - DefaultClearanceLevelUUID → ClearanceLevel.UUID (assigned to members on join)
 
 GroupCapability (junction: which capabilities a group grants)
   - GroupUUID → PermissionGroup.UUID
@@ -53,14 +63,14 @@ GroupSharingRule (sharing template applied to group members)
   - GroupUUID → PermissionGroup.UUID
   - DataType (nullable — category-level rule)
   - EntityUUID (nullable — item-level rule)
-  - MinClearanceLevel (int, 1-5, default 1)
+  - MinClearanceLevelUUID → ClearanceLevel.UUID (minimum level to see this data)
 
 CharacterPermissions (per character, per scope — links character to a group + clearance)
   - CharacterUUID → Character.UUID
   - ScopeType (enum: Faction, Character)
   - ScopeUUID (FactionUUID or CharacterUUID — whose group they're in)
   - GroupUUID → PermissionGroup.UUID (nullable — at most one group per scope)
-  - ClearanceLevel (int, 1-5, default 1)
+  - ClearanceLevelUUID → ClearanceLevel.UUID (character's assigned clearance)
 
 CharacterCapability (individual capability grants, outside of groups)
   - CharacterUUID → Character.UUID
@@ -78,7 +88,7 @@ IntelComment
   - TargetCharacterUUID → Character.UUID (the external character this is about)
   - SubmitterCharacterUUID → Character.UUID
   - FactionUUID → Faction.UUID (which faction's intel this belongs to)
-  - ClassificationLevel (int, 1-5)
+  - ClassificationLevelUUID → ClearanceLevel.UUID (minimum clearance to view)
   - Text
   - CreatedUtc
 
@@ -106,11 +116,13 @@ Awaiting requirements iteration. Key decisions needed:
 ```mermaid
 erDiagram
     Faction ||--o{ Capability : "defines (scope=Faction)"
+    Faction ||--o{ ClearanceLevel : "defines (scope=Faction)"
     Faction ||--o{ PermissionGroup : "defines (scope=Faction)"
     Faction ||--o{ CharacterPermissions : "scopes"
     Faction ||--o{ IntelComment : "owns"
 
     Character ||--o{ Capability : "defines (scope=Character)"
+    Character ||--o{ ClearanceLevel : "defines (scope=Character)"
     Character ||--o{ PermissionGroup : "defines (scope=Character)"
     Character ||--o{ CharacterPermissions : "has per-scope"
     Character ||--o{ CharacterCapability : "individual grants"
@@ -121,9 +133,14 @@ erDiagram
     PermissionGroup ||--o{ GroupCapability : "grants"
     PermissionGroup ||--o{ GroupSharingRule : "templates"
     PermissionGroup ||--o{ CharacterPermissions : "assigned via"
+    PermissionGroup }o--|| ClearanceLevel : "default level"
 
     Capability ||--o{ GroupCapability : "referenced by"
     Capability ||--o{ CharacterCapability : "referenced by"
+
+    ClearanceLevel ||--o{ CharacterPermissions : "assigned level"
+    ClearanceLevel ||--o{ GroupSharingRule : "min level"
+    ClearanceLevel ||--o{ IntelComment : "classification"
 
     IntelComment }o--|| Character : "about (target)"
 
@@ -132,7 +149,16 @@ erDiagram
         string Name
         string Description
         string ScopeType "Faction | Character"
-        string ScopeUUID FK "FactionUUID or CharacterUUID"
+        string ScopeUUID FK "owner"
+    }
+
+    ClearanceLevel {
+        string UUID PK
+        string ScopeType "Faction | Character"
+        string ScopeUUID FK "owner"
+        int Level "numeric ordering"
+        string Name "e.g. Recruit, Officer"
+        string Description "optional"
     }
 
     PermissionGroup {
@@ -140,8 +166,8 @@ erDiagram
         string Name
         string Description
         string ScopeType "Faction | Character"
-        string ScopeUUID FK "FactionUUID or CharacterUUID"
-        int DefaultClearanceLevel "1-5"
+        string ScopeUUID FK "owner"
+        string DefaultClearanceLevelUUID FK
     }
 
     GroupCapability {
@@ -152,23 +178,23 @@ erDiagram
     GroupSharingRule {
         string UUID PK
         string GroupUUID FK
-        string DataType "nullable (category-level)"
-        string EntityUUID "nullable (item-level)"
-        int MinClearanceLevel "1-5, default 1"
+        string DataType "nullable (category)"
+        string EntityUUID "nullable (item)"
+        string MinClearanceLevelUUID FK
     }
 
     CharacterPermissions {
         string CharacterUUID FK
         string ScopeType "Faction | Character"
-        string ScopeUUID FK "FactionUUID or CharacterUUID"
+        string ScopeUUID FK "scope owner"
         string GroupUUID FK "nullable"
-        int ClearanceLevel "1-5, default 1"
+        string ClearanceLevelUUID FK
     }
 
     CharacterCapability {
         string CharacterUUID FK
         string ScopeType "Faction | Character"
-        string ScopeUUID FK "FactionUUID or CharacterUUID"
+        string ScopeUUID FK "scope owner"
         string CapabilityUUID FK
     }
 
@@ -183,7 +209,7 @@ erDiagram
         string TargetCharacterUUID FK
         string SubmitterCharacterUUID FK
         string FactionUUID FK
-        int ClassificationLevel "1-5"
+        string ClassificationLevelUUID FK
         string Text
         datetime CreatedUtc
     }
