@@ -111,6 +111,10 @@ Awaiting requirements iteration. Key decisions needed:
 
 ## Database Schema
 
+### Faction-Scoped Relationships
+
+Starting from Faction — what a faction owns and how members connect to it:
+
 ```mermaid
 erDiagram
     Faction {
@@ -119,66 +123,39 @@ erDiagram
         string Description
     }
 
-    Character {
+    Faction ||--o{ ClearanceLevel : "defines levels"
+    Faction ||--o{ Capability : "defines capabilities"
+    Faction ||--o{ PermissionGroup : "defines groups"
+    Faction ||--o{ CharacterPermissions : "members have"
+    Faction ||--o{ IntelComment : "shared intel (nullable)"
+
+    ClearanceLevel {
         string UUID PK
-        string Name
-        string FactionUUID FK "nullable"
+        string ScopeType "Faction"
+        string ScopeUUID FK "FactionUUID"
+        int Level "numeric ordering"
+        string Name "e.g. Recruit, Officer"
     }
-
-    Faction ||--o{ Character : "members"
-    Faction ||--o{ Capability : "defines (scope=Faction)"
-    Faction ||--o{ ClearanceLevel : "defines (scope=Faction)"
-    Faction ||--o{ PermissionGroup : "defines (scope=Faction)"
-    Faction ||--o{ CharacterPermissions : "scopes"
-    Faction ||--o{ IntelComment : "visible to (nullable)"
-
-    Character ||--o{ Capability : "defines (scope=Character)"
-    Character ||--o{ ClearanceLevel : "defines (scope=Character)"
-    Character ||--o{ PermissionGroup : "defines (scope=Character)"
-    Character ||--o{ CharacterPermissions : "has per-scope"
-    Character ||--o{ CharacterCapability : "individual grants"
-    Character ||--o{ IntelComment : "submits"
-    Character ||--o{ PermissionAuditEntry : "actor or target"
-
-    PermissionGroup ||--o{ GroupCapability : "grants"
-    PermissionGroup ||--o{ GroupSharingRule : "templates"
-    PermissionGroup ||--o{ CharacterPermissions : "assigned via"
-    PermissionGroup }o--|| ClearanceLevel : "default level"
-
-    Capability ||--o{ GroupCapability : "referenced by"
-    Capability ||--o{ CharacterCapability : "referenced by"
-
-    ClearanceLevel ||--o{ CharacterPermissions : "assigned level"
-    ClearanceLevel ||--o{ GroupSharingRule : "min level"
-    ClearanceLevel ||--o{ IntelComment : "classification"
-
-    IntelComment }o--|| Character : "about (target)"
 
     Capability {
         string UUID PK
         string Name
+        string ScopeType "Faction"
+        string ScopeUUID FK "FactionUUID"
         string Description
-        string ScopeType "Faction | Character"
-        string ScopeUUID FK "owner"
-    }
-
-    ClearanceLevel {
-        string UUID PK
-        string ScopeType "Faction | Character"
-        string ScopeUUID FK "owner"
-        int Level "numeric ordering"
-        string Name "e.g. Recruit, Officer"
-        string Description "optional"
     }
 
     PermissionGroup {
         string UUID PK
         string Name
-        string Description
-        string ScopeType "Faction | Character"
-        string ScopeUUID FK "owner"
+        string ScopeType "Faction"
+        string ScopeUUID FK "FactionUUID"
         string DefaultClearanceLevelUUID FK
     }
+
+    PermissionGroup }o--|| ClearanceLevel : "default level"
+    PermissionGroup ||--o{ GroupCapability : "grants"
+    PermissionGroup ||--o{ GroupSharingRule : "templates"
 
     GroupCapability {
         string GroupUUID FK
@@ -188,25 +165,131 @@ erDiagram
     GroupSharingRule {
         string UUID PK
         string GroupUUID FK
-        string DataType "nullable (category)"
-        string EntityUUID "nullable (item)"
+        string DataType "nullable"
+        string EntityUUID "nullable"
         string MinClearanceLevelUUID FK
     }
 
+    GroupSharingRule }o--|| ClearanceLevel : "min level"
+    Capability ||--o{ GroupCapability : "granted via"
+
     CharacterPermissions {
         string CharacterUUID FK
-        string ScopeType "Faction | Character"
-        string ScopeUUID FK "scope owner"
+        string ScopeType "Faction"
+        string ScopeUUID FK "FactionUUID"
         string GroupUUID FK "nullable"
         string ClearanceLevelUUID FK
     }
 
+    CharacterPermissions }o--|| PermissionGroup : "assigned group"
+    CharacterPermissions }o--|| ClearanceLevel : "assigned level"
+
     CharacterCapability {
         string CharacterUUID FK
-        string ScopeType "Faction | Character"
-        string ScopeUUID FK "scope owner"
+        string ScopeType "Faction"
+        string ScopeUUID FK "FactionUUID"
         string CapabilityUUID FK
     }
+
+    CharacterCapability }o--|| Capability : "grants"
+    CharacterPermissions ||--o{ CharacterCapability : "individual grants"
+
+    IntelComment {
+        string UUID PK
+        string TargetCharacterUUID FK
+        string SubmitterCharacterUUID FK
+        string FactionUUID FK "nullable"
+        string ClassificationLevelUUID FK "nullable"
+        string Text
+        datetime CreatedUtc
+    }
+
+    IntelComment }o--|| ClearanceLevel : "classification"
+```
+
+### Character-Scoped Relationships
+
+Starting from Character — what a character owns and how they grant access to others:
+
+```mermaid
+erDiagram
+    Character {
+        string UUID PK
+        string Name
+        string FactionUUID FK "nullable"
+    }
+
+    Character ||--o{ ClearanceLevel : "defines levels"
+    Character ||--o{ Capability : "defines capabilities"
+    Character ||--o{ PermissionGroup : "defines groups"
+    Character ||--o{ CharacterPermissions : "grants to others"
+    Character ||--o{ IntelComment : "submits"
+    Character ||--o{ PermissionAuditEntry : "actor or target"
+
+    ClearanceLevel {
+        string UUID PK
+        string ScopeType "Character"
+        string ScopeUUID FK "CharacterUUID"
+        int Level "numeric ordering"
+        string Name "e.g. Trusted, Inner Circle"
+    }
+
+    Capability {
+        string UUID PK
+        string Name
+        string ScopeType "Character"
+        string ScopeUUID FK "CharacterUUID"
+        string Description
+    }
+
+    PermissionGroup {
+        string UUID PK
+        string Name
+        string ScopeType "Character"
+        string ScopeUUID FK "CharacterUUID"
+        string DefaultClearanceLevelUUID FK
+    }
+
+    PermissionGroup }o--|| ClearanceLevel : "default level"
+    PermissionGroup ||--o{ GroupCapability : "grants"
+    PermissionGroup ||--o{ GroupSharingRule : "templates"
+
+    GroupCapability {
+        string GroupUUID FK
+        string CapabilityUUID FK
+    }
+
+    GroupSharingRule {
+        string UUID PK
+        string GroupUUID FK
+        string DataType "nullable"
+        string EntityUUID "nullable"
+        string MinClearanceLevelUUID FK
+    }
+
+    GroupSharingRule }o--|| ClearanceLevel : "min level"
+    Capability ||--o{ GroupCapability : "granted via"
+
+    CharacterPermissions {
+        string CharacterUUID FK "the grantee"
+        string ScopeType "Character"
+        string ScopeUUID FK "granting CharacterUUID"
+        string GroupUUID FK "nullable"
+        string ClearanceLevelUUID FK
+    }
+
+    CharacterPermissions }o--|| PermissionGroup : "assigned group"
+    CharacterPermissions }o--|| ClearanceLevel : "assigned level"
+
+    CharacterCapability {
+        string CharacterUUID FK "the grantee"
+        string ScopeType "Character"
+        string ScopeUUID FK "granting CharacterUUID"
+        string CapabilityUUID FK
+    }
+
+    CharacterCapability }o--|| Capability : "grants"
+    CharacterPermissions ||--o{ CharacterCapability : "individual grants"
 
     IntelComment {
         string UUID PK
@@ -217,6 +300,8 @@ erDiagram
         string Text
         datetime CreatedUtc
     }
+
+    IntelComment }o--|| Character : "about (target)"
 
     PermissionAuditEntry {
         string UUID PK
