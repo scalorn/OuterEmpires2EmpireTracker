@@ -27,6 +27,18 @@
 
 ## Phase 4: Core Infrastructure
 
+- [ ] 4.0 Move PlayerContext and EmpireContext to OE2EmpireTracker.Common
+  - Satisfies: REQ-AVA-013, REQ-AVA-015
+  - Scope: Move context singletons from main project to Common, update all references
+    in WinForms project and tests, extract interfaces, verify full solution builds.
+    This is a prerequisite for all other Phase 4+ tasks.
+  - Sub-steps:
+    - 4.0a Extract IPlayerContext / IEmpireContext interfaces into Common
+    - 4.0b Move PlayerContext.cs and EmpireContext.cs to Common/Services/
+    - 4.0c Update WinForms project references (remove old files, add project reference usage)
+    - 4.0d Update test project references
+    - 4.0e Verify full solution builds (MSBuild OE2EmpireTracker.sln)
+    - 4.0f Run tests to confirm no regressions
 - [ ] 4.1 Implement IFileSystemService with platform-appropriate paths
   - Satisfies: REQ-AVA-009
   - Scope: Interface + implementation, Windows/Linux/macOS path resolution
@@ -63,6 +75,9 @@
 - [ ] 4.12 Implement data change messaging (WeakReferenceMessenger)
   - Satisfies: REQ-AVA-006
   - Scope: Message types for colony/blueprint/player changes, publish from services
+- [ ] 4.13 Add ScottPlot.Avalonia package for charting
+  - Satisfies: REQ-AVA-002 (feature parity — charts in Survey and Blueprint views)
+  - Scope: Add NuGet package, verify renders on Windows and Linux
 
 ## Phase 5: Feature Migration — Tier 4 (Small Forms, <500 lines each)
 
