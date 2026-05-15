@@ -89357,11 +89357,11 @@
       "LastImportDateTime": "2026-05-15T09:15:30Z",
       "Locks": {
         "6d2f5369-2f6b-4dbd-b7b0-9c021e38d9a0": {
-          "Resource:Acidic Inorganics|Refined": 7623,
-          "Resource:Alkali Organics|Refined": 6237,
-          "Resource:Halogens|Refined": 47124,
-          "Resource:Heavy Post-Trans Metals|Refined": 8514,
-          "Resource:Lanthanides|Refined": 6633
+          "Resource:Acidic Inorganics|Refined": 7315,
+          "Resource:Alkali Organics|Refined": 5985,
+          "Resource:Halogens|Refined": 45220,
+          "Resource:Heavy Post-Trans Metals|Refined": 8170,
+          "Resource:Lanthanides|Refined": 6365
         },
         "90593a7c-c402-5d4c-abb0-411894067cd8": {
           "WorkDetail:WhiteCollarDetail": 1,
@@ -109541,11 +109541,11 @@
       "LastImportDateTime": "2026-05-15T09:15:13Z",
       "Locks": {
         "63cfa422-da09-412d-9035-0bb2b171427c": {
-          "Resource:Acidic Organics|Refined": 14058,
-          "Resource:Alkali Inorganics|Refined": 13266,
-          "Resource:Heavy Alkaline Earth Metals|Refined": 13563,
-          "Resource:Heavy Post-Trans Metals|Refined": 13266,
-          "Resource:Trans-Metals|Refined": 69201
+          "Resource:Acidic Organics|Refined": 13490,
+          "Resource:Alkali Inorganics|Refined": 12730,
+          "Resource:Heavy Alkaline Earth Metals|Refined": 13015,
+          "Resource:Heavy Post-Trans Metals|Refined": 12730,
+          "Resource:Trans-Metals|Refined": 66405
         },
         "ec5e0289-eb1a-5a24-916a-75132536aebb": {
           "WorkDetail:WhiteCollarDetail": 1,

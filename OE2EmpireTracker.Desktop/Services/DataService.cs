@@ -99,6 +99,10 @@ public sealed class DataService
     public IReadOnlyList<SupplyChain> SupplyChains =>
         _playerRoot?.SupplyChain ?? Array.Empty<SupplyChain>();
 
+    /// <summary>Gets all warehouse overflow rules.</summary>
+    public IReadOnlyList<WarehouseOverflowRule> WarehouseOverflowRules =>
+        _playerRoot?.WarehouseOverflowRule ?? Array.Empty<WarehouseOverflowRule>();
+
     /// <summary>Gets all asteroids.</summary>
     public IReadOnlyList<Asteroid> Asteroids =>
         _playerRoot?.Asteroid ?? Array.Empty<Asteroid>();
@@ -709,6 +713,24 @@ public sealed class DataService
     {
         if (_playerRoot is null) return;
         _playerRoot.Asteroid = _playerRoot.Asteroid.Where(a => a.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a warehouse overflow rule to the player root.</summary>
+    public void AddWarehouseOverflowRule(WarehouseOverflowRule rule)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.WarehouseOverflowRule.ToList();
+        list.Add(rule);
+        _playerRoot.WarehouseOverflowRule = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a warehouse overflow rule by UUID.</summary>
+    public void RemoveWarehouseOverflowRule(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.WarehouseOverflowRule = _playerRoot.WarehouseOverflowRule.Where(r => r.UUID != uuid).ToArray();
         IsDirty = true;
     }
 

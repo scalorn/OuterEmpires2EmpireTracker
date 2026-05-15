@@ -65,6 +65,9 @@ public sealed partial class ColonyItemRowViewModel : ObservableObject
 
     [ObservableProperty]
     private string _itemType = string.Empty;
+
+    /// <summary>Gets or sets the UUID of the underlying Item (for removal).</summary>
+    public string ItemUuid { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -83,6 +86,9 @@ public sealed partial class ColonyOverflowRowViewModel : ObservableObject
 
     [ObservableProperty]
     private string _destination = string.Empty;
+
+    /// <summary>Gets or sets the UUID of the underlying WarehouseOverflowRule (for removal).</summary>
+    public string RuleUuid { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -95,6 +101,12 @@ public sealed partial class ColonyViewModel : DocumentViewModel
 {
     [ObservableProperty]
     private ColonyRowViewModel? _selectedColony;
+
+    [ObservableProperty]
+    private ColonyItemRowViewModel? _selectedItem;
+
+    [ObservableProperty]
+    private ColonyOverflowRowViewModel? _selectedOverflowRule;
 
     [ObservableProperty]
     private string _activityStatus = "No active timers";
@@ -134,6 +146,8 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         Items.Clear();
         OverflowRules.Clear();
         SelectedColony = null;
+        SelectedItem = null;
+        SelectedOverflowRule = null;
         ActivityStatus = "No active timers";
         LoadData();
     }
@@ -151,18 +165,165 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         return online ? "Online" : "Offline";
     }
 
-    private static List<WarehouseOverflowRule> GetOverflowRulesForColony(
-        DataService dataService,
-        string colonyUuid)
-    {
-        _ = dataService;
-        _ = colonyUuid;
-        return new List<WarehouseOverflowRule>();
-    }
-
     private static void UpdateActivityStatus(Colony colony)
     {
         _ = colony;
+    }
+
+    // --- D4: Colony Items Commands ---
+
+    /// <summary>Adds a new empty item to the selected colony's ItemBag.</summary>
+    [RelayCommand]
+    private void AddItem()
+    {
+        if (SelectedColony is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var colony = dataService.GetCurrentPlayerColonies()
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony is null)
+        {
+            return;
+        }
+
+        colony.Items ??= new ItemBag();
+
+        var newItem = new Item(ItemType.ItemTypeEnum.Resource, "New Item")
+        {
+            UUID = Guid.NewGuid().ToString(),
+            Quantity = 1,
+        };
+
+        colony.Items.AddItem(newItem);
+        dataService.IsDirty = true;
+        dataService.OnColonyDataChanged(colony.UUID);
+    }
+
+    /// <summary>Removes the selected item from the colony's ItemBag.</summary>
+    [RelayCommand]
+    private void RemoveItem()
+    {
+        if (SelectedColony is null || SelectedItem is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var colony = dataService.GetCurrentPlayerColonies()
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony is null || colony.Items is null)
+        {
+            return;
+        }
+
+        colony.Items.Remove(SelectedItem.ItemUuid);
+        dataService.IsDirty = true;
+        dataService.OnColonyDataChanged(colony.UUID);
+    }
+
+    // --- D5: Overflow Rules Commands ---
+
+    /// <summary>Adds a new overflow rule for the selected colony.</summary>
+    [RelayCommand]
+    private void AddOverflowRule()
+    {
+        if (SelectedColony is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var rule = new WarehouseOverflowRule
+        {
+            UUID = Guid.NewGuid().ToString(),
+            OwnerUUID = dataService.CurrentPlayerUUID,
+            ColonyUUID = SelectedColony.ColonyUuid,
+            ResourceName = "New Resource",
+            ResourcePurity = "High",
+            TriggerThreshold = 1000,
+            DestinationType = DestinationType.Station,
+        };
+
+        dataService.AddWarehouseOverflowRule(rule);
+        dataService.OnColonyDataChanged(SelectedColony.ColonyUuid);
+    }
+
+    /// <summary>Removes the selected overflow rule.</summary>
+    [RelayCommand]
+    private void RemoveOverflowRule()
+    {
+        if (SelectedColony is null || SelectedOverflowRule is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        dataService.RemoveWarehouseOverflowRule(SelectedOverflowRule.RuleUuid);
+        dataService.OnColonyDataChanged(SelectedColony.ColonyUuid);
+    }
+
+    // --- A7: Delete Colony with Reference Counting ---
+
+    /// <summary>Deletes the selected colony, checking references first.</summary>
+    [RelayCommand]
+    private void DeleteColony()
+    {
+        if (SelectedColony is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var refCountService = App.Services?.GetService(typeof(ReferenceCountService)) as ReferenceCountService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        string colonyUuid = SelectedColony.ColonyUuid;
+
+        // Check reference count before deleting
+        if (refCountService is not null)
+        {
+            int refs = refCountService.GetColonyReferenceCount(colonyUuid);
+            if (refs > 0)
+            {
+                var logger = App.Services?.GetService(typeof(ILogger<ColonyViewModel>)) as ILogger<ColonyViewModel>;
+                logger?.LogWarning(
+                    "Cannot delete colony {UUID}: {Count} references exist",
+                    colonyUuid,
+                    refs);
+                ImportStatus = $"Cannot delete: {refs} reference(s) exist";
+                return;
+            }
+        }
+
+        dataService.RemoveColony(colonyUuid);
+        dataService.OnColonyDataChanged(colonyUuid);
+        dataService.WriteContext();
     }
 
     /// <summary>
@@ -178,10 +339,10 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         }
 
         var clipboardService = App.Services?.GetService(typeof(IClipboardService)) as IClipboardService;
-        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var dataService2 = App.Services?.GetService(typeof(DataService)) as DataService;
         var loggerFactory = App.Services?.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
 
-        if (clipboardService is null || dataService is null || loggerFactory is null)
+        if (clipboardService is null || dataService2 is null || loggerFactory is null)
         {
             ImportStatus = "Services not available";
             return;
@@ -201,7 +362,7 @@ public sealed partial class ColonyViewModel : DocumentViewModel
             return;
         }
 
-        var colony = dataService.GetCurrentPlayerColonies()
+        var colony = dataService2.GetCurrentPlayerColonies()
             .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
         if (colony is null)
         {
@@ -210,12 +371,12 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         }
 
         var parser = new ColonyParser(loggerFactory.CreateLogger<ColonyParser>());
-        parser.ProcessHtml(colony, fragment, dataService);
+        parser.ProcessHtml(colony, fragment, dataService2);
 
         colony.LastImportDateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
-        dataService.IsDirty = true;
-        dataService.OnColonyDataChanged(colony.UUID);
-        dataService.WriteContext();
+        dataService2.IsDirty = true;
+        dataService2.OnColonyDataChanged(colony.UUID);
+        dataService2.WriteContext();
 
         ImportStatus = $"Imported {colony.Structures.Count} structures";
     }
@@ -265,6 +426,8 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         Commodities.Clear();
         Items.Clear();
         OverflowRules.Clear();
+        SelectedItem = null;
+        SelectedOverflowRule = null;
         ActivityStatus = "No active timers";
 
         if (row is null)
@@ -309,7 +472,6 @@ public sealed partial class ColonyViewModel : DocumentViewModel
 
         foreach (var structure in colony.Structures)
         {
-            // Get structure type from blueprint lookup
             string typeName = string.Empty;
             if (!string.IsNullOrEmpty(structure.FlatpackBlueprintUUID))
             {
@@ -317,14 +479,12 @@ public sealed partial class ColonyViewModel : DocumentViewModel
                     .FirstOrDefault(b => b.UUID == structure.FlatpackBlueprintUUID);
                 typeName = bp?.BluePrintType ?? bp?.Name ?? string.Empty;
 
-                // If we got a blueprint, use its name as the structure name
                 if (string.IsNullOrEmpty(typeName) && bp is not null)
                 {
                     typeName = bp.Name ?? string.Empty;
                 }
             }
 
-            // Determine what activity the structure is doing
             string activity = string.Empty;
             if (!string.IsNullOrEmpty(structure.RefiningResource))
             {
@@ -387,6 +547,7 @@ public sealed partial class ColonyViewModel : DocumentViewModel
             var item = kvp.Value;
             Items.Add(new ColonyItemRowViewModel
             {
+                ItemUuid = item.UUID ?? string.Empty,
                 ItemName = item.Name ?? string.Empty,
                 Quantity = item.Quantity,
                 ItemType = item.ItemType.ToString(),
@@ -396,14 +557,15 @@ public sealed partial class ColonyViewModel : DocumentViewModel
 
     private void LoadOverflowFromColony(DataService dataService, Colony colony)
     {
-        var rules = dataService.Colonies is not null
-            ? GetOverflowRulesForColony(dataService, colony.UUID)
-            : new List<WarehouseOverflowRule>();
+        var rules = dataService.WarehouseOverflowRules
+            .Where(r => r.ColonyUUID == colony.UUID)
+            .ToList();
 
         foreach (var rule in rules)
         {
             OverflowRules.Add(new ColonyOverflowRowViewModel
             {
+                RuleUuid = rule.UUID ?? string.Empty,
                 ResourceName = rule.ResourceName ?? string.Empty,
                 Purity = rule.ResourcePurity ?? string.Empty,
                 Threshold = rule.TriggerThreshold,

@@ -69,45 +69,67 @@
                 </DataGrid>
             </TabItem>
 
-            <!-- Items Tab -->
+            <!-- Items Tab (D4: Editable) -->
             <TabItem Header="Items">
-                <DataGrid Margin="0,8,0,0"
-                          ItemsSource="{Binding Items}"
-                          AutoGenerateColumns="False"
-                          CanUserReorderColumns="True"
-                          CanUserResizeColumns="True"
-                          CanUserSortColumns="True"
-                          IsReadOnly="True"
-                          GridLinesVisibility="Horizontal"
-                          SelectionMode="Single"
-                          HeadersVisibility="Column">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Item" Binding="{Binding ItemName}" Width="200" />
-                        <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="100" />
-                        <DataGridTextColumn Header="Type" Binding="{Binding ItemType}" Width="120" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                <DockPanel Margin="0,8,0,0">
+                    <StackPanel DockPanel.Dock="Bottom"
+                                Orientation="Horizontal"
+                                Spacing="8"
+                                Margin="0,8,0,0">
+                        <Button Content="Add Item"
+                                Command="{Binding AddItemCommand}" />
+                        <Button Content="Remove Item"
+                                Command="{Binding RemoveItemCommand}" />
+                    </StackPanel>
+                    <DataGrid ItemsSource="{Binding Items}"
+                              SelectedItem="{Binding SelectedItem}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="True"
+                              IsReadOnly="False"
+                              GridLinesVisibility="Horizontal"
+                              SelectionMode="Single"
+                              HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Item" Binding="{Binding ItemName}" Width="200" />
+                            <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="100" />
+                            <DataGridTextColumn Header="Type" Binding="{Binding ItemType}" Width="120" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
             </TabItem>
 
-            <!-- Overflow Tab -->
+            <!-- Overflow Tab (D5: Editable) -->
             <TabItem Header="Overflow">
-                <DataGrid Margin="0,8,0,0"
-                          ItemsSource="{Binding OverflowRules}"
-                          AutoGenerateColumns="False"
-                          CanUserReorderColumns="True"
-                          CanUserResizeColumns="True"
-                          CanUserSortColumns="True"
-                          IsReadOnly="True"
-                          GridLinesVisibility="Horizontal"
-                          SelectionMode="Single"
-                          HeadersVisibility="Column">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Resource" Binding="{Binding ResourceName}" Width="160" />
-                        <DataGridTextColumn Header="Purity" Binding="{Binding Purity}" Width="100" />
-                        <DataGridTextColumn Header="Threshold" Binding="{Binding Threshold}" Width="100" />
-                        <DataGridTextColumn Header="Destination" Binding="{Binding Destination}" Width="120" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                <DockPanel Margin="0,8,0,0">
+                    <StackPanel DockPanel.Dock="Bottom"
+                                Orientation="Horizontal"
+                                Spacing="8"
+                                Margin="0,8,0,0">
+                        <Button Content="Add Rule"
+                                Command="{Binding AddOverflowRuleCommand}" />
+                        <Button Content="Remove Rule"
+                                Command="{Binding RemoveOverflowRuleCommand}" />
+                    </StackPanel>
+                    <DataGrid ItemsSource="{Binding OverflowRules}"
+                              SelectedItem="{Binding SelectedOverflowRule}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="True"
+                              IsReadOnly="False"
+                              GridLinesVisibility="Horizontal"
+                              SelectionMode="Single"
+                              HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Resource" Binding="{Binding ResourceName}" Width="160" />
+                            <DataGridTextColumn Header="Purity" Binding="{Binding Purity}" Width="100" />
+                            <DataGridTextColumn Header="Threshold" Binding="{Binding Threshold}" Width="100" />
+                            <DataGridTextColumn Header="Destination" Binding="{Binding Destination}" Width="120" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
             </TabItem>
 
             <!-- Activity Tab -->
