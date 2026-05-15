@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -10,6 +12,7 @@ using Dock.Model.Core;
 using Dock.Model.Mvvm;
 using Dock.Model.Mvvm.Controls;
 using OE2EmpireTracker.Desktop.Services;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
 
@@ -23,6 +26,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private IRootDock? _layout;
 
+    [ObservableProperty]
+    private PlayerProfile? _selectedPlayer;
+
     private IDocumentDock? _documentDock;
 
     public MainWindowViewModel()
@@ -31,7 +37,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         Layout = _factory.CreateLayout();
         _factory.InitLayout(Layout);
         _documentDock = _factory.DocumentDock;
+        LoadPlayerProfiles();
     }
+
+    public ObservableCollection<PlayerProfile> PlayerProfiles { get; } = new ObservableCollection<PlayerProfile>();
 
     /// <summary>
     /// Opens a document tab by type. If a document of that type already exists, focuses it.
@@ -43,7 +52,6 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        // Check if already open
         if (_documentDock.VisibleDockables is not null)
         {
             foreach (var existing in _documentDock.VisibleDockables)
@@ -56,7 +64,6 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             }
         }
 
-        // Create new document
         var newDoc = CreateDocument(documentType, title);
         if (newDoc is null)
         {
@@ -66,6 +73,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _factory.AddDockable(_documentDock, newDoc);
         _factory.SetActiveDockable(newDoc);
         _factory.SetFocusedDockable(_documentDock, newDoc);
+    }
+
+    [RelayCommand]
+    private static void Exit()
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.Shutdown();
+        }
     }
 
     private static Window? GetMainWindow()
@@ -83,27 +99,66 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         return documentType switch
         {
             "About" => new AboutViewModel(),
+            "BlueprintList" => new BlueprintViewModel(),
             "ColonyList" => new ColonyViewModel(),
-            "Help" => new HelpViewModel(),
-            "Preferences" => new PreferencesViewModel(),
-            "SystemList" => new SystemListViewModel(),
             "ColonyActivity" => new ColonyActivityViewModel(),
-            "MarketList" => new MarketViewModel(),
-            "AsteroidList" => new AsteroidViewModel(),
-            "PricingPlanList" => new PricingPlanViewModel(),
-            "SupplyChainList" => new SupplyChainViewModel(),
             "ContactsList" => new ContactsViewModel(),
-            "ShipTemplateList" => new ShipTemplateViewModel(),
-            "ShipList" => new ShipInstanceViewModel(),
-            "StationList" => new StationViewModel(),
-            "Profile" => new PlayerProfileViewModel(),
-            "SurveyList" => new SurveyViewModel(),
             "DeliveryExecution" => new DeliveryExecutionViewModel(),
             "DeliveryList" => new DeliveryRouteViewModel(),
+            "Help" => new HelpViewModel(),
+            "MarketList" => new MarketViewModel(),
+            "AsteroidList" => new AsteroidViewModel(),
+            "Preferences" => new PreferencesViewModel(),
+            "PricingPlanList" => new PricingPlanViewModel(),
+            "Profile" => new PlayerProfileViewModel(),
+            "ShipList" => new ShipInstanceViewModel(),
+            "ShipTemplateList" => new ShipTemplateViewModel(),
+            "StationList" => new StationViewModel(),
             "StockTargets" => new StockTargetsViewModel(),
-            "BlueprintList" => new BlueprintViewModel(),
+            "SupplyChainList" => new SupplyChainViewModel(),
+            "SurveyList" => new SurveyViewModel(),
+            "SystemList" => new SystemListViewModel(),
             _ => new PlaceholderViewModel(title),
         };
+    }
+
+    partial void OnSelectedPlayerChanged(PlayerProfile? value)
+    {
+        if (value is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is not null)
+        {
+            dataService.SetCurrentPlayer(value.UUID);
+        }
+    }
+
+    private void LoadPlayerProfiles()
+    {
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        PlayerProfiles.Clear();
+        foreach (var profile in dataService.PlayerProfiles)
+        {
+            PlayerProfiles.Add(profile);
+        }
+
+        var current = PlayerProfiles.FirstOrDefault(p => p.UUID == dataService.CurrentPlayerUUID);
+        if (current is not null)
+        {
+            SelectedPlayer = current;
+        }
+        else if (PlayerProfiles.Count > 0)
+        {
+            SelectedPlayer = PlayerProfiles[0];
+        }
     }
 
     [RelayCommand]
@@ -138,11 +193,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        // Reload data from the selected file
         var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
         if (dataService is not null)
         {
             dataService.LoadFromFile(path);
+            LoadPlayerProfiles();
         }
     }
 
@@ -154,7 +209,6 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        // Use the document type as both type and title for menu-opened docs
         var title = documentType switch
         {
             "ColonyList" => "Colonies",
@@ -171,14 +225,5 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         };
 
         OpenDocument(documentType, title);
-    }
-
-    [RelayCommand]
-    private void Exit()
-    {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            desktop.Shutdown();
-        }
     }
 }

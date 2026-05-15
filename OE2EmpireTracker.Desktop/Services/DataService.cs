@@ -119,6 +119,18 @@ public sealed class DataService
     public bool IsLoaded => _playerRoot is not null;
 
     /// <summary>
+    /// Sets the current player UUID. Called when the user switches players via the combo box.
+    /// </summary>
+    public void SetCurrentPlayer(string playerUuid)
+    {
+        if (_playerRoot is not null)
+        {
+            _playerRoot.CurrentPlayerUUID = playerUuid;
+            _logger.LogInformation("Current player set to {UUID}", playerUuid);
+        }
+    }
+
+    /// <summary>
     /// Loads player data from a specific file path (File → Open).
     /// Also looks for BaselineData.json in the same directory.
     /// </summary>
