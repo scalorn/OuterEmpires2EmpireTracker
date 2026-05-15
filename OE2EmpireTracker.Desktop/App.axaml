@@ -33,6 +33,12 @@
         <DataTemplate DataType="vm:SystemListViewModel">
             <views:SystemListView />
         </DataTemplate>
+        <DataTemplate DataType="vm:ColonyActivityViewModel">
+            <views:ColonyActivityView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:MarketViewModel">
+            <views:MarketView />
+        </DataTemplate>
     </Application.DataTemplates>
 
 </Application>

@@ -70,6 +70,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             "Help" => new HelpViewModel(),
             "Preferences" => new PreferencesViewModel(),
             "SystemList" => new SystemListViewModel(),
+            "ColonyActivity" => new ColonyActivityViewModel(),
+            "MarketList" => new MarketViewModel(),
             _ => new PlaceholderViewModel(title),
         };
     }

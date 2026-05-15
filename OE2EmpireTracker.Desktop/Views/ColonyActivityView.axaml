@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.ColonyActivityView"
+             x:DataType="vm:ColonyActivityViewModel">
+
+    <DockPanel Margin="8">
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Colony Activity"
+                   FontSize="20"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,12" />
+
+        <DataGrid ItemsSource="{Binding Activities}"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="True"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  IsReadOnly="True"
+                  GridLinesVisibility="Horizontal"
+                  SelectionMode="Single"
+                  HeadersVisibility="Column">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Colony"
+                                    Binding="{Binding ColonyName}"
+                                    Width="150" />
+                <DataGridTextColumn Header="Structure"
+                                    Binding="{Binding StructureName}"
+                                    Width="180" />
+                <DataGridTextColumn Header="Activity"
+                                    Binding="{Binding ActivityType}"
+                                    Width="120" />
+                <DataGridTextColumn Header="Status"
+                                    Binding="{Binding Status}"
+                                    Width="100" />
+                <DataGridTextColumn Header="Time Remaining"
+                                    Binding="{Binding TimeRemaining}"
+                                    Width="120" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+
+</UserControl>
