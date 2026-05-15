@@ -78866,7 +78866,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Complex Metallics",
   "Name": "Complex Metallics",
-  "Quantity": 16519,
+  "Quantity": 16615,
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
@@ -78900,14 +78900,6 @@
   "Name": "Alkali Metals",
   "ResourcePurity": "Refined",
   "Volume": 1.0
-},
-        "f060d7c8-c4e3-44c0-b417-375241daf29a": {
-  "UUID": "f060d7c8-c4e3-44c0-b417-375241daf29a",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Complex Metallics",
-  "Name": "Complex Metallics",
-  "Quantity": 19,
-  "ResourcePurity": "High"
 },
         "f12c9fd6-7e51-416a-86a8-794b8c35a986": {
   "UUID": "f12c9fd6-7e51-416a-86a8-794b8c35a986",
@@ -79079,8 +79071,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-15T08:35:48.7693065Z",
-            "EndTime": "2026-05-15T09:35:48.7693065Z",
+            "StartTime": "2026-05-15T09:35:48.7693065Z",
+            "EndTime": "2026-05-15T10:35:48.7693065Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
