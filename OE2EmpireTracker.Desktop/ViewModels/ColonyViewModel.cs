@@ -160,6 +160,7 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         {
             Colonies.Add(new ColonyRowViewModel
             {
+                ColonyUuid = colony.UUID ?? string.Empty,
                 ColonyName = colony.ColonyName ?? string.Empty,
                 PlanetName = colony.PlanetName ?? string.Empty,
                 SystemName = colony.SystemName ?? string.Empty,
@@ -197,7 +198,7 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         }
 
         var colony = dataService.GetCurrentPlayerColonies()
-            .FirstOrDefault(c => c.ColonyName == row.ColonyName);
+            .FirstOrDefault(c => c.UUID == row.ColonyUuid);
         if (colony is null)
         {
             LoadSampleStructures(row.ColonyName);
@@ -223,28 +224,50 @@ public sealed partial class ColonyViewModel : DocumentViewModel
 
         foreach (var structure in colony.Structures)
         {
+            // Get structure type from blueprint lookup
             string typeName = string.Empty;
             if (!string.IsNullOrEmpty(structure.FlatpackBlueprintUUID))
             {
                 var bp = dataService.Blueprints
                     .FirstOrDefault(b => b.UUID == structure.FlatpackBlueprintUUID);
-                typeName = bp?.BluePrintType ?? string.Empty;
+                typeName = bp?.BluePrintType ?? bp?.Name ?? string.Empty;
+
+                // If we got a blueprint, use its name as the structure name
+                if (string.IsNullOrEmpty(typeName) && bp is not null)
+                {
+                    typeName = bp.Name ?? string.Empty;
+                }
+            }
+
+            // Determine what activity the structure is doing
+            string activity = string.Empty;
+            if (!string.IsNullOrEmpty(structure.RefiningResource))
+            {
+                activity = $"Refining {structure.RefiningResource}";
+            }
+            else if (!string.IsNullOrEmpty(structure.ManufacturingCommodityName))
+            {
+                activity = $"Manufacturing {structure.ManufacturingCommodityName}";
+            }
+            else if (!string.IsNullOrEmpty(structure.ResearchingBlueprintUUID))
+            {
+                activity = "Researching";
+            }
+            else if (!string.IsNullOrEmpty(structure.MiningSurveyResource))
+            {
+                activity = $"Mining {structure.MiningSurveyResource}";
             }
 
             string state = GetStructureState(structure);
+            string displayName = !string.IsNullOrEmpty(typeName) ? typeName : $"Structure #{structure.BuildingID}";
 
             Structures.Add(new ColonyStructureRowViewModel
             {
-                StructureName = typeName,
-                StructureType = typeName,
+                StructureName = displayName,
+                StructureType = !string.IsNullOrEmpty(activity) ? activity : state,
                 State = state,
                 BuildingId = structure.BuildingID,
             });
-        }
-
-        if (Structures.Count == 0)
-        {
-            LoadSampleStructures(colony.ColonyName ?? string.Empty);
         }
     }
 

@@ -66,7 +66,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         return documentType switch
         {
             "About" => new AboutViewModel(),
-            "ColonyList" => new ColonyListViewModel(),
+            "ColonyList" => new ColonyViewModel(),
             "Help" => new HelpViewModel(),
             "Preferences" => new PreferencesViewModel(),
             "SystemList" => new SystemListViewModel(),
