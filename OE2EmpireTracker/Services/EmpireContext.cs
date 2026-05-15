@@ -276,7 +276,21 @@ namespace OE2EmpireTracker.Services
         public void InitBlueprintTypes(BaselineRoot baselineRoot)
         {
             var sorted = CollectionSortHelper.OrderByName(baselineRoot.BlueprintType, x => x.Name);
-            _blueprintTypeList = new List<BlueprintType>(sorted);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<BlueprintType>();
+            foreach (var bt in sorted)
+            {
+                if (string.IsNullOrEmpty(bt.Id) || seen.Add(bt.Id))
+                {
+                    deduped.Add(bt);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE Id on load: BlueprintType Id='{0}' Name='{1}' — skipping duplicate", bt.Id, bt.Name);
+                }
+            }
+
+            _blueprintTypeList = deduped;
             // Initialize the BindingSource component
             BindingSourceBlueprintType = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -414,7 +428,21 @@ namespace OE2EmpireTracker.Services
         {
             if (baselineRoot.Commodity != null && baselineRoot.Commodity.Length > 0)
             {
-                _commodityList = new List<Commodity>(baselineRoot.Commodity);
+                var seen = new HashSet<string>(StringComparer.Ordinal);
+                var deduped = new List<Commodity>();
+                foreach (var c in baselineRoot.Commodity)
+                {
+                    if (string.IsNullOrEmpty(c.Name) || seen.Add(c.Name))
+                    {
+                        deduped.Add(c);
+                    }
+                    else
+                    {
+                        Log.Error("DUPLICATE Name on load: Commodity Name='{0}' — skipping duplicate", c.Name);
+                    }
+                }
+
+                _commodityList = deduped;
                 Commodity.SetCommodities(_commodityList);
                 Log.Info("Loaded {0} commodities from baseline data", _commodityList.Count);
             }
@@ -456,7 +484,21 @@ namespace OE2EmpireTracker.Services
         public void InitGlobalBlueprints(BaselineRoot baselineRoot)
         {
             var sorted = CollectionSortHelper.OrderBlueprints(baselineRoot.Blueprint ?? new Blueprint[0]);
-            _globalBlueprintList = new List<Blueprint>(sorted);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<Blueprint>();
+            foreach (var bp in sorted)
+            {
+                if (string.IsNullOrEmpty(bp.UUID) || seen.Add(bp.UUID))
+                {
+                    deduped.Add(bp);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: GlobalBlueprint UUID={0} Name='{1}' — skipping duplicate", bp.UUID, bp.Name);
+                }
+            }
+
+            _globalBlueprintList = deduped;
             InvalidateGlobalBlueprintCache();
 
             // Fix up game data quirks on existing blueprints

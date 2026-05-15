@@ -663,7 +663,21 @@ namespace OE2EmpireTracker.Services
         public void InitPlayerProfiles(PlayerRoot playerRoot)
         {
             var sorted = CollectionSortHelper.OrderPlayerProfiles(playerRoot.PlayerProfile);
-            _playerProfileList = new List<PlayerProfile>(sorted);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<PlayerProfile>();
+            foreach (var item in sorted)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: PlayerProfile UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _playerProfileList = deduped;
             // Initialize the BindingSource component
             BindingSourcePlayerProfile = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -673,7 +687,21 @@ namespace OE2EmpireTracker.Services
         public void InitBlueprints(PlayerRoot playerRoot)
         {
             var sorted = CollectionSortHelper.OrderBlueprints(playerRoot.Blueprint);
-            _blueprintList = new List<Blueprint>(sorted);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<Blueprint>();
+            foreach (var item in sorted)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: Blueprint UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _blueprintList = deduped;
             // Initialize the BindingSource component
             BindingSourceBlueprint = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -760,7 +788,21 @@ namespace OE2EmpireTracker.Services
         public void InitSurveys(PlayerRoot playerRoot)
         {
             var sorted = CollectionSortHelper.OrderSurveys(playerRoot.Survey);
-            _surveyList = new List<Survey>(sorted);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<Survey>();
+            foreach (var item in sorted)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: Survey UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _surveyList = deduped;
             // Initialize the BindingSource component
             BindingSourceSurvey = new BindingSource();
             // Set the in-memory list as the DataSource for the BindingSource
@@ -838,7 +880,19 @@ namespace OE2EmpireTracker.Services
         public void InitColonies(PlayerRoot playerRoot)
         {
             var sorted = CollectionSortHelper.OrderColonies(playerRoot.Colony);
-            var list = new List<Colony>(sorted);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var list = new List<Colony>();
+            foreach (var item in sorted)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    list.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: Colony UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.ColonyName);
+                }
+            }
 
             // Stamp BuildQueueSequence for existing data where values are all zero (migration).
             // Don't sort the list â€” consumers sort by BuildQueueSequence themselves.
@@ -862,84 +916,321 @@ namespace OE2EmpireTracker.Services
         public void InitDeliveryRoutes(PlayerRoot playerRoot)
         {
             var sorted = CollectionSortHelper.OrderDeliveryRoutes(playerRoot.DeliveryRoute ?? new DeliveryRoute[0]);
-            _deliveryRouteList = new List<DeliveryRoute>(sorted);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<DeliveryRoute>();
+            foreach (var item in sorted)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: DeliveryRoute UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _deliveryRouteList = deduped;
         }
 
         public void InitDeliveryPlans(PlayerRoot playerRoot)
         {
             var sorted = CollectionSortHelper.OrderDeliveryPlans(playerRoot.DeliveryPlan ?? new DeliveryPlan[0]);
-            _deliveryPlanList = new List<DeliveryPlan>(sorted);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<DeliveryPlan>();
+            foreach (var item in sorted)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: DeliveryPlan UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _deliveryPlanList = deduped;
         }
 
         public void InitPricingPlans(PlayerRoot playerRoot)
         {
             var sorted = CollectionSortHelper.OrderPricingPlans(playerRoot.PricingPlan ?? new PricingPlan[0]);
-            _pricingPlanList = new List<PricingPlan>(sorted);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<PricingPlan>();
+            foreach (var item in sorted)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: PricingPlan UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _pricingPlanList = deduped;
         }
 
         public void InitBuildPlans(PlayerRoot playerRoot)
         {
-            _buildPlanList = new List<BuildPlan>(playerRoot.BuildPlan ?? new BuildPlan[0]);
+            var source = playerRoot.BuildPlan ?? new BuildPlan[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<BuildPlan>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: BuildPlan UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _buildPlanList = deduped;
         }
 
         public void InitShipTemplates(PlayerRoot playerRoot)
         {
-            _shipTemplateList = new List<ShipTemplate>(playerRoot.ShipTemplate ?? new ShipTemplate[0]);
+            var source = playerRoot.ShipTemplate ?? new ShipTemplate[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<ShipTemplate>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: ShipTemplate UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _shipTemplateList = deduped;
         }
 
         public void InitShips(PlayerRoot playerRoot)
         {
-            _shipList = new List<Ship>(playerRoot.Ship ?? new Ship[0]);
+            var source = playerRoot.Ship ?? new Ship[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<Ship>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: Ship UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _shipList = deduped;
         }
 
         public void InitStations(PlayerRoot playerRoot)
         {
-            _stationList = new List<Station>(playerRoot.Station ?? new Station[0]);
+            var source = playerRoot.Station ?? new Station[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<Station>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: Station UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _stationList = deduped;
         }
 
         public void InitMarketListings(PlayerRoot playerRoot)
         {
-            _marketListingList = new List<MarketListing>(playerRoot.MarketListing ?? new MarketListing[0]);
+            var source = playerRoot.MarketListing ?? new MarketListing[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<MarketListing>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: MarketListing UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.ItemName);
+                }
+            }
+
+            _marketListingList = deduped;
         }
 
         public void InitMarketTransactions(PlayerRoot playerRoot)
         {
-            _marketTransactionList = new List<MarketTransaction>(playerRoot.MarketTransaction ?? new MarketTransaction[0]);
+            var source = playerRoot.MarketTransaction ?? new MarketTransaction[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<MarketTransaction>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: MarketTransaction UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.ItemName);
+                }
+            }
+
+            _marketTransactionList = deduped;
         }
 
         public void InitStockPlans(PlayerRoot playerRoot)
         {
-            _stockPlanList = new List<StockPlan>(playerRoot.StockPlan ?? new StockPlan[0]);
+            var source = playerRoot.StockPlan ?? new StockPlan[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<StockPlan>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: StockPlan UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _stockPlanList = deduped;
         }
 
         public void InitStockProfiles(PlayerRoot playerRoot)
         {
-            _stockProfileList = new List<StockProfile>(playerRoot.StockProfile ?? new StockProfile[0]);
+            var source = playerRoot.StockProfile ?? new StockProfile[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<StockProfile>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: StockProfile UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _stockProfileList = deduped;
         }
 
         public void InitSupplyChains(PlayerRoot playerRoot)
         {
-            _supplyChainList = new List<SupplyChain>(playerRoot.SupplyChain ?? new SupplyChain[0]);
+            var source = playerRoot.SupplyChain ?? new SupplyChain[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<SupplyChain>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: SupplyChain UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _supplyChainList = deduped;
         }
 
         public void InitWarehouseOverflowRules(PlayerRoot playerRoot)
         {
-            _warehouseOverflowRuleList = new List<WarehouseOverflowRule>(playerRoot.WarehouseOverflowRule ?? new WarehouseOverflowRule[0]);
+            var source = playerRoot.WarehouseOverflowRule ?? new WarehouseOverflowRule[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<WarehouseOverflowRule>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: WarehouseOverflowRule UUID={0} Resource='{1}' — skipping duplicate", item.UUID, item.ResourceName);
+                }
+            }
+
+            _warehouseOverflowRuleList = deduped;
         }
 
         public void InitFactions(PlayerRoot playerRoot)
         {
-            _factionList = new List<Faction>(playerRoot.Faction ?? new Faction[0]);
+            var source = playerRoot.Faction ?? new Faction[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<Faction>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: Faction UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _factionList = deduped;
         }
 
         public void InitExternalCharacters(PlayerRoot playerRoot)
         {
-            _externalCharacterList = new List<ExternalCharacter>(playerRoot.ExternalCharacter ?? new ExternalCharacter[0]);
+            var source = playerRoot.ExternalCharacter ?? new ExternalCharacter[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<ExternalCharacter>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: ExternalCharacter UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _externalCharacterList = deduped;
         }
 
         public void InitAsteroids(PlayerRoot playerRoot)
         {
-            _asteroidList = new List<Asteroid>(playerRoot.Asteroid ?? new Asteroid[0]);
+            var source = playerRoot.Asteroid ?? new Asteroid[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<Asteroid>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: Asteroid UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                }
+            }
+
+            _asteroidList = deduped;
         }
 
         public Colony FindColony(string id)
