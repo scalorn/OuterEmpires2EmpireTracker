@@ -2,9 +2,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using OE2EmpireTracker.Desktop.Services;
-using OE2EmpireTracker.Desktop.ViewModels.Messages;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
@@ -22,9 +20,6 @@ public sealed partial class ProfileRowViewModel : ObservableObject
 
     [ObservableProperty]
     private int _skillCount;
-
-    [ObservableProperty]
-    private string _uuid = string.Empty;
 }
 
 /// <summary>
@@ -42,9 +37,6 @@ public sealed partial class SkillRowViewModel : ObservableObject
 /// <summary>
 /// ViewModel for the Player Profile document tab.
 /// Shows profiles with skills and ranks.
-/// Provides CRUD operations via PlayerProfileService.
-/// Subscribes to <see cref="PlayerChangedMessage"/> (via base) and
-/// <see cref="PlayerProfileDataChangedMessage"/> to auto-refresh on data changes.
 /// </summary>
 public sealed partial class PlayerProfileViewModel : DocumentViewModel
 {
@@ -52,26 +44,11 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
     private ProfileRowViewModel? _selectedProfile;
 
     [ObservableProperty]
-    private string _editName = string.Empty;
-
-    [ObservableProperty]
-    private string _editFaction = string.Empty;
-
-    [ObservableProperty]
-    private string _editCredits = string.Empty;
-
-    [ObservableProperty]
-    private string _editSkillPoints = string.Empty;
+    private bool _isDirty;
 
     public PlayerProfileViewModel()
     {
         Title = "Player Profile";
-
-        WeakReferenceMessenger.Default.Register<PlayerProfileDataChangedMessage>(this, (r, m) =>
-        {
-            ((PlayerProfileViewModel)r).RefreshData();
-        });
-
         LoadData();
     }
 
@@ -79,103 +56,79 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
 
     public ObservableCollection<SkillRowViewModel> Skills { get; } = new ObservableCollection<SkillRowViewModel>();
 
-    [RelayCommand]
-    private void NewProfile()
-    {
-        var service = App.Services?.GetService(typeof(PlayerProfileService)) as PlayerProfileService;
-        service?.Create(new PlayerProfileCreateRequest
-        {
-            Name = "New Profile",
-            Faction = string.Empty,
-        });
-    }
-
-    [RelayCommand]
-    private void SaveProfile()
-    {
-        if (SelectedProfile is null)
-        {
-            return;
-        }
-
-        var service = App.Services?.GetService(typeof(PlayerProfileService)) as PlayerProfileService;
-        _ = decimal.TryParse(EditCredits, out decimal credits);
-        _ = int.TryParse(EditSkillPoints, out int skillPoints);
-        service?.Update(SelectedProfile.Uuid, new PlayerProfileUpdateRequest
-        {
-            Name = EditName,
-            Faction = EditFaction,
-            TotalCredits = credits,
-            SkillPoints = skillPoints,
-        });
-    }
-
-    [RelayCommand]
-    private void DeleteProfile()
-    {
-        if (SelectedProfile is null)
-        {
-            return;
-        }
-
-        var service = App.Services?.GetService(typeof(PlayerProfileService)) as PlayerProfileService;
-        service?.Delete(SelectedProfile.Uuid);
-    }
-
-    /// <inheritdoc/>
-    protected override void RefreshData()
-    {
-        Profiles.Clear();
-        Skills.Clear();
-        SelectedProfile = null;
-        EditName = string.Empty;
-        EditFaction = string.Empty;
-        EditCredits = string.Empty;
-        EditSkillPoints = string.Empty;
-        LoadData();
-    }
-
     partial void OnSelectedProfileChanged(ProfileRowViewModel? value)
     {
-        if (value is not null)
-        {
-            EditName = value.ProfileName;
-
-            // Load additional fields from the data model
-            var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
-            if (dataService is not null && dataService.IsLoaded)
-            {
-                var profile = dataService.PlayerProfiles
-                    .FirstOrDefault(p => p.UUID == value.Uuid);
-                if (profile is not null)
-                {
-                    EditFaction = profile.Faction ?? string.Empty;
-                    EditCredits = profile.TotalCredits.ToString();
-                    EditSkillPoints = profile.SkillPoints.ToString();
-                }
-                else
-                {
-                    EditFaction = string.Empty;
-                    EditCredits = string.Empty;
-                    EditSkillPoints = string.Empty;
-                }
-            }
-            else
-            {
-                EditFaction = string.Empty;
-                EditCredits = string.Empty;
-                EditSkillPoints = string.Empty;
-            }
-        }
-        else
-        {
-            EditName = string.Empty;
-            EditFaction = string.Empty;
-            EditCredits = string.Empty;
-            EditSkillPoints = string.Empty;
-        }
-
         LoadSkillsForProfile(value);
+        IsDirty = false;
+    }
+
+    /// <summary>
+    /// Saves modified skill levels back to the PlayerProfile model via the service layer.
+    /// </summary>
+    [RelayCommand]
+    private void SaveSkills()
+    {
+        if (SelectedProfile is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var profileService = App.Services?.GetService(typeof(PlayerProfileService)) as PlayerProfileService;
+        if (dataService is null || !dataService.IsLoaded || profileService is null)
+        {
+            return;
+        }
+
+        var playerProfile = dataService.PlayerProfiles
+            .FirstOrDefault(p => p.Name == SelectedProfile.ProfileName);
+        if (playerProfile is null)
+        {
+            return;
+        }
+
+        // Build skills dictionary from the grid
+        var skills = new System.Collections.Generic.Dictionary<string, SkillUpdateData>();
+        foreach (var row in Skills)
+        {
+            skills[row.SkillName] = new SkillUpdateData { Level = row.Level };
+        }
+
+        var request = new PlayerProfileUpdateRequest
+        {
+            Name = playerProfile.Name,
+            Faction = playerProfile.Faction,
+            TotalCredits = playerProfile.TotalCredits,
+            SkillPoints = playerProfile.SkillPoints,
+            CitizenId = playerProfile.CitizenId,
+            RegistrationDate = playerProfile.RegistrationDate,
+            ActiveTime = playerProfile.ActiveTime,
+            PublicRank = playerProfile.Public.Rank,
+            PublicCurrentXP = playerProfile.Public.CurrentXP,
+            PublicNextXP = playerProfile.Public.NextXP,
+            PublicTitle = playerProfile.Public.Title,
+            PrivateRank = playerProfile.Private.Rank,
+            PrivateCurrentXP = playerProfile.Private.CurrentXP,
+            PrivateNextXP = playerProfile.Private.NextXP,
+            PrivateTitle = playerProfile.Private.Title,
+            MilitaryRank = playerProfile.Military.Rank,
+            MilitaryCurrentXP = playerProfile.Military.CurrentXP,
+            MilitaryNextXP = playerProfile.Military.NextXP,
+            MilitaryTitle = playerProfile.Military.Title,
+            Skills = skills,
+        };
+
+        profileService.Update(playerProfile.UUID, request);
+        IsDirty = false;
+    }
+
+    /// <summary>
+    /// Marks the skills as dirty when a cell is edited.
+    /// </summary>
+    [RelayCommand]
+    private void MarkSkillsDirty()
+    {
+        IsDirty = true;
     }
 
     private void LoadData()
@@ -191,7 +144,6 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
         {
             Profiles.Add(new ProfileRowViewModel
             {
-                Uuid = profile.UUID ?? string.Empty,
                 ProfileName = profile.Name ?? string.Empty,
                 PublicRank = profile.Public?.Title ?? string.Empty,
                 SkillCount = profile.Skills?.Count ?? 0,
@@ -225,7 +177,7 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
         }
 
         var playerProfile = dataService.PlayerProfiles
-            .FirstOrDefault(p => p.UUID == profile.Uuid);
+            .FirstOrDefault(p => p.Name == profile.ProfileName);
         if (playerProfile?.Skills is null)
         {
             LoadSampleSkills();

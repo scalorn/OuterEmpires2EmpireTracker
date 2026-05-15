@@ -32,49 +32,37 @@
                 </ListBox>
             </DockPanel>
 
-            <!-- Right: Edit fields + Skills grid -->
+            <!-- Right: Skills grid -->
             <DockPanel Grid.Column="2">
-                <!-- Edit fields and CRUD buttons -->
-                <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12" Spacing="8">
-                    <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="6">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EditName}" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Faction:" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding EditFaction}" />
-
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Credits:" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EditCredits}" />
-
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Skill Points:" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding EditSkillPoints}" />
-                    </Grid>
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <Button Content="New" Command="{Binding NewProfileCommand}" />
-                        <Button Content="Save" Command="{Binding SaveProfileCommand}" />
-                        <Button Content="Delete" Command="{Binding DeleteProfileCommand}" />
-                    </StackPanel>
-                </StackPanel>
-
                 <TextBlock DockPanel.Dock="Top"
                            Text="Skills"
                            FontSize="16"
                            FontWeight="SemiBold"
                            Margin="0,0,0,8" />
 
+                <StackPanel DockPanel.Dock="Bottom"
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            Margin="0,8,0,0">
+                    <Button Content="Save Skills"
+                            Command="{Binding SaveSkillsCommand}" />
+                </StackPanel>
+
                 <DataGrid ItemsSource="{Binding Skills}"
                           AutoGenerateColumns="False"
                           CanUserReorderColumns="True"
                           CanUserResizeColumns="True"
                           CanUserSortColumns="True"
-                          IsReadOnly="True"
+                          IsReadOnly="False"
                           GridLinesVisibility="Horizontal"
                           SelectionMode="Single"
-                          HeadersVisibility="Column">
+                          HeadersVisibility="Column"
+                          CellEditEnded="OnCellEditEnded">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Skill"
                                             Binding="{Binding SkillName}"
-                                            Width="200" />
+                                            Width="200"
+                                            IsReadOnly="True" />
                         <DataGridTextColumn Header="Level"
                                             Binding="{Binding Level}"
                                             Width="80" />

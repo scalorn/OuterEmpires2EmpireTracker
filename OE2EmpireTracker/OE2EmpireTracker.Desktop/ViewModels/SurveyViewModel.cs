@@ -1,10 +1,14 @@
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using OE2EmpireTracker.Desktop.Parsers;
 using OE2EmpireTracker.Desktop.Services;
-using OE2EmpireTracker.Desktop.ViewModels.Messages;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
@@ -22,9 +26,6 @@ public sealed partial class SurveyRowViewModel : ObservableObject
 
     [ObservableProperty]
     private int _resourceCount;
-
-    [ObservableProperty]
-    private string _uuid = string.Empty;
 }
 
 /// <summary>
@@ -45,9 +46,6 @@ public sealed partial class SurveyResourceRowViewModel : ObservableObject
 /// <summary>
 /// ViewModel for the Survey document tab.
 /// Shows surveys with resource details.
-/// Provides CRUD operations via SurveyService.
-/// Subscribes to <see cref="PlayerChangedMessage"/> (via base) and
-/// <see cref="SurveyDataChangedMessage"/> to auto-refresh on data changes.
 /// </summary>
 public sealed partial class SurveyViewModel : DocumentViewModel
 {
@@ -55,26 +53,17 @@ public sealed partial class SurveyViewModel : DocumentViewModel
     private SurveyRowViewModel? _selectedSurvey;
 
     [ObservableProperty]
-    private string _editPlanetName = string.Empty;
+    private string _importStatus = string.Empty;
 
     [ObservableProperty]
-    private string _editSystemName = string.Empty;
+    private SurveyResourceRowViewModel? _selectedResource;
 
     [ObservableProperty]
-    private string _editSurveyId = string.Empty;
-
-    [ObservableProperty]
-    private string _editNickName = string.Empty;
+    private bool _isDirty;
 
     public SurveyViewModel()
     {
         Title = "Surveys";
-
-        WeakReferenceMessenger.Default.Register<SurveyDataChangedMessage>(this, (r, m) =>
-        {
-            ((SurveyViewModel)r).RefreshData();
-        });
-
         LoadData();
     }
 
@@ -82,19 +71,90 @@ public sealed partial class SurveyViewModel : DocumentViewModel
 
     public ObservableCollection<SurveyResourceRowViewModel> Resources { get; } = new ObservableCollection<SurveyResourceRowViewModel>();
 
+    /// <summary>
+    /// Imports survey data from the clipboard HTML and adds a new survey.
+    /// </summary>
     [RelayCommand]
-    private void NewSurvey()
+    private async Task ImportClipboardAsync()
     {
-        var service = App.Services?.GetService(typeof(SurveyService)) as SurveyService;
-        service?.Create(new SurveyCreateRequest
+        var clipboardService = App.Services?.GetService(typeof(IClipboardService)) as IClipboardService;
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var loggerFactory = App.Services?.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
+
+        if (clipboardService is null || dataService is null || loggerFactory is null)
         {
-            PlanetName = "New Survey",
-            SystemName = string.Empty,
-            SurveyID = string.Empty,
-            NickName = string.Empty,
+            ImportStatus = "Services not available";
+            return;
+        }
+
+        string? html = await clipboardService.GetHtmlAsync();
+        if (string.IsNullOrEmpty(html))
+        {
+            ImportStatus = "No HTML on clipboard";
+            return;
+        }
+
+        string fragment = HtmlClipboardHelper.ExtractHtmlFragment(html);
+        if (string.IsNullOrEmpty(fragment))
+        {
+            ImportStatus = "Could not extract HTML fragment";
+            return;
+        }
+
+        var parser = new SurveyParser(loggerFactory.CreateLogger<SurveyParser>());
+        var survey = parser.ParseSurveyHtml(fragment);
+        if (survey is null)
+        {
+            ImportStatus = "Failed to parse survey HTML";
+            return;
+        }
+
+        survey.UUID = Guid.NewGuid().ToString();
+        survey.OwnerUUID = dataService.CurrentPlayerUUID;
+
+        dataService.AddSurvey(survey);
+        dataService.OnSurveyDataChanged(survey.UUID);
+        dataService.WriteContext();
+
+        // Add to the local collection
+        Surveys.Add(new SurveyRowViewModel
+        {
+            PlanetName = survey.PlanetName ?? string.Empty,
+            SurveyType = survey.SurveyType.ToString(),
+            ResourceCount = survey.Resources?.Count ?? 0,
         });
+
+        SelectedSurvey = Surveys.LastOrDefault();
+        ImportStatus = $"Imported survey for {survey.PlanetName}";
     }
 
+    /// <summary>
+    /// Adds a new empty resource row to the Resources grid.
+    /// </summary>
+    [RelayCommand]
+    private void AddResource()
+    {
+        Resources.Add(new SurveyResourceRowViewModel { ResourceName = "New Resource", Purity = "Medium", Yield = "0" });
+        IsDirty = true;
+    }
+
+    /// <summary>
+    /// Removes the selected resource row from the Resources grid.
+    /// </summary>
+    [RelayCommand]
+    private void RemoveResource()
+    {
+        if (SelectedResource is not null)
+        {
+            Resources.Remove(SelectedResource);
+            SelectedResource = null;
+            IsDirty = true;
+        }
+    }
+
+    /// <summary>
+    /// Saves resources back to the survey model via the service layer.
+    /// </summary>
     [RelayCommand]
     private void SaveSurvey()
     {
@@ -103,81 +163,62 @@ public sealed partial class SurveyViewModel : DocumentViewModel
             return;
         }
 
-        var service = App.Services?.GetService(typeof(SurveyService)) as SurveyService;
-        service?.Update(SelectedSurvey.Uuid, new SurveyUpdateRequest
-        {
-            PlanetName = EditPlanetName,
-            SystemName = EditSystemName,
-            SurveyID = EditSurveyId,
-            NickName = EditNickName,
-        });
-    }
-
-    [RelayCommand]
-    private void DeleteSurvey()
-    {
-        if (SelectedSurvey is null)
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var surveyService = App.Services?.GetService(typeof(SurveyService)) as SurveyService;
+        if (dataService is null || !dataService.IsLoaded || surveyService is null)
         {
             return;
         }
 
-        var service = App.Services?.GetService(typeof(SurveyService)) as SurveyService;
-        service?.Delete(SelectedSurvey.Uuid);
+        var surveyModel = dataService.Surveys
+            .FirstOrDefault(s => s.PlanetName == SelectedSurvey.PlanetName);
+        if (surveyModel is null)
+        {
+            return;
+        }
+
+        // Build resources from the grid
+        var resources = new Dictionary<string, SurveyResource>();
+        foreach (var row in Resources)
+        {
+            if (!string.IsNullOrWhiteSpace(row.ResourceName))
+            {
+                resources[row.ResourceName] = new SurveyResource(row.ResourceName, row.Purity, row.Yield);
+            }
+        }
+
+        var request = new SurveyUpdateRequest
+        {
+            PlanetName = surveyModel.PlanetName,
+            SystemName = surveyModel.SystemName,
+            SurveyID = surveyModel.SurveyID,
+            NickName = surveyModel.NickName,
+            ScannedBy = surveyModel.ScannedBy,
+            DateTime = surveyModel.DateTime,
+            ScannerBlueprintUUID = surveyModel.ScannerBlueprintUUID,
+            AsteroidUUID = surveyModel.AsteroidUUID,
+            SurveyType = surveyModel.SurveyType,
+            Resources = resources,
+        };
+
+        surveyService.Update(surveyModel.UUID, request);
+        SelectedSurvey.ResourceCount = Resources.Count;
+        IsDirty = false;
     }
 
-    /// <inheritdoc/>
-    protected override void RefreshData()
+    /// <summary>
+    /// Marks the survey as dirty when a cell is edited.
+    /// </summary>
+    [RelayCommand]
+    private void MarkDirty()
     {
-        Surveys.Clear();
-        Resources.Clear();
-        SelectedSurvey = null;
-        EditPlanetName = string.Empty;
-        EditSystemName = string.Empty;
-        EditSurveyId = string.Empty;
-        EditNickName = string.Empty;
-        LoadData();
+        IsDirty = true;
     }
 
     partial void OnSelectedSurveyChanged(SurveyRowViewModel? value)
     {
-        if (value is not null)
-        {
-            EditPlanetName = value.PlanetName;
-
-            // Load additional fields from the data model
-            var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
-            if (dataService is not null && dataService.IsLoaded)
-            {
-                var survey = dataService.Surveys.FirstOrDefault(s => s.UUID == value.Uuid);
-                if (survey is not null)
-                {
-                    EditSystemName = survey.SystemName ?? string.Empty;
-                    EditSurveyId = survey.SurveyID ?? string.Empty;
-                    EditNickName = survey.NickName ?? string.Empty;
-                }
-                else
-                {
-                    EditSystemName = string.Empty;
-                    EditSurveyId = string.Empty;
-                    EditNickName = string.Empty;
-                }
-            }
-            else
-            {
-                EditSystemName = string.Empty;
-                EditSurveyId = string.Empty;
-                EditNickName = string.Empty;
-            }
-        }
-        else
-        {
-            EditPlanetName = string.Empty;
-            EditSystemName = string.Empty;
-            EditSurveyId = string.Empty;
-            EditNickName = string.Empty;
-        }
-
         LoadResourcesForSurvey(value);
+        IsDirty = false;
     }
 
     private void LoadData()
@@ -193,7 +234,6 @@ public sealed partial class SurveyViewModel : DocumentViewModel
         {
             Surveys.Add(new SurveyRowViewModel
             {
-                Uuid = survey.UUID ?? string.Empty,
                 PlanetName = survey.PlanetName ?? string.Empty,
                 SurveyType = survey.SurveyType.ToString(),
                 ResourceCount = survey.Resources?.Count ?? 0,
@@ -227,7 +267,7 @@ public sealed partial class SurveyViewModel : DocumentViewModel
         }
 
         var surveyModel = dataService.Surveys
-            .FirstOrDefault(s => s.UUID == survey.Uuid);
+            .FirstOrDefault(s => s.PlanetName == survey.PlanetName);
         if (surveyModel?.Resources is null)
         {
             LoadSampleResources(survey.PlanetName);

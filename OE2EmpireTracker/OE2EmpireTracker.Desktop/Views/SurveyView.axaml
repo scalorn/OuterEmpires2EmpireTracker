@@ -32,35 +32,25 @@
                 </ListBox>
             </DockPanel>
 
-            <!-- Right: Edit fields + Resources grid -->
+            <!-- Right: Resources grid + buttons -->
             <DockPanel Grid.Column="2">
-                <!-- Edit fields and CRUD buttons -->
-                <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12" Spacing="8">
-                    <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="6">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Planet:" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EditPlanetName}" />
-
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="System:" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding EditSystemName}" />
-
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Survey ID:" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EditSurveyId}" />
-
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Nick Name:" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding EditNickName}" />
-                    </Grid>
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <Button Content="New" Command="{Binding NewSurveyCommand}" />
-                        <Button Content="Save" Command="{Binding SaveSurveyCommand}" />
-                        <Button Content="Delete" Command="{Binding DeleteSurveyCommand}" />
-                    </StackPanel>
-                </StackPanel>
-
                 <TextBlock DockPanel.Dock="Top"
                            Text="Resources"
                            FontSize="16"
                            FontWeight="SemiBold"
                            Margin="0,0,0,8" />
+
+                <StackPanel DockPanel.Dock="Bottom"
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            Margin="0,8,0,0">
+                    <Button Content="Add Resource"
+                            Command="{Binding AddResourceCommand}" />
+                    <Button Content="Remove Resource"
+                            Command="{Binding RemoveResourceCommand}" />
+                    <Button Content="Save Survey"
+                            Command="{Binding SaveSurveyCommand}" />
+                </StackPanel>
 
                 <TextBlock DockPanel.Dock="Bottom"
                            Text="[Chart placeholder — resource distribution visualization]"
@@ -69,14 +59,16 @@
                            Margin="0,12,0,0" />
 
                 <DataGrid ItemsSource="{Binding Resources}"
+                          SelectedItem="{Binding SelectedResource}"
                           AutoGenerateColumns="False"
                           CanUserReorderColumns="True"
                           CanUserResizeColumns="True"
                           CanUserSortColumns="True"
-                          IsReadOnly="True"
+                          IsReadOnly="False"
                           GridLinesVisibility="Horizontal"
                           SelectionMode="Single"
-                          HeadersVisibility="Column">
+                          HeadersVisibility="Column"
+                          CellEditEnded="OnCellEditEnded">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Resource"
                                             Binding="{Binding ResourceName}"

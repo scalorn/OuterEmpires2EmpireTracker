@@ -3,9 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using OE2EmpireTracker.Desktop.Services;
-using OE2EmpireTracker.Desktop.ViewModels.Messages;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
@@ -29,9 +27,6 @@ public sealed partial class BlueprintRowViewModel : ObservableObject
 
     [ObservableProperty]
     private int _shipClass;
-
-    [ObservableProperty]
-    private string _uuid = string.Empty;
 }
 
 /// <summary>
@@ -61,23 +56,11 @@ public sealed partial class BlueprintResourceRowViewModel : ObservableObject
 /// <summary>
 /// ViewModel for the Blueprint document tab.
 /// Shows blueprint list with detail, statistics, resources, and evolution tabs.
-/// Provides CRUD operations via BlueprintService.
-/// Subscribes to <see cref="PlayerChangedMessage"/> (via base) and
-/// <see cref="BlueprintDataChangedMessage"/> to auto-refresh on data changes.
 /// </summary>
 public sealed partial class BlueprintViewModel : DocumentViewModel
 {
     [ObservableProperty]
     private BlueprintRowViewModel? _selectedBlueprint;
-
-    [ObservableProperty]
-    private string _editName = string.Empty;
-
-    [ObservableProperty]
-    private string _editBlueprintType = string.Empty;
-
-    [ObservableProperty]
-    private string _editTechLevel = string.Empty;
 
     [ObservableProperty]
     private string _detailName = string.Empty;
@@ -94,15 +77,18 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
     [ObservableProperty]
     private int _detailEvolution;
 
+    [ObservableProperty]
+    private BlueprintStatRowViewModel? _selectedStat;
+
+    [ObservableProperty]
+    private BlueprintResourceRowViewModel? _selectedResource;
+
+    [ObservableProperty]
+    private bool _isDirty;
+
     public BlueprintViewModel()
     {
         Title = "Blueprints";
-
-        WeakReferenceMessenger.Default.Register<BlueprintDataChangedMessage>(this, (r, m) =>
-        {
-            ((BlueprintViewModel)r).RefreshData();
-        });
-
         LoadData();
     }
 
@@ -112,18 +98,63 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
 
     public ObservableCollection<BlueprintResourceRowViewModel> Resources { get; } = new ();
 
-    [RelayCommand]
-    private void NewBlueprint()
+    partial void OnSelectedBlueprintChanged(BlueprintRowViewModel? value)
     {
-        var service = App.Services?.GetService(typeof(BlueprintService)) as BlueprintService;
-        service?.Create(new BlueprintCreateRequest
-        {
-            Name = "New Blueprint",
-            BluePrintType = string.Empty,
-            TechLevel = string.Empty,
-        });
+        LoadBlueprintDetail(value);
+        IsDirty = false;
     }
 
+    /// <summary>
+    /// Adds a new empty stat row to the Stats grid.
+    /// </summary>
+    [RelayCommand]
+    private void AddStat()
+    {
+        Stats.Add(new BlueprintStatRowViewModel { StatName = "NewStat", Value = "0" });
+        IsDirty = true;
+    }
+
+    /// <summary>
+    /// Removes the selected stat row from the Stats grid.
+    /// </summary>
+    [RelayCommand]
+    private void RemoveStat()
+    {
+        if (SelectedStat is not null)
+        {
+            Stats.Remove(SelectedStat);
+            SelectedStat = null;
+            IsDirty = true;
+        }
+    }
+
+    /// <summary>
+    /// Adds a new empty resource row to the Resources grid.
+    /// </summary>
+    [RelayCommand]
+    private void AddResource()
+    {
+        Resources.Add(new BlueprintResourceRowViewModel { ResourceName = "New Resource", Quantity = "0" });
+        IsDirty = true;
+    }
+
+    /// <summary>
+    /// Removes the selected resource row from the Resources grid.
+    /// </summary>
+    [RelayCommand]
+    private void RemoveResource()
+    {
+        if (SelectedResource is not null)
+        {
+            Resources.Remove(SelectedResource);
+            SelectedResource = null;
+            IsDirty = true;
+        }
+    }
+
+    /// <summary>
+    /// Saves stats and resources back to the blueprint model via the service layer.
+    /// </summary>
     [RelayCommand]
     private void SaveBlueprint()
     {
@@ -132,56 +163,66 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
             return;
         }
 
-        var service = App.Services?.GetService(typeof(BlueprintService)) as BlueprintService;
-        service?.Update(SelectedBlueprint.Uuid, new BlueprintUpdateRequest
-        {
-            Name = EditName,
-            BluePrintType = EditBlueprintType,
-            TechLevel = EditTechLevel,
-        });
-    }
-
-    [RelayCommand]
-    private void DeleteBlueprint()
-    {
-        if (SelectedBlueprint is null)
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var blueprintService = App.Services?.GetService(typeof(BlueprintService)) as BlueprintService;
+        if (dataService is null || !dataService.IsLoaded || blueprintService is null)
         {
             return;
         }
 
-        var service = App.Services?.GetService(typeof(BlueprintService)) as BlueprintService;
-        service?.Delete(SelectedBlueprint.Uuid);
-    }
-
-    /// <inheritdoc/>
-    protected override void RefreshData()
-    {
-        Blueprints.Clear();
-        Stats.Clear();
-        Resources.Clear();
-        SelectedBlueprint = null;
-        EditName = string.Empty;
-        EditBlueprintType = string.Empty;
-        EditTechLevel = string.Empty;
-        LoadData();
-    }
-
-    partial void OnSelectedBlueprintChanged(BlueprintRowViewModel? value)
-    {
-        if (value is not null)
+        var bp = dataService.GetCurrentPlayerBlueprints()
+            .FirstOrDefault(b => b.Name == SelectedBlueprint.Name && b.Evolution == SelectedBlueprint.Evolution);
+        if (bp is null)
         {
-            EditName = value.Name;
-            EditBlueprintType = value.BlueprintType;
-            EditTechLevel = value.TechLevel;
-        }
-        else
-        {
-            EditName = string.Empty;
-            EditBlueprintType = string.Empty;
-            EditTechLevel = string.Empty;
+            return;
         }
 
-        LoadBlueprintDetail(value);
+        // Build properties from the stats grid
+        var properties = new Dictionary<string, string>();
+        foreach (var row in Stats)
+        {
+            if (!string.IsNullOrWhiteSpace(row.StatName))
+            {
+                properties[row.StatName] = row.Value;
+            }
+        }
+
+        // Build resources from the resources grid
+        var resources = new Dictionary<string, string>();
+        foreach (var row in Resources)
+        {
+            if (!string.IsNullOrWhiteSpace(row.ResourceName))
+            {
+                resources[row.ResourceName] = row.Quantity;
+            }
+        }
+
+        var request = new BlueprintUpdateRequest
+        {
+            Name = bp.Name,
+            NickName = bp.NickName,
+            Description = bp.Description,
+            BluePrintType = bp.BluePrintType,
+            Evolution = bp.Evolution,
+            TechLevel = bp.TechLevel,
+            Class = bp.Class,
+            CopyCost = bp.CopyCost,
+            BaseBlueprintUUID = bp.BaseBlueprintUUID,
+            Properties = properties,
+            Resources = resources,
+        };
+
+        blueprintService.Update(bp.UUID, request);
+        IsDirty = false;
+    }
+
+    /// <summary>
+    /// Marks the blueprint as dirty when a cell is edited.
+    /// </summary>
+    [RelayCommand]
+    private void MarkDirty()
+    {
+        IsDirty = true;
     }
 
     private void LoadData()
@@ -204,7 +245,6 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
         {
             Blueprints.Add(new BlueprintRowViewModel
             {
-                Uuid = bp.UUID ?? string.Empty,
                 Name = bp.Name ?? string.Empty,
                 BlueprintType = bp.BluePrintType ?? string.Empty,
                 TechLevel = bp.TechLevel ?? string.Empty,
@@ -249,7 +289,7 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
         }
 
         var bp = dataService.GetCurrentPlayerBlueprints()
-            .FirstOrDefault(b => b.UUID == row.Uuid);
+            .FirstOrDefault(b => b.Name == row.Name && b.Evolution == row.Evolution);
         if (bp is null)
         {
             LoadSampleStats(row.Name);
