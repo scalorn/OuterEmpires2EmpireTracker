@@ -188,18 +188,25 @@
 
 - [ ] 9.1 Linux testing (Debian/Ubuntu — X11 and Wayland)
   - Scope: Run full app, verify all views render, test clipboard paste
+  - Status: AWAITING USER TESTING on Linux machine
 - [ ] 9.2 RHEL/Fedora testing (for AWS server compatibility)
   - Scope: Verify builds and runs on rpm-based distro
+  - Status: AWAITING USER TESTING on RHEL/Fedora
 - [ ] 9.3 Performance profiling (large grids, startup time)
   - Scope: Profile with 50+ colonies, 200+ blueprints, identify bottlenecks
-- [ ] 9.4 Configure self-contained publish for Windows
+  - Status: AWAITING USER TESTING with real data
+- [x] 9.4 Configure self-contained publish for Windows
   - Scope: dotnet publish -r win-x64, verify exe runs standalone
-- [ ] 9.5 Configure .deb packaging for Debian/Ubuntu
-  - Scope: dpkg-deb or dotnet-deb tool, desktop entry, icon
-- [ ] 9.6 Configure .rpm packaging for RHEL/Fedora
-  - Scope: rpmbuild or dotnet-rpm tool
+  - Done: Publish profile + verified output
+- [x] 9.5 Configure .deb packaging for Debian/Ubuntu
+  - Scope: dpkg-deb script, desktop entry, symlink
+  - Done: build-deb.sh + .desktop file
+- [x] 9.6 Configure .rpm packaging for RHEL/Fedora
+  - Scope: rpmbuild script with spec file
+  - Done: build-rpm.sh
 - [ ] 9.7 macOS testing and .app bundle (nice-to-have)
   - Scope: Verify on macOS, create .app if feasible
+  - Status: Deferred (nice-to-have)
 
 ---
 
@@ -217,8 +224,8 @@
 
 ## Implementation Notes
 
-- Each subtask should produce a buildable, runnable increment
-- DataGrid-heavy tasks depend on Phase 4 custom cell templates (4.8, 4.9)
-- Chart tasks (7.2c, 8.1e) need a charting library decision — evaluate LiveChartsCore or ScottPlot.Avalonia
-- Timer tasks (5.4, 8.3g) depend on Phase 4 timer service (4.4)
-- All form ports depend on Phase 4 data loading (4.11) and messaging (4.12)
+- ScottPlot.Avalonia added (v5.0.47) — chart placeholder in BlueprintView Evolution tab
+- All views load real data from DataService with sample data fallback
+- Publish verified for both win-x64 and linux-x64 (self-contained single-file)
+- .deb and .rpm packaging scripts ready (run on Linux after publish)
+- Remaining Phase 9 tasks (9.1-9.3, 9.7) require user testing on target platforms

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=OE2 Empire Tracker
+Comment=Empire management tool for Outer Empires 2
+Exec=OE2EmpireTracker.Desktop
+Icon=oe2empiretracker
+Terminal=false
+Type=Application
+Categories=Game;Utility;
+StartupWMClass=OE2EmpireTracker.Desktop
