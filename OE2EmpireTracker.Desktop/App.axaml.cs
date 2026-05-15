@@ -34,12 +34,24 @@ public partial class App : Application
 
         AutoLoadData(dataService, configService, logger);
 
+        // Start background processing after data is loaded
+        var backgroundProcessor = provider.GetRequiredService<BackgroundProcessor>();
+        if (dataService.IsLoaded)
+        {
+            backgroundProcessor.Start();
+        }
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var vm = provider.GetRequiredService<MainWindowViewModel>();
             desktop.MainWindow = new MainWindow
             {
                 DataContext = vm,
+            };
+
+            desktop.ShutdownRequested += (_, _) =>
+            {
+                backgroundProcessor.Dispose();
             };
         }
 
@@ -93,6 +105,8 @@ public partial class App : Application
         services.AddSingleton<SafeFileWriter>();
         services.AddSingleton<AppConfigService>();
         services.AddSingleton<DataService>();
+        services.AddSingleton<ColonyProcessingContext>();
+        services.AddSingleton<BackgroundProcessor>();
 
         // ViewModels
         services.AddSingleton<MainWindowViewModel>();

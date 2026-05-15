@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -5,7 +6,9 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Dock.Model.Controls;
@@ -24,6 +27,7 @@ namespace OE2EmpireTracker.Desktop.ViewModels;
 public sealed partial class MainWindowViewModel : ViewModelBase
 {
     private readonly DockFactory _factory;
+    private readonly DispatcherTimer _statusTimer;
 
     [ObservableProperty]
     private IRootDock? _layout;
@@ -33,6 +37,18 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _windowTitle = "OE2 Empire Tracker \u2014 New";
+
+    [ObservableProperty]
+    private string _nextProcessCountdown = "Next: --s";
+
+    [ObservableProperty]
+    private string _memoryUsage = "Memory: 0 MB";
+
+    [ObservableProperty]
+    private bool _lastCycleHadError;
+
+    [ObservableProperty]
+    private IBrush _statusForeground = Brushes.Gray;
 
     private IDocumentDock? _documentDock;
 
@@ -44,6 +60,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _documentDock = _factory.DocumentDock;
         LoadPlayerProfiles();
         UpdateWindowTitle();
+
+        // 1-second UI timer for status bar updates
+        _statusTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1),
+        };
+        _statusTimer.Tick += OnStatusTimerTick;
+        _statusTimer.Start();
     }
 
     public ObservableCollection<PlayerProfile> PlayerProfiles { get; } = new ObservableCollection<PlayerProfile>();
@@ -365,5 +389,26 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         {
             SelectedPlayer = PlayerProfiles[0];
         }
+    }
+
+    private void OnStatusTimerTick(object? sender, EventArgs e)
+    {
+        var processor = GetService<BackgroundProcessor>();
+        if (processor is not null && processor.IsRunning)
+        {
+            var remaining = processor.NextProcessTime - DateTime.UtcNow;
+            int seconds = Math.Max(0, (int)remaining.TotalSeconds);
+            NextProcessCountdown = $"Next: {seconds}s";
+            LastCycleHadError = processor.LastCycleHadError;
+            StatusForeground = processor.LastCycleHadError ? Brushes.Red : Brushes.Gray;
+        }
+        else
+        {
+            NextProcessCountdown = "Next: --s";
+            StatusForeground = Brushes.Gray;
+        }
+
+        long memoryMb = GC.GetTotalMemory(false) / 1024 / 1024;
+        MemoryUsage = $"Memory: {memoryMb} MB";
     }
 }

@@ -51,6 +51,20 @@
             </StackPanel>
         </DockPanel>
 
+        <!-- Status Bar -->
+        <Border DockPanel.Dock="Bottom"
+                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                Padding="8,4">
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <TextBlock Text="{Binding NextProcessCountdown}"
+                           VerticalAlignment="Center"
+                           Foreground="{Binding StatusForeground}" />
+                <TextBlock Text="{Binding MemoryUsage}"
+                           VerticalAlignment="Center"
+                           Opacity="0.7" />
+            </StackPanel>
+        </Border>
+
         <!-- Dock Layout -->
         <idc:DockControl Layout="{Binding Layout}" />
     </DockPanel>
