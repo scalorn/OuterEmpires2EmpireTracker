@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using OE2EmpireTracker.Desktop.ViewModels.Messages;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Desktop.Services;
@@ -128,6 +130,7 @@ public sealed class DataService
 
     /// <summary>
     /// Sets the current player UUID. Called when the user switches players via the combo box.
+    /// Fires <see cref="PlayerChangedMessage"/> after updating.
     /// </summary>
     public void SetCurrentPlayer(string playerUuid)
     {
@@ -135,7 +138,106 @@ public sealed class DataService
         {
             _playerRoot.CurrentPlayerUUID = playerUuid;
             _logger.LogInformation("Current player set to {UUID}", playerUuid);
+            OnCurrentPlayerChanged();
         }
+    }
+
+    // --- Data change notification methods (A2.1) ---
+
+    /// <summary>Sends <see cref="PlayerChangedMessage"/> to all subscribers.</summary>
+    public void OnCurrentPlayerChanged()
+    {
+        WeakReferenceMessenger.Default.Send(new PlayerChangedMessage(CurrentPlayerUUID));
+    }
+
+    /// <summary>Sends <see cref="ColonyDataChangedMessage"/> to all subscribers.</summary>
+    public void OnColonyDataChanged(string colonyUuid)
+    {
+        WeakReferenceMessenger.Default.Send(new ColonyDataChangedMessage(colonyUuid));
+    }
+
+    /// <summary>Sends <see cref="BlueprintDataChangedMessage"/> to all subscribers.</summary>
+    public void OnBlueprintDataChanged(string blueprintUuid)
+    {
+        WeakReferenceMessenger.Default.Send(new BlueprintDataChangedMessage(blueprintUuid));
+    }
+
+    /// <summary>Sends <see cref="SurveyDataChangedMessage"/> to all subscribers.</summary>
+    public void OnSurveyDataChanged(string surveyUuid)
+    {
+        WeakReferenceMessenger.Default.Send(new SurveyDataChangedMessage(surveyUuid));
+    }
+
+    /// <summary>Sends <see cref="DeliveryDataChangedMessage"/> to all subscribers.</summary>
+    public void OnDeliveryDataChanged()
+    {
+        WeakReferenceMessenger.Default.Send(new DeliveryDataChangedMessage());
+    }
+
+    /// <summary>Sends <see cref="PlayerProfileDataChangedMessage"/> to all subscribers.</summary>
+    public void OnPlayerProfileDataChanged(string playerUuid)
+    {
+        WeakReferenceMessenger.Default.Send(new PlayerProfileDataChangedMessage(playerUuid));
+    }
+
+    /// <summary>Sends <see cref="PricingDataChangedMessage"/> to all subscribers.</summary>
+    public void OnPricingDataChanged()
+    {
+        WeakReferenceMessenger.Default.Send(new PricingDataChangedMessage());
+    }
+
+    /// <summary>Sends <see cref="BuildPlanDataChangedMessage"/> to all subscribers.</summary>
+    public void OnBuildPlanDataChanged(string buildPlanUuid)
+    {
+        WeakReferenceMessenger.Default.Send(new BuildPlanDataChangedMessage(buildPlanUuid));
+    }
+
+    /// <summary>Sends <see cref="MarketDataChangedMessage"/> to all subscribers.</summary>
+    public void OnMarketDataChanged()
+    {
+        WeakReferenceMessenger.Default.Send(new MarketDataChangedMessage());
+    }
+
+    /// <summary>Sends <see cref="StationDataChangedMessage"/> to all subscribers.</summary>
+    public void OnStationDataChanged()
+    {
+        WeakReferenceMessenger.Default.Send(new StationDataChangedMessage());
+    }
+
+    /// <summary>Sends <see cref="AsteroidDataChangedMessage"/> to all subscribers.</summary>
+    public void OnAsteroidDataChanged(string asteroidUuid)
+    {
+        WeakReferenceMessenger.Default.Send(new AsteroidDataChangedMessage(asteroidUuid));
+    }
+
+    /// <summary>Sends <see cref="ShipTemplateDataChangedMessage"/> to all subscribers.</summary>
+    public void OnShipTemplateDataChanged(string shipTemplateUuid)
+    {
+        WeakReferenceMessenger.Default.Send(new ShipTemplateDataChangedMessage(shipTemplateUuid));
+    }
+
+    /// <summary>Sends <see cref="ShipDataChangedMessage"/> to all subscribers.</summary>
+    public void OnShipDataChanged(string shipUuid)
+    {
+        WeakReferenceMessenger.Default.Send(new ShipDataChangedMessage(shipUuid));
+    }
+
+    /// <summary>Sends <see cref="StockDataChangedMessage"/> to all subscribers.</summary>
+    public void OnStockDataChanged(string stockPlanUuid)
+    {
+        WeakReferenceMessenger.Default.Send(new StockDataChangedMessage(stockPlanUuid));
+    }
+
+    /// <summary>Sends <see cref="SupplyChainDataChangedMessage"/> to all subscribers.</summary>
+    public void OnSupplyChainDataChanged(string supplyChainUuid)
+    {
+        WeakReferenceMessenger.Default.Send(new SupplyChainDataChangedMessage(supplyChainUuid));
+    }
+
+    /// <summary>Sends <see cref="ContactDataChangedMessage"/> to all subscribers.</summary>
+    public void OnContactDataChanged(string characterUuid)
+    {
+        WeakReferenceMessenger.Default.Send(new ContactDataChangedMessage(characterUuid));
     }
 
     /// <summary>

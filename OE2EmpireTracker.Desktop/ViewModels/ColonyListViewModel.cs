@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using OE2EmpireTracker.Desktop.Services;
+using OE2EmpireTracker.Desktop.ViewModels.Messages;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
@@ -33,16 +35,32 @@ public sealed partial class ColonyRowViewModel : ObservableObject
 /// <summary>
 /// ViewModel for the Colony List document tab.
 /// Shows a DataGrid of all colonies with real data from DataService.
+/// Subscribes to <see cref="PlayerChangedMessage"/> (via base) and
+/// <see cref="ColonyDataChangedMessage"/> to auto-refresh on data changes.
 /// </summary>
 public sealed partial class ColonyListViewModel : DocumentViewModel
 {
     public ColonyListViewModel()
     {
         Title = "Colonies";
+
+        // Subscribe to colony-specific data changes
+        WeakReferenceMessenger.Default.Register<ColonyDataChangedMessage>(this, (r, m) =>
+        {
+            ((ColonyListViewModel)r).RefreshData();
+        });
+
         LoadData();
     }
 
     public ObservableCollection<ColonyRowViewModel> Colonies { get; } = new ObservableCollection<ColonyRowViewModel>();
+
+    /// <inheritdoc/>
+    protected override void RefreshData()
+    {
+        Colonies.Clear();
+        LoadData();
+    }
 
     private void LoadData()
     {

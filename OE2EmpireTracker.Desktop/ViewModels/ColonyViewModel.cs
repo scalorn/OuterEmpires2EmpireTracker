@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Desktop.Services;
+using OE2EmpireTracker.Desktop.ViewModels.Messages;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
@@ -80,6 +82,8 @@ public sealed partial class ColonyOverflowRowViewModel : ObservableObject
 /// <summary>
 /// ViewModel for the Colony document tab.
 /// Shows colony list with structures, commodities, items, overflow, and activity tabs.
+/// Subscribes to <see cref="PlayerChangedMessage"/> (via base) and
+/// <see cref="ColonyDataChangedMessage"/> to auto-refresh on data changes.
 /// </summary>
 public sealed partial class ColonyViewModel : DocumentViewModel
 {
@@ -92,6 +96,13 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     public ColonyViewModel()
     {
         Title = "Colonies";
+
+        // Subscribe to colony-specific data changes
+        WeakReferenceMessenger.Default.Register<ColonyDataChangedMessage>(this, (r, m) =>
+        {
+            ((ColonyViewModel)r).RefreshData();
+        });
+
         LoadData();
     }
 
@@ -104,6 +115,19 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     public ObservableCollection<ColonyItemRowViewModel> Items { get; } = new ();
 
     public ObservableCollection<ColonyOverflowRowViewModel> OverflowRules { get; } = new ();
+
+    /// <inheritdoc/>
+    protected override void RefreshData()
+    {
+        Colonies.Clear();
+        Structures.Clear();
+        Commodities.Clear();
+        Items.Clear();
+        OverflowRules.Clear();
+        SelectedColony = null;
+        ActivityStatus = "No active timers";
+        LoadData();
+    }
 
     private static string GetStructureState(ColonyStructure structure)
     {
