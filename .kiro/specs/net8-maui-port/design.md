@@ -1,18 +1,18 @@
-# .NET 8 + MAUI Port — Design
+# .NET 8 + Avalonia Port — Design
 
 ## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    MAUI Shell (AppShell)                 │
+│              Avalonia Window (MainWindow)                │
 │  ┌─────────────┐  ┌──────────────────────────────────┐  │
 │  │  Navigation │  │         Tab Container            │  │
 │  │   Sidebar   │  │  ┌────┐ ┌────┐ ┌────┐ ┌────┐   │  │
 │  │             │  │  │Tab1│ │Tab2│ │Tab3│ │... │   │  │
 │  │  • Colony   │  │  └────┘ └────┘ └────┘ └────┘   │  │
 │  │  • Blueprint│  │  ┌──────────────────────────┐   │  │
-│  │  • Survey   │  │  │     Content Page          │   │  │
-│  │  • Ships    │  │  │   (XAML ContentPage)      │   │  │
+│  │  • Survey   │  │  │     Content View          │   │  │
+│  │  • Ships    │  │  │   (AXAML UserControl)     │   │  │
 │  │  • Delivery │  │  │                           │   │  │
 │  │  • Market   │  │  │   ViewModel (MVVM)        │   │  │
 │  │  • Profile  │  │  │         ↓                 │   │  │
@@ -24,13 +24,13 @@
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Layer Mapping (WinForms → MAUI)
+## Layer Mapping (WinForms → Avalonia)
 
-| WinForms Layer | MAUI Layer | Notes |
+| WinForms Layer | Avalonia Layer | Notes |
 |---------------|-----------|-------|
-| Forms/*.Designer.cs | Pages/*.xaml | XAML replaces Designer-generated code |
-| Forms/*.cs (code-behind) | Pages/*.xaml.cs (minimal) + ViewModels/ | Logic moves to ViewModel |
-| Controls/ | Controls/ (MAUI custom controls) | Rewritten for MAUI |
+| Forms/*.Designer.cs | Views/*.axaml | AXAML replaces Designer-generated code |
+| Forms/*.cs (code-behind) | Views/*.axaml.cs (minimal) + ViewModels/ | Logic moves to ViewModel |
+| Controls/ | Controls/ (Avalonia custom controls) | Rewritten for Avalonia |
 | ViewModels/ | ViewModels/ (enhanced) | Add INotifyPropertyChanged, commands |
 | Services/ | Services/ (via DI) | Singleton → DI-registered singleton |
 | Models/ | OE2EmpireTracker.Common | Already cross-platform |
@@ -39,63 +39,57 @@
 ## Project Structure
 
 ```
-OE2EmpireTracker.Maui/
-├── App.xaml / App.xaml.cs          # Application entry, DI setup
-├── AppShell.xaml / AppShell.xaml.cs # Navigation shell (sidebar + tabs)
-├── MauiProgram.cs                  # Host builder, service registration
+OE2EmpireTracker.Desktop/
+├── App.axaml / App.axaml.cs        # Application entry, theme, DI setup
+├── Program.cs                       # Entry point (BuildAvaloniaApp)
+├── MainWindow.axaml / .axaml.cs    # Main window with sidebar + tab host
 │
-├── Pages/                          # XAML ContentPages (one per "form")
-│   ├── ColonyPage.xaml
-│   ├── BlueprintPage.xaml
-│   ├── SurveyPage.xaml
-│   ├── ShipTemplatePage.xaml
-│   ├── DeliveryRoutePage.xaml
-│   ├── PlayerProfilePage.xaml
-│   ├── MarketPage.xaml
-│   ├── PreferencesPage.xaml
-│   ├── AboutPage.xaml
+├── Views/                           # AXAML UserControls (one per "form")
+│   ├── ColonyView.axaml
+│   ├── BlueprintView.axaml
+│   ├── SurveyView.axaml
+│   ├── ShipTemplateView.axaml
+│   ├── DeliveryRouteView.axaml
+│   ├── PlayerProfileView.axaml
+│   ├── MarketView.axaml
+│   ├── PreferencesView.axaml
+│   ├── AboutView.axaml
 │   └── ...
 │
-├── ViewModels/                     # MVVM ViewModels
+├── ViewModels/                      # MVVM ViewModels
 │   ├── Base/
-│   │   └── BaseViewModel.cs        # INotifyPropertyChanged, IsBusy, etc.
+│   │   └── ViewModelBase.cs         # ObservableObject base, IsBusy, etc.
+│   ├── MainWindowViewModel.cs       # Tab management, navigation
 │   ├── ColonyViewModel.cs
 │   ├── BlueprintViewModel.cs
 │   ├── SurveyViewModel.cs
 │   └── ...
 │
-├── Controls/                       # Custom MAUI controls
-│   ├── DataGrid/                   # DataGrid abstraction (wraps third-party or custom)
-│   ├── FilteredPicker.cs           # Replacement for FilteredTextComboSet
-│   ├── ValidatedEntry.cs           # Replacement for ValidatedTextBox
-│   └── TabDocumentContainer.cs     # MDI replacement — tabbed document host
+├── Controls/                        # Custom Avalonia controls
+│   ├── TabDocumentHost.axaml        # MDI replacement — tabbed document container
+│   ├── FilteredComboBox.axaml       # Replacement for FilteredTextComboSet
+│   ├── ValidatedTextBox.cs          # TextBox with validation behavior
+│   └── DataGridExtensions/          # Custom DataGrid cell templates
 │
-├── Services/                       # Platform services
-│   ├── Platform/
-│   │   ├── IClipboardService.cs
-│   │   ├── IFileSystemService.cs
-│   │   ├── IWindowStateService.cs
-│   │   └── Implementations/        # Platform-specific implementations
-│   ├── NavigationService.cs        # Tab/page navigation management
-│   └── TimerService.cs             # Background processing timer
+├── Services/                        # Application services + platform abstractions
+│   ├── IClipboardService.cs
+│   ├── IFileSystemService.cs
+│   ├── IWindowStateService.cs
+│   ├── NavigationService.cs         # Tab/view navigation management
+│   ├── TimerService.cs              # Background processing timer
+│   └── Platform/                    # Platform-specific implementations (if needed)
 │
-├── Converters/                     # XAML value converters
+├── Converters/                      # AXAML value converters
 │   ├── BoolToVisibilityConverter.cs
 │   ├── StatusToColorConverter.cs
 │   └── ...
 │
-├── Resources/                      # MAUI resources
-│   ├── Styles/
-│   ├── Fonts/
-│   └── Images/
+├── Assets/                          # Images, icons, fonts
 │
-├── Platforms/                      # Platform-specific code
-│   ├── Windows/
-│   ├── MacCatalyst/
-│   ├── iOS/ (future)
-│   └── Android/ (future)
+├── Styles/                          # Shared styles and themes
+│   └── AppStyles.axaml
 │
-└── OE2EmpireTracker.Maui.csproj
+└── OE2EmpireTracker.Desktop.csproj
 ```
 
 ## Key Design Decisions
@@ -109,6 +103,8 @@ The main window uses a split layout:
 - Tabs can be closed, reordered, and duplicated
 - This mirrors VS Code / browser UX which is familiar to users
 
+Implementation: `TabControl` with custom `TabItem` template, or a custom `TabDocumentHost` control that manages a collection of open document ViewModels.
+
 ### 2. MVVM with CommunityToolkit.Mvvm
 
 Use `CommunityToolkit.Mvvm` for:
@@ -117,36 +113,38 @@ Use `CommunityToolkit.Mvvm` for:
 - `ObservableObject` base class
 - Messaging (`WeakReferenceMessenger`) for cross-ViewModel communication
 
+Rationale: CommunityToolkit.Mvvm is simpler than ReactiveUI, uses familiar patterns (closer to existing WinForms code), and has excellent source generator support. ReactiveUI is more powerful but adds complexity that isn't needed here.
+
 ### 3. Dependency Injection Strategy
 
 ```csharp
-// MauiProgram.cs
-public static MauiApp CreateMauiApp()
+// Program.cs / App.axaml.cs
+public static void ConfigureServices(IServiceCollection services)
 {
-    var builder = MauiApp.CreateBuilder();
-    builder.UseMauiApp<App>();
-
     // Existing services (from Common) — registered as singletons
-    builder.Services.AddSingleton<IEmpireContext, EmpireContext>();
-    builder.Services.AddSingleton<IPlayerContext, PlayerContext>();
+    services.AddSingleton<IEmpireContext, EmpireContext>();
+    services.AddSingleton<IPlayerContext, PlayerContext>();
 
     // Platform services
-    builder.Services.AddSingleton<IClipboardService, ClipboardService>();
-    builder.Services.AddSingleton<IFileSystemService, FileSystemService>();
+    services.AddSingleton<IClipboardService, AvaloniaClipboardService>();
+    services.AddSingleton<IFileSystemService, FileSystemService>();
+    services.AddSingleton<IWindowStateService, WindowStateService>();
 
-    // ViewModels — transient (one per page instance)
-    builder.Services.AddTransient<ColonyViewModel>();
-    builder.Services.AddTransient<BlueprintViewModel>();
+    // ViewModels — transient (one per tab instance)
+    services.AddTransient<ColonyViewModel>();
+    services.AddTransient<BlueprintViewModel>();
 
-    // Pages
-    builder.Services.AddTransient<ColonyPage>();
-    builder.Services.AddTransient<BlueprintPage>();
+    // Navigation
+    services.AddSingleton<NavigationService>();
 }
 ```
 
+Avalonia doesn't have built-in DI like MAUI, so we wire it up manually in `App.axaml.cs` using `Microsoft.Extensions.DependencyInjection`. ViewModels are resolved from the container when tabs are opened.
+
+
 ### 4. ViewModel Adaptation Strategy
 
-The existing ViewModels (e.g., `ColonyViewModel`, `BlueprintViewModel`) wrap domain models and expose typed operations. For MAUI:
+The existing ViewModels (e.g., `ColonyViewModel`, `BlueprintViewModel`) wrap domain models and expose typed operations. For Avalonia:
 
 **Keep**: Business logic, property calculations, validation rules
 **Add**: `INotifyPropertyChanged` (via `ObservableObject`), `ICommand` properties, `ObservableCollection<T>`
@@ -161,8 +159,8 @@ public class ColonyViewModel
     public void RefreshStructures() { /* rebuilds BindingList */ }
 }
 
-// After (MAUI)
-public partial class ColonyViewModel : ObservableObject
+// After (Avalonia)
+public partial class ColonyViewModel : ViewModelBase
 {
     private readonly Colony _colony;
 
@@ -179,7 +177,7 @@ public partial class ColonyViewModel : ObservableObject
 ```csharp
 public interface IFileSystemService
 {
-    string GetDataDirectory();      // %APPDATA% on Windows, ~/Library/... on macOS
+    string GetDataDirectory();      // %APPDATA% on Windows, ~/.local/share/ on Linux
     string GetLogDirectory();
     Task<string> ReadFileAsync(string relativePath);
     Task WriteFileAsync(string relativePath, string content);
@@ -199,23 +197,37 @@ public interface IWindowStateService
 }
 ```
 
+For Avalonia, most of these can use Avalonia's built-in APIs directly:
+- Clipboard: `TopLevel.GetTopLevel(control)?.Clipboard`
+- File dialogs: `TopLevel.StorageProvider`
+- Window state: `Window.Position`, `Window.Width/Height`, `Window.WindowState`
+
 ### 6. DataGrid Approach
 
-Recommended evaluation order:
-1. **Syncfusion MAUI DataGrid** — free community license for <$1M revenue, full-featured
-2. **DevExpress MAUI DataGrid** — commercial, very mature
-3. **Custom CollectionView** — fallback if licensing is a concern
+Avalonia has a **built-in DataGrid** (`Avalonia.Controls.DataGrid`) that supports:
+- Sortable columns (click header)
+- Column resizing
+- Row selection (single and multi)
+- Cell editing (text, checkbox, combo box via `DataGridTemplateColumn`)
+- Virtualization (handles large datasets)
 
-The DataGrid wrapper SHALL be abstracted so the underlying implementation can be swapped:
-```csharp
-// Abstract interface — pages bind to this
-public interface IDataGridSource<T>
-{
-    ObservableCollection<T> Items { get; }
-    T SelectedItem { get; set; }
-    ICommand SortCommand { get; }
-    ICommand FilterCommand { get; }
-}
+This is a significant advantage over MAUI. The built-in DataGrid covers most WinForms DataGridView use cases. Custom cell templates handle the rest:
+
+```xml
+<!-- AXAML: Custom combo box column with filtering -->
+<DataGridTemplateColumn Header="Type">
+    <DataGridTemplateColumn.CellTemplate>
+        <DataTemplate>
+            <TextBlock Text="{Binding TypeName}" />
+        </DataTemplate>
+    </DataGridTemplateColumn.CellTemplate>
+    <DataGridTemplateColumn.CellEditingTemplate>
+        <DataTemplate>
+            <AutoCompleteBox Items="{Binding $parent[DataGrid].DataContext.AvailableTypes}"
+                            Text="{Binding TypeName}" />
+        </DataTemplate>
+    </DataGridTemplateColumn.CellEditingTemplate>
+</DataGridTemplateColumn>
 ```
 
 ### 7. Logging Migration
@@ -230,55 +242,58 @@ private readonly ILogger<ColonyViewModel> _logger;
 _logger.LogInformation("Colony loaded: {Name}", colony.Name);
 ```
 
-Configure Serilog or NLog as the provider behind `ILogger<T>` for file output.
+Configure Serilog as the provider behind `ILogger<T>` for file output. Serilog has excellent cross-platform file sink support.
 
 ---
 
-## Migration Mapping: Forms → Pages
+## Migration Mapping: Forms → Views
 
-| WinForms Form | MAUI Page | Complexity | Phase |
+| WinForms Form | Avalonia View | Complexity | Phase |
 |--------------|-----------|-----------|-------|
-| FormAbout | AboutPage | Low | 3 |
-| FormHelp | HelpPage | Low | 3 |
-| FormPreferences | PreferencesPage | Low | 3 |
-| FormPlayerProfile | PlayerProfilePage | Medium | 3 |
-| FormSurvey | SurveyPage | Medium | 3 |
-| FormColonyV2 | ColonyPage | High | 4 |
-| FormBlueprintV2 | BlueprintPage | High | 4 |
-| FormDeliveryRoute | DeliveryRoutePage | High | 4 |
-| FormDeliveryExecution | DeliveryExecutionPage | High | 4 |
-| FormShipTemplate | ShipTemplatePage | Medium | 4 |
-| FormShipInstance | ShipInstancePage | Medium | 4 |
-| FormMarket | MarketPage | Medium | 4 |
-| FormStation | StationPage | Medium | 4 |
-| FormBuildPlanner | BuildPlannerPage | High | 4 |
-| FormColonyDailyBuild | ColonyDailyBuildPage | Medium | 4 |
-| FormColonyActivity | ColonyActivityPage | Medium | 4 |
-| FormSupplyChain | SupplyChainPage | Medium | 4 |
-| FormStockTargets | StockTargetsPage | Medium | 4 |
-| FormContacts | ContactsPage | Low | 3 |
-| FormAsteroid | AsteroidPage | Medium | 4 |
-| FormSystem | SystemPage | Medium | 4 |
-| MainWindow | AppShell + TabContainer | High | 2 |
+| FormAbout | AboutView | Low | 3 |
+| FormHelp | HelpView | Low | 3 |
+| FormPreferences | PreferencesView | Low | 3 |
+| FormPlayerProfile | PlayerProfileView | Medium | 3 |
+| FormSurvey | SurveyView | Medium | 3 |
+| FormContacts | ContactsView | Low | 3 |
+| FormColonyV2 | ColonyView | High | 4 |
+| FormBlueprintV2 | BlueprintView | High | 4 |
+| FormDeliveryRoute | DeliveryRouteView | High | 4 |
+| FormDeliveryExecution | DeliveryExecutionView | High | 4 |
+| FormShipTemplate | ShipTemplateView | Medium | 4 |
+| FormShipInstance | ShipInstanceView | Medium | 4 |
+| FormMarket | MarketView | Medium | 4 |
+| FormStation | StationView | Medium | 4 |
+| FormBuildPlanner | BuildPlannerView | High | 4 |
+| FormColonyDailyBuild | ColonyDailyBuildView | Medium | 4 |
+| FormColonyActivity | ColonyActivityView | Medium | 4 |
+| FormSupplyChain | SupplyChainView | Medium | 4 |
+| FormStockTargets | StockTargetsView | Medium | 4 |
+| FormAsteroid | AsteroidView | Medium | 4 |
+| FormSystem | SystemView | Medium | 4 |
+| FormPricingPlan | PricingPlanView | Medium | 4 |
+| MainWindow | MainWindow (shell) | High | 2 |
 
 
-## Package Dependencies (MAUI Project)
+## Package Dependencies (Avalonia Project)
 
 | Package | Purpose | Replaces |
 |---------|---------|----------|
-| Microsoft.Maui.Controls | MAUI framework | System.Windows.Forms |
+| Avalonia | UI framework | System.Windows.Forms |
+| Avalonia.Desktop | Desktop platform support | — |
+| Avalonia.Themes.Fluent | Modern theme (light + dark) | System theme |
+| Avalonia.Controls.DataGrid | Built-in DataGrid | DataGridView |
 | CommunityToolkit.Mvvm | MVVM source generators | Manual INotifyPropertyChanged |
-| CommunityToolkit.Maui | MAUI helpers, converters | — |
-| Newtonsoft.Json | JSON serialization | Same (from Common) |
+| Microsoft.Extensions.DependencyInjection | DI container | Singleton pattern |
 | Microsoft.Extensions.Logging | Logging abstraction | NLog |
 | Serilog.Extensions.Logging | File logging provider | NLog file target |
 | Serilog.Sinks.File | Log file output | NLog file target |
+| Newtonsoft.Json | JSON serialization | Same (from Common) |
 | Polly | Resilience (from Common) | Same |
-| (DataGrid TBD) | Tabular data display | DataGridView |
 
 ## Event System Migration
 
-Current WinForms uses `PlayerContext.*Changed` events with direct form subscriptions. MAUI equivalent:
+Current WinForms uses `PlayerContext.*Changed` events with direct form subscriptions. Avalonia equivalent:
 
 1. **WeakReferenceMessenger** (CommunityToolkit.Mvvm) for cross-ViewModel notifications
 2. ViewModels subscribe to messages instead of forms subscribing to context events
@@ -294,13 +309,36 @@ WeakReferenceMessenger.Default.Send(new ColonyChangedMessage(colonyId));
 // Subscribing (in ViewModel)
 WeakReferenceMessenger.Default.Register<ColonyChangedMessage>(this, (r, m) =>
 {
-    // Refresh data
+    // Refresh data on UI thread
+    Dispatcher.UIThread.Post(() => RefreshColony(m.ColonyId));
 });
 ```
 
+## Avalonia-Specific Patterns
+
+### View Locator
+Avalonia uses a ViewLocator to automatically resolve Views for ViewModels:
+```csharp
+public class ViewLocator : IDataTemplate
+{
+    public Control Build(object data)
+    {
+        var name = data.GetType().FullName!.Replace("ViewModel", "View");
+        var type = Type.GetType(name);
+        return type != null ? (Control)Activator.CreateInstance(type)! : new TextBlock { Text = name };
+    }
+
+    public bool Match(object data) => data is ViewModelBase;
+}
+```
+
+### Reactive Extensions (optional)
+Avalonia has deep ReactiveUI integration, but we'll use CommunityToolkit.Mvvm for simplicity. If reactive streams are needed later (e.g., debounced search), we can add `System.Reactive` without adopting full ReactiveUI.
+
 ## Testing Strategy
 
-- Unit tests for ViewModels (mock services via DI)
+- Unit tests for ViewModels (mock services via DI) — standard NUnit, no UI dependency
+- Avalonia headless testing (`Avalonia.Headless`) for control behavior tests
 - Integration tests for platform services
-- UI tests via MAUI testing framework (Appium or similar) — Phase 5
 - Existing Common tests remain unchanged
+- UI automation tests (Avalonia has headless test support) — Phase 5

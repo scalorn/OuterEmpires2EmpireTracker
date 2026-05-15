@@ -1,17 +1,17 @@
-# .NET 8 + MAUI Port — Requirements
+# .NET 8 + Avalonia Port — Requirements
 
 ## Goal
 
-Port the OE2EmpireTracker WinForms desktop client to .NET 8 + MAUI to enable cross-platform support (Windows, macOS, and potentially iOS/Android in the future). The primary driver is macOS support.
+Port the OE2EmpireTracker WinForms desktop client to .NET 8 + Avalonia UI to enable cross-platform support (Windows, Linux, macOS). The primary driver is Linux support — the developer is considering moving their primary development environment to Linux.
 
 ## Scope
 
 ### In Scope
 - The `OE2EmpireTracker` client project (WinForms UI, ViewModels, Controls, Persistence)
 - Migration from .NET Framework 4.8.1 to .NET 8
-- Migration from WinForms to MAUI XAML UI
+- Migration from WinForms to Avalonia XAML UI
 - Migration from `packages.config` to PackageReference
-- Custom control equivalents in MAUI
+- Custom control equivalents in Avalonia
 - Platform-adaptive persistence (file paths, window state)
 - Navigation pattern to replace MDI
 
@@ -23,16 +23,16 @@ Port the OE2EmpireTracker WinForms desktop client to .NET 8 + MAUI to enable cro
 
 ---
 
-## REQ-MAUI-001: Platform Targets
+## REQ-AVA-001: Platform Targets
 
-The MAUI application SHALL target:
-1. Windows 10+ (x64) — primary platform, feature parity with current WinForms app
-2. macOS 12+ (Apple Silicon + Intel) — primary driver for this port
-3. iOS and Android — MAY be supported in a future phase (not required for initial port)
+The Avalonia application SHALL target:
+1. Windows 10+ (x64) — current primary platform, feature parity with existing WinForms app
+2. Linux (x64, ARM64) — primary driver for this port; Ubuntu 22.04+, Fedora 38+, Arch
+3. macOS 12+ (Apple Silicon + Intel) — nice-to-have, not primary driver
 
-## REQ-MAUI-002: Feature Parity
+## REQ-AVA-002: Feature Parity
 
-The MAUI port SHALL provide functional parity with the existing WinForms client for all features:
+The Avalonia port SHALL provide functional parity with the existing WinForms client for all features:
 - Colony management (structures, mining, refining, research, manufacturing, commodity production)
 - Blueprint management (scanning, evolution, manufacturing, pricing)
 - Survey management (HTML paste import, resource display)
@@ -51,128 +51,142 @@ The MAUI port SHALL provide functional parity with the existing WinForms client 
 - Help system
 - Timed processing (mining cycles, refining, research, manufacturing countdowns)
 
-## REQ-MAUI-003: Project Structure
+## REQ-AVA-003: Project Structure
 
 The ported solution SHALL use the following project structure:
-1. `OE2EmpireTracker.Maui` — new MAUI client project (.NET 8, SDK-style csproj)
-2. `OE2EmpireTracker.Common` — unchanged, referenced by MAUI project
+1. `OE2EmpireTracker.Desktop` — new Avalonia client project (.NET 8, SDK-style csproj)
+2. `OE2EmpireTracker.Common` — unchanged, referenced by Desktop project
 3. `OE2EmpireTracker.Server` — unchanged
 4. The original `OE2EmpireTracker` WinForms project SHALL remain in the solution during the transition period for reference
 
-## REQ-MAUI-004: Package Management
+## REQ-AVA-004: Package Management
 
-The MAUI project SHALL use:
+The Avalonia project SHALL use:
 1. PackageReference format (not packages.config)
 2. Central Package Management (Directory.Packages.props) for version consistency
 3. NuGet packages compatible with .NET 8
 
-## REQ-MAUI-005: Navigation Pattern
+## REQ-AVA-005: Navigation Pattern
 
-The current WinForms app uses MDI (Multiple Document Interface) — child forms open within a parent window. MAUI does not support MDI. The MAUI port SHALL use:
+The current WinForms app uses MDI (Multiple Document Interface) — child forms open within a parent window. The Avalonia port SHALL use:
 1. A tabbed document interface — each "form" becomes a tab within the main window
 2. Tabs SHALL be closeable and reorderable
 3. Multiple instances of the same form type SHALL be supported (e.g., two colony tabs for different colonies)
 4. A navigation sidebar or menu SHALL provide access to all feature areas
 5. The app SHALL remember which tabs were open on last close and restore them on next launch
 
-## REQ-MAUI-006: Data Binding
+## REQ-AVA-006: Data Binding
 
-The MAUI port SHALL use:
-1. MAUI's native data binding (XAML `{Binding}` markup) instead of WinForms BindingSource
-2. ViewModels SHALL implement `INotifyPropertyChanged` (or use CommunityToolkit.Mvvm source generators)
+The Avalonia port SHALL use:
+1. Avalonia's native data binding (AXAML `{Binding}` markup) instead of WinForms BindingSource
+2. ViewModels SHALL implement `INotifyPropertyChanged` (or use CommunityToolkit.Mvvm source generators or ReactiveUI)
 3. Collections SHALL use `ObservableCollection<T>` instead of `BindingList<T>`
 4. The existing ViewModel layer SHALL be adapted (not rewritten from scratch) where possible
 
-## REQ-MAUI-007: Custom Control Equivalents
+## REQ-AVA-007: Custom Control Equivalents
 
-The following WinForms custom controls SHALL have MAUI equivalents:
+The following WinForms custom controls SHALL have Avalonia equivalents:
 
-| WinForms Control | MAUI Equivalent Strategy |
+| WinForms Control | Avalonia Equivalent Strategy |
 |-----------------|-------------------------|
-| DataEntryGridView | CollectionView with DataTemplate + inline editing |
-| FilteredTextComboSet | SearchBar + Picker combination or custom handler |
-| ValidatedTextBox | Entry with Behaviors for validation |
-| DataGridViewFilteredComboBoxColumn | CollectionView column with filtered Picker |
-| DataGridViewValidatedTextBoxColumn | CollectionView column with validated Entry |
-| RtfBuilder | HTML-based formatted text (WebView or Label with FormattedString) |
+| DataEntryGridView | Avalonia DataGrid with custom cell templates |
+| FilteredTextComboSet | AutoCompleteBox or custom ComboBox with filter |
+| ValidatedTextBox | TextBox with DataValidationErrors + INotifyDataErrorInfo |
+| DataGridViewFilteredComboBoxColumn | DataGrid column with ComboBox cell + filter |
+| DataGridViewValidatedTextBoxColumn | DataGrid column with validated TextBox cell |
+| RtfBuilder | Avalonia.HtmlRenderer or custom formatted TextBlock |
 | ProgrammaticUpdateGuard | Equivalent pattern using a flag property on ViewModels |
-| ListViewItemComparer | CollectionView sorting via IComparer or LINQ |
+| ListViewItemComparer | DataGrid sorting via DataGridColumn.Sort or CollectionView |
 
-## REQ-MAUI-008: DataGrid Strategy
+## REQ-AVA-008: DataGrid Strategy
 
-The WinForms app heavily uses DataGridView for tabular data with inline editing. MAUI's built-in CollectionView lacks full DataGrid capabilities. The port SHALL:
-1. Evaluate third-party MAUI DataGrid controls (Syncfusion, DevExpress, Telerik) for feature parity
-2. If a third-party control is selected, it SHALL support: sortable columns, inline cell editing, combo box columns, row selection, and column resizing
-3. If no suitable third-party control exists, a custom CollectionView-based solution SHALL be implemented with the above capabilities
-4. The choice SHALL be documented in a design decision record
+The WinForms app heavily uses DataGridView for tabular data with inline editing. Avalonia has a built-in DataGrid control. The port SHALL:
+1. Use Avalonia's built-in `DataGrid` control as the primary tabular data component
+2. The DataGrid SHALL support: sortable columns, inline cell editing, combo box columns, row selection, and column resizing
+3. Custom cell templates SHALL be used for specialized columns (filtered combo, validated text)
+4. If the built-in DataGrid lacks required features, evaluate `Avalonia.Controls.DataGrid` community extensions or implement custom cell editing templates
 
-## REQ-MAUI-009: Persistence Adaptation
+## REQ-AVA-009: Persistence Adaptation
 
-The MAUI port SHALL adapt persistence for cross-platform:
+The Avalonia port SHALL adapt persistence for cross-platform:
 1. JSON data files (PlayerData.json, BaselineData.json) SHALL be stored in platform-appropriate locations:
    - Windows: `%APPDATA%/OE2EmpireTracker/`
+   - Linux: `~/.local/share/OE2EmpireTracker/` (XDG_DATA_HOME)
    - macOS: `~/Library/Application Support/OE2EmpireTracker/`
-2. SafeFileWriter SHALL work on both Windows and macOS (atomic write via temp + rename)
+2. SafeFileWriter SHALL work on all platforms (atomic write via temp + rename)
 3. Window state persistence SHALL adapt to each platform's windowing model
 4. File paths SHALL use `Path.Combine` and platform-agnostic separators throughout
 
-## REQ-MAUI-010: Logging
+## REQ-AVA-010: Logging
 
-The MAUI port SHALL:
-1. Replace NLog with `Microsoft.Extensions.Logging` (MAUI's native logging abstraction)
-2. Configure file logging to platform-appropriate log directories
+The Avalonia port SHALL:
+1. Replace NLog with `Microsoft.Extensions.Logging` (standard .NET logging abstraction)
+2. Configure file logging to platform-appropriate log directories:
+   - Windows: `%APPDATA%/OE2EmpireTracker/logs/`
+   - Linux: `~/.local/share/OE2EmpireTracker/logs/` or `~/.cache/OE2EmpireTracker/logs/`
+   - macOS: `~/Library/Logs/OE2EmpireTracker/`
 3. Maintain the same log levels and categories as the current NLog configuration
 4. Support debug output during development
 
-## REQ-MAUI-011: Clipboard and HTML Import
+## REQ-AVA-011: Clipboard and HTML Import
 
-The current app imports data by pasting HTML from the game's web interface. The MAUI port SHALL:
-1. Support clipboard paste of HTML content on Windows and macOS
+The current app imports data by pasting HTML from the game's web interface. The Avalonia port SHALL:
+1. Support clipboard paste of HTML content on Windows and Linux (and macOS)
 2. The existing HTML parsers (ColonyParser, SurveyParser) SHALL work unchanged
-3. Platform-specific clipboard access SHALL be abstracted behind an interface
+3. Avalonia's built-in clipboard API (`TopLevel.Clipboard`) SHALL be used with platform-appropriate format handling
+4. On Linux, both X11 and Wayland clipboard access SHALL be supported (Avalonia handles this natively)
 
-## REQ-MAUI-012: Timer and Background Processing
+## REQ-AVA-012: Timer and Background Processing
 
-The current app uses `System.Windows.Forms.Timer` for periodic processing. The MAUI port SHALL:
-1. Use `Microsoft.Maui.Dispatching.IDispatcherTimer` for UI-thread timers
+The current app uses `System.Windows.Forms.Timer` for periodic processing. The Avalonia port SHALL:
+1. Use `Avalonia.Threading.DispatcherTimer` for UI-thread timers
 2. Use `System.Threading.Timer` or `PeriodicTimer` for background processing
 3. Maintain the same processing intervals and behavior as the current implementation
 
-## REQ-MAUI-013: Dependency Injection
+## REQ-AVA-013: Dependency Injection
 
-The MAUI port SHALL use .NET's built-in dependency injection:
-1. Register services in `MauiProgram.cs` using `builder.Services`
+The Avalonia port SHALL use .NET's built-in dependency injection:
+1. Register services using `Microsoft.Extensions.DependencyInjection` in application startup
 2. Replace singleton pattern (`getInstance()`) with DI-registered singletons
 3. ViewModels SHALL be registered and injected (not manually constructed)
 4. Platform services (clipboard, file system, preferences) SHALL be injected via interfaces
 
-## REQ-MAUI-014: Migration Strategy
+## REQ-AVA-014: Migration Strategy
 
 The port SHALL follow an incremental migration strategy:
-1. Phase 1: Project setup — create MAUI project, configure dependencies, establish patterns
+1. Phase 1: Project setup — create Avalonia project, configure dependencies, establish patterns
 2. Phase 2: Core infrastructure — navigation shell, DI registration, persistence, logging
 3. Phase 3: Feature migration — port forms one at a time, starting with simplest (About, Help, Preferences)
 4. Phase 4: Complex features — colony, blueprint, delivery (DataGrid-heavy forms)
 5. Phase 5: Polish — platform-specific refinements, performance, testing
 6. Each phase SHALL be independently buildable and testable
 
-## REQ-MAUI-015: Shared Code Maximization
+## REQ-AVA-015: Shared Code Maximization
 
 The port SHALL maximize code sharing between platforms:
 1. All business logic remains in `OE2EmpireTracker.Common` (already cross-platform)
-2. ViewModels SHALL be platform-agnostic (no MAUI-specific types in ViewModel layer)
+2. ViewModels SHALL be platform-agnostic (no Avalonia-specific types in ViewModel layer)
 3. Platform-specific code SHALL be isolated behind interfaces with platform implementations
-4. At least 90% of non-UI code SHALL be shared across Windows and macOS
+4. At least 90% of non-UI code SHALL be shared across all platforms
 
-## REQ-MAUI-016: Build and CI
+## REQ-AVA-016: Build and CI
 
-The MAUI project SHALL:
+The Avalonia project SHALL:
 1. Build with `dotnet build` (standard .NET 8 SDK tooling)
-2. Support building on both Windows and macOS development machines
+2. Support building on Windows, Linux, and macOS development machines
 3. Produce platform-specific packages:
-   - Windows: MSIX installer
-   - macOS: .app bundle (signed for distribution)
+   - Windows: self-contained exe or MSIX installer
+   - Linux: AppImage, .deb, or self-contained publish
+   - macOS: .app bundle
 4. The build SHALL produce zero warnings (matching current zero-warnings policy)
+
+## REQ-AVA-017: Theming and Appearance
+
+The Avalonia port SHALL:
+1. Support both light and dark themes (Avalonia has built-in theme support)
+2. Follow system theme preference by default
+3. Allow user override in preferences (force light, force dark, or follow system)
+4. Use Avalonia's FluentTheme for a modern appearance consistent across platforms
 
 ---
 
@@ -180,20 +194,19 @@ The MAUI project SHALL:
 
 | ID | Risk | Impact | Mitigation |
 |----|------|--------|------------|
-| R1 | MAUI DataGrid maturity — no built-in DataGrid, third-party options vary in quality | High — DataGridView is used in 15+ forms | Evaluate Syncfusion/DevExpress early in Phase 1; have fallback plan using CollectionView |
+| R1 | Avalonia DataGrid maturity — built-in DataGrid exists but may lack some WinForms DataGridView features (e.g., complex cell editing) | Medium — DataGridView is used in 15+ forms | Prototype complex editing scenarios early in Phase 1; custom cell templates as fallback |
 | R2 | MDI replacement — tabbed interface may not feel as flexible as MDI | Medium — user workflow change | Prototype tab navigation in Phase 2; get user feedback before committing |
-| R3 | RichTextBox equivalent — MAUI has no RTF control | Medium — used for formatted output display | Use HTML rendering via WebView or Label.FormattedString |
-| R4 | Clipboard HTML access — platform differences in clipboard format handling | Medium — core import workflow | Abstract behind interface; test on both platforms early |
-| R5 | MAUI macOS maturity — MAUI on macOS is less mature than Windows | High — primary driver is macOS | Test on macOS continuously from Phase 2; report bugs upstream |
-| R6 | Performance — MAUI rendering may be slower than native WinForms for large grids | Medium — colony/blueprint grids can have 100+ rows | Profile early; use virtualization; consider platform-specific optimizations |
-| R7 | Package ecosystem — some NuGet packages may not support .NET 8 or macOS | Low — most modern packages target .NET Standard 2.0+ | Audit all dependencies in Phase 1 |
+| R3 | RichTextBox equivalent — Avalonia has no built-in RTF control | Low — used for formatted output display | Use Avalonia.HtmlRenderer or custom TextBlock with Inlines |
+| R4 | Clipboard HTML on Linux — X11/Wayland clipboard format differences | Medium — core import workflow | Test on both X11 and Wayland early; Avalonia abstracts most differences |
+| R5 | Linux desktop integration — notifications, system tray, file dialogs | Low — not heavily used | Avalonia has platform abstractions; test on target distros |
+| R6 | Performance — Avalonia uses Skia rendering; may differ from native WinForms for large grids | Low — Avalonia is generally performant for desktop | Profile early; use virtualization for large collections |
+| R7 | Package ecosystem — some NuGet packages may have Windows-only dependencies | Low — most modern packages target .NET Standard 2.0+ | Audit all dependencies in Phase 1 |
 
 ---
 
 ## Open Questions
 
-1. **DataGrid choice** — Which third-party DataGrid control (if any) should be used? Needs evaluation in Phase 1.
+1. **MVVM framework** — CommunityToolkit.Mvvm (simpler, source generators) vs ReactiveUI (more powerful, Avalonia's traditional choice)? Recommend CommunityToolkit.Mvvm for consistency with existing patterns.
 2. **Tab vs. sidebar navigation** — Should the main navigation be a left sidebar (like VS Code) or a top tab bar (like a browser)? Needs UX prototyping.
-3. **Theming** — Should the MAUI app support dark mode? The current WinForms app uses system theme.
-4. **Mobile future** — How much should the UI be designed with future mobile support in mind? (Responsive layouts vs. desktop-optimized fixed layouts)
-5. **Offline-first** — With the server component existing, should the MAUI app lean more into online sync or maintain the current offline-first model?
+3. **Linux packaging** — AppImage (universal), .deb (Debian/Ubuntu), Flatpak, or self-contained publish? May support multiple.
+4. **Offline-first** — With the server component existing, should the Avalonia app lean more into online sync or maintain the current offline-first model?
