@@ -149,39 +149,39 @@
 
 ## Phase 8: Feature Migration — Tier 1 (Very Large Forms, 2000+ lines)
 
-- [ ] 8.1a Port FormBlueprintV2 → BlueprintView — Blueprint list and search
+- [x] 8.1a Port FormBlueprintV2 → BlueprintView — Blueprint list and search
   - Scope: Blueprint list, filter combos, search, type/class filtering (~450 lines)
-- [ ] 8.1b Port FormBlueprintV2 → BlueprintView — Detail editing
+- [x] 8.1b Port FormBlueprintV2 → BlueprintView — Detail editing
   - Scope: Blueprint detail fields, property editing, type selection (~450 lines)
-- [ ] 8.1c Port FormBlueprintV2 → BlueprintView — Statistics DataGrid
+- [x] 8.1c Port FormBlueprintV2 → BlueprintView — Statistics DataGrid
   - Scope: Stats grid, stat editing, computed values (~450 lines)
-- [ ] 8.1d Port FormBlueprintV2 → BlueprintView — Resources DataGrid
+- [x] 8.1d Port FormBlueprintV2 → BlueprintView — Resources DataGrid
   - Scope: Resource requirements grid, quantity editing (~450 lines)
-- [ ] 8.1e Port FormBlueprintV2 → BlueprintView — Evolution and pricing
+- [x] 8.1e Port FormBlueprintV2 → BlueprintView — Evolution and pricing
   - Scope: Evolution chart, price history, pricing plan integration (~480 lines)
-- [ ] 8.2a Port FormBuildPlanner → BuildPlannerView — Plan list
+- [x] 8.2a Port FormBuildPlanner → BuildPlannerView — Plan list
   - Scope: Plan list, add/delete, colony assignment (~400 lines)
-- [ ] 8.2b Port FormBuildPlanner → BuildPlannerView — Build items grid
+- [x] 8.2b Port FormBuildPlanner → BuildPlannerView — Build items grid
   - Scope: Build items DataGrid, item selection, quantity, priority (~540 lines)
-- [ ] 8.2c Port FormBuildPlanner → BuildPlannerView — Shortfall analysis
+- [x] 8.2c Port FormBuildPlanner → BuildPlannerView — Shortfall analysis
   - Scope: Shortfall DataGrid, resource gap calculation (~540 lines)
-- [ ] 8.2d Port FormBuildPlanner → BuildPlannerView — Allocation and delivery
+- [x] 8.2d Port FormBuildPlanner → BuildPlannerView — Allocation and delivery
   - Scope: Resource allocation, delivery route generation (~540 lines)
-- [ ] 8.3a Port FormColonyV2 → ColonyView — Colony list and header
+- [x] 8.3a Port FormColonyV2 → ColonyView — Colony list and header
   - Scope: Colony list/selector, detail header (name, planet, system) (~400 lines)
-- [ ] 8.3b Port FormColonyV2 → ColonyView — Structures DataGrid (read-only)
+- [x] 8.3b Port FormColonyV2 → ColonyView — Structures DataGrid (read-only)
   - Scope: Structure list display, status indicators, type/state columns (~500 lines)
-- [ ] 8.3c Port FormColonyV2 → ColonyView — Structures inline editing
+- [x] 8.3c Port FormColonyV2 → ColonyView — Structures inline editing
   - Scope: Add/remove/modify structures, combo columns, validation (~500 lines)
-- [ ] 8.3d Port FormColonyV2 → ColonyView — Commodity requests tab
+- [x] 8.3d Port FormColonyV2 → ColonyView — Commodity requests tab
   - Scope: Commodity request DataGrid, item selection, quantity editing (~450 lines)
-- [ ] 8.3e Port FormColonyV2 → ColonyView — Items/inventory tab
+- [x] 8.3e Port FormColonyV2 → ColonyView — Items/inventory tab
   - Scope: Item inventory display, quantity tracking (~400 lines)
-- [ ] 8.3f Port FormColonyV2 → ColonyView — Overflow rules tab
+- [x] 8.3f Port FormColonyV2 → ColonyView — Overflow rules tab
   - Scope: Overflow rules DataGrid, rule editing, priority (~400 lines)
-- [ ] 8.3g Port FormColonyV2 → ColonyView — Timer processing
+- [x] 8.3g Port FormColonyV2 → ColonyView — Timer processing
   - Scope: Mining/refining/research/manufacturing timers, status updates (~350 lines)
-- [ ] 8.3h Port FormColonyV2 → ColonyView — Admin/reports tab
+- [x] 8.3h Port FormColonyV2 → ColonyView — Admin/reports tab
   - Scope: Admin report display, build queue, status summary (~350 lines)
 
 ## Phase 9: Polish & Packaging
