@@ -114,6 +114,9 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     [ObservableProperty]
     private string _importStatus = string.Empty;
 
+    [ObservableProperty]
+    private string _validationError = string.Empty;
+
     public ColonyViewModel()
     {
         Title = "Colonies";
@@ -168,6 +171,53 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     private static void UpdateActivityStatus(Colony colony)
     {
         _ = colony;
+    }
+
+    // --- A8: Save Colony with Validation ---
+
+    /// <summary>Saves edits to the currently selected colony with name validation.</summary>
+    [RelayCommand]
+    private void SaveColony()
+    {
+        if (SelectedColony is null)
+        {
+            return;
+        }
+
+        var validationService = App.Services?.GetService(typeof(ValidationService)) as ValidationService;
+        if (validationService is not null)
+        {
+            string? error = validationService.ValidateName(SelectedColony.ColonyName, "Colony");
+            if (error is not null)
+            {
+                ValidationError = error;
+                return;
+            }
+        }
+
+        ValidationError = string.Empty;
+
+        var colonyService = App.Services?.GetService(typeof(ColonyService)) as ColonyService;
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (colonyService is null || dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var colony = dataService.Colonies
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony is null)
+        {
+            return;
+        }
+
+        colonyService.Update(SelectedColony.ColonyUuid, new ColonyUpdateRequest
+        {
+            Original = new ReadOnlyColony(colony),
+            ColonyName = SelectedColony.ColonyName,
+            PlanetName = SelectedColony.PlanetName,
+            SystemName = SelectedColony.SystemName,
+        });
     }
 
     // --- D4: Colony Items Commands ---

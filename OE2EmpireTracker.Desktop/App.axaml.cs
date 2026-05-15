@@ -129,6 +129,7 @@ public partial class App : Application
         services.AddSingleton<AsteroidService>();
         services.AddSingleton<SystemRepository>();
         services.AddSingleton<ReferenceCountService>();
+        services.AddSingleton<ValidationService>();
 
         // ViewModels
         services.AddSingleton<MainWindowViewModel>();

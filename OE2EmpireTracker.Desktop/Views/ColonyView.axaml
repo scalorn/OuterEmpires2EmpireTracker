@@ -26,7 +26,14 @@
         </DockPanel>
 
         <!-- Right panel: TabControl -->
-        <TabControl Grid.Column="2">
+        <DockPanel Grid.Column="2">
+            <!-- Validation error display -->
+            <TextBlock DockPanel.Dock="Top"
+                       Text="{Binding ValidationError}"
+                       Foreground="Red"
+                       IsVisible="{Binding ValidationError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                       Margin="0,0,0,8" />
+            <TabControl>
             <!-- Structures Tab -->
             <TabItem Header="Structures">
                 <DataGrid Margin="0,8,0,0"
@@ -142,6 +149,7 @@
                 </StackPanel>
             </TabItem>
         </TabControl>
+        </DockPanel>
     </Grid>
 
 </UserControl>

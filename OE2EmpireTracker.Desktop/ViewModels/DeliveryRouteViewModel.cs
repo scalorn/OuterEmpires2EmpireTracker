@@ -1,7 +1,12 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using OE2EmpireTracker.Desktop.Services;
+using OE2EmpireTracker.Desktop.ViewModels.Messages;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
 
@@ -15,6 +20,9 @@ public sealed partial class RouteRowViewModel : ObservableObject
 
     [ObservableProperty]
     private int _stopCount;
+
+    /// <summary>Gets or sets the UUID of the underlying DeliveryRoute.</summary>
+    public string RouteUuid { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -34,16 +42,25 @@ public sealed partial class RouteStopRowViewModel : ObservableObject
 
 /// <summary>
 /// ViewModel for the Delivery Route document tab.
-/// Shows routes with stops DataGrid.
+/// Shows routes with stops DataGrid and CRUD operations.
 /// </summary>
 public sealed partial class DeliveryRouteViewModel : DocumentViewModel
 {
     [ObservableProperty]
     private RouteRowViewModel? _selectedRoute;
 
+    [ObservableProperty]
+    private RouteStopRowViewModel? _selectedStop;
+
     public DeliveryRouteViewModel()
     {
         Title = "Delivery Routes";
+
+        WeakReferenceMessenger.Default.Register<DeliveryDataChangedMessage>(this, (r, _) =>
+        {
+            ((DeliveryRouteViewModel)r).RefreshData();
+        });
+
         LoadData();
     }
 
@@ -51,8 +68,98 @@ public sealed partial class DeliveryRouteViewModel : DocumentViewModel
 
     public ObservableCollection<RouteStopRowViewModel> RouteStops { get; } = new ObservableCollection<RouteStopRowViewModel>();
 
+    /// <inheritdoc/>
+    protected override void RefreshData()
+    {
+        Routes.Clear();
+        RouteStops.Clear();
+        SelectedRoute = null;
+        SelectedStop = null;
+        LoadData();
+    }
+
+    /// <summary>Adds a new stop to the selected route.</summary>
+    [RelayCommand]
+    private void AddStop()
+    {
+        if (SelectedRoute is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var routeService = App.Services?.GetService(typeof(DeliveryRouteService)) as DeliveryRouteService;
+        if (dataService is null || !dataService.IsLoaded || routeService is null)
+        {
+            return;
+        }
+
+        var route = dataService.DeliveryRoutes
+            .FirstOrDefault(r => r.UUID == SelectedRoute.RouteUuid);
+        if (route is null)
+        {
+            return;
+        }
+
+        int nextSequence = (route.Stops?.Count ?? 0) + 1;
+        route.Stops ??= new System.Collections.Generic.List<RouteStop>();
+        route.Stops.Add(new RouteStop
+        {
+            Sequence = nextSequence,
+            DestinationUUID = string.Empty,
+            Purpose = RouteStopPurpose.Cargo,
+        });
+
+        routeService.Update(route.UUID, new DeliveryRouteUpdateRequest
+        {
+            Name = route.Name,
+            Stops = route.Stops,
+        });
+    }
+
+    /// <summary>Removes the selected stop from the route.</summary>
+    [RelayCommand]
+    private void RemoveStop()
+    {
+        if (SelectedRoute is null || SelectedStop is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var routeService = App.Services?.GetService(typeof(DeliveryRouteService)) as DeliveryRouteService;
+        if (dataService is null || !dataService.IsLoaded || routeService is null)
+        {
+            return;
+        }
+
+        var route = dataService.DeliveryRoutes
+            .FirstOrDefault(r => r.UUID == SelectedRoute.RouteUuid);
+        if (route?.Stops is null)
+        {
+            return;
+        }
+
+        int seq = SelectedStop.Sequence;
+        route.Stops.RemoveAll(s => s.Sequence == seq);
+
+        // Re-sequence remaining stops
+        int i = 1;
+        foreach (var stop in route.Stops.OrderBy(s => s.Sequence))
+        {
+            stop.Sequence = i++;
+        }
+
+        routeService.Update(route.UUID, new DeliveryRouteUpdateRequest
+        {
+            Name = route.Name,
+            Stops = route.Stops,
+        });
+    }
+
     partial void OnSelectedRouteChanged(RouteRowViewModel? value)
     {
+        SelectedStop = null;
         LoadStopsForRoute(value);
     }
 
@@ -69,6 +176,7 @@ public sealed partial class DeliveryRouteViewModel : DocumentViewModel
         {
             Routes.Add(new RouteRowViewModel
             {
+                RouteUuid = route.UUID ?? string.Empty,
                 RouteName = route.Name ?? string.Empty,
                 StopCount = route.Stops?.Count ?? 0,
             });
@@ -101,7 +209,7 @@ public sealed partial class DeliveryRouteViewModel : DocumentViewModel
         }
 
         var routeModel = dataService.DeliveryRoutes
-            .FirstOrDefault(r => r.Name == route.RouteName);
+            .FirstOrDefault(r => r.UUID == route.RouteUuid);
         if (routeModel?.Stops is null)
         {
             LoadSampleStops(route.RouteName);
