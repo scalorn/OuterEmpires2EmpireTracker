@@ -41,6 +41,8 @@ public sealed partial class NavigationViewModel : ToolViewModel
             new NavItem { Label = "Profile", Icon = "👤", DocumentType = "Profile" },
             new NavItem { Label = "Systems", Icon = "⭐", DocumentType = "SystemList" },
             new NavItem { Label = "About", Icon = "ℹ️", DocumentType = "About" },
+            new NavItem { Label = "Help", Icon = "❓", DocumentType = "Help" },
+            new NavItem { Label = "Preferences", Icon = "⚙️", DocumentType = "Preferences" },
         };
     }
 

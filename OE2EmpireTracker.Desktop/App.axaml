@@ -24,6 +24,15 @@
         <DataTemplate DataType="vm:PlaceholderViewModel">
             <views:PlaceholderView />
         </DataTemplate>
+        <DataTemplate DataType="vm:HelpViewModel">
+            <views:HelpView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:PreferencesViewModel">
+            <views:PreferencesView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SystemListViewModel">
+            <views:SystemListView />
+        </DataTemplate>
     </Application.DataTemplates>
 
 </Application>

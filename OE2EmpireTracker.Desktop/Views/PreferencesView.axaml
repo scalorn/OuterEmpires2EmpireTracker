@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.PreferencesView"
+             x:DataType="vm:PreferencesViewModel">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="24" MaxWidth="500">
+            <TextBlock Text="Preferences" FontSize="20" FontWeight="SemiBold" />
+
+            <!-- Theme -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Theme" FontWeight="SemiBold" />
+                <ComboBox ItemsSource="{Binding ThemeOptions}"
+                          SelectedIndex="{Binding SelectedThemeIndex}"
+                          MinWidth="200" />
+            </StackPanel>
+
+            <!-- Server -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Server URL" FontWeight="SemiBold" />
+                <TextBox Text="{Binding ServerUrl}"
+                         Watermark="https://server.example.com"
+                         MinWidth="300" />
+            </StackPanel>
+
+            <!-- Processing Interval -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Processing Interval (seconds)" FontWeight="SemiBold" />
+                <NumericUpDown Value="{Binding ProcessingIntervalSeconds}"
+                               Minimum="10"
+                               Maximum="600"
+                               Increment="10"
+                               MinWidth="150" />
+            </StackPanel>
+
+            <!-- Save -->
+            <Button Content="Save Preferences"
+                    Command="{Binding SaveCommand}"
+                    HorizontalAlignment="Left"
+                    Margin="0,16,0,0" />
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

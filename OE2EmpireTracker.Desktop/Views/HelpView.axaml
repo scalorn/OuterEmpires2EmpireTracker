@@ -1,0 +1,14 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.HelpView"
+             x:DataType="vm:HelpViewModel">
+
+    <ScrollViewer Padding="24">
+        <TextBlock Text="{Binding Content}"
+                   TextWrapping="Wrap"
+                   FontSize="14"
+                   MaxWidth="700" />
+    </ScrollViewer>
+
+</UserControl>

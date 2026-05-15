@@ -67,6 +67,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         {
             "About" => new AboutViewModel(),
             "ColonyList" => new ColonyListViewModel(),
+            "Help" => new HelpViewModel(),
+            "Preferences" => new PreferencesViewModel(),
+            "SystemList" => new SystemListViewModel(),
             _ => new PlaceholderViewModel(title),
         };
     }
