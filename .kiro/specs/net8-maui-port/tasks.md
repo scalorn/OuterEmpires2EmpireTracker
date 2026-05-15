@@ -118,33 +118,33 @@
 
 ## Phase 7: Feature Migration — Tier 2 (Large Forms, 1000-2000 lines)
 
-- [ ] 7.1a Port FormPlayerProfile → PlayerProfileView — Profile list
+- [x] 7.1a Port FormPlayerProfile → PlayerProfileView — Profile list
   - Scope: Profile list/selector, add/delete, player switch handling (~350 lines)
-- [ ] 7.1b Port FormPlayerProfile → PlayerProfileView — Skills and ranks
+- [x] 7.1b Port FormPlayerProfile → PlayerProfileView — Skills and ranks
   - Scope: Skill group checkboxes, level inputs, rank display (~360 lines)
-- [ ] 7.2a Port FormSurvey → SurveyView — Survey list and details
+- [x] 7.2a Port FormSurvey → SurveyView — Survey list and details
   - Scope: Survey list, detail fields, HTML paste import (~490 lines)
-- [ ] 7.2b Port FormSurvey → SurveyView — Resource DataGrid
+- [x] 7.2b Port FormSurvey → SurveyView — Resource DataGrid
   - Scope: Resource grid with purity, yield, depletion columns (~490 lines)
-- [ ] 7.2c Port FormSurvey → SurveyView — Distribution chart
+- [x] 7.2c Port FormSurvey → SurveyView — Distribution chart
   - Scope: Resource distribution visualization (needs charting library) (~490 lines)
-- [ ] 7.3a Port FormDeliveryExecution → DeliveryExecutionView — Plan selection
+- [x] 7.3a Port FormDeliveryExecution → DeliveryExecutionView — Plan selection
   - Scope: Plan/route selector, execution state display (~340 lines)
-- [ ] 7.3b Port FormDeliveryExecution → DeliveryExecutionView — Stop execution
+- [x] 7.3b Port FormDeliveryExecution → DeliveryExecutionView — Stop execution
   - Scope: Stop list, item delivery tracking, cargo volume (~340 lines)
-- [ ] 7.3c Port FormDeliveryExecution → DeliveryExecutionView — Load list
+- [x] 7.3c Port FormDeliveryExecution → DeliveryExecutionView — Load list
   - Scope: Load DataGrid, item completion marking (~340 lines)
-- [ ] 7.4a Port FormDeliveryRoute → DeliveryRouteView — Route list
+- [x] 7.4a Port FormDeliveryRoute → DeliveryRouteView — Route list
   - Scope: Route list, add/delete, detail fields (~500 lines)
-- [ ] 7.4b Port FormDeliveryRoute → DeliveryRouteView — Stops grid
+- [x] 7.4b Port FormDeliveryRoute → DeliveryRouteView — Stops grid
   - Scope: Stops DataGrid, sequencing, destination combos (~500 lines)
-- [ ] 7.4c Port FormDeliveryRoute → DeliveryRouteView — Plan management
+- [x] 7.4c Port FormDeliveryRoute → DeliveryRouteView — Plan management
   - Scope: Plan list, pickup/dropoff grids, auto-fill dialog (~510 lines)
-- [ ] 7.5a Port FormStockTargets → StockTargetsView — Plans tab
+- [x] 7.5a Port FormStockTargets → StockTargetsView — Plans tab
   - Scope: Plan list, target DataGrid, colony/item selection (~410 lines)
-- [ ] 7.5b Port FormStockTargets → StockTargetsView — Profiles tab
+- [x] 7.5b Port FormStockTargets → StockTargetsView — Profiles tab
   - Scope: Profile list, entry DataGrid, item assignment (~410 lines)
-- [ ] 7.5c Port FormStockTargets → StockTargetsView — Target grid editing
+- [x] 7.5c Port FormStockTargets → StockTargetsView — Target grid editing
   - Scope: Inline editing, quantity validation, shortfall display (~400 lines)
 
 ## Phase 8: Feature Migration — Tier 1 (Very Large Forms, 2000+ lines)

@@ -60,6 +60,21 @@
         <DataTemplate DataType="vm:StationViewModel">
             <views:StationView />
         </DataTemplate>
+        <DataTemplate DataType="vm:PlayerProfileViewModel">
+            <views:PlayerProfileView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SurveyViewModel">
+            <views:SurveyView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:DeliveryExecutionViewModel">
+            <views:DeliveryExecutionView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:DeliveryRouteViewModel">
+            <views:DeliveryRouteView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:StockTargetsViewModel">
+            <views:StockTargetsView />
+        </DataTemplate>
     </Application.DataTemplates>
 
 </Application>

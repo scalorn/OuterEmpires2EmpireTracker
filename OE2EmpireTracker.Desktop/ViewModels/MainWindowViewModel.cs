@@ -79,6 +79,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             "ShipTemplateList" => new ShipTemplateViewModel(),
             "ShipList" => new ShipInstanceViewModel(),
             "StationList" => new StationViewModel(),
+            "Profile" => new PlayerProfileViewModel(),
+            "SurveyList" => new SurveyViewModel(),
+            "DeliveryExecution" => new DeliveryExecutionViewModel(),
+            "DeliveryList" => new DeliveryRouteViewModel(),
+            "StockTargets" => new StockTargetsViewModel(),
             _ => new PlaceholderViewModel(title),
         };
     }

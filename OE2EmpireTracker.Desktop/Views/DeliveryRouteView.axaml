@@ -1,0 +1,73 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.DeliveryRouteView"
+             x:DataType="vm:DeliveryRouteViewModel">
+
+    <DockPanel Margin="8">
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Delivery Routes"
+                   FontSize="20"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,12" />
+
+        <Grid ColumnDefinitions="250,12,*">
+            <!-- Left: Route list -->
+            <DockPanel Grid.Column="0">
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Routes"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,8" />
+                <ListBox ItemsSource="{Binding Routes}"
+                         SelectedItem="{Binding SelectedRoute}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding RouteName}" FontWeight="SemiBold" />
+                                <TextBlock FontSize="12" Opacity="0.7">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} stops">
+                                            <Binding Path="StopCount" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+
+            <!-- Right: Stops DataGrid -->
+            <DockPanel Grid.Column="2">
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Stops"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,8" />
+                <DataGrid ItemsSource="{Binding RouteStops}"
+                          AutoGenerateColumns="False"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          IsReadOnly="True"
+                          GridLinesVisibility="Horizontal"
+                          SelectionMode="Single"
+                          HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="#"
+                                            Binding="{Binding Sequence}"
+                                            Width="50" />
+                        <DataGridTextColumn Header="Destination"
+                                            Binding="{Binding DestinationName}"
+                                            Width="200" />
+                        <DataGridTextColumn Header="Purpose"
+                                            Binding="{Binding Purpose}"
+                                            Width="120" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+
+</UserControl>

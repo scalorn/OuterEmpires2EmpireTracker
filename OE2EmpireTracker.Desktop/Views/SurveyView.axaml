@@ -1,0 +1,74 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.SurveyView"
+             x:DataType="vm:SurveyViewModel">
+
+    <DockPanel Margin="8">
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Surveys"
+                   FontSize="20"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,12" />
+
+        <Grid ColumnDefinitions="250,12,*">
+            <!-- Left: Survey list -->
+            <DockPanel Grid.Column="0">
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Survey List"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,8" />
+                <ListBox ItemsSource="{Binding Surveys}"
+                         SelectedItem="{Binding SelectedSurvey}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding PlanetName}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding SurveyType}" FontSize="12" Opacity="0.7" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+
+            <!-- Right: Resources grid + chart placeholder -->
+            <DockPanel Grid.Column="2">
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Resources"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,8" />
+
+                <TextBlock DockPanel.Dock="Bottom"
+                           Text="[Chart placeholder — resource distribution visualization]"
+                           FontStyle="Italic"
+                           Opacity="0.5"
+                           Margin="0,12,0,0" />
+
+                <DataGrid ItemsSource="{Binding Resources}"
+                          AutoGenerateColumns="False"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          IsReadOnly="True"
+                          GridLinesVisibility="Horizontal"
+                          SelectionMode="Single"
+                          HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Resource"
+                                            Binding="{Binding ResourceName}"
+                                            Width="180" />
+                        <DataGridTextColumn Header="Purity"
+                                            Binding="{Binding Purity}"
+                                            Width="100" />
+                        <DataGridTextColumn Header="Yield"
+                                            Binding="{Binding Yield}"
+                                            Width="100" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+
+</UserControl>

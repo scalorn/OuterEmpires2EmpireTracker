@@ -81,6 +81,10 @@ public sealed class DataService
     public IReadOnlyList<StockPlan> StockPlans =>
         _playerRoot?.StockPlan ?? Array.Empty<StockPlan>();
 
+    /// <summary>Gets all stock profiles.</summary>
+    public IReadOnlyList<StockProfile> StockProfiles =>
+        _playerRoot?.StockProfile ?? Array.Empty<StockProfile>();
+
     /// <summary>Gets all supply chains.</summary>
     public IReadOnlyList<SupplyChain> SupplyChains =>
         _playerRoot?.SupplyChain ?? Array.Empty<SupplyChain>();
