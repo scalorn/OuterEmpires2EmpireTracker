@@ -27,18 +27,15 @@
 
 ## Phase 4: Core Infrastructure
 
-- [ ] 4.0 Move PlayerContext and EmpireContext to OE2EmpireTracker.Common
+- [ ] 4.0 Create DataService for Desktop project (reads same JSON files as WinForms)
   - Satisfies: REQ-AVA-013, REQ-AVA-015
-  - Scope: Move context singletons from main project to Common, update all references
-    in WinForms project and tests, extract interfaces, verify full solution builds.
-    This is a prerequisite for all other Phase 4+ tasks.
-  - Sub-steps:
-    - 4.0a Extract IPlayerContext / IEmpireContext interfaces into Common
-    - 4.0b Move PlayerContext.cs and EmpireContext.cs to Common/Services/
-    - 4.0c Update WinForms project references (remove old files, add project reference usage)
-    - 4.0d Update test project references
-    - 4.0e Verify full solution builds (MSBuild OE2EmpireTracker.sln)
-    - 4.0f Run tests to confirm no regressions
+  - Scope: Lightweight service that loads PlayerData.json and BaselineData.json using
+    Common models. Does NOT move PlayerContext/EmpireContext to Common yet — that
+    refactoring (removing BindingSource, MessageBox dependencies) is deferred to
+    merge-time when the branch is proven. The Desktop DataService reads the same
+    JSON format and exposes the same data via DI.
+  - Note: Full context migration (4300+ line PlayerContext has WinForms BindingSource
+    and MessageBox dependencies) will be done as a separate task when merging to mainline.
 - [ ] 4.1 Implement IFileSystemService with platform-appropriate paths
   - Satisfies: REQ-AVA-009
   - Scope: Interface + implementation, Windows/Linux/macOS path resolution

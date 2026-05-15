@@ -1,5 +1,8 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using OE2EmpireTracker.Desktop.Services;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
 
@@ -22,26 +25,63 @@ public sealed partial class ColonyRowViewModel : ObservableObject
 
     [ObservableProperty]
     private string _lastImport = string.Empty;
+
+    [ObservableProperty]
+    private string _colonyUuid = string.Empty;
 }
 
 /// <summary>
 /// ViewModel for the Colony List document tab.
-/// Shows a DataGrid of all colonies for smoke-test validation.
+/// Shows a DataGrid of all colonies with real data from DataService.
 /// </summary>
 public sealed partial class ColonyListViewModel : DocumentViewModel
 {
     public ColonyListViewModel()
     {
         Title = "Colonies";
-        LoadSampleData();
+        LoadData();
     }
 
     public ObservableCollection<ColonyRowViewModel> Colonies { get; } = new ObservableCollection<ColonyRowViewModel>();
 
+    private void LoadData()
+    {
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            LoadSampleData();
+            return;
+        }
+
+        var colonies = dataService.GetCurrentPlayerColonies();
+        if (colonies.Count == 0)
+        {
+            // Fall back to all colonies if no current player
+            colonies = dataService.Colonies.ToList();
+        }
+
+        foreach (var colony in colonies)
+        {
+            Colonies.Add(new ColonyRowViewModel
+            {
+                ColonyUuid = colony.UUID ?? string.Empty,
+                ColonyName = colony.ColonyName ?? string.Empty,
+                PlanetName = colony.PlanetName ?? string.Empty,
+                SystemName = colony.SystemName ?? string.Empty,
+                StructureCount = colony.Structures?.Count ?? 0,
+                LastImport = colony.LastImportDateTime ?? string.Empty,
+            });
+        }
+
+        // If no real data, show sample data
+        if (Colonies.Count == 0)
+        {
+            LoadSampleData();
+        }
+    }
+
     private void LoadSampleData()
     {
-        // Sample data for smoke test — validates DataGrid rendering,
-        // sorting, column resize, and selection.
         Colonies.Add(new ColonyRowViewModel
         {
             ColonyName = "Alpha Prime",
@@ -73,38 +113,6 @@ public sealed partial class ColonyListViewModel : DocumentViewModel
             SystemName = "Ross 128",
             StructureCount = 5,
             LastImport = "2026-05-12 22:45",
-        });
-        Colonies.Add(new ColonyRowViewModel
-        {
-            ColonyName = "Commodity Factory Delta",
-            PlanetName = "LHS 1140 b",
-            SystemName = "LHS 1140",
-            StructureCount = 15,
-            LastImport = "2026-05-15 11:20",
-        });
-        Colonies.Add(new ColonyRowViewModel
-        {
-            ColonyName = "Forward Base Epsilon",
-            PlanetName = "Wolf 1061 c",
-            SystemName = "Wolf 1061",
-            StructureCount = 6,
-            LastImport = "2026-05-14 03:10",
-        });
-        Colonies.Add(new ColonyRowViewModel
-        {
-            ColonyName = "Trade Hub Zeta",
-            PlanetName = "Gliese 667 Cc",
-            SystemName = "Gliese 667 C",
-            StructureCount = 9,
-            LastImport = "2026-05-11 16:55",
-        });
-        Colonies.Add(new ColonyRowViewModel
-        {
-            ColonyName = "Deep Space Relay",
-            PlanetName = "HD 40307 g",
-            SystemName = "HD 40307",
-            StructureCount = 2,
-            LastImport = "2026-05-10 08:30",
         });
     }
 }
