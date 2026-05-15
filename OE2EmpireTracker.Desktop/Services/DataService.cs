@@ -119,6 +119,40 @@ public sealed class DataService
     public bool IsLoaded => _playerRoot is not null;
 
     /// <summary>
+    /// Loads player data from a specific file path (File → Open).
+    /// Also looks for BaselineData.json in the same directory.
+    /// </summary>
+    public void LoadFromFile(string playerDataPath)
+    {
+        try
+        {
+            var json = File.ReadAllText(playerDataPath);
+            _playerRoot = JsonConvert.DeserializeObject<PlayerRoot>(json);
+            _logger.LogInformation("Loaded player data from {Path}: {Colonies} colonies, {Blueprints} blueprints",
+                playerDataPath,
+                _playerRoot?.Colony?.Length ?? 0,
+                _playerRoot?.Blueprint?.Length ?? 0);
+
+            // Try to load BaselineData.json from the same directory
+            var dir = Path.GetDirectoryName(playerDataPath);
+            if (dir is not null)
+            {
+                var baselinePath = Path.Combine(dir, "BaselineData.json");
+                if (File.Exists(baselinePath))
+                {
+                    var baselineJson = File.ReadAllText(baselinePath);
+                    _baselineRoot = JsonConvert.DeserializeObject<BaselineRoot>(baselineJson);
+                    _logger.LogInformation("Loaded baseline data from {Path}", baselinePath);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to load player data from {Path}", playerDataPath);
+        }
+    }
+
+    /// <summary>
     /// Loads player and baseline data from JSON files.
     /// Looks in the WinForms project directory first (for development),
     /// then falls back to the platform data directory.

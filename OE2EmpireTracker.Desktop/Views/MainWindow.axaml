@@ -8,6 +8,32 @@
         Width="1280" Height="800"
         WindowStartupLocation="CenterScreen">
 
-    <idc:DockControl Layout="{Binding Layout}" />
+    <DockPanel>
+        <!-- Menu Bar -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open Player Data..." Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O" />
+                <Separator />
+                <MenuItem Header="E_xit" Command="{Binding ExitCommand}" InputGesture="Alt+F4" />
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="_Colonies" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="ColonyList" />
+                <MenuItem Header="_Blueprints" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="BlueprintList" />
+                <MenuItem Header="_Surveys" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="SurveyList" />
+                <MenuItem Header="S_hips" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="ShipList" />
+                <MenuItem Header="_Delivery" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="DeliveryList" />
+                <MenuItem Header="_Market" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="MarketList" />
+                <MenuItem Header="_Profile" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="Profile" />
+                <MenuItem Header="S_ystems" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="SystemList" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_Help Topics" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="Help" />
+                <MenuItem Header="_About" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="About" />
+            </MenuItem>
+        </Menu>
+
+        <!-- Dock Layout -->
+        <idc:DockControl Layout="{Binding Layout}" />
+    </DockPanel>
 
 </Window>
