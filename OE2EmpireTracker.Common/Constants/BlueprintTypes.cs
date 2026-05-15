@@ -50,6 +50,33 @@ namespace OE2EmpireTracker.Constants
 
         /// <summary>Asteroid grapple ship component type</summary>
         public const string AsteroidGrapple = "AsteroidGrapple";
+
+        /// <summary>Shield ship component type</summary>
+        public const string Shield = "Shield";
+
+        /// <summary>Beamer weapon type prefix</summary>
+        public const string Beamer = "Beamer";
+
+        /// <summary>Coilgun weapon type prefix</summary>
+        public const string Coilgun = "CoilGun";
+
+        /// <summary>Railgun weapon type prefix</summary>
+        public const string Railgun = "Railgun";
+
+        /// <summary>Missile Launcher weapon type prefix</summary>
+        public const string MissileLauncher = "MissileLauncher";
+
+        /// <summary>Torpedo Launcher weapon type prefix</summary>
+        public const string TorpedoLauncher = "TorpedoLauncher";
+
+        /// <summary>Nav Comp ship component type</summary>
+        public const string NavComp = "NavComp";
+
+        /// <summary>Jump Drive ship component type</summary>
+        public const string JumpDrive = "JumpDrive";
+
+        /// <summary>Reactor ship component type</summary>
+        public const string Reactor = "Reactor";
     }
 
     /// <summary>

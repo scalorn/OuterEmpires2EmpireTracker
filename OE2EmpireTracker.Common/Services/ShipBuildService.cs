@@ -113,17 +113,34 @@ namespace OE2EmpireTracker.Services
             var sw = Stopwatch.StartNew();
             var stats = new ShipStats();
             var compList = components ?? Enumerable.Empty<ShipComponentSlot>();
+            decimal fuelPerJASPerMass = 0m;
 
             // Hull stats
             AddBlueprintStats(stats, hullBlueprint);
 
             // Read hull identity
+            stats.ShipType = hullBlueprint.Name ?? string.Empty;
+            stats.ShipClass = hullBlueprint.Class;
+
             string career = string.Empty;
             hullBlueprint.Properties?.GetString(BlueprintPropertyKeys.LicenseCareer, string.Empty, out career);
             stats.LicenseCareer = career ?? string.Empty;
             decimal licLevel = 0m;
             hullBlueprint.Properties?.GetDecimal(BlueprintPropertyKeys.LicenseLevel, 0m, out licLevel);
             stats.LicenseLevel = (int)licLevel;
+
+            // Hull eng capacity available
+            decimal engAvail = 0m;
+            if (hullBlueprint.Properties != null)
+            {
+                hullBlueprint.Properties.GetDecimal(BlueprintPropertyKeys.EngCapacityAvailable, 0m, out engAvail);
+            }
+
+            stats.EngCapacityAvailable = engAvail;
+
+            // Weapon and mining draw tracking for per-type grouping
+            var weaponDraws = new Dictionary<string, List<decimal>>();
+            var miningDraws = new Dictionary<string, List<decimal>>();
 
             // Component stats
             foreach (var slot in compList)
@@ -132,9 +149,109 @@ namespace OE2EmpireTracker.Services
                 var bp = blueprintFinder(slot.BlueprintUUID);
                 if (bp == null) continue;
                 AddBlueprintStats(stats, bp);
+
+                // Collect eng capacity required from components
+                decimal engReq = 0m;
+                if (bp.Properties != null)
+                {
+                    bp.Properties.GetDecimal(BlueprintPropertyKeys.EngCapacityRequired, 0m, out engReq);
+                }
+
+                stats.EngCapacityUsed += engReq;
+
+                // Collect type-specific power data
+                string bpType = bp.BluePrintType ?? string.Empty;
+                decimal drawPerSec = 0m;
+                if (bp.Properties != null)
+                {
+                    bp.Properties.GetDecimal(BlueprintPropertyKeys.PowerDrawPerSecond, 0m, out drawPerSec);
+                }
+
+                if (bpType == BlueprintTypes.Reactor)
+                {
+                    decimal pp = 0m;
+                    decimal rr = 0m;
+                    if (bp.Properties != null)
+                    {
+                        bp.Properties.GetDecimal(BlueprintPropertyKeys.PowerProvided, 0m, out pp);
+                        bp.Properties.GetDecimal(BlueprintPropertyKeys.PowerRegenRate, 0m, out rr);
+                    }
+
+                    stats.PowerProvided += pp;
+                    stats.PowerRegenRate += rr;
+                }
+                else if (bpType == BlueprintTypes.Shield)
+                {
+                    stats.ShieldPowerDraw += drawPerSec;
+                }
+                else if (IsWeaponType(bpType))
+                {
+                    stats.TotalWeaponPowerDraw += drawPerSec;
+                    if (!weaponDraws.ContainsKey(bpType))
+                    {
+                        weaponDraws[bpType] = new List<decimal>();
+                    }
+
+                    weaponDraws[bpType].Add(drawPerSec);
+                }
+                else if (bpType == BlueprintTypes.MiningLaser)
+                {
+                    if (!miningDraws.ContainsKey(bpType))
+                    {
+                        miningDraws[bpType] = new List<decimal>();
+                    }
+
+                    miningDraws[bpType].Add(drawPerSec);
+                }
+                else if (bpType == BlueprintTypes.NavComp)
+                {
+                    decimal chargeTime = 0m;
+                    if (bp.Properties != null)
+                    {
+                        bp.Properties.GetDecimal(BlueprintPropertyKeys.JumpChargeTime, 0m, out chargeTime);
+                    }
+
+                    stats.JumpChargeTime = chargeTime;
+                }
+                else if (bpType == BlueprintTypes.JumpDrive)
+                {
+                    decimal fpm = 0m;
+                    if (bp.Properties != null)
+                    {
+                        bp.Properties.GetDecimal(BlueprintPropertyKeys.FuelPerJASPerMass, 0m, out fpm);
+                    }
+
+                    fuelPerJASPerMass = fpm;
+                }
             }
 
             stats.PowerBalance = stats.PowerGenerated - stats.PowerConsumed;
+
+            // Build per-type sustainability lists
+            foreach (var kvp in weaponDraws)
+            {
+                decimal avgDraw = kvp.Value.Count > 0 ? kvp.Value[0] : 0m;
+                stats.WeaponSustainByType.Add(new WeaponSustainEntry
+                {
+                    WeaponType = kvp.Key,
+                    PowerDrawPerSecond = avgDraw,
+                    Count = kvp.Value.Count,
+                });
+            }
+
+            foreach (var kvp in miningDraws)
+            {
+                decimal avgDraw = kvp.Value.Count > 0 ? kvp.Value[0] : 0m;
+                stats.MiningSustainByType.Add(new MiningSustainEntry
+                {
+                    LaserType = kvp.Key,
+                    PowerDrawPerSecond = avgDraw,
+                    Count = kvp.Value.Count,
+                });
+            }
+
+            // Phase 2: Compute derived stats
+            ComputeDerivedStats(stats, fuelPerJASPerMass);
 
             sw.Stop();
             Log.Debug("PERF ComputeStats: '{0}' in {1}ms", hullBlueprint.Name, sw.ElapsedMilliseconds);
@@ -215,6 +332,58 @@ namespace OE2EmpireTracker.Services
             if (bp.Properties.GetDecimal(BlueprintPropertyKeys.MiningYield, 0m, out v)) stats.MiningYield += v;
             if (bp.Properties.GetDecimal(BlueprintPropertyKeys.MiningCycleTime, 0m, out v)) stats.MiningCycleTime += v;
             if (bp.Properties.GetDecimal(BlueprintPropertyKeys.ScanLevel, 0m, out v)) stats.ScanLevel = Math.Max(stats.ScanLevel, (int)v);
+        }
+
+        private static void ComputeDerivedStats(ShipStats stats, decimal fuelPerJASPerMass)
+        {
+            // Propulsion
+            stats.AccelerationFactor = stats.TotalMass > 0
+                ? stats.Acceleration / stats.TotalMass : 0m;
+            stats.TurnRate = stats.TotalMass > 0
+                ? stats.RotationalThrust / stats.TotalMass : 0m;
+
+            // Jump
+            stats.JumpFuelPerJAS = fuelPerJASPerMass * stats.TotalMass;
+            stats.JumpFuelRange = stats.JumpFuelPerJAS > 0
+                ? stats.FuelCapacity / stats.JumpFuelPerJAS : 0m;
+
+            // Shield sustainability
+            if (stats.ShieldPowerDraw > 0)
+            {
+                stats.ShieldUptime = stats.PowerRegenRate >= stats.ShieldPowerDraw
+                    ? -1m
+                    : stats.PowerProvided / (stats.ShieldPowerDraw - stats.PowerRegenRate);
+            }
+
+            // Weapon sustainability (aggregate)
+            if (stats.TotalWeaponPowerDraw > 0)
+            {
+                stats.WeaponSustainTime = stats.PowerRegenRate >= stats.TotalWeaponPowerDraw
+                    ? -1m
+                    : stats.PowerProvided / (stats.TotalWeaponPowerDraw - stats.PowerRegenRate);
+            }
+
+            // Per-type sustainability
+            foreach (var entry in stats.WeaponSustainByType)
+            {
+                entry.SustainableCount = entry.PowerDrawPerSecond > 0
+                    ? stats.PowerRegenRate / entry.PowerDrawPerSecond : 0m;
+            }
+
+            foreach (var entry in stats.MiningSustainByType)
+            {
+                entry.SustainableCount = entry.PowerDrawPerSecond > 0
+                    ? stats.PowerRegenRate / entry.PowerDrawPerSecond : 0m;
+            }
+        }
+
+        private static bool IsWeaponType(string blueprintType)
+        {
+            return blueprintType.StartsWith(BlueprintTypes.Beamer, StringComparison.Ordinal)
+                || blueprintType.StartsWith(BlueprintTypes.Coilgun, StringComparison.Ordinal)
+                || blueprintType.StartsWith(BlueprintTypes.Railgun, StringComparison.Ordinal)
+                || blueprintType.StartsWith(BlueprintTypes.MissileLauncher, StringComparison.Ordinal)
+                || blueprintType.StartsWith(BlueprintTypes.TorpedoLauncher, StringComparison.Ordinal);
         }
 
         private static void AddStationBlueprintStats(StationStats stats, ReadOnlyBlueprint bp)

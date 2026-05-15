@@ -705,32 +705,71 @@ namespace OE2EmpireTracker.Forms.ShipInstance
                 _viewModel.Components,
                 uuid => playerContext.FindBlueprint(uuid));
 
-            rtbStats.Text = string.Format(
-                "Mass: {0}  |  Power: {1}/{2} (Balance: {3})\n" +
-                "Cargo: {4}  |  Fuel: {5}  |  Hopper: {6}\n" +
-                "Health: {7}  |  Shield: {8} (Regen: {9})\n" +
-                "Defence \u2014 Energy: {10}  Kinetic: {11}  Missile: {12}\n" +
-                "Accel: {13}  |  Rotation: {14}  |  Jump: {15} (Fuel/Jump: {16})\n" +
-                "Mining Yield: {17}  |  Scan Level: {18}",
-                stats.TotalMass,
-                stats.PowerGenerated,
-                stats.PowerConsumed,
-                stats.PowerBalance,
-                stats.CargoCapacity,
-                stats.FuelCapacity,
-                stats.HopperCapacity,
-                stats.TotalHealth,
-                stats.ShieldHitpoints,
-                stats.ShieldRegen,
-                stats.EnergyDefence,
-                stats.KineticDefence,
-                stats.MissileDefence,
-                stats.Acceleration,
-                stats.RotationalThrust,
-                stats.MaxJumpDistance,
-                stats.FuelPerJump,
-                stats.MiningYield,
-                stats.ScanLevel);
+            var sb = new System.Text.StringBuilder();
+
+            // Identity
+            sb.AppendFormat("{0} - Class {1}\n", stats.ShipType, stats.ShipClass);
+
+            // Engineering
+            string engPrefix = stats.EngCapacityUsed > stats.EngCapacityAvailable ? "!! " : string.Empty;
+            sb.AppendFormat("{0}Engineering: {1} / {2}\n", engPrefix, stats.EngCapacityUsed, stats.EngCapacityAvailable);
+
+            // Capacity
+            sb.AppendFormat("--- Capacity ---\n");
+            sb.AppendFormat("  Cargo: {0}  |  Fuel: {1}  |  Hopper: {2}\n", stats.CargoCapacity, stats.FuelCapacity, stats.HopperCapacity);
+
+            // Defence
+            sb.AppendFormat("--- Defence ---\n");
+            sb.AppendFormat("  Health: {0}  |  Shield: {1} HP (Regen: {2}/s)\n", stats.TotalHealth, stats.ShieldHitpoints, stats.ShieldRegen);
+            sb.AppendFormat("  Energy: {0}  |  Kinetic: {1}  |  Missile: {2}\n", stats.EnergyDefence, stats.KineticDefence, stats.MissileDefence);
+
+            // Propulsion
+            sb.AppendFormat("--- Propulsion ---\n");
+            sb.AppendFormat("  Accel Factor: {0:F2}  (Raw: {1})\n", stats.AccelerationFactor, stats.Acceleration);
+            sb.AppendFormat("  Turn Rate: {0:F2} deg/s  (Raw: {1})\n", stats.TurnRate, stats.RotationalThrust);
+
+            // Jump
+            sb.AppendFormat("--- Jump ---\n");
+            sb.AppendFormat("  Range: {0:F2} JAS  |  Single Hop: {1} JAS  |  Fuel/JAS: {2:F2}\n", stats.JumpFuelRange, stats.MaxJumpDistance, stats.JumpFuelPerJAS);
+            sb.AppendFormat("  Charge Time: {0:F2}s\n", stats.JumpChargeTime);
+
+            // Power
+            sb.AppendFormat("--- Power ---\n");
+            sb.AppendFormat("  Capacitor: {0} MW  |  Regen: {1:F2} MW/s\n", stats.PowerProvided, stats.PowerRegenRate);
+            string shieldSustain = stats.ShieldPowerDraw > 0
+                ? (stats.ShieldUptime == -1m ? "Sustainable" : string.Format("{0:F2}s uptime", stats.ShieldUptime))
+                : "N/A";
+            sb.AppendFormat("  Shield Draw: {0:F2} MW/s -> {1}\n", stats.ShieldPowerDraw, shieldSustain);
+
+            // Mining
+            sb.AppendFormat("--- Mining ---\n");
+            sb.AppendFormat("  Yield: {0}  |  Cycle: {1}s\n", stats.MiningYield, stats.MiningCycleTime);
+            if (stats.MiningSustainByType.Count > 0)
+            {
+                foreach (var entry in stats.MiningSustainByType)
+                {
+                    sb.AppendFormat("  {0}: {1} installed, {2:F2} sustainable\n", entry.LaserType, entry.Count, entry.SustainableCount);
+                }
+            }
+
+            // Weapons
+            if (stats.WeaponSustainByType.Count > 0)
+            {
+                sb.AppendFormat("--- Weapons ---\n");
+                foreach (var entry in stats.WeaponSustainByType)
+                {
+                    sb.AppendFormat("  {0}: {1} installed, {2:F2} sustainable\n", entry.WeaponType, entry.Count, entry.SustainableCount);
+                }
+
+                string weaponSustain = stats.WeaponSustainTime == -1m ? "Sustainable" : string.Format("{0:F2}s sustain", stats.WeaponSustainTime);
+                sb.AppendFormat("  Total Draw: {0:F2} MW/s -> {1}\n", stats.TotalWeaponPowerDraw, weaponSustain);
+            }
+
+            // Scanning
+            sb.AppendFormat("--- Scanning ---\n");
+            sb.AppendFormat("  Scan Level: {0}", stats.ScanLevel);
+
+            rtbStats.Text = sb.ToString();
             sw.Stop();
             Log.Info("PERF RefreshStats: {0}ms", sw.ElapsedMilliseconds);
         }

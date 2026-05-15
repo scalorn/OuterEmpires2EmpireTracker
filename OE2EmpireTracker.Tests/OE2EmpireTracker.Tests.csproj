@@ -262,6 +262,8 @@
     <Compile Include="Services\BuildPlanServiceTests.cs" />
     <Compile Include="Services\BuildPlanExecutionPropertyTests.cs" />
     <Compile Include="Services\ShipBuildServiceTests.cs" />
+    <Compile Include="Services\ShipStatsPropertyTests.cs" />
+    <Compile Include="Services\ShipStatsUnitTests.cs" />
     <Compile Include="Services\CargoVolumeServiceTests.cs" />
     <Compile Include="Services\StockTargetServiceTests.cs" />
     <Compile Include="Services\SupplyChainServiceTests.cs" />

@@ -31,5 +31,14 @@ namespace OE2EmpireTracker.Constants
         public const string AmountManufactured = "Amount Manufactured";
         public const string LicenseCareer = "License Career";
         public const string LicenseLevel = "License Level";
+
+        // Enhanced stats — power model and derived computations
+        public const string EngCapacityRequired = "Eng Capacity Required";
+        public const string EngCapacityAvailable = "Eng Capacity Available";
+        public const string PowerProvided = "Power Provided";
+        public const string PowerRegenRate = "Power Regeneration Rate";
+        public const string PowerDrawPerSecond = "Power Draw Per Second";
+        public const string JumpChargeTime = "Jump Charge Time";
+        public const string FuelPerJASPerMass = "Fuel Used / JAS / Mass";
     }
 }

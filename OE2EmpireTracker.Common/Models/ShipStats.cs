@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace OE2EmpireTracker.Models
 {
     /// <summary>
@@ -55,5 +57,34 @@ namespace OE2EmpireTracker.Models
         // Hull identity
         public string LicenseCareer { get; set; } = string.Empty;
         public int LicenseLevel { get; set; }
+
+        // Enhanced stats — ship identity
+        public string ShipType { get; set; } = string.Empty;
+        public int ShipClass { get; set; }
+
+        // Enhanced stats — propulsion derived
+        public decimal AccelerationFactor { get; set; }
+        public decimal TurnRate { get; set; }
+
+        // Enhanced stats — jump derived
+        public decimal JumpFuelPerJAS { get; set; }
+        public decimal JumpFuelRange { get; set; }
+        public decimal JumpChargeTime { get; set; }
+
+        // Enhanced stats — power model
+        public decimal PowerProvided { get; set; }
+        public decimal PowerRegenRate { get; set; }
+
+        // Enhanced stats — shield sustainability
+        public decimal ShieldPowerDraw { get; set; }
+        public decimal ShieldUptime { get; set; }
+
+        // Enhanced stats — weapon sustainability
+        public decimal TotalWeaponPowerDraw { get; set; }
+        public decimal WeaponSustainTime { get; set; }
+        public List<WeaponSustainEntry> WeaponSustainByType { get; set; } = new List<WeaponSustainEntry>();
+
+        // Enhanced stats — mining sustainability
+        public List<MiningSustainEntry> MiningSustainByType { get; set; } = new List<MiningSustainEntry>();
     }
 }
