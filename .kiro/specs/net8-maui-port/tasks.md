@@ -9,14 +9,14 @@
 ## Phase A: Core Infrastructure (must be done first)
 
 ### A1: Data Persistence Layer
-- [ ] A1.1 Implement SafeFileWriter equivalent (atomic write via temp + rename)
-- [ ] A1.2 Implement WriteContext() — serialize PlayerRoot to JSON, write via SafeFileWriter
-- [ ] A1.3 Implement File > New (clear all data, reset state)
-- [ ] A1.4 Implement File > Save (write to Last_Opened_Path)
-- [ ] A1.5 Implement File > Save As (file picker, write, update path)
-- [ ] A1.6 Implement auto-open on launch (REQ-MM-010/011/012)
-- [ ] A1.7 Implement title bar update with current file path
-- [ ] A1.8 Implement exit confirmation dialog (REQ-MM-006)
+- [x] A1.1 Implement SafeFileWriter equivalent (atomic write via temp + rename)
+- [x] A1.2 Implement WriteContext() — serialize PlayerRoot to JSON, write via SafeFileWriter
+- [x] A1.3 Implement File > New (clear all data, reset state)
+- [x] A1.4 Implement File > Save (write to Last_Opened_Path)
+- [x] A1.5 Implement File > Save As (file picker, write, update path)
+- [x] A1.6 Implement auto-open on launch (REQ-MM-010/011/012)
+- [x] A1.7 Implement title bar update with current file path
+- [x] A1.8 Implement exit confirmation dialog (REQ-MM-006)
 
 ### A2: Data Change Event System
 - [ ] A2.1 Implement full event/message system matching REQ-DCE-001 (17 event types)

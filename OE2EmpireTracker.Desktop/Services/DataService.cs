@@ -16,15 +16,23 @@ public sealed class DataService
 {
     private readonly IFileSystemService _fileSystem;
     private readonly ILogger<DataService> _logger;
+    private readonly SafeFileWriter _safeFileWriter;
 
     private PlayerRoot? _playerRoot;
     private BaselineRoot? _baselineRoot;
 
-    public DataService(IFileSystemService fileSystem, ILogger<DataService> logger)
+    public DataService(IFileSystemService fileSystem, ILogger<DataService> logger, SafeFileWriter safeFileWriter)
     {
         _fileSystem = fileSystem;
         _logger = logger;
+        _safeFileWriter = safeFileWriter;
     }
+
+    /// <summary>Gets or sets the path the current data was loaded from (or saved to).</summary>
+    public string? CurrentFilePath { get; set; }
+
+    /// <summary>Gets or sets a value indicating whether data has been modified since last save.</summary>
+    public bool IsDirty { get; set; }
 
     /// <summary>Gets the current player UUID.</summary>
     public string CurrentPlayerUUID => _playerRoot?.CurrentPlayerUUID ?? string.Empty;
@@ -131,6 +139,47 @@ public sealed class DataService
     }
 
     /// <summary>
+    /// Serializes the current PlayerRoot to JSON and writes it via SafeFileWriter.
+    /// Uses <see cref="CurrentFilePath"/> as the target.
+    /// </summary>
+    /// <returns>True if the write succeeded; false otherwise.</returns>
+    public bool WriteContext()
+    {
+        if (_playerRoot is null)
+        {
+            _logger.LogWarning("WriteContext called with no data loaded");
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(CurrentFilePath))
+        {
+            _logger.LogWarning("WriteContext called with no CurrentFilePath set");
+            return false;
+        }
+
+        var json = JsonConvert.SerializeObject(_playerRoot, Formatting.Indented);
+        var success = _safeFileWriter.WriteAllText(CurrentFilePath, json);
+        if (success)
+        {
+            IsDirty = false;
+            _logger.LogInformation("WriteContext completed to {Path}", CurrentFilePath);
+        }
+
+        return success;
+    }
+
+    /// <summary>
+    /// Creates a new empty context, clearing all data.
+    /// </summary>
+    public void NewContext()
+    {
+        _playerRoot = new PlayerRoot();
+        CurrentFilePath = null;
+        IsDirty = false;
+        _logger.LogInformation("New context created");
+    }
+
+    /// <summary>
     /// Loads player data from a specific file path (File → Open).
     /// Also looks for BaselineData.json in the same directory.
     /// </summary>
@@ -140,6 +189,8 @@ public sealed class DataService
         {
             var json = File.ReadAllText(playerDataPath);
             _playerRoot = JsonConvert.DeserializeObject<PlayerRoot>(json);
+            CurrentFilePath = playerDataPath;
+            IsDirty = false;
             _logger.LogInformation("Loaded player data from {Path}: {Colonies} colonies, {Blueprints} blueprints",
                 playerDataPath,
                 _playerRoot?.Colony?.Length ?? 0,
@@ -180,6 +231,8 @@ public sealed class DataService
             {
                 var json = File.ReadAllText(playerPath);
                 _playerRoot = JsonConvert.DeserializeObject<PlayerRoot>(json);
+                CurrentFilePath = playerPath;
+                IsDirty = false;
                 _logger.LogInformation("Loaded player data from {Path}: {Count} profiles",
                     playerPath, _playerRoot?.PlayerProfile?.Length ?? 0);
             }

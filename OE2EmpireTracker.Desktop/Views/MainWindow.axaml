@@ -4,7 +4,7 @@
         xmlns:idc="using:Dock.Avalonia.Controls"
         x:Class="OE2EmpireTracker.Desktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Title="OE2 Empire Tracker"
+        Title="{Binding WindowTitle}"
         Width="1280" Height="800"
         WindowStartupLocation="CenterScreen">
 
@@ -13,7 +13,11 @@
         <DockPanel DockPanel.Dock="Top">
             <Menu DockPanel.Dock="Left">
                 <MenuItem Header="_File">
+                    <MenuItem Header="_New" Command="{Binding NewFileCommand}" InputGesture="Ctrl+N" />
                     <MenuItem Header="_Open Player Data..." Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O" />
+                    <Separator />
+                    <MenuItem Header="_Save" Command="{Binding SaveFileCommand}" InputGesture="Ctrl+S" />
+                    <MenuItem Header="Save _As..." Command="{Binding SaveFileAsCommand}" InputGesture="Ctrl+Shift+S" />
                     <Separator />
                     <MenuItem Header="E_xit" Command="{Binding ExitCommand}" InputGesture="Alt+F4" />
                 </MenuItem>

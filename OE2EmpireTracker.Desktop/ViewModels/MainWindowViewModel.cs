@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -11,6 +12,7 @@ using Dock.Model.Controls;
 using Dock.Model.Core;
 using Dock.Model.Mvvm;
 using Dock.Model.Mvvm.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using OE2EmpireTracker.Desktop.Services;
 using OE2EmpireTracker.Models;
 
@@ -29,6 +31,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private PlayerProfile? _selectedPlayer;
 
+    [ObservableProperty]
+    private string _windowTitle = "OE2 Empire Tracker \u2014 New";
+
     private IDocumentDock? _documentDock;
 
     public MainWindowViewModel()
@@ -38,6 +43,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _factory.InitLayout(Layout);
         _documentDock = _factory.DocumentDock;
         LoadPlayerProfiles();
+        UpdateWindowTitle();
     }
 
     public ObservableCollection<PlayerProfile> PlayerProfiles { get; } = new ObservableCollection<PlayerProfile>();
@@ -75,6 +81,23 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _factory.SetFocusedDockable(_documentDock, newDoc);
     }
 
+    /// <summary>
+    /// Updates the window title based on the current file path.
+    /// </summary>
+    public void UpdateWindowTitle()
+    {
+        var dataService = GetService<DataService>();
+        if (dataService?.CurrentFilePath is not null)
+        {
+            var fileName = Path.GetFileName(dataService.CurrentFilePath);
+            WindowTitle = $"OE2 Empire Tracker \u2014 {fileName}";
+        }
+        else
+        {
+            WindowTitle = "OE2 Empire Tracker \u2014 New";
+        }
+    }
+
     [RelayCommand]
     private static void Exit()
     {
@@ -92,6 +115,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
 
         return null;
+    }
+
+    private static T? GetService<T>()
+        where T : class
+    {
+        return App.Services?.GetService<T>();
     }
 
     private static DocumentViewModel? CreateDocument(string documentType, string title)
@@ -122,43 +151,107 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         };
     }
 
-    partial void OnSelectedPlayerChanged(PlayerProfile? value)
+    [RelayCommand]
+    private void NewFile()
     {
-        if (value is null)
+        var dataService = GetService<DataService>();
+        if (dataService is null)
         {
             return;
         }
 
-        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
-        if (dataService is not null)
+        dataService.NewContext();
+
+        // Clear document tabs
+        if (_documentDock?.VisibleDockables is not null)
         {
-            dataService.SetCurrentPlayer(value.UUID);
+            var dockables = _documentDock.VisibleDockables.ToList();
+            foreach (var dockable in dockables)
+            {
+                _factory.RemoveDockable(dockable, collapse: false);
+            }
+        }
+
+        // Clear player profiles
+        PlayerProfiles.Clear();
+        SelectedPlayer = null;
+
+        // Update config
+        var configService = GetService<AppConfigService>();
+        if (configService is not null)
+        {
+            configService.LastOpenedPath = null;
+        }
+
+        UpdateWindowTitle();
+    }
+
+    [RelayCommand]
+    private async Task SaveFileAsync()
+    {
+        var dataService = GetService<DataService>();
+        if (dataService is null)
+        {
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(dataService.CurrentFilePath))
+        {
+            dataService.WriteContext();
+        }
+        else
+        {
+            await SaveFileAsAsync();
         }
     }
 
-    private void LoadPlayerProfiles()
+    [RelayCommand]
+    private async Task SaveFileAsAsync()
     {
-        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
-        if (dataService is null || !dataService.IsLoaded)
+        var window = GetMainWindow();
+        if (window is null)
         {
             return;
         }
 
-        PlayerProfiles.Clear();
-        foreach (var profile in dataService.PlayerProfiles)
+        var file = await window.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            PlayerProfiles.Add(profile);
+            Title = "Save Player Data",
+            DefaultExtension = "json",
+            FileTypeChoices = new[]
+            {
+                new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } },
+                new FilePickerFileType("All Files") { Patterns = new[] { "*" } },
+            },
+        });
+
+        if (file is null)
+        {
+            return;
         }
 
-        var current = PlayerProfiles.FirstOrDefault(p => p.UUID == dataService.CurrentPlayerUUID);
-        if (current is not null)
+        var path = file.TryGetLocalPath();
+        if (path is null)
         {
-            SelectedPlayer = current;
+            return;
         }
-        else if (PlayerProfiles.Count > 0)
+
+        var dataService = GetService<DataService>();
+        if (dataService is null)
         {
-            SelectedPlayer = PlayerProfiles[0];
+            return;
         }
+
+        dataService.CurrentFilePath = path;
+        dataService.WriteContext();
+
+        var configService = GetService<AppConfigService>();
+        if (configService is not null)
+        {
+            configService.LastOpenedPath = path;
+        }
+
+        UpdateWindowTitle();
     }
 
     [RelayCommand]
@@ -193,11 +286,19 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var dataService = GetService<DataService>();
         if (dataService is not null)
         {
             dataService.LoadFromFile(path);
             LoadPlayerProfiles();
+
+            var configService = GetService<AppConfigService>();
+            if (configService is not null)
+            {
+                configService.LastOpenedPath = path;
+            }
+
+            UpdateWindowTitle();
         }
     }
 
@@ -225,5 +326,44 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         };
 
         OpenDocument(documentType, title);
+    }
+
+    partial void OnSelectedPlayerChanged(PlayerProfile? value)
+    {
+        if (value is null)
+        {
+            return;
+        }
+
+        var dataService = GetService<DataService>();
+        if (dataService is not null)
+        {
+            dataService.SetCurrentPlayer(value.UUID);
+        }
+    }
+
+    private void LoadPlayerProfiles()
+    {
+        var dataService = GetService<DataService>();
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        PlayerProfiles.Clear();
+        foreach (var profile in dataService.PlayerProfiles)
+        {
+            PlayerProfiles.Add(profile);
+        }
+
+        var current = PlayerProfiles.FirstOrDefault(p => p.UUID == dataService.CurrentPlayerUUID);
+        if (current is not null)
+        {
+            SelectedPlayer = current;
+        }
+        else if (PlayerProfiles.Count > 0)
+        {
+            SelectedPlayer = PlayerProfiles[0];
+        }
     }
 }
