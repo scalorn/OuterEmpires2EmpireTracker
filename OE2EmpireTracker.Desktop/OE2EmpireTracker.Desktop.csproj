@@ -25,6 +25,7 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="ScottPlot.Avalonia" Version="5.0.47" />
+    <PackageReference Include="Microsoft.Xml.SgmlReader" Version="1.8.30" />
   </ItemGroup>
 
   <ItemGroup>

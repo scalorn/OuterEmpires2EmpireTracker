@@ -102,6 +102,7 @@ public partial class App : Application
 
         // Platform services
         services.AddSingleton<IFileSystemService>(fileSystem);
+        services.AddSingleton<IClipboardService, ClipboardService>();
         services.AddSingleton<SafeFileWriter>();
         services.AddSingleton<AppConfigService>();
         services.AddSingleton<DataService>();

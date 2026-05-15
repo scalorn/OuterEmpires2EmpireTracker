@@ -1,6 +1,12 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using OE2EmpireTracker.Desktop.Parsers;
 using OE2EmpireTracker.Desktop.Services;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
@@ -44,6 +50,9 @@ public sealed partial class SurveyViewModel : DocumentViewModel
     [ObservableProperty]
     private SurveyRowViewModel? _selectedSurvey;
 
+    [ObservableProperty]
+    private string _importStatus = string.Empty;
+
     public SurveyViewModel()
     {
         Title = "Surveys";
@@ -53,6 +62,63 @@ public sealed partial class SurveyViewModel : DocumentViewModel
     public ObservableCollection<SurveyRowViewModel> Surveys { get; } = new ObservableCollection<SurveyRowViewModel>();
 
     public ObservableCollection<SurveyResourceRowViewModel> Resources { get; } = new ObservableCollection<SurveyResourceRowViewModel>();
+
+    /// <summary>
+    /// Imports survey data from the clipboard HTML and adds a new survey.
+    /// </summary>
+    [RelayCommand]
+    private async Task ImportClipboardAsync()
+    {
+        var clipboardService = App.Services?.GetService(typeof(IClipboardService)) as IClipboardService;
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var loggerFactory = App.Services?.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
+
+        if (clipboardService is null || dataService is null || loggerFactory is null)
+        {
+            ImportStatus = "Services not available";
+            return;
+        }
+
+        string? html = await clipboardService.GetHtmlAsync();
+        if (string.IsNullOrEmpty(html))
+        {
+            ImportStatus = "No HTML on clipboard";
+            return;
+        }
+
+        string fragment = HtmlClipboardHelper.ExtractHtmlFragment(html);
+        if (string.IsNullOrEmpty(fragment))
+        {
+            ImportStatus = "Could not extract HTML fragment";
+            return;
+        }
+
+        var parser = new SurveyParser(loggerFactory.CreateLogger<SurveyParser>());
+        var survey = parser.ParseSurveyHtml(fragment);
+        if (survey is null)
+        {
+            ImportStatus = "Failed to parse survey HTML";
+            return;
+        }
+
+        survey.UUID = Guid.NewGuid().ToString();
+        survey.OwnerUUID = dataService.CurrentPlayerUUID;
+
+        dataService.AddSurvey(survey);
+        dataService.OnSurveyDataChanged(survey.UUID);
+        dataService.WriteContext();
+
+        // Add to the local collection
+        Surveys.Add(new SurveyRowViewModel
+        {
+            PlanetName = survey.PlanetName ?? string.Empty,
+            SurveyType = survey.SurveyType.ToString(),
+            ResourceCount = survey.Resources?.Count ?? 0,
+        });
+
+        SelectedSurvey = Surveys.LastOrDefault();
+        ImportStatus = $"Imported survey for {survey.PlanetName}";
+    }
 
     partial void OnSelectedSurveyChanged(SurveyRowViewModel? value)
     {

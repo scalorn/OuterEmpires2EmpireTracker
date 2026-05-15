@@ -1,9 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Desktop.Parsers;
 using OE2EmpireTracker.Desktop.Services;
 using OE2EmpireTracker.Desktop.ViewModels.Messages;
 using OE2EmpireTracker.Models;
@@ -93,6 +99,9 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     [ObservableProperty]
     private string _activityStatus = "No active timers";
 
+    [ObservableProperty]
+    private string _importStatus = string.Empty;
+
     public ColonyViewModel()
     {
         Title = "Colonies";
@@ -146,8 +155,6 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         DataService dataService,
         string colonyUuid)
     {
-        // WarehouseOverflowRule is not directly exposed on DataService,
-        // so we return empty for now. Real data would come from PlayerRoot.
         _ = dataService;
         _ = colonyUuid;
         return new List<WarehouseOverflowRule>();
@@ -155,8 +162,62 @@ public sealed partial class ColonyViewModel : DocumentViewModel
 
     private static void UpdateActivityStatus(Colony colony)
     {
-        // Activity status is informational only
         _ = colony;
+    }
+
+    /// <summary>
+    /// Imports colony data from the clipboard HTML and merges into the selected colony.
+    /// </summary>
+    [RelayCommand]
+    private async Task ImportClipboardAsync()
+    {
+        if (SelectedColony is null)
+        {
+            ImportStatus = "No colony selected";
+            return;
+        }
+
+        var clipboardService = App.Services?.GetService(typeof(IClipboardService)) as IClipboardService;
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var loggerFactory = App.Services?.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
+
+        if (clipboardService is null || dataService is null || loggerFactory is null)
+        {
+            ImportStatus = "Services not available";
+            return;
+        }
+
+        string? html = await clipboardService.GetHtmlAsync();
+        if (string.IsNullOrEmpty(html))
+        {
+            ImportStatus = "No HTML on clipboard";
+            return;
+        }
+
+        string fragment = HtmlClipboardHelper.ExtractHtmlFragment(html);
+        if (string.IsNullOrEmpty(fragment))
+        {
+            ImportStatus = "Could not extract HTML fragment";
+            return;
+        }
+
+        var colony = dataService.GetCurrentPlayerColonies()
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony is null)
+        {
+            ImportStatus = "Colony not found in data";
+            return;
+        }
+
+        var parser = new ColonyParser(loggerFactory.CreateLogger<ColonyParser>());
+        parser.ProcessHtml(colony, fragment, dataService);
+
+        colony.LastImportDateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
+        dataService.IsDirty = true;
+        dataService.OnColonyDataChanged(colony.UUID);
+        dataService.WriteContext();
+
+        ImportStatus = $"Imported {colony.Structures.Count} structures";
     }
 
     partial void OnSelectedColonyChanged(ColonyRowViewModel? value)
