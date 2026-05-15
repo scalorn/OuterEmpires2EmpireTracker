@@ -1,0 +1,12 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.PlaceholderView"
+             x:DataType="vm:PlaceholderViewModel">
+
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="12">
+        <TextBlock Text="🚧" FontSize="48" HorizontalAlignment="Center" />
+        <TextBlock Text="{Binding Message}" FontSize="14" Foreground="Gray" TextWrapping="Wrap" MaxWidth="300" HorizontalAlignment="Center" TextAlignment="Center" />
+    </StackPanel>
+
+</UserControl>

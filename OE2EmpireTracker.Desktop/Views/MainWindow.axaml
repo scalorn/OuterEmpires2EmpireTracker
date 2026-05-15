@@ -1,0 +1,13 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+        xmlns:idc="using:Dock.Avalonia.Controls"
+        x:Class="OE2EmpireTracker.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="OE2 Empire Tracker"
+        Width="1280" Height="800"
+        WindowStartupLocation="CenterScreen">
+
+    <idc:DockControl Layout="{Binding Layout}" />
+
+</Window>
