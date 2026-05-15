@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.BuildPlannerView"
+             x:DataType="vm:BuildPlannerViewModel">
+
+    <DockPanel Margin="8">
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Build Planner"
+                   FontSize="20"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,12" />
+
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            <TextBox Text="{Binding EditPlanName}" Watermark="Plan Name" MinWidth="200" />
+            <Button Content="New" Command="{Binding NewPlanCommand}" />
+            <Button Content="Save" Command="{Binding SavePlanCommand}" />
+            <Button Content="Delete" Command="{Binding DeletePlanCommand}" />
+        </StackPanel>
+
+        <Grid ColumnDefinitions="250,12,*">
+            <!-- Left panel: Build plan list -->
+            <DockPanel Grid.Column="0">
+                <ListBox ItemsSource="{Binding BuildPlans}"
+                         SelectedItem="{Binding SelectedPlan}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="2">
+                                <TextBlock Text="{Binding PlanName}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding ColonyName}" FontSize="12" Opacity="0.7" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+
+            <!-- Right panel: TabControl -->
+            <TabControl Grid.Column="2">
+                <!-- Build Items Tab -->
+                <TabItem Header="Build Items">
+                    <DataGrid Margin="0,8,0,0"
+                              ItemsSource="{Binding BuildItems}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="True"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              SelectionMode="Single"
+                              HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Item" Binding="{Binding ItemName}" Width="200" />
+                            <DataGridTextColumn Header="Qty" Binding="{Binding Quantity}" Width="80" />
+                            <DataGridTextColumn Header="Type" Binding="{Binding ItemType}" Width="120" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+
+                <!-- Shortfall Tab -->
+                <TabItem Header="Shortfall">
+                    <DataGrid Margin="0,8,0,0"
+                              ItemsSource="{Binding Shortfalls}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="True"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              SelectionMode="Single"
+                              HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Resource" Binding="{Binding ResourceName}" Width="200" />
+                            <DataGridTextColumn Header="Required" Binding="{Binding Required}" Width="100" />
+                            <DataGridTextColumn Header="Available" Binding="{Binding Available}" Width="100" />
+                            <DataGridTextColumn Header="Deficit" Binding="{Binding Deficit}" Width="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </DockPanel>
+
+</UserControl>
