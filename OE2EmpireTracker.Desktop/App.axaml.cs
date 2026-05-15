@@ -108,6 +108,25 @@ public partial class App : Application
         services.AddSingleton<ColonyProcessingContext>();
         services.AddSingleton<BackgroundProcessor>();
 
+        // Domain services
+        services.AddSingleton<ColonyService>();
+        services.AddSingleton<BlueprintService>();
+        services.AddSingleton<SurveyService>();
+        services.AddSingleton<PlayerProfileService>();
+        services.AddSingleton<DeliveryRouteService>();
+        services.AddSingleton<DeliveryPlanService>();
+        services.AddSingleton<PricingPlanService>();
+        services.AddSingleton<BuildPlanService>();
+        services.AddSingleton<MarketService>();
+        services.AddSingleton<StationService>();
+        services.AddSingleton<ShipTemplateService>();
+        services.AddSingleton<ShipService>();
+        services.AddSingleton<StockTargetService>();
+        services.AddSingleton<SupplyChainService>();
+        services.AddSingleton<ContactsService>();
+        services.AddSingleton<AsteroidService>();
+        services.AddSingleton<SystemRepository>();
+
         // ViewModels
         services.AddSingleton<MainWindowViewModel>();
         services.AddTransient<ColonyListViewModel>();

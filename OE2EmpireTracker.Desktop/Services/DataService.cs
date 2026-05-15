@@ -394,6 +394,324 @@ public sealed class DataService
             .ToList();
     }
 
+    // --- Mutation helpers for service layer ---
+
+    /// <summary>Adds a colony to the player root.</summary>
+    public void AddColony(Colony colony)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.Colony.ToList();
+        list.Add(colony);
+        _playerRoot.Colony = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a colony by UUID.</summary>
+    public void RemoveColony(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.Colony = _playerRoot.Colony.Where(c => c.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a blueprint to the player root.</summary>
+    public void AddBlueprint(Blueprint blueprint)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.Blueprint.ToList();
+        list.Add(blueprint);
+        _playerRoot.Blueprint = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a blueprint by UUID.</summary>
+    public void RemoveBlueprint(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.Blueprint = _playerRoot.Blueprint.Where(b => b.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a survey to the player root.</summary>
+    public void AddSurvey(Survey survey)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.Survey.ToList();
+        list.Add(survey);
+        _playerRoot.Survey = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a survey by UUID.</summary>
+    public void RemoveSurvey(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.Survey = _playerRoot.Survey.Where(s => s.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a player profile to the player root.</summary>
+    public void AddPlayerProfile(PlayerProfile profile)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.PlayerProfile.ToList();
+        list.Add(profile);
+        _playerRoot.PlayerProfile = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a player profile by UUID.</summary>
+    public void RemovePlayerProfile(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.PlayerProfile = _playerRoot.PlayerProfile.Where(p => p.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a delivery route to the player root.</summary>
+    public void AddDeliveryRoute(DeliveryRoute route)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.DeliveryRoute.ToList();
+        list.Add(route);
+        _playerRoot.DeliveryRoute = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a delivery route by UUID.</summary>
+    public void RemoveDeliveryRoute(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.DeliveryRoute = _playerRoot.DeliveryRoute.Where(r => r.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a delivery plan to the player root.</summary>
+    public void AddDeliveryPlan(DeliveryPlan plan)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.DeliveryPlan.ToList();
+        list.Add(plan);
+        _playerRoot.DeliveryPlan = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a delivery plan by UUID.</summary>
+    public void RemoveDeliveryPlan(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.DeliveryPlan = _playerRoot.DeliveryPlan.Where(p => p.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a pricing plan to the player root.</summary>
+    public void AddPricingPlan(PricingPlan plan)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.PricingPlan.ToList();
+        list.Add(plan);
+        _playerRoot.PricingPlan = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a pricing plan by UUID.</summary>
+    public void RemovePricingPlan(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.PricingPlan = _playerRoot.PricingPlan.Where(p => p.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a build plan to the player root.</summary>
+    public void AddBuildPlan(BuildPlan plan)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.BuildPlan.ToList();
+        list.Add(plan);
+        _playerRoot.BuildPlan = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a build plan by UUID.</summary>
+    public void RemoveBuildPlan(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.BuildPlan = _playerRoot.BuildPlan.Where(p => p.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a market listing to the player root.</summary>
+    public void AddMarketListing(MarketListing listing)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.MarketListing.ToList();
+        list.Add(listing);
+        _playerRoot.MarketListing = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a market listing by UUID.</summary>
+    public void RemoveMarketListing(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.MarketListing = _playerRoot.MarketListing.Where(m => m.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a market transaction to the player root.</summary>
+    public void AddMarketTransaction(MarketTransaction transaction)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.MarketTransaction.ToList();
+        list.Add(transaction);
+        _playerRoot.MarketTransaction = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a station to the player root.</summary>
+    public void AddStation(Station station)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.Station.ToList();
+        list.Add(station);
+        _playerRoot.Station = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a station by UUID.</summary>
+    public void RemoveStation(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.Station = _playerRoot.Station.Where(s => s.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a ship template to the player root.</summary>
+    public void AddShipTemplate(ShipTemplate template)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.ShipTemplate.ToList();
+        list.Add(template);
+        _playerRoot.ShipTemplate = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a ship template by UUID.</summary>
+    public void RemoveShipTemplate(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.ShipTemplate = _playerRoot.ShipTemplate.Where(t => t.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a ship to the player root.</summary>
+    public void AddShip(Ship ship)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.Ship.ToList();
+        list.Add(ship);
+        _playerRoot.Ship = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a ship by UUID.</summary>
+    public void RemoveShip(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.Ship = _playerRoot.Ship.Where(s => s.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a stock plan to the player root.</summary>
+    public void AddStockPlan(StockPlan plan)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.StockPlan.ToList();
+        list.Add(plan);
+        _playerRoot.StockPlan = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a stock plan by UUID.</summary>
+    public void RemoveStockPlan(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.StockPlan = _playerRoot.StockPlan.Where(p => p.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a supply chain to the player root.</summary>
+    public void AddSupplyChain(SupplyChain chain)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.SupplyChain.ToList();
+        list.Add(chain);
+        _playerRoot.SupplyChain = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a supply chain by UUID.</summary>
+    public void RemoveSupplyChain(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.SupplyChain = _playerRoot.SupplyChain.Where(c => c.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds a faction to the player root.</summary>
+    public void AddFaction(Faction faction)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.Faction.ToList();
+        list.Add(faction);
+        _playerRoot.Faction = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes a faction by UUID.</summary>
+    public void RemoveFaction(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.Faction = _playerRoot.Faction.Where(f => f.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds an external character to the player root.</summary>
+    public void AddExternalCharacter(ExternalCharacter character)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.ExternalCharacter.ToList();
+        list.Add(character);
+        _playerRoot.ExternalCharacter = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes an external character by UUID.</summary>
+    public void RemoveExternalCharacter(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.ExternalCharacter = _playerRoot.ExternalCharacter.Where(c => c.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Adds an asteroid to the player root.</summary>
+    public void AddAsteroid(Asteroid asteroid)
+    {
+        if (_playerRoot is null) return;
+        var list = _playerRoot.Asteroid.ToList();
+        list.Add(asteroid);
+        _playerRoot.Asteroid = list.ToArray();
+        IsDirty = true;
+    }
+
+    /// <summary>Removes an asteroid by UUID.</summary>
+    public void RemoveAsteroid(string uuid)
+    {
+        if (_playerRoot is null) return;
+        _playerRoot.Asteroid = _playerRoot.Asteroid.Where(a => a.UUID != uuid).ToArray();
+        IsDirty = true;
+    }
+
     private static string? FindSolutionDirectory(string startDir)
     {
         var dir = startDir;
