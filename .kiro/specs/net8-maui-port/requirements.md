@@ -66,14 +66,16 @@ The Avalonia project SHALL use:
 2. Central Package Management (Directory.Packages.props) for version consistency
 3. NuGet packages compatible with .NET 8
 
-## REQ-AVA-005: Navigation Pattern
+## REQ-AVA-005: Navigation and Docking
 
-The current WinForms app uses MDI (Multiple Document Interface) — child forms open within a parent window. The Avalonia port SHALL use:
-1. A tabbed document interface — each "form" becomes a tab within the main window
-2. Tabs SHALL be closeable and reorderable
-3. Multiple instances of the same form type SHALL be supported (e.g., two colony tabs for different colonies)
-4. A navigation sidebar or menu SHALL provide access to all feature areas
-5. The app SHALL remember which tabs were open on last close and restore them on next launch
+The current WinForms app uses MDI (Multiple Document Interface) — child forms open within a parent window. The Avalonia port SHALL use the **Dock** library (wieslawsoltes/Dock, MIT license) to provide a VS Code / Visual Studio-style docking layout:
+1. A tabbed document area — each "form" becomes a document tab
+2. Document tabs SHALL be closeable, reorderable, and splittable (side-by-side)
+3. Document tabs SHALL be floatable — users can detach a tab into its own window
+4. Multiple instances of the same form type SHALL be supported (e.g., two colony tabs for different colonies)
+5. Dockable tool panels SHALL be supported for auxiliary views (e.g., activity log, notifications)
+6. A navigation sidebar or menu SHALL provide access to all feature areas
+7. The app SHALL persist and restore the full docking layout (tab positions, splits, panel states) across sessions using Dock's built-in layout serialization
 
 ## REQ-AVA-006: Data Binding
 
@@ -195,7 +197,7 @@ The Avalonia port SHALL:
 | ID | Risk | Impact | Mitigation |
 |----|------|--------|------------|
 | R1 | Avalonia DataGrid maturity — built-in DataGrid exists but may lack some WinForms DataGridView features (e.g., complex cell editing) | Medium — DataGridView is used in 15+ forms | Prototype complex editing scenarios early in Phase 1; custom cell templates as fallback |
-| R2 | MDI replacement — tabbed interface may not feel as flexible as MDI | Medium — user workflow change | Prototype tab navigation in Phase 2; get user feedback before committing |
+| R2 | Dock library learning curve — Dock has its own layout model and MVVM patterns | Low — well-documented, MIT licensed, active community | Follow Dock samples (DockMvvmSample, VisualStudioDemo); prototype in Phase 1 |
 | R3 | RichTextBox equivalent — Avalonia has no built-in RTF control | Low — used for formatted output display | Use Avalonia.HtmlRenderer or custom TextBlock with Inlines |
 | R4 | Clipboard HTML on Linux — X11/Wayland clipboard format differences | Medium — core import workflow | Test on both X11 and Wayland early; Avalonia abstracts most differences |
 | R5 | Linux desktop integration — notifications, system tray, file dialogs | Low — not heavily used | Avalonia has platform abstractions; test on target distros |

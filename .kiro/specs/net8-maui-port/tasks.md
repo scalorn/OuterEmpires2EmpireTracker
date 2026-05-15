@@ -19,13 +19,20 @@
   - Satisfies: REQ-AVA-016 (zero warnings policy)
 - [ ] 1.8 Add Avalonia.Themes.Fluent with light/dark theme support
   - Satisfies: REQ-AVA-017 (theming)
+- [ ] 1.9 Add Dock.Avalonia packages and verify basic docking layout works
+  - Satisfies: REQ-AVA-005 (Dock library integration)
+  - Deliverable: Spike showing tabbed documents, floating, and layout save/restore
 
 ## Phase 2: Core Infrastructure
 
-- [ ] 2.1 Implement MainWindow with sidebar navigation panel
+- [ ] 2.1 Implement MainWindow with Dock layout (RootDock, DocumentDock, ToolDock)
+  - Satisfies: REQ-AVA-005 (docking layout, document tabs, tool panels)
+- [ ] 2.2 Implement DockFactory for creating document and tool instances
+  - Satisfies: REQ-AVA-005 (tabbed interface, closeable, splittable, floatable)
+- [ ] 2.3 Implement navigation sidebar as a dockable tool panel
   - Satisfies: REQ-AVA-005 (navigation sidebar)
-- [ ] 2.2 Implement tabbed document container (MDI replacement)
-  - Satisfies: REQ-AVA-005 (tabbed interface, closeable, reorderable)
+- [ ] 2.4 Implement layout serialization (save/restore dock state via Dock.Serializer.Newtonsoft)
+  - Satisfies: REQ-AVA-005 (persist and restore layout across sessions)
 - [ ] 2.3 Set up dependency injection with Microsoft.Extensions.DependencyInjection
   - Satisfies: REQ-AVA-013 (DI registration)
 - [ ] 2.4 Implement IFileSystemService with platform-appropriate paths
@@ -38,8 +45,8 @@
   - Satisfies: REQ-AVA-010 (logging replacement)
 - [ ] 2.8 Implement timer service for background processing
   - Satisfies: REQ-AVA-012 (timer migration)
-- [ ] 2.9 Implement tab state persistence (remember open tabs across sessions)
-  - Satisfies: REQ-AVA-005 (restore tabs on launch)
+- [ ] 2.9 Prototype Dock integration with sample document (validate floating, splitting, tab reorder)
+  - Satisfies: REQ-AVA-005 (floatable, splittable documents)
 - [ ] 2.10 Create ViewModelBase with CommunityToolkit.Mvvm patterns
   - Satisfies: REQ-AVA-006 (INotifyPropertyChanged, CommunityToolkit.Mvvm)
 - [ ] 2.11 Implement ViewLocator for automatic View-ViewModel resolution

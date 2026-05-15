@@ -66,10 +66,14 @@ OE2EmpireTracker.Desktop/
 │   └── ...
 │
 ├── Controls/                        # Custom Avalonia controls
-│   ├── TabDocumentHost.axaml        # MDI replacement — tabbed document container
 │   ├── FilteredComboBox.axaml       # Replacement for FilteredTextComboSet
 │   ├── ValidatedTextBox.cs          # TextBox with validation behavior
 │   └── DataGridExtensions/          # Custom DataGrid cell templates
+│
+├── Dock/                            # Dock library integration
+│   ├── DockFactory.cs               # Creates dock layout, document/tool instances
+│   ├── DocumentTemplates.axaml      # DataTemplates mapping ViewModels → Views in dock
+│   └── LayoutSerializer.cs          # Save/restore dock layout to JSON
 │
 ├── Services/                        # Application services + platform abstractions
 │   ├── IClipboardService.cs
@@ -94,16 +98,46 @@ OE2EmpireTracker.Desktop/
 
 ## Key Design Decisions
 
-### 1. Navigation: Sidebar + Tabbed Documents
+### 1. Navigation: Dock Library (wieslawsoltes/Dock)
 
-The main window uses a split layout:
-- **Left sidebar**: Fixed navigation menu listing all feature areas (Colony, Blueprint, Survey, etc.)
-- **Main area**: Tabbed document container where each opened feature is a tab
-- Clicking a sidebar item opens a new tab (or focuses existing tab for that feature)
-- Tabs can be closed, reordered, and duplicated
-- This mirrors VS Code / browser UX which is familiar to users
+The main window uses the Dock library to provide a VS Code / Visual Studio-style layout:
+- **Left sidebar**: Dockable tool panel with navigation tree (all feature areas)
+- **Center**: DocumentDock area where each opened feature is a tabbed document
+- **Floating**: Any document tab can be detached into its own floating window
+- **Splitting**: Document area can be split horizontally/vertically for side-by-side views
+- **Layout persistence**: Dock's built-in serialization saves/restores the full layout (JSON format via Dock.Serializer.Newtonsoft)
 
-Implementation: `TabControl` with custom `TabItem` template, or a custom `TabDocumentHost` control that manages a collection of open document ViewModels.
+Key Dock concepts:
+- `RootDock` — top-level container
+- `DocumentDock` — hosts document tabs (our feature views)
+- `ToolDock` — hosts dockable tool panels (sidebar, activity log, etc.)
+- `DockableControl` — individual dockable item (wraps our UserControls)
+- `IFactory` — creates and manages dock layout programmatically
+
+```xml
+<!-- MainWindow.axaml (simplified) -->
+<DockControl Layout="{Binding Layout}">
+    <!-- Dock handles all tab/panel rendering -->
+</DockControl>
+```
+
+```csharp
+// MainWindowViewModel manages the Dock layout
+public class MainWindowViewModel : ViewModelBase
+{
+    public IRootDock Layout { get; set; }
+    
+    [RelayCommand]
+    private void OpenDocument(string documentType)
+    {
+        // Create new document ViewModel, add to DocumentDock
+        var factory = _dockFactory;
+        var document = factory.CreateDocument(documentType);
+        _documentDock.VisibleDockables?.Add(document);
+        factory.SetActiveDockable(document);
+    }
+}
+```
 
 ### 2. MVVM with CommunityToolkit.Mvvm
 
@@ -283,6 +317,10 @@ Configure Serilog as the provider behind `ILogger<T>` for file output. Serilog h
 | Avalonia.Desktop | Desktop platform support | — |
 | Avalonia.Themes.Fluent | Modern theme (light + dark) | System theme |
 | Avalonia.Controls.DataGrid | Built-in DataGrid | DataGridView |
+| Dock.Avalonia | Docking layout system | MDI (MdiClient) |
+| Dock.Model.Mvvm | Dock MVVM integration | — |
+| Dock.Serializer.Newtonsoft | Layout persistence (JSON) | — |
+| Dock.Avalonia.Themes.Fluent | Dock fluent theme | — |
 | CommunityToolkit.Mvvm | MVVM source generators | Manual INotifyPropertyChanged |
 | Microsoft.Extensions.DependencyInjection | DI container | Singleton pattern |
 | Microsoft.Extensions.Logging | Logging abstraction | NLog |
