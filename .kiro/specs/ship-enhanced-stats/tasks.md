@@ -7,7 +7,7 @@ Extend the ship stats computation pipeline to calculate derived performance metr
 ## Tasks
 
 - [ ] 1. Add BlueprintPropertyKeys constants and new model types
-  - [-] 1.1 Add new BlueprintPropertyKeys constants
+  - [x] 1.1 Add new BlueprintPropertyKeys constants
     - Add 7 new string constants to `OE2EmpireTracker.Common/Constants/BlueprintPropertyKeys.cs`: EngCapacityRequired, EngCapacityAvailable, PowerProvided, PowerRegenRate, PowerDrawPerSecond, JumpChargeTime, FuelPerJASPerMass
     - Use the exact property name strings from the design document
     - _Requirements: 10.2_
