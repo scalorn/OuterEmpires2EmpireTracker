@@ -72,6 +72,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             "SystemList" => new SystemListViewModel(),
             "ColonyActivity" => new ColonyActivityViewModel(),
             "MarketList" => new MarketViewModel(),
+            "AsteroidList" => new AsteroidViewModel(),
+            "PricingPlanList" => new PricingPlanViewModel(),
+            "SupplyChainList" => new SupplyChainViewModel(),
+            "ContactsList" => new ContactsViewModel(),
+            "ShipTemplateList" => new ShipTemplateViewModel(),
+            "ShipList" => new ShipInstanceViewModel(),
+            "StationList" => new StationViewModel(),
             _ => new PlaceholderViewModel(title),
         };
     }

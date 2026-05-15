@@ -93,27 +93,27 @@
 
 - [ ] 6.1 Port FormMarket → MarketView
   - Scope: Listings DataGrid, transactions DataGrid, plan selector (~541 lines)
-- [ ] 6.2 Port FormAsteroid → AsteroidView
+- [x] 6.2 Port FormAsteroid → AsteroidView
   - Scope: Asteroid list, reserves DataGrid, linked surveys (~502 lines)
-- [ ] 6.3 Port FormPricingPlan → PricingPlanView
+- [x] 6.3 Port FormPricingPlan → PricingPlanView
   - Scope: Plan list, resource price DataGrid, markup editing (~659 lines)
-- [ ] 6.4 Port FormSupplyChain → SupplyChainView
+- [x] 6.4 Port FormSupplyChain → SupplyChainView
   - Scope: Chain list, stages DataGrid, flow summary display (~758 lines)
-- [ ] 6.5a Port FormContacts → ContactsView — Factions tab
+- [x] 6.5a Port FormContacts → ContactsView — Factions tab
   - Scope: Faction list, detail editing, member display (~320 lines)
-- [ ] 6.5b Port FormContacts → ContactsView — Characters tab
+- [x] 6.5b Port FormContacts → ContactsView — Characters tab
   - Scope: Character list, detail editing, faction assignment (~320 lines)
-- [ ] 6.6a Port FormShipTemplate → ShipTemplateView — Template list and details
+- [x] 6.6a Port FormShipTemplate → ShipTemplateView — Template list and details
   - Scope: Template list, hull/class selection, pricing display (~625 lines)
-- [ ] 6.6b Port FormShipTemplate → ShipTemplateView — Slot grid
+- [x] 6.6b Port FormShipTemplate → ShipTemplateView — Slot grid
   - Scope: Slot DataGrid with combo columns, stats recalculation (~625 lines)
-- [ ] 6.7a Port FormShipInstance → ShipInstanceView — Ship list and components
+- [x] 6.7a Port FormShipInstance → ShipInstanceView — Ship list and components
   - Scope: Ship list, component DataGrid, template selection (~610 lines)
-- [ ] 6.7b Port FormShipInstance → ShipInstanceView — Cargo management
+- [x] 6.7b Port FormShipInstance → ShipInstanceView — Cargo management
   - Scope: Cargo DataGrid, volume/mass calculation (~610 lines)
-- [ ] 6.8a Port FormStation → StationView — Station list and hold
+- [x] 6.8a Port FormStation → StationView — Station list and hold
   - Scope: Station list, hold DataGrid, detail editing (~580 lines)
-- [ ] 6.8b Port FormStation → StationView — Components and munitions
+- [x] 6.8b Port FormStation → StationView — Components and munitions
   - Scope: Components DataGrid, munitions DataGrid (~580 lines)
 
 ## Phase 7: Feature Migration — Tier 2 (Large Forms, 1000-2000 lines)

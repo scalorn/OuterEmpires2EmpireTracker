@@ -39,6 +39,27 @@
         <DataTemplate DataType="vm:MarketViewModel">
             <views:MarketView />
         </DataTemplate>
+        <DataTemplate DataType="vm:AsteroidViewModel">
+            <views:AsteroidView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:PricingPlanViewModel">
+            <views:PricingPlanView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SupplyChainViewModel">
+            <views:SupplyChainView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ContactsViewModel">
+            <views:ContactsView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ShipTemplateViewModel">
+            <views:ShipTemplateView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ShipInstanceViewModel">
+            <views:ShipInstanceView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:StationViewModel">
+            <views:StationView />
+        </DataTemplate>
     </Application.DataTemplates>
 
 </Application>
