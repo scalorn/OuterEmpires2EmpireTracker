@@ -193,17 +193,42 @@ namespace OE2EmpireTracker.Services
                 if (!findResult.IsGlobal)
                     tempBP.OwnerUUID = pc.CurrentPlayerUUID;
 
+                // Check for UUID collision before adding
                 if (findResult.IsGlobal)
-                    ec.AddGlobalBlueprint(tempBP);
+                {
+                    var alreadyExists = ec.FindMutableGlobalBlueprint(tempBP.UUID);
+                    if (alreadyExists != null)
+                    {
+                        MarketBlueprintImporter.UpdateExisting(alreadyExists, tempBP);
+                        importedBP = alreadyExists;
+                        Log.Info(
+                            "UUID collision — updated existing global blueprint: {0} Ev{1} {2} UUID={3}",
+                            alreadyExists.Name,
+                            alreadyExists.Evolution,
+                            alreadyExists.BluePrintType,
+                            alreadyExists.UUID);
+                    }
+                    else
+                    {
+                        ec.AddGlobalBlueprint(tempBP);
+                        importedBP = tempBP;
+                        Log.Info(
+                            "New blueprint created: {0} Ev{1} {2} -> Global",
+                            importedBP.Name,
+                            importedBP.Evolution,
+                            importedBP.BluePrintType);
+                    }
+                }
                 else
+                {
                     pc.AddBlueprint(tempBP);
-                importedBP = tempBP;
-                Log.Info(
-                    "New blueprint created: {0} Ev{1} {2} -> {3}",
-                    importedBP.Name,
-                    importedBP.Evolution,
-                    importedBP.BluePrintType,
-                    findResult.IsGlobal ? "Global" : "Player");
+                    importedBP = tempBP;
+                    Log.Info(
+                        "New blueprint created: {0} Ev{1} {2} -> Player",
+                        importedBP.Name,
+                        importedBP.Evolution,
+                        importedBP.BluePrintType);
+                }
             }
 
             // Persist

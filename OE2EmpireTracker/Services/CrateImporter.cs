@@ -341,14 +341,32 @@ namespace OE2EmpireTracker.Services
                 if (!isGlobal)
                     tempBP.OwnerUUID = playerContext.CurrentPlayerUUID;
 
+                // Check for UUID collision before adding
                 if (isGlobal)
-                    empireContext.AddGlobalBlueprint(tempBP);
+                {
+                    var alreadyExists = empireContext.FindMutableGlobalBlueprint(tempBP.UUID);
+                    if (alreadyExists != null)
+                    {
+                        MarketBlueprintImporter.UpdateExisting(alreadyExists, tempBP);
+                        importEntry.Action = ImportAction.Updated;
+                        importEntry.Storage = "Global";
+                        Log.Info("    -> UUID collision — updated existing: UUID={0}", alreadyExists.UUID);
+                    }
+                    else
+                    {
+                        empireContext.AddGlobalBlueprint(tempBP);
+                        importEntry.Action = ImportAction.Created;
+                        importEntry.Storage = "Global";
+                        Log.Info("    -> Created new: UUID={0} (Global)", tempBP.UUID);
+                    }
+                }
                 else
+                {
                     playerContext.AddBlueprint(tempBP);
-
-                importEntry.Action = ImportAction.Created;
-                importEntry.Storage = isGlobal ? "Global" : "Player";
-                Log.Info("    -> Created new: UUID={0} ({1})", tempBP.UUID, importEntry.Storage);
+                    importEntry.Action = ImportAction.Created;
+                    importEntry.Storage = "Player";
+                    Log.Info("    -> Created new: UUID={0} (Player)", tempBP.UUID);
+                }
             }
 
             return importEntry;
