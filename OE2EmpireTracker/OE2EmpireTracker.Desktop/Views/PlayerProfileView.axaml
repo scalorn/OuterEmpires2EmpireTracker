@@ -1,0 +1,87 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.PlayerProfileView"
+             x:DataType="vm:PlayerProfileViewModel">
+
+    <DockPanel Margin="8">
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Player Profile"
+                   FontSize="20"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,12" />
+
+        <Grid ColumnDefinitions="250,12,*">
+            <!-- Left: Profile list -->
+            <DockPanel Grid.Column="0">
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Profiles"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,8" />
+                <ListBox ItemsSource="{Binding Profiles}"
+                         SelectedItem="{Binding SelectedProfile}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding ProfileName}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding PublicRank}" FontSize="12" Opacity="0.7" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+
+            <!-- Right: Edit fields + Skills grid -->
+            <DockPanel Grid.Column="2">
+                <!-- Edit fields and CRUD buttons -->
+                <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12" Spacing="8">
+                    <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="6">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EditName}" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Faction:" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding EditFaction}" />
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Credits:" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EditCredits}" />
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Skill Points:" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding EditSkillPoints}" />
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="New" Command="{Binding NewProfileCommand}" />
+                        <Button Content="Save" Command="{Binding SaveProfileCommand}" />
+                        <Button Content="Delete" Command="{Binding DeleteProfileCommand}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Skills"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,8" />
+
+                <DataGrid ItemsSource="{Binding Skills}"
+                          AutoGenerateColumns="False"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          IsReadOnly="True"
+                          GridLinesVisibility="Horizontal"
+                          SelectionMode="Single"
+                          HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Skill"
+                                            Binding="{Binding SkillName}"
+                                            Width="200" />
+                        <DataGridTextColumn Header="Level"
+                                            Binding="{Binding Level}"
+                                            Width="80" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+
+</UserControl>
