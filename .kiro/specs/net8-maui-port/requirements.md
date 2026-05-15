@@ -81,7 +81,7 @@ The current WinForms app uses MDI (Multiple Document Interface) — child forms 
 
 The Avalonia port SHALL use:
 1. Avalonia's native data binding (AXAML `{Binding}` markup) instead of WinForms BindingSource
-2. ViewModels SHALL implement `INotifyPropertyChanged` (or use CommunityToolkit.Mvvm source generators or ReactiveUI)
+2. ViewModels SHALL implement `INotifyPropertyChanged` using **CommunityToolkit.Mvvm** source generators (`[ObservableProperty]`, `[RelayCommand]`)
 3. Collections SHALL use `ObservableCollection<T>` instead of `BindingList<T>`
 4. The existing ViewModel layer SHALL be adapted (not rewritten from scratch) where possible
 
@@ -155,13 +155,14 @@ The Avalonia port SHALL use .NET's built-in dependency injection:
 
 ## REQ-AVA-014: Migration Strategy
 
-The port SHALL follow an incremental migration strategy:
+The port SHALL follow a smoke-test-first, incremental migration strategy. The goal of early phases is to validate the UI framework choice before investing in full feature migration:
 1. Phase 1: Project setup — create Avalonia project, configure dependencies, establish patterns
-2. Phase 2: Core infrastructure — navigation shell, DI registration, persistence, logging
-3. Phase 3: Feature migration — port forms one at a time, starting with simplest (About, Help, Preferences)
-4. Phase 4: Complex features — colony, blueprint, delivery (DataGrid-heavy forms)
-5. Phase 5: Polish — platform-specific refinements, performance, testing
-6. Each phase SHALL be independently buildable and testable
+2. Phase 2: Smoke test — build a minimal working shell with Dock layout, one simple view (About), and one DataGrid-heavy view (e.g., Colony or Blueprint) to validate look-and-feel, DataGrid usability, and docking behavior on both Windows and Linux
+3. Phase 3: Decision gate — evaluate the Phase 2 prototype; if the UI is acceptable, proceed; if not, reassess framework choice before investing further
+4. Phase 4: Feature migration — port remaining forms one at a time, starting with simplest
+5. Phase 5: Complex features — colony, blueprint, delivery (DataGrid-heavy forms)
+6. Phase 6: Polish — platform-specific refinements, performance, packaging, testing
+7. Each phase SHALL be independently buildable and testable
 
 ## REQ-AVA-015: Shared Code Maximization
 
@@ -178,8 +179,9 @@ The Avalonia project SHALL:
 2. Support building on Windows, Linux, and macOS development machines
 3. Produce platform-specific packages:
    - Windows: self-contained exe or MSIX installer
-   - Linux: AppImage, .deb, or self-contained publish
-   - macOS: .app bundle
+   - Linux (primary): .deb package for Debian/Ubuntu; .rpm package for RHEL/Fedora/Amazon Linux
+   - Linux (secondary): self-contained publish as universal fallback
+   - macOS: .app bundle (nice-to-have)
 4. The build SHALL produce zero warnings (matching current zero-warnings policy)
 
 ## REQ-AVA-017: Theming and Appearance
@@ -206,9 +208,14 @@ The Avalonia port SHALL:
 
 ---
 
+## Resolved Decisions
+
+1. **MVVM framework** — CommunityToolkit.Mvvm. Simpler than ReactiveUI, uses source generators, consistent with existing patterns.
+2. **Linux packaging** — Primary: .deb (Debian/Ubuntu). Secondary: .rpm (RHEL/Fedora/Amazon Linux). Fallback: self-contained publish.
+3. **Docking** — Dock library (wieslawsoltes/Dock, MIT). Provides tabbed documents, floating windows, split views, dockable panels.
+4. **Migration approach** — Smoke-test-first. Build minimal prototype with Dock + DataGrid + one real view, validate on Windows and Linux before full migration.
+
 ## Open Questions
 
-1. **MVVM framework** — CommunityToolkit.Mvvm (simpler, source generators) vs ReactiveUI (more powerful, Avalonia's traditional choice)? Recommend CommunityToolkit.Mvvm for consistency with existing patterns.
-2. **Tab vs. sidebar navigation** — Should the main navigation be a left sidebar (like VS Code) or a top tab bar (like a browser)? Needs UX prototyping.
-3. **Linux packaging** — AppImage (universal), .deb (Debian/Ubuntu), Flatpak, or self-contained publish? May support multiple.
-4. **Offline-first** — With the server component existing, should the Avalonia app lean more into online sync or maintain the current offline-first model?
+1. **Offline-first** — With the server component existing, should the Avalonia app lean more into online sync or maintain the current offline-first model? (Deferred — not relevant until after smoke test passes)
+2. **Tab vs. sidebar navigation** — Exact sidebar layout TBD during Phase 2 prototyping.
