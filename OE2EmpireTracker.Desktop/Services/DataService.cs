@@ -201,7 +201,7 @@ public sealed class DataService
         }
     }
 
-    /// <summary>Gets colonies for the current player. Returns ALL colonies if no current player set.</summary>
+    /// <summary>Gets colonies for the current player.</summary>
     public List<Colony> GetCurrentPlayerColonies()
     {
         if (_playerRoot is null)
@@ -209,20 +209,9 @@ public sealed class DataService
             return new List<Colony>();
         }
 
-        // If current player is set, filter. Otherwise return all.
-        if (!string.IsNullOrEmpty(CurrentPlayerUUID))
-        {
-            var filtered = Colonies
-                .Where(c => c.OwnerUUID == CurrentPlayerUUID)
-                .ToList();
-            if (filtered.Count > 0)
-            {
-                return filtered;
-            }
-        }
-
-        // Return all colonies if no current player or filter returned nothing
-        return Colonies.ToList();
+        return Colonies
+            .Where(c => c.OwnerUUID == CurrentPlayerUUID)
+            .ToList();
     }
 
     /// <summary>Gets blueprints for the current player.</summary>
