@@ -105,6 +105,7 @@ public partial class App : Application
         services.AddSingleton<IClipboardService, ClipboardService>();
         services.AddSingleton<SafeFileWriter>();
         services.AddSingleton<AppConfigService>();
+        services.AddSingleton<PreferencesStore>();
         services.AddSingleton<DataService>();
         services.AddSingleton<ColonyProcessingContext>();
         services.AddSingleton<BackgroundProcessor>();

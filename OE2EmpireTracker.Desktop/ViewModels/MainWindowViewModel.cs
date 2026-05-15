@@ -152,7 +152,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         return documentType switch
         {
             "About" => new AboutViewModel(),
+            "AsteroidList" => new AsteroidViewModel(),
             "BlueprintList" => new BlueprintViewModel(),
+            "BuildPlanList" => new BuildPlannerViewModel(),
             "ColonyList" => new ColonyViewModel(),
             "ColonyActivity" => new ColonyActivityViewModel(),
             "ContactsList" => new ContactsViewModel(),
@@ -160,7 +162,6 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             "DeliveryList" => new DeliveryRouteViewModel(),
             "Help" => new HelpViewModel(),
             "MarketList" => new MarketViewModel(),
-            "AsteroidList" => new AsteroidViewModel(),
             "Preferences" => new PreferencesViewModel(),
             "PricingPlanList" => new PricingPlanViewModel(),
             "Profile" => new PlayerProfileViewModel(),
@@ -336,13 +337,22 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
         var title = documentType switch
         {
-            "ColonyList" => "Colonies",
+            "AsteroidList" => "Asteroids",
             "BlueprintList" => "Blueprints",
-            "SurveyList" => "Surveys",
-            "ShipList" => "Ships",
+            "BuildPlanList" => "Build Plans",
+            "ColonyList" => "Colonies",
+            "ColonyActivity" => "Colony Activity",
+            "ContactsList" => "Contacts",
             "DeliveryList" => "Delivery Routes",
             "MarketList" => "Market",
+            "Preferences" => "Preferences",
+            "PricingPlanList" => "Pricing Plans",
             "Profile" => "Profile",
+            "ShipList" => "Ships",
+            "StationList" => "Stations",
+            "StockTargets" => "Stock Targets",
+            "SupplyChainList" => "Supply Chains",
+            "SurveyList" => "Surveys",
             "SystemList" => "Systems",
             "Help" => "Help",
             "About" => "About",
