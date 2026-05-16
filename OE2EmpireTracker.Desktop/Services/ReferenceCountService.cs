@@ -134,11 +134,44 @@ public sealed class ReferenceCountService
     }
 
     /// <summary>
-    /// Counts how many times a faction is referenced from external characters.
+    /// Counts how many times a build plan is referenced from stock plans
+    /// (StockPlan.ReplenishmentBuildPlanUUID).
+    /// </summary>
+    public int GetBuildPlanReferenceCount(string buildPlanUuid)
+    {
+        int count = 0;
+
+        foreach (var stockPlan in _dataService.StockPlans)
+        {
+            if (stockPlan.ReplenishmentBuildPlanUUID == buildPlanUuid)
+            {
+                count++;
+            }
+        }
+
+        _logger.LogDebug(
+            "BuildPlan {UUID} has {Count} references",
+            buildPlanUuid,
+            count);
+
+        return count;
+    }
+
+    /// <summary>
+    /// Counts how many times a faction is referenced from player profiles
+    /// and external characters.
     /// </summary>
     public int GetFactionReferenceCount(string factionUuid)
     {
         int count = 0;
+
+        foreach (var profile in _dataService.PlayerProfiles)
+        {
+            if (profile.FactionUUID == factionUuid)
+            {
+                count++;
+            }
+        }
 
         foreach (var character in _dataService.ExternalCharacters)
         {

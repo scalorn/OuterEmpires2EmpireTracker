@@ -7,19 +7,21 @@ using Newtonsoft.Json;
 namespace OE2EmpireTracker.Desktop.Services;
 
 /// <summary>
-/// Persists DataGrid column widths per grid ID.
+/// Persists DataGrid column widths and filter text per grid/view ID.
 /// Stores alongside UIPreferences.json in the config directory.
 /// Actual wiring to each DataGrid is deferred (requires code-behind per grid).
 /// </summary>
 public sealed class GridStateService
 {
     private const string FileName = "GridState.json";
+    private const string FilterFileName = "FilterState.json";
 
     private readonly IFileSystemService _fileSystem;
     private readonly SafeFileWriter _safeFileWriter;
     private readonly ILogger<GridStateService> _logger;
 
     private Dictionary<string, Dictionary<string, double>> _state;
+    private Dictionary<string, Dictionary<string, string>> _filterState;
 
     public GridStateService(
         IFileSystemService fileSystem,
@@ -30,7 +32,9 @@ public sealed class GridStateService
         _safeFileWriter = safeFileWriter;
         _logger = logger;
         _state = new Dictionary<string, Dictionary<string, double>>();
+        _filterState = new Dictionary<string, Dictionary<string, string>>();
         Load();
+        LoadFilters();
     }
 
     /// <summary>
@@ -53,6 +57,29 @@ public sealed class GridStateService
     {
         return _state.TryGetValue(gridId, out var widths)
             ? new Dictionary<string, double>(widths)
+            : null;
+    }
+
+    /// <summary>
+    /// Saves filter text values for a given view ID.
+    /// </summary>
+    /// <param name="viewId">Unique identifier for the view (e.g. "ColonyList").</param>
+    /// <param name="filters">Dictionary of filter name to filter text value.</param>
+    public void SaveFilterState(string viewId, Dictionary<string, string> filters)
+    {
+        _filterState[viewId] = new Dictionary<string, string>(filters);
+        PersistFilters();
+    }
+
+    /// <summary>
+    /// Loads saved filter text values for a given view ID.
+    /// </summary>
+    /// <param name="viewId">Unique identifier for the view.</param>
+    /// <returns>Dictionary of filter name to filter text value, or null if not saved.</returns>
+    public Dictionary<string, string>? LoadFilterState(string viewId)
+    {
+        return _filterState.TryGetValue(viewId, out var filters)
+            ? new Dictionary<string, string>(filters)
             : null;
     }
 
@@ -102,6 +129,55 @@ public sealed class GridStateService
         {
             _logger.LogWarning(ex, "Failed to load grid state from {Path}, using defaults", path);
             _state = new Dictionary<string, Dictionary<string, double>>();
+        }
+    }
+
+    private void PersistFilters()
+    {
+        try
+        {
+            var path = GetFilterFilePath();
+            var json = JsonConvert.SerializeObject(_filterState, Formatting.Indented);
+            _safeFileWriter.WriteAllText(path, json);
+            _logger.LogDebug("Saved filter state to {Path}", path);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to save filter state");
+        }
+    }
+
+    private string GetFilterFilePath()
+    {
+        var configDir = _fileSystem.GetConfigDirectory();
+        _fileSystem.EnsureDirectoryExists(configDir);
+        return Path.Combine(configDir, FilterFileName);
+    }
+
+    private void LoadFilters()
+    {
+        var path = GetFilterFilePath();
+        if (!File.Exists(path))
+        {
+            _logger.LogDebug("Filter state file not found, using defaults");
+            return;
+        }
+
+        try
+        {
+            var json = File.ReadAllText(path);
+            var loaded = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(json);
+            if (loaded is not null)
+            {
+                _filterState = loaded;
+            }
+
+            _logger.LogDebug("Loaded filter state from {Path}", path);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to load filter state from {Path}, using defaults", path);
+            _filterState = new Dictionary<string, Dictionary<string, string>>();
         }
     }
 }

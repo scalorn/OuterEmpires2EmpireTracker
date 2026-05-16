@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using OE2EmpireTracker.Desktop.Services;
 
@@ -40,6 +41,22 @@ public sealed partial class HelpViewModel : DocumentViewModel
                 return;
             }
         }
+    }
+
+    /// <summary>
+    /// Command to navigate to an internal link target (S5).
+    /// Accepts a filename (e.g. "colonies.md") and loads that topic.
+    /// Infrastructure is ready for when HTML rendering makes links clickable.
+    /// </summary>
+    [RelayCommand]
+    private void NavigateLink(string? fileName)
+    {
+        if (string.IsNullOrEmpty(fileName))
+        {
+            return;
+        }
+
+        NavigateToTopic(fileName);
     }
 
     partial void OnSelectedTopicChanged(HelpTopic? value)

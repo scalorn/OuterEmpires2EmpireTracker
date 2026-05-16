@@ -75,6 +75,9 @@
         <DataTemplate DataType="vm:StockTargetsViewModel">
             <views:StockTargetsView />
         </DataTemplate>
+        <DataTemplate DataType="vm:ColonyDailyBuildViewModel">
+            <views:ColonyDailyBuildView />
+        </DataTemplate>
     </Application.DataTemplates>
 
 </Application>

@@ -34,6 +34,7 @@ public sealed partial class NavigationViewModel : ToolViewModel
         {
             new NavItem { Label = "Colonies", Icon = "🏠", DocumentType = "ColonyList" },
             new NavItem { Label = "Activity", Icon = "⏱️", DocumentType = "ColonyActivity" },
+            new NavItem { Label = "Daily Build", Icon = "🔨", DocumentType = "DailyBuild" },
             new NavItem { Label = "Blueprints", Icon = "📋", DocumentType = "BlueprintList" },
             new NavItem { Label = "Surveys", Icon = "🔍", DocumentType = "SurveyList" },
             new NavItem { Label = "Ships", Icon = "🚀", DocumentType = "ShipList" },

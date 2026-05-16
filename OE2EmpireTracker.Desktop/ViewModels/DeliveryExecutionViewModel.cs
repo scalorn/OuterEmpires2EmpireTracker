@@ -3,8 +3,11 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using OE2EmpireTracker.Desktop.Services;
 using OE2EmpireTracker.Desktop.ViewModels.Messages;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
 
@@ -77,6 +80,9 @@ public sealed partial class DeliveryExecutionViewModel : DocumentViewModel
     [ObservableProperty]
     private DeliveryLoadItemRowViewModel? _selectedLoadItem;
 
+    [ObservableProperty]
+    private string _cargoVolumeDisplay = string.Empty;
+
     public DeliveryExecutionViewModel()
     {
         Title = "Delivery Execution";
@@ -106,7 +112,8 @@ public sealed partial class DeliveryExecutionViewModel : DocumentViewModel
         LoadData();
     }
 
-    /// <summary>Marks the selected load item as delivered and fires ColonyDataChanged (REQ-DCE-030a).</summary>
+    /// <summary>Marks the selected load item as delivered and fires ColonyDataChanged (REQ-DCE-030a).
+    /// For flatpack items, also stages the structure at the destination colony (H3.5).</summary>
     [RelayCommand]
     private void MarkDelivered()
     {
@@ -127,6 +134,7 @@ public sealed partial class DeliveryExecutionViewModel : DocumentViewModel
         // Find the plan model and mark the corresponding item delivered
         var planModel = dataService.DeliveryPlans
             .FirstOrDefault(p => p.UUID == SelectedPlan.PlanUuid);
+        DeliveryItem? matchedItem = null;
         if (planModel?.Stops is not null)
         {
             foreach (var stop in planModel.Stops)
@@ -137,10 +145,27 @@ public sealed partial class DeliveryExecutionViewModel : DocumentViewModel
                     if (key == SelectedLoadItem.ItemKey && !dropItem.Delivered)
                     {
                         dropItem.Delivered = true;
+                        matchedItem = dropItem;
                         break;
                     }
                 }
+
+                if (matchedItem is not null)
+                {
+                    break;
+                }
             }
+        }
+
+        // H3.5: If the delivered item is a flatpack, stage the structure at the destination colony
+        if (matchedItem is not null
+            && matchedItem.ItemType == ItemType.ItemTypeEnum.Flatpack
+            && !string.IsNullOrEmpty(SelectedLoadItem.DestinationColonyUuid))
+        {
+            var colonyService = App.Services?.GetService(typeof(ColonyService)) as ColonyService;
+            colonyService?.StageFlatpackStructure(
+                SelectedLoadItem.DestinationColonyUuid,
+                matchedItem.BaseItemTypeID);
         }
 
         dataService.IsDirty = true;
@@ -247,6 +272,9 @@ public sealed partial class DeliveryExecutionViewModel : DocumentViewModel
             });
         }
 
+        // Compute cargo volume display (H3.4)
+        UpdateCargoVolumeDisplay(loadList, dataService);
+
         if (Stops.Count == 0)
         {
             LoadSampleStops();
@@ -274,5 +302,23 @@ public sealed partial class DeliveryExecutionViewModel : DocumentViewModel
         LoadItems.Add(new DeliveryLoadItemRowViewModel { ItemName = "Electronics", Quantity = 100, Delivered = true });
         LoadItems.Add(new DeliveryLoadItemRowViewModel { ItemName = "Fuel Cells", Quantity = 50, Delivered = false });
         LoadItems.Add(new DeliveryLoadItemRowViewModel { ItemName = "Food Rations", Quantity = 200, Delivered = false });
+    }
+
+    /// <summary>Computes and sets the CargoVolumeDisplay from the load list (H3.4).</summary>
+    private void UpdateCargoVolumeDisplay(
+        System.Collections.Generic.List<OE2EmpireTracker.Models.DeliveryItem> loadList,
+        DataService dataService)
+    {
+        ReadOnlyBlueprint? FindBlueprint(string id)
+        {
+            var bp = dataService.Blueprints.FirstOrDefault(b => b.UUID == id);
+            return bp is not null ? new ReadOnlyBlueprint(bp) : null;
+        }
+
+        var result = OE2EmpireTracker.Services.CargoVolumeService.ComputeLoadVolume(
+            loadList,
+            FindBlueprint!);
+
+        CargoVolumeDisplay = $"Vol: {result.TotalVolume:N0}  Mass: {result.TotalMass:N0}";
     }
 }
