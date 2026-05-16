@@ -76,6 +76,9 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
     [ObservableProperty]
     private int _detailEvolution;
 
+    [ObservableProperty]
+    private string _computedPriceDisplay = string.Empty;
+
     public BlueprintViewModel()
     {
         Title = "Blueprints";
@@ -131,6 +134,7 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
     {
         Stats.Clear();
         Resources.Clear();
+        ComputedPriceDisplay = string.Empty;
 
         if (row is null)
         {
@@ -193,6 +197,35 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
         if (Resources.Count == 0)
         {
             LoadSampleResources(row.Name);
+        }
+
+        UpdateComputedPrice(bp);
+    }
+
+    private void UpdateComputedPrice(Blueprint bp)
+    {
+        var calculator = App.Services?.GetService(typeof(PriceCalculator)) as PriceCalculator;
+        if (calculator is null)
+        {
+            ComputedPriceDisplay = string.Empty;
+            return;
+        }
+
+        var plan = calculator.GetFirstPlanForCurrentPlayer();
+        if (plan is null)
+        {
+            ComputedPriceDisplay = string.Empty;
+            return;
+        }
+
+        var result = calculator.ComputeBlueprintPrice(bp, plan, 0m);
+        if (result.IsComplete)
+        {
+            ComputedPriceDisplay = $"{result.Price:N2} credits";
+        }
+        else
+        {
+            ComputedPriceDisplay = $"{result.Price:N2} credits (Incomplete)";
         }
     }
 

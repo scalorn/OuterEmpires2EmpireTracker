@@ -118,6 +118,7 @@ public partial class App : Application
         services.AddSingleton<DeliveryRouteService>();
         services.AddSingleton<DeliveryPlanService>();
         services.AddSingleton<PricingPlanService>();
+        services.AddSingleton<PriceCalculator>();
         services.AddSingleton<BuildPlanService>();
         services.AddSingleton<MarketService>();
         services.AddSingleton<StationService>();
