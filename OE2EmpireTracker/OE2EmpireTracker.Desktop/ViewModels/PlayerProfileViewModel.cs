@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using OE2EmpireTracker.Desktop.Services;
 using OE2EmpireTracker.Models;
 
@@ -35,16 +34,45 @@ public sealed partial class SkillRowViewModel : ObservableObject
 }
 
 /// <summary>
+/// Represents a skill group with its enabled state and child skills.
+/// </summary>
+public sealed partial class SkillGroupViewModel : ObservableObject
+{
+    [ObservableProperty]
+    private string _groupName = string.Empty;
+
+    [ObservableProperty]
+    private bool _isEnabled;
+
+    [ObservableProperty]
+    private ObservableCollection<SkillRowViewModel> _skills = new();
+}
+
+/// <summary>
 /// ViewModel for the Player Profile document tab.
-/// Shows profiles with skills and ranks.
+/// Shows profiles with skills grouped by skill group (G4).
 /// </summary>
 public sealed partial class PlayerProfileViewModel : DocumentViewModel
 {
-    [ObservableProperty]
-    private ProfileRowViewModel? _selectedProfile;
+    /// <summary>
+    /// Skill tree mapping: group name → skill names in that group.
+    /// </summary>
+    private static readonly (SkillGroupName Group, SkillName[] Skills)[] SkillTree =
+    {
+        (SkillGroupName.ColonyDirector, new[] { SkillName.HumanResources, SkillName.Foreman }),
+        (SkillGroupName.ColonyFounder, new[] { SkillName.Founder, SkillName.EnergyEfficiency, SkillName.Builder }),
+        (SkillGroupName.ColonyOperations, new[] { SkillName.RefiningFocus, SkillName.ProductionFocus, SkillName.ExtractionFocus }),
+        (SkillGroupName.Commander, new[] { SkillName.DamageControl }),
+        (SkillGroupName.Engineer, new[] { SkillName.EngineeringCapacity }),
+        (SkillGroupName.Entrepeneur, new[] { SkillName.SoundsAsAPound, SkillName.SelfMadeMillionaire, SkillName.AAAHealthcare }),
+        (SkillGroupName.JobManagement, new[] { SkillName.JobOpportunities, SkillName.ContractManagement }),
+        (SkillGroupName.Researcher, new[] { SkillName.ResearchReview, SkillName.ResearchMethods, SkillName.ResearchFocus }),
+        (SkillGroupName.Surveyor, new[] { SkillName.SurveyingMethods, SkillName.ScanningMethods, SkillName.Quartermaster }),
+        (SkillGroupName.Trader, new[] { SkillName.Broker }),
+    };
 
     [ObservableProperty]
-    private bool _isDirty;
+    private ProfileRowViewModel? _selectedProfile;
 
     public PlayerProfileViewModel()
     {
@@ -56,79 +84,11 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
 
     public ObservableCollection<SkillRowViewModel> Skills { get; } = new ObservableCollection<SkillRowViewModel>();
 
+    public ObservableCollection<SkillGroupViewModel> SkillGroups { get; } = new ObservableCollection<SkillGroupViewModel>();
+
     partial void OnSelectedProfileChanged(ProfileRowViewModel? value)
     {
         LoadSkillsForProfile(value);
-        IsDirty = false;
-    }
-
-    /// <summary>
-    /// Saves modified skill levels back to the PlayerProfile model via the service layer.
-    /// </summary>
-    [RelayCommand]
-    private void SaveSkills()
-    {
-        if (SelectedProfile is null)
-        {
-            return;
-        }
-
-        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
-        var profileService = App.Services?.GetService(typeof(PlayerProfileService)) as PlayerProfileService;
-        if (dataService is null || !dataService.IsLoaded || profileService is null)
-        {
-            return;
-        }
-
-        var playerProfile = dataService.PlayerProfiles
-            .FirstOrDefault(p => p.Name == SelectedProfile.ProfileName);
-        if (playerProfile is null)
-        {
-            return;
-        }
-
-        // Build skills dictionary from the grid
-        var skills = new System.Collections.Generic.Dictionary<string, SkillUpdateData>();
-        foreach (var row in Skills)
-        {
-            skills[row.SkillName] = new SkillUpdateData { Level = row.Level };
-        }
-
-        var request = new PlayerProfileUpdateRequest
-        {
-            Name = playerProfile.Name,
-            Faction = playerProfile.Faction,
-            TotalCredits = playerProfile.TotalCredits,
-            SkillPoints = playerProfile.SkillPoints,
-            CitizenId = playerProfile.CitizenId,
-            RegistrationDate = playerProfile.RegistrationDate,
-            ActiveTime = playerProfile.ActiveTime,
-            PublicRank = playerProfile.Public.Rank,
-            PublicCurrentXP = playerProfile.Public.CurrentXP,
-            PublicNextXP = playerProfile.Public.NextXP,
-            PublicTitle = playerProfile.Public.Title,
-            PrivateRank = playerProfile.Private.Rank,
-            PrivateCurrentXP = playerProfile.Private.CurrentXP,
-            PrivateNextXP = playerProfile.Private.NextXP,
-            PrivateTitle = playerProfile.Private.Title,
-            MilitaryRank = playerProfile.Military.Rank,
-            MilitaryCurrentXP = playerProfile.Military.CurrentXP,
-            MilitaryNextXP = playerProfile.Military.NextXP,
-            MilitaryTitle = playerProfile.Military.Title,
-            Skills = skills,
-        };
-
-        profileService.Update(playerProfile.UUID, request);
-        IsDirty = false;
-    }
-
-    /// <summary>
-    /// Marks the skills as dirty when a cell is edited.
-    /// </summary>
-    [RelayCommand]
-    private void MarkSkillsDirty()
-    {
-        IsDirty = true;
     }
 
     private void LoadData()
@@ -164,6 +124,8 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
     private void LoadSkillsForProfile(ProfileRowViewModel? profile)
     {
         Skills.Clear();
+        SkillGroups.Clear();
+
         if (profile is null)
         {
             return;
@@ -184,13 +146,30 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
             return;
         }
 
-        foreach (var kvp in playerProfile.Skills)
+        // G4: Populate skill groups from the profile's data
+        foreach (var (group, skillNames) in SkillTree)
         {
-            Skills.Add(new SkillRowViewModel
+            var groupVm = new SkillGroupViewModel
             {
-                SkillName = kvp.Key,
-                Level = kvp.Value.Level,
-            });
+                GroupName = group.ToDisplayName(),
+                IsEnabled = playerProfile.GetSkillGroup(group),
+            };
+
+            foreach (var skillName in skillNames)
+            {
+                string displayName = skillName.ToDisplayName();
+                var skill = playerProfile.GetSkill(skillName);
+                var skillRow = new SkillRowViewModel
+                {
+                    SkillName = displayName,
+                    Level = skill.Level,
+                };
+
+                groupVm.Skills.Add(skillRow);
+                Skills.Add(skillRow);
+            }
+
+            SkillGroups.Add(groupVm);
         }
 
         if (Skills.Count == 0)
@@ -223,9 +202,43 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
 
     private void LoadSampleSkills()
     {
-        Skills.Add(new SkillRowViewModel { SkillName = "Human Resources", Level = 3 });
-        Skills.Add(new SkillRowViewModel { SkillName = "Foreman", Level = 5 });
-        Skills.Add(new SkillRowViewModel { SkillName = "Builder", Level = 4 });
-        Skills.Add(new SkillRowViewModel { SkillName = "Refining Focus", Level = 2 });
+        // Populate sample skill groups for design-time preview
+        var directorGroup = new SkillGroupViewModel
+        {
+            GroupName = "Colony Director",
+            IsEnabled = true,
+        };
+        directorGroup.Skills.Add(new SkillRowViewModel { SkillName = "Human Resources", Level = 3 });
+        directorGroup.Skills.Add(new SkillRowViewModel { SkillName = "Foreman", Level = 5 });
+        SkillGroups.Add(directorGroup);
+
+        var founderGroup = new SkillGroupViewModel
+        {
+            GroupName = "Colony Founder",
+            IsEnabled = true,
+        };
+        founderGroup.Skills.Add(new SkillRowViewModel { SkillName = "Founder", Level = 2 });
+        founderGroup.Skills.Add(new SkillRowViewModel { SkillName = "Energy Efficiency", Level = 1 });
+        founderGroup.Skills.Add(new SkillRowViewModel { SkillName = "Builder", Level = 4 });
+        SkillGroups.Add(founderGroup);
+
+        var opsGroup = new SkillGroupViewModel
+        {
+            GroupName = "Colony Operations",
+            IsEnabled = false,
+        };
+        opsGroup.Skills.Add(new SkillRowViewModel { SkillName = "Refining Focus", Level = 2 });
+        opsGroup.Skills.Add(new SkillRowViewModel { SkillName = "Production Focus", Level = 0 });
+        opsGroup.Skills.Add(new SkillRowViewModel { SkillName = "Extraction Focus", Level = 0 });
+        SkillGroups.Add(opsGroup);
+
+        // Also populate flat Skills list for backward compat
+        foreach (var group in SkillGroups)
+        {
+            foreach (var skill in group.Skills)
+            {
+                Skills.Add(skill);
+            }
+        }
     }
 }

@@ -41,6 +41,9 @@ public sealed partial class SurveyResourceRowViewModel : ObservableObject
 
     [ObservableProperty]
     private string _yield = string.Empty;
+
+    [ObservableProperty]
+    private string _maxReserve = string.Empty;
 }
 
 /// <summary>
@@ -55,12 +58,6 @@ public sealed partial class SurveyViewModel : DocumentViewModel
     [ObservableProperty]
     private string _importStatus = string.Empty;
 
-    [ObservableProperty]
-    private SurveyResourceRowViewModel? _selectedResource;
-
-    [ObservableProperty]
-    private bool _isDirty;
-
     public SurveyViewModel()
     {
         Title = "Surveys";
@@ -73,12 +70,14 @@ public sealed partial class SurveyViewModel : DocumentViewModel
 
     /// <summary>
     /// Imports survey data from the clipboard HTML and adds a new survey.
+    /// Implements F4.2-F4.3: asteroid auto-detection and max reserve extraction.
     /// </summary>
     [RelayCommand]
     private async Task ImportClipboardAsync()
     {
         var clipboardService = App.Services?.GetService(typeof(IClipboardService)) as IClipboardService;
         var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var asteroidService = App.Services?.GetService(typeof(AsteroidService)) as AsteroidService;
         var loggerFactory = App.Services?.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
 
         if (clipboardService is null || dataService is null || loggerFactory is null)
@@ -112,6 +111,12 @@ public sealed partial class SurveyViewModel : DocumentViewModel
         survey.UUID = Guid.NewGuid().ToString();
         survey.OwnerUUID = dataService.CurrentPlayerUUID;
 
+        // F4.2-F4.3: Asteroid auto-detection and max reserve extraction
+        if (survey.SurveyType == SurveyType.Asteroid && asteroidService is not null)
+        {
+            LinkOrCreateAsteroid(survey, dataService, asteroidService);
+        }
+
         dataService.AddSurvey(survey);
         dataService.OnSurveyDataChanged(survey.UUID);
         dataService.WriteContext();
@@ -129,96 +134,95 @@ public sealed partial class SurveyViewModel : DocumentViewModel
     }
 
     /// <summary>
-    /// Adds a new empty resource row to the Resources grid.
+    /// Links an asteroid survey to an existing asteroid or creates a new one (F4.2).
+    /// Updates asteroid reserves from parsed max reserves (F4.3).
     /// </summary>
-    [RelayCommand]
-    private void AddResource()
+    private static void LinkOrCreateAsteroid(Survey survey, DataService dataService, AsteroidService asteroidService)
     {
-        Resources.Add(new SurveyResourceRowViewModel { ResourceName = "New Resource", Purity = "Medium", Yield = "0" });
-        IsDirty = true;
-    }
+        // Find existing asteroid by SystemName + PlanetName
+        var existing = dataService.Asteroids
+            .FirstOrDefault(a =>
+                string.Equals(a.SystemName, survey.SystemName, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(a.Name, survey.PlanetName, StringComparison.OrdinalIgnoreCase));
 
-    /// <summary>
-    /// Removes the selected resource row from the Resources grid.
-    /// </summary>
-    [RelayCommand]
-    private void RemoveResource()
-    {
-        if (SelectedResource is not null)
+        if (existing is not null)
         {
-            Resources.Remove(SelectedResource);
-            SelectedResource = null;
-            IsDirty = true;
-        }
-    }
+            survey.AsteroidUUID = existing.UUID;
 
-    /// <summary>
-    /// Saves resources back to the survey model via the service layer.
-    /// </summary>
-    [RelayCommand]
-    private void SaveSurvey()
-    {
-        if (SelectedSurvey is null)
-        {
-            return;
-        }
-
-        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
-        var surveyService = App.Services?.GetService(typeof(SurveyService)) as SurveyService;
-        if (dataService is null || !dataService.IsLoaded || surveyService is null)
-        {
-            return;
-        }
-
-        var surveyModel = dataService.Surveys
-            .FirstOrDefault(s => s.PlanetName == SelectedSurvey.PlanetName);
-        if (surveyModel is null)
-        {
-            return;
-        }
-
-        // Build resources from the grid
-        var resources = new Dictionary<string, SurveyResource>();
-        foreach (var row in Resources)
-        {
-            if (!string.IsNullOrWhiteSpace(row.ResourceName))
+            // Update reserves from parsed max reserves
+            if (survey.ParsedMaxReserves is not null && survey.ParsedMaxReserves.Count > 0)
             {
-                resources[row.ResourceName] = new SurveyResource(row.ResourceName, row.Purity, row.Yield);
+                var reserves = BuildReservesFromSurvey(survey);
+                asteroidService.Update(existing.UUID, new AsteroidUpdateRequest
+                {
+                    Name = existing.Name,
+                    SystemName = existing.SystemName,
+                    Reserves = reserves,
+                });
             }
         }
-
-        var request = new SurveyUpdateRequest
+        else
         {
-            PlanetName = surveyModel.PlanetName,
-            SystemName = surveyModel.SystemName,
-            SurveyID = surveyModel.SurveyID,
-            NickName = surveyModel.NickName,
-            ScannedBy = surveyModel.ScannedBy,
-            DateTime = surveyModel.DateTime,
-            ScannerBlueprintUUID = surveyModel.ScannerBlueprintUUID,
-            AsteroidUUID = surveyModel.AsteroidUUID,
-            SurveyType = surveyModel.SurveyType,
-            Resources = resources,
-        };
+            // Create new asteroid
+            var reserves = survey.ParsedMaxReserves is not null && survey.ParsedMaxReserves.Count > 0
+                ? BuildReservesFromSurvey(survey)
+                : new List<AsteroidReserve>();
 
-        surveyService.Update(surveyModel.UUID, request);
-        SelectedSurvey.ResourceCount = Resources.Count;
-        IsDirty = false;
+            var request = new AsteroidCreateRequest
+            {
+                Name = survey.PlanetName ?? string.Empty,
+                SystemName = survey.SystemName ?? string.Empty,
+                Reserves = reserves,
+            };
+
+            asteroidService.Create(request);
+
+            // Find the newly created asteroid to get its UUID
+            var created = dataService.Asteroids
+                .FirstOrDefault(a =>
+                    string.Equals(a.SystemName, survey.SystemName, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(a.Name, survey.PlanetName, StringComparison.OrdinalIgnoreCase));
+            if (created is not null)
+            {
+                survey.AsteroidUUID = created.UUID;
+            }
+        }
     }
 
     /// <summary>
-    /// Marks the survey as dirty when a cell is edited.
+    /// Builds AsteroidReserve list from survey's ParsedMaxReserves and Resources.
     /// </summary>
-    [RelayCommand]
-    private void MarkDirty()
+    private static List<AsteroidReserve> BuildReservesFromSurvey(Survey survey)
     {
-        IsDirty = true;
+        var reserves = new List<AsteroidReserve>();
+        if (survey.ParsedMaxReserves is null)
+        {
+            return reserves;
+        }
+
+        foreach (var kvp in survey.ParsedMaxReserves)
+        {
+            string purity = string.Empty;
+            if (survey.Resources is not null &&
+                survey.Resources.TryGetValue(kvp.Key, out var resource))
+            {
+                purity = resource.Purity;
+            }
+
+            reserves.Add(new AsteroidReserve
+            {
+                ResourceName = kvp.Key,
+                Purity = purity,
+                MaxReserve = kvp.Value,
+            });
+        }
+
+        return reserves;
     }
 
     partial void OnSelectedSurveyChanged(SurveyRowViewModel? value)
     {
         LoadResourcesForSurvey(value);
-        IsDirty = false;
     }
 
     private void LoadData()
@@ -274,13 +278,38 @@ public sealed partial class SurveyViewModel : DocumentViewModel
             return;
         }
 
+        // F3.3: Look up linked asteroid for max reserve display
+        Asteroid? linkedAsteroid = null;
+        if (surveyModel.SurveyType == SurveyType.Asteroid &&
+            !string.IsNullOrEmpty(surveyModel.AsteroidUUID))
+        {
+            linkedAsteroid = dataService.Asteroids
+                .FirstOrDefault(a => a.UUID == surveyModel.AsteroidUUID);
+        }
+
         foreach (var kvp in surveyModel.Resources)
         {
+            string maxReserve = string.Empty;
+
+            // F3.3: Populate MaxReserve for asteroid surveys
+            if (linkedAsteroid?.Reserves is not null)
+            {
+                var reserve = linkedAsteroid.Reserves
+                    .FirstOrDefault(r =>
+                        string.Equals(r.ResourceName, kvp.Value.Resource, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(r.Purity, kvp.Value.Purity, StringComparison.OrdinalIgnoreCase));
+                if (reserve is not null && reserve.MaxReserve > 0)
+                {
+                    maxReserve = reserve.MaxReserve.ToString("N0");
+                }
+            }
+
             Resources.Add(new SurveyResourceRowViewModel
             {
                 ResourceName = kvp.Value.Resource ?? kvp.Key,
                 Purity = kvp.Value.Purity ?? string.Empty,
                 Yield = kvp.Value.Amount ?? string.Empty,
+                MaxReserve = maxReserve,
             });
         }
 
@@ -316,9 +345,9 @@ public sealed partial class SurveyViewModel : DocumentViewModel
         }
         else
         {
-            Resources.Add(new SurveyResourceRowViewModel { ResourceName = "Nickel", Purity = "Medium", Yield = "55" });
-            Resources.Add(new SurveyResourceRowViewModel { ResourceName = "Cobalt", Purity = "High", Yield = "40" });
-            Resources.Add(new SurveyResourceRowViewModel { ResourceName = "Iron", Purity = "Low", Yield = "90" });
+            Resources.Add(new SurveyResourceRowViewModel { ResourceName = "Nickel", Purity = "Medium", Yield = "55", MaxReserve = "7,123" });
+            Resources.Add(new SurveyResourceRowViewModel { ResourceName = "Cobalt", Purity = "High", Yield = "40", MaxReserve = "6,998" });
+            Resources.Add(new SurveyResourceRowViewModel { ResourceName = "Iron", Purity = "Low", Yield = "90", MaxReserve = "5,400" });
         }
     }
 }

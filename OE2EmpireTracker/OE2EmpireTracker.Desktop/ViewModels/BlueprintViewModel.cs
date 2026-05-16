@@ -1,8 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using OE2EmpireTracker.Desktop.Parsers;
 using OE2EmpireTracker.Desktop.Services;
 using OE2EmpireTracker.Models;
 
@@ -56,6 +61,7 @@ public sealed partial class BlueprintResourceRowViewModel : ObservableObject
 /// <summary>
 /// ViewModel for the Blueprint document tab.
 /// Shows blueprint list with detail, statistics, resources, and evolution tabs.
+/// Implements E6.2-E6.4: blueprint import with deduplication and government handling.
 /// </summary>
 public sealed partial class BlueprintViewModel : DocumentViewModel
 {
@@ -78,13 +84,13 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
     private int _detailEvolution;
 
     [ObservableProperty]
-    private BlueprintStatRowViewModel? _selectedStat;
+    private string _computedPriceDisplay = string.Empty;
 
     [ObservableProperty]
-    private BlueprintResourceRowViewModel? _selectedResource;
+    private bool _hasEvolutionData;
 
     [ObservableProperty]
-    private bool _isDirty;
+    private string _importStatus = string.Empty;
 
     public BlueprintViewModel()
     {
@@ -98,131 +104,172 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
 
     public ObservableCollection<BlueprintResourceRowViewModel> Resources { get; } = new ();
 
+    /// <summary>
+    /// Imports a blueprint from clipboard HTML.
+    /// E6.2: Deduplicates by Name+Evolution+Type+Class+TechLevel.
+    /// E6.3: Preserves NickName, CopyCost, BaseBlueprintUUID on update.
+    /// E6.4: Sets OwnerUUID to empty for Government seller.
+    /// </summary>
+    [RelayCommand]
+    private async Task ImportClipboardAsync()
+    {
+        var clipboardService = App.Services?.GetService(typeof(IClipboardService)) as IClipboardService;
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var blueprintService = App.Services?.GetService(typeof(BlueprintService)) as BlueprintService;
+        var loggerFactory = App.Services?.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
+
+        if (clipboardService is null || dataService is null || blueprintService is null || loggerFactory is null)
+        {
+            ImportStatus = "Services not available";
+            return;
+        }
+
+        string? html = await clipboardService.GetHtmlAsync();
+        if (string.IsNullOrEmpty(html))
+        {
+            ImportStatus = "No HTML on clipboard";
+            return;
+        }
+
+        string fragment = HtmlClipboardHelper.ExtractHtmlFragment(html);
+        if (string.IsNullOrEmpty(fragment))
+        {
+            ImportStatus = "Could not extract HTML fragment";
+            return;
+        }
+
+        var scanner = new BlueprintScanner(loggerFactory.CreateLogger<BlueprintScanner>());
+        var parsed = scanner.ProcessHtml(fragment);
+        if (parsed is null)
+        {
+            ImportStatus = "Failed to parse blueprint HTML";
+            return;
+        }
+
+        // E6.4: Check if seller is "Government" — set OwnerUUID to empty
+        bool isGovernment = IsGovernmentSeller(fragment);
+        string ownerUuid = isGovernment ? string.Empty : dataService.CurrentPlayerUUID;
+
+        // E6.2: Check for existing blueprint by Name+Evolution+Type+Class+TechLevel
+        var existing = dataService.Blueprints.FirstOrDefault(b =>
+            string.Equals(b.Name, parsed.Name, StringComparison.OrdinalIgnoreCase) &&
+            b.Evolution == parsed.Evolution &&
+            string.Equals(b.BluePrintType, parsed.BluePrintType, StringComparison.OrdinalIgnoreCase) &&
+            b.Class == parsed.Class &&
+            string.Equals(b.TechLevel, parsed.TechLevel, StringComparison.OrdinalIgnoreCase));
+
+        if (existing is not null)
+        {
+            // E6.3: Update existing, preserving NickName, CopyCost, BaseBlueprintUUID
+            var properties = new Dictionary<string, string>();
+            foreach (var key in parsed.Properties.Properties.Keys)
+            {
+                parsed.Properties.GetString(key, string.Empty, out string val);
+                properties[key] = val;
+            }
+
+            blueprintService.Update(existing.UUID, new BlueprintUpdateRequest
+            {
+                Name = parsed.Name,
+                NickName = existing.NickName,
+                Description = parsed.Description,
+                BluePrintType = parsed.BluePrintType,
+                Evolution = parsed.Evolution,
+                TechLevel = parsed.TechLevel,
+                Class = parsed.Class,
+                CopyCost = existing.CopyCost,
+                BaseBlueprintUUID = existing.BaseBlueprintUUID,
+                Properties = properties,
+                Resources = parsed.Resources is not null
+                    ? new Dictionary<string, string>(parsed.Resources)
+                    : null,
+            });
+
+            ImportStatus = $"Updated existing blueprint: {parsed.Name}";
+        }
+        else
+        {
+            // Create new blueprint
+            var properties = new Dictionary<string, string>();
+            foreach (var key in parsed.Properties.Properties.Keys)
+            {
+                parsed.Properties.GetString(key, string.Empty, out string val);
+                properties[key] = val;
+            }
+
+            var request = new BlueprintCreateRequest
+            {
+                Name = parsed.Name,
+                NickName = string.Empty,
+                Description = parsed.Description,
+                BluePrintType = parsed.BluePrintType,
+                Evolution = parsed.Evolution,
+                TechLevel = parsed.TechLevel,
+                Class = parsed.Class,
+                CopyCost = 0,
+                BaseBlueprintUUID = string.Empty,
+                Properties = properties,
+                Resources = parsed.Resources is not null
+                    ? new Dictionary<string, string>(parsed.Resources)
+                    : null,
+            };
+
+            blueprintService.Create(request);
+
+            // E6.4: If government, clear the OwnerUUID on the newly created blueprint
+            if (isGovernment)
+            {
+                var created = dataService.Blueprints.LastOrDefault(b =>
+                    string.Equals(b.Name, parsed.Name, StringComparison.OrdinalIgnoreCase) &&
+                    b.Evolution == parsed.Evolution);
+                if (created is not null)
+                {
+                    created.OwnerUUID = string.Empty;
+                    dataService.IsDirty = true;
+                    dataService.WriteContext();
+                }
+            }
+
+            ImportStatus = $"Imported new blueprint: {parsed.Name}";
+        }
+
+        // Refresh the list
+        RefreshBlueprintList(dataService);
+    }
+
+    /// <summary>
+    /// Checks if the HTML fragment indicates a Government seller.
+    /// </summary>
+    private static bool IsGovernmentSeller(string htmlFragment)
+    {
+        return htmlFragment.Contains("Government", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void RefreshBlueprintList(DataService dataService)
+    {
+        Blueprints.Clear();
+        var blueprints = dataService.GetCurrentPlayerBlueprints();
+        foreach (var bp in blueprints)
+        {
+            Blueprints.Add(new BlueprintRowViewModel
+            {
+                Name = bp.Name ?? string.Empty,
+                BlueprintType = bp.BluePrintType ?? string.Empty,
+                TechLevel = bp.TechLevel ?? string.Empty,
+                Evolution = bp.Evolution,
+                ShipClass = bp.Class,
+            });
+        }
+
+        if (Blueprints.Count > 0)
+        {
+            SelectedBlueprint = Blueprints.LastOrDefault();
+        }
+    }
+
     partial void OnSelectedBlueprintChanged(BlueprintRowViewModel? value)
     {
         LoadBlueprintDetail(value);
-        IsDirty = false;
-    }
-
-    /// <summary>
-    /// Adds a new empty stat row to the Stats grid.
-    /// </summary>
-    [RelayCommand]
-    private void AddStat()
-    {
-        Stats.Add(new BlueprintStatRowViewModel { StatName = "NewStat", Value = "0" });
-        IsDirty = true;
-    }
-
-    /// <summary>
-    /// Removes the selected stat row from the Stats grid.
-    /// </summary>
-    [RelayCommand]
-    private void RemoveStat()
-    {
-        if (SelectedStat is not null)
-        {
-            Stats.Remove(SelectedStat);
-            SelectedStat = null;
-            IsDirty = true;
-        }
-    }
-
-    /// <summary>
-    /// Adds a new empty resource row to the Resources grid.
-    /// </summary>
-    [RelayCommand]
-    private void AddResource()
-    {
-        Resources.Add(new BlueprintResourceRowViewModel { ResourceName = "New Resource", Quantity = "0" });
-        IsDirty = true;
-    }
-
-    /// <summary>
-    /// Removes the selected resource row from the Resources grid.
-    /// </summary>
-    [RelayCommand]
-    private void RemoveResource()
-    {
-        if (SelectedResource is not null)
-        {
-            Resources.Remove(SelectedResource);
-            SelectedResource = null;
-            IsDirty = true;
-        }
-    }
-
-    /// <summary>
-    /// Saves stats and resources back to the blueprint model via the service layer.
-    /// </summary>
-    [RelayCommand]
-    private void SaveBlueprint()
-    {
-        if (SelectedBlueprint is null)
-        {
-            return;
-        }
-
-        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
-        var blueprintService = App.Services?.GetService(typeof(BlueprintService)) as BlueprintService;
-        if (dataService is null || !dataService.IsLoaded || blueprintService is null)
-        {
-            return;
-        }
-
-        var bp = dataService.GetCurrentPlayerBlueprints()
-            .FirstOrDefault(b => b.Name == SelectedBlueprint.Name && b.Evolution == SelectedBlueprint.Evolution);
-        if (bp is null)
-        {
-            return;
-        }
-
-        // Build properties from the stats grid
-        var properties = new Dictionary<string, string>();
-        foreach (var row in Stats)
-        {
-            if (!string.IsNullOrWhiteSpace(row.StatName))
-            {
-                properties[row.StatName] = row.Value;
-            }
-        }
-
-        // Build resources from the resources grid
-        var resources = new Dictionary<string, string>();
-        foreach (var row in Resources)
-        {
-            if (!string.IsNullOrWhiteSpace(row.ResourceName))
-            {
-                resources[row.ResourceName] = row.Quantity;
-            }
-        }
-
-        var request = new BlueprintUpdateRequest
-        {
-            Name = bp.Name,
-            NickName = bp.NickName,
-            Description = bp.Description,
-            BluePrintType = bp.BluePrintType,
-            Evolution = bp.Evolution,
-            TechLevel = bp.TechLevel,
-            Class = bp.Class,
-            CopyCost = bp.CopyCost,
-            BaseBlueprintUUID = bp.BaseBlueprintUUID,
-            Properties = properties,
-            Resources = resources,
-        };
-
-        blueprintService.Update(bp.UUID, request);
-        IsDirty = false;
-    }
-
-    /// <summary>
-    /// Marks the blueprint as dirty when a cell is edited.
-    /// </summary>
-    [RelayCommand]
-    private void MarkDirty()
-    {
-        IsDirty = true;
     }
 
     private void LoadData()
@@ -263,6 +310,8 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
     {
         Stats.Clear();
         Resources.Clear();
+        ComputedPriceDisplay = string.Empty;
+        HasEvolutionData = false;
 
         if (row is null)
         {
@@ -294,6 +343,7 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
         {
             LoadSampleStats(row.Name);
             LoadSampleResources(row.Name);
+            HasEvolutionData = true;
             return;
         }
 
@@ -325,6 +375,37 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
         if (Resources.Count == 0)
         {
             LoadSampleResources(row.Name);
+        }
+
+        HasEvolutionData = Stats.Count > 0;
+
+        UpdateComputedPrice(bp);
+    }
+
+    private void UpdateComputedPrice(Blueprint bp)
+    {
+        var calculator = App.Services?.GetService(typeof(PriceCalculator)) as PriceCalculator;
+        if (calculator is null)
+        {
+            ComputedPriceDisplay = string.Empty;
+            return;
+        }
+
+        var plan = calculator.GetFirstPlanForCurrentPlayer();
+        if (plan is null)
+        {
+            ComputedPriceDisplay = string.Empty;
+            return;
+        }
+
+        var result = calculator.ComputeBlueprintPrice(bp, plan, 0m);
+        if (result.IsComplete)
+        {
+            ComputedPriceDisplay = $"{result.Price:N2} credits";
+        }
+        else
+        {
+            ComputedPriceDisplay = $"{result.Price:N2} credits (Incomplete)";
         }
     }
 
