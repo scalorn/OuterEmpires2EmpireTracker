@@ -112811,6 +112811,13 @@
   "Quantity": 1,
   "Volume": 50.0
 },
+        "4a0bb548-07e4-4819-8f8b-e498968aae27": {
+  "UUID": "4a0bb548-07e4-4819-8f8b-e498968aae27",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Alkaline Earth Metals",
+  "Name": "Alkaline Earth Metals",
+  "ResourcePurity": "High"
+},
         "4f912025-3470-4f81-98f3-a4618d75448a": {
   "UUID": "4f912025-3470-4f81-98f3-a4618d75448a",
   "ItemType": "WorkDetail",
@@ -113529,9 +113536,14 @@
             "Blue Collar Detail(s)": "6349",
             "BlueCollar1": "True"
           },
+          "ProcessCompletionTime": {
+            "StartTime": "2026-05-16T00:25:37.591589Z",
+            "EndTime": "2026-05-19T00:25:36.591589Z",
+            "RepeatIntervalSeconds": 259199,
+            "IsRepeating": true
+          },
           "ManufacturingBlueprintUUID": "7ff4ec6b-cc7e-5992-ae6a-4b346425c13e",
-          "ManufacturingQuantity": 5,
-          "ManufacturingCompleted": 2,
+          "ManufacturingQuantity": 3,
           "CurrentAttitude": ""
         },
         {
@@ -114205,8 +114217,13 @@
           "NeedBy": "2026-05-21T07:01:44"
         }
       ],
-      "LastImportDateTime": "2026-05-15T09:16:22Z",
+      "LastImportDateTime": "2026-05-16T00:25:21Z",
       "Locks": {
+        "989ba6cd-c218-4252-9108-fecab1dce0d0": {
+          "Resource:Heavy Noble Gases|Refined": 50136,
+          "Resource:Heavy Trans-Metals|Refined": 15266,
+          "Resource:Non-Metallics|Refined": 7828
+        },
         "faa0a267-f57f-50b3-8b89-3ac0e4235884": {
           "WorkDetail:WhiteCollarDetail": 1,
           "WorkDetail:SpecialistDetail": 1

@@ -29,23 +29,46 @@
         <TabControl Grid.Column="2">
             <!-- Build Items Tab -->
             <TabItem Header="Build Items">
-                <DataGrid Margin="0,8,0,0"
-                          ItemsSource="{Binding BuildItems}"
-                          AutoGenerateColumns="False"
-                          CanUserReorderColumns="True"
-                          CanUserResizeColumns="True"
-                          CanUserSortColumns="True"
-                          IsReadOnly="True"
-                          GridLinesVisibility="Horizontal"
-                          SelectionMode="Single"
-                          HeadersVisibility="Column">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Item" Binding="{Binding ItemName}" Width="200" />
-                        <DataGridTextColumn Header="Qty" Binding="{Binding Quantity}" Width="80" />
-                        <DataGridTextColumn Header="Type" Binding="{Binding ItemType}" Width="120" />
-                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                <DockPanel Margin="0,8,0,0">
+                    <StackPanel DockPanel.Dock="Bottom"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Left"
+                                Margin="0,8,0,0"
+                                Spacing="8">
+                        <Button Content="Add Item"
+                                Command="{Binding AddBuildItemCommand}" />
+                        <Button Content="Remove Item"
+                                Command="{Binding RemoveBuildItemCommand}" />
+                        <Button Content="Save"
+                                Command="{Binding SavePlanCommand}" />
+                    </StackPanel>
+
+                    <DataGrid ItemsSource="{Binding BuildItems}"
+                              SelectedItem="{Binding SelectedBuildItem}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="True"
+                              IsReadOnly="False"
+                              GridLinesVisibility="Horizontal"
+                              SelectionMode="Single"
+                              HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Item"
+                                                Binding="{Binding ItemName}"
+                                                Width="200" />
+                            <DataGridTextColumn Header="Qty"
+                                                Binding="{Binding Quantity}"
+                                                Width="80" />
+                            <DataGridTextColumn Header="Type"
+                                                Binding="{Binding ItemType}"
+                                                Width="120" />
+                            <DataGridTextColumn Header="Status"
+                                                Binding="{Binding Status}"
+                                                Width="120" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
             </TabItem>
 
             <!-- Shortfall Tab -->
@@ -61,10 +84,18 @@
                           SelectionMode="Single"
                           HeadersVisibility="Column">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Resource" Binding="{Binding ResourceName}" Width="200" />
-                        <DataGridTextColumn Header="Required" Binding="{Binding Required}" Width="100" />
-                        <DataGridTextColumn Header="Available" Binding="{Binding Available}" Width="100" />
-                        <DataGridTextColumn Header="Deficit" Binding="{Binding Deficit}" Width="100" />
+                        <DataGridTextColumn Header="Resource"
+                                            Binding="{Binding ResourceName}"
+                                            Width="200" />
+                        <DataGridTextColumn Header="Required"
+                                            Binding="{Binding Required}"
+                                            Width="100" />
+                        <DataGridTextColumn Header="Available"
+                                            Binding="{Binding Available}"
+                                            Width="100" />
+                        <DataGridTextColumn Header="Deficit"
+                                            Binding="{Binding Deficit}"
+                                            Width="100" />
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>

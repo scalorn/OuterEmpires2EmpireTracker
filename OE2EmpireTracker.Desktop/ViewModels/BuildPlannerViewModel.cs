@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using OE2EmpireTracker.Desktop.Services;
 using OE2EmpireTracker.Models;
 
@@ -11,6 +14,9 @@ namespace OE2EmpireTracker.Desktop.ViewModels;
 /// </summary>
 public sealed partial class BuildPlanRowViewModel : ObservableObject
 {
+    [ObservableProperty]
+    private string _planUuid = string.Empty;
+
     [ObservableProperty]
     private string _planName = string.Empty;
 
@@ -66,6 +72,9 @@ public sealed partial class BuildPlannerViewModel : DocumentViewModel
     [ObservableProperty]
     private BuildPlanRowViewModel? _selectedPlan;
 
+    [ObservableProperty]
+    private BuildItemRowViewModel? _selectedBuildItem;
+
     public BuildPlannerViewModel()
     {
         Title = "Build Planner";
@@ -96,6 +105,69 @@ public sealed partial class BuildPlannerViewModel : DocumentViewModel
         return colony?.ColonyName ?? string.Empty;
     }
 
+    /// <summary>
+    /// Adds a new build item to the selected plan's items grid.
+    /// </summary>
+    [RelayCommand]
+    private void AddBuildItem()
+    {
+        BuildItems.Add(new BuildItemRowViewModel
+        {
+            ItemName = "New Item",
+            Quantity = 1,
+            ItemType = "Manufactory",
+            Status = "Staged",
+        });
+    }
+
+    /// <summary>
+    /// Removes the selected build item from the items grid.
+    /// </summary>
+    [RelayCommand]
+    private void RemoveBuildItem()
+    {
+        if (SelectedBuildItem is not null)
+        {
+            BuildItems.Remove(SelectedBuildItem);
+            SelectedBuildItem = null;
+        }
+    }
+
+    /// <summary>
+    /// Saves the build items back to the plan model and persists.
+    /// </summary>
+    [RelayCommand]
+    private void SavePlan()
+    {
+        if (SelectedPlan is null || string.IsNullOrEmpty(SelectedPlan.PlanUuid))
+        {
+            return;
+        }
+
+        var svc = App.Services?.GetService(typeof(BuildPlanService)) as BuildPlanService;
+        if (svc is null)
+        {
+            return;
+        }
+
+        var items = BuildItems.Select(row => new BuildItem
+        {
+            UUID = Guid.NewGuid().ToString(),
+            ItemName = row.ItemName,
+            Quantity = row.Quantity,
+            ItemType = Enum.TryParse<BuildItemType>(row.ItemType, out var t) ? t : BuildItemType.Manufactory,
+            Status = Enum.TryParse<BuildItemStatus>(row.Status, out var s) ? s : BuildItemStatus.Staged,
+        }).ToList();
+
+        svc.Update(SelectedPlan.PlanUuid, new BuildPlanUpdateRequest
+        {
+            Name = SelectedPlan.PlanName,
+            Items = items,
+        });
+
+        SelectedPlan.ItemCount = items.Count;
+    }
+
     partial void OnSelectedPlanChanged(BuildPlanRowViewModel? value)
     {
         LoadPlanDetail(value);
@@ -123,6 +195,7 @@ public sealed partial class BuildPlannerViewModel : DocumentViewModel
         {
             BuildPlans.Add(new BuildPlanRowViewModel
             {
+                PlanUuid = plan.UUID ?? string.Empty,
                 PlanName = plan.Name ?? string.Empty,
                 ColonyName = ResolveColonyName(dataService, plan),
                 ItemCount = plan.Items?.Count ?? 0,
@@ -139,6 +212,7 @@ public sealed partial class BuildPlannerViewModel : DocumentViewModel
     {
         BuildItems.Clear();
         Shortfalls.Clear();
+        SelectedBuildItem = null;
 
         if (row is null)
         {
@@ -154,7 +228,7 @@ public sealed partial class BuildPlannerViewModel : DocumentViewModel
         }
 
         var plan = dataService.BuildPlans
-            .FirstOrDefault(p => p.Name == row.PlanName);
+            .FirstOrDefault(p => p.UUID == row.PlanUuid);
         if (plan?.Items is null || plan.Items.Count == 0)
         {
             LoadSampleItems(row.PlanName);
