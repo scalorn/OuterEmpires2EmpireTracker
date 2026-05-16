@@ -2,10 +2,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using OE2EmpireTracker.Desktop.Services;
-using OE2EmpireTracker.Desktop.ViewModels.Messages;
-using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
 
@@ -15,9 +12,6 @@ namespace OE2EmpireTracker.Desktop.ViewModels;
 public sealed partial class StationRowViewModel : ObservableObject
 {
     [ObservableProperty]
-    private string _stationUuid = string.Empty;
-
-    [ObservableProperty]
     private string _stationName = string.Empty;
 
     [ObservableProperty]
@@ -25,11 +19,33 @@ public sealed partial class StationRowViewModel : ObservableObject
 
     [ObservableProperty]
     private int _holdItemCount;
+
+    /// <summary>Gets or sets the UUID of the underlying Station.</summary>
+    [ObservableProperty]
+    private string _uuid = string.Empty;
+}
+
+/// <summary>
+/// Row item for the station hold items DataGrid.
+/// </summary>
+public sealed partial class HoldItemRowViewModel : ObservableObject
+{
+    [ObservableProperty]
+    private string _itemName = string.Empty;
+
+    [ObservableProperty]
+    private int _quantity;
+
+    [ObservableProperty]
+    private string _itemType = string.Empty;
+
+    [ObservableProperty]
+    private string _itemUuid = string.Empty;
 }
 
 /// <summary>
 /// ViewModel for the Station document tab.
-/// Shows stations with CRUD operations.
+/// Shows stations with hold item management.
 /// </summary>
 public sealed partial class StationViewModel : DocumentViewModel
 {
@@ -37,65 +53,93 @@ public sealed partial class StationViewModel : DocumentViewModel
     private StationRowViewModel? _selectedStation;
 
     [ObservableProperty]
-    private string _editStationName = string.Empty;
+    private HoldItemRowViewModel? _selectedHoldItem;
 
     public StationViewModel()
     {
         Title = "Stations";
-
-        WeakReferenceMessenger.Default.Register<StationDataChangedMessage>(this, (r, m) =>
-        {
-            ((StationViewModel)r).RefreshData();
-        });
-
         LoadData();
     }
 
-    public ObservableCollection<StationRowViewModel> Stations { get; } = new ObservableCollection<StationRowViewModel>();
+    public ObservableCollection<StationRowViewModel> Stations { get; } = new();
+
+    public ObservableCollection<HoldItemRowViewModel> HoldItems { get; } = new();
 
     [RelayCommand]
-    private void NewStation()
+    private void AddHoldItem()
     {
-        var svc = App.Services?.GetService(typeof(StationService)) as StationService;
-        svc?.Create(new StationCreateRequest { Name = "New Station" });
+        var newItem = new HoldItemRowViewModel
+        {
+            ItemName = "New Item",
+            Quantity = 1,
+            ItemType = "Resource",
+            ItemUuid = string.Empty,
+        };
+        HoldItems.Add(newItem);
+        SelectedHoldItem = newItem;
     }
 
     [RelayCommand]
-    private void SaveStation()
+    private void RemoveHoldItem()
     {
-        if (SelectedStation is null || string.IsNullOrEmpty(SelectedStation.StationUuid))
+        if (SelectedHoldItem is null)
         {
             return;
         }
 
-        var svc = App.Services?.GetService(typeof(StationService)) as StationService;
-        svc?.Update(SelectedStation.StationUuid, new StationUpdateRequest { Name = EditStationName });
-    }
-
-    [RelayCommand]
-    private void DeleteStation()
-    {
-        if (SelectedStation is null || string.IsNullOrEmpty(SelectedStation.StationUuid))
-        {
-            return;
-        }
-
-        var svc = App.Services?.GetService(typeof(StationService)) as StationService;
-        svc?.Delete(SelectedStation.StationUuid);
-    }
-
-    /// <inheritdoc/>
-    protected override void RefreshData()
-    {
-        Stations.Clear();
-        SelectedStation = null;
-        EditStationName = string.Empty;
-        LoadData();
+        HoldItems.Remove(SelectedHoldItem);
+        SelectedHoldItem = HoldItems.LastOrDefault();
     }
 
     partial void OnSelectedStationChanged(StationRowViewModel? value)
     {
-        EditStationName = value?.StationName ?? string.Empty;
+        LoadHoldItems(value);
+    }
+
+    private void LoadHoldItems(StationRowViewModel? row)
+    {
+        HoldItems.Clear();
+        SelectedHoldItem = null;
+
+        if (row is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var station = dataService.Stations
+            .FirstOrDefault(s => s.UUID == row.Uuid);
+        if (station is null)
+        {
+            return;
+        }
+
+        var currentPlayerUuid = dataService.CurrentPlayerUUID;
+        if (string.IsNullOrEmpty(currentPlayerUuid))
+        {
+            return;
+        }
+
+        if (!station.Holds.TryGetValue(currentPlayerUuid, out var hold))
+        {
+            return;
+        }
+
+        foreach (var item in hold.Items.Values)
+        {
+            HoldItems.Add(new HoldItemRowViewModel
+            {
+                ItemName = item.Name ?? string.Empty,
+                Quantity = item.Quantity,
+                ItemType = item.ItemType.ToString(),
+                ItemUuid = item.UUID ?? string.Empty,
+            });
+        }
     }
 
     private void LoadData()
@@ -112,10 +156,10 @@ public sealed partial class StationViewModel : DocumentViewModel
             var holdCount = station.Holds?.Values.Sum(h => h.Count()) ?? 0;
             Stations.Add(new StationRowViewModel
             {
-                StationUuid = station.UUID ?? string.Empty,
                 StationName = station.Name ?? string.Empty,
                 StationType = station.StationType.ToString(),
                 HoldItemCount = holdCount,
+                Uuid = station.UUID ?? string.Empty,
             });
         }
 

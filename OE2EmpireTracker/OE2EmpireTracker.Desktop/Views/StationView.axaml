@@ -11,35 +11,72 @@
                    FontWeight="SemiBold"
                    Margin="0,0,0,12" />
 
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
-            <TextBox Text="{Binding EditStationName}" Watermark="Station Name" MinWidth="200" />
-            <Button Content="New" Command="{Binding NewStationCommand}" />
-            <Button Content="Save" Command="{Binding SaveStationCommand}" />
-            <Button Content="Delete" Command="{Binding DeleteStationCommand}" />
-        </StackPanel>
+        <Grid RowDefinitions="*,8,Auto,*">
+            <!-- Station list -->
+            <DataGrid Grid.Row="0"
+                      ItemsSource="{Binding Stations}"
+                      SelectedItem="{Binding SelectedStation}"
+                      AutoGenerateColumns="False"
+                      CanUserReorderColumns="True"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      IsReadOnly="True"
+                      GridLinesVisibility="Horizontal"
+                      SelectionMode="Single"
+                      HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Station"
+                                        Binding="{Binding StationName}"
+                                        Width="200" />
+                    <DataGridTextColumn Header="Type"
+                                        Binding="{Binding StationType}"
+                                        Width="120" />
+                    <DataGridTextColumn Header="Hold Items"
+                                        Binding="{Binding HoldItemCount}"
+                                        Width="100" />
+                </DataGrid.Columns>
+            </DataGrid>
 
-        <DataGrid ItemsSource="{Binding Stations}"
-                  SelectedItem="{Binding SelectedStation}"
-                  AutoGenerateColumns="False"
-                  CanUserReorderColumns="True"
-                  CanUserResizeColumns="True"
-                  CanUserSortColumns="True"
-                  IsReadOnly="True"
-                  GridLinesVisibility="Horizontal"
-                  SelectionMode="Single"
-                  HeadersVisibility="Column">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Station"
-                                    Binding="{Binding StationName}"
-                                    Width="200" />
-                <DataGridTextColumn Header="Type"
-                                    Binding="{Binding StationType}"
-                                    Width="120" />
-                <DataGridTextColumn Header="Hold Items"
-                                    Binding="{Binding HoldItemCount}"
-                                    Width="100" />
-            </DataGrid.Columns>
-        </DataGrid>
+            <!-- Hold item buttons -->
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        Spacing="8">
+                <TextBlock Text="Hold Items"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center" />
+                <Button Content="Add Item"
+                        Command="{Binding AddHoldItemCommand}" />
+                <Button Content="Remove Item"
+                        Command="{Binding RemoveHoldItemCommand}" />
+            </StackPanel>
+
+            <!-- Hold items grid -->
+            <DataGrid Grid.Row="3"
+                      ItemsSource="{Binding HoldItems}"
+                      SelectedItem="{Binding SelectedHoldItem}"
+                      AutoGenerateColumns="False"
+                      CanUserReorderColumns="True"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      IsReadOnly="False"
+                      GridLinesVisibility="Horizontal"
+                      SelectionMode="Single"
+                      HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Item"
+                                        Binding="{Binding ItemName}"
+                                        Width="200"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Quantity"
+                                        Binding="{Binding Quantity}"
+                                        Width="100" />
+                    <DataGridTextColumn Header="Type"
+                                        Binding="{Binding ItemType}"
+                                        Width="120"
+                                        IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
     </DockPanel>
 
 </UserControl>

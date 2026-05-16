@@ -11,35 +11,76 @@
                    FontWeight="SemiBold"
                    Margin="0,0,0,12" />
 
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
-            <TextBox Text="{Binding EditPlanName}" Watermark="Plan Name" MinWidth="200" />
-            <Button Content="New" Command="{Binding NewPlanCommand}" />
-            <Button Content="Save" Command="{Binding SavePlanCommand}" />
-            <Button Content="Delete" Command="{Binding DeletePlanCommand}" />
-        </StackPanel>
+        <Grid ColumnDefinitions="250,8,*">
+            <!-- Plan list (left panel) -->
+            <DataGrid Grid.Column="0"
+                      ItemsSource="{Binding Plans}"
+                      SelectedItem="{Binding SelectedPlan}"
+                      AutoGenerateColumns="False"
+                      CanUserReorderColumns="True"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      IsReadOnly="True"
+                      GridLinesVisibility="Horizontal"
+                      SelectionMode="Single"
+                      HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Plan"
+                                        Binding="{Binding PlanName}"
+                                        Width="150" />
+                    <DataGridTextColumn Header="Resources"
+                                        Binding="{Binding ResourceCount}"
+                                        Width="80" />
+                </DataGrid.Columns>
+            </DataGrid>
 
-        <DataGrid ItemsSource="{Binding Plans}"
-                  SelectedItem="{Binding SelectedPlan}"
-                  AutoGenerateColumns="False"
-                  CanUserReorderColumns="True"
-                  CanUserResizeColumns="True"
-                  CanUserSortColumns="True"
-                  IsReadOnly="True"
-                  GridLinesVisibility="Horizontal"
-                  SelectionMode="Single"
-                  HeadersVisibility="Column">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Plan"
-                                    Binding="{Binding PlanName}"
-                                    Width="200" />
-                <DataGridTextColumn Header="Resources"
-                                    Binding="{Binding ResourceCount}"
-                                    Width="100" />
-                <DataGridTextColumn Header="Owner"
-                                    Binding="{Binding OwnerUuid}"
-                                    Width="200" />
-            </DataGrid.Columns>
-        </DataGrid>
+            <!-- Right panel: detail + resource grid -->
+            <DockPanel Grid.Column="2">
+                <!-- Plan detail fields -->
+                <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,12">
+                    <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="6">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Name" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding PlanName}" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Description" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding PlanDescription}" />
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Fixed Cost/Item" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding FixedCostPerItem}" Width="120" HorizontalAlignment="Left" />
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Hourly Rate" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding HourlyCostRate}" Width="120" HorizontalAlignment="Left" />
+                    </Grid>
+
+                    <Button Content="Save Plan" Command="{Binding SavePlanCommand}" />
+                </StackPanel>
+
+                <!-- Resource prices grid -->
+                <DataGrid ItemsSource="{Binding ResourcePrices}"
+                          AutoGenerateColumns="False"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          IsReadOnly="False"
+                          GridLinesVisibility="Horizontal"
+                          SelectionMode="Single"
+                          HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Resource"
+                                            Binding="{Binding ResourceName}"
+                                            Width="200"
+                                            IsReadOnly="True" />
+                        <DataGridTextColumn Header="Purity"
+                                            Binding="{Binding Purity}"
+                                            Width="100"
+                                            IsReadOnly="True" />
+                        <DataGridTextColumn Header="Price"
+                                            Binding="{Binding Price}"
+                                            Width="100" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Grid>
     </DockPanel>
 
 </UserControl>
