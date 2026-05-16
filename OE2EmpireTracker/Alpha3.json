@@ -107955,7 +107955,7 @@
   "ItemType": "Flatpack",
   "BaseItemTypeID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
   "Name": "Entertainment Centre Flatpack",
-  "Quantity": 47
+  "Quantity": 48
 },
         "edbd1103-7c21-463c-ad81-3c35e1d48cad": {
   "UUID": "edbd1103-7c21-463c-ad81-3c35e1d48cad",
@@ -108586,8 +108586,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-16T06:12:31.2972804Z",
-            "EndTime": "2026-05-16T10:12:30.2972804Z",
+            "StartTime": "2026-05-16T10:12:30.2972804Z",
+            "EndTime": "2026-05-16T14:12:29.2972804Z",
             "RepeatIntervalSeconds": 14399,
             "IsRepeating": true
           },
@@ -108595,7 +108595,7 @@
           "MiningSurveyResource": "Entertainment Centre Flatpack",
           "ManufacturingBlueprintUUID": "623b6d38-342d-5ba7-b1fe-376621732aa2",
           "ManufacturingQuantity": 149,
-          "ManufacturingCompleted": 55,
+          "ManufacturingCompleted": 56,
           "CurrentAttitude": ""
         },
         {
