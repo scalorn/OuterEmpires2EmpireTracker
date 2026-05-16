@@ -1,6 +1,11 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
+using OE2EmpireTracker.Desktop.Parsers;
 using OE2EmpireTracker.Desktop.Services;
 using OE2EmpireTracker.Models;
 
@@ -34,45 +39,16 @@ public sealed partial class SkillRowViewModel : ObservableObject
 }
 
 /// <summary>
-/// Represents a skill group with its enabled state and child skills.
-/// </summary>
-public sealed partial class SkillGroupViewModel : ObservableObject
-{
-    [ObservableProperty]
-    private string _groupName = string.Empty;
-
-    [ObservableProperty]
-    private bool _isEnabled;
-
-    [ObservableProperty]
-    private ObservableCollection<SkillRowViewModel> _skills = new();
-}
-
-/// <summary>
 /// ViewModel for the Player Profile document tab.
-/// Shows profiles with skills grouped by skill group (G4).
+/// Shows profiles with skills and ranks.
 /// </summary>
 public sealed partial class PlayerProfileViewModel : DocumentViewModel
 {
-    /// <summary>
-    /// Skill tree mapping: group name → skill names in that group.
-    /// </summary>
-    private static readonly (SkillGroupName Group, SkillName[] Skills)[] SkillTree =
-    {
-        (SkillGroupName.ColonyDirector, new[] { SkillName.HumanResources, SkillName.Foreman }),
-        (SkillGroupName.ColonyFounder, new[] { SkillName.Founder, SkillName.EnergyEfficiency, SkillName.Builder }),
-        (SkillGroupName.ColonyOperations, new[] { SkillName.RefiningFocus, SkillName.ProductionFocus, SkillName.ExtractionFocus }),
-        (SkillGroupName.Commander, new[] { SkillName.DamageControl }),
-        (SkillGroupName.Engineer, new[] { SkillName.EngineeringCapacity }),
-        (SkillGroupName.Entrepeneur, new[] { SkillName.SoundsAsAPound, SkillName.SelfMadeMillionaire, SkillName.AAAHealthcare }),
-        (SkillGroupName.JobManagement, new[] { SkillName.JobOpportunities, SkillName.ContractManagement }),
-        (SkillGroupName.Researcher, new[] { SkillName.ResearchReview, SkillName.ResearchMethods, SkillName.ResearchFocus }),
-        (SkillGroupName.Surveyor, new[] { SkillName.SurveyingMethods, SkillName.ScanningMethods, SkillName.Quartermaster }),
-        (SkillGroupName.Trader, new[] { SkillName.Broker }),
-    };
-
     [ObservableProperty]
     private ProfileRowViewModel? _selectedProfile;
+
+    [ObservableProperty]
+    private string _importStatus = string.Empty;
 
     public PlayerProfileViewModel()
     {
@@ -80,15 +56,133 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
         LoadData();
     }
 
-    public ObservableCollection<ProfileRowViewModel> Profiles { get; } = new ObservableCollection<ProfileRowViewModel>();
+    public ObservableCollection<ProfileRowViewModel> Profiles { get; } = new();
 
-    public ObservableCollection<SkillRowViewModel> Skills { get; } = new ObservableCollection<SkillRowViewModel>();
+    public ObservableCollection<SkillRowViewModel> Skills { get; } = new();
 
-    public ObservableCollection<SkillGroupViewModel> SkillGroups { get; } = new ObservableCollection<SkillGroupViewModel>();
+    /// <summary>
+    /// Imports a player profile from clipboard HTML data.
+    /// Extracts the HTML fragment, parses it, and either updates an existing profile
+    /// (matched by name) or creates a new one.
+    /// </summary>
+    [RelayCommand]
+    private async Task ImportClipboardAsync()
+    {
+        var clipboardService = App.Services?.GetService(typeof(IClipboardService)) as IClipboardService;
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var loggerFactory = App.Services?.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
+
+        if (clipboardService is null || dataService is null || loggerFactory is null)
+        {
+            ImportStatus = "Services not available";
+            return;
+        }
+
+        string? html = await clipboardService.GetHtmlAsync();
+        if (string.IsNullOrEmpty(html))
+        {
+            ImportStatus = "No HTML on clipboard";
+            return;
+        }
+
+        string fragment = HtmlClipboardHelper.ExtractHtmlFragment(html);
+        if (string.IsNullOrEmpty(fragment))
+        {
+            ImportStatus = "Could not extract HTML fragment";
+            return;
+        }
+
+        var parser = new PlayerProfileParser(loggerFactory.CreateLogger<PlayerProfileParser>());
+        var parsed = parser.ParseHtml(fragment);
+        if (parsed is null)
+        {
+            ImportStatus = "Failed to parse profile HTML";
+            return;
+        }
+
+        // Match existing profile by name, or create new
+        var existing = dataService.PlayerProfiles
+            .FirstOrDefault(p => string.Equals(
+                p.Name, parsed.Name, StringComparison.OrdinalIgnoreCase));
+
+        if (existing is not null)
+        {
+            // Update existing profile
+            existing.Faction = parsed.Faction;
+            existing.TotalCredits = parsed.TotalCredits;
+            existing.SkillPoints = parsed.SkillPoints;
+            existing.CitizenId = parsed.CitizenId;
+            existing.RegistrationDate = parsed.RegistrationDate;
+            existing.ActiveTime = parsed.ActiveTime;
+            existing.Public.Rank = parsed.Public.Rank;
+            existing.Public.CurrentXP = parsed.Public.CurrentXP;
+            existing.Public.NextXP = parsed.Public.NextXP;
+            existing.Public.Title = parsed.Public.Title;
+            existing.Private.Rank = parsed.Private.Rank;
+            existing.Private.CurrentXP = parsed.Private.CurrentXP;
+            existing.Private.NextXP = parsed.Private.NextXP;
+            existing.Private.Title = parsed.Private.Title;
+            existing.Military.Rank = parsed.Military.Rank;
+            existing.Military.CurrentXP = parsed.Military.CurrentXP;
+            existing.Military.NextXP = parsed.Military.NextXP;
+            existing.Military.Title = parsed.Military.Title;
+
+            // Merge skills
+            foreach (var kvp in parsed.Skills)
+            {
+                var skill = existing.GetSkill(kvp.Key);
+                skill.Level = kvp.Value.Level;
+                skill.TrainingStarted = kvp.Value.TrainingStarted;
+            }
+
+            dataService.IsDirty = true;
+            dataService.OnPlayerProfileDataChanged(existing.UUID);
+            dataService.WriteContext();
+            ImportStatus = $"Updated profile: {existing.Name}";
+        }
+        else
+        {
+            // Create new profile
+            parsed.UUID = Guid.NewGuid().ToString();
+            dataService.AddPlayerProfile(parsed);
+            dataService.OnPlayerProfileDataChanged(parsed.UUID);
+            dataService.WriteContext();
+            ImportStatus = $"Created profile: {parsed.Name}";
+        }
+
+        RefreshProfiles();
+    }
 
     partial void OnSelectedProfileChanged(ProfileRowViewModel? value)
     {
         LoadSkillsForProfile(value);
+    }
+
+    private void RefreshProfiles()
+    {
+        Profiles.Clear();
+        Skills.Clear();
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        foreach (var profile in dataService.PlayerProfiles)
+        {
+            Profiles.Add(new ProfileRowViewModel
+            {
+                ProfileName = profile.Name ?? string.Empty,
+                PublicRank = profile.Public?.Title ?? string.Empty,
+                SkillCount = profile.Skills?.Count ?? 0,
+            });
+        }
+
+        if (Profiles.Count > 0)
+        {
+            SelectedProfile = Profiles[0];
+        }
     }
 
     private void LoadData()
@@ -124,8 +218,6 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
     private void LoadSkillsForProfile(ProfileRowViewModel? profile)
     {
         Skills.Clear();
-        SkillGroups.Clear();
-
         if (profile is null)
         {
             return;
@@ -146,30 +238,13 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
             return;
         }
 
-        // G4: Populate skill groups from the profile's data
-        foreach (var (group, skillNames) in SkillTree)
+        foreach (var kvp in playerProfile.Skills)
         {
-            var groupVm = new SkillGroupViewModel
+            Skills.Add(new SkillRowViewModel
             {
-                GroupName = group.ToDisplayName(),
-                IsEnabled = playerProfile.GetSkillGroup(group),
-            };
-
-            foreach (var skillName in skillNames)
-            {
-                string displayName = skillName.ToDisplayName();
-                var skill = playerProfile.GetSkill(skillName);
-                var skillRow = new SkillRowViewModel
-                {
-                    SkillName = displayName,
-                    Level = skill.Level,
-                };
-
-                groupVm.Skills.Add(skillRow);
-                Skills.Add(skillRow);
-            }
-
-            SkillGroups.Add(groupVm);
+                SkillName = kvp.Key,
+                Level = kvp.Value.Level,
+            });
         }
 
         if (Skills.Count == 0)
@@ -202,43 +277,9 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
 
     private void LoadSampleSkills()
     {
-        // Populate sample skill groups for design-time preview
-        var directorGroup = new SkillGroupViewModel
-        {
-            GroupName = "Colony Director",
-            IsEnabled = true,
-        };
-        directorGroup.Skills.Add(new SkillRowViewModel { SkillName = "Human Resources", Level = 3 });
-        directorGroup.Skills.Add(new SkillRowViewModel { SkillName = "Foreman", Level = 5 });
-        SkillGroups.Add(directorGroup);
-
-        var founderGroup = new SkillGroupViewModel
-        {
-            GroupName = "Colony Founder",
-            IsEnabled = true,
-        };
-        founderGroup.Skills.Add(new SkillRowViewModel { SkillName = "Founder", Level = 2 });
-        founderGroup.Skills.Add(new SkillRowViewModel { SkillName = "Energy Efficiency", Level = 1 });
-        founderGroup.Skills.Add(new SkillRowViewModel { SkillName = "Builder", Level = 4 });
-        SkillGroups.Add(founderGroup);
-
-        var opsGroup = new SkillGroupViewModel
-        {
-            GroupName = "Colony Operations",
-            IsEnabled = false,
-        };
-        opsGroup.Skills.Add(new SkillRowViewModel { SkillName = "Refining Focus", Level = 2 });
-        opsGroup.Skills.Add(new SkillRowViewModel { SkillName = "Production Focus", Level = 0 });
-        opsGroup.Skills.Add(new SkillRowViewModel { SkillName = "Extraction Focus", Level = 0 });
-        SkillGroups.Add(opsGroup);
-
-        // Also populate flat Skills list for backward compat
-        foreach (var group in SkillGroups)
-        {
-            foreach (var skill in group.Skills)
-            {
-                Skills.Add(skill);
-            }
-        }
+        Skills.Add(new SkillRowViewModel { SkillName = "Human Resources", Level = 3 });
+        Skills.Add(new SkillRowViewModel { SkillName = "Foreman", Level = 5 });
+        Skills.Add(new SkillRowViewModel { SkillName = "Builder", Level = 4 });
+        Skills.Add(new SkillRowViewModel { SkillName = "Refining Focus", Level = 2 });
     }
 }
