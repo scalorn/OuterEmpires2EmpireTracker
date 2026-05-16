@@ -19,6 +19,8 @@ namespace OE2EmpireTracker.Services
 
         private readonly IColonyProcessingContext _colonyProcessingContext;
 
+        private readonly Func<int> _getTickIntervalMs;
+
         private readonly ManualResetEventSlim _stopping = new ManualResetEventSlim(false);
 
         private readonly object _cycleLock = new object();
@@ -29,9 +31,19 @@ namespace OE2EmpireTracker.Services
 
         private bool _running;
 
-        public BackgroundProcessor(PlayerContext playerContext)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BackgroundProcessor"/> class.
+        /// </summary>
+        /// <param name="playerContext">The player context to process.</param>
+        /// <param name="getTickIntervalMs">
+        /// A function that returns the desired tick interval in milliseconds.
+        /// Called each tick to allow dynamic interval changes. Minimum enforced: 1000ms.
+        /// If null, defaults to <see cref="TickIntervalMs"/>.
+        /// </param>
+        public BackgroundProcessor(PlayerContext playerContext, Func<int> getTickIntervalMs = null)
         {
             _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
+            _getTickIntervalMs = getTickIntervalMs ?? (() => TickIntervalMs);
             _colonyProcessingContext = new ColonyProcessingContextAdapter(
                 playerContext, EmpireContext.GetInstance());
         }
@@ -137,13 +149,12 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Reads the background processing interval from user preferences,
+        /// Reads the background processing interval from the injected function,
         /// enforcing a minimum of 1000ms.
         /// </summary>
         private int GetTickIntervalMs()
         {
-            var intervalMs = (int)(PreferencesStore.GetInstance().Preferences.Thresholds.BackgroundProcessingIntervalSeconds * 1000);
-            return Math.Max(intervalMs, 1000);
+            return Math.Max(_getTickIntervalMs(), 1000);
         }
 
         private void OnTimerTick(object state)

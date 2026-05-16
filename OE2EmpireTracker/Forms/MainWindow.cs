@@ -80,7 +80,7 @@ namespace OE2EmpireTracker
             UpdateNoPlayerGuard();
             playerContext.PlayerProfilesChanged += OnPlayerProfilesChanged;
 
-            _backgroundProcessor = new BackgroundProcessor(playerContext);
+            _backgroundProcessor = new BackgroundProcessor(playerContext, GetBackgroundProcessingIntervalMs);
             _backgroundProcessor.Start();
 
             // Initialize remote server infrastructure (no-op if LocalOnly)
@@ -455,6 +455,11 @@ namespace OE2EmpireTracker
             cmbCurrentPlayer.Enabled = hasPlayer;
         }
 
+        private int GetBackgroundProcessingIntervalMs()
+        {
+            return (int)(PreferencesStore.GetInstance().Preferences.Thresholds.BackgroundProcessingIntervalSeconds * 1000);
+        }
+
         private void OnTimerNextProcessTick(object sender, EventArgs e)
         {
             if (_backgroundProcessor == null)
@@ -545,7 +550,7 @@ namespace OE2EmpireTracker
                 playerContext = EmpireContext.PlayerContext;
                 playerContext.PlayerProfilesChanged += OnPlayerProfilesChanged;
 
-                _backgroundProcessor = new BackgroundProcessor(playerContext);
+                _backgroundProcessor = new BackgroundProcessor(playerContext, GetBackgroundProcessingIntervalMs);
                 _backgroundProcessor.Start();
 
                 PopulatePlayerDropdown();
@@ -939,7 +944,7 @@ namespace OE2EmpireTracker
             playerContext = EmpireContext.PlayerContext;
             playerContext.PlayerProfilesChanged += OnPlayerProfilesChanged;
 
-            _backgroundProcessor = new BackgroundProcessor(playerContext);
+            _backgroundProcessor = new BackgroundProcessor(playerContext, GetBackgroundProcessingIntervalMs);
             _backgroundProcessor.Start();
 
             PopulatePlayerDropdown();

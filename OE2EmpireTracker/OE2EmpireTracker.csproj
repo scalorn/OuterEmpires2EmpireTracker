@@ -173,7 +173,7 @@
     <Compile Include="Services\Migration\Migrations\Migration006_DisplaySequenceJsonKey.cs" />
     <Compile Include="Services\Migration\Migrations\Migration007_RemoveClassFromProperties.cs" />
     <Compile Include="Services\Migration\Migrations\Migration008_RouteStopDestinationMigration.cs" />
-    <Compile Include="Services\ColonyProcessingContextAdapter.cs" />
+
     <Compile Include="Services\ColonyImportHelper.cs" />
     <Compile Include="Services\SurveyImportHelper.cs" />
 
@@ -230,7 +230,7 @@
     </Compile>
 
     <Compile Include="Services\HelpTopicRegistry.cs" />
-    <Compile Include="Services\BackgroundProcessor.cs" />
+
 
 
 
@@ -260,7 +260,7 @@
 
     <Compile Include="Services\ColonyBootstrap.cs" />
     <Compile Include="Services\ColonyAdminReportBuilder.cs" />
-    <Compile Include="Services\BuildPlanExecutionService.cs" />
+
     <Compile Include="Services\SurveyService.cs" />
     <Compile Include="Services\ColonyBuildEligibility.cs" />
     <Compile Include="Services\ColonyStatusCalculator.cs" />
