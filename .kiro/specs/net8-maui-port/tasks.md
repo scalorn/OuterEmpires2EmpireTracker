@@ -1,6 +1,8 @@
 # .NET 8 + Avalonia Port — Task List (Updated)
 
-## Status: ~225/228 tasks complete (~99%)
+## Status: ~226/228 tasks complete (~99%)
+
+## Remaining: T5-T8 (Platform testing — requires user's Linux/macOS machines)
 
 ## Status Key
 - [x] Complete
@@ -49,13 +51,13 @@
 - [x] D6.4-D6.5: Manufacturing reconciliation, miner/refinery setup after import
 - [x] D7.1-D7.3: Admin tab (summary, build queue, generate build plan)
 
-## Phase E: Blueprint — 90% COMPLETE
+## Phase E: Blueprint — COMPLETE
 
 - [x] E1.1-E1.3: List, filters, events
 - [x] E2.1-E2.2: Detail editing, CRUD
 - [x] E3.1-E3.3: Stats DataGrid editable with add/remove
 - [x] E4.1-E4.3: Resources DataGrid editable with add/remove
-- [~] E5.1: Evolution chart (AvaPlot placed, needs code-behind wiring)
+- [x] E5.1: Evolution chart (ScottPlot code-behind wiring — plots first numeric property across evolutions)
 - [x] E5.2-E5.3: Pricing display, per-unit cost
 - [x] E6.1-E6.4: BlueprintScanner, idempotent import, preserve fields, government distinction
 
@@ -136,7 +138,9 @@
 
 ---
 
-## Remaining Items (~5 tasks):
+## Remaining Items (4 tasks — all require user testing):
 
-1. E5.1: ScottPlot evolution chart code-behind wiring
-2. T5-T8: Platform testing (requires user's Linux machines)
+1. T5: Linux testing (Debian — X11 and Wayland)
+2. T6: RHEL/Fedora testing
+3. T7: Performance profiling with real data (50+ colonies, 200+ blueprints)
+4. T8: macOS testing (nice-to-have)
