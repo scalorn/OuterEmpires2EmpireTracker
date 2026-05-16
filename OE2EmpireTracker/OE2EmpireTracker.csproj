@@ -228,7 +228,7 @@
     <Compile Include="Forms\ShipInstance\FormShipInstance.Designer.cs">
       <DependentUpon>FormShipInstance.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\YieldDistributionService.cs" />
+
     <Compile Include="Services\HelpTopicRegistry.cs" />
     <Compile Include="Services\BackgroundProcessor.cs" />
     <Compile Include="Services\SupplyChainService.cs" />
@@ -273,19 +273,19 @@
     <Compile Include="Services\HelpRenderer.cs" />
     <Compile Include="Services\PreferencesStore.cs" />
     <Compile Include="Services\TabWarningService.cs" />
-    <Compile Include="Services\EvolutionChainService.cs" />
-    <Compile Include="Services\QueueCalculator.cs" />
+
+
     <Compile Include="Persistence\BoundsValidator.cs" />
     <Compile Include="Persistence\WindowStateHelper.cs" />
-    <Compile Include="Services\DistanceCalculator.cs" />
-    <Compile Include="Services\SystemImporter.cs" />
+
+
     <Compile Include="Constants\ChartColors.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
     <Compile Include="Controls\ListViewItemComparer.cs" />
     <Compile Include="Controls\LayoutHelper.cs" />
     <Compile Include="Controls\RtfBuilder.cs" />
     <Compile Include="Controls\ProgrammaticUpdateGuard.cs" />
-    <Compile Include="Parsers\CountdownFormatParser.cs" />
+
     <Compile Include="Parsers\SurveyParser.cs" />
     <Compile Include="Controls\DataEntryGridView.cs">
       <SubType>Component</SubType>
