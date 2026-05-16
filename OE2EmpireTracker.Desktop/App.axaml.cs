@@ -51,11 +51,21 @@ public partial class App : Application
 
             desktop.ShutdownRequested += (_, _) =>
             {
+                SaveDockLayout(vm);
                 backgroundProcessor.Dispose();
             };
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static void SaveDockLayout(MainWindowViewModel vm)
+    {
+        var layoutService = Services?.GetService<LayoutService>();
+        if (layoutService is not null)
+        {
+            layoutService.SaveLayout(vm.Layout);
+        }
     }
 
     private static void AutoLoadData(DataService dataService, AppConfigService configService, Microsoft.Extensions.Logging.ILogger logger)
@@ -106,6 +116,9 @@ public partial class App : Application
         services.AddSingleton<SafeFileWriter>();
         services.AddSingleton<AppConfigService>();
         services.AddSingleton<PreferencesStore>();
+        services.AddSingleton<LayoutService>();
+        services.AddSingleton<HelpTopicRegistry>();
+        services.AddSingleton<HelpRenderer>();
         services.AddSingleton<DataService>();
         services.AddSingleton<ColonyProcessingContext>();
         services.AddSingleton<BackgroundProcessor>();

@@ -4,11 +4,42 @@
              x:Class="OE2EmpireTracker.Desktop.Views.HelpView"
              x:DataType="vm:HelpViewModel">
 
-    <ScrollViewer Padding="24">
-        <TextBlock Text="{Binding Content}"
-                   TextWrapping="Wrap"
-                   FontSize="14"
-                   MaxWidth="700" />
-    </ScrollViewer>
+    <Grid ColumnDefinitions="220,8,*">
+        <!-- Topic List -->
+        <Border Grid.Column="0"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                BorderThickness="0,0,1,0">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Help Topics"
+                           FontWeight="SemiBold"
+                           Margin="12,12,12,8" />
+                <ListBox ItemsSource="{Binding Topics}"
+                         SelectedItem="{Binding SelectedTopic}"
+                         Margin="4,0,4,4">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}"
+                                       Padding="8,4" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <!-- Splitter -->
+        <GridSplitter Grid.Column="1"
+                      ResizeDirection="Columns"
+                      Background="Transparent" />
+
+        <!-- Content Area -->
+        <ScrollViewer Grid.Column="2" Padding="24,12">
+            <TextBlock Text="{Binding Content}"
+                       TextWrapping="Wrap"
+                       FontSize="14"
+                       FontFamily="Consolas, Courier New, monospace"
+                       MaxWidth="800" />
+        </ScrollViewer>
+    </Grid>
 
 </UserControl>
