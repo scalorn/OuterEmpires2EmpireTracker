@@ -133,6 +133,9 @@ public sealed class DataService
     public IReadOnlyList<Commodity> Commodities =>
         _baselineRoot?.Commodity ?? Array.Empty<Commodity>();
 
+    /// <summary>Gets or sets a value indicating whether stock targets need re-evaluation (REQ-BP-070).</summary>
+    public bool CascadeStockTargetsDirty { get; set; }
+
     /// <summary>Gets whether data has been loaded.</summary>
     public bool IsLoaded => _playerRoot is not null;
 

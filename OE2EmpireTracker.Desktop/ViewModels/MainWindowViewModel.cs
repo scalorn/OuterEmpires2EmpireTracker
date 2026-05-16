@@ -176,6 +176,22 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         };
     }
 
+    /// <summary>Closes all open document tabs (B3: Window menu).</summary>
+    [RelayCommand]
+    private void CloseAllTabs()
+    {
+        if (_documentDock?.VisibleDockables is null)
+        {
+            return;
+        }
+
+        var dockables = _documentDock.VisibleDockables.ToList();
+        foreach (var dockable in dockables)
+        {
+            _factory.RemoveDockable(dockable, collapse: false);
+        }
+    }
+
     [RelayCommand]
     private void NewFile()
     {

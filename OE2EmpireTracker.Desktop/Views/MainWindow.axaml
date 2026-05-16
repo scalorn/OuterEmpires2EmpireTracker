@@ -40,6 +40,9 @@
                     <MenuItem Header="Manage Su_rveys" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="SurveyList" />
                     <MenuItem Header="Manage S_ystems" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="SystemList" />
                 </MenuItem>
+                <MenuItem Header="_Window">
+                    <MenuItem Header="_Close All Tabs" Command="{Binding CloseAllTabsCommand}" />
+                </MenuItem>
                 <MenuItem Header="_Help">
                     <MenuItem Header="_Help Topics" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="Help" />
                     <MenuItem Header="_About" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="About" />

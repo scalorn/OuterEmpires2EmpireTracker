@@ -205,14 +205,28 @@
                 </DockPanel>
             </TabItem>
 
-            <!-- Activity Tab -->
-            <TabItem Header="Activity">
-                <StackPanel Margin="0,8,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding ActivityStatus}"
-                               FontSize="16"
-                               Opacity="0.6"
-                               HorizontalAlignment="Center" />
-                </StackPanel>
+            <!-- Activity/Admin Tab (D7) -->
+            <TabItem Header="Admin">
+                <DockPanel Margin="0,8,0,0">
+                    <StackPanel DockPanel.Dock="Bottom"
+                                Orientation="Horizontal"
+                                Spacing="8"
+                                Margin="0,8,0,0">
+                        <Button Content="Generate Build Plan"
+                                Command="{Binding GenerateBuildPlanCommand}" />
+                    </StackPanel>
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Colony Admin Summary"
+                                   FontSize="16"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding AdminSummary}"
+                                   FontSize="14"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding ActivityStatus}"
+                                   FontSize="14"
+                                   Opacity="0.6" />
+                    </StackPanel>
+                </DockPanel>
             </TabItem>
         </TabControl>
         </DockPanel>

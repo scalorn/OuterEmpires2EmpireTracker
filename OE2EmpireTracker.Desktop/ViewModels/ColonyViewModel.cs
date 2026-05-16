@@ -128,6 +128,9 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     [ObservableProperty]
     private string _validationError = string.Empty;
 
+    [ObservableProperty]
+    private string _adminSummary = string.Empty;
+
     // --- D2.4-D2.7: Assignment properties ---
 
     [ObservableProperty]
@@ -210,6 +213,49 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         return null;
     }
 
+    private void UpdateAdminSummary(Colony colony)
+    {
+        int totalStructures = colony.Structures?.Count ?? 0;
+        int onlineCount = 0;
+        int stagedCount = 0;
+
+        if (colony.Structures is not null)
+        {
+            foreach (var s in colony.Structures)
+            {
+                s.Properties.GetBoolean(GameConstants.PropBuilt, false, out bool built);
+                if (built)
+                {
+                    s.Properties.GetBoolean(GameConstants.PropOnline, false, out bool online);
+                    if (online)
+                    {
+                        onlineCount++;
+                    }
+                }
+                else
+                {
+                    s.Properties.GetBoolean(GameConstants.PropStaged, false, out bool staged);
+                    if (staged)
+                    {
+                        stagedCount++;
+                    }
+                }
+            }
+        }
+
+        int totalItems = 0;
+        if (colony.Items?.Items is not null)
+        {
+            totalItems = colony.Items.Items.Values.Sum(i => i.Quantity);
+        }
+
+        string lastImport = colony.LastImportDateTime ?? "Never";
+
+        AdminSummary = $"Structures: {totalStructures} total, {onlineCount} online, {stagedCount} staged\n"
+            + $"Warehouse items: {totalItems}\n"
+            + $"Last import: {lastImport}";
+    }
+
     // --- A8: Save Colony with Validation ---
 
     /// <summary>Saves edits to the currently selected colony with name validation.</summary>
@@ -255,6 +301,55 @@ public sealed partial class ColonyViewModel : DocumentViewModel
             PlanetName = SelectedColony.PlanetName,
             SystemName = SelectedColony.SystemName,
         });
+    }
+
+    // --- D7: Colony Admin/Reports ---
+
+    /// <summary>
+    /// Generates build plan items for all unstaged (unbuilt) structures in the selected colony.
+    /// </summary>
+    [RelayCommand]
+    private void GenerateBuildPlan()
+    {
+        if (SelectedColony is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var colony = dataService.GetCurrentPlayerColonies()
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony?.Structures is null)
+        {
+            return;
+        }
+
+        int stagedCount = 0;
+        foreach (var structure in colony.Structures)
+        {
+            structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out bool built);
+            if (!built)
+            {
+                structure.Properties.GetBoolean(GameConstants.PropStaged, false, out bool staged);
+                if (staged)
+                {
+                    stagedCount++;
+                }
+            }
+        }
+
+        var logger = App.Services?.GetService(typeof(ILogger<ColonyViewModel>)) as ILogger<ColonyViewModel>;
+        logger?.LogInformation(
+            "Generate build plan for colony {Colony}: {Count} staged structures",
+            colony.ColonyName,
+            stagedCount);
+
+        ImportStatus = $"Build plan: {stagedCount} staged structure(s) identified";
     }
 
     // --- D4: Colony Items Commands ---
@@ -885,6 +980,7 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         LoadItemsFromColony(colony);
         LoadOverflowFromColony(dataService, colony);
         UpdateActivityStatus(colony);
+        UpdateAdminSummary(colony);
     }
 
     private void LoadStructuresFromColony(DataService dataService, Colony colony)

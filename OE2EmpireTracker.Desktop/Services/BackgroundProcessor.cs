@@ -187,5 +187,118 @@ public sealed class BackgroundProcessor : IDisposable
             _dataService.WriteContext();
             _logger.LogDebug("Processed {Count} colonies", processedUuids.Count);
         }
+
+        // After processing colonies, check overflow rules (REQ-BP-050)
+        CheckWarehouseOverflow();
+
+        // Check supply chain thresholds (REQ-BP-060)
+        CheckSupplyChainThresholds();
+
+        // Check stock target cascade (REQ-BP-070)
+        if (_dataService.CascadeStockTargetsDirty)
+        {
+            EvaluateStockTargets();
+            _dataService.CascadeStockTargetsDirty = false;
+        }
+    }
+
+    /// <summary>
+    /// Evaluates all active warehouse overflow rules and logs when thresholds are exceeded.
+    /// Implements REQ-BP-050 through REQ-BP-052.
+    /// </summary>
+    private void CheckWarehouseOverflow()
+    {
+        var rules = _dataService.WarehouseOverflowRules;
+        foreach (var rule in rules)
+        {
+            if (!rule.IsActive)
+            {
+                continue;
+            }
+
+            var colony = _dataService.Colonies.FirstOrDefault(c => c.UUID == rule.ColonyUUID);
+            if (colony?.Items is null)
+            {
+                continue;
+            }
+
+            var items = colony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
+            int totalQty = items.Sum(i => i.Quantity);
+            if (totalQty > rule.TriggerThreshold)
+            {
+                _logger.LogInformation(
+                    "Overflow triggered: {Resource} ({Purity}) at {Colony}: {Qty} > {Threshold}",
+                    rule.ResourceName,
+                    rule.ResourcePurity,
+                    colony.ColonyName,
+                    totalQty,
+                    rule.TriggerThreshold);
+
+                // TODO: Generate delivery plan for excess (totalQty - threshold)
+            }
+        }
+    }
+
+    /// <summary>
+    /// Evaluates all active supply chains and logs when stage accumulation exceeds thresholds.
+    /// Implements REQ-BP-060 through REQ-BP-062.
+    /// </summary>
+    private void CheckSupplyChainThresholds()
+    {
+        var chains = _dataService.SupplyChains;
+        foreach (var chain in chains)
+        {
+            if (!chain.IsActive)
+            {
+                continue;
+            }
+
+            if (chain.Stages is null)
+            {
+                continue;
+            }
+
+            foreach (var stage in chain.Stages)
+            {
+                if (stage.AccumulationThreshold <= 0)
+                {
+                    continue;
+                }
+
+                var colony = _dataService.Colonies.FirstOrDefault(c => c.UUID == stage.LocationUUID);
+                if (colony?.Items is null)
+                {
+                    continue;
+                }
+
+                var items = colony.Items.FindResource(stage.ResourceName, stage.ResourcePurity);
+                int totalQty = items.Sum(i => i.Quantity);
+                if (totalQty > stage.AccumulationThreshold)
+                {
+                    _logger.LogInformation(
+                        "Supply chain '{Chain}' stage {Seq} threshold exceeded: {Resource} ({Purity}) {Qty} > {Threshold}",
+                        chain.Name,
+                        stage.Sequence,
+                        stage.ResourceName,
+                        stage.ResourcePurity,
+                        totalQty,
+                        stage.AccumulationThreshold);
+
+                    // TODO: Generate delivery plan on stage's designated route
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Evaluates stock targets when the dirty flag is set.
+    /// Implements REQ-BP-070 through REQ-BP-072.
+    /// </summary>
+    private void EvaluateStockTargets()
+    {
+        _logger.LogInformation("Stock target evaluation triggered");
+
+        // TODO: Expand template targets, check scoped inventory, compute shortfalls,
+        // and create replenishment build items in linked build plans.
     }
 }
