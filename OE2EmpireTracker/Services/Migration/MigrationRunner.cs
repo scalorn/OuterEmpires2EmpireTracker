@@ -28,7 +28,11 @@ namespace OE2EmpireTracker.Services.Migration
         /// Set to true when a migration fails. Prevents saving data in a
         /// partially-migrated state.
         /// </summary>
-        public static bool MigrationFailed { get; private set; }
+        public static bool MigrationFailed
+        {
+            get => PlayerContext.WritesBlocked;
+            private set => PlayerContext.WritesBlocked = value;
+        }
 
         /// <summary>
         /// When true, suppresses MessageBox dialogs (e.g. during unit tests).
@@ -98,7 +102,7 @@ namespace OE2EmpireTracker.Services.Migration
         /// </summary>
         public static void ResetFailureState()
         {
-            MigrationFailed = false;
+            PlayerContext.WritesBlocked = false;
             SuppressUI = false;
         }
 

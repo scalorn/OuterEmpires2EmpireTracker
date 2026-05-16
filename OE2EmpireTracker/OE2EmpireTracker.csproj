@@ -243,7 +243,6 @@
     <Compile Include="Services\ColonyActivityCollector.cs" />
     <Compile Include="Services\MarketBlueprintImporter.cs" />
     <Compile Include="Services\CrateImporter.cs" />
-    <Compile Include="Services\SerializationSorter.cs" />
     <Compile Include="Services\BlueprintService.cs" />
     <Compile Include="Services\PlayerProfileService.cs" />
     <Compile Include="Services\PricingPlanService.cs" />
@@ -258,7 +257,6 @@
     <Compile Include="Services\StationService.cs" />
     <Compile Include="Services\MarketListingService.cs" />
     <Compile Include="Services\DeliveryPlanService.cs" />
-    <Compile Include="Services\CollectionSortHelper.cs" />
     <Compile Include="Services\ColonyInactivityCollector.cs" />
     <Compile Include="Services\ColonyAdminReportBuilder.cs" />
     <Compile Include="Services\ColonyBuildEligibility.cs" />
@@ -277,12 +275,8 @@
     <Compile Include="Services\TabWarningService.cs" />
     <Compile Include="Services\EvolutionChainService.cs" />
     <Compile Include="Services\QueueCalculator.cs" />
-    <Compile Include="Services\PlayerContext.cs" />
-    <Compile Include="Persistence\SafeFileWriter.cs" />
     <Compile Include="Persistence\BoundsValidator.cs" />
     <Compile Include="Persistence\WindowStateHelper.cs" />
-    <Compile Include="Services\EmpireContext.cs" />
-    <Compile Include="Services\SystemRepository.cs" />
     <Compile Include="Services\DistanceCalculator.cs" />
     <Compile Include="Services\SystemImporter.cs" />
     <Compile Include="Constants\ChartColors.cs" />

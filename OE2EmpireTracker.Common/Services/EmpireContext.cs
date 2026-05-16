@@ -1,23 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Reflection.Emit;
-using System.Runtime.Remoting.Contexts;
-using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
-using Amazon;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Services.Migration;
-using Sgml;
 
 namespace OE2EmpireTracker.Services
 {
@@ -87,19 +79,8 @@ namespace OE2EmpireTracker.Services
             _systemRepository = new SystemRepository();
             _systemRepository.Load(SystemRepository.FilePath);
 
-            // Run migrations same as private constructor
-            int prevBaselineVersion = DataVersion;
-            int prevPlayerVersion = PlayerContext.DataVersion;
-            MigrationRunner.Run(this, PlayerContext);
-            if (DataVersion != prevBaselineVersion)
-            {
-                WriteContext();
-            }
-
-            if (PlayerContext.DataVersion != prevPlayerVersion)
-            {
-                PlayerContext.WriteContext();
-            }
+            // Run migrations via delegate (set by host application)
+            RunMigrationsIfConfigured();
         }
 
         private EmpireContext() : base()
@@ -138,24 +119,26 @@ namespace OE2EmpireTracker.Services
             _systemRepository = new SystemRepository();
             _systemRepository.Load(SystemRepository.FilePath);
 
-            // Run migrations after both contexts are loaded
-            int prevBaselineVersion = DataVersion;
-            int prevPlayerVersion = PlayerContext.DataVersion;
-            MigrationRunner.Run(this, PlayerContext);
-            if (DataVersion != prevBaselineVersion)
-            {
-                WriteContext();
-            }
-
-            if (PlayerContext.DataVersion != prevPlayerVersion)
-            {
-                PlayerContext.WriteContext();
-            }
+            // Run migrations via delegate (set by host application)
+            RunMigrationsIfConfigured();
         }
 
         public static string FilePath { get; set; } = "BaselineData.json";
 
         public static PlayerContext PlayerContext { get; set; }
+
+        /// <summary>
+        /// Delegate that runs data migrations. Set by the host application (WinForms)
+        /// before creating the EmpireContext instance.
+        /// Parameters: EmpireContext, PlayerContext.
+        /// </summary>
+        public static Action<EmpireContext, PlayerContext> RunMigrations { get; set; }
+
+        /// <summary>
+        /// Delegate that fixes up blueprint properties (e.g. flatpack properties).
+        /// Set by the host application where parser logic is available.
+        /// </summary>
+        public static Action<Blueprint> FixupBlueprintProperties { get; set; }
 
         public IReadOnlyList<BlueprintType> BlueprintTypeList => _blueprintTypeList;
 
@@ -209,7 +192,7 @@ namespace OE2EmpireTracker.Services
 
         public void WriteContext()
         {
-            if (MigrationRunner.MigrationFailed)
+            if (PlayerContext.WritesBlocked)
             {
                 Log.Warn("WriteContext blocked -- migration failed, saving disabled");
                 return;
@@ -256,7 +239,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE Id on load: BlueprintType Id='{0}' Name='{1}' — skipping duplicate", bt.Id, bt.Name);
+                    Log.Error("DUPLICATE Id on load: BlueprintType Id='{0}' Name='{1}' â€” skipping duplicate", bt.Id, bt.Name);
                 }
             }
 
@@ -381,7 +364,7 @@ namespace OE2EmpireTracker.Services
                     }
                     else
                     {
-                        Log.Error("DUPLICATE Name on load: Commodity Name='{0}' — skipping duplicate", c.Name);
+                        Log.Error("DUPLICATE Name on load: Commodity Name='{0}' â€” skipping duplicate", c.Name);
                     }
                 }
 
@@ -437,7 +420,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: GlobalBlueprint UUID={0} Name='{1}' — skipping duplicate", bp.UUID, bp.Name);
+                    Log.Error("DUPLICATE UUID on load: GlobalBlueprint UUID={0} Name='{1}' â€” skipping duplicate", bp.UUID, bp.Name);
                 }
             }
 
@@ -445,10 +428,10 @@ namespace OE2EmpireTracker.Services
             InvalidateGlobalBlueprintCache();
 
             // Fix up game data quirks on existing blueprints
-            // (e.g. Reactor "Power Required" → "Power Provided")
+            // (e.g. Reactor "Power Required" â†’ "Power Provided")
             foreach (var bp in _globalBlueprintList)
             {
-                Parsers.BlueprintScanner.FixupFlatpackProperties(bp);
+                FixupBlueprintProperties?.Invoke(bp);
             }
 
             Log.Info("Loaded {0} global blueprints", _globalBlueprintList.Count);
@@ -520,7 +503,7 @@ namespace OE2EmpireTracker.Services
             }
         }
 
-        // ── Task 6.2: Mutation methods for GlobalBlueprint (UUID cache) ──
+        // â”€â”€ Task 6.2: Mutation methods for GlobalBlueprint (UUID cache) â”€â”€
 
         public void AddGlobalBlueprint(Blueprint item)
         {
@@ -553,7 +536,7 @@ namespace OE2EmpireTracker.Services
                 _globalBlueprintCache.Remove(item.UUID);
         }
 
-        // ── Task 6.3: Mutation methods for Commodity (name cache with _commodityLock) ──
+        // â”€â”€ Task 6.3: Mutation methods for Commodity (name cache with _commodityLock) â”€â”€
 
         public void AddCommodity(Commodity item)
         {
@@ -592,7 +575,7 @@ namespace OE2EmpireTracker.Services
             }
         }
 
-        // ── Task 6.4: Mutation methods for lookup lists ──
+        // â”€â”€ Task 6.4: Mutation methods for lookup lists â”€â”€
 
         public void AddBlueprintType(BlueprintType item)
         {
@@ -811,18 +794,23 @@ namespace OE2EmpireTracker.Services
                 return null;
             };
         }
-    }
 
-    public class BaselineRoot
-    {
-        public int DataVersion { get; set; }
-        public BaselineGameConstants GameConstants { get; set; }
-        public ShipClass[] ShipClass { get; set; }
-        public BlueprintType[] BlueprintType { get; set; }
-        public Blueprint[] Blueprint { get; set; }
-        public TechLevel[] TechLevel { get; set; }
-        public Commodity[] Commodity { get; set; }
-        public RefiningRecipe[] RefiningRecipe { get; set; }
-        public ResearchTimeEntry[] ResearchTime { get; set; }
+        private void RunMigrationsIfConfigured()
+        {
+            if (RunMigrations == null) return;
+
+            int prevBaselineVersion = DataVersion;
+            int prevPlayerVersion = PlayerContext.DataVersion;
+            RunMigrations(this, PlayerContext);
+            if (DataVersion != prevBaselineVersion)
+            {
+                WriteContext();
+            }
+
+            if (PlayerContext.DataVersion != prevPlayerVersion)
+            {
+                PlayerContext.WriteContext();
+            }
+        }
     }
 }

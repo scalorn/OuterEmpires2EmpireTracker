@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
-using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.Services
 {
@@ -240,6 +239,37 @@ namespace OE2EmpireTracker.Services
         /// Fired when external character (contacts) data is modified.
         /// </summary>
         public event EventHandler<ContactDataChangedEventArgs> ContactDataChanged;
+
+        /// <summary>
+        /// When true, WriteContext is blocked (set by migration system on failure).
+        /// </summary>
+        public static bool WritesBlocked { get; set; }
+
+        /// <summary>
+        /// Delegate that determines whether the app is in ServerOnly mode.
+        /// Set by the host application (WinForms/Desktop) at startup.
+        /// Returns true when local file writes should be skipped.
+        /// </summary>
+        public static Func<bool> IsServerOnlyMode { get; set; }
+
+        /// <summary>
+        /// Delegate that pushes player data JSON to the remote server.
+        /// Set by the host application when server connectivity is available.
+        /// Parameters: characterUUID, jsonContent. Returns Task.
+        /// </summary>
+        public static Func<string, string, Task> PushToServer { get; set; }
+
+        /// <summary>
+        /// Delegate that exports character data from the remote server.
+        /// Parameters: characterUUID. Returns JSON string or null.
+        /// </summary>
+        public static Func<string, Task<string>> ExportFromServer { get; set; }
+
+        /// <summary>
+        /// Delegate that checks whether the server is connected and reachable.
+        /// Returns true if the server is available for data operations.
+        /// </summary>
+        public static Func<bool> IsServerConnected { get; set; }
 
         public static string FilePath { get; set; } = "PlayerData.json";
 
@@ -477,7 +507,7 @@ namespace OE2EmpireTracker.Services
 
         public void WriteContext()
         {
-            if (MigrationRunner.MigrationFailed)
+            if (WritesBlocked)
             {
                 Log.Warn("WriteContext blocked -- migration failed, saving disabled");
                 return;
@@ -531,10 +561,9 @@ namespace OE2EmpireTracker.Services
 
             string jsonContent = JsonConvert.SerializeObject(playerRoot, JsonSettings.SerializerSettings);
 
-            // In ServerOnly mode, skip local file write — data lives on the server only.
+            // In ServerOnly mode, skip local file write â€” data lives on the server only.
             // In LocalOnly or DualWrite (ServerAndLocal) mode, always write locally.
-            var serverContext = Client.ServerContext.Instance;
-            bool isServerOnly = serverContext != null && serverContext.Mode == Client.OperatingMode.ServerOnly;
+            bool isServerOnly = IsServerOnlyMode?.Invoke() == true;
 
             if (!isServerOnly)
             {
@@ -543,10 +572,10 @@ namespace OE2EmpireTracker.Services
             }
             else
             {
-                Log.Debug("WriteContext: ServerOnly mode — local file write skipped");
+                Log.Debug("WriteContext: ServerOnly mode â€” local file write skipped");
             }
 
-            // Write-through: push data to server when mode is ServerOnly or DualWrite
+            // Write-through: push data to server when configured
             PushToServerAsync(jsonContent).ConfigureAwait(false);
         }
 
@@ -558,22 +587,21 @@ namespace OE2EmpireTracker.Services
         /// <returns>True if data was loaded from server; false if fell back to local.</returns>
         public async Task<bool> LoadFromServerAsync()
         {
-            var serverContext = Client.ServerContext.Instance;
-            if (serverContext?.Client == null)
-            {
-                Log.Debug("LoadFromServerAsync: no server context, using local data");
-                return false;
-            }
-
-            if (serverContext.Mode != Client.OperatingMode.ServerOnly)
+            if (IsServerOnlyMode?.Invoke() != true)
             {
                 Log.Debug("LoadFromServerAsync: not in ServerOnly mode, using local data");
                 return false;
             }
 
-            if (!serverContext.Client.IsConnected)
+            if (IsServerConnected?.Invoke() != true)
             {
                 Log.Warn("LoadFromServerAsync: server unreachable in ServerOnly mode, using local data");
+                return false;
+            }
+
+            if (ExportFromServer == null)
+            {
+                Log.Debug("LoadFromServerAsync: no export delegate configured, using local data");
                 return false;
             }
 
@@ -586,7 +614,7 @@ namespace OE2EmpireTracker.Services
 
             try
             {
-                string exportJson = await serverContext.Client.ExportCharacterDataAsync(characterUUID).ConfigureAwait(false);
+                string exportJson = await ExportFromServer(characterUUID).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(exportJson))
                 {
                     Log.Warn("LoadFromServerAsync: server returned empty data, using local data");
@@ -650,7 +678,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: PlayerProfile UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: PlayerProfile UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -670,7 +698,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: Blueprint UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: Blueprint UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -763,7 +791,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: Survey UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: Survey UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -847,12 +875,12 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: Colony UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.ColonyName);
+                    Log.Error("DUPLICATE UUID on load: Colony UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.ColonyName);
                 }
             }
 
             // Stamp BuildQueueSequence for existing data where values are all zero (migration).
-            // Don't sort the list â€” consumers sort by BuildQueueSequence themselves.
+            // Don't sort the list Ã¢â‚¬â€ consumers sort by BuildQueueSequence themselves.
             foreach (var colony in list)
             {
                 if (colony.Structures != null && colony.Structures.Count > 0
@@ -879,7 +907,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: DeliveryRoute UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: DeliveryRoute UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -899,7 +927,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: DeliveryPlan UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: DeliveryPlan UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -919,7 +947,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: PricingPlan UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: PricingPlan UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -939,7 +967,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: BuildPlan UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: BuildPlan UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -959,7 +987,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: ShipTemplate UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: ShipTemplate UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -979,7 +1007,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: Ship UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: Ship UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -999,7 +1027,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: Station UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: Station UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -1019,7 +1047,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: MarketListing UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.ItemName);
+                    Log.Error("DUPLICATE UUID on load: MarketListing UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.ItemName);
                 }
             }
 
@@ -1039,7 +1067,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: MarketTransaction UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.ItemName);
+                    Log.Error("DUPLICATE UUID on load: MarketTransaction UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.ItemName);
                 }
             }
 
@@ -1059,7 +1087,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: StockPlan UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: StockPlan UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -1079,7 +1107,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: StockProfile UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: StockProfile UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -1099,7 +1127,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: SupplyChain UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: SupplyChain UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -1119,7 +1147,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: WarehouseOverflowRule UUID={0} Resource='{1}' — skipping duplicate", item.UUID, item.ResourceName);
+                    Log.Error("DUPLICATE UUID on load: WarehouseOverflowRule UUID={0} Resource='{1}' â€” skipping duplicate", item.UUID, item.ResourceName);
                 }
             }
 
@@ -1139,7 +1167,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: Faction UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: Faction UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -1159,7 +1187,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: ExternalCharacter UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: ExternalCharacter UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -1179,7 +1207,7 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    Log.Error("DUPLICATE UUID on load: Asteroid UUID={0} Name='{1}' — skipping duplicate", item.UUID, item.Name);
+                    Log.Error("DUPLICATE UUID on load: Asteroid UUID={0} Name='{1}' â€” skipping duplicate", item.UUID, item.Name);
                 }
             }
 
@@ -3873,36 +3901,28 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private async Task PushToServerAsync(string jsonContent)
         {
+            if (PushToServer == null)
+            {
+                return;
+            }
+
+            string characterUUID = _currentPlayerUUID;
+            if (string.IsNullOrEmpty(characterUUID))
+            {
+                return;
+            }
+
             try
             {
-                var serverContext = Client.ServerContext.Instance;
-                if (serverContext == null)
-                {
-                    return;
-                }
-
-                var syncManager = serverContext.SyncManager;
-                if (syncManager == null || syncManager.Mode == Client.OperatingMode.LocalOnly)
-                {
-                    return;
-                }
-
-                string characterUUID = _currentPlayerUUID;
-                if (string.IsNullOrEmpty(characterUUID))
-                {
-                    return;
-                }
-
-                await syncManager.WriteToServerAsync(characterUUID, "player-data", jsonContent).ConfigureAwait(false);
+                await PushToServer(characterUUID, jsonContent).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                Log.Warn(ex, "PushToServerAsync failed — data saved locally only");
+                Log.Warn(ex, "PushToServerAsync failed â€” data saved locally only");
 
                 // Graceful degradation: if in ServerOnly mode and server is unreachable,
                 // write to local file to prevent data loss.
-                var serverContext = Client.ServerContext.Instance;
-                if (serverContext != null && serverContext.Mode == Client.OperatingMode.ServerOnly)
+                if (IsServerOnlyMode?.Invoke() == true)
                 {
                     if (!string.IsNullOrEmpty(FilePath))
                     {
@@ -4152,170 +4172,5 @@ namespace OE2EmpireTracker.Services
 
             Log.Info("Current player restored: {0}", _currentPlayerUUID);
         }
-    }
-
-    public class PlayerRoot
-    {
-        public PlayerRoot()
-        {
-            DataVersion = 0;
-            CurrentPlayerUUID = string.Empty;
-            PlayerProfile = new PlayerProfile[0];
-            Blueprint = new Blueprint[0];
-            Survey = new Survey[0];
-            Colony = new Colony[0];
-            DeliveryRoute = new DeliveryRoute[0];
-            DeliveryPlan = new DeliveryPlan[0];
-            PricingPlan = new PricingPlan[0];
-            BuildPlan = new BuildPlan[0];
-            ShipTemplate = new ShipTemplate[0];
-            Ship = new Ship[0];
-            Station = new Station[0];
-            MarketListing = new MarketListing[0];
-            MarketTransaction = new MarketTransaction[0];
-            StockPlan = new StockPlan[0];
-            StockProfile = new StockProfile[0];
-            SupplyChain = new SupplyChain[0];
-            WarehouseOverflowRule = new WarehouseOverflowRule[0];
-            Faction = new Faction[0];
-            ExternalCharacter = new ExternalCharacter[0];
-            Asteroid = new Asteroid[0];
-        }
-
-        public int DataVersion { get; set; }
-
-        public string CurrentPlayerUUID { get; set; }
-
-        public PlayerProfile[] PlayerProfile { get; set; }
-
-        public Blueprint[] Blueprint { get; set; }
-
-        public Survey[] Survey { get; set; }
-
-        public Colony[] Colony { get; set; }
-
-        public DeliveryRoute[] DeliveryRoute { get; set; }
-
-        public DeliveryPlan[] DeliveryPlan { get; set; }
-
-        public PricingPlan[] PricingPlan { get; set; }
-
-        public BuildPlan[] BuildPlan { get; set; }
-
-        public ShipTemplate[] ShipTemplate { get; set; }
-
-        public Ship[] Ship { get; set; }
-
-        public Station[] Station { get; set; }
-
-        public MarketListing[] MarketListing { get; set; }
-
-        public MarketTransaction[] MarketTransaction { get; set; }
-
-        public StockPlan[] StockPlan { get; set; }
-
-        public StockProfile[] StockProfile { get; set; }
-
-        public SupplyChain[] SupplyChain { get; set; }
-
-        public WarehouseOverflowRule[] WarehouseOverflowRule { get; set; }
-
-        public Faction[] Faction { get; set; }
-
-        public ExternalCharacter[] ExternalCharacter { get; set; }
-
-        public Asteroid[] Asteroid { get; set; }
-    }
-
-    public class CountDownTimeReference
-    {
-        public enum SourceType
-        {
-            None,
-            Player,
-            Colony
-        }
-
-        public SourceType Source { get; set; }
-        public string SourceUUID { get; set; }
-        public string InternalUUID { get; set; }
-        public CountDownTime CountDownTime { get; set; }
-    }
-
-    public class ColonyDataChangedEventArgs : EventArgs
-    {
-        public ColonyDataChangedEventArgs(string colonyUUID) { ColonyUUID = colonyUUID; }
-
-        public string ColonyUUID { get; }
-    }
-
-    public class BlueprintDataChangedEventArgs : EventArgs
-    {
-        public BlueprintDataChangedEventArgs(string blueprintUUID) { BlueprintUUID = blueprintUUID; }
-
-        public string BlueprintUUID { get; }
-    }
-
-    public class SurveyDataChangedEventArgs : EventArgs
-    {
-        public SurveyDataChangedEventArgs(string surveyUUID) { SurveyUUID = surveyUUID; }
-
-        public string SurveyUUID { get; }
-    }
-
-    public class PlayerProfileDataChangedEventArgs : EventArgs
-    {
-        public PlayerProfileDataChangedEventArgs(string playerUUID) { PlayerUUID = playerUUID; }
-
-        public string PlayerUUID { get; }
-    }
-
-    public class BuildPlanDataChangedEventArgs : EventArgs
-    {
-        public BuildPlanDataChangedEventArgs(string uuid) { BuildPlanUUID = uuid; }
-
-        public string BuildPlanUUID { get; }
-    }
-
-    public class AsteroidDataChangedEventArgs : EventArgs
-    {
-        public AsteroidDataChangedEventArgs(string asteroidUUID) { AsteroidUUID = asteroidUUID; }
-
-        public string AsteroidUUID { get; }
-    }
-
-    public class ShipTemplateDataChangedEventArgs : EventArgs
-    {
-        public ShipTemplateDataChangedEventArgs(string uuid) { ShipTemplateUUID = uuid; }
-
-        public string ShipTemplateUUID { get; }
-    }
-
-    public class ShipDataChangedEventArgs : EventArgs
-    {
-        public ShipDataChangedEventArgs(string uuid) { ShipUUID = uuid; }
-
-        public string ShipUUID { get; }
-    }
-
-    public class StockDataChangedEventArgs : EventArgs
-    {
-        public StockDataChangedEventArgs(string uuid) { StockPlanUUID = uuid; }
-
-        public string StockPlanUUID { get; }
-    }
-
-    public class SupplyChainDataChangedEventArgs : EventArgs
-    {
-        public SupplyChainDataChangedEventArgs(string uuid) { SupplyChainUUID = uuid; }
-
-        public string SupplyChainUUID { get; }
-    }
-
-    public class ContactDataChangedEventArgs : EventArgs
-    {
-        public ContactDataChangedEventArgs(string uuid) { CharacterUUID = uuid; }
-
-        public string CharacterUUID { get; }
     }
 }
