@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             xmlns:sp="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
              xmlns:ctrl="using:OE2EmpireTracker.Desktop.Controls"
              x:Class="OE2EmpireTracker.Desktop.Views.SurveyView"
              x:DataType="vm:SurveyViewModel">
@@ -33,7 +34,7 @@
                 </ListBox>
             </DockPanel>
 
-            <!-- Right: Resources grid + chart placeholder -->
+            <!-- Right: Resources grid + distribution chart -->
             <DockPanel Grid.Column="2">
                 <TextBlock DockPanel.Dock="Top"
                            Text="Resources"
@@ -41,11 +42,15 @@
                            FontWeight="SemiBold"
                            Margin="0,0,0,8" />
 
-                <TextBlock DockPanel.Dock="Bottom"
-                           Text="[Chart placeholder — resource distribution visualization]"
-                           FontStyle="Italic"
-                           Opacity="0.5"
-                           Margin="0,12,0,0" />
+                <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+                        <TextBlock Text="Distribution:" VerticalAlignment="Center" />
+                        <ComboBox ItemsSource="{Binding AvailableCombos}"
+                                  SelectedItem="{Binding SelectedCombo}"
+                                  MinWidth="200" />
+                    </StackPanel>
+                    <sp:AvaPlot x:Name="DistributionPlot" MinHeight="200" />
+                </DockPanel>
 
                 <DataGrid ItemsSource="{Binding Resources}"
                           AutoGenerateColumns="False"

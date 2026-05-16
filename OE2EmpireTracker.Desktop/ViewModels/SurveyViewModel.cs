@@ -43,7 +43,7 @@ public sealed partial class SurveyResourceRowViewModel : ObservableObject
 
 /// <summary>
 /// ViewModel for the Survey document tab.
-/// Shows surveys with resource details.
+/// Shows surveys with resource details and yield distribution chart.
 /// </summary>
 public sealed partial class SurveyViewModel : DocumentViewModel
 {
@@ -52,6 +52,9 @@ public sealed partial class SurveyViewModel : DocumentViewModel
 
     [ObservableProperty]
     private string _importStatus = string.Empty;
+
+    [ObservableProperty]
+    private YieldDistributionService.ResourcePurityCombo? _selectedCombo;
 
     public SurveyViewModel()
     {
@@ -62,6 +65,10 @@ public sealed partial class SurveyViewModel : DocumentViewModel
     public ObservableCollection<SurveyRowViewModel> Surveys { get; } = new ObservableCollection<SurveyRowViewModel>();
 
     public ObservableCollection<SurveyResourceRowViewModel> Resources { get; } = new ObservableCollection<SurveyResourceRowViewModel>();
+
+    public ObservableCollection<YieldDistributionService.ResourcePurityCombo> AvailableCombos { get; } = new ObservableCollection<YieldDistributionService.ResourcePurityCombo>();
+
+    public ObservableCollection<YieldDistributionService.DistributionPoint> DistributionPoints { get; } = new ObservableCollection<YieldDistributionService.DistributionPoint>();
 
     /// <summary>
     /// Imports survey data from the clipboard HTML and adds a new survey.
@@ -118,11 +125,68 @@ public sealed partial class SurveyViewModel : DocumentViewModel
 
         SelectedSurvey = Surveys.LastOrDefault();
         ImportStatus = $"Imported survey for {survey.PlanetName}";
+        RefreshAvailableCombos();
     }
 
     partial void OnSelectedSurveyChanged(SurveyRowViewModel? value)
     {
         LoadResourcesForSurvey(value);
+    }
+
+    partial void OnSelectedComboChanged(YieldDistributionService.ResourcePurityCombo? value)
+    {
+        UpdateDistributionPoints();
+    }
+
+    private void UpdateDistributionPoints()
+    {
+        DistributionPoints.Clear();
+
+        if (SelectedCombo is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var result = YieldDistributionService.ComputeDistribution(
+            dataService.Surveys, SelectedCombo.ResourceName, SelectedCombo.Purity);
+
+        if (result.InsufficientData)
+        {
+            return;
+        }
+
+        foreach (var point in result.Points)
+        {
+            DistributionPoints.Add(point);
+        }
+    }
+
+    private void RefreshAvailableCombos()
+    {
+        AvailableCombos.Clear();
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var combos = YieldDistributionService.GetAvailableCombos(dataService.Surveys);
+        foreach (var combo in combos)
+        {
+            AvailableCombos.Add(combo);
+        }
+
+        if (AvailableCombos.Count > 0)
+        {
+            SelectedCombo = AvailableCombos[0];
+        }
     }
 
     private void LoadData()
@@ -153,6 +217,8 @@ public sealed partial class SurveyViewModel : DocumentViewModel
         {
             SelectedSurvey = Surveys[0];
         }
+
+        RefreshAvailableCombos();
     }
 
     private void LoadResourcesForSurvey(SurveyRowViewModel? survey)
