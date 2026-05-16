@@ -1,6 +1,6 @@
 # .NET 8 + Avalonia Port — Task List (Updated)
 
-## Status: ~216/228 tasks complete (~95%)
+## Status: ~220/228 tasks complete (~96%)
 
 ## Status Key
 - [x] Complete
@@ -59,13 +59,13 @@
 - [x] E5.2-E5.3: Pricing display, per-unit cost
 - [x] E6.1-E6.4: BlueprintScanner, idempotent import, preserve fields, government distinction
 
-## Phase F: Survey — 85% COMPLETE
+## Phase F: Survey — COMPLETE
 
 - [x] F1.1-F1.3: List, events
 - [x] F2.1-F2.4: Detail editing, CRUD
 - [x] F3.1-F3.3: Resources DataGrid, add/remove, Max Reserve column
 - [x] F4.1-F4.3: Clipboard import, asteroid auto-detection, max reserve extraction
-- [ ] F5.1-F5.3: Yield distribution chart (needs ScottPlot wiring)
+- [x] F5.1-F5.3: Yield distribution chart (ScottPlot + YieldDistributionService)
 
 ## Phase G: Player Profile — COMPLETE
 
@@ -74,11 +74,10 @@
 - [x] G5, G7: CRUD, events
 - [x] G6: Profile HTML import (full parser ported from WinForms)
 
-## Phase H: Delivery — 90% COMPLETE
+## Phase H: Delivery — COMPLETE
 
 - [x] H1.1-H1.7: Route list, detail, stops, add/remove, CRUD, events
-- [x] H2.1-H2.3, H2.5: Plan list, detail, stop details, CRUD
-- [ ] H2.4: Auto-fill dialog
+- [x] H2.1-H2.5: Plan list, detail, stop details, auto-fill dialog, CRUD
 - [x] H3.1-H3.5: Execution, mark delivered, cargo volume, flatpack staging
 - [x] H3.6: Event subscription
 
@@ -137,11 +136,9 @@
 
 ---
 
-## Remaining Items (~12 tasks):
+## Remaining Items (~10 tasks):
 
 1. E5.1: ScottPlot evolution chart code-behind wiring
-2. F5.1-F5.3: Yield distribution chart (ScottPlot + YieldDistributionService)
-3. H2.4: Delivery auto-fill dialog
-4. P3-P7: Systems detail/editing (needs SystemData.json loading)
-5. S5: Help internal link navigation (needs HTML rendering)
-6. T5-T8: Platform testing (requires user's Linux machines)
+2. P3-P7: Systems detail/editing (needs SystemData.json loading)
+3. S5: Help internal link navigation (needs HTML rendering)
+4. T5-T8: Platform testing (requires user's Linux machines)

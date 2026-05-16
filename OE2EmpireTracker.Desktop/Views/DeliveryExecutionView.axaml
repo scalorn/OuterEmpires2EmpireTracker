@@ -84,6 +84,8 @@
                         Margin="0,8,0,0">
                 <Button Content="Mark Delivered"
                         Command="{Binding MarkDeliveredCommand}" />
+                <Button Content="Auto-Fill"
+                        Command="{Binding AutoFillCommand}" />
             </StackPanel>
         </Grid>
     </DockPanel>

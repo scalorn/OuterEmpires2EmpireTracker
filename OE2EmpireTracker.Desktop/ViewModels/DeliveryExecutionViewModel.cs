@@ -1,11 +1,16 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using OE2EmpireTracker.Desktop.Services;
 using OE2EmpireTracker.Desktop.ViewModels.Messages;
+using OE2EmpireTracker.Desktop.Views;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -177,6 +182,99 @@ public sealed partial class DeliveryExecutionViewModel : DocumentViewModel
         {
             dataService.OnColonyDataChanged(destColony);
         }
+    }
+
+    /// <summary>Opens the Auto-Fill dialog to generate delivery items from a build plan (H2.4).</summary>
+    [RelayCommand]
+    private async System.Threading.Tasks.Task AutoFill()
+    {
+        if (SelectedPlan is null)
+        {
+            return;
+        }
+
+        var vm = new AutoFillDialogViewModel();
+        var dialog = new AutoFillDialog { DataContext = vm };
+
+        Window? owner = null;
+        if (Application.Current?.ApplicationLifetime
+            is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            owner = desktop.MainWindow;
+        }
+
+        if (owner is not null)
+        {
+            await dialog.ShowDialog(owner);
+        }
+        else
+        {
+            dialog.Show();
+            return;
+        }
+
+        if (!vm.Confirmed || vm.GeneratedItems.Count == 0)
+        {
+            return;
+        }
+
+        ApplyAutoFillItems(vm.GeneratedItems);
+    }
+
+    private void ApplyAutoFillItems(
+        System.Collections.ObjectModel.ObservableCollection<AutoFillItemRowViewModel> items)
+    {
+        if (SelectedPlan is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var planService = App.Services?.GetService(typeof(DeliveryPlanService))
+            as DeliveryPlanService;
+        if (dataService is null || !dataService.IsLoaded || planService is null)
+        {
+            return;
+        }
+
+        var planModel = dataService.DeliveryPlans
+            .FirstOrDefault(p => p.UUID == SelectedPlan.PlanUuid);
+        if (planModel is null)
+        {
+            return;
+        }
+
+        // Group items by destination to create stops
+        var grouped = items
+            .GroupBy(i => i.DestinationUuid)
+            .ToList();
+
+        var stops = new List<DeliveryPlanStop>();
+        int seq = 1;
+
+        foreach (var group in grouped)
+        {
+            var stop = new DeliveryPlanStop
+            {
+                Sequence = seq++,
+                DestinationType = DestinationType.Colony,
+                DestinationUUID = group.Key,
+                DropOff = group.Select(i => new DeliveryItem
+                {
+                    Name = i.ItemName,
+                    Quantity = i.Quantity,
+                    ItemType = ItemType.ItemTypeEnum.Resource,
+                }).ToList(),
+            };
+
+            stops.Add(stop);
+        }
+
+        planService.Update(planModel.UUID, new DeliveryPlanUpdateRequest
+        {
+            Name = planModel.Name,
+            Stops = stops,
+        });
     }
 
     partial void OnSelectedPlanChanged(DeliveryPlanRowViewModel? value)

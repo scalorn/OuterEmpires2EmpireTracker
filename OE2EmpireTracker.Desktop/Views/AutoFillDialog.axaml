@@ -1,0 +1,87 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+        x:Class="OE2EmpireTracker.Desktop.Views.AutoFillDialog"
+        x:DataType="vm:AutoFillDialogViewModel"
+        Title="Auto-Fill Delivery Plan"
+        Width="600"
+        Height="450"
+        WindowStartupLocation="CenterOwner"
+        CanResize="True">
+
+    <DockPanel Margin="16">
+        <!-- Header -->
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Auto-Fill Delivery Plan"
+                   FontSize="18"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,12" />
+
+        <!-- Build plan selector -->
+        <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    Margin="0,0,0,12">
+            <TextBlock Text="Source Build Plan:"
+                       VerticalAlignment="Center" />
+            <ComboBox ItemsSource="{Binding BuildPlans}"
+                      SelectedItem="{Binding SelectedBuildPlan}"
+                      MinWidth="250">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding PlanName}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Button Content="Generate"
+                    Command="{Binding GenerateCommand}" />
+        </StackPanel>
+
+        <!-- Items label -->
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Items to deliver:"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,4" />
+
+        <!-- Bottom buttons -->
+        <StackPanel DockPanel.Dock="Bottom"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="8"
+                    Margin="0,12,0,0">
+            <Button Content="Confirm"
+                    Command="{Binding ConfirmCommand}"
+                    IsDefault="True" />
+            <Button Content="Cancel"
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True" />
+        </StackPanel>
+
+        <!-- Generated items DataGrid -->
+        <DataGrid ItemsSource="{Binding GeneratedItems}"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="True"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  IsReadOnly="True"
+                  GridLinesVisibility="Horizontal"
+                  SelectionMode="Single"
+                  HeadersVisibility="Column">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Item"
+                                    Binding="{Binding ItemName}"
+                                    Width="180" />
+                <DataGridTextColumn Header="Qty"
+                                    Binding="{Binding Quantity}"
+                                    Width="80" />
+                <DataGridTextColumn Header="From"
+                                    Binding="{Binding Source}"
+                                    Width="120" />
+                <DataGridTextColumn Header="To"
+                                    Binding="{Binding Destination}"
+                                    Width="150" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+
+</Window>
