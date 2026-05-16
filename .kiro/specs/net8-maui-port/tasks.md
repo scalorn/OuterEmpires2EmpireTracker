@@ -1,6 +1,6 @@
 # .NET 8 + Avalonia Port — Task List (Updated)
 
-## Status: ~215/228 tasks complete (~94%)
+## Status: ~216/228 tasks complete (~95%)
 
 ## Status Key
 - [x] Complete
@@ -34,7 +34,7 @@
 
 - [x] C1-C5: ThresholdPreferences, form with validation, countdown parser, PreferencesStore
 
-## Phase D: Colony — 90% COMPLETE
+## Phase D: Colony — COMPLETE
 
 - [x] D1.1-D1.4: Colony list, header editing, CRUD, events
 - [x] D2.1-D2.3: Structures DataGrid, state display, add/remove
@@ -46,7 +46,7 @@
 - [x] D5.1-D5.2: Overflow rules DataGrid, add/remove
 - [x] D6.1, D6.3: Clipboard import, merge semantics
 - [x] D6.2: File import
-- [ ] D6.4-D6.5: Manufacturing reconciliation, miner/refinery setup after import
+- [x] D6.4-D6.5: Manufacturing reconciliation, miner/refinery setup after import
 - [x] D7.1-D7.3: Admin tab (summary, build queue, generate build plan)
 
 ## Phase E: Blueprint — 90% COMPLETE
@@ -137,12 +137,11 @@
 
 ---
 
-## Remaining Items (~13 tasks):
+## Remaining Items (~12 tasks):
 
-1. D6.4-D6.5: Manufacturing reconciliation + miner/refinery setup after import
-2. E5.1: ScottPlot evolution chart code-behind wiring
-3. F5.1-F5.3: Yield distribution chart (ScottPlot + YieldDistributionService)
-4. H2.4: Delivery auto-fill dialog
-5. P3-P7: Systems detail/editing (needs SystemData.json loading)
-6. S5: Help internal link navigation (needs HTML rendering)
-7. T5-T8: Platform testing (requires user's Linux machines)
+1. E5.1: ScottPlot evolution chart code-behind wiring
+2. F5.1-F5.3: Yield distribution chart (ScottPlot + YieldDistributionService)
+3. H2.4: Delivery auto-fill dialog
+4. P3-P7: Systems detail/editing (needs SystemData.json loading)
+5. S5: Help internal link navigation (needs HTML rendering)
+6. T5-T8: Platform testing (requires user's Linux machines)

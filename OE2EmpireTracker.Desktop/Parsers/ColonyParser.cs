@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Microsoft.Extensions.Logging;
@@ -93,6 +94,7 @@ public sealed class ColonyParser
 
             ParsePlanetOverview(colony, doc);
             ParseColonyBuildings(colony, doc, dataService);
+            PostImportSetup(colony, dataService);
         }
         catch (Exception ex)
         {
@@ -130,6 +132,104 @@ public sealed class ColonyParser
         if (!string.IsNullOrEmpty(parsed.RefiningResource))
         {
             existing.RefiningResource = parsed.RefiningResource;
+        }
+    }
+
+    /// <summary>
+    /// Reconciles the game's manufacturing state (remaining runs) with the tracker's
+    /// model (total + completed). The game JSON field manufactureNumber represents
+    /// remaining runs, not total. (REQ-CI-025a/b/c)
+    /// </summary>
+    internal static void ReconcileManufacturing(ColonyStructure existing, ColonyStructure parsed)
+    {
+        int gameRemaining = parsed.ManufacturingQuantity;
+
+        // REQ-CI-025a: Game reports remaining > 0 and tracker has active batch
+        if (gameRemaining > 0 && existing.ManufacturingQuantity > 0)
+        {
+            if (gameRemaining > existing.ManufacturingQuantity)
+            {
+                // User added more runs in-game — update total, reset completed
+                existing.ManufacturingQuantity = gameRemaining;
+                existing.ManufacturingCompleted = 0;
+            }
+            else
+            {
+                // Normal progress: completed = total - remaining
+                existing.ManufacturingCompleted = existing.ManufacturingQuantity - gameRemaining;
+            }
+        }
+
+        // REQ-CI-025b: Game reports 0 remaining and tracker has active batch
+        else if (gameRemaining == 0 && existing.ManufacturingQuantity > 0)
+        {
+            // Manufacturing finished or cancelled — clear all state
+            existing.ManufacturingBlueprintUUID = null;
+            existing.ManufacturingCommodityName = null;
+            existing.ManufacturingQuantity = 0;
+            existing.ManufacturingCompleted = 0;
+            existing.StagingResources = false;
+            existing.ProcessCompletionTime = null;
+        }
+
+        // REQ-CI-025c: Never overwrite ManufacturingQuantity directly with game value
+    }
+
+    /// <summary>
+    /// Performs post-import setup for mining rigs and refineries.
+    /// Assigns surveys to mining rigs that have a resource but no survey,
+    /// and sets refining resource from mining resource where missing.
+    /// </summary>
+    internal static void PostImportSetup(Colony colony, DataService dataService)
+    {
+        if (colony.Structures is null)
+        {
+            return;
+        }
+
+        foreach (var structure in colony.Structures)
+        {
+            if (string.IsNullOrEmpty(structure.FlatpackBlueprintUUID))
+            {
+                continue;
+            }
+
+            var bp = dataService.Blueprints.FirstOrDefault(
+                b => b.UUID == structure.FlatpackBlueprintUUID);
+            if (bp is null)
+            {
+                continue;
+            }
+
+            string bpType = bp.BluePrintType ?? string.Empty;
+
+            // MinerSetup: If a mining rig has no survey assigned but has a resource,
+            // try to find a matching survey
+            if (bpType.Contains("MiningRig", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.IsNullOrEmpty(structure.MiningSurvey)
+                    && !string.IsNullOrEmpty(structure.MiningSurveyResource))
+                {
+                    var survey = dataService.Surveys.FirstOrDefault(s =>
+                        s.PlanetName == colony.PlanetName
+                        && s.Resources != null
+                        && s.Resources.ContainsKey(structure.MiningSurveyResource));
+                    if (survey != null)
+                    {
+                        structure.MiningSurvey = survey.UUID;
+                    }
+                }
+            }
+
+            // RefinerySetup: If a refinery has a mining resource but no refining resource, set it
+            if (bpType.Contains("Refinery", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.IsNullOrEmpty(structure.RefiningResource)
+                    && !string.IsNullOrEmpty(structure.MiningSurveyResource))
+                {
+                    structure.RefiningResource = structure.MiningSurveyResource;
+                }
+            }
         }
     }
 
@@ -176,11 +276,16 @@ public sealed class ColonyParser
             }
         }
 
-        // Mining resource
+        // Mining resource — only apply for MiningRig/Refinery types (REQ-CI-026)
         string? resourceName = building["resourceName"]?.ToString();
         if (!string.IsNullOrEmpty(resourceName))
         {
-            ParseMiningResource(structure, resourceName);
+            bool isMiningOrRefinery = designName.Contains("Mining", StringComparison.OrdinalIgnoreCase)
+                || designName.Contains("Refinery", StringComparison.OrdinalIgnoreCase);
+            if (isMiningOrRefinery)
+            {
+                ParseMiningResource(structure, resourceName);
+            }
         }
 
         // Manufacturing fields
@@ -476,6 +581,7 @@ public sealed class ColonyParser
             if (existing is not null)
             {
                 MergeStructure(existing, parsed);
+                ReconcileManufacturing(existing, parsed);
                 updated++;
             }
             else

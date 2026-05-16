@@ -43909,7 +43909,7 @@
   "ItemType": "ShipPart",
   "BaseItemTypeID": "84c50319-e88e-500a-8048-df77cde4ef33",
   "Name": "Class 2 Hull Sealant Injection Unit",
-  "Quantity": 12,
+  "Quantity": 13,
   "Volume": 10.0
 },
         "e6b0bda6-0d4a-412d-a2d8-f328ccc1c643": {
@@ -44508,14 +44508,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-16T12:41:57.8002225Z",
-            "EndTime": "2026-05-16T13:41:57.8002225Z",
+            "StartTime": "2026-05-16T13:41:57.8002225Z",
+            "EndTime": "2026-05-16T14:41:57.8002225Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "ManufacturingBlueprintUUID": "84c50319-e88e-500a-8048-df77cde4ef33",
           "ManufacturingQuantity": 29,
-          "ManufacturingCompleted": 12,
+          "ManufacturingCompleted": 13,
           "CurrentAttitude": ""
         },
         {
