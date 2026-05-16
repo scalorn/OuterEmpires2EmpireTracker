@@ -308,7 +308,7 @@ namespace OE2EmpireTracker.Services
 
             // Route: evo 0 → global, evo > 0 → player
             bool hasPlayer = !string.IsNullOrEmpty(playerContext.CurrentPlayerUUID);
-            bool isGlobal = MarketBlueprintImporter.IsGlobalRoute(tempBP.Evolution, hasPlayer);
+            bool isGlobal = BlueprintService.IsGlobalRoute(tempBP.Evolution, hasPlayer);
 
             var targetList = isGlobal
                 ? (IEnumerable<Blueprint>)preExistingGlobal
@@ -318,7 +318,7 @@ namespace OE2EmpireTracker.Services
             // Exclude blueprints already matched by a previous entry in this import
             // to prevent two distinct incoming entries from collapsing into the same target.
             var availableTargets = targetList.Where(b => !matchedUUIDs.Contains(b.UUID));
-            var existing = MarketBlueprintImporter.FindBestMatch(availableTargets, tempBP);
+            var existing = BlueprintService.FindBestMatch(availableTargets, tempBP);
 
             if (existing != null)
             {
@@ -326,7 +326,7 @@ namespace OE2EmpireTracker.Services
                 matchedUUIDs.Add(existing.UUID);
 
                 // Update existing
-                MarketBlueprintImporter.UpdateExisting(existing, tempBP);
+                BlueprintService.UpdateExisting(existing, tempBP);
                 importEntry.Action = ImportAction.Updated;
                 importEntry.Storage = isGlobal ? "Global" : "Player";
                 Log.Info("    -> Updated existing: UUID={0}", existing.UUID);
@@ -347,7 +347,7 @@ namespace OE2EmpireTracker.Services
                     var alreadyExists = empireContext.FindMutableGlobalBlueprint(tempBP.UUID);
                     if (alreadyExists != null)
                     {
-                        MarketBlueprintImporter.UpdateExisting(alreadyExists, tempBP);
+                        BlueprintService.UpdateExisting(alreadyExists, tempBP);
                         importEntry.Action = ImportAction.Updated;
                         importEntry.Storage = "Global";
                         Log.Info("    -> UUID collision — updated existing: UUID={0}", alreadyExists.UUID);

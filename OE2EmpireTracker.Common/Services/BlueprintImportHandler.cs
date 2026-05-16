@@ -30,7 +30,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public static ImportType ClassifyImport(Blueprint tempBP)
         {
-            if (MarketBlueprintImporter.IsResourcesOnlyImport(tempBP))
+            if (BlueprintService.IsResourcesOnlyImport(tempBP))
                 return ImportType.ResourcesOnly;
             if (string.IsNullOrEmpty(tempBP.Name))
                 return ImportType.NoName;
@@ -124,7 +124,7 @@ namespace OE2EmpireTracker.Services
             if (string.IsNullOrEmpty(selected.UUID))
             {
                 bool hasPlayer = !string.IsNullOrEmpty(pc.CurrentPlayerUUID);
-                bool isGlobalRoute = MarketBlueprintImporter.IsGlobalRoute(tempBP.Evolution, hasPlayer);
+                bool isGlobalRoute = BlueprintService.IsGlobalRoute(tempBP.Evolution, hasPlayer);
                 Log.Info("  New blueprint state (no UUID) -- creating new ({0})", isGlobalRoute ? "global" : "player");
                 return new FindTargetResult
                 {
@@ -136,7 +136,7 @@ namespace OE2EmpireTracker.Services
 
             // No selected match — route via market logic
             bool hasCurrentPlayer = !string.IsNullOrEmpty(pc.CurrentPlayerUUID);
-            bool globalRoute = MarketBlueprintImporter.IsGlobalRoute(tempBP.Evolution, hasCurrentPlayer);
+            bool globalRoute = BlueprintService.IsGlobalRoute(tempBP.Evolution, hasCurrentPlayer);
             Log.Info(
                 "  No selected match -- routing: isGlobal={0} (evo={1}, hasPlayer={2})",
                 globalRoute,
@@ -147,7 +147,7 @@ namespace OE2EmpireTracker.Services
                 ? ec.GlobalBlueprintList
                 : pc.BlueprintList;
 
-            var existing = MarketBlueprintImporter.FindUnambiguousMatch(targetList, tempBP);
+            var existing = BlueprintService.FindUnambiguousMatch(targetList, tempBP);
             Log.Info(
                 "  FindUnambiguousMatch in {0} list ({1} blueprints): {2}",
                 globalRoute ? "global" : "player",
@@ -176,7 +176,7 @@ namespace OE2EmpireTracker.Services
 
             if (findResult.Target != null)
             {
-                MarketBlueprintImporter.UpdateExisting(findResult.Target, tempBP);
+                BlueprintService.UpdateExisting(findResult.Target, tempBP);
                 importedBP = findResult.Target;
                 Log.Info(
                     "Blueprint updated via dedup ({0}): {1} Ev{2} {3}",
@@ -199,7 +199,7 @@ namespace OE2EmpireTracker.Services
                     var alreadyExists = ec.FindMutableGlobalBlueprint(tempBP.UUID);
                     if (alreadyExists != null)
                     {
-                        MarketBlueprintImporter.UpdateExisting(alreadyExists, tempBP);
+                        BlueprintService.UpdateExisting(alreadyExists, tempBP);
                         importedBP = alreadyExists;
                         Log.Info(
                             "UUID collision — updated existing global blueprint: {0} Ev{1} {2} UUID={3}",

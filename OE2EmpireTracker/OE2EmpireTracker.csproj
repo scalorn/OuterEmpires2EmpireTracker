@@ -260,8 +260,7 @@
 
 
     <Compile Include="Services\ColonyAdminReportBuilder.cs" />
-    <Compile Include="Services\BlueprintService.cs" />
-    <Compile Include="Services\BlueprintImportHandler.cs" />
+
 
 
     <Compile Include="Services\ColonyBuildEligibility.cs" />
