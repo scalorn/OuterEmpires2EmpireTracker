@@ -257,10 +257,10 @@ public sealed partial class ColonyViewModel : DocumentViewModel
             }
         }
 
-        int totalItems = 0;
+        long totalItems = 0;
         if (colony.Items?.Items is not null)
         {
-            totalItems = colony.Items.Items.Values.Sum(i => i.Quantity);
+            totalItems = colony.Items.Items.Values.Sum(i => (long)i.Quantity);
         }
 
         string lastImport = colony.LastImportDateTime ?? "Never";
