@@ -41,6 +41,12 @@
                                 Command="{Binding RemoveBuildItemCommand}" />
                         <Button Content="Save"
                                 Command="{Binding SavePlanCommand}" />
+                        <Button Content="Auto-Assign"
+                                Command="{Binding AutoAssignCommand}" />
+                        <Button Content="Generate Delivery"
+                                Command="{Binding GenerateDeliveryCommand}" />
+                        <Button Content="Start Manufacturing"
+                                Command="{Binding StartManufacturingCommand}" />
                     </StackPanel>
 
                     <DataGrid ItemsSource="{Binding BuildItems}"
@@ -63,9 +69,18 @@
                             <DataGridTextColumn Header="Type"
                                                 Binding="{Binding ItemType}"
                                                 Width="120" />
-                            <DataGridTextColumn Header="Status"
-                                                Binding="{Binding Status}"
-                                                Width="120" />
+                            <DataGridTemplateColumn Header="Status" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{Binding StatusColor}"
+                                                CornerRadius="3"
+                                                Padding="4,2">
+                                            <TextBlock Text="{Binding Status}"
+                                                       HorizontalAlignment="Center" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

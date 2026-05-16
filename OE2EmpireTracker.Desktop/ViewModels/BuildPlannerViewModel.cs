@@ -43,6 +43,31 @@ public sealed partial class BuildItemRowViewModel : ObservableObject
 
     [ObservableProperty]
     private string _status = string.Empty;
+
+    /// <summary>Gets or sets the UUID of the underlying BuildItem.</summary>
+    public string ItemUuid { get; set; } = string.Empty;
+
+    /// <summary>Gets or sets the build location UUID for this item.</summary>
+    public string BuildLocationUuid { get; set; } = string.Empty;
+
+    /// <summary>Gets or sets the structure UUID for this item.</summary>
+    public string StructureUuid { get; set; } = string.Empty;
+
+    /// <summary>Gets the status color based on the current status value.</summary>
+    public string StatusColor => Status switch
+    {
+        "Staged" => "#FFD700",
+        "Delivering" => "#87CEEB",
+        "Ready" => "#90EE90",
+        "InProgress" => "#FFA500",
+        "Completed" => "#808080",
+        _ => "Transparent",
+    };
+
+    partial void OnStatusChanged(string value)
+    {
+        OnPropertyChanged(nameof(StatusColor));
+    }
 }
 
 /// <summary>
@@ -103,6 +128,41 @@ public sealed partial class BuildPlannerViewModel : DocumentViewModel
         var colony = dataService.Colonies
             .FirstOrDefault(c => c.UUID == firstItem.BuildLocationUUID);
         return colony?.ColonyName ?? string.Empty;
+    }
+
+    private static Colony? FindColonyWithStructureType(List<Colony> colonies, BuildItemType itemType)
+    {
+        string targetType = itemType switch
+        {
+            BuildItemType.Manufactory => "Manufactory",
+            BuildItemType.Mining => "MiningRig",
+            BuildItemType.Refining => "Refinery",
+            BuildItemType.Research => "ResearchLaboratory",
+            BuildItemType.Commodity => "CommodityFactory",
+            _ => string.Empty,
+        };
+
+        if (string.IsNullOrEmpty(targetType))
+        {
+            return null;
+        }
+
+        foreach (var colony in colonies)
+        {
+            if (colony.Structures is null)
+            {
+                continue;
+            }
+
+            bool hasMatch = colony.Structures.Any(s => s.IsBuiltAndOnline
+                && !string.IsNullOrEmpty(s.FlatpackBlueprintUUID));
+            if (hasMatch)
+            {
+                return colony;
+            }
+        }
+
+        return colonies.FirstOrDefault(c => c.Structures is not null && c.Structures.Count > 0);
     }
 
     /// <summary>
@@ -166,6 +226,173 @@ public sealed partial class BuildPlannerViewModel : DocumentViewModel
         });
 
         SelectedPlan.ItemCount = items.Count;
+    }
+
+    // --- K6: Auto-Assign (simplified) ---
+
+    /// <summary>
+    /// For each unallocated item, finds the first colony with a matching structure type
+    /// and sets BuildLocationUUID to that colony's UUID.
+    /// </summary>
+    [RelayCommand]
+    private void AutoAssign()
+    {
+        if (SelectedPlan is null || string.IsNullOrEmpty(SelectedPlan.PlanUuid))
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var plan = dataService.BuildPlans.FirstOrDefault(p => p.UUID == SelectedPlan.PlanUuid);
+        if (plan?.Items is null)
+        {
+            return;
+        }
+
+        var colonies = dataService.GetCurrentPlayerColonies();
+        bool changed = false;
+
+        foreach (var item in plan.Items)
+        {
+            if (!string.IsNullOrEmpty(item.BuildLocationUUID))
+            {
+                continue;
+            }
+
+            var matchingColony = FindColonyWithStructureType(colonies, item.ItemType);
+            if (matchingColony is not null)
+            {
+                item.BuildLocationUUID = matchingColony.UUID;
+                changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            dataService.IsDirty = true;
+            dataService.WriteContext();
+            LoadPlanDetail(SelectedPlan);
+        }
+    }
+
+    // --- K7: Generate Delivery Plan ---
+
+    /// <summary>
+    /// For each item with status "Staged" that has a location, creates a delivery plan.
+    /// </summary>
+    [RelayCommand]
+    private void GenerateDelivery()
+    {
+        if (SelectedPlan is null || string.IsNullOrEmpty(SelectedPlan.PlanUuid))
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        var deliveryService = App.Services?.GetService(typeof(DeliveryPlanService)) as DeliveryPlanService;
+        if (dataService is null || !dataService.IsLoaded || deliveryService is null)
+        {
+            return;
+        }
+
+        var plan = dataService.BuildPlans.FirstOrDefault(p => p.UUID == SelectedPlan.PlanUuid);
+        if (plan?.Items is null)
+        {
+            return;
+        }
+
+        var stagedWithLocation = plan.Items
+            .Where(i => i.Status == BuildItemStatus.Staged && !string.IsNullOrEmpty(i.BuildLocationUUID))
+            .ToList();
+
+        if (stagedWithLocation.Count == 0)
+        {
+            return;
+        }
+
+        string planName = $"Delivery for {plan.Name}";
+        deliveryService.Create(planName, string.Empty, string.Empty);
+
+        foreach (var item in stagedWithLocation)
+        {
+            item.Status = BuildItemStatus.Delivering;
+        }
+
+        dataService.IsDirty = true;
+        dataService.WriteContext();
+        LoadPlanDetail(SelectedPlan);
+    }
+
+    // --- K8: Start Manufacturing ---
+
+    /// <summary>
+    /// For the selected "Ready" item, finds the colony and structure,
+    /// sets ManufacturingBlueprintUUID and quantity, and advances status to InProgress.
+    /// </summary>
+    [RelayCommand]
+    private void StartManufacturing()
+    {
+        if (SelectedPlan is null || SelectedBuildItem is null)
+        {
+            return;
+        }
+
+        if (SelectedBuildItem.Status != "Ready")
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var plan = dataService.BuildPlans.FirstOrDefault(p => p.UUID == SelectedPlan.PlanUuid);
+        if (plan?.Items is null)
+        {
+            return;
+        }
+
+        var buildItem = plan.Items.FirstOrDefault(i => i.UUID == SelectedBuildItem.ItemUuid);
+        if (buildItem is null || string.IsNullOrEmpty(buildItem.BuildLocationUUID))
+        {
+            return;
+        }
+
+        var colony = dataService.Colonies.FirstOrDefault(c => c.UUID == buildItem.BuildLocationUUID);
+        if (colony?.Structures is null)
+        {
+            return;
+        }
+
+        ColonyStructure? structure = null;
+        if (!string.IsNullOrEmpty(buildItem.StructureUUID))
+        {
+            structure = colony.Structures.FirstOrDefault(s => s.UUID == buildItem.StructureUUID);
+        }
+
+        structure ??= colony.Structures.FirstOrDefault(s => s.IsBuiltAndOnline
+            && string.IsNullOrEmpty(s.ManufacturingBlueprintUUID));
+
+        if (structure is null)
+        {
+            return;
+        }
+
+        structure.ManufacturingBlueprintUUID = buildItem.BlueprintUUID;
+        structure.ManufacturingQuantity = buildItem.Quantity;
+        buildItem.Status = BuildItemStatus.InProgress;
+
+        dataService.IsDirty = true;
+        dataService.OnColonyDataChanged(colony.UUID);
+        dataService.WriteContext();
+        LoadPlanDetail(SelectedPlan);
     }
 
     partial void OnSelectedPlanChanged(BuildPlanRowViewModel? value)
@@ -240,10 +467,13 @@ public sealed partial class BuildPlannerViewModel : DocumentViewModel
         {
             BuildItems.Add(new BuildItemRowViewModel
             {
+                ItemUuid = item.UUID ?? string.Empty,
                 ItemName = !string.IsNullOrEmpty(item.ItemName) ? item.ItemName : item.CommodityName,
                 Quantity = item.Quantity,
                 ItemType = item.ItemType.ToString(),
                 Status = item.Status.ToString(),
+                BuildLocationUuid = item.BuildLocationUUID ?? string.Empty,
+                StructureUuid = item.StructureUUID ?? string.Empty,
             });
         }
 

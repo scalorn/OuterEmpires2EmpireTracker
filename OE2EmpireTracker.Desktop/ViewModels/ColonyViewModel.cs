@@ -120,6 +120,20 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     [ObservableProperty]
     private string _validationError = string.Empty;
 
+    // --- D2.4-D2.7: Assignment properties ---
+
+    [ObservableProperty]
+    private string _assignResource = string.Empty;
+
+    [ObservableProperty]
+    private string _assignPurity = string.Empty;
+
+    [ObservableProperty]
+    private string _assignBlueprintUuid = string.Empty;
+
+    [ObservableProperty]
+    private int _assignQuantity = 1;
+
     public ColonyViewModel()
     {
         Title = "Colonies";
@@ -414,6 +428,107 @@ public sealed partial class ColonyViewModel : DocumentViewModel
             dataService.IsDirty = true;
             dataService.OnColonyDataChanged(colony.UUID);
         }
+    }
+
+    // --- D2.4-D2.7: Structure Assignment Commands ---
+
+    /// <summary>Assigns mining to the selected structure.</summary>
+    [RelayCommand]
+    private void AssignMining()
+    {
+        var structure = FindSelectedStructure();
+        if (structure is null)
+        {
+            return;
+        }
+
+        structure.MiningSurveyResource = AssignResource;
+        MarkDirtyAndRefresh();
+    }
+
+    /// <summary>Assigns refining to the selected structure.</summary>
+    [RelayCommand]
+    private void AssignRefining()
+    {
+        var structure = FindSelectedStructure();
+        if (structure is null)
+        {
+            return;
+        }
+
+        structure.RefiningResource = AssignResource;
+        structure.RefiningResourcePurity = AssignPurity;
+        MarkDirtyAndRefresh();
+    }
+
+    /// <summary>Assigns manufacturing to the selected structure.</summary>
+    [RelayCommand]
+    private void AssignManufacturing()
+    {
+        var structure = FindSelectedStructure();
+        if (structure is null)
+        {
+            return;
+        }
+
+        structure.ManufacturingBlueprintUUID = AssignBlueprintUuid;
+        structure.ManufacturingQuantity = AssignQuantity;
+        MarkDirtyAndRefresh();
+    }
+
+    /// <summary>Assigns research to the selected structure.</summary>
+    [RelayCommand]
+    private void AssignResearch()
+    {
+        var structure = FindSelectedStructure();
+        if (structure is null)
+        {
+            return;
+        }
+
+        structure.ResearchingBlueprintUUID = AssignBlueprintUuid;
+        MarkDirtyAndRefresh();
+    }
+
+    private ColonyStructure? FindSelectedStructure()
+    {
+        if (SelectedColony is null || SelectedStructure is null)
+        {
+            return null;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return null;
+        }
+
+        var colony = dataService.GetCurrentPlayerColonies()
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony?.Structures is null)
+        {
+            return null;
+        }
+
+        return colony.Structures
+            .FirstOrDefault(s => s.BuildingID == SelectedStructure.BuildingId);
+    }
+
+    private void MarkDirtyAndRefresh()
+    {
+        if (SelectedColony is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null)
+        {
+            return;
+        }
+
+        dataService.IsDirty = true;
+        dataService.OnColonyDataChanged(SelectedColony.ColonyUuid);
     }
 
     // --- A7: Delete Colony with Reference Counting ---
