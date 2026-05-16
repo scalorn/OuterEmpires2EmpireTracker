@@ -87,6 +87,10 @@ public sealed class DataService
     public IReadOnlyList<MarketListing> MarketListings =>
         _playerRoot?.MarketListing ?? Array.Empty<MarketListing>();
 
+    /// <summary>Gets all market transactions.</summary>
+    public IReadOnlyList<MarketTransaction> MarketTransactions =>
+        _playerRoot?.MarketTransaction ?? Array.Empty<MarketTransaction>();
+
     /// <summary>Gets all stock plans.</summary>
     public IReadOnlyList<StockPlan> StockPlans =>
         _playerRoot?.StockPlan ?? Array.Empty<StockPlan>();
