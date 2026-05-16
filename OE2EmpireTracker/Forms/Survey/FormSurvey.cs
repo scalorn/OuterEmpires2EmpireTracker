@@ -114,7 +114,7 @@ namespace OE2EmpireTracker.Forms.Survey
             DataGridViewComboBoxColumn cmbPurity = (DataGridViewComboBoxColumn)dgvResources.Columns["Purity"];
             cmbPurity.DisplayMember = "Name";
             cmbPurity.ValueMember = "Name";
-            cmbPurity.DataSource = empireContext.BindingSourceResourcePurity;
+            cmbPurity.DataSource = empireContext.ResourcePurityList.ToList();
 
             dgvResources.DataError += (s, ev) =>
             {

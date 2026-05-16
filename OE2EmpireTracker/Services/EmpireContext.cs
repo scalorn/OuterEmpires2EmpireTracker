@@ -9,8 +9,6 @@ using System.Runtime.Remoting.Contexts;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using Amazon;
 using Newtonsoft.Json;
 using NLog;
@@ -166,31 +164,17 @@ namespace OE2EmpireTracker.Services
 
         public IReadOnlyList<BlueprintType> BlueprintTypeList => _blueprintTypeList;
 
-        public BindingSource BindingSourceBlueprintType { get; set; }
-
         public IReadOnlyList<ShipClass> ShipClassList => _shipClassList;
-
-        public BindingSource BindingSourceShipClass { get; set; }
 
         public IReadOnlyList<TechLevel> TechLevelList => _techLevelList;
 
-        public BindingSource BindingSourceTechLevel { get; set; }
-
         public IReadOnlyList<string> EvolutionList => _evolutionList;
-
-        public BindingSource BindingSourceEvolution { get; set; }
 
         public IReadOnlyList<Resource> ResourceList => _resourceList;
 
-        public BindingSource BindingSourceResource { get; set; }
-
         public IReadOnlyList<ResourceGroup> ResourceGroupList => _resourceGroupList;
 
-        public BindingSource BindingSourceResourceGroup { get; set; }
-
         public IReadOnlyList<ResourcePurity> ResourcePurityList => _resourcePurityList;
-
-        public BindingSource BindingSourceResourcePurity { get; set; }
 
         public int DataVersion { get; set; } = 0;
 
@@ -291,10 +275,6 @@ namespace OE2EmpireTracker.Services
             }
 
             _blueprintTypeList = deduped;
-            // Initialize the BindingSource component
-            BindingSourceBlueprintType = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceBlueprintType.DataSource = _blueprintTypeList;
         }
 
         public BlueprintType FindBlueprintType(string id)
@@ -324,11 +304,6 @@ namespace OE2EmpireTracker.Services
         public void InitShipClasses(BaselineRoot baselineRoot)
         {
             _shipClassList = new List<ShipClass>(baselineRoot.ShipClass);
-
-            // Initialize the BindingSource component
-            BindingSourceShipClass = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceShipClass.DataSource = _shipClassList;
         }
 
         public ShipClass FindShipClass(int id)
@@ -348,10 +323,6 @@ namespace OE2EmpireTracker.Services
         {
             var sorted = CollectionSortHelper.OrderByName(baselineRoot.TechLevel, x => x.Name);
             _techLevelList = new List<TechLevel>(sorted);
-            // Initialize the BindingSource component
-            BindingSourceTechLevel = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceTechLevel.DataSource = _techLevelList;
         }
 
         public TechLevel FindTechLevel(string id)
@@ -376,10 +347,6 @@ namespace OE2EmpireTracker.Services
             }
 
             _evolutionList = new List<string>(list);
-            // Initialize the BindingSource component
-            BindingSourceEvolution = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceEvolution.DataSource = _evolutionList;
         }
 
         public string FindEvolution(int id)
@@ -400,28 +367,18 @@ namespace OE2EmpireTracker.Services
         {
             var sorted = CollectionSortHelper.OrderByName(Resource.Resources, x => x.Name);
             _resourceList = new List<Resource>(sorted);
-            // Initialize the BindingSource component
-            BindingSourceResource = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceResource.DataSource = _resourceList;
         }
 
         public void InitResourceGroups(BaselineRoot baselineRoot)
         {
             var sorted = CollectionSortHelper.OrderByName(ResourceGroup.Groups, x => x.Name);
             _resourceGroupList = new List<ResourceGroup>(sorted);
-            // Initialize the BindingSource component
-            BindingSourceResourceGroup = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceResourceGroup.DataSource = _resourceGroupList;
         }
 
         public void InitResourcePurities(BaselineRoot baselineRoot)
         {
             var sorted = CollectionSortHelper.OrderByName(ResourcePurity.Purities, x => x.Name);
             _resourcePurityList = new List<ResourcePurity>(sorted);
-            BindingSourceResourcePurity = new BindingSource();
-            BindingSourceResourcePurity.DataSource = _resourcePurityList;
         }
 
         public void InitCommodities(BaselineRoot baselineRoot)
@@ -577,7 +534,7 @@ namespace OE2EmpireTracker.Services
             }
         }
 
-        // ── Task 6.2: Mutation methods for GlobalBlueprint (UUID cache, no BindingSource) ──
+        // ── Task 6.2: Mutation methods for GlobalBlueprint (UUID cache) ──
 
         public void AddGlobalBlueprint(Blueprint item)
         {
@@ -649,7 +606,7 @@ namespace OE2EmpireTracker.Services
             }
         }
 
-        // ── Task 6.4: Mutation methods for BindingSource-only lists ──
+        // ── Task 6.4: Mutation methods for lookup lists ──
 
         public void AddBlueprintType(BlueprintType item)
         {
@@ -660,13 +617,11 @@ namespace OE2EmpireTracker.Services
             }
 
             _blueprintTypeList.Add(item);
-            BindingSourceBlueprintType?.ResetBindings(false);
         }
 
         public void RemoveBlueprintType(BlueprintType item)
         {
             _blueprintTypeList.Remove(item);
-            BindingSourceBlueprintType?.ResetBindings(false);
         }
 
         public void AddShipClass(ShipClass item)
@@ -678,13 +633,11 @@ namespace OE2EmpireTracker.Services
             }
 
             _shipClassList.Add(item);
-            BindingSourceShipClass?.ResetBindings(false);
         }
 
         public void RemoveShipClass(ShipClass item)
         {
             _shipClassList.Remove(item);
-            BindingSourceShipClass?.ResetBindings(false);
         }
 
         public void AddTechLevel(TechLevel item)
@@ -696,25 +649,21 @@ namespace OE2EmpireTracker.Services
             }
 
             _techLevelList.Add(item);
-            BindingSourceTechLevel?.ResetBindings(false);
         }
 
         public void RemoveTechLevel(TechLevel item)
         {
             _techLevelList.Remove(item);
-            BindingSourceTechLevel?.ResetBindings(false);
         }
 
         public void AddEvolution(string item)
         {
             _evolutionList.Add(item);
-            BindingSourceEvolution?.ResetBindings(false);
         }
 
         public void RemoveEvolution(string item)
         {
             _evolutionList.Remove(item);
-            BindingSourceEvolution?.ResetBindings(false);
         }
 
         public void AddResource(Resource item)
@@ -726,13 +675,11 @@ namespace OE2EmpireTracker.Services
             }
 
             _resourceList.Add(item);
-            BindingSourceResource?.ResetBindings(false);
         }
 
         public void RemoveResource(Resource item)
         {
             _resourceList.Remove(item);
-            BindingSourceResource?.ResetBindings(false);
         }
 
         public void AddResourceGroup(ResourceGroup item)
@@ -744,13 +691,11 @@ namespace OE2EmpireTracker.Services
             }
 
             _resourceGroupList.Add(item);
-            BindingSourceResourceGroup?.ResetBindings(false);
         }
 
         public void RemoveResourceGroup(ResourceGroup item)
         {
             _resourceGroupList.Remove(item);
-            BindingSourceResourceGroup?.ResetBindings(false);
         }
 
         public void AddResourcePurity(ResourcePurity item)
@@ -762,13 +707,11 @@ namespace OE2EmpireTracker.Services
             }
 
             _resourcePurityList.Add(item);
-            BindingSourceResourcePurity?.ResetBindings(false);
         }
 
         public void RemoveResourcePurity(ResourcePurity item)
         {
             _resourcePurityList.Remove(item);
-            BindingSourceResourcePurity?.ResetBindings(false);
         }
 
         // -- Task 6.1: GetReadOnly and FindReadOnly methods --

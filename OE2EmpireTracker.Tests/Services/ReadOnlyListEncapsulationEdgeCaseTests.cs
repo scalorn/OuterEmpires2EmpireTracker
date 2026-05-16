@@ -117,47 +117,5 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(_ctx.ColonyList.Count, Is.EqualTo(1));
             Assert.That(_ctx.FindColony("col-1"), Is.SameAs(existing));
         }
-
-        [Test]
-        public void BindingSourceBlueprint_CountReflectsAddAndRemove()
-        {
-            var bs = _ctx.BindingSourceBlueprint;
-            Assert.That(bs.Count, Is.EqualTo(0));
-
-            var bp = new Bp("Test") { UUID = "bp-bs-1" };
-            _ctx.AddBlueprint(bp);
-            Assert.That(bs.Count, Is.EqualTo(1));
-
-            _ctx.RemoveBlueprint(bp);
-            Assert.That(bs.Count, Is.EqualTo(0));
-        }
-
-        [Test]
-        public void BindingSourceSurvey_CountReflectsAddAndRemove()
-        {
-            var bs = _ctx.BindingSourceSurvey;
-            Assert.That(bs.Count, Is.EqualTo(0));
-
-            var survey = new Survey("Test") { UUID = "sv-bs-1", PlanetName = "X" };
-            _ctx.AddSurvey(survey);
-            Assert.That(bs.Count, Is.EqualTo(1));
-
-            _ctx.RemoveSurvey(survey);
-            Assert.That(bs.Count, Is.EqualTo(0));
-        }
-
-        [Test]
-        public void BindingSourceColony_CountReflectsAddAndRemove()
-        {
-            var bs = _ctx.BindingSourceColony;
-            Assert.That(bs.Count, Is.EqualTo(0));
-
-            var colony = new Colony { UUID = "col-bs-1", PlanetName = "X", ColonyName = "X" };
-            _ctx.AddColony(colony);
-            Assert.That(bs.Count, Is.EqualTo(1));
-
-            _ctx.RemoveColony(colony);
-            Assert.That(bs.Count, Is.EqualTo(0));
-        }
     }
 }

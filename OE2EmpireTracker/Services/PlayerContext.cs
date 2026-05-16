@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Models;
@@ -296,19 +295,11 @@ namespace OE2EmpireTracker.Services
 
         public IReadOnlyList<PlayerProfile> PlayerProfileList => _playerProfileList;
 
-        public BindingSource BindingSourcePlayerProfile { get; set; }
-
         public IReadOnlyList<Blueprint> BlueprintList => _blueprintList;
-
-        public BindingSource BindingSourceBlueprint { get; set; }
 
         public IReadOnlyList<Survey> SurveyList => _surveyList;
 
-        public BindingSource BindingSourceSurvey { get; set; }
-
         public IReadOnlyList<Colony> ColonyList => _colonyList;
-
-        public BindingSource BindingSourceColony { get; set; }
 
         public IReadOnlyList<DeliveryRoute> DeliveryRouteList => _deliveryRouteList;
 
@@ -678,10 +669,6 @@ namespace OE2EmpireTracker.Services
             }
 
             _playerProfileList = deduped;
-            // Initialize the BindingSource component
-            BindingSourcePlayerProfile = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourcePlayerProfile.DataSource = _playerProfileList;
         }
 
         public void InitBlueprints(PlayerRoot playerRoot)
@@ -702,10 +689,6 @@ namespace OE2EmpireTracker.Services
             }
 
             _blueprintList = deduped;
-            // Initialize the BindingSource component
-            BindingSourceBlueprint = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceBlueprint.DataSource = _blueprintList;
             InvalidateBlueprintCache();
         }
 
@@ -767,8 +750,6 @@ namespace OE2EmpireTracker.Services
                 _allBlueprintsCache = null;
                 _blueprintTypeCountCache = null;
             }
-
-            BindingSourceBlueprint?.ResetBindings(false);
         }
 
         public void RemoveBlueprint(Blueprint item)
@@ -781,8 +762,6 @@ namespace OE2EmpireTracker.Services
                 _allBlueprintsCache = null;
                 _blueprintTypeCountCache = null;
             }
-
-            BindingSourceBlueprint?.ResetBindings(false);
         }
 
         public void InitSurveys(PlayerRoot playerRoot)
@@ -803,10 +782,6 @@ namespace OE2EmpireTracker.Services
             }
 
             _surveyList = deduped;
-            // Initialize the BindingSource component
-            BindingSourceSurvey = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceSurvey.DataSource = _surveyList;
             InvalidateSurveyCache();
         }
 
@@ -861,8 +836,6 @@ namespace OE2EmpireTracker.Services
                 if (_surveyCache != null && item.UUID != null)
                     _surveyCache[item.UUID] = item;
             }
-
-            BindingSourceSurvey?.ResetBindings(false);
         }
 
         public void RemoveSurvey(Survey item)
@@ -873,8 +846,6 @@ namespace OE2EmpireTracker.Services
                 if (_surveyCache != null && item.UUID != null)
                     _surveyCache.Remove(item.UUID);
             }
-
-            BindingSourceSurvey?.ResetBindings(false);
         }
 
         public void InitColonies(PlayerRoot playerRoot)
@@ -906,10 +877,6 @@ namespace OE2EmpireTracker.Services
             }
 
             _colonyList = new List<Colony>(list);
-            // Initialize the BindingSource component
-            BindingSourceColony = new BindingSource();
-            // Set the in-memory list as the DataSource for the BindingSource
-            BindingSourceColony.DataSource = _colonyList;
             InvalidateColonyCache();
         }
 
@@ -1284,8 +1251,6 @@ namespace OE2EmpireTracker.Services
                 if (_colonyCache != null && item.UUID != null)
                     _colonyCache[item.UUID] = item;
             }
-
-            BindingSourceColony?.ResetBindings(false);
         }
 
         public void RemoveColony(Colony item)
@@ -1296,11 +1261,9 @@ namespace OE2EmpireTracker.Services
                 if (_colonyCache != null && item.UUID != null)
                     _colonyCache.Remove(item.UUID);
             }
-
-            BindingSourceColony?.ResetBindings(false);
         }
 
-        // --- Task 4.1: PlayerProfile mutation methods (Pattern E: UUID cache + BindingSource) ---
+        // --- Task 4.1: PlayerProfile mutation methods (Pattern E: UUID cache) ---
 
         public void AddPlayerProfile(PlayerProfile item)
         {
@@ -1324,8 +1287,6 @@ namespace OE2EmpireTracker.Services
                 if (_playerProfileCache != null && item.UUID != null)
                     _playerProfileCache[item.UUID] = item;
             }
-
-            BindingSourcePlayerProfile?.ResetBindings(false);
         }
 
         public void RemovePlayerProfile(PlayerProfile item)
@@ -1336,8 +1297,6 @@ namespace OE2EmpireTracker.Services
                 if (_playerProfileCache != null && item.UUID != null)
                     _playerProfileCache.Remove(item.UUID);
             }
-
-            BindingSourcePlayerProfile?.ResetBindings(false);
         }
 
         // --- Task 4.2: BuildPlan mutation methods (Pattern D: UUID cache + derived caches) ---

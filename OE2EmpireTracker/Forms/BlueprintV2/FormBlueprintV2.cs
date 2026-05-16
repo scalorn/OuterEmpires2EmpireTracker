@@ -301,17 +301,17 @@ namespace OE2EmpireTracker
 
             cmbShipClass.DisplayMember = "Name";
             cmbShipClass.ValueMember = "Id";
-            cmbShipClass.DataSource = empireContext.BindingSourceShipClass;
+            cmbShipClass.DataSource = empireContext.ShipClassList.ToList();
             cmbShipClass.SelectedIndex = -1;
 
             cmbTechLevel.DisplayMember = "Name";
             cmbTechLevel.ValueMember = "Name";
-            cmbTechLevel.DataSource = empireContext.BindingSourceTechLevel;
+            cmbTechLevel.DataSource = empireContext.TechLevelList.ToList();
             cmbTechLevel.SelectedIndex = -1;
 
-            cmbEvolution.DisplayMember = "Name";
-            cmbEvolution.ValueMember = "Name";
-            cmbEvolution.DataSource = empireContext.BindingSourceEvolution;
+            cmbEvolution.DisplayMember = string.Empty;
+            cmbEvolution.ValueMember = string.Empty;
+            cmbEvolution.DataSource = empireContext.EvolutionList.ToList();
             cmbEvolution.SelectedIndex = 0;
         }
 
