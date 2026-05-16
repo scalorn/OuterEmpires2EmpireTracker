@@ -116,6 +116,7 @@ public partial class App : Application
         services.AddSingleton<SafeFileWriter>();
         services.AddSingleton<AppConfigService>();
         services.AddSingleton<PreferencesStore>();
+        services.AddSingleton<GridStateService>();
         services.AddSingleton<LayoutService>();
         services.AddSingleton<HelpTopicRegistry>();
         services.AddSingleton<HelpRenderer>();

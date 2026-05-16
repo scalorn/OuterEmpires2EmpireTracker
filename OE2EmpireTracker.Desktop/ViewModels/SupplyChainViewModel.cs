@@ -60,6 +60,9 @@ public sealed partial class SupplyChainViewModel : DocumentViewModel
     [ObservableProperty]
     private StageRowViewModel? _selectedStage;
 
+    [ObservableProperty]
+    private string _flowSummary = string.Empty;
+
     public SupplyChainViewModel()
     {
         Title = "Supply Chains";
@@ -140,6 +143,26 @@ public sealed partial class SupplyChainViewModel : DocumentViewModel
     partial void OnSelectedChainChanged(SupplyChainRowViewModel? value)
     {
         LoadStagesForChain(value);
+        BuildFlowSummary();
+    }
+
+    private void BuildFlowSummary()
+    {
+        if (Stages.Count == 0)
+        {
+            FlowSummary = string.Empty;
+            return;
+        }
+
+        var parts = Stages
+            .OrderBy(s => s.Sequence)
+            .Select(s =>
+            {
+                string location = !string.IsNullOrEmpty(s.Location) ? $" ({s.Location})" : string.Empty;
+                return $"{s.StageType}{location}";
+            });
+
+        FlowSummary = string.Join(" \u2192 ", parts);
     }
 
     private void LoadData()

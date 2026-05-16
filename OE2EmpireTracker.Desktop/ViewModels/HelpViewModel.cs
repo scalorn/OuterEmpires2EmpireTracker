@@ -26,6 +26,22 @@ public sealed partial class HelpViewModel : DocumentViewModel
 
     public ObservableCollection<HelpTopic> Topics { get; }
 
+    /// <summary>
+    /// Navigates to the topic with the given file name, selecting it in the list.
+    /// </summary>
+    /// <param name="fileName">The help topic file name (e.g. "colonies.md").</param>
+    public void NavigateToTopic(string fileName)
+    {
+        foreach (var topic in Topics)
+        {
+            if (string.Equals(topic.FileName, fileName, System.StringComparison.OrdinalIgnoreCase))
+            {
+                SelectedTopic = topic;
+                return;
+            }
+        }
+    }
+
     partial void OnSelectedTopicChanged(HelpTopic? value)
     {
         if (value is null)

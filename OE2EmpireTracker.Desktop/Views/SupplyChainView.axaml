@@ -54,6 +54,15 @@
                         Command="{Binding SaveChainCommand}" />
             </StackPanel>
 
+            <!-- N5: Flow Summary -->
+            <TextBlock DockPanel.Dock="Bottom"
+                       Text="{Binding FlowSummary}"
+                       FontSize="12"
+                       Opacity="0.8"
+                       TextWrapping="Wrap"
+                       Margin="0,8,0,0"
+                       IsVisible="{Binding FlowSummary, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
             <DataGrid ItemsSource="{Binding Stages}"
                       SelectedItem="{Binding SelectedStage}"
                       AutoGenerateColumns="False"

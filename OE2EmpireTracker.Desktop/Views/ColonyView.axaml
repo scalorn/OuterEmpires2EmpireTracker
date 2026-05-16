@@ -104,6 +104,7 @@
                             <DataGridTextColumn Header="Structure" Binding="{Binding StructureName}" Width="180" IsReadOnly="True" />
                             <DataGridTextColumn Header="Type" Binding="{Binding StructureType}" Width="140" IsReadOnly="True" />
                             <DataGridTextColumn Header="State" Binding="{Binding State}" Width="100" />
+                            <DataGridTextColumn Header="Timer" Binding="{Binding TimerCountdown}" Width="80" IsReadOnly="True" />
                             <DataGridTextColumn Header="ID" Binding="{Binding BuildingId}" Width="60" IsReadOnly="True" />
                         </DataGrid.Columns>
                     </DataGrid>

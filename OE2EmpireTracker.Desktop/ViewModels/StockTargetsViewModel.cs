@@ -45,6 +45,10 @@ public sealed partial class StockTargetRowViewModel : ObservableObject
 
     [ObservableProperty]
     private string _scope = string.Empty;
+
+    /// <summary>Gets or sets the stock level color indicator (Green/Yellow/Red).</summary>
+    [ObservableProperty]
+    private string _stockLevelColor = "Green";
 }
 
 /// <summary>
@@ -88,6 +92,9 @@ public sealed partial class StockTargetsViewModel : DocumentViewModel
     private StockProfileRowViewModel? _selectedProfile;
 
     [ObservableProperty]
+    private StockTargetRowViewModel? _selectedTarget;
+
+    [ObservableProperty]
     private string _statusMessage = string.Empty;
 
     public StockTargetsViewModel()
@@ -103,6 +110,27 @@ public sealed partial class StockTargetsViewModel : DocumentViewModel
     public ObservableCollection<StockProfileRowViewModel> StockProfiles { get; } = new ();
 
     public ObservableCollection<StockProfileEntryRowViewModel> ProfileEntries { get; } = new ();
+
+    private static string ComputeStockLevelColor(int current, int target)
+    {
+        if (target <= 0)
+        {
+            return "Green";
+        }
+
+        double ratio = (double)current / target;
+        if (ratio >= 1.0)
+        {
+            return "Green";
+        }
+
+        if (ratio >= 0.5)
+        {
+            return "Yellow";
+        }
+
+        return "Red";
+    }
 
     private static int GetCurrentInventory(DataService dataService, StockTarget target)
     {
@@ -148,6 +176,75 @@ public sealed partial class StockTargetsViewModel : DocumentViewModel
         return colony.Items.Items.Values
             .Where(i => string.Equals(i.Name, itemName, StringComparison.OrdinalIgnoreCase))
             .Sum(i => i.Quantity);
+    }
+
+    /// <summary>Adds a new target to the selected stock plan.</summary>
+    [RelayCommand]
+    private void AddTarget()
+    {
+        if (SelectedPlan is null || string.IsNullOrEmpty(SelectedPlan.PlanUuid))
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var plan = dataService.StockPlans
+            .FirstOrDefault(p => p.UUID == SelectedPlan.PlanUuid);
+        if (plan is null)
+        {
+            return;
+        }
+
+        plan.Targets ??= new System.Collections.Generic.List<StockTarget>();
+        plan.Targets.Add(new StockTarget
+        {
+            ItemName = "New Item",
+            TargetQuantity = 100,
+            Scope = StockTargetScope.EmpireWide,
+        });
+
+        dataService.IsDirty = true;
+        SelectedPlan.TargetCount = plan.Targets.Count;
+        LoadTargetsForPlan(SelectedPlan);
+    }
+
+    /// <summary>Removes the selected target from the stock plan.</summary>
+    [RelayCommand]
+    private void RemoveTarget()
+    {
+        if (SelectedPlan is null || SelectedTarget is null
+            || string.IsNullOrEmpty(SelectedPlan.PlanUuid))
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var plan = dataService.StockPlans
+            .FirstOrDefault(p => p.UUID == SelectedPlan.PlanUuid);
+        if (plan?.Targets is null)
+        {
+            return;
+        }
+
+        var toRemove = plan.Targets
+            .FirstOrDefault(t => t.ItemName == SelectedTarget.ItemName);
+        if (toRemove is not null)
+        {
+            plan.Targets.Remove(toRemove);
+            dataService.IsDirty = true;
+            SelectedPlan.TargetCount = plan.Targets.Count;
+            LoadTargetsForPlan(SelectedPlan);
+        }
     }
 
     /// <summary>
@@ -319,13 +416,25 @@ public sealed partial class StockTargetsViewModel : DocumentViewModel
         {
             int current = GetCurrentInventory(dataService, target);
             int shortfall = Math.Max(0, target.TargetQuantity - current);
+
+            // M3: Show "(template)" suffix when ShipTemplateUUID is set
+            string displayName = target.ItemName ?? string.Empty;
+            if (!string.IsNullOrEmpty(target.ShipTemplateUUID))
+            {
+                displayName += " (template)";
+            }
+
+            // M6: Stock level color based on current vs target
+            string color = ComputeStockLevelColor(current, target.TargetQuantity);
+
             Targets.Add(new StockTargetRowViewModel
             {
-                ItemName = target.ItemName ?? string.Empty,
+                ItemName = displayName,
                 TargetQuantity = target.TargetQuantity,
                 CurrentQuantity = current,
                 Shortfall = shortfall,
                 Scope = target.Scope.ToString(),
+                StockLevelColor = color,
             });
         }
 

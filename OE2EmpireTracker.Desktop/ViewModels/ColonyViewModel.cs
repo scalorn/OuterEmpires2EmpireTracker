@@ -8,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -34,6 +35,9 @@ public sealed partial class ColonyStructureRowViewModel : ObservableObject
 
     [ObservableProperty]
     private string _state = string.Empty;
+
+    [ObservableProperty]
+    private string _timerCountdown = string.Empty;
 
     [ObservableProperty]
     private int _buildingId;
@@ -104,6 +108,8 @@ public sealed partial class ColonyOverflowRowViewModel : ObservableObject
 /// </summary>
 public sealed partial class ColonyViewModel : DocumentViewModel
 {
+    private readonly DispatcherTimer _countdownTimer;
+
     [ObservableProperty]
     private ColonyRowViewModel? _selectedColony;
 
@@ -154,6 +160,14 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         {
             ((ColonyViewModel)r).RefreshData();
         });
+
+        // D2.8: 1-second timer to refresh countdown strings
+        _countdownTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1),
+        };
+        _countdownTimer.Tick += OnCountdownTimerTick;
+        _countdownTimer.Start();
 
         LoadData();
     }
@@ -901,6 +915,72 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     partial void OnSelectedColonyChanged(ColonyRowViewModel? value)
     {
         LoadColonyDetail(value);
+    }
+
+    // --- D2.8: Timer Countdown ---
+
+    private string FormatCountdown(long totalSeconds)
+    {
+        if (totalSeconds <= 0)
+        {
+            return string.Empty;
+        }
+
+        int hours = (int)(totalSeconds / 3600);
+        int minutes = (int)((totalSeconds % 3600) / 60);
+        int seconds = (int)(totalSeconds % 60);
+        return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
+    }
+
+    private void OnCountdownTimerTick(object? sender, EventArgs e)
+    {
+        RefreshCountdowns();
+    }
+
+    private void RefreshCountdowns()
+    {
+        if (SelectedColony is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var colony = dataService.GetCurrentPlayerColonies()
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony?.Structures is null)
+        {
+            return;
+        }
+
+        foreach (var row in Structures)
+        {
+            var structure = colony.Structures
+                .FirstOrDefault(s => s.BuildingID == row.BuildingId);
+            if (structure is null)
+            {
+                row.TimerCountdown = string.Empty;
+                continue;
+            }
+
+            long remaining = 0;
+            if (structure.BuildCompletionTime is not null
+                && structure.BuildCompletionTime.TimeRemaining > 0)
+            {
+                remaining = structure.BuildCompletionTime.TimeRemaining;
+            }
+            else if (structure.ProcessCompletionTime is not null
+                && structure.ProcessCompletionTime.TimeRemaining > 0)
+            {
+                remaining = structure.ProcessCompletionTime.TimeRemaining;
+            }
+
+            row.TimerCountdown = FormatCountdown(remaining);
+        }
     }
 
     private void LoadData()

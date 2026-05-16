@@ -22,6 +22,10 @@
                                 Margin="0,8,0,0">
                         <Button Content="Check &amp; Generate Orders"
                                 Command="{Binding CheckAndGenerateCommand}" />
+                        <Button Content="Add Target"
+                                Command="{Binding AddTargetCommand}" />
+                        <Button Content="Remove Target"
+                                Command="{Binding RemoveTargetCommand}" />
                         <TextBlock Text="{Binding StatusMessage}"
                                    VerticalAlignment="Center"
                                    Opacity="0.8" />
@@ -39,15 +43,18 @@
                                      SelectedItem="{Binding SelectedPlan}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding PlanName}" FontWeight="SemiBold" />
-                                            <TextBlock FontSize="12" Opacity="0.7">
-                                                <TextBlock.Text>
-                                                    <MultiBinding StringFormat="{}{0} targets">
-                                                        <Binding Path="TargetCount" />
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <CheckBox IsChecked="{Binding IsActive}" VerticalAlignment="Center" />
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding PlanName}" FontWeight="SemiBold" />
+                                                <TextBlock FontSize="12" Opacity="0.7">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} targets">
+                                                            <Binding Path="TargetCount" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </StackPanel>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -56,6 +63,7 @@
 
                         <DataGrid Grid.Column="2"
                                   ItemsSource="{Binding Targets}"
+                                  SelectedItem="{Binding SelectedTarget}"
                                   AutoGenerateColumns="False"
                                   CanUserReorderColumns="True"
                                   CanUserResizeColumns="True"
@@ -80,6 +88,9 @@
                                 <DataGridTextColumn Header="Scope"
                                                     Binding="{Binding Scope}"
                                                     Width="120" />
+                                <DataGridTextColumn Header="Level"
+                                                    Binding="{Binding StockLevelColor}"
+                                                    Width="70" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>

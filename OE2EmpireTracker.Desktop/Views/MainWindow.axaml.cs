@@ -1,12 +1,16 @@
 using System;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Dock.Model.Controls;
+using Dock.Model.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OE2EmpireTracker.Desktop.Models;
 using OE2EmpireTracker.Desktop.Services;
+using OE2EmpireTracker.Desktop.ViewModels;
 using OE2EmpireTracker.Desktop.ViewModels.Messages;
 
 namespace OE2EmpireTracker.Desktop.Views;
@@ -46,6 +50,11 @@ public partial class MainWindow : Window
         if (e.Key == Key.F5)
         {
             WeakReferenceMessenger.Default.Send(new RefreshRequestedMessage());
+            e.Handled = true;
+        }
+        else if (e.Key == Key.F1)
+        {
+            OpenContextSensitiveHelp();
             e.Handled = true;
         }
 
@@ -174,6 +183,130 @@ public partial class MainWindow : Window
         {
             _lastNormalPosition = e.Point;
         }
+    }
+
+    private void OpenContextSensitiveHelp()
+    {
+        var vm = DataContext as MainWindowViewModel;
+        if (vm is null)
+        {
+            return;
+        }
+
+        // Determine the active document type from the current tab
+        string? documentType = GetActiveDocumentType(vm);
+
+        // Look up the help topic
+        var registry = App.Services?.GetService<HelpTopicRegistry>();
+        string? topicFileName = null;
+        if (registry is not null && documentType is not null)
+        {
+            topicFileName = registry.GetTopicForDocumentType(documentType);
+        }
+
+        // Open the Help view and navigate to the topic
+        vm.OpenDocument("Help", "Help");
+
+        if (topicFileName is not null)
+        {
+            // Find the Help document and navigate to the topic
+            NavigateHelpToTopic(vm, topicFileName);
+        }
+    }
+
+    private string? GetActiveDocumentType(MainWindowViewModel vm)
+    {
+        // Map ViewModel types to document type strings
+        var layout = vm.Layout;
+        if (layout?.ActiveDockable is DocumentViewModel activeDoc)
+        {
+            return activeDoc switch
+            {
+                ColonyViewModel => "ColonyList",
+                ColonyListViewModel => "ColonyList",
+                BlueprintViewModel => "BlueprintList",
+                SurveyViewModel => "SurveyList",
+                ShipInstanceViewModel => "ShipList",
+                ShipTemplateViewModel => "ShipTemplateList",
+                DeliveryRouteViewModel => "DeliveryList",
+                DeliveryExecutionViewModel => "DeliveryExecution",
+                MarketViewModel => "MarketList",
+                PlayerProfileViewModel => "Profile",
+                SystemListViewModel => "SystemList",
+                StationViewModel => "StationList",
+                BuildPlannerViewModel => "BuildPlanList",
+                StockTargetsViewModel => "StockTargets",
+                SupplyChainViewModel => "SupplyChainList",
+                ContactsViewModel => "ContactsList",
+                PricingPlanViewModel => "PricingPlanList",
+                PreferencesViewModel => "Preferences",
+                ColonyActivityViewModel => "ColonyActivity",
+                AsteroidViewModel => "AsteroidList",
+                _ => null,
+            };
+        }
+
+        return null;
+    }
+
+    private void NavigateHelpToTopic(MainWindowViewModel vm, string topicFileName)
+    {
+        // Find the Help ViewModel in the dock and navigate to the topic
+        var layout = vm.Layout;
+        if (layout is null)
+        {
+            return;
+        }
+
+        // Search through all dockables for the HelpViewModel
+        var helpVm = FindHelpViewModel(layout);
+        helpVm?.NavigateToTopic(topicFileName);
+    }
+
+    private HelpViewModel? FindHelpViewModel(IDockable dockable)
+    {
+        if (dockable is HelpViewModel help)
+        {
+            return help;
+        }
+
+        if (dockable is IDocumentDock docDock && docDock.VisibleDockables is not null)
+        {
+            foreach (var child in docDock.VisibleDockables)
+            {
+                var found = FindHelpViewModel(child);
+                if (found is not null)
+                {
+                    return found;
+                }
+            }
+        }
+
+        if (dockable is IRootDock rootDock && rootDock.VisibleDockables is not null)
+        {
+            foreach (var child in rootDock.VisibleDockables)
+            {
+                var found = FindHelpViewModel(child);
+                if (found is not null)
+                {
+                    return found;
+                }
+            }
+        }
+
+        if (dockable is IProportionalDock propDock && propDock.VisibleDockables is not null)
+        {
+            foreach (var child in propDock.VisibleDockables)
+            {
+                var found = FindHelpViewModel(child);
+                if (found is not null)
+                {
+                    return found;
+                }
+            }
+        }
+
+        return null;
     }
 
     private void RestoreWindowState()
