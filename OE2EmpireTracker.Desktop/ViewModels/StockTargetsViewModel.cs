@@ -1,7 +1,10 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using OE2EmpireTracker.Desktop.Services;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
 
@@ -18,6 +21,9 @@ public sealed partial class StockPlanRowViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isActive;
+
+    /// <summary>Gets or sets the UUID of the underlying StockPlan.</summary>
+    public string PlanUuid { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -32,7 +38,10 @@ public sealed partial class StockTargetRowViewModel : ObservableObject
     private int _targetQuantity;
 
     [ObservableProperty]
-    private int _criticalThreshold;
+    private int _currentQuantity;
+
+    [ObservableProperty]
+    private int _shortfall;
 
     [ObservableProperty]
     private string _scope = string.Empty;
@@ -68,6 +77,7 @@ public sealed partial class StockProfileEntryRowViewModel : ObservableObject
 /// <summary>
 /// ViewModel for the Stock Targets document tab.
 /// Shows stock plans with targets and stock profiles with entries.
+/// Provides Check and Generate Orders functionality (M5).
 /// </summary>
 public sealed partial class StockTargetsViewModel : DocumentViewModel
 {
@@ -77,19 +87,154 @@ public sealed partial class StockTargetsViewModel : DocumentViewModel
     [ObservableProperty]
     private StockProfileRowViewModel? _selectedProfile;
 
+    [ObservableProperty]
+    private string _statusMessage = string.Empty;
+
     public StockTargetsViewModel()
     {
         Title = "Stock Targets";
         LoadData();
     }
 
-    public ObservableCollection<StockPlanRowViewModel> StockPlans { get; } = new ObservableCollection<StockPlanRowViewModel>();
+    public ObservableCollection<StockPlanRowViewModel> StockPlans { get; } = new ();
 
-    public ObservableCollection<StockTargetRowViewModel> Targets { get; } = new ObservableCollection<StockTargetRowViewModel>();
+    public ObservableCollection<StockTargetRowViewModel> Targets { get; } = new ();
 
-    public ObservableCollection<StockProfileRowViewModel> StockProfiles { get; } = new ObservableCollection<StockProfileRowViewModel>();
+    public ObservableCollection<StockProfileRowViewModel> StockProfiles { get; } = new ();
 
-    public ObservableCollection<StockProfileEntryRowViewModel> ProfileEntries { get; } = new ObservableCollection<StockProfileEntryRowViewModel>();
+    public ObservableCollection<StockProfileEntryRowViewModel> ProfileEntries { get; } = new ();
+
+    private static int GetCurrentInventory(DataService dataService, StockTarget target)
+    {
+        int total = 0;
+        var colonies = dataService.Colonies
+            .Where(c => c.OwnerUUID == dataService.CurrentPlayerUUID)
+            .ToList();
+
+        switch (target.Scope)
+        {
+            case StockTargetScope.EmpireWide:
+                foreach (var colony in colonies)
+                {
+                    total += GetItemQuantityInColony(colony, target.ItemName);
+                }
+
+                break;
+
+            case StockTargetScope.Colony:
+                var targetColony = colonies.FirstOrDefault(c => c.UUID == target.LocationUUID);
+                if (targetColony is not null)
+                {
+                    total = GetItemQuantityInColony(targetColony, target.ItemName);
+                }
+
+                break;
+
+            case StockTargetScope.Station:
+                // Station inventory not tracked in colony items; return 0
+                break;
+        }
+
+        return total;
+    }
+
+    private static int GetItemQuantityInColony(Colony colony, string itemName)
+    {
+        if (colony.Items?.Items is null)
+        {
+            return 0;
+        }
+
+        return colony.Items.Items.Values
+            .Where(i => string.Equals(i.Name, itemName, StringComparison.OrdinalIgnoreCase))
+            .Sum(i => i.Quantity);
+    }
+
+    /// <summary>
+    /// Evaluates all active stock plans, checks current inventory vs targets,
+    /// computes shortfalls, and creates build items in the linked replenishment build plan.
+    /// </summary>
+    [RelayCommand]
+    private void CheckAndGenerate()
+    {
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            StatusMessage = "Data not loaded";
+            return;
+        }
+
+        var activePlans = dataService.StockPlans
+            .Where(p => p.IsActive && p.OwnerUUID == dataService.CurrentPlayerUUID)
+            .ToList();
+
+        if (activePlans.Count == 0)
+        {
+            StatusMessage = "No active stock plans";
+            return;
+        }
+
+        int totalGenerated = 0;
+        string lastPlanName = string.Empty;
+
+        foreach (var plan in activePlans)
+        {
+            if (plan.Targets is null || plan.Targets.Count == 0)
+            {
+                continue;
+            }
+
+            var buildPlan = dataService.BuildPlans
+                .FirstOrDefault(bp => bp.UUID == plan.ReplenishmentBuildPlanUUID);
+            if (buildPlan is null)
+            {
+                StatusMessage = $"Build plan not found for '{plan.Name}'";
+                return;
+            }
+
+            int planItems = 0;
+            foreach (var target in plan.Targets)
+            {
+                int current = GetCurrentInventory(dataService, target);
+                int shortfall = target.TargetQuantity - current;
+                if (shortfall > 0)
+                {
+                    var buildItem = new BuildItem
+                    {
+                        UUID = Guid.NewGuid().ToString(),
+                        ItemType = BuildItemType.Manufactory,
+                        Status = BuildItemStatus.Staged,
+                        ItemName = target.ItemName,
+                        Quantity = shortfall,
+                    };
+
+                    buildPlan.Items.Add(buildItem);
+                    planItems++;
+                }
+            }
+
+            if (planItems > 0)
+            {
+                totalGenerated += planItems;
+                lastPlanName = plan.Name ?? string.Empty;
+                dataService.IsDirty = true;
+                dataService.OnBuildPlanDataChanged(buildPlan.UUID);
+            }
+        }
+
+        if (totalGenerated > 0)
+        {
+            dataService.WriteContext();
+            StatusMessage = $"Generated {totalGenerated} items in plan '{lastPlanName}'";
+        }
+        else
+        {
+            StatusMessage = "All targets met \u2014 no orders needed";
+        }
+
+        // Refresh targets grid to show updated current/shortfall
+        LoadTargetsForPlan(SelectedPlan);
+    }
 
     partial void OnSelectedPlanChanged(StockPlanRowViewModel? value)
     {
@@ -114,6 +259,7 @@ public sealed partial class StockTargetsViewModel : DocumentViewModel
         {
             StockPlans.Add(new StockPlanRowViewModel
             {
+                PlanUuid = plan.UUID ?? string.Empty,
                 PlanName = plan.Name ?? string.Empty,
                 TargetCount = plan.Targets?.Count ?? 0,
                 IsActive = plan.IsActive,
@@ -162,7 +308,7 @@ public sealed partial class StockTargetsViewModel : DocumentViewModel
         }
 
         var planModel = dataService.StockPlans
-            .FirstOrDefault(p => p.Name == plan.PlanName);
+            .FirstOrDefault(p => p.UUID == plan.PlanUuid);
         if (planModel?.Targets is null)
         {
             LoadSampleTargets(plan.PlanName);
@@ -171,11 +317,14 @@ public sealed partial class StockTargetsViewModel : DocumentViewModel
 
         foreach (var target in planModel.Targets)
         {
+            int current = GetCurrentInventory(dataService, target);
+            int shortfall = Math.Max(0, target.TargetQuantity - current);
             Targets.Add(new StockTargetRowViewModel
             {
                 ItemName = target.ItemName ?? string.Empty,
                 TargetQuantity = target.TargetQuantity,
-                CriticalThreshold = target.CriticalThreshold,
+                CurrentQuantity = current,
+                Shortfall = shortfall,
                 Scope = target.Scope.ToString(),
             });
         }
@@ -239,16 +388,16 @@ public sealed partial class StockTargetsViewModel : DocumentViewModel
     {
         if (planName == "Essential Supplies")
         {
-            Targets.Add(new StockTargetRowViewModel { ItemName = "Iron", TargetQuantity = 1000, CriticalThreshold = 200, Scope = "EmpireWide" });
-            Targets.Add(new StockTargetRowViewModel { ItemName = "Copper", TargetQuantity = 500, CriticalThreshold = 100, Scope = "EmpireWide" });
-            Targets.Add(new StockTargetRowViewModel { ItemName = "Fuel Cells", TargetQuantity = 200, CriticalThreshold = 50, Scope = "Colony" });
-            Targets.Add(new StockTargetRowViewModel { ItemName = "Food Rations", TargetQuantity = 300, CriticalThreshold = 75, Scope = "EmpireWide" });
+            Targets.Add(new StockTargetRowViewModel { ItemName = "Iron", TargetQuantity = 1000, CurrentQuantity = 450, Shortfall = 550, Scope = "EmpireWide" });
+            Targets.Add(new StockTargetRowViewModel { ItemName = "Copper", TargetQuantity = 500, CurrentQuantity = 230, Shortfall = 270, Scope = "EmpireWide" });
+            Targets.Add(new StockTargetRowViewModel { ItemName = "Fuel Cells", TargetQuantity = 200, CurrentQuantity = 200, Shortfall = 0, Scope = "Colony" });
+            Targets.Add(new StockTargetRowViewModel { ItemName = "Food Rations", TargetQuantity = 300, CurrentQuantity = 300, Shortfall = 0, Scope = "EmpireWide" });
         }
         else
         {
-            Targets.Add(new StockTargetRowViewModel { ItemName = "Missiles", TargetQuantity = 100, CriticalThreshold = 25, Scope = "Station" });
-            Targets.Add(new StockTargetRowViewModel { ItemName = "Armor Plates", TargetQuantity = 50, CriticalThreshold = 10, Scope = "EmpireWide" });
-            Targets.Add(new StockTargetRowViewModel { ItemName = "Shield Cells", TargetQuantity = 75, CriticalThreshold = 15, Scope = "Station" });
+            Targets.Add(new StockTargetRowViewModel { ItemName = "Missiles", TargetQuantity = 100, CurrentQuantity = 60, Shortfall = 40, Scope = "Station" });
+            Targets.Add(new StockTargetRowViewModel { ItemName = "Armor Plates", TargetQuantity = 50, CurrentQuantity = 50, Shortfall = 0, Scope = "EmpireWide" });
+            Targets.Add(new StockTargetRowViewModel { ItemName = "Shield Cells", TargetQuantity = 75, CurrentQuantity = 30, Shortfall = 45, Scope = "Station" });
         }
     }
 

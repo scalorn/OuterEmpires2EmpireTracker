@@ -103,6 +103,9 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     private ColonyRowViewModel? _selectedColony;
 
     [ObservableProperty]
+    private ColonyStructureRowViewModel? _selectedStructure;
+
+    [ObservableProperty]
     private ColonyItemRowViewModel? _selectedItem;
 
     [ObservableProperty]
@@ -149,6 +152,7 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         Items.Clear();
         OverflowRules.Clear();
         SelectedColony = null;
+        SelectedStructure = null;
         SelectedItem = null;
         SelectedOverflowRule = null;
         ActivityStatus = "No active timers";
@@ -335,6 +339,83 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         dataService.OnColonyDataChanged(SelectedColony.ColonyUuid);
     }
 
+    // --- D2.3-D2.7: Colony Structure Commands ---
+
+    /// <summary>Adds a new structure to the selected colony.</summary>
+    [RelayCommand]
+    private void AddStructure()
+    {
+        if (SelectedColony is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var colony = dataService.GetCurrentPlayerColonies()
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony is null)
+        {
+            return;
+        }
+
+        colony.Structures ??= new List<ColonyStructure>();
+
+        int nextId = colony.Structures.Count > 0
+            ? colony.Structures.Max(s => s.BuildingID) + 1
+            : 1;
+
+        var structure = new ColonyStructure
+        {
+            UUID = Guid.NewGuid().ToString(),
+            BuildingID = nextId,
+        };
+
+        structure.Properties.SetProperty(GameConstants.PropBuilt, false);
+        structure.Properties.SetProperty(GameConstants.PropStaged, true);
+        structure.Properties.SetProperty(GameConstants.PropOnline, false);
+
+        colony.Structures.Add(structure);
+        dataService.IsDirty = true;
+        dataService.OnColonyDataChanged(colony.UUID);
+    }
+
+    /// <summary>Removes the selected structure from the colony.</summary>
+    [RelayCommand]
+    private void RemoveStructure()
+    {
+        if (SelectedColony is null || SelectedStructure is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var colony = dataService.GetCurrentPlayerColonies()
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony?.Structures is null)
+        {
+            return;
+        }
+
+        var toRemove = colony.Structures
+            .FirstOrDefault(s => s.BuildingID == SelectedStructure.BuildingId);
+        if (toRemove is not null)
+        {
+            colony.Structures.Remove(toRemove);
+            dataService.IsDirty = true;
+            dataService.OnColonyDataChanged(colony.UUID);
+        }
+    }
+
     // --- A7: Delete Colony with Reference Counting ---
 
     /// <summary>Deletes the selected colony, checking references first.</summary>
@@ -476,6 +557,7 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         Commodities.Clear();
         Items.Clear();
         OverflowRules.Clear();
+        SelectedStructure = null;
         SelectedItem = null;
         SelectedOverflowRule = null;
         ActivityStatus = "No active timers";

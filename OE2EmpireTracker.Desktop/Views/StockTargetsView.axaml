@@ -14,58 +14,76 @@
         <TabControl>
             <!-- Plans Tab -->
             <TabItem Header="Plans">
-                <Grid ColumnDefinitions="250,12,*" Margin="0,8,0,0">
-                    <DockPanel Grid.Column="0">
-                        <TextBlock DockPanel.Dock="Top"
-                                   Text="Stock Plans"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Margin="0,0,0,8" />
-                        <ListBox ItemsSource="{Binding StockPlans}"
-                                 SelectedItem="{Binding SelectedPlan}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding PlanName}" FontWeight="SemiBold" />
-                                        <TextBlock FontSize="12" Opacity="0.7">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0} targets">
-                                                    <Binding Path="TargetCount" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </DockPanel>
+                <DockPanel Margin="0,8,0,0">
+                    <!-- Status bar and button at bottom -->
+                    <StackPanel DockPanel.Dock="Bottom"
+                                Orientation="Horizontal"
+                                Spacing="12"
+                                Margin="0,8,0,0">
+                        <Button Content="Check &amp; Generate Orders"
+                                Command="{Binding CheckAndGenerateCommand}" />
+                        <TextBlock Text="{Binding StatusMessage}"
+                                   VerticalAlignment="Center"
+                                   Opacity="0.8" />
+                    </StackPanel>
 
-                    <DataGrid Grid.Column="2"
-                              ItemsSource="{Binding Targets}"
-                              AutoGenerateColumns="False"
-                              CanUserReorderColumns="True"
-                              CanUserResizeColumns="True"
-                              CanUserSortColumns="True"
-                              IsReadOnly="True"
-                              GridLinesVisibility="Horizontal"
-                              SelectionMode="Single"
-                              HeadersVisibility="Column">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Item"
-                                                Binding="{Binding ItemName}"
-                                                Width="180" />
-                            <DataGridTextColumn Header="Target Qty"
-                                                Binding="{Binding TargetQuantity}"
-                                                Width="100" />
-                            <DataGridTextColumn Header="Critical"
-                                                Binding="{Binding CriticalThreshold}"
-                                                Width="100" />
-                            <DataGridTextColumn Header="Scope"
-                                                Binding="{Binding Scope}"
-                                                Width="120" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
+                    <!-- Split layout: plan list left, targets grid right -->
+                    <Grid ColumnDefinitions="250,12,*">
+                        <DockPanel Grid.Column="0">
+                            <TextBlock DockPanel.Dock="Top"
+                                       Text="Stock Plans"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Margin="0,0,0,8" />
+                            <ListBox ItemsSource="{Binding StockPlans}"
+                                     SelectedItem="{Binding SelectedPlan}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding PlanName}" FontWeight="SemiBold" />
+                                            <TextBlock FontSize="12" Opacity="0.7">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} targets">
+                                                        <Binding Path="TargetCount" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DockPanel>
+
+                        <DataGrid Grid.Column="2"
+                                  ItemsSource="{Binding Targets}"
+                                  AutoGenerateColumns="False"
+                                  CanUserReorderColumns="True"
+                                  CanUserResizeColumns="True"
+                                  CanUserSortColumns="True"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  SelectionMode="Single"
+                                  HeadersVisibility="Column">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Item"
+                                                    Binding="{Binding ItemName}"
+                                                    Width="180" />
+                                <DataGridTextColumn Header="Target"
+                                                    Binding="{Binding TargetQuantity}"
+                                                    Width="80" />
+                                <DataGridTextColumn Header="Current"
+                                                    Binding="{Binding CurrentQuantity}"
+                                                    Width="80" />
+                                <DataGridTextColumn Header="Shortfall"
+                                                    Binding="{Binding Shortfall}"
+                                                    Width="80" />
+                                <DataGridTextColumn Header="Scope"
+                                                    Binding="{Binding Scope}"
+                                                    Width="120" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </DockPanel>
             </TabItem>
 
             <!-- Profiles Tab -->
