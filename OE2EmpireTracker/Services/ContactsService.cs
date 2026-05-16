@@ -180,29 +180,9 @@ namespace OE2EmpireTracker.Services
                 return;
             }
 
-            // Character just joined a faction — prompt sharing preferences
-            if (PlayerContext.SuppressUI)
-            {
-                return;
-            }
-
-            Log.Info("Character joined faction {0} — prompting sharing preferences", newFactionUUID);
-
-            var result = System.Windows.Forms.MessageBox.Show(
-                "You've joined a faction. Would you like to configure what data to share with faction members?",
-                "Sharing Preferences",
-                System.Windows.Forms.MessageBoxButtons.YesNo,
-                System.Windows.Forms.MessageBoxIcon.Question);
-
-            if (result == System.Windows.Forms.DialogResult.Yes)
-            {
-                System.Windows.Forms.MessageBox.Show(
-                    "Sharing configuration will be available in a future update.\n\n" +
-                    "By default, your data is private. You can configure sharing later in Preferences.",
-                    "Sharing Preferences",
-                    System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Information);
-            }
+            // Character just joined a faction — sharing preferences not yet implemented.
+            // TODO: When sharing configuration is implemented, prompt via a form event, not MessageBox.
+            Log.Info("Character joined faction {0} — sharing preferences not yet available", newFactionUUID);
         }
     }
 }
