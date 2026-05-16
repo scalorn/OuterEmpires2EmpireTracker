@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -112,6 +117,9 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     private ColonyOverflowRowViewModel? _selectedOverflowRule;
 
     [ObservableProperty]
+    private ColonyCommodityRowViewModel? _selectedCommodity;
+
+    [ObservableProperty]
     private string _activityStatus = "No active timers";
 
     [ObservableProperty]
@@ -169,6 +177,7 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         SelectedStructure = null;
         SelectedItem = null;
         SelectedOverflowRule = null;
+        SelectedCommodity = null;
         ActivityStatus = "No active timers";
         LoadData();
     }
@@ -189,6 +198,16 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     private static void UpdateActivityStatus(Colony colony)
     {
         _ = colony;
+    }
+
+    private static Window? GetMainWindow()
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return desktop.MainWindow;
+        }
+
+        return null;
     }
 
     // --- A8: Save Colony with Validation ---
@@ -354,6 +373,75 @@ public sealed partial class ColonyViewModel : DocumentViewModel
     }
 
     // --- D2.3-D2.7: Colony Structure Commands ---
+
+    /// <summary>Adds a new commodity request to the selected colony.</summary>
+    [RelayCommand]
+    private void AddCommodity()
+    {
+        if (SelectedColony is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var colony = dataService.GetCurrentPlayerColonies()
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony is null)
+        {
+            return;
+        }
+
+        colony.Commodities ??= new List<CommodityRequested>();
+
+        var newCommodity = new CommodityRequested
+        {
+            Name = "New Commodity",
+            Requested = 0,
+            Delivered = 0,
+            Fulfilled = false,
+        };
+
+        colony.Commodities.Add(newCommodity);
+        dataService.IsDirty = true;
+        dataService.OnColonyDataChanged(colony.UUID);
+    }
+
+    /// <summary>Removes the selected commodity from the colony.</summary>
+    [RelayCommand]
+    private void RemoveCommodity()
+    {
+        if (SelectedColony is null || SelectedCommodity is null)
+        {
+            return;
+        }
+
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
+        {
+            return;
+        }
+
+        var colony = dataService.GetCurrentPlayerColonies()
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony?.Commodities is null)
+        {
+            return;
+        }
+
+        var toRemove = colony.Commodities
+            .FirstOrDefault(c => c.Name == SelectedCommodity.CommodityName);
+        if (toRemove is not null)
+        {
+            colony.Commodities.Remove(toRemove);
+            dataService.IsDirty = true;
+            dataService.OnColonyDataChanged(colony.UUID);
+        }
+    }
 
     /// <summary>Adds a new structure to the selected colony.</summary>
     [RelayCommand]
@@ -627,6 +715,94 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         ImportStatus = $"Imported {colony.Structures.Count} structures";
     }
 
+    /// <summary>
+    /// Imports colony data from an HTML file and merges into the selected colony.
+    /// </summary>
+    [RelayCommand]
+    private async Task ImportFileAsync()
+    {
+        if (SelectedColony is null)
+        {
+            ImportStatus = "No colony selected";
+            return;
+        }
+
+        var window = GetMainWindow();
+        if (window is null)
+        {
+            ImportStatus = "No window available";
+            return;
+        }
+
+        var files = await window.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Import Colony HTML",
+            AllowMultiple = false,
+            FileTypeFilter = new[]
+            {
+                new FilePickerFileType("HTML Files") { Patterns = new[] { "*.html", "*.htm" } },
+                new FilePickerFileType("All Files") { Patterns = new[] { "*" } },
+            },
+        });
+
+        if (files.Count == 0)
+        {
+            return;
+        }
+
+        var file = files[0];
+        var path = file.TryGetLocalPath();
+        if (path is null)
+        {
+            ImportStatus = "Could not resolve file path";
+            return;
+        }
+
+        string html;
+        try
+        {
+            html = File.ReadAllText(path);
+        }
+        catch (IOException ex)
+        {
+            ImportStatus = $"Error reading file: {ex.Message}";
+            return;
+        }
+
+        if (string.IsNullOrEmpty(html))
+        {
+            ImportStatus = "File is empty";
+            return;
+        }
+
+        var dataService2 = App.Services?.GetService(typeof(DataService)) as DataService;
+        var loggerFactory = App.Services?.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
+
+        if (dataService2 is null || loggerFactory is null)
+        {
+            ImportStatus = "Services not available";
+            return;
+        }
+
+        var colony = dataService2.GetCurrentPlayerColonies()
+            .FirstOrDefault(c => c.UUID == SelectedColony.ColonyUuid);
+        if (colony is null)
+        {
+            ImportStatus = "Colony not found in data";
+            return;
+        }
+
+        var parser = new ColonyParser(loggerFactory.CreateLogger<ColonyParser>());
+        parser.ProcessHtml(colony, html, dataService2);
+
+        colony.LastImportDateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
+        dataService2.IsDirty = true;
+        dataService2.OnColonyDataChanged(colony.UUID);
+        dataService2.WriteContext();
+
+        ImportStatus = $"Imported from file: {colony.Structures.Count} structures";
+    }
+
     partial void OnSelectedColonyChanged(ColonyRowViewModel? value)
     {
         LoadColonyDetail(value);
@@ -675,6 +851,7 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         SelectedStructure = null;
         SelectedItem = null;
         SelectedOverflowRule = null;
+        SelectedCommodity = null;
         ActivityStatus = "No active timers";
 
         if (row is null)

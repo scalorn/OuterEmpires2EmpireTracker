@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using OE2EmpireTracker.Desktop.Services;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
@@ -15,6 +16,9 @@ public sealed partial class FactionRowViewModel : ObservableObject
 
     [ObservableProperty]
     private int _memberCount;
+
+    /// <summary>Gets or sets the UUID of the faction.</summary>
+    public string FactionUuid { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -31,10 +35,16 @@ public sealed partial class CharacterRowViewModel : ObservableObject
 
 /// <summary>
 /// ViewModel for the Contacts document tab.
-/// Shows factions and external characters.
+/// Shows factions and external characters with delete protection.
 /// </summary>
 public sealed partial class ContactsViewModel : DocumentViewModel
 {
+    [ObservableProperty]
+    private FactionRowViewModel? _selectedFaction;
+
+    [ObservableProperty]
+    private string _deleteError = string.Empty;
+
     public ContactsViewModel()
     {
         Title = "Contacts";
@@ -44,6 +54,42 @@ public sealed partial class ContactsViewModel : DocumentViewModel
     public ObservableCollection<FactionRowViewModel> Factions { get; } = new ObservableCollection<FactionRowViewModel>();
 
     public ObservableCollection<CharacterRowViewModel> Characters { get; } = new ObservableCollection<CharacterRowViewModel>();
+
+    /// <inheritdoc/>
+    protected override void RefreshData()
+    {
+        Factions.Clear();
+        Characters.Clear();
+        SelectedFaction = null;
+        DeleteError = string.Empty;
+        LoadData();
+    }
+
+    /// <summary>Deletes the selected faction with reference count protection.</summary>
+    [RelayCommand]
+    private void DeleteFaction()
+    {
+        if (SelectedFaction is null)
+        {
+            return;
+        }
+
+        var contactsService = App.Services?.GetService(typeof(ContactsService)) as ContactsService;
+        if (contactsService is null)
+        {
+            return;
+        }
+
+        string? error = contactsService.DeleteFaction(SelectedFaction.FactionUuid);
+        if (error is not null)
+        {
+            DeleteError = error;
+            return;
+        }
+
+        DeleteError = string.Empty;
+        RefreshData();
+    }
 
     private void LoadData()
     {
@@ -62,6 +108,7 @@ public sealed partial class ContactsViewModel : DocumentViewModel
             var memberCount = characters.Count(c => c.FactionUUID == faction.UUID);
             Factions.Add(new FactionRowViewModel
             {
+                FactionUuid = faction.UUID ?? string.Empty,
                 FactionName = faction.Name ?? string.Empty,
                 MemberCount = memberCount,
             });

@@ -4,34 +4,91 @@
              x:Class="OE2EmpireTracker.Desktop.Views.StationView"
              x:DataType="vm:StationViewModel">
 
-    <DockPanel Margin="8">
-        <TextBlock DockPanel.Dock="Top"
-                   Text="Stations"
-                   FontSize="20"
-                   FontWeight="SemiBold"
-                   Margin="0,0,0,12" />
+    <Grid ColumnDefinitions="250,12,*" Margin="8">
+        <DockPanel Grid.Column="0">
+            <TextBlock DockPanel.Dock="Top"
+                       Text="Stations"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,12" />
+            <DataGrid ItemsSource="{Binding Stations}"
+                      SelectedItem="{Binding SelectedStation}"
+                      AutoGenerateColumns="False"
+                      CanUserReorderColumns="True"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      IsReadOnly="True"
+                      GridLinesVisibility="Horizontal"
+                      SelectionMode="Single"
+                      HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Station"
+                                        Binding="{Binding StationName}"
+                                        Width="140" />
+                    <DataGridTextColumn Header="Type"
+                                        Binding="{Binding StationType}"
+                                        Width="80" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
 
-        <DataGrid ItemsSource="{Binding Stations}"
-                  AutoGenerateColumns="False"
-                  CanUserReorderColumns="True"
-                  CanUserResizeColumns="True"
-                  CanUserSortColumns="True"
-                  IsReadOnly="True"
-                  GridLinesVisibility="Horizontal"
-                  SelectionMode="Single"
-                  HeadersVisibility="Column">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Station"
-                                    Binding="{Binding StationName}"
-                                    Width="200" />
-                <DataGridTextColumn Header="Type"
-                                    Binding="{Binding StationType}"
-                                    Width="120" />
-                <DataGridTextColumn Header="Hold Items"
-                                    Binding="{Binding HoldItemCount}"
-                                    Width="100" />
-            </DataGrid.Columns>
-        </DataGrid>
-    </DockPanel>
+        <TabControl Grid.Column="2">
+            <TabItem Header="Hold">
+                <TextBlock Margin="0,8,0,0"
+                           Text="{Binding SelectedStation.HoldItemCount, StringFormat='Hold contains {0} item(s)', FallbackValue='Select a station'}"
+                           FontSize="14"
+                           Opacity="0.7"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center" />
+            </TabItem>
+
+            <TabItem Header="Components">
+                <DataGrid Margin="0,8,0,0"
+                          ItemsSource="{Binding Components}"
+                          AutoGenerateColumns="False"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          IsReadOnly="True"
+                          GridLinesVisibility="Horizontal"
+                          SelectionMode="Single"
+                          HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Slot Type"
+                                            Binding="{Binding SlotType}"
+                                            Width="150" />
+                        <DataGridTextColumn Header="Index"
+                                            Binding="{Binding SlotIndex}"
+                                            Width="80" />
+                        <DataGridTextColumn Header="Blueprint"
+                                            Binding="{Binding BlueprintName}"
+                                            Width="200" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <TabItem Header="Munitions">
+                <DataGrid Margin="0,8,0,0"
+                          ItemsSource="{Binding MunitionsItems}"
+                          AutoGenerateColumns="False"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          IsReadOnly="True"
+                          GridLinesVisibility="Horizontal"
+                          SelectionMode="Single"
+                          HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Item"
+                                            Binding="{Binding ItemName}"
+                                            Width="200" />
+                        <DataGridTextColumn Header="Quantity"
+                                            Binding="{Binding Quantity}"
+                                            Width="100" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+    </Grid>
 
 </UserControl>

@@ -11,7 +11,7 @@
                    FontWeight="SemiBold"
                    Margin="0,0,0,12" />
 
-        <Grid RowDefinitions="Auto,*,Auto,*">
+        <Grid RowDefinitions="Auto,*,Auto,Auto,*">
             <TextBlock Grid.Row="0"
                        Text="Factions"
                        FontSize="16"
@@ -20,6 +20,7 @@
 
             <DataGrid Grid.Row="1"
                       ItemsSource="{Binding Factions}"
+                      SelectedItem="{Binding SelectedFaction}"
                       AutoGenerateColumns="False"
                       CanUserReorderColumns="True"
                       CanUserResizeColumns="True"
@@ -28,7 +29,7 @@
                       GridLinesVisibility="Horizontal"
                       SelectionMode="Single"
                       HeadersVisibility="Column"
-                      Margin="0,0,0,12">
+                      Margin="0,0,0,4">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Faction"
                                         Binding="{Binding FactionName}"
@@ -39,13 +40,21 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <TextBlock Grid.Row="2"
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8" Margin="0,4,0,8">
+                <Button Content="Delete Faction" Command="{Binding DeleteFactionCommand}" />
+                <TextBlock Text="{Binding DeleteError}"
+                           Foreground="Red"
+                           VerticalAlignment="Center"
+                           IsVisible="{Binding DeleteError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </StackPanel>
+
+            <TextBlock Grid.Row="3"
                        Text="Characters"
                        FontSize="16"
                        FontWeight="SemiBold"
                        Margin="0,0,0,8" />
 
-            <DataGrid Grid.Row="3"
+            <DataGrid Grid.Row="4"
                       ItemsSource="{Binding Characters}"
                       AutoGenerateColumns="False"
                       CanUserReorderColumns="True"

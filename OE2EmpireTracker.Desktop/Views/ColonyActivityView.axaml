@@ -11,6 +11,16 @@
                    FontWeight="SemiBold"
                    Margin="0,0,0,12" />
 
+        <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal"
+                    Spacing="16"
+                    Margin="0,0,0,8">
+            <CheckBox Content="Mining" IsChecked="{Binding ShowMining}" />
+            <CheckBox Content="Refining" IsChecked="{Binding ShowRefining}" />
+            <CheckBox Content="Research" IsChecked="{Binding ShowResearch}" />
+            <CheckBox Content="Manufacturing" IsChecked="{Binding ShowManufacturing}" />
+        </StackPanel>
+
         <DataGrid ItemsSource="{Binding Activities}"
                   AutoGenerateColumns="False"
                   CanUserReorderColumns="True"

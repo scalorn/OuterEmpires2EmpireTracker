@@ -134,6 +134,29 @@ public sealed class ReferenceCountService
     }
 
     /// <summary>
+    /// Counts how many times a faction is referenced from external characters.
+    /// </summary>
+    public int GetFactionReferenceCount(string factionUuid)
+    {
+        int count = 0;
+
+        foreach (var character in _dataService.ExternalCharacters)
+        {
+            if (character.FactionUUID == factionUuid)
+            {
+                count++;
+            }
+        }
+
+        _logger.LogDebug(
+            "Faction {UUID} has {Count} references",
+            factionUuid,
+            count);
+
+        return count;
+    }
+
+    /// <summary>
     /// Counts how many times a station is referenced from delivery routes
     /// and market listings.
     /// </summary>

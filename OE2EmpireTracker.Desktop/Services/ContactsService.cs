@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using OE2EmpireTracker.Models;
 
@@ -11,19 +13,26 @@ namespace OE2EmpireTracker.Desktop.Services;
 public sealed class ContactsService
 {
     private readonly DataService _dataService;
+    private readonly ReferenceCountService _referenceCountService;
     private readonly ILogger<ContactsService> _logger;
 
-    public ContactsService(DataService dataService, ILogger<ContactsService> logger)
+    public ContactsService(DataService dataService, ReferenceCountService referenceCountService, ILogger<ContactsService> logger)
     {
         _dataService = dataService;
+        _referenceCountService = referenceCountService;
         _logger = logger;
     }
 
+    /// <summary>
+    /// Creates a faction with a deterministic UUID derived from the name.
+    /// </summary>
     public void CreateFaction(FactionCreateRequest request)
     {
+        string uuid = GenerateDeterministicUuid(request.Name);
+
         var faction = new Faction
         {
-            UUID = Guid.NewGuid().ToString(),
+            UUID = uuid,
             Name = request.Name,
             Description = request.Description,
         };
@@ -32,6 +41,27 @@ public sealed class ContactsService
         _dataService.OnContactDataChanged(faction.UUID);
         _dataService.WriteContext();
         _logger.LogInformation("Created faction {Name} ({UUID})", faction.Name, faction.UUID);
+    }
+
+    /// <summary>
+    /// Attempts to delete a faction. Returns an error message if references exist.
+    /// </summary>
+    /// <returns>Null on success, or an error message if deletion is blocked.</returns>
+    public string? DeleteFaction(string uuid)
+    {
+        int refs = _referenceCountService.GetFactionReferenceCount(uuid);
+        if (refs > 0)
+        {
+            string msg = $"Cannot delete: {refs} character(s) still reference this faction";
+            _logger.LogWarning("Delete blocked for faction {UUID}: {Count} references", uuid, refs);
+            return msg;
+        }
+
+        _dataService.RemoveFaction(uuid);
+        _dataService.OnContactDataChanged(uuid);
+        _dataService.WriteContext();
+        _logger.LogInformation("Deleted faction {UUID}", uuid);
+        return null;
     }
 
     public void UpdateFaction(string uuid, FactionUpdateRequest request)
@@ -49,14 +79,6 @@ public sealed class ContactsService
         _dataService.OnContactDataChanged(uuid);
         _dataService.WriteContext();
         _logger.LogInformation("Updated faction {UUID}", uuid);
-    }
-
-    public void DeleteFaction(string uuid)
-    {
-        _dataService.RemoveFaction(uuid);
-        _dataService.OnContactDataChanged(uuid);
-        _dataService.WriteContext();
-        _logger.LogInformation("Deleted faction {UUID}", uuid);
     }
 
     public void CreateCharacter(ExternalCharacterCreateRequest request)
@@ -97,5 +119,14 @@ public sealed class ContactsService
         _dataService.OnContactDataChanged(uuid);
         _dataService.WriteContext();
         _logger.LogInformation("Deleted external character {UUID}", uuid);
+    }
+
+    /// <summary>
+    /// Generates a deterministic UUID from a faction name using MD5 hash.
+    /// </summary>
+    private static string GenerateDeterministicUuid(string name)
+    {
+        byte[] hash = MD5.HashData(Encoding.UTF8.GetBytes("faction:" + name));
+        return new Guid(hash).ToString();
     }
 }
