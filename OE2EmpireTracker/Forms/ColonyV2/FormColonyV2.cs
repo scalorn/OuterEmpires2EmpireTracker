@@ -2751,10 +2751,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
 
                 var parser = new ColonyParser();
-                var tempColony = parser.ParseClipboardToTemp(empireContext, out string extractedHtml);
-
-                if (tempColony == null)
-                    return;
+                var tempColony = new Colony();
+                parser.ProcessHtml(tempColony, htmlFragment, empireContext);
 
                 Log.Info(
                     "Colony temp parse complete: PlanetName='{0}', SystemName='{1}', {2} structures",
@@ -2773,7 +2771,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     return;
                 }
 
-                ReadOnlyColony imported = _colonyService.Import(tempColony, extractedHtml, empireContext);
+                ReadOnlyColony imported = _colonyService.Import(tempColony, htmlFragment, empireContext);
 
                 Log.Info(
                     "Colony imported via service: planet='{0}' uuid={1}",

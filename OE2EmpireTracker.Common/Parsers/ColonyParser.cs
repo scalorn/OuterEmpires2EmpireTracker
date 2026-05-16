@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -73,7 +72,7 @@ namespace OE2EmpireTracker.Parsers
                     RegexOptions.IgnoreCase);
                 if (purityMatch.Success)
                 {
-                    structure.RefiningResourcePurity = SurveyParser.NormalizePurity(
+                    structure.RefiningResourcePurity = GameConstants.NormalizePurity(
                         purityMatch.Groups[1].Value.Trim());
                 }
             }
@@ -102,39 +101,6 @@ namespace OE2EmpireTracker.Parsers
             {
                 Log.Error(ex, "Error parsing colony HTML fragment");
             }
-        }
-
-        /// <summary>
-        /// Reads HTML from the clipboard and processes it into the given colony.
-        /// </summary>
-        public void ProcessClipboard(Colony colony, EmpireContext empireContext)
-        {
-            if (Clipboard.ContainsText(TextDataFormat.Html))
-            {
-                string clipboardData = Clipboard.GetText(TextDataFormat.Html);
-                Log.Info("Colony clipboard data length: {0}", clipboardData.Length);
-                string html = ClipboardHelper.ExtractHtmlFragment(clipboardData);
-                ProcessHtml(colony, html, empireContext);
-            }
-        }
-
-        /// <summary>
-        /// Parses clipboard HTML into a new temporary Colony object without mutating any existing colony.
-        /// Returns null if the clipboard does not contain HTML.
-        /// </summary>
-        public Colony ParseClipboardToTemp(EmpireContext empireContext, out string extractedHtml)
-        {
-            extractedHtml = null;
-            if (!Clipboard.ContainsText(TextDataFormat.Html))
-                return null;
-
-            string clipboardData = Clipboard.GetText(TextDataFormat.Html);
-            Log.Info("Colony clipboard data length (temp parse): {0}", clipboardData.Length);
-            extractedHtml = ClipboardHelper.ExtractHtmlFragment(clipboardData);
-
-            var tempColony = new Colony();
-            ProcessHtml(tempColony, extractedHtml, empireContext);
-            return tempColony;
         }
 
         /// <summary>

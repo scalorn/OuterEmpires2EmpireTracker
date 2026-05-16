@@ -247,7 +247,7 @@
 
 
 
-    <Compile Include="Services\ColonyService.cs" />
+
 
 
 
@@ -268,7 +268,7 @@
 
     <Compile Include="Parsers\ClipboardHelper.cs" />
     <Compile Include="Parsers\ClipboardContentDetector.cs" />
-    <Compile Include="Parsers\ColonyParser.cs" />
+
 
 
     <Compile Include="Parsers\PlayerProfileParser.cs" />

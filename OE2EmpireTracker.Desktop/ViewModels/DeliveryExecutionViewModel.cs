@@ -167,7 +167,7 @@ public sealed partial class DeliveryExecutionViewModel : DocumentViewModel
             && matchedItem.ItemType == ItemType.ItemTypeEnum.Flatpack
             && !string.IsNullOrEmpty(SelectedLoadItem.DestinationColonyUuid))
         {
-            var colonyService = App.Services?.GetService(typeof(ColonyService)) as ColonyService;
+            var colonyService = App.Services?.GetService(typeof(Desktop.Services.ColonyService)) as Desktop.Services.ColonyService;
             colonyService?.StageFlatpackStructure(
                 SelectedLoadItem.DestinationColonyUuid,
                 matchedItem.BaseItemTypeID);
