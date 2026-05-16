@@ -230,8 +230,8 @@ public sealed partial class DeliveryExecutionViewModel : DocumentViewModel
         }
 
         var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
-        var planService = App.Services?.GetService(typeof(DeliveryPlanService))
-            as DeliveryPlanService;
+        var planService = App.Services?.GetService(typeof(Desktop.Services.DeliveryPlanService))
+            as Desktop.Services.DeliveryPlanService;
         if (dataService is null || !dataService.IsLoaded || planService is null)
         {
             return;
