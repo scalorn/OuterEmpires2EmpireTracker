@@ -1342,7 +1342,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             var builder = new RtfBuilder();
-            ColonyStatusCalculator.PopulateStatus(builder, status);
+            RtfBuilder.AppendColonyStatus(builder, status);
             rtbStatusSummary.Rtf = builder.ToRtf();
             sw.Stop();
             Log.Info("PERF RefreshStatusSummary: {0}ms", sw.ElapsedMilliseconds);

@@ -258,15 +258,14 @@
 
 
 
-    <Compile Include="Services\ColonyBootstrap.cs" />
+
     <Compile Include="Services\ColonyAdminReportBuilder.cs" />
     <Compile Include="Services\BlueprintService.cs" />
     <Compile Include="Services\BlueprintImportHandler.cs" />
 
 
     <Compile Include="Services\ColonyBuildEligibility.cs" />
-    <Compile Include="Services\ColonyStatusCalculator.cs" />
-    <Compile Include="Services\BuildOrderOptimizer.cs" />
+
 
     <Compile Include="Parsers\ClipboardHelper.cs" />
     <Compile Include="Parsers\ClipboardContentDetector.cs" />

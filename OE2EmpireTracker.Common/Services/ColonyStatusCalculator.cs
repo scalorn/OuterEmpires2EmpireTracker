@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using NLog;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -55,43 +53,6 @@ namespace OE2EmpireTracker.Services
         public ColonyStructureStatus FinalActualStatus { get; set; }
 
         public ColonyStructureStatus FinalIdealStatus { get; set; }
-
-        /// <summary>
-        /// Populates a RichTextBox with the colony status summary in a single RTF assignment.
-        /// </summary>
-        public static void PopulateStatus(RtfBuilder builder, ColonyStructureStatus status)
-        {
-            AppendStatus(
-                builder,
-                "Power:",
-                status.PowerRequired > status.PowerProvided ? Color.Red : Color.Green,
-                status.PowerRequired,
-                status.PowerProvided);
-            AppendStatus(
-                builder,
-                " Habitation: ",
-                status.HabitationProvision < status.HabitationRequired ? Color.Red : Color.Green,
-                status.HabitationRequired,
-                status.HabitationProvision);
-            AppendStatus(
-                builder,
-                " Food: ",
-                status.FoodProvision < status.FoodRequired ? Color.Red : Color.Green,
-                status.FoodRequired,
-                status.FoodProvision);
-            AppendStatus(
-                builder,
-                " Entertainment: ",
-                status.EntertainmentProvided < status.EntertainmentRequired ? Color.Red : Color.Green,
-                status.EntertainmentRequired,
-                status.EntertainmentProvided);
-            AppendStatus(
-                builder,
-                " Warehouse: ",
-                status.WarehouseCapacity < status.WarehouseRequired ? Color.Red : Color.Green,
-                status.WarehouseRequired,
-                status.WarehouseCapacity);
-        }
 
         /// <summary>
         /// Calculates the resource status and worker assignments for the tracked colony.
@@ -539,14 +500,6 @@ namespace OE2EmpireTracker.Services
             decimal value = 0m;
             blueprint.Properties.GetDecimal(propertyName, 0m, out value);
             return value;
-        }
-
-        private static void AppendStatus(RtfBuilder builder, string name, Color color, decimal required, decimal provided)
-        {
-            builder.Append(name, Color.Black);
-            builder.Append(string.Empty + required, required > provided ? Color.Red : Color.Green);
-            builder.Append("/", Color.Black);
-            builder.Append(string.Empty + provided, Color.Black);
         }
 
         private decimal CalculateWarehouseRequired()
