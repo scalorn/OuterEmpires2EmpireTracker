@@ -21,6 +21,9 @@
         <DataTemplate DataType="vm:ColonyListViewModel">
             <views:ColonyListView />
         </DataTemplate>
+        <DataTemplate DataType="vm:ColonyViewModel">
+            <views:ColonyView />
+        </DataTemplate>
         <DataTemplate DataType="vm:PlaceholderViewModel">
             <views:PlaceholderView />
         </DataTemplate>
