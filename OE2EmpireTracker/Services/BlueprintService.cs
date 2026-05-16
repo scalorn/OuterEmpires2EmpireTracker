@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services.Migration;
 
@@ -14,6 +15,15 @@ namespace OE2EmpireTracker.Services
     public class BlueprintService
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Protected property names that are preserved when merging resources into an existing blueprint.
+        /// </summary>
+        private static readonly HashSet<string> ProtectedProperties = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            BlueprintPropertyKeys.ManufactureRunTime,
+            GameConstants.PropPowerRequired
+        };
 
         private readonly PlayerContext _playerContext;
         private readonly EmpireContext _empireContext;
@@ -259,7 +269,7 @@ namespace OE2EmpireTracker.Services
 
             Log.Info("BlueprintService.MergeResources: UUID={0} name='{1}'", uuid, bp.Name);
 
-            MarketBlueprintImporter.MergeResourcesOnly(bp, tempBP);
+            MergeResourcesOnly(bp, tempBP);
 
             bool isGlobal = _empireContext.GlobalBlueprintList.Contains(bp);
             if (isGlobal)
@@ -269,6 +279,49 @@ namespace OE2EmpireTracker.Services
 
             _playerContext.OnBlueprintDataChanged(uuid);
             return new ReadOnlyBlueprint(bp);
+        }
+
+        /// <summary>
+        /// Merges resources and non-protected properties from incoming into target,
+        /// preserving all existing scalar fields and protected properties.
+        /// </summary>
+        private static void MergeResourcesOnly(Blueprint target, Blueprint incoming)
+        {
+            target.Resources = incoming.Resources;
+
+            if (incoming.Properties != null && incoming.Properties.Count > 0)
+            {
+                var preservedProps = new Dictionary<string, string>();
+                foreach (var protectedKey in ProtectedProperties)
+                {
+                    string existingValue;
+                    if (target.Properties != null
+                        && target.Properties.GetString(protectedKey, null, out existingValue)
+                        && existingValue != null)
+                    {
+                        preservedProps[protectedKey] = existingValue;
+                    }
+                }
+
+                if (target.Properties == null)
+                {
+                    target.Properties = new PropertyBag();
+                }
+
+                foreach (var kvp in incoming.Properties.Properties)
+                {
+                    if (!ProtectedProperties.Contains(kvp.Key)
+                        || !preservedProps.ContainsKey(kvp.Key))
+                    {
+                        target.Properties.SetProperty(kvp.Key, kvp.Value);
+                    }
+                }
+
+                foreach (var kvp in preservedProps)
+                {
+                    target.Properties.SetProperty(kvp.Key, kvp.Value);
+                }
+            }
         }
     }
 }
