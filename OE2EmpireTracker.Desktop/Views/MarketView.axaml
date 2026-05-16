@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             xmlns:ctrl="using:OE2EmpireTracker.Desktop.Controls"
              x:Class="OE2EmpireTracker.Desktop.Views.MarketView"
              x:DataType="vm:MarketViewModel">
 
@@ -34,7 +35,8 @@
                               IsReadOnly="True"
                               GridLinesVisibility="Horizontal"
                               SelectionMode="Single"
-                              HeadersVisibility="Column">
+                              HeadersVisibility="Column"
+                              ctrl:DataGridPersistence.GridId="MarketListings">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Item"
                                                 Binding="{Binding ItemName}"
@@ -63,7 +65,8 @@
                           IsReadOnly="True"
                           GridLinesVisibility="Horizontal"
                           SelectionMode="Single"
-                          HeadersVisibility="Column">
+                          HeadersVisibility="Column"
+                          ctrl:DataGridPersistence.GridId="MarketTransactions">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Type"
                                             Binding="{Binding TransactionType}"

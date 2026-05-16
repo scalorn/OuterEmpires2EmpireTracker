@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             xmlns:ctrl="using:OE2EmpireTracker.Desktop.Controls"
              x:Class="OE2EmpireTracker.Desktop.Views.BuildPlannerView"
              x:DataType="vm:BuildPlannerViewModel">
 
@@ -58,7 +59,8 @@
                               IsReadOnly="False"
                               GridLinesVisibility="Horizontal"
                               SelectionMode="Single"
-                              HeadersVisibility="Column">
+                              HeadersVisibility="Column"
+                              ctrl:DataGridPersistence.GridId="BuildItems">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Item"
                                                 Binding="{Binding ItemName}"
@@ -97,7 +99,8 @@
                           IsReadOnly="True"
                           GridLinesVisibility="Horizontal"
                           SelectionMode="Single"
-                          HeadersVisibility="Column">
+                          HeadersVisibility="Column"
+                          ctrl:DataGridPersistence.GridId="BuildShortfalls">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Resource"
                                             Binding="{Binding ResourceName}"

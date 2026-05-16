@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             xmlns:ctrl="using:OE2EmpireTracker.Desktop.Controls"
              x:Class="OE2EmpireTracker.Desktop.Views.StationView"
              x:DataType="vm:StationViewModel">
 
@@ -20,7 +21,8 @@
                       IsReadOnly="True"
                       GridLinesVisibility="Horizontal"
                       SelectionMode="Single"
-                      HeadersVisibility="Column">
+                      HeadersVisibility="Column"
+                      ctrl:DataGridPersistence.GridId="Stations">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Station"
                                         Binding="{Binding StationName}"
@@ -52,7 +54,8 @@
                           IsReadOnly="True"
                           GridLinesVisibility="Horizontal"
                           SelectionMode="Single"
-                          HeadersVisibility="Column">
+                          HeadersVisibility="Column"
+                          ctrl:DataGridPersistence.GridId="StationHold">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Slot Type"
                                             Binding="{Binding SlotType}"

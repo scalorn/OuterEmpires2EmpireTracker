@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
              xmlns:sp="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
+             xmlns:ctrl="using:OE2EmpireTracker.Desktop.Controls"
              x:Class="OE2EmpireTracker.Desktop.Views.BlueprintView"
              x:DataType="vm:BlueprintViewModel">
 
@@ -64,7 +65,8 @@
                           IsReadOnly="True"
                           GridLinesVisibility="Horizontal"
                           SelectionMode="Single"
-                          HeadersVisibility="Column">
+                          HeadersVisibility="Column"
+                          ctrl:DataGridPersistence.GridId="BlueprintStats">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Stat" Binding="{Binding StatName}" Width="200" />
                         <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="150" />
@@ -83,7 +85,8 @@
                           IsReadOnly="True"
                           GridLinesVisibility="Horizontal"
                           SelectionMode="Single"
-                          HeadersVisibility="Column">
+                          HeadersVisibility="Column"
+                          ctrl:DataGridPersistence.GridId="BlueprintResources">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Resource" Binding="{Binding ResourceName}" Width="200" />
                         <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="150" />

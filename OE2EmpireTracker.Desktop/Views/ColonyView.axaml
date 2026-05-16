@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             xmlns:ctrl="using:OE2EmpireTracker.Desktop.Controls"
              x:Class="OE2EmpireTracker.Desktop.Views.ColonyView"
              x:DataType="vm:ColonyViewModel">
 
@@ -99,7 +100,8 @@
                               IsReadOnly="False"
                               GridLinesVisibility="Horizontal"
                               SelectionMode="Single"
-                              HeadersVisibility="Column">
+                              HeadersVisibility="Column"
+                              ctrl:DataGridPersistence.GridId="ColonyStructures">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Structure" Binding="{Binding StructureName}" Width="180" IsReadOnly="True" />
                             <DataGridTextColumn Header="Type" Binding="{Binding StructureType}" Width="140" IsReadOnly="True" />
@@ -132,7 +134,8 @@
                               IsReadOnly="False"
                               GridLinesVisibility="Horizontal"
                               SelectionMode="Single"
-                              HeadersVisibility="Column">
+                              HeadersVisibility="Column"
+                              ctrl:DataGridPersistence.GridId="ColonyCommodities">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Commodity" Binding="{Binding CommodityName}" Width="180" IsReadOnly="True" />
                             <DataGridTextColumn Header="Requested" Binding="{Binding Requested}" Width="100" />
@@ -164,7 +167,8 @@
                               IsReadOnly="False"
                               GridLinesVisibility="Horizontal"
                               SelectionMode="Single"
-                              HeadersVisibility="Column">
+                              HeadersVisibility="Column"
+                              ctrl:DataGridPersistence.GridId="ColonyItems">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Item" Binding="{Binding ItemName}" Width="200" />
                             <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" Width="100" />
@@ -195,7 +199,8 @@
                               IsReadOnly="False"
                               GridLinesVisibility="Horizontal"
                               SelectionMode="Single"
-                              HeadersVisibility="Column">
+                              HeadersVisibility="Column"
+                              ctrl:DataGridPersistence.GridId="ColonyOverflow">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Resource" Binding="{Binding ResourceName}" Width="160" />
                             <DataGridTextColumn Header="Purity" Binding="{Binding Purity}" Width="100" />
