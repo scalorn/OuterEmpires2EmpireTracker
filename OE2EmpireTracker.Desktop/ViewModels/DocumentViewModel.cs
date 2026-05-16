@@ -23,6 +23,11 @@ public abstract class DocumentViewModel : Document
         {
             ((DocumentViewModel)r).OnPlayerChanged(m.playerUuid);
         });
+
+        WeakReferenceMessenger.Default.Register<RefreshRequestedMessage>(this, (r, _) =>
+        {
+            ((DocumentViewModel)r).RefreshData();
+        });
     }
 
     /// <summary>

@@ -79,6 +79,9 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
     [ObservableProperty]
     private string _computedPriceDisplay = string.Empty;
 
+    [ObservableProperty]
+    private bool _hasEvolutionData;
+
     public BlueprintViewModel()
     {
         Title = "Blueprints";
@@ -135,6 +138,7 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
         Stats.Clear();
         Resources.Clear();
         ComputedPriceDisplay = string.Empty;
+        HasEvolutionData = false;
 
         if (row is null)
         {
@@ -166,6 +170,7 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
         {
             LoadSampleStats(row.Name);
             LoadSampleResources(row.Name);
+            HasEvolutionData = true;
             return;
         }
 
@@ -198,6 +203,8 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
         {
             LoadSampleResources(row.Name);
         }
+
+        HasEvolutionData = Stats.Count > 0;
 
         UpdateComputedPrice(bp);
     }

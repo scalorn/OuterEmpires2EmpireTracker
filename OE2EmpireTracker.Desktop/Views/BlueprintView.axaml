@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             xmlns:sp="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
              x:Class="OE2EmpireTracker.Desktop.Views.BlueprintView"
              x:DataType="vm:BlueprintViewModel">
 
@@ -91,13 +92,20 @@
             </TabItem>
 
             <!-- Evolution Tab -->
+            <!-- NOTE: ScottPlot.Avalonia AvaPlot does not support MVVM binding.
+                 Chart rendering requires code-behind wiring during testing phase.
+                 The AvaPlot control is placed here; populate it in BlueprintView.axaml.cs
+                 by subscribing to DataContext/SelectedBlueprint changes. -->
             <TabItem Header="Evolution">
-                <StackPanel Margin="0,8,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="Evolution chart — ScottPlot integration pending"
-                               FontSize="16"
-                               Opacity="0.6"
+                <Grid Margin="0,8,0,0">
+                    <sp:AvaPlot x:Name="EvolutionPlot" />
+                    <TextBlock Text="Select a blueprint to view evolution chart"
+                               FontSize="14"
+                               Opacity="0.5"
+                               IsVisible="{Binding !HasEvolutionData}"
+                               VerticalAlignment="Center"
                                HorizontalAlignment="Center" />
-                </StackPanel>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>

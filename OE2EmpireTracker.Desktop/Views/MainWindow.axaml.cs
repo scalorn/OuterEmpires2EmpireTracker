@@ -1,10 +1,13 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OE2EmpireTracker.Desktop.Models;
 using OE2EmpireTracker.Desktop.Services;
+using OE2EmpireTracker.Desktop.ViewModels.Messages;
 
 namespace OE2EmpireTracker.Desktop.Views;
 
@@ -36,6 +39,17 @@ public partial class MainWindow : Window
         _lastNormalPosition = Position;
         _lastNormalWidth = Bounds.Width;
         _lastNormalHeight = Bounds.Height;
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if (e.Key == Key.F5)
+        {
+            WeakReferenceMessenger.Default.Send(new RefreshRequestedMessage());
+            e.Handled = true;
+        }
+
+        base.OnKeyDown(e);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -74,14 +88,34 @@ public partial class MainWindow : Window
 
         e.Cancel = true;
 
+        var result = await ShowUnsavedChangesDialog();
+
+        if (result == "Save")
+        {
+            dataService.WriteContext();
+            Close();
+        }
+        else if (result == "Discard")
+        {
+            dataService.IsDirty = false;
+            Close();
+        }
+
+        // "Cancel" — do nothing, stay open
+    }
+
+    private async System.Threading.Tasks.Task<string> ShowUnsavedChangesDialog()
+    {
         var dialog = new Window
         {
             Title = "Unsaved Changes",
-            Width = 380,
-            Height = 150,
+            Width = 400,
+            Height = 170,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
             CanResize = false,
         };
+
+        string dialogResult = "Cancel";
 
         var panel = new StackPanel
         {
@@ -91,7 +125,7 @@ public partial class MainWindow : Window
 
         panel.Children.Add(new TextBlock
         {
-            Text = "You have unsaved changes. Are you sure you want to exit?",
+            Text = "You have unsaved changes. What would you like to do?",
             TextWrapping = Avalonia.Media.TextWrapping.Wrap,
         });
 
@@ -102,23 +136,36 @@ public partial class MainWindow : Window
             Spacing = 8,
         };
 
-        var yesButton = new Button { Content = "Yes, Exit" };
-        var noButton = new Button { Content = "Cancel" };
+        var saveButton = new Button { Content = "Save" };
+        var discardButton = new Button { Content = "Discard" };
+        var cancelButton = new Button { Content = "Cancel" };
 
-        yesButton.Click += (_, _) => dialog.Close(true);
-        noButton.Click += (_, _) => dialog.Close(false);
+        saveButton.Click += (_, _) =>
+        {
+            dialogResult = "Save";
+            dialog.Close();
+        };
 
-        buttonPanel.Children.Add(yesButton);
-        buttonPanel.Children.Add(noButton);
+        discardButton.Click += (_, _) =>
+        {
+            dialogResult = "Discard";
+            dialog.Close();
+        };
+
+        cancelButton.Click += (_, _) =>
+        {
+            dialogResult = "Cancel";
+            dialog.Close();
+        };
+
+        buttonPanel.Children.Add(saveButton);
+        buttonPanel.Children.Add(discardButton);
+        buttonPanel.Children.Add(cancelButton);
         panel.Children.Add(buttonPanel);
         dialog.Content = panel;
 
-        var result = await dialog.ShowDialog<bool?>(this);
-        if (result == true)
-        {
-            dataService.IsDirty = false;
-            Close();
-        }
+        await dialog.ShowDialog(this);
+        return dialogResult;
     }
 
     private void OnWindowPositionChanged(object? sender, PixelPointEventArgs e)

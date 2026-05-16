@@ -47,3 +47,6 @@ public sealed record SupplyChainDataChangedMessage(string supplyChainUuid);
 
 /// <summary>Sent when contact (faction/character) data is modified.</summary>
 public sealed record ContactDataChangedMessage(string characterUuid);
+
+/// <summary>Sent when the user presses F5 to refresh the active view.</summary>
+public sealed record RefreshRequestedMessage;
