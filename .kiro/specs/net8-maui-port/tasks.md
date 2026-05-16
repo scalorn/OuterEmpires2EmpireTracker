@@ -1,6 +1,6 @@
 # .NET 8 + Avalonia Port — Task List (Updated)
 
-## Status: ~210/228 tasks complete (~92%)
+## Status: ~215/228 tasks complete (~94%)
 
 ## Status Key
 - [x] Complete
@@ -16,10 +16,10 @@
 - [x] A3.1-A3.7: Background Processing (timer, colony processing, events, persist, error handling, status bar)
 - [x] A3.8-A3.10: Advanced processing (overflow checks, supply chain thresholds, stock cascade — with TODOs for delivery generation)
 - [x] A4.1-A4.2, A4.5-A4.6: UI State (PreferencesStore, window position, bounds validation, dock layout)
-- [~] A4.3-A4.4: DataGrid column/filter persistence (GridStateService API done, per-view wiring deferred)
+- [x] A4.3-A4.4: DataGrid column/filter persistence (attached property behavior wired to 17 grids across 10 views)
 - [x] A5.1-A5.17: Service Layer (all 17 CRUD services)
 - [x] A6.1-A6.3, A6.5-A6.6: Parsers (ColonyParser, SurveyParser, BlueprintScanner, clipboard helper, SGML)
-- [~] A6.4: PlayerProfileParser (stub — needs game HTML samples)
+- [x] A6.4: PlayerProfileParser (full implementation ported from WinForms)
 - [x] A7.1-A7.6: Reference Counting (colony, blueprint, station, build plan, faction + delete protection)
 - [x] A8.1-A8.4: Validation (name, duplicate, positive, unsaved changes dialog)
 
@@ -67,12 +67,12 @@
 - [x] F4.1-F4.3: Clipboard import, asteroid auto-detection, max reserve extraction
 - [ ] F5.1-F5.3: Yield distribution chart (needs ScottPlot wiring)
 
-## Phase G: Player Profile — 85% COMPLETE
+## Phase G: Player Profile — COMPLETE
 
 - [x] G1-G3: List, detail, skill groups with checkboxes
 - [x] G4: Skill group display (grouped ItemsControl with 10 groups)
 - [x] G5, G7: CRUD, events
-- [ ] G6: Profile HTML import (stub — needs game HTML samples)
+- [x] G6: Profile HTML import (full parser ported from WinForms)
 
 ## Phase H: Delivery — 90% COMPLETE
 
@@ -137,14 +137,12 @@
 
 ---
 
-## Remaining Items (~18 tasks):
+## Remaining Items (~13 tasks):
 
 1. D6.4-D6.5: Manufacturing reconciliation + miner/refinery setup after import
 2. E5.1: ScottPlot evolution chart code-behind wiring
 3. F5.1-F5.3: Yield distribution chart (ScottPlot + YieldDistributionService)
-4. G6: Player profile HTML import (needs game HTML samples)
-5. H2.4: Delivery auto-fill dialog
-6. P3-P7: Systems detail/editing (needs SystemData.json loading)
-7. S5: Help internal link navigation (needs HTML rendering)
-8. T5-T8: Platform testing (requires user's Linux machines)
-9. A4.3-A4.4: Per-view DataGrid column/filter wiring
+4. H2.4: Delivery auto-fill dialog
+5. P3-P7: Systems detail/editing (needs SystemData.json loading)
+6. S5: Help internal link navigation (needs HTML rendering)
+7. T5-T8: Platform testing (requires user's Linux machines)
