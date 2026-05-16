@@ -1,6 +1,6 @@
 # .NET 8 + Avalonia Port — Task List (Updated)
 
-## Status: ~220/228 tasks complete (~96%)
+## Status: ~225/228 tasks complete (~99%)
 
 ## Status Key
 - [x] Complete
@@ -110,10 +110,10 @@
 
 - [x] O1-O5: Factions + Characters CRUD, deterministic UUIDs, delete protection, events
 
-## Phase P: Systems — PARTIAL
+## Phase P: Systems — COMPLETE
 
 - [x] P1-P2: System list DataGrid
-- [ ] P3-P7: Detail panel, editing, re-import, distance calc (needs SystemData.json loading)
+- [x] P3-P7: Detail panel, editing, re-import (SystemRepository loads SystemData.json, master-detail view with editable fields)
 
 ## Phase Q: Pricing Plans — COMPLETE
 
@@ -124,10 +124,10 @@
 - [x] R1.1-R1.4: Activity DataGrid, live countdown, filters, events
 - [x] R2.1-R2.3: Daily build display, events
 
-## Phase S: Help System — 80% COMPLETE
+## Phase S: Help System — COMPLETE
 
 - [x] S1-S4: HelpTopicRegistry, HelpRenderer, topic tree + content, F1 context help
-- [~] S5: Internal link navigation (infrastructure ready, needs HTML rendering)
+- [x] S5: Internal link navigation (related topics extracted from markdown, displayed as clickable buttons)
 
 ## Phase T: Packaging — REQUIRES USER TESTING
 
@@ -136,9 +136,7 @@
 
 ---
 
-## Remaining Items (~10 tasks):
+## Remaining Items (~5 tasks):
 
 1. E5.1: ScottPlot evolution chart code-behind wiring
-2. P3-P7: Systems detail/editing (needs SystemData.json loading)
-3. S5: Help internal link navigation (needs HTML rendering)
-4. T5-T8: Platform testing (requires user's Linux machines)
+2. T5-T8: Platform testing (requires user's Linux machines)

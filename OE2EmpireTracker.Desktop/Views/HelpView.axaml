@@ -33,13 +33,46 @@
                       Background="Transparent" />
 
         <!-- Content Area -->
-        <ScrollViewer Grid.Column="2" Padding="24,12">
-            <TextBlock Text="{Binding Content}"
-                       TextWrapping="Wrap"
-                       FontSize="14"
-                       FontFamily="Consolas, Courier New, monospace"
-                       MaxWidth="800" />
-        </ScrollViewer>
+        <DockPanel Grid.Column="2">
+            <!-- Related Topics (bottom) -->
+            <Border DockPanel.Dock="Bottom"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                    BorderThickness="0,1,0,0"
+                    Padding="24,8"
+                    IsVisible="{Binding RelatedTopics.Count}">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Related Topics"
+                               FontWeight="SemiBold"
+                               FontSize="12" />
+                    <ItemsControl ItemsSource="{Binding RelatedTopics}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:RelatedTopicItem">
+                                <Button Content="{Binding DisplayName}"
+                                        Command="{Binding $parent[UserControl].((vm:HelpViewModel)DataContext).NavigateLinkCommand}"
+                                        CommandParameter="{Binding FileName}"
+                                        Margin="0,0,8,4"
+                                        Padding="8,4"
+                                        FontSize="12" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Markdown content -->
+            <ScrollViewer Padding="24,12">
+                <TextBlock Text="{Binding Content}"
+                           TextWrapping="Wrap"
+                           FontSize="14"
+                           FontFamily="Consolas, Courier New, monospace"
+                           MaxWidth="800" />
+            </ScrollViewer>
+        </DockPanel>
     </Grid>
 
 </UserControl>
