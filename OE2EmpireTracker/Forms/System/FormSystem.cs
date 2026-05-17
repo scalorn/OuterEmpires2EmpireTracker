@@ -285,7 +285,7 @@ namespace OE2EmpireTracker.Forms
             if (!System.IO.File.Exists(sourcePath))
             {
                 string exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                string candidate = System.IO.Path.Combine(exeDir, "..", "..", "..", "..", sourcePath);
+                string candidate = System.IO.Path.Combine(exeDir, "..", "..", "..", sourcePath);
                 if (System.IO.File.Exists(candidate))
                 {
                     sourcePath = candidate;
