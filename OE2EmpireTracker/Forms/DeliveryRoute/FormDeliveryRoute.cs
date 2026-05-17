@@ -522,16 +522,33 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 if (!string.IsNullOrEmpty(previousSystemName) && !string.IsNullOrEmpty(systemName))
                 {
                     var repo = EmpireContext.GetInstance().SystemRepository;
-                    var fromSystem = repo.FindByName(previousSystemName);
-                    var toSystem = repo.FindByName(systemName);
-                    if (fromSystem != null && toSystem != null)
+                    if (repo == null || repo.Count == 0)
                     {
-                        int jas = DistanceCalculator.CalculateJas(fromSystem, toSystem);
-                        if (jas >= 0)
+                        Log.Debug("JAS calc: SystemRepository is null or empty");
+                    }
+                    else
+                    {
+                        var fromSystem = repo.FindByName(previousSystemName);
+                        var toSystem = repo.FindByName(systemName);
+                        Log.Debug(
+                            "JAS calc: from='{0}' ({1}) to='{2}' ({3})",
+                            previousSystemName,
+                            fromSystem != null ? "found" : "NOT FOUND",
+                            systemName,
+                            toSystem != null ? "found" : "NOT FOUND");
+                        if (fromSystem != null && toSystem != null)
                         {
-                            jasStr = jas.ToString();
+                            int jas = DistanceCalculator.CalculateJas(fromSystem, toSystem);
+                            jasStr = jas >= 0 ? jas.ToString() : string.Empty;
                         }
                     }
+                }
+                else
+                {
+                    Log.Debug(
+                        "JAS calc: skipped — prev='{0}' curr='{1}'",
+                        previousSystemName ?? "(null)",
+                        systemName);
                 }
 
                 previousSystemName = systemName;
