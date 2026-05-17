@@ -275,7 +275,7 @@
 
     <Compile Include="Services\HelpRenderer.cs" />
 
-    <Compile Include="Services\TabWarningService.cs" />
+
 
 
     <Compile Include="Persistence\BoundsValidator.cs" />
