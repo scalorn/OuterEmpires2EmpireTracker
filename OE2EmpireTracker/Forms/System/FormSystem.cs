@@ -280,6 +280,18 @@ namespace OE2EmpireTracker.Forms
             }
 
             string sourcePath = "oe2-galaxy-systems.json";
+
+            // Resolve relative to exe directory first, then try solution root
+            if (!System.IO.File.Exists(sourcePath))
+            {
+                string exeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string candidate = System.IO.Path.Combine(exeDir, "..", "..", "..", "..", sourcePath);
+                if (System.IO.File.Exists(candidate))
+                {
+                    sourcePath = candidate;
+                }
+            }
+
             string outputPath = SystemRepository.FilePath;
 
             int count = SystemImporter.Import(sourcePath, outputPath);
