@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using OE2EmpireTracker.Desktop.Parsers;
 using OE2EmpireTracker.Desktop.Services;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
 
@@ -54,7 +54,7 @@ public sealed partial class SurveyViewModel : DocumentViewModel
     private string _importStatus = string.Empty;
 
     [ObservableProperty]
-    private YieldDistributionService.ResourcePurityCombo? _selectedCombo;
+    private ResourcePurityCombo? _selectedCombo;
 
     public SurveyViewModel()
     {
@@ -66,9 +66,9 @@ public sealed partial class SurveyViewModel : DocumentViewModel
 
     public ObservableCollection<SurveyResourceRowViewModel> Resources { get; } = new ObservableCollection<SurveyResourceRowViewModel>();
 
-    public ObservableCollection<YieldDistributionService.ResourcePurityCombo> AvailableCombos { get; } = new ObservableCollection<YieldDistributionService.ResourcePurityCombo>();
+    public ObservableCollection<ResourcePurityCombo> AvailableCombos { get; } = new ObservableCollection<ResourcePurityCombo>();
 
-    public ObservableCollection<YieldDistributionService.DistributionPoint> DistributionPoints { get; } = new ObservableCollection<YieldDistributionService.DistributionPoint>();
+    public ObservableCollection<DistributionPoint> DistributionPoints { get; } = new ObservableCollection<DistributionPoint>();
 
     /// <summary>
     /// Imports survey data from the clipboard HTML and adds a new survey.
@@ -78,9 +78,8 @@ public sealed partial class SurveyViewModel : DocumentViewModel
     {
         var clipboardService = App.Services?.GetService(typeof(IClipboardService)) as IClipboardService;
         var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
-        var loggerFactory = App.Services?.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
 
-        if (clipboardService is null || dataService is null || loggerFactory is null)
+        if (clipboardService is null || dataService is null)
         {
             ImportStatus = "Services not available";
             return;
@@ -100,9 +99,10 @@ public sealed partial class SurveyViewModel : DocumentViewModel
             return;
         }
 
-        var parser = new SurveyParser(loggerFactory.CreateLogger<SurveyParser>());
-        var survey = parser.ParseSurveyHtml(fragment);
-        if (survey is null)
+        var survey = new Survey(string.Empty);
+        var parser = new SurveyParser();
+        parser.ProcessHtml(survey, fragment);
+        if (survey.Resources.Count == 0 && string.IsNullOrEmpty(survey.PlanetName))
         {
             ImportStatus = "Failed to parse survey HTML";
             return;
@@ -133,7 +133,7 @@ public sealed partial class SurveyViewModel : DocumentViewModel
         LoadResourcesForSurvey(value);
     }
 
-    partial void OnSelectedComboChanged(YieldDistributionService.ResourcePurityCombo? value)
+    partial void OnSelectedComboChanged(ResourcePurityCombo? value)
     {
         UpdateDistributionPoints();
     }
@@ -153,8 +153,9 @@ public sealed partial class SurveyViewModel : DocumentViewModel
             return;
         }
 
-        var result = YieldDistributionService.ComputeDistribution(
-            dataService.Surveys, SelectedCombo.ResourceName, SelectedCombo.Purity);
+        var readOnlySurveys = dataService.Surveys.Select(s => new ReadOnlySurvey(s)).ToList();
+        var result = OE2EmpireTracker.Services.YieldDistributionService.ComputeDistribution(
+            readOnlySurveys, SelectedCombo.ResourceName, SelectedCombo.Purity, 10);
 
         if (result.InsufficientData)
         {
@@ -177,7 +178,8 @@ public sealed partial class SurveyViewModel : DocumentViewModel
             return;
         }
 
-        var combos = YieldDistributionService.GetAvailableCombos(dataService.Surveys);
+        var readOnlySurveys = dataService.Surveys.Select(s => new ReadOnlySurvey(s)).ToList();
+        var combos = OE2EmpireTracker.Services.YieldDistributionService.GetAvailableCombos(readOnlySurveys);
         foreach (var combo in combos)
         {
             AvailableCombos.Add(combo);

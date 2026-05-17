@@ -15,10 +15,10 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OE2EmpireTracker.Constants;
-using OE2EmpireTracker.Desktop.Parsers;
 using OE2EmpireTracker.Desktop.Services;
 using OE2EmpireTracker.Desktop.ViewModels.Messages;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
 
@@ -783,9 +783,8 @@ public sealed partial class ColonyViewModel : DocumentViewModel
 
         var clipboardService = App.Services?.GetService(typeof(IClipboardService)) as IClipboardService;
         var dataService2 = App.Services?.GetService(typeof(DataService)) as DataService;
-        var loggerFactory = App.Services?.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
 
-        if (clipboardService is null || dataService2 is null || loggerFactory is null)
+        if (clipboardService is null || dataService2 is null)
         {
             ImportStatus = "Services not available";
             return;
@@ -813,8 +812,8 @@ public sealed partial class ColonyViewModel : DocumentViewModel
             return;
         }
 
-        var parser = new ColonyParser(loggerFactory.CreateLogger<ColonyParser>());
-        parser.ProcessHtml(colony, fragment, dataService2);
+        var parser = new ColonyParser();
+        parser.ProcessHtml(colony, fragment, null);
 
         colony.LastImportDateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
         dataService2.IsDirty = true;
@@ -885,9 +884,8 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         }
 
         var dataService2 = App.Services?.GetService(typeof(DataService)) as DataService;
-        var loggerFactory = App.Services?.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
 
-        if (dataService2 is null || loggerFactory is null)
+        if (dataService2 is null)
         {
             ImportStatus = "Services not available";
             return;
@@ -901,8 +899,8 @@ public sealed partial class ColonyViewModel : DocumentViewModel
             return;
         }
 
-        var parser = new ColonyParser(loggerFactory.CreateLogger<ColonyParser>());
-        parser.ProcessHtml(colony, html, dataService2);
+        var parser = new ColonyParser();
+        parser.ProcessHtml(colony, html, null);
 
         colony.LastImportDateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
         dataService2.IsDirty = true;

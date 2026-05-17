@@ -18,16 +18,14 @@ public sealed class DataService
 {
     private readonly IFileSystemService _fileSystem;
     private readonly ILogger<DataService> _logger;
-    private readonly SafeFileWriter _safeFileWriter;
 
     private PlayerRoot? _playerRoot;
     private BaselineRoot? _baselineRoot;
 
-    public DataService(IFileSystemService fileSystem, ILogger<DataService> logger, SafeFileWriter safeFileWriter)
+    public DataService(IFileSystemService fileSystem, ILogger<DataService> logger)
     {
         _fileSystem = fileSystem;
         _logger = logger;
-        _safeFileWriter = safeFileWriter;
     }
 
     /// <summary>Gets or sets the path the current data was loaded from (or saved to).</summary>
@@ -271,14 +269,18 @@ public sealed class DataService
         }
 
         var json = JsonConvert.SerializeObject(_playerRoot, Formatting.Indented);
-        var success = _safeFileWriter.WriteAllText(CurrentFilePath, json);
-        if (success)
+        try
         {
+            OE2EmpireTracker.Persistence.SafeFileWriter.WriteAllText(CurrentFilePath, json);
             IsDirty = false;
             _logger.LogInformation("WriteContext completed to {Path}", CurrentFilePath);
+            return true;
         }
-
-        return success;
+        catch (System.IO.IOException ex)
+        {
+            _logger.LogError(ex, "WriteContext failed for {Path}", CurrentFilePath);
+            return false;
+        }
     }
 
     /// <summary>

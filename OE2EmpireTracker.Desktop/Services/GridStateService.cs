@@ -17,7 +17,6 @@ public sealed class GridStateService
     private const string FilterFileName = "FilterState.json";
 
     private readonly IFileSystemService _fileSystem;
-    private readonly SafeFileWriter _safeFileWriter;
     private readonly ILogger<GridStateService> _logger;
 
     private Dictionary<string, Dictionary<string, double>> _state;
@@ -25,11 +24,9 @@ public sealed class GridStateService
 
     public GridStateService(
         IFileSystemService fileSystem,
-        SafeFileWriter safeFileWriter,
         ILogger<GridStateService> logger)
     {
         _fileSystem = fileSystem;
-        _safeFileWriter = safeFileWriter;
         _logger = logger;
         _state = new Dictionary<string, Dictionary<string, double>>();
         _filterState = new Dictionary<string, Dictionary<string, string>>();
@@ -89,7 +86,7 @@ public sealed class GridStateService
         {
             var path = GetFilePath();
             var json = JsonConvert.SerializeObject(_state, Formatting.Indented);
-            _safeFileWriter.WriteAllText(path, json);
+            OE2EmpireTracker.Persistence.SafeFileWriter.WriteAllText(path, json);
             _logger.LogDebug("Saved grid state to {Path}", path);
         }
         catch (Exception ex)
@@ -138,7 +135,7 @@ public sealed class GridStateService
         {
             var path = GetFilterFilePath();
             var json = JsonConvert.SerializeObject(_filterState, Formatting.Indented);
-            _safeFileWriter.WriteAllText(path, json);
+            OE2EmpireTracker.Persistence.SafeFileWriter.WriteAllText(path, json);
             _logger.LogDebug("Saved filter state to {Path}", path);
         }
         catch (Exception ex)

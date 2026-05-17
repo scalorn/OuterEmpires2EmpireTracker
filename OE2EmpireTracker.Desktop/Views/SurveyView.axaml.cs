@@ -58,8 +58,8 @@ public partial class SurveyView : UserControl
         }
 
         // Build bar chart data
-        double[] positions = points.Select(p => p.BinMidpoint).ToArray();
-        double[] values = points.Select(p => p.Percentage).ToArray();
+        double[] positions = points.Select(p => (double)p.BinMidpoint).ToArray();
+        double[] values = points.Select(p => (double)p.Percentage).ToArray();
 
         var bars = plot.Plot.Add.Bars(positions, values);
         bars.LegendText = $"{vm.SelectedCombo.ResourceName} ({vm.SelectedCombo.Purity})";

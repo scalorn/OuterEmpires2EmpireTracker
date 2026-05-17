@@ -113,7 +113,6 @@ public partial class App : Application
         // Platform services
         services.AddSingleton<IFileSystemService>(fileSystem);
         services.AddSingleton<IClipboardService, ClipboardService>();
-        services.AddSingleton<SafeFileWriter>();
         services.AddSingleton<AppConfigService>();
         services.AddSingleton<PreferencesStore>();
         services.AddSingleton<GridStateService>();
@@ -132,7 +131,6 @@ public partial class App : Application
         services.AddSingleton<DeliveryRouteService>();
         services.AddSingleton<DeliveryPlanService>();
         services.AddSingleton<PricingPlanService>();
-        services.AddSingleton<PriceCalculator>();
         services.AddSingleton<BuildPlanService>();
         services.AddSingleton<MarketService>();
         services.AddSingleton<StationService>();
@@ -142,7 +140,7 @@ public partial class App : Application
         services.AddSingleton<SupplyChainService>();
         services.AddSingleton<ContactsService>();
         services.AddSingleton<AsteroidService>();
-        services.AddSingleton<SystemRepository>();
+        services.AddSingleton<OE2EmpireTracker.Services.SystemRepository>();
         services.AddSingleton<ReferenceCountService>();
         services.AddSingleton<ValidationService>();
 

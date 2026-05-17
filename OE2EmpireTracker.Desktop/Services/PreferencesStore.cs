@@ -9,7 +9,7 @@ namespace OE2EmpireTracker.Desktop.Services;
 /// <summary>
 /// Loads and saves <see cref="ThresholdPreferences"/> and <see cref="SavedWindowState"/>
 /// from UIPreferences.json.
-/// Uses <see cref="SafeFileWriter"/> for atomic writes.
+/// Uses <see cref="OE2EmpireTracker.Persistence.SafeFileWriter"/> for atomic writes.
 /// If the file is missing or malformed, defaults are used.
 /// </summary>
 public sealed class PreferencesStore
@@ -17,7 +17,6 @@ public sealed class PreferencesStore
     private const string PreferencesFileName = "UIPreferences.json";
 
     private readonly IFileSystemService _fileSystem;
-    private readonly SafeFileWriter _safeFileWriter;
     private readonly ILogger<PreferencesStore> _logger;
 
     private ThresholdPreferences _thresholds;
@@ -25,11 +24,9 @@ public sealed class PreferencesStore
 
     public PreferencesStore(
         IFileSystemService fileSystem,
-        SafeFileWriter safeFileWriter,
         ILogger<PreferencesStore> logger)
     {
         _fileSystem = fileSystem;
-        _safeFileWriter = safeFileWriter;
         _logger = logger;
         _thresholds = new ThresholdPreferences();
         _windowState = new SavedWindowState();
@@ -73,7 +70,7 @@ public sealed class PreferencesStore
                 WindowState = _windowState,
             };
             var json = JsonConvert.SerializeObject(wrapper, Formatting.Indented);
-            _safeFileWriter.WriteAllText(path, json);
+            OE2EmpireTracker.Persistence.SafeFileWriter.WriteAllText(path, json);
             _logger.LogDebug("Saved preferences to {Path}", path);
         }
         catch (Exception ex)

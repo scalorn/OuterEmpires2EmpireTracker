@@ -18,6 +18,26 @@ namespace OE2EmpireTracker.Parsers
         };
 
         /// <summary>
+        /// Formats a duration in seconds to "Xd Yh Zm Ws" format.
+        /// </summary>
+        /// <param name="totalSeconds">The total seconds to format. Must be non-negative.</param>
+        /// <returns>A formatted string like "2d 0h 0m 0s".</returns>
+        public static string FormatSeconds(long totalSeconds)
+        {
+            if (totalSeconds < 0)
+                throw new ArgumentOutOfRangeException(nameof(totalSeconds), "Value must be non-negative.");
+
+            long days = totalSeconds / 86400;
+            long remainder = totalSeconds % 86400;
+            long hours = remainder / 3600;
+            remainder %= 3600;
+            long minutes = remainder / 60;
+            long seconds = remainder % 60;
+
+            return string.Format("{0}d {1}h {2}m {3}s", days, hours, minutes, seconds);
+        }
+
+        /// <summary>
         /// Attempts to parse a countdown format string into total seconds.
         /// Accepts space-separated tokens with unit suffixes (d, h, m, s),
         /// partial formats, any order, no duplicate units.

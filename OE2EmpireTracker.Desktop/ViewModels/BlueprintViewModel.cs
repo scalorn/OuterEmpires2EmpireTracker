@@ -211,21 +211,23 @@ public sealed partial class BlueprintViewModel : DocumentViewModel
 
     private void UpdateComputedPrice(Blueprint bp)
     {
-        var calculator = App.Services?.GetService(typeof(PriceCalculator)) as PriceCalculator;
-        if (calculator is null)
+        var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+        if (dataService is null || !dataService.IsLoaded)
         {
             ComputedPriceDisplay = string.Empty;
             return;
         }
 
-        var plan = calculator.GetFirstPlanForCurrentPlayer();
+        var plan = dataService.PricingPlans
+            .FirstOrDefault(p => p.OwnerUUID == dataService.CurrentPlayerUUID);
         if (plan is null)
         {
             ComputedPriceDisplay = string.Empty;
             return;
         }
 
-        var result = calculator.ComputeBlueprintPrice(bp, plan, 0m);
+        var readOnly = new ReadOnlyBlueprint(bp);
+        var result = OE2EmpireTracker.Services.PriceCalculator.ComputeBlueprintPrice(plan, readOnly, 0m);
         if (result.IsComplete)
         {
             ComputedPriceDisplay = $"{result.Price:N2} credits";

@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OE2EmpireTracker.Desktop.Services;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
 
@@ -155,11 +156,22 @@ public sealed partial class SystemListViewModel : DocumentViewModel
             return;
         }
 
-        var success = repo.UpdateSystem(
-            SelectedSystem.Id,
-            EditFactionName,
-            EditHasSpaceport,
-            EditHasStarbase);
+        var success = true;
+        try
+        {
+            repo.UpdateSystem(
+                SelectedSystem.Id,
+                s =>
+                {
+                    s.FactionName = EditFactionName;
+                    s.HasSpaceport = EditHasSpaceport;
+                    s.HasStarbase = EditHasStarbase;
+                });
+        }
+        catch
+        {
+            success = false;
+        }
 
         if (success)
         {
@@ -217,7 +229,7 @@ public sealed partial class SystemListViewModel : DocumentViewModel
             return;
         }
 
-        var count = repo.ImportFromGalaxyFile(filePath);
+        var count = ImportGalaxyFile(repo, filePath);
         if (count >= 0)
         {
             StatusMessage = $"Imported {count:N0} systems from galaxy file";
@@ -235,13 +247,27 @@ public sealed partial class SystemListViewModel : DocumentViewModel
         Systems.Clear();
 
         var repo = App.Services?.GetService<SystemRepository>();
-        if (repo is null || !repo.IsLoaded)
+        if (repo is null || repo.Count == 0)
         {
-            // Try to load
-            repo?.Load();
+            // Try to load from known path
+            var dataService = App.Services?.GetService(typeof(DataService)) as DataService;
+            string? dir = null;
+            if (!string.IsNullOrEmpty(dataService?.CurrentFilePath))
+            {
+                dir = System.IO.Path.GetDirectoryName(dataService.CurrentFilePath);
+            }
+
+            if (dir is not null)
+            {
+                var systemPath = System.IO.Path.Combine(dir, "SystemData.json");
+                if (System.IO.File.Exists(systemPath))
+                {
+                    repo?.Load(systemPath);
+                }
+            }
         }
 
-        if (repo is null || !repo.IsLoaded)
+        if (repo is null || repo.Count == 0)
         {
             StatusMessage = "No system data loaded";
             return;
@@ -256,7 +282,7 @@ public sealed partial class SystemListViewModel : DocumentViewModel
         Systems.Clear();
 
         var repo = App.Services?.GetService<SystemRepository>();
-        if (repo is null || !repo.IsLoaded)
+        if (repo is null || repo.Count == 0)
         {
             return;
         }
@@ -292,5 +318,94 @@ public sealed partial class SystemListViewModel : DocumentViewModel
                 HasStarbase = s.HasStarbase,
             });
         }
+    }
+
+    private int ImportGalaxyFile(SystemRepository repo, string sourcePath)
+    {
+        try
+        {
+            var json = System.IO.File.ReadAllText(sourcePath);
+            var rawSystems = Newtonsoft.Json.JsonConvert.DeserializeObject<
+                System.Collections.Generic.List<GalaxyImportEntry>>(json);
+            if (rawSystems is null)
+            {
+                return -1;
+            }
+
+            var systems = rawSystems.Select(r => new StarSystem
+            {
+                Id = r.Id,
+                Name = r.Name,
+                X = r.X,
+                Y = r.Y,
+                Quadrant = r.Quadrant,
+                Sector = r.Sector,
+                Region = r.Region,
+                Locality = r.Locality,
+                SpectralClass = r.SpectralClass,
+                FactionId = r.FactionId,
+                FactionName = r.FactionName,
+                FactionColor = r.FactionColor,
+                HasOrbital = r.Orbital != 0,
+                HasSpaceport = r.Spaceport != 0,
+                HasStarbase = r.Starbase != 0,
+            }).ToList();
+
+            repo.ReplaceAll(systems);
+            return systems.Count;
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Failed to import galaxy data from {Path}", sourcePath);
+            return -1;
+        }
+    }
+
+    private sealed class GalaxyImportEntry
+    {
+        [Newtonsoft.Json.JsonProperty("id")]
+        public int Id { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("n")]
+        public string Name { get; set; } = string.Empty;
+
+        [Newtonsoft.Json.JsonProperty("x")]
+        public decimal X { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("y")]
+        public decimal Y { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("q")]
+        public int Quadrant { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("s")]
+        public int Sector { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("r")]
+        public int Region { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("l")]
+        public int Locality { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("st")]
+        public string SpectralClass { get; set; } = string.Empty;
+
+        [Newtonsoft.Json.JsonProperty("fid")]
+        public int FactionId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("fn")]
+        public string FactionName { get; set; } = string.Empty;
+
+        [Newtonsoft.Json.JsonProperty("fc")]
+        public string FactionColor { get; set; } = string.Empty;
+
+        [Newtonsoft.Json.JsonProperty("o")]
+        public int Orbital { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("sp")]
+        public int Spaceport { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("sb")]
+        public int Starbase { get; set; }
     }
 }

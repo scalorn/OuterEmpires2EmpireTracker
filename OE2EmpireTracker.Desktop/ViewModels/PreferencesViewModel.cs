@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using OE2EmpireTracker.Desktop.Models;
 using OE2EmpireTracker.Desktop.Services;
+using OE2EmpireTracker.Parsers;
 
 namespace OE2EmpireTracker.Desktop.ViewModels;
 
