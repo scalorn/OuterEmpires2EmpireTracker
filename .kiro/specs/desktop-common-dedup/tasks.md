@@ -79,11 +79,22 @@ All 4 parsers (BlueprintScanner, ColonyParser, PlayerProfileParser, SurveyParser
 - [ ] 2.5 Delete Desktop/Services/SystemRepository.cs
 - [ ] 2.6 Fix callers to use Common types directly
 
-### Phase 3: CRUD services (needs adapter pattern)
-- [ ] 3.1 Design adapter pattern: Desktop service wraps Common service + adds save/notify
-- [ ] 3.2 Refactor BlueprintService as pilot (most complex, validates the pattern)
-- [ ] 3.3 Apply pattern to remaining 15 CRUD services
-- [ ] 3.4 Remove duplicated logic from Desktop services (keep only adapter code)
+### Phase 3: CRUD services — DEFERRED (not true duplicates)
+
+Analysis revealed these Desktop services are NOT duplicating Common's logic. They're thin
+CRUD wrappers around Desktop's `DataService` (the Avalonia data layer), while Common's
+services operate on `PlayerContext`/`EmpireContext` singletons. They do the same thing
+conceptually but against different data stores.
+
+To truly unify them would require either:
+- Making Desktop use PlayerContext/EmpireContext (abandon DataService) — huge rewrite
+- Making Common services accept an interface for data access — significant refactor
+
+Neither is worth doing now. The real shared logic (parsing, calculations, validation,
+background processing) is already in Common. These 60-130 line CRUD wrappers are
+platform-specific and should stay.
+
+**Status: Deferred — not cost-effective to unify at this time.**
 
 ### Phase 4: Cleanup
 - [ ] 4.1 Remove any dead code / unused usings
