@@ -12,8 +12,9 @@ MDI child form. Left-list / right-detail with tabbed stops and plan management.
 │                      │                                                             │
 │ ┌──────────────────┐ │ ┌─ Stops ─┬─ Plan ──────────────────────────────────────┐   │
 │ │▸ Main Supply Run │ │ │                                                       │   │
-│ │  Fuel Circuit    │ │ │ ┌──┬────────┬─────────────┬────────┬────────┬────────┐│   │
-│ │  Ore Haul        │ │ │ │# │ Type   │ Destination │ Planet │ System │Fuel Est││   │
+│ │  Fuel Circuit    │ │ │ Ship: [Service Shuttle          ▼]                    │   │
+│ │  Ore Haul        │ │ │ ┌──┬────────┬─────────────┬────────┬────────┬────────┐│   │
+│ │                  │ │ │ │# │ Type   │ Destination │ Planet │ System │Fuel Est││   │
 │ │                  │ │ │ ├──┼────────┼─────────────┼────────┼────────┼────────┤│   │
 │ │                  │ │ │ │1 │ Colony │ Alpha Prime │ Kepler │ K-442  │   12   ││   │
 │ │                  │ │ │ │2 │ Colony │ Beta Colony │ Sol-3  │ Sol    │    8   ││   │
@@ -60,6 +61,7 @@ Controls:
 - Left: `flpSearchList` → `txtRouteFilter` (ValidatedTextBox) + `lvwRoutes` (ListView)
 - Right: `flpRouteData` (top-down) → `txtRouteName` (ValidatedTextBox), `tabRouteDetail` (TabControl)
   - Stops tab: `dgvStops` (DataGridView, read-only) with columns: Sequence, DestType, ColonyName, PlanetName, SystemName, Purpose, FuelEstimate
+    - `flpShipPicker`: `lblShip` + `cmbShip` (FilteredTextComboSet — ship selection for fuel estimate calculation)
     - `flpAddStop`: `cmbDestType`, `cmbStopPurpose`, `cmbColony` (FilteredTextComboSet — inline filter for destination selection), `cmdAddStop`, `cmdUp`/`cmdDown`, `cmdRemoveStop`, `chkPreventDuplicates`
   - Plan tab: `flpPlanContent` (top-down)
     - `flpPlanSelector`: `chkShowCompleted`, `txtPlanFilter`, `cmbPlan`, `cmdNewPlan`, `cmdDeletePlan`, `cmdExecutePlan`, `cmdAutoFill`

@@ -37,6 +37,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         /// <summary>Parallel list of destination UUIDs matching cmbColony display items, for lookup via SelectedFullIndex.</summary>
         private List<string> _colonyPickerUUIDs = new List<string>();
 
+        /// <summary>Parallel list of ship UUIDs matching cmbShip display items.</summary>
+        private List<string> _shipPickerUUIDs = new List<string>();
+
+        private decimal _selectedShipFuelPerJAS = 0m;
+
         public FormDeliveryRoute()
         {
             // Guard against WindowStateHelper.RestoreState setting control values
@@ -63,6 +68,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulateDestTypePicker();
             PopulateStopPurposePicker();
             PopulateColonyPicker();
+            PopulateShipPicker();
+            cmbShip.SelectedItemChanged += CmbShip_SelectedIndexChanged;
             cmbDestType.SelectedIndexChanged += (s, ev) => PopulateColonyPicker();
 
             cmdAddStop.Click += CmdAddStop_Click;
@@ -449,6 +456,52 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             Log.Info("PERF PopulateColonyPicker: {0}ms", sw.ElapsedMilliseconds);
         }
 
+        private void PopulateShipPicker()
+        {
+            var sw = Stopwatch.StartNew();
+            var ships = playerContext.ShipList.ToList();
+            _shipPickerUUIDs = ships.Select(s => s.UUID).ToList();
+            var displayNames = ships.Select(s => s.Name).ToList();
+            cmbShip.SetItems(displayNames, string.Empty);
+            sw.Stop();
+            Log.Info("PERF PopulateShipPicker: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void CmbShip_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+
+            int idx = cmbShip.SelectedFullIndex;
+            if (idx < 0 || idx >= _shipPickerUUIDs.Count)
+            {
+                _selectedShipFuelPerJAS = 0m;
+                PopulateStopsGrid();
+                return;
+            }
+
+            string shipUUID = _shipPickerUUIDs[idx];
+            var ship = playerContext.FindShip(shipUUID);
+            if (ship == null)
+            {
+                _selectedShipFuelPerJAS = 0m;
+                PopulateStopsGrid();
+                return;
+            }
+
+            var hullBp = playerContext.FindBlueprint(ship.HullBlueprintUUID);
+            if (hullBp == null)
+            {
+                _selectedShipFuelPerJAS = 0m;
+                PopulateStopsGrid();
+                return;
+            }
+
+            var stats = ShipBuildService.ComputeStats(hullBp, ship.Components, uuid => playerContext.FindBlueprint(uuid));
+            _selectedShipFuelPerJAS = stats.JumpFuelPerJAS;
+            Log.Info("Ship selected: {0}, JumpFuelPerJAS={1}", ship.Name, _selectedShipFuelPerJAS);
+            PopulateStopsGrid();
+        }
+
         /// <summary>
         /// Resolves a display name for a route stop based on its destination type.
         /// </summary>
@@ -553,7 +606,14 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
 
                 previousSystemName = systemName;
 
-                string fuelStr = stop.FuelEstimate > 0 ? stop.FuelEstimate.ToString("N1") : string.Empty;
+                string fuelStr = string.Empty;
+                if (_selectedShipFuelPerJAS > 0 && !string.IsNullOrEmpty(jasStr))
+                {
+                    int jasValue = int.Parse(jasStr);
+                    decimal fuel = _selectedShipFuelPerJAS * jasValue;
+                    fuelStr = fuel.ToString("N1");
+                }
+
                 int rowIndex = dgvStops.Rows.Add(
                     stop.Sequence + 1,
                     destTypeStr,
