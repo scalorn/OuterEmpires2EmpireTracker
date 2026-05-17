@@ -460,6 +460,36 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Fixes up game data quirks in flatpack blueprint properties.
+        /// Reactor Core: "Power Required" is actually "Power Provided" in the game UI.
+        /// </summary>
+        internal static void FixupFlatpackProperties(Blueprint blueprint)
+        {
+            if (blueprint == null || string.IsNullOrEmpty(blueprint.BluePrintType))
+                return;
+
+            if (blueprint.BluePrintType == "Flatpacks/ReactorCore")
+            {
+                string powerValue;
+                if (blueprint.Properties.GetString(GameConstants.PropPowerRequired, null, out powerValue)
+                    && !string.IsNullOrEmpty(powerValue))
+                {
+                    string existingProvided;
+                    blueprint.Properties.GetString(GameConstants.PropPowerProvided, null, out existingProvided);
+                    if (string.IsNullOrEmpty(existingProvided))
+                    {
+                        blueprint.Properties.SetProperty(GameConstants.PropPowerProvided, powerValue);
+                        blueprint.Properties.Remove(GameConstants.PropPowerRequired);
+                        Log.Info(
+                            "FixupFlatpackProperties: Reactor '{0}' — remapped Power Required={1} to Power Provided",
+                            blueprint.Name,
+                            powerValue);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Merges resources (and any parsed properties) from incoming into target,
         /// preserving all existing scalar fields and protected properties.
         /// Unlike UpdateExisting, this does NOT overwrite Name, Evolution, Class, or BluePrintType.

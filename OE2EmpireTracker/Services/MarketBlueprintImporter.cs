@@ -8,13 +8,6 @@ using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.Services
 {
-    public enum ImportAction
-    {
-        Created,
-        Updated,
-        Skipped
-    }
-
     public static class MarketBlueprintImporter
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
