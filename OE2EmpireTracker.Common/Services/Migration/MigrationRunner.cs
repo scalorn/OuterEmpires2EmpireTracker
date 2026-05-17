@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using NLog;
 
 namespace OE2EmpireTracker.Services.Migration
@@ -35,9 +34,15 @@ namespace OE2EmpireTracker.Services.Migration
         }
 
         /// <summary>
-        /// When true, suppresses MessageBox dialogs (e.g. during unit tests).
+        /// When true, suppresses failure notification (e.g. during unit tests).
         /// </summary>
         public static bool SuppressUI { get; set; }
+
+        /// <summary>
+        /// Optional callback invoked when a migration fails. Receives the error message.
+        /// Set by the UI layer to show a dialog. If null, failure is only logged.
+        /// </summary>
+        public static Action<string> OnMigrationFailed { get; set; }
 
         public static void Run(EmpireContext ec, PlayerContext pc)
         {
@@ -110,17 +115,15 @@ namespace OE2EmpireTracker.Services.Migration
         {
             MigrationFailed = true;
             Log.Error(ex, "Migration failed during {0}", phase);
-            if (!SuppressUI)
+            if (!SuppressUI && OnMigrationFailed != null)
             {
-                MessageBox.Show(
+                string message =
                     $"Data migration failed during {phase}.\n\n" +
                     $"{ex.Message}\n\n" +
                     "Your data files have NOT been modified. " +
                     "Saving is disabled to prevent data corruption. " +
-                    "Please report this error.",
-                    "Migration Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                    "Please report this error.";
+                OnMigrationFailed(message);
             }
         }
     }

@@ -18,6 +18,10 @@ namespace OE2EmpireTracker
         private static void Main()
         {
             // Wire up delegates for Common-hosted contexts
+            MigrationRunner.OnMigrationFailed = msg =>
+                System.Windows.Forms.MessageBox.Show(msg, "Migration Error",
+                    System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Error);
             EmpireContext.RunMigrations = (ec, pc) => MigrationRunner.Run(ec, pc);
             EmpireContext.FixupBlueprintProperties = bp => BlueprintScanner.FixupFlatpackProperties(bp);
             PlayerContext.IsServerOnlyMode = () =>
