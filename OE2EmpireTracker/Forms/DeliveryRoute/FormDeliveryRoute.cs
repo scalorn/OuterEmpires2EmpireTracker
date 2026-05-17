@@ -463,6 +463,24 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             _shipPickerUUIDs = ships.Select(s => s.UUID).ToList();
             var displayNames = ships.Select(s => s.Name).ToList();
             cmbShip.SetItems(displayNames, string.Empty);
+
+            // Compute fuel for the first ship (if any) since SetItems suppresses events
+            _selectedShipFuelPerJAS = 0m;
+            if (_shipPickerUUIDs.Count > 0)
+            {
+                var ship = playerContext.FindShip(_shipPickerUUIDs[0]);
+                if (ship != null)
+                {
+                    var hullBp = playerContext.FindBlueprint(ship.HullBlueprintUUID);
+                    if (hullBp != null)
+                    {
+                        var stats = ShipBuildService.ComputeStats(hullBp, ship.Components, uuid => playerContext.FindBlueprint(uuid));
+                        _selectedShipFuelPerJAS = stats.JumpFuelPerJAS;
+                        Log.Info("PopulateShipPicker: initial ship={0}, JumpFuelPerJAS={1}", ship.Name, _selectedShipFuelPerJAS);
+                    }
+                }
+            }
+
             sw.Stop();
             Log.Info("PERF PopulateShipPicker: {0}ms", sw.ElapsedMilliseconds);
         }

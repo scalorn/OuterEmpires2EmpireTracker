@@ -667,14 +667,14 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.lblShip.Location = new System.Drawing.Point(2, 4);
             this.lblShip.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblShip.Name = "lblShip";
-            this.lblShip.Size = new System.Drawing.Size(35, 17);
+            this.lblShip.Size = new System.Drawing.Size(80, 17);
             this.lblShip.TabIndex = 0;
             this.lblShip.Text = "Ship:";
             this.lblShip.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cmbShip
             // 
-            this.cmbShip.Location = new System.Drawing.Point(42, 3);
+            this.cmbShip.Location = new System.Drawing.Point(87, 3);
             this.cmbShip.Name = "cmbShip";
             this.cmbShip.Size = new System.Drawing.Size(250, 21);
             this.cmbShip.TabIndex = 1;
