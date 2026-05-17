@@ -274,7 +274,7 @@
 
 
     <Compile Include="Services\HelpRenderer.cs" />
-    <Compile Include="Services\PreferencesStore.cs" />
+
     <Compile Include="Services\TabWarningService.cs" />
 
 
