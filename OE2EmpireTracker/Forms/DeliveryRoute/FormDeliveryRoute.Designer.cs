@@ -46,6 +46,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.colSystemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPurpose = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colFuelEstimate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colJasDistance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flpAddStop = new System.Windows.Forms.FlowLayoutPanel();
             this.lblAddStop = new System.Windows.Forms.Label();
             this.cmbColony = new OE2EmpireTracker.Controls.FilteredTextComboSet();
@@ -218,7 +219,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.colPlanetName,
             this.colSystemName,
             this.colPurpose,
-            this.colFuelEstimate});
+            this.colFuelEstimate,
+            this.colJasDistance});
             this.dgvStops.Location = new System.Drawing.Point(2, 32);
             this.dgvStops.Margin = new System.Windows.Forms.Padding(2);
             this.dgvStops.Name = "dgvStops";
@@ -276,6 +278,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.colFuelEstimate.Name = "colFuelEstimate";
             this.colFuelEstimate.ReadOnly = true;
             this.colFuelEstimate.Width = 60;
+            // 
+            // colJasDistance
+            // 
+            this.colJasDistance.HeaderText = "JAS";
+            this.colJasDistance.Name = "colJasDistance";
+            this.colJasDistance.ReadOnly = true;
+            this.colJasDistance.Width = 50;
             // 
             // tabRouteDetail
             // 
@@ -876,6 +885,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private System.Windows.Forms.DataGridViewTextBoxColumn colSystemName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPurpose;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFuelEstimate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colJasDistance;
         private System.Windows.Forms.FlowLayoutPanel flpAddStop;
         private System.Windows.Forms.Label lblAddStop;
         private OE2EmpireTracker.Controls.FilteredTextComboSet cmbColony;

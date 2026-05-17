@@ -490,6 +490,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvStops.Rows.Clear();
+            string previousSystemName = null;
             foreach (var stop in viewModel.Stops)
             {
                 string destName = "(unknown)";
@@ -517,6 +518,24 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                     systemName = colony?.SystemName ?? string.Empty;
                 }
 
+                string jasStr = string.Empty;
+                if (!string.IsNullOrEmpty(previousSystemName) && !string.IsNullOrEmpty(systemName))
+                {
+                    var repo = EmpireContext.GetInstance().SystemRepository;
+                    var fromSystem = repo.FindByName(previousSystemName);
+                    var toSystem = repo.FindByName(systemName);
+                    if (fromSystem != null && toSystem != null)
+                    {
+                        int jas = DistanceCalculator.CalculateJas(fromSystem, toSystem);
+                        if (jas >= 0)
+                        {
+                            jasStr = jas.ToString();
+                        }
+                    }
+                }
+
+                previousSystemName = systemName;
+
                 string fuelStr = stop.FuelEstimate > 0 ? stop.FuelEstimate.ToString("N1") : string.Empty;
                 int rowIndex = dgvStops.Rows.Add(
                     stop.Sequence + 1,
@@ -525,7 +544,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                     planetName,
                     systemName,
                     stop.Purpose.ToString(),
-                    fuelStr);
+                    fuelStr,
+                    jasStr);
                 dgvStops.Rows[rowIndex].Tag = stop;
             }
 
