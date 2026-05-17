@@ -2,16 +2,14 @@ using System;
 using System.Linq;
 using NLog;
 using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services.Migration;
 
 namespace OE2EmpireTracker.Services
 {
     /// <summary>
     /// Centralizes all Colony mutation. The form and ViewModel never touch the entity directly.
-    /// Only this service (plus ColonyParser called by the service during import,
-    /// Colony.ProcessColony for background processing, JSON deserialization, and migration code)
-    /// mutates Colony objects.
+    /// Only this service (plus Colony.ProcessColony for background processing,
+    /// JSON deserialization, and migration code) mutates Colony objects.
     /// </summary>
     public class ColonyService
     {
@@ -19,12 +17,9 @@ namespace OE2EmpireTracker.Services
 
         private readonly PlayerContext _playerContext;
 
-        private readonly ColonyParser _colonyParser;
-
         public ColonyService(PlayerContext playerContext)
         {
             _playerContext = playerContext ?? throw new ArgumentNullException(nameof(playerContext));
-            _colonyParser = new ColonyParser();
         }
 
         /// <summary>
@@ -129,64 +124,69 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Imports a parsed temporary colony. Deduplicates by PlanetName (case-insensitive),
-        /// merges into existing or creates new, persists, and fires event.
+        /// Finds an existing colony by planet name or creates a new one.
+        /// Acquires the write lock on existing colonies. Caller MUST call
+        /// <see cref="PersistImport"/> when done to release the lock and persist.
         /// </summary>
-        public ReadOnlyColony Import(Colony tempColony, string extractedHtml, EmpireContext empireContext)
+        /// <param name="planetName">Planet name to dedup on.</param>
+        /// <param name="systemName">System name for identity merge.</param>
+        /// <returns>The target colony (existing or new) and whether it was existing.</returns>
+        public ColonyDedupeResult DedupeOrCreate(string planetName, string systemName)
         {
-            if (tempColony == null)
-            {
-                throw new ArgumentNullException(nameof(tempColony));
-            }
-
             var existingColonies = _playerContext.GetCurrentPlayerColonies();
-            var existingColony = ColonyImportHelper.FindByPlanet(
-                existingColonies, tempColony.PlanetName, tempColony.SystemName);
+            var existing = ColonyImportHelper.FindByPlanet(existingColonies, planetName, systemName);
 
-            Colony colony;
-            if (existingColony != null)
+            if (existing != null)
             {
                 Log.Info(
-                    "ColonyService.Import: merging into existing UUID={0} planet='{1}'",
-                    existingColony.UUID,
-                    existingColony.PlanetName);
+                    "ColonyService.DedupeOrCreate: found existing UUID={0} planet='{1}'",
+                    existing.UUID,
+                    existing.PlanetName);
 
-                if (!existingColony.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
+                if (!existing.ColonyLock.TryEnterWriteLock(Colony.WriteLockTimeoutMs))
                 {
-                    throw new TimeoutException("Write lock timeout for colony: " + existingColony.UUID);
+                    throw new TimeoutException("Write lock timeout for colony: " + existing.UUID);
                 }
 
-                try
-                {
-                    ColonyImportHelper.MergeIdentity(existingColony, tempColony);
-
-                    // Save ColonyName before ProcessHtml -- the parser's ParsePlanetOverview
-                    // overwrites ColonyName with the game's (potentially truncated) value.
-                    string preservedColonyName = existingColony.ColonyName;
-                    _colonyParser.ProcessHtml(existingColony, extractedHtml, empireContext);
-                    existingColony.ColonyName = preservedColonyName;
-
-                    existingColony.LastImportDateTime = SurveyDateTimeParser.ToIsoString(SystemClock.UtcNow);
-                    existingColony.StampBuildQueueSequence();
-                }
-                finally
-                {
-                    existingColony.ColonyLock.ExitWriteLock();
-                }
-
-                colony = existingColony;
+                return new ColonyDedupeResult { Colony = existing, IsExisting = true };
             }
-            else
+
+            var newColony = ColonyImportHelper.CreateFromTemp(
+                new Colony { PlanetName = planetName, SystemName = systemName },
+                _playerContext.CurrentPlayerUUID);
+
+            Log.Info(
+                "ColonyService.DedupeOrCreate: created new UUID={0} planet='{1}'",
+                newColony.UUID,
+                newColony.PlanetName);
+
+            return new ColonyDedupeResult { Colony = newColony, IsExisting = false };
+        }
+
+        /// <summary>
+        /// Persists a colony after import parsing is complete.
+        /// Releases the write lock (if existing), stamps sequence, persists, and fires event.
+        /// </summary>
+        public ReadOnlyColony PersistImport(ColonyDedupeResult dedupeResult)
+        {
+            var colony = dedupeResult.Colony;
+
+            try
             {
-                colony = ColonyImportHelper.CreateFromTemp(tempColony, _playerContext.CurrentPlayerUUID);
-
-                Log.Info(
-                    "ColonyService.Import: created new UUID={0} planet='{1}'",
-                    colony.UUID,
-                    colony.PlanetName);
-
+                colony.LastImportDateTime = SurveyDateTimeParser.ToIsoString(SystemClock.UtcNow);
                 colony.StampBuildQueueSequence();
-                _playerContext.AddColony(colony);
+
+                if (!dedupeResult.IsExisting)
+                {
+                    _playerContext.AddColony(colony);
+                }
+            }
+            finally
+            {
+                if (dedupeResult.IsExisting)
+                {
+                    colony.ColonyLock.ExitWriteLock();
+                }
             }
 
             _playerContext.WriteContext();
@@ -526,5 +526,18 @@ namespace OE2EmpireTracker.Services
 
             return colony;
         }
+    }
+
+    /// <summary>
+    /// Result of <see cref="ColonyService.DedupeOrCreate"/>. Contains the target colony
+    /// and whether it was an existing colony (write lock held) or newly created.
+    /// </summary>
+    public class ColonyDedupeResult
+    {
+        /// <summary>The target colony to parse into.</summary>
+        public Colony Colony { get; set; }
+
+        /// <summary>True if this is an existing colony (write lock is held by caller).</summary>
+        public bool IsExisting { get; set; }
     }
 }

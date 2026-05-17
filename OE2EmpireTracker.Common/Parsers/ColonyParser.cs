@@ -83,6 +83,47 @@ namespace OE2EmpireTracker.Parsers
         }
 
         /// <summary>
+        /// Orchestrates a full colony import from HTML: parses identity, dedupes via
+        /// the service, then parses full HTML into the target colony.
+        /// </summary>
+        /// <param name="html">Extracted HTML fragment from clipboard.</param>
+        /// <param name="empireContext">Empire context for blueprint lookups.</param>
+        /// <param name="colonyService">Colony service for dedup and persistence.</param>
+        /// <returns>The dedup result containing the fully-parsed colony.</returns>
+        public ColonyDedupeResult ImportFromHtml(string html, EmpireContext empireContext, ColonyService colonyService)
+        {
+            // Step 1: Parse identity into a temp colony
+            var tempColony = new Colony();
+            ProcessHtml(tempColony, html, empireContext);
+
+            if (string.IsNullOrEmpty(tempColony.PlanetName))
+            {
+                Log.Warn("ImportFromHtml: no planet name parsed from HTML");
+                return null;
+            }
+
+            // Step 2: Dedup via service — get the target colony (existing or new)
+            var dedupeResult = colonyService.DedupeOrCreate(tempColony.PlanetName, tempColony.SystemName);
+            var target = dedupeResult.Colony;
+
+            // Step 3: Parse full HTML into the target colony
+            if (dedupeResult.IsExisting)
+            {
+                ColonyImportHelper.MergeIdentity(target, tempColony);
+                string preservedColonyName = target.ColonyName;
+                ProcessHtml(target, html, empireContext);
+                target.ColonyName = preservedColonyName;
+            }
+            else
+            {
+                // New colony — tempColony already has the parsed data, copy it over
+                ProcessHtml(target, html, empireContext);
+            }
+
+            return dedupeResult;
+        }
+
+        /// <summary>
         /// Parses an HTML fragment from the game's colony Administration tab clipboard data
         /// and populates the given Colony object with extracted data.
         /// </summary>

@@ -2751,16 +2751,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 }
 
                 var parser = new ColonyParser();
-                var tempColony = new Colony();
-                parser.ProcessHtml(tempColony, htmlFragment, empireContext);
+                var dedupeResult = parser.ImportFromHtml(htmlFragment, empireContext, _colonyService);
 
-                Log.Info(
-                    "Colony temp parse complete: PlanetName='{0}', SystemName='{1}', {2} structures",
-                    tempColony.PlanetName ?? "(null)",
-                    tempColony.SystemName ?? "(null)",
-                    tempColony.Structures.Count);
-
-                if (string.IsNullOrEmpty(tempColony.PlanetName))
+                if (dedupeResult == null)
                 {
                     Log.Warn("Colony import: no planet name parsed, skipping import");
                     MessageBox.Show(
@@ -2771,7 +2764,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     return;
                 }
 
-                ReadOnlyColony imported = _colonyService.Import(tempColony, htmlFragment, empireContext);
+                ReadOnlyColony imported = _colonyService.PersistImport(dedupeResult);
 
                 Log.Info(
                     "Colony imported via service: planet='{0}' uuid={1}",
