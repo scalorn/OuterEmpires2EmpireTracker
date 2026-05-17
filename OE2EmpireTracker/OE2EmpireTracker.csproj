@@ -263,7 +263,7 @@
 
 
 
-    <Compile Include="Services\ColonyBuildEligibility.cs" />
+
 
 
     <Compile Include="Parsers\ClipboardHelper.cs" />
@@ -299,26 +299,6 @@
     <Compile Include="Controls\ValidatedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ViewModels\ColonyStructureViewModel.cs" />
-    <Compile Include="ViewModels\DeliveryRouteViewModel.cs" />
-    <Compile Include="ViewModels\BuildPlanViewModel.cs" />
-    <Compile Include="ViewModels\AsteroidViewModel.cs" />
-    <Compile Include="ViewModels\StockTargetViewModel.cs" />
-    <Compile Include="ViewModels\SupplyChainViewModel.cs" />
-    <Compile Include="ViewModels\ContactsViewModel.cs" />
-    <Compile Include="ViewModels\ShipTemplateViewModel.cs" />
-    <Compile Include="ViewModels\ShipViewModel.cs" />
-    <Compile Include="ViewModels\StationViewModel.cs" />
-    <Compile Include="ViewModels\DeliveryPlanViewModel.cs" />
-    <Compile Include="ViewModels\ColonyViewModel.cs" />
-    <Compile Include="ViewModels\BlueprintFilterCriteria.cs" />
-    <Compile Include="ViewModels\BlueprintViewModel.cs" />
-    <Compile Include="ViewModels\LocalRankData.cs" />
-    <Compile Include="ViewModels\LocalSkillData.cs" />
-    <Compile Include="ViewModels\PlayerProfileViewModel.cs" />
-    <Compile Include="ViewModels\SurveyViewModel.cs" />
-    <Compile Include="ViewModels\PricingPlanViewModel.cs" />
-    <Compile Include="ViewModels\SystemViewModel.cs" />
     <Compile Include="Parsers\BlueprintScanner.cs" />
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>

@@ -19,6 +19,9 @@ namespace OE2EmpireTracker.Tests.Services
         private static readonly string SourceRoot = Path.GetFullPath(
             Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker"));
 
+        private static readonly string CommonRoot = Path.GetFullPath(
+            Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker.Common"));
+
         private static readonly string TestRoot = Path.GetFullPath(
             Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker.Tests"));
 
@@ -276,7 +279,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             var violations = new List<string>();
             var viewModelFiles = Directory.GetFiles(
-                Path.Combine(SourceRoot, "ViewModels"), "*ViewModel.cs", SearchOption.AllDirectories)
+                Path.Combine(CommonRoot, "ViewModels"), "*ViewModel.cs", SearchOption.AllDirectories)
                 .ToArray();
 
             foreach (var fullPath in viewModelFiles)
