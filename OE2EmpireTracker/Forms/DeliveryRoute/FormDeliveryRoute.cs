@@ -71,6 +71,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulateShipPicker();
             cmbShip.SelectedItemChanged += CmbShip_SelectedIndexChanged;
             playerContext.ShipDataChanged += OnShipDataChanged;
+            playerContext.ShipTemplateDataChanged += OnShipTemplateDataChanged;
             cmbDestType.SelectedIndexChanged += (s, ev) => PopulateColonyPicker();
 
             cmdAddStop.Click += CmdAddStop_Click;
@@ -169,6 +170,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.DeliveryDataChanged -= OnDeliveryDataChanged;
             playerContext.ShipDataChanged -= OnShipDataChanged;
+            playerContext.ShipTemplateDataChanged -= OnShipTemplateDataChanged;
             base.OnFormClosed(e);
         }
 
@@ -518,6 +520,27 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             {
                 UpdateShipFuelRate(e.ShipUUID);
                 PopulateStopsGrid();
+            }
+        }
+
+        private void OnShipTemplateDataChanged(object sender, ShipTemplateDataChangedEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => OnShipTemplateDataChanged(sender, e)));
+                return;
+            }
+
+            // Recompute fuel if the currently selected ship uses this template
+            int idx = cmbShip.SelectedFullIndex;
+            if (idx >= 0 && idx < _shipPickerUUIDs.Count)
+            {
+                var ship = playerContext.FindShip(_shipPickerUUIDs[idx]);
+                if (ship != null && ship.TemplateUUID == e.ShipTemplateUUID)
+                {
+                    UpdateShipFuelRate(ship.UUID);
+                    PopulateStopsGrid();
+                }
             }
         }
 
