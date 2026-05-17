@@ -225,13 +225,12 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.colPurpose,
             this.colFuelEstimate,
             this.colJasDistance});
-            this.dgvStops.Location = new System.Drawing.Point(2, 32);
+            this.dgvStops.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvStops.Margin = new System.Windows.Forms.Padding(2);
             this.dgvStops.Name = "dgvStops";
             this.dgvStops.ReadOnly = true;
             this.dgvStops.RowHeadersVisible = false;
             this.dgvStops.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvStops.Size = new System.Drawing.Size(630, 400);
             this.dgvStops.TabIndex = 1;
             // 
             // colSequence
@@ -658,7 +657,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // 
             this.flpShipPicker.Controls.Add(this.lblShip);
             this.flpShipPicker.Controls.Add(this.cmbShip);
-            this.flpShipPicker.Location = new System.Drawing.Point(2, 2);
+            this.flpShipPicker.Dock = System.Windows.Forms.DockStyle.Top;
             this.flpShipPicker.Margin = new System.Windows.Forms.Padding(2);
             this.flpShipPicker.Name = "flpShipPicker";
             this.flpShipPicker.Size = new System.Drawing.Size(630, 28);

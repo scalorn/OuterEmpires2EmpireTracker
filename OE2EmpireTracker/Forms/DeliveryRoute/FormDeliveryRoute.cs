@@ -472,6 +472,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             if (_isProgrammaticUpdate > 0) return;
 
             int idx = cmbShip.SelectedFullIndex;
+            Log.Info("CmbShip_SelectedIndexChanged: SelectedFullIndex={0}, _shipPickerUUIDs.Count={1}", idx, _shipPickerUUIDs.Count);
             if (idx < 0 || idx >= _shipPickerUUIDs.Count)
             {
                 _selectedShipFuelPerJAS = 0m;
@@ -483,6 +484,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             var ship = playerContext.FindShip(shipUUID);
             if (ship == null)
             {
+                Log.Warn("CmbShip: ship UUID {0} not found", shipUUID);
                 _selectedShipFuelPerJAS = 0m;
                 PopulateStopsGrid();
                 return;
@@ -491,6 +493,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             var hullBp = playerContext.FindBlueprint(ship.HullBlueprintUUID);
             if (hullBp == null)
             {
+                Log.Warn("CmbShip: hull blueprint {0} not found for ship {1}", ship.HullBlueprintUUID, ship.Name);
                 _selectedShipFuelPerJAS = 0m;
                 PopulateStopsGrid();
                 return;
