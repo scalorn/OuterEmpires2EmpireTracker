@@ -70,6 +70,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulateColonyPicker();
             PopulateShipPicker();
             cmbShip.SelectedItemChanged += CmbShip_SelectedIndexChanged;
+            playerContext.ShipDataChanged += OnShipDataChanged;
             cmbDestType.SelectedIndexChanged += (s, ev) => PopulateColonyPicker();
 
             cmdAddStop.Click += CmdAddStop_Click;
@@ -167,6 +168,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.DeliveryDataChanged -= OnDeliveryDataChanged;
+            playerContext.ShipDataChanged -= OnShipDataChanged;
             base.OnFormClosed(e);
         }
 
@@ -498,29 +500,47 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 return;
             }
 
-            string shipUUID = _shipPickerUUIDs[idx];
+            UpdateShipFuelRate(_shipPickerUUIDs[idx]);
+            PopulateStopsGrid();
+        }
+
+        private void OnShipDataChanged(object sender, ShipDataChangedEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => OnShipDataChanged(sender, e)));
+                return;
+            }
+
+            // Recompute fuel if the modified ship is the currently selected one
+            int idx = cmbShip.SelectedFullIndex;
+            if (idx >= 0 && idx < _shipPickerUUIDs.Count && _shipPickerUUIDs[idx] == e.ShipUUID)
+            {
+                UpdateShipFuelRate(e.ShipUUID);
+                PopulateStopsGrid();
+            }
+        }
+
+        private void UpdateShipFuelRate(string shipUUID)
+        {
+            _selectedShipFuelPerJAS = 0m;
             var ship = playerContext.FindShip(shipUUID);
             if (ship == null)
             {
-                Log.Warn("CmbShip: ship UUID {0} not found", shipUUID);
-                _selectedShipFuelPerJAS = 0m;
-                PopulateStopsGrid();
+                Log.Warn("UpdateShipFuelRate: ship UUID {0} not found", shipUUID);
                 return;
             }
 
             var hullBp = playerContext.FindBlueprint(ship.HullBlueprintUUID);
             if (hullBp == null)
             {
-                Log.Warn("CmbShip: hull blueprint {0} not found for ship {1}", ship.HullBlueprintUUID, ship.Name);
-                _selectedShipFuelPerJAS = 0m;
-                PopulateStopsGrid();
+                Log.Warn("UpdateShipFuelRate: hull blueprint {0} not found for ship {1}", ship.HullBlueprintUUID, ship.Name);
                 return;
             }
 
             var stats = ShipBuildService.ComputeStats(hullBp, ship.Components, uuid => playerContext.FindBlueprint(uuid));
             _selectedShipFuelPerJAS = stats.JumpFuelPerJAS;
             Log.Info("Ship selected: {0}, JumpFuelPerJAS={1}", ship.Name, _selectedShipFuelPerJAS);
-            PopulateStopsGrid();
         }
 
         /// <summary>

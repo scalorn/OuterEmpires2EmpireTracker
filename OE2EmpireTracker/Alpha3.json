@@ -129220,7 +129220,16 @@
       "OwnerUUID": "bd61f05d-2fd2-4d1c-8c52-5bd132b21e8a",
       "TemplateUUID": "",
       "HullBlueprintUUID": "36ffc113-5066-58eb-a8b4-994a3bc4233a",
-      "Components": [],
+      "Components": [
+        {
+          "SlotType": "JumpDrive",
+          "BlueprintUUID": "c4fb1b4b-1757-56f2-bee6-272a6fc7bf6c"
+        },
+        {
+          "SlotType": "NavComp",
+          "BlueprintUUID": "012c4391-9059-4460-a2e6-22bdc6ca4179"
+        }
+      ],
       "LocationType": "Station",
       "LocationUUID": "",
       "Cargo": {},
