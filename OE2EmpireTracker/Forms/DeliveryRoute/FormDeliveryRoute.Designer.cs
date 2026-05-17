@@ -173,6 +173,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // flpRouteData
             // 
             this.flpRouteData.Controls.Add(this.flpRouteName);
+            this.flpRouteData.Controls.Add(this.flpShipPicker);
             this.flpRouteData.Controls.Add(this.tabRouteDetail);
             this.flpRouteData.Controls.Add(this.flpCommands);
             this.flpRouteData.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
@@ -225,7 +226,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.colPurpose,
             this.colFuelEstimate,
             this.colJasDistance});
-            this.dgvStops.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvStops.Location = new System.Drawing.Point(2, 2);
             this.dgvStops.Margin = new System.Windows.Forms.Padding(2);
             this.dgvStops.Name = "dgvStops";
             this.dgvStops.ReadOnly = true;
@@ -302,7 +303,6 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // 
             // tabStops
             // 
-            this.tabStops.Controls.Add(this.flpShipPicker);
             this.tabStops.Controls.Add(this.dgvStops);
             this.tabStops.Controls.Add(this.flpAddStop);
             this.tabStops.Location = new System.Drawing.Point(4, 22);
@@ -657,7 +657,6 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // 
             this.flpShipPicker.Controls.Add(this.lblShip);
             this.flpShipPicker.Controls.Add(this.cmbShip);
-            this.flpShipPicker.Dock = System.Windows.Forms.DockStyle.Top;
             this.flpShipPicker.Margin = new System.Windows.Forms.Padding(2);
             this.flpShipPicker.Name = "flpShipPicker";
             this.flpShipPicker.Size = new System.Drawing.Size(630, 28);
