@@ -687,7 +687,11 @@ namespace OE2EmpireTracker
                 }
 
                 var scanner = new BlueprintScanner();
-                var tempBP = scanner.ParseClipboardToTemp();
+
+                Log.Info("Blueprint clipboard data length (temp parse): {0}", clipboardData.Length);
+
+                var tempBP = new Blueprint();
+                scanner.ProcessHtml(tempBP, htmlFragment);
 
                 if (tempBP == null)
                     return;
@@ -735,13 +739,13 @@ namespace OE2EmpireTracker
                     return;
                 }
 
-                // NoName fallback: use scanner.ProcessClipboard on a temp Blueprint
+                // NoName fallback: re-parse clipboard HTML into a temp Blueprint
                 if (importType == BlueprintImportHandler.ImportType.NoName)
                 {
                     Log.Warn("  No name parsed from clipboard -- using fallback direct import");
                     Blueprint fallbackBp = new Blueprint();
 
-                    // Copy current ViewModel state into temp for ProcessClipboard to merge into
+                    // Copy current ViewModel state into temp for ProcessHtml to merge into
                     if (!string.IsNullOrEmpty(viewModel.UUID))
                     {
                         fallbackBp.UUID = viewModel.UUID;
@@ -752,7 +756,7 @@ namespace OE2EmpireTracker
                         fallbackBp.TechLevel = viewModel.TechLevel;
                     }
 
-                    scanner.ProcessClipboard(fallbackBp);
+                    scanner.ProcessHtml(fallbackBp, htmlFragment);
                     if (string.IsNullOrEmpty(fallbackBp.UUID))
                     {
                         bool fallbackGlobal = fallbackBp.Evolution == 0
@@ -815,7 +819,7 @@ namespace OE2EmpireTracker
             }
 
             string clipboardData = Clipboard.GetText(TextDataFormat.Html);
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboardData);
+            string html = ClipboardHelper.ExtractHtmlFragment(clipboardData);
             if (string.IsNullOrEmpty(html) || html.StartsWith("ERROR:"))
             {
                 MessageBox.Show(

@@ -15,7 +15,7 @@ namespace OE2EmpireTracker.Tests.Services
             string baseDir = TestContext.CurrentContext.TestDirectory;
             string rawClipboard = File.ReadAllText(Path.Combine(baseDir, "TestData", "BUGHUNT.html"));
 
-            string fragment = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(rawClipboard);
+            string fragment = ClipboardHelper.ExtractHtmlFragment(rawClipboard);
 
             Assert.That(fragment, Does.Not.StartWith("ERROR"), "Fragment extraction failed");
             Assert.That(fragment.Length, Is.GreaterThan(1000), "Fragment too short");

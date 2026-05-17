@@ -620,8 +620,10 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
                 // Parse clipboard into a temp profile
                 var tempProfile = new Models.PlayerProfile();
+                Log.Info("Player profile clipboard data length: {0}", clipboardData.Length);
+
                 var parser = new PlayerProfileParser();
-                parser.ProcessClipboard(tempProfile);
+                parser.ProcessHtml(tempProfile, htmlFragment);
 
                 if (string.IsNullOrEmpty(tempProfile.Name))
                 {

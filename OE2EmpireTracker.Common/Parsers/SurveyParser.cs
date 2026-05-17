@@ -2,10 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml;
 using NLog;
 using OE2EmpireTracker.Constants;
@@ -225,41 +222,6 @@ namespace OE2EmpireTracker.Parsers
             catch (Exception ex)
             {
                 Log.Error(ex, "Error parsing survey HTML fragment");
-            }
-        }
-
-        /// <summary>
-        /// Parses clipboard HTML into a new temporary Survey object without mutating any existing survey.
-        /// Returns null if the clipboard does not contain HTML.
-        /// Also returns the extracted HTML via the out parameter for reuse.
-        /// </summary>
-        public Survey ParseClipboardToTemp(out string extractedHtml)
-        {
-            extractedHtml = null;
-            if (!Clipboard.ContainsText(TextDataFormat.Html))
-                return null;
-
-            string clipboardData = Clipboard.GetText(TextDataFormat.Html);
-            Log.Info("Survey clipboard data length (temp parse): {0}", clipboardData.Length);
-            extractedHtml = ClipboardHelper.ExtractHtmlFragment(clipboardData);
-
-            var tempSurvey = new Survey();
-            ProcessHtml(tempSurvey, extractedHtml);
-            return tempSurvey;
-        }
-
-        /// <summary>
-        /// Reads HTML from the clipboard and processes it into the given survey.
-        /// </summary>
-        public void ProcessClipboard(Survey survey)
-        {
-            if (Clipboard.ContainsText(TextDataFormat.Html))
-            {
-                string clipboardData = Clipboard.GetText(TextDataFormat.Html);
-                string output = $@"@""{clipboardData.Replace("\"", "\"\"")}""";
-                Log.Info(output);
-                string html = ClipboardHelper.ExtractHtmlFragment(clipboardData);
-                ProcessHtml(survey, html);
             }
         }
     }

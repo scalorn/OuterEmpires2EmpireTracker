@@ -271,7 +271,7 @@
 
 
 
-    <Compile Include="Parsers\PlayerProfileParser.cs" />
+
 
     <Compile Include="Services\HelpRenderer.cs" />
     <Compile Include="Services\PreferencesStore.cs" />
@@ -289,7 +289,7 @@
     <Compile Include="Controls\RtfBuilder.cs" />
     <Compile Include="Controls\ProgrammaticUpdateGuard.cs" />
 
-    <Compile Include="Parsers\SurveyParser.cs" />
+
     <Compile Include="Controls\DataEntryGridView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -299,7 +299,7 @@
     <Compile Include="Controls\ValidatedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Parsers\BlueprintScanner.cs" />
+
     <Compile Include="Forms\BlueprintV2\FormBlueprintV2.cs">
       <SubType>Form</SubType>
     </Compile>

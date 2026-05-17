@@ -478,8 +478,8 @@ namespace OE2EmpireTracker.Tests.Parsers
 
         private static string ExtractFragment(string clipboardData)
         {
-            return OE2EmpireTracker.Parsers.BlueprintScanner
-                .ExtractHtmlFragmentFromClipboardData(clipboardData);
+            return OE2EmpireTracker.Parsers.ClipboardHelper
+                .ExtractHtmlFragment(clipboardData);
         }
 
         private PlayerProfile ParseScalorn()

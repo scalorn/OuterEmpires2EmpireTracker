@@ -127,7 +127,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             // First import: Stats page
             string rawStats = LoadTestData("IndivudalBPAssetTabWSMS-LL6Stats.html");
-            string htmlStats = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(rawStats);
+            string htmlStats = ClipboardHelper.ExtractHtmlFragment(rawStats);
             _scanner.ProcessHtml(bp, htmlStats);
 
             Assert.That(bp.Name, Is.EqualTo("WSMS-LL Jump Drive"));
@@ -136,7 +136,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             // Second import: Resources page
             string rawRes = LoadTestData("IndivudalBPAssetTabWSMS-LL6Resources.html");
-            string htmlRes = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(rawRes);
+            string htmlRes = ClipboardHelper.ExtractHtmlFragment(rawRes);
             _scanner.ProcessHtml(bp, htmlRes);
 
             Assert.That(
@@ -162,7 +162,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         private OE2EmpireTracker.Models.Blueprint ParseAssetTabStats()
         {
             string raw = LoadTestData("IndivudalBPAssetTabWSMS-LL6Stats.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, html);
             return bp;
@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         private OE2EmpireTracker.Models.Blueprint ParseAssetTabResources()
         {
             string raw = LoadTestData("IndivudalBPAssetTabWSMS-LL6Resources.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bp, html);
             return bp;

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using System.Xml;
 using NLog;
 using OE2EmpireTracker.Models;
@@ -36,20 +34,6 @@ namespace OE2EmpireTracker.Parsers
             catch (Exception ex)
             {
                 Log.Error(ex, "Error parsing player profile HTML fragment");
-            }
-        }
-
-        /// <summary>
-        /// Reads HTML from the clipboard and processes it into the given profile.
-        /// </summary>
-        public void ProcessClipboard(PlayerProfile profile)
-        {
-            if (Clipboard.ContainsText(TextDataFormat.Html))
-            {
-                string clipboardData = Clipboard.GetText(TextDataFormat.Html);
-                Log.Info("Player profile clipboard data length: {0}", clipboardData.Length);
-                string html = ClipboardHelper.ExtractHtmlFragment(clipboardData);
-                ProcessHtml(profile, html);
             }
         }
 

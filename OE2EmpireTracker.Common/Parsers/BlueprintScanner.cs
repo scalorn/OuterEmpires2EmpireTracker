@@ -1,20 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml;
-using Amazon.Runtime.Internal.Transform;
 using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Services;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace OE2EmpireTracker.Parsers
 {
@@ -58,29 +51,6 @@ namespace OE2EmpireTracker.Parsers
         };
 
         /// <summary>
-        /// Extracts selected HTML fragment string from clipboard data by parsing header information.
-        /// </summary>
-        /// <param name="htmlDataString">String representing HTML clipboard data. This includes HTML header.</param>
-        /// <returns>String containing only the HTML selection part of htmlDataString, without header. Returns error message if parsing fails.</returns>
-        /// <remarks>
-        /// Uses Microsoft's standard clipboard HTML format which wraps fragments with:
-        /// - <!--StartFragment--> marker followed by byte count to fragment start
-        /// - <!--EndFragment--> marker followed by byte count to fragment end
-        ///
-        /// The method extracts the content between these markers to isolate just the selected fragment.
-        ///
-        /// Reference: https:// msdn.microsoft.com/en-us/library/aa767917(v=vs.85).aspx
-        ///
-        /// TODO: Current implementation assumes 10-digit indices which may be brittle for non-standard cases.
-        /// More flexible parsing should be implemented to handle edge cases.
-        /// </remarks>
-        public static string ExtractHtmlFragmentFromClipboardData(string htmlDataString)
-        {
-            // Delegated to ClipboardHelper -- the canonical implementation lives there.
-            return ClipboardHelper.ExtractHtmlFragment(htmlDataString);
-        }
-
-        /// <summary>
         /// Fixes up flatpack properties that the game labels incorrectly.
         /// The Reactor Core Flatpack reports its power output as "Power Required"
         /// in the game UI, but it actually provides power to the colony. This method
@@ -113,47 +83,6 @@ namespace OE2EmpireTracker.Parsers
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Handles the click event for the Import button.
-        /// </summary>
-        /// <param name="sender">The object that triggered the event.</param>
-        /// <param name="e">Event data containing event information.</param>
-        /// <remarks>
-        /// Checks if clipboard contains HTML text and retrieves it for import operations.
-        /// The HTML fragment is extracted from clipboard data which typically includes
-            // start/end fragment markers. Currently commented out - can be re-enabled when needed.
-            /// </remarks>
-        public void ProcessClipboard(Models.Blueprint blueprint)
-        {
-            string returnHtmlText = null;
-            if (Clipboard.ContainsText(TextDataFormat.Html))
-            {
-                returnHtmlText = Clipboard.GetText(TextDataFormat.Html);
-                string output = $@"@""{returnHtmlText.Replace("\"", "\"\"")}""";
-                Log.Info(output);
-                string html = ExtractHtmlFragmentFromClipboardData(returnHtmlText);
-                ProcessHtml(blueprint, html);
-            }
-        }
-
-        /// <summary>
-        /// Parses clipboard HTML into a new temporary Blueprint object without mutating any existing blueprint.
-        /// Returns null if the clipboard does not contain HTML.
-        /// </summary>
-        public Models.Blueprint ParseClipboardToTemp()
-        {
-            if (!Clipboard.ContainsText(TextDataFormat.Html))
-                return null;
-
-            string clipboardData = Clipboard.GetText(TextDataFormat.Html);
-            Log.Info("Blueprint clipboard data length (temp parse): {0}", clipboardData.Length);
-            string html = ExtractHtmlFragmentFromClipboardData(clipboardData);
-
-            var tempBlueprint = new Models.Blueprint();
-            ProcessHtml(tempBlueprint, html);
-            return tempBlueprint;
         }
 
         public void ProcessHtml(Models.Blueprint blueprint, string htmlFragment)
