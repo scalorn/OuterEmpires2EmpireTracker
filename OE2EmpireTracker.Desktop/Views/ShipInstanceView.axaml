@@ -1,0 +1,149 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.ShipInstanceView"
+             x:DataType="vm:ShipInstanceViewModel">
+
+    <DockPanel Margin="8">
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Ships"
+                   FontSize="20"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,12" />
+
+        <Grid ColumnDefinitions="*,2,2*">
+            <!-- Ship List -->
+            <DockPanel Grid.Column="0">
+                <StackPanel DockPanel.Dock="Bottom"
+                            Orientation="Horizontal"
+                            Margin="0,8,0,0"
+                            Spacing="8">
+                    <Button Content="Create from Template"
+                            Command="{Binding CreateFromTemplateCommand}" />
+                </StackPanel>
+
+                <DataGrid ItemsSource="{Binding Ships}"
+                          SelectedItem="{Binding SelectedShip}"
+                          AutoGenerateColumns="False"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          IsReadOnly="True"
+                          GridLinesVisibility="Horizontal"
+                          SelectionMode="Single"
+                          HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Ship"
+                                            Binding="{Binding ShipName}"
+                                            Width="140" />
+                        <DataGridTextColumn Header="Template"
+                                            Binding="{Binding TemplateName}"
+                                            Width="120" />
+                        <DataGridTextColumn Header="Location"
+                                            Binding="{Binding Location}"
+                                            Width="120" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+
+            <GridSplitter Grid.Column="1" Width="2" />
+
+            <!-- Detail Tabs -->
+            <TabControl Grid.Column="2" Margin="4,0,0,0">
+                <!-- Overview Tab -->
+                <TabItem Header="Overview">
+                    <DataGrid ItemsSource="{Binding Components}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="True"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              SelectionMode="Single"
+                              HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Slot Type"
+                                                Binding="{Binding SlotType}"
+                                                Width="120" />
+                            <DataGridTextColumn Header="Index"
+                                                Binding="{Binding SlotIndex}"
+                                                Width="60" />
+                            <DataGridTextColumn Header="Blueprint"
+                                                Binding="{Binding BlueprintName}"
+                                                Width="200" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+
+                <!-- Cargo Tab -->
+                <TabItem Header="Cargo">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Bottom"
+                                    Orientation="Horizontal"
+                                    Margin="0,8,0,0"
+                                    Spacing="8">
+                            <Button Content="Add Item"
+                                    Command="{Binding AddCargoItemCommand}" />
+                            <Button Content="Remove Item"
+                                    Command="{Binding RemoveCargoItemCommand}" />
+                            <TextBlock VerticalAlignment="Center"
+                                       Margin="12,0,0,0">
+                                <Run Text="Volume: " FontWeight="SemiBold" />
+                                <Run Text="{Binding CargoVolumeDisplay}" />
+                            </TextBlock>
+                        </StackPanel>
+
+                        <DataGrid ItemsSource="{Binding CargoItems}"
+                                  SelectedItem="{Binding SelectedCargoItem}"
+                                  AutoGenerateColumns="False"
+                                  CanUserReorderColumns="True"
+                                  CanUserResizeColumns="True"
+                                  CanUserSortColumns="True"
+                                  IsReadOnly="True"
+                                  GridLinesVisibility="Horizontal"
+                                  SelectionMode="Single"
+                                  HeadersVisibility="Column">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Item"
+                                                    Binding="{Binding ItemName}"
+                                                    Width="200" />
+                                <DataGridTextColumn Header="Quantity"
+                                                    Binding="{Binding Quantity}"
+                                                    Width="80" />
+                                <DataGridTextColumn Header="Volume"
+                                                    Binding="{Binding Volume, StringFormat={}{0:N1}}"
+                                                    Width="100" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </TabItem>
+
+                <!-- Hopper Tab -->
+                <TabItem Header="Hopper">
+                    <DataGrid ItemsSource="{Binding HopperItems}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="True"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              SelectionMode="Single"
+                              HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Resource"
+                                                Binding="{Binding ResourceName}"
+                                                Width="180" />
+                            <DataGridTextColumn Header="Purity"
+                                                Binding="{Binding Purity}"
+                                                Width="100" />
+                            <DataGridTextColumn Header="Quantity"
+                                                Binding="{Binding Quantity}"
+                                                Width="80" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </DockPanel>
+
+</UserControl>

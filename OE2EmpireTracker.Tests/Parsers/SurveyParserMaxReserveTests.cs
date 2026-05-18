@@ -188,7 +188,7 @@ namespace OE2EmpireTracker.Tests.Parsers
 
         private static string ExtractFragment(string clipboardData)
         {
-            return BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboardData);
+            return ClipboardHelper.ExtractHtmlFragment(clipboardData);
         }
 
         private Survey ParseAsteroidSurvey()

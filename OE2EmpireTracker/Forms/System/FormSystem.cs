@@ -268,33 +268,39 @@ namespace OE2EmpireTracker.Forms
 
         private void BtnReimport_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show(
-                "Re-importing will overwrite all manual faction and infrastructure edits.\n\nAre you sure?",
-                "Confirm Re-import",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
-
-            if (result != DialogResult.Yes)
+            using (var openDialog = new OpenFileDialog())
             {
-                return;
-            }
+                openDialog.Title = "Select Galaxy Systems JSON File";
+                openDialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
+                openDialog.FileName = "oe2-galaxy-systems.json";
 
-            string sourcePath = "oe2-galaxy-systems.json";
-            string outputPath = SystemRepository.FilePath;
+                if (openDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
 
-            int count = SystemImporter.Import(sourcePath, outputPath);
-            if (count > 0)
-            {
-                _systemRepository.Load(outputPath);
-                Log.Info("Re-imported {0} systems", count);
-            }
-            else
-            {
-                MessageBox.Show(
-                    "Import returned 0 systems. Check that oe2-galaxy-systems.json exists.",
-                    "Import Warning",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                string sourcePath = openDialog.FileName;
+                string outputPath = SystemRepository.FilePath;
+
+                int count = SystemImporter.Import(sourcePath, outputPath);
+                if (count > 0)
+                {
+                    _systemRepository.Load(outputPath);
+                    Log.Info("Re-imported {0} systems from {1}", count, sourcePath);
+                    MessageBox.Show(
+                        $"Successfully imported {count} systems.",
+                        "Import Complete",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        $"Import returned 0 systems from:\n{sourcePath}\n\nCheck that the file contains valid galaxy data.",
+                        "Import Warning",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
             }
         }
     }

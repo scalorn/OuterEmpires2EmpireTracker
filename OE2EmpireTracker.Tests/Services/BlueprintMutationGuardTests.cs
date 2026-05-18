@@ -18,6 +18,9 @@ namespace OE2EmpireTracker.Tests.Services
         private static readonly string SourceRoot = Path.GetFullPath(
             Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker"));
 
+        private static readonly string CommonRoot = Path.GetFullPath(
+            Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker.Common"));
+
         /// <summary>
         /// No direct Blueprint entity mutation in form or ViewModel.
         /// Scans FormBlueprintV2 and BlueprintViewModel for patterns like
@@ -54,7 +57,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ViewModel_DoesNotExposeDataProperty()
         {
-            var filePath = Path.Combine(SourceRoot, "ViewModels", "BlueprintViewModel.cs");
+            var filePath = Path.Combine(CommonRoot, "ViewModels", "BlueprintViewModel.cs");
             var content = File.ReadAllText(filePath);
 
             Assert.That(content, Does.Not.Contain("public Blueprint Data"),

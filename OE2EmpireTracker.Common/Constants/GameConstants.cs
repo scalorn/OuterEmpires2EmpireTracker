@@ -183,5 +183,21 @@ namespace OE2EmpireTracker.Constants
                 default: return baseRate * PurityMultiplierLow;
             }
         }
+
+        /// <summary>
+        /// Normalizes abbreviated purity strings from game HTML to canonical form.
+        /// "hi" → "High", "med" → "Medium", "lo" → "Low". Passes through unknown values unchanged.
+        /// </summary>
+        public static string NormalizePurity(string purity)
+        {
+            if (string.IsNullOrEmpty(purity)) return purity;
+            switch (purity.ToLowerInvariant())
+            {
+                case "med": return PurityMedium;
+                case "hi": return PurityHigh;
+                case "lo": return PurityLow;
+                default: return purity;
+            }
+        }
     }
 }

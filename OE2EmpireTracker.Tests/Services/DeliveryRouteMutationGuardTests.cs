@@ -19,6 +19,9 @@ namespace OE2EmpireTracker.Tests.Services
         private static readonly string SourceRoot = Path.GetFullPath(
             Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker"));
 
+        private static readonly string CommonRoot = Path.GetFullPath(
+            Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker.Common"));
+
         /// <summary>
         /// Allowed files for direct DeliveryRoute scalar property sets (Name, UUID, OwnerUUID).
         /// </summary>
@@ -208,7 +211,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ViewModel_DoesNotExposeMutableDeliveryRoute()
         {
-            var filePath = Path.Combine(SourceRoot, "ViewModels", "DeliveryRouteViewModel.cs");
+            var filePath = Path.Combine(CommonRoot, "ViewModels", "DeliveryRouteViewModel.cs");
             var content = File.ReadAllText(filePath);
 
             Assert.That(content, Does.Not.Contain("public DeliveryRoute Data"),

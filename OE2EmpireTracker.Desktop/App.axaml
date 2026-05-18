@@ -1,0 +1,86 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             xmlns:views="using:OE2EmpireTracker.Desktop.Views"
+             x:Class="OE2EmpireTracker.Desktop.App"
+             RequestedThemeVariant="Default">
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://Dock.Avalonia.Themes.Fluent/DockFluentTheme.axaml" />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+    </Application.Styles>
+
+    <Application.DataTemplates>
+        <DataTemplate DataType="vm:NavigationViewModel">
+            <views:NavigationView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:AboutViewModel">
+            <views:AboutView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ColonyListViewModel">
+            <views:ColonyListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ColonyViewModel">
+            <views:ColonyView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:PlaceholderViewModel">
+            <views:PlaceholderView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:HelpViewModel">
+            <views:HelpView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:PreferencesViewModel">
+            <views:PreferencesView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SystemListViewModel">
+            <views:SystemListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ColonyActivityViewModel">
+            <views:ColonyActivityView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:MarketViewModel">
+            <views:MarketView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:AsteroidViewModel">
+            <views:AsteroidView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:PricingPlanViewModel">
+            <views:PricingPlanView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SupplyChainViewModel">
+            <views:SupplyChainView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ContactsViewModel">
+            <views:ContactsView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ShipTemplateViewModel">
+            <views:ShipTemplateView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ShipInstanceViewModel">
+            <views:ShipInstanceView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:StationViewModel">
+            <views:StationView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:PlayerProfileViewModel">
+            <views:PlayerProfileView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SurveyViewModel">
+            <views:SurveyView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:DeliveryExecutionViewModel">
+            <views:DeliveryExecutionView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:DeliveryRouteViewModel">
+            <views:DeliveryRouteView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:StockTargetsViewModel">
+            <views:StockTargetsView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ColonyDailyBuildViewModel">
+            <views:ColonyDailyBuildView />
+        </DataTemplate>
+    </Application.DataTemplates>
+
+</Application>

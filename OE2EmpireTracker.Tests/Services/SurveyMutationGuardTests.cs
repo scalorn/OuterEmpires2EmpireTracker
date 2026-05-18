@@ -19,6 +19,9 @@ namespace OE2EmpireTracker.Tests.Services
         private static readonly string SourceRoot = Path.GetFullPath(
             Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker"));
 
+        private static readonly string CommonRoot = Path.GetFullPath(
+            Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker.Common"));
+
         /// <summary>
         /// Allowed files for direct Survey property sets.
         /// </summary>
@@ -164,7 +167,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ViewModel_DoesNotExposeMutableSurvey()
         {
-            var filePath = Path.Combine(SourceRoot, "ViewModels", "SurveyViewModel.cs");
+            var filePath = Path.Combine(CommonRoot, "ViewModels", "SurveyViewModel.cs");
             var content = File.ReadAllText(filePath);
 
             Assert.That(content, Does.Not.Contain("public Survey Data"),

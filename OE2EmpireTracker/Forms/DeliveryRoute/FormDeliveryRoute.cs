@@ -37,6 +37,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         /// <summary>Parallel list of destination UUIDs matching cmbColony display items, for lookup via SelectedFullIndex.</summary>
         private List<string> _colonyPickerUUIDs = new List<string>();
 
+        /// <summary>Parallel list of ship UUIDs matching cmbShip display items.</summary>
+        private List<string> _shipPickerUUIDs = new List<string>();
+
+        private decimal _selectedShipFuelPerJAS = 0m;
+
         public FormDeliveryRoute()
         {
             // Guard against WindowStateHelper.RestoreState setting control values
@@ -63,6 +68,10 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             PopulateDestTypePicker();
             PopulateStopPurposePicker();
             PopulateColonyPicker();
+            PopulateShipPicker();
+            cmbShip.SelectedItemChanged += CmbShip_SelectedIndexChanged;
+            playerContext.ShipDataChanged += OnShipDataChanged;
+            playerContext.ShipTemplateDataChanged += OnShipTemplateDataChanged;
             cmbDestType.SelectedIndexChanged += (s, ev) => PopulateColonyPicker();
 
             cmdAddStop.Click += CmdAddStop_Click;
@@ -160,6 +169,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.DeliveryDataChanged -= OnDeliveryDataChanged;
+            playerContext.ShipDataChanged -= OnShipDataChanged;
+            playerContext.ShipTemplateDataChanged -= OnShipTemplateDataChanged;
             base.OnFormClosed(e);
         }
 
@@ -449,6 +460,112 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             Log.Info("PERF PopulateColonyPicker: {0}ms", sw.ElapsedMilliseconds);
         }
 
+        private void PopulateShipPicker()
+        {
+            var sw = Stopwatch.StartNew();
+            var ships = playerContext.ShipList.ToList();
+            _shipPickerUUIDs = ships.Select(s => s.UUID).ToList();
+            var displayNames = ships.Select(s => s.Name).ToList();
+            cmbShip.SetItems(displayNames, string.Empty);
+
+            // Compute fuel for the first ship (if any) since SetItems suppresses events
+            _selectedShipFuelPerJAS = 0m;
+            if (_shipPickerUUIDs.Count > 0)
+            {
+                var ship = playerContext.FindShip(_shipPickerUUIDs[0]);
+                if (ship != null)
+                {
+                    var hullBp = playerContext.FindBlueprint(ship.HullBlueprintUUID);
+                    if (hullBp != null)
+                    {
+                        var stats = ShipBuildService.ComputeStats(hullBp, ship.Components, uuid => playerContext.FindBlueprint(uuid));
+                        _selectedShipFuelPerJAS = stats.JumpFuelPerJAS;
+                        Log.Info("PopulateShipPicker: initial ship={0}, JumpFuelPerJAS={1}", ship.Name, _selectedShipFuelPerJAS);
+                    }
+                }
+            }
+
+            sw.Stop();
+            Log.Info("PERF PopulateShipPicker: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void CmbShip_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+
+            int idx = cmbShip.SelectedFullIndex;
+            Log.Info("CmbShip_SelectedIndexChanged: SelectedFullIndex={0}, _shipPickerUUIDs.Count={1}", idx, _shipPickerUUIDs.Count);
+            if (idx < 0 || idx >= _shipPickerUUIDs.Count)
+            {
+                _selectedShipFuelPerJAS = 0m;
+                PopulateStopsGrid();
+                return;
+            }
+
+            UpdateShipFuelRate(_shipPickerUUIDs[idx]);
+            PopulateStopsGrid();
+        }
+
+        private void OnShipDataChanged(object sender, ShipDataChangedEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => OnShipDataChanged(sender, e)));
+                return;
+            }
+
+            // Recompute fuel if the modified ship is the currently selected one
+            int idx = cmbShip.SelectedFullIndex;
+            if (idx >= 0 && idx < _shipPickerUUIDs.Count && _shipPickerUUIDs[idx] == e.ShipUUID)
+            {
+                UpdateShipFuelRate(e.ShipUUID);
+                PopulateStopsGrid();
+            }
+        }
+
+        private void OnShipTemplateDataChanged(object sender, ShipTemplateDataChangedEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => OnShipTemplateDataChanged(sender, e)));
+                return;
+            }
+
+            // Recompute fuel if the currently selected ship uses this template
+            int idx = cmbShip.SelectedFullIndex;
+            if (idx >= 0 && idx < _shipPickerUUIDs.Count)
+            {
+                var ship = playerContext.FindShip(_shipPickerUUIDs[idx]);
+                if (ship != null && ship.TemplateUUID == e.ShipTemplateUUID)
+                {
+                    UpdateShipFuelRate(ship.UUID);
+                    PopulateStopsGrid();
+                }
+            }
+        }
+
+        private void UpdateShipFuelRate(string shipUUID)
+        {
+            _selectedShipFuelPerJAS = 0m;
+            var ship = playerContext.FindShip(shipUUID);
+            if (ship == null)
+            {
+                Log.Warn("UpdateShipFuelRate: ship UUID {0} not found", shipUUID);
+                return;
+            }
+
+            var hullBp = playerContext.FindBlueprint(ship.HullBlueprintUUID);
+            if (hullBp == null)
+            {
+                Log.Warn("UpdateShipFuelRate: hull blueprint {0} not found for ship {1}", ship.HullBlueprintUUID, ship.Name);
+                return;
+            }
+
+            var stats = ShipBuildService.ComputeStats(hullBp, ship.Components, uuid => playerContext.FindBlueprint(uuid));
+            _selectedShipFuelPerJAS = stats.JumpFuelPerJAS;
+            Log.Info("Ship selected: {0}, JumpFuelPerJAS={1}", ship.Name, _selectedShipFuelPerJAS);
+        }
+
         /// <summary>
         /// Resolves a display name for a route stop based on its destination type.
         /// </summary>
@@ -490,6 +607,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             dgvStops.Rows.Clear();
+            string previousSystemName = null;
             foreach (var stop in viewModel.Stops)
             {
                 string destName = "(unknown)";
@@ -517,7 +635,49 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                     systemName = colony?.SystemName ?? string.Empty;
                 }
 
-                string fuelStr = stop.FuelEstimate > 0 ? stop.FuelEstimate.ToString("N1") : string.Empty;
+                string jasStr = string.Empty;
+                if (!string.IsNullOrEmpty(previousSystemName) && !string.IsNullOrEmpty(systemName))
+                {
+                    var repo = EmpireContext.GetInstance().SystemRepository;
+                    if (repo == null || repo.Count == 0)
+                    {
+                        Log.Debug("JAS calc: SystemRepository is null or empty");
+                    }
+                    else
+                    {
+                        var fromSystem = repo.FindByName(previousSystemName);
+                        var toSystem = repo.FindByName(systemName);
+                        Log.Debug(
+                            "JAS calc: from='{0}' ({1}) to='{2}' ({3})",
+                            previousSystemName,
+                            fromSystem != null ? "found" : "NOT FOUND",
+                            systemName,
+                            toSystem != null ? "found" : "NOT FOUND");
+                        if (fromSystem != null && toSystem != null)
+                        {
+                            int jas = DistanceCalculator.CalculateJas(fromSystem, toSystem);
+                            jasStr = jas >= 0 ? jas.ToString() : string.Empty;
+                        }
+                    }
+                }
+                else
+                {
+                    Log.Debug(
+                        "JAS calc: skipped — prev='{0}' curr='{1}'",
+                        previousSystemName ?? "(null)",
+                        systemName);
+                }
+
+                previousSystemName = systemName;
+
+                string fuelStr = string.Empty;
+                if (_selectedShipFuelPerJAS > 0 && !string.IsNullOrEmpty(jasStr))
+                {
+                    int jasValue = int.Parse(jasStr);
+                    decimal fuel = _selectedShipFuelPerJAS * jasValue;
+                    fuelStr = fuel.ToString("N1");
+                }
+
                 int rowIndex = dgvStops.Rows.Add(
                     stop.Sequence + 1,
                     destTypeStr,
@@ -525,7 +685,8 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                     planetName,
                     systemName,
                     stop.Purpose.ToString(),
-                    fuelStr);
+                    fuelStr,
+                    jasStr);
                 dgvStops.Rows[rowIndex].Tag = stop;
             }
 

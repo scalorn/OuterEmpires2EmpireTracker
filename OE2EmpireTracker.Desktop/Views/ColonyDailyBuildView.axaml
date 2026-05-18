@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.ColonyDailyBuildView"
+             x:DataType="vm:ColonyDailyBuildViewModel">
+  <DataGrid ItemsSource="{Binding Items}"
+            AutoGenerateColumns="False"
+            IsReadOnly="True"
+            CanUserReorderColumns="True"
+            CanUserResizeColumns="True"
+            CanUserSortColumns="True">
+    <DataGrid.Columns>
+      <DataGridTextColumn Header="Plan" Binding="{Binding PlanName}" Width="*" />
+      <DataGridTextColumn Header="Item" Binding="{Binding ItemName}" Width="*" />
+      <DataGridTextColumn Header="Qty" Binding="{Binding Quantity}" Width="80" />
+      <DataGridTextColumn Header="Destination" Binding="{Binding Destination}" Width="*" />
+    </DataGrid.Columns>
+  </DataGrid>
+</UserControl>

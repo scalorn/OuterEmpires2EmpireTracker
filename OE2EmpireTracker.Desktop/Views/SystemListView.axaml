@@ -1,0 +1,152 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             xmlns:ctrl="using:OE2EmpireTracker.Desktop.Controls"
+             x:Class="OE2EmpireTracker.Desktop.Views.SystemListView"
+             x:DataType="vm:SystemListViewModel">
+
+    <DockPanel Margin="8">
+        <!-- Header -->
+        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+            <TextBlock Text="Star Systems"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="8">
+                <Button Content="Re-import"
+                        Command="{Binding ReimportCommand}" />
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Search -->
+        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+            <TextBlock Text="Search:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,8,0" />
+            <TextBox Text="{Binding SearchText}"
+                     Watermark="Filter by name..."
+                     MinWidth="200" />
+        </DockPanel>
+
+        <!-- Status bar -->
+        <TextBlock DockPanel.Dock="Bottom"
+                   Text="{Binding StatusMessage}"
+                   Margin="0,4,0,0"
+                   FontSize="12"
+                   Opacity="0.7" />
+
+        <!-- Main content: list + detail -->
+        <Grid ColumnDefinitions="*,8,320">
+            <!-- System list -->
+            <DataGrid Grid.Column="0"
+                      ItemsSource="{Binding Systems}"
+                      SelectedItem="{Binding SelectedSystem}"
+                      AutoGenerateColumns="False"
+                      CanUserReorderColumns="True"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      IsReadOnly="True"
+                      GridLinesVisibility="Horizontal"
+                      SelectionMode="Single"
+                      HeadersVisibility="Column"
+                      ctrl:DataGridPersistence.GridId="Systems">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name"
+                                        Binding="{Binding SystemName}"
+                                        Width="200" />
+                    <DataGridTextColumn Header="Quadrant"
+                                        Binding="{Binding Quadrant}"
+                                        Width="80" />
+                    <DataGridTextColumn Header="Sector"
+                                        Binding="{Binding Sector}"
+                                        Width="80" />
+                    <DataGridTextColumn Header="Class"
+                                        Binding="{Binding SpectralClass}"
+                                        Width="60" />
+                    <DataGridTextColumn Header="Faction"
+                                        Binding="{Binding FactionName}"
+                                        Width="120" />
+                    <DataGridCheckBoxColumn Header="Port"
+                                            Binding="{Binding HasSpaceport}"
+                                            Width="50" />
+                    <DataGridCheckBoxColumn Header="Base"
+                                            Binding="{Binding HasStarbase}"
+                                            Width="50" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1"
+                          ResizeDirection="Columns"
+                          Background="Transparent" />
+
+            <!-- Detail panel -->
+            <Border Grid.Column="2"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="12"
+                    IsVisible="{Binding HasSelection}">
+                <ScrollViewer>
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="System Details"
+                                   FontSize="16"
+                                   FontWeight="SemiBold" />
+
+                        <!-- Read-only fields -->
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Name" FontWeight="SemiBold" FontSize="12" />
+                            <TextBlock Text="{Binding DetailName}" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Coordinates (X, Y)" FontWeight="SemiBold" FontSize="12" />
+                            <TextBlock Text="{Binding DetailCoordinates}" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Quadrant" FontWeight="SemiBold" FontSize="12" />
+                            <TextBlock Text="{Binding DetailQuadrant}" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Sector" FontWeight="SemiBold" FontSize="12" />
+                            <TextBlock Text="{Binding DetailSector}" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Spectral Class" FontWeight="SemiBold" FontSize="12" />
+                            <TextBlock Text="{Binding DetailSpectralClass}" />
+                        </StackPanel>
+
+                        <Separator Margin="0,8" />
+
+                        <!-- Editable fields -->
+                        <TextBlock Text="Editable Properties"
+                                   FontSize="14"
+                                   FontWeight="SemiBold" />
+
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Faction Name" FontWeight="SemiBold" FontSize="12" />
+                            <TextBox Text="{Binding EditFactionName}" />
+                        </StackPanel>
+
+                        <CheckBox Content="Has Spaceport"
+                                  IsChecked="{Binding EditHasSpaceport}" />
+
+                        <CheckBox Content="Has Starbase"
+                                  IsChecked="{Binding EditHasStarbase}" />
+
+                        <Button Content="Save"
+                                Command="{Binding SaveSystemCommand}"
+                                HorizontalAlignment="Left"
+                                Margin="0,8,0,0" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </DockPanel>
+
+</UserControl>

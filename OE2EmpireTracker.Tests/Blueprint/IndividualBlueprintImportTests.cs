@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_StatsHtml_ExtractsName()
         {
             string raw = LoadTestData("IndivudalBPWSMS-LL9Stats.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
 
             _scanner.ProcessHtml(bp, html);
@@ -48,7 +48,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_StatsHtml_ExtractsBlueprintType()
         {
             string raw = LoadTestData("IndivudalBPWSMS-LL9Stats.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
 
             _scanner.ProcessHtml(bp, html);
@@ -63,7 +63,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_StatsHtml_ExtractsTechLevel()
         {
             string raw = LoadTestData("IndivudalBPWSMS-LL9Stats.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
 
             _scanner.ProcessHtml(bp, html);
@@ -75,7 +75,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_StatsHtml_ExtractsEvolution()
         {
             string raw = LoadTestData("IndivudalBPWSMS-LL9Stats.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
 
             _scanner.ProcessHtml(bp, html);
@@ -87,7 +87,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_StatsHtml_ExtractsDescription()
         {
             string raw = LoadTestData("IndivudalBPWSMS-LL9Stats.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
 
             _scanner.ProcessHtml(bp, html);
@@ -99,7 +99,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_StatsHtml_ExtractsProperties()
         {
             string raw = LoadTestData("IndivudalBPWSMS-LL9Stats.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
 
             _scanner.ProcessHtml(bp, html);
@@ -114,7 +114,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_StatsHtml_ExtractsClass()
         {
             string raw = LoadTestData("IndivudalBPWSMS-LL9Stats.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
 
             _scanner.ProcessHtml(bp, html);
@@ -130,7 +130,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_ResourcesHtml_ExtractsResources()
         {
             string raw = LoadTestData("IndivudalBPWSMS-LL9Resources.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
 
             _scanner.ProcessHtml(bp, html);
@@ -145,7 +145,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_ResourcesHtml_ExtractsName()
         {
             string raw = LoadTestData("IndivudalBPWSMS-LL9Resources.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
 
             _scanner.ProcessHtml(bp, html);
@@ -157,7 +157,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         public void IndividualBlueprintImport_ResourcesHtml_ContainsHeavyNobleGases()
         {
             string raw = LoadTestData("IndivudalBPWSMS-LL9Resources.html");
-            string html = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string html = ClipboardHelper.ExtractHtmlFragment(raw);
             var bp = new OE2EmpireTracker.Models.Blueprint();
 
             _scanner.ProcessHtml(bp, html);
@@ -180,7 +180,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             // First import: Stats page (sets name, properties, type)
             string rawStats = LoadTestData("IndivudalBPWSMS-LL9Stats.html");
-            string htmlStats = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(rawStats);
+            string htmlStats = ClipboardHelper.ExtractHtmlFragment(rawStats);
             _scanner.ProcessHtml(bp, htmlStats);
 
             Assert.That(
@@ -190,7 +190,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
 
             // Second import: Resources page (adds resources, should NOT clear type)
             string rawRes = LoadTestData("IndivudalBPWSMS-LL9Resources.html");
-            string htmlRes = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(rawRes);
+            string htmlRes = ClipboardHelper.ExtractHtmlFragment(rawRes);
             _scanner.ProcessHtml(bp, htmlRes);
 
             Assert.That(
@@ -230,7 +230,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
             // The key point is that extraction is the correct approach -- it
             // matches what cmdImportMarket_Click already does.
             // We just verify the extracted path produces the correct name.
-            string rawExtracted = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(raw);
+            string rawExtracted = ClipboardHelper.ExtractHtmlFragment(raw);
             var bpClean = new OE2EmpireTracker.Models.Blueprint();
             _scanner.ProcessHtml(bpClean, rawExtracted);
 

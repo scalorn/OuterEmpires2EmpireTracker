@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OE2EmpireTracker.Server.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OE2EmpireTracker.Common", "OE2EmpireTracker.Common\OE2EmpireTracker.Common.csproj", "{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OE2EmpireTracker.Desktop", "OE2EmpireTracker.Desktop\OE2EmpireTracker.Desktop.csproj", "{C785220D-9253-4B9E-B1A7-4C6091514831}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Release|x64.Build.0 = Release|Any CPU
 		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Release|x86.ActiveCfg = Release|Any CPU
 		{7790CCF1-E9FD-46FE-A368-B75C15CC13E6}.Release|x86.Build.0 = Release|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Debug|x64.Build.0 = Debug|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Debug|x86.Build.0 = Debug|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Release|x64.ActiveCfg = Release|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Release|x64.Build.0 = Release|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Release|x86.ActiveCfg = Release|Any CPU
+		{C785220D-9253-4B9E-B1A7-4C6091514831}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

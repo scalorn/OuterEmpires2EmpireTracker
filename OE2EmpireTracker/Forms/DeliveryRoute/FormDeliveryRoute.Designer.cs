@@ -46,6 +46,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.colSystemName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPurpose = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colFuelEstimate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colJasDistance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.flpAddStop = new System.Windows.Forms.FlowLayoutPanel();
             this.lblAddStop = new System.Windows.Forms.Label();
             this.cmbColony = new OE2EmpireTracker.Controls.FilteredTextComboSet();
@@ -96,6 +97,9 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.flpPlanName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPlanNameLabel = new System.Windows.Forms.Label();
             this.txtPlanName = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpShipPicker = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblShip = new System.Windows.Forms.Label();
+            this.cmbShip = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdNew = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
@@ -107,6 +111,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.flpRouteName.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStops)).BeginInit();
             this.flpAddStop.SuspendLayout();
+            this.flpShipPicker.SuspendLayout();
             this.flpCommands.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -168,6 +173,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             // flpRouteData
             // 
             this.flpRouteData.Controls.Add(this.flpRouteName);
+            this.flpRouteData.Controls.Add(this.flpShipPicker);
             this.flpRouteData.Controls.Add(this.tabRouteDetail);
             this.flpRouteData.Controls.Add(this.flpCommands);
             this.flpRouteData.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
@@ -218,14 +224,14 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.colPlanetName,
             this.colSystemName,
             this.colPurpose,
-            this.colFuelEstimate});
-            this.dgvStops.Location = new System.Drawing.Point(2, 32);
+            this.colFuelEstimate,
+            this.colJasDistance});
+            this.dgvStops.Location = new System.Drawing.Point(2, 2);
             this.dgvStops.Margin = new System.Windows.Forms.Padding(2);
             this.dgvStops.Name = "dgvStops";
             this.dgvStops.ReadOnly = true;
             this.dgvStops.RowHeadersVisible = false;
             this.dgvStops.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvStops.Size = new System.Drawing.Size(630, 400);
             this.dgvStops.TabIndex = 1;
             // 
             // colSequence
@@ -276,6 +282,13 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.colFuelEstimate.Name = "colFuelEstimate";
             this.colFuelEstimate.ReadOnly = true;
             this.colFuelEstimate.Width = 60;
+            // 
+            // colJasDistance
+            // 
+            this.colJasDistance.HeaderText = "JAS";
+            this.colJasDistance.Name = "colJasDistance";
+            this.colJasDistance.ReadOnly = true;
+            this.colJasDistance.Width = 50;
             // 
             // tabRouteDetail
             // 
@@ -640,6 +653,32 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.cmdRemovePickUp.Text = "Remove";
             this.cmdRemovePickUp.UseVisualStyleBackColor = true;
             // 
+            // flpShipPicker
+            // 
+            this.flpShipPicker.Controls.Add(this.lblShip);
+            this.flpShipPicker.Controls.Add(this.cmbShip);
+            this.flpShipPicker.Margin = new System.Windows.Forms.Padding(2);
+            this.flpShipPicker.Name = "flpShipPicker";
+            this.flpShipPicker.Size = new System.Drawing.Size(630, 28);
+            this.flpShipPicker.TabIndex = 0;
+            // 
+            // lblShip
+            // 
+            this.lblShip.Location = new System.Drawing.Point(2, 4);
+            this.lblShip.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblShip.Name = "lblShip";
+            this.lblShip.Size = new System.Drawing.Size(80, 17);
+            this.lblShip.TabIndex = 0;
+            this.lblShip.Text = "Ship:";
+            this.lblShip.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbShip
+            // 
+            this.cmbShip.Location = new System.Drawing.Point(87, 3);
+            this.cmbShip.Name = "cmbShip";
+            this.cmbShip.Size = new System.Drawing.Size(250, 21);
+            this.cmbShip.TabIndex = 1;
+            // 
             // flpAddStop
             // 
             this.flpAddStop.Controls.Add(this.chkPreventDuplicates);
@@ -852,6 +891,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
             this.flpRouteName.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStops)).EndInit();
             this.flpAddStop.ResumeLayout(false);
+            this.flpShipPicker.ResumeLayout(false);
             this.flpCommands.ResumeLayout(false);
             this.ResumeLayout(false);
         }
@@ -876,6 +916,7 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private System.Windows.Forms.DataGridViewTextBoxColumn colSystemName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPurpose;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFuelEstimate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colJasDistance;
         private System.Windows.Forms.FlowLayoutPanel flpAddStop;
         private System.Windows.Forms.Label lblAddStop;
         private OE2EmpireTracker.Controls.FilteredTextComboSet cmbColony;
@@ -930,6 +971,9 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
         private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;
+        private System.Windows.Forms.FlowLayoutPanel flpShipPicker;
+        private System.Windows.Forms.Label lblShip;
+        private OE2EmpireTracker.Controls.FilteredTextComboSet cmbShip;
         private System.Windows.Forms.ContextMenuStrip cmsStops;
         private System.Windows.Forms.ToolStripMenuItem tsmiAddStop;
         private System.Windows.Forms.ToolStripMenuItem tsmiMoveUpStop;

@@ -21,7 +21,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 "</body>\r\n" +
                 "</html>";
 
-            string result = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboard);
+            string result = ClipboardHelper.ExtractHtmlFragment(clipboard);
 
             Assert.That(result, Is.EqualTo("<p>Hello World</p>"));
         }
@@ -61,7 +61,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
                 $"EndFragment:{endByte.ToString("D10")}\r\n";
             clipboard = correctedHeader + body;
 
-            string result = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboard);
+            string result = ClipboardHelper.ExtractHtmlFragment(clipboard);
 
             Assert.That(result, Is.EqualTo("<p>Fallback Test</p>"));
         }
@@ -71,7 +71,7 @@ namespace OE2EmpireTracker.Tests.Blueprint
         {
             string clipboard = "<html><body><p>No clipboard header at all</p></body></html>";
 
-            string result = BlueprintScanner.ExtractHtmlFragmentFromClipboardData(clipboard);
+            string result = ClipboardHelper.ExtractHtmlFragment(clipboard);
 
             Assert.That(result, Does.StartWith("ERROR"));
         }

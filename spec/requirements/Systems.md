@@ -40,7 +40,7 @@ The SystemRepository SHALL provide methods to find systems with spaceport, starb
 The SystemRepository SHALL provide methods to find systems by faction and summarize faction territories.
 
 ### REQ-SYS-008: Data Import
-The SystemImporter SHALL import from oe2-galaxy-systems.json, mapping fields and converting int flags to booleans.
+The SystemImporter SHALL import from a user-selected JSON file (via OpenFileDialog), mapping fields and converting int flags to booleans. The file dialog SHALL default to "oe2-galaxy-systems.json" filter.
 
 ### REQ-SYS-009: Serialization Round-Trip
 Serialization with DefaultValueHandling.Ignore SHALL preserve all data through round-trip.

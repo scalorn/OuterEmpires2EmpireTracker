@@ -19,6 +19,9 @@ namespace OE2EmpireTracker.Tests.Services
         private static readonly string SourceRoot = Path.GetFullPath(
             Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker"));
 
+        private static readonly string CommonRoot = Path.GetFullPath(
+            Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker.Common"));
+
         private static readonly HashSet<string> AllowedScalarMutators = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "ShipService.cs",
@@ -119,7 +122,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ViewModel_DoesNotDirectlyMutateShipEntity()
         {
-            var filePath = Path.Combine(SourceRoot, "ViewModels", "ShipViewModel.cs");
+            var filePath = Path.Combine(CommonRoot, "ViewModels", "ShipViewModel.cs");
             var content = File.ReadAllText(filePath);
             Assert.That(content, Does.Not.Contain("public Ship Data"), "ViewModel still exposes mutable Data property");
             Assert.That(content, Does.Not.Contain("public Ship _"), "ViewModel still exposes mutable Ship field");

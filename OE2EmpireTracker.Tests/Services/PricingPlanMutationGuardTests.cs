@@ -18,6 +18,9 @@ namespace OE2EmpireTracker.Tests.Services
         private static readonly string SourceRoot = Path.GetFullPath(
             Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker"));
 
+        private static readonly string CommonRoot = Path.GetFullPath(
+            Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "OE2EmpireTracker.Common"));
+
         /// <summary>
         /// Requirement 17.1, 17.2: No direct PricingPlan entity mutation in form or ViewModel.
         /// Scans FormPricingPlan.cs and PricingPlanViewModel.cs for patterns like
@@ -55,7 +58,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void ViewModel_DoesNotExposeMutablePricingPlan()
         {
-            var filePath = Path.Combine(SourceRoot, "ViewModels", "PricingPlanViewModel.cs");
+            var filePath = Path.Combine(CommonRoot, "ViewModels", "PricingPlanViewModel.cs");
             var content = File.ReadAllText(filePath);
 
             Assert.That(content, Does.Not.Contain("public PricingPlan Data"),

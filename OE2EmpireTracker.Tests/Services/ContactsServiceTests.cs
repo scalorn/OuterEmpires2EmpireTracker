@@ -14,7 +14,6 @@ namespace OE2EmpireTracker.Tests.Services
         [SetUp]
         public void SetUp()
         {
-            PlayerContext.SuppressUI = true;
             PlayerContext.FilePath = string.Empty;
             _ctx = new PlayerContext(new PlayerRoot());
             _svc = new ContactsService(_ctx);

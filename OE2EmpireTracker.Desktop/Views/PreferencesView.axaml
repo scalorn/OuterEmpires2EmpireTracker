@@ -1,0 +1,121 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.PreferencesView"
+             x:DataType="vm:PreferencesViewModel">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="24" MaxWidth="500">
+            <TextBlock Text="Preferences" FontSize="20" FontWeight="SemiBold" />
+
+            <!-- Theme -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Theme" FontWeight="SemiBold" />
+                <ComboBox ItemsSource="{Binding ThemeOptions}"
+                          SelectedIndex="{Binding SelectedThemeIndex}"
+                          MinWidth="200" />
+            </StackPanel>
+
+            <!-- Structure Count Thresholds -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Structure Count Thresholds" FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,Auto" RowSpacing="4">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Yellow Warning"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                             Text="{Binding StructureCountYellow}"
+                             MinWidth="120" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Red Warning"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1"
+                             Text="{Binding StructureCountRed}"
+                             MinWidth="120" />
+                </Grid>
+            </StackPanel>
+
+            <!-- Worker Request Due Window -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Worker Request Due Window" FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,Auto" RowSpacing="4">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Yellow Warning"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                             Text="{Binding WorkerRequestDueYellow}"
+                             MinWidth="180" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Red Warning"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1"
+                             Text="{Binding WorkerRequestDueRed}"
+                             MinWidth="180" />
+                </Grid>
+            </StackPanel>
+
+            <!-- Colony Import Staleness -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Colony Import Staleness" FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,Auto" RowSpacing="4">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Yellow Warning"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                             Text="{Binding ColonyImportStalenessYellow}"
+                             MinWidth="180" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Red Warning"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1"
+                             Text="{Binding ColonyImportStalenessRed}"
+                             MinWidth="180" />
+                </Grid>
+            </StackPanel>
+
+            <!-- Background Processing -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Background Processing" FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="150,*" RowDefinitions="Auto" RowSpacing="4">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Interval"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                             Text="{Binding BackgroundProcessingInterval}"
+                             MinWidth="180" />
+                </Grid>
+            </StackPanel>
+
+            <!-- Administration Report -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Administration Report" FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="150,*" RowDefinitions="Auto" RowSpacing="4">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Refresh Interval"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                             Text="{Binding AdminReportRefresh}"
+                             MinWidth="180" />
+                </Grid>
+            </StackPanel>
+
+            <!-- Countdown Display -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Countdown Display" FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="150,*" RowDefinitions="Auto" RowSpacing="4">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Refresh Rate"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                             Text="{Binding CountdownDisplayRefresh}"
+                             MinWidth="180" />
+                </Grid>
+            </StackPanel>
+
+            <!-- Validation Error -->
+            <TextBlock Text="{Binding ValidationError}"
+                       Foreground="Red"
+                       IsVisible="{Binding ValidationError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                       TextWrapping="Wrap" />
+
+            <!-- Buttons -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,16,0,0">
+                <Button Content="OK" Command="{Binding OkCommand}" MinWidth="80" />
+                <Button Content="Cancel" Command="{Binding CancelCommand}" MinWidth="80" />
+                <Button Content="Reset to Defaults" Command="{Binding ResetToDefaultsCommand}" MinWidth="130" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

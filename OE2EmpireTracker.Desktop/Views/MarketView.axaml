@@ -1,0 +1,121 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             xmlns:ctrl="using:OE2EmpireTracker.Desktop.Controls"
+             x:Class="OE2EmpireTracker.Desktop.Views.MarketView"
+             x:DataType="vm:MarketViewModel">
+
+    <DockPanel Margin="8">
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Market"
+                   FontSize="20"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,12" />
+
+        <TabControl>
+            <!-- Listings Tab -->
+            <TabItem Header="Listings">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Bottom"
+                                Orientation="Horizontal"
+                                Margin="0,8,0,0"
+                                Spacing="8">
+                        <Button Content="Record Sale"
+                                Command="{Binding RecordSaleCommand}" />
+                        <Button Content="Record Purchase"
+                                Command="{Binding RecordPurchaseCommand}" />
+                    </StackPanel>
+
+                    <DataGrid ItemsSource="{Binding Listings}"
+                              SelectedItem="{Binding SelectedListing}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="True"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              SelectionMode="Single"
+                              HeadersVisibility="Column"
+                              ctrl:DataGridPersistence.GridId="MarketListings">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Item"
+                                                Binding="{Binding ItemName}"
+                                                Width="200" />
+                            <DataGridTextColumn Header="Quantity"
+                                                Binding="{Binding Quantity}"
+                                                Width="100" />
+                            <DataGridTextColumn Header="Price"
+                                                Binding="{Binding Price, StringFormat={}{0:N2}}"
+                                                Width="100" />
+                            <DataGridTextColumn Header="Station"
+                                                Binding="{Binding StationName}"
+                                                Width="180" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <!-- Transactions Tab -->
+            <TabItem Header="Transactions">
+                <DataGrid ItemsSource="{Binding MarketTransactions}"
+                          AutoGenerateColumns="False"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          IsReadOnly="True"
+                          GridLinesVisibility="Horizontal"
+                          SelectionMode="Single"
+                          HeadersVisibility="Column"
+                          ctrl:DataGridPersistence.GridId="MarketTransactions">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Type"
+                                            Binding="{Binding TransactionType}"
+                                            Width="80" />
+                        <DataGridTextColumn Header="Item"
+                                            Binding="{Binding ItemName}"
+                                            Width="180" />
+                        <DataGridTextColumn Header="Qty"
+                                            Binding="{Binding Quantity}"
+                                            Width="80" />
+                        <DataGridTextColumn Header="Price"
+                                            Binding="{Binding PricePerUnit, StringFormat={}{0:N2}}"
+                                            Width="100" />
+                        <DataGridTextColumn Header="Total"
+                                            Binding="{Binding TotalPrice, StringFormat={}{0:N2}}"
+                                            Width="100" />
+                        <DataGridTextColumn Header="Counterparty"
+                                            Binding="{Binding Counterparty}"
+                                            Width="150" />
+                        <DataGridTextColumn Header="Date"
+                                            Binding="{Binding Timestamp}"
+                                            Width="160" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Summary Tab -->
+            <TabItem Header="Summary">
+                <StackPanel Margin="12" Spacing="12">
+                    <TextBlock Text="Market Summary"
+                               FontSize="16"
+                               FontWeight="SemiBold" />
+                    <StackPanel Spacing="6">
+                        <TextBlock>
+                            <Run Text="Total Sales: " FontWeight="SemiBold" />
+                            <Run Text="{Binding TotalSales, StringFormat={}{0:N2}}" />
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Total Purchases: " FontWeight="SemiBold" />
+                            <Run Text="{Binding TotalPurchases, StringFormat={}{0:N2}}" />
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Net P&amp;L: " FontWeight="SemiBold" />
+                            <Run Text="{Binding NetProfitLoss, StringFormat={}{0:N2}}" />
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+
+</UserControl>

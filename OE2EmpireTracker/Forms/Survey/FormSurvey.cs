@@ -114,7 +114,7 @@ namespace OE2EmpireTracker.Forms.Survey
             DataGridViewComboBoxColumn cmbPurity = (DataGridViewComboBoxColumn)dgvResources.Columns["Purity"];
             cmbPurity.DisplayMember = "Name";
             cmbPurity.ValueMember = "Name";
-            cmbPurity.DataSource = empireContext.BindingSourceResourcePurity;
+            cmbPurity.DataSource = empireContext.ResourcePurityList.ToList();
 
             dgvResources.DataError += (s, ev) =>
             {
@@ -1400,8 +1400,11 @@ namespace OE2EmpireTracker.Forms.Survey
                 }
 
                 Log.Info("Survey import started from clipboard");
+                Log.Info("Survey clipboard data length: {0}", clipboardData.Length);
+
                 var parser = new SurveyParser();
-                var tempSurvey = parser.ParseClipboardToTemp(out string extractedHtml);
+                var tempSurvey = new Models.Survey();
+                parser.ProcessHtml(tempSurvey, htmlFragment);
 
                 if (tempSurvey == null)
                 {

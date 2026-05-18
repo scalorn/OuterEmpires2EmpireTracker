@@ -1,0 +1,84 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+        xmlns:idc="using:Dock.Avalonia.Controls"
+        x:Class="OE2EmpireTracker.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="{Binding WindowTitle}"
+        Width="1280" Height="800"
+        WindowStartupLocation="CenterScreen">
+
+    <DockPanel>
+        <!-- Menu Bar + Player Selector -->
+        <DockPanel DockPanel.Dock="Top">
+            <Menu DockPanel.Dock="Left">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_New" Command="{Binding NewFileCommand}" InputGesture="Ctrl+N" />
+                    <MenuItem Header="_Open Player Data..." Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O" />
+                    <Separator />
+                    <MenuItem Header="_Save" Command="{Binding SaveFileCommand}" InputGesture="Ctrl+S" />
+                    <MenuItem Header="Save _As..." Command="{Binding SaveFileAsCommand}" InputGesture="Ctrl+Shift+S" />
+                    <Separator />
+                    <MenuItem Header="_Preferences..." Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="Preferences" />
+                    <Separator />
+                    <MenuItem Header="E_xit" Command="{Binding ExitCommand}" InputGesture="Alt+F4" />
+                </MenuItem>
+                <MenuItem Header="_Manage">
+                    <MenuItem Header="Manage _Asteroids" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="AsteroidList" />
+                    <MenuItem Header="Manage _Blueprints" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="BlueprintList" />
+                    <MenuItem Header="Manage B_uild Plans" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="BuildPlanList" />
+                    <MenuItem Header="Manage _Colonies" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="ColonyList" />
+                    <MenuItem Header="Manage Colony _Activity" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="ColonyActivity" />
+                    <MenuItem Header="Manage Co_ntacts" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="ContactsList" />
+                    <MenuItem Header="Manage _Delivery Routes" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="DeliveryList" />
+                    <MenuItem Header="Manage _Market" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="MarketList" />
+                    <MenuItem Header="Manage _Pricing Plans" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="PricingPlanList" />
+                    <MenuItem Header="Manage P_rofile" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="Profile" />
+                    <MenuItem Header="Manage St_ations" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="StationList" />
+                    <MenuItem Header="Manage Stoc_k Targets" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="StockTargets" />
+                    <MenuItem Header="Manage S_upply Chains" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="SupplyChainList" />
+                    <MenuItem Header="Manage Su_rveys" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="SurveyList" />
+                    <MenuItem Header="Manage S_ystems" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="SystemList" />
+                </MenuItem>
+                <MenuItem Header="_Window">
+                    <MenuItem Header="_Close All Tabs" Command="{Binding CloseAllTabsCommand}" />
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="_Help Topics" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="Help" />
+                    <MenuItem Header="_About" Command="{Binding OpenDocumentFromMenuCommand}" CommandParameter="About" />
+                </MenuItem>
+            </Menu>
+
+            <!-- Player Selector (right-aligned in toolbar area) -->
+            <StackPanel DockPanel.Dock="Right"
+                        Orientation="Horizontal"
+                        Spacing="8"
+                        Margin="8,2"
+                        VerticalAlignment="Center">
+                <TextBlock Text="Player:" VerticalAlignment="Center" Opacity="0.7" />
+                <ComboBox ItemsSource="{Binding PlayerProfiles}"
+                          SelectedItem="{Binding SelectedPlayer}"
+                          MinWidth="180"
+                          DisplayMemberBinding="{Binding Name}" />
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Status Bar -->
+        <Border DockPanel.Dock="Bottom"
+                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                Padding="8,4">
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <TextBlock Text="{Binding NextProcessCountdown}"
+                           VerticalAlignment="Center"
+                           Foreground="{Binding StatusForeground}" />
+                <TextBlock Text="{Binding MemoryUsage}"
+                           VerticalAlignment="Center"
+                           Opacity="0.7" />
+            </StackPanel>
+        </Border>
+
+        <!-- Dock Layout -->
+        <idc:DockControl Layout="{Binding Layout}" />
+    </DockPanel>
+
+</Window>

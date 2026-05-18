@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OE2EmpireTracker.Desktop.ViewModels"
+             x:Class="OE2EmpireTracker.Desktop.Views.ColonyListView"
+             x:DataType="vm:ColonyListViewModel">
+
+    <DockPanel Margin="8">
+        <!-- Header -->
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Colonies"
+                   FontSize="20"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,12" />
+
+        <!-- DataGrid — the key smoke test component -->
+        <DataGrid ItemsSource="{Binding Colonies}"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="True"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  IsReadOnly="False"
+                  GridLinesVisibility="Horizontal"
+                  SelectionMode="Single"
+                  HeadersVisibility="Column">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Colony Name"
+                                    Binding="{Binding ColonyName}"
+                                    Width="200" />
+                <DataGridTextColumn Header="Planet"
+                                    Binding="{Binding PlanetName}"
+                                    Width="150" />
+                <DataGridTextColumn Header="System"
+                                    Binding="{Binding SystemName}"
+                                    Width="150" />
+                <DataGridTextColumn Header="Structures"
+                                    Binding="{Binding StructureCount}"
+                                    Width="90" />
+                <DataGridTextColumn Header="Last Import"
+                                    Binding="{Binding LastImport}"
+                                    Width="150" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+
+</UserControl>

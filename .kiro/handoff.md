@@ -1,55 +1,75 @@
-# Session Handoff — 2026-05-15
+# Session Handoff — 2026-05-16 (continued)
 
-## Next Task
+## Branch: net8maui (59 commits, all backed up to 3 remotes)
 
-Create a branch `net8maui` and start a spec for porting the WinForms client to .NET 8 + MAUI for cross-platform support (Windows, macOS, potentially iOS/Android).
+## What Was Done This Session
 
-### Steps to execute:
-1. `git checkout -b net8maui` from mainline
-2. Create `.kiro/specs/net8-maui-port/` with requirements.md, design.md, tasks.md
-3. Start with requirements — the user wants to iterate on this spec
+### Service Migration to Common — 31 services moved
 
-### Key context for the spec:
-- The current client is .NET Framework 4.8.1 + WinForms (Windows-only)
-- `OE2EmpireTracker.Common` is already .NET Standard 2.0 — shared between client and server, no porting needed
-- `OE2EmpireTracker.Server` is already .NET 8 — no porting needed
-- Only the `OE2EmpireTracker` (client/tool) project needs porting
-- The user wants macOS support — that's the primary driver
-- MAUI was chosen over Avalonia (user's decision)
+**Batch 1 (6 pure-logic services):**
+- EvolutionChainService.cs → Common/Services/
+- QueueCalculator.cs → Common/Services/
+- DistanceCalculator.cs → Common/Services/
+- YieldDistributionService.cs → Common/Services/
+- SystemImporter.cs → Common/Services/
+- CountdownFormatParser.cs → Common/Parsers/
 
-### Architecture considerations:
-- Common library (Models, Services, Constants) stays as-is — already cross-platform
-- ViewModels may need adaptation (WinForms BindingSource → MAUI data binding)
-- Forms (40+ WinForms forms with Designer.cs files) need complete UI rewrite in XAML
-- Custom controls (FilteredTextComboSet, DataEntryGridView, ValidatedTextBox, DataGridViewFilteredComboBoxColumn) need MAUI equivalents
-- Parsers (HTML scraping) stay as-is — no UI dependency
-- Client/ (RemoteFactionClient, SyncManager, etc.) stays as-is — pure networking
-- Persistence (SafeFileWriter, WindowStateHelper) needs platform adaptation
-- NLog → Microsoft.Extensions.Logging (or keep NLog with MAUI target)
-- packages.config → PackageReference (required for .NET 8)
+**Batch 2 (25 services referencing PlayerContext/EmpireContext):**
+- PlayerProfileService, DeliveryRouteService, DeliveryPlanService
+- PricingPlanService, BuildPlanMutationService, BuildPlanService
+- StationService, ShipTemplateService, ShipService
+- StockTargetMutationService, StockTargetService
+- SupplyChainMutationService, SupplyChainService
+- ContactsService, AsteroidService, ResourceCheckService
+- DeliveryGenerationService, DeliveryFulfillment
+- ColonyActivityCollector, ColonyInactivityCollector
+- AutoAssignService, MarketListingService
+- BlueprintReferenceCounter, ColonyReferenceCounter, SurveyReferenceCounter
 
-### Risk areas to document:
-- MAUI DataGrid maturity (WinForms DataGridView is heavily used)
-- MDI (Multiple Document Interface) — MAUI doesn't have MDI; need tabbed or navigation pattern
-- RichTextBox equivalent in MAUI
-- System.Windows.Forms.Timer → MAUI dispatcher timer
-- Clipboard access for HTML paste import
-- Window state persistence across platforms
+**Fixed:** Desktop ambiguity — qualified DeliveryPlanService in
+DeliveryExecutionViewModel.cs with Desktop.Services prefix.
 
-### What was completed this session:
-- Ship template pricing (full spec + implementation)
-- Remote faction service client-side (Phases 11-15: preferences, sync, WebSocket, operating modes)
-- Ship enhanced stats (full spec + implementation)
-- Expanded permissions spec (requirements + design, not implemented)
-- JAS distance calibration (scaling factor 25/16)
-- Blueprint duplicate UUID prevention (Add* guards + Init* dedup on load + importer fixes)
-- Audit enforcement (hook changed from askAgent to runCommand)
-- Common-mistakes steering file (6 entries)
-- Server publish script (win-x64 + linux-x64)
-- Dependabot vulnerability fixes (Npgsql, System.Text.Json, npm packages)
-- FsCheck 2.x compatibility fixes (star system tests)
-- Class diagrams added to all spec/design/ docs
-- Multiple spec design iterations (faction-server-expanded-permissions)
+## Remaining Services (still in WinForms)
 
-### Current branch: mainline
-### All work committed and backed up to all 3 remotes.
+### Blocked by dependencies:
+- **ColonyBootstrap** — depends on BuildOrderOptimizer (which depends on ColonyStatusCalculator → System.Drawing + RtfBuilder)
+- **BuildPlanExecutionService** — depends on BackgroundProcessor (System.Windows.Forms.Timer)
+- **SurveyService** — depends on SurveyImportHelper (clipboard/UI)
+- **ColonyService** — depends on ColonyParser + Migration namespace
+- **BlueprintService** — depends on Migration namespace
+- **ColonyAdminReportBuilder** — uses System.Drawing + Controls.RtfBuilder
+
+### Stays in WinForms (UI-dependent per handoff):
+- BackgroundProcessor (System.Windows.Forms.Timer)
+- HelpRenderer, HelpTopicRegistry (form type references)
+- PreferencesStore (WindowStateHelper)
+- TabWarningService (form tab controls)
+- ClipboardHelper, ClipboardContentDetector (WinForms clipboard)
+- MarketBlueprintImporter (clipboard)
+- Migration/ directory (8 migration classes + MigrationRunner)
+- ColonyImportHelper, SurveyImportHelper (clipboard)
+- CrateImporter, BlueprintImportHandler (clipboard)
+- ColonyProcessingContextAdapter
+
+### Blocked but could move with more work:
+- **BuildOrderOptimizer** — if ColonyStatusCalculator's UI methods are extracted
+- **ColonyStatusCalculator** — if PopulateStatus/AppendStatus are moved to a UI helper
+- **ColonyBuildEligibility** — if ViewModels dependency is removed
+- **ChartColors** — if System.Drawing.Color is replaced with a platform-neutral type
+- **MinerSetupHelper, RefinerySetupHelper** — if DeterministicUUID moves to Common
+
+### Parsers (need SgmlReader NuGet in Common):
+- ColonyParser, SurveyParser, BlueprintScanner, PlayerProfileParser
+
+## Current branch state:
+- All work committed and backed up to all 3 remotes
+- Full solution builds with zero warnings
+- All 6 projects compile (including Desktop)
+- 2563 tests pass
+- Audit: 10 pre-existing DateTime findings in Desktop project (not new)
+
+## Next steps:
+1. Move DeterministicUUID to Common → unblocks MinerSetupHelper, RefinerySetupHelper, ColonyService, BlueprintService
+2. Extract ColonyStatusCalculator UI methods → unblocks BuildOrderOptimizer, ColonyBootstrap
+3. Add SgmlReader to Common.csproj → unblocks Parsers
+4. Remaining Avalonia tasks (T5-T8: platform testing)

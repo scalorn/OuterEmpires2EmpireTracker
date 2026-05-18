@@ -37,4 +37,11 @@
 **REQ-DEL-082** Stations SHALL be valid route stops for cargo pickup and dropoff.  
 **REQ-DEL-083** Asteroids SHALL be valid route stops for resource pickup (ship mining operations).  
 **REQ-DEL-084** Delivery execution at station and asteroid stops SHALL follow the same checkbox-per-item pattern as colony stops.
-
+
+## Route Distance and Fuel Estimation
+
+**REQ-DEL-085** The stops grid SHALL display a "JAS" column showing the Jump Arc Seconds distance between consecutive stops. The first stop SHALL show empty (no previous stop). Same-system legs SHALL show 0.  
+**REQ-DEL-086** JAS distance SHALL be computed using `DistanceCalculator.CalculateJas()` from the SystemRepository, resolving system names from the stop's destination (colony, station, or asteroid).  
+**REQ-DEL-087** The form SHALL provide a ship picker (FilteredTextComboSet) above the tab control, allowing the user to select a ship for fuel estimation.  
+**REQ-DEL-088** When a ship is selected, the "Fuel Est." column SHALL display the estimated fuel consumption per leg, computed as `ShipStats.JumpFuelPerJAS × JAS distance`. Empty when no ship is selected or JAS is 0.  
+**REQ-DEL-089** When the selected ship's data or template is modified externally, the form SHALL recompute fuel estimates automatically by subscribing to `ShipDataChanged` and `ShipTemplateDataChanged` events.  

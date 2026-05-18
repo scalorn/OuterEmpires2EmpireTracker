@@ -63,7 +63,7 @@ The user expects that when data changes (via background processing, import, or a
 | FormShipTemplate | Yes | PricingDataChanged |
 | FormSurvey | Yes | SurveyDataChanged, ColonyDataChanged |
 | FormPlayerProfile | Yes | PlayerProfileDataChanged |
-| FormDeliveryRoute | Yes | DeliveryDataChanged |
+| FormDeliveryRoute | Yes | DeliveryDataChanged, ShipDataChanged, ShipTemplateDataChanged |
 | FormDeliveryExecution | Yes | DeliveryDataChanged |
 | FormBuildPlanner | Yes | BuildPlanDataChanged, ColonyDataChanged |
 | FormMarket | Yes | MarketDataChanged |
