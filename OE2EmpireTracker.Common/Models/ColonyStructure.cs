@@ -30,64 +30,64 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public string UUID { get; set; } = null;
+        public string UUID { get; internal set; } = null;
 
-        public string FlatpackBlueprintUUID { get; set; } = null;
+        public string FlatpackBlueprintUUID { get; internal set; } = null;
 
         [JsonProperty("displaySequence")]
-        public int DisplaySequence { get; set; } = 0;
+        public int DisplaySequence { get; internal set; } = 0;
 
         [JsonProperty("buildingID")]
-        public int BuildingID { get; set; } = 0;
+        public int BuildingID { get; internal set; } = 0;
 
         [JsonProperty("buildQueueSequence")]
-        public int BuildQueueSequence { get; set; } = 0;
+        public int BuildQueueSequence { get; internal set; } = 0;
 
-        public PropertyBag Properties { get; set; }
+        public PropertyBag Properties { get; internal set; }
 
-        public PropertyBag AssignedWorkers { get; set; }
+        public PropertyBag AssignedWorkers { get; internal set; }
 
-        public CountDownTime BuildCompletionTime { get; set; } = null;
+        public CountDownTime BuildCompletionTime { get; internal set; } = null;
 
-        public CountDownTime ProcessCompletionTime { get; set; } = null;
+        public CountDownTime ProcessCompletionTime { get; internal set; } = null;
 
-        public string MiningSurvey { get; set; } = null;
+        public string MiningSurvey { get; internal set; } = null;
 
-        public string MiningSurveyResource { get; set; } = null;
+        public string MiningSurveyResource { get; internal set; } = null;
 
-        public decimal MiningLeftOvers { get; set; } = decimal.Zero;
+        public decimal MiningLeftOvers { get; internal set; } = decimal.Zero;
 
-        public string RefiningResource { get; set; } = null;
+        public string RefiningResource { get; internal set; } = null;
 
-        public string RefiningResourcePurity { get; set; } = null;
+        public string RefiningResourcePurity { get; internal set; } = null;
 
-        public string ResearchingBlueprintUUID { get; set; } = null;
+        public string ResearchingBlueprintUUID { get; internal set; } = null;
 
-        public string ManufacturingBlueprintUUID { get; set; } = null;
+        public string ManufacturingBlueprintUUID { get; internal set; } = null;
 
-        public string ManufacturingCommodityName { get; set; } = null;
+        public string ManufacturingCommodityName { get; internal set; } = null;
 
-        public int ManufacturingQuantity { get; set; } = 0;
+        public int ManufacturingQuantity { get; internal set; } = 0;
 
-        public int ManufacturingCompleted { get; set; } = 0;
+        public int ManufacturingCompleted { get; internal set; } = 0;
 
-        public bool StagingResources { get; set; } = false;
+        public bool StagingResources { get; internal set; } = false;
 
         [JsonIgnore]
-        public Dictionary<string, ColonyStructureStatus> Statuses { get; set; } = new Dictionary<string, ColonyStructureStatus>();
+        public Dictionary<string, ColonyStructureStatus> Statuses { get; internal set; } = new Dictionary<string, ColonyStructureStatus>();
 
         /// <summary>
         /// Per-structure incremental delta for O(1) status recalculation.
         /// Computed by ColonyStatusCalculator.ComputeStructureDelta() during CalculateBuilt().
         /// </summary>
         [JsonIgnore]
-        public StructureStatusDelta StatusDelta { get; set; }
+        public StructureStatusDelta StatusDelta { get; internal set; }
 
-        public string CurrentAttitude { get; set; } = string.Empty;
+        public string CurrentAttitude { get; internal set; } = string.Empty;
 
-        public int ContentmentIndex { get; set; }
+        public int ContentmentIndex { get; internal set; }
 
-        public int WageLevel { get; set; }
+        public int WageLevel { get; internal set; }
 
         /// <summary>
         /// Backward-compat: reads old "gameSequence" JSON key into DisplaySequence.

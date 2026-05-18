@@ -16,13 +16,13 @@ namespace OE2EmpireTracker.Models
             Stops = new List<RouteStop>();
         }
 
-        public string UUID { get; set; }
+        public string UUID { get; internal set; }
 
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; internal set; } = string.Empty;
 
-        public string OwnerUUID { get; set; } = string.Empty;
+        public string OwnerUUID { get; internal set; } = string.Empty;
 
-        public List<RouteStop> Stops { get; set; }
+        public List<RouteStop> Stops { get; internal set; }
     }
 
     /// <summary>
@@ -31,19 +31,19 @@ namespace OE2EmpireTracker.Models
     public class RouteStop
     {
         [DefaultValue("")]
-        public string ColonyUUID { get; set; } = string.Empty;
-        public int Sequence { get; set; }
+        public string ColonyUUID { get; internal set; } = string.Empty;
+        public int Sequence { get; internal set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         [DefaultValue(DestinationType.Colony)]
-        public DestinationType DestinationType { get; set; } = DestinationType.Colony;
+        public DestinationType DestinationType { get; internal set; } = DestinationType.Colony;
 
-        public string DestinationUUID { get; set; } = string.Empty;
+        public string DestinationUUID { get; internal set; } = string.Empty;
 
         [JsonConverter(typeof(StringEnumConverter))]
         [DefaultValue(RouteStopPurpose.Cargo)]
-        public RouteStopPurpose Purpose { get; set; } = RouteStopPurpose.Cargo;
+        public RouteStopPurpose Purpose { get; internal set; } = RouteStopPurpose.Cargo;
 
-        public decimal FuelEstimate { get; set; } = 0m;
+        public decimal FuelEstimate { get; internal set; } = 0m;
     }
 }

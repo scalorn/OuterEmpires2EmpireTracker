@@ -8,18 +8,18 @@ namespace OE2EmpireTracker.Models
     /// </summary>
     public class PricingPlan
     {
-        public string UUID { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string OwnerUUID { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public decimal FixedCostPerItem { get; set; } = 0m;
-        public decimal HourlyCostRate { get; set; } = 0m;
+        public string UUID { get; internal set; }
+        public string Name { get; internal set; } = string.Empty;
+        public string OwnerUUID { get; internal set; } = string.Empty;
+        public string Description { get; internal set; } = string.Empty;
+        public decimal FixedCostPerItem { get; internal set; } = 0m;
+        public decimal HourlyCostRate { get; internal set; } = 0m;
 
         /// <summary>
         /// Base resource prices keyed by "{ResourceName}|{Purity}".
         /// Example: "Alkali Metals|Refined" -> 12.50m
         /// </summary>
-        public Dictionary<string, decimal> ResourcePrices { get; set; }
+        public Dictionary<string, decimal> ResourcePrices { get; internal set; }
             = new Dictionary<string, decimal>();
     }
 }

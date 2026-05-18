@@ -82,26 +82,26 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public string OwnerUUID { get; set; } = string.Empty;
+        public string OwnerUUID { get; internal set; } = string.Empty;
 
-        public string BaseBlueprintUUID { get; set; }
+        public string BaseBlueprintUUID { get; internal set; }
 
         [DefaultValue(null)]
-        public string LegacyUUID { get; set; }
+        public string LegacyUUID { get; internal set; }
 
-        public string BluePrintType { get; set; }
+        public string BluePrintType { get; internal set; }
 
-        public int Evolution { get; set; }
+        public int Evolution { get; internal set; }
 
-        public string TechLevel { get; set; }
+        public string TechLevel { get; internal set; }
 
-        public int Class { get; set; }
+        public int Class { get; internal set; }
 
-        public int CopyCost { get; set; }
+        public int CopyCost { get; internal set; }
 
-        public PropertyBag Properties { get; set; }
+        public PropertyBag Properties { get; internal set; }
 
-        public Dictionary<string, string> Resources { get; set; }
+        public Dictionary<string, string> Resources { get; internal set; }
 
         /// <summary>
         /// Validates that this blueprint has not been corrupted.

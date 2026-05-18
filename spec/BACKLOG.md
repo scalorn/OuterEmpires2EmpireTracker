@@ -128,13 +128,7 @@ Bug: When colonies and surveys are imported in the wrong order, duplicate defaul
 
 ### BL-074: Immutable Data Model — Mutation Through Interface Only
 **Dependencies:** BL-069 (done), readonly-list-encapsulation spec (in progress)
-**Status: New**
-
-Before we can move to a database or SOA we need to protect the data model from in-memory editing and make all mutation go through an interface. Currently entity POCOs (Blueprint, Colony, Survey, etc.) have public setters on all properties — any code can mutate any field at any time without going through a controlled path. This makes it impossible to track dirty state, emit change events, or swap the persistence layer.
-
-Phase 1 (readonly-list-encapsulation) protects the *collections* — you can't add/remove entities without going through PlayerContext. Phase 2 (this item) protects the *entities themselves* — you can't mutate a Blueprint's Name or a Colony's OwnerUUID without going through a controlled update path. This likely means read-only public properties with internal/private setters, plus Update methods or a unit-of-work pattern that tracks changes and persists them atomically.
-
-Revisit when the project migrates to .NET 8+ where `dotnet test --collect:"XPlat Code Coverage"` works natively. In the meantime, use the file-level coverage analysis tool (`node .kiro/tools/spec-coverage.js`) and the reference counter completeness tests as proxies for coverage.
+**Status: Complete** — All entity property setters in Common/Models/ changed to `internal set`. InternalsVisibleTo grants access to WinForms, Tests, Server, Server.Tests, and Desktop projects. Compile-level enforcement applies to any future project not in the InternalsVisibleTo list. Runtime enforcement via mutation-audit.js prevents Forms/ViewModels from bypassing services. See `.kiro/specs/immutable-data-model/tasks.md`.
 
 ## Unused Model Fields
 

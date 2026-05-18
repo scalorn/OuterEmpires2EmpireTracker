@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -26,28 +26,28 @@ namespace OE2EmpireTracker.Models
             Locks = new OE2EmpireTracker.Models.LockTracking();
         }
 
-        public string UUID { get; set; }
+        public string UUID { get; internal set; }
 
-        public string OwnerUUID { get; set; } = string.Empty;
+        public string OwnerUUID { get; internal set; } = string.Empty;
 
         [DefaultValue(null)]
-        public string LegacyUUID { get; set; }
+        public string LegacyUUID { get; internal set; }
 
-        public string PlanetName { get; set; }
+        public string PlanetName { get; internal set; }
 
-        public string SystemName { get; set; } = string.Empty;
+        public string SystemName { get; internal set; } = string.Empty;
 
-        public string ColonyName { get; set; }
+        public string ColonyName { get; internal set; }
 
-        public ItemBag Items { get; set; }
+        public ItemBag Items { get; internal set; }
 
-        public List<ColonyStructure> Structures { get; set; }
+        public List<ColonyStructure> Structures { get; internal set; }
 
-        public List<CommodityRequested> Commodities { get; set; }
+        public List<CommodityRequested> Commodities { get; internal set; }
 
-        public string LastImportDateTime { get; set; }
+        public string LastImportDateTime { get; internal set; }
 
-        public OE2EmpireTracker.Models.LockTracking Locks { get; set; }
+        public OE2EmpireTracker.Models.LockTracking Locks { get; internal set; }
 
         [JsonIgnore]
         public ReaderWriterLockSlim ColonyLock { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);

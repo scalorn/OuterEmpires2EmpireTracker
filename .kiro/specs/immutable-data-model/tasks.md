@@ -68,14 +68,14 @@ Priority order (most-referenced first):
 
 ## Tasks
 
-- [ ] 1. Add InternalsVisibleTo to Common.csproj
-- [ ] 2. Start with Blueprint.cs — make setters internal, build, fix errors
-- [ ] 3. Colony.cs + ColonyStructure.cs
-- [ ] 4. Survey.cs
-- [ ] 5. PlayerProfile.cs
-- [ ] 6. DeliveryRoute.cs + RouteStop
-- [ ] 7. Ship.cs + ShipTemplate.cs
-- [ ] 8. Station.cs + Asteroid.cs
-- [ ] 9. Remaining models
-- [ ] 10. Full build + test + audit
-- [ ] 11. Update BL-074 status in BACKLOG.md
+- [x] 1. Add InternalsVisibleTo to Common.csproj
+- [x] 2. Start with Blueprint.cs — make setters internal, build, fix errors
+- [x] 3. Colony.cs + ColonyStructure.cs
+- [x] 4. Survey.cs
+- [x] 5. PlayerProfile.cs
+- [x] 6. DeliveryRoute.cs + RouteStop
+- [x] 7. Ship.cs + ShipTemplate.cs
+- [x] 8. Station.cs + Asteroid.cs
+- [x] 9. Remaining models
+- [x] 10. Full build + test + audit
+- [x] 11. Update BL-074 status in BACKLOG.md

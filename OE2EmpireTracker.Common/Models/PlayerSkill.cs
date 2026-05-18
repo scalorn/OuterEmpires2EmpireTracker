@@ -99,8 +99,8 @@ namespace OE2EmpireTracker.Models
 
     public class PlayerSkill
     {
-        public int Level { get; set; } = 0;
-        public bool TrainingStarted { get; set; } = false;
-        public CountDownTime CompletionTime { get; set; } = new CountDownTime();
+        public int Level { get; internal set; } = 0;
+        public bool TrainingStarted { get; internal set; } = false;
+        public CountDownTime CompletionTime { get; internal set; } = new CountDownTime();
     }
 }

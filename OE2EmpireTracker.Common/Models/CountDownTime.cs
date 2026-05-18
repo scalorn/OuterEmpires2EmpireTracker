@@ -182,20 +182,20 @@ namespace OE2EmpireTracker.Models
         /// The point in time the countdown was last started or updated.
         /// For repeating timers this is the baseline used to calculate how many intervals have elapsed.
         /// </summary>
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime { get; internal set; }
 
         /// <summary>
         /// The current target time for the countdown.
         /// For non-repeating timers this is the final expiration time.
         /// For repeating timers this is the anchor used to calculate the current interval end.
         /// </summary>
-        public DateTime EndTime { get; set; }
+        public DateTime EndTime { get; internal set; }
 
         /// <summary>
         /// The repeating interval length in seconds. If this value is greater than zero,
         /// the countdown functions as a repeating timer.
         /// </summary>
-        public long RepeatIntervalSeconds { get; set; }
+        public long RepeatIntervalSeconds { get; internal set; }
 
         /// <summary>
         /// Returns true when the countdown is configured to repeat.

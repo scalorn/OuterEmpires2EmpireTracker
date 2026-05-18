@@ -12,20 +12,20 @@ namespace OE2EmpireTracker.Models
 
     public class StockTarget
     {
-        public string UUID { get; set; }
+        public string UUID { get; internal set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public ItemType.ItemTypeEnum ItemType { get; set; } = Models.ItemType.ItemTypeEnum.None;
-        public string ItemReferenceID { get; set; } = string.Empty;
-        public string ItemName { get; set; } = string.Empty;
-        public string ShipTemplateUUID { get; set; } = string.Empty;
+        public ItemType.ItemTypeEnum ItemType { get; internal set; } = Models.ItemType.ItemTypeEnum.None;
+        public string ItemReferenceID { get; internal set; } = string.Empty;
+        public string ItemName { get; internal set; } = string.Empty;
+        public string ShipTemplateUUID { get; internal set; } = string.Empty;
 
-        public int TargetQuantity { get; set; } = 0;
-        public int CriticalThreshold { get; set; } = 0;
+        public int TargetQuantity { get; internal set; } = 0;
+        public int CriticalThreshold { get; internal set; } = 0;
 
         [JsonConverter(typeof(StringEnumConverter))]
         [System.ComponentModel.DefaultValue(StockTargetScope.EmpireWide)]
-        public StockTargetScope Scope { get; set; } = StockTargetScope.EmpireWide;
-        public string LocationUUID { get; set; } = string.Empty;
+        public StockTargetScope Scope { get; internal set; } = StockTargetScope.EmpireWide;
+        public string LocationUUID { get; internal set; } = string.Empty;
     }
 }

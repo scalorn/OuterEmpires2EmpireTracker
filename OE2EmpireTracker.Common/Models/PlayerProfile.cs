@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,31 +13,31 @@ namespace OE2EmpireTracker.Models
         {
         }
 
-        public string UUID { get; set; } = string.Empty;
+        public string UUID { get; internal set; } = string.Empty;
 
-        public string Name { get; set; } =  string.Empty;
+        public string Name { get; internal set; } =  string.Empty;
 
-        public string Faction { get; set; } = string.Empty;
+        public string Faction { get; internal set; } = string.Empty;
 
-        public string FactionUUID { get; set; } = string.Empty;
+        public string FactionUUID { get; internal set; } = string.Empty;
 
-        public decimal TotalCredits { get; set; } = new decimal(0);
+        public decimal TotalCredits { get; internal set; } = new decimal(0);
 
-        public PlayerRank Public { get; set; } = new PlayerRank();
+        public PlayerRank Public { get; internal set; } = new PlayerRank();
 
-        public PlayerRank Private { get; set; } = new PlayerRank();
+        public PlayerRank Private { get; internal set; } = new PlayerRank();
 
-        public PlayerRank Military { get; set; } = new PlayerRank();
+        public PlayerRank Military { get; internal set; } = new PlayerRank();
 
-        public int SkillPoints { get; set; } = 0;
+        public int SkillPoints { get; internal set; } = 0;
 
-        public string CitizenId { get; set; } = string.Empty;
+        public string CitizenId { get; internal set; } = string.Empty;
 
-        public string RegistrationDate { get; set; } = string.Empty;
+        public string RegistrationDate { get; internal set; } = string.Empty;
 
-        public string ActiveTime { get; set; } = string.Empty;
+        public string ActiveTime { get; internal set; } = string.Empty;
 
-        public Dictionary<string, PlayerSkill> Skills { get; set; } = new Dictionary<string, PlayerSkill>();
+        public Dictionary<string, PlayerSkill> Skills { get; internal set; } = new Dictionary<string, PlayerSkill>();
 
         private Dictionary<string, bool> SkillGroups { get; set; } = new Dictionary<string, bool>();
 

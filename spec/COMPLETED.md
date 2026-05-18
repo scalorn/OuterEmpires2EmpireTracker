@@ -4,6 +4,10 @@ Items moved here from BACKLOG.md after implementation, plus completed specs that
 
 ---
 
+### BL-074: Immutable Data Model — Mutation Through Interface Only
+Changed all entity property setters in OE2EmpireTracker.Common/Models/ from `public set` to `internal set` (~340 properties across 32 entity files). InternalsVisibleTo grants access to all consuming projects (WinForms, Tests, Server, Server.Tests, Desktop). Compile-level enforcement applies to any future project not in the InternalsVisibleTo list. Runtime enforcement via mutation-audit.js prevents Forms/ViewModels from bypassing services. Newtonsoft.Json deserialization continues to work via reflection. Spec: `.kiro/specs/immutable-data-model/tasks.md`.
+**Status: Complete**
+
 ### BL-019: Systems & Planets Model
 Implemented star system coordinate data for the galaxy (23,631 systems). StarSystem model with 15 properties, SystemRepository with O(1) lookups by Id/Name, DistanceCalculator for Euclidean distance, SystemImporter for galaxy extract import, and FormSystem MDI child for viewing/editing system data (faction ownership, infrastructure flags). 14 FsCheck property-based tests + unit tests. Spec: `.kiro/specs/systems-model/`.
 **Status: Complete**
