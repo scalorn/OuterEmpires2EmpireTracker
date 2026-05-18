@@ -126,10 +126,6 @@ Bug: When colonies and surveys are imported in the wrong order, duplicate defaul
 **Dependencies:** None
 **Status: Blocked**  AltCover (both global tool and NuGet package) fails with .NET Framework 4.8.1 + NUnit + vstest.console. The global tool crashes with a CLR assertion (net8.0 runtime vs net4.8.1 assemblies). The NuGet package instruments successfully but the NUnit test adapter can't discover tests in the instrumented assemblies. OpenCover is unmaintained (last release 2021). VS Community doesn't include the Enterprise code coverage collector.
 
-### BL-074: Immutable Data Model — Mutation Through Interface Only
-**Dependencies:** BL-069 (done), readonly-list-encapsulation spec (in progress)
-**Status: Complete** — All entity property setters in Common/Models/ changed to `internal set`. InternalsVisibleTo grants access to WinForms, Tests, Server, Server.Tests, and Desktop projects. Compile-level enforcement applies to any future project not in the InternalsVisibleTo list. Runtime enforcement via mutation-audit.js prevents Forms/ViewModels from bypassing services. See `.kiro/specs/immutable-data-model/tasks.md`.
-
 ## Unused Model Fields
 
 Fields on model classes that exist in the data model (persisted in JSON) but are never read by production code. Discovered during the April 2026 model field audit. Each item is a candidate for either wiring into production logic or removing.
@@ -160,16 +156,6 @@ Declared on BuildItem but never set by any code and never read. Appears to be a 
 **Dependencies:** None
 **Status: New**
 Declared on ShipStats but never set by `ShipBuildService.AddBlueprintStats()` and never displayed in any form. Always zero. Remove or wire into ship stat computation.
-
-### BL-093: ShipStats.EngCapacityAvailable — Never Set or Read
-**Dependencies:** None
-**Status: New**
-Declared on ShipStats but never set or read. Always zero. Remove or wire into ship stat computation.
-
-### BL-094: ShipStats.EngCapacityUsed — Never Set or Read
-**Dependencies:** None
-**Status: New**
-Declared on ShipStats but never set or read. Always zero. Same field exists on StationStats (BL-099) — also unused.
 
 ### BL-095: ShipStats.MiningYieldIncrease — Never Set or Read
 **Dependencies:** None
