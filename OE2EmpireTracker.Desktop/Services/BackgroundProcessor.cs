@@ -59,7 +59,7 @@ public sealed class BackgroundProcessor : IDisposable
         };
         _timer.Tick += OnTimerTick;
         _timer.Start();
-        NextProcessTime = DateTime.UtcNow.AddSeconds(safeInterval);
+        NextProcessTime = OE2EmpireTracker.Services.SystemClock.UtcNow.AddSeconds(safeInterval);
         _logger.LogInformation("BackgroundProcessor started with {Interval}s interval", safeInterval);
     }
 
@@ -95,7 +95,7 @@ public sealed class BackgroundProcessor : IDisposable
         // Update next process time immediately
         if (_timer is not null)
         {
-            NextProcessTime = DateTime.UtcNow.Add(_timer.Interval);
+            NextProcessTime = OE2EmpireTracker.Services.SystemClock.UtcNow.Add(_timer.Interval);
         }
 
         // Prevent concurrent processing (REQ-BP-005)

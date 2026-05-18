@@ -424,7 +424,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         var processor = GetService<BackgroundProcessor>();
         if (processor is not null && processor.IsRunning)
         {
-            var remaining = processor.NextProcessTime - DateTime.UtcNow;
+            var remaining = processor.NextProcessTime - OE2EmpireTracker.Services.SystemClock.UtcNow;
             int seconds = Math.Max(0, (int)remaining.TotalSeconds);
             NextProcessCountdown = $"Next: {seconds}s";
             LastCycleHadError = processor.LastCycleHadError;

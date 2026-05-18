@@ -114,7 +114,7 @@ public sealed partial class ColonyActivityViewModel : DocumentViewModel
 
     private void OnCountdownTick(object? sender, EventArgs e)
     {
-        var now = DateTime.UtcNow;
+        var now = OE2EmpireTracker.Services.SystemClock.UtcNow;
         foreach (var activity in Activities)
         {
             if (activity.EndTime.HasValue)
@@ -202,7 +202,7 @@ public sealed partial class ColonyActivityViewModel : DocumentViewModel
             return;
         }
 
-        var now = DateTime.UtcNow;
+        var now = OE2EmpireTracker.Services.SystemClock.UtcNow;
         var remaining = endTime.HasValue ? endTime.Value - now : TimeSpan.Zero;
         string status = remaining <= TimeSpan.Zero ? "Complete" : "Active";
         string timeStr = remaining <= TimeSpan.Zero ? "00:00:00" : remaining.ToString(@"hh\:mm\:ss");
@@ -227,7 +227,7 @@ public sealed partial class ColonyActivityViewModel : DocumentViewModel
             ActivityType = "Mining",
             Status = "Active",
             TimeRemaining = "02:15:30",
-            EndTime = DateTime.UtcNow.AddHours(2).AddMinutes(15).AddSeconds(30),
+            EndTime = OE2EmpireTracker.Services.SystemClock.UtcNow.AddHours(2).AddMinutes(15).AddSeconds(30),
         });
         AllActivities.Add(new ActivityRowViewModel
         {
@@ -236,7 +236,7 @@ public sealed partial class ColonyActivityViewModel : DocumentViewModel
             ActivityType = "Refining",
             Status = "Active",
             TimeRemaining = "01:45:00",
-            EndTime = DateTime.UtcNow.AddHours(1).AddMinutes(45),
+            EndTime = OE2EmpireTracker.Services.SystemClock.UtcNow.AddHours(1).AddMinutes(45),
         });
         AllActivities.Add(new ActivityRowViewModel
         {
@@ -253,7 +253,7 @@ public sealed partial class ColonyActivityViewModel : DocumentViewModel
             ActivityType = "Manufacturing",
             Status = "Active",
             TimeRemaining = "04:30:15",
-            EndTime = DateTime.UtcNow.AddHours(4).AddMinutes(30).AddSeconds(15),
+            EndTime = OE2EmpireTracker.Services.SystemClock.UtcNow.AddHours(4).AddMinutes(30).AddSeconds(15),
         });
     }
 }

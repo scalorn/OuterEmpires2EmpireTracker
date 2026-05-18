@@ -815,7 +815,7 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         var parser = new ColonyParser();
         parser.ProcessHtml(colony, fragment, null);
 
-        colony.LastImportDateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
+        colony.LastImportDateTime = OE2EmpireTracker.Services.SystemClock.UtcNow.ToString("yyyy-MM-dd HH:mm");
         dataService2.IsDirty = true;
         dataService2.OnColonyDataChanged(colony.UUID);
         dataService2.WriteContext();
@@ -902,7 +902,7 @@ public sealed partial class ColonyViewModel : DocumentViewModel
         var parser = new ColonyParser();
         parser.ProcessHtml(colony, html, null);
 
-        colony.LastImportDateTime = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
+        colony.LastImportDateTime = OE2EmpireTracker.Services.SystemClock.UtcNow.ToString("yyyy-MM-dd HH:mm");
         dataService2.IsDirty = true;
         dataService2.OnColonyDataChanged(colony.UUID);
         dataService2.WriteContext();
