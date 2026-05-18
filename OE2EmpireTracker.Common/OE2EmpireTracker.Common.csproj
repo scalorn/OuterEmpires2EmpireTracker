@@ -14,4 +14,12 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="OE2EmpireTracker" />
+    <InternalsVisibleTo Include="OE2EmpireTracker.Tests" />
+    <InternalsVisibleTo Include="OE2EmpireTracker.Server" />
+    <InternalsVisibleTo Include="OE2EmpireTracker.Server.Tests" />
+    <InternalsVisibleTo Include="OE2EmpireTracker.Desktop" />
+  </ItemGroup>
+
 </Project>

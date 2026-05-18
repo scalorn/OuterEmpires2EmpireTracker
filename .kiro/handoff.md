@@ -1,75 +1,60 @@
-# Session Handoff — 2026-05-16 (continued)
+# Session Handoff — 2026-05-18
 
-## Branch: net8maui (59 commits, all backed up to 3 remotes)
+## Branch: mainline (merged from net8maui, backed up to 3 remotes)
 
 ## What Was Done This Session
 
-### Service Migration to Common — 31 services moved
+### Service Migration to Common — 90+ files moved
+- All services, parsers, ViewModels, Migration classes moved from WinForms to Common
+- Architectural cleanups: ColonyService import flow, BlueprintService data methods, BackgroundProcessor decoupling, MigrationRunner delegate
+- Desktop dedup: deleted 9 duplicated files (parsers + pure logic services)
 
-**Batch 1 (6 pure-logic services):**
-- EvolutionChainService.cs → Common/Services/
-- QueueCalculator.cs → Common/Services/
-- DistanceCalculator.cs → Common/Services/
-- YieldDistributionService.cs → Common/Services/
-- SystemImporter.cs → Common/Services/
-- CountdownFormatParser.cs → Common/Parsers/
+### Delivery Route Enhancements
+- Added JAS distance column (system-to-system distance)
+- Added ship picker combo with fuel estimate calculation (JumpFuelPerJAS × JAS)
+- Ship/template change events refresh fuel estimates
+- System import now uses file dialog instead of hardcoded path
+- SystemData.json added to project with CopyToOutputDirectory
 
-**Batch 2 (25 services referencing PlayerContext/EmpireContext):**
-- PlayerProfileService, DeliveryRouteService, DeliveryPlanService
-- PricingPlanService, BuildPlanMutationService, BuildPlanService
-- StationService, ShipTemplateService, ShipService
-- StockTargetMutationService, StockTargetService
-- SupplyChainMutationService, SupplyChainService
-- ContactsService, AsteroidService, ResourceCheckService
-- DeliveryGenerationService, DeliveryFulfillment
-- ColonyActivityCollector, ColonyInactivityCollector
-- AutoAssignService, MarketListingService
-- BlueprintReferenceCounter, ColonyReferenceCounter, SurveyReferenceCounter
+### Audit
+- All 21 automated checks pass with zero findings
+- Fixed 10 DateTime.UtcNow violations in Desktop project
+- Updated event matrix, requirements, mockups for new features
 
-**Fixed:** Desktop ambiguity — qualified DeliveryPlanService in
-DeliveryExecutionViewModel.cs with Desktop.Services prefix.
+## Next Task: BL-074 — Immutable Data Model
 
-## Remaining Services (still in WinForms)
+### Spec: `.kiro/specs/immutable-data-model/tasks.md`
 
-### Blocked by dependencies:
-- **ColonyBootstrap** — depends on BuildOrderOptimizer (which depends on ColonyStatusCalculator → System.Drawing + RtfBuilder)
-- **BuildPlanExecutionService** — depends on BackgroundProcessor (System.Windows.Forms.Timer)
-- **SurveyService** — depends on SurveyImportHelper (clipboard/UI)
-- **ColonyService** — depends on ColonyParser + Migration namespace
-- **BlueprintService** — depends on Migration namespace
-- **ColonyAdminReportBuilder** — uses System.Drawing + Controls.RtfBuilder
+Make entity property setters `internal` so only Common can mutate entities.
+InternalsVisibleTo already added to Common.csproj for all consuming projects.
 
-### Stays in WinForms (UI-dependent per handoff):
-- BackgroundProcessor (System.Windows.Forms.Timer)
-- HelpRenderer, HelpTopicRegistry (form type references)
-- PreferencesStore (WindowStateHelper)
-- TabWarningService (form tab controls)
-- ClipboardHelper, ClipboardContentDetector (WinForms clipboard)
-- MarketBlueprintImporter (clipboard)
-- Migration/ directory (8 migration classes + MigrationRunner)
-- ColonyImportHelper, SurveyImportHelper (clipboard)
-- CrateImporter, BlueprintImportHandler (clipboard)
-- ColonyProcessingContextAdapter
+### Scope
+- ~30 model files in Common/Models/
+- ~525 entity constructions in tests
+- ~698 property sets in tests
+- All compile via InternalsVisibleTo
 
-### Blocked but could move with more work:
-- **BuildOrderOptimizer** — if ColonyStatusCalculator's UI methods are extracted
-- **ColonyStatusCalculator** — if PopulateStatus/AppendStatus are moved to a UI helper
-- **ColonyBuildEligibility** — if ViewModels dependency is removed
-- **ChartColors** — if System.Drawing.Color is replaced with a platform-neutral type
-- **MinerSetupHelper, RefinerySetupHelper** — if DeterministicUUID moves to Common
+### Approach
+1. InternalsVisibleTo already set up ✅
+2. Change entity setters from `public set` to `internal set` one class at a time
+3. Build after each class to catch any external mutation that slipped through
+4. Newtonsoft.Json handles internal setters via reflection (no issue)
+5. Start with Blueprint.cs, then Colony, ColonyStructure, Survey, etc.
 
-### Parsers (need SgmlReader NuGet in Common):
-- ColonyParser, SurveyParser, BlueprintScanner, PlayerProfileParser
+### Key Insight
+Since ALL consuming projects are in InternalsVisibleTo, this change is
+primarily about documentation/intent rather than compile-level enforcement.
+True enforcement would require removing WinForms/Desktop from the list —
+but they still have services that need internal access. The mutation-audit.js
+tool provides the actual enforcement at the Form/ViewModel level.
 
-## Current branch state:
+## What Stays in WinForms (genuinely UI-bound, 4 files)
+- ClipboardHelper, ClipboardContentDetector
+- ColonyAdminReportBuilder (RTF formatting)
+- HelpRenderer, HelpTopicRegistry
+
+## Current state
 - All work committed and backed up to all 3 remotes
 - Full solution builds with zero warnings
-- All 6 projects compile (including Desktop)
-- 2563 tests pass
-- Audit: 10 pre-existing DateTime findings in Desktop project (not new)
-
-## Next steps:
-1. Move DeterministicUUID to Common → unblocks MinerSetupHelper, RefinerySetupHelper, ColonyService, BlueprintService
-2. Extract ColonyStatusCalculator UI methods → unblocks BuildOrderOptimizer, ColonyBootstrap
-3. Add SgmlReader to Common.csproj → unblocks Parsers
-4. Remaining Avalonia tasks (T5-T8: platform testing)
+- All 2563 tests pass
+- Audit: 21/21 checks pass, zero findings
