@@ -37,7 +37,10 @@ public static class CharacterEndpoints
             return Results.BadRequest(new { error = "name is required" });
         }
 
-        var uuid = FactionEndpoints.GenerateDeterministicUUID("character", request.Name);
+        // Use client-provided UUID for bootstrapping (Owner only), otherwise generate deterministic
+        var uuid = !string.IsNullOrWhiteSpace(request.UUID)
+            ? request.UUID
+            : FactionEndpoints.GenerateDeterministicUUID("character", request.Name);
         var existing = await storage.GetCharacterAsync(uuid);
         if (existing != null)
         {
@@ -198,6 +201,12 @@ public static class CharacterEndpoints
     public class CharacterRequest
     {
         public string? Name { get; set; }
+
+        /// <summary>
+        /// Optional UUID for bootstrapping. If provided by an Owner, the server uses this UUID
+        /// instead of generating a deterministic one. Allows importing existing local characters.
+        /// </summary>
+        public string? UUID { get; set; }
     }
 
     /// <summary>Request body for character update.</summary>

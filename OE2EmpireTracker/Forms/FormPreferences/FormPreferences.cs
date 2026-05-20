@@ -286,17 +286,45 @@ namespace OE2EmpireTracker.Forms
                     if (System.IO.File.Exists(playerPath))
                     {
                         string playerJson = System.IO.File.ReadAllText(playerPath);
-                        string characterUUID = EmpireContext.PlayerContext?.CurrentPlayerUUID;
-                        if (!string.IsNullOrEmpty(characterUUID) && !string.IsNullOrEmpty(playerJson))
+                        if (!string.IsNullOrEmpty(playerJson))
                         {
-                            await client.UploadCharacterDataAsync(characterUUID, "player-data", playerJson)
-                                .ConfigureAwait(true);
-                            pushed++;
-                            Log.Info("Pushed PlayerData.json to server for character {0}", characterUUID);
-                        }
-                        else
-                        {
-                            Log.Warn("Cannot push player data: no current player UUID or empty file");
+                            // Register all player profiles as characters on the server
+                            var playerRoot = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerRoot>(playerJson);
+                            if (playerRoot?.PlayerProfile != null)
+                            {
+                                foreach (var profile in playerRoot.PlayerProfile)
+                                {
+                                    if (string.IsNullOrEmpty(profile.UUID) || string.IsNullOrEmpty(profile.Name))
+                                    {
+                                        continue;
+                                    }
+
+                                    try
+                                    {
+                                        await client.CreateCharacterAsync(profile.Name, profile.UUID)
+                                            .ConfigureAwait(true);
+                                        Log.Info("Registered character on server: {0} ({1})", profile.Name, profile.UUID);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Log.Warn(ex, "Failed to register character {0} (may already exist)", profile.Name);
+                                    }
+                                }
+                            }
+
+                            // Upload the full player data blob for the current player
+                            string characterUUID = playerRoot?.CurrentPlayerUUID;
+                            if (!string.IsNullOrEmpty(characterUUID))
+                            {
+                                await client.UploadCharacterDataAsync(characterUUID, "player-data", playerJson)
+                                    .ConfigureAwait(true);
+                                pushed++;
+                                Log.Info("Pushed PlayerData.json to server for character {0}", characterUUID);
+                            }
+                            else
+                            {
+                                Log.Warn("Cannot push player data: no CurrentPlayerUUID in file");
+                            }
                         }
                     }
                     else

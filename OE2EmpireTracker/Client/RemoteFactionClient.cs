@@ -230,6 +230,28 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
+        /// Creates a character on the server. For bootstrapping, pass the local UUID
+        /// so the server uses it instead of generating a new one.
+        /// </summary>
+        /// <param name="name">Character name.</param>
+        /// <param name="uuid">Optional UUID to use (bootstrapping).</param>
+        /// <returns>A task representing the async operation.</returns>
+        public async Task CreateCharacterAsync(string name, string uuid = null)
+        {
+            string json;
+            if (!string.IsNullOrEmpty(uuid))
+            {
+                json = string.Format("{{\"name\":\"{0}\",\"uuid\":\"{1}\"}}", name, uuid);
+            }
+            else
+            {
+                json = string.Format("{{\"name\":\"{0}\"}}", name);
+            }
+
+            await PostStringAsync("/characters", json).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Gets character data of a specific type.
         /// </summary>
         /// <param name="characterUUID">The character UUID.</param>
@@ -968,6 +990,22 @@ namespace OE2EmpireTracker.Client
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "PUT {0}{1} failed", _serverUrl, path);
+                SetConnected(false, ex.Message);
+            }
+        }
+
+        private async Task PostStringAsync(string path, string json)
+        {
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync(_serverUrl + path, content).ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "POST {0}{1} failed", _serverUrl, path);
                 SetConnected(false, ex.Message);
             }
         }
