@@ -545,14 +545,14 @@ Extends the faction server with named capabilities, permission groups, clearance
   - Ask the user if questions arise
 
 - [ ] 40. Intel Comment endpoints — create and query
-  - [ ] 40.1 Implement POST /api/v1/characters/{uuid}/intel
+  - [x] 40.1 Implement POST /api/v1/characters/{uuid}/intel
     - Create new `Endpoints/IntelEndpoints.cs`
     - Create private intel comment (visible only to submitter)
     - Validate: target character UUID provided, text not empty
     - _Requirements: 4.3_
     - Verify: Integration test — POST returns 201, comment is private
 
-  - [ ] 40.2 Implement GET /api/v1/characters/{uuid}/intel
+  - [x] 40.2 Implement GET /api/v1/characters/{uuid}/intel
     - Return: submitter's own private comments + faction-shared comments filtered by clearance
     - Include submitter name in response
     - If caller has `classify_intel`, include unclassified comments too
@@ -560,13 +560,13 @@ Extends the faction server with named capabilities, permission groups, clearance
     - Verify: Integration test — GET returns filtered results
 
 - [ ] 41. Intel Comment endpoints — share and revoke
-  - [ ] 41.1 Implement POST /api/v1/characters/{uuid}/intel/{commentId}/share
+  - [x] 41.1 Implement POST /api/v1/characters/{uuid}/intel/{commentId}/share
     - Share comment with a faction (create IntelCommentFactionShare with null classification)
     - Validate: caller is submitter, faction exists
     - _Requirements: 4.4, 4.6_
     - Verify: Integration test — POST returns 201, share record created
 
-  - [ ] 41.2 Implement DELETE /api/v1/characters/{uuid}/intel/{commentId}/share/{factionUUID}
+  - [x] 41.2 Implement DELETE /api/v1/characters/{uuid}/intel/{commentId}/share/{factionUUID}
     - Revoke faction share (delete IntelCommentFactionShare)
     - Validate: caller is submitter
     - _Requirements: 4.11, 4.12_
@@ -574,26 +574,26 @@ Extends the faction server with named capabilities, permission groups, clearance
 
 
 - [ ] 42. Intel Comment endpoints — classify and delete
-  - [ ] 42.1 Implement PUT /api/v1/factions/{uuid}/intel/{shareId}/classify
+  - [x] 42.1 Implement PUT /api/v1/factions/{uuid}/intel/{shareId}/classify
     - Assign classification level to a shared comment
     - Validate: caller has `classify_intel` capability, share exists, level exists
     - Record classifier identity and timestamp
     - _Requirements: 4.8, 4.9, 4.10_
     - Verify: Integration test — PUT returns 200, classification fields populated
 
-  - [ ] 42.2 Implement DELETE /api/v1/characters/{uuid}/intel/{commentId}
+  - [x] 42.2 Implement DELETE /api/v1/characters/{uuid}/intel/{commentId}
     - Delete comment and all its faction shares
     - Validate: caller is submitter, Faction Leader, or Owner
     - _Requirements: 4.16_
     - Verify: Integration test — DELETE returns 204, shares also removed
 
-  - [ ] 42.3 Enforce comment immutability
+  - [x] 42.3 Enforce comment immutability
     - Ensure no PUT endpoint exists for comment text
     - If a PUT is attempted on the comment body, return 405 Method Not Allowed
     - _Requirements: 4.15_
     - Verify: Integration test — PUT on comment text returns 405
 
-- [ ] 43. Intel visibility logic — classify_intel gating
+- [x] 43. Intel visibility logic — classify_intel gating
   - Implement the logic that filters GET /intel results:
     - Unclassified comments visible only to members with `classify_intel` capability
     - Classified comments visible only to members with clearance >= classification level
@@ -602,14 +602,14 @@ Extends the faction server with named capabilities, permission groups, clearance
   - Verify: Unit test — unclassified hidden from non-classifiers; classified filtered by clearance
 
 
-- [ ] 44. Effective permission computation service
+- [x] 44. Effective permission computation service
   - Create `Services/PermissionResolver.cs` (or similar)
   - Compute a character's effective capabilities: role permissions + group capabilities + individual capabilities
   - Compute a character's effective sharing access: individual sharing rules + group sharing template
   - _Requirements: 2.12, 2.13_
   - Verify: Unit test — effective permissions are additive union of all sources
 
-- [ ] 45. Visibility resolution — two-layer system
+- [x] 45. Visibility resolution — two-layer system
   - Implement the data visibility query logic:
     - Layer 1: What the character shared outward (CharacterGroupSharingRules)
     - Layer 2: What the faction's clearance rules permit (FactionGroupSharingRules + member clearance)

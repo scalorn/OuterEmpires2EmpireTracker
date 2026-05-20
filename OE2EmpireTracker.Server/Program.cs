@@ -193,6 +193,7 @@ app.MapDataEndpoints();
 app.MapSharingEndpoints();
 app.MapRateLimitEndpoints();
 app.MapAdminEndpoints();
+app.MapIntelEndpoints();
 
 // WebSocket endpoint
 var heartbeatTimeout = builder.Configuration.GetValue<int>(
