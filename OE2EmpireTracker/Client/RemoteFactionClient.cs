@@ -278,6 +278,19 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
+        /// Uploads global/baseline data to the server.
+        /// Requires Owner token.
+        /// </summary>
+        /// <param name="dataType">The global data type (e.g. "baseline").</param>
+        /// <param name="json">The JSON payload.</param>
+        /// <returns>A task representing the async operation.</returns>
+        public async Task UploadGlobalDataAsync(string dataType, string json)
+        {
+            string path = string.Format("/global/{0}", dataType);
+            await PutStringAsync(path, json).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Gets a sync snapshot from the server (timestamps for conflict resolution).
         /// </summary>
         /// <returns>JSON string of the sync snapshot, or null on failure.</returns>

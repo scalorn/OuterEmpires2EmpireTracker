@@ -34,6 +34,7 @@ namespace OE2EmpireTracker.Forms
             btnOK.Click += BtnOK_Click;
             btnResetDefaults.Click += BtnResetDefaults_Click;
             btnTestConnection.Click += BtnTestConnection_Click;
+            btnPushLocalToServer.Click += BtnPushLocalToServer_Click;
 
             // Populate operating mode dropdown
             cmbOperatingMode.Items.Add("Local Only");
@@ -224,6 +225,116 @@ namespace OE2EmpireTracker.Forms
             finally
             {
                 btnTestConnection.Enabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Reads local PlayerData.json and BaselineData.json from disk and pushes them
+        /// to the server. This is the bootstrapping path for getting local data onto an
+        /// empty server. Reads files directly — does not use in-memory state.
+        /// </summary>
+        private async void BtnPushLocalToServer_Click(object sender, EventArgs e)
+        {
+            var confirm = MessageBox.Show(
+                "This will upload your local PlayerData.json and BaselineData.json to the server, " +
+                "overwriting any existing server data for your character.\n\n" +
+                "Continue?",
+                "Push Local Data to Server",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirm != DialogResult.Yes)
+            {
+                return;
+            }
+
+            btnPushLocalToServer.Enabled = false;
+            lblConnectionStatus.ForeColor = SystemColors.ControlText;
+            lblConnectionStatus.Text = "Pushing...";
+
+            try
+            {
+                string tokenText = txtBearerToken.Text;
+                System.Security.SecureString token;
+
+                if (tokenText == "stored-token")
+                {
+                    var stored = PreferencesStore.GetInstance()
+                        .Preferences.ServerConnection.ProtectedBearerToken;
+                    token = CredentialStore.Unprotect(stored);
+                }
+                else
+                {
+                    token = new System.Security.SecureString();
+                    foreach (char c in tokenText ?? string.Empty)
+                    {
+                        token.AppendChar(c);
+                    }
+
+                    token.MakeReadOnly();
+                }
+
+                string url = txtServerUrl.Text.Trim();
+                string thumbprint = txtThumbprint.Text.Trim();
+
+                using (var client = new RemoteFactionClient(url, token, thumbprint))
+                {
+                    int pushed = 0;
+
+                    // Push player data
+                    string playerPath = PlayerContext.FilePath;
+                    if (System.IO.File.Exists(playerPath))
+                    {
+                        string playerJson = System.IO.File.ReadAllText(playerPath);
+                        string characterUUID = EmpireContext.PlayerContext?.CurrentPlayerUUID;
+                        if (!string.IsNullOrEmpty(characterUUID) && !string.IsNullOrEmpty(playerJson))
+                        {
+                            await client.UploadCharacterDataAsync(characterUUID, "player-data", playerJson)
+                                .ConfigureAwait(true);
+                            pushed++;
+                            Log.Info("Pushed PlayerData.json to server for character {0}", characterUUID);
+                        }
+                        else
+                        {
+                            Log.Warn("Cannot push player data: no current player UUID or empty file");
+                        }
+                    }
+                    else
+                    {
+                        Log.Warn("PlayerData.json not found at {0}", playerPath);
+                    }
+
+                    // Push baseline data
+                    string baselinePath = EmpireContext.FilePath;
+                    if (System.IO.File.Exists(baselinePath))
+                    {
+                        string baselineJson = System.IO.File.ReadAllText(baselinePath);
+                        if (!string.IsNullOrEmpty(baselineJson))
+                        {
+                            await client.UploadGlobalDataAsync("baseline", baselineJson)
+                                .ConfigureAwait(true);
+                            pushed++;
+                            Log.Info("Pushed BaselineData.json to server as global/baseline");
+                        }
+                    }
+                    else
+                    {
+                        Log.Warn("BaselineData.json not found at {0}", baselinePath);
+                    }
+
+                    lblConnectionStatus.ForeColor = Color.Green;
+                    lblConnectionStatus.Text = string.Format("Push complete ({0} file(s) uploaded).", pushed);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Push local data to server failed");
+                lblConnectionStatus.ForeColor = Color.Red;
+                lblConnectionStatus.Text = "Push failed: " + ex.Message;
+            }
+            finally
+            {
+                btnPushLocalToServer.Enabled = true;
             }
         }
 

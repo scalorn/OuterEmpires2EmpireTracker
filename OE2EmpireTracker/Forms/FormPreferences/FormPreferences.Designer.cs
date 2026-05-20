@@ -46,6 +46,7 @@ namespace OE2EmpireTracker.Forms
             this.lblServerUrl = new System.Windows.Forms.Label();
             this.txtServerUrl = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.btnTestConnection = new System.Windows.Forms.Button();
+            this.btnPushLocalToServer = new System.Windows.Forms.Button();
             this.lblThumbprint = new System.Windows.Forms.Label();
             this.txtThumbprint = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lblBearerToken = new System.Windows.Forms.Label();
@@ -325,9 +326,10 @@ namespace OE2EmpireTracker.Forms
             this.grpServerConnection.Controls.Add(this.lblOperatingMode);
             this.grpServerConnection.Controls.Add(this.cmbOperatingMode);
             this.grpServerConnection.Controls.Add(this.lblConnectionStatus);
+            this.grpServerConnection.Controls.Add(this.btnPushLocalToServer);
             this.grpServerConnection.Location = new System.Drawing.Point(12, 12);
             this.grpServerConnection.Name = "grpServerConnection";
-            this.grpServerConnection.Size = new System.Drawing.Size(460, 220);
+            this.grpServerConnection.Size = new System.Drawing.Size(460, 260);
             this.grpServerConnection.TabIndex = 0;
             this.grpServerConnection.TabStop = false;
             this.grpServerConnection.Text = "Server Connection";
@@ -411,6 +413,15 @@ namespace OE2EmpireTracker.Forms
             this.lblConnectionStatus.Name = "lblConnectionStatus";
             this.lblConnectionStatus.Size = new System.Drawing.Size(0, 13);
             this.lblConnectionStatus.TabIndex = 6;
+            // 
+            // btnPushLocalToServer
+            // 
+            this.btnPushLocalToServer.Location = new System.Drawing.Point(15, 210);
+            this.btnPushLocalToServer.Name = "btnPushLocalToServer";
+            this.btnPushLocalToServer.Size = new System.Drawing.Size(160, 23);
+            this.btnPushLocalToServer.TabIndex = 7;
+            this.btnPushLocalToServer.Text = "Push Local Data to Server";
+            this.btnPushLocalToServer.UseVisualStyleBackColor = true;
             // 
             // btnOK
             // 
@@ -510,6 +521,7 @@ namespace OE2EmpireTracker.Forms
         private System.Windows.Forms.Label lblServerUrl;
         internal OE2EmpireTracker.Controls.ValidatedTextBox txtServerUrl;
         internal System.Windows.Forms.Button btnTestConnection;
+        internal System.Windows.Forms.Button btnPushLocalToServer;
         private System.Windows.Forms.Label lblThumbprint;
         internal OE2EmpireTracker.Controls.ValidatedTextBox txtThumbprint;
         private System.Windows.Forms.Label lblBearerToken;

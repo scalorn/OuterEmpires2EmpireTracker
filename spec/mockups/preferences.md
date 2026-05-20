@@ -55,6 +55,7 @@ Server tab:
 │ │ Operating Mode:        [Local Only________▼]             │ │
 │ │                                                          │ │
 │ │ Connection successful.                                   │ │
+│ │ [Push Local Data to Server]                              │ │
 │ └──────────────────────────────────────────────────────────┘ │
 │                                                              │
 │                          [OK] [Cancel] [Reset]               │
@@ -89,6 +90,7 @@ Controls:
   - `txtBearerToken` (ValidatedTextBox) — bearer token (masked with UseSystemPasswordChar)
   - `cmbOperatingMode` (ComboBox, DropDownList) — Local Only / Server Only / Server + Local
   - `lblConnectionStatus` (Label) — shows test connection result
+  - `btnPushLocalToServer` (Button) — reads local PlayerData.json and BaselineData.json from disk and uploads to server (bootstrapping)
 - `btnOK` (Button), `btnCancel` (Button, DialogResult=Cancel), `btnResetDefaults` (Button)
 - All time values use countdown format: `Xd Xh Xm Xs`
 
