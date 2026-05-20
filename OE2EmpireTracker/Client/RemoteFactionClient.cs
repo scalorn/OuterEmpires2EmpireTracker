@@ -961,18 +961,20 @@ namespace OE2EmpireTracker.Client
         // HTTP Helpers (with rate limiting)
         // -----------------------------------------------------------------------
 
+        private const string ApiPrefix = "/api/v1";
+
         private async Task<string> GetStringAsync(string path)
         {
             try
             {
                 await AcquireRateLimitTokenAsync().ConfigureAwait(false);
-                var response = await _httpClient.GetAsync(_serverUrl + path).ConfigureAwait(false);
+                var response = await _httpClient.GetAsync(_serverUrl + ApiPrefix + path).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
             catch (HttpRequestException ex)
             {
-                Log.Warn(ex, "GET {0}{1} failed", _serverUrl, path);
+                Log.Warn(ex, "GET {0}{1}{2} failed", _serverUrl, ApiPrefix, path);
                 SetConnected(false, ex.Message);
                 return null;
             }
@@ -984,13 +986,14 @@ namespace OE2EmpireTracker.Client
             {
                 await AcquireRateLimitTokenAsync().ConfigureAwait(false);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PutAsync(_serverUrl + path, content).ConfigureAwait(false);
+                var response = await _httpClient.PutAsync(_serverUrl + ApiPrefix + path, content).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
             }
             catch (HttpRequestException ex)
             {
-                Log.Warn(ex, "PUT {0}{1} failed", _serverUrl, path);
+                Log.Warn(ex, "PUT {0}{1}{2} failed", _serverUrl, ApiPrefix, path);
                 SetConnected(false, ex.Message);
+                throw;
             }
         }
 
@@ -1000,13 +1003,14 @@ namespace OE2EmpireTracker.Client
             {
                 await AcquireRateLimitTokenAsync().ConfigureAwait(false);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(_serverUrl + path, content).ConfigureAwait(false);
+                var response = await _httpClient.PostAsync(_serverUrl + ApiPrefix + path, content).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
             }
             catch (HttpRequestException ex)
             {
-                Log.Warn(ex, "POST {0}{1} failed", _serverUrl, path);
+                Log.Warn(ex, "POST {0}{1}{2} failed", _serverUrl, ApiPrefix, path);
                 SetConnected(false, ex.Message);
+                throw;
             }
         }
 
