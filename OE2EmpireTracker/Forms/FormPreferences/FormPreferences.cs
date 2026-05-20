@@ -317,9 +317,7 @@ namespace OE2EmpireTracker.Forms
                             if (!string.IsNullOrEmpty(characterUUID))
                             {
                                 // Wrap in envelope: {"player-data": <raw json>}
-                                var envelope = new Newtonsoft.Json.Linq.JObject();
-                                envelope["player-data"] = Newtonsoft.Json.Linq.JToken.Parse(playerJson);
-                                string envelopeJson = envelope.ToString(Newtonsoft.Json.Formatting.None);
+                                string envelopeJson = "{\"player-data\":" + playerJson + "}";
                                 await client.UploadAllCharacterDataAsync(characterUUID, envelopeJson)
                                     .ConfigureAwait(true);
                                 pushed++;
