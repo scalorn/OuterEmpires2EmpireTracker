@@ -423,123 +423,123 @@ Extends the faction server with named capabilities, permission groups, clearance
 
 
 - [ ] 30. Character Capability endpoints — POST and GET
-  - [ ] 30.1 Implement POST /api/v1/characters/{uuid}/capabilities
+  - [x] 30.1 Implement POST /api/v1/characters/{uuid}/capabilities
     - Create new `Endpoints/CharacterCapabilityEndpoints.cs`
     - Validate: character exists, caller is character owner or Owner, name unique within character
     - _Requirements: 1.5_
     - Verify: Integration test — POST returns 201
 
-  - [ ] 30.2 Implement GET /api/v1/characters/{uuid}/capabilities
+  - [x] 30.2 Implement GET /api/v1/characters/{uuid}/capabilities
     - Return all capabilities defined by or granted to the character
     - _Requirements: 1.14_
     - Verify: Integration test — GET returns list
 
 - [ ] 31. Character Capability endpoints — PUT and DELETE
-  - [ ] 31.1 Implement PUT /api/v1/characters/{uuid}/capabilities/{capId}
+  - [x] 31.1 Implement PUT /api/v1/characters/{uuid}/capabilities/{capId}
     - Rename capability (update Name/Description)
     - Validate: capability exists, caller is owner or Owner
     - _Requirements: 1.9_
     - Verify: Integration test — PUT returns 200
 
-  - [ ] 31.2 Implement DELETE /api/v1/characters/{uuid}/capabilities/{capId}
+  - [x] 31.2 Implement DELETE /api/v1/characters/{uuid}/capabilities/{capId}
     - Delete capability, cascade: remove from CharacterGroupCapability and CharacterGranteeCapability
     - _Requirements: 1.9_
     - Verify: Integration test — DELETE returns 204
 
 - [ ] 32. Character ClearanceLevel endpoints — POST and GET
-  - [ ] 32.1 Implement POST /api/v1/characters/{uuid}/clearance-levels
+  - [x] 32.1 Implement POST /api/v1/characters/{uuid}/clearance-levels
     - Create clearance level for character scope
     - Validate: character exists, caller is owner or Owner
     - _Requirements: 3.5_
     - Verify: Integration test — POST returns 201
 
-  - [ ] 32.2 Implement GET /api/v1/characters/{uuid}/clearance-levels
+  - [x] 32.2 Implement GET /api/v1/characters/{uuid}/clearance-levels
     - Return all clearance levels for the character, ordered by Level ascending
     - _Requirements: 3.5_
     - Verify: Integration test — GET returns ordered list
 
 - [ ] 33. Character ClearanceLevel endpoints — PUT and DELETE
-  - [ ] 33.1 Implement PUT /api/v1/characters/{uuid}/clearance-levels/{levelId}
+  - [x] 33.1 Implement PUT /api/v1/characters/{uuid}/clearance-levels/{levelId}
     - Update Level number, Name, or Description
     - _Requirements: 3.4_
     - Verify: Integration test — PUT returns 200
 
-  - [ ] 33.2 Implement DELETE /api/v1/characters/{uuid}/clearance-levels/{levelId}
+  - [x] 33.2 Implement DELETE /api/v1/characters/{uuid}/clearance-levels/{levelId}
     - Delete clearance level
     - _Requirements: 3.4_
     - Verify: Integration test — DELETE returns 204
 
 
 - [ ] 34. Character PermissionGroup endpoints — POST and GET
-  - [ ] 34.1 Implement POST /api/v1/characters/{uuid}/groups
+  - [x] 34.1 Implement POST /api/v1/characters/{uuid}/groups
     - Create new `Endpoints/CharacterGroupEndpoints.cs`
     - Create group with Name, Description, DefaultClearanceLevelUUID
     - Validate: character exists, caller is owner or Owner
     - _Requirements: 2.9_
     - Verify: Integration test — POST returns 201
 
-  - [ ] 34.2 Implement GET /api/v1/characters/{uuid}/groups
+  - [x] 34.2 Implement GET /api/v1/characters/{uuid}/groups
     - Return all permission groups for the character
     - _Requirements: 2.9_
     - Verify: Integration test — GET returns list
 
 - [ ] 35. Character PermissionGroup endpoints — PUT and DELETE
-  - [ ] 35.1 Implement PUT /api/v1/characters/{uuid}/groups/{groupId}
+  - [x] 35.1 Implement PUT /api/v1/characters/{uuid}/groups/{groupId}
     - Update group Name, Description, DefaultClearanceLevelUUID
     - _Requirements: 2.9_
     - Verify: Integration test — PUT returns 200
 
-  - [ ] 35.2 Implement DELETE /api/v1/characters/{uuid}/groups/{groupId}
+  - [x] 35.2 Implement DELETE /api/v1/characters/{uuid}/groups/{groupId}
     - Delete group, cascade: remove CharacterGroupCapability, CharacterGroupSharingRule, clear GroupUUID from CharacterGranteePermissions
     - _Requirements: 2.9_
     - Verify: Integration test — DELETE returns 204
 
 - [ ] 36. Character Group member (grantee) management
-  - [ ] 36.1 Implement PUT /api/v1/characters/{uuid}/groups/{groupId}/members
+  - [x] 36.1 Implement PUT /api/v1/characters/{uuid}/groups/{groupId}/members
     - Assign grantee (character or faction) to group
     - Enforce single-group constraint per granting character
     - _Requirements: 2.10, 2.2_
     - Verify: Integration test — PUT returns 200
 
-  - [ ] 36.2 Implement DELETE /api/v1/characters/{uuid}/groups/{groupId}/members/{granteeUUID}
+  - [x] 36.2 Implement DELETE /api/v1/characters/{uuid}/groups/{groupId}/members/{granteeUUID}
     - Remove grantee from group
     - _Requirements: 2.11_
     - Verify: Integration test — DELETE returns 204
 
 - [ ] 37. Character Group sharing rules and capability grants
-  - [ ] 37.1 Implement POST /api/v1/characters/{uuid}/groups/{groupId}/sharing-rules
+  - [x] 37.1 Implement POST /api/v1/characters/{uuid}/groups/{groupId}/sharing-rules
     - Add a CharacterGroupSharingRule (DataType, optional EntityUUID — no MinClearanceLevel)
     - _Requirements: 2.4_
     - Verify: Integration test — POST returns 201
 
-  - [ ] 37.2 Implement DELETE /api/v1/characters/{uuid}/groups/{groupId}/sharing-rules/{ruleId}
+  - [x] 37.2 Implement DELETE /api/v1/characters/{uuid}/groups/{groupId}/sharing-rules/{ruleId}
     - Remove a sharing rule
     - _Requirements: 2.4_
     - Verify: Integration test — DELETE returns 204
 
-  - [ ] 37.3 Implement POST /api/v1/characters/{uuid}/groups/{groupId}/capabilities
+  - [x] 37.3 Implement POST /api/v1/characters/{uuid}/groups/{groupId}/capabilities
     - Add a CharacterGroupCapability
     - _Requirements: 2.3_
     - Verify: Integration test — POST returns 201
 
-  - [ ] 37.4 Implement DELETE /api/v1/characters/{uuid}/groups/{groupId}/capabilities/{capId}
+  - [x] 37.4 Implement DELETE /api/v1/characters/{uuid}/groups/{groupId}/capabilities/{capId}
     - Remove a capability grant from the group
     - _Requirements: 2.3_
     - Verify: Integration test — DELETE returns 204
 
 
 - [ ] 38. Character individual grantee capabilities
-  - [ ] 38.1 Implement PUT /api/v1/characters/{uuid}/grantees/{granteeUUID}/capabilities (grant)
+  - [x] 38.1 Implement PUT /api/v1/characters/{uuid}/grantees/{granteeUUID}/capabilities (grant)
     - Add individual CharacterGranteeCapability
     - _Requirements: 1.7, 1.9_
     - Verify: Integration test — PUT returns 200
 
-  - [ ] 38.2 Implement DELETE /api/v1/characters/{uuid}/grantees/{granteeUUID}/capabilities/{capId} (revoke)
+  - [x] 38.2 Implement DELETE /api/v1/characters/{uuid}/grantees/{granteeUUID}/capabilities/{capId} (revoke)
     - Remove individual CharacterGranteeCapability
     - _Requirements: 1.9_
     - Verify: Integration test — DELETE returns 204
 
-- [ ] 39. Checkpoint — Character API endpoints compile and pass basic tests
+- [x] 39. Checkpoint — Character API endpoints compile and pass basic tests
   - Ensure `dotnet build` passes with zero errors and zero warnings
   - All character permission endpoints registered in Program.cs
   - Ask the user if questions arise
