@@ -6,58 +6,58 @@ Extends the faction server with named capabilities, permission groups, clearance
 
 ## Tasks
 
-- [ ] 1. Faction-scoped entity models
-  - [ ] 1.1 Create FactionCapability model class
+- [x] 1. Faction-scoped entity models
+  - [x] 1.1 Create FactionCapability model class
     - Add `FactionCapability` (UUID, FactionUUID, Name, Description) to a new file `Storage/PermissionModels.cs`
     - _Requirements: 1.1, 1.3_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 1.2 Create FactionClearanceLevel model class
+  - [x] 1.2 Create FactionClearanceLevel model class
     - Add `FactionClearanceLevel` (UUID, FactionUUID, Level, Name, Description) to `Storage/PermissionModels.cs`
     - _Requirements: 3.1, 3.2_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 1.3 Create FactionPermissionGroup model class
+  - [x] 1.3 Create FactionPermissionGroup model class
     - Add `FactionPermissionGroup` (UUID, FactionUUID, Name, Description, DefaultClearanceLevelUUID) to `Storage/PermissionModels.cs`
     - _Requirements: 2.1, 2.3, 3.11_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 1.4 Create FactionGroupCapability and FactionGroupSharingRule models
+  - [x] 1.4 Create FactionGroupCapability and FactionGroupSharingRule models
     - Add `FactionGroupCapability` (GroupUUID, CapabilityUUID) junction model
     - Add `FactionGroupSharingRule` (UUID, GroupUUID, DataType, EntityUUID, MinClearanceLevelUUID)
     - _Requirements: 2.3, 2.4, 3.8_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 1.5 Create FactionMemberPermissions and FactionMemberCapability models
+  - [x] 1.5 Create FactionMemberPermissions and FactionMemberCapability models
     - Add `FactionMemberPermissions` (CharacterUUID, FactionUUID, GroupUUID, ClearanceLevelUUID)
     - Add `FactionMemberCapability` (CharacterUUID, FactionUUID, CapabilityUUID)
     - _Requirements: 2.5, 3.6, 1.6_
     - Verify: `dotnet build` compiles cleanly
 
 
-- [ ] 2. Character-scoped entity models
-  - [ ] 2.1 Create CharacterCapability model class
+- [x] 2. Character-scoped entity models
+  - [x] 2.1 Create CharacterCapability model class
     - Add `CharacterCapability` (UUID, OwnerCharacterUUID, Name, Description) to `Storage/PermissionModels.cs`
     - _Requirements: 1.3, 1.14_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 2.2 Create CharacterClearanceLevel model class
+  - [x] 2.2 Create CharacterClearanceLevel model class
     - Add `CharacterClearanceLevel` (UUID, OwnerCharacterUUID, Level, Name, Description)
     - _Requirements: 3.1, 3.15_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 2.3 Create CharacterPermissionGroup model class
+  - [x] 2.3 Create CharacterPermissionGroup model class
     - Add `CharacterPermissionGroup` (UUID, OwnerCharacterUUID, Name, Description, DefaultClearanceLevelUUID)
     - _Requirements: 2.1, 2.14_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 2.4 Create CharacterGroupCapability and CharacterGroupSharingRule models
+  - [x] 2.4 Create CharacterGroupCapability and CharacterGroupSharingRule models
     - Add `CharacterGroupCapability` (GroupUUID, CapabilityUUID) junction
     - Add `CharacterGroupSharingRule` (UUID, GroupUUID, DataType, EntityUUID) — no MinClearanceLevelUUID
     - _Requirements: 2.3, 2.4_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 2.5 Create CharacterGranteePermissions and CharacterGranteeCapability models
+  - [x] 2.5 Create CharacterGranteePermissions and CharacterGranteeCapability models
     - Add `CharacterGranteePermissions` (OwnerCharacterUUID, GranteeType, GranteeUUID, GroupUUID, ClearanceLevelUUID)
     - Add `CharacterGranteeCapability` (OwnerCharacterUUID, GranteeType, GranteeUUID, CapabilityUUID)
     - Add `GranteeType` enum (Character, Faction)
@@ -65,30 +65,30 @@ Extends the faction server with named capabilities, permission groups, clearance
     - Verify: `dotnet build` compiles cleanly
 
 
-- [ ] 3. Shared entity models (Intel + Audit)
-  - [ ] 3.1 Create IntelComment model class
+- [x] 3. Shared entity models (Intel + Audit)
+  - [x] 3.1 Create IntelComment model class
     - Add `IntelComment` (UUID, TargetCharacterUUID, SubmitterCharacterUUID, Text, CreatedUtc)
     - _Requirements: 4.1, 4.2_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 3.2 Create IntelCommentFactionShare model class
+  - [x] 3.2 Create IntelCommentFactionShare model class
     - Add `IntelCommentFactionShare` (UUID, IntelCommentUUID, FactionUUID, ClassificationLevelUUID, ClassifiedByCharacterUUID, SharedUtc, ClassifiedUtc)
     - _Requirements: 4.5, 4.6, 4.10_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 3.3 Create PermissionAuditEntry model class
+  - [x] 3.3 Create PermissionAuditEntry model class
     - Add `PermissionAuditEntry` (UUID, Timestamp, ActorCharacterUUID, TargetCharacterUUID, ActionType, OldValue, NewValue)
     - Add `PermissionActionType` enum (CapabilityGranted, CapabilityRevoked, GroupAssigned, GroupRemoved, ClearanceChanged)
     - _Requirements: 5.2_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 3.4 Create DataType enum
+  - [x] 3.4 Create DataType enum
     - Add `DataType` enum with all 16 values from design (blueprints, colonies, surveys, etc.)
     - Used by sharing rules to specify category-level access
     - _Requirements: 2.4_
     - Verify: `dotnet build` compiles cleanly
 
-- [ ] 4. Checkpoint — All models compile
+- [x] 4. Checkpoint — All models compile
   - Ensure `dotnet build` passes with zero errors and zero warnings
   - Ask the user if questions arise about model design
 
@@ -819,75 +819,75 @@ Extends the faction server with named capabilities, permission groups, clearance
 
 
 - [ ] 78. Tests — effective permission computation
-  - [ ]* 78.1 Unit tests for additive permission model
+  - [ ] 78.1 Unit tests for additive permission model
     - Test: role + group capabilities + individual capabilities = union
     - Test: no deny mechanism — having capability from any source means you have it
     - _Requirements: 1.2, 2.12_
 
-  - [ ]* 78.2 Unit tests for single-group constraint
+  - [ ] 78.2 Unit tests for single-group constraint
     - Test: assigning to new group removes from old group
     - Test: character belongs to at most one group per scope
     - _Requirements: 2.5_
 
 - [ ] 79. Tests — visibility resolution
-  - [ ]* 79.1 Unit tests for two-layer visibility
+  - [ ] 79.1 Unit tests for two-layer visibility
     - Test: member sees intersection of (what character shared) ∩ (what clearance permits)
     - Test: if character didn't share, faction clearance doesn't matter — result is empty
     - _Requirements: 3.9, 3.10_
 
-  - [ ]* 79.2 Unit tests for clearance defaults
+  - [ ] 79.2 Unit tests for clearance defaults
     - Test: no clearance on sharing rule defaults to lowest level (visible to everyone)
     - Test: clearance below minimum blocks access
     - _Requirements: 3.10_
 
-  - [ ]* 79.3 Unit tests for Owner/Leader clearance overrides
+  - [ ] 79.3 Unit tests for Owner/Leader clearance overrides
     - Test: Owner always sees everything regardless of clearance level
     - Test: Leader sees all but highest-only content
     - _Requirements: 3.12, 3.13_
 
 - [ ] 80. Tests — intel comment lifecycle
-  - [ ]* 80.1 Unit tests for comment creation and privacy
+  - [ ] 80.1 Unit tests for comment creation and privacy
     - Test: new comment is private (only submitter sees it)
     - Test: sharing with faction creates unclassified share
     - _Requirements: 4.3, 4.6_
 
-  - [ ]* 80.2 Unit tests for classification and visibility
+  - [ ] 80.2 Unit tests for classification and visibility
     - Test: unclassified visible only to classify_intel holders
     - Test: classified visible to members with sufficient clearance
     - Test: classified invisible to members below clearance
     - _Requirements: 4.7, 4.9_
 
-  - [ ]* 80.3 Unit tests for share revocation
+  - [ ] 80.3 Unit tests for share revocation
     - Test: revoking share makes comment invisible to faction immediately
     - Test: deleting comment removes all shares
     - _Requirements: 4.11, 4.12, 4.16_
 
 - [ ] 81. Tests — audit trail
-  - [ ]* 81.1 Unit tests for audit entry creation
+  - [ ] 81.1 Unit tests for audit entry creation
     - Test: each permission mutation type produces correct audit entry
     - Test: audit entry has correct actor, target, action type, old/new values
     - _Requirements: 5.1, 5.2_
 
-  - [ ]* 81.2 Unit tests for audit retention and immutability
+  - [ ] 81.2 Unit tests for audit retention and immutability
     - Test: entries older than retention period are cleaned up
     - Test: no mechanism to delete individual entries
     - _Requirements: 5.4, 5.5_
 
 - [ ] 82. Tests — authorization
-  - [ ]* 82.1 Unit tests for faction endpoint authorization
+  - [ ] 82.1 Unit tests for faction endpoint authorization
     - Test: Leader can mutate faction permissions
     - Test: Owner can mutate any faction's permissions
     - Test: regular character gets 403 on faction mutations
     - _Requirements: 1.8, 1.10_
 
-  - [ ]* 82.2 Unit tests for character endpoint authorization
+  - [ ] 82.2 Unit tests for character endpoint authorization
     - Test: character can mutate own permissions
     - Test: Owner can mutate any character's permissions
     - Test: other character gets 403
     - _Requirements: 1.9, 1.10_
 
 - [ ] 83. Tests — starting set seeding
-  - [ ]* 83.1 Unit tests for faction creation seeding
+  - [ ] 83.1 Unit tests for faction creation seeding
     - Test: new faction gets 9 default capabilities
     - Test: new faction gets 5 default clearance levels
     - Test: all seeded items are deletable/renameable (no special protection)
