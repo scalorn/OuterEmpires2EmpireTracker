@@ -2,9 +2,10 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using OE2EmpireTracker.Server.Push;
+using OE2EmpireTracker.Server.Services;
 using OE2EmpireTracker.Server.Storage;
-
 using OE2EmpireTracker.Services;
+
 namespace OE2EmpireTracker.Server.Endpoints;
 
 /// <summary>
@@ -71,6 +72,10 @@ public static class FactionEndpoints
         };
 
         await storage.UpsertFactionAsync(faction);
+
+        // Seed default capabilities and clearance levels for the new faction
+        await PermissionSeedingService.SeedFactionCapabilitiesAsync(storage, uuid);
+        await PermissionSeedingService.SeedFactionClearanceLevelsAsync(storage, uuid);
 
         LogMutation(httpContext, "Created", "Faction", uuid);
         await DispatchEntityEvent(httpContext, ServerEventType.Created, "Faction", uuid);

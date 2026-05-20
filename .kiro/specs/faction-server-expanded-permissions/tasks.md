@@ -266,14 +266,14 @@ Extends the faction server with named capabilities, permission groups, clearance
   - Other backends (Dynamo, Postgres, Sqlite) have NotImplementedException stubs
   - Ask the user if questions arise
 
-- [ ] 17. Starting set seeding — faction capabilities
+- [x] 17. Starting set seeding — faction capabilities
   - Implement logic to create the 9 default capabilities when a faction is first created
     - global_data_write, server_processing_admin, export_any_character, manage_faction_members, classify_intel, server_side_processing, real_time_push, bulk_export, market_analytics
   - Hook into faction creation flow (FactionEndpoints.CreateFaction or a post-creation service)
   - _Requirements: 1.11, 4.17_
   - Verify: Creating a faction via POST produces 9 capabilities in storage
 
-- [ ] 18. Starting set seeding — clearance levels
+- [x] 18. Starting set seeding — clearance levels
   - Implement logic to create default clearance levels (1=Recruit, 2=Member, 3=Officer, 4=Command, 5=Leader) on faction creation
   - Implement same for character scope on first use
   - _Requirements: 3.3_
@@ -281,50 +281,50 @@ Extends the faction server with named capabilities, permission groups, clearance
 
 
 - [ ] 19. Faction Capability endpoints — POST and GET
-  - [ ] 19.1 Implement POST /api/v1/factions/{uuid}/capabilities
+  - [x] 19.1 Implement POST /api/v1/factions/{uuid}/capabilities
     - Create new `Endpoints/FactionCapabilityEndpoints.cs`
     - Validate: faction exists, caller is Leader/Owner, name not empty, name unique within faction
     - _Requirements: 1.4_
     - Verify: Integration test — POST returns 201 with capability UUID
 
-  - [ ] 19.2 Implement GET /api/v1/factions/{uuid}/capabilities
+  - [x] 19.2 Implement GET /api/v1/factions/{uuid}/capabilities
     - Return all capabilities defined by the faction
     - _Requirements: 1.13_
     - Verify: Integration test — GET returns list of capabilities
 
 - [ ] 20. Faction Capability endpoints — PUT and DELETE
-  - [ ] 20.1 Implement PUT /api/v1/factions/{uuid}/capabilities/{capId}
+  - [x] 20.1 Implement PUT /api/v1/factions/{uuid}/capabilities/{capId}
     - Rename capability (update Name/Description)
     - Validate: capability exists, caller is Leader/Owner
     - _Requirements: 1.8, 1.12_
     - Verify: Integration test — PUT returns 200 with updated capability
 
-  - [ ] 20.2 Implement DELETE /api/v1/factions/{uuid}/capabilities/{capId}
+  - [x] 20.2 Implement DELETE /api/v1/factions/{uuid}/capabilities/{capId}
     - Delete capability (including starting set — no undeletable capabilities)
     - Cascade: remove from FactionGroupCapability and FactionMemberCapability
     - _Requirements: 1.8, 1.12_
     - Verify: Integration test — DELETE returns 204, capability gone from storage
 
 - [ ] 21. Faction ClearanceLevel endpoints — POST and GET
-  - [ ] 21.1 Implement POST /api/v1/factions/{uuid}/clearance-levels
+  - [x] 21.1 Implement POST /api/v1/factions/{uuid}/clearance-levels
     - Create new clearance level with Level (int), Name, Description
     - Validate: faction exists, caller is Leader/Owner
     - _Requirements: 3.5_
     - Verify: Integration test — POST returns 201
 
-  - [ ] 21.2 Implement GET /api/v1/factions/{uuid}/clearance-levels
+  - [x] 21.2 Implement GET /api/v1/factions/{uuid}/clearance-levels
     - Return all clearance levels for the faction, ordered by Level ascending
     - _Requirements: 3.5_
     - Verify: Integration test — GET returns ordered list
 
 - [ ] 22. Faction ClearanceLevel endpoints — PUT and DELETE
-  - [ ] 22.1 Implement PUT /api/v1/factions/{uuid}/clearance-levels/{levelId}
+  - [x] 22.1 Implement PUT /api/v1/factions/{uuid}/clearance-levels/{levelId}
     - Update Level number, Name, or Description
     - Validate: level exists, caller is Leader/Owner
     - _Requirements: 3.4_
     - Verify: Integration test — PUT returns 200
 
-  - [ ] 22.2 Implement DELETE /api/v1/factions/{uuid}/clearance-levels/{levelId}
+  - [x] 22.2 Implement DELETE /api/v1/factions/{uuid}/clearance-levels/{levelId}
     - Delete clearance level (including starting set)
     - Validate: caller is Leader/Owner
     - _Requirements: 3.4_
@@ -332,91 +332,91 @@ Extends the faction server with named capabilities, permission groups, clearance
 
 
 - [ ] 23. Faction PermissionGroup endpoints — POST and GET
-  - [ ] 23.1 Implement POST /api/v1/factions/{uuid}/groups
+  - [x] 23.1 Implement POST /api/v1/factions/{uuid}/groups
     - Create new `Endpoints/FactionGroupEndpoints.cs`
     - Create group with Name, Description, DefaultClearanceLevelUUID
     - Validate: faction exists, caller is Leader/Owner, DefaultClearanceLevelUUID references valid level
     - _Requirements: 2.9_
     - Verify: Integration test — POST returns 201
 
-  - [ ] 23.2 Implement GET /api/v1/factions/{uuid}/groups
+  - [x] 23.2 Implement GET /api/v1/factions/{uuid}/groups
     - Return all permission groups for the faction
     - _Requirements: 2.9_
     - Verify: Integration test — GET returns list
 
 - [ ] 24. Faction PermissionGroup endpoints — PUT and DELETE
-  - [ ] 24.1 Implement PUT /api/v1/factions/{uuid}/groups/{groupId}
+  - [x] 24.1 Implement PUT /api/v1/factions/{uuid}/groups/{groupId}
     - Update group Name, Description, DefaultClearanceLevelUUID
     - Validate: group exists, caller is Leader/Owner
     - _Requirements: 2.9_
     - Verify: Integration test — PUT returns 200
 
-  - [ ] 24.2 Implement DELETE /api/v1/factions/{uuid}/groups/{groupId}
+  - [x] 24.2 Implement DELETE /api/v1/factions/{uuid}/groups/{groupId}
     - Delete group, cascade: remove FactionGroupCapability, FactionGroupSharingRule, clear GroupUUID from FactionMemberPermissions
     - _Requirements: 2.9_
     - Verify: Integration test — DELETE returns 204, members' GroupUUID nulled
 
 - [ ] 25. Faction Group member management
-  - [ ] 25.1 Implement PUT /api/v1/factions/{uuid}/groups/{groupId}/members
+  - [x] 25.1 Implement PUT /api/v1/factions/{uuid}/groups/{groupId}/members
     - Assign character to group (set FactionMemberPermissions.GroupUUID)
     - Enforce single-group constraint: if character already in another group, move them
     - Assign DefaultClearanceLevelUUID if character has no clearance yet
     - _Requirements: 2.10, 2.5, 2.7_
     - Verify: Integration test — PUT returns 200, character's group updated
 
-  - [ ] 25.2 Implement DELETE /api/v1/factions/{uuid}/groups/{groupId}/members/{characterUUID}
+  - [x] 25.2 Implement DELETE /api/v1/factions/{uuid}/groups/{groupId}/members/{characterUUID}
     - Remove character from group (null out GroupUUID in FactionMemberPermissions)
     - _Requirements: 2.11_
     - Verify: Integration test — DELETE returns 204
 
 - [ ] 26. Faction Group sharing rules and capability grants
-  - [ ] 26.1 Implement POST /api/v1/factions/{uuid}/groups/{groupId}/sharing-rules
+  - [x] 26.1 Implement POST /api/v1/factions/{uuid}/groups/{groupId}/sharing-rules
     - Add a FactionGroupSharingRule to the group
     - Validate: MinClearanceLevelUUID references valid level
     - _Requirements: 2.4, 3.8_
     - Verify: Integration test — POST returns 201
 
-  - [ ] 26.2 Implement DELETE /api/v1/factions/{uuid}/groups/{groupId}/sharing-rules/{ruleId}
+  - [x] 26.2 Implement DELETE /api/v1/factions/{uuid}/groups/{groupId}/sharing-rules/{ruleId}
     - Remove a sharing rule from the group
     - _Requirements: 2.4_
     - Verify: Integration test — DELETE returns 204
 
-  - [ ] 26.3 Implement POST /api/v1/factions/{uuid}/groups/{groupId}/capabilities
+  - [x] 26.3 Implement POST /api/v1/factions/{uuid}/groups/{groupId}/capabilities
     - Add a FactionGroupCapability to the group
     - Validate: CapabilityUUID references valid faction capability
     - _Requirements: 2.3_
     - Verify: Integration test — POST returns 201
 
-  - [ ] 26.4 Implement DELETE /api/v1/factions/{uuid}/groups/{groupId}/capabilities/{capId}
+  - [x] 26.4 Implement DELETE /api/v1/factions/{uuid}/groups/{groupId}/capabilities/{capId}
     - Remove a capability grant from the group
     - _Requirements: 2.3_
     - Verify: Integration test — DELETE returns 204
 
 
 - [ ] 27. Faction member clearance and individual capabilities
-  - [ ] 27.1 Implement PUT /api/v1/factions/{uuid}/members/{charUUID}/clearance
+  - [x] 27.1 Implement PUT /api/v1/factions/{uuid}/members/{charUUID}/clearance
     - Set a member's clearance level (update FactionMemberPermissions.ClearanceLevelUUID)
     - Validate: level exists, caller is Leader/Owner
     - _Requirements: 3.7_
     - Verify: Integration test — PUT returns 200
 
-  - [ ] 27.2 Implement PUT /api/v1/factions/{uuid}/members/{charUUID}/capabilities (grant)
+  - [x] 27.2 Implement PUT /api/v1/factions/{uuid}/members/{charUUID}/capabilities (grant)
     - Add individual FactionMemberCapability
     - Validate: capability exists, caller is Leader/Owner
     - _Requirements: 1.6, 1.8_
     - Verify: Integration test — PUT returns 200
 
-  - [ ] 27.3 Implement DELETE /api/v1/factions/{uuid}/members/{charUUID}/capabilities/{capId} (revoke)
+  - [x] 27.3 Implement DELETE /api/v1/factions/{uuid}/members/{charUUID}/capabilities/{capId} (revoke)
     - Remove individual FactionMemberCapability
     - _Requirements: 1.8_
     - Verify: Integration test — DELETE returns 204
 
-- [ ] 28. Implement GET /api/v1/factions/{uuid}/members with clearance info
+- [x] 28. Implement GET /api/v1/factions/{uuid}/members with clearance info
   - Extend existing members endpoint to include each member's clearance level (name + numeric value) and group name
   - _Requirements: 3.14_
   - Verify: Integration test — GET response includes clearance fields
 
-- [ ] 29. Checkpoint — Faction API endpoints compile and pass basic tests
+- [x] 29. Checkpoint — Faction API endpoints compile and pass basic tests
   - Ensure `dotnet build` passes with zero errors and zero warnings
   - All faction permission endpoints registered in Program.cs
   - Ask the user if questions arise

@@ -179,6 +179,10 @@ app.MapGet("/health", () =>
 // Token management endpoints (Owner only)
 app.MapTokenEndpoints();
 app.MapFactionEndpoints();
+app.MapFactionCapabilityEndpoints();
+app.MapFactionClearanceLevelEndpoints();
+app.MapFactionGroupEndpoints();
+app.MapFactionMemberEndpoints();
 app.MapCharacterEndpoints();
 app.MapMembershipEndpoints();
 app.MapDataEndpoints();
