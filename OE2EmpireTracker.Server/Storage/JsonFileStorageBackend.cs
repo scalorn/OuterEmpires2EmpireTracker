@@ -352,6 +352,944 @@ public class JsonFileStorageBackend : IStorageBackend
         await WriteAtomicAsync(path, json);
     }
 
+    // --- Faction Permission Entities ---
+
+    public async Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID)
+    {
+        return await ReadFactionListAsync<FactionCapability>(factionUUID, "capabilities.json");
+    }
+
+    public async Task UpsertFactionCapabilityAsync(FactionCapability capability)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            EnsureFactionDirectory(capability.FactionUUID);
+            var path = FactionDataPath(capability.FactionUUID, "capabilities.json");
+            var list = await ReadListUnlockedAsync<FactionCapability>(path);
+            var index = list.FindIndex(c => c.UUID == capability.UUID);
+            if (index >= 0)
+            {
+                list[index] = capability;
+            }
+            else
+            {
+                list.Add(capability);
+            }
+
+            var json = JsonConvert.SerializeObject(list, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteFactionCapabilityAsync(string factionUUID, string capabilityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = FactionDataPath(factionUUID, "capabilities.json");
+            var list = await ReadListUnlockedAsync<FactionCapability>(path);
+            var removed = list.RemoveAll(c => c.UUID == capabilityUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<IReadOnlyList<FactionClearanceLevel>> GetFactionClearanceLevelsAsync(string factionUUID)
+    {
+        return await ReadFactionListAsync<FactionClearanceLevel>(factionUUID, "clearance-levels.json");
+    }
+
+    public async Task UpsertFactionClearanceLevelAsync(FactionClearanceLevel level)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            EnsureFactionDirectory(level.FactionUUID);
+            var path = FactionDataPath(level.FactionUUID, "clearance-levels.json");
+            var list = await ReadListUnlockedAsync<FactionClearanceLevel>(path);
+            var index = list.FindIndex(l => l.UUID == level.UUID);
+            if (index >= 0)
+            {
+                list[index] = level;
+            }
+            else
+            {
+                list.Add(level);
+            }
+
+            var json = JsonConvert.SerializeObject(list, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteFactionClearanceLevelAsync(string factionUUID, string levelUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = FactionDataPath(factionUUID, "clearance-levels.json");
+            var list = await ReadListUnlockedAsync<FactionClearanceLevel>(path);
+            var removed = list.RemoveAll(l => l.UUID == levelUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<IReadOnlyList<FactionPermissionGroup>> GetFactionGroupsAsync(string factionUUID)
+    {
+        return await ReadFactionListAsync<FactionPermissionGroup>(factionUUID, "groups.json");
+    }
+
+    public async Task<FactionPermissionGroup?> GetFactionGroupAsync(string factionUUID, string groupUUID)
+    {
+        var groups = await ReadFactionListAsync<FactionPermissionGroup>(factionUUID, "groups.json");
+        return groups.FirstOrDefault(g => g.UUID == groupUUID);
+    }
+
+    public async Task UpsertFactionGroupAsync(FactionPermissionGroup group)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            EnsureFactionDirectory(group.FactionUUID);
+            var path = FactionDataPath(group.FactionUUID, "groups.json");
+            var list = await ReadListUnlockedAsync<FactionPermissionGroup>(path);
+            var index = list.FindIndex(g => g.UUID == group.UUID);
+            if (index >= 0)
+            {
+                list[index] = group;
+            }
+            else
+            {
+                list.Add(group);
+            }
+
+            var json = JsonConvert.SerializeObject(list, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteFactionGroupAsync(string factionUUID, string groupUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = FactionDataPath(factionUUID, "groups.json");
+            var list = await ReadListUnlockedAsync<FactionPermissionGroup>(path);
+            var removed = list.RemoveAll(g => g.UUID == groupUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<IReadOnlyList<FactionGroupCapability>> GetFactionGroupCapabilitiesAsync(string groupUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var allFiles = FindFactionFilesForGroup("group-capabilities.json");
+            var results = new List<FactionGroupCapability>();
+            foreach (var file in allFiles)
+            {
+                var list = await ReadListUnlockedAsync<FactionGroupCapability>(file);
+                results.AddRange(list.Where(c => c.GroupUUID == groupUUID));
+            }
+
+            return results;
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task AddFactionGroupCapabilityAsync(FactionGroupCapability item)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var factionUUID = await FindFactionForGroupUnlockedAsync(item.GroupUUID);
+            if (factionUUID == null)
+            {
+                return;
+            }
+
+            EnsureFactionDirectory(factionUUID);
+            var path = FactionDataPath(factionUUID, "group-capabilities.json");
+            var list = await ReadListUnlockedAsync<FactionGroupCapability>(path);
+            if (!list.Any(c => c.GroupUUID == item.GroupUUID && c.CapabilityUUID == item.CapabilityUUID))
+            {
+                list.Add(item);
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task RemoveFactionGroupCapabilityAsync(string groupUUID, string capabilityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var factionUUID = await FindFactionForGroupUnlockedAsync(groupUUID);
+            if (factionUUID == null)
+            {
+                return;
+            }
+
+            var path = FactionDataPath(factionUUID, "group-capabilities.json");
+            var list = await ReadListUnlockedAsync<FactionGroupCapability>(path);
+            var removed = list.RemoveAll(c => c.GroupUUID == groupUUID && c.CapabilityUUID == capabilityUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<IReadOnlyList<FactionGroupSharingRule>> GetFactionGroupSharingRulesAsync(string groupUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var allFiles = FindFactionFilesForGroup("group-sharing-rules.json");
+            var results = new List<FactionGroupSharingRule>();
+            foreach (var file in allFiles)
+            {
+                var list = await ReadListUnlockedAsync<FactionGroupSharingRule>(file);
+                results.AddRange(list.Where(r => r.GroupUUID == groupUUID));
+            }
+
+            return results;
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task UpsertFactionGroupSharingRuleAsync(FactionGroupSharingRule rule)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var factionUUID = await FindFactionForGroupUnlockedAsync(rule.GroupUUID);
+            if (factionUUID == null)
+            {
+                return;
+            }
+
+            EnsureFactionDirectory(factionUUID);
+            var path = FactionDataPath(factionUUID, "group-sharing-rules.json");
+            var list = await ReadListUnlockedAsync<FactionGroupSharingRule>(path);
+            var index = list.FindIndex(r => r.UUID == rule.UUID);
+            if (index >= 0)
+            {
+                list[index] = rule;
+            }
+            else
+            {
+                list.Add(rule);
+            }
+
+            var json = JsonConvert.SerializeObject(list, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteFactionGroupSharingRuleAsync(string groupUUID, string ruleUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var factionUUID = await FindFactionForGroupUnlockedAsync(groupUUID);
+            if (factionUUID == null)
+            {
+                return;
+            }
+
+            var path = FactionDataPath(factionUUID, "group-sharing-rules.json");
+            var list = await ReadListUnlockedAsync<FactionGroupSharingRule>(path);
+            var removed = list.RemoveAll(r => r.GroupUUID == groupUUID && r.UUID == ruleUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<FactionMemberPermissions?> GetFactionMemberPermissionsAsync(string factionUUID, string characterUUID)
+    {
+        var list = await ReadFactionListAsync<FactionMemberPermissions>(factionUUID, "member-permissions.json");
+        return list.FirstOrDefault(p => p.CharacterUUID == characterUUID);
+    }
+
+    public async Task UpsertFactionMemberPermissionsAsync(FactionMemberPermissions perms)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            EnsureFactionDirectory(perms.FactionUUID);
+            var path = FactionDataPath(perms.FactionUUID, "member-permissions.json");
+            var list = await ReadListUnlockedAsync<FactionMemberPermissions>(path);
+            var index = list.FindIndex(p => p.CharacterUUID == perms.CharacterUUID);
+            if (index >= 0)
+            {
+                list[index] = perms;
+            }
+            else
+            {
+                list.Add(perms);
+            }
+
+            var json = JsonConvert.SerializeObject(list, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<IReadOnlyList<FactionMemberPermissions>> GetAllFactionMembersPermissionsAsync(string factionUUID)
+    {
+        return await ReadFactionListAsync<FactionMemberPermissions>(factionUUID, "member-permissions.json");
+    }
+
+    public async Task<IReadOnlyList<FactionMemberCapability>> GetFactionMemberCapabilitiesAsync(string factionUUID, string characterUUID)
+    {
+        var list = await ReadFactionListAsync<FactionMemberCapability>(factionUUID, "member-capabilities.json");
+        return list.Where(c => c.CharacterUUID == characterUUID).ToList();
+    }
+
+    public async Task AddFactionMemberCapabilityAsync(FactionMemberCapability item)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            EnsureFactionDirectory(item.FactionUUID);
+            var path = FactionDataPath(item.FactionUUID, "member-capabilities.json");
+            var list = await ReadListUnlockedAsync<FactionMemberCapability>(path);
+            if (!list.Any(c => c.CharacterUUID == item.CharacterUUID && c.CapabilityUUID == item.CapabilityUUID))
+            {
+                list.Add(item);
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task RemoveFactionMemberCapabilityAsync(string factionUUID, string characterUUID, string capabilityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = FactionDataPath(factionUUID, "member-capabilities.json");
+            var list = await ReadListUnlockedAsync<FactionMemberCapability>(path);
+            var removed = list.RemoveAll(c => c.CharacterUUID == characterUUID && c.CapabilityUUID == capabilityUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // --- Character Permission Entities ---
+
+    public async Task<IReadOnlyList<CharacterCapability>> GetCharacterCapabilitiesAsync(string characterUUID)
+    {
+        return await ReadCharacterPermListAsync<CharacterCapability>(characterUUID, "perm-capabilities.json");
+    }
+
+    public async Task UpsertCharacterCapabilityAsync(CharacterCapability capability)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            EnsureCharacterDirectory(capability.OwnerCharacterUUID);
+            var path = CharacterPermPath(capability.OwnerCharacterUUID, "perm-capabilities.json");
+            var list = await ReadListUnlockedAsync<CharacterCapability>(path);
+            var index = list.FindIndex(c => c.UUID == capability.UUID);
+            if (index >= 0)
+            {
+                list[index] = capability;
+            }
+            else
+            {
+                list.Add(capability);
+            }
+
+            var json = JsonConvert.SerializeObject(list, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteCharacterCapabilityAsync(string characterUUID, string capabilityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterPermPath(characterUUID, "perm-capabilities.json");
+            var list = await ReadListUnlockedAsync<CharacterCapability>(path);
+            var removed = list.RemoveAll(c => c.UUID == capabilityUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<IReadOnlyList<CharacterClearanceLevel>> GetCharacterClearanceLevelsAsync(string characterUUID)
+    {
+        return await ReadCharacterPermListAsync<CharacterClearanceLevel>(characterUUID, "perm-clearance-levels.json");
+    }
+
+    public async Task UpsertCharacterClearanceLevelAsync(CharacterClearanceLevel level)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            EnsureCharacterDirectory(level.OwnerCharacterUUID);
+            var path = CharacterPermPath(level.OwnerCharacterUUID, "perm-clearance-levels.json");
+            var list = await ReadListUnlockedAsync<CharacterClearanceLevel>(path);
+            var index = list.FindIndex(l => l.UUID == level.UUID);
+            if (index >= 0)
+            {
+                list[index] = level;
+            }
+            else
+            {
+                list.Add(level);
+            }
+
+            var json = JsonConvert.SerializeObject(list, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteCharacterClearanceLevelAsync(string characterUUID, string levelUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterPermPath(characterUUID, "perm-clearance-levels.json");
+            var list = await ReadListUnlockedAsync<CharacterClearanceLevel>(path);
+            var removed = list.RemoveAll(l => l.UUID == levelUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<IReadOnlyList<CharacterPermissionGroup>> GetCharacterGroupsAsync(string characterUUID)
+    {
+        return await ReadCharacterPermListAsync<CharacterPermissionGroup>(characterUUID, "perm-groups.json");
+    }
+
+    public async Task<CharacterPermissionGroup?> GetCharacterGroupAsync(string characterUUID, string groupUUID)
+    {
+        var groups = await ReadCharacterPermListAsync<CharacterPermissionGroup>(characterUUID, "perm-groups.json");
+        return groups.FirstOrDefault(g => g.UUID == groupUUID);
+    }
+
+    public async Task UpsertCharacterGroupAsync(CharacterPermissionGroup group)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            EnsureCharacterDirectory(group.OwnerCharacterUUID);
+            var path = CharacterPermPath(group.OwnerCharacterUUID, "perm-groups.json");
+            var list = await ReadListUnlockedAsync<CharacterPermissionGroup>(path);
+            var index = list.FindIndex(g => g.UUID == group.UUID);
+            if (index >= 0)
+            {
+                list[index] = group;
+            }
+            else
+            {
+                list.Add(group);
+            }
+
+            var json = JsonConvert.SerializeObject(list, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteCharacterGroupAsync(string characterUUID, string groupUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterPermPath(characterUUID, "perm-groups.json");
+            var list = await ReadListUnlockedAsync<CharacterPermissionGroup>(path);
+            var removed = list.RemoveAll(g => g.UUID == groupUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<IReadOnlyList<CharacterGroupCapability>> GetCharacterGroupCapabilitiesAsync(string groupUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var allFiles = FindCharacterFilesForGroup("perm-group-capabilities.json");
+            var results = new List<CharacterGroupCapability>();
+            foreach (var file in allFiles)
+            {
+                var list = await ReadListUnlockedAsync<CharacterGroupCapability>(file);
+                results.AddRange(list.Where(c => c.GroupUUID == groupUUID));
+            }
+
+            return results;
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task AddCharacterGroupCapabilityAsync(CharacterGroupCapability item)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var ownerUUID = await FindCharacterForGroupUnlockedAsync(item.GroupUUID);
+            if (ownerUUID == null)
+            {
+                return;
+            }
+
+            EnsureCharacterDirectory(ownerUUID);
+            var path = CharacterPermPath(ownerUUID, "perm-group-capabilities.json");
+            var list = await ReadListUnlockedAsync<CharacterGroupCapability>(path);
+            if (!list.Any(c => c.GroupUUID == item.GroupUUID && c.CapabilityUUID == item.CapabilityUUID))
+            {
+                list.Add(item);
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task RemoveCharacterGroupCapabilityAsync(string groupUUID, string capabilityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var ownerUUID = await FindCharacterForGroupUnlockedAsync(groupUUID);
+            if (ownerUUID == null)
+            {
+                return;
+            }
+
+            var path = CharacterPermPath(ownerUUID, "perm-group-capabilities.json");
+            var list = await ReadListUnlockedAsync<CharacterGroupCapability>(path);
+            var removed = list.RemoveAll(c => c.GroupUUID == groupUUID && c.CapabilityUUID == capabilityUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<IReadOnlyList<CharacterGroupSharingRule>> GetCharacterGroupSharingRulesAsync(string groupUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var allFiles = FindCharacterFilesForGroup("perm-group-sharing-rules.json");
+            var results = new List<CharacterGroupSharingRule>();
+            foreach (var file in allFiles)
+            {
+                var list = await ReadListUnlockedAsync<CharacterGroupSharingRule>(file);
+                results.AddRange(list.Where(r => r.GroupUUID == groupUUID));
+            }
+
+            return results;
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task UpsertCharacterGroupSharingRuleAsync(CharacterGroupSharingRule rule)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var ownerUUID = await FindCharacterForGroupUnlockedAsync(rule.GroupUUID);
+            if (ownerUUID == null)
+            {
+                return;
+            }
+
+            EnsureCharacterDirectory(ownerUUID);
+            var path = CharacterPermPath(ownerUUID, "perm-group-sharing-rules.json");
+            var list = await ReadListUnlockedAsync<CharacterGroupSharingRule>(path);
+            var index = list.FindIndex(r => r.UUID == rule.UUID);
+            if (index >= 0)
+            {
+                list[index] = rule;
+            }
+            else
+            {
+                list.Add(rule);
+            }
+
+            var json = JsonConvert.SerializeObject(list, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteCharacterGroupSharingRuleAsync(string groupUUID, string ruleUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var ownerUUID = await FindCharacterForGroupUnlockedAsync(groupUUID);
+            if (ownerUUID == null)
+            {
+                return;
+            }
+
+            var path = CharacterPermPath(ownerUUID, "perm-group-sharing-rules.json");
+            var list = await ReadListUnlockedAsync<CharacterGroupSharingRule>(path);
+            var removed = list.RemoveAll(r => r.GroupUUID == groupUUID && r.UUID == ruleUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<IReadOnlyList<CharacterGranteePermissions>> GetCharacterGranteesAsync(string ownerCharacterUUID)
+    {
+        return await ReadCharacterPermListAsync<CharacterGranteePermissions>(ownerCharacterUUID, "perm-grantees.json");
+    }
+
+    public async Task UpsertCharacterGranteePermissionsAsync(CharacterGranteePermissions perms)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            EnsureCharacterDirectory(perms.OwnerCharacterUUID);
+            var path = CharacterPermPath(perms.OwnerCharacterUUID, "perm-grantees.json");
+            var list = await ReadListUnlockedAsync<CharacterGranteePermissions>(path);
+            var index = list.FindIndex(p => p.GranteeUUID == perms.GranteeUUID);
+            if (index >= 0)
+            {
+                list[index] = perms;
+            }
+            else
+            {
+                list.Add(perms);
+            }
+
+            var json = JsonConvert.SerializeObject(list, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteCharacterGranteePermissionsAsync(string ownerCharacterUUID, string granteeUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterPermPath(ownerCharacterUUID, "perm-grantees.json");
+            var list = await ReadListUnlockedAsync<CharacterGranteePermissions>(path);
+            var removed = list.RemoveAll(p => p.GranteeUUID == granteeUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task<IReadOnlyList<CharacterGranteeCapability>> GetCharacterGranteeCapabilitiesAsync(string ownerCharacterUUID, string granteeUUID)
+    {
+        var list = await ReadCharacterPermListAsync<CharacterGranteeCapability>(ownerCharacterUUID, "perm-grantee-capabilities.json");
+        return list.Where(c => c.GranteeUUID == granteeUUID).ToList();
+    }
+
+    public async Task AddCharacterGranteeCapabilityAsync(CharacterGranteeCapability item)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            EnsureCharacterDirectory(item.OwnerCharacterUUID);
+            var path = CharacterPermPath(item.OwnerCharacterUUID, "perm-grantee-capabilities.json");
+            var list = await ReadListUnlockedAsync<CharacterGranteeCapability>(path);
+            if (!list.Any(c => c.GranteeUUID == item.GranteeUUID && c.CapabilityUUID == item.CapabilityUUID))
+            {
+                list.Add(item);
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task RemoveCharacterGranteeCapabilityAsync(string ownerCharacterUUID, string granteeUUID, string capabilityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterPermPath(ownerCharacterUUID, "perm-grantee-capabilities.json");
+            var list = await ReadListUnlockedAsync<CharacterGranteeCapability>(path);
+            var removed = list.RemoveAll(c => c.GranteeUUID == granteeUUID && c.CapabilityUUID == capabilityUUID);
+            if (removed > 0)
+            {
+                var json = JsonConvert.SerializeObject(list, SerializerSettings);
+                await WriteAtomicUnlockedAsync(path, json);
+            }
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // --- Intel and Audit ---
+
+    public async Task<IReadOnlyList<IntelComment>> GetIntelCommentsForTargetAsync(string targetCharacterUUID)
+    {
+        var list = await ReadListAsync<IntelComment>("intel-comments.json");
+        return list.Where(c => c.TargetCharacterUUID == targetCharacterUUID).ToList();
+    }
+
+    public async Task<IntelComment?> GetIntelCommentAsync(string commentUUID)
+    {
+        var list = await ReadListAsync<IntelComment>("intel-comments.json");
+        return list.FirstOrDefault(c => c.UUID == commentUUID);
+    }
+
+    public async Task UpsertIntelCommentAsync(IntelComment comment)
+    {
+        await UpsertInListAsync<IntelComment>("intel-comments.json", comment, c => c.UUID == comment.UUID);
+    }
+
+    public async Task DeleteIntelCommentAsync(string commentUUID)
+    {
+        await DeleteFromListAsync<IntelComment>("intel-comments.json", c => c.UUID == commentUUID);
+    }
+
+    public async Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForCommentAsync(string commentUUID)
+    {
+        var list = await ReadListAsync<IntelCommentFactionShare>("intel-shares.json");
+        return list.Where(s => s.IntelCommentUUID == commentUUID).ToList();
+    }
+
+    public async Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForFactionAsync(string factionUUID)
+    {
+        var list = await ReadListAsync<IntelCommentFactionShare>("intel-shares.json");
+        return list.Where(s => s.FactionUUID == factionUUID).ToList();
+    }
+
+    public async Task UpsertIntelShareAsync(IntelCommentFactionShare share)
+    {
+        await UpsertInListAsync<IntelCommentFactionShare>("intel-shares.json", share, s => s.UUID == share.UUID);
+    }
+
+    public async Task DeleteIntelShareAsync(string shareUUID)
+    {
+        await DeleteFromListAsync<IntelCommentFactionShare>("intel-shares.json", s => s.UUID == shareUUID);
+    }
+
+    public async Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(
+        DateTime? startDate = null,
+        DateTime? endDate = null,
+        PermissionActionType? actionType = null,
+        string? actorUUID = null,
+        string? targetUUID = null)
+    {
+        var list = await ReadListAsync<PermissionAuditEntry>("permission-audit.json");
+        IEnumerable<PermissionAuditEntry> filtered = list;
+
+        if (startDate.HasValue)
+        {
+            filtered = filtered.Where(e => e.Timestamp >= startDate.Value);
+        }
+
+        if (endDate.HasValue)
+        {
+            filtered = filtered.Where(e => e.Timestamp <= endDate.Value);
+        }
+
+        if (actionType.HasValue)
+        {
+            filtered = filtered.Where(e => e.ActionType == actionType.Value);
+        }
+
+        if (actorUUID != null)
+        {
+            filtered = filtered.Where(e => e.ActorCharacterUUID == actorUUID);
+        }
+
+        if (targetUUID != null)
+        {
+            filtered = filtered.Where(e => e.TargetCharacterUUID == targetUUID);
+        }
+
+        return filtered.ToList();
+    }
+
+    public async Task AppendPermissionAuditEntryAsync(PermissionAuditEntry entry)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = DataFilePath("permission-audit.json");
+            var list = await ReadListUnlockedAsync<PermissionAuditEntry>(path);
+            list.Add(entry);
+            var json = JsonConvert.SerializeObject(list, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteExpiredAuditEntriesAsync(DateTime cutoff)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = DataFilePath("permission-audit.json");
+            var list = await ReadListUnlockedAsync<PermissionAuditEntry>(path);
+            var filtered = list.Where(e => e.Timestamp > cutoff).ToList();
+            var json = JsonConvert.SerializeObject(filtered, SerializerSettings);
+            await WriteAtomicUnlockedAsync(path, json);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
     // --- Private Static Helpers ---
 
     private static void EnsureFile(string path, string defaultContent)
@@ -505,5 +1443,114 @@ public class JsonFileStorageBackend : IStorageBackend
         {
             _lock.Release();
         }
+    }
+
+    private string FactionDataPath(string factionUUID, string filename) =>
+        Path.Combine(_dataPath, "factions", factionUUID, filename);
+
+    private void EnsureFactionDirectory(string factionUUID)
+    {
+        Directory.CreateDirectory(Path.Combine(_dataPath, "factions", factionUUID));
+    }
+
+    private async Task<List<T>> ReadFactionListAsync<T>(string factionUUID, string filename)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = FactionDataPath(factionUUID, filename);
+            return await ReadListUnlockedAsync<T>(path);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    private List<string> FindFactionFilesForGroup(string filename)
+    {
+        var factionsDir = Path.Combine(_dataPath, "factions");
+        if (!Directory.Exists(factionsDir))
+        {
+            return new List<string>();
+        }
+
+        return Directory.GetDirectories(factionsDir)
+            .Select(d => Path.Combine(d, filename))
+            .Where(File.Exists)
+            .ToList();
+    }
+
+    private async Task<string?> FindFactionForGroupUnlockedAsync(string groupUUID)
+    {
+        var factionsDir = Path.Combine(_dataPath, "factions");
+        if (!Directory.Exists(factionsDir))
+        {
+            return null;
+        }
+
+        foreach (var dir in Directory.GetDirectories(factionsDir))
+        {
+            var groupsPath = Path.Combine(dir, "groups.json");
+            var groups = await ReadListUnlockedAsync<FactionPermissionGroup>(groupsPath);
+            if (groups.Any(g => g.UUID == groupUUID))
+            {
+                return Path.GetFileName(dir);
+            }
+        }
+
+        return null;
+    }
+
+    private string CharacterPermPath(string characterUUID, string filename) =>
+        Path.Combine(_dataPath, "characters", characterUUID, filename);
+
+    private async Task<List<T>> ReadCharacterPermListAsync<T>(string characterUUID, string filename)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterPermPath(characterUUID, filename);
+            return await ReadListUnlockedAsync<T>(path);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    private List<string> FindCharacterFilesForGroup(string filename)
+    {
+        var charsDir = Path.Combine(_dataPath, "characters");
+        if (!Directory.Exists(charsDir))
+        {
+            return new List<string>();
+        }
+
+        return Directory.GetDirectories(charsDir)
+            .Select(d => Path.Combine(d, filename))
+            .Where(File.Exists)
+            .ToList();
+    }
+
+    private async Task<string?> FindCharacterForGroupUnlockedAsync(string groupUUID)
+    {
+        var charsDir = Path.Combine(_dataPath, "characters");
+        if (!Directory.Exists(charsDir))
+        {
+            return null;
+        }
+
+        foreach (var dir in Directory.GetDirectories(charsDir))
+        {
+            var groupsPath = Path.Combine(dir, "perm-groups.json");
+            var groups = await ReadListUnlockedAsync<CharacterPermissionGroup>(groupsPath);
+            if (groups.Any(g => g.UUID == groupUUID))
+            {
+                return Path.GetFileName(dir);
+            }
+        }
+
+        return null;
     }
 }

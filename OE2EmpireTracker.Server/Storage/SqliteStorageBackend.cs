@@ -579,6 +579,177 @@ CREATE TABLE IF NOT EXISTS CharacterPreferences (
         await cmd.ExecuteNonQueryAsync();
     }
 
+    // --- Faction Permission Entities ---
+
+    public Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertFactionCapabilityAsync(FactionCapability capability)
+        => throw new NotImplementedException();
+
+    public Task DeleteFactionCapabilityAsync(string factionUUID, string capabilityUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<FactionClearanceLevel>> GetFactionClearanceLevelsAsync(string factionUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertFactionClearanceLevelAsync(FactionClearanceLevel level)
+        => throw new NotImplementedException();
+
+    public Task DeleteFactionClearanceLevelAsync(string factionUUID, string levelUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<FactionPermissionGroup>> GetFactionGroupsAsync(string factionUUID)
+        => throw new NotImplementedException();
+
+    public Task<FactionPermissionGroup?> GetFactionGroupAsync(string factionUUID, string groupUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertFactionGroupAsync(FactionPermissionGroup group)
+        => throw new NotImplementedException();
+
+    public Task DeleteFactionGroupAsync(string factionUUID, string groupUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<FactionGroupCapability>> GetFactionGroupCapabilitiesAsync(string groupUUID)
+        => throw new NotImplementedException();
+
+    public Task AddFactionGroupCapabilityAsync(FactionGroupCapability item)
+        => throw new NotImplementedException();
+
+    public Task RemoveFactionGroupCapabilityAsync(string groupUUID, string capabilityUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<FactionGroupSharingRule>> GetFactionGroupSharingRulesAsync(string groupUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertFactionGroupSharingRuleAsync(FactionGroupSharingRule rule)
+        => throw new NotImplementedException();
+
+    public Task DeleteFactionGroupSharingRuleAsync(string groupUUID, string ruleUUID)
+        => throw new NotImplementedException();
+
+    public Task<FactionMemberPermissions?> GetFactionMemberPermissionsAsync(string factionUUID, string characterUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertFactionMemberPermissionsAsync(FactionMemberPermissions perms)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<FactionMemberPermissions>> GetAllFactionMembersPermissionsAsync(string factionUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<FactionMemberCapability>> GetFactionMemberCapabilitiesAsync(string factionUUID, string characterUUID)
+        => throw new NotImplementedException();
+
+    public Task AddFactionMemberCapabilityAsync(FactionMemberCapability item)
+        => throw new NotImplementedException();
+
+    public Task RemoveFactionMemberCapabilityAsync(string factionUUID, string characterUUID, string capabilityUUID)
+        => throw new NotImplementedException();
+
+    // --- Character Permission Entities ---
+
+    public Task<IReadOnlyList<CharacterCapability>> GetCharacterCapabilitiesAsync(string characterUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertCharacterCapabilityAsync(CharacterCapability capability)
+        => throw new NotImplementedException();
+
+    public Task DeleteCharacterCapabilityAsync(string characterUUID, string capabilityUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<CharacterClearanceLevel>> GetCharacterClearanceLevelsAsync(string characterUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertCharacterClearanceLevelAsync(CharacterClearanceLevel level)
+        => throw new NotImplementedException();
+
+    public Task DeleteCharacterClearanceLevelAsync(string characterUUID, string levelUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<CharacterPermissionGroup>> GetCharacterGroupsAsync(string characterUUID)
+        => throw new NotImplementedException();
+
+    public Task<CharacterPermissionGroup?> GetCharacterGroupAsync(string characterUUID, string groupUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertCharacterGroupAsync(CharacterPermissionGroup group)
+        => throw new NotImplementedException();
+
+    public Task DeleteCharacterGroupAsync(string characterUUID, string groupUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<CharacterGroupCapability>> GetCharacterGroupCapabilitiesAsync(string groupUUID)
+        => throw new NotImplementedException();
+
+    public Task AddCharacterGroupCapabilityAsync(CharacterGroupCapability item)
+        => throw new NotImplementedException();
+
+    public Task RemoveCharacterGroupCapabilityAsync(string groupUUID, string capabilityUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<CharacterGroupSharingRule>> GetCharacterGroupSharingRulesAsync(string groupUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertCharacterGroupSharingRuleAsync(CharacterGroupSharingRule rule)
+        => throw new NotImplementedException();
+
+    public Task DeleteCharacterGroupSharingRuleAsync(string groupUUID, string ruleUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<CharacterGranteePermissions>> GetCharacterGranteesAsync(string ownerCharacterUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertCharacterGranteePermissionsAsync(CharacterGranteePermissions perms)
+        => throw new NotImplementedException();
+
+    public Task DeleteCharacterGranteePermissionsAsync(string ownerCharacterUUID, string granteeUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<CharacterGranteeCapability>> GetCharacterGranteeCapabilitiesAsync(string ownerCharacterUUID, string granteeUUID)
+        => throw new NotImplementedException();
+
+    public Task AddCharacterGranteeCapabilityAsync(CharacterGranteeCapability item)
+        => throw new NotImplementedException();
+
+    public Task RemoveCharacterGranteeCapabilityAsync(string ownerCharacterUUID, string granteeUUID, string capabilityUUID)
+        => throw new NotImplementedException();
+
+    // --- Intel and Audit ---
+
+    public Task<IReadOnlyList<IntelComment>> GetIntelCommentsForTargetAsync(string targetCharacterUUID)
+        => throw new NotImplementedException();
+
+    public Task<IntelComment?> GetIntelCommentAsync(string commentUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertIntelCommentAsync(IntelComment comment)
+        => throw new NotImplementedException();
+
+    public Task DeleteIntelCommentAsync(string commentUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForCommentAsync(string commentUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<IntelCommentFactionShare>> GetIntelSharesForFactionAsync(string factionUUID)
+        => throw new NotImplementedException();
+
+    public Task UpsertIntelShareAsync(IntelCommentFactionShare share)
+        => throw new NotImplementedException();
+
+    public Task DeleteIntelShareAsync(string shareUUID)
+        => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(DateTime? startDate = null, DateTime? endDate = null, PermissionActionType? actionType = null, string? actorUUID = null, string? targetUUID = null)
+        => throw new NotImplementedException();
+
+    public Task AppendPermissionAuditEntryAsync(PermissionAuditEntry entry)
+        => throw new NotImplementedException();
+
+    public Task DeleteExpiredAuditEntriesAsync(DateTime cutoff)
+        => throw new NotImplementedException();
+
     // --- Private Helpers ---
 
     private static async Task RebuildCollectionBlobAsync(SqliteConnection conn, string characterUUID, string dataType)

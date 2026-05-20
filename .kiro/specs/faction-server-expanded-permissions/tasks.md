@@ -93,174 +93,174 @@ Extends the faction server with named capabilities, permission groups, clearance
   - Ask the user if questions arise about model design
 
 
-- [ ] 5. Storage backend — FactionCapability CRUD
-  - [ ] 5.1 Add IStorageBackend methods for FactionCapability
+- [x] 5. Storage backend — FactionCapability CRUD
+  - [x] 5.1 Add IStorageBackend methods for FactionCapability
     - Add to `IStorageBackend.cs`: GetFactionCapabilitiesAsync, UpsertFactionCapabilityAsync, DeleteFactionCapabilityAsync
     - _Requirements: 1.4_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 5.2 Implement FactionCapability storage in JsonFileStorageBackend
+  - [x] 5.2 Implement FactionCapability storage in JsonFileStorageBackend
     - Implement the three methods in `JsonFileStorageBackend.cs` using JSON file per faction
     - _Requirements: 1.4_
     - Verify: `dotnet build` compiles cleanly
 
-- [ ] 6. Storage backend — FactionClearanceLevel CRUD
-  - [ ] 6.1 Add IStorageBackend methods for FactionClearanceLevel
+- [x] 6. Storage backend — FactionClearanceLevel CRUD
+  - [x] 6.1 Add IStorageBackend methods for FactionClearanceLevel
     - Add: GetFactionClearanceLevelsAsync, UpsertFactionClearanceLevelAsync, DeleteFactionClearanceLevelAsync
     - _Requirements: 3.5_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 6.2 Implement FactionClearanceLevel storage in JsonFileStorageBackend
+  - [x] 6.2 Implement FactionClearanceLevel storage in JsonFileStorageBackend
     - Implement the three methods using JSON file per faction
     - _Requirements: 3.5_
     - Verify: `dotnet build` compiles cleanly
 
-- [ ] 7. Storage backend — FactionPermissionGroup CRUD
-  - [ ] 7.1 Add IStorageBackend methods for FactionPermissionGroup
+- [x] 7. Storage backend — FactionPermissionGroup CRUD
+  - [x] 7.1 Add IStorageBackend methods for FactionPermissionGroup
     - Add: GetFactionGroupsAsync, GetFactionGroupAsync, UpsertFactionGroupAsync, DeleteFactionGroupAsync
     - _Requirements: 2.9_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 7.2 Implement FactionPermissionGroup storage in JsonFileStorageBackend
+  - [x] 7.2 Implement FactionPermissionGroup storage in JsonFileStorageBackend
     - Implement the four methods using JSON file per faction
     - _Requirements: 2.9_
     - Verify: `dotnet build` compiles cleanly
 
 
-- [ ] 8. Storage backend — FactionGroupCapability and FactionGroupSharingRule
-  - [ ] 8.1 Add IStorageBackend methods for FactionGroupCapability
+- [x] 8. Storage backend — FactionGroupCapability and FactionGroupSharingRule
+  - [x] 8.1 Add IStorageBackend methods for FactionGroupCapability
     - Add: GetFactionGroupCapabilitiesAsync, AddFactionGroupCapabilityAsync, RemoveFactionGroupCapabilityAsync
     - _Requirements: 2.3_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 8.2 Implement FactionGroupCapability storage in JsonFileStorageBackend
+  - [x] 8.2 Implement FactionGroupCapability storage in JsonFileStorageBackend
     - Implement the three methods
     - _Requirements: 2.3_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 8.3 Add IStorageBackend methods for FactionGroupSharingRule
+  - [x] 8.3 Add IStorageBackend methods for FactionGroupSharingRule
     - Add: GetFactionGroupSharingRulesAsync, UpsertFactionGroupSharingRuleAsync, DeleteFactionGroupSharingRuleAsync
     - _Requirements: 2.4, 3.8_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 8.4 Implement FactionGroupSharingRule storage in JsonFileStorageBackend
+  - [x] 8.4 Implement FactionGroupSharingRule storage in JsonFileStorageBackend
     - Implement the three methods
     - _Requirements: 2.4, 3.8_
     - Verify: `dotnet build` compiles cleanly
 
-- [ ] 9. Storage backend — FactionMemberPermissions and FactionMemberCapability
-  - [ ] 9.1 Add IStorageBackend methods for FactionMemberPermissions
+- [x] 9. Storage backend — FactionMemberPermissions and FactionMemberCapability
+  - [x] 9.1 Add IStorageBackend methods for FactionMemberPermissions
     - Add: GetFactionMemberPermissionsAsync, UpsertFactionMemberPermissionsAsync, GetAllFactionMembersPermissionsAsync
     - _Requirements: 2.5, 3.6_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 9.2 Implement FactionMemberPermissions storage in JsonFileStorageBackend
+  - [x] 9.2 Implement FactionMemberPermissions storage in JsonFileStorageBackend
     - Implement the three methods
     - _Requirements: 2.5, 3.6_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 9.3 Add IStorageBackend methods for FactionMemberCapability
+  - [x] 9.3 Add IStorageBackend methods for FactionMemberCapability
     - Add: GetFactionMemberCapabilitiesAsync, AddFactionMemberCapabilityAsync, RemoveFactionMemberCapabilityAsync
     - _Requirements: 1.6_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 9.4 Implement FactionMemberCapability storage in JsonFileStorageBackend
+  - [x] 9.4 Implement FactionMemberCapability storage in JsonFileStorageBackend
     - Implement the three methods
     - _Requirements: 1.6_
     - Verify: `dotnet build` compiles cleanly
 
 
-- [ ] 10. Storage backend — CharacterCapability CRUD
-  - [ ] 10.1 Add IStorageBackend methods for CharacterCapability
+- [x] 10. Storage backend — CharacterCapability CRUD
+  - [x] 10.1 Add IStorageBackend methods for CharacterCapability
     - Add: GetCharacterCapabilitiesAsync, UpsertCharacterCapabilityAsync, DeleteCharacterCapabilityAsync
     - _Requirements: 1.3_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 10.2 Implement CharacterCapability storage in JsonFileStorageBackend
+  - [x] 10.2 Implement CharacterCapability storage in JsonFileStorageBackend
     - Implement the three methods using JSON file per character
     - _Requirements: 1.3_
     - Verify: `dotnet build` compiles cleanly
 
-- [ ] 11. Storage backend — CharacterClearanceLevel CRUD
-  - [ ] 11.1 Add IStorageBackend methods for CharacterClearanceLevel
+- [x] 11. Storage backend — CharacterClearanceLevel CRUD
+  - [x] 11.1 Add IStorageBackend methods for CharacterClearanceLevel
     - Add: GetCharacterClearanceLevelsAsync, UpsertCharacterClearanceLevelAsync, DeleteCharacterClearanceLevelAsync
     - _Requirements: 3.5_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 11.2 Implement CharacterClearanceLevel storage in JsonFileStorageBackend
+  - [x] 11.2 Implement CharacterClearanceLevel storage in JsonFileStorageBackend
     - Implement the three methods
     - _Requirements: 3.5_
     - Verify: `dotnet build` compiles cleanly
 
-- [ ] 12. Storage backend — CharacterPermissionGroup CRUD
-  - [ ] 12.1 Add IStorageBackend methods for CharacterPermissionGroup
+- [x] 12. Storage backend — CharacterPermissionGroup CRUD
+  - [x] 12.1 Add IStorageBackend methods for CharacterPermissionGroup
     - Add: GetCharacterGroupsAsync, GetCharacterGroupAsync, UpsertCharacterGroupAsync, DeleteCharacterGroupAsync
     - _Requirements: 2.9_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 12.2 Implement CharacterPermissionGroup storage in JsonFileStorageBackend
+  - [x] 12.2 Implement CharacterPermissionGroup storage in JsonFileStorageBackend
     - Implement the four methods
     - _Requirements: 2.9_
     - Verify: `dotnet build` compiles cleanly
 
 
-- [ ] 13. Storage backend — CharacterGroupCapability, CharacterGroupSharingRule, CharacterGrantee entities
-  - [ ] 13.1 Add IStorageBackend methods for CharacterGroupCapability and CharacterGroupSharingRule
+- [x] 13. Storage backend — CharacterGroupCapability, CharacterGroupSharingRule, CharacterGrantee entities
+  - [x] 13.1 Add IStorageBackend methods for CharacterGroupCapability and CharacterGroupSharingRule
     - Add: GetCharacterGroupCapabilitiesAsync, AddCharacterGroupCapabilityAsync, RemoveCharacterGroupCapabilityAsync
     - Add: GetCharacterGroupSharingRulesAsync, UpsertCharacterGroupSharingRuleAsync, DeleteCharacterGroupSharingRuleAsync
     - _Requirements: 2.3, 2.4_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 13.2 Implement CharacterGroupCapability and CharacterGroupSharingRule in JsonFileStorageBackend
+  - [x] 13.2 Implement CharacterGroupCapability and CharacterGroupSharingRule in JsonFileStorageBackend
     - Implement the six methods
     - _Requirements: 2.3, 2.4_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 13.3 Add IStorageBackend methods for CharacterGranteePermissions and CharacterGranteeCapability
+  - [x] 13.3 Add IStorageBackend methods for CharacterGranteePermissions and CharacterGranteeCapability
     - Add: GetCharacterGranteesAsync, UpsertCharacterGranteePermissionsAsync, DeleteCharacterGranteePermissionsAsync
     - Add: GetCharacterGranteeCapabilitiesAsync, AddCharacterGranteeCapabilityAsync, RemoveCharacterGranteeCapabilityAsync
     - _Requirements: 1.7, 2.2_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 13.4 Implement CharacterGrantee storage in JsonFileStorageBackend
+  - [x] 13.4 Implement CharacterGrantee storage in JsonFileStorageBackend
     - Implement the six methods
     - _Requirements: 1.7, 2.2_
     - Verify: `dotnet build` compiles cleanly
 
-- [ ] 14. Storage backend — IntelComment and IntelCommentFactionShare
-  - [ ] 14.1 Add IStorageBackend methods for IntelComment
+- [x] 14. Storage backend — IntelComment and IntelCommentFactionShare
+  - [x] 14.1 Add IStorageBackend methods for IntelComment
     - Add: GetIntelCommentsForTargetAsync, GetIntelCommentAsync, UpsertIntelCommentAsync, DeleteIntelCommentAsync
     - _Requirements: 4.1, 4.2_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 14.2 Implement IntelComment storage in JsonFileStorageBackend
+  - [x] 14.2 Implement IntelComment storage in JsonFileStorageBackend
     - Implement the four methods
     - _Requirements: 4.1, 4.2_
     - Verify: `dotnet build` compiles cleanly
 
-  - [ ] 14.3 Add IStorageBackend methods for IntelCommentFactionShare
+  - [x] 14.3 Add IStorageBackend methods for IntelCommentFactionShare
     - Add: GetIntelSharesForCommentAsync, GetIntelSharesForFactionAsync, UpsertIntelShareAsync, DeleteIntelShareAsync
     - _Requirements: 4.4, 4.5, 4.11_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 14.4 Implement IntelCommentFactionShare storage in JsonFileStorageBackend
+  - [x] 14.4 Implement IntelCommentFactionShare storage in JsonFileStorageBackend
     - Implement the four methods
     - _Requirements: 4.4, 4.5, 4.11_
     - Verify: `dotnet build` compiles cleanly
 
 
-- [ ] 15. Storage backend — PermissionAuditEntry
-  - [ ] 15.1 Add IStorageBackend methods for PermissionAuditEntry
+- [x] 15. Storage backend — PermissionAuditEntry
+  - [x] 15.1 Add IStorageBackend methods for PermissionAuditEntry
     - Add: GetPermissionAuditEntriesAsync (with filters: dateRange, actionType, actor, target), AppendPermissionAuditEntryAsync, DeleteExpiredAuditEntriesAsync
     - _Requirements: 5.1, 5.2, 5.4_
     - Verify: `dotnet build` compiles (stubs in backends)
 
-  - [ ] 15.2 Implement PermissionAuditEntry storage in JsonFileStorageBackend
+  - [x] 15.2 Implement PermissionAuditEntry storage in JsonFileStorageBackend
     - Implement the three methods (append-only file, no update/delete of individual records)
     - _Requirements: 5.1, 5.2, 5.5_
     - Verify: `dotnet build` compiles cleanly
 
-- [ ] 16. Checkpoint — All storage methods compile
+- [x] 16. Checkpoint — All storage methods compile
   - Ensure `dotnet build` passes with zero errors and zero warnings
   - All IStorageBackend methods have implementations in JsonFileStorageBackend
   - Other backends (Dynamo, Postgres, Sqlite) have NotImplementedException stubs
