@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Models
         /// Optional display name resolver for items that reference other entities.
         /// Set by the application at startup. Returns display name for a given item type and UUID, or null.
         /// </summary>
-        public static Func<ItemType.ItemTypeEnum, string, string> DisplayNameResolver { get; internal set; }
+        public static Func<ItemType.ItemTypeEnum, string, string> DisplayNameResolver { get; set; }
 
         [JsonIgnore]
         public virtual string ExtendedName
@@ -69,42 +69,42 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public string UUID { get; internal set; }
+        public string UUID { get; set; }
 
         [Required]
         [JsonConverter(typeof(StringEnumConverter))]
-        public Models.ItemType.ItemTypeEnum ItemType { get; internal set; } = Models.ItemType.ItemTypeEnum.None;
+        public Models.ItemType.ItemTypeEnum ItemType { get; set; } = Models.ItemType.ItemTypeEnum.None;
 
         [DefaultValue("")]
-        public string BaseItemTypeID { get; internal set; } = string.Empty;
-
-        [Required]
-        [DefaultValue("")]
-        public virtual string Name { get; internal set; } = string.Empty;
+        public string BaseItemTypeID { get; set; } = string.Empty;
 
         [Required]
         [DefaultValue("")]
-        public virtual string NickName { get; internal set; } = string.Empty;
+        public virtual string Name { get; set; } = string.Empty;
 
         [Required]
         [DefaultValue("")]
-        public virtual string Description { get; internal set; } = string.Empty;
+        public virtual string NickName { get; set; } = string.Empty;
+
+        [Required]
+        [DefaultValue("")]
+        public virtual string Description { get; set; } = string.Empty;
 
         // [Required]
-        public int Quantity { get; internal set; } = 0;
+        public int Quantity { get; set; } = 0;
 
         [DefaultValue("")]
-        public string ResourcePurity { get; internal set; } = string.Empty;
+        public string ResourcePurity { get; set; } = string.Empty;
 
-        public decimal Volume { get; internal set; } = 0m;
+        public decimal Volume { get; set; } = 0m;
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public ItemBag Contents { get; internal set; }
+        public ItemBag Contents { get; set; }
 
-        public int CurrentHP { get; internal set; } = 0;
+        public int CurrentHP { get; set; } = 0;
 
-        public int MaxHP { get; internal set; } = 0;
+        public int MaxHP { get; set; } = 0;
 
-        public decimal MaxRepairPercent { get; internal set; } = 0m;
+        public decimal MaxRepairPercent { get; set; } = 0m;
     }
 }

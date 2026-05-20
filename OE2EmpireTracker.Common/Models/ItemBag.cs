@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Models
             Items = new Dictionary<string, Item>();
         }
 
-        public Dictionary<string, Item> Items { get; internal set; }
+        public Dictionary<string, Item> Items { get; set; }
 
         public bool ContainsKey(string uuid)
         {

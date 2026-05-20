@@ -59,15 +59,15 @@ namespace OE2EmpireTracker.Models
         }
 
         [Required]
-        public Models.CommodityIndustry.CommodityIndustryEnum CommodityIndustry { get; internal set; }
+        public Models.CommodityIndustry.CommodityIndustryEnum CommodityIndustry { get; set; }
 
-        public Models.CommodityGroup.CommodityGroupEnum CommodityGroup { get; internal set; }
+        public Models.CommodityGroup.CommodityGroupEnum CommodityGroup { get; set; }
 
-        public string ID { get; internal set; } = string.Empty;
+        public string ID { get; set; } = string.Empty;
 
-        public string Name { get; internal set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
-        public Dictionary<string, string> ConstructionResources { get; internal set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> ConstructionResources { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// Replaces the commodity list with externally-loaded data (e.g. from BaselineData.json).

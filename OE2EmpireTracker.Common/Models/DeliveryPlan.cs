@@ -18,19 +18,19 @@ namespace OE2EmpireTracker.Models
             Stops = new List<DeliveryPlanStop>();
         }
 
-        public string UUID { get; internal set; }
+        public string UUID { get; set; }
 
-        public string Name { get; internal set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
-        public string OwnerUUID { get; internal set; } = string.Empty;
+        public string OwnerUUID { get; set; } = string.Empty;
 
-        public string RouteUUID { get; internal set; } = string.Empty;
+        public string RouteUUID { get; set; } = string.Empty;
 
-        public string ShipUUID { get; internal set; } = string.Empty;
+        public string ShipUUID { get; set; } = string.Empty;
 
-        public bool Completed { get; internal set; } = false;
+        public bool Completed { get; set; } = false;
 
-        public List<DeliveryPlanStop> Stops { get; internal set; }
+        public List<DeliveryPlanStop> Stops { get; set; }
 
         /// <summary>
         /// Calculates what needs to be loaded before departure.
@@ -103,21 +103,21 @@ namespace OE2EmpireTracker.Models
         }
 
         [DefaultValue("")]
-        public string ColonyUUID { get; internal set; } = string.Empty;
+        public string ColonyUUID { get; set; } = string.Empty;
 
-        public int Sequence { get; internal set; }
+        public int Sequence { get; set; }
 
-        public bool StopCompleted { get; internal set; } = false;
+        public bool StopCompleted { get; set; } = false;
 
-        public List<DeliveryItem> DropOff { get; internal set; }
+        public List<DeliveryItem> DropOff { get; set; }
 
-        public List<DeliveryItem> PickUp { get; internal set; }
+        public List<DeliveryItem> PickUp { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         [DefaultValue(DestinationType.Colony)]
-        public DestinationType DestinationType { get; internal set; } = DestinationType.Colony;
+        public DestinationType DestinationType { get; set; } = DestinationType.Colony;
 
-        public string DestinationUUID { get; internal set; } = string.Empty;
+        public string DestinationUUID { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -140,16 +140,16 @@ namespace OE2EmpireTracker.Models
         }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public ItemType.ItemTypeEnum ItemType { get; internal set; } = Models.ItemType.ItemTypeEnum.None;
+        public ItemType.ItemTypeEnum ItemType { get; set; } = Models.ItemType.ItemTypeEnum.None;
 
-        public string BaseItemTypeID { get; internal set; } = string.Empty;
+        public string BaseItemTypeID { get; set; } = string.Empty;
 
-        public string Name { get; internal set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
-        public string ResourcePurity { get; internal set; } = string.Empty;
+        public string ResourcePurity { get; set; } = string.Empty;
 
-        public int Quantity { get; internal set; } = 0;
+        public int Quantity { get; set; } = 0;
 
-        public bool Delivered { get; internal set; } = false;
+        public bool Delivered { get; set; } = false;
     }
 }

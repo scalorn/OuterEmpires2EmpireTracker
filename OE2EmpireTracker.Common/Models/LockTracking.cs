@@ -17,9 +17,9 @@ namespace OE2EmpireTracker.Models
             BaseItemTypeID = baseItemTypeID ?? string.Empty;
         }
 
-        public Models.ItemType.ItemTypeEnum ItemType { get; internal set; }
+        public Models.ItemType.ItemTypeEnum ItemType { get; set; }
 
-        public string BaseItemTypeID { get; internal set; }
+        public string BaseItemTypeID { get; set; }
 
         /// <summary>
         /// Parses a key string produced by ToString().
@@ -72,9 +72,9 @@ namespace OE2EmpireTracker.Models
             Quantity = quantity;
         }
 
-        public ItemKey Key { get; internal set; }
+        public ItemKey Key { get; set; }
 
-        public int Quantity { get; internal set; }
+        public int Quantity { get; set; }
     }
 
     /// <summary>

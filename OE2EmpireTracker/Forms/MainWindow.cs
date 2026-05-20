@@ -173,6 +173,14 @@ namespace OE2EmpireTracker
 
         private void PopulatePlayerDropdown()
         {
+            Log.Info("PopulatePlayerDropdown: PlayerProfileList.Count={0}, CurrentPlayerUUID={1}",
+                playerContext.PlayerProfileList.Count,
+                playerContext.CurrentPlayerUUID ?? "(null)");
+            foreach (var p in playerContext.PlayerProfileList)
+            {
+                Log.Debug("  Profile: UUID={0} Name={1}", p.UUID, p.Name);
+            }
+
             cmbCurrentPlayer.Items.Clear();
             foreach (var profile in playerContext.PlayerProfileList)
             {

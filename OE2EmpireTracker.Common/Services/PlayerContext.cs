@@ -667,6 +667,7 @@ namespace OE2EmpireTracker.Services
 
         public void InitPlayerProfiles(PlayerRoot playerRoot)
         {
+            Log.Info("InitPlayerProfiles: input count={0}", playerRoot.PlayerProfile?.Length ?? 0);
             var sorted = CollectionSortHelper.OrderPlayerProfiles(playerRoot.PlayerProfile);
             var seen = new HashSet<string>(StringComparer.Ordinal);
             var deduped = new List<PlayerProfile>();
@@ -689,6 +690,7 @@ namespace OE2EmpireTracker.Services
             }
 
             _playerProfileList = deduped;
+            Log.Info("InitPlayerProfiles: result count={0}", _playerProfileList.Count);
         }
 
         public void InitBlueprints(PlayerRoot playerRoot)

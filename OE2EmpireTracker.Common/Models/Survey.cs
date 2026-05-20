@@ -49,32 +49,32 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public string OwnerUUID { get; internal set; } = string.Empty;
+        public string OwnerUUID { get; set; } = string.Empty;
 
-        public string ScannedBy { get; internal set; }
+        public string ScannedBy { get; set; }
 
-        public string DateTime { get; internal set; }
+        public string DateTime { get; set; }
 
-        public string PlanetName { get; internal set; }
+        public string PlanetName { get; set; }
 
-        public string SystemName { get; internal set; } = string.Empty;
+        public string SystemName { get; set; } = string.Empty;
 
-        public string SurveyID { get; internal set; }
+        public string SurveyID { get; set; }
 
-        public string ScannerBlueprintUUID { get; internal set; }
+        public string ScannerBlueprintUUID { get; set; }
 
-        public Dictionary<string, string> Properties { get; internal set; }
+        public Dictionary<string, string> Properties { get; set; }
 
-        public Dictionary<string, SurveyResource> Resources { get; internal set; }
+        public Dictionary<string, SurveyResource> Resources { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         [DefaultValue(SurveyType.Planet)]
-        public SurveyType SurveyType { get; internal set; } = SurveyType.Planet;
+        public SurveyType SurveyType { get; set; } = SurveyType.Planet;
 
-        public string AsteroidUUID { get; internal set; } = string.Empty;
+        public string AsteroidUUID { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public Dictionary<string, int> ParsedMaxReserves { get; internal set; }
+        public Dictionary<string, int> ParsedMaxReserves { get; set; }
     }
 
     public class SurveyResource
@@ -100,10 +100,10 @@ namespace OE2EmpireTracker.Models
             }
         }
 
-        public string Resource { get; internal set; } = string.Empty;
+        public string Resource { get; set; } = string.Empty;
 
-        public string Purity { get; internal set; } = string.Empty;
+        public string Purity { get; set; } = string.Empty;
 
-        public string Amount { get; internal set; } = string.Empty;
+        public string Amount { get; set; } = string.Empty;
     }
 }
