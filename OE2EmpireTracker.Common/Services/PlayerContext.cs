@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -785,7 +785,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<Survey>();
             foreach (var item in sorted)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping survey with null/empty UUID (PlanetName={0})", item.PlanetName);
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }

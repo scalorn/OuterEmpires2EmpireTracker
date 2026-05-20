@@ -575,6 +575,12 @@ namespace OE2EmpireTracker.Forms.Survey
 
             foreach (ReadOnlySurvey survey in surveys)
             {
+                if (string.IsNullOrEmpty(survey.UUID))
+                {
+                    Log.Warn("Skipping survey with null/empty UUID (PlanetName={0})", survey.PlanetName);
+                    continue;
+                }
+
                 ListViewItem item;
                 bool found = viewableSurveys.TryGetValue(survey.UUID, out item);
                 string refCount = counter.CountReferences(survey.UUID).TotalCount.ToString();
