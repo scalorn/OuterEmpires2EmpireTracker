@@ -47,6 +47,8 @@ namespace OE2EmpireTracker.Client
         /// </summary>
         private const int MaxReconnectAttempts = 10;
 
+        private const string ApiPrefix = "/api/v1";
+
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly string _serverUrl;
@@ -961,7 +963,9 @@ namespace OE2EmpireTracker.Client
         // HTTP Helpers (with rate limiting)
         // -----------------------------------------------------------------------
 
-        private const string ApiPrefix = "/api/v1";
+        // -----------------------------------------------------------------------
+        // HTTP Helpers
+        // -----------------------------------------------------------------------
 
         private async Task<string> GetStringAsync(string path)
         {
