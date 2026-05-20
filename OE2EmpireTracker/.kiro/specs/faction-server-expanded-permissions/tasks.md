@@ -899,6 +899,76 @@ Extends the faction server with named capabilities, permission groups, clearance
   - Ask the user if questions arise
 
 
+
+---
+
+### Desktop UI (Avalonia/.NET 8) — OE2EmpireTracker.Desktop
+
+> Mirrors the WinForms UI tasks (57-77) for the Avalonia Desktop project.
+> ViewModels are shared from Common; Views are Avalonia AXAML.
+
+- [ ] 84. Create PermissionManagerView shell (Avalonia Window with TabControl: My Sharing + Faction tab)
+  - _Satisfies: Req 1, Req 2, Req 3 — Desktop UI entry point for permission management_
+  - _Inputs: OE2EmpireTracker.Desktop/Views/, design.md mockups_
+  - _Output: PermissionManagerView.axaml + .axaml.cs_
+  - _Verification: View opens without error, tabs render_
+
+- [ ] 85. Implement My Sharing tab — permission groups list + CRUD (Desktop/Avalonia)
+  - _Satisfies: Req 2, Criterion "Character-scoped groups are assignable to anyone the character shares with"_
+  - _Output: Views/Permissions/MySharingGroupsView.axaml_
+  - _Verification: Groups list populates from API, add/delete works_
+
+- [ ] 86. Implement My Sharing tab — group detail panel (sharing rules, capabilities, members) (Desktop/Avalonia)
+  - _Satisfies: Req 2, Criterion "Each group SHALL have a sharing template"_
+  - _Output: Views/Permissions/GroupDetailView.axaml_
+  - _Verification: Selecting a group shows its rules/capabilities/members_
+
+- [ ] 87. Implement My Sharing tab — clearance levels grid (Desktop/Avalonia)
+  - _Satisfies: Req 3, Criterion "Clearance levels SHALL be stored as a user-definable table"_
+  - _Output: Views/Permissions/ClearanceLevelsView.axaml_
+  - _Verification: Grid shows levels, add/remove/reorder works_
+
+- [ ] 88. Implement My Sharing tab — capabilities list + CRUD (Desktop/Avalonia)
+  - _Satisfies: Req 1, Criterion "Characters SHALL be able to create, delete, rename capabilities"_
+  - _Output: Views/Permissions/CapabilitiesView.axaml_
+  - _Verification: Capabilities list populates, CRUD operations work_
+
+- [ ] 89. Implement Faction tab — permission groups + detail (Desktop/Avalonia)
+  - _Satisfies: Req 2, Criterion "CRUD endpoints: POST/GET/PUT/DELETE /api/factions/{uuid}/groups"_
+  - _Output: Views/Permissions/FactionGroupsView.axaml_
+  - _Verification: Faction groups list + detail panel renders with min clearance on rules_
+
+- [ ] 90. Implement Faction tab — clearance levels + capabilities + members overview (Desktop/Avalonia)
+  - _Satisfies: Req 3, Criterion "GET /api/factions/{uuid}/members SHALL include clearance level"_
+  - _Output: Views/Permissions/FactionOverviewView.axaml_
+  - _Verification: Members grid shows Name, Group, Clearance, Capabilities count_
+
+- [ ] 91. Create IntelCommentsView (Avalonia Window with target selector + sections)
+  - _Satisfies: Req 4, Criterion "The service SHALL support intelligence comments attached to ExternalCharacter entities"_
+  - _Output: Views/Intel/IntelCommentsView.axaml + .axaml.cs_
+  - _Verification: View opens, target selector populates_
+
+- [ ] 92. Implement private notes + pending review + classified sections (Desktop/Avalonia)
+  - _Satisfies: Req 4, Criterion "POST creates private comment", "classify_intel can assign level", "classified visible by clearance"_
+  - _Output: Views/Intel/IntelSectionsView.axaml_
+  - _Verification: Create comment, share, classify, filter by clearance all work_
+
+- [ ] 93. Create AuditLogView (Avalonia Window with filterable paginated grid)
+  - _Satisfies: Req 5, Criterion "GET /api/audit/permissions SHALL return permission change history"_
+  - _Output: Views/Audit/AuditLogView.axaml + .axaml.cs_
+  - _Verification: Grid populates with audit entries, filters work_
+
+- [ ] 94. Wire Desktop menu items (Permissions, Intel, Audit) to new views
+  - _Satisfies: Req 1-5 — Desktop UI navigation entry points_
+  - _Output: MainWindow.axaml menu additions + navigation wiring_
+  - _Verification: Menu items open correct views_
+
+- [ ] 95. Wire Intel button on Contacts detail view (Desktop/Avalonia)
+  - _Satisfies: Req 4 — UI integration point for intel from contact view_
+  - _Output: Views/Contacts/ modification_
+  - _Verification: Intel button opens IntelCommentsView with target pre-selected_
+
+
 ## Notes
 
 - Tasks marked with `*` are optional and can be skipped for faster MVP
