@@ -672,7 +672,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<PlayerProfile>();
             foreach (var item in sorted)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -692,7 +698,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<Blueprint>();
             foreach (var item in sorted)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -875,7 +887,13 @@ namespace OE2EmpireTracker.Services
             var list = new List<Colony>();
             foreach (var item in sorted)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     list.Add(item);
                 }
@@ -907,7 +925,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<DeliveryRoute>();
             foreach (var item in sorted)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -927,7 +951,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<DeliveryPlan>();
             foreach (var item in sorted)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -947,7 +977,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<PricingPlan>();
             foreach (var item in sorted)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -967,7 +1003,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<BuildPlan>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -987,7 +1029,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<ShipTemplate>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -1007,7 +1055,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<Ship>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -1027,7 +1081,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<Station>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -1047,7 +1107,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<MarketListing>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -1067,7 +1133,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<MarketTransaction>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -1087,7 +1159,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<StockPlan>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -1107,7 +1185,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<StockProfile>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -1127,7 +1211,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<SupplyChain>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -1147,7 +1237,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<WarehouseOverflowRule>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -1167,7 +1263,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<Faction>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -1187,7 +1289,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<ExternalCharacter>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }
@@ -1207,7 +1315,13 @@ namespace OE2EmpireTracker.Services
             var deduped = new List<Asteroid>();
             foreach (var item in source)
             {
-                if (string.IsNullOrEmpty(item.UUID) || seen.Add(item.UUID))
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
                 {
                     deduped.Add(item);
                 }

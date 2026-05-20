@@ -431,6 +431,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             foreach (ReadOnlyColony colony in colonies)
             {
+                if (string.IsNullOrEmpty(colony.UUID))
+                {
+                    Log.Warn("Skipping colony with null/empty UUID (PlanetName={0})", colony.PlanetName);
+                    continue;
+                }
+
                 string refCount = counter.CountReferences(colony.UUID).TotalCount.ToString();
                 ListViewItem item;
                 bool found = viewableColonies.TryGetValue(colony.UUID, out item);
