@@ -1,3 +1,5 @@
+using OE2EmpireTracker.Models;
+
 namespace OE2EmpireTracker.Server.Storage;
 
 /// <summary>
@@ -149,4 +151,120 @@ public interface IStorageBackend
     Task<IReadOnlyList<PermissionAuditEntry>> GetPermissionAuditEntriesAsync(DateTime? startDate = null, DateTime? endDate = null, PermissionActionType? actionType = null, string? actorUUID = null, string? targetUUID = null);
     Task AppendPermissionAuditEntryAsync(PermissionAuditEntry entry);
     Task DeleteExpiredAuditEntriesAsync(DateTime cutoff);
+
+    // Typed Entity CRUD (per-character domain entities)
+
+    // Colony
+    Task<IReadOnlyList<Colony>> GetAllColoniesAsync(string characterUUID);
+    Task<Colony?> GetColonyAsync(string characterUUID, string entityUUID);
+    Task UpsertColonyAsync(string characterUUID, Colony entity);
+    Task DeleteColonyAsync(string characterUUID, string entityUUID);
+
+    // Blueprint
+    Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID);
+    Task<Blueprint?> GetBlueprintAsync(string characterUUID, string entityUUID);
+    Task UpsertBlueprintAsync(string characterUUID, Blueprint entity);
+    Task DeleteBlueprintAsync(string characterUUID, string entityUUID);
+
+    // Survey
+    Task<IReadOnlyList<Survey>> GetAllSurveysAsync(string characterUUID);
+    Task<Survey?> GetSurveyAsync(string characterUUID, string entityUUID);
+    Task UpsertSurveyAsync(string characterUUID, Survey entity);
+    Task DeleteSurveyAsync(string characterUUID, string entityUUID);
+
+    // PlayerProfile
+    Task<IReadOnlyList<PlayerProfile>> GetAllPlayerProfilesAsync(string characterUUID);
+    Task<PlayerProfile?> GetPlayerProfileAsync(string characterUUID, string entityUUID);
+    Task UpsertPlayerProfileAsync(string characterUUID, PlayerProfile entity);
+    Task DeletePlayerProfileAsync(string characterUUID, string entityUUID);
+
+    // DeliveryRoute
+    Task<IReadOnlyList<DeliveryRoute>> GetAllDeliveryRoutesAsync(string characterUUID);
+    Task<DeliveryRoute?> GetDeliveryRouteAsync(string characterUUID, string entityUUID);
+    Task UpsertDeliveryRouteAsync(string characterUUID, DeliveryRoute entity);
+    Task DeleteDeliveryRouteAsync(string characterUUID, string entityUUID);
+
+    // DeliveryPlan
+    Task<IReadOnlyList<DeliveryPlan>> GetAllDeliveryPlansAsync(string characterUUID);
+    Task<DeliveryPlan?> GetDeliveryPlanAsync(string characterUUID, string entityUUID);
+    Task UpsertDeliveryPlanAsync(string characterUUID, DeliveryPlan entity);
+    Task DeleteDeliveryPlanAsync(string characterUUID, string entityUUID);
+
+    // Ship
+    Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID);
+    Task<Ship?> GetShipAsync(string characterUUID, string entityUUID);
+    Task UpsertShipAsync(string characterUUID, Ship entity);
+    Task DeleteShipAsync(string characterUUID, string entityUUID);
+
+    // ShipTemplate
+    Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID);
+    Task<ShipTemplate?> GetShipTemplateAsync(string characterUUID, string entityUUID);
+    Task UpsertShipTemplateAsync(string characterUUID, ShipTemplate entity);
+    Task DeleteShipTemplateAsync(string characterUUID, string entityUUID);
+
+    // MarketListing
+    Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID);
+    Task<MarketListing?> GetMarketListingAsync(string characterUUID, string entityUUID);
+    Task UpsertMarketListingAsync(string characterUUID, MarketListing entity);
+    Task DeleteMarketListingAsync(string characterUUID, string entityUUID);
+
+    // MarketTransaction
+    Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID);
+    Task<MarketTransaction?> GetMarketTransactionAsync(string characterUUID, string entityUUID);
+    Task UpsertMarketTransactionAsync(string characterUUID, MarketTransaction entity);
+    Task DeleteMarketTransactionAsync(string characterUUID, string entityUUID);
+
+    // PricingPlan
+    Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID);
+    Task<PricingPlan?> GetPricingPlanAsync(string characterUUID, string entityUUID);
+    Task UpsertPricingPlanAsync(string characterUUID, PricingPlan entity);
+    Task DeletePricingPlanAsync(string characterUUID, string entityUUID);
+
+    // StockPlan
+    Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID);
+    Task<StockPlan?> GetStockPlanAsync(string characterUUID, string entityUUID);
+    Task UpsertStockPlanAsync(string characterUUID, StockPlan entity);
+    Task DeleteStockPlanAsync(string characterUUID, string entityUUID);
+
+    // StockProfile
+    Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID);
+    Task<StockProfile?> GetStockProfileAsync(string characterUUID, string entityUUID);
+    Task UpsertStockProfileAsync(string characterUUID, StockProfile entity);
+    Task DeleteStockProfileAsync(string characterUUID, string entityUUID);
+
+    // BuildPlan
+    Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID);
+    Task<BuildPlan?> GetBuildPlanAsync(string characterUUID, string entityUUID);
+    Task UpsertBuildPlanAsync(string characterUUID, BuildPlan entity);
+    Task DeleteBuildPlanAsync(string characterUUID, string entityUUID);
+
+    // SupplyChain
+    Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID);
+    Task<SupplyChain?> GetSupplyChainAsync(string characterUUID, string entityUUID);
+    Task UpsertSupplyChainAsync(string characterUUID, SupplyChain entity);
+    Task DeleteSupplyChainAsync(string characterUUID, string entityUUID);
+
+    // Asteroid
+    Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID);
+    Task<Asteroid?> GetAsteroidAsync(string characterUUID, string entityUUID);
+    Task UpsertAsteroidAsync(string characterUUID, Asteroid entity);
+    Task DeleteAsteroidAsync(string characterUUID, string entityUUID);
+
+    // Station
+    Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID);
+    Task<Station?> GetStationAsync(string characterUUID, string entityUUID);
+    Task UpsertStationAsync(string characterUUID, Station entity);
+    Task DeleteStationAsync(string characterUUID, string entityUUID);
+
+    // Faction (contacts — per-character domain entity, distinct from server-level ServerFaction)
+    Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID);
+    Task<Faction?> GetFactionForCharacterAsync(string characterUUID, string entityUUID);
+    Task UpsertFactionForCharacterAsync(string characterUUID, Faction entity);
+    Task DeleteFactionForCharacterAsync(string characterUUID, string entityUUID);
+
+    // ExternalCharacter
+    Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID);
+    Task<ExternalCharacter?> GetExternalCharacterAsync(string characterUUID, string entityUUID);
+    Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity);
+    Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID);
 }

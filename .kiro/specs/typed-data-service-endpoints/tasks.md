@@ -19,25 +19,25 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Validates negative values → 400
     - _Requirements: 29.1, 29.2, 29.3, 29.5, 29.6_
 
-- [ ] 2. Infrastructure: TypedEndpointBase abstract class
+- [x] 2. Infrastructure: TypedEndpointBase abstract class
   - [x] 2.1 Create TypedEndpointBase<TEntity, TCreate, TUpdate> (Part 1 — class skeleton and abstract members)
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/TypedEndpointBase.cs`
     - Abstract properties: EntityTypeName, RoutePrefix
     - Abstract methods: ValidateCreate, ValidateUpdate, ApplyCreate, ApplyUpdate
     - Virtual method: HandleCreateDedup
     - _Requirements: 2.5, 3.1, 3.2_
-  - [-] 2.2 Implement TypedEndpointBase handler methods (Part 2 — HandleGetAll, HandleGetOne)
+  - [x] 2.2 Implement TypedEndpointBase handler methods (Part 2 — HandleGetAll, HandleGetOne)
     - HandleGetAll: auth check, storage call, pagination
     - HandleGetOne: auth check, UUID validation, storage call, 404 handling
     - _Requirements: 2.2, 2.3, 2.4, 3.5, 3.6, 23.4, 23.5_
-  - [-] 2.3 Implement TypedEndpointBase handler methods (Part 3 — HandleCreate, HandleUpdate, HandleDelete)
+  - [x] 2.3 Implement TypedEndpointBase handler methods (Part 3 — HandleCreate, HandleUpdate, HandleDelete)
     - HandleCreate: auth, body read, validation, dedup hook, storage, logging, event dispatch, rollback on failure
     - HandleUpdate: auth, body read, validation, storage, logging, event dispatch, rollback
     - HandleDelete: auth, UUID validation, storage, logging, event dispatch, rollback
     - _Requirements: 25.1, 25.2, 25.3, 25.5, 26.1, 26.3_
 
 - [ ] 3. Storage interface extension (Group 1: Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute)
-  - [~] 3.1 Add typed methods to IStorageBackend for Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute
+  - [x] 3.1 Add typed methods to IStorageBackend for Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute
     - Add 4 methods × 5 entities = 20 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
   - [~] 3.2 Implement typed methods in JsonFileStorageBackend for Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute
@@ -46,7 +46,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 22.3, 22.7, 22.8_
 
 - [ ] 4. Storage interface extension (Group 2: DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction)
-  - [~] 4.1 Add typed methods to IStorageBackend for DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction
+  - [x] 4.1 Add typed methods to IStorageBackend for DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction
     - Add 4 methods × 5 entities = 20 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
   - [~] 4.2 Implement typed methods in JsonFileStorageBackend for DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction
@@ -54,7 +54,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 22.3, 22.7, 22.8_
 
 - [ ] 5. Storage interface extension (Group 3: PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain)
-  - [~] 5.1 Add typed methods to IStorageBackend for PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain
+  - [x] 5.1 Add typed methods to IStorageBackend for PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain
     - Add 4 methods × 5 entities = 20 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
   - [~] 5.2 Implement typed methods in JsonFileStorageBackend for PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain
@@ -62,7 +62,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 22.3, 22.7, 22.8_
 
 - [ ] 6. Storage interface extension (Group 4: Asteroid, Station, Faction, ExternalCharacter)
-  - [~] 6.1 Add typed methods to IStorageBackend for Asteroid, Station, Faction, ExternalCharacter
+  - [x] 6.1 Add typed methods to IStorageBackend for Asteroid, Station, Faction, ExternalCharacter
     - Add 4 methods × 4 entities = 16 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
   - [~] 6.2 Implement typed methods in JsonFileStorageBackend for Asteroid, Station, Faction, ExternalCharacter

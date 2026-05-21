@@ -1,6 +1,7 @@
 using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Server.Storage;
 
@@ -749,6 +750,103 @@ CREATE TABLE IF NOT EXISTS CharacterPreferences (
 
     public Task DeleteExpiredAuditEntriesAsync(DateTime cutoff)
         => throw new NotImplementedException();
+
+    // --- Typed Entity CRUD (per-character domain entities) --- NOT YET IMPLEMENTED ---
+
+    public Task<IReadOnlyList<Colony>> GetAllColoniesAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<Colony?> GetColonyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertColonyAsync(string characterUUID, Colony entity) => throw new NotImplementedException();
+    public Task DeleteColonyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<Blueprint?> GetBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertBlueprintAsync(string characterUUID, Blueprint entity) => throw new NotImplementedException();
+    public Task DeleteBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<Survey>> GetAllSurveysAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<Survey?> GetSurveyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertSurveyAsync(string characterUUID, Survey entity) => throw new NotImplementedException();
+    public Task DeleteSurveyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<PlayerProfile>> GetAllPlayerProfilesAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<PlayerProfile?> GetPlayerProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertPlayerProfileAsync(string characterUUID, PlayerProfile entity) => throw new NotImplementedException();
+    public Task DeletePlayerProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<DeliveryRoute>> GetAllDeliveryRoutesAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<DeliveryRoute?> GetDeliveryRouteAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertDeliveryRouteAsync(string characterUUID, DeliveryRoute entity) => throw new NotImplementedException();
+    public Task DeleteDeliveryRouteAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<DeliveryPlan>> GetAllDeliveryPlansAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<DeliveryPlan?> GetDeliveryPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertDeliveryPlanAsync(string characterUUID, DeliveryPlan entity) => throw new NotImplementedException();
+    public Task DeleteDeliveryPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<Ship?> GetShipAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertShipAsync(string characterUUID, Ship entity) => throw new NotImplementedException();
+    public Task DeleteShipAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<ShipTemplate?> GetShipTemplateAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertShipTemplateAsync(string characterUUID, ShipTemplate entity) => throw new NotImplementedException();
+    public Task DeleteShipTemplateAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<MarketListing?> GetMarketListingAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertMarketListingAsync(string characterUUID, MarketListing entity) => throw new NotImplementedException();
+    public Task DeleteMarketListingAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<MarketTransaction?> GetMarketTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertMarketTransactionAsync(string characterUUID, MarketTransaction entity) => throw new NotImplementedException();
+    public Task DeleteMarketTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<PricingPlan?> GetPricingPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertPricingPlanAsync(string characterUUID, PricingPlan entity) => throw new NotImplementedException();
+    public Task DeletePricingPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<StockPlan?> GetStockPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertStockPlanAsync(string characterUUID, StockPlan entity) => throw new NotImplementedException();
+    public Task DeleteStockPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<StockProfile?> GetStockProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertStockProfileAsync(string characterUUID, StockProfile entity) => throw new NotImplementedException();
+    public Task DeleteStockProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<BuildPlan?> GetBuildPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertBuildPlanAsync(string characterUUID, BuildPlan entity) => throw new NotImplementedException();
+    public Task DeleteBuildPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<SupplyChain?> GetSupplyChainAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertSupplyChainAsync(string characterUUID, SupplyChain entity) => throw new NotImplementedException();
+    public Task DeleteSupplyChainAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<Asteroid?> GetAsteroidAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertAsteroidAsync(string characterUUID, Asteroid entity) => throw new NotImplementedException();
+    public Task DeleteAsteroidAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<Station?> GetStationAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertStationAsync(string characterUUID, Station entity) => throw new NotImplementedException();
+    public Task DeleteStationAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<Faction?> GetFactionForCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertFactionForCharacterAsync(string characterUUID, Faction entity) => throw new NotImplementedException();
+    public Task DeleteFactionForCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID) => throw new NotImplementedException();
+    public Task<ExternalCharacter?> GetExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity) => throw new NotImplementedException();
+    public Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
 
     // --- Private Helpers ---
 
