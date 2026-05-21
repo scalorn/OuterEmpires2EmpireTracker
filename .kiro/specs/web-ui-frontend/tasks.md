@@ -94,7 +94,7 @@ Tasks are sized to ≤5 files modified, ≤200 new lines, and ≤3 acceptance cr
   - Ensure `npm run lint` passes
   - Ask the user if questions arise.
 
-- [ ] 7. TanStack Query setup and data hooks
+- [x] 7. TanStack Query setup and data hooks
   - [x] 7.1 Configure TanStack Query provider and query key conventions
     - Install @tanstack/react-query
     - Create src/main.tsx QueryClientProvider setup with default options (retry logic, staleTime)
@@ -114,7 +114,7 @@ Tasks are sized to ≤5 files modified, ≤200 new lines, and ≤3 acceptance cr
     - Create src/api/hooks/useColonyPlanner.ts (useMutation for status, build-order, eligibility)
     - _Requirements: 11.1, 11.2, 16.1, 9.3_
 
-- [ ] 8. WebSocket client
+- [x] 8. WebSocket client
   - [x] 8.1 Implement WebSocketClient class with reconnection
     - Create src/ws/WebSocketClient.ts with connect, disconnect, ping (25s interval), exponential backoff reconnect
     - Handle connection URL construction from runtime config (http→ws replacement)
@@ -132,7 +132,7 @@ Tasks are sized to ≤5 files modified, ≤200 new lines, and ≤3 acceptance cr
     - **Property 7: Reconnection uses exponential backoff**
     - **Validates: Requirements 12.2, 12.3**
 
-- [ ] 9. Layout and navigation components
+- [x] 9. Layout and navigation components
   - [x] 9.1 Create AppShell, Sidebar, Header, Footer layout components
     - Install @radix-ui/react-collapsible (for sidebar collapse)
     - Create src/components/layout/AppShell.tsx (sidebar + header + content area with Outlet)
@@ -153,7 +153,7 @@ Tasks are sized to ≤5 files modified, ≤200 new lines, and ≤3 acceptance cr
     - Create src/components/common/FilterBar.tsx (generic filter controls)
     - _Requirements: 6.1, 7.1_
 
-- [ ] 10. Router setup and page structure
+- [x] 10. Router setup and page structure
   - [x] 10.1 Configure React Router with public and authenticated route groups
     - Install react-router-dom
     - Create src/App.tsx with createBrowserRouter, public routes (/, /blueprints, /surveys, /planner, /login), authenticated routes (/app/*)
@@ -162,14 +162,14 @@ Tasks are sized to ≤5 files modified, ≤200 new lines, and ≤3 acceptance cr
     - _Requirements: 1.5, 5.1, 5.4_
 
 - [ ] 11. Public mode — Blueprint browser
-  - [ ] 11.1 Create BlueprintBrowser page with filtering
+  - [x] 11.1 Create BlueprintBrowser page with filtering
     - Create src/pages/public/BlueprintBrowser.tsx with DataTable, FilterBar (type, tech level, ship class)
     - Create src/components/domain/BlueprintCard.tsx for list item display
     - Wire to useBlueprints hook with filter state
     - Display ownership attribution when available
     - _Requirements: 6.1, 6.2, 6.4_
 
-  - [ ] 11.2 Create BlueprintDetail page
+  - [x] 11.2 Create BlueprintDetail page
     - Create src/pages/public/BlueprintDetail.tsx showing full blueprint properties, evolution chain, manufacturing requirements
     - Use route param :id to fetch specific blueprint
     - _Requirements: 6.3_
@@ -179,13 +179,13 @@ Tasks are sized to ≤5 files modified, ≤200 new lines, and ≤3 acceptance cr
     - **Validates: Requirements 6.2**
 
 - [ ] 12. Public mode — Survey browser
-  - [ ] 12.1 Create SurveyBrowser page with filtering
+  - [x] 12.1 Create SurveyBrowser page with filtering
     - Create src/pages/public/SurveyBrowser.tsx with DataTable, FilterBar (system, resource type, purity level)
     - Create src/components/domain/SurveyCard.tsx for list item display
     - Wire to useSurveys hook with filter state
     - _Requirements: 7.1, 7.2_
 
-  - [ ] 12.2 Create SurveyDetail page
+  - [x] 12.2 Create SurveyDetail page
     - Create src/pages/public/SurveyDetail.tsx showing full resource breakdown and location details
     - Use route param :id to fetch specific survey
     - _Requirements: 7.3_

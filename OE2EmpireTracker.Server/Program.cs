@@ -194,6 +194,7 @@ app.MapSharingEndpoints();
 app.MapRateLimitEndpoints();
 app.MapAdminEndpoints();
 app.MapIntelEndpoints();
+app.MapColonyPlannerEndpoints();
 
 // Static file serving for the React SPA
 app.UseStaticFiles(new StaticFileOptions
