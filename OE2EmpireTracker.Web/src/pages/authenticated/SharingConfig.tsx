@@ -6,8 +6,8 @@ import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 import type { SharingRule, SharingTargetType, DataType } from '../../api/types/generated';
 
-const DATA_TYPES: DataType[] = ['Colonies', 'Blueprints', 'Surveys', 'Profiles', 'Intel'];
-const TARGET_TYPES: SharingTargetType[] = ['Character', 'Faction', 'Public'];
+const DATA_TYPES: DataType[] = ['Colonies', 'Blueprints', 'Surveys'];
+const TARGET_TYPES: SharingTargetType[] = ['Character', 'Faction'];
 
 export function SharingConfig() {
   const { characterUUID } = useAuthStore();
@@ -16,7 +16,7 @@ export function SharingConfig() {
   const [showEditor, setShowEditor] = useState(false);
   const [editTargetType, setEditTargetType] = useState<SharingTargetType>('Faction');
   const [editTargetUUID, setEditTargetUUID] = useState('');
-  const [editDataTypes, setEditDataTypes] = useState<DataType[]>([]);
+  const [editDataType, setEditDataType] = useState<DataType | null>(null);
 
   if (isLoading) return <LoadingSpinner message="Loading sharing rules..." />;
   if (isError) return <RetryableError message="Failed to load sharing rules." onRetry={() => void refetch()} />;
@@ -24,31 +24,25 @@ export function SharingConfig() {
   const rules = (Array.isArray(data) ? data : []) as SharingRule[];
 
   const handleAddRule = () => {
-    if (!editTargetUUID.trim() && editTargetType !== 'Public') return;
+    if (!editTargetUUID.trim()) return;
     const newRule: SharingRule = {
-      uuid: crypto.randomUUID(),
+      id: crypto.randomUUID(),
       ownerCharacterUUID: characterUUID ?? '',
       targetType: editTargetType,
-      targetUUID: editTargetType === 'Public' ? 'public' : editTargetUUID.trim(),
-      dataTypes: editDataTypes,
-      createdAt: new Date().toISOString(),
+      targetUUID: editTargetUUID.trim(),
+      dataType: editDataType as string | null,
+      entityUUID: null,
     };
     const updated = [...rules, newRule];
     mutation.mutate(updated);
     setShowEditor(false);
     setEditTargetUUID('');
-    setEditDataTypes([]);
+    setEditDataType(null);
   };
 
-  const handleDeleteRule = (uuid: string) => {
-    const updated = rules.filter((r) => r.uuid !== uuid);
+  const handleDeleteRule = (id: string) => {
+    const updated = rules.filter((r) => r.id !== id);
     mutation.mutate(updated);
-  };
-
-  const toggleDataType = (dt: DataType) => {
-    setEditDataTypes((prev) =>
-      prev.includes(dt) ? prev.filter((d) => d !== dt) : [...prev, dt]
-    );
   };
 
   return (
@@ -79,39 +73,32 @@ export function SharingConfig() {
                 ))}
               </select>
             </div>
-            {editTargetType !== 'Public' && (
-              <div>
-                <label className="mb-1 block text-sm text-gray-400">Target UUID</label>
-                <input
-                  type="text"
-                  value={editTargetUUID}
-                  onChange={(e) => setEditTargetUUID(e.target.value)}
-                  placeholder={`${editTargetType} UUID`}
-                  className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-500"
-                />
-              </div>
-            )}
             <div>
-              <label className="mb-1 block text-sm text-gray-400">Data Types</label>
-              <div className="flex flex-wrap gap-2">
+              <label className="mb-1 block text-sm text-gray-400">Target UUID</label>
+              <input
+                type="text"
+                value={editTargetUUID}
+                onChange={(e) => setEditTargetUUID(e.target.value)}
+                placeholder={`${editTargetType} UUID`}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-500"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm text-gray-400">Data Type</label>
+              <select
+                value={editDataType ?? ''}
+                onChange={(e) => setEditDataType(e.target.value ? e.target.value as DataType : null)}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+              >
+                <option value="">All data types</option>
                 {DATA_TYPES.map((dt) => (
-                  <button
-                    key={dt}
-                    onClick={() => toggleDataType(dt)}
-                    className={`rounded px-3 py-1 text-sm ${
-                      editDataTypes.includes(dt)
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-700 text-gray-300'
-                    }`}
-                  >
-                    {dt}
-                  </button>
+                  <option key={dt} value={dt}>{dt}</option>
                 ))}
-              </div>
+              </select>
             </div>
             <button
               onClick={handleAddRule}
-              disabled={editDataTypes.length === 0}
+              disabled={!editTargetUUID.trim()}
               className="rounded bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700 disabled:opacity-50"
             >
               Save Rule
@@ -125,20 +112,18 @@ export function SharingConfig() {
       ) : (
         <ul className="space-y-3">
           {rules.map((rule) => (
-            <li key={rule.uuid} className="flex items-center justify-between rounded border border-gray-700 p-3">
+            <li key={rule.id} className="flex items-center justify-between rounded border border-gray-700 p-3">
               <div>
                 <p className="text-sm text-white">
                   <span className="font-medium">{rule.targetType}</span>
-                  {rule.targetType !== 'Public' && (
-                    <span className="ml-2 text-gray-400">{rule.targetUUID}</span>
-                  )}
+                  <span className="ml-2 text-gray-400">{rule.targetUUID}</span>
                 </p>
                 <p className="mt-1 text-xs text-gray-400">
-                  Sharing: {rule.dataTypes.join(', ')}
+                  Sharing: {rule.dataType ?? 'All data types'}
                 </p>
               </div>
               <button
-                onClick={() => handleDeleteRule(rule.uuid)}
+                onClick={() => handleDeleteRule(rule.id)}
                 className="text-sm text-red-400 hover:text-red-300"
               >
                 Delete

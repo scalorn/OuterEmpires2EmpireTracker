@@ -38,7 +38,7 @@ export const useAuthStore = create<AuthState>()(
               token,
               characterName: first.name,
               characterUUID: first.uuid,
-              role: first.role,
+              role: null,
               isAuthenticated: true,
               loginError: null,
             });

@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "generate-types": "echo \"TODO: NSwag type generation\""
+    "generate-types": "node scripts/generate-types.cjs"
   },
   "dependencies": {
     "@radix-ui/react-collapsible": "^1.1.12",
