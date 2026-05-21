@@ -95,33 +95,33 @@ Tasks are sized to ≤5 files modified, ≤200 new lines, and ≤3 acceptance cr
   - Ask the user if questions arise.
 
 - [ ] 7. TanStack Query setup and data hooks
-  - [ ] 7.1 Configure TanStack Query provider and query key conventions
+  - [x] 7.1 Configure TanStack Query provider and query key conventions
     - Install @tanstack/react-query
     - Create src/main.tsx QueryClientProvider setup with default options (retry logic, staleTime)
     - Create src/api/hooks/queryKeys.ts with hierarchical key factory
     - _Requirements: 15.1, 15.3_
 
-  - [ ] 7.2 Create data hooks for characters, blueprints, surveys, colonies
+  - [x] 7.2 Create data hooks for characters, blueprints, surveys, colonies
     - Create src/api/hooks/useCharacters.ts (useQuery for character list, character detail)
     - Create src/api/hooks/useBlueprints.ts (useQuery for blueprints with filters, useMutation for CRUD)
     - Create src/api/hooks/useSurveys.ts (useQuery for surveys with filters, useMutation for CRUD)
     - Create src/api/hooks/useColonies.ts (useQuery for colonies, useMutation for CRUD)
     - _Requirements: 10.2, 10.3, 10.4, 10.6_
 
-  - [ ] 7.3 Create data hooks for faction, sharing, and colony planner
+  - [x] 7.3 Create data hooks for faction, sharing, and colony planner
     - Create src/api/hooks/useFaction.ts (faction membership, shared data)
     - Create src/api/hooks/useSharing.ts (sharing rules CRUD)
     - Create src/api/hooks/useColonyPlanner.ts (useMutation for status, build-order, eligibility)
     - _Requirements: 11.1, 11.2, 16.1, 9.3_
 
 - [ ] 8. WebSocket client
-  - [ ] 8.1 Implement WebSocketClient class with reconnection
+  - [x] 8.1 Implement WebSocketClient class with reconnection
     - Create src/ws/WebSocketClient.ts with connect, disconnect, ping (25s interval), exponential backoff reconnect
     - Handle connection URL construction from runtime config (http→ws replacement)
     - Implement max reconnect attempts (10), backoff formula: min(1000 * 2^N, 30000)
     - _Requirements: 12.1, 12.3, 12.4_
 
-  - [ ] 8.2 Create useWebSocket hook with TanStack Query cache invalidation
+  - [x] 8.2 Create useWebSocket hook with TanStack Query cache invalidation
     - Create src/ws/useWebSocket.ts hook that manages WS lifecycle (connect on auth, disconnect on logout)
     - Implement handleServerEvent that maps entityType to query key invalidation
     - Wire into TanStack Query's queryClient.invalidateQueries
@@ -133,7 +133,7 @@ Tasks are sized to ≤5 files modified, ≤200 new lines, and ≤3 acceptance cr
     - **Validates: Requirements 12.2, 12.3**
 
 - [ ] 9. Layout and navigation components
-  - [ ] 9.1 Create AppShell, Sidebar, Header, Footer layout components
+  - [x] 9.1 Create AppShell, Sidebar, Header, Footer layout components
     - Install @radix-ui/react-collapsible (for sidebar collapse)
     - Create src/components/layout/AppShell.tsx (sidebar + header + content area with Outlet)
     - Create src/components/layout/Sidebar.tsx (collapsible nav links, mode-aware sections)
@@ -141,20 +141,20 @@ Tasks are sized to ≤5 files modified, ≤200 new lines, and ≤3 acceptance cr
     - Create src/components/layout/Footer.tsx (version from runtime config)
     - _Requirements: 14.1, 14.2, 14.3, 14.4_
 
-  - [ ] 9.2 Create common UI components (loading, error, empty states)
+  - [x] 9.2 Create common UI components (loading, error, empty states)
     - Create src/components/common/LoadingSpinner.tsx
     - Create src/components/common/ErrorBoundary.tsx (route-level error boundary)
     - Create src/components/common/RetryableError.tsx (network/server error with retry button)
     - Create src/components/common/EmptyState.tsx
     - _Requirements: 15.1, 15.2, 15.3, 15.5_
 
-  - [ ] 9.3 Create DataTable and FilterBar reusable components
+  - [x] 9.3 Create DataTable and FilterBar reusable components
     - Create src/components/common/DataTable.tsx (sortable, paginated table)
     - Create src/components/common/FilterBar.tsx (generic filter controls)
     - _Requirements: 6.1, 7.1_
 
 - [ ] 10. Router setup and page structure
-  - [ ] 10.1 Configure React Router with public and authenticated route groups
+  - [x] 10.1 Configure React Router with public and authenticated route groups
     - Install react-router-dom
     - Create src/App.tsx with createBrowserRouter, public routes (/, /blueprints, /surveys, /planner, /login), authenticated routes (/app/*)
     - Wire AppShell as layout element, AuthGuard as authenticated wrapper
