@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import * as Collapsible from '@radix-ui/react-collapsible';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../auth/store';
 
 interface NavItem {
@@ -26,7 +26,17 @@ const authenticatedNavItems: NavItem[] = [
 
 export function Sidebar() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(() => window.innerWidth >= 1024);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsOpen(true);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <Collapsible.Root open={isOpen} onOpenChange={setIsOpen}>
@@ -35,7 +45,7 @@ export function Sidebar() {
           <span className="text-sm font-semibold text-gray-300">Navigation</span>
           <Collapsible.Trigger asChild>
             <button
-              className="rounded p-1 text-gray-400 hover:bg-gray-700 hover:text-white"
+              className="rounded p-1 text-gray-400 hover:bg-gray-700 hover:text-white lg:hidden"
               aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             >
               {isOpen ? '◀' : '▶'}

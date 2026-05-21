@@ -7,6 +7,7 @@ import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 import { BlueprintCard } from '../../components/domain/BlueprintCard';
 import { Link } from 'react-router-dom';
+import { AuthPrompt } from '../../components/common/AuthPrompt';
 import type { BlueprintFilters } from '../../api/endpoints/public';
 
 const filterFields: FilterField[] = [
@@ -91,6 +92,7 @@ export function BlueprintBrowser() {
 
   return (
     <div>
+      <AuthPrompt />
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white">Blueprint Browser</h1>
         <div className="flex gap-2">

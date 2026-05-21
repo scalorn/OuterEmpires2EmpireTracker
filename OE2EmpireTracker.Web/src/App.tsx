@@ -3,6 +3,7 @@ import { AppShell } from './components/layout/AppShell';
 import { AuthGuard } from './auth/AuthGuard';
 import { LoginPage } from './auth/LoginPage';
 import { NotFound } from './pages/NotFound';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { BlueprintBrowser } from './pages/public/BlueprintBrowser';
 import { BlueprintDetail } from './pages/public/BlueprintDetail';
 import { SurveyBrowser } from './pages/public/SurveyBrowser';
@@ -50,5 +51,9 @@ const router = createBrowserRouter([
 
 export function App() {
   useWebSocket();
-  return <RouterProvider router={router} />;
+  return (
+    <ErrorBoundary>
+      <RouterProvider router={router} />
+    </ErrorBoundary>
+  );
 }
