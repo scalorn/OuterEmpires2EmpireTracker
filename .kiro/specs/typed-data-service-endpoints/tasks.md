@@ -20,17 +20,17 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 29.1, 29.2, 29.3, 29.5, 29.6_
 
 - [ ] 2. Infrastructure: TypedEndpointBase abstract class
-  - [-] 2.1 Create TypedEndpointBase<TEntity, TCreate, TUpdate> (Part 1 — class skeleton and abstract members)
+  - [x] 2.1 Create TypedEndpointBase<TEntity, TCreate, TUpdate> (Part 1 — class skeleton and abstract members)
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/TypedEndpointBase.cs`
     - Abstract properties: EntityTypeName, RoutePrefix
     - Abstract methods: ValidateCreate, ValidateUpdate, ApplyCreate, ApplyUpdate
     - Virtual method: HandleCreateDedup
     - _Requirements: 2.5, 3.1, 3.2_
-  - [~] 2.2 Implement TypedEndpointBase handler methods (Part 2 — HandleGetAll, HandleGetOne)
+  - [-] 2.2 Implement TypedEndpointBase handler methods (Part 2 — HandleGetAll, HandleGetOne)
     - HandleGetAll: auth check, storage call, pagination
     - HandleGetOne: auth check, UUID validation, storage call, 404 handling
     - _Requirements: 2.2, 2.3, 2.4, 3.5, 3.6, 23.4, 23.5_
-  - [~] 2.3 Implement TypedEndpointBase handler methods (Part 3 — HandleCreate, HandleUpdate, HandleDelete)
+  - [-] 2.3 Implement TypedEndpointBase handler methods (Part 3 — HandleCreate, HandleUpdate, HandleDelete)
     - HandleCreate: auth, body read, validation, dedup hook, storage, logging, event dispatch, rollback on failure
     - HandleUpdate: auth, body read, validation, storage, logging, event dispatch, rollback
     - HandleDelete: auth, UUID validation, storage, logging, event dispatch, rollback
