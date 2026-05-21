@@ -6,13 +6,13 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
 
 ## Tasks
 
-- [ ] 1. Infrastructure: PaginatedResponse model and PaginationHelper
-  - [-] 1.1 Create PaginatedResponse<T> in Common_Library
+- [x] 1. Infrastructure: PaginatedResponse model and PaginationHelper
+  - [x] 1.1 Create PaginatedResponse<T> in Common_Library
     - Create `OE2EmpireTracker.Common/Models/PaginatedResponse.cs`
     - Generic class with Items, Total, Limit, Offset properties
     - Dual JSON annotations (Newtonsoft + STJ)
     - _Requirements: 29.1, 29.4_
-  - [-] 1.2 Create PaginationHelper in Server
+  - [x] 1.2 Create PaginationHelper in Server
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/PaginationHelper.cs`
     - Static method `ApplyPagination<T>` with MaxLimit=500 cap
     - Returns raw array when no params, PaginatedResponse when params present
@@ -20,7 +20,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 29.1, 29.2, 29.3, 29.5, 29.6_
 
 - [ ] 2. Infrastructure: TypedEndpointBase abstract class
-  - [~] 2.1 Create TypedEndpointBase<TEntity, TCreate, TUpdate> (Part 1 — class skeleton and abstract members)
+  - [-] 2.1 Create TypedEndpointBase<TEntity, TCreate, TUpdate> (Part 1 — class skeleton and abstract members)
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/TypedEndpointBase.cs`
     - Abstract properties: EntityTypeName, RoutePrefix
     - Abstract methods: ValidateCreate, ValidateUpdate, ApplyCreate, ApplyUpdate
