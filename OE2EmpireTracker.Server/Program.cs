@@ -195,6 +195,25 @@ app.MapRateLimitEndpoints();
 app.MapAdminEndpoints();
 app.MapIntelEndpoints();
 
+// Static file serving for the React SPA
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        if (ctx.File.Name == "index.html")
+        {
+            ctx.Context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+        }
+        else
+        {
+            ctx.Context.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+        }
+    }
+});
+
+// SPA fallback — return index.html for unmatched routes (must be after API endpoints)
+app.MapFallbackToFile("index.html");
+
 // WebSocket endpoint
 var heartbeatTimeout = builder.Configuration.GetValue<int>(
     "Server:WebSocketHeartbeatTimeoutSeconds", 60);
