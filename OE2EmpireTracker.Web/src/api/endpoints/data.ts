@@ -6,6 +6,10 @@ function toLowerDataType(dataType: DataType | string): string {
 }
 
 export const dataApi = {
+  /** Get ALL character data as a combined object (all data types merged). */
+  getAllData: (charUUID: string) =>
+    apiClient.get(`api/v1/characters/${charUUID}/data`).json<Record<string, unknown>>(),
+
   getData: (charUUID: string, dataType: DataType | string) =>
     apiClient.get(`api/v1/characters/${charUUID}/data/${toLowerDataType(dataType)}`).json<unknown>(),
 

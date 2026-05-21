@@ -104,6 +104,13 @@ builder.Services.AddAuthorization(options =>
         policy.RequireAuthenticatedUser());
 });
 
+// Configure JSON serialization for consistent camelCase (handles UUID → uuid correctly)
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase));
+});
+
 // Configure Kestrel for HTTPS with certificate
 builder.WebHost.ConfigureKestrel((context, options) =>
 {
