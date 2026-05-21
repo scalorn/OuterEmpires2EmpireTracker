@@ -1291,102 +1291,1071 @@ public class JsonFileStorageBackend : IStorageBackend
         }
     }
 
-    // --- Typed Entity CRUD (per-character domain entities) --- NOT YET IMPLEMENTED ---
+    // --- Typed Entity CRUD (per-character domain entities) ---
 
-    public Task<IReadOnlyList<Colony>> GetAllColoniesAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<Colony?> GetColonyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertColonyAsync(string characterUUID, Colony entity) => throw new NotImplementedException();
-    public Task DeleteColonyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    // Colony
 
-    public Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<Blueprint?> GetBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertBlueprintAsync(string characterUUID, Blueprint entity) => throw new NotImplementedException();
-    public Task DeleteBlueprintAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task<IReadOnlyList<Colony>> GetAllColoniesAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "colonies");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<Colony>();
+        return JsonConvert.DeserializeObject<List<Colony>>(json, SerializerSettings) ?? new List<Colony>();
+    }
 
-    public Task<IReadOnlyList<Survey>> GetAllSurveysAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<Survey?> GetSurveyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertSurveyAsync(string characterUUID, Survey entity) => throw new NotImplementedException();
-    public Task DeleteSurveyAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task<Colony?> GetColonyAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllColoniesAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
 
-    public Task<IReadOnlyList<PlayerProfile>> GetAllPlayerProfilesAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<PlayerProfile?> GetPlayerProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertPlayerProfileAsync(string characterUUID, PlayerProfile entity) => throw new NotImplementedException();
-    public Task DeletePlayerProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task UpsertColonyAsync(string characterUUID, Colony entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "colonies");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<Colony>()
+                : JsonConvert.DeserializeObject<List<Colony>>(json, SerializerSettings) ?? new List<Colony>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
 
-    public Task<IReadOnlyList<DeliveryRoute>> GetAllDeliveryRoutesAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<DeliveryRoute?> GetDeliveryRouteAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertDeliveryRouteAsync(string characterUUID, DeliveryRoute entity) => throw new NotImplementedException();
-    public Task DeleteDeliveryRouteAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task DeleteColonyAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "colonies");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<Colony>>(json, SerializerSettings) ?? new List<Colony>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
 
-    public Task<IReadOnlyList<DeliveryPlan>> GetAllDeliveryPlansAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<DeliveryPlan?> GetDeliveryPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertDeliveryPlanAsync(string characterUUID, DeliveryPlan entity) => throw new NotImplementedException();
-    public Task DeleteDeliveryPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    // Blueprint
 
-    public Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<Ship?> GetShipAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertShipAsync(string characterUUID, Ship entity) => throw new NotImplementedException();
-    public Task DeleteShipAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "blueprints");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<Blueprint>();
+        return JsonConvert.DeserializeObject<List<Blueprint>>(json, SerializerSettings) ?? new List<Blueprint>();
+    }
 
-    public Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<ShipTemplate?> GetShipTemplateAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertShipTemplateAsync(string characterUUID, ShipTemplate entity) => throw new NotImplementedException();
-    public Task DeleteShipTemplateAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task<Blueprint?> GetBlueprintAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllBlueprintsAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
 
-    public Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<MarketListing?> GetMarketListingAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertMarketListingAsync(string characterUUID, MarketListing entity) => throw new NotImplementedException();
-    public Task DeleteMarketListingAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task UpsertBlueprintAsync(string characterUUID, Blueprint entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "blueprints");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<Blueprint>()
+                : JsonConvert.DeserializeObject<List<Blueprint>>(json, SerializerSettings) ?? new List<Blueprint>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
 
-    public Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<MarketTransaction?> GetMarketTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertMarketTransactionAsync(string characterUUID, MarketTransaction entity) => throw new NotImplementedException();
-    public Task DeleteMarketTransactionAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task DeleteBlueprintAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "blueprints");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<Blueprint>>(json, SerializerSettings) ?? new List<Blueprint>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
 
-    public Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<PricingPlan?> GetPricingPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertPricingPlanAsync(string characterUUID, PricingPlan entity) => throw new NotImplementedException();
-    public Task DeletePricingPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    // Survey
 
-    public Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<StockPlan?> GetStockPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertStockPlanAsync(string characterUUID, StockPlan entity) => throw new NotImplementedException();
-    public Task DeleteStockPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task<IReadOnlyList<Survey>> GetAllSurveysAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "surveys");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<Survey>();
+        return JsonConvert.DeserializeObject<List<Survey>>(json, SerializerSettings) ?? new List<Survey>();
+    }
 
-    public Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<StockProfile?> GetStockProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertStockProfileAsync(string characterUUID, StockProfile entity) => throw new NotImplementedException();
-    public Task DeleteStockProfileAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task<Survey?> GetSurveyAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllSurveysAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
 
-    public Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<BuildPlan?> GetBuildPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertBuildPlanAsync(string characterUUID, BuildPlan entity) => throw new NotImplementedException();
-    public Task DeleteBuildPlanAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task UpsertSurveyAsync(string characterUUID, Survey entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "surveys");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<Survey>()
+                : JsonConvert.DeserializeObject<List<Survey>>(json, SerializerSettings) ?? new List<Survey>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
 
-    public Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<SupplyChain?> GetSupplyChainAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertSupplyChainAsync(string characterUUID, SupplyChain entity) => throw new NotImplementedException();
-    public Task DeleteSupplyChainAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task DeleteSurveyAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "surveys");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<Survey>>(json, SerializerSettings) ?? new List<Survey>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
 
-    public Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<Asteroid?> GetAsteroidAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertAsteroidAsync(string characterUUID, Asteroid entity) => throw new NotImplementedException();
-    public Task DeleteAsteroidAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    // PlayerProfile
 
-    public Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<Station?> GetStationAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertStationAsync(string characterUUID, Station entity) => throw new NotImplementedException();
-    public Task DeleteStationAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task<IReadOnlyList<PlayerProfile>> GetAllPlayerProfilesAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "profiles");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<PlayerProfile>();
+        return JsonConvert.DeserializeObject<List<PlayerProfile>>(json, SerializerSettings) ?? new List<PlayerProfile>();
+    }
 
-    public Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<Faction?> GetFactionForCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertFactionForCharacterAsync(string characterUUID, Faction entity) => throw new NotImplementedException();
-    public Task DeleteFactionForCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task<PlayerProfile?> GetPlayerProfileAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllPlayerProfilesAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
 
-    public Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID) => throw new NotImplementedException();
-    public Task<ExternalCharacter?> GetExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
-    public Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity) => throw new NotImplementedException();
-    public Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+    public async Task UpsertPlayerProfileAsync(string characterUUID, PlayerProfile entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "profiles");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<PlayerProfile>()
+                : JsonConvert.DeserializeObject<List<PlayerProfile>>(json, SerializerSettings) ?? new List<PlayerProfile>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeletePlayerProfileAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "profiles");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<PlayerProfile>>(json, SerializerSettings) ?? new List<PlayerProfile>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // DeliveryRoute
+
+    public async Task<IReadOnlyList<DeliveryRoute>> GetAllDeliveryRoutesAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "delivery-routes");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<DeliveryRoute>();
+        return JsonConvert.DeserializeObject<List<DeliveryRoute>>(json, SerializerSettings) ?? new List<DeliveryRoute>();
+    }
+
+    public async Task<DeliveryRoute?> GetDeliveryRouteAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllDeliveryRoutesAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertDeliveryRouteAsync(string characterUUID, DeliveryRoute entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "delivery-routes");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<DeliveryRoute>()
+                : JsonConvert.DeserializeObject<List<DeliveryRoute>>(json, SerializerSettings) ?? new List<DeliveryRoute>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteDeliveryRouteAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "delivery-routes");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<DeliveryRoute>>(json, SerializerSettings) ?? new List<DeliveryRoute>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // DeliveryPlan
+
+    public async Task<IReadOnlyList<DeliveryPlan>> GetAllDeliveryPlansAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "delivery-plans");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<DeliveryPlan>();
+        return JsonConvert.DeserializeObject<List<DeliveryPlan>>(json, SerializerSettings) ?? new List<DeliveryPlan>();
+    }
+
+    public async Task<DeliveryPlan?> GetDeliveryPlanAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllDeliveryPlansAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertDeliveryPlanAsync(string characterUUID, DeliveryPlan entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "delivery-plans");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<DeliveryPlan>()
+                : JsonConvert.DeserializeObject<List<DeliveryPlan>>(json, SerializerSettings) ?? new List<DeliveryPlan>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteDeliveryPlanAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "delivery-plans");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<DeliveryPlan>>(json, SerializerSettings) ?? new List<DeliveryPlan>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // Ship
+
+    public async Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "ships");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<Ship>();
+        return JsonConvert.DeserializeObject<List<Ship>>(json, SerializerSettings) ?? new List<Ship>();
+    }
+
+    public async Task<Ship?> GetShipAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllShipsAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertShipAsync(string characterUUID, Ship entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "ships");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<Ship>()
+                : JsonConvert.DeserializeObject<List<Ship>>(json, SerializerSettings) ?? new List<Ship>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteShipAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "ships");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<Ship>>(json, SerializerSettings) ?? new List<Ship>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // ShipTemplate
+
+    public async Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "ship-templates");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<ShipTemplate>();
+        return JsonConvert.DeserializeObject<List<ShipTemplate>>(json, SerializerSettings) ?? new List<ShipTemplate>();
+    }
+
+    public async Task<ShipTemplate?> GetShipTemplateAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllShipTemplatesAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertShipTemplateAsync(string characterUUID, ShipTemplate entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "ship-templates");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<ShipTemplate>()
+                : JsonConvert.DeserializeObject<List<ShipTemplate>>(json, SerializerSettings) ?? new List<ShipTemplate>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteShipTemplateAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "ship-templates");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<ShipTemplate>>(json, SerializerSettings) ?? new List<ShipTemplate>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // MarketListing
+
+    public async Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "market-listings");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<MarketListing>();
+        return JsonConvert.DeserializeObject<List<MarketListing>>(json, SerializerSettings) ?? new List<MarketListing>();
+    }
+
+    public async Task<MarketListing?> GetMarketListingAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllMarketListingsAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertMarketListingAsync(string characterUUID, MarketListing entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "market-listings");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<MarketListing>()
+                : JsonConvert.DeserializeObject<List<MarketListing>>(json, SerializerSettings) ?? new List<MarketListing>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteMarketListingAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "market-listings");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<MarketListing>>(json, SerializerSettings) ?? new List<MarketListing>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // MarketTransaction
+
+    public async Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "market-transactions");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<MarketTransaction>();
+        return JsonConvert.DeserializeObject<List<MarketTransaction>>(json, SerializerSettings) ?? new List<MarketTransaction>();
+    }
+
+    public async Task<MarketTransaction?> GetMarketTransactionAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllMarketTransactionsAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertMarketTransactionAsync(string characterUUID, MarketTransaction entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "market-transactions");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<MarketTransaction>()
+                : JsonConvert.DeserializeObject<List<MarketTransaction>>(json, SerializerSettings) ?? new List<MarketTransaction>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteMarketTransactionAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "market-transactions");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<MarketTransaction>>(json, SerializerSettings) ?? new List<MarketTransaction>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // PricingPlan
+
+    public async Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "pricing-plans");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<PricingPlan>();
+        return JsonConvert.DeserializeObject<List<PricingPlan>>(json, SerializerSettings) ?? new List<PricingPlan>();
+    }
+
+    public async Task<PricingPlan?> GetPricingPlanAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllPricingPlansAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertPricingPlanAsync(string characterUUID, PricingPlan entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "pricing-plans");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<PricingPlan>()
+                : JsonConvert.DeserializeObject<List<PricingPlan>>(json, SerializerSettings) ?? new List<PricingPlan>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeletePricingPlanAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "pricing-plans");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<PricingPlan>>(json, SerializerSettings) ?? new List<PricingPlan>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // StockPlan
+
+    public async Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "stock-plans");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<StockPlan>();
+        return JsonConvert.DeserializeObject<List<StockPlan>>(json, SerializerSettings) ?? new List<StockPlan>();
+    }
+
+    public async Task<StockPlan?> GetStockPlanAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllStockPlansAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertStockPlanAsync(string characterUUID, StockPlan entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "stock-plans");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<StockPlan>()
+                : JsonConvert.DeserializeObject<List<StockPlan>>(json, SerializerSettings) ?? new List<StockPlan>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteStockPlanAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "stock-plans");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<StockPlan>>(json, SerializerSettings) ?? new List<StockPlan>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // StockProfile
+
+    public async Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "stock-profiles");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<StockProfile>();
+        return JsonConvert.DeserializeObject<List<StockProfile>>(json, SerializerSettings) ?? new List<StockProfile>();
+    }
+
+    public async Task<StockProfile?> GetStockProfileAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllStockProfilesAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertStockProfileAsync(string characterUUID, StockProfile entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "stock-profiles");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<StockProfile>()
+                : JsonConvert.DeserializeObject<List<StockProfile>>(json, SerializerSettings) ?? new List<StockProfile>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteStockProfileAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "stock-profiles");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<StockProfile>>(json, SerializerSettings) ?? new List<StockProfile>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // BuildPlan
+
+    public async Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "build-plans");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<BuildPlan>();
+        return JsonConvert.DeserializeObject<List<BuildPlan>>(json, SerializerSettings) ?? new List<BuildPlan>();
+    }
+
+    public async Task<BuildPlan?> GetBuildPlanAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllBuildPlansAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertBuildPlanAsync(string characterUUID, BuildPlan entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "build-plans");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<BuildPlan>()
+                : JsonConvert.DeserializeObject<List<BuildPlan>>(json, SerializerSettings) ?? new List<BuildPlan>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteBuildPlanAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "build-plans");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<BuildPlan>>(json, SerializerSettings) ?? new List<BuildPlan>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // SupplyChain
+
+    public async Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "supply-chains");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<SupplyChain>();
+        return JsonConvert.DeserializeObject<List<SupplyChain>>(json, SerializerSettings) ?? new List<SupplyChain>();
+    }
+
+    public async Task<SupplyChain?> GetSupplyChainAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllSupplyChainsAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertSupplyChainAsync(string characterUUID, SupplyChain entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "supply-chains");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<SupplyChain>()
+                : JsonConvert.DeserializeObject<List<SupplyChain>>(json, SerializerSettings) ?? new List<SupplyChain>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteSupplyChainAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "supply-chains");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<SupplyChain>>(json, SerializerSettings) ?? new List<SupplyChain>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // Asteroid
+
+    public async Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "asteroids");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<Asteroid>();
+        return JsonConvert.DeserializeObject<List<Asteroid>>(json, SerializerSettings) ?? new List<Asteroid>();
+    }
+
+    public async Task<Asteroid?> GetAsteroidAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllAsteroidsAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertAsteroidAsync(string characterUUID, Asteroid entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "asteroids");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<Asteroid>()
+                : JsonConvert.DeserializeObject<List<Asteroid>>(json, SerializerSettings) ?? new List<Asteroid>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteAsteroidAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "asteroids");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<Asteroid>>(json, SerializerSettings) ?? new List<Asteroid>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // Station
+
+    public async Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "stations");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<Station>();
+        return JsonConvert.DeserializeObject<List<Station>>(json, SerializerSettings) ?? new List<Station>();
+    }
+
+    public async Task<Station?> GetStationAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllStationsAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertStationAsync(string characterUUID, Station entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "stations");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<Station>()
+                : JsonConvert.DeserializeObject<List<Station>>(json, SerializerSettings) ?? new List<Station>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteStationAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "stations");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<Station>>(json, SerializerSettings) ?? new List<Station>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // Faction (per-character faction contacts)
+
+    public async Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "factions");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<Faction>();
+        return JsonConvert.DeserializeObject<List<Faction>>(json, SerializerSettings) ?? new List<Faction>();
+    }
+
+    public async Task<Faction?> GetFactionForCharacterAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllFactionsForCharacterAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertFactionForCharacterAsync(string characterUUID, Faction entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "factions");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<Faction>()
+                : JsonConvert.DeserializeObject<List<Faction>>(json, SerializerSettings) ?? new List<Faction>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteFactionForCharacterAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "factions");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<Faction>>(json, SerializerSettings) ?? new List<Faction>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    // ExternalCharacter
+
+    public async Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID)
+    {
+        var path = CharacterDataPath(characterUUID, "contacts");
+        var json = await ReadRawAsync(path);
+        if (json == null) return Array.Empty<ExternalCharacter>();
+        return JsonConvert.DeserializeObject<List<ExternalCharacter>>(json, SerializerSettings) ?? new List<ExternalCharacter>();
+    }
+
+    public async Task<ExternalCharacter?> GetExternalCharacterAsync(string characterUUID, string entityUUID)
+    {
+        var all = await GetAllExternalCharactersAsync(characterUUID);
+        return all.FirstOrDefault(e => e.UUID == entityUUID);
+    }
+
+    public async Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "contacts");
+            EnsureCharacterDirectory(characterUUID);
+            var json = await ReadRawUnlockedAsync(path);
+            var list = string.IsNullOrEmpty(json)
+                ? new List<ExternalCharacter>()
+                : JsonConvert.DeserializeObject<List<ExternalCharacter>>(json, SerializerSettings) ?? new List<ExternalCharacter>();
+            var index = list.FindIndex(e => e.UUID == entity.UUID);
+            if (index >= 0) list[index] = entity;
+            else list.Add(entity);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID)
+    {
+        await _lock.WaitAsync();
+        try
+        {
+            var path = CharacterDataPath(characterUUID, "contacts");
+            var json = await ReadRawUnlockedAsync(path);
+            if (json == null) return;
+            var list = JsonConvert.DeserializeObject<List<ExternalCharacter>>(json, SerializerSettings) ?? new List<ExternalCharacter>();
+            list.RemoveAll(e => e.UUID == entityUUID);
+            await WriteAtomicUnlockedAsync(path, JsonConvert.SerializeObject(list, SerializerSettings));
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
 
     // --- Private Static Helpers ---
 

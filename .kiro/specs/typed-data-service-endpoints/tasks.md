@@ -40,7 +40,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
   - [x] 3.1 Add typed methods to IStorageBackend for Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute
     - Add 4 methods × 5 entities = 20 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
-  - [~] 3.2 Implement typed methods in JsonFileStorageBackend for Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute
+  - [-] 3.2 Implement typed methods in JsonFileStorageBackend for Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute
     - Implement GetAll, Get, Upsert, Delete for each entity type
     - Read/write JSON files per entity type
     - _Requirements: 22.3, 22.7, 22.8_
@@ -49,7 +49,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
   - [x] 4.1 Add typed methods to IStorageBackend for DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction
     - Add 4 methods × 5 entities = 20 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
-  - [~] 4.2 Implement typed methods in JsonFileStorageBackend for DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction
+  - [-] 4.2 Implement typed methods in JsonFileStorageBackend for DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction
     - Implement GetAll, Get, Upsert, Delete for each entity type
     - _Requirements: 22.3, 22.7, 22.8_
 
@@ -57,7 +57,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
   - [x] 5.1 Add typed methods to IStorageBackend for PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain
     - Add 4 methods × 5 entities = 20 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
-  - [~] 5.2 Implement typed methods in JsonFileStorageBackend for PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain
+  - [-] 5.2 Implement typed methods in JsonFileStorageBackend for PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain
     - Implement GetAll, Get, Upsert, Delete for each entity type
     - _Requirements: 22.3, 22.7, 22.8_
 
@@ -65,7 +65,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
   - [x] 6.1 Add typed methods to IStorageBackend for Asteroid, Station, Faction, ExternalCharacter
     - Add 4 methods × 4 entities = 16 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
-  - [~] 6.2 Implement typed methods in JsonFileStorageBackend for Asteroid, Station, Faction, ExternalCharacter
+  - [-] 6.2 Implement typed methods in JsonFileStorageBackend for Asteroid, Station, Faction, ExternalCharacter
     - Implement GetAll, Get, Upsert, Delete for each entity type
     - _Requirements: 22.3, 22.7, 22.8_
 
