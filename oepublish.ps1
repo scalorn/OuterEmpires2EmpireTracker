@@ -6,6 +6,6 @@ npm run build
 cd ..
 dotnet publish OE2EmpireTracker.Server/OE2EmpireTracker.Server.csproj -c Release -r linux-x64 --self-contained true -o ./publish/linux
 
-# md T:\oe2server\
-# xcopy publish\linux\. T:\oe2server\. /e /h /r /c /y
-# Write-Host "Publish complete."
+md T:\oe2server\
+xcopy publish\linux\. T:\oe2server\. /e /h /r /c /y
+Write-Host "Publish complete."

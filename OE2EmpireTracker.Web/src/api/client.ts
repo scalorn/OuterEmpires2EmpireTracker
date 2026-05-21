@@ -26,7 +26,7 @@ export function registerAuthStore(getter: typeof getAuthState): void {
 }
 
 export const apiClient = ky.create({
-  prefix: getApiBaseUrl(),
+  prefix: getApiBaseUrl() || undefined,
   hooks: {
     beforeRequest: [
       ({ request }) => {
