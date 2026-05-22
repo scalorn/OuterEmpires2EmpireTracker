@@ -353,7 +353,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Output: ≤5 page component files_
     - _Verification: TypeScript compiles; no imports from data.ts in modified files_
 
-  - [-] 13.3 Add error display handling for typed endpoint responses
+  - [x] 13.3 Add error display handling for typed endpoint responses
     - On HTTP 400: parse error and display to user
     - On HTTP 2xx: clear previous error messages
     - On unparseable 400: display generic error
@@ -362,7 +362,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Output: Error handling utility + integration into API client_
     - _Verification: TypeScript compiles_
 
-  - [~] 13.4 Remove data.ts module
+  - [x] 13.4 Remove data.ts module
     - Delete data.ts (or remove all raw data functions)
     - Verify no remaining imports reference it
     - _Satisfies: Req 3 Criterion 7_
