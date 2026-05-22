@@ -13,9 +13,9 @@ export interface ApiError {
 
 function getApiBaseUrl(): string {
   try {
-    return getRuntimeConfig().apiBaseUrl;
+    return getRuntimeConfig().apiBaseUrl || '/';
   } catch {
-    return window.__OE2_CONFIG__?.apiBaseUrl ?? '';
+    return window.__OE2_CONFIG__?.apiBaseUrl || '/';
   }
 }
 
