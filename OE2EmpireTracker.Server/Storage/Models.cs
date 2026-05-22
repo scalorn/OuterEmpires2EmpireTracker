@@ -11,7 +11,10 @@ public enum TokenRole
 /// <summary>Rate limit configuration per token.</summary>
 public class RateLimitConfig
 {
-    public int RequestsPerMinute { get; set; } = 60;
+    /// <summary>
+    /// Maximum requests per minute. Default is 300 (5 TPS sliding window).
+    /// </summary>
+    public int RequestsPerMinute { get; set; } = 300;
 }
 
 /// <summary>API token stored server-side (hash only, never plaintext).</summary>

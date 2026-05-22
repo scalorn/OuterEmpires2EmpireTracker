@@ -109,6 +109,8 @@ builder.Services.AddAuthorization(options =>
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    options.SerializerOptions.PropertyNameCaseInsensitive = true;
+    options.SerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
     options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase));
 });
 
@@ -204,9 +206,26 @@ app.MapAdminEndpoints();
 app.MapIntelEndpoints();
 app.MapColonyPlannerEndpoints();
 app.MapPublicDataEndpoints();
-app.MapExternalCharacterEndpoints();
+// Typed CRUD endpoints (19 entity types)
+app.MapColonyEndpoints();
+app.MapBlueprintEndpoints();
+app.MapSurveyEndpoints();
+app.MapPlayerProfileEndpoints();
+app.MapDeliveryRouteEndpoints();
+app.MapDeliveryPlanEndpoints();
 app.MapShipEndpoints();
+app.MapShipTemplateEndpoints();
+app.MapMarketListingEndpoints();
+app.MapMarketTransactionEndpoints();
+app.MapPricingPlanEndpoints();
+app.MapStockPlanEndpoints();
+app.MapStockProfileEndpoints();
 app.MapBuildPlanEndpoints();
+app.MapSupplyChainEndpoints();
+app.MapAsteroidEndpoints();
+app.MapStationEndpoints();
+app.MapFactionContactEndpoints();
+app.MapExternalCharacterEndpoints();
 
 // Static file serving for the React SPA
 app.UseStaticFiles(new StaticFileOptions

@@ -12,7 +12,7 @@ internal sealed class TokenBucket
     private readonly object _lock = new object();
     private readonly List<DateTime> _timestamps = new List<DateTime>();
 
-    public int MaxRequestsPerMinute { get; set; } = 60;
+    public int MaxRequestsPerMinute { get; set; } = 300;
 
     /// <summary>
     /// Attempts to consume a request slot. Returns true if allowed.

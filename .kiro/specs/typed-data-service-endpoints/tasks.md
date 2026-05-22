@@ -207,7 +207,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Output: { itemsAdded: int }
     - _Requirements: 17.7_
 
-- [~] 21. Checkpoint
+- [x] 21. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 22. Complex endpoint: Ship (CRUD + from-template)
@@ -236,7 +236,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - POST /blueprints/{entityUuid}/move-to-player — moves to player scope
     - _Requirements: 5.8, 5.9, 5.10_
 
-- [ ] 24. Complex endpoint: Colony (CRUD with dedup)
+- [x] 24. Complex endpoint: Colony (CRUD with dedup)
   - [x] 24.1 Create ColonyEndpoints.cs — standard CRUD with dedup
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/ColonyEndpoints.cs`
     - Inherit TypedEndpointBase<Colony, ColonyCreateRequest, ColonyUpdateRequest>
@@ -248,12 +248,12 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - POST /colonies/{colonyUuid}/structures — add structure (flatpackBlueprintUUID required)
     - DELETE /colonies/{colonyUuid}/structures/{structureUuid} — remove structure
     - _Requirements: 4.8, 4.9_
-  - [-] 24.3 Add colony sub-resource endpoints: items
+  - [x] 24.3 Add colony sub-resource endpoints: items
     - POST /colonies/{colonyUuid}/items — add item
     - DELETE /colonies/{colonyUuid}/items/{itemUuid} — remove item
     - PUT /colonies/{colonyUuid}/items/{itemUuid} — update quantity
     - _Requirements: 4.10, 4.11, 4.12_
-  - [-] 24.4 Add colony sub-resource endpoints: commodity-requests
+  - [x] 24.4 Add colony sub-resource endpoints: commodity-requests
     - POST /colonies/{colonyUuid}/commodity-requests — add request (commodityName required)
     - DELETE /colonies/{colonyUuid}/commodity-requests/{commodityName} — remove request
     - PUT /colonies/{colonyUuid}/commodity-requests/{commodityName} — update request
@@ -284,7 +284,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Validate required fields, date format
     - _Requirements: 13.5, 13.6, 32.1, 32.2, 32.3_
 
-- [ ] 27. Complex endpoint: DeliveryPlan (CRUD)
+- [x] 27. Complex endpoint: DeliveryPlan (CRUD)
   - [x] 27.1 Create DeliveryPlanEndpoints.cs — standard CRUD
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/DeliveryPlanEndpoints.cs`
     - Inherit TypedEndpointBase<DeliveryPlan, object, DeliveryPlanUpdateRequest> (inline create DTO)
@@ -297,37 +297,37 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - DELETE /delivery-plans/{entityUuid}/drop-off — remove drop-off items by index
     - DELETE /delivery-plans/{entityUuid}/pick-up — remove pick-up items by index
     - _Requirements: 9.8, 9.9, 9.10, 9.11_
-  - [-] 27.3 Add mark-delivered, mark-stop-complete, mark-complete, ship actions
+  - [x] 27.3 Add mark-delivered, mark-stop-complete, mark-complete, ship actions
     - PUT /delivery-plans/{entityUuid}/mark-delivered
     - PUT /delivery-plans/{entityUuid}/mark-stop-complete
     - PUT /delivery-plans/{entityUuid}/mark-complete
     - PUT /delivery-plans/{entityUuid}/ship
     - _Requirements: 9.12, 9.13, 9.14, 9.15_
-  - [-] 27.4 Add split-trips action endpoint to DeliveryPlanEndpoints
+  - [x] 27.4 Add split-trips action endpoint to DeliveryPlanEndpoints
     - POST /delivery-plans/{entityUuid}/split-trips
     - Input: { cargoCapacity } (required, > 0)
     - Splits plan into multiple trip plans, returns List<DeliveryPlan> (201)
     - Original plan unchanged
     - _Requirements: 9.16, 30.1, 30.2, 30.3, 30.4_
 
-- [~] 28. Checkpoint
+- [x] 28. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 29. Program.cs wiring: Register all 19 endpoint groups
-  - [~] 29.1 Register endpoint groups in Program.cs
+  - [-] 29.1 Register endpoint groups in Program.cs
     - Add MapColonyEndpoints, MapBlueprintEndpoints, MapSurveyEndpoints, MapPlayerProfileEndpoints, MapDeliveryRouteEndpoints, MapDeliveryPlanEndpoints, MapShipEndpoints, MapShipTemplateEndpoints, MapMarketListingEndpoints, MapMarketTransactionEndpoints, MapPricingPlanEndpoints, MapStockPlanEndpoints, MapStockProfileEndpoints, MapBuildPlanEndpoints, MapSupplyChainEndpoints, MapAsteroidEndpoints, MapStationEndpoints, MapFactionContactEndpoints, MapExternalCharacterEndpoints
     - All under /api/v1/ prefix with "Authenticated" policy
     - _Requirements: 28.1, 28.2, 28.3, 28.4, 28.5_
 
 - [ ] 30. Rate limiting configuration
-  - [~] 30.1 Configure rate limiting for typed endpoints
+  - [-] 30.1 Configure rate limiting for typed endpoints
     - Verify existing RateLimitMiddleware applies to typed endpoint routes
     - Ensure 5 TPS per token, sliding window, Owner exempt
     - Verify Retry-After header on 429 responses
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6_
 
 - [ ] 31. JSON serialization configuration
-  - [~] 31.1 Configure System.Text.Json options for typed endpoints
+  - [-] 31.1 Configure System.Text.Json options for typed endpoints
     - Verify JsonSerializerOptions: camelCase, case-insensitive, ignore null, enum converter
     - Ensure Common_Library models have dual annotations (Newtonsoft + STJ)
     - Verify lenient deserialization (extra fields ignored)
