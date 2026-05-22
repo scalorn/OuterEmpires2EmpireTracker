@@ -381,11 +381,11 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 9.16, 30.1, 30.2, 30.3, 30.4_
 
 - [ ] 37. Unit tests: Blueprint, MarketListing, MarketTransaction actions
-  - [-] 37.1 Write unit tests for Blueprint import and move actions
+  - [x] 37.1 Write unit tests for Blueprint import and move actions
     - Test import merge (200) vs new (201)
     - Test move-to-global, move-to-player (200, 404)
     - _Requirements: 5.8, 5.9, 5.10_
-  - [-] 37.2 Write unit tests for MarketListing record-sale and MarketTransaction endpoints
+  - [x] 37.2 Write unit tests for MarketListing record-sale and MarketTransaction endpoints
     - Test record-sale creates transaction (201), 422 on validation failure
     - Test record-purchase (201), profit-loss computation (200)
     - Test 400 for invalid date format
