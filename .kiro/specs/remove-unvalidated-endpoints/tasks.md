@@ -307,7 +307,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
   - _Verification: MSBuild zero errors/warnings; vstest all pass_
 
 - [ ] 12. Migrate Web UI to typed endpoint modules — entity types A–G
-  - [-] 12.1 Create typed API modules for colonies, blueprints, surveys, profiles
+  - [x] 12.1 Create typed API modules for colonies, blueprints, surveys, profiles
     - Create src/api/endpoints/colonies.ts, blueprints.ts, surveys.ts, profiles.ts
     - Each module provides getAll, get, create, update, delete functions calling typed endpoints
     - _Satisfies: Req 3, Criteria 1–5 (partial); Req 3 Criterion 6 (partial)_
@@ -315,7 +315,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Output: 4 new TypeScript files_
     - _Verification: TypeScript compiles (tsc --noEmit)_
 
-  - [-] 12.2 Create typed API modules for delivery-routes, delivery-plans, ships, ship-templates
+  - [x] 12.2 Create typed API modules for delivery-routes, delivery-plans, ships, ship-templates
     - Create src/api/endpoints/delivery-routes.ts, delivery-plans.ts, ships.ts, ship-templates.ts
     - _Satisfies: Req 3 Criterion 6 (partial)_
     - _Inputs: Existing data.ts, typed endpoint URL patterns_
@@ -323,14 +323,14 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Verification: TypeScript compiles (tsc --noEmit)_
 
 
-  - [~] 12.3 Create typed API modules for market-listings, market-transactions, pricing-plans, stock-plans, stock-profiles
+  - [-] 12.3 Create typed API modules for market-listings, market-transactions, pricing-plans, stock-plans, stock-profiles
     - Create src/api/endpoints/ files for each
     - _Satisfies: Req 3 Criterion 6 (partial)_
     - _Inputs: Existing data.ts, typed endpoint URL patterns_
     - _Output: 5 new TypeScript files_
     - _Verification: TypeScript compiles (tsc --noEmit)_
 
-  - [~] 12.4 Create typed API modules for build-plans, supply-chains, asteroids, stations, faction-contacts, external-characters
+  - [-] 12.4 Create typed API modules for build-plans, supply-chains, asteroids, stations, faction-contacts, external-characters
     - Create src/api/endpoints/ files for each
     - _Satisfies: Req 3 Criterion 6 (complete)_
     - _Inputs: Existing data.ts, typed endpoint URL patterns_
