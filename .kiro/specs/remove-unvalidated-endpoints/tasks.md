@@ -330,7 +330,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Output: 5 new TypeScript files_
     - _Verification: TypeScript compiles (tsc --noEmit)_
 
-  - [-] 12.4 Create typed API modules for build-plans, supply-chains, asteroids, stations, faction-contacts, external-characters
+  - [x] 12.4 Create typed API modules for build-plans, supply-chains, asteroids, stations, faction-contacts, external-characters
     - Create src/api/endpoints/ files for each
     - _Satisfies: Req 3 Criterion 6 (complete)_
     - _Inputs: Existing data.ts, typed endpoint URL patterns_
