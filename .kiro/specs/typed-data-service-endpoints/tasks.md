@@ -175,13 +175,13 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Return 200 if merged, 201 if new
     - _Requirements: 6.7_
 
-- [ ] 18. Simple CRUD endpoints: Faction and ExternalCharacter
+- [x] 18. Simple CRUD endpoints: Faction and ExternalCharacter
   - [x] 18.1 Create FactionContactEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/FactionContactEndpoints.cs`
     - MapFactionContactEndpoints extension method with both /factions and /contacts route groups
     - Faction: ValidateCreate (Name required), standard CRUD
     - _Requirements: 21.1, 21.2, 21.3, 21.4, 21.5, 21.6_
-  - [-] 18.2 Add ExternalCharacter routes to FactionContactEndpoints
+  - [x] 18.2 Add ExternalCharacter routes to FactionContactEndpoints
     - /contacts route group: GET all, GET one, POST, PUT, DELETE
     - ValidateCreate (Name required)
     - _Requirements: 21.7, 21.8, 21.9, 21.10, 21.11, 21.12_
@@ -194,14 +194,14 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - MapSupplyChainEndpoints extension method
     - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5, 18.6_
 
-- [ ] 20. Simple CRUD endpoint: BuildPlan
+- [x] 20. Simple CRUD endpoint: BuildPlan
   - [x] 20.1 Create BuildPlanEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/BuildPlanEndpoints.cs`
     - Inherit TypedEndpointBase<BuildPlan, BuildPlanCreateRequest, BuildPlanUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
     - MapBuildPlanEndpoints extension method
     - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5, 17.6_
-  - [-] 20.2 Add generate-colony-items action endpoint to BuildPlanEndpoints
+  - [x] 20.2 Add generate-colony-items action endpoint to BuildPlanEndpoints
     - POST /build-plans/{entityUuid}/generate-colony-items
     - Input: { colonyUUID } — scans colony for unstaged structures
     - Output: { itemsAdded: int }
@@ -211,20 +211,20 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 22. Complex endpoint: Ship (CRUD + from-template)
-  - [-] 22.1 Create ShipEndpoints.cs
+  - [x] 22.1 Create ShipEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/ShipEndpoints.cs`
     - Inherit TypedEndpointBase<Ship, ShipCreateRequest, ShipUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
     - MapShipEndpoints extension method
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
-  - [~] 22.2 Add from-template action endpoint to ShipEndpoints
+  - [x] 22.2 Add from-template action endpoint to ShipEndpoints
     - POST /ships/from-template — creates ship from template UUID
     - Validate templateUUID required, lookup template (404 if not found)
     - Return created Ship (201)
     - _Requirements: 10.7_
 
 - [ ] 23. Complex endpoint: Blueprint (CRUD)
-  - [~] 23.1 Create BlueprintEndpoints.cs — standard CRUD
+  - [x] 23.1 Create BlueprintEndpoints.cs — standard CRUD
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/BlueprintEndpoints.cs`
     - Inherit TypedEndpointBase<Blueprint, BlueprintCreateRequest, BlueprintUpdateRequest>
     - ValidateCreate (Name, BluePrintType required)
@@ -237,7 +237,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 5.8, 5.9, 5.10_
 
 - [ ] 24. Complex endpoint: Colony (CRUD with dedup)
-  - [~] 24.1 Create ColonyEndpoints.cs — standard CRUD with dedup
+  - [x] 24.1 Create ColonyEndpoints.cs — standard CRUD with dedup
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/ColonyEndpoints.cs`
     - Inherit TypedEndpointBase<Colony, ColonyCreateRequest, ColonyUpdateRequest>
     - ValidateCreate (PlanetName, ColonyName required)
@@ -260,7 +260,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 4.13, 4.14, 4.15_
 
 - [ ] 25. Complex endpoint: MarketListing (CRUD + record-sale)
-  - [~] 25.1 Create MarketListingEndpoints.cs — standard CRUD
+  - [-] 25.1 Create MarketListingEndpoints.cs — standard CRUD
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/MarketListingEndpoints.cs`
     - Inherit TypedEndpointBase<MarketListing, MarketListingCreateRequest, MarketListingUpdateRequest>
     - ValidateCreate (ItemName, StationUUID required)
@@ -273,7 +273,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 12.8_
 
 - [ ] 26. Complex endpoint: MarketTransaction (read + purchase + profit-loss)
-  - [~] 26.1 Create MarketTransactionEndpoints.cs — read-only CRUD + delete
+  - [-] 26.1 Create MarketTransactionEndpoints.cs — read-only CRUD + delete
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/MarketTransactionEndpoints.cs`
     - GET all, GET one, DELETE (no standalone POST)
     - MapMarketTransactionEndpoints extension method
@@ -285,7 +285,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 13.5, 13.6, 32.1, 32.2, 32.3_
 
 - [ ] 27. Complex endpoint: DeliveryPlan (CRUD)
-  - [~] 27.1 Create DeliveryPlanEndpoints.cs — standard CRUD
+  - [-] 27.1 Create DeliveryPlanEndpoints.cs — standard CRUD
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/DeliveryPlanEndpoints.cs`
     - Inherit TypedEndpointBase<DeliveryPlan, object, DeliveryPlanUpdateRequest> (inline create DTO)
     - ValidateCreate (name, routeUUID required)

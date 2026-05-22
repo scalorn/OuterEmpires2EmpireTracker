@@ -5,6 +5,8 @@
 // -----------------------------------------------------------------------
 
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
 
@@ -20,6 +22,79 @@ public class ShipEndpoints : TypedEndpointBase<Ship, ShipCreateRequest, ShipUpda
 
     /// <inheritdoc/>
     protected override string RoutePrefix => "ships";
+
+    /// <summary>
+    /// Handles POST /ships/from-template requests.
+    /// Creates a new Ship from an existing ShipTemplate, copying Name,
+    /// HullBlueprintUUID, and Components from the template.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the created Ship or an error response.</returns>
+    public async Task<IResult> HandleFromTemplate(
+        string uuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (!HasJsonContentType(ctx))
+        {
+            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
+        }
+
+        FromTemplateRequest? request;
+        try
+        {
+            request = await ctx.Request.ReadFromJsonAsync<FromTemplateRequest>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (request == null || string.IsNullOrWhiteSpace(request.TemplateUUID))
+        {
+            return Results.BadRequest(new { error = "templateUUID is required" });
+        }
+
+        var template = await storage.GetShipTemplateAsync(uuid, request.TemplateUUID);
+        if (template == null)
+        {
+            return Results.NotFound(new { error = "ShipTemplate not found" });
+        }
+
+        var ship = new Ship
+        {
+            UUID = Guid.NewGuid().ToString(),
+            Name = template.Name,
+            TemplateUUID = template.UUID,
+            HullBlueprintUUID = template.HullBlueprintUUID,
+            Components = template.Components
+                .Select(c => new ShipComponentSlot
+                {
+                    SlotType = c.SlotType,
+                    SlotIndex = c.SlotIndex,
+                    BlueprintUUID = c.BlueprintUUID,
+                    CurrentHP = c.CurrentHP,
+                    MaxHP = c.MaxHP,
+                    MaxRepairPercent = c.MaxRepairPercent,
+                })
+                .ToList(),
+        };
+
+        await UpsertToStorage(uuid, ship, storage);
+
+        var location = $"/api/v1/characters/{uuid}/{RoutePrefix}/{ship.UUID}";
+        return Results.Created(location, ship);
+    }
 
     /// <inheritdoc/>
     protected override string? ValidateCreate(ShipCreateRequest dto)
@@ -112,6 +187,17 @@ public class ShipEndpoints : TypedEndpointBase<Ship, ShipCreateRequest, ShipUpda
 }
 
 /// <summary>
+/// Request body for the from-template action.
+/// </summary>
+public class FromTemplateRequest
+{
+    /// <summary>
+    /// Gets or sets the UUID of the ShipTemplate to create a ship from.
+    /// </summary>
+    public string? TemplateUUID { get; set; }
+}
+
+/// <summary>
 /// Extension methods for registering Ship endpoints.
 /// </summary>
 public static class ShipEndpointsExtensions
@@ -136,5 +222,7 @@ public static class ShipEndpointsExtensions
             => endpoints.HandleUpdate(uuid, entityUuid, ctx, storage));
         group.MapDelete("/{entityUuid}", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
             => endpoints.HandleDelete(uuid, entityUuid, ctx, storage));
+        group.MapPost("/from-template", (string uuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleFromTemplate(uuid, ctx, storage));
     }
 }
