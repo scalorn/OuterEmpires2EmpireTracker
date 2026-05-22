@@ -358,49 +358,49 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Test offset beyond collection returns empty items with correct total
     - _Requirements: 29.1, 29.2, 29.3, 29.4, 29.5, 29.6_
 
-- [ ] 35. Unit tests: Colony endpoint (dedup + sub-resources)
-  - [-] 35.1 Write unit tests for ColonyEndpoints dedup logic
+- [x] 35. Unit tests: Colony endpoint (dedup + sub-resources)
+  - [x] 35.1 Write unit tests for ColonyEndpoints dedup logic
     - Test merge on duplicate PlanetName+SystemName (case-insensitive) returns 200
     - Test new colony returns 201
     - _Requirements: 31.1, 31.2, 31.3, 31.4_
-  - [-] 35.2 Write unit tests for Colony sub-resource endpoints
+  - [x] 35.2 Write unit tests for Colony sub-resource endpoints
     - Test add/remove structure, add/remove/update item, add/remove/update commodity-request
     - Test 404 for missing colony, 400 for missing required fields
     - _Requirements: 4.8, 4.9, 4.10, 4.11, 4.12, 4.13, 4.14, 4.15_
 
-- [ ] 36. Unit tests: DeliveryPlan actions
-  - [-] 36.1 Write unit tests for DeliveryPlan action endpoints
+- [x] 36. Unit tests: DeliveryPlan actions
+  - [x] 36.1 Write unit tests for DeliveryPlan action endpoints
     - Test drop-off/pick-up add and remove
     - Test mark-delivered, mark-stop-complete, mark-complete
     - Test ship assignment
     - _Requirements: 9.8, 9.9, 9.10, 9.11, 9.12, 9.13, 9.14, 9.15_
-  - [-] 36.2 Write unit tests for split-trips endpoint
+  - [x] 36.2 Write unit tests for split-trips endpoint
     - Test split creates multiple plans based on cargo capacity
     - Test original plan unchanged
     - Test 400 for missing/invalid cargoCapacity
     - _Requirements: 9.16, 30.1, 30.2, 30.3, 30.4_
 
 - [ ] 37. Unit tests: Blueprint, MarketListing, MarketTransaction actions
-  - [~] 37.1 Write unit tests for Blueprint import and move actions
+  - [-] 37.1 Write unit tests for Blueprint import and move actions
     - Test import merge (200) vs new (201)
     - Test move-to-global, move-to-player (200, 404)
     - _Requirements: 5.8, 5.9, 5.10_
-  - [~] 37.2 Write unit tests for MarketListing record-sale and MarketTransaction endpoints
+  - [-] 37.2 Write unit tests for MarketListing record-sale and MarketTransaction endpoints
     - Test record-sale creates transaction (201), 422 on validation failure
     - Test record-purchase (201), profit-loss computation (200)
     - Test 400 for invalid date format
     - _Requirements: 12.8, 13.5, 13.6, 32.1, 32.2, 32.3_
 
 - [ ] 38. Property-based tests
-  - [~] 38.1 Write property test: Round-trip serialization integrity
+  - [-] 38.1 Write property test: Round-trip serialization integrity
     - **Property 5: Round-Trip Serialization Integrity**
     - For all 19 domain model types, generate random instances, serialize to JSON with STJ config, deserialize back, verify equivalent field values
     - **Validates: Requirements 33.1, 33.3, 33.4**
-  - [~] 38.2 Write property test: Pagination correctness
+  - [-] 38.2 Write property test: Pagination correctness
     - **Property 4: Pagination Correctness**
     - For any collection and valid limit/offset: total == collection.Count, items.length <= limit, offset + items.length <= total
     - **Validates: Requirements 29.1, 29.2, 29.3, 29.4, 29.5, 29.6**
-  - [~] 38.3 Write property test: Authorization isolation
+  - [-] 38.3 Write property test: Authorization isolation
     - **Property 1: Authorization Isolation**
     - For any two distinct Character_UUIDs, token A (non-Owner) cannot access token B's data (403, no entity data leaked)
     - **Validates: Requirements 2.3, 2.4, 2.6, 2.7**
