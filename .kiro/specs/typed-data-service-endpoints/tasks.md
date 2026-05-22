@@ -210,7 +210,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
 - [x] 21. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 22. Complex endpoint: Ship (CRUD + from-template)
+- [x] 22. Complex endpoint: Ship (CRUD + from-template)
   - [x] 22.1 Create ShipEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/ShipEndpoints.cs`
     - Inherit TypedEndpointBase<Ship, ShipCreateRequest, ShipUpdateRequest>
@@ -223,7 +223,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Return created Ship (201)
     - _Requirements: 10.7_
 
-- [ ] 23. Complex endpoint: Blueprint (CRUD)
+- [x] 23. Complex endpoint: Blueprint (CRUD)
   - [x] 23.1 Create BlueprintEndpoints.cs — standard CRUD
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/BlueprintEndpoints.cs`
     - Inherit TypedEndpointBase<Blueprint, BlueprintCreateRequest, BlueprintUpdateRequest>
@@ -259,7 +259,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - PUT /colonies/{colonyUuid}/commodity-requests/{commodityName} — update request
     - _Requirements: 4.13, 4.14, 4.15_
 
-- [ ] 25. Complex endpoint: MarketListing (CRUD + record-sale)
+- [x] 25. Complex endpoint: MarketListing (CRUD + record-sale)
   - [x] 25.1 Create MarketListingEndpoints.cs — standard CRUD
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/MarketListingEndpoints.cs`
     - Inherit TypedEndpointBase<MarketListing, MarketListingCreateRequest, MarketListingUpdateRequest>
@@ -272,7 +272,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Creates MarketTransaction, returns 201 or 422 on validation failure
     - _Requirements: 12.8_
 
-- [ ] 26. Complex endpoint: MarketTransaction (read + purchase + profit-loss)
+- [x] 26. Complex endpoint: MarketTransaction (read + purchase + profit-loss)
   - [x] 26.1 Create MarketTransactionEndpoints.cs — read-only CRUD + delete
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/MarketTransactionEndpoints.cs`
     - GET all, GET one, DELETE (no standalone POST)
@@ -380,7 +380,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Test 400 for missing/invalid cargoCapacity
     - _Requirements: 9.16, 30.1, 30.2, 30.3, 30.4_
 
-- [ ] 37. Unit tests: Blueprint, MarketListing, MarketTransaction actions
+- [x] 37. Unit tests: Blueprint, MarketListing, MarketTransaction actions
   - [x] 37.1 Write unit tests for Blueprint import and move actions
     - Test import merge (200) vs new (201)
     - Test move-to-global, move-to-player (200, 404)
@@ -391,16 +391,16 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Test 400 for invalid date format
     - _Requirements: 12.8, 13.5, 13.6, 32.1, 32.2, 32.3_
 
-- [ ] 38. Property-based tests
-  - [-] 38.1 Write property test: Round-trip serialization integrity
+- [x] 38. Property-based tests
+  - [x] 38.1 Write property test: Round-trip serialization integrity
     - **Property 5: Round-Trip Serialization Integrity**
     - For all 19 domain model types, generate random instances, serialize to JSON with STJ config, deserialize back, verify equivalent field values
     - **Validates: Requirements 33.1, 33.3, 33.4**
-  - [-] 38.2 Write property test: Pagination correctness
+  - [x] 38.2 Write property test: Pagination correctness
     - **Property 4: Pagination Correctness**
     - For any collection and valid limit/offset: total == collection.Count, items.length <= limit, offset + items.length <= total
     - **Validates: Requirements 29.1, 29.2, 29.3, 29.4, 29.5, 29.6**
-  - [-] 38.3 Write property test: Authorization isolation
+  - [x] 38.3 Write property test: Authorization isolation
     - **Property 1: Authorization Isolation**
     - For any two distinct Character_UUIDs, token A (non-Owner) cannot access token B's data (403, no entity data leaked)
     - **Validates: Requirements 2.3, 2.4, 2.6, 2.7**
@@ -432,7 +432,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Test 500 returned when logging fails, mutation rolled back
     - _Requirements: 26.1, 26.2, 26.3_
 
-- [~] 42. Final checkpoint
+- [x] 42. Final checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

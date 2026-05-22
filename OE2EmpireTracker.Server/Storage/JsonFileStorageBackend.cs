@@ -144,6 +144,13 @@ public class JsonFileStorageBackend : IStorageBackend
         var path = CharacterDataPath(characterUUID, dataType);
         EnsureCharacterDirectory(characterUUID);
         await WriteAtomicAsync(path, json);
+
+        // When the desktop app syncs the full PlayerRoot blob as "player-data",
+        // also split it into individual typed files so typed endpoints can read them.
+        if (string.Equals(dataType, "player-data", StringComparison.OrdinalIgnoreCase))
+        {
+            await SplitPlayerRootIntoTypedFilesAsync(characterUUID, json);
+        }
     }
 
     public async Task UpsertCharacterEntityAsync(string characterUUID, string dataType, string entityUUID, string json)
@@ -2415,6 +2422,55 @@ public class JsonFileStorageBackend : IStorageBackend
     }
 
     // --- Private Instance Helpers ---
+
+    /// <summary>
+    /// Splits a PlayerRoot JSON blob into individual per-entity-type files
+    /// that the typed CRUD endpoints read from. Maps PascalCase singular
+    /// property names (e.g. "Colony") to lowercase plural file names (e.g. "colonies").
+    /// </summary>
+    private async Task SplitPlayerRootIntoTypedFilesAsync(string characterUUID, string json)
+    {
+        var playerRootToTypedFileMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Colony"] = "colonies",
+            ["Blueprint"] = "blueprints",
+            ["Survey"] = "surveys",
+            ["PlayerProfile"] = "profiles",
+            ["DeliveryRoute"] = "delivery-routes",
+            ["DeliveryPlan"] = "delivery-plans",
+            ["PricingPlan"] = "pricing-plans",
+            ["BuildPlan"] = "build-plans",
+            ["ShipTemplate"] = "ship-templates",
+            ["Ship"] = "ships",
+            ["Station"] = "stations",
+            ["MarketListing"] = "market-listings",
+            ["MarketTransaction"] = "market-transactions",
+            ["StockPlan"] = "stock-plans",
+            ["StockProfile"] = "stock-profiles",
+            ["SupplyChain"] = "supply-chains",
+            ["Faction"] = "factions",
+            ["ExternalCharacter"] = "contacts",
+            ["Asteroid"] = "asteroids",
+        };
+
+        try
+        {
+            var obj = JObject.Parse(json);
+            foreach (var mapping in playerRootToTypedFileMap)
+            {
+                var prop = obj.Property(mapping.Key);
+                if (prop != null && prop.Value.Type == JTokenType.Array)
+                {
+                    var typedPath = CharacterDataPath(characterUUID, mapping.Value);
+                    await WriteAtomicAsync(typedPath, prop.Value.ToString(Formatting.Indented));
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to split player-data into typed files for character {UUID}", characterUUID);
+        }
+    }
 
     private string DataFilePath(string filename) => Path.Combine(_dataPath, filename);
 
