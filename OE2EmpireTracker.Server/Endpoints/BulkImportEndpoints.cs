@@ -4,8 +4,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Text.Json;
-
 using OE2EmpireTracker.Server.Storage;
 using OE2EmpireTracker.Services;
 
@@ -41,8 +39,7 @@ public static class BulkImportEndpoints
             return Results.Json(new { error = "Access denied" }, statusCode: 403);
         }
 
-        // Read and deserialize with case-sensitive options (Req 7 Criteria 1-2)
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = false };
+        // Read request body
         string body;
         try
         {
@@ -54,12 +51,15 @@ public static class BulkImportEndpoints
             return Results.BadRequest(new { error = "Invalid request body" });
         }
 
+        // Deserialize using Newtonsoft.Json to match the desktop app's serialization format.
+        // The model classes use Newtonsoft attributes ([JsonIgnore], [DefaultValue], etc.)
+        // and contain complex types that System.Text.Json cannot handle.
         PlayerRoot? playerRoot;
         try
         {
-            playerRoot = JsonSerializer.Deserialize<PlayerRoot>(body, options);
+            playerRoot = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerRoot>(body);
         }
-        catch (JsonException)
+        catch (Newtonsoft.Json.JsonException)
         {
             return Results.BadRequest(new { error = "Invalid request body" });
         }
