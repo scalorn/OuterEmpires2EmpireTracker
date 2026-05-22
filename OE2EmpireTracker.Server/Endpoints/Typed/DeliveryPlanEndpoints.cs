@@ -5,7 +5,10 @@
 // -----------------------------------------------------------------------
 
 using System.Collections.Generic;
+using System.Security.Claims;
+using System.Text.Json;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints.Typed;
@@ -20,6 +23,62 @@ public class DeliveryPlanEndpoints : TypedEndpointBase<DeliveryPlan, DeliveryPla
 
     /// <inheritdoc/>
     protected override string RoutePrefix => "delivery-plans";
+
+    /// <summary>
+    /// Handles POST requests to add a drop-off item to a delivery plan stop.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The delivery plan UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated plan or an error response.</returns>
+    public async Task<IResult> HandleAddDropOff(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        return await HandleAddItem(uuid, entityUuid, ctx, storage, isDropOff: true);
+    }
+
+    /// <summary>
+    /// Handles POST requests to add a pick-up item to a delivery plan stop.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The delivery plan UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated plan or an error response.</returns>
+    public async Task<IResult> HandleAddPickUp(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        return await HandleAddItem(uuid, entityUuid, ctx, storage, isDropOff: false);
+    }
+
+    /// <summary>
+    /// Handles DELETE requests to remove drop-off items by index from a delivery plan stop.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The delivery plan UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated plan or an error response.</returns>
+    public async Task<IResult> HandleRemoveDropOff(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        return await HandleRemoveItems(uuid, entityUuid, ctx, storage, isDropOff: true);
+    }
+
+    /// <summary>
+    /// Handles DELETE requests to remove pick-up items by index from a delivery plan stop.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The delivery plan UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated plan or an error response.</returns>
+    public async Task<IResult> HandleRemovePickUp(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        return await HandleRemoveItems(uuid, entityUuid, ctx, storage, isDropOff: false);
+    }
 
     /// <inheritdoc/>
     protected override string? ValidateCreate(DeliveryPlanCreateRequest dto)
@@ -85,6 +144,242 @@ public class DeliveryPlanEndpoints : TypedEndpointBase<DeliveryPlan, DeliveryPla
 
     /// <inheritdoc/>
     protected override string GetEntityUuid(DeliveryPlan entity) => entity.UUID;
+
+    private static DeliveryPlanStop FindOrCreateStop(DeliveryPlan plan, StopDestinationInfo? destInfo)
+    {
+        if (destInfo == null)
+        {
+            destInfo = new StopDestinationInfo();
+        }
+
+        var stop = plan.Stops.FirstOrDefault(s =>
+            !string.IsNullOrEmpty(destInfo.DestinationUUID) &&
+            s.DestinationUUID == destInfo.DestinationUUID);
+
+        if (stop == null)
+        {
+            stop = plan.Stops.FirstOrDefault(s =>
+                !string.IsNullOrEmpty(destInfo.ColonyUUID) &&
+                s.ColonyUUID == destInfo.ColonyUUID &&
+                string.IsNullOrEmpty(s.DestinationUUID));
+        }
+
+        if (stop == null)
+        {
+            stop = new DeliveryPlanStop
+            {
+                ColonyUUID = destInfo.ColonyUUID ?? string.Empty,
+                Sequence = destInfo.Sequence,
+                DestinationType = destInfo.DestinationType,
+                DestinationUUID = destInfo.DestinationUUID ?? string.Empty,
+            };
+            plan.Stops.Add(stop);
+        }
+
+        return stop;
+    }
+
+    private static DeliveryPlanStop? FindStop(DeliveryPlan plan, StopDestinationInfo? destInfo)
+    {
+        if (destInfo == null)
+        {
+            return null;
+        }
+
+        var stop = plan.Stops.FirstOrDefault(s =>
+            !string.IsNullOrEmpty(destInfo.DestinationUUID) &&
+            s.DestinationUUID == destInfo.DestinationUUID);
+
+        if (stop == null)
+        {
+            stop = plan.Stops.FirstOrDefault(s =>
+                !string.IsNullOrEmpty(destInfo.ColonyUUID) &&
+                s.ColonyUUID == destInfo.ColonyUUID &&
+                string.IsNullOrEmpty(s.DestinationUUID));
+        }
+
+        return stop;
+    }
+
+    private async Task<IResult> HandleAddItem(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage, bool isDropOff)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var plan = await storage.GetDeliveryPlanAsync(uuid, entityUuid);
+        if (plan == null)
+        {
+            return Results.NotFound(new { error = "DeliveryPlan not found" });
+        }
+
+        AddItemRequest? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<AddItemRequest>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        var stop = FindOrCreateStop(plan, dto.DestInfo);
+        var item = new DeliveryItem
+        {
+            ItemType = dto.ItemInfo?.ItemType ?? OE2EmpireTracker.Models.ItemType.ItemTypeEnum.None,
+            BaseItemTypeID = dto.ItemInfo?.BaseItemTypeID ?? string.Empty,
+            Name = dto.ItemInfo?.Name ?? string.Empty,
+            Quantity = dto.ItemInfo?.Quantity ?? 0,
+            ResourcePurity = dto.ItemInfo?.ResourcePurity ?? string.Empty,
+        };
+
+        if (isDropOff)
+        {
+            stop.DropOff.Add(item);
+        }
+        else
+        {
+            stop.PickUp.Add(item);
+        }
+
+        await storage.UpsertDeliveryPlanAsync(uuid, plan);
+
+        try
+        {
+            LogMutation(ctx, "Updated", entityUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(plan);
+    }
+
+    private async Task<IResult> HandleRemoveItems(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage, bool isDropOff)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var plan = await storage.GetDeliveryPlanAsync(uuid, entityUuid);
+        if (plan == null)
+        {
+            return Results.NotFound(new { error = "DeliveryPlan not found" });
+        }
+
+        RemoveItemsRequest? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<RemoveItemsRequest>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        var stop = FindStop(plan, dto.DestInfo);
+        if (stop != null && dto.Indices != null)
+        {
+            var list = isDropOff ? stop.DropOff : stop.PickUp;
+            foreach (int idx in dto.Indices.OrderByDescending(i => i))
+            {
+                if (idx >= 0 && idx < list.Count)
+                {
+                    list.RemoveAt(idx);
+                }
+            }
+        }
+
+        await storage.UpsertDeliveryPlanAsync(uuid, plan);
+
+        try
+        {
+            LogMutation(ctx, "Updated", entityUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(plan);
+    }
+}
+
+/// <summary>
+/// Request DTO for adding a drop-off or pick-up item to a delivery plan stop.
+/// </summary>
+public class AddItemRequest
+{
+    /// <summary>Gets or sets the destination info identifying the stop.</summary>
+    public StopDestinationInfo? DestInfo { get; set; }
+
+    /// <summary>Gets or sets the item info to add.</summary>
+    public DeliveryItemInfo? ItemInfo { get; set; }
+}
+
+/// <summary>
+/// Request DTO for removing drop-off or pick-up items by index from a delivery plan stop.
+/// </summary>
+public class RemoveItemsRequest
+{
+    /// <summary>Gets or sets the destination info identifying the stop.</summary>
+    public StopDestinationInfo? DestInfo { get; set; }
+
+    /// <summary>Gets or sets the indices of items to remove.</summary>
+    public List<int>? Indices { get; set; }
 }
 
 /// <summary>
@@ -112,5 +407,13 @@ public static class DeliveryPlanEndpointsExtensions
             => endpoints.HandleUpdate(uuid, entityUuid, ctx, storage));
         group.MapDelete("/{entityUuid}", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
             => endpoints.HandleDelete(uuid, entityUuid, ctx, storage));
+        group.MapPost("/{entityUuid}/drop-off", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleAddDropOff(uuid, entityUuid, ctx, storage));
+        group.MapPost("/{entityUuid}/pick-up", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleAddPickUp(uuid, entityUuid, ctx, storage));
+        group.MapDelete("/{entityUuid}/drop-off", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleRemoveDropOff(uuid, entityUuid, ctx, storage));
+        group.MapDelete("/{entityUuid}/pick-up", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleRemovePickUp(uuid, entityUuid, ctx, storage));
     }
 }

@@ -5,7 +5,9 @@
 // -----------------------------------------------------------------------
 
 using System.Collections.Generic;
+using System.Text.Json;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints.Typed;
@@ -15,6 +17,114 @@ namespace OE2EmpireTracker.Server.Endpoints.Typed;
 /// </summary>
 public class MarketListingEndpoints : TypedEndpointBase<MarketListing, MarketListingCreateRequest, MarketListingUpdateRequest>
 {
+    /// <summary>
+    /// Handles POST /market-listings/{entityUuid}/record-sale requests.
+    /// Creates a MarketTransaction from the listing and returns 201.
+    /// Returns 422 if required fields (quantity, pricePerUnit) are missing.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The market listing UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the created transaction or an error response.</returns>
+    public async Task<IResult> HandleRecordSale(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var listing = await GetFromStorage(uuid, entityUuid, storage);
+        if (listing == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        if (!HasJsonContentType(ctx))
+        {
+            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
+        }
+
+        RecordSaleRequest? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<RecordSaleRequest>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        if (dto.Quantity <= 0)
+        {
+            return Results.Json(new { error = "quantity is required and must be positive" }, statusCode: 422);
+        }
+
+        if (dto.PricePerUnit <= 0)
+        {
+            return Results.Json(new { error = "pricePerUnit is required and must be positive" }, statusCode: 422);
+        }
+
+        var transaction = new MarketTransaction
+        {
+            UUID = Guid.NewGuid().ToString(),
+            OwnerUUID = uuid,
+            TransactionType = TransactionType.Sell,
+            ItemType = listing.ItemType,
+            ItemReferenceID = listing.ItemReferenceID,
+            ItemName = listing.ItemName,
+            Quantity = dto.Quantity,
+            PricePerUnit = dto.PricePerUnit,
+            TotalPrice = dto.Quantity * dto.PricePerUnit,
+            Counterparty = dto.Counterparty ?? string.Empty,
+            CounterpartyFaction = dto.CounterpartyFaction ?? string.Empty,
+            StationUUID = dto.StationUUID ?? listing.StationUUID,
+            Timestamp = DateTime.UtcNow.ToString("o"),
+            ListingUUID = entityUuid,
+        };
+
+        await storage.UpsertMarketTransactionAsync(uuid, transaction);
+
+        try
+        {
+            LogMutation(ctx, "Created", transaction.UUID);
+        }
+        catch (Exception)
+        {
+            await storage.DeleteMarketTransactionAsync(uuid, transaction.UUID);
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Created, transaction.UUID, uuid);
+        }
+        catch (Exception)
+        {
+            await storage.DeleteMarketTransactionAsync(uuid, transaction.UUID);
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        var location = $"/api/v1/characters/{uuid}/market-transactions/{transaction.UUID}";
+        return Results.Created(location, transaction);
+    }
+
     /// <inheritdoc/>
     protected override string EntityTypeName => "MarketListing";
 
@@ -95,6 +205,37 @@ public class MarketListingEndpoints : TypedEndpointBase<MarketListing, MarketLis
 }
 
 /// <summary>
+/// Request DTO for recording a sale against a market listing.
+/// </summary>
+public class RecordSaleRequest
+{
+    /// <summary>
+    /// Gets or sets the quantity sold.
+    /// </summary>
+    public int Quantity { get; set; }
+
+    /// <summary>
+    /// Gets or sets the price per unit.
+    /// </summary>
+    public decimal PricePerUnit { get; set; }
+
+    /// <summary>
+    /// Gets or sets the counterparty name (optional).
+    /// </summary>
+    public string? Counterparty { get; set; }
+
+    /// <summary>
+    /// Gets or sets the counterparty faction (optional).
+    /// </summary>
+    public string? CounterpartyFaction { get; set; }
+
+    /// <summary>
+    /// Gets or sets the station UUID where the sale occurred (optional, defaults to listing's station).
+    /// </summary>
+    public string? StationUUID { get; set; }
+}
+
+/// <summary>
 /// Extension methods for registering MarketListing endpoints.
 /// </summary>
 public static class MarketListingEndpointsExtensions
@@ -119,5 +260,7 @@ public static class MarketListingEndpointsExtensions
             => endpoints.HandleUpdate(uuid, entityUuid, ctx, storage));
         group.MapDelete("/{entityUuid}", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
             => endpoints.HandleDelete(uuid, entityUuid, ctx, storage));
+        group.MapPost("/{entityUuid}/record-sale", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleRecordSale(uuid, entityUuid, ctx, storage));
     }
 }

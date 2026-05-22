@@ -6,7 +6,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints.Typed;
@@ -17,6 +19,163 @@ namespace OE2EmpireTracker.Server.Endpoints.Typed;
 /// </summary>
 public class ColonyEndpoints : TypedEndpointBase<Colony, ColonyCreateRequest, ColonyUpdateRequest>
 {
+    /// <summary>
+    /// Handles POST /colonies/{colonyUuid}/structures requests.
+    /// Adds a new structure to the colony. Requires flatpackBlueprintUUID in the request body.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="colonyUuid">The colony UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated colony or an error response.</returns>
+    public async Task<IResult> HandleAddStructure(
+        string uuid, string colonyUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(colonyUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var colony = await GetFromStorage(uuid, colonyUuid, storage);
+        if (colony == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        if (!HasJsonContentType(ctx))
+        {
+            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
+        }
+
+        AddStructureRequest? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<AddStructureRequest>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(dto.FlatpackBlueprintUUID))
+        {
+            return Results.BadRequest(new { error = "flatpackBlueprintUUID is required" });
+        }
+
+        var structure = new ColonyStructure
+        {
+            UUID = Guid.NewGuid().ToString(),
+            FlatpackBlueprintUUID = dto.FlatpackBlueprintUUID,
+        };
+
+        colony.Structures.Add(structure);
+        await UpsertToStorage(uuid, colony, storage);
+
+        try
+        {
+            LogMutation(ctx, "Updated", colonyUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, colonyUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(colony);
+    }
+
+    /// <summary>
+    /// Handles DELETE /colonies/{colonyUuid}/structures/{structureUuid} requests.
+    /// Removes a structure from the colony by its UUID.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="colonyUuid">The colony UUID from the URL path.</param>
+    /// <param name="structureUuid">The structure UUID to remove.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> indicating success or an error response.</returns>
+    public async Task<IResult> HandleRemoveStructure(
+        string uuid, string colonyUuid, string structureUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(colonyUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var colony = await GetFromStorage(uuid, colonyUuid, storage);
+        if (colony == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        if (string.IsNullOrWhiteSpace(structureUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid structure UUID" });
+        }
+
+        var structure = colony.Structures.FirstOrDefault(s => s.UUID == structureUuid);
+        if (structure == null)
+        {
+            return Results.NotFound(new { error = "Structure not found" });
+        }
+
+        colony.Structures.Remove(structure);
+        await UpsertToStorage(uuid, colony, storage);
+
+        try
+        {
+            LogMutation(ctx, "Updated", colonyUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, colonyUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.NoContent();
+    }
+
     /// <inheritdoc/>
     protected override string EntityTypeName => "Colony";
 
@@ -132,6 +291,17 @@ public class ColonyEndpoints : TypedEndpointBase<Colony, ColonyCreateRequest, Co
 }
 
 /// <summary>
+/// Request DTO for adding a structure to a colony.
+/// </summary>
+public class AddStructureRequest
+{
+    /// <summary>
+    /// Gets or sets the flatpack blueprint UUID for the structure to add.
+    /// </summary>
+    public string? FlatpackBlueprintUUID { get; set; }
+}
+
+/// <summary>
 /// Extension methods for registering Colony endpoints.
 /// </summary>
 public static class ColonyEndpointsExtensions
@@ -156,5 +326,9 @@ public static class ColonyEndpointsExtensions
             => endpoints.HandleUpdate(uuid, entityUuid, ctx, storage));
         group.MapDelete("/{entityUuid}", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
             => endpoints.HandleDelete(uuid, entityUuid, ctx, storage));
+        group.MapPost("/{colonyUuid}/structures", (string uuid, string colonyUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleAddStructure(uuid, colonyUuid, ctx, storage));
+        group.MapDelete("/{colonyUuid}/structures/{structureUuid}", (string uuid, string colonyUuid, string structureUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleRemoveStructure(uuid, colonyUuid, structureUuid, ctx, storage));
     }
 }

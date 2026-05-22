@@ -5,7 +5,9 @@
 // -----------------------------------------------------------------------
 
 using System.Collections.Generic;
+using System.Text.Json;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints.Typed;
@@ -15,6 +17,218 @@ namespace OE2EmpireTracker.Server.Endpoints.Typed;
 /// </summary>
 public class BlueprintEndpoints : TypedEndpointBase<Blueprint, BlueprintCreateRequest, BlueprintUpdateRequest>
 {
+    /// <summary>
+    /// Handles POST /import requests to import a full Blueprint object.
+    /// If a blueprint with the same UUID exists, merges and returns 200.
+    /// If no matching blueprint exists, inserts and returns 201 with Location header.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the imported entity or an error response.</returns>
+    public async Task<IResult> HandleImport(string uuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (!HasJsonContentType(ctx))
+        {
+            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
+        }
+
+        Blueprint? imported;
+        try
+        {
+            imported = await ctx.Request.ReadFromJsonAsync<Blueprint>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (imported == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(imported.UUID))
+        {
+            imported.UUID = Guid.NewGuid().ToString();
+        }
+
+        var existing = await GetFromStorage(uuid, imported.UUID, storage);
+        bool isNew = existing == null;
+
+        await UpsertToStorage(uuid, imported, storage);
+
+        string action = isNew ? "Created" : "Updated";
+        try
+        {
+            LogMutation(ctx, action, imported.UUID);
+        }
+        catch (Exception)
+        {
+            if (isNew)
+            {
+                await DeleteFromStorage(uuid, imported.UUID, storage);
+            }
+            else
+            {
+                await UpsertToStorage(uuid, existing!, storage);
+            }
+
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        var eventType = isNew ? ServerEventType.Created : ServerEventType.Updated;
+        try
+        {
+            await DispatchEvent(ctx, eventType, imported.UUID, uuid);
+        }
+        catch (Exception)
+        {
+            if (isNew)
+            {
+                await DeleteFromStorage(uuid, imported.UUID, storage);
+            }
+            else
+            {
+                await UpsertToStorage(uuid, existing!, storage);
+            }
+
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        if (isNew)
+        {
+            var location = $"/api/v1/characters/{uuid}/{RoutePrefix}/{imported.UUID}";
+            return Results.Created(location, imported);
+        }
+
+        return Results.Ok(imported);
+    }
+
+    /// <summary>
+    /// Handles POST /blueprints/{entityUuid}/move-to-global requests.
+    /// Sets the blueprint's OwnerUUID to empty (global scope) and returns the updated blueprint.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The blueprint UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated blueprint or an error response.</returns>
+    public async Task<IResult> HandleMoveToGlobal(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var blueprint = await GetFromStorage(uuid, entityUuid, storage);
+        if (blueprint == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        blueprint.OwnerUUID = string.Empty;
+        await UpsertToStorage(uuid, blueprint, storage);
+
+        try
+        {
+            LogMutation(ctx, "Updated", entityUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(blueprint);
+    }
+
+    /// <summary>
+    /// Handles POST /blueprints/{entityUuid}/move-to-player requests.
+    /// Sets the blueprint's OwnerUUID to the character UUID (player scope) and returns the updated blueprint.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The blueprint UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated blueprint or an error response.</returns>
+    public async Task<IResult> HandleMoveToPlayer(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var blueprint = await GetFromStorage(uuid, entityUuid, storage);
+        if (blueprint == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        blueprint.OwnerUUID = uuid;
+        await UpsertToStorage(uuid, blueprint, storage);
+
+        try
+        {
+            LogMutation(ctx, "Updated", entityUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(blueprint);
+    }
+
     /// <inheritdoc/>
     protected override string EntityTypeName => "Blueprint";
 
@@ -172,5 +386,11 @@ public static class BlueprintEndpointsExtensions
             => endpoints.HandleUpdate(uuid, entityUuid, ctx, storage));
         group.MapDelete("/{entityUuid}", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
             => endpoints.HandleDelete(uuid, entityUuid, ctx, storage));
+        group.MapPost("/import", (string uuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleImport(uuid, ctx, storage));
+        group.MapPost("/{entityUuid}/move-to-global", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleMoveToGlobal(uuid, entityUuid, ctx, storage));
+        group.MapPost("/{entityUuid}/move-to-player", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleMoveToPlayer(uuid, entityUuid, ctx, storage));
     }
 }

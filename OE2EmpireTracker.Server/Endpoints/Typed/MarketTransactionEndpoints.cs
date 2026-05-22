@@ -5,7 +5,9 @@
 // -----------------------------------------------------------------------
 
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Claims;
+using System.Text.Json;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
@@ -141,6 +143,212 @@ public class MarketTransactionEndpoints
         return Results.NoContent();
     }
 
+    /// <summary>
+    /// Handles POST requests to record a purchase transaction.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the created transaction or an error response.</returns>
+    public async Task<IResult> HandleRecordPurchase(
+        string uuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        RecordPurchaseRequest? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<RecordPurchaseRequest>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(dto.ItemName))
+        {
+            return Results.BadRequest(new { error = "itemName is required" });
+        }
+
+        if (dto.Quantity <= 0)
+        {
+            return Results.BadRequest(new { error = "quantity is required" });
+        }
+
+        if (dto.PricePerUnit <= 0)
+        {
+            return Results.BadRequest(new { error = "pricePerUnit is required" });
+        }
+
+        var transaction = new MarketTransaction
+        {
+            UUID = Guid.NewGuid().ToString(),
+            OwnerUUID = uuid,
+            TransactionType = TransactionType.Buy,
+            ItemName = dto.ItemName,
+            ItemType = dto.ItemType,
+            Quantity = dto.Quantity,
+            PricePerUnit = dto.PricePerUnit,
+            TotalPrice = dto.Quantity * dto.PricePerUnit,
+            Counterparty = dto.Counterparty ?? string.Empty,
+            CounterpartyFaction = dto.CounterpartyFaction ?? string.Empty,
+            StationUUID = dto.StationUUID ?? string.Empty,
+            Timestamp = DateTime.UtcNow.ToString("o"),
+        };
+
+        await storage.UpsertMarketTransactionAsync(uuid, transaction);
+
+        try
+        {
+            LogMutation(ctx, "Created", transaction.UUID);
+        }
+        catch (Exception)
+        {
+            await storage.DeleteMarketTransactionAsync(uuid, transaction.UUID);
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Created, transaction.UUID, uuid);
+        }
+        catch (Exception)
+        {
+            await storage.DeleteMarketTransactionAsync(uuid, transaction.UUID);
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Created(
+            $"/api/v1/characters/{uuid}/market-transactions/{transaction.UUID}",
+            transaction);
+    }
+
+    /// <summary>
+    /// Handles GET requests for profit/loss summary with date filters.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="startDate">Optional start date filter (ISO format).</param>
+    /// <param name="endDate">Optional end date filter (ISO format).</param>
+    /// <param name="itemName">Optional item name filter.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the profit/loss summary or an error response.</returns>
+    public async Task<IResult> HandleProfitLoss(
+        string uuid,
+        string? startDate,
+        string? endDate,
+        string? itemName,
+        HttpContext ctx,
+        IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        DateTime? parsedStart = null;
+        DateTime? parsedEnd = null;
+
+        if (!string.IsNullOrWhiteSpace(startDate))
+        {
+            if (!DateTime.TryParse(startDate, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var s))
+            {
+                return Results.BadRequest(new { error = "Invalid date format" });
+            }
+
+            parsedStart = s;
+        }
+
+        if (!string.IsNullOrWhiteSpace(endDate))
+        {
+            if (!DateTime.TryParse(endDate, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var e))
+            {
+                return Results.BadRequest(new { error = "Invalid date format" });
+            }
+
+            parsedEnd = e;
+        }
+
+        var allTransactions = await storage.GetAllMarketTransactionsAsync(uuid);
+
+        var filtered = allTransactions.AsEnumerable();
+
+        if (parsedStart.HasValue)
+        {
+            filtered = filtered.Where(t =>
+                DateTime.TryParse(t.Timestamp, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var ts)
+                && ts >= parsedStart.Value);
+        }
+
+        if (parsedEnd.HasValue)
+        {
+            filtered = filtered.Where(t =>
+                DateTime.TryParse(t.Timestamp, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var ts)
+                && ts <= parsedEnd.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(itemName))
+        {
+            filtered = filtered.Where(t =>
+                string.Equals(t.ItemName, itemName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        var summary = new ProfitLossSummary();
+
+        foreach (var t in filtered)
+        {
+            if (t.TransactionType == TransactionType.Sell)
+            {
+                summary.TotalSalesRevenue += t.TotalPrice;
+            }
+            else
+            {
+                summary.TotalPurchaseCost += t.TotalPrice;
+            }
+
+            if (!summary.ItemBreakdown.TryGetValue(t.ItemName, out var breakdown))
+            {
+                breakdown = new ProfitLossItemBreakdown { ItemName = t.ItemName };
+                summary.ItemBreakdown[t.ItemName] = breakdown;
+            }
+
+            if (t.TransactionType == TransactionType.Sell)
+            {
+                breakdown.SalesRevenue += t.TotalPrice;
+                breakdown.QuantitySold += t.Quantity;
+            }
+            else
+            {
+                breakdown.PurchaseCost += t.TotalPrice;
+                breakdown.QuantityBought += t.Quantity;
+            }
+
+            breakdown.NetProfitLoss = breakdown.SalesRevenue - breakdown.PurchaseCost;
+        }
+
+        summary.NetProfitLoss = summary.TotalSalesRevenue - summary.TotalPurchaseCost;
+
+        return Results.Ok(summary);
+    }
+
     private static bool CanAccessCharacterData(HttpContext httpContext, string characterUuid)
     {
         if (httpContext.User.IsInRole("Owner"))
@@ -186,6 +394,33 @@ public class MarketTransactionEndpoints
 }
 
 /// <summary>
+/// Request DTO for recording a purchase transaction.
+/// </summary>
+public class RecordPurchaseRequest
+{
+    /// <summary>Gets or sets the item name.</summary>
+    public string ItemName { get; set; } = string.Empty;
+
+    /// <summary>Gets or sets the item type.</summary>
+    public ItemType.ItemTypeEnum ItemType { get; set; } = OE2EmpireTracker.Models.ItemType.ItemTypeEnum.None;
+
+    /// <summary>Gets or sets the quantity purchased.</summary>
+    public int Quantity { get; set; }
+
+    /// <summary>Gets or sets the price per unit.</summary>
+    public decimal PricePerUnit { get; set; }
+
+    /// <summary>Gets or sets the counterparty name.</summary>
+    public string? Counterparty { get; set; }
+
+    /// <summary>Gets or sets the counterparty faction.</summary>
+    public string? CounterpartyFaction { get; set; }
+
+    /// <summary>Gets or sets the station UUID where the purchase occurred.</summary>
+    public string? StationUUID { get; set; }
+}
+
+/// <summary>
 /// Extension methods for registering MarketTransaction endpoints.
 /// </summary>
 public static class MarketTransactionEndpointsExtensions
@@ -206,5 +441,9 @@ public static class MarketTransactionEndpointsExtensions
             => endpoints.HandleGetOne(uuid, entityUuid, ctx, storage));
         group.MapDelete("/{entityUuid}", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
             => endpoints.HandleDelete(uuid, entityUuid, ctx, storage));
+        group.MapPost("/record-purchase", (string uuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleRecordPurchase(uuid, ctx, storage));
+        group.MapGet("/profit-loss", (string uuid, string? startDate, string? endDate, string? itemName, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleProfitLoss(uuid, startDate, endDate, itemName, ctx, storage));
     }
 }
