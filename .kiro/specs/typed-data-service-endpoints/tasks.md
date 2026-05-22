@@ -94,48 +94,48 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
 - [x] 8. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Simple CRUD endpoint: Asteroid
-  - [-] 9.1 Create AsteroidEndpoints.cs
+- [x] 9. Simple CRUD endpoint: Asteroid
+  - [x] 9.1 Create AsteroidEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/AsteroidEndpoints.cs`
     - Inherit TypedEndpointBase<Asteroid, AsteroidCreateRequest, AsteroidUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
     - MapAsteroidEndpoints extension method with GET/POST/PUT/DELETE routes
     - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5, 19.6_
 
-- [ ] 10. Simple CRUD endpoint: Station
-  - [-] 10.1 Create StationEndpoints.cs
+- [x] 10. Simple CRUD endpoint: Station
+  - [x] 10.1 Create StationEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/StationEndpoints.cs`
     - Inherit TypedEndpointBase<Station, StationCreateRequest, StationUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
     - MapStationEndpoints extension method
     - _Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.6_
 
-- [ ] 11. Simple CRUD endpoint: PricingPlan
-  - [-] 11.1 Create PricingPlanEndpoints.cs
+- [x] 11. Simple CRUD endpoint: PricingPlan
+  - [x] 11.1 Create PricingPlanEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/PricingPlanEndpoints.cs`
     - Inherit TypedEndpointBase<PricingPlan, PricingPlanCreateRequest, PricingPlanUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
     - MapPricingPlanEndpoints extension method
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6_
 
-- [ ] 12. Simple CRUD endpoint: StockPlan
-  - [-] 12.1 Create StockPlanEndpoints.cs
+- [x] 12. Simple CRUD endpoint: StockPlan
+  - [x] 12.1 Create StockPlanEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/StockPlanEndpoints.cs`
     - Inherit TypedEndpointBase<StockPlan, StockPlanCreateRequest, StockPlanUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
     - MapStockPlanEndpoints extension method
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6_
 
-- [ ] 13. Simple CRUD endpoint: StockProfile
-  - [-] 13.1 Create StockProfileEndpoints.cs
+- [x] 13. Simple CRUD endpoint: StockProfile
+  - [x] 13.1 Create StockProfileEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/StockProfileEndpoints.cs`
     - Inherit TypedEndpointBase<StockProfile, StockProfileCreateRequest, StockProfileUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
     - MapStockProfileEndpoints extension method
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 16.6_
 
-- [ ] 14. Simple CRUD endpoint: ShipTemplate
-  - [-] 14.1 Create ShipTemplateEndpoints.cs
+- [x] 14. Simple CRUD endpoint: ShipTemplate
+  - [x] 14.1 Create ShipTemplateEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/ShipTemplateEndpoints.cs`
     - Inherit TypedEndpointBase<ShipTemplate, ShipTemplateCreateRequest, ShipTemplateUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
@@ -143,7 +143,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6_
 
 - [ ] 15. Simple CRUD endpoint: DeliveryRoute
-  - [~] 15.1 Create DeliveryRouteEndpoints.cs
+  - [-] 15.1 Create DeliveryRouteEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/DeliveryRouteEndpoints.cs`
     - Inherit TypedEndpointBase<DeliveryRoute, DeliveryRouteCreateRequest, DeliveryRouteUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
@@ -152,7 +152,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
 - [ ] 16. Simple CRUD endpoint: PlayerProfile
-  - [~] 16.1 Create PlayerProfileEndpoints.cs
+  - [-] 16.1 Create PlayerProfileEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/PlayerProfileEndpoints.cs`
     - Inherit TypedEndpointBase<PlayerProfile, PlayerProfileCreateRequest, PlayerProfileUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
@@ -164,7 +164,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 7.7_
 
 - [ ] 17. Simple CRUD endpoint: Survey
-  - [~] 17.1 Create SurveyEndpoints.cs
+  - [-] 17.1 Create SurveyEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/SurveyEndpoints.cs`
     - Inherit TypedEndpointBase<Survey, SurveyCreateRequest, SurveyUpdateRequest>
     - Implement ValidateCreate (PlanetName required), ValidateUpdate, ApplyCreate, ApplyUpdate
@@ -176,7 +176,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 6.7_
 
 - [ ] 18. Simple CRUD endpoints: Faction and ExternalCharacter
-  - [~] 18.1 Create FactionContactEndpoints.cs
+  - [-] 18.1 Create FactionContactEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/FactionContactEndpoints.cs`
     - MapFactionContactEndpoints extension method with both /factions and /contacts route groups
     - Faction: ValidateCreate (Name required), standard CRUD
@@ -187,7 +187,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 21.7, 21.8, 21.9, 21.10, 21.11, 21.12_
 
 - [ ] 19. Simple CRUD endpoint: SupplyChain
-  - [~] 19.1 Create SupplyChainEndpoints.cs
+  - [-] 19.1 Create SupplyChainEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/SupplyChainEndpoints.cs`
     - Inherit TypedEndpointBase<SupplyChain, SupplyChainCreateRequest, SupplyChainUpdateRequest>
     - Deep-copy and renumber stages on create/update
@@ -195,7 +195,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5, 18.6_
 
 - [ ] 20. Simple CRUD endpoint: BuildPlan
-  - [~] 20.1 Create BuildPlanEndpoints.cs
+  - [-] 20.1 Create BuildPlanEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/BuildPlanEndpoints.cs`
     - Inherit TypedEndpointBase<BuildPlan, BuildPlanCreateRequest, BuildPlanUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
