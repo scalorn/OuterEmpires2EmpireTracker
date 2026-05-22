@@ -359,22 +359,22 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 29.1, 29.2, 29.3, 29.4, 29.5, 29.6_
 
 - [ ] 35. Unit tests: Colony endpoint (dedup + sub-resources)
-  - [~] 35.1 Write unit tests for ColonyEndpoints dedup logic
+  - [-] 35.1 Write unit tests for ColonyEndpoints dedup logic
     - Test merge on duplicate PlanetName+SystemName (case-insensitive) returns 200
     - Test new colony returns 201
     - _Requirements: 31.1, 31.2, 31.3, 31.4_
-  - [~] 35.2 Write unit tests for Colony sub-resource endpoints
+  - [-] 35.2 Write unit tests for Colony sub-resource endpoints
     - Test add/remove structure, add/remove/update item, add/remove/update commodity-request
     - Test 404 for missing colony, 400 for missing required fields
     - _Requirements: 4.8, 4.9, 4.10, 4.11, 4.12, 4.13, 4.14, 4.15_
 
 - [ ] 36. Unit tests: DeliveryPlan actions
-  - [~] 36.1 Write unit tests for DeliveryPlan action endpoints
+  - [-] 36.1 Write unit tests for DeliveryPlan action endpoints
     - Test drop-off/pick-up add and remove
     - Test mark-delivered, mark-stop-complete, mark-complete
     - Test ship assignment
     - _Requirements: 9.8, 9.9, 9.10, 9.11, 9.12, 9.13, 9.14, 9.15_
-  - [~] 36.2 Write unit tests for split-trips endpoint
+  - [-] 36.2 Write unit tests for split-trips endpoint
     - Test split creates multiple plans based on cargo capacity
     - Test original plan unchanged
     - Test 400 for missing/invalid cargoCapacity
