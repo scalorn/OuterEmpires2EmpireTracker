@@ -17,6 +17,35 @@ public class JsonFileStorageBackend : IStorageBackend
         NullValueHandling = NullValueHandling.Ignore,
     };
 
+    /// <summary>
+    /// Maps PlayerRoot property names to the canonical file names used by both
+    /// the web UI (via /data/{dataType}) and the typed CRUD endpoints.
+    /// Web UI calls toLowerDataType on DataType enum values (e.g. "Colonies" → "colonies").
+    /// </summary>
+    private static readonly Dictionary<string, string> PlayerRootToFileName =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Colony"] = "colonies",
+            ["Blueprint"] = "blueprints",
+            ["Survey"] = "surveys",
+            ["PlayerProfile"] = "playerprofile",
+            ["DeliveryRoute"] = "deliveryroutes",
+            ["DeliveryPlan"] = "deliveryplans",
+            ["PricingPlan"] = "pricingplans",
+            ["BuildPlan"] = "buildplans",
+            ["ShipTemplate"] = "shiptemplates",
+            ["Ship"] = "ships",
+            ["Station"] = "stations",
+            ["MarketListing"] = "marketlistings",
+            ["MarketTransaction"] = "markettransactions",
+            ["StockPlan"] = "stockplans",
+            ["StockProfile"] = "stockprofiles",
+            ["SupplyChain"] = "supplychains",
+            ["Faction"] = "faction",
+            ["ExternalCharacter"] = "externalcharacter",
+            ["Asteroid"] = "asteroids",
+        };
+
     private readonly string _dataPath;
     private readonly ILogger<JsonFileStorageBackend> _logger;
     private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
@@ -148,6 +177,7 @@ public class JsonFileStorageBackend : IStorageBackend
         // When the desktop syncs the full PlayerRoot blob as "player-data",
         // also split it into individual per-property files so both the bulk GET
         // and the typed endpoints read from the same per-entity-type files.
+        // Files are written with canonical names matching what consumers expect.
         if (string.Equals(dataType, "player-data", StringComparison.OrdinalIgnoreCase))
         {
             try
@@ -157,7 +187,10 @@ public class JsonFileStorageBackend : IStorageBackend
                 {
                     if (prop.Value.Type == JTokenType.Array || prop.Value.Type == JTokenType.Object)
                     {
-                        var propPath = CharacterDataPath(characterUUID, prop.Name);
+                        string fileName = PlayerRootToFileName.TryGetValue(prop.Name, out var mapped)
+                            ? mapped
+                            : prop.Name.ToLowerInvariant();
+                        var propPath = CharacterDataPath(characterUUID, fileName);
                         await WriteAtomicAsync(propPath, prop.Value.ToString(Formatting.Indented));
                     }
                 }
@@ -1320,7 +1353,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<Colony>> GetAllColoniesAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "Colony");
+        var path = CharacterDataPath(characterUUID, "colonies");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<Colony>();
         return JsonConvert.DeserializeObject<List<Colony>>(json, SerializerSettings) ?? new List<Colony>();
@@ -1337,7 +1370,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Colony");
+            var path = CharacterDataPath(characterUUID, "colonies");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1359,7 +1392,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Colony");
+            var path = CharacterDataPath(characterUUID, "colonies");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<Colony>>(json, SerializerSettings) ?? new List<Colony>();
@@ -1376,7 +1409,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<Blueprint>> GetAllBlueprintsAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "Blueprint");
+        var path = CharacterDataPath(characterUUID, "blueprints");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<Blueprint>();
         return JsonConvert.DeserializeObject<List<Blueprint>>(json, SerializerSettings) ?? new List<Blueprint>();
@@ -1393,7 +1426,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Blueprint");
+            var path = CharacterDataPath(characterUUID, "blueprints");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1415,7 +1448,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Blueprint");
+            var path = CharacterDataPath(characterUUID, "blueprints");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<Blueprint>>(json, SerializerSettings) ?? new List<Blueprint>();
@@ -1432,7 +1465,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<Survey>> GetAllSurveysAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "Survey");
+        var path = CharacterDataPath(characterUUID, "surveys");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<Survey>();
         return JsonConvert.DeserializeObject<List<Survey>>(json, SerializerSettings) ?? new List<Survey>();
@@ -1449,7 +1482,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Survey");
+            var path = CharacterDataPath(characterUUID, "surveys");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1471,7 +1504,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Survey");
+            var path = CharacterDataPath(characterUUID, "surveys");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<Survey>>(json, SerializerSettings) ?? new List<Survey>();
@@ -1488,7 +1521,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<PlayerProfile>> GetAllPlayerProfilesAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "PlayerProfile");
+        var path = CharacterDataPath(characterUUID, "playerprofile");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<PlayerProfile>();
         return JsonConvert.DeserializeObject<List<PlayerProfile>>(json, SerializerSettings) ?? new List<PlayerProfile>();
@@ -1505,7 +1538,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "PlayerProfile");
+            var path = CharacterDataPath(characterUUID, "playerprofile");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1527,7 +1560,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "PlayerProfile");
+            var path = CharacterDataPath(characterUUID, "playerprofile");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<PlayerProfile>>(json, SerializerSettings) ?? new List<PlayerProfile>();
@@ -1544,7 +1577,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<DeliveryRoute>> GetAllDeliveryRoutesAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "DeliveryRoute");
+        var path = CharacterDataPath(characterUUID, "deliveryroutes");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<DeliveryRoute>();
         return JsonConvert.DeserializeObject<List<DeliveryRoute>>(json, SerializerSettings) ?? new List<DeliveryRoute>();
@@ -1561,7 +1594,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "DeliveryRoute");
+            var path = CharacterDataPath(characterUUID, "deliveryroutes");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1583,7 +1616,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "DeliveryRoute");
+            var path = CharacterDataPath(characterUUID, "deliveryroutes");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<DeliveryRoute>>(json, SerializerSettings) ?? new List<DeliveryRoute>();
@@ -1600,7 +1633,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<DeliveryPlan>> GetAllDeliveryPlansAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "DeliveryPlan");
+        var path = CharacterDataPath(characterUUID, "deliveryplans");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<DeliveryPlan>();
         return JsonConvert.DeserializeObject<List<DeliveryPlan>>(json, SerializerSettings) ?? new List<DeliveryPlan>();
@@ -1617,7 +1650,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "DeliveryPlan");
+            var path = CharacterDataPath(characterUUID, "deliveryplans");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1639,7 +1672,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "DeliveryPlan");
+            var path = CharacterDataPath(characterUUID, "deliveryplans");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<DeliveryPlan>>(json, SerializerSettings) ?? new List<DeliveryPlan>();
@@ -1656,7 +1689,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<Ship>> GetAllShipsAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "Ship");
+        var path = CharacterDataPath(characterUUID, "ships");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<Ship>();
         return JsonConvert.DeserializeObject<List<Ship>>(json, SerializerSettings) ?? new List<Ship>();
@@ -1673,7 +1706,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Ship");
+            var path = CharacterDataPath(characterUUID, "ships");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1695,7 +1728,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Ship");
+            var path = CharacterDataPath(characterUUID, "ships");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<Ship>>(json, SerializerSettings) ?? new List<Ship>();
@@ -1712,7 +1745,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<ShipTemplate>> GetAllShipTemplatesAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "ShipTemplate");
+        var path = CharacterDataPath(characterUUID, "shiptemplates");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<ShipTemplate>();
         return JsonConvert.DeserializeObject<List<ShipTemplate>>(json, SerializerSettings) ?? new List<ShipTemplate>();
@@ -1729,7 +1762,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "ShipTemplate");
+            var path = CharacterDataPath(characterUUID, "shiptemplates");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1751,7 +1784,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "ShipTemplate");
+            var path = CharacterDataPath(characterUUID, "shiptemplates");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<ShipTemplate>>(json, SerializerSettings) ?? new List<ShipTemplate>();
@@ -1768,7 +1801,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<MarketListing>> GetAllMarketListingsAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "MarketListing");
+        var path = CharacterDataPath(characterUUID, "marketlistings");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<MarketListing>();
         return JsonConvert.DeserializeObject<List<MarketListing>>(json, SerializerSettings) ?? new List<MarketListing>();
@@ -1785,7 +1818,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "MarketListing");
+            var path = CharacterDataPath(characterUUID, "marketlistings");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1807,7 +1840,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "MarketListing");
+            var path = CharacterDataPath(characterUUID, "marketlistings");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<MarketListing>>(json, SerializerSettings) ?? new List<MarketListing>();
@@ -1824,7 +1857,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<MarketTransaction>> GetAllMarketTransactionsAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "MarketTransaction");
+        var path = CharacterDataPath(characterUUID, "markettransactions");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<MarketTransaction>();
         return JsonConvert.DeserializeObject<List<MarketTransaction>>(json, SerializerSettings) ?? new List<MarketTransaction>();
@@ -1841,7 +1874,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "MarketTransaction");
+            var path = CharacterDataPath(characterUUID, "markettransactions");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1863,7 +1896,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "MarketTransaction");
+            var path = CharacterDataPath(characterUUID, "markettransactions");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<MarketTransaction>>(json, SerializerSettings) ?? new List<MarketTransaction>();
@@ -1880,7 +1913,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<PricingPlan>> GetAllPricingPlansAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "PricingPlan");
+        var path = CharacterDataPath(characterUUID, "pricingplans");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<PricingPlan>();
         return JsonConvert.DeserializeObject<List<PricingPlan>>(json, SerializerSettings) ?? new List<PricingPlan>();
@@ -1897,7 +1930,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "PricingPlan");
+            var path = CharacterDataPath(characterUUID, "pricingplans");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1919,7 +1952,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "PricingPlan");
+            var path = CharacterDataPath(characterUUID, "pricingplans");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<PricingPlan>>(json, SerializerSettings) ?? new List<PricingPlan>();
@@ -1936,7 +1969,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<StockPlan>> GetAllStockPlansAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "StockPlan");
+        var path = CharacterDataPath(characterUUID, "stockplans");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<StockPlan>();
         return JsonConvert.DeserializeObject<List<StockPlan>>(json, SerializerSettings) ?? new List<StockPlan>();
@@ -1953,7 +1986,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "StockPlan");
+            var path = CharacterDataPath(characterUUID, "stockplans");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -1975,7 +2008,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "StockPlan");
+            var path = CharacterDataPath(characterUUID, "stockplans");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<StockPlan>>(json, SerializerSettings) ?? new List<StockPlan>();
@@ -1992,7 +2025,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<StockProfile>> GetAllStockProfilesAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "StockProfile");
+        var path = CharacterDataPath(characterUUID, "stockprofiles");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<StockProfile>();
         return JsonConvert.DeserializeObject<List<StockProfile>>(json, SerializerSettings) ?? new List<StockProfile>();
@@ -2009,7 +2042,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "StockProfile");
+            var path = CharacterDataPath(characterUUID, "stockprofiles");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -2031,7 +2064,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "StockProfile");
+            var path = CharacterDataPath(characterUUID, "stockprofiles");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<StockProfile>>(json, SerializerSettings) ?? new List<StockProfile>();
@@ -2048,7 +2081,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<BuildPlan>> GetAllBuildPlansAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "BuildPlan");
+        var path = CharacterDataPath(characterUUID, "buildplans");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<BuildPlan>();
         return JsonConvert.DeserializeObject<List<BuildPlan>>(json, SerializerSettings) ?? new List<BuildPlan>();
@@ -2065,7 +2098,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "BuildPlan");
+            var path = CharacterDataPath(characterUUID, "buildplans");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -2087,7 +2120,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "BuildPlan");
+            var path = CharacterDataPath(characterUUID, "buildplans");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<BuildPlan>>(json, SerializerSettings) ?? new List<BuildPlan>();
@@ -2104,7 +2137,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<SupplyChain>> GetAllSupplyChainsAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "SupplyChain");
+        var path = CharacterDataPath(characterUUID, "supplychains");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<SupplyChain>();
         return JsonConvert.DeserializeObject<List<SupplyChain>>(json, SerializerSettings) ?? new List<SupplyChain>();
@@ -2121,7 +2154,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "SupplyChain");
+            var path = CharacterDataPath(characterUUID, "supplychains");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -2143,7 +2176,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "SupplyChain");
+            var path = CharacterDataPath(characterUUID, "supplychains");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<SupplyChain>>(json, SerializerSettings) ?? new List<SupplyChain>();
@@ -2160,7 +2193,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<Asteroid>> GetAllAsteroidsAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "Asteroid");
+        var path = CharacterDataPath(characterUUID, "asteroids");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<Asteroid>();
         return JsonConvert.DeserializeObject<List<Asteroid>>(json, SerializerSettings) ?? new List<Asteroid>();
@@ -2177,7 +2210,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Asteroid");
+            var path = CharacterDataPath(characterUUID, "asteroids");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -2199,7 +2232,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Asteroid");
+            var path = CharacterDataPath(characterUUID, "asteroids");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<Asteroid>>(json, SerializerSettings) ?? new List<Asteroid>();
@@ -2216,7 +2249,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<Station>> GetAllStationsAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "Station");
+        var path = CharacterDataPath(characterUUID, "stations");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<Station>();
         return JsonConvert.DeserializeObject<List<Station>>(json, SerializerSettings) ?? new List<Station>();
@@ -2233,7 +2266,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Station");
+            var path = CharacterDataPath(characterUUID, "stations");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -2255,7 +2288,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Station");
+            var path = CharacterDataPath(characterUUID, "stations");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<Station>>(json, SerializerSettings) ?? new List<Station>();
@@ -2272,7 +2305,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<Faction>> GetAllFactionsForCharacterAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "Faction");
+        var path = CharacterDataPath(characterUUID, "faction");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<Faction>();
         return JsonConvert.DeserializeObject<List<Faction>>(json, SerializerSettings) ?? new List<Faction>();
@@ -2289,7 +2322,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Faction");
+            var path = CharacterDataPath(characterUUID, "faction");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -2311,7 +2344,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "Faction");
+            var path = CharacterDataPath(characterUUID, "faction");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<Faction>>(json, SerializerSettings) ?? new List<Faction>();
@@ -2328,7 +2361,7 @@ public class JsonFileStorageBackend : IStorageBackend
 
     public async Task<IReadOnlyList<ExternalCharacter>> GetAllExternalCharactersAsync(string characterUUID)
     {
-        var path = CharacterDataPath(characterUUID, "ExternalCharacter");
+        var path = CharacterDataPath(characterUUID, "externalcharacter");
         var json = await ReadRawAsync(path);
         if (json == null) return Array.Empty<ExternalCharacter>();
         return JsonConvert.DeserializeObject<List<ExternalCharacter>>(json, SerializerSettings) ?? new List<ExternalCharacter>();
@@ -2345,7 +2378,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "ExternalCharacter");
+            var path = CharacterDataPath(characterUUID, "externalcharacter");
             EnsureCharacterDirectory(characterUUID);
             var json = await ReadRawUnlockedAsync(path);
             var list = string.IsNullOrEmpty(json)
@@ -2367,7 +2400,7 @@ public class JsonFileStorageBackend : IStorageBackend
         await _lock.WaitAsync();
         try
         {
-            var path = CharacterDataPath(characterUUID, "ExternalCharacter");
+            var path = CharacterDataPath(characterUUID, "externalcharacter");
             var json = await ReadRawUnlockedAsync(path);
             if (json == null) return;
             var list = JsonConvert.DeserializeObject<List<ExternalCharacter>>(json, SerializerSettings) ?? new List<ExternalCharacter>();
