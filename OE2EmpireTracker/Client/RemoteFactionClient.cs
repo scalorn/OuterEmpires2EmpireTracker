@@ -302,6 +302,25 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
+        /// Performs a validated bulk import of all character data via the import endpoint.
+        /// Returns the raw <see cref="HttpResponseMessage"/> so callers can inspect status codes
+        /// and parse validation errors on HTTP 400.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID.</param>
+        /// <param name="playerRootJson">
+        /// The JSON payload (PascalCase-serialized PlayerRoot) to import.
+        /// </param>
+        /// <returns>The HTTP response from the server.</returns>
+        public async Task<HttpResponseMessage> BulkImportAsync(string characterUUID, string playerRootJson)
+        {
+            string path = string.Format("/characters/{0}/import", characterUUID);
+            await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+            var content = new StringContent(playerRootJson, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync(_serverUrl + ApiPrefix + path, content).ConfigureAwait(false);
+            return response;
+        }
+
+        /// <summary>
         /// Uploads global/baseline data to the server.
         /// Requires Owner token.
         /// </summary>

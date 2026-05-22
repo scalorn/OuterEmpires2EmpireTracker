@@ -377,7 +377,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
   - _Verification: tsc --noEmit succeeds; grep for data.ts returns zero results_
 
 - [ ] 15. Migrate Desktop SyncManager to bulk import
-  - [~] 15.1 Add BulkImportAsync method to RemoteFactionClient
+  - [-] 15.1 Add BulkImportAsync method to RemoteFactionClient
     - Implement `BulkImportAsync(characterUUID, playerRootJson)` calling PUT /api/v1/characters/{uuid}/import
     - Use PascalCase serialization matching Common model annotations
     - _Satisfies: Req 4, Criteria 2–3, 5_
