@@ -950,5 +950,15 @@ public static class DeliveryPlanEndpointsExtensions
             => endpoints.HandleRemoveDropOff(uuid, entityUuid, ctx, storage));
         group.MapDelete("/{entityUuid}/pick-up", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
             => endpoints.HandleRemovePickUp(uuid, entityUuid, ctx, storage));
+        group.MapPut("/{entityUuid}/mark-delivered", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleMarkDelivered(uuid, entityUuid, ctx, storage));
+        group.MapPut("/{entityUuid}/mark-stop-complete", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleMarkStopComplete(uuid, entityUuid, ctx, storage));
+        group.MapPut("/{entityUuid}/mark-complete", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleMarkComplete(uuid, entityUuid, ctx, storage));
+        group.MapPut("/{entityUuid}/ship", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleAssignShip(uuid, entityUuid, ctx, storage));
+        group.MapPost("/{entityUuid}/split-trips", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleSplitTrips(uuid, entityUuid, ctx, storage));
     }
 }
