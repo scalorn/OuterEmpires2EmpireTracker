@@ -7,10 +7,10 @@ import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 
 const baseColumns: Column<Record<string, unknown>>[] = [
-  { key: 'Name', header: 'Name' },
-  { key: 'BlueprintType', header: 'Type' },
-  { key: 'TechLevel', header: 'Tech Level' },
-  { key: 'ShipClass', header: 'Ship Class' },
+  { key: 'name', header: 'Name' },
+  { key: 'bluePrintType', header: 'Type' },
+  { key: 'techLevel', header: 'Tech Level' },
+  { key: 'class', header: 'Class' },
 ];
 
 export function BlueprintManager() {

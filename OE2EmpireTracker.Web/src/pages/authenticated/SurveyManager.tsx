@@ -7,10 +7,9 @@ import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 
 const baseColumns: Column<Record<string, unknown>>[] = [
-  { key: 'System', header: 'System' },
-  { key: 'Planet', header: 'Planet' },
-  { key: 'ResourceType', header: 'Resource' },
-  { key: 'Purity', header: 'Purity' },
+  { key: 'systemName', header: 'System' },
+  { key: 'planetName', header: 'Planet' },
+  { key: 'surveyType', header: 'Type' },
 ];
 
 export function SurveyManager() {

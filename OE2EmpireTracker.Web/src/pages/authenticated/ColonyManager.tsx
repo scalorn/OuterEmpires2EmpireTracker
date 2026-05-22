@@ -7,11 +7,11 @@ import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 
 const columns: Column<Record<string, unknown>>[] = [
-  { key: 'Name', header: 'Name' },
-  { key: 'System', header: 'System' },
-  { key: 'Planet', header: 'Planet' },
+  { key: 'colonyName', header: 'Name' },
+  { key: 'systemName', header: 'System' },
+  { key: 'planetName', header: 'Planet' },
   {
-    key: 'StructureCount',
+    key: 'structures',
     header: 'Structures',
     render: (item) => {
       const structures = item.Structures ?? item.structures;
