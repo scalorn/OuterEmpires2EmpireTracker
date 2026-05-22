@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
@@ -37,24 +36,13 @@ public class ServerColonyProcessingContext : IColonyProcessingContext
     /// </summary>
     public async Task LoadDataAsync()
     {
-        var bpJson = await _storage.GetCharacterDataAsync(_characterUUID, "Blueprints");
-        _blueprints = bpJson != null
-            ? JsonConvert.DeserializeObject<List<Blueprint>>(bpJson) ?? new List<Blueprint>()
-            : new List<Blueprint>();
-
-        var surveyJson = await _storage.GetCharacterDataAsync(_characterUUID, "Surveys");
-        _surveys = surveyJson != null
-            ? JsonConvert.DeserializeObject<List<Survey>>(surveyJson) ?? new List<Survey>()
-            : new List<Survey>();
-
-        var profileJson = await _storage.GetCharacterDataAsync(_characterUUID, "PlayerProfiles");
-        _profiles = profileJson != null
-            ? JsonConvert.DeserializeObject<List<PlayerProfile>>(profileJson) ?? new List<PlayerProfile>()
-            : new List<PlayerProfile>();
+        _blueprints = (await _storage.GetAllBlueprintsAsync(_characterUUID)).ToList();
+        _surveys = (await _storage.GetAllSurveysAsync(_characterUUID)).ToList();
+        _profiles = (await _storage.GetAllPlayerProfilesAsync(_characterUUID)).ToList();
 
         var btJson = await _storage.GetGlobalDataAsync("BlueprintTypes");
         _blueprintTypes = btJson != null
-            ? JsonConvert.DeserializeObject<List<BlueprintType>>(btJson) ?? new List<BlueprintType>()
+            ? Newtonsoft.Json.JsonConvert.DeserializeObject<List<BlueprintType>>(btJson) ?? new List<BlueprintType>()
             : new List<BlueprintType>();
     }
 
@@ -100,7 +88,9 @@ public class ServerColonyProcessingContext : IColonyProcessingContext
             return;
         }
 
-        var json = JsonConvert.SerializeObject(_blueprints, OE2EmpireTracker.Services.JsonSettings.SerializerSettings);
-        await _storage.UpsertCharacterDataAsync(_characterUUID, "Blueprints", json);
+        foreach (var blueprint in _blueprints)
+        {
+            await _storage.UpsertBlueprintAsync(_characterUUID, blueprint);
+        }
     }
 }

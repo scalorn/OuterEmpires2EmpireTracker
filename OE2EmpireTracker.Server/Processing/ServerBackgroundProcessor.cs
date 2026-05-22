@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
@@ -126,36 +125,13 @@ public class ServerBackgroundProcessor : BackgroundService
                 }
 
                 // Load colony data for the opted-in character
-                var colonyData = await _storage.GetCharacterDataAsync(character.UUID, "Colonies");
-                if (string.IsNullOrEmpty(colonyData))
+                var colonies = (await _storage.GetAllColoniesAsync(character.UUID)).ToList();
+                if (colonies.Count == 0)
                 {
                     _logger.LogDebug(
                         "Processing character {Name} ({UUID}) — no colony data",
                         character.Name,
                         character.UUID);
-                    processedCount++;
-                    continue;
-                }
-
-                // Deserialize into actual Colony domain models
-                List<Colony>? colonies;
-                try
-                {
-                    colonies = JsonConvert.DeserializeObject<List<Colony>>(colonyData);
-                }
-                catch (JsonException ex)
-                {
-                    _logger.LogWarning(
-                        ex,
-                        "Failed to deserialize colony data for character {Name} ({UUID})",
-                        character.Name,
-                        character.UUID);
-                    processedCount++;
-                    continue;
-                }
-
-                if (colonies == null || colonies.Count == 0)
-                {
                     processedCount++;
                     continue;
                 }
@@ -190,8 +166,11 @@ public class ServerBackgroundProcessor : BackgroundService
 
                 if (anyProcessed)
                 {
-                    var updatedJson = JsonConvert.SerializeObject(colonies, JsonSettings.SerializerSettings);
-                    await _storage.UpsertCharacterDataAsync(character.UUID, "Colonies", updatedJson);
+                    foreach (var colony in colonies)
+                    {
+                        await _storage.UpsertColonyAsync(character.UUID, colony);
+                    }
+
                     await context.SaveBlueprintsIfModifiedAsync();
 
                     _logger.LogDebug(

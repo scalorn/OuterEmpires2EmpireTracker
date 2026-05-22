@@ -47,7 +47,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Verification: getDiagnostics clean; export handler references only typed methods_
 
 
-- [~] 3. Checkpoint — Verify storage and endpoint removal compiles
+- [-] 3. Checkpoint — Verify storage and endpoint removal compiles
   - Build full solution, ensure zero errors and zero warnings
   - Ensure all tests pass (existing tests that referenced raw methods may need updating)
   - _Verification: MSBuild zero errors/warnings; vstest all pass_
@@ -376,8 +376,8 @@ This plan removes all unvalidated data paths from the server, replaces them with
   - No imports from data.ts remain
   - _Verification: tsc --noEmit succeeds; grep for data.ts returns zero results_
 
-- [ ] 15. Migrate Desktop SyncManager to bulk import
-  - [-] 15.1 Add BulkImportAsync method to RemoteFactionClient
+- [x] 15. Migrate Desktop SyncManager to bulk import
+  - [x] 15.1 Add BulkImportAsync method to RemoteFactionClient
     - Implement `BulkImportAsync(characterUUID, playerRootJson)` calling PUT /api/v1/characters/{uuid}/import
     - Use PascalCase serialization matching Common model annotations
     - _Satisfies: Req 4, Criteria 2–3, 5_
@@ -385,7 +385,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Output: RemoteFactionClient.cs_
     - _Verification: getDiagnostics clean_
 
-  - [~] 15.2 Remove old upload methods from RemoteFactionClient
+  - [x] 15.2 Remove old upload methods from RemoteFactionClient
     - Remove `UploadCharacterDataAsync(characterUUID, dataType, json)`
     - Remove `UploadAllCharacterDataAsync(characterUUID, json)`
     - _Satisfies: Req 4, Criteria 2–3_
@@ -393,7 +393,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Output: RemoteFactionClient.cs_
     - _Verification: getDiagnostics shows errors only in SyncManager (expected, fixed next)_
 
-  - [~] 15.3 Update SyncManager to use BulkImportAsync
+  - [x] 15.3 Update SyncManager to use BulkImportAsync
     - Change WriteToServerAsync to call BulkImportAsync instead of per-dataType upload
     - On HTTP 400: log validation errors, queue for user review, raise SyncValidationFailed event
     - On HTTP 403: log denial, set connection status to Unauthorized
@@ -403,14 +403,14 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Verification: getDiagnostics clean_
 
 
-  - [~] 15.4 Update offline queue flush to use BulkImportAsync
+  - [x] 15.4 Update offline queue flush to use BulkImportAsync
     - Change FlushOfflineQueueAsync to replay via BulkImportAsync
     - _Satisfies: Req 4 Criterion 6_
     - _Inputs: SyncManager.cs (or OfflineQueue.cs)_
     - _Output: SyncManager.cs (or OfflineQueue.cs)_
     - _Verification: getDiagnostics clean; full solution builds_
 
-  - [~] 15.5 Write unit tests for desktop sync migration
+  - [x] 15.5 Write unit tests for desktop sync migration
     - Test: SyncManager calls PUT /import (not PUT /data)
     - Test: RemoteFactionClient.BulkImportAsync exists and calls correct URL
     - Test: validation failure queues for review
@@ -423,8 +423,8 @@ This plan removes all unvalidated data paths from the server, replaces them with
   - Run all tests
   - _Verification: MSBuild zero errors/warnings; vstest all pass_
 
-- [ ] 17. Write endpoint removal verification tests
-  - [~] 17.1 Write tests verifying removed routes return 404
+- [x] 17. Write endpoint removal verification tests
+  - [x] 17.1 Write tests verifying removed routes return 404
     - Test: PUT /data/{dataType} → 404
     - Test: POST /data/{dataType} → 404
     - Test: GET /data/{dataType}/{entityUuid} → 404
@@ -436,7 +436,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Verification: EndpointRemovalTests pass_
 
 
-  - [~] 17.2 Write tests verifying preserved endpoints still work
+  - [x] 17.2 Write tests verifying preserved endpoints still work
     - Test: GET /export returns assembled character data
     - Test: GET /sync returns filtered data
     - Test: GET /global/{dataType} works
@@ -444,27 +444,27 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Satisfies: Req 1 Criterion 11; Req 10 Criterion 1; Req 11, Criteria 1–3_
     - _Verification: PreservedEndpointTests pass_
 
-  - [~] 17.3 Write property test for removed routes returning 404 via framework default
+  - [x] 17.3 Write property test for removed routes returning 404 via framework default
     - **Property 8: Removed Routes Return 404 via Framework Default**
     - Generate random removed route paths; verify 404 comes from framework (no explicit handler)
     - **Validates: Req 1, Criteria 8–9**
     - _Verification: Property8_RemovedRoutesReturn404 passes_
 
-- [ ] 18. Write remaining property tests
-  - [~] 18.1 Write property test for no unvalidated write path
+- [x] 18. Write remaining property tests
+  - [x] 18.1 Write property test for no unvalidated write path
     - **Property 1: No Unvalidated Write Path Exists**
     - Static analysis / reflection test: verify no route handler references raw storage methods
     - **Validates: Req 1, 5, 8, 12**
     - _Verification: Property1_NoUnvalidatedWritePath passes_
 
-  - [~] 18.2 Write property test for authorization before body read
+  - [x] 18.2 Write property test for authorization before body read
     - **Property 2: Authorization Before Body Read**
     - Verify bulk import endpoint checks auth before reading any request body bytes
     - **Validates: Req 6 Criterion 2**
     - _Verification: Property2_AuthBeforeBodyRead passes_
 
 
-  - [~] 18.3 Write property test for rate limit independence
+  - [x] 18.3 Write property test for rate limit independence
     - **Property 9: Rate Limit Independence**
     - Verify Token A exceeding rate limit does not affect Token B
     - **Validates: Req 2 Criterion 10**

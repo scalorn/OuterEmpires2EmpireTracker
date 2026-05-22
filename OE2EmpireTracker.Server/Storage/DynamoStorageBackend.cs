@@ -674,5 +674,4 @@ public class DynamoStorageBackend : IStorageBackend
 
         return results;
     }
-
 }

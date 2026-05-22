@@ -258,6 +258,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\DesktopSyncMigrationTests.cs" />
     <Compile Include="Services\BackgroundProcessorTests.cs" />
     <Compile Include="Services\BuildPlanServiceTests.cs" />
     <Compile Include="Services\BuildPlanExecutionPropertyTests.cs" />

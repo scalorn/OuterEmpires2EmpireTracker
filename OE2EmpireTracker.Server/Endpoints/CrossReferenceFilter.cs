@@ -50,7 +50,7 @@ public static class CrossReferenceFilter
         accessible.Add(viewerCharacterUUID);
 
         // Extract all UUIDs from the viewer's own data
-        var viewerData = await storage.GetAllCharacterDataAsync(viewerCharacterUUID);
+        var viewerData = await AssembleCharacterDataJsonAsync(storage, viewerCharacterUUID);
         if (viewerData != null)
         {
             ExtractUUIDsFromJson(viewerData, accessible);
@@ -75,7 +75,7 @@ public static class CrossReferenceFilter
                 continue;
             }
 
-            var charData = await storage.GetAllCharacterDataAsync(character.UUID);
+            var charData = await AssembleCharacterDataJsonAsync(storage, character.UUID);
             if (charData != null)
             {
                 ExtractUUIDsFromJson(charData, accessible);
@@ -90,6 +90,34 @@ public static class CrossReferenceFilter
         }
 
         return accessible;
+    }
+
+    private static async Task<string?> AssembleCharacterDataJsonAsync(
+        IStorageBackend storage,
+        string characterUUID)
+    {
+        var colonies = await storage.GetAllColoniesAsync(characterUUID);
+        var blueprints = await storage.GetAllBlueprintsAsync(characterUUID);
+        var surveys = await storage.GetAllSurveysAsync(characterUUID);
+        var profiles = await storage.GetAllPlayerProfilesAsync(characterUUID);
+        var deliveryRoutes = await storage.GetAllDeliveryRoutesAsync(characterUUID);
+        var ships = await storage.GetAllShipsAsync(characterUUID);
+        var stations = await storage.GetAllStationsAsync(characterUUID);
+        var externalCharacters = await storage.GetAllExternalCharactersAsync(characterUUID);
+
+        var combined = new
+        {
+            Colonies = colonies,
+            Blueprints = blueprints,
+            Surveys = surveys,
+            PlayerProfiles = profiles,
+            DeliveryRoutes = deliveryRoutes,
+            Ships = ships,
+            Stations = stations,
+            ExternalCharacters = externalCharacters,
+        };
+
+        return JsonSerializer.Serialize(combined);
     }
 
     private static void ExtractUUIDsFromJson(string json, HashSet<string> uuids)

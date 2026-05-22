@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints;
@@ -135,14 +136,15 @@ public static class SharingEndpoints
                 continue;
             }
 
-            var json = await storage.GetCharacterDataAsync(member.UUID, dataType);
-            if (json == null)
+            var entities = await GetTypedDataAsync(storage, member.UUID, dataType);
+            if (entities == null)
             {
                 continue;
             }
 
             try
             {
+                var json = JsonSerializer.Serialize(entities);
                 var doc = JsonDocument.Parse(json);
                 if (doc.RootElement.ValueKind == JsonValueKind.Array)
                 {
@@ -203,14 +205,15 @@ public static class SharingEndpoints
                 continue;
             }
 
-            var json = await storage.GetCharacterDataAsync(character.UUID, dataType);
-            if (json == null)
+            var entities = await GetTypedDataAsync(storage, character.UUID, dataType);
+            if (entities == null)
             {
                 continue;
             }
 
             try
             {
+                var json = JsonSerializer.Serialize(entities);
                 var doc = JsonDocument.Parse(json);
                 if (doc.RootElement.ValueKind == JsonValueKind.Array)
                 {
@@ -233,6 +236,33 @@ public static class SharingEndpoints
     }
 
     // --- Helpers ---
+
+    private static async Task<object?> GetTypedDataAsync(IStorageBackend storage, string characterUUID, string dataType)
+    {
+        return dataType switch
+        {
+            "Colonies" => await storage.GetAllColoniesAsync(characterUUID),
+            "Blueprints" => await storage.GetAllBlueprintsAsync(characterUUID),
+            "Surveys" => await storage.GetAllSurveysAsync(characterUUID),
+            "PlayerProfiles" => await storage.GetAllPlayerProfilesAsync(characterUUID),
+            "DeliveryRoutes" => await storage.GetAllDeliveryRoutesAsync(characterUUID),
+            "DeliveryPlans" => await storage.GetAllDeliveryPlansAsync(characterUUID),
+            "Ships" => await storage.GetAllShipsAsync(characterUUID),
+            "ShipTemplates" => await storage.GetAllShipTemplatesAsync(characterUUID),
+            "MarketListings" => await storage.GetAllMarketListingsAsync(characterUUID),
+            "MarketTransactions" => await storage.GetAllMarketTransactionsAsync(characterUUID),
+            "PricingPlans" => await storage.GetAllPricingPlansAsync(characterUUID),
+            "StockPlans" => await storage.GetAllStockPlansAsync(characterUUID),
+            "StockProfiles" => await storage.GetAllStockProfilesAsync(characterUUID),
+            "BuildPlans" => await storage.GetAllBuildPlansAsync(characterUUID),
+            "SupplyChains" => await storage.GetAllSupplyChainsAsync(characterUUID),
+            "Asteroids" => await storage.GetAllAsteroidsAsync(characterUUID),
+            "Stations" => await storage.GetAllStationsAsync(characterUUID),
+            "Factions" => await storage.GetAllFactionsForCharacterAsync(characterUUID),
+            "ExternalCharacters" => await storage.GetAllExternalCharactersAsync(characterUUID),
+            _ => null,
+        };
+    }
 
     private static bool IsOwner(HttpContext httpContext)
     {

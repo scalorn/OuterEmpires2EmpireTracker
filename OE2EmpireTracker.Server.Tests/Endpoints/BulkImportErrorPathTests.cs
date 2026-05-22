@@ -14,6 +14,8 @@ using OE2EmpireTracker.Server.Endpoints;
 using OE2EmpireTracker.Server.Storage;
 using OE2EmpireTracker.Services;
 
+#pragma warning disable SA1009 // Closing parenthesis should be followed by a space
+
 namespace OE2EmpireTracker.Server.Tests.Endpoints;
 
 /// <summary>

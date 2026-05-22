@@ -10,6 +10,8 @@ using System.Text.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Server.Tests;
 
+#pragma warning disable SA1009 // Closing parenthesis should be followed by a space
+
 namespace OE2EmpireTracker.Server.Tests.Endpoints;
 
 /// <summary>

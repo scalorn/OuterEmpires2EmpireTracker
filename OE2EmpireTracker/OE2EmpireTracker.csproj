@@ -161,6 +161,7 @@
     <Compile Include="Client\RemoteFactionClient.cs" />
     <Compile Include="Client\ServerContext.cs" />
     <Compile Include="Client\SyncManager.cs" />
+    <Compile Include="Client\SyncValidationFailedEventArgs.cs" />
 
 
 

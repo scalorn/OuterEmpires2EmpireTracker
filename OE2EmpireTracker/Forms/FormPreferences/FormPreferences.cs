@@ -312,16 +312,27 @@ namespace OE2EmpireTracker.Forms
                                 }
                             }
 
-                            // Upload the full player data blob for the current player
+                            // Upload the full player data via bulk import
                             string characterUUID = playerRoot?.CurrentPlayerUUID;
                             if (!string.IsNullOrEmpty(characterUUID))
                             {
-                                // Wrap in envelope: {"player-data": <raw json>}
-                                string envelopeJson = "{\"player-data\":" + playerJson + "}";
-                                await client.UploadAllCharacterDataAsync(characterUUID, envelopeJson)
+                                var importResponse = await client.BulkImportAsync(characterUUID, playerJson)
                                     .ConfigureAwait(true);
-                                pushed++;
-                                Log.Info("Pushed PlayerData.json to server for character {0}", characterUUID);
+                                if (importResponse.IsSuccessStatusCode)
+                                {
+                                    pushed++;
+                                    Log.Info("Pushed PlayerData.json to server for character {0}", characterUUID);
+                                }
+                                else
+                                {
+                                    string errorBody = await importResponse.Content.ReadAsStringAsync()
+                                        .ConfigureAwait(true);
+                                    Log.Warn(
+                                        "Bulk import failed (HTTP {0}) for character {1}: {2}",
+                                        (int)importResponse.StatusCode,
+                                        characterUUID,
+                                        errorBody);
+                                }
                             }
                             else
                             {

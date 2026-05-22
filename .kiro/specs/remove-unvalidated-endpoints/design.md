@@ -349,7 +349,7 @@ All hardened endpoints use consistent error responses:
 When `BulkImportAsync` returns HTTP 400:
 1. SyncManager logs the full error response (entity type, UUID, field, message)
 2. The failed change is queued in `OfflineQueue` with a `ValidationFailed` status
-3. A `SyncValidationFailed` event is raised for UI notification
+3. A `SyncValidationFailed` event is raised for UI notification (via `SyncValidationFailedEventArgs`)
 4. The user can review and fix the data before retrying
 
 When `BulkImportAsync` returns HTTP 403:

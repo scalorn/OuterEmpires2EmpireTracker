@@ -12,7 +12,7 @@ namespace OE2EmpireTracker.Server.Endpoints;
 /// Validates entities for the bulk import endpoint using the same rules
 /// as the individual typed endpoints.
 /// </summary>
-internal static class BulkImportValidator
+public static class BulkImportValidator
 {
     private const int MaxErrors = 100;
 

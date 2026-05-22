@@ -19,10 +19,11 @@ HTTP client that communicates with the Remote Faction Service API. Handles:
 ### SyncManager
 
 Coordinates data flow between local storage and the remote server:
-- Write-through: when local data changes, also writes to server
+- Write-through: when local data changes, also writes to server via `BulkImportAsync`
 - Offline queuing: when disconnected, queues changes for later
-- Queue flushing: on reconnection, replays queued changes
+- Queue flushing: on reconnection, replays queued changes via bulk import
 - Operating mode awareness (LocalOnly, ServerOnly, ServerAndLocal)
+- Raises `SyncValidationFailed` event (via `SyncValidationFailedEventArgs`) when server returns HTTP 400
 
 ### OfflineQueue
 

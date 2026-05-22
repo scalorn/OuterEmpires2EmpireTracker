@@ -266,19 +266,6 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
-        /// Uploads character data of a specific type.
-        /// </summary>
-        /// <param name="characterUUID">The character UUID.</param>
-        /// <param name="dataType">The data type.</param>
-        /// <param name="json">The JSON payload.</param>
-        /// <returns>A task representing the async operation.</returns>
-        public async Task UploadCharacterDataAsync(string characterUUID, string dataType, string json)
-        {
-            string path = string.Format("/characters/{0}/data/{1}", characterUUID, dataType);
-            await PutStringAsync(path, json).ConfigureAwait(false);
-        }
-
-        /// <summary>
         /// Gets all data for a character (all types combined).
         /// </summary>
         /// <param name="characterUUID">The character UUID.</param>
@@ -287,18 +274,6 @@ namespace OE2EmpireTracker.Client
         {
             string path = string.Format("/characters/{0}/data", characterUUID);
             return await GetStringAsync(path).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Uploads all data for a character (bulk upload).
-        /// </summary>
-        /// <param name="characterUUID">The character UUID.</param>
-        /// <param name="json">The JSON payload containing all data types.</param>
-        /// <returns>A task representing the async operation.</returns>
-        public async Task UploadAllCharacterDataAsync(string characterUUID, string json)
-        {
-            string path = string.Format("/characters/{0}/data", characterUUID);
-            await PutStringAsync(path, json).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -351,6 +326,17 @@ namespace OE2EmpireTracker.Client
         {
             string path = string.Format("/characters/{0}/export", characterUUID);
             return await GetStringAsync(path).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sets the connection status and raises the <see cref="ConnectionStatusChanged"/> event.
+        /// Used by <see cref="SyncManager"/> to signal authorization failures.
+        /// </summary>
+        /// <param name="connected">Whether the client is connected.</param>
+        /// <param name="message">A human-readable status message.</param>
+        public void SetConnectionStatus(bool connected, string message)
+        {
+            SetConnected(connected, message);
         }
 
         /// <summary>

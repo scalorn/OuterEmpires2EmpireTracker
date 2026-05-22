@@ -91,7 +91,7 @@ public class BulkImportTruncationTests
         playerRoot.Colony = new Colony[]
         {
             new Colony { UUID = "c1", OwnerUUID = CharacterUUID, PlanetName = "Earth", ColonyName = "Valid" },
-            null,
+            null!,
             new Colony { UUID = "c3", OwnerUUID = CharacterUUID, PlanetName = "Mars", ColonyName = "Also Valid" },
         };
 
