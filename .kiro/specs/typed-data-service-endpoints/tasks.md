@@ -260,7 +260,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 4.13, 4.14, 4.15_
 
 - [ ] 25. Complex endpoint: MarketListing (CRUD + record-sale)
-  - [-] 25.1 Create MarketListingEndpoints.cs — standard CRUD
+  - [x] 25.1 Create MarketListingEndpoints.cs — standard CRUD
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/MarketListingEndpoints.cs`
     - Inherit TypedEndpointBase<MarketListing, MarketListingCreateRequest, MarketListingUpdateRequest>
     - ValidateCreate (ItemName, StationUUID required)
@@ -273,7 +273,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 12.8_
 
 - [ ] 26. Complex endpoint: MarketTransaction (read + purchase + profit-loss)
-  - [-] 26.1 Create MarketTransactionEndpoints.cs — read-only CRUD + delete
+  - [x] 26.1 Create MarketTransactionEndpoints.cs — read-only CRUD + delete
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/MarketTransactionEndpoints.cs`
     - GET all, GET one, DELETE (no standalone POST)
     - MapMarketTransactionEndpoints extension method
@@ -285,7 +285,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 13.5, 13.6, 32.1, 32.2, 32.3_
 
 - [ ] 27. Complex endpoint: DeliveryPlan (CRUD)
-  - [-] 27.1 Create DeliveryPlanEndpoints.cs — standard CRUD
+  - [x] 27.1 Create DeliveryPlanEndpoints.cs — standard CRUD
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/DeliveryPlanEndpoints.cs`
     - Inherit TypedEndpointBase<DeliveryPlan, object, DeliveryPlanUpdateRequest> (inline create DTO)
     - ValidateCreate (name, routeUUID required)
