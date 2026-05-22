@@ -47,7 +47,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Verification: getDiagnostics clean; export handler references only typed methods_
 
 
-- [-] 3. Checkpoint — Verify storage and endpoint removal compiles
+- [x] 3. Checkpoint — Verify storage and endpoint removal compiles
   - Build full solution, ensure zero errors and zero warnings
   - Ensure all tests pass (existing tests that referenced raw methods may need updating)
   - _Verification: MSBuild zero errors/warnings; vstest all pass_
@@ -157,7 +157,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - **Validates: Req 7, Criteria 1–2**
     - _Verification: Property7_CaseSensitivityEnforcement passes_
 
-- [~] 6. Checkpoint — Verify bulk import and auth helper compile and pass tests
+- [x] 6. Checkpoint — Verify bulk import and auth helper compile and pass tests
   - Build full solution, ensure zero errors and zero warnings
   - Run all tests
   - _Verification: MSBuild zero errors/warnings; vstest all pass_
@@ -222,7 +222,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Satisfies: Req 15, Criteria 1–9_
     - _Verification: FactionEndpointAuthTests pass_
 
-- [ ] 9. Harden Sync Endpoint authorization
+- [x] 9. Harden Sync Endpoint authorization
   - [x] 9.1 Filter sync response to authorized factions and characters
     - Modify sync handler to return only factions caller is a member of
     - Return only characters caller has access to (via CanAccessCharacterData)
@@ -301,7 +301,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - **Validates: Req 14, 15, 16, 17**
     - _Verification: Property5_AuthorizationIsolation passes_
 
-- [~] 11. Checkpoint — Verify all authorization hardening compiles and passes tests
+- [x] 11. Checkpoint — Verify all authorization hardening compiles and passes tests
   - Build full solution, ensure zero errors and zero warnings
   - Run all tests
   - _Verification: MSBuild zero errors/warnings; vstest all pass_
@@ -337,7 +337,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Output: 6 new TypeScript files_
     - _Verification: TypeScript compiles (tsc --noEmit)_
 
-- [ ] 13. Migrate Web UI consumers from data.ts to typed modules
+- [x] 13. Migrate Web UI consumers from data.ts to typed modules
   - [x] 13.1 Update page components to import from typed API modules (batch 1)
     - Replace getData/putData/getEntity/putEntity/deleteEntity calls in first set of page components
     - _Satisfies: Req 3, Criteria 1–5 (partial)_
@@ -371,7 +371,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Verification: TypeScript compiles; grep confirms zero imports from data.ts_
 
 
-- [~] 14. Checkpoint — Verify Web UI migration compiles
+- [x] 14. Checkpoint — Verify Web UI migration compiles
   - TypeScript compiles with zero errors
   - No imports from data.ts remain
   - _Verification: tsc --noEmit succeeds; grep for data.ts returns zero results_
@@ -418,7 +418,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Satisfies: Req 4, Criteria 1–6_
     - _Verification: DesktopSyncMigrationTests pass_
 
-- [~] 16. Checkpoint — Verify desktop sync migration compiles and passes tests
+- [x] 16. Checkpoint — Verify desktop sync migration compiles and passes tests
   - Build full solution, ensure zero errors and zero warnings
   - Run all tests
   - _Verification: MSBuild zero errors/warnings; vstest all pass_
@@ -470,7 +470,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - **Validates: Req 2 Criterion 10**
     - _Verification: Property9_RateLimitIndependence passes_
 
-- [~] 19. Final checkpoint — Full verification
+- [x] 19. Final checkpoint — Full verification
   - Build full solution: zero errors, zero warnings
   - Run all tests: all pass
   - Run audit: `node .kiro/tools/audit.js` reports no new findings
