@@ -55,39 +55,6 @@ public class DeliveryPlanSplitTripsTests
         _factory.Dispose();
     }
 
-
-    /// <summary>
-    /// Creates a delivery plan with drop-off items for split testing.
-    /// </summary>
-    private async Task<string> CreatePlanWithItemsAsync(HttpClient client, int itemCount, int quantityPerItem)
-    {
-        var response = await client.PostAsJsonAsync(
-            $"/api/v1/characters/{_charUUID}/delivery-plans",
-            new { name = "SplitTestPlan", routeUUID = "route-split-001" });
-        var json = await response.Content.ReadFromJsonAsync<JsonElement>();
-        var planUuid = json.GetProperty("uuid").GetString()!;
-
-        for (int i = 0; i < itemCount; i++)
-        {
-            await client.PostAsJsonAsync(
-                $"/api/v1/characters/{_charUUID}/delivery-plans/{planUuid}/drop-off",
-                new
-                {
-                    destInfo = new { colonyUUID = "colony-split", sequence = 1 },
-                    itemInfo = new
-                    {
-                        itemType = "Resource",
-                        baseItemTypeID = $"item-{i:D3}",
-                        name = $"Item{i}",
-                        quantity = quantityPerItem,
-                        resourcePurity = "High",
-                    },
-                });
-        }
-
-        return planUuid;
-    }
-
     /// <summary>
     /// Split-trips creates multiple plans when items exceed cargo capacity.
     /// Validates: Requirements 9.16, 30.1.
@@ -140,7 +107,6 @@ public class DeliveryPlanSplitTripsTests
         Assert.That(afterPlan.GetProperty("stops").GetArrayLength(), Is.EqualTo(originalStops));
         Assert.That(afterPlan.GetProperty("name").GetString(), Is.EqualTo("SplitTestPlan"));
     }
-
 
     /// <summary>
     /// Split-trips with missing cargoCapacity (0) returns 400.
@@ -239,5 +205,37 @@ public class DeliveryPlanSplitTripsTests
         Assert.That(splitResponse.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         var plans = await splitResponse.Content.ReadFromJsonAsync<JsonElement>();
         Assert.That(plans.GetArrayLength(), Is.EqualTo(0));
+    }
+
+    /// <summary>
+    /// Creates a delivery plan with drop-off items for split testing.
+    /// </summary>
+    private async Task<string> CreatePlanWithItemsAsync(HttpClient client, int itemCount, int quantityPerItem)
+    {
+        var response = await client.PostAsJsonAsync(
+            $"/api/v1/characters/{_charUUID}/delivery-plans",
+            new { name = "SplitTestPlan", routeUUID = "route-split-001" });
+        var json = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var planUuid = json.GetProperty("uuid").GetString()!;
+
+        for (int i = 0; i < itemCount; i++)
+        {
+            await client.PostAsJsonAsync(
+                $"/api/v1/characters/{_charUUID}/delivery-plans/{planUuid}/drop-off",
+                new
+                {
+                    destInfo = new { colonyUUID = "colony-split", sequence = 1 },
+                    itemInfo = new
+                    {
+                        itemType = "Resource",
+                        baseItemTypeID = $"item-{i:D3}",
+                        name = $"Item{i}",
+                        quantity = quantityPerItem,
+                        resourcePurity = "High",
+                    },
+                });
+        }
+
+        return planUuid;
     }
 }

@@ -55,19 +55,6 @@ public class DeliveryPlanActionTests
         _factory.Dispose();
     }
 
-
-    /// <summary>
-    /// Creates a delivery plan for testing and returns its UUID.
-    /// </summary>
-    private async Task<string> CreateDeliveryPlanAsync(HttpClient client)
-    {
-        var response = await client.PostAsJsonAsync(
-            $"/api/v1/characters/{_charUUID}/delivery-plans",
-            new { name = "TestPlan", routeUUID = "route-001" });
-        var json = await response.Content.ReadFromJsonAsync<JsonElement>();
-        return json.GetProperty("uuid").GetString()!;
-    }
-
     /// <summary>
     /// POST drop-off adds a drop-off item to the plan. Returns updated plan.
     /// Validates: Requirement 9.8.
@@ -115,7 +102,6 @@ public class DeliveryPlanActionTests
         var stops = plan.GetProperty("stops");
         Assert.That(stops.GetArrayLength(), Is.GreaterThan(0));
     }
-
 
     /// <summary>
     /// DELETE drop-off removes items by index. Returns updated plan.
@@ -203,7 +189,6 @@ public class DeliveryPlanActionTests
         Assert.That(pickUp.GetArrayLength(), Is.EqualTo(1));
     }
 
-
     /// <summary>
     /// PUT mark-delivered marks a specific item as delivered.
     /// Validates: Requirement 9.12.
@@ -267,7 +252,6 @@ public class DeliveryPlanActionTests
         var item = pickUp[0];
         Assert.That(item.GetProperty("delivered").GetBoolean(), Is.True);
     }
-
 
     /// <summary>
     /// PUT mark-stop-complete marks a stop as completed.
@@ -382,5 +366,17 @@ public class DeliveryPlanActionTests
             new { stopSequence = 99, itemIndex = 0, listType = "dropOff", delivered = true });
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+    }
+
+    /// <summary>
+    /// Creates a delivery plan for testing and returns its UUID.
+    /// </summary>
+    private async Task<string> CreateDeliveryPlanAsync(HttpClient client)
+    {
+        var response = await client.PostAsJsonAsync(
+            $"/api/v1/characters/{_charUUID}/delivery-plans",
+            new { name = "TestPlan", routeUUID = "route-001" });
+        var json = await response.Content.ReadFromJsonAsync<JsonElement>();
+        return json.GetProperty("uuid").GetString()!;
     }
 }
