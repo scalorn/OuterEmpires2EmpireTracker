@@ -36,66 +36,66 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - HandleDelete: auth, UUID validation, storage, logging, event dispatch, rollback
     - _Requirements: 25.1, 25.2, 25.3, 25.5, 26.1, 26.3_
 
-- [ ] 3. Storage interface extension (Group 1: Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute)
+- [x] 3. Storage interface extension (Group 1: Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute)
   - [x] 3.1 Add typed methods to IStorageBackend for Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute
     - Add 4 methods × 5 entities = 20 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
-  - [-] 3.2 Implement typed methods in JsonFileStorageBackend for Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute
+  - [x] 3.2 Implement typed methods in JsonFileStorageBackend for Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute
     - Implement GetAll, Get, Upsert, Delete for each entity type
     - Read/write JSON files per entity type
     - _Requirements: 22.3, 22.7, 22.8_
 
-- [ ] 4. Storage interface extension (Group 2: DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction)
+- [x] 4. Storage interface extension (Group 2: DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction)
   - [x] 4.1 Add typed methods to IStorageBackend for DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction
     - Add 4 methods × 5 entities = 20 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
-  - [-] 4.2 Implement typed methods in JsonFileStorageBackend for DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction
+  - [x] 4.2 Implement typed methods in JsonFileStorageBackend for DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction
     - Implement GetAll, Get, Upsert, Delete for each entity type
     - _Requirements: 22.3, 22.7, 22.8_
 
-- [ ] 5. Storage interface extension (Group 3: PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain)
+- [x] 5. Storage interface extension (Group 3: PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain)
   - [x] 5.1 Add typed methods to IStorageBackend for PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain
     - Add 4 methods × 5 entities = 20 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
-  - [-] 5.2 Implement typed methods in JsonFileStorageBackend for PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain
+  - [x] 5.2 Implement typed methods in JsonFileStorageBackend for PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain
     - Implement GetAll, Get, Upsert, Delete for each entity type
     - _Requirements: 22.3, 22.7, 22.8_
 
-- [ ] 6. Storage interface extension (Group 4: Asteroid, Station, Faction, ExternalCharacter)
+- [x] 6. Storage interface extension (Group 4: Asteroid, Station, Faction, ExternalCharacter)
   - [x] 6.1 Add typed methods to IStorageBackend for Asteroid, Station, Faction, ExternalCharacter
     - Add 4 methods × 4 entities = 16 method signatures to IStorageBackend interface
     - _Requirements: 22.1, 22.2_
-  - [-] 6.2 Implement typed methods in JsonFileStorageBackend for Asteroid, Station, Faction, ExternalCharacter
+  - [x] 6.2 Implement typed methods in JsonFileStorageBackend for Asteroid, Station, Faction, ExternalCharacter
     - Implement GetAll, Get, Upsert, Delete for each entity type
     - _Requirements: 22.3, 22.7, 22.8_
 
-- [ ] 7. Storage stubs: Sqlite, Postgres, Dynamo backends
-  - [~] 7.1 Add NotImplementedException stubs for Group 1 entities (Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute) to all 3 backends
+- [x] 7. Storage stubs: Sqlite, Postgres, Dynamo backends
+  - [x] 7.1 Add NotImplementedException stubs for Group 1 entities (Colony, Blueprint, Survey, PlayerProfile, DeliveryRoute) to all 3 backends
     - Add 20 stub methods (4 per entity × 5 entities) to SqliteStorageBackend, PostgresStorageBackend, DynamoStorageBackend
     - Each method throws NotImplementedException with descriptive message
     - 3 files modified, ~80 LOC per file
     - _Requirements: 22.4, 22.5, 22.6_
-  - [~] 7.2 Add NotImplementedException stubs for Group 2 entities (DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction) to all 3 backends
+  - [x] 7.2 Add NotImplementedException stubs for Group 2 entities (DeliveryPlan, Ship, ShipTemplate, MarketListing, MarketTransaction) to all 3 backends
     - Add 20 stub methods (4 per entity × 5 entities) to SqliteStorageBackend, PostgresStorageBackend, DynamoStorageBackend
     - Each method throws NotImplementedException with descriptive message
     - 3 files modified, ~80 LOC per file
     - _Requirements: 22.4, 22.5, 22.6_
-  - [~] 7.3 Add NotImplementedException stubs for Group 3 entities (PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain) to all 3 backends
+  - [x] 7.3 Add NotImplementedException stubs for Group 3 entities (PricingPlan, StockPlan, StockProfile, BuildPlan, SupplyChain) to all 3 backends
     - Add 20 stub methods (4 per entity × 5 entities) to SqliteStorageBackend, PostgresStorageBackend, DynamoStorageBackend
     - Each method throws NotImplementedException with descriptive message
     - 3 files modified, ~80 LOC per file
     - _Requirements: 22.4, 22.5, 22.6_
-  - [~] 7.4 Add NotImplementedException stubs for Group 4 entities (Asteroid, Station, Faction, ExternalCharacter) to all 3 backends
+  - [x] 7.4 Add NotImplementedException stubs for Group 4 entities (Asteroid, Station, Faction, ExternalCharacter) to all 3 backends
     - Add 16 stub methods (4 per entity × 4 entities) to SqliteStorageBackend, PostgresStorageBackend, DynamoStorageBackend
     - Each method throws NotImplementedException with descriptive message
     - 3 files modified, ~64 LOC per file
     - _Requirements: 22.4, 22.5, 22.6_
 
-- [~] 8. Checkpoint
+- [x] 8. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 9. Simple CRUD endpoint: Asteroid
-  - [~] 9.1 Create AsteroidEndpoints.cs
+  - [-] 9.1 Create AsteroidEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/AsteroidEndpoints.cs`
     - Inherit TypedEndpointBase<Asteroid, AsteroidCreateRequest, AsteroidUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
@@ -103,7 +103,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5, 19.6_
 
 - [ ] 10. Simple CRUD endpoint: Station
-  - [~] 10.1 Create StationEndpoints.cs
+  - [-] 10.1 Create StationEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/StationEndpoints.cs`
     - Inherit TypedEndpointBase<Station, StationCreateRequest, StationUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
@@ -111,7 +111,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.6_
 
 - [ ] 11. Simple CRUD endpoint: PricingPlan
-  - [~] 11.1 Create PricingPlanEndpoints.cs
+  - [-] 11.1 Create PricingPlanEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/PricingPlanEndpoints.cs`
     - Inherit TypedEndpointBase<PricingPlan, PricingPlanCreateRequest, PricingPlanUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
@@ -119,7 +119,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6_
 
 - [ ] 12. Simple CRUD endpoint: StockPlan
-  - [~] 12.1 Create StockPlanEndpoints.cs
+  - [-] 12.1 Create StockPlanEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/StockPlanEndpoints.cs`
     - Inherit TypedEndpointBase<StockPlan, StockPlanCreateRequest, StockPlanUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
@@ -127,7 +127,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6_
 
 - [ ] 13. Simple CRUD endpoint: StockProfile
-  - [~] 13.1 Create StockProfileEndpoints.cs
+  - [-] 13.1 Create StockProfileEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/StockProfileEndpoints.cs`
     - Inherit TypedEndpointBase<StockProfile, StockProfileCreateRequest, StockProfileUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
@@ -135,7 +135,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 16.6_
 
 - [ ] 14. Simple CRUD endpoint: ShipTemplate
-  - [~] 14.1 Create ShipTemplateEndpoints.cs
+  - [-] 14.1 Create ShipTemplateEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/ShipTemplateEndpoints.cs`
     - Inherit TypedEndpointBase<ShipTemplate, ShipTemplateCreateRequest, ShipTemplateUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
