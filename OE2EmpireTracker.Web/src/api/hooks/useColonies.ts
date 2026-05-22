@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { dataApi } from '../endpoints/data';
+import { coloniesApi } from '../endpoints/colonies';
 import { queryKeys } from './queryKeys';
 import { useAuthStore } from '../../auth/store';
 
 export function useColonies(charUUID?: string | null) {
   return useQuery({
     queryKey: queryKeys.characterData(charUUID ?? '', 'Colonies'),
-    queryFn: () => dataApi.getData(charUUID!, 'Colonies'),
+    queryFn: () => coloniesApi.getAll(charUUID!),
     enabled: !!charUUID,
   });
 }
@@ -17,7 +17,7 @@ export function useColonyMutations() {
 
   const createOrUpdate = useMutation({
     mutationFn: ({ entityUUID, data }: { entityUUID: string; data: unknown }) =>
-      dataApi.putEntity(charUUID!, 'Colonies', entityUUID, data),
+      coloniesApi.update(charUUID!, entityUUID, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.characterData(charUUID!, 'Colonies') });
     },
@@ -25,7 +25,7 @@ export function useColonyMutations() {
 
   const remove = useMutation({
     mutationFn: (entityUUID: string) =>
-      dataApi.deleteEntity(charUUID!, 'Colonies', entityUUID),
+      coloniesApi.delete(charUUID!, entityUUID),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.characterData(charUUID!, 'Colonies') });
     },

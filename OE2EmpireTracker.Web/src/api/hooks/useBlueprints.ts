@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { dataApi } from '../endpoints/data';
+import { blueprintsApi } from '../endpoints/blueprints';
 import { publicApi, type BlueprintFilters } from '../endpoints/public';
 import { queryKeys } from './queryKeys';
 import { useAuthStore } from '../../auth/store';
@@ -7,7 +7,7 @@ import { useAuthStore } from '../../auth/store';
 export function useBlueprints(charUUID?: string | null) {
   return useQuery({
     queryKey: queryKeys.characterData(charUUID ?? '', 'Blueprints'),
-    queryFn: () => dataApi.getData(charUUID!, 'Blueprints'),
+    queryFn: () => blueprintsApi.getAll(charUUID!),
     enabled: !!charUUID,
   });
 }
@@ -25,7 +25,7 @@ export function useBlueprintMutations() {
 
   const createOrUpdate = useMutation({
     mutationFn: ({ entityUUID, data }: { entityUUID: string; data: unknown }) =>
-      dataApi.putEntity(charUUID!, 'Blueprints', entityUUID, data),
+      blueprintsApi.update(charUUID!, entityUUID, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.characterData(charUUID!, 'Blueprints') });
     },
@@ -33,7 +33,7 @@ export function useBlueprintMutations() {
 
   const remove = useMutation({
     mutationFn: (entityUUID: string) =>
-      dataApi.deleteEntity(charUUID!, 'Blueprints', entityUUID),
+      blueprintsApi.delete(charUUID!, entityUUID),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.characterData(charUUID!, 'Blueprints') });
     },

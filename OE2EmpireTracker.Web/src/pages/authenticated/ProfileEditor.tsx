@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../auth/store';
-import { dataApi } from '../../api/endpoints/data';
+import { profilesApi } from '../../api/endpoints/profiles';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
-import type { DataType } from '../../api/types/generated';
 
 interface ProfileData {
   Name?: string;
@@ -26,7 +25,7 @@ export function ProfileEditor() {
   useEffect(() => {
     if (!characterUUID) return;
     setIsLoading(true);
-    dataApi.getData(characterUUID, 'Profiles' as unknown as DataType)
+    profilesApi.getAll(characterUUID)
       .then((data) => {
         const profiles = Array.isArray(data) ? data : [];
         const p = (profiles[0] ?? {}) as ProfileData;
@@ -45,7 +44,7 @@ export function ProfileEditor() {
     try {
       const updated = { ...profile, Name: editName, Rank: editRank, Profession: editProfession };
       const uuid = String(profile.UUID ?? profile.uuid ?? characterUUID);
-      await dataApi.putEntity(characterUUID, 'Profiles' as unknown as DataType, uuid, updated);
+      await profilesApi.update(characterUUID, uuid, updated);
       setProfile(updated);
     } catch {
       setError('Failed to save profile.');

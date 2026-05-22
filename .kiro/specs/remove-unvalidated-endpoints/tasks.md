@@ -306,7 +306,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
   - Run all tests
   - _Verification: MSBuild zero errors/warnings; vstest all pass_
 
-- [ ] 12. Migrate Web UI to typed endpoint modules — entity types A–G
+- [x] 12. Migrate Web UI to typed endpoint modules — entity types A–G
   - [x] 12.1 Create typed API modules for colonies, blueprints, surveys, profiles
     - Create src/api/endpoints/colonies.ts, blueprints.ts, surveys.ts, profiles.ts
     - Each module provides getAll, get, create, update, delete functions calling typed endpoints
@@ -323,7 +323,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Verification: TypeScript compiles (tsc --noEmit)_
 
 
-  - [-] 12.3 Create typed API modules for market-listings, market-transactions, pricing-plans, stock-plans, stock-profiles
+  - [x] 12.3 Create typed API modules for market-listings, market-transactions, pricing-plans, stock-plans, stock-profiles
     - Create src/api/endpoints/ files for each
     - _Satisfies: Req 3 Criterion 6 (partial)_
     - _Inputs: Existing data.ts, typed endpoint URL patterns_
@@ -338,7 +338,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Verification: TypeScript compiles (tsc --noEmit)_
 
 - [ ] 13. Migrate Web UI consumers from data.ts to typed modules
-  - [~] 13.1 Update page components to import from typed API modules (batch 1)
+  - [-] 13.1 Update page components to import from typed API modules (batch 1)
     - Replace getData/putData/getEntity/putEntity/deleteEntity calls in first set of page components
     - _Satisfies: Req 3, Criteria 1–5 (partial)_
     - _Inputs: Page component files, new typed API modules_
