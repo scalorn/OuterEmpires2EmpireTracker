@@ -4,7 +4,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
 using OE2EmpireTracker.Models;
@@ -78,6 +80,376 @@ public class DeliveryPlanEndpoints : TypedEndpointBase<DeliveryPlan, DeliveryPla
         string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
     {
         return await HandleRemoveItems(uuid, entityUuid, ctx, storage, isDropOff: false);
+    }
+
+    /// <summary>
+    /// Handles PUT requests to mark a delivery item as delivered or undelivered.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The delivery plan UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated plan or an error response.</returns>
+    public async Task<IResult> HandleMarkDelivered(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var plan = await storage.GetDeliveryPlanAsync(uuid, entityUuid);
+        if (plan == null)
+        {
+            return Results.NotFound(new { error = "DeliveryPlan not found" });
+        }
+
+        MarkDeliveredRequest? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<MarkDeliveredRequest>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        var stop = plan.Stops.FirstOrDefault(s => s.Sequence == dto.StopSequence);
+        if (stop == null)
+        {
+            return Results.NotFound(new { error = "Stop not found" });
+        }
+
+        var list = string.Equals(dto.ListType, "pickUp", StringComparison.OrdinalIgnoreCase)
+            ? stop.PickUp
+            : stop.DropOff;
+
+        if (dto.ItemIndex < 0 || dto.ItemIndex >= list.Count)
+        {
+            return Results.BadRequest(new { error = "Invalid item index" });
+        }
+
+        list[dto.ItemIndex].Delivered = dto.Delivered;
+
+        await storage.UpsertDeliveryPlanAsync(uuid, plan);
+
+        try
+        {
+            LogMutation(ctx, "Updated", entityUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(plan);
+    }
+
+    /// <summary>
+    /// Handles PUT requests to mark a stop as complete.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The delivery plan UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated plan or an error response.</returns>
+    public async Task<IResult> HandleMarkStopComplete(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var plan = await storage.GetDeliveryPlanAsync(uuid, entityUuid);
+        if (plan == null)
+        {
+            return Results.NotFound(new { error = "DeliveryPlan not found" });
+        }
+
+        MarkStopCompleteRequest? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<MarkStopCompleteRequest>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        var stop = plan.Stops.FirstOrDefault(s => s.Sequence == dto.StopSequence);
+        if (stop == null)
+        {
+            return Results.NotFound(new { error = "Stop not found" });
+        }
+
+        stop.StopCompleted = true;
+
+        await storage.UpsertDeliveryPlanAsync(uuid, plan);
+
+        try
+        {
+            LogMutation(ctx, "Updated", entityUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(plan);
+    }
+
+    /// <summary>
+    /// Handles PUT requests to mark an entire delivery plan as complete.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The delivery plan UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated plan or an error response.</returns>
+    public async Task<IResult> HandleMarkComplete(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var plan = await storage.GetDeliveryPlanAsync(uuid, entityUuid);
+        if (plan == null)
+        {
+            return Results.NotFound(new { error = "DeliveryPlan not found" });
+        }
+
+        plan.Completed = true;
+
+        await storage.UpsertDeliveryPlanAsync(uuid, plan);
+
+        try
+        {
+            LogMutation(ctx, "Updated", entityUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(plan);
+    }
+
+    /// <summary>
+    /// Handles PUT requests to assign a ship to a delivery plan.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The delivery plan UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated plan or an error response.</returns>
+    public async Task<IResult> HandleAssignShip(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var plan = await storage.GetDeliveryPlanAsync(uuid, entityUuid);
+        if (plan == null)
+        {
+            return Results.NotFound(new { error = "DeliveryPlan not found" });
+        }
+
+        AssignShipRequest? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<AssignShipRequest>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        plan.ShipUUID = dto.ShipUUID ?? string.Empty;
+
+        await storage.UpsertDeliveryPlanAsync(uuid, plan);
+
+        try
+        {
+            LogMutation(ctx, "Updated", entityUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(plan);
+    }
+
+    /// <summary>
+    /// Handles POST requests to split a delivery plan into multiple trips based on cargo capacity.
+    /// Creates new plans for each trip; the original plan remains unchanged.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The delivery plan UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the list of new plans or an error response.</returns>
+    public async Task<IResult> HandleSplitTrips(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var plan = await storage.GetDeliveryPlanAsync(uuid, entityUuid);
+        if (plan == null)
+        {
+            return Results.NotFound(new { error = "DeliveryPlan not found" });
+        }
+
+        SplitTripsRequest? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<SplitTripsRequest>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null || dto.CargoCapacity <= 0)
+        {
+            return Results.BadRequest(new { error = "cargoCapacity is required and must be greater than 0" });
+        }
+
+        var newPlans = SplitPlanIntoTrips(plan, dto.CargoCapacity);
+
+        foreach (var newPlan in newPlans)
+        {
+            await storage.UpsertDeliveryPlanAsync(uuid, newPlan);
+        }
+
+        try
+        {
+            LogMutation(ctx, "Created", entityUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Created, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Json(newPlans, statusCode: 201);
     }
 
     /// <inheritdoc/>
@@ -199,6 +571,124 @@ public class DeliveryPlanEndpoints : TypedEndpointBase<DeliveryPlan, DeliveryPla
         }
 
         return stop;
+    }
+
+    private static List<DeliveryPlan> SplitPlanIntoTrips(DeliveryPlan plan, decimal cargoCapacity)
+    {
+        // Collect all items across all stops with their quantities
+        var allItems = new List<DeliveryItem>();
+        foreach (var stop in plan.Stops.OrderBy(s => s.Sequence))
+        {
+            foreach (var item in stop.DropOff)
+            {
+                allItems.Add(item);
+            }
+        }
+
+        if (allItems.Count == 0)
+        {
+            return new List<DeliveryPlan>();
+        }
+
+        // Split items into trips based on cargo capacity (quantity-based)
+        var trips = new List<List<DeliveryItem>>();
+        var currentTrip = new List<DeliveryItem>();
+        decimal currentVolume = 0m;
+
+        foreach (var item in allItems)
+        {
+            decimal itemVolume = item.Quantity;
+            if (currentVolume + itemVolume > cargoCapacity && currentTrip.Count > 0)
+            {
+                trips.Add(currentTrip);
+                currentTrip = new List<DeliveryItem>();
+                currentVolume = 0m;
+            }
+
+            currentTrip.Add(new DeliveryItem
+            {
+                ItemType = item.ItemType,
+                BaseItemTypeID = item.BaseItemTypeID,
+                Name = item.Name,
+                ResourcePurity = item.ResourcePurity,
+                Quantity = item.Quantity,
+            });
+            currentVolume += itemVolume;
+        }
+
+        if (currentTrip.Count > 0)
+        {
+            trips.Add(currentTrip);
+        }
+
+        // Create new plans for each trip
+        var newPlans = new List<DeliveryPlan>();
+        for (int i = 0; i < trips.Count; i++)
+        {
+            var newPlan = new DeliveryPlan
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Name = string.Format("{0} (Trip {1})", plan.Name, i + 1),
+                OwnerUUID = plan.OwnerUUID,
+                RouteUUID = plan.RouteUUID,
+                ShipUUID = plan.ShipUUID,
+            };
+
+            // Rebuild stops structure with the trip's items
+            foreach (var stop in plan.Stops.OrderBy(s => s.Sequence))
+            {
+                var newStop = new DeliveryPlanStop
+                {
+                    ColonyUUID = stop.ColonyUUID,
+                    Sequence = stop.Sequence,
+                    DestinationType = stop.DestinationType,
+                    DestinationUUID = stop.DestinationUUID,
+                };
+
+                foreach (var dropItem in stop.DropOff)
+                {
+                    var tripItem = trips[i].FirstOrDefault(t =>
+                        t.ItemType == dropItem.ItemType &&
+                        t.BaseItemTypeID == dropItem.BaseItemTypeID &&
+                        t.ResourcePurity == dropItem.ResourcePurity &&
+                        t.Quantity > 0);
+                    if (tripItem != null)
+                    {
+                        int qty = Math.Min(tripItem.Quantity, dropItem.Quantity);
+                        newStop.DropOff.Add(new DeliveryItem
+                        {
+                            ItemType = dropItem.ItemType,
+                            BaseItemTypeID = dropItem.BaseItemTypeID,
+                            Name = dropItem.Name,
+                            ResourcePurity = dropItem.ResourcePurity,
+                            Quantity = qty,
+                        });
+                        tripItem.Quantity -= qty;
+                    }
+                }
+
+                foreach (var pickItem in stop.PickUp)
+                {
+                    newStop.PickUp.Add(new DeliveryItem
+                    {
+                        ItemType = pickItem.ItemType,
+                        BaseItemTypeID = pickItem.BaseItemTypeID,
+                        Name = pickItem.Name,
+                        ResourcePurity = pickItem.ResourcePurity,
+                        Quantity = pickItem.Quantity,
+                    });
+                }
+
+                if (newStop.DropOff.Count > 0 || newStop.PickUp.Count > 0)
+                {
+                    newPlan.Stops.Add(newStop);
+                }
+            }
+
+            newPlans.Add(newPlan);
+        }
+
+        return newPlans;
     }
 
     private async Task<IResult> HandleAddItem(
@@ -380,6 +870,51 @@ public class RemoveItemsRequest
 
     /// <summary>Gets or sets the indices of items to remove.</summary>
     public List<int>? Indices { get; set; }
+}
+
+/// <summary>
+/// Request DTO for marking a delivery item as delivered or undelivered.
+/// </summary>
+public class MarkDeliveredRequest
+{
+    /// <summary>Gets or sets the stop sequence number.</summary>
+    public int StopSequence { get; set; }
+
+    /// <summary>Gets or sets the item index within the list.</summary>
+    public int ItemIndex { get; set; }
+
+    /// <summary>Gets or sets the list type ("dropOff" or "pickUp").</summary>
+    public string? ListType { get; set; }
+
+    /// <summary>Gets or sets a value indicating whether the item is delivered.</summary>
+    public bool Delivered { get; set; }
+}
+
+/// <summary>
+/// Request DTO for marking a stop as complete.
+/// </summary>
+public class MarkStopCompleteRequest
+{
+    /// <summary>Gets or sets the stop sequence number.</summary>
+    public int StopSequence { get; set; }
+}
+
+/// <summary>
+/// Request DTO for assigning a ship to a delivery plan.
+/// </summary>
+public class AssignShipRequest
+{
+    /// <summary>Gets or sets the ship UUID to assign.</summary>
+    public string? ShipUUID { get; set; }
+}
+
+/// <summary>
+/// Request DTO for splitting a delivery plan into multiple trips.
+/// </summary>
+public class SplitTripsRequest
+{
+    /// <summary>Gets or sets the cargo capacity per trip.</summary>
+    public decimal CargoCapacity { get; set; }
 }
 
 /// <summary>

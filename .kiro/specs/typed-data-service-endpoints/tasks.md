@@ -248,12 +248,12 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - POST /colonies/{colonyUuid}/structures — add structure (flatpackBlueprintUUID required)
     - DELETE /colonies/{colonyUuid}/structures/{structureUuid} — remove structure
     - _Requirements: 4.8, 4.9_
-  - [~] 24.3 Add colony sub-resource endpoints: items
+  - [-] 24.3 Add colony sub-resource endpoints: items
     - POST /colonies/{colonyUuid}/items — add item
     - DELETE /colonies/{colonyUuid}/items/{itemUuid} — remove item
     - PUT /colonies/{colonyUuid}/items/{itemUuid} — update quantity
     - _Requirements: 4.10, 4.11, 4.12_
-  - [~] 24.4 Add colony sub-resource endpoints: commodity-requests
+  - [-] 24.4 Add colony sub-resource endpoints: commodity-requests
     - POST /colonies/{colonyUuid}/commodity-requests — add request (commodityName required)
     - DELETE /colonies/{colonyUuid}/commodity-requests/{commodityName} — remove request
     - PUT /colonies/{colonyUuid}/commodity-requests/{commodityName} — update request
@@ -297,13 +297,13 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - DELETE /delivery-plans/{entityUuid}/drop-off — remove drop-off items by index
     - DELETE /delivery-plans/{entityUuid}/pick-up — remove pick-up items by index
     - _Requirements: 9.8, 9.9, 9.10, 9.11_
-  - [~] 27.3 Add mark-delivered, mark-stop-complete, mark-complete, ship actions
+  - [-] 27.3 Add mark-delivered, mark-stop-complete, mark-complete, ship actions
     - PUT /delivery-plans/{entityUuid}/mark-delivered
     - PUT /delivery-plans/{entityUuid}/mark-stop-complete
     - PUT /delivery-plans/{entityUuid}/mark-complete
     - PUT /delivery-plans/{entityUuid}/ship
     - _Requirements: 9.12, 9.13, 9.14, 9.15_
-  - [~] 27.4 Add split-trips action endpoint to DeliveryPlanEndpoints
+  - [-] 27.4 Add split-trips action endpoint to DeliveryPlanEndpoints
     - POST /delivery-plans/{entityUuid}/split-trips
     - Input: { cargoCapacity } (required, > 0)
     - Splits plan into multiple trip plans, returns List<DeliveryPlan> (201)

@@ -182,6 +182,517 @@ public class ColonyEndpoints : TypedEndpointBase<Colony, ColonyCreateRequest, Co
         return Results.NoContent();
     }
 
+    /// <summary>
+    /// Handles POST /colonies/{colonyUuid}/items requests.
+    /// Adds a new item to the colony inventory.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="colonyUuid">The colony UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated colony or an error response.</returns>
+    public async Task<IResult> HandleAddItem(
+        string uuid, string colonyUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(colonyUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var colony = await GetFromStorage(uuid, colonyUuid, storage);
+        if (colony == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        if (!HasJsonContentType(ctx))
+        {
+            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
+        }
+
+        Item? item;
+        try
+        {
+            item = await ctx.Request.ReadFromJsonAsync<Item>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (item == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(item.UUID))
+        {
+            item.UUID = Guid.NewGuid().ToString();
+        }
+
+        colony.Items.AddItem(item);
+        await UpsertToStorage(uuid, colony, storage);
+
+        try
+        {
+            LogMutation(ctx, "Updated", colonyUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, colonyUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(colony);
+    }
+
+    /// <summary>
+    /// Handles DELETE /colonies/{colonyUuid}/items/{itemUuid} requests.
+    /// Removes an item from the colony inventory by its UUID.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="colonyUuid">The colony UUID from the URL path.</param>
+    /// <param name="itemUuid">The item UUID to remove.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> indicating success or an error response.</returns>
+    public async Task<IResult> HandleRemoveItem(
+        string uuid, string colonyUuid, string itemUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(colonyUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var colony = await GetFromStorage(uuid, colonyUuid, storage);
+        if (colony == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        if (string.IsNullOrWhiteSpace(itemUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid item UUID" });
+        }
+
+        if (!colony.Items.ContainsKey(itemUuid))
+        {
+            return Results.NotFound(new { error = "Item not found" });
+        }
+
+        colony.Items.Remove(itemUuid);
+        await UpsertToStorage(uuid, colony, storage);
+
+        try
+        {
+            LogMutation(ctx, "Updated", colonyUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, colonyUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.NoContent();
+    }
+
+    /// <summary>
+    /// Handles PUT /colonies/{colonyUuid}/items/{itemUuid} requests.
+    /// Updates the quantity of an item in the colony inventory.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="colonyUuid">The colony UUID from the URL path.</param>
+    /// <param name="itemUuid">The item UUID to update.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated colony or an error response.</returns>
+    public async Task<IResult> HandleUpdateItem(
+        string uuid, string colonyUuid, string itemUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(colonyUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var colony = await GetFromStorage(uuid, colonyUuid, storage);
+        if (colony == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        if (string.IsNullOrWhiteSpace(itemUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid item UUID" });
+        }
+
+        if (!colony.Items.ContainsKey(itemUuid))
+        {
+            return Results.NotFound(new { error = "Item not found" });
+        }
+
+        if (!HasJsonContentType(ctx))
+        {
+            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
+        }
+
+        UpdateItemQuantityRequest? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<UpdateItemQuantityRequest>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        if (dto.Quantity < 0)
+        {
+            return Results.BadRequest(new { error = "quantity must be >= 0" });
+        }
+
+        colony.Items.Items[itemUuid].Quantity = dto.Quantity;
+        await UpsertToStorage(uuid, colony, storage);
+
+        try
+        {
+            LogMutation(ctx, "Updated", colonyUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, colonyUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(colony);
+    }
+
+    /// <summary>
+    /// Handles POST /colonies/{colonyUuid}/commodity-requests requests.
+    /// Adds a new commodity request to the colony.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="colonyUuid">The colony UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated colony or an error response.</returns>
+    public async Task<IResult> HandleAddCommodityRequest(
+        string uuid, string colonyUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(colonyUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var colony = await GetFromStorage(uuid, colonyUuid, storage);
+        if (colony == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        if (!HasJsonContentType(ctx))
+        {
+            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
+        }
+
+        AddCommodityRequestDto? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<AddCommodityRequestDto>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(dto.CommodityName))
+        {
+            return Results.BadRequest(new { error = "commodityName is required" });
+        }
+
+        var commodityRequest = new CommodityRequested
+        {
+            Name = dto.CommodityName,
+            Requested = dto.Requested,
+            NeedBy = dto.NeedBy ?? DateTime.MinValue,
+        };
+
+        colony.Commodities.Add(commodityRequest);
+        await UpsertToStorage(uuid, colony, storage);
+
+        try
+        {
+            LogMutation(ctx, "Updated", colonyUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, colonyUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(colony);
+    }
+
+    /// <summary>
+    /// Handles DELETE /colonies/{colonyUuid}/commodity-requests/{commodityName} requests.
+    /// Removes a commodity request from the colony by commodity name.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="colonyUuid">The colony UUID from the URL path.</param>
+    /// <param name="commodityName">The commodity name to remove.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> indicating success or an error response.</returns>
+    public async Task<IResult> HandleRemoveCommodityRequest(
+        string uuid, string colonyUuid, string commodityName, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(colonyUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var colony = await GetFromStorage(uuid, colonyUuid, storage);
+        if (colony == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        if (string.IsNullOrWhiteSpace(commodityName))
+        {
+            return Results.BadRequest(new { error = "Invalid commodity name" });
+        }
+
+        var existing = colony.Commodities.FirstOrDefault(c =>
+            string.Equals(c.Name, commodityName, StringComparison.OrdinalIgnoreCase));
+        if (existing == null)
+        {
+            return Results.NotFound(new { error = "Commodity request not found" });
+        }
+
+        colony.Commodities.Remove(existing);
+        await UpsertToStorage(uuid, colony, storage);
+
+        try
+        {
+            LogMutation(ctx, "Updated", colonyUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, colonyUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.NoContent();
+    }
+
+    /// <summary>
+    /// Handles PUT /colonies/{colonyUuid}/commodity-requests/{commodityName} requests.
+    /// Updates a commodity request in the colony.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="colonyUuid">The colony UUID from the URL path.</param>
+    /// <param name="commodityName">The commodity name to update.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated colony or an error response.</returns>
+    public async Task<IResult> HandleUpdateCommodityRequest(
+        string uuid, string colonyUuid, string commodityName, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(colonyUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var colony = await GetFromStorage(uuid, colonyUuid, storage);
+        if (colony == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        if (string.IsNullOrWhiteSpace(commodityName))
+        {
+            return Results.BadRequest(new { error = "Invalid commodity name" });
+        }
+
+        var existing = colony.Commodities.FirstOrDefault(c =>
+            string.Equals(c.Name, commodityName, StringComparison.OrdinalIgnoreCase));
+        if (existing == null)
+        {
+            return Results.NotFound(new { error = "Commodity request not found" });
+        }
+
+        if (!HasJsonContentType(ctx))
+        {
+            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
+        }
+
+        UpdateCommodityRequestDto? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<UpdateCommodityRequestDto>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        if (dto.Requested.HasValue)
+        {
+            existing.Requested = dto.Requested.Value;
+        }
+
+        if (dto.Delivered.HasValue)
+        {
+            existing.Delivered = dto.Delivered.Value;
+        }
+
+        if (dto.NeedBy.HasValue)
+        {
+            existing.NeedBy = dto.NeedBy.Value;
+        }
+
+        if (dto.Fulfilled.HasValue)
+        {
+            existing.Fulfilled = dto.Fulfilled.Value;
+        }
+
+        await UpsertToStorage(uuid, colony, storage);
+
+        try
+        {
+            LogMutation(ctx, "Updated", colonyUuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, colonyUuid, uuid);
+        }
+        catch (Exception)
+        {
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(colony);
+    }
+
     /// <inheritdoc/>
     protected override string? ValidateCreate(ColonyCreateRequest dto)
     {
@@ -302,6 +813,64 @@ public class AddStructureRequest
 }
 
 /// <summary>
+/// Request DTO for updating an item's quantity in a colony.
+/// </summary>
+public class UpdateItemQuantityRequest
+{
+    /// <summary>
+    /// Gets or sets the new quantity for the item.
+    /// </summary>
+    public int Quantity { get; set; }
+}
+
+/// <summary>
+/// Request DTO for adding a commodity request to a colony.
+/// </summary>
+public class AddCommodityRequestDto
+{
+    /// <summary>
+    /// Gets or sets the commodity name.
+    /// </summary>
+    public string? CommodityName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the requested quantity.
+    /// </summary>
+    public int Requested { get; set; }
+
+    /// <summary>
+    /// Gets or sets the need-by date.
+    /// </summary>
+    public DateTime? NeedBy { get; set; }
+}
+
+/// <summary>
+/// Request DTO for updating a commodity request in a colony.
+/// </summary>
+public class UpdateCommodityRequestDto
+{
+    /// <summary>
+    /// Gets or sets the requested quantity.
+    /// </summary>
+    public int? Requested { get; set; }
+
+    /// <summary>
+    /// Gets or sets the delivered quantity.
+    /// </summary>
+    public int? Delivered { get; set; }
+
+    /// <summary>
+    /// Gets or sets the need-by date.
+    /// </summary>
+    public DateTime? NeedBy { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether the request is fulfilled.
+    /// </summary>
+    public bool? Fulfilled { get; set; }
+}
+
+/// <summary>
 /// Extension methods for registering Colony endpoints.
 /// </summary>
 public static class ColonyEndpointsExtensions
@@ -330,5 +899,17 @@ public static class ColonyEndpointsExtensions
             => endpoints.HandleAddStructure(uuid, colonyUuid, ctx, storage));
         group.MapDelete("/{colonyUuid}/structures/{structureUuid}", (string uuid, string colonyUuid, string structureUuid, HttpContext ctx, IStorageBackend storage)
             => endpoints.HandleRemoveStructure(uuid, colonyUuid, structureUuid, ctx, storage));
+        group.MapPost("/{colonyUuid}/items", (string uuid, string colonyUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleAddItem(uuid, colonyUuid, ctx, storage));
+        group.MapDelete("/{colonyUuid}/items/{itemUuid}", (string uuid, string colonyUuid, string itemUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleRemoveItem(uuid, colonyUuid, itemUuid, ctx, storage));
+        group.MapPut("/{colonyUuid}/items/{itemUuid}", (string uuid, string colonyUuid, string itemUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleUpdateItem(uuid, colonyUuid, itemUuid, ctx, storage));
+        group.MapPost("/{colonyUuid}/commodity-requests", (string uuid, string colonyUuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleAddCommodityRequest(uuid, colonyUuid, ctx, storage));
+        group.MapDelete("/{colonyUuid}/commodity-requests/{commodityName}", (string uuid, string colonyUuid, string commodityName, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleRemoveCommodityRequest(uuid, colonyUuid, commodityName, ctx, storage));
+        group.MapPut("/{colonyUuid}/commodity-requests/{commodityName}", (string uuid, string colonyUuid, string commodityName, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleUpdateCommodityRequest(uuid, colonyUuid, commodityName, ctx, storage));
     }
 }
