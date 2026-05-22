@@ -124,7 +124,6 @@ public class ColonySubResourceTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
 
-
     /// <summary>
     /// Removing a structure from a colony returns 204.
     /// Validates: Requirement 4.9.
@@ -199,7 +198,6 @@ public class ColonySubResourceTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
 
-
     /// <summary>
     /// Removing an item from a colony returns 204.
     /// Validates: Requirement 4.11.
@@ -266,7 +264,6 @@ public class ColonySubResourceTests
 
         Assert.That(updateResponse.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
-
 
     // ---- Commodity-request sub-resource tests ----
 
