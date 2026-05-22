@@ -144,6 +144,29 @@ public class JsonFileStorageBackend : IStorageBackend
         var path = CharacterDataPath(characterUUID, dataType);
         EnsureCharacterDirectory(characterUUID);
         await WriteAtomicAsync(path, json);
+
+        // When the desktop syncs the full PlayerRoot blob as "player-data",
+        // also split it into individual per-property files so both the bulk GET
+        // and the typed endpoints read from the same per-entity-type files.
+        if (string.Equals(dataType, "player-data", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                var obj = JObject.Parse(json);
+                foreach (var prop in obj.Properties())
+                {
+                    if (prop.Value.Type == JTokenType.Array || prop.Value.Type == JTokenType.Object)
+                    {
+                        var propPath = CharacterDataPath(characterUUID, prop.Name);
+                        await WriteAtomicAsync(propPath, prop.Value.ToString(Formatting.Indented));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to split player-data into per-type files for {UUID}", characterUUID);
+            }
+        }
     }
 
     public async Task UpsertCharacterEntityAsync(string characterUUID, string dataType, string entityUUID, string json)
