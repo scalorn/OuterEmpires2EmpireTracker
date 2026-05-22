@@ -17,6 +17,34 @@ public class JsonFileStorageBackend : IStorageBackend
         NullValueHandling = NullValueHandling.Ignore,
     };
 
+    /// <summary>
+    /// Maps PlayerRoot PascalCase singular property names to the lowercase plural
+    /// file names used by the typed CRUD endpoints.
+    /// </summary>
+    private static readonly Dictionary<string, string> PlayerRootToTypedFileMap =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Colony"] = "colonies",
+            ["Blueprint"] = "blueprints",
+            ["Survey"] = "surveys",
+            ["PlayerProfile"] = "profiles",
+            ["DeliveryRoute"] = "delivery-routes",
+            ["DeliveryPlan"] = "delivery-plans",
+            ["PricingPlan"] = "pricing-plans",
+            ["BuildPlan"] = "build-plans",
+            ["ShipTemplate"] = "ship-templates",
+            ["Ship"] = "ships",
+            ["Station"] = "stations",
+            ["MarketListing"] = "market-listings",
+            ["MarketTransaction"] = "market-transactions",
+            ["StockPlan"] = "stock-plans",
+            ["StockProfile"] = "stock-profiles",
+            ["SupplyChain"] = "supply-chains",
+            ["Faction"] = "factions",
+            ["ExternalCharacter"] = "contacts",
+            ["Asteroid"] = "asteroids",
+        };
+
     private readonly string _dataPath;
     private readonly ILogger<JsonFileStorageBackend> _logger;
     private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
@@ -241,6 +269,14 @@ public class JsonFileStorageBackend : IStorageBackend
         {
             var path = CharacterDataPath(characterUUID, prop.Name);
             await WriteAtomicAsync(path, prop.Value.ToString(Formatting.Indented));
+
+            // Also write to the typed file name if this property maps to one.
+            // This ensures data synced via the bulk endpoint is visible to typed endpoints.
+            if (prop.Value.Type == JTokenType.Array && PlayerRootToTypedFileMap.TryGetValue(prop.Name, out var typedFileName))
+            {
+                var typedPath = CharacterDataPath(characterUUID, typedFileName);
+                await WriteAtomicAsync(typedPath, prop.Value.ToString(Formatting.Indented));
+            }
         }
     }
 
@@ -2430,33 +2466,10 @@ public class JsonFileStorageBackend : IStorageBackend
     /// </summary>
     private async Task SplitPlayerRootIntoTypedFilesAsync(string characterUUID, string json)
     {
-        var playerRootToTypedFileMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            ["Colony"] = "colonies",
-            ["Blueprint"] = "blueprints",
-            ["Survey"] = "surveys",
-            ["PlayerProfile"] = "profiles",
-            ["DeliveryRoute"] = "delivery-routes",
-            ["DeliveryPlan"] = "delivery-plans",
-            ["PricingPlan"] = "pricing-plans",
-            ["BuildPlan"] = "build-plans",
-            ["ShipTemplate"] = "ship-templates",
-            ["Ship"] = "ships",
-            ["Station"] = "stations",
-            ["MarketListing"] = "market-listings",
-            ["MarketTransaction"] = "market-transactions",
-            ["StockPlan"] = "stock-plans",
-            ["StockProfile"] = "stock-profiles",
-            ["SupplyChain"] = "supply-chains",
-            ["Faction"] = "factions",
-            ["ExternalCharacter"] = "contacts",
-            ["Asteroid"] = "asteroids",
-        };
-
         try
         {
             var obj = JObject.Parse(json);
-            foreach (var mapping in playerRootToTypedFileMap)
+            foreach (var mapping in PlayerRootToTypedFileMap)
             {
                 var prop = obj.Property(mapping.Key);
                 if (prop != null && prop.Value.Type == JTokenType.Array)
