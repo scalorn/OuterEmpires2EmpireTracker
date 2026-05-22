@@ -1,6 +1,8 @@
 import ky, { type HTTPError } from 'ky';
 import { getRuntimeConfig } from '../hooks/useRuntimeConfig';
 
+export { handleApiCall, getDisplayError, type ApiResult } from './apiErrorHandler';
+
 export interface ApiError {
   status: number;
   message: string;

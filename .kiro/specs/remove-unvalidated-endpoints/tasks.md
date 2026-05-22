@@ -338,7 +338,7 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Verification: TypeScript compiles (tsc --noEmit)_
 
 - [ ] 13. Migrate Web UI consumers from data.ts to typed modules
-  - [-] 13.1 Update page components to import from typed API modules (batch 1)
+  - [x] 13.1 Update page components to import from typed API modules (batch 1)
     - Replace getData/putData/getEntity/putEntity/deleteEntity calls in first set of page components
     - _Satisfies: Req 3, Criteria 1–5 (partial)_
     - _Inputs: Page component files, new typed API modules_
@@ -346,14 +346,14 @@ This plan removes all unvalidated data paths from the server, replaces them with
     - _Verification: TypeScript compiles; no imports from data.ts in modified files_
 
 
-  - [~] 13.2 Update page components to import from typed API modules (batch 2)
+  - [x] 13.2 Update page components to import from typed API modules (batch 2)
     - Replace remaining getData/putData/getEntity/putEntity/deleteEntity calls
     - _Satisfies: Req 3, Criteria 1–5 (complete)_
     - _Inputs: Remaining page component files, new typed API modules_
     - _Output: ≤5 page component files_
     - _Verification: TypeScript compiles; no imports from data.ts in modified files_
 
-  - [~] 13.3 Add error display handling for typed endpoint responses
+  - [-] 13.3 Add error display handling for typed endpoint responses
     - On HTTP 400: parse error and display to user
     - On HTTP 2xx: clear previous error messages
     - On unparseable 400: display generic error
