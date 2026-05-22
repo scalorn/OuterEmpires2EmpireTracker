@@ -405,8 +405,8 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - For any two distinct Character_UUIDs, token A (non-Owner) cannot access token B's data (403, no entity data leaked)
     - **Validates: Requirements 2.3, 2.4, 2.6, 2.7**
 
-- [ ] 39. Integration tests: Storage backend round-trip
-  - [~] 39.1 Write integration tests for JsonFileStorageBackend typed methods
+- [x] 39. Integration tests: Storage backend round-trip
+  - [x] 39.1 Write integration tests for JsonFileStorageBackend typed methods
     - Test round-trip: upsert then get returns equivalent entity
     - Test GetAll returns all entities for a character
     - Test Delete removes the entity
@@ -414,20 +414,20 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Test GetAll returns empty list for character with no entities
     - _Requirements: 22.3, 22.7, 22.8_
 
-- [ ] 40. Backward compatibility verification
-  - [~] 40.1 Write integration tests for bulk endpoint coexistence
+- [x] 40. Backward compatibility verification
+  - [x] 40.1 Write integration tests for bulk endpoint coexistence
     - Test data written via typed endpoint visible via bulk GET
     - Test data written via bulk PUT visible via typed GET
     - Test both endpoints coexist without conflict
     - _Requirements: 24.1, 24.2, 24.3, 24.4, 24.5_
 
-- [ ] 41. Event dispatch and logging tests
-  - [~] 41.1 Write unit tests for event dispatch on mutations
+- [x] 41. Event dispatch and logging tests
+  - [x] 41.1 Write unit tests for event dispatch on mutations
     - Test ServerEvent dispatched on create (Created), update (Updated), delete (Deleted)
     - Test correct EventType, EntityType, EntityUUID, OwnerCharacterUUID
     - Test 503 returned when EventDispatcher throws, mutation rolled back
     - _Requirements: 25.1, 25.2, 25.3, 25.4, 25.5_
-  - [~] 41.2 Write unit tests for mutation logging
+  - [x] 41.2 Write unit tests for mutation logging
     - Test log entry on POST/PUT/DELETE with action type, entity type, UUID, token ID, IP
     - Test 500 returned when logging fails, mutation rolled back
     - _Requirements: 26.1, 26.2, 26.3_
