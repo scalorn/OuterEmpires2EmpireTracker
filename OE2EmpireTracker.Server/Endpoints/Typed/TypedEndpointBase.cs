@@ -377,6 +377,22 @@ public abstract class TypedEndpointBase<TEntity, TCreate, TUpdate>
     }
 
     /// <summary>
+    /// Checks whether the request has a JSON content type.
+    /// </summary>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <returns>True if the Content-Type is application/json; false otherwise.</returns>
+    protected static bool HasJsonContentType(HttpContext ctx)
+    {
+        var contentType = ctx.Request.ContentType;
+        if (string.IsNullOrEmpty(contentType))
+        {
+            return false;
+        }
+
+        return contentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
     /// Retrieves all entities of this type for the specified character from storage.
     /// </summary>
     /// <param name="characterUUID">The owning character's UUID.</param>
@@ -487,21 +503,5 @@ public abstract class TypedEndpointBase<TEntity, TCreate, TUpdate>
             entityUuid,
             tokenId,
             remoteIp);
-    }
-
-    /// <summary>
-    /// Checks whether the request has a JSON content type.
-    /// </summary>
-    /// <param name="ctx">The current HTTP context.</param>
-    /// <returns>True if the Content-Type is application/json; false otherwise.</returns>
-    private static bool HasJsonContentType(HttpContext ctx)
-    {
-        var contentType = ctx.Request.ContentType;
-        if (string.IsNullOrEmpty(contentType))
-        {
-            return false;
-        }
-
-        return contentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
     }
 }

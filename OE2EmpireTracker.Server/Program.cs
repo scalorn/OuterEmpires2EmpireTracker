@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using OE2EmpireTracker.Server.Auth;
 using OE2EmpireTracker.Server.Config;
 using OE2EmpireTracker.Server.Endpoints;
+using OE2EmpireTracker.Server.Endpoints.Typed;
 using OE2EmpireTracker.Server.Middleware;
 using OE2EmpireTracker.Server.Processing;
 using OE2EmpireTracker.Server.Push;
@@ -203,6 +204,9 @@ app.MapAdminEndpoints();
 app.MapIntelEndpoints();
 app.MapColonyPlannerEndpoints();
 app.MapPublicDataEndpoints();
+app.MapExternalCharacterEndpoints();
+app.MapShipEndpoints();
+app.MapBuildPlanEndpoints();
 
 // Static file serving for the React SPA
 app.UseStaticFiles(new StaticFileOptions

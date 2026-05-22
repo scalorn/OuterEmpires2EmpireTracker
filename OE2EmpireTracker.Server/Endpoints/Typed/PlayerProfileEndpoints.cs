@@ -5,7 +5,9 @@
 // -----------------------------------------------------------------------
 
 using System.Collections.Generic;
+using System.Text.Json;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints.Typed;
@@ -20,6 +22,104 @@ public class PlayerProfileEndpoints : TypedEndpointBase<PlayerProfile, PlayerPro
 
     /// <inheritdoc/>
     protected override string RoutePrefix => "profiles";
+
+    /// <summary>
+    /// Handles POST /import requests to import a full PlayerProfile object.
+    /// If a profile with the same UUID exists, merges and returns 200.
+    /// If no matching profile exists, inserts and returns 201 with Location header.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the imported entity or an error response.</returns>
+    public async Task<IResult> HandleImport(string uuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (!HasJsonContentType(ctx))
+        {
+            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
+        }
+
+        PlayerProfile? imported;
+        try
+        {
+            imported = await ctx.Request.ReadFromJsonAsync<PlayerProfile>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (imported == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        if (string.IsNullOrWhiteSpace(imported.UUID))
+        {
+            imported.UUID = Guid.NewGuid().ToString();
+        }
+
+        var existing = await GetFromStorage(uuid, imported.UUID, storage);
+        bool isNew = existing == null;
+
+        await UpsertToStorage(uuid, imported, storage);
+
+        string action = isNew ? "Created" : "Updated";
+        try
+        {
+            LogMutation(ctx, action, imported.UUID);
+        }
+        catch (Exception)
+        {
+            if (isNew)
+            {
+                await DeleteFromStorage(uuid, imported.UUID, storage);
+            }
+            else
+            {
+                await UpsertToStorage(uuid, existing!, storage);
+            }
+
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        var eventType = isNew ? ServerEventType.Created : ServerEventType.Updated;
+        try
+        {
+            await DispatchEvent(ctx, eventType, imported.UUID, uuid);
+        }
+        catch (Exception)
+        {
+            if (isNew)
+            {
+                await DeleteFromStorage(uuid, imported.UUID, storage);
+            }
+            else
+            {
+                await UpsertToStorage(uuid, existing!, storage);
+            }
+
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        if (isNew)
+        {
+            var location = $"/api/v1/characters/{uuid}/{RoutePrefix}/{imported.UUID}";
+            return Results.Created(location, imported);
+        }
+
+        return Results.Ok(imported);
+    }
 
     /// <inheritdoc/>
     protected override string? ValidateCreate(PlayerProfileCreateRequest dto)
@@ -203,5 +303,7 @@ public static class PlayerProfileEndpointsExtensions
             => endpoints.HandleUpdate(uuid, entityUuid, ctx, storage));
         group.MapDelete("/{entityUuid}", (string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
             => endpoints.HandleDelete(uuid, entityUuid, ctx, storage));
+        group.MapPost("/import", (string uuid, HttpContext ctx, IStorageBackend storage)
+            => endpoints.HandleImport(uuid, ctx, storage));
     }
 }

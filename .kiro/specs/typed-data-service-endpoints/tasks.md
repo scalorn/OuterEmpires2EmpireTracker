@@ -142,8 +142,8 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - MapShipTemplateEndpoints extension method
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6_
 
-- [ ] 15. Simple CRUD endpoint: DeliveryRoute
-  - [-] 15.1 Create DeliveryRouteEndpoints.cs
+- [x] 15. Simple CRUD endpoint: DeliveryRoute
+  - [x] 15.1 Create DeliveryRouteEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/DeliveryRouteEndpoints.cs`
     - Inherit TypedEndpointBase<DeliveryRoute, DeliveryRouteCreateRequest, DeliveryRouteUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
@@ -151,43 +151,43 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - MapDeliveryRouteEndpoints extension method
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
-- [ ] 16. Simple CRUD endpoint: PlayerProfile
-  - [-] 16.1 Create PlayerProfileEndpoints.cs
+- [x] 16. Simple CRUD endpoint: PlayerProfile
+  - [x] 16.1 Create PlayerProfileEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/PlayerProfileEndpoints.cs`
     - Inherit TypedEndpointBase<PlayerProfile, PlayerProfileCreateRequest, PlayerProfileUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
     - MapPlayerProfileEndpoints extension method
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
-  - [~] 16.2 Add import endpoint to PlayerProfileEndpoints
+  - [x] 16.2 Add import endpoint to PlayerProfileEndpoints
     - POST /profiles/import — full object import/merge logic
     - Return 200 if merged, 201 if new
     - _Requirements: 7.7_
 
-- [ ] 17. Simple CRUD endpoint: Survey
-  - [-] 17.1 Create SurveyEndpoints.cs
+- [x] 17. Simple CRUD endpoint: Survey
+  - [x] 17.1 Create SurveyEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/SurveyEndpoints.cs`
     - Inherit TypedEndpointBase<Survey, SurveyCreateRequest, SurveyUpdateRequest>
     - Implement ValidateCreate (PlanetName required), ValidateUpdate, ApplyCreate, ApplyUpdate
     - MapSurveyEndpoints extension method
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
-  - [~] 17.2 Add import endpoint to SurveyEndpoints
+  - [x] 17.2 Add import endpoint to SurveyEndpoints
     - POST /surveys/import — full object import/merge with asteroid auto-linking
     - Return 200 if merged, 201 if new
     - _Requirements: 6.7_
 
 - [ ] 18. Simple CRUD endpoints: Faction and ExternalCharacter
-  - [-] 18.1 Create FactionContactEndpoints.cs
+  - [x] 18.1 Create FactionContactEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/FactionContactEndpoints.cs`
     - MapFactionContactEndpoints extension method with both /factions and /contacts route groups
     - Faction: ValidateCreate (Name required), standard CRUD
     - _Requirements: 21.1, 21.2, 21.3, 21.4, 21.5, 21.6_
-  - [~] 18.2 Add ExternalCharacter routes to FactionContactEndpoints
+  - [-] 18.2 Add ExternalCharacter routes to FactionContactEndpoints
     - /contacts route group: GET all, GET one, POST, PUT, DELETE
     - ValidateCreate (Name required)
     - _Requirements: 21.7, 21.8, 21.9, 21.10, 21.11, 21.12_
 
-- [ ] 19. Simple CRUD endpoint: SupplyChain
-  - [-] 19.1 Create SupplyChainEndpoints.cs
+- [x] 19. Simple CRUD endpoint: SupplyChain
+  - [x] 19.1 Create SupplyChainEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/SupplyChainEndpoints.cs`
     - Inherit TypedEndpointBase<SupplyChain, SupplyChainCreateRequest, SupplyChainUpdateRequest>
     - Deep-copy and renumber stages on create/update
@@ -195,13 +195,13 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5, 18.6_
 
 - [ ] 20. Simple CRUD endpoint: BuildPlan
-  - [-] 20.1 Create BuildPlanEndpoints.cs
+  - [x] 20.1 Create BuildPlanEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/BuildPlanEndpoints.cs`
     - Inherit TypedEndpointBase<BuildPlan, BuildPlanCreateRequest, BuildPlanUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
     - MapBuildPlanEndpoints extension method
     - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5, 17.6_
-  - [~] 20.2 Add generate-colony-items action endpoint to BuildPlanEndpoints
+  - [-] 20.2 Add generate-colony-items action endpoint to BuildPlanEndpoints
     - POST /build-plans/{entityUuid}/generate-colony-items
     - Input: { colonyUUID } — scans colony for unstaged structures
     - Output: { itemsAdded: int }
@@ -211,7 +211,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 22. Complex endpoint: Ship (CRUD + from-template)
-  - [~] 22.1 Create ShipEndpoints.cs
+  - [-] 22.1 Create ShipEndpoints.cs
     - Create `OE2EmpireTracker.Server/Endpoints/Typed/ShipEndpoints.cs`
     - Inherit TypedEndpointBase<Ship, ShipCreateRequest, ShipUpdateRequest>
     - Implement ValidateCreate (Name required), ValidateUpdate, ApplyCreate, ApplyUpdate
