@@ -21,6 +21,7 @@ public static class DataEndpoints
         charData.MapPut("/{dataType}/{entityUuid}", UpdateCharacterEntity);
         charData.MapDelete("/{dataType}/{entityUuid}", DeleteCharacterEntity);
         charData.MapGet("/{dataType}", GetCharacterDataCollection);
+        charData.MapPut("/{dataType}", PutCharacterDataCollection);
         charData.MapPost("/{dataType}", CreateCharacterEntity);
         charData.MapGet("/", GetAllCharacterData);
         charData.MapPut("/", PutAllCharacterData);
@@ -42,6 +43,31 @@ public static class DataEndpoints
     }
 
     // --- Character Data CRUD ---
+
+    private static async Task<IResult> PutCharacterDataCollection(
+        string uuid,
+        string dataType,
+        HttpContext httpContext,
+        IStorageBackend storage)
+    {
+        if (!CanAccessCharacterData(httpContext, uuid))
+        {
+            return Results.Forbid();
+        }
+
+        var body = await ReadBodyAsStringAsync(httpContext);
+        if (string.IsNullOrWhiteSpace(body))
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        await storage.UpsertCharacterDataAsync(uuid, dataType, body);
+
+        LogMutation(httpContext, "Updated", dataType, uuid);
+        await DispatchDataEvent(httpContext, ServerEventType.Updated, dataType, uuid, uuid);
+
+        return Results.Ok(JsonDocument.Parse(body).RootElement);
+    }
 
     private static async Task<IResult> GetCharacterDataCollection(
         string uuid,
