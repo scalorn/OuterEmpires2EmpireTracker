@@ -55,7 +55,8 @@ if (-not (Test-Path $DeployDir)) {
     Write-Host "ERROR: Deploy directory $DeployDir does not exist or is not mounted." -ForegroundColor Red
     exit 1
 }
-xcopy "$PublishDir\." "$DeployDir\." /e /h /r /c /y | Out-Null
+$source = (Resolve-Path $PublishDir).Path
+& cmd /c "xcopy `"$source\*`" `"$DeployDir\`" /e /h /r /c /y" | Out-Null
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: xcopy failed (exit code $LASTEXITCODE)" -ForegroundColor Red
     exit 1
