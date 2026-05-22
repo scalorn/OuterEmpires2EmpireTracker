@@ -230,7 +230,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - ValidateCreate (Name, BluePrintType required)
     - MapBlueprintEndpoints extension method
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
-  - [-] 23.2 Add import and move actions to BlueprintEndpoints
+  - [x] 23.2 Add import and move actions to BlueprintEndpoints
     - POST /blueprints/import — full object import/merge (200 if merged, 201 if new)
     - POST /blueprints/{entityUuid}/move-to-global — moves to global scope
     - POST /blueprints/{entityUuid}/move-to-player — moves to player scope
@@ -244,7 +244,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - Override HandleCreateDedup for PlanetName+SystemName case-insensitive matching
     - MapColonyEndpoints extension method
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 31.1, 31.2, 31.3, 31.4_
-  - [-] 24.2 Add colony sub-resource endpoints: structures
+  - [x] 24.2 Add colony sub-resource endpoints: structures
     - POST /colonies/{colonyUuid}/structures — add structure (flatpackBlueprintUUID required)
     - DELETE /colonies/{colonyUuid}/structures/{structureUuid} — remove structure
     - _Requirements: 4.8, 4.9_
@@ -266,7 +266,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - ValidateCreate (ItemName, StationUUID required)
     - MapMarketListingEndpoints extension method
     - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6, 12.7_
-  - [-] 25.2 Add record-sale action to MarketListingEndpoints
+  - [x] 25.2 Add record-sale action to MarketListingEndpoints
     - POST /market-listings/{entityUuid}/record-sale
     - Input: quantity, pricePerUnit (required), counterparty, counterpartyFaction, stationUUID
     - Creates MarketTransaction, returns 201 or 422 on validation failure
@@ -278,7 +278,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - GET all, GET one, DELETE (no standalone POST)
     - MapMarketTransactionEndpoints extension method
     - _Requirements: 13.1, 13.2, 13.3, 13.4_
-  - [-] 26.2 Add record-purchase and profit-loss endpoints to MarketTransactionEndpoints
+  - [x] 26.2 Add record-purchase and profit-loss endpoints to MarketTransactionEndpoints
     - POST /market-transactions/record-purchase — creates transaction (201)
     - GET /market-transactions/profit-loss — computes ProfitLossSummary with date filters
     - Validate required fields, date format
@@ -291,7 +291,7 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
     - ValidateCreate (name, routeUUID required)
     - MapDeliveryPlanEndpoints extension method
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
-  - [-] 27.2 Add drop-off and pick-up action endpoints to DeliveryPlanEndpoints
+  - [x] 27.2 Add drop-off and pick-up action endpoints to DeliveryPlanEndpoints
     - POST /delivery-plans/{entityUuid}/drop-off — add drop-off item
     - POST /delivery-plans/{entityUuid}/pick-up — add pick-up item
     - DELETE /delivery-plans/{entityUuid}/drop-off — remove drop-off items by index

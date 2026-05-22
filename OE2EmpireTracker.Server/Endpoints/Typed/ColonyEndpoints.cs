@@ -19,6 +19,12 @@ namespace OE2EmpireTracker.Server.Endpoints.Typed;
 /// </summary>
 public class ColonyEndpoints : TypedEndpointBase<Colony, ColonyCreateRequest, ColonyUpdateRequest>
 {
+    /// <inheritdoc/>
+    protected override string EntityTypeName => "Colony";
+
+    /// <inheritdoc/>
+    protected override string RoutePrefix => "colonies";
+
     /// <summary>
     /// Handles POST /colonies/{colonyUuid}/structures requests.
     /// Adds a new structure to the colony. Requires flatpackBlueprintUUID in the request body.
@@ -175,12 +181,6 @@ public class ColonyEndpoints : TypedEndpointBase<Colony, ColonyCreateRequest, Co
 
         return Results.NoContent();
     }
-
-    /// <inheritdoc/>
-    protected override string EntityTypeName => "Colony";
-
-    /// <inheritdoc/>
-    protected override string RoutePrefix => "colonies";
 
     /// <inheritdoc/>
     protected override string? ValidateCreate(ColonyCreateRequest dto)

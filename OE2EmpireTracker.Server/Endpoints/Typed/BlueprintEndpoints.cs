@@ -17,6 +17,12 @@ namespace OE2EmpireTracker.Server.Endpoints.Typed;
 /// </summary>
 public class BlueprintEndpoints : TypedEndpointBase<Blueprint, BlueprintCreateRequest, BlueprintUpdateRequest>
 {
+    /// <inheritdoc/>
+    protected override string EntityTypeName => "Blueprint";
+
+    /// <inheritdoc/>
+    protected override string RoutePrefix => "blueprints";
+
     /// <summary>
     /// Handles POST /import requests to import a full Blueprint object.
     /// If a blueprint with the same UUID exists, merges and returns 200.
@@ -228,12 +234,6 @@ public class BlueprintEndpoints : TypedEndpointBase<Blueprint, BlueprintCreateRe
 
         return Results.Ok(blueprint);
     }
-
-    /// <inheritdoc/>
-    protected override string EntityTypeName => "Blueprint";
-
-    /// <inheritdoc/>
-    protected override string RoutePrefix => "blueprints";
 
     /// <inheritdoc/>
     protected override string? ValidateCreate(BlueprintCreateRequest dto)

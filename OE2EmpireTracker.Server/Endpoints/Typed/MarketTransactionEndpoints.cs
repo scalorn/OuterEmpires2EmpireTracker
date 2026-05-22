@@ -206,7 +206,7 @@ public class MarketTransactionEndpoints
             Counterparty = dto.Counterparty ?? string.Empty,
             CounterpartyFaction = dto.CounterpartyFaction ?? string.Empty,
             StationUUID = dto.StationUUID ?? string.Empty,
-            Timestamp = DateTime.UtcNow.ToString("o"),
+            Timestamp = OE2EmpireTracker.Services.SystemClock.UtcNow.ToString("o"),
         };
 
         await storage.UpsertMarketTransactionAsync(uuid, transaction);
@@ -402,7 +402,7 @@ public class RecordPurchaseRequest
     public string ItemName { get; set; } = string.Empty;
 
     /// <summary>Gets or sets the item type.</summary>
-    public ItemType.ItemTypeEnum ItemType { get; set; } = OE2EmpireTracker.Models.ItemType.ItemTypeEnum.None;
+    public ItemType.ItemTypeEnum ItemType { get; set; }
 
     /// <summary>Gets or sets the quantity purchased.</summary>
     public int Quantity { get; set; }

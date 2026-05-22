@@ -17,6 +17,12 @@ namespace OE2EmpireTracker.Server.Endpoints.Typed;
 /// </summary>
 public class MarketListingEndpoints : TypedEndpointBase<MarketListing, MarketListingCreateRequest, MarketListingUpdateRequest>
 {
+    /// <inheritdoc/>
+    protected override string EntityTypeName => "MarketListing";
+
+    /// <inheritdoc/>
+    protected override string RoutePrefix => "market-listings";
+
     /// <summary>
     /// Handles POST /market-listings/{entityUuid}/record-sale requests.
     /// Creates a MarketTransaction from the listing and returns 201.
@@ -95,7 +101,7 @@ public class MarketListingEndpoints : TypedEndpointBase<MarketListing, MarketLis
             Counterparty = dto.Counterparty ?? string.Empty,
             CounterpartyFaction = dto.CounterpartyFaction ?? string.Empty,
             StationUUID = dto.StationUUID ?? listing.StationUUID,
-            Timestamp = DateTime.UtcNow.ToString("o"),
+            Timestamp = OE2EmpireTracker.Services.SystemClock.UtcNow.ToString("o"),
             ListingUUID = entityUuid,
         };
 
@@ -124,12 +130,6 @@ public class MarketListingEndpoints : TypedEndpointBase<MarketListing, MarketLis
         var location = $"/api/v1/characters/{uuid}/market-transactions/{transaction.UUID}";
         return Results.Created(location, transaction);
     }
-
-    /// <inheritdoc/>
-    protected override string EntityTypeName => "MarketListing";
-
-    /// <inheritdoc/>
-    protected override string RoutePrefix => "market-listings";
 
     /// <inheritdoc/>
     protected override string? ValidateCreate(MarketListingCreateRequest dto)
