@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Npgsql;
 using OE2EmpireTracker.Models;
 
@@ -212,146 +211,6 @@ CREATE TABLE IF NOT EXISTS CharacterPreferences (
         using var cmd = new NpgsqlCommand("DELETE FROM Characters WHERE UUID = @uuid", conn);
         cmd.Parameters.AddWithValue("@uuid", uuid);
         await cmd.ExecuteNonQueryAsync();
-    }
-
-    // --- Character Data (raw JSON) ---
-
-    public async Task<string?> GetCharacterDataAsync(string characterUUID, string dataType)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var cmd = new NpgsqlCommand(
-            "SELECT Data FROM CharacterCollections WHERE CharacterUUID = @charUuid AND DataType = @dataType", conn);
-        cmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        cmd.Parameters.AddWithValue("@dataType", dataType);
-
-        var result = await cmd.ExecuteScalarAsync();
-        return result as string;
-    }
-
-    public async Task<string?> GetCharacterEntityAsync(string characterUUID, string dataType, string entityUUID)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var cmd = new NpgsqlCommand(
-            "SELECT Data FROM CharacterData WHERE CharacterUUID = @charUuid AND DataType = @dataType AND EntityUUID = @entityUuid", conn);
-        cmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        cmd.Parameters.AddWithValue("@dataType", dataType);
-        cmd.Parameters.AddWithValue("@entityUuid", entityUUID);
-
-        var result = await cmd.ExecuteScalarAsync();
-        return result as string;
-    }
-
-    public async Task UpsertCharacterDataAsync(string characterUUID, string dataType, string json)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var transaction = await conn.BeginTransactionAsync();
-
-        using var upsertCmd = new NpgsqlCommand(@"INSERT INTO CharacterCollections (CharacterUUID, DataType, Data)
-            VALUES (@charUuid, @dataType, @data)
-            ON CONFLICT (CharacterUUID, DataType) DO UPDATE SET Data = @data", conn, transaction);
-        upsertCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        upsertCmd.Parameters.AddWithValue("@dataType", dataType);
-        upsertCmd.Parameters.AddWithValue("@data", json);
-        await upsertCmd.ExecuteNonQueryAsync();
-
-        using var deleteCmd = new NpgsqlCommand(
-            "DELETE FROM CharacterData WHERE CharacterUUID = @charUuid AND DataType = @dataType", conn, transaction);
-        deleteCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        deleteCmd.Parameters.AddWithValue("@dataType", dataType);
-        await deleteCmd.ExecuteNonQueryAsync();
-
-        if (!string.IsNullOrWhiteSpace(json))
-        {
-            try
-            {
-                var array = JArray.Parse(json);
-                foreach (var item in array)
-                {
-                    var entityUuid = item["UUID"]?.ToString();
-                    if (string.IsNullOrEmpty(entityUuid))
-                    {
-                        continue;
-                    }
-
-                    using var insertCmd = new NpgsqlCommand(@"INSERT INTO CharacterData (CharacterUUID, DataType, EntityUUID, Data)
-                        VALUES (@charUuid, @dataType, @entityUuid, @entityData)", conn, transaction);
-                    insertCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-                    insertCmd.Parameters.AddWithValue("@dataType", dataType);
-                    insertCmd.Parameters.AddWithValue("@entityUuid", entityUuid);
-                    insertCmd.Parameters.AddWithValue("@entityData", item.ToString(Formatting.Indented));
-                    await insertCmd.ExecuteNonQueryAsync();
-                }
-            }
-            catch (JsonReaderException)
-            {
-                // Not a JSON array — just store as collection blob only
-            }
-        }
-
-        await transaction.CommitAsync();
-    }
-
-    public async Task UpsertCharacterEntityAsync(string characterUUID, string dataType, string entityUUID, string json)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var transaction = await conn.BeginTransactionAsync();
-
-        using var entityCmd = new NpgsqlCommand(@"INSERT INTO CharacterData (CharacterUUID, DataType, EntityUUID, Data)
-            VALUES (@charUuid, @dataType, @entityUuid, @data)
-            ON CONFLICT (CharacterUUID, DataType, EntityUUID) DO UPDATE SET Data = @data", conn, transaction);
-        entityCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        entityCmd.Parameters.AddWithValue("@dataType", dataType);
-        entityCmd.Parameters.AddWithValue("@entityUuid", entityUUID);
-        entityCmd.Parameters.AddWithValue("@data", json);
-        await entityCmd.ExecuteNonQueryAsync();
-
-        await RebuildCollectionBlobAsync(conn, transaction, characterUUID, dataType);
-        await transaction.CommitAsync();
-    }
-
-    public async Task DeleteCharacterEntityAsync(string characterUUID, string dataType, string entityUUID)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var transaction = await conn.BeginTransactionAsync();
-
-        using var cmd = new NpgsqlCommand(
-            "DELETE FROM CharacterData WHERE CharacterUUID = @charUuid AND DataType = @dataType AND EntityUUID = @entityUuid",
-            conn, transaction);
-        cmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        cmd.Parameters.AddWithValue("@dataType", dataType);
-        cmd.Parameters.AddWithValue("@entityUuid", entityUUID);
-        await cmd.ExecuteNonQueryAsync();
-
-        await RebuildCollectionBlobAsync(conn, transaction, characterUUID, dataType);
-        await transaction.CommitAsync();
-    }
-
-    public async Task<string?> GetAllCharacterDataAsync(string characterUUID)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var cmd = new NpgsqlCommand(
-            "SELECT DataType, Data FROM CharacterCollections WHERE CharacterUUID = @charUuid", conn);
-        cmd.Parameters.AddWithValue("@charUuid", characterUUID);
-
-        var result = new JObject();
-        using var reader = await cmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
-        {
-            var dataType = reader.GetString(0);
-            var data = reader.GetString(1);
-            result[dataType] = JToken.Parse(data);
-        }
-
-        return result.HasValues ? result.ToString(Formatting.Indented) : null;
-    }
-
-    public async Task PutAllCharacterDataAsync(string characterUUID, string json)
-    {
-        var obj = JObject.Parse(json);
-        foreach (var prop in obj.Properties())
-        {
-            await UpsertCharacterDataAsync(characterUUID, prop.Name, prop.Value.ToString(Formatting.Indented));
-        }
     }
 
     // --- Global/Baseline Data ---
@@ -808,35 +667,6 @@ CREATE TABLE IF NOT EXISTS CharacterPreferences (
     public Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
 
     // --- Private Helpers ---
-
-    private static async Task RebuildCollectionBlobAsync(
-        NpgsqlConnection conn,
-        NpgsqlTransaction transaction,
-        string characterUUID,
-        string dataType)
-    {
-        using var selectCmd = new NpgsqlCommand(
-            "SELECT Data FROM CharacterData WHERE CharacterUUID = @charUuid AND DataType = @dataType",
-            conn, transaction);
-        selectCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        selectCmd.Parameters.AddWithValue("@dataType", dataType);
-
-        var array = new JArray();
-        using var reader = await selectCmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
-        {
-            var entityJson = reader.GetString(0);
-            array.Add(JToken.Parse(entityJson));
-        }
-
-        using var upsertCmd = new NpgsqlCommand(@"INSERT INTO CharacterCollections (CharacterUUID, DataType, Data)
-            VALUES (@charUuid, @dataType, @data)
-            ON CONFLICT (CharacterUUID, DataType) DO UPDATE SET Data = @data", conn, transaction);
-        upsertCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        upsertCmd.Parameters.AddWithValue("@dataType", dataType);
-        upsertCmd.Parameters.AddWithValue("@data", array.ToString(Formatting.Indented));
-        await upsertCmd.ExecuteNonQueryAsync();
-    }
 
     private async Task<NpgsqlConnection> OpenConnectionAsync()
     {

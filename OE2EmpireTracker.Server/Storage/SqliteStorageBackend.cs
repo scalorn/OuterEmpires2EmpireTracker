@@ -1,6 +1,5 @@
 using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Server.Storage;
@@ -230,156 +229,6 @@ CREATE TABLE IF NOT EXISTS CharacterPreferences (
         cmd.CommandText = "DELETE FROM Characters WHERE UUID = @uuid";
         cmd.Parameters.AddWithValue("@uuid", uuid);
         await cmd.ExecuteNonQueryAsync();
-    }
-
-    // --- Character Data (raw JSON) ---
-
-    public async Task<string?> GetCharacterDataAsync(string characterUUID, string dataType)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = "SELECT Data FROM CharacterCollections WHERE CharacterUUID = @charUuid AND DataType = @dataType";
-        cmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        cmd.Parameters.AddWithValue("@dataType", dataType);
-
-        var result = await cmd.ExecuteScalarAsync();
-        return result as string;
-    }
-
-    public async Task<string?> GetCharacterEntityAsync(string characterUUID, string dataType, string entityUUID)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = "SELECT Data FROM CharacterData WHERE CharacterUUID = @charUuid AND DataType = @dataType AND EntityUUID = @entityUuid";
-        cmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        cmd.Parameters.AddWithValue("@dataType", dataType);
-        cmd.Parameters.AddWithValue("@entityUuid", entityUUID);
-
-        var result = await cmd.ExecuteScalarAsync();
-        return result as string;
-    }
-
-    public async Task UpsertCharacterDataAsync(string characterUUID, string dataType, string json)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var transaction = conn.BeginTransaction();
-
-        // Replace the collection blob
-        using var upsertCmd = conn.CreateCommand();
-        upsertCmd.CommandText = @"INSERT INTO CharacterCollections (CharacterUUID, DataType, Data)
-            VALUES (@charUuid, @dataType, @data)
-            ON CONFLICT(CharacterUUID, DataType) DO UPDATE SET Data = @data";
-        upsertCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        upsertCmd.Parameters.AddWithValue("@dataType", dataType);
-        upsertCmd.Parameters.AddWithValue("@data", json);
-        await upsertCmd.ExecuteNonQueryAsync();
-
-        // Also sync individual entities in CharacterData table
-        using var deleteCmd = conn.CreateCommand();
-        deleteCmd.CommandText = "DELETE FROM CharacterData WHERE CharacterUUID = @charUuid AND DataType = @dataType";
-        deleteCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        deleteCmd.Parameters.AddWithValue("@dataType", dataType);
-        await deleteCmd.ExecuteNonQueryAsync();
-
-        // Parse the JSON array and insert individual entities
-        if (!string.IsNullOrWhiteSpace(json))
-        {
-            try
-            {
-                var array = JArray.Parse(json);
-                foreach (var item in array)
-                {
-                    var entityUuid = item["UUID"]?.ToString();
-                    if (string.IsNullOrEmpty(entityUuid))
-                    {
-                        continue;
-                    }
-
-                    using var insertCmd = conn.CreateCommand();
-                    insertCmd.CommandText = @"INSERT INTO CharacterData (CharacterUUID, DataType, EntityUUID, Data)
-                        VALUES (@charUuid, @dataType, @entityUuid, @entityData)";
-                    insertCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-                    insertCmd.Parameters.AddWithValue("@dataType", dataType);
-                    insertCmd.Parameters.AddWithValue("@entityUuid", entityUuid);
-                    insertCmd.Parameters.AddWithValue("@entityData", item.ToString(Formatting.Indented));
-                    await insertCmd.ExecuteNonQueryAsync();
-                }
-            }
-            catch (JsonReaderException)
-            {
-                // Not a JSON array — just store as collection blob only
-            }
-        }
-
-        transaction.Commit();
-    }
-
-    public async Task UpsertCharacterEntityAsync(string characterUUID, string dataType, string entityUUID, string json)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var transaction = conn.BeginTransaction();
-
-        // Upsert in the individual entity table
-        using var entityCmd = conn.CreateCommand();
-        entityCmd.CommandText = @"INSERT INTO CharacterData (CharacterUUID, DataType, EntityUUID, Data)
-            VALUES (@charUuid, @dataType, @entityUuid, @data)
-            ON CONFLICT(CharacterUUID, DataType, EntityUUID) DO UPDATE SET Data = @data";
-        entityCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        entityCmd.Parameters.AddWithValue("@dataType", dataType);
-        entityCmd.Parameters.AddWithValue("@entityUuid", entityUUID);
-        entityCmd.Parameters.AddWithValue("@data", json);
-        await entityCmd.ExecuteNonQueryAsync();
-
-        // Rebuild the collection blob from all entities
-        await RebuildCollectionBlobAsync(conn, characterUUID, dataType);
-
-        transaction.Commit();
-    }
-
-    public async Task DeleteCharacterEntityAsync(string characterUUID, string dataType, string entityUUID)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var transaction = conn.BeginTransaction();
-
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = "DELETE FROM CharacterData WHERE CharacterUUID = @charUuid AND DataType = @dataType AND EntityUUID = @entityUuid";
-        cmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        cmd.Parameters.AddWithValue("@dataType", dataType);
-        cmd.Parameters.AddWithValue("@entityUuid", entityUUID);
-        await cmd.ExecuteNonQueryAsync();
-
-        // Rebuild the collection blob from remaining entities
-        await RebuildCollectionBlobAsync(conn, characterUUID, dataType);
-
-        transaction.Commit();
-    }
-
-    public async Task<string?> GetAllCharacterDataAsync(string characterUUID)
-    {
-        using var conn = await OpenConnectionAsync();
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = "SELECT DataType, Data FROM CharacterCollections WHERE CharacterUUID = @charUuid";
-        cmd.Parameters.AddWithValue("@charUuid", characterUUID);
-
-        var result = new JObject();
-        using var reader = await cmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
-        {
-            var dataType = reader.GetString(0);
-            var data = reader.GetString(1);
-            result[dataType] = JToken.Parse(data);
-        }
-
-        return result.HasValues ? result.ToString(Formatting.Indented) : null;
-    }
-
-    public async Task PutAllCharacterDataAsync(string characterUUID, string json)
-    {
-        var obj = JObject.Parse(json);
-        foreach (var prop in obj.Properties())
-        {
-            await UpsertCharacterDataAsync(characterUUID, prop.Name, prop.Value.ToString(Formatting.Indented));
-        }
     }
 
     // --- Global/Baseline Data ---
@@ -849,31 +698,6 @@ CREATE TABLE IF NOT EXISTS CharacterPreferences (
     public Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
 
     // --- Private Helpers ---
-
-    private static async Task RebuildCollectionBlobAsync(SqliteConnection conn, string characterUUID, string dataType)
-    {
-        using var selectCmd = conn.CreateCommand();
-        selectCmd.CommandText = "SELECT Data FROM CharacterData WHERE CharacterUUID = @charUuid AND DataType = @dataType";
-        selectCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        selectCmd.Parameters.AddWithValue("@dataType", dataType);
-
-        var array = new JArray();
-        using var reader = await selectCmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
-        {
-            var entityJson = reader.GetString(0);
-            array.Add(JToken.Parse(entityJson));
-        }
-
-        using var upsertCmd = conn.CreateCommand();
-        upsertCmd.CommandText = @"INSERT INTO CharacterCollections (CharacterUUID, DataType, Data)
-            VALUES (@charUuid, @dataType, @data)
-            ON CONFLICT(CharacterUUID, DataType) DO UPDATE SET Data = @data";
-        upsertCmd.Parameters.AddWithValue("@charUuid", characterUUID);
-        upsertCmd.Parameters.AddWithValue("@dataType", dataType);
-        upsertCmd.Parameters.AddWithValue("@data", array.ToString(Formatting.Indented));
-        await upsertCmd.ExecuteNonQueryAsync();
-    }
 
     private async Task<SqliteConnection> OpenConnectionAsync()
     {

@@ -206,6 +206,7 @@ app.MapAdminEndpoints();
 app.MapIntelEndpoints();
 app.MapColonyPlannerEndpoints();
 app.MapPublicDataEndpoints();
+app.MapBulkImportEndpoints();
 // Typed CRUD endpoints (19 entity types)
 app.MapColonyEndpoints();
 app.MapBlueprintEndpoints();

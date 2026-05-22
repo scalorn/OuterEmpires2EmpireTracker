@@ -80,12 +80,19 @@ public static class CharacterGroupEndpoints
 
     private static async Task<IResult> GetGroups(
         string uuid,
+        HttpContext httpContext,
         IStorageBackend storage)
     {
         var character = await storage.GetCharacterAsync(uuid);
         if (character == null)
         {
             return Results.NotFound(new { error = "Character not found" });
+        }
+
+        var callerUUID = AuthorizationHelper.GetCallerCharacterUUID(httpContext);
+        if (callerUUID != uuid && !AuthorizationHelper.IsOwner(httpContext))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
         }
 
         var groups = await storage.GetCharacterGroupsAsync(uuid);

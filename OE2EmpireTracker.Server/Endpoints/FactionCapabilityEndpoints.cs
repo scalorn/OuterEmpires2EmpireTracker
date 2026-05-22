@@ -62,12 +62,22 @@ public static class FactionCapabilityEndpoints
 
     private static async Task<IResult> GetCapabilities(
         string uuid,
+        HttpContext httpContext,
         IStorageBackend storage)
     {
         var faction = await storage.GetFactionAsync(uuid);
         if (faction == null)
         {
             return Results.NotFound(new { error = "Faction not found" });
+        }
+
+        if (!AuthorizationHelper.IsOwner(httpContext))
+        {
+            var callerUUID = AuthorizationHelper.GetCallerCharacterUUID(httpContext);
+            if (string.IsNullOrEmpty(callerUUID) || !await AuthorizationHelper.IsFactionMember(callerUUID, uuid, storage))
+            {
+                return Results.Json(new { error = "Access denied" }, statusCode: 403);
+            }
         }
 
         var capabilities = await storage.GetFactionCapabilitiesAsync(uuid);

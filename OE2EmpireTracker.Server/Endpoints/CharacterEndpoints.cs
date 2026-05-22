@@ -62,18 +62,47 @@ public static class CharacterEndpoints
         return Results.Created($"/api/v1/characters/{uuid}", character);
     }
 
-    private static async Task<IResult> GetAllCharacters(IStorageBackend storage)
+    private static async Task<IResult> GetAllCharacters(
+        HttpContext httpContext,
+        IStorageBackend storage)
     {
+        // Owner sees all characters
+        if (AuthorizationHelper.IsOwner(httpContext))
+        {
+            var allCharacters = await storage.GetAllCharactersAsync();
+            return Results.Ok(allCharacters);
+        }
+
+        // Non-owner: filter to only characters the caller has access to
         var characters = await storage.GetAllCharactersAsync();
-        return Results.Ok(characters);
+        var accessible = new List<ServerCharacter>();
+
+        foreach (var character in characters)
+        {
+            if (await AuthorizationHelper.CanAccessCharacterData(httpContext, character.UUID, storage))
+            {
+                accessible.Add(character);
+            }
+        }
+
+        return Results.Ok(accessible);
     }
 
-    private static async Task<IResult> GetCharacter(string uuid, IStorageBackend storage)
+    private static async Task<IResult> GetCharacter(
+        string uuid,
+        HttpContext httpContext,
+        IStorageBackend storage)
     {
         var character = await storage.GetCharacterAsync(uuid);
         if (character == null)
         {
             return Results.NotFound(new { error = "Character not found" });
+        }
+
+        var canAccess = await AuthorizationHelper.CanAccessCharacterData(httpContext, uuid, storage);
+        if (!canAccess)
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
         }
 
         return Results.Ok(character);

@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Server.Storage;
@@ -16,35 +15,6 @@ public class JsonFileStorageBackend : IStorageBackend
         Formatting = Formatting.Indented,
         NullValueHandling = NullValueHandling.Ignore,
     };
-
-    /// <summary>
-    /// Maps PlayerRoot property names to the canonical file names used by both
-    /// the web UI (via /data/{dataType}) and the typed CRUD endpoints.
-    /// Web UI calls toLowerDataType on DataType enum values (e.g. "Colonies" → "colonies").
-    /// </summary>
-    private static readonly Dictionary<string, string> PlayerRootToFileName =
-        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            ["Colony"] = "colonies",
-            ["Blueprint"] = "blueprints",
-            ["Survey"] = "surveys",
-            ["PlayerProfile"] = "playerprofile",
-            ["DeliveryRoute"] = "deliveryroutes",
-            ["DeliveryPlan"] = "deliveryplans",
-            ["PricingPlan"] = "pricingplans",
-            ["BuildPlan"] = "buildplans",
-            ["ShipTemplate"] = "shiptemplates",
-            ["Ship"] = "ships",
-            ["Station"] = "stations",
-            ["MarketListing"] = "marketlistings",
-            ["MarketTransaction"] = "markettransactions",
-            ["StockPlan"] = "stockplans",
-            ["StockProfile"] = "stockprofiles",
-            ["SupplyChain"] = "supplychains",
-            ["Faction"] = "faction",
-            ["ExternalCharacter"] = "externalcharacter",
-            ["Asteroid"] = "asteroids",
-        };
 
     private readonly string _dataPath;
     private readonly ILogger<JsonFileStorageBackend> _logger;
@@ -145,152 +115,6 @@ public class JsonFileStorageBackend : IStorageBackend
     public async Task DeleteCharacterAsync(string uuid)
     {
         await DeleteFromListAsync<ServerCharacter>("characters.json", c => c.UUID == uuid);
-    }
-
-    // --- Character Data (raw JSON) ---
-
-    public async Task<string?> GetCharacterDataAsync(string characterUUID, string dataType)
-    {
-        var path = CharacterDataPath(characterUUID, dataType);
-        return await ReadRawAsync(path);
-    }
-
-    public async Task<string?> GetCharacterEntityAsync(string characterUUID, string dataType, string entityUUID)
-    {
-        var json = await GetCharacterDataAsync(characterUUID, dataType);
-        if (json == null)
-        {
-            return null;
-        }
-
-        var array = JArray.Parse(json);
-        var entity = array.FirstOrDefault(t => t["UUID"]?.ToString() == entityUUID);
-        return entity?.ToString(Formatting.Indented);
-    }
-
-    public async Task UpsertCharacterDataAsync(string characterUUID, string dataType, string json)
-    {
-        var path = CharacterDataPath(characterUUID, dataType);
-        EnsureCharacterDirectory(characterUUID);
-        await WriteAtomicAsync(path, json);
-
-        // When the desktop syncs the full PlayerRoot blob as "player-data",
-        // also split it into individual per-property files so both the bulk GET
-        // and the typed endpoints read from the same per-entity-type files.
-        // Files are written with canonical names matching what consumers expect.
-        if (string.Equals(dataType, "player-data", StringComparison.OrdinalIgnoreCase))
-        {
-            try
-            {
-                var obj = JObject.Parse(json);
-                foreach (var prop in obj.Properties())
-                {
-                    if (prop.Value.Type == JTokenType.Array || prop.Value.Type == JTokenType.Object)
-                    {
-                        string fileName = PlayerRootToFileName.TryGetValue(prop.Name, out var mapped)
-                            ? mapped
-                            : prop.Name.ToLowerInvariant();
-                        var propPath = CharacterDataPath(characterUUID, fileName);
-                        await WriteAtomicAsync(propPath, prop.Value.ToString(Formatting.Indented));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Failed to split player-data into per-type files for {UUID}", characterUUID);
-            }
-        }
-    }
-
-    public async Task UpsertCharacterEntityAsync(string characterUUID, string dataType, string entityUUID, string json)
-    {
-        await _lock.WaitAsync();
-        try
-        {
-            var path = CharacterDataPath(characterUUID, dataType);
-            EnsureCharacterDirectory(characterUUID);
-
-            var existing = await ReadRawUnlockedAsync(path);
-            var array = string.IsNullOrEmpty(existing) ? new JArray() : JArray.Parse(existing);
-            var newEntity = JObject.Parse(json);
-
-            var index = FindEntityIndex(array, entityUUID);
-            if (index >= 0)
-            {
-                array[index] = newEntity;
-            }
-            else
-            {
-                array.Add(newEntity);
-            }
-
-            await WriteAtomicUnlockedAsync(path, array.ToString(Formatting.Indented));
-        }
-        finally
-        {
-            _lock.Release();
-        }
-    }
-
-    public async Task DeleteCharacterEntityAsync(string characterUUID, string dataType, string entityUUID)
-    {
-        await _lock.WaitAsync();
-        try
-        {
-            var path = CharacterDataPath(characterUUID, dataType);
-            var existing = await ReadRawUnlockedAsync(path);
-            if (existing == null)
-            {
-                return;
-            }
-
-            var array = JArray.Parse(existing);
-            var index = FindEntityIndex(array, entityUUID);
-            if (index >= 0)
-            {
-                array.RemoveAt(index);
-                await WriteAtomicUnlockedAsync(path, array.ToString(Formatting.Indented));
-            }
-        }
-        finally
-        {
-            _lock.Release();
-        }
-    }
-
-    public async Task<string?> GetAllCharacterDataAsync(string characterUUID)
-    {
-        var dir = Path.Combine(_dataPath, "characters", characterUUID);
-        if (!Directory.Exists(dir))
-        {
-            return null;
-        }
-
-        var result = new JObject();
-        foreach (var file in Directory.GetFiles(dir, "*.json"))
-        {
-            var name = Path.GetFileNameWithoutExtension(file);
-            if (name == "sharing" || name == "preferences")
-            {
-                continue;
-            }
-
-            var content = await File.ReadAllTextAsync(file);
-            result[name] = JToken.Parse(content);
-        }
-
-        return result.ToString(Formatting.Indented);
-    }
-
-    public async Task PutAllCharacterDataAsync(string characterUUID, string json)
-    {
-        EnsureCharacterDirectory(characterUUID);
-        var obj = JObject.Parse(json);
-        foreach (var prop in obj.Properties())
-        {
-            var path = CharacterDataPath(characterUUID, prop.Name);
-            await WriteAtomicAsync(path, prop.Value.ToString(Formatting.Indented));
-        }
     }
 
     // --- Global/Baseline Data ---
@@ -2421,19 +2245,6 @@ public class JsonFileStorageBackend : IStorageBackend
         {
             File.WriteAllText(path, defaultContent);
         }
-    }
-
-    private static int FindEntityIndex(JArray array, string entityUUID)
-    {
-        for (int i = 0; i < array.Count; i++)
-        {
-            if (array[i]["UUID"]?.ToString() == entityUUID)
-            {
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     private static async Task<string?> ReadRawUnlockedAsync(string path)

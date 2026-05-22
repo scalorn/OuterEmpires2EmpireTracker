@@ -34,10 +34,15 @@ public static class IntelEndpoints
         HttpContext httpContext,
         IStorageBackend storage)
     {
-        var callerCharUUID = httpContext.User.FindFirstValue("CharacterUUID");
+        var callerCharUUID = AuthorizationHelper.GetCallerCharacterUUID(httpContext);
         if (callerCharUUID == null)
         {
             return Results.Forbid();
+        }
+
+        if (callerCharUUID != uuid && !AuthorizationHelper.IsOwner(httpContext))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
         }
 
         if (string.IsNullOrWhiteSpace(request.Text))
@@ -66,6 +71,12 @@ public static class IntelEndpoints
         HttpContext httpContext,
         IStorageBackend storage)
     {
+        var canAccess = await AuthorizationHelper.CanAccessCharacterData(httpContext, uuid, storage);
+        if (!canAccess)
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
         var callerCharUUID = httpContext.User.FindFirstValue("CharacterUUID");
         if (callerCharUUID == null)
         {
@@ -161,7 +172,7 @@ public static class IntelEndpoints
         HttpContext httpContext,
         IStorageBackend storage)
     {
-        var callerCharUUID = httpContext.User.FindFirstValue("CharacterUUID");
+        var callerCharUUID = AuthorizationHelper.GetCallerCharacterUUID(httpContext);
         if (callerCharUUID == null)
         {
             return Results.Forbid();
@@ -173,9 +184,9 @@ public static class IntelEndpoints
             return Results.NotFound(new { error = "Comment not found" });
         }
 
-        if (comment.SubmitterCharacterUUID != callerCharUUID)
+        if (comment.SubmitterCharacterUUID != callerCharUUID && !AuthorizationHelper.IsOwner(httpContext))
         {
-            return Results.Forbid();
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
         }
 
         if (string.IsNullOrWhiteSpace(request.FactionUUID))
@@ -214,7 +225,7 @@ public static class IntelEndpoints
         HttpContext httpContext,
         IStorageBackend storage)
     {
-        var callerCharUUID = httpContext.User.FindFirstValue("CharacterUUID");
+        var callerCharUUID = AuthorizationHelper.GetCallerCharacterUUID(httpContext);
         if (callerCharUUID == null)
         {
             return Results.Forbid();
@@ -226,9 +237,9 @@ public static class IntelEndpoints
             return Results.NotFound(new { error = "Comment not found" });
         }
 
-        if (comment.SubmitterCharacterUUID != callerCharUUID)
+        if (comment.SubmitterCharacterUUID != callerCharUUID && !AuthorizationHelper.IsOwner(httpContext))
         {
-            return Results.Forbid();
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
         }
 
         var shares = await storage.GetIntelSharesForCommentAsync(commentId);
@@ -250,44 +261,18 @@ public static class IntelEndpoints
         HttpContext httpContext,
         IStorageBackend storage)
     {
-        var callerCharUUID = httpContext.User.FindFirstValue("CharacterUUID");
-        if (callerCharUUID == null)
+        // Enforce caller is faction leader or Owner
+        var faction = await storage.GetFactionAsync(uuid);
+        if (faction == null)
         {
-            return Results.Forbid();
+            return Results.NotFound(new { error = "Faction not found" });
         }
 
-        // Verify caller has classify_intel capability in this faction
-        var factionCaps = await storage.GetFactionCapabilitiesAsync(uuid);
-        var classifyCapUUID = factionCaps
-            .FirstOrDefault(c => c.Name == "classify_intel")?.UUID;
-
-        if (classifyCapUUID == null)
+        var callerUUID = AuthorizationHelper.GetCallerCharacterUUID(httpContext);
+        if (!AuthorizationHelper.IsOwner(httpContext) &&
+            (callerUUID == null || !faction.LeaderCharacterUUIDs.Contains(callerUUID)))
         {
-            return Results.Forbid();
-        }
-
-        var memberCaps = await storage.GetFactionMemberCapabilitiesAsync(
-            uuid, callerCharUUID);
-        bool hasClassifyIntel = memberCaps.Any(
-            mc => mc.CapabilityUUID == classifyCapUUID);
-
-        if (!hasClassifyIntel)
-        {
-            // Check group capabilities
-            var memberPerms = await storage.GetFactionMemberPermissionsAsync(
-                uuid, callerCharUUID);
-            if (memberPerms?.GroupUUID != null)
-            {
-                var groupCaps = await storage.GetFactionGroupCapabilitiesAsync(
-                    memberPerms.GroupUUID);
-                hasClassifyIntel = groupCaps.Any(
-                    gc => gc.CapabilityUUID == classifyCapUUID);
-            }
-        }
-
-        if (!hasClassifyIntel)
-        {
-            return Results.Forbid();
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
         }
 
         // Find the share
@@ -315,7 +300,7 @@ public static class IntelEndpoints
         }
 
         share.ClassificationLevelUUID = request.ClassificationLevelUUID;
-        share.ClassifiedByCharacterUUID = callerCharUUID;
+        share.ClassifiedByCharacterUUID = callerUUID;
         share.ClassifiedUtc = SystemClock.UtcNow;
 
         await storage.UpsertIntelShareAsync(share);
@@ -329,7 +314,7 @@ public static class IntelEndpoints
         HttpContext httpContext,
         IStorageBackend storage)
     {
-        var callerCharUUID = httpContext.User.FindFirstValue("CharacterUUID");
+        var callerCharUUID = AuthorizationHelper.GetCallerCharacterUUID(httpContext);
         if (callerCharUUID == null)
         {
             return Results.Forbid();
@@ -341,21 +326,9 @@ public static class IntelEndpoints
             return Results.NotFound(new { error = "Comment not found" });
         }
 
-        bool isSubmitter = comment.SubmitterCharacterUUID == callerCharUUID;
-        bool isOwner = httpContext.User.IsInRole(TokenRole.Owner.ToString());
-        bool isFactionLeader = false;
-
-        if (!isSubmitter && !isOwner)
+        if (comment.SubmitterCharacterUUID != callerCharUUID && !AuthorizationHelper.IsOwner(httpContext))
         {
-            // Check if caller is a faction leader
-            var factions = await storage.GetAllFactionsAsync();
-            isFactionLeader = factions.Any(f =>
-                f.LeaderCharacterUUIDs.Contains(callerCharUUID));
-        }
-
-        if (!isSubmitter && !isOwner && !isFactionLeader)
-        {
-            return Results.Forbid();
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
         }
 
         // Delete all shares first

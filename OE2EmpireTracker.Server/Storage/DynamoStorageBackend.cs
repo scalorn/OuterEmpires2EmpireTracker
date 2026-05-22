@@ -2,7 +2,6 @@ using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Server.Storage;
@@ -147,127 +146,6 @@ public class DynamoStorageBackend : IStorageBackend
     public async Task DeleteCharacterAsync(string uuid)
     {
         await DeleteItemAsync($"Character#{uuid}", "Character");
-    }
-
-    // --- Character Data (raw JSON) ---
-
-    public async Task<string?> GetCharacterDataAsync(string characterUUID, string dataType)
-    {
-        return await GetItemDataAsync($"CharCollection#{characterUUID}", dataType);
-    }
-
-    public async Task<string?> GetCharacterEntityAsync(string characterUUID, string dataType, string entityUUID)
-    {
-        return await GetItemDataAsync($"CharEntity#{characterUUID}#{dataType}", entityUUID);
-    }
-
-    public async Task UpsertCharacterDataAsync(string characterUUID, string dataType, string json)
-    {
-        // Store the collection blob
-        await PutItemDataAsync($"CharCollection#{characterUUID}", dataType, json);
-
-        // Delete existing entities for this character+dataType
-        var scanRequest = new ScanRequest
-        {
-            TableName = _tableName,
-            FilterExpression = "begins_with(PK, :pk)",
-            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-            {
-                [":pk"] = new AttributeValue($"CharEntity#{characterUUID}#{dataType}"),
-            },
-        };
-
-        var scanResponse = await _client.ScanAsync(scanRequest);
-        foreach (var item in scanResponse.Items)
-        {
-            await _client.DeleteItemAsync(new DeleteItemRequest
-            {
-                TableName = _tableName,
-                Key = new Dictionary<string, AttributeValue>
-                {
-                    ["PK"] = item["PK"],
-                    ["SK"] = item["SK"],
-                },
-            });
-        }
-
-        // Parse and insert individual entities
-        if (!string.IsNullOrWhiteSpace(json))
-        {
-            try
-            {
-                var array = JArray.Parse(json);
-                foreach (var item in array)
-                {
-                    var entityUuid = item["UUID"]?.ToString();
-                    if (string.IsNullOrEmpty(entityUuid))
-                    {
-                        continue;
-                    }
-
-                    await PutItemDataAsync(
-                        $"CharEntity#{characterUUID}#{dataType}",
-                        entityUuid,
-                        item.ToString(Formatting.Indented));
-                }
-            }
-            catch (JsonReaderException)
-            {
-                // Not a JSON array — just store as collection blob only
-            }
-        }
-    }
-
-    public async Task UpsertCharacterEntityAsync(string characterUUID, string dataType, string entityUUID, string json)
-    {
-        await PutItemDataAsync($"CharEntity#{characterUUID}#{dataType}", entityUUID, json);
-        await RebuildCollectionBlobAsync(characterUUID, dataType);
-    }
-
-    public async Task DeleteCharacterEntityAsync(string characterUUID, string dataType, string entityUUID)
-    {
-        await DeleteItemAsync($"CharEntity#{characterUUID}#{dataType}", entityUUID);
-        await RebuildCollectionBlobAsync(characterUUID, dataType);
-    }
-
-    public async Task<string?> GetAllCharacterDataAsync(string characterUUID)
-    {
-        var items = await ScanByPrefixAsync($"CharCollection#{characterUUID}", null);
-        if (items.Count == 0)
-        {
-            return null;
-        }
-
-        // We need the SK (dataType) and Data for each item
-        var scanRequest = new ScanRequest
-        {
-            TableName = _tableName,
-            FilterExpression = "begins_with(PK, :pk)",
-            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-            {
-                [":pk"] = new AttributeValue($"CharCollection#{characterUUID}"),
-            },
-        };
-
-        var scanResponse = await _client.ScanAsync(scanRequest);
-        var result = new JObject();
-        foreach (var item in scanResponse.Items)
-        {
-            var dataType = item["SK"].S;
-            var data = item["Data"].S;
-            result[dataType] = JToken.Parse(data);
-        }
-
-        return result.HasValues ? result.ToString(Formatting.Indented) : null;
-    }
-
-    public async Task PutAllCharacterDataAsync(string characterUUID, string json)
-    {
-        var obj = JObject.Parse(json);
-        foreach (var prop in obj.Properties())
-        {
-            await UpsertCharacterDataAsync(characterUUID, prop.Name, prop.Value.ToString(Formatting.Indented));
-        }
     }
 
     // --- Global/Baseline Data ---
@@ -797,31 +675,4 @@ public class DynamoStorageBackend : IStorageBackend
         return results;
     }
 
-    private async Task RebuildCollectionBlobAsync(string characterUUID, string dataType)
-    {
-        var scanRequest = new ScanRequest
-        {
-            TableName = _tableName,
-            FilterExpression = "begins_with(PK, :pk)",
-            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-            {
-                [":pk"] = new AttributeValue($"CharEntity#{characterUUID}#{dataType}"),
-            },
-        };
-
-        var scanResponse = await _client.ScanAsync(scanRequest);
-        var array = new JArray();
-        foreach (var item in scanResponse.Items)
-        {
-            if (item.ContainsKey("Data"))
-            {
-                array.Add(JToken.Parse(item["Data"].S));
-            }
-        }
-
-        await PutItemDataAsync(
-            $"CharCollection#{characterUUID}",
-            dataType,
-            array.ToString(Formatting.Indented));
-    }
 }

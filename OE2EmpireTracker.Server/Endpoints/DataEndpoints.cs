@@ -1,31 +1,17 @@
 using System.Security.Claims;
 using System.Text.Json;
-using OE2EmpireTracker.Server.Push;
 using OE2EmpireTracker.Server.Storage;
 
 using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Server.Endpoints;
 
 /// <summary>
-/// Character data CRUD, global/baseline data, sync, and export endpoints.
+/// Global/baseline data, sync, and export endpoints.
 /// </summary>
 public static class DataEndpoints
 {
     public static void MapDataEndpoints(this WebApplication app)
     {
-        // Character data CRUD
-        var charData = app.MapGroup("/api/v1/characters/{uuid}/data")
-            .RequireAuthorization("Authenticated");
-
-        charData.MapGet("/{dataType}/{entityUuid}", GetCharacterEntity);
-        charData.MapPut("/{dataType}/{entityUuid}", UpdateCharacterEntity);
-        charData.MapDelete("/{dataType}/{entityUuid}", DeleteCharacterEntity);
-        charData.MapGet("/{dataType}", GetCharacterDataCollection);
-        charData.MapPut("/{dataType}", PutCharacterDataCollection);
-        charData.MapPost("/{dataType}", CreateCharacterEntity);
-        charData.MapGet("/", GetAllCharacterData);
-        charData.MapPut("/", PutAllCharacterData);
-
         // Global/baseline data
         var global = app.MapGroup("/api/v1/global")
             .RequireAuthorization("Authenticated");
@@ -40,229 +26,6 @@ public static class DataEndpoints
         // Export
         app.MapGet("/api/v1/characters/{uuid}/export", ExportCharacterData)
             .RequireAuthorization("Authenticated");
-    }
-
-    // --- Character Data CRUD ---
-
-    private static async Task<IResult> PutCharacterDataCollection(
-        string uuid,
-        string dataType,
-        HttpContext httpContext,
-        IStorageBackend storage)
-    {
-        if (!CanAccessCharacterData(httpContext, uuid))
-        {
-            return Results.Forbid();
-        }
-
-        var body = await ReadBodyAsStringAsync(httpContext);
-        if (string.IsNullOrWhiteSpace(body))
-        {
-            return Results.BadRequest(new { error = "Request body is required" });
-        }
-
-        await storage.UpsertCharacterDataAsync(uuid, dataType, body);
-
-        LogMutation(httpContext, "Updated", dataType, uuid);
-        await DispatchDataEvent(httpContext, ServerEventType.Updated, dataType, uuid, uuid);
-
-        return Results.Ok(JsonDocument.Parse(body).RootElement);
-    }
-
-    private static async Task<IResult> GetCharacterDataCollection(
-        string uuid,
-        string dataType,
-        HttpContext httpContext,
-        IStorageBackend storage)
-    {
-        if (!CanAccessCharacterData(httpContext, uuid))
-        {
-            return Results.Forbid();
-        }
-
-        var json = await storage.GetCharacterDataAsync(uuid, dataType);
-        if (json == null)
-        {
-            return Results.Ok(JsonDocument.Parse("[]").RootElement);
-        }
-
-        return Results.Content(json, "application/json");
-    }
-
-    private static async Task<IResult> CreateCharacterEntity(
-        string uuid,
-        string dataType,
-        HttpContext httpContext,
-        IStorageBackend storage)
-    {
-        if (!CanAccessCharacterData(httpContext, uuid))
-        {
-            return Results.Forbid();
-        }
-
-        var body = await ReadBodyAsStringAsync(httpContext);
-        if (string.IsNullOrWhiteSpace(body))
-        {
-            return Results.BadRequest(new { error = "Request body is required" });
-        }
-
-        // Parse UUID from body JSON
-        string? entityUuid;
-        try
-        {
-            var doc = JsonDocument.Parse(body);
-            entityUuid = doc.RootElement.TryGetProperty("UUID", out var uuidProp)
-                ? uuidProp.GetString()
-                : null;
-        }
-        catch (JsonException)
-        {
-            return Results.BadRequest(new { error = "Invalid JSON body" });
-        }
-
-        if (string.IsNullOrWhiteSpace(entityUuid))
-        {
-            return Results.BadRequest(new { error = "Body must contain a UUID field" });
-        }
-
-        await storage.UpsertCharacterEntityAsync(uuid, dataType, entityUuid, body);
-
-        LogMutation(httpContext, "Created", dataType, entityUuid);
-        await DispatchDataEvent(httpContext, ServerEventType.Created, dataType, entityUuid, uuid);
-
-        return Results.Created(
-            $"/api/v1/characters/{uuid}/data/{dataType}/{entityUuid}",
-            JsonDocument.Parse(body).RootElement);
-    }
-
-    private static async Task<IResult> GetCharacterEntity(
-        string uuid,
-        string dataType,
-        string entityUuid,
-        HttpContext httpContext,
-        IStorageBackend storage)
-    {
-        if (!CanAccessCharacterData(httpContext, uuid))
-        {
-            return Results.Forbid();
-        }
-
-        var json = await storage.GetCharacterEntityAsync(uuid, dataType, entityUuid);
-        if (json == null)
-        {
-            return Results.NotFound(new { error = "Entity not found" });
-        }
-
-        return Results.Content(json, "application/json");
-    }
-
-    private static async Task<IResult> UpdateCharacterEntity(
-        string uuid,
-        string dataType,
-        string entityUuid,
-        HttpContext httpContext,
-        IStorageBackend storage)
-    {
-        if (!CanAccessCharacterData(httpContext, uuid))
-        {
-            return Results.Forbid();
-        }
-
-        var body = await ReadBodyAsStringAsync(httpContext);
-        if (string.IsNullOrWhiteSpace(body))
-        {
-            return Results.BadRequest(new { error = "Request body is required" });
-        }
-
-        // Validate JSON
-        try
-        {
-            JsonDocument.Parse(body);
-        }
-        catch (JsonException)
-        {
-            return Results.BadRequest(new { error = "Invalid JSON body" });
-        }
-
-        await storage.UpsertCharacterEntityAsync(uuid, dataType, entityUuid, body);
-
-        LogMutation(httpContext, "Updated", dataType, entityUuid);
-        await DispatchDataEvent(httpContext, ServerEventType.Updated, dataType, entityUuid, uuid);
-
-        return Results.Ok(JsonDocument.Parse(body).RootElement);
-    }
-
-    private static async Task<IResult> DeleteCharacterEntity(
-        string uuid,
-        string dataType,
-        string entityUuid,
-        HttpContext httpContext,
-        IStorageBackend storage)
-    {
-        if (!CanAccessCharacterData(httpContext, uuid))
-        {
-            return Results.Forbid();
-        }
-
-        await storage.DeleteCharacterEntityAsync(uuid, dataType, entityUuid);
-
-        LogMutation(httpContext, "Deleted", dataType, entityUuid);
-        await DispatchDataEvent(httpContext, ServerEventType.Deleted, dataType, entityUuid, uuid);
-
-        return Results.NoContent();
-    }
-
-    private static async Task<IResult> GetAllCharacterData(
-        string uuid,
-        HttpContext httpContext,
-        IStorageBackend storage)
-    {
-        if (!CanAccessCharacterData(httpContext, uuid))
-        {
-            return Results.Forbid();
-        }
-
-        var json = await storage.GetAllCharacterDataAsync(uuid);
-        if (json == null)
-        {
-            return Results.Ok(JsonDocument.Parse("{}").RootElement);
-        }
-
-        return Results.Content(json, "application/json");
-    }
-
-    private static async Task<IResult> PutAllCharacterData(
-        string uuid,
-        HttpContext httpContext,
-        IStorageBackend storage)
-    {
-        if (!CanAccessCharacterData(httpContext, uuid))
-        {
-            return Results.Forbid();
-        }
-
-        var body = await ReadBodyAsStringAsync(httpContext);
-        if (string.IsNullOrWhiteSpace(body))
-        {
-            return Results.BadRequest(new { error = "Request body is required" });
-        }
-
-        // Validate JSON
-        try
-        {
-            JsonDocument.Parse(body);
-        }
-        catch (JsonException)
-        {
-            return Results.BadRequest(new { error = "Invalid JSON body" });
-        }
-
-        await storage.PutAllCharacterDataAsync(uuid, body);
-
-        LogMutation(httpContext, "BulkUpdated", "AllData", uuid);
-        await DispatchDataEvent(httpContext, ServerEventType.Updated, "AllData", uuid, uuid);
-
-        return Results.Ok(JsonDocument.Parse(body).RootElement);
     }
 
     // --- Global/Baseline Data ---
@@ -315,19 +78,41 @@ public static class DataEndpoints
 
     // --- Sync ---
 
-    private static async Task<IResult> GetSync(IStorageBackend storage)
+    private static async Task<IResult> GetSync(
+        HttpContext httpContext,
+        IStorageBackend storage)
     {
-        var factions = await storage.GetAllFactionsAsync();
-        var characters = await storage.GetAllCharactersAsync();
+        var allFactions = await storage.GetAllFactionsAsync();
+        var allCharacters = await storage.GetAllCharactersAsync();
 
-        var result = new
+        if (AuthorizationHelper.IsOwner(httpContext))
         {
-            factions,
-            characters,
-            serverTimestamp = SystemClock.UtcNow,
-        };
+            return Results.Ok(new { factions = allFactions, characters = allCharacters, serverTimestamp = SystemClock.UtcNow });
+        }
 
-        return Results.Ok(result);
+        var callerUUID = AuthorizationHelper.GetCallerCharacterUUID(httpContext);
+
+        // Filter factions to only those caller is a member of
+        var accessibleFactions = new List<ServerFaction>();
+        foreach (var faction in allFactions)
+        {
+            if (!string.IsNullOrEmpty(callerUUID) && await AuthorizationHelper.IsFactionMember(callerUUID, faction.UUID, storage))
+            {
+                accessibleFactions.Add(faction);
+            }
+        }
+
+        // Filter characters to only those caller has access to
+        var accessibleCharacters = new List<ServerCharacter>();
+        foreach (var character in allCharacters)
+        {
+            if (await AuthorizationHelper.CanAccessCharacterData(httpContext, character.UUID, storage))
+            {
+                accessibleCharacters.Add(character);
+            }
+        }
+
+        return Results.Ok(new { factions = accessibleFactions, characters = accessibleCharacters, serverTimestamp = SystemClock.UtcNow });
     }
 
     // --- Export ---
@@ -342,13 +127,50 @@ public static class DataEndpoints
             return Results.Forbid();
         }
 
-        var json = await storage.GetAllCharacterDataAsync(uuid);
-        if (json == null)
-        {
-            return Results.Ok(JsonDocument.Parse("{}").RootElement);
-        }
+        var colonies = await storage.GetAllColoniesAsync(uuid);
+        var blueprints = await storage.GetAllBlueprintsAsync(uuid);
+        var surveys = await storage.GetAllSurveysAsync(uuid);
+        var playerProfiles = await storage.GetAllPlayerProfilesAsync(uuid);
+        var deliveryRoutes = await storage.GetAllDeliveryRoutesAsync(uuid);
+        var deliveryPlans = await storage.GetAllDeliveryPlansAsync(uuid);
+        var ships = await storage.GetAllShipsAsync(uuid);
+        var shipTemplates = await storage.GetAllShipTemplatesAsync(uuid);
+        var marketListings = await storage.GetAllMarketListingsAsync(uuid);
+        var marketTransactions = await storage.GetAllMarketTransactionsAsync(uuid);
+        var pricingPlans = await storage.GetAllPricingPlansAsync(uuid);
+        var stockPlans = await storage.GetAllStockPlansAsync(uuid);
+        var stockProfiles = await storage.GetAllStockProfilesAsync(uuid);
+        var buildPlans = await storage.GetAllBuildPlansAsync(uuid);
+        var supplyChains = await storage.GetAllSupplyChainsAsync(uuid);
+        var asteroids = await storage.GetAllAsteroidsAsync(uuid);
+        var stations = await storage.GetAllStationsAsync(uuid);
+        var factions = await storage.GetAllFactionsForCharacterAsync(uuid);
+        var externalCharacters = await storage.GetAllExternalCharactersAsync(uuid);
 
-        return Results.Content(json, "application/json");
+        var result = new
+        {
+            Colony = colonies,
+            Blueprint = blueprints,
+            Survey = surveys,
+            PlayerProfile = playerProfiles,
+            DeliveryRoute = deliveryRoutes,
+            DeliveryPlan = deliveryPlans,
+            Ship = ships,
+            ShipTemplate = shipTemplates,
+            MarketListing = marketListings,
+            MarketTransaction = marketTransactions,
+            PricingPlan = pricingPlans,
+            StockPlan = stockPlans,
+            StockProfile = stockProfiles,
+            BuildPlan = buildPlans,
+            SupplyChain = supplyChains,
+            Asteroid = asteroids,
+            Station = stations,
+            Faction = factions,
+            ExternalCharacter = externalCharacters,
+        };
+
+        return Results.Ok(result);
     }
 
     // --- Helpers ---
@@ -389,22 +211,5 @@ public static class DataEndpoints
             uuid,
             tokenId,
             remoteIp);
-    }
-
-    private static async Task DispatchDataEvent(
-        HttpContext httpContext,
-        ServerEventType eventType,
-        string dataType,
-        string entityUuid,
-        string ownerCharacterUuid)
-    {
-        var dispatcher = httpContext.RequestServices.GetRequiredService<EventDispatcher>();
-        await dispatcher.DispatchEvent(new ServerEvent
-        {
-            EventType = eventType,
-            EntityType = dataType,
-            EntityUUID = entityUuid,
-            OwnerCharacterUUID = ownerCharacterUuid,
-        });
     }
 }

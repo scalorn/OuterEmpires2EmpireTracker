@@ -24,15 +24,6 @@ public interface IStorageBackend
     Task UpsertCharacterAsync(ServerCharacter character);
     Task DeleteCharacterAsync(string uuid);
 
-    // Character Data (per data type — stored as raw JSON)
-    Task<string?> GetCharacterDataAsync(string characterUUID, string dataType);
-    Task<string?> GetCharacterEntityAsync(string characterUUID, string dataType, string entityUUID);
-    Task UpsertCharacterDataAsync(string characterUUID, string dataType, string json);
-    Task UpsertCharacterEntityAsync(string characterUUID, string dataType, string entityUUID, string json);
-    Task DeleteCharacterEntityAsync(string characterUUID, string dataType, string entityUUID);
-    Task<string?> GetAllCharacterDataAsync(string characterUUID);
-    Task PutAllCharacterDataAsync(string characterUUID, string json);
-
     // Global/Baseline Data
     Task<string?> GetGlobalDataAsync(string dataType);
     Task UpsertGlobalDataAsync(string dataType, string json);
