@@ -313,44 +313,44 @@ Replace raw JSON proxy endpoints with strongly-typed CRUD endpoints for 19 domai
 - [x] 28. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 29. Program.cs wiring: Register all 19 endpoint groups
-  - [-] 29.1 Register endpoint groups in Program.cs
+- [x] 29. Program.cs wiring: Register all 19 endpoint groups
+  - [x] 29.1 Register endpoint groups in Program.cs
     - Add MapColonyEndpoints, MapBlueprintEndpoints, MapSurveyEndpoints, MapPlayerProfileEndpoints, MapDeliveryRouteEndpoints, MapDeliveryPlanEndpoints, MapShipEndpoints, MapShipTemplateEndpoints, MapMarketListingEndpoints, MapMarketTransactionEndpoints, MapPricingPlanEndpoints, MapStockPlanEndpoints, MapStockProfileEndpoints, MapBuildPlanEndpoints, MapSupplyChainEndpoints, MapAsteroidEndpoints, MapStationEndpoints, MapFactionContactEndpoints, MapExternalCharacterEndpoints
     - All under /api/v1/ prefix with "Authenticated" policy
     - _Requirements: 28.1, 28.2, 28.3, 28.4, 28.5_
 
-- [ ] 30. Rate limiting configuration
-  - [-] 30.1 Configure rate limiting for typed endpoints
+- [x] 30. Rate limiting configuration
+  - [x] 30.1 Configure rate limiting for typed endpoints
     - Verify existing RateLimitMiddleware applies to typed endpoint routes
     - Ensure 5 TPS per token, sliding window, Owner exempt
     - Verify Retry-After header on 429 responses
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6_
 
-- [ ] 31. JSON serialization configuration
-  - [-] 31.1 Configure System.Text.Json options for typed endpoints
+- [x] 31. JSON serialization configuration
+  - [x] 31.1 Configure System.Text.Json options for typed endpoints
     - Verify JsonSerializerOptions: camelCase, case-insensitive, ignore null, enum converter
     - Ensure Common_Library models have dual annotations (Newtonsoft + STJ)
     - Verify lenient deserialization (extra fields ignored)
     - _Requirements: 23.2, 23.3, 27.1, 27.5, 27.6, 33.2, 33.3, 33.4, 3.8, 3.9_
 
-- [~] 32. Checkpoint
+- [x] 32. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 33. Unit tests: TypedEndpointBase authorization and validation
-  - [~] 33.1 Write unit tests for authorization enforcement in TypedEndpointBase
+- [x] 33. Unit tests: TypedEndpointBase authorization and validation
+  - [x] 33.1 Write unit tests for authorization enforcement in TypedEndpointBase
     - Test 403 for mismatched Character_UUID (non-Owner)
     - Test pass-through for matching Character_UUID
     - Test pass-through for Owner role
     - Test no entity data in 403 response
     - _Requirements: 2.2, 2.3, 2.4, 2.6_
-  - [~] 33.2 Write unit tests for input validation in TypedEndpointBase
+  - [x] 33.2 Write unit tests for input validation in TypedEndpointBase
     - Test 400 for empty body, invalid JSON, missing required fields
     - Test 400 for invalid Character_UUID, invalid Entity_UUID
     - Test 415 for wrong Content-Type
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
 
-- [ ] 34. Unit tests: PaginationHelper
-  - [~] 34.1 Write unit tests for PaginationHelper
+- [x] 34. Unit tests: PaginationHelper
+  - [x] 34.1 Write unit tests for PaginationHelper
     - Test raw array returned when no params
     - Test PaginatedResponse when limit/offset provided
     - Test MaxLimit cap at 500
