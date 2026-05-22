@@ -32,6 +32,310 @@ public abstract class TypedEndpointBase<TEntity, TCreate, TUpdate>
     protected abstract string RoutePrefix { get; }
 
     /// <summary>
+    /// Handles GET requests for all entities of this type belonging to a character.
+    /// Validates the character UUID, checks authorization, retrieves all entities
+    /// from storage, and applies pagination if requested.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="limit">Optional maximum number of items to return.</param>
+    /// <param name="offset">Optional number of items to skip.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the entity collection or an error response.</returns>
+    public async Task<IResult> HandleGetAll(
+        string uuid, int? limit, int? offset, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        var items = await GetAllFromStorage(uuid, storage);
+        return PaginationHelper.ApplyPagination(items, limit, offset);
+    }
+
+    /// <summary>
+    /// Handles GET requests for a single entity by UUID.
+    /// Validates both UUIDs, checks authorization, retrieves the entity
+    /// from storage, and returns 404 if not found.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The entity UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the entity or an error response.</returns>
+    public async Task<IResult> HandleGetOne(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var entity = await GetFromStorage(uuid, entityUuid, storage);
+        if (entity == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        return Results.Ok(entity);
+    }
+
+    /// <summary>
+    /// Handles POST requests to create a new entity.
+    /// Validates the character UUID, checks authorization, reads and validates
+    /// the request body, checks for duplicates, persists the entity, logs the
+    /// mutation, dispatches an event, and returns 201 with a Location header.
+    /// Rolls back on logging or event dispatch failure.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the created entity or an error response.</returns>
+    public async Task<IResult> HandleCreate(string uuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (!HasJsonContentType(ctx))
+        {
+            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
+        }
+
+        TCreate? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<TCreate>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        var validationError = ValidateCreate(dto);
+        if (validationError != null)
+        {
+            return Results.BadRequest(new { error = validationError });
+        }
+
+        var dedupResult = await HandleCreateDedup(uuid, dto, storage);
+        if (dedupResult != null)
+        {
+            return dedupResult;
+        }
+
+        var entity = ApplyCreate(dto);
+        var entityUuid = GetEntityUuid(entity);
+
+        await UpsertToStorage(uuid, entity, storage);
+
+        try
+        {
+            LogMutation(ctx, "Created", entityUuid);
+        }
+        catch (Exception)
+        {
+            // Rollback: delete the newly created entity
+            await DeleteFromStorage(uuid, entityUuid, storage);
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Created, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            // Rollback: delete the newly created entity
+            await DeleteFromStorage(uuid, entityUuid, storage);
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        var location = $"/api/v1/characters/{uuid}/{RoutePrefix}/{entityUuid}";
+        return Results.Created(location, entity);
+    }
+
+    /// <summary>
+    /// Handles PUT requests to update an existing entity.
+    /// Validates both UUIDs, checks authorization, reads and validates
+    /// the request body, retrieves the existing entity, applies the update,
+    /// persists, logs, and dispatches an event. Rolls back on failure.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The entity UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> containing the updated entity or an error response.</returns>
+    public async Task<IResult> HandleUpdate(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        if (!HasJsonContentType(ctx))
+        {
+            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
+        }
+
+        TUpdate? dto;
+        try
+        {
+            dto = await ctx.Request.ReadFromJsonAsync<TUpdate>();
+        }
+        catch (JsonException)
+        {
+            return Results.BadRequest(new { error = "Invalid request body" });
+        }
+
+        if (dto == null)
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        var validationError = ValidateUpdate(dto);
+        if (validationError != null)
+        {
+            return Results.BadRequest(new { error = validationError });
+        }
+
+        var existing = await GetFromStorage(uuid, entityUuid, storage);
+        if (existing == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        var previousState = existing;
+        var updated = ApplyUpdate(existing, dto);
+
+        await UpsertToStorage(uuid, updated, storage);
+
+        try
+        {
+            LogMutation(ctx, "Updated", entityUuid);
+        }
+        catch (Exception)
+        {
+            // Rollback: restore previous state
+            await UpsertToStorage(uuid, previousState, storage);
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Updated, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            // Rollback: restore previous state
+            await UpsertToStorage(uuid, previousState, storage);
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.Ok(updated);
+    }
+
+    /// <summary>
+    /// Handles DELETE requests to remove an entity.
+    /// Validates both UUIDs, checks authorization, retrieves the entity
+    /// (for rollback), deletes from storage, logs, and dispatches an event.
+    /// Rolls back on failure by re-upserting the deleted entity.
+    /// </summary>
+    /// <param name="uuid">The character UUID from the URL path.</param>
+    /// <param name="entityUuid">The entity UUID from the URL path.</param>
+    /// <param name="ctx">The current HTTP context.</param>
+    /// <param name="storage">The storage backend.</param>
+    /// <returns>An <see cref="IResult"/> indicating success or an error response.</returns>
+    public async Task<IResult> HandleDelete(
+        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
+    {
+        if (string.IsNullOrWhiteSpace(uuid))
+        {
+            return Results.BadRequest(new { error = "Invalid character UUID" });
+        }
+
+        if (!CanAccessCharacterData(ctx, uuid))
+        {
+            return Results.Json(new { error = "Access denied" }, statusCode: 403);
+        }
+
+        if (string.IsNullOrWhiteSpace(entityUuid))
+        {
+            return Results.BadRequest(new { error = "Invalid entity UUID" });
+        }
+
+        var existing = await GetFromStorage(uuid, entityUuid, storage);
+        if (existing == null)
+        {
+            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
+        }
+
+        await DeleteFromStorage(uuid, entityUuid, storage);
+
+        try
+        {
+            LogMutation(ctx, "Deleted", entityUuid);
+        }
+        catch (Exception)
+        {
+            // Rollback: re-upsert the deleted entity
+            await UpsertToStorage(uuid, existing, storage);
+            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
+        }
+
+        try
+        {
+            await DispatchEvent(ctx, ServerEventType.Deleted, entityUuid, uuid);
+        }
+        catch (Exception)
+        {
+            // Rollback: re-upsert the deleted entity
+            await UpsertToStorage(uuid, existing, storage);
+            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
+        }
+
+        return Results.NoContent();
+    }
+
+    /// <summary>
     /// Checks whether the current request is authorized to access the
     /// specified character's data.
     /// </summary>
@@ -123,6 +427,29 @@ public abstract class TypedEndpointBase<TEntity, TCreate, TUpdate>
     protected abstract TEntity ApplyUpdate(TEntity existing, TUpdate dto);
 
     /// <summary>
+    /// Persists an entity to storage (insert or update).
+    /// </summary>
+    /// <param name="characterUUID">The owning character's UUID.</param>
+    /// <param name="entity">The entity to persist.</param>
+    /// <param name="storage">The storage backend.</param>
+    protected abstract Task UpsertToStorage(string characterUUID, TEntity entity, IStorageBackend storage);
+
+    /// <summary>
+    /// Deletes an entity from storage.
+    /// </summary>
+    /// <param name="characterUUID">The owning character's UUID.</param>
+    /// <param name="entityUUID">The UUID of the entity to delete.</param>
+    /// <param name="storage">The storage backend.</param>
+    protected abstract Task DeleteFromStorage(string characterUUID, string entityUUID, IStorageBackend storage);
+
+    /// <summary>
+    /// Extracts the UUID from an entity instance.
+    /// </summary>
+    /// <param name="entity">The entity to extract the UUID from.</param>
+    /// <returns>The entity's UUID string.</returns>
+    protected abstract string GetEntityUuid(TEntity entity);
+
+    /// <summary>
     /// Hook for handling create deduplication. Override to check for
     /// existing entities that match the create request and return a
     /// merge result instead of creating a new entity.
@@ -160,333 +487,6 @@ public abstract class TypedEndpointBase<TEntity, TCreate, TUpdate>
             entityUuid,
             tokenId,
             remoteIp);
-    }
-
-    /// <summary>
-    /// Handles GET requests for all entities of this type belonging to a character.
-    /// Validates the character UUID, checks authorization, retrieves all entities
-    /// from storage, and applies pagination if requested.
-    /// </summary>
-    /// <param name="uuid">The character UUID from the URL path.</param>
-    /// <param name="limit">Optional maximum number of items to return.</param>
-    /// <param name="offset">Optional number of items to skip.</param>
-    /// <param name="ctx">The current HTTP context.</param>
-    /// <param name="storage">The storage backend.</param>
-    /// <returns>An <see cref="IResult"/> containing the entity collection or an error response.</returns>
-    protected async Task<IResult> HandleGetAll(
-        string uuid, int? limit, int? offset, HttpContext ctx, IStorageBackend storage)
-    {
-        if (string.IsNullOrWhiteSpace(uuid))
-        {
-            return Results.BadRequest(new { error = "Invalid character UUID" });
-        }
-
-        if (!CanAccessCharacterData(ctx, uuid))
-        {
-            return Results.Json(new { error = "Access denied" }, statusCode: 403);
-        }
-
-        var items = await GetAllFromStorage(uuid, storage);
-        return PaginationHelper.ApplyPagination(items, limit, offset);
-    }
-
-    /// <summary>
-    /// Handles GET requests for a single entity by UUID.
-    /// Validates both UUIDs, checks authorization, retrieves the entity
-    /// from storage, and returns 404 if not found.
-    /// </summary>
-    /// <param name="uuid">The character UUID from the URL path.</param>
-    /// <param name="entityUuid">The entity UUID from the URL path.</param>
-    /// <param name="ctx">The current HTTP context.</param>
-    /// <param name="storage">The storage backend.</param>
-    /// <returns>An <see cref="IResult"/> containing the entity or an error response.</returns>
-    protected async Task<IResult> HandleGetOne(
-        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
-    {
-        if (string.IsNullOrWhiteSpace(uuid))
-        {
-            return Results.BadRequest(new { error = "Invalid character UUID" });
-        }
-
-        if (!CanAccessCharacterData(ctx, uuid))
-        {
-            return Results.Json(new { error = "Access denied" }, statusCode: 403);
-        }
-
-        if (string.IsNullOrWhiteSpace(entityUuid))
-        {
-            return Results.BadRequest(new { error = "Invalid entity UUID" });
-        }
-
-        var entity = await GetFromStorage(uuid, entityUuid, storage);
-        if (entity == null)
-        {
-            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
-        }
-
-        return Results.Ok(entity);
-    }
-
-    /// <summary>
-    /// Persists an entity to storage (insert or update).
-    /// </summary>
-    /// <param name="characterUUID">The owning character's UUID.</param>
-    /// <param name="entity">The entity to persist.</param>
-    /// <param name="storage">The storage backend.</param>
-    protected abstract Task UpsertToStorage(string characterUUID, TEntity entity, IStorageBackend storage);
-
-    /// <summary>
-    /// Deletes an entity from storage.
-    /// </summary>
-    /// <param name="characterUUID">The owning character's UUID.</param>
-    /// <param name="entityUUID">The UUID of the entity to delete.</param>
-    /// <param name="storage">The storage backend.</param>
-    protected abstract Task DeleteFromStorage(string characterUUID, string entityUUID, IStorageBackend storage);
-
-    /// <summary>
-    /// Extracts the UUID from an entity instance.
-    /// </summary>
-    /// <param name="entity">The entity to extract the UUID from.</param>
-    /// <returns>The entity's UUID string.</returns>
-    protected abstract string GetEntityUuid(TEntity entity);
-
-    /// <summary>
-    /// Handles POST requests to create a new entity.
-    /// Validates the character UUID, checks authorization, reads and validates
-    /// the request body, checks for duplicates, persists the entity, logs the
-    /// mutation, dispatches an event, and returns 201 with a Location header.
-    /// Rolls back on logging or event dispatch failure.
-    /// </summary>
-    /// <param name="uuid">The character UUID from the URL path.</param>
-    /// <param name="ctx">The current HTTP context.</param>
-    /// <param name="storage">The storage backend.</param>
-    /// <returns>An <see cref="IResult"/> containing the created entity or an error response.</returns>
-    protected async Task<IResult> HandleCreate(string uuid, HttpContext ctx, IStorageBackend storage)
-    {
-        if (string.IsNullOrWhiteSpace(uuid))
-        {
-            return Results.BadRequest(new { error = "Invalid character UUID" });
-        }
-
-        if (!CanAccessCharacterData(ctx, uuid))
-        {
-            return Results.Json(new { error = "Access denied" }, statusCode: 403);
-        }
-
-        if (!HasJsonContentType(ctx))
-        {
-            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
-        }
-
-        TCreate? dto;
-        try
-        {
-            dto = await ctx.Request.ReadFromJsonAsync<TCreate>();
-        }
-        catch (JsonException)
-        {
-            return Results.BadRequest(new { error = "Invalid request body" });
-        }
-
-        if (dto == null)
-        {
-            return Results.BadRequest(new { error = "Request body is required" });
-        }
-
-        var validationError = ValidateCreate(dto);
-        if (validationError != null)
-        {
-            return Results.BadRequest(new { error = validationError });
-        }
-
-        var dedupResult = await HandleCreateDedup(uuid, dto, storage);
-        if (dedupResult != null)
-        {
-            return dedupResult;
-        }
-
-        var entity = ApplyCreate(dto);
-        var entityUuid = GetEntityUuid(entity);
-
-        await UpsertToStorage(uuid, entity, storage);
-
-        try
-        {
-            LogMutation(ctx, "Created", entityUuid);
-        }
-        catch (Exception)
-        {
-            // Rollback: delete the newly created entity
-            await DeleteFromStorage(uuid, entityUuid, storage);
-            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
-        }
-
-        try
-        {
-            await DispatchEvent(ctx, ServerEventType.Created, entityUuid, uuid);
-        }
-        catch (Exception)
-        {
-            // Rollback: delete the newly created entity
-            await DeleteFromStorage(uuid, entityUuid, storage);
-            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
-        }
-
-        var location = $"/api/v1/characters/{uuid}/{RoutePrefix}/{entityUuid}";
-        return Results.Created(location, entity);
-    }
-
-    /// <summary>
-    /// Handles PUT requests to update an existing entity.
-    /// Validates both UUIDs, checks authorization, reads and validates
-    /// the request body, retrieves the existing entity, applies the update,
-    /// persists, logs, and dispatches an event. Rolls back on failure.
-    /// </summary>
-    /// <param name="uuid">The character UUID from the URL path.</param>
-    /// <param name="entityUuid">The entity UUID from the URL path.</param>
-    /// <param name="ctx">The current HTTP context.</param>
-    /// <param name="storage">The storage backend.</param>
-    /// <returns>An <see cref="IResult"/> containing the updated entity or an error response.</returns>
-    protected async Task<IResult> HandleUpdate(
-        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
-    {
-        if (string.IsNullOrWhiteSpace(uuid))
-        {
-            return Results.BadRequest(new { error = "Invalid character UUID" });
-        }
-
-        if (!CanAccessCharacterData(ctx, uuid))
-        {
-            return Results.Json(new { error = "Access denied" }, statusCode: 403);
-        }
-
-        if (string.IsNullOrWhiteSpace(entityUuid))
-        {
-            return Results.BadRequest(new { error = "Invalid entity UUID" });
-        }
-
-        if (!HasJsonContentType(ctx))
-        {
-            return Results.Json(new { error = "Unsupported media type" }, statusCode: 415);
-        }
-
-        TUpdate? dto;
-        try
-        {
-            dto = await ctx.Request.ReadFromJsonAsync<TUpdate>();
-        }
-        catch (JsonException)
-        {
-            return Results.BadRequest(new { error = "Invalid request body" });
-        }
-
-        if (dto == null)
-        {
-            return Results.BadRequest(new { error = "Request body is required" });
-        }
-
-        var validationError = ValidateUpdate(dto);
-        if (validationError != null)
-        {
-            return Results.BadRequest(new { error = validationError });
-        }
-
-        var existing = await GetFromStorage(uuid, entityUuid, storage);
-        if (existing == null)
-        {
-            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
-        }
-
-        var previousState = existing;
-        var updated = ApplyUpdate(existing, dto);
-
-        await UpsertToStorage(uuid, updated, storage);
-
-        try
-        {
-            LogMutation(ctx, "Updated", entityUuid);
-        }
-        catch (Exception)
-        {
-            // Rollback: restore previous state
-            await UpsertToStorage(uuid, previousState, storage);
-            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
-        }
-
-        try
-        {
-            await DispatchEvent(ctx, ServerEventType.Updated, entityUuid, uuid);
-        }
-        catch (Exception)
-        {
-            // Rollback: restore previous state
-            await UpsertToStorage(uuid, previousState, storage);
-            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
-        }
-
-        return Results.Ok(updated);
-    }
-
-    /// <summary>
-    /// Handles DELETE requests to remove an entity.
-    /// Validates both UUIDs, checks authorization, retrieves the entity
-    /// (for rollback), deletes from storage, logs, and dispatches an event.
-    /// Rolls back on failure by re-upserting the deleted entity.
-    /// </summary>
-    /// <param name="uuid">The character UUID from the URL path.</param>
-    /// <param name="entityUuid">The entity UUID from the URL path.</param>
-    /// <param name="ctx">The current HTTP context.</param>
-    /// <param name="storage">The storage backend.</param>
-    /// <returns>An <see cref="IResult"/> indicating success or an error response.</returns>
-    protected async Task<IResult> HandleDelete(
-        string uuid, string entityUuid, HttpContext ctx, IStorageBackend storage)
-    {
-        if (string.IsNullOrWhiteSpace(uuid))
-        {
-            return Results.BadRequest(new { error = "Invalid character UUID" });
-        }
-
-        if (!CanAccessCharacterData(ctx, uuid))
-        {
-            return Results.Json(new { error = "Access denied" }, statusCode: 403);
-        }
-
-        if (string.IsNullOrWhiteSpace(entityUuid))
-        {
-            return Results.BadRequest(new { error = "Invalid entity UUID" });
-        }
-
-        var existing = await GetFromStorage(uuid, entityUuid, storage);
-        if (existing == null)
-        {
-            return Results.NotFound(new { error = $"{EntityTypeName} not found" });
-        }
-
-        await DeleteFromStorage(uuid, entityUuid, storage);
-
-        try
-        {
-            LogMutation(ctx, "Deleted", entityUuid);
-        }
-        catch (Exception)
-        {
-            // Rollback: re-upsert the deleted entity
-            await UpsertToStorage(uuid, existing, storage);
-            return Results.Json(new { error = "Internal server error" }, statusCode: 500);
-        }
-
-        try
-        {
-            await DispatchEvent(ctx, ServerEventType.Deleted, entityUuid, uuid);
-        }
-        catch (Exception)
-        {
-            // Rollback: re-upsert the deleted entity
-            await UpsertToStorage(uuid, existing, storage);
-            return Results.Json(new { error = "Event system temporarily unavailable" }, statusCode: 503);
-        }
-
-        return Results.NoContent();
     }
 
     /// <summary>
