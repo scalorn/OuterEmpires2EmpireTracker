@@ -138,13 +138,13 @@ graph TD
 
 ### Phase 7: Desktop App — FormSharing
 
-- [-] 8.1 Create FormSharing Designer layout (Designer.cs + .resx)
+- [x] 8.1 Create FormSharing Designer layout (Designer.cs + .resx)
   - Satisfies: Req 3, Criteria 1, 3 ("FormSharing form accessible from main menu"; "DataGridView with columns")
   - Inputs: Design mockup layout
   - Output: `OE2EmpireTracker/Forms/Sharing/FormSharing.cs`, `FormSharing.Designer.cs`, `FormSharing.resx`
   - Verification: getDiagnostics clean; form opens in designer
 
-- [~] 8.2 Implement FormSharing behavior (load, save, add, delete, validation)
+- [-] 8.2 Implement FormSharing behavior (load, save, add, delete, validation)
   - Satisfies: Req 3, Criteria 2, 4-8 ("load rules on open"; "add rule"; "save rules"; "delete rule"; "error on save"; "reload on player change"); Req 5, Criterion 5 ("Public in Target Type dropdown"); Req 6, Criterion 6 ("rule appears immediately"); Req 7, Criterion 5 ("disable save with empty UUID")
   - Inputs: FormSharing.Designer.cs, RemoteFactionClient, SharingRuleDto
   - Output: Modified FormSharing.cs with full behavior implementation
