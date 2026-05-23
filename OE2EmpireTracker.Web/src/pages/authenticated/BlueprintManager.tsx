@@ -29,7 +29,7 @@ export function BlueprintManager() {
     const uuid = crypto.randomUUID();
     createOrUpdate.mutate({
       entityUUID: uuid,
-      data: { uuid, name: 'New Blueprint', blueprintType: 'Ship', techLevel: 1 },
+      data: { name: 'New Blueprint', blueprintType: 'Ship', techLevel: 1, evolution: 0, isGlobal: false, properties: {}, resources: [] },
     });
   };
 

@@ -30,13 +30,13 @@ export function ColonyManager() {
   if (isLoading) return <LoadingSpinner message="Loading colonies..." />;
   if (isError) return <RetryableError message="Failed to load colonies." onRetry={() => void refetch()} />;
 
-  const colonies = (Array.isArray(data) ? data : []) as Record<string, unknown>[];
+  const colonies = (Array.isArray(data) ? data : []) as unknown as Record<string, unknown>[];
 
   const handleCreate = () => {
     const uuid = crypto.randomUUID();
     createOrUpdate.mutate({
       entityUUID: uuid,
-      data: { UUID: uuid, Name: 'New Colony', Structures: [] },
+      data: { colonyName: 'New Colony', planetName: '', systemName: '', structures: [], items: [], commodityRequests: [] },
     });
   };
 
@@ -51,7 +51,7 @@ export function ColonyManager() {
     if (colony) {
       createOrUpdate.mutate({
         entityUUID: uuid,
-        data: { ...colony, Name: editName },
+        data: { colonyName: editName },
       });
     }
     setEditingId(null);

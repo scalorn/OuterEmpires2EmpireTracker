@@ -52,7 +52,7 @@ export function ColonyPlanner() {
 
   const handleLoadColony = () => {
     if (!coloniesData || !Array.isArray(coloniesData)) return;
-    const colonies = coloniesData as Record<string, unknown>[];
+    const colonies = coloniesData as unknown as Record<string, unknown>[];
     if (colonies.length === 0) return;
     const colony = colonies[0];
     const colStructures = colony.Structures ?? colony.structures;

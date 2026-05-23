@@ -22,13 +22,13 @@ export function SurveyManager() {
   if (isLoading) return <LoadingSpinner message="Loading surveys..." />;
   if (isError) return <RetryableError message="Failed to load surveys." onRetry={() => void refetch()} />;
 
-  const surveys = (Array.isArray(data) ? data : []) as Record<string, unknown>[];
+  const surveys = (Array.isArray(data) ? data : []) as unknown as Record<string, unknown>[];
 
   const handleCreate = () => {
     const uuid = crypto.randomUUID();
     createOrUpdate.mutate({
       entityUUID: uuid,
-      data: { UUID: uuid, System: 'New System', Planet: 'Unknown', ResourceType: 'Ore', Purity: 'Medium' },
+      data: { systemName: 'New System', planetName: 'Unknown', surveyType: 'Planet', resources: [] },
     });
   };
 
@@ -41,7 +41,7 @@ export function SurveyManager() {
   const handleSaveEdit = (uuid: string) => {
     const survey = surveys.find((s) => String(s.UUID ?? s.uuid) === uuid);
     if (survey) {
-      createOrUpdate.mutate({ entityUUID: uuid, data: { ...survey, System: editSystem } });
+      createOrUpdate.mutate({ entityUUID: uuid, data: { systemName: editSystem } });
     }
     setEditingId(null);
   };
