@@ -17,32 +17,51 @@ export function SharingConfig() {
   const [editTargetType, setEditTargetType] = useState<SharingTargetType>('Faction');
   const [editTargetUUID, setEditTargetUUID] = useState('');
   const [editDataType, setEditDataType] = useState<DataType | null>(null);
+  const [mutationError, setMutationError] = useState<string | null>(null);
 
   if (isLoading) return <LoadingSpinner message="Loading sharing rules..." />;
   if (isError) return <RetryableError message="Failed to load sharing rules." onRetry={() => void refetch()} />;
 
   const rules = (Array.isArray(data) ? data : []) as SharingRule[];
 
+  const isPublicTarget = editTargetType === 'Public';
+  const isSaveDisabled = !isPublicTarget && !editTargetUUID.trim();
+
   const handleAddRule = () => {
-    if (!editTargetUUID.trim()) return;
+    const targetUUID = isPublicTarget ? 'public' : editTargetUUID.trim();
+    if (!targetUUID) return;
+
     const newRule: SharingRule = {
       id: crypto.randomUUID(),
       ownerCharacterUUID: characterUUID ?? '',
       targetType: editTargetType,
-      targetUUID: editTargetUUID.trim(),
+      targetUUID,
       dataType: editDataType as string | null,
       entityUUID: null,
     };
     const updated = [...rules, newRule];
-    mutation.mutate(updated);
-    setShowEditor(false);
-    setEditTargetUUID('');
-    setEditDataType(null);
+    setMutationError(null);
+    mutation.mutate(updated, {
+      onSuccess: () => {
+        setShowEditor(false);
+        setEditTargetUUID('');
+        setEditDataType(null);
+        setEditTargetType('Faction');
+      },
+      onError: () => {
+        setMutationError('Failed to save sharing rule. Please try again.');
+      },
+    });
   };
 
   const handleDeleteRule = (id: string) => {
     const updated = rules.filter((r) => r.id !== id);
-    mutation.mutate(updated);
+    setMutationError(null);
+    mutation.mutate(updated, {
+      onError: () => {
+        setMutationError('Failed to delete sharing rule. Please try again.');
+      },
+    });
   };
 
   return (
@@ -57,6 +76,12 @@ export function SharingConfig() {
         </button>
       </div>
 
+      {mutationError && (
+        <div className="mb-4 rounded border border-red-700 bg-red-900/30 p-3 text-sm text-red-300">
+          {mutationError}
+        </div>
+      )}
+
       {showEditor && (
         <div className="mb-6 rounded border border-gray-700 p-4">
           <h2 className="mb-3 text-lg font-semibold text-gray-200">New Sharing Rule</h2>
@@ -65,7 +90,12 @@ export function SharingConfig() {
               <label className="mb-1 block text-sm text-gray-400">Target Type</label>
               <select
                 value={editTargetType}
-                onChange={(e) => setEditTargetType(e.target.value as SharingTargetType)}
+                onChange={(e) => {
+                  setEditTargetType(e.target.value as SharingTargetType);
+                  if (e.target.value === 'Public') {
+                    setEditTargetUUID('');
+                  }
+                }}
                 className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
               >
                 {TARGET_TYPES.map((t) => (
@@ -73,16 +103,18 @@ export function SharingConfig() {
                 ))}
               </select>
             </div>
-            <div>
-              <label className="mb-1 block text-sm text-gray-400">Target UUID</label>
-              <input
-                type="text"
-                value={editTargetUUID}
-                onChange={(e) => setEditTargetUUID(e.target.value)}
-                placeholder={`${editTargetType} UUID`}
-                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-500"
-              />
-            </div>
+            {!isPublicTarget && (
+              <div>
+                <label className="mb-1 block text-sm text-gray-400">Target UUID</label>
+                <input
+                  type="text"
+                  value={editTargetUUID}
+                  onChange={(e) => setEditTargetUUID(e.target.value)}
+                  placeholder={`${editTargetType} UUID`}
+                  className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-500"
+                />
+              </div>
+            )}
             <div>
               <label className="mb-1 block text-sm text-gray-400">Data Type</label>
               <select
@@ -98,10 +130,10 @@ export function SharingConfig() {
             </div>
             <button
               onClick={handleAddRule}
-              disabled={!editTargetUUID.trim()}
+              disabled={isSaveDisabled || mutation.isPending}
               className="rounded bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700 disabled:opacity-50"
             >
-              Save Rule
+              {mutation.isPending ? 'Saving...' : 'Save Rule'}
             </button>
           </div>
         </div>
@@ -116,7 +148,9 @@ export function SharingConfig() {
               <div>
                 <p className="text-sm text-white">
                   <span className="font-medium">{rule.targetType}</span>
-                  <span className="ml-2 text-gray-400">{rule.targetUUID}</span>
+                  {rule.targetType !== 'Public' && (
+                    <span className="ml-2 text-gray-400">{rule.targetUUID}</span>
+                  )}
                 </p>
                 <p className="mt-1 text-xs text-gray-400">
                   Sharing: {rule.dataType ?? 'All data types'}
@@ -124,7 +158,8 @@ export function SharingConfig() {
               </div>
               <button
                 onClick={() => handleDeleteRule(rule.id)}
-                className="text-sm text-red-400 hover:text-red-300"
+                disabled={mutation.isPending}
+                className="text-sm text-red-400 hover:text-red-300 disabled:opacity-50"
               >
                 Delete
               </button>

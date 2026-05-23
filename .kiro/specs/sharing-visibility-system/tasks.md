@@ -110,13 +110,13 @@ graph TD
 
 ### Phase 5: Web UI — Sharing Configuration
 
-- [-] 6.1 Update generated.ts types and add Public to SharingConfig target types
+- [x] 6.1 Update generated.ts types and add Public to SharingConfig target types
   - Satisfies: Req 5, Criterion 4 ("Web_UI SHALL include Public as selectable target type"); Req 4, Criteria 1, 3-4
   - Inputs: generated.ts, SharingConfig.tsx
   - Output: Modified generated.ts with `'Public'` in SharingTargetType; SharingConfig TARGET_TYPES updated
   - Verification: TypeScript compiles clean
 
-- [~] 6.2 Add Public target type UX and validation to SharingConfig
+- [x] 6.2 Add Public target type UX and validation to SharingConfig
   - Satisfies: Req 4, Criteria 2, 5-6 ("validate Target UUID non-empty"; "refresh after mutation"; "error notification"); Req 5, Criterion 4; Req 6, Criterion 6
   - Inputs: SharingConfig.tsx
   - Output: Modified SharingConfig with UUID validation disabling save, Public target hiding UUID field, optimistic update after save, error notification
