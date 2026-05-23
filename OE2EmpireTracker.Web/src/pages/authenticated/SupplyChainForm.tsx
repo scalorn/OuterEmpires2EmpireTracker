@@ -10,7 +10,8 @@ import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
-import type { SupplyChain } from '../../api/types/domain';
+import { moveUp, moveDown, resequence } from '../../utils/reorderUtils';
+import type { SupplyChain, SupplyChainStep } from '../../api/types/domain';
 
 interface FormState {
   name: string;
@@ -45,6 +46,7 @@ export function SupplyChainForm() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isNewMode, setIsNewMode] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm);
+  const [localSteps, setLocalSteps] = useState<SupplyChainStep[]>([]);
   const [isDirty, setIsDirty] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [filterValues, setFilterValues] = useState<FilterValues>({ search: '' });
@@ -86,6 +88,7 @@ export function SupplyChainForm() {
     const chain = chains?.find((c) => c.uuid === uuid);
     if (chain) {
       setForm(formFromChain(chain));
+      setLocalSteps([...chain.steps].sort((a, b) => a.sequence - b.sequence));
       setIsDirty(false);
     }
   }, [chains]);
@@ -93,6 +96,7 @@ export function SupplyChainForm() {
   const handleBack = useCallback(() => {
     setSelectedId(null);
     setIsNewMode(false);
+    setLocalSteps([]);
     setIsDirty(false);
   }, []);
 
@@ -100,6 +104,7 @@ export function SupplyChainForm() {
     setSelectedId('new');
     setIsNewMode(true);
     setForm(emptyForm);
+    setLocalSteps([]);
     setIsDirty(false);
   }, []);
 
@@ -108,35 +113,79 @@ export function SupplyChainForm() {
     setIsDirty(true);
   }, []);
 
+  // Step management handlers
+  const handleAddStep = useCallback((resourceOrCommodity: string, quantity: number, processingType: string) => {
+    const newStep: SupplyChainStep = {
+      uuid: crypto.randomUUID(),
+      resourceOrCommodity,
+      quantity,
+      processingType,
+      sequence: localSteps.length + 1,
+    };
+    setLocalSteps((prev) => [...prev, newStep]);
+    setIsDirty(true);
+  }, [localSteps.length]);
+
+  const handleRemoveStep = useCallback((index: number) => {
+    setLocalSteps((prev) => resequence(prev.filter((_, i) => i !== index)));
+    setIsDirty(true);
+  }, []);
+
+  const handleMoveStepUp = useCallback((index: number) => {
+    setLocalSteps((prev) => resequence(moveUp(prev, index)));
+    setIsDirty(true);
+  }, []);
+
+  const handleMoveStepDown = useCallback((index: number) => {
+    setLocalSteps((prev) => resequence(moveDown(prev, index)));
+    setIsDirty(true);
+  }, []);
+
   const handleSave = useCallback(async () => {
+    const stepsPayload = localSteps.map((s) => ({
+      resourceOrCommodity: s.resourceOrCommodity,
+      quantity: s.quantity,
+      processingType: s.processingType,
+      sequence: s.sequence,
+    }));
+
     if (isNewMode) {
       const result = await save.mutateAsync({
         data: {
           name: form.name,
           sourceColonyUUID: form.sourceColonyUUID,
           destinationColonyUUID: form.destinationColonyUUID,
+          steps: stepsPayload,
         },
       });
       setSelectedId(result.uuid);
       setIsNewMode(false);
+      if (result.steps) {
+        setLocalSteps([...result.steps].sort((a, b) => a.sequence - b.sequence));
+      }
     } else if (selectedId) {
-      await save.mutateAsync({
+      const result = await save.mutateAsync({
         entityUUID: selectedId,
         data: {
           name: form.name,
           sourceColonyUUID: form.sourceColonyUUID,
           destinationColonyUUID: form.destinationColonyUUID,
+          steps: stepsPayload,
         },
       });
+      if (result.steps) {
+        setLocalSteps([...result.steps].sort((a, b) => a.sequence - b.sequence));
+      }
     }
     setIsDirty(false);
-  }, [isNewMode, selectedId, form, save]);
+  }, [isNewMode, selectedId, form, localSteps, save]);
 
   const handleDelete = useCallback(async () => {
     if (!selectedId || isNewMode) return;
     await remove.mutateAsync(selectedId);
     setSelectedId(null);
     setForm(emptyForm);
+    setLocalSteps([]);
     setIsDirty(false);
     setShowDeleteConfirm(false);
   }, [selectedId, isNewMode, remove]);
@@ -146,6 +195,7 @@ export function SupplyChainForm() {
   const [lastSyncedUUID, setLastSyncedUUID] = useState<string | null>(null);
   if (selectedChain && detailUUID !== lastSyncedUUID && !isNewMode && !isDirty) {
     setForm(formFromChain(selectedChain));
+    setLocalSteps([...selectedChain.steps].sort((a, b) => a.sequence - b.sequence));
     setLastSyncedUUID(detailUUID ?? null);
   }
 
@@ -258,15 +308,14 @@ export function SupplyChainForm() {
               />
             </div>
 
-            {/* Steps section placeholder — implemented in task 16.2 */}
-            {!isNewMode && selectedChain && selectedChain.steps.length > 0 && (
-              <div className="pt-4">
-                <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-400">
-                  Steps ({selectedChain.steps.length})
-                </h3>
-                <p className="text-xs text-gray-500">Step management will be available in a future update.</p>
-              </div>
-            )}
+            {/* Steps section */}
+            <StepsSection
+              steps={localSteps}
+              onAddStep={handleAddStep}
+              onRemoveStep={handleRemoveStep}
+              onMoveUp={handleMoveStepUp}
+              onMoveDown={handleMoveStepDown}
+            />
           </div>
         </div>
       )}

@@ -10,19 +10,28 @@ import { SurveyBrowser } from './pages/public/SurveyBrowser';
 import { SurveyDetail } from './pages/public/SurveyDetail';
 import { ColonyPlanner } from './pages/planner/ColonyPlanner';
 import { Dashboard } from './pages/authenticated/Dashboard';
-import { ColonyManager } from './pages/authenticated/ColonyManager';
-import { BlueprintManager } from './pages/authenticated/BlueprintManager';
-import { SurveyManager } from './pages/authenticated/SurveyManager';
-import { ProfileEditor } from './pages/authenticated/ProfileEditor';
-import { FactionView } from './pages/authenticated/FactionView';
-import { SharingConfig } from './pages/authenticated/SharingConfig';
-import { ColonyActivityPage } from './pages/authenticated/ColonyActivityPage';
+import { ColonyForm } from './pages/authenticated/ColonyForm';
+import { BlueprintForm } from './pages/authenticated/BlueprintForm';
+import { SurveyForm } from './pages/authenticated/SurveyForm';
+import { ProfileForm } from './pages/authenticated/ProfileForm';
+import { RouteForm } from './pages/authenticated/RouteForm';
+import { ExecutionForm } from './pages/authenticated/ExecutionForm';
+import { ShipTemplateForm } from './pages/authenticated/ShipTemplateForm';
+import { MarketForm } from './pages/authenticated/MarketForm';
+import { SupplyChainForm } from './pages/authenticated/SupplyChainForm';
 import { StockTargetForm } from './pages/authenticated/StockTargetForm';
 import { PricingPlanForm } from './pages/authenticated/PricingPlanForm';
-import { SupplyChainForm } from './pages/authenticated/SupplyChainForm';
-import { MarketForm } from './pages/authenticated/MarketForm';
 import { SharedDataView } from './pages/authenticated/SharedDataView';
+import { ColonyActivityPage } from './pages/authenticated/ColonyActivityPage';
+import { DailyBuildPage } from './pages/authenticated/DailyBuildPage';
+import { BuildPlannerForm } from './pages/authenticated/BuildPlannerForm';
+import { ContactsForm } from './pages/authenticated/ContactsForm';
+import { StationsForm } from './pages/authenticated/StationsForm';
+import { AsteroidsForm } from './pages/authenticated/AsteroidsForm';
+import { FactionView } from './pages/authenticated/FactionView';
+import { SharingConfig } from './pages/authenticated/SharingConfig';
 import { useWebSocket } from './ws/useWebSocket';
+import { ConnectionBanner } from './components/domain/ConnectionBanner';
 
 const router = createBrowserRouter([
   {
@@ -42,18 +51,26 @@ const router = createBrowserRouter([
         element: <AuthGuard />,
         children: [
           { index: true, element: <Dashboard /> },
-          { path: 'colonies', element: <ColonyManager /> },
-          { path: 'blueprints', element: <BlueprintManager /> },
-          { path: 'surveys', element: <SurveyManager /> },
-          { path: 'profile', element: <ProfileEditor /> },
+          { path: 'colonies', element: <ColonyForm /> },
+          { path: 'blueprints', element: <BlueprintForm /> },
+          { path: 'surveys', element: <SurveyForm /> },
+          { path: 'profiles', element: <ProfileForm /> },
+          { path: 'routes', element: <RouteForm /> },
+          { path: 'delivery', element: <ExecutionForm /> },
+          { path: 'ships', element: <ShipTemplateForm /> },
+          { path: 'market', element: <MarketForm /> },
+          { path: 'supply-chains', element: <SupplyChainForm /> },
+          { path: 'stock-targets', element: <StockTargetForm /> },
+          { path: 'pricing-plans', element: <PricingPlanForm /> },
+          { path: 'shared', element: <SharedDataView /> },
+          { path: 'activity', element: <ColonyActivityPage /> },
+          { path: 'daily-build', element: <DailyBuildPage /> },
+          { path: 'build-planner', element: <BuildPlannerForm /> },
+          { path: 'contacts', element: <ContactsForm /> },
+          { path: 'stations', element: <StationsForm /> },
+          { path: 'asteroids', element: <AsteroidsForm /> },
           { path: 'faction', element: <FactionView /> },
           { path: 'sharing', element: <SharingConfig /> },
-          { path: 'activity', element: <ColonyActivityPage /> },
-          { path: 'pricing-plans', element: <PricingPlanForm /> },
-          { path: 'stock-targets', element: <StockTargetForm /> },
-          { path: 'supply-chains', element: <SupplyChainForm /> },
-          { path: 'market', element: <MarketForm /> },
-          { path: 'shared', element: <SharedDataView /> },
         ],
       },
       { path: '*', element: <NotFound /> },

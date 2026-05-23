@@ -13,6 +13,8 @@ export interface ServerPushEvent {
   ownerCharacterUUID?: string;
 }
 
+export type ConnectionState = 'connected' | 'reconnecting' | 'closed';
+
 export class WebSocketClient {
   private ws: WebSocket | null = null;
   private reconnectAttempts = 0;
@@ -20,9 +22,14 @@ export class WebSocketClient {
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
   private token: string | null = null;
   private onEvent: (event: ServerPushEvent) => void;
+  private onStateChange?: (state: ConnectionState) => void;
 
-  constructor(onEvent: (event: ServerPushEvent) => void) {
+  constructor(
+    onEvent: (event: ServerPushEvent) => void,
+    onStateChange?: (state: ConnectionState) => void,
+  ) {
     this.onEvent = onEvent;
+    this.onStateChange = onStateChange;
   }
 
   connect(token: string): void {
@@ -50,9 +57,22 @@ export class WebSocketClient {
     }
   }
 
+  /**
+   * Manual reconnection triggered by the user (e.g. retry button).
+   * Resets attempt counter and initiates a fresh connection.
+   */
+  reconnect(token: string): void {
+    this.disconnect();
+    this.reconnectAttempts = 0;
+    this.token = token;
+    this.onStateChange?.('reconnecting');
+    this.connect(token);
+  }
+
   private handleOpen(): void {
     this.reconnectAttempts = 0;
     this.startPing();
+    this.onStateChange?.('connected');
   }
 
   private handleMessage(event: MessageEvent): void {
@@ -94,11 +114,16 @@ export class WebSocketClient {
 
   private reconnectWithBackoff(): void {
     if (!this.token) return;
-    if (this.reconnectAttempts >= WS_MAX_RECONNECT_ATTEMPTS) return;
+    if (this.reconnectAttempts >= WS_MAX_RECONNECT_ATTEMPTS) {
+      this.onStateChange?.('closed');
+      return;
+    }
+
+    this.onStateChange?.('reconnecting');
 
     const delay = Math.min(
       1000 * Math.pow(2, this.reconnectAttempts),
-      WS_MAX_BACKOFF_MS
+      WS_MAX_BACKOFF_MS,
     );
     this.reconnectAttempts++;
 
