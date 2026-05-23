@@ -3,6 +3,7 @@ import { surveysApi } from '../endpoints/surveys';
 import { publicApi, type SurveyFilters } from '../endpoints/public';
 import { queryKeys } from './queryKeys';
 import { useAuthStore } from '../../auth/store';
+import type { Survey } from '../types/domain';
 
 export function useSurveys(charUUID?: string | null) {
   return useQuery({
@@ -24,7 +25,7 @@ export function useSurveyMutations() {
   const charUUID = useAuthStore((s) => s.characterUUID);
 
   const createOrUpdate = useMutation({
-    mutationFn: ({ entityUUID, data }: { entityUUID: string; data: unknown }) =>
+    mutationFn: ({ entityUUID, data }: { entityUUID: string; data: Partial<Survey> }) =>
       surveysApi.update(charUUID!, entityUUID, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.characterData(charUUID!, 'Surveys') });
@@ -33,7 +34,7 @@ export function useSurveyMutations() {
 
   const remove = useMutation({
     mutationFn: (entityUUID: string) =>
-      surveysApi.delete(charUUID!, entityUUID),
+      surveysApi.remove(charUUID!, entityUUID),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.characterData(charUUID!, 'Surveys') });
     },

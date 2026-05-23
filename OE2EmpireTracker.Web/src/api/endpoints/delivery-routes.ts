@@ -1,29 +1,20 @@
 import { apiClient } from '../client';
+import type { DeliveryRoute, RouteStop } from '../types/domain';
 
-export interface RouteStop {
-  colonyUUID: string;
-  sequence: number;
-  destinationType: string;
-  destinationUUID: string;
-  purpose: string;
-  fuelEstimate: number;
-}
-
-export interface DeliveryRoute {
-  uuid: string;
-  name: string;
-  ownerUUID: string;
-  stops: RouteStop[];
-}
+export type { DeliveryRoute, RouteStop };
 
 export interface DeliveryRouteCreateRequest {
   name: string;
-  stops: RouteStop[];
+  stops: Omit<RouteStop, 'uuid'>[];
 }
 
 export interface DeliveryRouteUpdateRequest {
   name?: string;
-  stops?: RouteStop[];
+  stops?: Omit<RouteStop, 'uuid'>[];
+}
+
+export interface ReorderStopsRequest {
+  stops: { uuid: string; sequence: number }[];
 }
 
 export const deliveryRoutesApi = {
@@ -41,4 +32,7 @@ export const deliveryRoutesApi = {
 
   delete: (charUUID: string, entityUUID: string) =>
     apiClient.delete(`api/v1/characters/${charUUID}/delivery-routes/${entityUUID}`).json<void>(),
+
+  reorderStops: (charUUID: string, routeUUID: string, data: ReorderStopsRequest) =>
+    apiClient.put(`api/v1/characters/${charUUID}/delivery-routes/${routeUUID}/reorder`, { json: data }).json<DeliveryRoute>(),
 };
