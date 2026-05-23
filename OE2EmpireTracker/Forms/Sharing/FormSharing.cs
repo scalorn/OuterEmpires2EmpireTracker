@@ -292,8 +292,8 @@ namespace OE2EmpireTracker.Forms.Sharing
                 {
                     Id = row.Tag as string ?? string.Empty,
                     TargetType = row.Cells[colTargetType.Index].Value?.ToString() ?? "Faction",
-                    TargetUUID = row.Cells[colTargetUUID.Index].Value?.ToString() ?? string.Empty,
-                    DataType = row.Cells[colDataType.Index].Value?.ToString() ?? "All",
+                    TargetUUID = GetTargetUUIDForSave(row),
+                    DataType = GetDataTypeForSave(row),
                     OwnerCharacterUUID = characterUUID,
                 };
 
@@ -408,6 +408,34 @@ namespace OE2EmpireTracker.Forms.Sharing
         {
             bool hasEmptyUUID = HasEmptyTargetUUID(dgvRules, colTargetType.Index, colTargetUUID.Index);
             btnSave.Enabled = !hasEmptyUUID;
+        }
+
+        /// <summary>
+        /// Gets the TargetUUID value for serialization. Public rules use "public" sentinel.
+        /// </summary>
+        private string GetTargetUUIDForSave(DataGridViewRow row)
+        {
+            string targetType = row.Cells[colTargetType.Index].Value?.ToString() ?? "Faction";
+            if (string.Equals(targetType, "Public", StringComparison.Ordinal))
+            {
+                return "public";
+            }
+
+            return row.Cells[colTargetUUID.Index].Value?.ToString() ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Gets the DataType value for serialization. "All" maps to null (all data types).
+        /// </summary>
+        private string GetDataTypeForSave(DataGridViewRow row)
+        {
+            string dataType = row.Cells[colDataType.Index].Value?.ToString() ?? "All";
+            if (string.Equals(dataType, "All", StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            return dataType;
         }
 
         private void DgvRules_DataError(object sender, DataGridViewDataErrorEventArgs e)

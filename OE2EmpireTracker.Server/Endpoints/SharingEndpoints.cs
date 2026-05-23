@@ -13,6 +13,7 @@ public static class SharingEndpoints
     private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions()
     {
         PropertyNameCaseInsensitive = true,
+        Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() },
     };
 
     public static void MapSharingEndpoints(this WebApplication app)
