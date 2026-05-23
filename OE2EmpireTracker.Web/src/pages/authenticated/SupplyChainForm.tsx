@@ -191,3 +191,105 @@ export function SupplyChainForm() {
       )}
     </div>
   );
+
+  const detailPanel = (
+    <div className="flex h-full flex-col">
+      <div className="border-b border-gray-700 p-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-white">
+            {isNewMode ? 'New Supply Chain' : 'Supply Chain Details'}
+          </h2>
+          <div className="flex gap-2">
+            <button
+              onClick={handleNew}
+              className="rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700"
+            >
+              New
+            </button>
+            <button
+              onClick={() => void handleSave()}
+              disabled={!isDirty && !isNewMode}
+              className="rounded bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              {save.isPending ? 'Saving...' : 'Save'}
+            </button>
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={isNewMode || !selectedId}
+              className="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:opacity-50"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {!selectedId && !isNewMode ? (
+        <EmptyState title="No chain selected" message="Select a supply chain from the list or create a new one." />
+      ) : (
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="max-w-lg space-y-4">
+            <div>
+              <label htmlFor="chain-name" className="mb-1 block text-sm text-gray-400">Name</label>
+              <input
+                id="chain-name"
+                type="text"
+                value={form.name}
+                onChange={(e) => handleFieldChange('name', e.target.value)}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+              />
+            </div>
+            <div>
+              <label htmlFor="chain-source" className="mb-1 block text-sm text-gray-400">Source Colony</label>
+              <FilteredDropdown
+                options={colonyOptions}
+                value={form.sourceColonyUUID}
+                onChange={(value) => handleFieldChange('sourceColonyUUID', value)}
+                placeholder="Select source colony..."
+              />
+            </div>
+            <div>
+              <label htmlFor="chain-destination" className="mb-1 block text-sm text-gray-400">Destination Colony</label>
+              <FilteredDropdown
+                options={colonyOptions}
+                value={form.destinationColonyUUID}
+                onChange={(value) => handleFieldChange('destinationColonyUUID', value)}
+                placeholder="Select destination colony..."
+              />
+            </div>
+
+            {/* Steps section placeholder — implemented in task 16.2 */}
+            {!isNewMode && selectedChain && selectedChain.steps.length > 0 && (
+              <div className="pt-4">
+                <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-400">
+                  Steps ({selectedChain.steps.length})
+                </h3>
+                <p className="text-xs text-gray-500">Step management will be available in a future update.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+      <MasterDetailLayout
+        listPanel={listPanel}
+        detailPanel={detailPanel}
+        selectedId={selectedId}
+        onBack={handleBack}
+      />
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Delete Supply Chain"
+        message={`Are you sure you want to delete "${form.name || 'this supply chain'}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={() => void handleDelete()}
+        onCancel={() => setShowDeleteConfirm(false)}
+        variant="danger"
+      />
+    </>
+  );
+}

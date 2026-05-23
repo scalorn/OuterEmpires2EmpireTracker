@@ -17,6 +17,9 @@ import { ProfileEditor } from './pages/authenticated/ProfileEditor';
 import { FactionView } from './pages/authenticated/FactionView';
 import { SharingConfig } from './pages/authenticated/SharingConfig';
 import { ColonyActivityPage } from './pages/authenticated/ColonyActivityPage';
+import { StockTargetForm } from './pages/authenticated/StockTargetForm';
+import { PricingPlanForm } from './pages/authenticated/PricingPlanForm';
+import { SupplyChainForm } from './pages/authenticated/SupplyChainForm';
 import { useWebSocket } from './ws/useWebSocket';
 
 const router = createBrowserRouter([
@@ -44,6 +47,9 @@ const router = createBrowserRouter([
           { path: 'faction', element: <FactionView /> },
           { path: 'sharing', element: <SharingConfig /> },
           { path: 'activity', element: <ColonyActivityPage /> },
+          { path: 'pricing-plans', element: <PricingPlanForm /> },
+          { path: 'stock-targets', element: <StockTargetForm /> },
+          { path: 'supply-chains', element: <SupplyChainForm /> },
         ],
       },
       { path: '*', element: <NotFound /> },
