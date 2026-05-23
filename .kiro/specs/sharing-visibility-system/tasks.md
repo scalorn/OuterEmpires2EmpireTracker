@@ -96,7 +96,7 @@ graph TD
 
 ### Phase 4: Web UI — Shared Data View
 
-- [~] 5.1 Rewire shared-data.ts API module to use /shared-with-me/{dataType}
+- [-] 5.1 Rewire shared-data.ts API module to use /shared-with-me/{dataType}
   - Satisfies: Req 2, Criteria 1-2 ("call GET /shared-with-me/{dataType}"; "remove non-existent getSharedCharacters call")
   - Inputs: Web UI shared-data.ts (or equivalent API module)
   - Output: Modified API module calling correct endpoint; SharedWithMeGroup interface added

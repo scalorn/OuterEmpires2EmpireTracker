@@ -1,18 +1,24 @@
 import { apiClient } from '../client';
-import type { SharedDataSummary } from '../types/domain';
+
+/**
+ * Response shape from GET /shared-with-me/{dataType}.
+ * Each group represents entities shared by a single owner character.
+ */
+export interface SharedWithMeGroup {
+  ownerCharacterUUID: string;
+  ownerCharacterName: string;
+  entities: unknown[];
+}
 
 /**
  * Typed API module for Shared Data (read-only).
- * Provides access to data shared by other faction members.
+ * Provides access to data shared by other faction members via the
+ * /shared-with-me/{dataType} endpoint.
  */
 export const sharedDataApi = {
-  /** List characters who have shared data with the current player. */
-  getSharedCharacters: (charUUID: string) =>
-    apiClient.get(`api/v1/characters/${charUUID}/shared-data`).json<SharedDataSummary[]>(),
-
-  /** Get shared data detail for a specific sharer and data type. */
-  getSharedData: (charUUID: string, sharerUUID: string, dataType: string) =>
+  /** Get data shared with the current character for a specific data type. */
+  getSharedWithMe: (charUUID: string, dataType: string) =>
     apiClient
-      .get(`api/v1/characters/${charUUID}/shared-data/${sharerUUID}/${dataType}`)
-      .json<unknown[]>(),
+      .get(`api/v1/characters/${charUUID}/shared-with-me/${dataType}`)
+      .json<SharedWithMeGroup[]>(),
 };
