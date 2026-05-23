@@ -74,7 +74,7 @@ graph TD
   - Output: Modified PublicDataEndpoints.cs with filtering logic for blueprints, surveys, colonies; pagination with max 100
   - Verification: getDiagnostics clean; endpoint returns data when Public rules exist
 
-- [~] 2.2 Write property tests for public data filtering
+- [x] 2.2 Write property tests for public data filtering
   - Satisfies: Correctness Property 1
   - Inputs: PublicDataEndpoints.cs logic
   - Output: `OE2EmpireTracker.Tests/Server/PublicDataFilteringTests.cs`
