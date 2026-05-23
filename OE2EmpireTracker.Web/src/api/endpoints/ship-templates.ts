@@ -1,13 +1,8 @@
 import { apiClient } from '../client';
+import type { ShipTemplate } from '../types/domain';
 import type { ShipComponentSlot } from './ships';
 
-export interface ShipTemplate {
-  uuid: string;
-  name: string;
-  ownerUUID: string;
-  hullBlueprintUUID: string;
-  components: ShipComponentSlot[];
-}
+export type { ShipTemplate };
 
 export interface ShipTemplateCreateRequest {
   name: string;
@@ -36,4 +31,7 @@ export const shipTemplatesApi = {
 
   delete: (charUUID: string, entityUUID: string) =>
     apiClient.delete(`api/v1/characters/${charUUID}/ship-templates/${entityUUID}`).json<void>(),
+
+  orderBuild: (charUUID: string, templateUUID: string) =>
+    apiClient.post(`api/v1/characters/${charUUID}/ship-templates/${templateUUID}/order-build`).json<void>(),
 };
