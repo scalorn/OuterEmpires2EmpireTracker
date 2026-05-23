@@ -318,7 +318,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 3.3, 3.4, 3.5_
     - _Verification: Detail renders, resource grid allows add/edit/remove_
 
-  - [-] 10.3 Implement SurveyForm CRUD actions
+  - [x] 10.3 Implement SurveyForm CRUD actions
     - Save/New/Delete buttons
     - Delete disabled with tooltip when survey has assigned mining rigs (assignedRigCount > 0)
     - _Requirements: 3.6, 3.7, 3.8, 3.9_
@@ -386,7 +386,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 7.3, 7.4, 7.5_
     - _Verification: Checkboxes trigger correct API calls_
 
-  - [-] 13.3 Implement ExecutionForm stop completion and plan completion
+  - [x] 13.3 Implement ExecutionForm stop completion and plan completion
     - Complete Stop button appears when all items checked; visual completion only after click
     - When all stops complete, mark plan as completed via API
     - _Requirements: 7.6, 7.7, 7.8_

@@ -12,6 +12,7 @@ import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 import { EditableGrid, type GridColumn } from '../../components/common/EditableGrid';
 import { TabBar } from '../../components/common/TabBar';
+import { EvolutionChart, type EvolutionDataPoint } from '../../components/domain/EvolutionChart';
 import { applyFilters, type FilterConfig } from '../../utils/filterUtils';
 import type { Blueprint, BlueprintResource } from '../../api/types/domain';
 
@@ -192,6 +193,35 @@ export function BlueprintForm() {
       options: evolutionLevels.map((e) => ({ value: String(e), label: `Evo ${e}` })),
     },
   ], [blueprintTypes, shipClasses, techLevelOptions, evolutionLevels]);
+
+  // --- Evolution chart data ---
+  // Gather blueprints with the same type and name at different evolution levels
+  const evolutionChartData = useMemo((): { data: EvolutionDataPoint[]; propertyNames: string[] } => {
+    if (!selectedBlueprint) return { data: [], propertyNames: [] };
+
+    // Find all blueprints with the same type and name (the evolution chain)
+    const chain = blueprints.filter(
+      (bp) => bp.blueprintType === selectedBlueprint.blueprintType && bp.name === selectedBlueprint.name,
+    );
+
+    if (chain.length < 2) return { data: [], propertyNames: [] };
+
+    // Collect all property names across the chain
+    const propNameSet = new Set<string>();
+    for (const bp of chain) {
+      for (const key of Object.keys(bp.properties)) {
+        propNameSet.add(key);
+      }
+    }
+    const propertyNames = Array.from(propNameSet).sort();
+
+    // Build data points sorted by evolution level
+    const data: EvolutionDataPoint[] = chain
+      .map((bp) => ({ evolution: bp.evolution, properties: bp.properties }))
+      .sort((a, b) => a.evolution - b.evolution);
+
+    return { data, propertyNames };
+  }, [selectedBlueprint, blueprints]);
 
   const filteredBlueprints = useMemo(() => {
     const filters: FilterConfig<Blueprint>[] = [];
