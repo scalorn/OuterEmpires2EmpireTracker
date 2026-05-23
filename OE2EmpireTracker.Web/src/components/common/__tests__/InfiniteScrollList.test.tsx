@@ -31,7 +31,8 @@ function makeItems(count: number, pageOffset = 0): TestItem[] {
 }
 
 describe('InfiniteScrollList', () => {
-  let mockFetchPage: ReturnType<typeof vi.fn>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockFetchPage: any;
 
   beforeEach(() => {
     mockFetchPage = vi.fn();

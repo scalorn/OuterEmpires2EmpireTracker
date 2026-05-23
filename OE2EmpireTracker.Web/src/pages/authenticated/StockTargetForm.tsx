@@ -5,7 +5,6 @@ import { useColonies } from '../../api/hooks/useColonies';
 import { useUnsavedChanges } from '../../hooks/useUnsavedChanges';
 import { MasterDetailLayout } from '../../components/common/MasterDetailLayout';
 import { FilteredDropdown } from '../../components/common/FilteredDropdown';
-import { EditableGrid, type GridColumn } from '../../components/common/EditableGrid';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
@@ -31,14 +30,6 @@ function formFromProfile(profile: StockProfile): FormState {
     items: profile.items ?? [],
   };
 }
-
-const itemColumns: GridColumn<StockTargetItem>[] = [
-  { key: 'itemType', header: 'Item Type', type: 'text' },
-  { key: 'name', header: 'Name', type: 'text' },
-  { key: 'purity', header: 'Purity', type: 'text' },
-  { key: 'targetQuantity', header: 'Target Qty', type: 'number' },
-  { key: 'currentQuantity', header: 'Current Qty', type: 'readonly' },
-];
 
 export function StockTargetForm() {
   const { characterUUID } = useAuthStore();
@@ -97,35 +88,6 @@ export function StockTargetForm() {
     },
     [],
   );
-
-  // Item management handlers
-  const handleItemChange = useCallback((index: number, row: StockTargetItem) => {
-    setForm((prev) => {
-      const updated = [...prev.items];
-      updated[index] = row;
-      return { ...prev, items: updated };
-    });
-    setIsDirty(true);
-  }, []);
-
-  const handleItemAdd = useCallback(() => {
-    setForm((prev) => ({
-      ...prev,
-      items: [
-        ...prev.items,
-        { uuid: crypto.randomUUID(), itemType: '', name: '', purity: '', targetQuantity: 0 },
-      ],
-    }));
-    setIsDirty(true);
-  }, []);
-
-  const handleItemRemove = useCallback((index: number) => {
-    setForm((prev) => ({
-      ...prev,
-      items: prev.items.filter((_, i) => i !== index),
-    }));
-    setIsDirty(true);
-  }, []);
 
   const handleSave = useCallback(async () => {
     const items = form.items.map((item) => ({

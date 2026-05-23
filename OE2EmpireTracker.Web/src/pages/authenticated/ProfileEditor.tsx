@@ -28,7 +28,7 @@ export function ProfileEditor() {
     profilesApi.getAll(characterUUID)
       .then((data) => {
         const profiles = Array.isArray(data) ? data : [];
-        const p = (profiles[0] ?? {}) as ProfileData;
+        const p = (profiles[0] ?? {}) as unknown as ProfileData;
         setProfile(p);
         setEditName(p.Name ?? '');
         setEditRank(p.Rank ?? '');
@@ -44,7 +44,8 @@ export function ProfileEditor() {
     try {
       const updated = { ...profile, Name: editName, Rank: editRank, Profession: editProfession };
       const uuid = String(profile.UUID ?? profile.uuid ?? characterUUID);
-      await profilesApi.update(characterUUID, uuid, updated);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await profilesApi.update(characterUUID, uuid, updated as any);
       setProfile(updated);
     } catch {
       setError('Failed to save profile.');

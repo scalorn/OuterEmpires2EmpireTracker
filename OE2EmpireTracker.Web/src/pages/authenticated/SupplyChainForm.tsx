@@ -342,3 +342,113 @@ export function SupplyChainForm() {
     </>
   );
 }
+
+
+// --- Steps Section sub-component ---
+
+interface StepsSectionProps {
+  steps: SupplyChainStep[];
+  onAddStep: (resourceOrCommodity: string, quantity: number, processingType: string) => void;
+  onRemoveStep: (index: number) => void;
+  onMoveUp: (index: number) => void;
+  onMoveDown: (index: number) => void;
+}
+
+function StepsSection({ steps, onAddStep, onRemoveStep, onMoveUp, onMoveDown }: StepsSectionProps) {
+  const [newResource, setNewResource] = useState('');
+  const [newQuantity, setNewQuantity] = useState('');
+  const [newProcessingType, setNewProcessingType] = useState('');
+
+  const handleAdd = useCallback(() => {
+    const qty = Number(newQuantity);
+    if (!newResource.trim() || qty <= 0 || !newProcessingType.trim()) return;
+    onAddStep(newResource.trim(), qty, newProcessingType.trim());
+    setNewResource('');
+    setNewQuantity('');
+    setNewProcessingType('');
+  }, [newResource, newQuantity, newProcessingType, onAddStep]);
+
+  return (
+    <div className="pt-4">
+      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">
+        Steps ({steps.length})
+      </h3>
+
+      {steps.length === 0 ? (
+        <p className="text-sm text-gray-500">No steps defined. Add one below.</p>
+      ) : (
+        <ol className="space-y-2">
+          {steps.map((step, index) => (
+            <li
+              key={step.uuid}
+              className="flex items-center gap-2 rounded border border-gray-700 bg-gray-800 px-3 py-2"
+            >
+              <span className="min-w-[1.5rem] text-center text-xs font-bold text-gray-500">
+                {step.sequence}
+              </span>
+              <span className="flex-1 text-sm text-gray-300">
+                {step.resourceOrCommodity} × {step.quantity} ({step.processingType})
+              </span>
+              <button
+                onClick={() => onMoveUp(index)}
+                disabled={index === 0}
+                className="rounded px-1.5 py-0.5 text-xs text-gray-400 hover:bg-gray-700 disabled:opacity-30"
+                title="Move up"
+              >
+                ▲
+              </button>
+              <button
+                onClick={() => onMoveDown(index)}
+                disabled={index === steps.length - 1}
+                className="rounded px-1.5 py-0.5 text-xs text-gray-400 hover:bg-gray-700 disabled:opacity-30"
+                title="Move down"
+              >
+                ▼
+              </button>
+              <button
+                onClick={() => onRemoveStep(index)}
+                className="rounded px-1.5 py-0.5 text-xs text-red-400 hover:bg-gray-700"
+                title="Remove"
+              >
+                ✕
+              </button>
+            </li>
+          ))}
+        </ol>
+      )}
+
+      {/* Add step form */}
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        <input
+          type="text"
+          value={newResource}
+          onChange={(e) => setNewResource(e.target.value)}
+          placeholder="Resource/Commodity"
+          className="rounded border border-gray-600 bg-gray-700 px-2 py-1.5 text-sm text-white placeholder-gray-400"
+        />
+        <input
+          type="number"
+          min={1}
+          value={newQuantity}
+          onChange={(e) => setNewQuantity(e.target.value)}
+          placeholder="Qty"
+          className="rounded border border-gray-600 bg-gray-700 px-2 py-1.5 text-sm text-white placeholder-gray-400"
+        />
+        <input
+          type="text"
+          value={newProcessingType}
+          onChange={(e) => setNewProcessingType(e.target.value)}
+          placeholder="Processing type"
+          className="rounded border border-gray-600 bg-gray-700 px-2 py-1.5 text-sm text-white placeholder-gray-400"
+        />
+      </div>
+      <button
+        onClick={handleAdd}
+        disabled={!newResource.trim() || Number(newQuantity) <= 0 || !newProcessingType.trim()}
+        className="mt-2 rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700 disabled:opacity-50"
+      >
+        Add Step
+      </button>
+    </div>
+  );
+}

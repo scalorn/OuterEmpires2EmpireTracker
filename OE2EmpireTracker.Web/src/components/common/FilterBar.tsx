@@ -27,12 +27,12 @@ export interface CheckboxFilterDef {
   label: string;
 }
 
-export type FilterDefinition<T = unknown> = TextFilterDef | DropdownFilterDef | CheckboxFilterDef;
+export type FilterDefinition = TextFilterDef | DropdownFilterDef | CheckboxFilterDef;
 
 export type FilterValues = Record<string, string | boolean>;
 
-export interface FilterBarProps<T = unknown> {
-  filters: FilterDefinition<T>[];
+export interface FilterBarProps {
+  filters: FilterDefinition[];
   values: FilterValues;
   onChange: (values: FilterValues) => void;
   onClear?: () => void;

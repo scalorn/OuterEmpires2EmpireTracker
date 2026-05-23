@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { stockProfilesApi, type StockProfileCreateRequest, type StockProfileUpdateRequest } from '../endpoints/stock-profiles';
 import { queryKeys } from './queryKeys';
 import { useAuthStore } from '../../auth/store';
-import type { StockProfile } from '../types/domain';
 
 export function useStockProfiles(charUUID?: string | null) {
   return useQuery({

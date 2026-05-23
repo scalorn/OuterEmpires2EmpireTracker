@@ -556,3 +556,62 @@ function TransactionsTab() {
     </div>
   );
 }
+
+
+// --- Summary Tab sub-component ---
+
+function SummaryTab() {
+  const { characterUUID } = useAuthStore();
+  const { data, isLoading, isError, refetch } = useTransactions(characterUUID);
+
+  const transactions: MarketTransaction[] = useMemo(
+    () => (Array.isArray(data) ? data : []) as MarketTransaction[],
+    [data],
+  );
+
+  const { buyTotal, sellTotal, profitLoss } = useMemo(() => {
+    let buy = 0;
+    let sell = 0;
+    for (const tx of transactions) {
+      const amount = tx.price * tx.quantity;
+      if (tx.type === 'Buy') {
+        buy += amount;
+      } else {
+        sell += amount;
+      }
+    }
+    return { buyTotal: buy, sellTotal: sell, profitLoss: sell - buy };
+  }, [transactions]);
+
+  if (isLoading) return <LoadingSpinner message="Loading summary..." />;
+  if (isError) return <RetryableError message="Failed to load transactions." onRetry={() => void refetch()} />;
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold text-white">Profit / Loss Summary</h2>
+      <div className="grid max-w-md grid-cols-2 gap-4">
+        <div className="rounded border border-gray-700 bg-gray-800 p-4">
+          <div className="text-sm text-gray-400">Total Purchases</div>
+          <div className="mt-1 text-xl font-semibold text-red-400">
+            {buyTotal.toLocaleString()} cr
+          </div>
+        </div>
+        <div className="rounded border border-gray-700 bg-gray-800 p-4">
+          <div className="text-sm text-gray-400">Total Sales</div>
+          <div className="mt-1 text-xl font-semibold text-green-400">
+            {sellTotal.toLocaleString()} cr
+          </div>
+        </div>
+        <div className="col-span-2 rounded border border-gray-700 bg-gray-800 p-4">
+          <div className="text-sm text-gray-400">Net Profit / Loss</div>
+          <div className={`mt-1 text-xl font-semibold ${profitLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+            {profitLoss >= 0 ? '+' : ''}{profitLoss.toLocaleString()} cr
+          </div>
+        </div>
+      </div>
+      <p className="text-sm text-gray-500">
+        Based on {transactions.length} transaction{transactions.length !== 1 ? 's' : ''}.
+      </p>
+    </div>
+  );
+}

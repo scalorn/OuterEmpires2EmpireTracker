@@ -45,7 +45,7 @@ export function ColonyForm() {
 
   // Recalculate timers from end timestamps when tab regains focus
   const visibilityKeys = useMemo(
-    () => (characterUUID ? [queryKeys.colonies(characterUUID) as string[]] : []),
+    () => (characterUUID ? [queryKeys.colonies(characterUUID) as unknown as string[]] : []),
     [characterUUID],
   );
   useVisibilityRecovery(visibilityKeys);

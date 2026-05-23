@@ -40,7 +40,7 @@ export function DailyBuildPage() {
     [colonies],
   );
 
-  const { data: colonyDetail } = useColonyDetail(characterUUID, selectedColonyUUID || null);
+  const { data: _colonyDetail } = useColonyDetail(characterUUID, selectedColonyUUID || null);
 
   const buildOrderMutation = useColonyPlannerBuildOrder();
 

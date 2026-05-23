@@ -3,7 +3,6 @@ import { deliveryPlansApi } from '../endpoints/delivery-plans';
 import type { DeliveryPlanCreateRequest, DeliveryPlanUpdateRequest, AutoFillRequest } from '../endpoints/delivery-plans';
 import { queryKeys } from './queryKeys';
 import { useAuthStore } from '../../auth/store';
-import type { DeliveryPlan } from '../types/domain';
 
 export function usePlans(charUUID?: string | null) {
   return useQuery({

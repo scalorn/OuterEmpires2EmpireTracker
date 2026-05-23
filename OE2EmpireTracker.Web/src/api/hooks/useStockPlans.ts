@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { stockPlansApi, type StockPlanCreateRequest, type StockPlanUpdateRequest } from '../endpoints/stock-plans';
 import { queryKeys } from './queryKeys';
 import { useAuthStore } from '../../auth/store';
-import type { StockProfile } from '../types/domain';
 
 export function useStockPlans(charUUID?: string | null) {
   return useQuery({

@@ -3,7 +3,6 @@ import { shipTemplatesApi } from '../endpoints/ship-templates';
 import type { ShipTemplateCreateRequest, ShipTemplateUpdateRequest } from '../endpoints/ship-templates';
 import { queryKeys } from './queryKeys';
 import { useAuthStore } from '../../auth/store';
-import type { ShipTemplate } from '../types/domain';
 
 export function useShipTemplates(charUUID?: string | null) {
   return useQuery({

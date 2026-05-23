@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supplyChainsApi, type SupplyChainCreateRequest, type SupplyChainUpdateRequest } from '../endpoints/supply-chains';
 import { queryKeys } from './queryKeys';
 import { useAuthStore } from '../../auth/store';
-import type { SupplyChain } from '../types/domain';
 
 export function useSupplyChains(charUUID?: string | null) {
   return useQuery({
