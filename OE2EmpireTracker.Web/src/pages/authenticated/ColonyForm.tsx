@@ -7,7 +7,8 @@ import { TabBar } from '../../components/common/TabBar';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
-import type { Colony } from '../../api/types/domain';
+import { CountdownTimer } from '../../components/common/CountdownTimer';
+import type { Colony, ColonyStructure } from '../../api/types/domain';
 
 type SortKey = 'colonyName' | 'systemName' | 'planetName' | 'structures';
 type SortDir = 'asc' | 'desc';
@@ -239,16 +240,7 @@ function ColonyDetailPanel({
 function TabContent({ tab, colony }: { tab: string; colony: Colony }) {
   switch (tab) {
     case 'structures':
-      return (
-        <div>
-          <h3 className="mb-2 text-sm font-medium text-gray-300">
-            Structures ({colony.structures?.length ?? 0})
-          </h3>
-          <p className="text-sm text-gray-500">
-            Structure management will be implemented in a subsequent task.
-          </p>
-        </div>
-      );
+      return <StructuresTab colony={colony} />;
     case 'warehousing':
       return (
         <div>
@@ -283,4 +275,122 @@ function TabContent({ tab, colony }: { tab: string; colony: Colony }) {
     default:
       return null;
   }
+}
+
+// --- Structures Tab ---
+
+const STATUS_COLORS: Record<ColonyStructure['status'], { bg: string; text: string; label: string }> = {
+  staged: { bg: 'bg-gray-600', text: 'text-gray-200', label: 'Staged' },
+  building: { bg: 'bg-yellow-600', text: 'text-yellow-100', label: 'Building' },
+  built: { bg: 'bg-blue-600', text: 'text-blue-100', label: 'Built' },
+  online: { bg: 'bg-green-600', text: 'text-green-100', label: 'Online' },
+};
+
+function computeColonyStatus(colony: Colony) {
+  const structures = colony.structures ?? [];
+  const onlineStructures = structures.filter((s) => s.status === 'online');
+
+  let power = 0;
+  let habitation = 0;
+  let food = 0;
+  let entertainment = 0;
+  let warehouseCapacity = 0;
+
+  for (const s of onlineStructures) {
+    const type = s.blueprintType.toLowerCase();
+    if (type.includes('reactor') || type.includes('power')) power++;
+    if (type.includes('habitat') || type.includes('habitation')) habitation++;
+    if (type.includes('farm') || type.includes('food')) food++;
+    if (type.includes('entertainment') || type.includes('bar') || type.includes('casino')) entertainment++;
+    if (type.includes('warehouse') || type.includes('storage')) warehouseCapacity++;
+  }
+
+  const totalWorkerSlots = structures.reduce(
+    (sum, s) => sum + Object.keys(s.assignedWorkers ?? {}).length,
+    0,
+  );
+  const assignedWorkers = structures.reduce(
+    (sum, s) => sum + Object.values(s.assignedWorkers ?? {}).filter(Boolean).length,
+    0,
+  );
+
+  return { power, habitation, food, entertainment, warehouseCapacity, totalWorkerSlots, assignedWorkers };
+}
+
+function StructuresTab({ colony }: { colony: Colony }) {
+  const structures = colony.structures ?? [];
+  const status = computeColonyStatus(colony);
+
+  return (
+    <div>
+      {/* Colony status summary */}
+      <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+        <StatusCard label="Power" value={status.power} />
+        <StatusCard label="Habitation" value={status.habitation} />
+        <StatusCard label="Food" value={status.food} />
+        <StatusCard label="Entertainment" value={status.entertainment} />
+        <StatusCard label="Warehouse" value={status.warehouseCapacity} />
+        <StatusCard label="Workers" value={`${status.assignedWorkers}/${status.totalWorkerSlots}`} />
+      </div>
+
+      {/* Structures list */}
+      <h3 className="mb-2 text-sm font-medium text-gray-300">
+        Structures ({structures.length})
+      </h3>
+      {structures.length === 0 ? (
+        <p className="text-sm text-gray-500">No structures in this colony.</p>
+      ) : (
+        <div className="space-y-2">
+          {structures.map((structure) => (
+            <StructureRow key={structure.uuid} structure={structure} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StatusCard({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">
+      <p className="text-xs text-gray-400">{label}</p>
+      <p className="text-sm font-semibold text-white">{value}</p>
+    </div>
+  );
+}
+
+function StructureRow({ structure }: { structure: ColonyStructure }) {
+  const statusStyle = STATUS_COLORS[structure.status] ?? STATUS_COLORS.staged;
+  const assignedCount = Object.values(structure.assignedWorkers ?? {}).filter(Boolean).length;
+  const totalSlots = Object.keys(structure.assignedWorkers ?? {}).length;
+
+  return (
+    <div className="flex items-center gap-3 rounded border border-gray-700 bg-gray-800/50 px-3 py-2">
+      {/* Blueprint type */}
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium text-white">{structure.blueprintType}</p>
+      </div>
+
+      {/* Status badge */}
+      <span className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}>
+        {statusStyle.label}
+      </span>
+
+      {/* Workers */}
+      {totalSlots > 0 && (
+        <span className="text-xs text-gray-400">
+          {assignedCount}/{totalSlots} workers
+        </span>
+      )}
+
+      {/* Processing timer */}
+      {structure.processingEndUtc && (
+        <CountdownTimer
+          targetTime={structure.processingEndUtc}
+          keepZero
+          className="text-xs text-amber-400"
+        />
+      )}
+    </div>
+  );
 }
