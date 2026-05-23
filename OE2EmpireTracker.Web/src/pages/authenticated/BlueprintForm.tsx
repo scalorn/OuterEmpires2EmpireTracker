@@ -355,3 +355,161 @@ export function BlueprintForm() {
       )}
     </div>
   );
+
+  const detailPanel = (
+    <div className="flex h-full flex-col">
+      <div className="border-b border-gray-700 p-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-white">
+            {isNewMode ? 'New Blueprint' : 'Blueprint Details'}
+          </h2>
+          <div className="flex gap-2">
+            <button
+              onClick={handleNew}
+              className="rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700"
+            >
+              New
+            </button>
+            <button
+              onClick={() => void handleSave()}
+              disabled={!isDirty && !isNewMode}
+              className="rounded bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              {save.isPending || create.isPending ? 'Saving...' : 'Save'}
+            </button>
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={isNewMode || !selectedId}
+              className="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:opacity-50"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {!selectedId && !isNewMode ? (
+        <EmptyState title="No blueprint selected" message="Select a blueprint from the list or create a new one." />
+      ) : (
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="max-w-lg space-y-4">
+            <div>
+              <label htmlFor="bp-name" className="mb-1 block text-sm text-gray-400">Name</label>
+              <input
+                id="bp-name"
+                type="text"
+                value={form.name}
+                onChange={(e) => handleFieldChange('name', e.target.value)}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+              />
+            </div>
+            <div>
+              <label htmlFor="bp-type" className="mb-1 block text-sm text-gray-400">Type</label>
+              <FilteredDropdown
+                options={blueprintTypes.map((t) => ({ value: t, label: t }))}
+                value={form.blueprintType}
+                onChange={(v) => handleFieldChange('blueprintType', v)}
+                placeholder="Select type..."
+              />
+            </div>
+            <div>
+              <label htmlFor="bp-shipclass" className="mb-1 block text-sm text-gray-400">Ship Class</label>
+              <FilteredDropdown
+                options={shipClasses.map((sc) => ({ value: sc.name, label: sc.name }))}
+                value={form.shipClass}
+                onChange={(v) => handleFieldChange('shipClass', v)}
+                placeholder="Select ship class..."
+              />
+            </div>
+
+            <div>
+              <label htmlFor="bp-techlevel" className="mb-1 block text-sm text-gray-400">Tech Level</label>
+              <input
+                id="bp-techlevel"
+                type="number"
+                min={0}
+                value={form.techLevel}
+                onChange={(e) => handleFieldChange('techLevel', Number(e.target.value) || 0)}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+              />
+            </div>
+            <div>
+              <label htmlFor="bp-evolution" className="mb-1 block text-sm text-gray-400">Evolution</label>
+              <input
+                id="bp-evolution"
+                type="number"
+                min={0}
+                value={form.evolution}
+                onChange={(e) => handleFieldChange('evolution', Number(e.target.value) || 0)}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+              />
+            </div>
+            <div>
+              <label htmlFor="bp-nickname" className="mb-1 block text-sm text-gray-400">Nick Name</label>
+              <input
+                id="bp-nickname"
+                type="text"
+                value={form.nickName}
+                onChange={(e) => handleFieldChange('nickName', e.target.value)}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                id="bp-global"
+                type="checkbox"
+                checked={form.isGlobal}
+                onChange={(e) => handleFieldChange('isGlobal', e.target.checked)}
+                className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600"
+              />
+              <label htmlFor="bp-global" className="text-sm text-gray-400">Global Blueprint</label>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+      <MasterDetailLayout
+        listPanel={listPanel}
+        detailPanel={detailPanel}
+        selectedId={selectedId}
+        onBack={handleBack}
+      />
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Delete Blueprint"
+        message={`Are you sure you want to delete "${form.name || 'this blueprint'}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={() => void handleDelete()}
+        onCancel={() => setShowDeleteConfirm(false)}
+        variant="danger"
+      />
+    </>
+  );
+}
+
+interface SortHeaderProps {
+  field: keyof Blueprint;
+  label: string;
+  current: keyof Blueprint;
+  asc: boolean;
+  onSort: (field: keyof Blueprint) => void;
+}
+
+function SortHeader({ field, label, current, asc, onSort }: SortHeaderProps) {
+  const isActive = current === field;
+  return (
+    <th
+      className="cursor-pointer px-3 py-2 select-none hover:text-white"
+      onClick={() => onSort(field)}
+    >
+      {label}
+      {isActive && (
+        <span className="ml-1">{asc ? '▲' : '▼'}</span>
+      )}
+    </th>
+  );
+}

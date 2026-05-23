@@ -405,3 +405,46 @@ export function ShipTemplateForm() {
           propulsion={stats.propulsion}
         />
       )}
+
+      {/* Pricing section */}
+      {editHull && (
+        <div className="mt-4 rounded border border-gray-700 bg-gray-800 p-4">
+          <h3 className="mb-2 text-sm font-semibold text-gray-300">Pricing</h3>
+          <div className="mb-3">
+            <label className="mb-1 block text-xs text-gray-400">Pricing Plan</label>
+            <FilteredDropdown
+              options={pricingPlanOptions}
+              value={selectedPricingPlanId}
+              onChange={setSelectedPricingPlanId}
+              placeholder="Select pricing plan..."
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-400">Total Estimated Build Cost</span>
+            <span className="text-lg font-semibold text-white">
+              {selectedPricingPlan ? totalBuildCost.toLocaleString() : '—'}
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+      <MasterDetailLayout
+        listPanel={listPanel}
+        detailPanel={detailPanel}
+        selectedId={selectedId}
+        onBack={() => setSelectedId(null)}
+      />
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Delete Template"
+        message={`Are you sure you want to delete "${editName}"? This action cannot be undone.`}
+        onConfirm={handleDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
+    </>
+  );
+}
