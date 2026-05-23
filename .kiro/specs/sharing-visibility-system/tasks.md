@@ -88,7 +88,7 @@ graph TD
 
 ### Phase 3: Server — SharedWithMe Enhancement
 
-- [-] 4.1 Enhance SharedWithMe endpoint to return owner-grouped response
+- [x] 4.1 Enhance SharedWithMe endpoint to return owner-grouped response
   - Satisfies: Req 2, Criterion 3 ("display entities grouped by sharer character with sharer's name visible")
   - Inputs: Server SharingEndpoints.cs (GetSharedWithMe method)
   - Output: Modified GetSharedWithMe to return `SharedWithMeGroup[]` with ownerCharacterUUID and ownerCharacterName
