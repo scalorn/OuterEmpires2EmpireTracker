@@ -306,12 +306,28 @@ namespace OE2EmpireTracker.Forms.Sharing
             {
                 var response = await ctx.Client.PutSharingRulesAsync(characterUUID, json).ConfigureAwait(false);
 
+                if (IsDisposed)
+                {
+                    return;
+                }
+
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    if (IsDisposed)
+                    {
+                        return;
+                    }
+
                     if (InvokeRequired)
                     {
-                        Invoke(new Action(() => PopulateGrid(responseBody)));
+                        try
+                        {
+                            Invoke(new Action(() => PopulateGrid(responseBody)));
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                        }
                     }
                     else
                     {
@@ -330,17 +346,23 @@ namespace OE2EmpireTracker.Forms.Sharing
 
                     Log.Warn(errorMessage);
 
-                    if (InvokeRequired)
+                    if (!IsDisposed && InvokeRequired)
                     {
-                        Invoke(new Action(() =>
-                            MessageBox.Show(
-                                this,
-                                errorMessage,
-                                "Save Failed",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error)));
+                        try
+                        {
+                            Invoke(new Action(() =>
+                                MessageBox.Show(
+                                    this,
+                                    errorMessage,
+                                    "Save Failed",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error)));
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                        }
                     }
-                    else
+                    else if (!IsDisposed)
                     {
                         MessageBox.Show(
                             this,
@@ -354,15 +376,26 @@ namespace OE2EmpireTracker.Forms.Sharing
             catch (Exception ex)
             {
                 Log.Error(ex, "Failed to save sharing rules");
+                if (IsDisposed)
+                {
+                    return;
+                }
+
                 if (InvokeRequired)
                 {
-                    Invoke(new Action(() =>
-                        MessageBox.Show(
-                            this,
-                            "Failed to save sharing rules: " + ex.Message,
-                            "Save Failed",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error)));
+                    try
+                    {
+                        Invoke(new Action(() =>
+                            MessageBox.Show(
+                                this,
+                                "Failed to save sharing rules: " + ex.Message,
+                                "Save Failed",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error)));
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                    }
                 }
                 else
                 {
