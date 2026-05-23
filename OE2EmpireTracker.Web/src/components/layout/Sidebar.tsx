@@ -8,20 +8,62 @@ interface NavItem {
   to: string;
 }
 
+interface NavGroup {
+  label: string;
+  items: NavItem[];
+}
+
 const publicNavItems: NavItem[] = [
   { label: 'Blueprints', to: '/blueprints' },
   { label: 'Surveys', to: '/surveys' },
   { label: 'Colony Planner', to: '/planner' },
 ];
 
-const authenticatedNavItems: NavItem[] = [
-  { label: 'Dashboard', to: '/app' },
-  { label: 'Colonies', to: '/app/colonies' },
-  { label: 'Blueprints', to: '/app/blueprints' },
-  { label: 'Surveys', to: '/app/surveys' },
-  { label: 'Profile', to: '/app/profile' },
-  { label: 'Faction', to: '/app/faction' },
-  { label: 'Sharing', to: '/app/sharing' },
+const authenticatedNavGroups: NavGroup[] = [
+  {
+    label: 'Empire',
+    items: [
+      { label: 'Dashboard', to: '/app' },
+      { label: 'Colonies', to: '/app/colonies' },
+      { label: 'Blueprints', to: '/app/blueprints' },
+      { label: 'Surveys', to: '/app/surveys' },
+      { label: 'Profiles', to: '/app/profiles' },
+    ],
+  },
+  {
+    label: 'Logistics',
+    items: [
+      { label: 'Delivery Routes', to: '/app/routes' },
+      { label: 'Delivery Execution', to: '/app/delivery' },
+      { label: 'Ship Templates', to: '/app/ships' },
+    ],
+  },
+  {
+    label: 'Market',
+    items: [
+      { label: 'Market', to: '/app/market' },
+      { label: 'Supply Chains', to: '/app/supply-chains' },
+      { label: 'Stock Targets', to: '/app/stock-targets' },
+      { label: 'Pricing Plans', to: '/app/pricing-plans' },
+    ],
+  },
+  {
+    label: 'Planning',
+    items: [
+      { label: 'Colony Activity', to: '/app/activity' },
+      { label: 'Daily Build', to: '/app/daily-build' },
+      { label: 'Build Planner', to: '/app/build-planner' },
+    ],
+  },
+  {
+    label: 'Admin',
+    items: [
+      { label: 'Contacts', to: '/app/contacts' },
+      { label: 'Stations', to: '/app/stations' },
+      { label: 'Asteroids', to: '/app/asteroids' },
+      { label: 'Shared Data', to: '/app/shared' },
+    ],
+  },
 ];
 
 export function Sidebar() {
@@ -54,20 +96,21 @@ export function Sidebar() {
         </div>
 
         <Collapsible.Content className="flex-1 overflow-y-auto">
-          <nav className="space-y-1 px-2">
+          <nav className="space-y-1 px-2 pb-4">
             <SectionLabel label="Public" />
             {publicNavItems.map((item) => (
               <SidebarLink key={item.to} {...item} />
             ))}
 
-            {isAuthenticated && (
-              <>
-                <SectionLabel label="My Data" />
-                {authenticatedNavItems.map((item) => (
-                  <SidebarLink key={item.to} {...item} />
-                ))}
-              </>
-            )}
+            {isAuthenticated &&
+              authenticatedNavGroups.map((group) => (
+                <div key={group.label}>
+                  <SectionLabel label={group.label} />
+                  {group.items.map((item) => (
+                    <SidebarLink key={item.to} {...item} />
+                  ))}
+                </div>
+              ))}
           </nav>
         </Collapsible.Content>
       </aside>

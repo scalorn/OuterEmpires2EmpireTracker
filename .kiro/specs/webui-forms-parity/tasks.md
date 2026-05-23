@@ -41,29 +41,29 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 5.4, 14.5_
     - _Verification: Unit tests pass for reorderUtils_
 
-- [ ] 2. Foundation: Shared UI Components (Part 1)
-  - [-] 2.1 Implement MasterDetailLayout component
+- [x] 2. Foundation: Shared UI Components (Part 1)
+  - [x] 2.1 Implement MasterDetailLayout component
     - Create `src/components/common/MasterDetailLayout.tsx`
     - Responsive: side-by-side on desktop (≥1024px), narrower list on tablet (768–1023px), single-panel with back button on mobile (<768px)
     - Props: listPanel, detailPanel, listWidth, selectedId, onBack
     - _Requirements: 10.2, 10.9_
     - _Verification: Component renders at all breakpoints without errors_
 
-  - [-] 2.2 Implement FilterBar component
+  - [x] 2.2 Implement FilterBar component
     - Create `src/components/common/FilterBar.tsx`
     - Support text search input, dropdown filters, and checkbox filters
     - Emit filter state changes via onChange callback
     - _Requirements: 10.3_
     - _Verification: Component renders and emits filter changes_
 
-  - [-] 2.3 Implement FilteredDropdown component
+  - [x] 2.3 Implement FilteredDropdown component
     - Create `src/components/common/FilteredDropdown.tsx`
     - Searchable dropdown with type-ahead filtering
     - Props: options, value, onChange, placeholder, filterFn
     - _Requirements: 10.6, 1.4, 8.4_
     - _Verification: Component renders, filters options on input_
 
-  - [-] 2.4 Implement EditableGrid component
+  - [x] 2.4 Implement EditableGrid component
     - Create `src/components/common/EditableGrid.tsx`
     - Inline cell editing: click to activate, commit on blur or Enter
     - Column types: text, number, select, readonly
@@ -72,14 +72,14 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Component renders, cells editable inline_
 
 
-  - [-] 2.5 Implement InfiniteScrollList component
+  - [x] 2.5 Implement InfiniteScrollList component
     - Create `src/components/common/InfiniteScrollList.tsx`
     - Loads pages of 50 items on scroll using IntersectionObserver
     - Props: queryKey, fetchPage, renderItem, keyExtractor, pageSize, filterValue
     - _Requirements: 10.8_
     - _Verification: Component renders initial page, loads more on scroll_
 
-  - [-] 2.6 Implement TabBar and ConfirmDialog components
+  - [x] 2.6 Implement TabBar and ConfirmDialog components
     - Create `src/components/common/TabBar.tsx` — tab switching with active indicator
     - Create `src/components/common/ConfirmDialog.tsx` — modal confirmation for delete actions
     - _Requirements: 10.5, 2.9, 3.8, 4.9, 5.8_
@@ -92,14 +92,14 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 11.2, 18.3, 18.5_
     - _Verification: Timer displays and decrements correctly_
 
-  - [-] 2.8 Implement UnsavedChangesGuard hook
+  - [x] 2.8 Implement UnsavedChangesGuard hook
     - Create `src/hooks/useUnsavedChanges.ts`
     - Uses react-router useBlocker to prevent navigation when isDirty is true
     - Fail-closed: if hook errors, blocks all navigation
     - _Requirements: 10.7_
     - _Verification: Navigation blocked when dirty flag is true_
 
-  - [-] 2.9 Implement useVisibilityRecovery hook
+  - [x] 2.9 Implement useVisibilityRecovery hook
     - Create `src/hooks/useVisibilityRecovery.ts`
     - Listens to `visibilitychange` event, invalidates timer queries on tab refocus
     - Recalculates countdown from end timestamp, not last displayed value
@@ -107,27 +107,27 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Timer recalculates correctly after simulated tab background_
 
 - [ ] 3. Foundation: Shared UI Components (Part 2)
-  - [~] 3.1 Implement ConnectionBanner component
+  - [-] 3.1 Implement ConnectionBanner component
     - Create `src/components/domain/ConnectionBanner.tsx`
     - Shows "Reconnecting..." during backoff, "Connection lost" after 60s
     - Manual retry button on persistent banner
     - _Requirements: 18.6_
     - _Verification: Banner renders in disconnected state_
 
-  - [~] 3.2 Implement TimerGroup component
+  - [-] 3.2 Implement TimerGroup component
     - Create `src/components/domain/TimerGroup.tsx`
     - Groups multiple CountdownTimers by activity type (mining, refining, manufacturing, research, building)
     - _Requirements: 11.1, 11.2_
     - _Verification: Component renders grouped timers_
 
-  - [~] 3.3 Implement loading, error, and empty state components
+  - [-] 3.3 Implement loading, error, and empty state components
     - Create `src/components/common/LoadingState.tsx`, `ErrorState.tsx`, `EmptyState.tsx`
     - ErrorState includes retry button
     - Consistent styling across all forms
     - _Requirements: 10.5_
     - _Verification: All three states render correctly_
 
-  - [~] 3.4 Update Sidebar navigation with all form links
+  - [-] 3.4 Update Sidebar navigation with all form links
     - Modify `src/components/layout/Sidebar.tsx`
     - Add navigation links for all 18 form pages listed in Req 10.1
     - _Requirements: 10.1_
