@@ -85,7 +85,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 10.5, 2.9, 3.8, 4.9, 5.8_
     - _Verification: Components render and handle interactions_
 
-  - [-] 2.7 Implement CountdownTimer component
+  - [x] 2.7 Implement CountdownTimer component
     - Create `src/components/common/CountdownTimer.tsx`
     - Computes remaining time from ISO 8601 end timestamp, decrements each second
     - Handles keepZero prop (stays at 00:00:00 after completion)
