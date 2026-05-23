@@ -12,7 +12,6 @@ import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 import { EditableGrid, type GridColumn } from '../../components/common/EditableGrid';
 import { TabBar } from '../../components/common/TabBar';
-import { EvolutionChart, type EvolutionDataPoint } from '../../components/domain/EvolutionChart';
 import { applyFilters, type FilterConfig } from '../../utils/filterUtils';
 import type { Blueprint, BlueprintResource } from '../../api/types/domain';
 
@@ -78,7 +77,11 @@ const BLUEPRINT_TABS = [
  * BlueprintForm — master-detail layout for managing blueprints.
  *
  * Left panel: filterable, sortable list of blueprints
- * Right panel: editable detail panel with tabbed content (Details, Statistics, Resources, Evolution)
+ * Right panel: editable detail panel with tabbed content
+ *   - Details: basic fields (name, type, ship class, tech level, evolution, nick name, global)
+ *   - Statistics: editable grid of numeric properties (Record<string, number>)
+ *   - Resources: editable grid of manufacturing resource requirements
+ *   - Evolution: placeholder for future evolution chart
  *
  * Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.7, 2.8, 2.9
  */
@@ -193,35 +196,6 @@ export function BlueprintForm() {
       options: evolutionLevels.map((e) => ({ value: String(e), label: `Evo ${e}` })),
     },
   ], [blueprintTypes, shipClasses, techLevelOptions, evolutionLevels]);
-
-  // --- Evolution chart data ---
-  // Gather blueprints with the same type and name at different evolution levels
-  const evolutionChartData = useMemo((): { data: EvolutionDataPoint[]; propertyNames: string[] } => {
-    if (!selectedBlueprint) return { data: [], propertyNames: [] };
-
-    // Find all blueprints with the same type and name (the evolution chain)
-    const chain = blueprints.filter(
-      (bp) => bp.blueprintType === selectedBlueprint.blueprintType && bp.name === selectedBlueprint.name,
-    );
-
-    if (chain.length < 2) return { data: [], propertyNames: [] };
-
-    // Collect all property names across the chain
-    const propNameSet = new Set<string>();
-    for (const bp of chain) {
-      for (const key of Object.keys(bp.properties)) {
-        propNameSet.add(key);
-      }
-    }
-    const propertyNames = Array.from(propNameSet).sort();
-
-    // Build data points sorted by evolution level
-    const data: EvolutionDataPoint[] = chain
-      .map((bp) => ({ evolution: bp.evolution, properties: bp.properties }))
-      .sort((a, b) => a.evolution - b.evolution);
-
-    return { data, propertyNames };
-  }, [selectedBlueprint, blueprints]);
 
   const filteredBlueprints = useMemo(() => {
     const filters: FilterConfig<Blueprint>[] = [];
@@ -529,80 +503,19 @@ export function BlueprintForm() {
       ) : (
         <div className="flex flex-1 flex-col overflow-hidden">
           <TabBar tabs={BLUEPRINT_TABS} activeTab={activeTab} onTabChange={setActiveTab} />
-          <div className="flex-1 overflow-y-auto p-4" role="tabpanel" id={`tabpanel-${activeTab}`} aria-labelledby={`tab-${activeTab}`}>
+          <div
+            className="flex-1 overflow-y-auto p-4"
+            role="tabpanel"
+            id={`tabpanel-${activeTab}`}
+            aria-labelledby={`tab-${activeTab}`}
+          >
             {activeTab === 'details' && (
-              <div className="max-w-lg space-y-4">
-                <div>
-                  <label htmlFor="bp-name" className="mb-1 block text-sm text-gray-400">Name</label>
-                  <input
-                    id="bp-name"
-                    type="text"
-                    value={form.name}
-                    onChange={(e) => handleFieldChange('name', e.target.value)}
-                    className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="bp-type" className="mb-1 block text-sm text-gray-400">Type</label>
-                  <FilteredDropdown
-                    options={blueprintTypes.map((t) => ({ value: t, label: t }))}
-                    value={form.blueprintType}
-                    onChange={(v) => handleFieldChange('blueprintType', v)}
-                    placeholder="Select type..."
-                  />
-                </div>
-                <div>
-                  <label htmlFor="bp-shipclass" className="mb-1 block text-sm text-gray-400">Ship Class</label>
-                  <FilteredDropdown
-                    options={shipClasses.map((sc) => ({ value: sc.name, label: sc.name }))}
-                    value={form.shipClass}
-                    onChange={(v) => handleFieldChange('shipClass', v)}
-                    placeholder="Select ship class..."
-                  />
-                </div>
-                <div>
-                  <label htmlFor="bp-techlevel" className="mb-1 block text-sm text-gray-400">Tech Level</label>
-                  <input
-                    id="bp-techlevel"
-                    type="number"
-                    min={0}
-                    value={form.techLevel}
-                    onChange={(e) => handleFieldChange('techLevel', Number(e.target.value) || 0)}
-                    className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="bp-evolution" className="mb-1 block text-sm text-gray-400">Evolution</label>
-                  <input
-                    id="bp-evolution"
-                    type="number"
-                    min={0}
-                    value={form.evolution}
-                    onChange={(e) => handleFieldChange('evolution', Number(e.target.value) || 0)}
-                    className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="bp-nickname" className="mb-1 block text-sm text-gray-400">Nick Name</label>
-                  <input
-                    id="bp-nickname"
-                    type="text"
-                    value={form.nickName}
-                    onChange={(e) => handleFieldChange('nickName', e.target.value)}
-                    className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    id="bp-global"
-                    type="checkbox"
-                    checked={form.isGlobal}
-                    onChange={(e) => handleFieldChange('isGlobal', e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600"
-                  />
-                  <label htmlFor="bp-global" className="text-sm text-gray-400">Global Blueprint</label>
-                </div>
-              </div>
+              <DetailsTab
+                form={form}
+                blueprintTypes={blueprintTypes}
+                shipClasses={shipClasses}
+                onFieldChange={handleFieldChange}
+              />
             )}
 
             {activeTab === 'statistics' && (
@@ -616,7 +529,7 @@ export function BlueprintForm() {
                   onRowChange={handlePropertyChange}
                   onRowAdd={handlePropertyAdd}
                   onRowRemove={handlePropertyRemove}
-                  keyExtractor={(row) => `${row.key}-${properties.indexOf(row)}`}
+                  keyExtractor={(row) => `prop-${properties.indexOf(row)}`}
                 />
               </div>
             )}
@@ -632,13 +545,16 @@ export function BlueprintForm() {
                   onRowChange={handleResourceChange}
                   onRowAdd={handleResourceAdd}
                   onRowRemove={handleResourceRemove}
-                  keyExtractor={(row) => `${row.resourceName}-${resources.indexOf(row)}`}
+                  keyExtractor={(row) => `res-${resources.indexOf(row)}`}
                 />
               </div>
             )}
 
             {activeTab === 'evolution' && (
-              <EmptyState title="Evolution Graph" message="Evolution chart will be implemented in a future task." />
+              <EmptyState
+                title="Evolution Graph"
+                message="Evolution chart will be implemented in a future task."
+              />
             )}
           </div>
         </div>
@@ -664,6 +580,92 @@ export function BlueprintForm() {
         variant="danger"
       />
     </>
+  );
+}
+
+// --- Sub-components ---
+
+interface DetailsTabProps {
+  form: BlueprintFormState;
+  blueprintTypes: string[];
+  shipClasses: { name: string }[];
+  onFieldChange: (field: keyof BlueprintFormState, value: string | number | boolean) => void;
+}
+
+function DetailsTab({ form, blueprintTypes, shipClasses, onFieldChange }: DetailsTabProps) {
+  return (
+    <div className="max-w-lg space-y-4">
+      <div>
+        <label htmlFor="bp-name" className="mb-1 block text-sm text-gray-400">Name</label>
+        <input
+          id="bp-name"
+          type="text"
+          value={form.name}
+          onChange={(e) => onFieldChange('name', e.target.value)}
+          className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+        />
+      </div>
+      <div>
+        <label htmlFor="bp-type" className="mb-1 block text-sm text-gray-400">Type</label>
+        <FilteredDropdown
+          options={blueprintTypes.map((t) => ({ value: t, label: t }))}
+          value={form.blueprintType}
+          onChange={(v) => onFieldChange('blueprintType', v)}
+          placeholder="Select type..."
+        />
+      </div>
+      <div>
+        <label htmlFor="bp-shipclass" className="mb-1 block text-sm text-gray-400">Ship Class</label>
+        <FilteredDropdown
+          options={shipClasses.map((sc) => ({ value: sc.name, label: sc.name }))}
+          value={form.shipClass}
+          onChange={(v) => onFieldChange('shipClass', v)}
+          placeholder="Select ship class..."
+        />
+      </div>
+      <div>
+        <label htmlFor="bp-techlevel" className="mb-1 block text-sm text-gray-400">Tech Level</label>
+        <input
+          id="bp-techlevel"
+          type="number"
+          min={0}
+          value={form.techLevel}
+          onChange={(e) => onFieldChange('techLevel', Number(e.target.value) || 0)}
+          className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+        />
+      </div>
+      <div>
+        <label htmlFor="bp-evolution" className="mb-1 block text-sm text-gray-400">Evolution</label>
+        <input
+          id="bp-evolution"
+          type="number"
+          min={0}
+          value={form.evolution}
+          onChange={(e) => onFieldChange('evolution', Number(e.target.value) || 0)}
+          className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+        />
+      </div>
+      <div>
+        <label htmlFor="bp-nickname" className="mb-1 block text-sm text-gray-400">Nick Name</label>
+        <input
+          id="bp-nickname"
+          type="text"
+          value={form.nickName}
+          onChange={(e) => onFieldChange('nickName', e.target.value)}
+          className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+        />
+      </div>
+      <div className="flex items-center gap-2">
+        <input
+          id="bp-global"
+          type="checkbox"
+          checked={form.isGlobal}
+          onChange={(e) => onFieldChange('isGlobal', e.target.checked)}
+          className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600"
+        />
+        <label htmlFor="bp-global" className="text-sm text-gray-400">Global Blueprint</label>
+      </div>
+    </div>
   );
 }
 
