@@ -245,39 +245,135 @@ function TabContent({ tab, colony }: { tab: string; colony: Colony }) {
     case 'structures':
       return <StructuresTab colony={colony} colonyUUID={colony.uuid} />;
     case 'warehousing':
-      return (
-        <div>
-          <h3 className="mb-2 text-sm font-medium text-gray-300">
-            Warehouse Items ({colony.items?.length ?? 0})
-          </h3>
-          <p className="text-sm text-gray-500">
-            Warehouse management will be implemented in a subsequent task.
-          </p>
-        </div>
-      );
+      return <WarehousingTab colony={colony} />;
     case 'commodityRequests':
-      return (
-        <div>
-          <h3 className="mb-2 text-sm font-medium text-gray-300">
-            Commodity Requests ({colony.commodityRequests?.length ?? 0})
-          </h3>
-          <p className="text-sm text-gray-500">
-            Commodity request management will be implemented in a subsequent task.
-          </p>
-        </div>
-      );
+      return <CommodityRequestsTab colony={colony} />;
     case 'administration':
-      return (
-        <div>
-          <h3 className="mb-2 text-sm font-medium text-gray-300">Administration</h3>
-          <p className="text-sm text-gray-500">
-            Administration panel will be implemented in a subsequent task.
-          </p>
-        </div>
-      );
+      return <AdministrationTab colony={colony} />;
     default:
       return null;
   }
+}
+
+// --- Warehousing Tab ---
+
+/**
+ * WarehousingTab — displays warehouse inventory grouped by item type.
+ *
+ * Validates: Requirement 1.6
+ */
+function WarehousingTab({ colony }: { colony: Colony }) {
+  const items = colony.items ?? [];
+
+  const grouped = useMemo(() => {
+    const groups: Record<string, typeof items> = {};
+    for (const item of items) {
+      const type = item.itemType || 'Unknown';
+      if (!groups[type]) groups[type] = [];
+      groups[type].push(item);
+    }
+    return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
+  }, [items]);
+
+  if (items.length === 0) {
+    return (
+      <div>
+        <h3 className="mb-2 text-sm font-medium text-gray-300">Warehouse Items (0)</h3>
+        <p className="text-sm text-gray-500">No items in warehouse.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h3 className="mb-3 text-sm font-medium text-gray-300">
+        Warehouse Items ({items.length})
+      </h3>
+      <div className="space-y-4">
+        {grouped.map(([itemType, groupItems]) => (
+          <div key={itemType}>
+            <h4 className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-400">
+              {itemType}
+            </h4>
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-gray-700">
+                  <th className="px-3 py-1.5 text-gray-400">Name</th>
+                  <th className="px-3 py-1.5 text-gray-400">Purity</th>
+                  <th className="px-3 py-1.5 text-right text-gray-400">Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {groupItems.map((item) => (
+                  <tr key={item.uuid} className="border-b border-gray-700/50">
+                    <td className="px-3 py-1.5 text-white">{item.name}</td>
+                    <td className="px-3 py-1.5 text-gray-300">{item.purity ?? '—'}</td>
+                    <td className="px-3 py-1.5 text-right text-gray-300">{item.quantity}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// --- Commodity Requests Tab ---
+
+/**
+ * CommodityRequestsTab — displays commodity requests with fulfillment status.
+ *
+ * Validates: Requirement 1.7
+ */
+function CommodityRequestsTab({ colony }: { colony: Colony }) {
+  const requests = colony.commodityRequests ?? [];
+
+  if (requests.length === 0) {
+    return (
+      <div>
+        <h3 className="mb-2 text-sm font-medium text-gray-300">Commodity Requests (0)</h3>
+        <p className="text-sm text-gray-500">No commodity requests.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h3 className="mb-3 text-sm font-medium text-gray-300">
+        Commodity Requests ({requests.length})
+      </h3>
+      <table className="w-full text-left text-sm">
+        <thead>
+          <tr className="border-b border-gray-700">
+            <th className="px-3 py-1.5 text-gray-400">Commodity</th>
+            <th className="px-3 py-1.5 text-right text-gray-400">Quantity</th>
+            <th className="px-3 py-1.5 text-gray-400">Need-By Date</th>
+            <th className="px-3 py-1.5 text-center text-gray-400">Fulfilled</th>
+          </tr>
+        </thead>
+        <tbody>
+          {requests.map((req, idx) => (
+            <tr key={`${req.commodityName}-${idx}`} className="border-b border-gray-700/50">
+              <td className="px-3 py-1.5 text-white">{req.commodityName}</td>
+              <td className="px-3 py-1.5 text-right text-gray-300">{req.quantity}</td>
+              <td className="px-3 py-1.5 text-gray-300">
+                {req.needByDate ? new Date(req.needByDate).toLocaleDateString() : '—'}
+              </td>
+              <td className="px-3 py-1.5 text-center">
+                {req.isFulfilled ? (
+                  <span className="text-green-400" aria-label="Fulfilled">✓</span>
+                ) : (
+                  <span className="text-red-400" aria-label="Not fulfilled">✗</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 // --- Structures Tab ---
@@ -483,6 +579,124 @@ function StructureRow({ structure }: { structure: ColonyStructure }) {
           className="text-xs text-amber-400"
         />
       )}
+    </div>
+  );
+}
+
+
+// --- Administration Tab ---
+
+/**
+ * Computes the number of days since the last import.
+ * Returns null if lastImportUtc is null/undefined.
+ */
+function computeDaysSinceImport(lastImportUtc: string | undefined | null): number | null {
+  if (!lastImportUtc) return null;
+  const importDate = new Date(lastImportUtc);
+  if (isNaN(importDate.getTime())) return null;
+  const now = new Date();
+  const diffMs = now.getTime() - importDate.getTime();
+  return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+}
+
+/**
+ * Returns staleness classification based on days since last import.
+ * 0–4 days: fresh (no color / gray)
+ * 5–6 days: stale (yellow)
+ * 6+ days (>6): very stale (red)
+ */
+function getStalenessInfo(days: number | null): {
+  label: string;
+  badgeClass: string;
+} {
+  if (days === null) {
+    return {
+      label: 'Never imported',
+      badgeClass: 'bg-gray-600 text-gray-200',
+    };
+  }
+  if (days <= 4) {
+    return {
+      label: 'Fresh',
+      badgeClass: 'bg-gray-600 text-gray-200',
+    };
+  }
+  if (days <= 6) {
+    return {
+      label: `Stale (${days} days)`,
+      badgeClass: 'bg-yellow-600 text-yellow-100',
+    };
+  }
+  return {
+    label: `Very stale (${days} days)`,
+    badgeClass: 'bg-red-600 text-red-100',
+  };
+}
+
+/**
+ * AdministrationTab — displays import staleness indicator and colony status report.
+ *
+ * Validates: Requirement 1.10
+ */
+function AdministrationTab({ colony }: { colony: Colony }) {
+  const days = computeDaysSinceImport(colony.lastImportUtc);
+  const staleness = getStalenessInfo(days);
+
+  const structureCount = colony.structures?.length ?? 0;
+  const itemCount = colony.items?.length ?? 0;
+  const commodityRequestCount = colony.commodityRequests?.length ?? 0;
+
+  return (
+    <div className="space-y-6">
+      {/* Import Staleness Indicator */}
+      <div>
+        <h3 className="mb-2 text-sm font-medium text-gray-300">Import Status</h3>
+        <div className="flex items-center gap-3">
+          <span
+            className={`inline-flex items-center rounded px-2.5 py-1 text-xs font-medium ${staleness.badgeClass}`}
+          >
+            {staleness.label}
+          </span>
+          {colony.lastImportUtc && days !== null && (
+            <span className="text-xs text-gray-500">
+              Last imported: {new Date(colony.lastImportUtc).toLocaleDateString()}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Colony Status Report */}
+      <div>
+        <h3 className="mb-2 text-sm font-medium text-gray-300">Colony Status Report</h3>
+        <div className="rounded border border-gray-700 bg-gray-800/50 p-4">
+          <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <dt className="text-xs text-gray-400">Colony Name</dt>
+              <dd className="text-sm text-white">{colony.colonyName}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-400">Planet</dt>
+              <dd className="text-sm text-white">{colony.planetName}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-400">System</dt>
+              <dd className="text-sm text-white">{colony.systemName}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-400">Structures</dt>
+              <dd className="text-sm text-white">{structureCount}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-400">Warehouse Items</dt>
+              <dd className="text-sm text-white">{itemCount}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-gray-400">Commodity Requests</dt>
+              <dd className="text-sm text-white">{commodityRequestCount}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
     </div>
   );
 }

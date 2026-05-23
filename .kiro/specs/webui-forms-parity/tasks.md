@@ -251,27 +251,27 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 1.1, 1.2_
     - _Verification: Colony list renders, selection shows detail panel_
 
-  - [-] 8.2 Implement ColonyForm Structures tab
+  - [x] 8.2 Implement ColonyForm Structures tab
     - Add Structures tab to ColonyForm detail panel
     - Display structures with blueprint type, status, workers, processing timer (CountdownTimer)
     - Colony status summary (power, habitation, food, entertainment, warehouse capacity, workers)
     - _Requirements: 1.3, 1.8_
     - _Verification: Structures tab renders with status summary_
 
-  - [-] 8.3 Implement ColonyForm structure actions (Add, Optimize, Bootstrap)
+  - [x] 8.3 Implement ColonyForm structure actions (Add, Optimize, Bootstrap)
     - Add flatpack FilteredDropdown + Add button to append structure
     - Optimize button calls POST /colony-planner/build-order then persists reorder
     - Bootstrap button calls POST /colonies/{id}/bootstrap
     - _Requirements: 1.4, 1.5, 1.9_
     - _Verification: Add/Optimize/Bootstrap actions call correct endpoints_
 
-  - [~] 8.4 Implement ColonyForm Warehousing and Commodity Requests tabs
+  - [-] 8.4 Implement ColonyForm Warehousing and Commodity Requests tabs
     - Warehousing tab: inventory grouped by item type with name, purity, quantity columns
     - Commodity Requests tab: commodity name, quantity, need-by date, fulfilled status
     - _Requirements: 1.6, 1.7_
     - _Verification: Both tabs render with correct data_
 
-  - [~] 8.5 Implement ColonyForm Administration tab
+  - [-] 8.5 Implement ColonyForm Administration tab
     - Import staleness indicators: no color (0–4 days), yellow (5–6 days), red (6+ days)
     - Colony status report display
     - _Requirements: 1.10_
@@ -285,19 +285,19 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 2.1, 2.2_
     - _Verification: Blueprint list renders with working filters_
 
-  - [-] 9.2 Implement BlueprintForm detail panel and editing
+  - [x] 9.2 Implement BlueprintForm detail panel and editing
     - Editable detail fields: name, type, ship class, tech level, evolution, nick name, global flag
     - Save/New/Delete buttons with confirmation dialog on delete
     - _Requirements: 2.3, 2.7, 2.8, 2.9_
     - _Verification: Detail fields editable, CRUD operations work_
 
-  - [~] 9.3 Implement BlueprintForm Statistics and Resources tabs
+  - [-] 9.3 Implement BlueprintForm Statistics and Resources tabs
     - Statistics tab: editable grid of numeric properties
     - Resources tab: editable grid of manufacturing resource requirements
     - _Requirements: 2.4, 2.5_
     - _Verification: Both grids render and allow inline editing_
 
-  - [~] 9.4 Implement BlueprintForm Evolution Graph tab
+  - [-] 9.4 Implement BlueprintForm Evolution Graph tab
     - Create `src/components/domain/EvolutionChart.tsx`
     - Line chart showing property percentage changes across evolution levels
     - _Requirements: 2.6_
@@ -312,19 +312,19 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 3.1, 3.2_
     - _Verification: Survey list renders with working filters_
 
-  - [-] 10.2 Implement SurveyForm detail panel and resource grid
+  - [x] 10.2 Implement SurveyForm detail panel and resource grid
     - Detail fields: planet name, system name, survey ID, nick name, scanned by, scan date, sensor abundance, purity modifier, scan level, scanner blueprint
     - Resource grid: editable rows with resource name, purity, amount, max reserve
     - _Requirements: 3.3, 3.4, 3.5_
     - _Verification: Detail renders, resource grid allows add/edit/remove_
 
-  - [~] 10.3 Implement SurveyForm CRUD actions
+  - [-] 10.3 Implement SurveyForm CRUD actions
     - Save/New/Delete buttons
     - Delete disabled with tooltip when survey has assigned mining rigs (assignedRigCount > 0)
     - _Requirements: 3.6, 3.7, 3.8, 3.9_
     - _Verification: CRUD works, delete disabled when rigs assigned_
 
-- [ ] 11. Player Profile Form
+- [x] 11. Player Profile Form
   - [x] 11.1 Implement ProfileForm list and basic details
     - Create `src/pages/authenticated/ProfileForm.tsx`
     - Profile list in left panel, editable fields: name, faction, total credits, skill points
@@ -332,7 +332,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 4.1, 4.2, 4.7, 4.8, 4.9_
     - _Verification: Profile list renders, detail fields editable_
 
-  - [-] 11.2 Implement ProfileForm ranks and skills sections
+  - [x] 11.2 Implement ProfileForm ranks and skills sections
     - Three rank sections (Public, Private, Military): level, current XP, XP to next
     - Skill groups as collapsible sections (Radix Collapsible) with enable/disable toggle
     - Individual skills: name, level, training status — changes update immediately
@@ -347,7 +347,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 5.1, 5.2_
     - _Verification: Route list renders, stops display in order_
 
-  - [-] 12.2 Implement RouteForm stop management
+  - [x] 12.2 Implement RouteForm stop management
     - Add Stop: colony dropdown + Add button appends stop (works on empty routes)
     - Reorder: Up/Down controls per stop
     - Remove: delete individual stops
@@ -355,7 +355,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 5.3, 5.4, 5.5, 5.6, 5.7, 5.8_
     - _Verification: Stops can be added, reordered, removed, and persisted_
 
-  - [~] 12.3 Implement RouteForm Plan tab
+  - [-] 12.3 Implement RouteForm Plan tab
     - Plan tab with dropdown to select/create delivery plans
     - New Plan button creates plan with default name (route name + date)
     - Stop selection shows drop-off and pick-up item lists
@@ -379,14 +379,14 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 7.1, 7.2_
     - _Verification: Dropdowns filter, load list aggregates correctly_
 
-  - [-] 13.2 Implement ExecutionForm stop-by-stop execution
+  - [x] 13.2 Implement ExecutionForm stop-by-stop execution
     - Each stop as a section with checkable drop-off and pick-up items
     - Checking commodity drop-off marks colony request as fulfilled via API
     - Checking flatpack drop-off marks colony structure as staged via API
     - _Requirements: 7.3, 7.4, 7.5_
     - _Verification: Checkboxes trigger correct API calls_
 
-  - [~] 13.3 Implement ExecutionForm stop completion and plan completion
+  - [-] 13.3 Implement ExecutionForm stop completion and plan completion
     - Complete Stop button appears when all items checked; visual completion only after click
     - When all stops complete, mark plan as completed via API
     - _Requirements: 7.6, 7.7, 7.8_

@@ -1,10 +1,11 @@
 import { useState, useMemo, useCallback } from 'react';
-import { useSurveys } from '../../api/hooks/useSurveys';
+import { useSurveys, useSurveyMutations } from '../../api/hooks/useSurveys';
 import { useBaseline } from '../../api/hooks/useBaseline';
 import { useAuthStore } from '../../auth/store';
 import { MasterDetailLayout } from '../../components/common/MasterDetailLayout';
 import { FilterBar, type FilterDefinition, type FilterValues } from '../../components/common/FilterBar';
 import { EditableGrid, type GridColumn } from '../../components/common/EditableGrid';
+import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
@@ -200,7 +201,7 @@ export function SurveyForm() {
   );
 
   const detailPanel = selectedSurvey ? (
-    <SurveyDetailPanel survey={selectedSurvey} purities={purities} />
+    <SurveyDetailPanel survey={selectedSurvey} purities={purities} onNew={() => setSelectedId(null)} />
   ) : (
     <div className="flex h-full items-center justify-center p-8">
       <p className="text-sm text-gray-500">Select a survey from the list to view details.</p>
@@ -224,12 +225,16 @@ export function SurveyForm() {
 interface SurveyDetailPanelProps {
   survey: Survey;
   purities: string[];
+  onNew: () => void;
 }
 
-function SurveyDetailPanel({ survey, purities }: SurveyDetailPanelProps) {
+function SurveyDetailPanel({ survey, purities, onNew }: SurveyDetailPanelProps) {
   const [nickName, setNickName] = useState(survey.nickName ?? '');
   const [resources, setResources] = useState<SurveyResource[]>(survey.resources);
   const [isDirty, setIsDirty] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const { save, remove } = useSurveyMutations();
 
   useUnsavedChanges(isDirty);
 
