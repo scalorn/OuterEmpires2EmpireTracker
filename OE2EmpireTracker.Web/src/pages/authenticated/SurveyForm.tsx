@@ -274,6 +274,22 @@ function SurveyDetailPanel({ survey, purities, onNew }: SurveyDetailPanelProps) 
     setIsDirty(true);
   }, []);
 
+  const handleSave = useCallback(async () => {
+    await save.mutateAsync({
+      entityUUID: survey.uuid,
+      data: { nickName, resources },
+    });
+    setIsDirty(false);
+  }, [save, survey.uuid, nickName, resources]);
+
+  const handleDelete = useCallback(async () => {
+    await remove.mutateAsync(survey.uuid);
+    setShowDeleteConfirm(false);
+    onNew();
+  }, [remove, survey.uuid, onNew]);
+
+  const isDeleteDisabled = (survey.assignedRigCount ?? 0) > 0;
+
   const isAsteroid = survey.surveyType === 'Asteroid';
 
   const resourceColumns: GridColumn<SurveyResource>[] = useMemo(() => {
@@ -295,7 +311,32 @@ function SurveyDetailPanel({ survey, purities, onNew }: SurveyDetailPanelProps) 
 
   return (
     <div className="flex h-full flex-col overflow-y-auto p-6">
-      <h2 className="mb-4 text-lg font-semibold text-white">Survey Details</h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-white">Survey Details</h2>
+        <div className="flex gap-2">
+          <button
+            onClick={onNew}
+            className="rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700"
+          >
+            New
+          </button>
+          <button
+            onClick={() => void handleSave()}
+            disabled={!isDirty}
+            className="rounded bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            {save.isPending ? 'Saving...' : 'Save'}
+          </button>
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            disabled={isDeleteDisabled}
+            title={isDeleteDisabled ? 'Cannot delete: survey is assigned to mining rigs' : undefined}
+            className="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
 
       {/* Detail fields */}
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -329,6 +370,16 @@ function SurveyDetailPanel({ survey, purities, onNew }: SurveyDetailPanelProps) 
         onRowAdd={handleRowAdd}
         onRowRemove={handleRowRemove}
         keyExtractor={(row) => `${row.resourceName}-${row.purity}-${row.amount}`}
+      />
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Delete Survey"
+        message={`Are you sure you want to delete the survey for "${survey.planetName}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={() => void handleDelete()}
+        onCancel={() => setShowDeleteConfirm(false)}
+        variant="danger"
       />
     </div>
   );

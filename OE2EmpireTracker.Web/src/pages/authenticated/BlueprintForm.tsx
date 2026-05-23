@@ -147,3 +147,515 @@ export function BlueprintForm() {
       .map((l) => ({ value: String(l), label: `TL ${l}` }));
   }, [techLevels, blueprints]);
 
+  // --- Grid column definitions ---
+
+  const statisticsColumns: GridColumn<PropertyRow>[] = useMemo(() => [
+    { key: 'key', header: 'Property', type: 'text' as const },
+    { key: 'value', header: 'Value', type: 'number' as const },
+  ], []);
+
+  const resourceColumns: GridColumn<BlueprintResource>[] = useMemo(() => [
+    { key: 'resourceName', header: 'Resource', type: 'text' as const },
+    { key: 'quantity', header: 'Quantity', type: 'number' as const },
+    {
+      key: 'purity',
+      header: 'Purity',
+      type: 'select' as const,
+      options: purities.map((p) => ({ value: p, label: p })),
+    },
+  ], [purities]);
+
+  const filterDefs: FilterDefinition[] = useMemo(() => [
+    { type: 'text', key: 'search', placeholder: 'Search name or nick name...' },
+    {
+      type: 'dropdown',
+      key: 'blueprintType',
+      label: 'Type',
+      options: blueprintTypes.map((t) => ({ value: t, label: t })),
+    },
+    {
+      type: 'dropdown',
+      key: 'shipClass',
+      label: 'Ship Class',
+      options: shipClasses.map((sc) => ({ value: sc.name, label: sc.name })),
+    },
+    {
+      type: 'dropdown',
+      key: 'techLevel',
+      label: 'Tech Level',
+      options: techLevelOptions,
+    },
+    {
+      type: 'dropdown',
+      key: 'evolution',
+      label: 'Evolution',
+      options: evolutionLevels.map((e) => ({ value: String(e), label: `Evo ${e}` })),
+    },
+  ], [blueprintTypes, shipClasses, techLevelOptions, evolutionLevels]);
+
+  const filteredBlueprints = useMemo(() => {
+    const filters: FilterConfig<Blueprint>[] = [];
+
+    const searchQuery = (filterValues.search as string) ?? '';
+    if (searchQuery.trim()) {
+      filters.push({
+        type: 'text',
+        fields: ['name', 'nickName'],
+        query: searchQuery,
+      });
+    }
+
+    const bpType = (filterValues.blueprintType as string) ?? '';
+    if (bpType) {
+      filters.push({
+        type: 'dropdown',
+        field: 'blueprintType',
+        selected: bpType,
+      });
+    }
+
+    const shipClass = (filterValues.shipClass as string) ?? '';
+    if (shipClass) {
+      filters.push({
+        type: 'dropdown',
+        field: 'shipClass',
+        selected: shipClass,
+      });
+    }
+
+    let result = applyFilters(blueprints, filters);
+
+    // Tech level filter (numeric comparison)
+    const techLevelStr = (filterValues.techLevel as string) ?? '';
+    if (techLevelStr) {
+      const tl = Number(techLevelStr);
+      if (!isNaN(tl)) {
+        result = result.filter((bp) => bp.techLevel === tl);
+      }
+    }
+
+    // Evolution filter (numeric comparison)
+    const evoStr = (filterValues.evolution as string) ?? '';
+    if (evoStr) {
+      const evo = Number(evoStr);
+      if (!isNaN(evo)) {
+        result = result.filter((bp) => bp.evolution === evo);
+      }
+    }
+
+    return result;
+  }, [blueprints, filterValues]);
+
+  const sortedBlueprints = useMemo(() => {
+    const sorted = [...filteredBlueprints].sort((a, b) => {
+      const aVal = a[sortField] ?? '';
+      const bVal = b[sortField] ?? '';
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return sortAsc ? aVal - bVal : bVal - aVal;
+      }
+      const cmp = String(aVal).localeCompare(String(bVal));
+      return sortAsc ? cmp : -cmp;
+    });
+    return sorted;
+  }, [filteredBlueprints, sortField, sortAsc]);
+
+  // --- Handlers ---
+
+  const handleSort = (field: keyof Blueprint) => {
+    if (field === sortField) {
+      setSortAsc(!sortAsc);
+    } else {
+      setSortField(field);
+      setSortAsc(true);
+    }
+  };
+
+  const handleClearFilters = () => {
+    setFilterValues({ search: '', blueprintType: '', shipClass: '', techLevel: '', evolution: '' });
+  };
+
+  const handleSelect = useCallback((uuid: string) => {
+    setSelectedId(uuid);
+    setIsNewMode(false);
+    const bp = blueprints.find((b) => b.uuid === uuid);
+    if (bp) {
+      setForm(formFromBlueprint(bp));
+      setProperties(propertiesToRows(bp.properties));
+      setResources([...bp.resources]);
+      setIsDirty(false);
+    }
+  }, [blueprints]);
+
+  const handleBack = useCallback(() => {
+    setSelectedId(null);
+    setIsNewMode(false);
+    setIsDirty(false);
+  }, []);
+
+  const handleNew = useCallback(() => {
+    setSelectedId('new');
+    setIsNewMode(true);
+    setForm(emptyForm);
+    setProperties([]);
+    setResources([]);
+    setActiveTab('details');
+    setIsDirty(false);
+  }, []);
+
+  const handleFieldChange = useCallback(
+    (field: keyof BlueprintFormState, value: string | number | boolean) => {
+      setForm((prev) => ({ ...prev, [field]: value }));
+      setIsDirty(true);
+    },
+    [],
+  );
+
+  // --- Properties (Statistics) handlers ---
+
+  const handlePropertyChange = useCallback((index: number, row: PropertyRow) => {
+    setProperties((prev) => {
+      const next = [...prev];
+      next[index] = row;
+      return next;
+    });
+    setIsDirty(true);
+  }, []);
+
+  const handlePropertyAdd = useCallback(() => {
+    setProperties((prev) => [...prev, { key: '', value: 0 }]);
+    setIsDirty(true);
+  }, []);
+
+  const handlePropertyRemove = useCallback((index: number) => {
+    setProperties((prev) => prev.filter((_, i) => i !== index));
+    setIsDirty(true);
+  }, []);
+
+  // --- Resources handlers ---
+
+  const handleResourceChange = useCallback((index: number, row: BlueprintResource) => {
+    setResources((prev) => {
+      const next = [...prev];
+      next[index] = row;
+      return next;
+    });
+    setIsDirty(true);
+  }, []);
+
+  const handleResourceAdd = useCallback(() => {
+    setResources((prev) => [...prev, { resourceName: '', quantity: 0, purity: '' }]);
+    setIsDirty(true);
+  }, []);
+
+  const handleResourceRemove = useCallback((index: number) => {
+    setResources((prev) => prev.filter((_, i) => i !== index));
+    setIsDirty(true);
+  }, []);
+
+  // --- Save / Delete ---
+
+  const handleSave = useCallback(async () => {
+    const propsRecord = rowsToProperties(properties);
+    if (isNewMode) {
+      const result = await create.mutateAsync({
+        name: form.name,
+        blueprintType: form.blueprintType,
+        shipClass: form.shipClass || undefined,
+        techLevel: form.techLevel,
+        evolution: form.evolution,
+        nickName: form.nickName || undefined,
+        isGlobal: form.isGlobal,
+        properties: propsRecord,
+        resources,
+      });
+      setSelectedId(result.uuid);
+      setIsNewMode(false);
+    } else if (selectedId) {
+      await save.mutateAsync({
+        entityUUID: selectedId,
+        data: {
+          name: form.name,
+          blueprintType: form.blueprintType,
+          shipClass: form.shipClass || undefined,
+          techLevel: form.techLevel,
+          evolution: form.evolution,
+          nickName: form.nickName || undefined,
+          isGlobal: form.isGlobal,
+          properties: propsRecord,
+          resources,
+        },
+      });
+    }
+    setIsDirty(false);
+  }, [isNewMode, selectedId, form, properties, resources, create, save]);
+
+  const handleDelete = useCallback(async () => {
+    if (!selectedId || isNewMode) return;
+    await remove.mutateAsync(selectedId);
+    setSelectedId(null);
+    setForm(emptyForm);
+    setProperties([]);
+    setResources([]);
+    setIsDirty(false);
+    setShowDeleteConfirm(false);
+  }, [selectedId, isNewMode, remove]);
+
+  // Sync form when detail loads from server
+  const detailUUID = selectedBlueprint?.uuid;
+  const [lastSyncedUUID, setLastSyncedUUID] = useState<string | null>(null);
+  if (selectedBlueprint && detailUUID !== lastSyncedUUID && !isNewMode && !isDirty) {
+    setForm(formFromBlueprint(selectedBlueprint));
+    setProperties(propertiesToRows(selectedBlueprint.properties));
+    setResources([...selectedBlueprint.resources]);
+    setLastSyncedUUID(detailUUID ?? null);
+  }
+
+  // --- Render ---
+
+  if (isLoading) return <LoadingSpinner message="Loading blueprints..." />;
+  if (isError) return <RetryableError message="Failed to load blueprints." onRetry={() => void refetch()} />;
+
+  const listPanel = (
+    <div className="flex h-full flex-col p-4">
+      <h2 className="mb-3 text-lg font-semibold text-white">Blueprints</h2>
+      <FilterBar
+        filters={filterDefs}
+        values={filterValues}
+        onChange={setFilterValues}
+        onClear={handleClearFilters}
+      />
+      {sortedBlueprints.length === 0 ? (
+        <EmptyState title="No blueprints" message="No blueprints match the current filters." />
+      ) : (
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="sticky top-0 bg-gray-800 text-xs uppercase text-gray-400">
+              <tr>
+                <SortHeader field="blueprintType" label="Type" current={sortField} asc={sortAsc} onSort={handleSort} />
+                <SortHeader field="name" label="Name" current={sortField} asc={sortAsc} onSort={handleSort} />
+                <SortHeader field="techLevel" label="TL" current={sortField} asc={sortAsc} onSort={handleSort} />
+                <SortHeader field="evolution" label="Evo" current={sortField} asc={sortAsc} onSort={handleSort} />
+                <SortHeader field="nickName" label="Nick Name" current={sortField} asc={sortAsc} onSort={handleSort} />
+              </tr>
+            </thead>
+            <tbody>
+              {sortedBlueprints.map((bp) => (
+                <tr
+                  key={bp.uuid}
+                  onClick={() => handleSelect(bp.uuid)}
+                  className={[
+                    'cursor-pointer border-b border-gray-700 hover:bg-gray-750',
+                    selectedId === bp.uuid ? 'bg-gray-700' : '',
+                  ].join(' ')}
+                >
+                  <td className="px-3 py-2 text-gray-300">{bp.blueprintType}</td>
+                  <td className="px-3 py-2 text-white">{bp.name}</td>
+                  <td className="px-3 py-2 text-gray-300">{bp.techLevel}</td>
+                  <td className="px-3 py-2 text-gray-300">{bp.evolution}</td>
+                  <td className="px-3 py-2 text-gray-300">{bp.nickName ?? '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+
+  const detailPanel = (
+    <div className="flex h-full flex-col">
+      <div className="border-b border-gray-700 p-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-white">
+            {isNewMode ? 'New Blueprint' : 'Blueprint Details'}
+          </h2>
+          <div className="flex gap-2">
+            <button
+              onClick={handleNew}
+              className="rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700"
+            >
+              New
+            </button>
+            <button
+              onClick={() => void handleSave()}
+              disabled={!isDirty && !isNewMode}
+              className="rounded bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              {save.isPending || create.isPending ? 'Saving...' : 'Save'}
+            </button>
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={isNewMode || !selectedId}
+              className="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:opacity-50"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {!selectedId && !isNewMode ? (
+        <EmptyState title="No blueprint selected" message="Select a blueprint from the list or create a new one." />
+      ) : (
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <TabBar tabs={BLUEPRINT_TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+          <div className="flex-1 overflow-y-auto p-4" role="tabpanel" id={`tabpanel-${activeTab}`} aria-labelledby={`tab-${activeTab}`}>
+            {activeTab === 'details' && (
+              <div className="max-w-lg space-y-4">
+                <div>
+                  <label htmlFor="bp-name" className="mb-1 block text-sm text-gray-400">Name</label>
+                  <input
+                    id="bp-name"
+                    type="text"
+                    value={form.name}
+                    onChange={(e) => handleFieldChange('name', e.target.value)}
+                    className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="bp-type" className="mb-1 block text-sm text-gray-400">Type</label>
+                  <FilteredDropdown
+                    options={blueprintTypes.map((t) => ({ value: t, label: t }))}
+                    value={form.blueprintType}
+                    onChange={(v) => handleFieldChange('blueprintType', v)}
+                    placeholder="Select type..."
+                  />
+                </div>
+                <div>
+                  <label htmlFor="bp-shipclass" className="mb-1 block text-sm text-gray-400">Ship Class</label>
+                  <FilteredDropdown
+                    options={shipClasses.map((sc) => ({ value: sc.name, label: sc.name }))}
+                    value={form.shipClass}
+                    onChange={(v) => handleFieldChange('shipClass', v)}
+                    placeholder="Select ship class..."
+                  />
+                </div>
+                <div>
+                  <label htmlFor="bp-techlevel" className="mb-1 block text-sm text-gray-400">Tech Level</label>
+                  <input
+                    id="bp-techlevel"
+                    type="number"
+                    min={0}
+                    value={form.techLevel}
+                    onChange={(e) => handleFieldChange('techLevel', Number(e.target.value) || 0)}
+                    className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="bp-evolution" className="mb-1 block text-sm text-gray-400">Evolution</label>
+                  <input
+                    id="bp-evolution"
+                    type="number"
+                    min={0}
+                    value={form.evolution}
+                    onChange={(e) => handleFieldChange('evolution', Number(e.target.value) || 0)}
+                    className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="bp-nickname" className="mb-1 block text-sm text-gray-400">Nick Name</label>
+                  <input
+                    id="bp-nickname"
+                    type="text"
+                    value={form.nickName}
+                    onChange={(e) => handleFieldChange('nickName', e.target.value)}
+                    className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    id="bp-global"
+                    type="checkbox"
+                    checked={form.isGlobal}
+                    onChange={(e) => handleFieldChange('isGlobal', e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600"
+                  />
+                  <label htmlFor="bp-global" className="text-sm text-gray-400">Global Blueprint</label>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'statistics' && (
+              <div>
+                <p className="mb-3 text-sm text-gray-400">
+                  Numeric properties for this blueprint. Edit values inline.
+                </p>
+                <EditableGrid<PropertyRow>
+                  columns={statisticsColumns}
+                  rows={properties}
+                  onRowChange={handlePropertyChange}
+                  onRowAdd={handlePropertyAdd}
+                  onRowRemove={handlePropertyRemove}
+                  keyExtractor={(row) => `${row.key}-${properties.indexOf(row)}`}
+                />
+              </div>
+            )}
+
+            {activeTab === 'resources' && (
+              <div>
+                <p className="mb-3 text-sm text-gray-400">
+                  Manufacturing resource requirements. Edit values inline.
+                </p>
+                <EditableGrid<BlueprintResource>
+                  columns={resourceColumns}
+                  rows={resources}
+                  onRowChange={handleResourceChange}
+                  onRowAdd={handleResourceAdd}
+                  onRowRemove={handleResourceRemove}
+                  keyExtractor={(row) => `${row.resourceName}-${resources.indexOf(row)}`}
+                />
+              </div>
+            )}
+
+            {activeTab === 'evolution' && (
+              <EmptyState title="Evolution Graph" message="Evolution chart will be implemented in a future task." />
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+      <MasterDetailLayout
+        listPanel={listPanel}
+        detailPanel={detailPanel}
+        selectedId={selectedId}
+        onBack={handleBack}
+      />
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Delete Blueprint"
+        message={`Are you sure you want to delete "${form.name || 'this blueprint'}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={() => void handleDelete()}
+        onCancel={() => setShowDeleteConfirm(false)}
+        variant="danger"
+      />
+    </>
+  );
+}
+
+interface SortHeaderProps {
+  field: keyof Blueprint;
+  label: string;
+  current: keyof Blueprint;
+  asc: boolean;
+  onSort: (field: keyof Blueprint) => void;
+}
+
+function SortHeader({ field, label, current, asc, onSort }: SortHeaderProps) {
+  const isActive = current === field;
+  return (
+    <th
+      className="cursor-pointer px-3 py-2 select-none hover:text-white"
+      onClick={() => onSort(field)}
+    >
+      {label}
+      {isActive && (
+        <span className="ml-1">{asc ? '▲' : '▼'}</span>
+      )}
+    </th>
+  );
+}

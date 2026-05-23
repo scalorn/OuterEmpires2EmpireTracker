@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useDeliveryRoutes } from '../../api/hooks/useDeliveryRoutes';
-import { usePlans } from '../../api/hooks/useDeliveryPlans';
+import { usePlans, usePlanMutations } from '../../api/hooks/useDeliveryPlans';
 import { useColonyMutations } from '../../api/hooks/useColonies';
 import { useAuthStore } from '../../auth/store';
 import { FilteredDropdown } from '../../components/common/FilteredDropdown';
@@ -26,16 +26,23 @@ interface LoadListItem {
  * checkable drop-off and pick-up items. Checking items triggers API calls
  * to mark commodity requests fulfilled or structures staged.
  *
- * Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5
+ * Complete Stop button appears when all items at a stop are checked.
+ * Visual completion (green badge, grayed-out section) only after clicking
+ * Complete Stop. When all stops are completed, a Complete Plan button
+ * marks the plan as completed via the API.
+ *
+ * Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8
  */
 export function ExecutionForm() {
   const { characterUUID } = useAuthStore();
   const { data: routesData, isLoading: routesLoading } = useDeliveryRoutes(characterUUID);
   const { data: plansData, isLoading: plansLoading } = usePlans(characterUUID);
   const { updateCommodityRequest, addStructure } = useColonyMutations();
+  const { save: savePlan } = usePlanMutations();
 
   const [selectedRouteId, setSelectedRouteId] = useState<string>('');
   const [selectedPlanId, setSelectedPlanId] = useState<string>('');
+  const [completedStops, setCompletedStops] = useState<Set<string>>(new Set());
 
   const routes = useMemo(
     () => (Array.isArray(routesData) ? routesData : []) as DeliveryRoute[],
@@ -106,14 +113,49 @@ export function ExecutionForm() {
     [loadList],
   );
 
+  // Determine which stops have items (used for plan completion check)
+  const stopsWithItems = useMemo((): string[] => {
+    if (!selectedPlan || !orderedStops.length) return [];
+    return orderedStops
+      .filter((stop) => {
+        const stopItems = selectedPlan.stopItems[stop.uuid];
+        return stopItems && (stopItems.dropOff.length > 0 || stopItems.pickUp.length > 0);
+      })
+      .map((stop) => stop.uuid);
+  }, [selectedPlan, orderedStops]);
+
+  // Check if all stops with items are completed
+  const allStopsCompleted = useMemo(() => {
+    if (stopsWithItems.length === 0) return false;
+    return stopsWithItems.every((uuid) => completedStops.has(uuid));
+  }, [stopsWithItems, completedStops]);
+
   const handleRouteChange = (value: string) => {
     setSelectedRouteId(value);
     setSelectedPlanId('');
+    setCompletedStops(new Set());
   };
 
   const handlePlanChange = (value: string) => {
     setSelectedPlanId(value);
+    setCompletedStops(new Set());
   };
+
+  const handleCompleteStop = useCallback((stopUUID: string) => {
+    setCompletedStops((prev) => {
+      const next = new Set(prev);
+      next.add(stopUUID);
+      return next;
+    });
+  }, []);
+
+  const handleCompletePlan = useCallback(() => {
+    if (!selectedPlanId) return;
+    savePlan.mutate({
+      entityUUID: selectedPlanId,
+      data: { isCompleted: true },
+    });
+  }, [selectedPlanId, savePlan]);
 
   /**
    * Handles checking a drop-off item.
@@ -242,11 +284,27 @@ export function ExecutionForm() {
                   key={stop.uuid}
                   stop={stop}
                   stopItems={stopItems}
+                  isCompleted={completedStops.has(stop.uuid)}
                   onDropOffCheck={handleDropOffCheck}
+                  onCompleteStop={handleCompleteStop}
                 />
               );
             })}
           </div>
+
+          {/* Complete Plan button — shown when all stops are completed */}
+          {allStopsCompleted && (
+            <div className="mt-6 flex justify-center">
+              <button
+                type="button"
+                onClick={handleCompletePlan}
+                disabled={savePlan.isPending}
+                className="rounded bg-green-600 px-6 py-2 text-sm font-semibold text-white hover:bg-green-500 disabled:opacity-50"
+              >
+                {savePlan.isPending ? 'Completing...' : 'Complete Plan'}
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -287,22 +345,51 @@ function aggregateItem(map: Map<string, LoadListItem>, item: DeliveryItem): void
 interface StopSectionProps {
   stop: RouteStop;
   stopItems: StopItemSet;
+  isCompleted: boolean;
   onDropOffCheck: (stop: RouteStop, item: DeliveryItem) => void;
+  onCompleteStop: (stopUUID: string) => void;
 }
 
 /**
  * Renders a single stop section with checkable drop-off and pick-up items.
  * Items already checked (isChecked=true) render as checked and disabled.
+ *
+ * When all items are checked and the stop is not yet completed, a
+ * "Complete Stop" button appears. Clicking it marks the stop as completed
+ * and shows a green "✓ Completed" badge with grayed-out styling.
  */
-function StopSection({ stop, stopItems, onDropOffCheck }: StopSectionProps) {
+function StopSection({ stop, stopItems, isCompleted, onDropOffCheck, onCompleteStop }: StopSectionProps) {
+  // Check if all items in this stop are checked
+  const allItemsChecked = useMemo(() => {
+    const allItems = [...stopItems.dropOff, ...stopItems.pickUp];
+    if (allItems.length === 0) return false;
+    return allItems.every((item) => item.isChecked);
+  }, [stopItems]);
+
+  // Show Complete Stop button when all items checked but stop not yet completed
+  const showCompleteButton = allItemsChecked && !isCompleted;
+
   return (
-    <div className="rounded border border-gray-700 bg-gray-800/50 p-3">
-      <h4 className="mb-2 text-sm font-semibold text-white">
-        Stop {stop.sequence}: {stop.colonyName}
-        <span className="ml-2 text-xs font-normal text-gray-400">
-          {stop.planetName}, {stop.systemName}
-        </span>
-      </h4>
+    <div
+      className={`rounded border p-3 ${
+        isCompleted
+          ? 'border-green-700/50 bg-gray-800/30 opacity-75'
+          : 'border-gray-700 bg-gray-800/50'
+      }`}
+    >
+      <div className="mb-2 flex items-center justify-between">
+        <h4 className="text-sm font-semibold text-white">
+          Stop {stop.sequence}: {stop.colonyName}
+          <span className="ml-2 text-xs font-normal text-gray-400">
+            {stop.planetName}, {stop.systemName}
+          </span>
+        </h4>
+        {isCompleted && (
+          <span className="rounded bg-green-700/30 px-2 py-0.5 text-xs font-medium text-green-400">
+            ✓ Completed
+          </span>
+        )}
+      </div>
 
       {/* Drop-off items */}
       {stopItems.dropOff.length > 0 && (
@@ -314,7 +401,7 @@ function StopSection({ stop, stopItems, onDropOffCheck }: StopSectionProps) {
                 <input
                   type="checkbox"
                   checked={item.isChecked}
-                  disabled={item.isChecked}
+                  disabled={item.isChecked || isCompleted}
                   onChange={() => onDropOffCheck(stop, item)}
                   className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
                 />
@@ -340,7 +427,7 @@ function StopSection({ stop, stopItems, onDropOffCheck }: StopSectionProps) {
                 <input
                   type="checkbox"
                   checked={item.isChecked}
-                  disabled={item.isChecked}
+                  disabled={item.isChecked || isCompleted}
                   className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
                 />
                 <span className={`text-sm ${item.isChecked ? 'text-gray-500 line-through' : 'text-white'}`}>
@@ -352,6 +439,19 @@ function StopSection({ stop, stopItems, onDropOffCheck }: StopSectionProps) {
               </li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {/* Complete Stop button */}
+      {showCompleteButton && (
+        <div className="mt-3 flex justify-end">
+          <button
+            type="button"
+            onClick={() => onCompleteStop(stop.uuid)}
+            className="rounded bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-500"
+          >
+            Complete Stop
+          </button>
         </div>
       )}
     </div>

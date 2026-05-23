@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useAuthStore } from '../../auth/store';
 import { useDeliveryRoutes, useRouteDetail, useRouteMutations } from '../../api/hooks/useDeliveryRoutes';
+import { usePlans, usePlanMutations } from '../../api/hooks/useDeliveryPlans';
 import { useColonies } from '../../api/hooks/useColonies';
 import { MasterDetailLayout } from '../../components/common/MasterDetailLayout';
 import { FilterBar, type FilterDefinition, type FilterValues } from '../../components/common/FilterBar';
@@ -12,7 +13,7 @@ import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 import { useUnsavedChanges } from '../../hooks/useUnsavedChanges';
 import { moveUp, moveDown, resequence } from '../../utils/reorderUtils';
-import type { DeliveryRoute, RouteStop } from '../../api/types/domain';
+import type { DeliveryRoute, RouteStop, DeliveryPlan, DeliveryItem } from '../../api/types/domain';
 
 const ROUTE_FILTERS: FilterDefinition[] = [
   { type: 'text', key: 'search', placeholder: 'Filter routes...' },
@@ -303,7 +304,14 @@ function RouteDetailPanel({ charUUID, routeUUID, activeTab, onTabChange, onNew, 
             onRemoveStop={handleRemoveStop}
           />
         )}
-        {activeTab === 'plans' && <PlansTabPlaceholder />}
+        {activeTab === 'plans' && (
+          <PlansTab
+            charUUID={charUUID}
+            routeUUID={isNew ? undefined : routeUUID}
+            routeName={routeName}
+            stops={localStops}
+          />
+        )}
       </div>
 
       {/* Delete confirmation dialog */}
@@ -439,8 +447,197 @@ function StopsTab({ charUUID, stops, onAddStop, onMoveUp, onMoveDown, onRemoveSt
   );
 }
 
-// --- Plans Tab Placeholder (filled in by task 12.3) ---
+// --- Plans Tab ---
 
-function PlansTabPlaceholder() {
-  return <EmptyState title="Plans" message="Delivery plan management will be available here." />;
+interface PlansTabProps {
+  charUUID: string | null;
+  routeUUID: string | undefined;
+  routeName: string;
+  stops: RouteStop[];
+}
+
+function PlansTab({ charUUID, routeUUID, routeName, stops }: PlansTabProps) {
+  const { data: allPlans } = usePlans(charUUID);
+  const { save } = usePlanMutations();
+  const [selectedPlanUUID, setSelectedPlanUUID] = useState('');
+  const [selectedStopUUID, setSelectedStopUUID] = useState<string | null>(null);
+
+  // Filter plans to only those belonging to this route
+  const routePlans = useMemo(() => {
+    if (!allPlans || !routeUUID) return [];
+    return allPlans.filter((p) => p.routeUUID === routeUUID);
+  }, [allPlans, routeUUID]);
+
+  const planOptions = useMemo(() => {
+    return routePlans.map((p) => ({ value: p.uuid, label: p.name }));
+  }, [routePlans]);
+
+  const selectedPlan = useMemo(() => {
+    return routePlans.find((p) => p.uuid === selectedPlanUUID) ?? null;
+  }, [routePlans, selectedPlanUUID]);
+
+  const handleNewPlan = () => {
+    if (!routeUUID) return;
+    const today = new Date().toISOString().slice(0, 10);
+    const planName = `${routeName || 'Route'} - ${today}`;
+    save.mutate(
+      { data: { name: planName, routeUUID } },
+      {
+        onSuccess: (created: DeliveryPlan) => {
+          setSelectedPlanUUID(created.uuid);
+        },
+      },
+    );
+  };
+
+  const handleSelectStop = (stopUUID: string) => {
+    setSelectedStopUUID((prev) => (prev === stopUUID ? null : stopUUID));
+  };
+
+  // Get items for the selected stop from the selected plan
+  const stopItems = useMemo(() => {
+    if (!selectedPlan || !selectedStopUUID) return null;
+    return selectedPlan.stopItems[selectedStopUUID] ?? null;
+  }, [selectedPlan, selectedStopUUID]);
+
+  if (!routeUUID) {
+    return <EmptyState title="Save route first" message="Save the route before managing delivery plans." />;
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Plan selection */}
+      <div className="rounded border border-gray-700 bg-gray-800/50 p-3">
+        <p className="mb-2 text-sm font-medium text-gray-300">Delivery Plan</p>
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <FilteredDropdown
+              options={planOptions}
+              value={selectedPlanUUID}
+              onChange={setSelectedPlanUUID}
+              placeholder="Select a plan..."
+            />
+          </div>
+          <button
+            onClick={handleNewPlan}
+            disabled={save.isPending}
+            className="rounded bg-green-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
+          >
+            {save.isPending ? 'Creating...' : 'New Plan'}
+          </button>
+        </div>
+      </div>
+
+      {/* Stop selection and items display */}
+      {selectedPlan && (
+        <div className="space-y-3">
+          <p className="text-sm text-gray-400">
+            Select a stop to view its delivery items:
+          </p>
+          <div className="space-y-2">
+            {stops.map((stop) => (
+              <button
+                key={stop.uuid}
+                onClick={() => handleSelectStop(stop.uuid)}
+                className={`w-full rounded border px-4 py-3 text-left transition-colors ${
+                  selectedStopUUID === stop.uuid
+                    ? 'border-blue-500 bg-blue-600/20 text-blue-300'
+                    : 'border-gray-700 bg-gray-800/50 text-gray-300 hover:border-gray-600 hover:bg-gray-800'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600/30 text-xs font-bold text-blue-300">
+                    {stop.sequence}
+                  </span>
+                  <div>
+                    <p className="font-medium text-white">{stop.colonyName}</p>
+                    <p className="text-xs text-gray-400">
+                      {stop.planetName} &middot; {stop.systemName}
+                    </p>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Items for selected stop */}
+          {selectedStopUUID && (
+            <StopItemsDisplay items={stopItems} />
+          )}
+        </div>
+      )}
+
+      {!selectedPlan && routePlans.length === 0 && (
+        <EmptyState title="No plans" message="Create a new plan to start assigning delivery items to stops." />
+      )}
+    </div>
+  );
+}
+
+// --- Stop Items Display ---
+
+interface StopItemsDisplayProps {
+  items: { dropOff: DeliveryItem[]; pickUp: DeliveryItem[] } | null;
+}
+
+function StopItemsDisplay({ items }: StopItemsDisplayProps) {
+  if (!items || (items.dropOff.length === 0 && items.pickUp.length === 0)) {
+    return (
+      <div className="rounded border border-gray-700 bg-gray-800/50 p-4 text-center text-sm text-gray-400">
+        No items assigned to this stop yet.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Drop-off items */}
+      <div className="rounded border border-gray-700 bg-gray-800/50 p-3">
+        <h4 className="mb-2 text-sm font-medium text-orange-300">
+          Drop-off ({items.dropOff.length})
+        </h4>
+        {items.dropOff.length === 0 ? (
+          <p className="text-xs text-gray-500">No drop-off items.</p>
+        ) : (
+          <ul className="space-y-1">
+            {items.dropOff.map((item) => (
+              <li key={item.uuid} className="flex items-center justify-between rounded bg-gray-900/50 px-3 py-1.5 text-sm">
+                <span className="text-gray-200">
+                  {item.name}
+                  {item.purity && <span className="ml-1 text-xs text-gray-400">({item.purity})</span>}
+                </span>
+                <span className="text-xs text-gray-400">
+                  {item.quantity} &times; {item.itemType}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Pick-up items */}
+      <div className="rounded border border-gray-700 bg-gray-800/50 p-3">
+        <h4 className="mb-2 text-sm font-medium text-green-300">
+          Pick-up ({items.pickUp.length})
+        </h4>
+        {items.pickUp.length === 0 ? (
+          <p className="text-xs text-gray-500">No pick-up items.</p>
+        ) : (
+          <ul className="space-y-1">
+            {items.pickUp.map((item) => (
+              <li key={item.uuid} className="flex items-center justify-between rounded bg-gray-900/50 px-3 py-1.5 text-sm">
+                <span className="text-gray-200">
+                  {item.name}
+                  {item.purity && <span className="ml-1 text-xs text-gray-400">({item.purity})</span>}
+                </span>
+                <span className="text-xs text-gray-400">
+                  {item.quantity} &times; {item.itemType}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
 }
