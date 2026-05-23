@@ -53,6 +53,42 @@ namespace OE2EmpireTracker.Forms.Sharing
             _isProgrammaticUpdate--;
         }
 
+        /// <summary>
+        /// Determines whether any non-Public row has an empty or whitespace-only Target UUID.
+        /// Extracted for testability.
+        /// </summary>
+        /// <param name="grid">The DataGridView containing sharing rules.</param>
+        /// <param name="targetTypeColumnIndex">Column index for Target Type.</param>
+        /// <param name="targetUUIDColumnIndex">Column index for Target UUID.</param>
+        /// <returns>True if any non-Public row has an empty Target UUID.</returns>
+        internal static bool HasEmptyTargetUUID(
+            DataGridView grid,
+            int targetTypeColumnIndex,
+            int targetUUIDColumnIndex)
+        {
+            foreach (DataGridViewRow row in grid.Rows)
+            {
+                if (row.IsNewRow)
+                {
+                    continue;
+                }
+
+                string targetType = row.Cells[targetTypeColumnIndex].Value?.ToString() ?? string.Empty;
+                if (string.Equals(targetType, "Public", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                string targetUUID = row.Cells[targetUUIDColumnIndex].Value?.ToString() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(targetUUID))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
@@ -370,29 +406,7 @@ namespace OE2EmpireTracker.Forms.Sharing
 
         private void UpdateSaveButtonState()
         {
-            bool hasEmptyUUID = false;
-
-            foreach (DataGridViewRow row in dgvRules.Rows)
-            {
-                if (row.IsNewRow)
-                {
-                    continue;
-                }
-
-                string targetType = row.Cells[colTargetType.Index].Value?.ToString() ?? string.Empty;
-                if (string.Equals(targetType, "Public", StringComparison.Ordinal))
-                {
-                    continue;
-                }
-
-                string targetUUID = row.Cells[colTargetUUID.Index].Value?.ToString() ?? string.Empty;
-                if (string.IsNullOrWhiteSpace(targetUUID))
-                {
-                    hasEmptyUUID = true;
-                    break;
-                }
-            }
-
+            bool hasEmptyUUID = HasEmptyTargetUUID(dgvRules, colTargetType.Index, colTargetUUID.Index);
             btnSave.Enabled = !hasEmptyUUID;
         }
 

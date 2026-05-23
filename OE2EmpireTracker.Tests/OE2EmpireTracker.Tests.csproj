@@ -343,6 +343,7 @@
     <Compile Include="Forms\GetDeleteButtonStateTests.cs" />
     <Compile Include="Forms\MdiWindowNumberPropertyTests.cs" />
     <Compile Include="Forms\PricingPlanValidationPropertyTests.cs" />
+    <Compile Include="Forms\SharingValidationTests.cs" />
     <Compile Include="Forms\ShipTemplatePricingTests.cs" />
     <Compile Include="ViewModels\BaseBlueprintCandidatesTests.cs" />
     <Compile Include="ViewModels\BlueprintFilterPropertyTests.cs" />

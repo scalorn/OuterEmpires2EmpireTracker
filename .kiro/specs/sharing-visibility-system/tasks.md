@@ -158,7 +158,7 @@ graph TD
 
 ### Phase 8: Desktop App — Property Tests
 
-- [~] 9.1 Write property test for Target UUID validation blocking save
+- [-] 9.1 Write property test for Target UUID validation blocking save
   - Satisfies: Correctness Property 5
   - Inputs: FormSharing validation logic
   - Output: `OE2EmpireTracker.Tests/Forms/SharingValidationTests.cs`

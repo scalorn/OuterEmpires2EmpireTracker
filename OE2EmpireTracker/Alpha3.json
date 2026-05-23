@@ -60540,7 +60540,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Metallics",
   "Name": "Metallics",
-  "Quantity": 2147479929,
+  "Quantity": 2147479985,
   "ResourcePurity": "Medium"
 },
         "e8b29d62-4eee-43ed-a5e5-590eee28f71b": {
@@ -60555,7 +60555,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Post-Trans Metals",
   "Name": "Heavy Post-Trans Metals",
-  "Quantity": 2147475448,
+  "Quantity": 2147475460,
   "ResourcePurity": "Low"
 },
         "fafb9470-4ede-4939-ad53-89ee37cbf5df": {
@@ -60873,14 +60873,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-23T14:26:18.7467934Z",
-            "EndTime": "2026-05-23T15:26:18.7467934Z",
+            "StartTime": "2026-05-23T15:26:18.7467934Z",
+            "EndTime": "2026-05-23T16:26:18.7467934Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "cf4432f5-0c4c-441c-9951-77c8cdcc51b7",
           "MiningSurveyResource": "Metallics",
-          "MiningLeftOvers": 0.1958,
+          "MiningLeftOvers": 0.4427,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },
@@ -61003,14 +61003,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-23T14:26:18.7467934Z",
-            "EndTime": "2026-05-23T15:26:18.7467934Z",
+            "StartTime": "2026-05-23T15:26:18.7467934Z",
+            "EndTime": "2026-05-23T16:26:18.7467934Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "cf4432f5-0c4c-441c-9951-77c8cdcc51b7",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
-          "MiningLeftOvers": 0.7548,
+          "MiningLeftOvers": 0.0062,
           "RefiningResourcePurity": "Low",
           "CurrentAttitude": ""
         },
