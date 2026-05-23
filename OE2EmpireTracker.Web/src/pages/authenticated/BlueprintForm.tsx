@@ -1,29 +1,69 @@
-import { useState, useMemo } from 'react';
-import { useBlueprints } from '../../api/hooks/useBlueprints';
+import { useState, useMemo, useCallback } from 'react';
+import { useBlueprints, useBlueprintDetail, useBlueprintMutations } from '../../api/hooks/useBlueprints';
 import { useBaseline } from '../../api/hooks/useBaseline';
 import { useAuthStore } from '../../auth/store';
+import { useUnsavedChanges } from '../../hooks/useUnsavedChanges';
 import { MasterDetailLayout } from '../../components/common/MasterDetailLayout';
 import { FilterBar, type FilterDefinition, type FilterValues } from '../../components/common/FilterBar';
+import { FilteredDropdown } from '../../components/common/FilteredDropdown';
+import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 import { applyFilters, type FilterConfig } from '../../utils/filterUtils';
 import type { Blueprint } from '../../api/types/domain';
 
+interface BlueprintFormState {
+  name: string;
+  blueprintType: string;
+  shipClass: string;
+  techLevel: number;
+  evolution: number;
+  nickName: string;
+  isGlobal: boolean;
+}
+
+const emptyForm: BlueprintFormState = {
+  name: '',
+  blueprintType: '',
+  shipClass: '',
+  techLevel: 1,
+  evolution: 0,
+  nickName: '',
+  isGlobal: false,
+};
+
+function formFromBlueprint(bp: Blueprint): BlueprintFormState {
+  return {
+    name: bp.name,
+    blueprintType: bp.blueprintType,
+    shipClass: bp.shipClass ?? '',
+    techLevel: bp.techLevel,
+    evolution: bp.evolution,
+    nickName: bp.nickName ?? '',
+    isGlobal: bp.isGlobal,
+  };
+}
+
 /**
  * BlueprintForm — master-detail layout for managing blueprints.
  *
  * Left panel: filterable, sortable list of blueprints
- * Right panel: detail panel for selected blueprint (placeholder until detail task)
+ * Right panel: editable detail panel with Save/New/Delete actions
  *
- * Requirements: 2.1, 2.2
+ * Requirements: 2.1, 2.2, 2.3, 2.7, 2.8, 2.9
  */
 export function BlueprintForm() {
   const { characterUUID } = useAuthStore();
   const { data, isLoading, isError, refetch } = useBlueprints(characterUUID);
   const { data: baseline } = useBaseline();
+  const { create, save, remove } = useBlueprintMutations();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isNewMode, setIsNewMode] = useState(false);
+  const [form, setForm] = useState<BlueprintFormState>(emptyForm);
+  const [isDirty, setIsDirty] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [filterValues, setFilterValues] = useState<FilterValues>({
     search: '',
     blueprintType: '',
@@ -33,6 +73,15 @@ export function BlueprintForm() {
   });
   const [sortField, setSortField] = useState<keyof Blueprint>('name');
   const [sortAsc, setSortAsc] = useState(true);
+
+  // Fetch detail for selected blueprint
+  const { data: selectedBlueprint } = useBlueprintDetail(
+    characterUUID,
+    isNewMode ? null : selectedId,
+  );
+
+  // Unsaved changes guard
+  useUnsavedChanges(isDirty);
 
   const blueprints: Blueprint[] = useMemo(
     () => (Array.isArray(data) ? data : []) as Blueprint[],
@@ -160,6 +209,8 @@ export function BlueprintForm() {
     return sorted;
   }, [filteredBlueprints, sortField, sortAsc]);
 
+  // --- Handlers ---
+
   const handleSort = (field: keyof Blueprint) => {
     if (field === sortField) {
       setSortAsc(!sortAsc);
@@ -173,7 +224,87 @@ export function BlueprintForm() {
     setFilterValues({ search: '', blueprintType: '', shipClass: '', techLevel: '', evolution: '' });
   };
 
-  const handleBack = () => setSelectedId(null);
+  const handleSelect = useCallback((uuid: string) => {
+    setSelectedId(uuid);
+    setIsNewMode(false);
+    const bp = blueprints.find((b) => b.uuid === uuid);
+    if (bp) {
+      setForm(formFromBlueprint(bp));
+      setIsDirty(false);
+    }
+  }, [blueprints]);
+
+  const handleBack = useCallback(() => {
+    setSelectedId(null);
+    setIsNewMode(false);
+    setIsDirty(false);
+  }, []);
+
+  const handleNew = useCallback(() => {
+    setSelectedId('new');
+    setIsNewMode(true);
+    setForm(emptyForm);
+    setIsDirty(false);
+  }, []);
+
+  const handleFieldChange = useCallback(
+    (field: keyof BlueprintFormState, value: string | number | boolean) => {
+      setForm((prev) => ({ ...prev, [field]: value }));
+      setIsDirty(true);
+    },
+    [],
+  );
+
+  const handleSave = useCallback(async () => {
+    if (isNewMode) {
+      const result = await create.mutateAsync({
+        name: form.name,
+        blueprintType: form.blueprintType,
+        shipClass: form.shipClass || undefined,
+        techLevel: form.techLevel,
+        evolution: form.evolution,
+        nickName: form.nickName || undefined,
+        isGlobal: form.isGlobal,
+        properties: {},
+        resources: [],
+      });
+      setSelectedId(result.uuid);
+      setIsNewMode(false);
+    } else if (selectedId) {
+      await save.mutateAsync({
+        entityUUID: selectedId,
+        data: {
+          name: form.name,
+          blueprintType: form.blueprintType,
+          shipClass: form.shipClass || undefined,
+          techLevel: form.techLevel,
+          evolution: form.evolution,
+          nickName: form.nickName || undefined,
+          isGlobal: form.isGlobal,
+        },
+      });
+    }
+    setIsDirty(false);
+  }, [isNewMode, selectedId, form, create, save]);
+
+  const handleDelete = useCallback(async () => {
+    if (!selectedId || isNewMode) return;
+    await remove.mutateAsync(selectedId);
+    setSelectedId(null);
+    setForm(emptyForm);
+    setIsDirty(false);
+    setShowDeleteConfirm(false);
+  }, [selectedId, isNewMode, remove]);
+
+  // Sync form when detail loads from server
+  const detailUUID = selectedBlueprint?.uuid;
+  const [lastSyncedUUID, setLastSyncedUUID] = useState<string | null>(null);
+  if (selectedBlueprint && detailUUID !== lastSyncedUUID && !isNewMode && !isDirty) {
+    setForm(formFromBlueprint(selectedBlueprint));
+    setLastSyncedUUID(detailUUID ?? null);
+  }
+
+  // --- Render ---
 
   if (isLoading) return <LoadingSpinner message="Loading blueprints..." />;
   if (isError) return <RetryableError message="Failed to load blueprints." onRetry={() => void refetch()} />;
@@ -205,7 +336,7 @@ export function BlueprintForm() {
               {sortedBlueprints.map((bp) => (
                 <tr
                   key={bp.uuid}
-                  onClick={() => setSelectedId(bp.uuid)}
+                  onClick={() => handleSelect(bp.uuid)}
                   className={[
                     'cursor-pointer border-b border-gray-700 hover:bg-gray-750',
                     selectedId === bp.uuid ? 'bg-gray-700' : '',
@@ -224,46 +355,3 @@ export function BlueprintForm() {
       )}
     </div>
   );
-
-  const detailPanel = selectedId ? (
-    <div className="flex h-full items-center justify-center p-8">
-      <p className="text-sm text-gray-500">Blueprint detail panel — coming in a future task</p>
-    </div>
-  ) : (
-    <div className="flex h-full items-center justify-center p-8">
-      <p className="text-sm text-gray-500">Select a blueprint from the list to view details.</p>
-    </div>
-  );
-
-  return (
-    <MasterDetailLayout
-      listPanel={listPanel}
-      detailPanel={detailPanel}
-      selectedId={selectedId}
-      onBack={handleBack}
-    />
-  );
-}
-
-interface SortHeaderProps {
-  field: keyof Blueprint;
-  label: string;
-  current: keyof Blueprint;
-  asc: boolean;
-  onSort: (field: keyof Blueprint) => void;
-}
-
-function SortHeader({ field, label, current, asc, onSort }: SortHeaderProps) {
-  const isActive = current === field;
-  return (
-    <th
-      className="cursor-pointer px-3 py-2 select-none hover:text-white"
-      onClick={() => onSort(field)}
-    >
-      {label}
-      {isActive && (
-        <span className="ml-1">{asc ? '▲' : '▼'}</span>
-      )}
-    </th>
-  );
-}

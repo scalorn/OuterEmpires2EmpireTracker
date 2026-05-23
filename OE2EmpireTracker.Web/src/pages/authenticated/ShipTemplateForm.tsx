@@ -2,14 +2,16 @@ import { useState, useMemo, useCallback } from 'react';
 import { useShipTemplates, useTemplateMutations } from '../../api/hooks/useShipTemplates';
 import { useBlueprints } from '../../api/hooks/useBlueprints';
 import { useBaseline } from '../../api/hooks/useBaseline';
+import { usePricingPlans } from '../../api/hooks/usePricingPlans';
 import { useAuthStore } from '../../auth/store';
 import { MasterDetailLayout } from '../../components/common/MasterDetailLayout';
 import { FilteredDropdown } from '../../components/common/FilteredDropdown';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
+import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { ShipStatsPanel } from '../../components/domain/ShipStatsPanel';
-import type { ShipTemplate, TemplateSlot, Blueprint, SlotDefinition } from '../../api/types/domain';
+import type { ShipTemplate, TemplateSlot, Blueprint, SlotDefinition, PricingPlan } from '../../api/types/domain';
 
 /** Slot type to blueprint type mapping for filtering compatible blueprints */
 const SLOT_TYPE_TO_BLUEPRINT_TYPE: Record<string, string> = {
@@ -47,6 +49,31 @@ function computeStats(
   return { mass, powerBalance, cargoCapacity, defenceRating, propulsion };
 }
 
+/** Compute total estimated build cost from a pricing plan and assigned blueprints */
+function computeBuildCost(
+  slots: TemplateSlot[],
+  blueprints: Blueprint[],
+  pricingPlan: PricingPlan | null,
+): number {
+  if (!pricingPlan) return 0;
+  let total = 0;
+
+  for (const slot of slots) {
+    if (!slot.blueprintUUID) continue;
+    const bp = blueprints.find((b) => b.uuid === slot.blueprintUUID);
+    if (!bp) continue;
+
+    const planItem = pricingPlan.items.find(
+      (item) => item.itemName.toLowerCase() === (bp.nickName || bp.name || '').toLowerCase(),
+    );
+    if (planItem) {
+      total += planItem.unitPrice;
+    }
+  }
+
+  return total;
+}
+
 /** Expand slot definitions into individual slot entries */
 function expandSlotDefs(slotDefs: SlotDefinition[]): { slotType: string; slotIndex: number }[] {
   const result: { slotType: string; slotIndex: number }[] = [];
@@ -63,16 +90,20 @@ export function ShipTemplateForm() {
   const { data: templates, isLoading, isError, refetch } = useShipTemplates(characterUUID);
   const { data: blueprints } = useBlueprints(characterUUID);
   const { data: baseline } = useBaseline();
-  const { save } = useTemplateMutations();
+  const { data: pricingPlans } = usePricingPlans(characterUUID);
+  const { save, remove, orderBuild } = useTemplateMutations();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [editHull, setEditHull] = useState('');
   const [editSlots, setEditSlots] = useState<TemplateSlot[]>([]);
+  const [selectedPricingPlanId, setSelectedPricingPlanId] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const templateList = useMemo(() => (Array.isArray(templates) ? templates : []) as ShipTemplate[], [templates]);
   const blueprintList = useMemo(() => (Array.isArray(blueprints) ? blueprints : []) as Blueprint[], [blueprints]);
   const shipClasses = useMemo(() => baseline?.shipClasses ?? [], [baseline]);
+  const pricingPlanList = useMemo(() => (Array.isArray(pricingPlans) ? pricingPlans : []) as PricingPlan[], [pricingPlans]);
 
   const selectedHullDef = useMemo(
     () => shipClasses.find((sc) => sc.name === editHull) ?? null,
@@ -88,6 +119,17 @@ export function ShipTemplateForm() {
   const stats = useMemo(
     () => computeStats(editSlots, blueprintList),
     [editSlots, blueprintList],
+  );
+
+  // Compute total estimated build cost from selected pricing plan
+  const selectedPricingPlan = useMemo(
+    () => pricingPlanList.find((p) => p.uuid === selectedPricingPlanId) ?? null,
+    [pricingPlanList, selectedPricingPlanId],
+  );
+
+  const totalBuildCost = useMemo(
+    () => computeBuildCost(editSlots, blueprintList, selectedPricingPlan),
+    [editSlots, blueprintList, selectedPricingPlan],
   );
 
   // Select a template and populate edit state
@@ -178,11 +220,31 @@ export function ShipTemplateForm() {
     setEditSlots([]);
   };
 
+  // Delete handler
+  const handleDelete = () => {
+    if (!selectedId) return;
+    remove.mutate(selectedId, {
+      onSuccess: () => {
+        setShowDeleteConfirm(false);
+        handleNew();
+      },
+    });
+  };
+
+  // Order Build handler
+  const handleOrderBuild = () => {
+    if (!selectedId) return;
+    orderBuild.mutate(selectedId);
+  };
+
   if (isLoading) return <LoadingSpinner message="Loading ship templates..." />;
   if (isError) return <RetryableError message="Failed to load ship templates." onRetry={() => void refetch()} />;
 
   // Hull dropdown options
   const hullOptions = shipClasses.map((sc) => ({ value: sc.name, label: sc.name }));
+
+  // Pricing plan dropdown options
+  const pricingPlanOptions = pricingPlanList.map((p) => ({ value: p.uuid, label: p.name }));
 
   // Group expanded slots by type for display
   const slotsByType: Record<string, { slotType: string; slotIndex: number }[]> = {};
@@ -241,6 +303,23 @@ export function ShipTemplateForm() {
           >
             Save
           </button>
+          {selectedId && (
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700"
+            >
+              Delete
+            </button>
+          )}
+          {selectedId && (
+            <button
+              onClick={handleOrderBuild}
+              disabled={orderBuild.isPending}
+              className="rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700 disabled:opacity-50"
+            >
+              Order Build
+            </button>
+          )}
         </div>
       </div>
 
@@ -326,15 +405,3 @@ export function ShipTemplateForm() {
           propulsion={stats.propulsion}
         />
       )}
-    </div>
-  );
-
-  return (
-    <MasterDetailLayout
-      listPanel={listPanel}
-      detailPanel={detailPanel}
-      selectedId={selectedId}
-      onBack={() => setSelectedId(null)}
-    />
-  );
-}

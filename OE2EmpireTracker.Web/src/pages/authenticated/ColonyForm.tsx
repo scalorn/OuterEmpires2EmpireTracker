@@ -1,14 +1,17 @@
 import { useState, useMemo } from 'react';
-import { useColonies, useColonyDetail } from '../../api/hooks/useColonies';
+import { useColonies, useColonyDetail, useColonyMutations } from '../../api/hooks/useColonies';
+import { useBaseline } from '../../api/hooks/useBaseline';
 import { useAuthStore } from '../../auth/store';
 import { MasterDetailLayout } from '../../components/common/MasterDetailLayout';
 import { FilterBar, type FilterDefinition, type FilterValues } from '../../components/common/FilterBar';
+import { FilteredDropdown } from '../../components/common/FilteredDropdown';
 import { TabBar } from '../../components/common/TabBar';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 import { CountdownTimer } from '../../components/common/CountdownTimer';
 import type { Colony, ColonyStructure } from '../../api/types/domain';
+import type { ColonyPlannerRequest, PlannerStructure } from '../../api/types/generated';
 
 type SortKey = 'colonyName' | 'systemName' | 'planetName' | 'structures';
 type SortDir = 'asc' | 'desc';
@@ -240,7 +243,7 @@ function ColonyDetailPanel({
 function TabContent({ tab, colony }: { tab: string; colony: Colony }) {
   switch (tab) {
     case 'structures':
-      return <StructuresTab colony={colony} />;
+      return <StructuresTab colony={colony} colonyUUID={colony.uuid} />;
     case 'warehousing':
       return (
         <div>
@@ -317,9 +320,54 @@ function computeColonyStatus(colony: Colony) {
   return { power, habitation, food, entertainment, warehouseCapacity, totalWorkerSlots, assignedWorkers };
 }
 
-function StructuresTab({ colony }: { colony: Colony }) {
+function StructuresTab({ colony, colonyUUID }: { colony: Colony; colonyUUID: string }) {
   const structures = colony.structures ?? [];
   const status = computeColonyStatus(colony);
+  const { data: baseline } = useBaseline();
+  const { addStructure, optimizeBuildOrder, bootstrap, save } = useColonyMutations();
+
+  const [selectedFlatpack, setSelectedFlatpack] = useState('');
+
+  const flatpackOptions = useMemo(() => {
+    const types = baseline?.blueprintTypes ?? [];
+    return types.map((t) => ({ value: t, label: t }));
+  }, [baseline]);
+
+  const handleAddStructure = () => {
+    if (!selectedFlatpack) return;
+    addStructure.mutate(
+      { colonyUUID, flatpackBlueprintUUID: selectedFlatpack },
+      { onSuccess: () => setSelectedFlatpack('') },
+    );
+  };
+
+  const handleOptimize = () => {
+    const plannerStructures: PlannerStructure[] = structures.map((s) => ({
+      flatpackBlueprintUUID: s.flatpackBlueprintUUID,
+      isBuilt: s.status === 'built' || s.status === 'online',
+      isStaged: s.status === 'staged',
+      isOnline: s.status === 'online',
+      buildQueueSequence: s.buildQueueSequence,
+      assignedWorkers: s.assignedWorkers,
+    }));
+    const request: ColonyPlannerRequest = { structures: plannerStructures };
+    optimizeBuildOrder.mutate(request, {
+      onSuccess: (result) => {
+        // Persist the reordered structures back to the colony
+        const reordered = structures.map((s) => {
+          const step = result.steps.find(
+            (st) => st.blueprintType === s.blueprintType,
+          );
+          return { ...s, buildQueueSequence: step?.sequence ?? s.buildQueueSequence };
+        });
+        save.mutate({ entityUUID: colonyUUID, data: { structures: reordered } });
+      },
+    });
+  };
+
+  const handleBootstrap = () => {
+    bootstrap.mutate(colonyUUID);
+  };
 
   return (
     <div>
@@ -331,6 +379,50 @@ function StructuresTab({ colony }: { colony: Colony }) {
         <StatusCard label="Entertainment" value={status.entertainment} />
         <StatusCard label="Warehouse" value={status.warehouseCapacity} />
         <StatusCard label="Workers" value={`${status.assignedWorkers}/${status.totalWorkerSlots}`} />
+      </div>
+
+      {/* Structure actions */}
+      <div className="mb-4 space-y-3 rounded border border-gray-700 bg-gray-800/50 p-3">
+        {/* Add Structure */}
+        <div className="flex items-end gap-2">
+          <div className="min-w-0 flex-1">
+            <label className="mb-1 block text-xs text-gray-400">Add Structure</label>
+            <FilteredDropdown
+              options={flatpackOptions}
+              value={selectedFlatpack}
+              onChange={setSelectedFlatpack}
+              placeholder="Select flatpack blueprint..."
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleAddStructure}
+            disabled={!selectedFlatpack || addStructure.isPending}
+            className="rounded bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {addStructure.isPending ? 'Adding...' : 'Add'}
+          </button>
+        </div>
+
+        {/* Optimize and Bootstrap buttons */}
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={handleOptimize}
+            disabled={structures.length === 0 || optimizeBuildOrder.isPending}
+            className="rounded bg-amber-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-amber-500 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {optimizeBuildOrder.isPending ? 'Optimizing...' : 'Optimize'}
+          </button>
+          <button
+            type="button"
+            onClick={handleBootstrap}
+            disabled={bootstrap.isPending}
+            className="rounded bg-green-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {bootstrap.isPending ? 'Bootstrapping...' : 'Bootstrap'}
+          </button>
+        </div>
       </div>
 
       {/* Structures list */}

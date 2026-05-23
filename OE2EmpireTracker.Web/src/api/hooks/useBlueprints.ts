@@ -32,6 +32,14 @@ export function useBlueprintMutations() {
   const queryClient = useQueryClient();
   const charUUID = useAuthStore((s) => s.characterUUID);
 
+  const create = useMutation({
+    mutationFn: (data: Omit<Blueprint, 'uuid'>) =>
+      blueprintsApi.create(charUUID!, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.characterData(charUUID!, 'Blueprints') });
+    },
+  });
+
   const save = useMutation({
     mutationFn: ({ entityUUID, data }: { entityUUID: string; data: Partial<Blueprint> }) =>
       blueprintsApi.update(charUUID!, entityUUID, data),
@@ -48,5 +56,5 @@ export function useBlueprintMutations() {
     },
   });
 
-  return { save, remove };
+  return { create, save, remove };
 }

@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import * as Collapsible from '@radix-ui/react-collapsible';
 import { useAuthStore } from '../../auth/store';
 import { useProfiles, useProfileDetail, useProfileMutations } from '../../api/hooks/useProfiles';
 import { useUnsavedChanges } from '../../hooks/useUnsavedChanges';
@@ -7,20 +8,30 @@ import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
-import type { PlayerProfile } from '../../api/types/domain';
+import type { PlayerProfile, ProfileRanks, SkillGroup } from '../../api/types/domain';
 
 interface FormState {
   name: string;
   faction: string;
   totalCredits: number;
   skillPoints: number;
+  ranks: ProfileRanks;
+  skillGroups: SkillGroup[];
 }
+
+const emptyRanks: ProfileRanks = {
+  public: { level: 0, currentXP: 0, xpToNext: 0 },
+  private: { level: 0, currentXP: 0, xpToNext: 0 },
+  military: { level: 0, currentXP: 0, xpToNext: 0 },
+};
 
 const emptyForm: FormState = {
   name: '',
   faction: '',
   totalCredits: 0,
   skillPoints: 0,
+  ranks: emptyRanks,
+  skillGroups: [],
 };
 
 function formFromProfile(profile: PlayerProfile): FormState {
@@ -29,6 +40,8 @@ function formFromProfile(profile: PlayerProfile): FormState {
     faction: profile.faction ?? '',
     totalCredits: profile.totalCredits,
     skillPoints: profile.skillPoints,
+    ranks: profile.ranks ?? emptyRanks,
+    skillGroups: profile.skillGroups ?? [],
   };
 }
 
@@ -83,6 +96,43 @@ export function ProfileForm() {
     [],
   );
 
+  const handleRankChange = useCallback(
+    (rankType: keyof ProfileRanks, field: 'level' | 'currentXP' | 'xpToNext', value: number) => {
+      setForm((prev) => ({
+        ...prev,
+        ranks: {
+          ...prev.ranks,
+          [rankType]: { ...prev.ranks[rankType], [field]: value },
+        },
+      }));
+      setIsDirty(true);
+    },
+    [],
+  );
+
+  const handleSkillGroupToggle = useCallback((groupIndex: number, enabled: boolean) => {
+    setForm((prev) => {
+      const updated = [...prev.skillGroups];
+      updated[groupIndex] = { ...updated[groupIndex], enabled };
+      return { ...prev, skillGroups: updated };
+    });
+    setIsDirty(true);
+  }, []);
+
+  const handleSkillChange = useCallback(
+    (groupIndex: number, skillIndex: number, field: 'level' | 'isTraining', value: number | boolean) => {
+      setForm((prev) => {
+        const updatedGroups = [...prev.skillGroups];
+        const updatedSkills = [...updatedGroups[groupIndex].skills];
+        updatedSkills[skillIndex] = { ...updatedSkills[skillIndex], [field]: value };
+        updatedGroups[groupIndex] = { ...updatedGroups[groupIndex], skills: updatedSkills };
+        return { ...prev, skillGroups: updatedGroups };
+      });
+      setIsDirty(true);
+    },
+    [],
+  );
+
   const handleSave = useCallback(async () => {
     if (isNewMode) {
       const result = await create.mutateAsync({
@@ -90,8 +140,8 @@ export function ProfileForm() {
         faction: form.faction || undefined,
         totalCredits: form.totalCredits,
         skillPoints: form.skillPoints,
-        ranks: { public: { level: 0, currentXP: 0, xpToNext: 0 }, private: { level: 0, currentXP: 0, xpToNext: 0 }, military: { level: 0, currentXP: 0, xpToNext: 0 } },
-        skillGroups: [],
+        ranks: form.ranks,
+        skillGroups: form.skillGroups,
       });
       setSelectedId(result.uuid);
       setIsNewMode(false);
@@ -103,6 +153,8 @@ export function ProfileForm() {
           faction: form.faction || undefined,
           totalCredits: form.totalCredits,
           skillPoints: form.skillPoints,
+          ranks: form.ranks,
+          skillGroups: form.skillGroups,
         },
       });
     }
@@ -238,6 +290,129 @@ export function ProfileForm() {
                 className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
               />
             </div>
+
+            {/* Ranks Section */}
+            <div className="pt-4">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">Ranks</h3>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                {(['public', 'private', 'military'] as const).map((rankType) => (
+                  <div key={rankType} className="rounded border border-gray-600 bg-gray-800 p-3">
+                    <h4 className="mb-2 text-sm font-medium capitalize text-white">{rankType}</h4>
+                    <div className="space-y-2">
+                      <div>
+                        <label className="block text-xs text-gray-500">Level</label>
+                        <input
+                          type="number"
+                          value={form.ranks[rankType].level}
+                          onChange={(e) => handleRankChange(rankType, 'level', Number(e.target.value) || 0)}
+                          className="w-full rounded border border-gray-600 bg-gray-700 px-2 py-1 text-sm text-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500">Current XP</label>
+                        <input
+                          type="number"
+                          value={form.ranks[rankType].currentXP}
+                          onChange={(e) => handleRankChange(rankType, 'currentXP', Number(e.target.value) || 0)}
+                          className="w-full rounded border border-gray-600 bg-gray-700 px-2 py-1 text-sm text-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500">XP to Next</label>
+                        <input
+                          type="number"
+                          value={form.ranks[rankType].xpToNext}
+                          onChange={(e) => handleRankChange(rankType, 'xpToNext', Number(e.target.value) || 0)}
+                          className="w-full rounded border border-gray-600 bg-gray-700 px-2 py-1 text-sm text-white"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Skill Groups Section */}
+            {form.skillGroups.length > 0 && (
+              <div className="pt-4">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">Skill Groups</h3>
+                <div className="space-y-2">
+                  {form.skillGroups.map((group, groupIndex) => (
+                    <Collapsible.Root key={group.name} defaultOpen>
+                      <div className="rounded border border-gray-600 bg-gray-800">
+                        <div className="flex items-center justify-between px-3 py-2">
+                          <Collapsible.Trigger className="flex flex-1 items-center gap-2 text-left text-sm font-medium text-white hover:text-gray-300">
+                            <svg
+                              className="h-4 w-4 shrink-0 transition-transform data-[state=open]:rotate-90"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <path d="M9 18l6-6-6-6" />
+                            </svg>
+                            {group.name}
+                          </Collapsible.Trigger>
+                          <label className="flex items-center gap-2 text-xs text-gray-400">
+                            <input
+                              type="checkbox"
+                              checked={group.enabled}
+                              onChange={(e) => handleSkillGroupToggle(groupIndex, e.target.checked)}
+                              className="rounded border-gray-500"
+                            />
+                            Enabled
+                          </label>
+                        </div>
+                        <Collapsible.Content>
+                          <div className="border-t border-gray-700 px-3 py-2">
+                            {group.skills.length === 0 ? (
+                              <p className="text-xs text-gray-500">No skills in this group.</p>
+                            ) : (
+                              <table className="w-full text-sm">
+                                <thead>
+                                  <tr className="text-left text-xs text-gray-500">
+                                    <th className="pb-1 font-normal">Skill</th>
+                                    <th className="pb-1 font-normal">Level</th>
+                                    <th className="pb-1 font-normal">Training</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {group.skills.map((skill, skillIndex) => (
+                                    <tr key={skill.name} className="border-t border-gray-700/50">
+                                      <td className="py-1 text-gray-300">{skill.name}</td>
+                                      <td className="py-1">
+                                        <input
+                                          type="number"
+                                          value={skill.level}
+                                          onChange={(e) =>
+                                            handleSkillChange(groupIndex, skillIndex, 'level', Number(e.target.value) || 0)
+                                          }
+                                          className="w-16 rounded border border-gray-600 bg-gray-700 px-2 py-0.5 text-sm text-white"
+                                        />
+                                      </td>
+                                      <td className="py-1">
+                                        <input
+                                          type="checkbox"
+                                          checked={skill.isTraining}
+                                          onChange={(e) =>
+                                            handleSkillChange(groupIndex, skillIndex, 'isTraining', e.target.checked)
+                                          }
+                                          className="rounded border-gray-500"
+                                        />
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            )}
+                          </div>
+                        </Collapsible.Content>
+                      </div>
+                    </Collapsible.Root>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

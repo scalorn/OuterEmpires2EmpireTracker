@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useDeliveryRoutes } from '../../api/hooks/useDeliveryRoutes';
 import { usePlans } from '../../api/hooks/useDeliveryPlans';
+import { useColonyMutations } from '../../api/hooks/useColonies';
 import { useAuthStore } from '../../auth/store';
 import { FilteredDropdown } from '../../components/common/FilteredDropdown';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
-import type { DeliveryRoute, DeliveryPlan, DeliveryItem } from '../../api/types/domain';
+import type { DeliveryRoute, DeliveryPlan, DeliveryItem, RouteStop, StopItemSet } from '../../api/types/domain';
 
 interface LoadListItem {
   name: string;
@@ -21,14 +22,17 @@ interface LoadListItem {
  * Below: consolidated load list showing all items to load across all stops
  * with columns: item name, type, purity, total quantity, volume.
  *
- * The stop-by-stop execution section is added in tasks 13.2 and 13.3.
+ * Stop-by-stop execution section: each stop rendered as a section with
+ * checkable drop-off and pick-up items. Checking items triggers API calls
+ * to mark commodity requests fulfilled or structures staged.
  *
- * Validates: Requirements 7.1, 7.2
+ * Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5
  */
 export function ExecutionForm() {
   const { characterUUID } = useAuthStore();
   const { data: routesData, isLoading: routesLoading } = useDeliveryRoutes(characterUUID);
   const { data: plansData, isLoading: plansLoading } = usePlans(characterUUID);
+  const { updateCommodityRequest, addStructure } = useColonyMutations();
 
   const [selectedRouteId, setSelectedRouteId] = useState<string>('');
   const [selectedPlanId, setSelectedPlanId] = useState<string>('');
@@ -62,6 +66,18 @@ export function ExecutionForm() {
     () => plans.find((p) => p.uuid === selectedPlanId) ?? null,
     [plans, selectedPlanId],
   );
+
+  // Get the selected route object for stop information
+  const selectedRoute = useMemo(
+    () => routes.find((r) => r.uuid === selectedRouteId) ?? null,
+    [routes, selectedRouteId],
+  );
+
+  // Stops ordered by sequence for the selected route
+  const orderedStops = useMemo((): RouteStop[] => {
+    if (!selectedRoute) return [];
+    return [...selectedRoute.stops].sort((a, b) => a.sequence - b.sequence);
+  }, [selectedRoute]);
 
   // Build consolidated load list from all stops in the selected plan
   const loadList = useMemo((): LoadListItem[] => {
@@ -99,6 +115,28 @@ export function ExecutionForm() {
     setSelectedPlanId(value);
   };
 
+  /**
+   * Handles checking a drop-off item.
+   * - Commodity items: marks the colony commodity request as fulfilled.
+   * - Flatpack items: adds the structure to the colony as staged.
+   */
+  const handleDropOffCheck = (stop: RouteStop, item: DeliveryItem) => {
+    if (item.isChecked) return; // Already checked, no-op
+
+    if (item.itemType === 'Commodity') {
+      updateCommodityRequest.mutate({
+        colonyUUID: stop.colonyUUID,
+        commodityName: item.name,
+        dto: { isFulfilled: true },
+      });
+    } else if (item.itemType === 'Flatpack') {
+      addStructure.mutate({
+        colonyUUID: stop.colonyUUID,
+        flatpackBlueprintUUID: item.uuid,
+      });
+    }
+  };
+
   if (routesLoading || plansLoading) {
     return <LoadingSpinner message="Loading delivery data..." />;
   }
@@ -131,7 +169,7 @@ export function ExecutionForm() {
 
       {/* Consolidated Load List */}
       {selectedPlan && (
-        <div className="min-h-0 flex-1 overflow-hidden">
+        <div className="mb-6">
           <div className="mb-2 flex items-baseline gap-4">
             <h3 className="text-sm font-semibold text-white">Load Before Departure</h3>
             {loadList.length > 0 && (
@@ -188,6 +226,30 @@ export function ExecutionForm() {
         </div>
       )}
 
+      {/* Stop-by-Stop Execution */}
+      {selectedPlan && orderedStops.length > 0 && (
+        <div className="min-h-0 flex-1 overflow-auto">
+          <h3 className="mb-3 text-sm font-semibold text-white">Stop-by-Stop Execution</h3>
+          <div className="space-y-4">
+            {orderedStops.map((stop) => {
+              const stopItems = selectedPlan.stopItems[stop.uuid];
+              if (!stopItems) return null;
+              const hasItems = stopItems.dropOff.length > 0 || stopItems.pickUp.length > 0;
+              if (!hasItems) return null;
+
+              return (
+                <StopSection
+                  key={stop.uuid}
+                  stop={stop}
+                  stopItems={stopItems}
+                  onDropOffCheck={handleDropOffCheck}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {!selectedPlan && selectedRouteId && (
         <p className="text-sm text-gray-500">Select a plan to view the load list.</p>
       )}
@@ -218,4 +280,80 @@ function aggregateItem(map: Map<string, LoadListItem>, item: DeliveryItem): void
       volume: item.quantity, // Volume = quantity (1:1 default)
     });
   }
+}
+
+// ─── Stop Section Component ───────────────────────────────────────────────────
+
+interface StopSectionProps {
+  stop: RouteStop;
+  stopItems: StopItemSet;
+  onDropOffCheck: (stop: RouteStop, item: DeliveryItem) => void;
+}
+
+/**
+ * Renders a single stop section with checkable drop-off and pick-up items.
+ * Items already checked (isChecked=true) render as checked and disabled.
+ */
+function StopSection({ stop, stopItems, onDropOffCheck }: StopSectionProps) {
+  return (
+    <div className="rounded border border-gray-700 bg-gray-800/50 p-3">
+      <h4 className="mb-2 text-sm font-semibold text-white">
+        Stop {stop.sequence}: {stop.colonyName}
+        <span className="ml-2 text-xs font-normal text-gray-400">
+          {stop.planetName}, {stop.systemName}
+        </span>
+      </h4>
+
+      {/* Drop-off items */}
+      {stopItems.dropOff.length > 0 && (
+        <div className="mb-2">
+          <p className="mb-1 text-xs font-medium text-gray-400">Drop-off</p>
+          <ul className="space-y-1">
+            {stopItems.dropOff.map((item) => (
+              <li key={item.uuid} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={item.isChecked}
+                  disabled={item.isChecked}
+                  onChange={() => onDropOffCheck(stop, item)}
+                  className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                />
+                <span className={`text-sm ${item.isChecked ? 'text-gray-500 line-through' : 'text-white'}`}>
+                  {item.name}
+                  {item.purity && <span className="text-gray-400"> ({item.purity})</span>}
+                  <span className="ml-1 text-gray-400">×{item.quantity}</span>
+                  <span className="ml-1 text-xs text-gray-500">[{item.itemType}]</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Pick-up items */}
+      {stopItems.pickUp.length > 0 && (
+        <div>
+          <p className="mb-1 text-xs font-medium text-gray-400">Pick-up</p>
+          <ul className="space-y-1">
+            {stopItems.pickUp.map((item) => (
+              <li key={item.uuid} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={item.isChecked}
+                  disabled={item.isChecked}
+                  className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                />
+                <span className={`text-sm ${item.isChecked ? 'text-gray-500 line-through' : 'text-white'}`}>
+                  {item.name}
+                  {item.purity && <span className="text-gray-400"> ({item.purity})</span>}
+                  <span className="ml-1 text-gray-400">×{item.quantity}</span>
+                  <span className="ml-1 text-xs text-gray-500">[{item.itemType}]</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 }

@@ -244,21 +244,21 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
 
 
 - [ ] 8. Colony Form
-  - [-] 8.1 Implement ColonyForm list panel and selection
+  - [x] 8.1 Implement ColonyForm list panel and selection
     - Create `src/pages/authenticated/ColonyForm.tsx`
     - Searchable, sortable colony list in left panel using InfiniteScrollList
     - Selection updates URL param, detail panel shows/hides based on selection
     - _Requirements: 1.1, 1.2_
     - _Verification: Colony list renders, selection shows detail panel_
 
-  - [~] 8.2 Implement ColonyForm Structures tab
+  - [-] 8.2 Implement ColonyForm Structures tab
     - Add Structures tab to ColonyForm detail panel
     - Display structures with blueprint type, status, workers, processing timer (CountdownTimer)
     - Colony status summary (power, habitation, food, entertainment, warehouse capacity, workers)
     - _Requirements: 1.3, 1.8_
     - _Verification: Structures tab renders with status summary_
 
-  - [~] 8.3 Implement ColonyForm structure actions (Add, Optimize, Bootstrap)
+  - [-] 8.3 Implement ColonyForm structure actions (Add, Optimize, Bootstrap)
     - Add flatpack FilteredDropdown + Add button to append structure
     - Optimize button calls POST /colony-planner/build-order then persists reorder
     - Bootstrap button calls POST /colonies/{id}/bootstrap
@@ -278,14 +278,14 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Staleness colors render correctly based on lastImportUtc_
 
 - [ ] 9. Blueprint Form
-  - [-] 9.1 Implement BlueprintForm list panel with filters
+  - [x] 9.1 Implement BlueprintForm list panel with filters
     - Create `src/pages/authenticated/BlueprintForm.tsx`
     - Filterable list with columns: type, name, tech level, evolution, nick name, reference count
     - Filter controls: text search, blueprint type, ship class, tech level, evolution level
     - _Requirements: 2.1, 2.2_
     - _Verification: Blueprint list renders with working filters_
 
-  - [~] 9.2 Implement BlueprintForm detail panel and editing
+  - [-] 9.2 Implement BlueprintForm detail panel and editing
     - Editable detail fields: name, type, ship class, tech level, evolution, nick name, global flag
     - Save/New/Delete buttons with confirmation dialog on delete
     - _Requirements: 2.3, 2.7, 2.8, 2.9_
@@ -305,14 +305,14 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
 
 
 - [ ] 10. Survey Form
-  - [-] 10.1 Implement SurveyForm list panel with filters
+  - [x] 10.1 Implement SurveyForm list panel with filters
     - Create `src/pages/authenticated/SurveyForm.tsx`
     - Filterable list: planet name, system name, survey type, scan date
     - Filters: text search, survey type (Planet/Asteroid/All), purity level, minimum yield
     - _Requirements: 3.1, 3.2_
     - _Verification: Survey list renders with working filters_
 
-  - [~] 10.2 Implement SurveyForm detail panel and resource grid
+  - [-] 10.2 Implement SurveyForm detail panel and resource grid
     - Detail fields: planet name, system name, survey ID, nick name, scanned by, scan date, sensor abundance, purity modifier, scan level, scanner blueprint
     - Resource grid: editable rows with resource name, purity, amount, max reserve
     - _Requirements: 3.3, 3.4, 3.5_
@@ -325,14 +325,14 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: CRUD works, delete disabled when rigs assigned_
 
 - [ ] 11. Player Profile Form
-  - [-] 11.1 Implement ProfileForm list and basic details
+  - [x] 11.1 Implement ProfileForm list and basic details
     - Create `src/pages/authenticated/ProfileForm.tsx`
     - Profile list in left panel, editable fields: name, faction, total credits, skill points
     - Save/New/Delete with confirmation
     - _Requirements: 4.1, 4.2, 4.7, 4.8, 4.9_
     - _Verification: Profile list renders, detail fields editable_
 
-  - [~] 11.2 Implement ProfileForm ranks and skills sections
+  - [-] 11.2 Implement ProfileForm ranks and skills sections
     - Three rank sections (Public, Private, Military): level, current XP, XP to next
     - Skill groups as collapsible sections (Radix Collapsible) with enable/disable toggle
     - Individual skills: name, level, training status — changes update immediately
@@ -340,14 +340,14 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Ranks display, skill groups collapse/expand, skill changes persist_
 
 - [ ] 12. Delivery Route Form
-  - [-] 12.1 Implement RouteForm list and route details
+  - [x] 12.1 Implement RouteForm list and route details
     - Create `src/pages/authenticated/RouteForm.tsx`
     - Filterable route list, detail panel with route name and ordered stops
     - Each stop shows colony name, planet name, system name
     - _Requirements: 5.1, 5.2_
     - _Verification: Route list renders, stops display in order_
 
-  - [~] 12.2 Implement RouteForm stop management
+  - [-] 12.2 Implement RouteForm stop management
     - Add Stop: colony dropdown + Add button appends stop (works on empty routes)
     - Reorder: Up/Down controls per stop
     - Remove: delete individual stops
@@ -372,14 +372,14 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
 
 
 - [ ] 13. Delivery Execution Form
-  - [-] 13.1 Implement ExecutionForm route/plan selection and load list
+  - [x] 13.1 Implement ExecutionForm route/plan selection and load list
     - Create `src/pages/authenticated/ExecutionForm.tsx`
     - Route and plan selection dropdowns with text filters
     - Consolidated load list showing all items with total quantity and volume
     - _Requirements: 7.1, 7.2_
     - _Verification: Dropdowns filter, load list aggregates correctly_
 
-  - [~] 13.2 Implement ExecutionForm stop-by-stop execution
+  - [-] 13.2 Implement ExecutionForm stop-by-stop execution
     - Each stop as a section with checkable drop-off and pick-up items
     - Checking commodity drop-off marks colony request as fulfilled via API
     - Checking flatpack drop-off marks colony structure as staged via API
@@ -393,20 +393,20 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Complete Stop gates visual state, plan marked done_
 
 - [ ] 14. Ship Template Form
-  - [-] 14.1 Implement ShipTemplateForm list and hull selection
+  - [x] 14.1 Implement ShipTemplateForm list and hull selection
     - Create `src/pages/authenticated/ShipTemplateForm.tsx`
     - Template list in left panel, hull dropdown from BaselineData ship classes
     - Hull selection displays available component slots grouped by type
     - _Requirements: 8.1, 8.2, 8.3_
     - _Verification: Template list renders, hull selection shows slots_
 
-  - [-] 14.2 Implement ShipTemplateForm slot assignment and stats
+  - [x] 14.2 Implement ShipTemplateForm slot assignment and stats
     - Filtered dropdown per slot showing compatible blueprints
     - Create `src/components/domain/ShipStatsPanel.tsx` — live-updating stats (mass, power, cargo, defence, propulsion)
     - _Requirements: 8.4, 8.5_
     - _Verification: Slots assignable, stats update on change_
 
-  - [~] 14.3 Implement ShipTemplateForm pricing and actions
+  - [-] 14.3 Implement ShipTemplateForm pricing and actions
     - Pricing section: pricing plan dropdown, total estimated build cost display
     - Save/New/Order Build buttons
     - Order Build generates manufacturing items via build-plans API

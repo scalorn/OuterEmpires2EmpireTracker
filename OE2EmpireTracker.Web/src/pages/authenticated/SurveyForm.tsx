@@ -1,22 +1,24 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useSurveys } from '../../api/hooks/useSurveys';
 import { useBaseline } from '../../api/hooks/useBaseline';
 import { useAuthStore } from '../../auth/store';
 import { MasterDetailLayout } from '../../components/common/MasterDetailLayout';
 import { FilterBar, type FilterDefinition, type FilterValues } from '../../components/common/FilterBar';
+import { EditableGrid, type GridColumn } from '../../components/common/EditableGrid';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
+import { useUnsavedChanges } from '../../hooks/useUnsavedChanges';
 import { applyFilters, type FilterConfig } from '../../utils/filterUtils';
-import type { Survey } from '../../api/types/domain';
+import type { Survey, SurveyResource } from '../../api/types/domain';
 
 /**
  * SurveyForm — master-detail layout for managing planet and asteroid resource surveys.
  *
  * Left panel: filterable, sortable list of surveys
- * Right panel: detail panel for selected survey (placeholder until task 10.2)
+ * Right panel: detail panel with survey fields and editable resource grid
  *
- * Requirements: 3.1, 3.2
+ * Requirements: 3.1, 3.2, 3.3, 3.4, 3.5
  */
 export function SurveyForm() {
   const { characterUUID } = useAuthStore();
@@ -130,6 +132,8 @@ export function SurveyForm() {
   if (isLoading) return <LoadingSpinner message="Loading surveys..." />;
   if (isError) return <RetryableError message="Failed to load surveys." onRetry={() => void refetch()} />;
 
+  const selectedSurvey = surveys.find((s) => s.uuid === selectedId) ?? null;
+
   const listPanel = (
     <div className="flex h-full flex-col p-4">
       <h2 className="mb-3 text-lg font-semibold text-white">Surveys</h2>
@@ -195,10 +199,8 @@ export function SurveyForm() {
     </div>
   );
 
-  const detailPanel = selectedId ? (
-    <div className="flex h-full items-center justify-center p-8">
-      <p className="text-sm text-gray-500">Survey detail panel — coming in task 10.2</p>
-    </div>
+  const detailPanel = selectedSurvey ? (
+    <SurveyDetailPanel survey={selectedSurvey} purities={purities} />
   ) : (
     <div className="flex h-full items-center justify-center p-8">
       <p className="text-sm text-gray-500">Select a survey from the list to view details.</p>
@@ -212,6 +214,138 @@ export function SurveyForm() {
       selectedId={selectedId}
       onBack={handleBack}
     />
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Detail Panel
+// ---------------------------------------------------------------------------
+
+interface SurveyDetailPanelProps {
+  survey: Survey;
+  purities: string[];
+}
+
+function SurveyDetailPanel({ survey, purities }: SurveyDetailPanelProps) {
+  const [nickName, setNickName] = useState(survey.nickName ?? '');
+  const [resources, setResources] = useState<SurveyResource[]>(survey.resources);
+  const [isDirty, setIsDirty] = useState(false);
+
+  useUnsavedChanges(isDirty);
+
+  // Reset local state when a different survey is selected
+  const [prevUuid, setPrevUuid] = useState(survey.uuid);
+  if (survey.uuid !== prevUuid) {
+    setPrevUuid(survey.uuid);
+    setNickName(survey.nickName ?? '');
+    setResources(survey.resources);
+    setIsDirty(false);
+  }
+
+  const handleNickNameChange = (value: string) => {
+    setNickName(value);
+    setIsDirty(true);
+  };
+
+  const handleRowChange = useCallback((index: number, row: SurveyResource) => {
+    setResources((prev) => {
+      const updated = [...prev];
+      updated[index] = row;
+      return updated;
+    });
+    setIsDirty(true);
+  }, []);
+
+  const handleRowAdd = useCallback(() => {
+    setResources((prev) => [
+      ...prev,
+      { resourceName: '', purity: '', amount: 0, maxReserve: undefined },
+    ]);
+    setIsDirty(true);
+  }, []);
+
+  const handleRowRemove = useCallback((index: number) => {
+    setResources((prev) => prev.filter((_, i) => i !== index));
+    setIsDirty(true);
+  }, []);
+
+  const isAsteroid = survey.surveyType === 'Asteroid';
+
+  const resourceColumns: GridColumn<SurveyResource>[] = useMemo(() => {
+    const cols: GridColumn<SurveyResource>[] = [
+      { key: 'resourceName', header: 'Resource', type: 'text' },
+      {
+        key: 'purity',
+        header: 'Purity',
+        type: 'select',
+        options: purities.map((p) => ({ value: p, label: p })),
+      },
+      { key: 'amount', header: 'Amount', type: 'number' },
+    ];
+    if (isAsteroid) {
+      cols.push({ key: 'maxReserve', header: 'Max Reserve', type: 'number' });
+    }
+    return cols;
+  }, [purities, isAsteroid]);
+
+  return (
+    <div className="flex h-full flex-col overflow-y-auto p-6">
+      <h2 className="mb-4 text-lg font-semibold text-white">Survey Details</h2>
+
+      {/* Detail fields */}
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <DetailField label="Planet Name" value={survey.planetName} />
+        <DetailField label="System Name" value={survey.systemName} />
+        <DetailField label="Survey ID" value={survey.uuid} />
+        <div className="flex flex-col">
+          <label className="mb-1 text-xs font-medium text-gray-400">Nick Name</label>
+          <input
+            type="text"
+            value={nickName}
+            onChange={(e) => handleNickNameChange(e.target.value)}
+            className="rounded border border-gray-600 bg-gray-700 px-3 py-1.5 text-sm text-white placeholder-gray-500"
+            placeholder="Enter nick name..."
+          />
+        </div>
+        <DetailField label="Scanned By" value={survey.scannedBy ?? '—'} />
+        <DetailField label="Scan Date" value={survey.scanDate ?? '—'} />
+        <DetailField label="Sensor Abundance" value={survey.sensorAbundance != null ? String(survey.sensorAbundance) : '—'} />
+        <DetailField label="Purity Modifier" value={survey.purityModifier != null ? String(survey.purityModifier) : '—'} />
+        <DetailField label="Scan Level" value={survey.scanLevel != null ? String(survey.scanLevel) : '—'} />
+        <DetailField label="Scanner Blueprint" value={survey.scannerBlueprint ?? '—'} />
+      </div>
+
+      {/* Resource grid */}
+      <h3 className="mb-2 text-sm font-semibold text-white">Resources</h3>
+      <EditableGrid<SurveyResource>
+        columns={resourceColumns}
+        rows={resources}
+        onRowChange={handleRowChange}
+        onRowAdd={handleRowAdd}
+        onRowRemove={handleRowRemove}
+        keyExtractor={(row) => `${row.resourceName}-${row.purity}-${row.amount}`}
+      />
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Helper Components
+// ---------------------------------------------------------------------------
+
+interface DetailFieldProps {
+  label: string;
+  value: string;
+}
+
+function DetailField({ label, value }: DetailFieldProps) {
+  return (
+    <div className="flex flex-col">
+      <span className="mb-1 text-xs font-medium text-gray-400">{label}</span>
+      <span className="rounded border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm text-gray-200">
+        {value}
+      </span>
+    </div>
   );
 }
 
