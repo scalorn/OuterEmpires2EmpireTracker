@@ -16,7 +16,7 @@ const baseColumns: Column<Record<string, unknown>>[] = [
 export function BlueprintManager() {
   const { characterUUID } = useAuthStore();
   const { data, isLoading, isError, refetch } = useBlueprints(characterUUID);
-  const { createOrUpdate, remove } = useBlueprintMutations();
+  const { save: createOrUpdate, remove } = useBlueprintMutations();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
 

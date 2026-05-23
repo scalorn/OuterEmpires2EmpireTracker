@@ -13,6 +13,14 @@ export function useBlueprints(charUUID?: string | null) {
   });
 }
 
+export function useBlueprintDetail(charUUID?: string | null, entityUUID?: string | null) {
+  return useQuery({
+    queryKey: queryKeys.characterEntity(charUUID ?? '', 'Blueprints', entityUUID ?? ''),
+    queryFn: () => blueprintsApi.getOne(charUUID!, entityUUID!),
+    enabled: !!charUUID && !!entityUUID,
+  });
+}
+
 export function usePublicBlueprints(filters?: BlueprintFilters) {
   return useQuery({
     queryKey: queryKeys.publicBlueprints(filters),
@@ -24,7 +32,7 @@ export function useBlueprintMutations() {
   const queryClient = useQueryClient();
   const charUUID = useAuthStore((s) => s.characterUUID);
 
-  const createOrUpdate = useMutation({
+  const save = useMutation({
     mutationFn: ({ entityUUID, data }: { entityUUID: string; data: Partial<Blueprint> }) =>
       blueprintsApi.update(charUUID!, entityUUID, data),
     onSuccess: () => {
@@ -40,5 +48,5 @@ export function useBlueprintMutations() {
     },
   });
 
-  return { createOrUpdate, remove };
+  return { save, remove };
 }

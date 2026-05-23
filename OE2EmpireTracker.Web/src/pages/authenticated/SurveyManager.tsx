@@ -15,7 +15,7 @@ const baseColumns: Column<Record<string, unknown>>[] = [
 export function SurveyManager() {
   const { characterUUID } = useAuthStore();
   const { data, isLoading, isError, refetch } = useSurveys(characterUUID);
-  const { createOrUpdate, remove } = useSurveyMutations();
+  const { save: createOrUpdate, remove } = useSurveyMutations();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editSystem, setEditSystem] = useState('');
 

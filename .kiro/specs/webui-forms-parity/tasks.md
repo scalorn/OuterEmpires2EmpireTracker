@@ -184,55 +184,55 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
 
 
 - [ ] 6. API Layer: React Query Hook Modules
-  - [~] 6.1 Create useBaseline and extend queryKeys
+  - [-] 6.1 Create useBaseline and extend queryKeys
     - Create `src/api/hooks/useBaseline.ts` with staleTime: Infinity
     - Extend `src/api/hooks/queryKeys.ts` with keys for all new entity types
     - _Requirements: 10.6_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [~] 6.2 Create useColonies hook module (extend)
+  - [-] 6.2 Create useColonies hook module (extend)
     - Extend `src/api/hooks/useColonies.ts` with useColonyDetail, useColonyMutations (save, remove, bootstrap, optimize)
     - _Requirements: 1.1–1.10_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [~] 6.3 Create useBlueprints and useSurveys hook modules (extend)
+  - [-] 6.3 Create useBlueprints and useSurveys hook modules (extend)
     - Extend `src/api/hooks/useBlueprints.ts` with useBlueprintDetail, useBlueprintMutations
     - Extend `src/api/hooks/useSurveys.ts` with useSurveyDetail, useSurveyMutations
     - _Requirements: 2.1–2.9, 3.1–3.9_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [~] 6.4 Create useProfiles and useDeliveryRoutes hook modules
+  - [-] 6.4 Create useProfiles and useDeliveryRoutes hook modules
     - Create `src/api/hooks/useProfiles.ts` with useProfiles, useProfileDetail, useProfileMutations
     - Create `src/api/hooks/useDeliveryRoutes.ts` with useDeliveryRoutes, useRouteDetail, useRouteMutations
     - _Requirements: 4.1–4.9, 5.1–5.8_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [~] 6.5 Create useDeliveryPlans and useShipTemplates hook modules
+  - [-] 6.5 Create useDeliveryPlans and useShipTemplates hook modules
     - Create `src/api/hooks/useDeliveryPlans.ts` with usePlans, usePlanDetail, usePlanMutations
     - Create `src/api/hooks/useShipTemplates.ts` with useShipTemplates, useTemplateDetail, useTemplateMutations
     - _Requirements: 6.1–6.7, 8.1–8.9_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [~] 6.6 Create useMarketListings and useMarketTransactions hook modules
+  - [-] 6.6 Create useMarketListings and useMarketTransactions hook modules
     - Create `src/api/hooks/useMarketListings.ts` with useListings, useListingMutations (save, remove, recordSale)
     - Create `src/api/hooks/useMarketTransactions.ts` with useTransactions, useRecordPurchase
     - _Requirements: 9.1–9.7_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [~] 6.7 Create useSupplyChains, useStockProfiles, useStockPlans hook modules
+  - [-] 6.7 Create useSupplyChains, useStockProfiles, useStockPlans hook modules
     - Create `src/api/hooks/useSupplyChains.ts` with CRUD hooks
     - Create `src/api/hooks/useStockProfiles.ts` and `useStockPlans.ts` with CRUD hooks
     - _Requirements: 14.1–14.7, 15.1–15.7_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [~] 6.8 Create usePricingPlans, useSharedData, useBuildPlans hook modules
+  - [-] 6.8 Create usePricingPlans, useSharedData, useBuildPlans hook modules
     - Create `src/api/hooks/usePricingPlans.ts` with CRUD hooks
     - Create `src/api/hooks/useSharedData.ts` with list + detail hooks (read-only)
     - Create `src/api/hooks/useBuildPlans.ts` with CRUD hooks
     - _Requirements: 16.1–16.7, 17.1–17.5, 12.1–12.5_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [~] 6.9 Create useContacts, useStations, useAsteroids hook modules
+  - [-] 6.9 Create useContacts, useStations, useAsteroids hook modules
     - Create `src/api/hooks/useContacts.ts` with CRUD hooks
     - Create `src/api/hooks/useStations.ts` with CRUD hooks
     - Create `src/api/hooks/useAsteroids.ts` with CRUD hooks

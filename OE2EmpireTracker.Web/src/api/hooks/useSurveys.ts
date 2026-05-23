@@ -13,6 +13,14 @@ export function useSurveys(charUUID?: string | null) {
   });
 }
 
+export function useSurveyDetail(charUUID?: string | null, entityUUID?: string | null) {
+  return useQuery({
+    queryKey: queryKeys.characterEntity(charUUID ?? '', 'Surveys', entityUUID ?? ''),
+    queryFn: () => surveysApi.getOne(charUUID!, entityUUID!),
+    enabled: !!charUUID && !!entityUUID,
+  });
+}
+
 export function usePublicSurveys(filters?: SurveyFilters) {
   return useQuery({
     queryKey: queryKeys.publicSurveys(filters),
@@ -24,7 +32,7 @@ export function useSurveyMutations() {
   const queryClient = useQueryClient();
   const charUUID = useAuthStore((s) => s.characterUUID);
 
-  const createOrUpdate = useMutation({
+  const save = useMutation({
     mutationFn: ({ entityUUID, data }: { entityUUID: string; data: Partial<Survey> }) =>
       surveysApi.update(charUUID!, entityUUID, data),
     onSuccess: () => {
@@ -40,5 +48,5 @@ export function useSurveyMutations() {
     },
   });
 
-  return { createOrUpdate, remove };
+  return { save, remove };
 }
