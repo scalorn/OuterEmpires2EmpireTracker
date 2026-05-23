@@ -80,7 +80,7 @@ graph TD
   - Output: `OE2EmpireTracker.Tests/Server/PublicDataFilteringTests.cs`
   - Verification: Tests pass via vstest.console
 
-- [~] 2.3 Write property tests for pagination slice correctness
+- [-] 2.3 Write property tests for pagination slice correctness
   - Satisfies: Correctness Property 2
   - Inputs: Pagination logic in PublicDataEndpoints.cs
   - Output: `OE2EmpireTracker.Tests/Server/PaginationTests.cs`
