@@ -12,7 +12,6 @@ import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 import { EditableGrid, type GridColumn } from '../../components/common/EditableGrid';
 import { TabBar } from '../../components/common/TabBar';
-import { EvolutionChart, type EvolutionDataPoint } from '../../components/domain/EvolutionChart';
 import { applyFilters, type FilterConfig } from '../../utils/filterUtils';
 import type { Blueprint, BlueprintResource } from '../../api/types/domain';
 
@@ -638,7 +637,15 @@ export function BlueprintForm() {
             )}
 
             {activeTab === 'evolution' && (
-              <EmptyState title="Evolution Graph" message="Evolution chart will be implemented in a future task." />
+              <div>
+                <p className="mb-3 text-sm text-gray-400">
+                  Property percentage changes across evolution levels for blueprints with the same type and name.
+                </p>
+                <EvolutionChart
+                  data={evolutionChartData.data}
+                  propertyNames={evolutionChartData.propertyNames}
+                />
+              </div>
             )}
           </div>
         </div>
