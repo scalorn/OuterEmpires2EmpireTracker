@@ -146,13 +146,28 @@ namespace OE2EmpireTracker.Forms.Sharing
                 return;
             }
 
+            Log.Info("Loading sharing rules for character {0}", characterUUID);
+
             try
             {
                 string json = await ctx.Client.GetSharingRulesAsync(characterUUID).ConfigureAwait(false);
 
+                Log.Info("GetSharingRulesAsync returned: {0}", json ?? "(null)");
+
+                if (IsDisposed)
+                {
+                    return;
+                }
+
                 if (InvokeRequired)
                 {
-                    Invoke(new Action(() => PopulateGrid(json)));
+                    try
+                    {
+                        Invoke(new Action(() => PopulateGrid(json)));
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                    }
                 }
                 else
                 {
@@ -211,9 +226,9 @@ namespace OE2EmpireTracker.Forms.Sharing
             {
                 int rowIndex = dgvRules.Rows.Add();
                 var row = dgvRules.Rows[rowIndex];
-                row.Cells[colTargetType.Index].Value = rule.TargetType ?? "Faction";
+                row.Cells[colTargetType.Index].Value = NormalizeTargetType(rule.TargetType);
                 row.Cells[colTargetUUID.Index].Value = rule.TargetUUID ?? string.Empty;
-                row.Cells[colDataType.Index].Value = rule.DataType ?? "All";
+                row.Cells[colDataType.Index].Value = NormalizeDataType(rule.DataType);
                 row.Tag = rule.Id;
             }
 
@@ -466,6 +481,63 @@ namespace OE2EmpireTracker.Forms.Sharing
             if (string.Equals(dataType, "All", StringComparison.Ordinal))
             {
                 return null;
+            }
+
+            return dataType;
+        }
+
+        /// <summary>
+        /// Normalizes a TargetType value from the server (camelCase) to PascalCase for the combo.
+        /// </summary>
+        private string NormalizeTargetType(string targetType)
+        {
+            if (string.IsNullOrEmpty(targetType))
+            {
+                return "Faction";
+            }
+
+            if (string.Equals(targetType, "public", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Public";
+            }
+
+            if (string.Equals(targetType, "character", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Character";
+            }
+
+            if (string.Equals(targetType, "faction", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Faction";
+            }
+
+            return targetType;
+        }
+
+        /// <summary>
+        /// Normalizes a DataType value from the server to match combo items.
+        /// Null or empty means "All".
+        /// </summary>
+        private string NormalizeDataType(string dataType)
+        {
+            if (string.IsNullOrEmpty(dataType))
+            {
+                return "All";
+            }
+
+            if (string.Equals(dataType, "colonies", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Colonies";
+            }
+
+            if (string.Equals(dataType, "blueprints", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Blueprints";
+            }
+
+            if (string.Equals(dataType, "surveys", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Surveys";
             }
 
             return dataType;
