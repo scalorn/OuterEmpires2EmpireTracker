@@ -78,9 +78,15 @@ public static class SharingEndpoints
             return Results.BadRequest(new { error = "Body must be a non-null array" });
         }
 
-        // Ensure all rules have the correct owner
+        // Validate and normalize all rules
         foreach (var rule in rules)
         {
+            if (string.IsNullOrWhiteSpace(rule.TargetUUID))
+            {
+                return Results.BadRequest(new { error = "TargetUUID must not be empty" });
+            }
+
+            // TargetType validation is handled by JSON deserialization (enum)
             rule.OwnerCharacterUUID = uuid;
             if (string.IsNullOrWhiteSpace(rule.Id))
             {

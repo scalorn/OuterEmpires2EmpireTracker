@@ -54,7 +54,7 @@ graph TD
   - Output: Modified Models.cs with `Public` added to enum
   - Verification: Server project compiles; existing tests pass
 
-- [~] 3.1 Add validation logic to SharingEndpoints UpdateSharingConfig
+- [-] 3.1 Add validation logic to SharingEndpoints UpdateSharingConfig
   - Satisfies: Req 7, Criteria 1-4 ("Server SHALL return 400 for empty TargetUUID / invalid TargetType / assign OwnerCharacterUUID / generate Id")
   - Inputs: Server SharingEndpoints.cs
   - Output: Modified SharingEndpoints.cs with validation for empty TargetUUID, OwnerCharacterUUID override, and Id generation
@@ -80,7 +80,7 @@ graph TD
   - Output: `OE2EmpireTracker.Tests/Server/PublicDataFilteringTests.cs`
   - Verification: Tests pass via vstest.console
 
-- [-] 2.3 Write property tests for pagination slice correctness
+- [x] 2.3 Write property tests for pagination slice correctness
   - Satisfies: Correctness Property 2
   - Inputs: Pagination logic in PublicDataEndpoints.cs
   - Output: `OE2EmpireTracker.Tests/Server/PaginationTests.cs`
