@@ -37267,6 +37267,14 @@
   "ResourcePurity": "Refined",
   "Volume": 1.0
 },
+        "a8a96914-f638-4a07-a708-ce3873993ce9": {
+  "UUID": "a8a96914-f638-4a07-a708-ce3873993ce9",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Heavy Trans-Metals",
+  "Name": "Heavy Trans-Metals",
+  "Quantity": 42,
+  "ResourcePurity": "High"
+},
         "c0cb29ed-7a4c-4a1d-909f-242c9001b437": {
   "UUID": "c0cb29ed-7a4c-4a1d-909f-242c9001b437",
   "ItemType": "Resource",
@@ -37546,14 +37554,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-23T14:03:29.7703062Z",
-            "EndTime": "2026-05-23T15:03:29.7703062Z",
+            "StartTime": "2026-05-23T15:03:29.7703062Z",
+            "EndTime": "2026-05-23T16:03:29.7703062Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "22fe7b47-47c6-4ecf-ad43-f598103317c4",
           "MiningSurveyResource": "Heavy Trans-Metals",
-          "MiningLeftOvers": 0.9416,
+          "MiningLeftOvers": 0.1900,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -38714,8 +38722,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-23T14:03:29.7703062Z",
-            "EndTime": "2026-05-23T15:03:29.7703062Z",
+            "StartTime": "2026-05-23T15:03:29.7703062Z",
+            "EndTime": "2026-05-23T16:03:29.7703062Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
@@ -55321,7 +55329,7 @@
   "ItemType": "Flatpack",
   "BaseItemTypeID": "49763d1e-1bcf-5b26-892c-0b87ab8e11b6",
   "Name": "Warehouse Flatpack",
-  "Quantity": 90
+  "Quantity": 91
 }
       },
       "Structures": [
@@ -55404,8 +55412,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-23T11:03:28.7527363Z",
-            "EndTime": "2026-05-23T15:03:27.7527363Z",
+            "StartTime": "2026-05-23T15:03:27.7527363Z",
+            "EndTime": "2026-05-23T19:03:26.7527363Z",
             "RepeatIntervalSeconds": 14399,
             "IsRepeating": true
           },
@@ -55413,7 +55421,7 @@
           "MiningSurveyResource": "Warehouse Flatpack",
           "ManufacturingBlueprintUUID": "49763d1e-1bcf-5b26-892c-0b87ab8e11b6",
           "ManufacturingQuantity": 168,
-          "ManufacturingCompleted": 119,
+          "ManufacturingCompleted": 120,
           "CurrentAttitude": ""
         },
         {
@@ -59635,7 +59643,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Heavy Post-Trans Metals",
   "Name": "Heavy Post-Trans Metals",
-  "Quantity": 2147472642,
+  "Quantity": 2147472650,
   "ResourcePurity": "High"
 },
         "ff7f44c6-5ab7-4e1e-b74f-acad0ece79df": {
@@ -59643,7 +59651,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Acidic Inorganics",
   "Name": "Acidic Inorganics",
-  "Quantity": 249248646,
+  "Quantity": 249248676,
   "ResourcePurity": "Medium"
 }
       },
@@ -59758,14 +59766,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-23T14:02:50.7277849Z",
-            "EndTime": "2026-05-23T15:02:50.7277849Z",
+            "StartTime": "2026-05-23T15:02:50.7277849Z",
+            "EndTime": "2026-05-23T16:02:50.7277849Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "f71640ab-f2f9-4284-97a4-59529cf0f86c",
           "MiningSurveyResource": "Heavy Post-Trans Metals",
-          "MiningLeftOvers": 0.9493,
+          "MiningLeftOvers": 0.4536,
           "RefiningResourcePurity": "High",
           "CurrentAttitude": ""
         },
@@ -60034,14 +60042,14 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-23T14:02:49.7277849Z",
-            "EndTime": "2026-05-23T15:02:49.7277849Z",
+            "StartTime": "2026-05-23T15:02:49.7277849Z",
+            "EndTime": "2026-05-23T16:02:49.7277849Z",
             "RepeatIntervalSeconds": 3600,
             "IsRepeating": true
           },
           "MiningSurvey": "f71640ab-f2f9-4284-97a4-59529cf0f86c",
           "MiningSurveyResource": "Acidic Inorganics",
-          "MiningLeftOvers": 0.4599,
+          "MiningLeftOvers": 0.4569,
           "RefiningResourcePurity": "Medium",
           "CurrentAttitude": ""
         },

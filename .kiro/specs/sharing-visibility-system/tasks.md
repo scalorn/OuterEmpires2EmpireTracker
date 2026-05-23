@@ -130,7 +130,7 @@ graph TD
   - Output: `OE2EmpireTracker/Client/SharingRuleDto.cs`
   - Verification: getDiagnostics clean on new file
 
-- [-] 7.2 Add GetSharingRulesAsync and PutSharingRulesAsync to RemoteFactionClient
+- [x] 7.2 Add GetSharingRulesAsync and PutSharingRulesAsync to RemoteFactionClient
   - Satisfies: Design component 9; Req 3, Criteria 2, 5 ("load rules via GET"; "call PUT with rules"); Req 6, Criterion 1
   - Inputs: RemoteFactionClient.cs, SharingRuleDto.cs
   - Output: Modified RemoteFactionClient.cs with two new async methods
@@ -138,7 +138,7 @@ graph TD
 
 ### Phase 7: Desktop App — FormSharing
 
-- [~] 8.1 Create FormSharing Designer layout (Designer.cs + .resx)
+- [-] 8.1 Create FormSharing Designer layout (Designer.cs + .resx)
   - Satisfies: Req 3, Criteria 1, 3 ("FormSharing form accessible from main menu"; "DataGridView with columns")
   - Inputs: Design mockup layout
   - Output: `OE2EmpireTracker/Forms/Sharing/FormSharing.cs`, `FormSharing.Designer.cs`, `FormSharing.resx`
