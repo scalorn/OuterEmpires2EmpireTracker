@@ -54,6 +54,7 @@ public enum SharingTargetType
 {
     Faction,
     Character,
+    Public,
 }
 
 /// <summary>A single sharing rule granting access to data.</summary>
