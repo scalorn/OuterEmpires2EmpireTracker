@@ -68,7 +68,7 @@ graph TD
 
 ### Phase 2: Server — Public Data Endpoints
 
-- [-] 2.1 Implement public data endpoint logic in PublicDataEndpoints.cs
+- [x] 2.1 Implement public data endpoint logic in PublicDataEndpoints.cs
   - Satisfies: Req 1, Criteria 1-5 ("Server SHALL query sharing rules and return entities with TargetType=Public"); Req 5, Criterion 3
   - Inputs: Server PublicDataEndpoints.cs, IStorageBackend interface
   - Output: Modified PublicDataEndpoints.cs with filtering logic for blueprints, surveys, colonies; pagination with max 100
