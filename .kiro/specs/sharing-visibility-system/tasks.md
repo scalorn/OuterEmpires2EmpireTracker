@@ -124,13 +124,13 @@ graph TD
 
 ### Phase 6: Desktop App — Client and Model
 
-- [-] 7.1 Create SharingRuleDto model class
+- [x] 7.1 Create SharingRuleDto model class
   - Satisfies: Design component 11 (Desktop DTO for sharing rules)
   - Inputs: Design document DTO definition
   - Output: `OE2EmpireTracker/Client/SharingRuleDto.cs`
   - Verification: getDiagnostics clean on new file
 
-- [~] 7.2 Add GetSharingRulesAsync and PutSharingRulesAsync to RemoteFactionClient
+- [-] 7.2 Add GetSharingRulesAsync and PutSharingRulesAsync to RemoteFactionClient
   - Satisfies: Design component 9; Req 3, Criteria 2, 5 ("load rules via GET"; "call PUT with rules"); Req 6, Criterion 1
   - Inputs: RemoteFactionClient.cs, SharingRuleDto.cs
   - Output: Modified RemoteFactionClient.cs with two new async methods

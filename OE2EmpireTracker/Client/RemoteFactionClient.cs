@@ -329,6 +329,32 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
+        /// Gets sharing rules for the specified character.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID.</param>
+        /// <returns>JSON string of sharing rules, or null on failure.</returns>
+        public async Task<string> GetSharingRulesAsync(string characterUUID)
+        {
+            string path = string.Format("/characters/{0}/sharing", characterUUID);
+            return await GetStringAsync(path).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Replaces all sharing rules for the specified character.
+        /// </summary>
+        /// <param name="characterUUID">The character UUID.</param>
+        /// <param name="rulesJson">JSON payload containing the sharing rules array.</param>
+        /// <returns>The HTTP response from the server.</returns>
+        public async Task<HttpResponseMessage> PutSharingRulesAsync(string characterUUID, string rulesJson)
+        {
+            string path = string.Format("/characters/{0}/sharing", characterUUID);
+            await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+            var content = new StringContent(rulesJson, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync(_serverUrl + ApiPrefix + path, content).ConfigureAwait(false);
+            return response;
+        }
+
+        /// <summary>
         /// Sets the connection status and raises the <see cref="ConnectionStatusChanged"/> event.
         /// Used by <see cref="SyncManager"/> to signal authorization failures.
         /// </summary>
