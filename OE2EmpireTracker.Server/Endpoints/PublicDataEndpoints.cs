@@ -1,3 +1,4 @@
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Endpoints;
@@ -17,59 +18,85 @@ public static class PublicDataEndpoints
         publicGroup.MapGet("/colonies", GetPublicColonies);
     }
 
-    private static Task<IResult> GetPublicBlueprints(
+    private static async Task<IResult> GetPublicBlueprints(
         HttpContext httpContext,
         IStorageBackend storage,
         int page = 1,
         int pageSize = 20)
     {
-        page = Math.Max(1, page);
-        pageSize = Math.Clamp(pageSize, 1, 100);
-
-        // Placeholder: return empty paginated result until sharing system is wired
-        var result = new PaginatedResult(
-            items: Array.Empty<object>(),
-            page: page,
-            pageSize: pageSize,
-            totalCount: 0);
-
-        return Task.FromResult(Results.Ok(result));
+        return await GetPublicDataAsync(storage, "Blueprints", page, pageSize);
     }
 
-    private static Task<IResult> GetPublicSurveys(
+    private static async Task<IResult> GetPublicSurveys(
         HttpContext httpContext,
         IStorageBackend storage,
         int page = 1,
         int pageSize = 20)
     {
-        page = Math.Max(1, page);
-        pageSize = Math.Clamp(pageSize, 1, 100);
-
-        var result = new PaginatedResult(
-            items: Array.Empty<object>(),
-            page: page,
-            pageSize: pageSize,
-            totalCount: 0);
-
-        return Task.FromResult(Results.Ok(result));
+        return await GetPublicDataAsync(storage, "Surveys", page, pageSize);
     }
 
-    private static Task<IResult> GetPublicColonies(
+    private static async Task<IResult> GetPublicColonies(
         HttpContext httpContext,
         IStorageBackend storage,
         int page = 1,
         int pageSize = 20)
     {
+        return await GetPublicDataAsync(storage, "Colonies", page, pageSize);
+    }
+
+    private static async Task<IResult> GetPublicDataAsync(
+        IStorageBackend storage,
+        string dataType,
+        int page,
+        int pageSize)
+    {
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var result = new PaginatedResult(
-            items: Array.Empty<object>(),
-            page: page,
-            pageSize: pageSize,
-            totalCount: 0);
+        var allCharacters = await storage.GetAllCharactersAsync();
+        var publicEntities = new List<object>();
 
-        return Task.FromResult(Results.Ok(result));
+        foreach (var character in allCharacters)
+        {
+            var rules = await storage.GetSharingRulesForCharacterAsync(character.UUID);
+            var hasPublicData = rules.Any(r =>
+                r.TargetType == SharingTargetType.Public &&
+                (r.DataType == null || r.DataType == dataType));
+
+            if (!hasPublicData)
+            {
+                continue;
+            }
+
+            var entities = await GetEntitiesAsync(storage, character.UUID, dataType);
+            publicEntities.AddRange(entities);
+        }
+
+        var totalCount = publicEntities.Count;
+        var items = publicEntities
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToArray();
+
+        return Results.Ok(new PaginatedResult(items, page, pageSize, totalCount));
+    }
+
+    private static async Task<IReadOnlyList<object>> GetEntitiesAsync(
+        IStorageBackend storage,
+        string characterUUID,
+        string dataType)
+    {
+        return dataType switch
+        {
+            "Blueprints" => (await storage.GetAllBlueprintsAsync(characterUUID))
+                .Cast<object>().ToList(),
+            "Surveys" => (await storage.GetAllSurveysAsync(characterUUID))
+                .Cast<object>().ToList(),
+            "Colonies" => (await storage.GetAllColoniesAsync(characterUUID))
+                .Cast<object>().ToList(),
+            _ => Array.Empty<object>(),
+        };
     }
 
     private record PaginatedResult(
