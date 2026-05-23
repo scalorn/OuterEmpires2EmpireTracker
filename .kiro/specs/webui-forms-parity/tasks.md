@@ -137,45 +137,45 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
 - [x] 4. Checkpoint - Foundation complete
   - Ensure all foundation components compile, render, and pass unit tests. Ask the user if questions arise.
 
-- [ ] 5. API Layer: Endpoint Modules
-  - [-] 5.1 Create/extend colony endpoint module
+- [x] 5. API Layer: Endpoint Modules
+  - [x] 5.1 Create/extend colony endpoint module
     - Extend `src/api/endpoints/colonies.ts` with sub-resource methods: getStructures, getItems, getCommodityRequests, bootstrap, optimize
     - _Requirements: 1.1–1.10_
     - _Verification: TypeScript compiles, endpoint functions exported_
 
-  - [-] 5.2 Create/extend blueprint and survey endpoint modules
+  - [x] 5.2 Create/extend blueprint and survey endpoint modules
     - Extend `src/api/endpoints/blueprints.ts` with typed responses, save, delete
     - Extend `src/api/endpoints/surveys.ts` with typed responses, save, delete
     - _Requirements: 2.1–2.9, 3.1–3.9_
     - _Verification: TypeScript compiles, endpoint functions exported_
 
-  - [-] 5.3 Create delivery routes and plans endpoint modules
+  - [x] 5.3 Create delivery routes and plans endpoint modules
     - Create/extend `src/api/endpoints/delivery-routes.ts` with CRUD + stop reordering
     - Create/extend `src/api/endpoints/delivery-plans.ts` with CRUD + auto-fill
     - _Requirements: 5.1–5.8, 6.1–6.7_
     - _Verification: TypeScript compiles, endpoint functions exported_
 
-  - [-] 5.4 Create ship templates and market endpoint modules
+  - [x] 5.4 Create ship templates and market endpoint modules
     - Create/extend `src/api/endpoints/ship-templates.ts` with CRUD + order-build
     - Create/extend `src/api/endpoints/market-listings.ts` with CRUD + record-sale
     - Create/extend `src/api/endpoints/market-transactions.ts` with list + record-purchase
     - _Requirements: 8.1–8.9, 9.1–9.7_
     - _Verification: TypeScript compiles, endpoint functions exported_
 
-  - [-] 5.5 Create supply chains, stock, and pricing endpoint modules
+  - [x] 5.5 Create supply chains, stock, and pricing endpoint modules
     - Create `src/api/endpoints/supply-chains.ts` with CRUD + step management
     - Create `src/api/endpoints/stock-profiles.ts` and `stock-plans.ts` with CRUD
     - _Requirements: 14.1–14.7, 15.1–15.7_
     - _Verification: TypeScript compiles, endpoint functions exported_
 
-  - [-] 5.6 Create pricing plans, shared data, and baseline endpoint modules
+  - [x] 5.6 Create pricing plans, shared data, and baseline endpoint modules
     - Create/extend `src/api/endpoints/pricing-plans.ts` with CRUD
     - Create `src/api/endpoints/shared-data.ts` with list + detail
     - Extend `src/api/endpoints/global.ts` with baseline endpoint
     - _Requirements: 16.1–16.7, 17.1–17.5, 10.6_
     - _Verification: TypeScript compiles, endpoint functions exported_
 
-  - [-] 5.7 Create profiles, contacts, stations, asteroids, build-plans endpoint modules
+  - [x] 5.7 Create profiles, contacts, stations, asteroids, build-plans endpoint modules
     - Create/extend `src/api/endpoints/profiles.ts` with CRUD
     - Create/extend `src/api/endpoints/build-plans.ts` with CRUD + item management
     - Extend contacts, stations, asteroids endpoints with typed CRUD
