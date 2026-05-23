@@ -124,7 +124,7 @@ graph TD
 
 ### Phase 6: Desktop App — Client and Model
 
-- [~] 7.1 Create SharingRuleDto model class
+- [-] 7.1 Create SharingRuleDto model class
   - Satisfies: Design component 11 (Desktop DTO for sharing rules)
   - Inputs: Design document DTO definition
   - Output: `OE2EmpireTracker/Client/SharingRuleDto.cs`

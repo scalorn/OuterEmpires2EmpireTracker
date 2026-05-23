@@ -85,6 +85,18 @@ Event args for push events received via WebSocket (Req 18):
 Event args for real-time mode changes (Req 18 Fallback):
 - IsRealtime flag (true = WebSocket, false = polling)
 
+### SharingRuleDto
+
+Data transfer object for sharing rules returned from the server API (`GET /characters/{uuid}/sharing`):
+- Id — unique identifier of the sharing rule
+- OwnerCharacterUUID — UUID of the character who owns the shared data
+- TargetUUID — UUID of the target (character or faction) the data is shared with
+- TargetType — target type (Character, Faction, Public)
+- DataType — data type being shared (colonies, blueprints, surveys)
+- EntityUUID — UUID of the specific entity being shared
+
+All properties use `[JsonProperty]` for Newtonsoft.Json serialization matching the server API contract.
+
 
 ## Class Diagram
 
