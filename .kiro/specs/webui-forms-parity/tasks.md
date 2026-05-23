@@ -6,64 +6,64 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
 
 ## Tasks
 
-- [ ] 1. Foundation: Shared Types and Utilities
-  - [-] 1.1 Create domain type interfaces (Colony, Blueprint, Survey, PlayerProfile)
+- [x] 1. Foundation: Shared Types and Utilities
+  - [x] 1.1 Create domain type interfaces (Colony, Blueprint, Survey, PlayerProfile)
     - Create `src/api/types/domain.ts` with Colony, ColonyStructure, WarehouseItem, CommodityRequest, Blueprint, BlueprintResource, Survey, SurveyResource, PlayerProfile, ProfileRanks, RankInfo, SkillGroup, Skill interfaces
     - _Requirements: 1.1–1.10, 2.1–2.9, 3.1–3.9, 4.1–4.9_
     - _Verification: TypeScript compiles with no errors_
 
-  - [-] 1.2 Create domain type interfaces (Delivery, Ship, Market, BuildPlan)
+  - [x] 1.2 Create domain type interfaces (Delivery, Ship, Market, BuildPlan)
     - Add to `src/api/types/domain.ts`: DeliveryRoute, RouteStop, DeliveryPlan, StopItemSet, DeliveryItem, ShipTemplate, TemplateSlot, MarketListing, MarketTransaction, BuildPlan, BuildPlanItem interfaces
     - _Requirements: 5.1–5.8, 6.1–6.7, 7.1–7.8, 8.1–8.9, 9.1–9.7, 12.1–12.5_
     - _Verification: TypeScript compiles with no errors_
 
-  - [-] 1.3 Create domain type interfaces (SupplyChain, Stock, Pricing, Shared, Supporting, Baseline)
+  - [x] 1.3 Create domain type interfaces (SupplyChain, Stock, Pricing, Shared, Supporting, Baseline)
     - Add to `src/api/types/domain.ts`: SupplyChain, SupplyChainStep, StockProfile, StockTargetItem, PricingPlan, PricingPlanItem, SharedDataSummary, ExternalCharacter, Station, Asteroid, BaselineData, ShipClassDef, SlotDefinition, TechLevelDef, CommodityDef interfaces
     - _Requirements: 13.1–13.5, 14.1–14.7, 15.1–15.7, 16.1–16.7, 17.1–17.5_
     - _Verification: TypeScript compiles with no errors_
 
 
-  - [-] 1.4 Create timer utility functions
+  - [x] 1.4 Create timer utility functions
     - Create `src/utils/timerUtils.ts` with: computeRemaining(endTime, now), formatCountdown(seconds), isExpired(endTime)
     - Handle edge cases: past timestamps return 0, null/undefined endTime returns null
     - _Requirements: 11.2, 18.3, 18.4_
     - _Verification: Unit tests pass for timerUtils_
 
-  - [-] 1.5 Create filter utility functions
+  - [x] 1.5 Create filter utility functions
     - Create `src/utils/filterUtils.ts` with: matchesTextFilter(item, fields, query), matchesDropdownFilter(value, selected), applyFilters(items, filters)
     - Generic filter application logic reusable across all entity lists
     - _Requirements: 10.3, 2.2, 3.2_
     - _Verification: Unit tests pass for filterUtils_
 
-  - [-] 1.6 Create reorder utility functions
+  - [x] 1.6 Create reorder utility functions
     - Create `src/utils/reorderUtils.ts` with: moveUp(items, index), moveDown(items, index), resequence(items)
     - Maintains sequential numbering after moves
     - _Requirements: 5.4, 14.5_
     - _Verification: Unit tests pass for reorderUtils_
 
 - [ ] 2. Foundation: Shared UI Components (Part 1)
-  - [~] 2.1 Implement MasterDetailLayout component
+  - [-] 2.1 Implement MasterDetailLayout component
     - Create `src/components/common/MasterDetailLayout.tsx`
     - Responsive: side-by-side on desktop (≥1024px), narrower list on tablet (768–1023px), single-panel with back button on mobile (<768px)
     - Props: listPanel, detailPanel, listWidth, selectedId, onBack
     - _Requirements: 10.2, 10.9_
     - _Verification: Component renders at all breakpoints without errors_
 
-  - [~] 2.2 Implement FilterBar component
+  - [-] 2.2 Implement FilterBar component
     - Create `src/components/common/FilterBar.tsx`
     - Support text search input, dropdown filters, and checkbox filters
     - Emit filter state changes via onChange callback
     - _Requirements: 10.3_
     - _Verification: Component renders and emits filter changes_
 
-  - [~] 2.3 Implement FilteredDropdown component
+  - [-] 2.3 Implement FilteredDropdown component
     - Create `src/components/common/FilteredDropdown.tsx`
     - Searchable dropdown with type-ahead filtering
     - Props: options, value, onChange, placeholder, filterFn
     - _Requirements: 10.6, 1.4, 8.4_
     - _Verification: Component renders, filters options on input_
 
-  - [~] 2.4 Implement EditableGrid component
+  - [-] 2.4 Implement EditableGrid component
     - Create `src/components/common/EditableGrid.tsx`
     - Inline cell editing: click to activate, commit on blur or Enter
     - Column types: text, number, select, readonly
@@ -72,34 +72,34 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Component renders, cells editable inline_
 
 
-  - [~] 2.5 Implement InfiniteScrollList component
+  - [-] 2.5 Implement InfiniteScrollList component
     - Create `src/components/common/InfiniteScrollList.tsx`
     - Loads pages of 50 items on scroll using IntersectionObserver
     - Props: queryKey, fetchPage, renderItem, keyExtractor, pageSize, filterValue
     - _Requirements: 10.8_
     - _Verification: Component renders initial page, loads more on scroll_
 
-  - [~] 2.6 Implement TabBar and ConfirmDialog components
+  - [-] 2.6 Implement TabBar and ConfirmDialog components
     - Create `src/components/common/TabBar.tsx` — tab switching with active indicator
     - Create `src/components/common/ConfirmDialog.tsx` — modal confirmation for delete actions
     - _Requirements: 10.5, 2.9, 3.8, 4.9, 5.8_
     - _Verification: Components render and handle interactions_
 
-  - [~] 2.7 Implement CountdownTimer component
+  - [-] 2.7 Implement CountdownTimer component
     - Create `src/components/common/CountdownTimer.tsx`
     - Computes remaining time from ISO 8601 end timestamp, decrements each second
     - Handles keepZero prop (stays at 00:00:00 after completion)
     - _Requirements: 11.2, 18.3, 18.5_
     - _Verification: Timer displays and decrements correctly_
 
-  - [~] 2.8 Implement UnsavedChangesGuard hook
+  - [-] 2.8 Implement UnsavedChangesGuard hook
     - Create `src/hooks/useUnsavedChanges.ts`
     - Uses react-router useBlocker to prevent navigation when isDirty is true
     - Fail-closed: if hook errors, blocks all navigation
     - _Requirements: 10.7_
     - _Verification: Navigation blocked when dirty flag is true_
 
-  - [~] 2.9 Implement useVisibilityRecovery hook
+  - [-] 2.9 Implement useVisibilityRecovery hook
     - Create `src/hooks/useVisibilityRecovery.ts`
     - Listens to `visibilitychange` event, invalidates timer queries on tab refocus
     - Recalculates countdown from end timestamp, not last displayed value
