@@ -209,3 +209,119 @@ export function StockTargetForm() {
       )}
     </div>
   );
+
+  const detailPanel = (
+    <div className="flex h-full flex-col">
+      <div className="border-b border-gray-700 p-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-white">
+            {isNewMode ? 'New Stock Profile' : 'Stock Profile Details'}
+          </h2>
+          <div className="flex gap-2">
+            <button
+              onClick={handleNew}
+              className="rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700"
+            >
+              New
+            </button>
+            <button
+              onClick={() => void handleSave()}
+              disabled={!isDirty && !isNewMode}
+              className="rounded bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              {save.isPending ? 'Saving...' : 'Save'}
+            </button>
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={isNewMode || !selectedId}
+              className="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:opacity-50"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {!selectedId && !isNewMode ? (
+        <EmptyState title="No profile selected" message="Select a stock profile from the list or create a new one." />
+      ) : (
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="max-w-lg space-y-4">
+            <div>
+              <label htmlFor="stock-profile-name" className="mb-1 block text-sm text-gray-400">Profile Name</label>
+              <input
+                id="stock-profile-name"
+                type="text"
+                value={form.name}
+                onChange={(e) => handleFieldChange('name', e.target.value)}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+              />
+            </div>
+            <div>
+              <label htmlFor="stock-profile-colony" className="mb-1 block text-sm text-gray-400">Assigned Colony</label>
+              <FilteredDropdown
+                options={colonyOptions}
+                value={form.assignedColonyUUID}
+                onChange={(value) => handleFieldChange('assignedColonyUUID', value)}
+                placeholder="Select a colony..."
+              />
+            </div>
+
+            {/* Stock target items display */}
+            {!isNewMode && selectedProfile && selectedProfile.items.length > 0 && (
+              <div className="pt-4">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">
+                  Stock Target Items
+                </h3>
+                <div className="rounded border border-gray-600 bg-gray-800 p-3">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-xs text-gray-500">
+                        <th className="pb-1 font-normal">Item</th>
+                        <th className="pb-1 font-normal">Type</th>
+                        <th className="pb-1 font-normal">Target Qty</th>
+                        <th className="pb-1 font-normal">Current Qty</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedProfile.items.map((item) => (
+                        <tr key={item.uuid} className="border-t border-gray-700/50">
+                          <td className="py-1 text-gray-300">
+                            {item.name}{item.purity ? ` (${item.purity})` : ''}
+                          </td>
+                          <td className="py-1 text-gray-400">{item.itemType}</td>
+                          <td className="py-1 text-gray-300">{item.targetQuantity}</td>
+                          <td className="py-1 text-gray-400">{item.currentQuantity ?? '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+      <MasterDetailLayout
+        listPanel={listPanel}
+        detailPanel={detailPanel}
+        selectedId={selectedId}
+        onBack={handleBack}
+      />
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Delete Stock Profile"
+        message={`Are you sure you want to delete "${form.name || 'this profile'}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={() => void handleDelete()}
+        onCancel={() => setShowDeleteConfirm(false)}
+        variant="danger"
+      />
+    </>
+  );
+}
