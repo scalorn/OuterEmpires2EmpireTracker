@@ -16,6 +16,7 @@ import { SurveyManager } from './pages/authenticated/SurveyManager';
 import { ProfileEditor } from './pages/authenticated/ProfileEditor';
 import { FactionView } from './pages/authenticated/FactionView';
 import { SharingConfig } from './pages/authenticated/SharingConfig';
+import { ColonyActivityPage } from './pages/authenticated/ColonyActivityPage';
 import { useWebSocket } from './ws/useWebSocket';
 
 const router = createBrowserRouter([
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
           { path: 'profile', element: <ProfileEditor /> },
           { path: 'faction', element: <FactionView /> },
           { path: 'sharing', element: <SharingConfig /> },
+          { path: 'activity', element: <ColonyActivityPage /> },
         ],
       },
       { path: '*', element: <NotFound /> },

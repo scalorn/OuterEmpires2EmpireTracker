@@ -243,7 +243,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
   - Ensure all endpoint modules and hook modules compile with no TypeScript errors. Ask the user if questions arise.
 
 
-- [ ] 8. Colony Form
+- [x] 8. Colony Form
   - [x] 8.1 Implement ColonyForm list panel and selection
     - Create `src/pages/authenticated/ColonyForm.tsx`
     - Searchable, sortable colony list in left panel using InfiniteScrollList
@@ -265,19 +265,19 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 1.4, 1.5, 1.9_
     - _Verification: Add/Optimize/Bootstrap actions call correct endpoints_
 
-  - [-] 8.4 Implement ColonyForm Warehousing and Commodity Requests tabs
+  - [x] 8.4 Implement ColonyForm Warehousing and Commodity Requests tabs
     - Warehousing tab: inventory grouped by item type with name, purity, quantity columns
     - Commodity Requests tab: commodity name, quantity, need-by date, fulfilled status
     - _Requirements: 1.6, 1.7_
     - _Verification: Both tabs render with correct data_
 
-  - [-] 8.5 Implement ColonyForm Administration tab
+  - [x] 8.5 Implement ColonyForm Administration tab
     - Import staleness indicators: no color (0–4 days), yellow (5–6 days), red (6+ days)
     - Colony status report display
     - _Requirements: 1.10_
     - _Verification: Staleness colors render correctly based on lastImportUtc_
 
-- [ ] 9. Blueprint Form
+- [x] 9. Blueprint Form
   - [x] 9.1 Implement BlueprintForm list panel with filters
     - Create `src/pages/authenticated/BlueprintForm.tsx`
     - Filterable list with columns: type, name, tech level, evolution, nick name, reference count
@@ -291,13 +291,13 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 2.3, 2.7, 2.8, 2.9_
     - _Verification: Detail fields editable, CRUD operations work_
 
-  - [-] 9.3 Implement BlueprintForm Statistics and Resources tabs
+  - [x] 9.3 Implement BlueprintForm Statistics and Resources tabs
     - Statistics tab: editable grid of numeric properties
     - Resources tab: editable grid of manufacturing resource requirements
     - _Requirements: 2.4, 2.5_
     - _Verification: Both grids render and allow inline editing_
 
-  - [-] 9.4 Implement BlueprintForm Evolution Graph tab
+  - [x] 9.4 Implement BlueprintForm Evolution Graph tab
     - Create `src/components/domain/EvolutionChart.tsx`
     - Line chart showing property percentage changes across evolution levels
     - _Requirements: 2.6_
@@ -355,14 +355,14 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 5.3, 5.4, 5.5, 5.6, 5.7, 5.8_
     - _Verification: Stops can be added, reordered, removed, and persisted_
 
-  - [-] 12.3 Implement RouteForm Plan tab
+  - [x] 12.3 Implement RouteForm Plan tab
     - Plan tab with dropdown to select/create delivery plans
     - New Plan button creates plan with default name (route name + date)
     - Stop selection shows drop-off and pick-up item lists
     - _Requirements: 6.1, 6.2, 6.3_
     - _Verification: Plan tab renders, plans selectable, items display per stop_
 
-  - [~] 12.4 Implement RouteForm Plan item management
+  - [-] 12.4 Implement RouteForm Plan item management
     - Add items to drop-off/pick-up: item type, name, purity, quantity fields
     - Remove items from lists
     - Auto-Fill button populates from colony requests/flatpacks/resources
@@ -414,7 +414,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Pricing displays, CRUD works, Order Build calls API_
 
 - [ ] 15. Market Form
-  - [~] 15.1 Implement MarketForm Listings tab
+  - [-] 15.1 Implement MarketForm Listings tab
     - Create `src/pages/authenticated/MarketForm.tsx`
     - Listings tab: active listings with station, item, quantity, price, condition columns
     - Create new listing form: station, item, quantity, price, condition, max-repair
@@ -436,7 +436,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
 
 
 - [ ] 16. Supply Chain Form
-  - [~] 16.1 Implement SupplyChainForm list and detail
+  - [-] 16.1 Implement SupplyChainForm list and detail
     - Create `src/pages/authenticated/SupplyChainForm.tsx`
     - Filterable list, detail panel: name, source colony, destination colony
     - Create new chain: name, source colony dropdown, destination colony dropdown
@@ -451,7 +451,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Steps addable, reorderable, removable, persist on save_
 
 - [ ] 17. Stock Target Form
-  - [~] 17.1 Implement StockTargetForm list and profile detail
+  - [-] 17.1 Implement StockTargetForm list and profile detail
     - Create `src/pages/authenticated/StockTargetForm.tsx`
     - Stock profile list, detail: profile name, assigned colony
     - Create new profile with name and colony assignment
@@ -466,7 +466,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Items addable/editable/removable, persist on save_
 
 - [ ] 18. Pricing Plan Form
-  - [~] 18.1 Implement PricingPlanForm list and detail
+  - [-] 18.1 Implement PricingPlanForm list and detail
     - Create `src/pages/authenticated/PricingPlanForm.tsx`
     - Plan list, detail: plan name, item prices grid (item name, item type, unit price)
     - Create new plan with name
@@ -481,7 +481,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Prices addable/editable/removable, persist on save_
 
 - [ ] 19. Shared Data View
-  - [~] 19.1 Implement SharedDataView character list and tabs
+  - [-] 19.1 Implement SharedDataView character list and tabs
     - Create `src/pages/authenticated/SharedDataView.tsx`
     - List of characters who shared data, tabs per shared type (blueprints, surveys, colonies)
     - Visual badge distinguishing shared from owned data
@@ -496,7 +496,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
 
 
 - [ ] 20. Colony Activity and Daily Build Pages
-  - [~] 20.1 Implement ColonyActivityPage with grouped timers
+  - [-] 20.1 Implement ColonyActivityPage with grouped timers
     - Create `src/pages/authenticated/ColonyActivityPage.tsx`
     - Active timers grouped by activity type (mining, refining, manufacturing, research, building)
     - Timers only display when active; show zero until user navigates away

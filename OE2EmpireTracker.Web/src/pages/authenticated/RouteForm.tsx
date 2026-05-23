@@ -458,9 +458,11 @@ interface PlansTabProps {
 
 function PlansTab({ charUUID, routeUUID, routeName, stops }: PlansTabProps) {
   const { data: allPlans } = usePlans(charUUID);
-  const { save } = usePlanMutations();
+  const { save, autoFill } = usePlanMutations();
   const [selectedPlanUUID, setSelectedPlanUUID] = useState('');
   const [selectedStopUUID, setSelectedStopUUID] = useState<string | null>(null);
+  const [localStopItems, setLocalStopItems] = useState<Record<string, { dropOff: DeliveryItem[]; pickUp: DeliveryItem[] }>>({});
+  const [isPlanDirty, setIsPlanDirty] = useState(false);
 
   // Filter plans to only those belonging to this route
   const routePlans = useMemo(() => {
@@ -475,6 +477,18 @@ function PlansTab({ charUUID, routeUUID, routeName, stops }: PlansTabProps) {
   const selectedPlan = useMemo(() => {
     return routePlans.find((p) => p.uuid === selectedPlanUUID) ?? null;
   }, [routePlans, selectedPlanUUID]);
+
+  // Sync local stop items when plan selection changes
+  const [lastSyncedPlanUUID, setLastSyncedPlanUUID] = useState<string | null>(null);
+  if (selectedPlan && selectedPlan.uuid !== lastSyncedPlanUUID) {
+    setLocalStopItems(selectedPlan.stopItems ?? {});
+    setIsPlanDirty(false);
+    setLastSyncedPlanUUID(selectedPlan.uuid);
+  } else if (!selectedPlan && lastSyncedPlanUUID !== null) {
+    setLocalStopItems({});
+    setIsPlanDirty(false);
+    setLastSyncedPlanUUID(null);
+  }
 
   const handleNewPlan = () => {
     if (!routeUUID) return;
@@ -494,11 +508,61 @@ function PlansTab({ charUUID, routeUUID, routeName, stops }: PlansTabProps) {
     setSelectedStopUUID((prev) => (prev === stopUUID ? null : stopUUID));
   };
 
-  // Get items for the selected stop from the selected plan
+  const handleAddItem = (stopUUID: string, list: 'dropOff' | 'pickUp', item: DeliveryItem) => {
+    setLocalStopItems((prev) => {
+      const existing = prev[stopUUID] ?? { dropOff: [], pickUp: [] };
+      return {
+        ...prev,
+        [stopUUID]: {
+          ...existing,
+          [list]: [...existing[list], item],
+        },
+      };
+    });
+    setIsPlanDirty(true);
+  };
+
+  const handleRemoveItem = (stopUUID: string, list: 'dropOff' | 'pickUp', itemUUID: string) => {
+    setLocalStopItems((prev) => {
+      const existing = prev[stopUUID];
+      if (!existing) return prev;
+      return {
+        ...prev,
+        [stopUUID]: {
+          ...existing,
+          [list]: existing[list].filter((i) => i.uuid !== itemUUID),
+        },
+      };
+    });
+    setIsPlanDirty(true);
+  };
+
+  const handleAutoFill = () => {
+    if (!selectedPlanUUID || !routeUUID) return;
+    autoFill.mutate(
+      { planUUID: selectedPlanUUID, data: { routeUUID } },
+      {
+        onSuccess: (response) => {
+          setLocalStopItems(response.stopItems);
+          setIsPlanDirty(true);
+        },
+      },
+    );
+  };
+
+  const handleSavePlan = () => {
+    if (!selectedPlanUUID) return;
+    save.mutate(
+      { entityUUID: selectedPlanUUID, data: { stopItems: localStopItems } },
+      { onSuccess: () => setIsPlanDirty(false) },
+    );
+  };
+
+  // Get items for the selected stop from local state
   const stopItems = useMemo(() => {
     if (!selectedPlan || !selectedStopUUID) return null;
-    return selectedPlan.stopItems[selectedStopUUID] ?? null;
-  }, [selectedPlan, selectedStopUUID]);
+    return localStopItems[selectedStopUUID] ?? null;
+  }, [selectedPlan, selectedStopUUID, localStopItems]);
 
   if (!routeUUID) {
     return <EmptyState title="Save route first" message="Save the route before managing delivery plans." />;
@@ -527,6 +591,26 @@ function PlansTab({ charUUID, routeUUID, routeName, stops }: PlansTabProps) {
           </button>
         </div>
       </div>
+
+      {/* Auto-Fill and Save Plan buttons */}
+      {selectedPlan && (
+        <div className="flex gap-2">
+          <button
+            onClick={handleAutoFill}
+            disabled={autoFill.isPending}
+            className="rounded bg-purple-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-purple-700 disabled:opacity-50"
+          >
+            {autoFill.isPending ? 'Filling...' : 'Auto-Fill'}
+          </button>
+          <button
+            onClick={handleSavePlan}
+            disabled={save.isPending || !isPlanDirty}
+            className="rounded bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            {save.isPending ? 'Saving...' : 'Save Plan'}
+          </button>
+        </div>
+      )}
 
       {/* Stop selection and items display */}
       {selectedPlan && (
@@ -562,7 +646,12 @@ function PlansTab({ charUUID, routeUUID, routeName, stops }: PlansTabProps) {
 
           {/* Items for selected stop */}
           {selectedStopUUID && (
-            <StopItemsDisplay items={stopItems} />
+            <StopItemsDisplay
+              items={stopItems}
+              stopUUID={selectedStopUUID}
+              onAddItem={handleAddItem}
+              onRemoveItem={handleRemoveItem}
+            />
           )}
         </div>
       )}
@@ -578,65 +667,181 @@ function PlansTab({ charUUID, routeUUID, routeName, stops }: PlansTabProps) {
 
 interface StopItemsDisplayProps {
   items: { dropOff: DeliveryItem[]; pickUp: DeliveryItem[] } | null;
+  stopUUID: string;
+  onAddItem: (stopUUID: string, list: 'dropOff' | 'pickUp', item: DeliveryItem) => void;
+  onRemoveItem: (stopUUID: string, list: 'dropOff' | 'pickUp', itemUUID: string) => void;
 }
 
-function StopItemsDisplay({ items }: StopItemsDisplayProps) {
-  if (!items || (items.dropOff.length === 0 && items.pickUp.length === 0)) {
-    return (
-      <div className="rounded border border-gray-700 bg-gray-800/50 p-4 text-center text-sm text-gray-400">
-        No items assigned to this stop yet.
-      </div>
-    );
-  }
+function StopItemsDisplay({ items, stopUUID, onAddItem, onRemoveItem }: StopItemsDisplayProps) {
+  const dropOffItems = items?.dropOff ?? [];
+  const pickUpItems = items?.pickUp ?? [];
 
   return (
     <div className="space-y-4">
       {/* Drop-off items */}
       <div className="rounded border border-gray-700 bg-gray-800/50 p-3">
         <h4 className="mb-2 text-sm font-medium text-orange-300">
-          Drop-off ({items.dropOff.length})
+          Drop-off ({dropOffItems.length})
         </h4>
-        {items.dropOff.length === 0 ? (
+        {dropOffItems.length === 0 ? (
           <p className="text-xs text-gray-500">No drop-off items.</p>
         ) : (
-          <ul className="space-y-1">
-            {items.dropOff.map((item) => (
+          <ul className="mb-3 space-y-1">
+            {dropOffItems.map((item) => (
               <li key={item.uuid} className="flex items-center justify-between rounded bg-gray-900/50 px-3 py-1.5 text-sm">
                 <span className="text-gray-200">
                   {item.name}
                   {item.purity && <span className="ml-1 text-xs text-gray-400">({item.purity})</span>}
                 </span>
-                <span className="text-xs text-gray-400">
-                  {item.quantity} &times; {item.itemType}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400">
+                    {item.quantity} &times; {item.itemType}
+                  </span>
+                  <button
+                    onClick={() => onRemoveItem(stopUUID, 'dropOff', item.uuid)}
+                    title="Remove item"
+                    className="rounded p-0.5 text-red-400 hover:bg-red-900/30 hover:text-red-300"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
         )}
+        <AddItemForm onAdd={(item) => onAddItem(stopUUID, 'dropOff', item)} />
       </div>
 
       {/* Pick-up items */}
       <div className="rounded border border-gray-700 bg-gray-800/50 p-3">
         <h4 className="mb-2 text-sm font-medium text-green-300">
-          Pick-up ({items.pickUp.length})
+          Pick-up ({pickUpItems.length})
         </h4>
-        {items.pickUp.length === 0 ? (
+        {pickUpItems.length === 0 ? (
           <p className="text-xs text-gray-500">No pick-up items.</p>
         ) : (
-          <ul className="space-y-1">
-            {items.pickUp.map((item) => (
+          <ul className="mb-3 space-y-1">
+            {pickUpItems.map((item) => (
               <li key={item.uuid} className="flex items-center justify-between rounded bg-gray-900/50 px-3 py-1.5 text-sm">
                 <span className="text-gray-200">
                   {item.name}
                   {item.purity && <span className="ml-1 text-xs text-gray-400">({item.purity})</span>}
                 </span>
-                <span className="text-xs text-gray-400">
-                  {item.quantity} &times; {item.itemType}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400">
+                    {item.quantity} &times; {item.itemType}
+                  </span>
+                  <button
+                    onClick={() => onRemoveItem(stopUUID, 'pickUp', item.uuid)}
+                    title="Remove item"
+                    className="rounded p-0.5 text-red-400 hover:bg-red-900/30 hover:text-red-300"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
         )}
+        <AddItemForm onAdd={(item) => onAddItem(stopUUID, 'pickUp', item)} />
+      </div>
+    </div>
+  );
+}
+
+// --- Add Item Form ---
+
+const ITEM_TYPE_OPTIONS = [
+  { value: 'Commodity', label: 'Commodity' },
+  { value: 'Flatpack', label: 'Flatpack' },
+  { value: 'Resource', label: 'Resource' },
+];
+
+interface AddItemFormProps {
+  onAdd: (item: DeliveryItem) => void;
+}
+
+function AddItemForm({ onAdd }: AddItemFormProps) {
+  const [itemType, setItemType] = useState('Commodity');
+  const [name, setName] = useState('');
+  const [purity, setPurity] = useState('');
+  const [quantity, setQuantity] = useState(1);
+
+  const handleAdd = () => {
+    if (!name.trim() || quantity <= 0) return;
+    const newItem: DeliveryItem = {
+      uuid: crypto.randomUUID(),
+      itemType,
+      name: name.trim(),
+      purity: purity.trim() || undefined,
+      quantity,
+      isChecked: false,
+    };
+    onAdd(newItem);
+    setName('');
+    setPurity('');
+    setQuantity(1);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAdd();
+    }
+  };
+
+  return (
+    <div className="rounded border border-gray-600 bg-gray-900/30 p-2">
+      <p className="mb-2 text-xs font-medium text-gray-400">Add Item</p>
+      <div className="flex flex-wrap gap-2">
+        <select
+          value={itemType}
+          onChange={(e) => setItemType(e.target.value)}
+          className="rounded border border-gray-600 bg-gray-700 px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+          aria-label="Item type"
+        >
+          {ITEM_TYPE_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Item name"
+          className="min-w-0 flex-1 rounded border border-gray-600 bg-gray-700 px-2 py-1 text-xs text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          aria-label="Item name"
+        />
+        <input
+          type="text"
+          value={purity}
+          onChange={(e) => setPurity(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Purity (optional)"
+          className="w-28 rounded border border-gray-600 bg-gray-700 px-2 py-1 text-xs text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          aria-label="Purity"
+        />
+        <input
+          type="number"
+          value={quantity}
+          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value, 10) || 1))}
+          onKeyDown={handleKeyDown}
+          min={1}
+          className="w-16 rounded border border-gray-600 bg-gray-700 px-2 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+          aria-label="Quantity"
+        />
+        <button
+          onClick={handleAdd}
+          disabled={!name.trim() || quantity <= 0}
+          className="rounded bg-green-600 px-2 py-1 text-xs font-medium text-white hover:bg-green-700 disabled:opacity-50"
+        >
+          Add
+        </button>
       </div>
     </div>
   );
