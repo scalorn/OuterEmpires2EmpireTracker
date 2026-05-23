@@ -406,7 +406,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Requirements: 8.4, 8.5_
     - _Verification: Slots assignable, stats update on change_
 
-  - [-] 14.3 Implement ShipTemplateForm pricing and actions
+  - [x] 14.3 Implement ShipTemplateForm pricing and actions
     - Pricing section: pricing plan dropdown, total estimated build cost display
     - Save/New/Order Build buttons
     - Order Build generates manufacturing items via build-plans API
