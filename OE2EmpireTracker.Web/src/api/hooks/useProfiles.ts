@@ -24,6 +24,14 @@ export function useProfileMutations() {
   const queryClient = useQueryClient();
   const charUUID = useAuthStore((s) => s.characterUUID);
 
+  const create = useMutation({
+    mutationFn: (data: Omit<PlayerProfile, 'uuid'>) =>
+      profilesApi.create(charUUID!, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.characterData(charUUID!, 'Profiles') });
+    },
+  });
+
   const save = useMutation({
     mutationFn: ({ entityUUID, data }: { entityUUID: string; data: Partial<PlayerProfile> }) =>
       profilesApi.update(charUUID!, entityUUID, data),
@@ -40,5 +48,5 @@ export function useProfileMutations() {
     },
   });
 
-  return { save, remove };
+  return { create, save, remove };
 }

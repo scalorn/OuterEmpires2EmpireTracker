@@ -183,56 +183,56 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: TypeScript compiles, endpoint functions exported_
 
 
-- [ ] 6. API Layer: React Query Hook Modules
-  - [-] 6.1 Create useBaseline and extend queryKeys
+- [x] 6. API Layer: React Query Hook Modules
+  - [x] 6.1 Create useBaseline and extend queryKeys
     - Create `src/api/hooks/useBaseline.ts` with staleTime: Infinity
     - Extend `src/api/hooks/queryKeys.ts` with keys for all new entity types
     - _Requirements: 10.6_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [-] 6.2 Create useColonies hook module (extend)
+  - [x] 6.2 Create useColonies hook module (extend)
     - Extend `src/api/hooks/useColonies.ts` with useColonyDetail, useColonyMutations (save, remove, bootstrap, optimize)
     - _Requirements: 1.1–1.10_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [-] 6.3 Create useBlueprints and useSurveys hook modules (extend)
+  - [x] 6.3 Create useBlueprints and useSurveys hook modules (extend)
     - Extend `src/api/hooks/useBlueprints.ts` with useBlueprintDetail, useBlueprintMutations
     - Extend `src/api/hooks/useSurveys.ts` with useSurveyDetail, useSurveyMutations
     - _Requirements: 2.1–2.9, 3.1–3.9_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [-] 6.4 Create useProfiles and useDeliveryRoutes hook modules
+  - [x] 6.4 Create useProfiles and useDeliveryRoutes hook modules
     - Create `src/api/hooks/useProfiles.ts` with useProfiles, useProfileDetail, useProfileMutations
     - Create `src/api/hooks/useDeliveryRoutes.ts` with useDeliveryRoutes, useRouteDetail, useRouteMutations
     - _Requirements: 4.1–4.9, 5.1–5.8_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [-] 6.5 Create useDeliveryPlans and useShipTemplates hook modules
+  - [x] 6.5 Create useDeliveryPlans and useShipTemplates hook modules
     - Create `src/api/hooks/useDeliveryPlans.ts` with usePlans, usePlanDetail, usePlanMutations
     - Create `src/api/hooks/useShipTemplates.ts` with useShipTemplates, useTemplateDetail, useTemplateMutations
     - _Requirements: 6.1–6.7, 8.1–8.9_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [-] 6.6 Create useMarketListings and useMarketTransactions hook modules
+  - [x] 6.6 Create useMarketListings and useMarketTransactions hook modules
     - Create `src/api/hooks/useMarketListings.ts` with useListings, useListingMutations (save, remove, recordSale)
     - Create `src/api/hooks/useMarketTransactions.ts` with useTransactions, useRecordPurchase
     - _Requirements: 9.1–9.7_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [-] 6.7 Create useSupplyChains, useStockProfiles, useStockPlans hook modules
+  - [x] 6.7 Create useSupplyChains, useStockProfiles, useStockPlans hook modules
     - Create `src/api/hooks/useSupplyChains.ts` with CRUD hooks
     - Create `src/api/hooks/useStockProfiles.ts` and `useStockPlans.ts` with CRUD hooks
     - _Requirements: 14.1–14.7, 15.1–15.7_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [-] 6.8 Create usePricingPlans, useSharedData, useBuildPlans hook modules
+  - [x] 6.8 Create usePricingPlans, useSharedData, useBuildPlans hook modules
     - Create `src/api/hooks/usePricingPlans.ts` with CRUD hooks
     - Create `src/api/hooks/useSharedData.ts` with list + detail hooks (read-only)
     - Create `src/api/hooks/useBuildPlans.ts` with CRUD hooks
     - _Requirements: 16.1–16.7, 17.1–17.5, 12.1–12.5_
     - _Verification: TypeScript compiles, hooks exported_
 
-  - [-] 6.9 Create useContacts, useStations, useAsteroids hook modules
+  - [x] 6.9 Create useContacts, useStations, useAsteroids hook modules
     - Create `src/api/hooks/useContacts.ts` with CRUD hooks
     - Create `src/api/hooks/useStations.ts` with CRUD hooks
     - Create `src/api/hooks/useAsteroids.ts` with CRUD hooks
@@ -244,7 +244,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
 
 
 - [ ] 8. Colony Form
-  - [~] 8.1 Implement ColonyForm list panel and selection
+  - [-] 8.1 Implement ColonyForm list panel and selection
     - Create `src/pages/authenticated/ColonyForm.tsx`
     - Searchable, sortable colony list in left panel using InfiniteScrollList
     - Selection updates URL param, detail panel shows/hides based on selection
@@ -278,7 +278,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Staleness colors render correctly based on lastImportUtc_
 
 - [ ] 9. Blueprint Form
-  - [~] 9.1 Implement BlueprintForm list panel with filters
+  - [-] 9.1 Implement BlueprintForm list panel with filters
     - Create `src/pages/authenticated/BlueprintForm.tsx`
     - Filterable list with columns: type, name, tech level, evolution, nick name, reference count
     - Filter controls: text search, blueprint type, ship class, tech level, evolution level
@@ -305,7 +305,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
 
 
 - [ ] 10. Survey Form
-  - [~] 10.1 Implement SurveyForm list panel with filters
+  - [-] 10.1 Implement SurveyForm list panel with filters
     - Create `src/pages/authenticated/SurveyForm.tsx`
     - Filterable list: planet name, system name, survey type, scan date
     - Filters: text search, survey type (Planet/Asteroid/All), purity level, minimum yield
@@ -325,7 +325,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: CRUD works, delete disabled when rigs assigned_
 
 - [ ] 11. Player Profile Form
-  - [~] 11.1 Implement ProfileForm list and basic details
+  - [-] 11.1 Implement ProfileForm list and basic details
     - Create `src/pages/authenticated/ProfileForm.tsx`
     - Profile list in left panel, editable fields: name, faction, total credits, skill points
     - Save/New/Delete with confirmation
@@ -340,7 +340,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Ranks display, skill groups collapse/expand, skill changes persist_
 
 - [ ] 12. Delivery Route Form
-  - [~] 12.1 Implement RouteForm list and route details
+  - [-] 12.1 Implement RouteForm list and route details
     - Create `src/pages/authenticated/RouteForm.tsx`
     - Filterable route list, detail panel with route name and ordered stops
     - Each stop shows colony name, planet name, system name
@@ -372,7 +372,7 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
 
 
 - [ ] 13. Delivery Execution Form
-  - [~] 13.1 Implement ExecutionForm route/plan selection and load list
+  - [-] 13.1 Implement ExecutionForm route/plan selection and load list
     - Create `src/pages/authenticated/ExecutionForm.tsx`
     - Route and plan selection dropdowns with text filters
     - Consolidated load list showing all items with total quantity and volume
@@ -393,14 +393,14 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Complete Stop gates visual state, plan marked done_
 
 - [ ] 14. Ship Template Form
-  - [~] 14.1 Implement ShipTemplateForm list and hull selection
+  - [-] 14.1 Implement ShipTemplateForm list and hull selection
     - Create `src/pages/authenticated/ShipTemplateForm.tsx`
     - Template list in left panel, hull dropdown from BaselineData ship classes
     - Hull selection displays available component slots grouped by type
     - _Requirements: 8.1, 8.2, 8.3_
     - _Verification: Template list renders, hull selection shows slots_
 
-  - [~] 14.2 Implement ShipTemplateForm slot assignment and stats
+  - [-] 14.2 Implement ShipTemplateForm slot assignment and stats
     - Filtered dropdown per slot showing compatible blueprints
     - Create `src/components/domain/ShipStatsPanel.tsx` — live-updating stats (mass, power, cargo, defence, propulsion)
     - _Requirements: 8.4, 8.5_
