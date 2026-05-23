@@ -7,7 +7,7 @@ export type TokenRole = 'Owner' | 'FactionLeader' | 'Character';
 
 export type MembershipActionType = 'JoinRequest' | 'Invitation';
 
-export type SharingTargetType = 'Faction' | 'Character';
+export type SharingTargetType = 'Faction' | 'Character' | 'Public';
 
 export type GranteeType = 'Character' | 'Faction';
 

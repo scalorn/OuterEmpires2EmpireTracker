@@ -7,7 +7,7 @@ import { EmptyState } from '../../components/common/EmptyState';
 import type { SharingRule, SharingTargetType, DataType } from '../../api/types/generated';
 
 const DATA_TYPES: DataType[] = ['Colonies', 'Blueprints', 'Surveys'];
-const TARGET_TYPES: SharingTargetType[] = ['Character', 'Faction'];
+const TARGET_TYPES: SharingTargetType[] = ['Character', 'Faction', 'Public'];
 
 export function SharingConfig() {
   const { characterUUID } = useAuthStore();

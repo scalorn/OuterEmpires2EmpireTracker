@@ -110,7 +110,7 @@ graph TD
 
 ### Phase 5: Web UI — Sharing Configuration
 
-- [~] 6.1 Update generated.ts types and add Public to SharingConfig target types
+- [-] 6.1 Update generated.ts types and add Public to SharingConfig target types
   - Satisfies: Req 5, Criterion 4 ("Web_UI SHALL include Public as selectable target type"); Req 4, Criteria 1, 3-4
   - Inputs: generated.ts, SharingConfig.tsx
   - Output: Modified generated.ts with `'Public'` in SharingTargetType; SharingConfig TARGET_TYPES updated

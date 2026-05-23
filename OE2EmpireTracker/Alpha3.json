@@ -56998,7 +56998,7 @@
   "ItemType": "Flatpack",
   "BaseItemTypeID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
   "Name": "Habitation Block Flatpack",
-  "Quantity": 124
+  "Quantity": 125
 },
         "86f3cb68-edbf-473e-9b46-3225322f4af3": {
   "UUID": "86f3cb68-edbf-473e-9b46-3225322f4af3",
@@ -58099,8 +58099,8 @@
             "BlueCollar1": "True"
           },
           "ProcessCompletionTime": {
-            "StartTime": "2026-05-23T11:47:11.9907935Z",
-            "EndTime": "2026-05-23T14:47:10.9907935Z",
+            "StartTime": "2026-05-23T14:47:10.9907935Z",
+            "EndTime": "2026-05-23T17:47:09.9907935Z",
             "RepeatIntervalSeconds": 10799,
             "IsRepeating": true
           },
@@ -58108,7 +58108,7 @@
           "MiningSurveyResource": "Habitation Block Flatpack",
           "ManufacturingBlueprintUUID": "e3c0b1b6-7dca-5a43-83bb-d0c14283147c",
           "ManufacturingQuantity": 142,
-          "ManufacturingCompleted": 133,
+          "ManufacturingCompleted": 134,
           "StagingResources": true,
           "CurrentAttitude": ""
         },
