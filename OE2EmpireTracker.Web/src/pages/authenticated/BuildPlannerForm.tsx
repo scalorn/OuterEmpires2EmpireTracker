@@ -191,16 +191,6 @@ export function BuildPlannerForm() {
     setIsDirty(true);
   }, []);
 
-  // Assign colony to item
-  const handleAssignColony = useCallback((index: number, colonyUUID: string) => {
-    setForm((prev) => {
-      const updated = [...prev.items];
-      updated[index] = { ...updated[index], assignedColonyUUID: colonyUUID || undefined };
-      return { ...prev, items: updated };
-    });
-    setIsDirty(true);
-  }, []);
-
   const handleSave = useCallback(async () => {
     const itemsPayload = form.items.map((item) => ({
       blueprintUUID: item.blueprintUUID,

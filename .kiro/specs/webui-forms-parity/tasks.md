@@ -512,14 +512,14 @@ Bring the OE2EmpireTracker web UI to feature parity with the desktop WinForms ap
     - _Verification: Colony selection triggers API, results display_
 
 - [ ] 21. Build Planner Form
-  - [~] 21.1 Implement BuildPlannerForm list and detail
+  - [x] 21.1 Implement BuildPlannerForm list and detail
     - Create `src/pages/authenticated/BuildPlannerForm.tsx`
     - Build plan list, detail: items with blueprint name, quantity, status, assigned colony
     - Add items by selecting blueprint + quantity
     - _Requirements: 12.1, 12.2, 12.3_
     - _Verification: Plan list renders, items display, add works_
 
-  - [~] 21.2 Implement BuildPlannerForm item status and resource aggregation
+  - [x] 21.2 Implement BuildPlannerForm item status and resource aggregation
     - Mark items as allocated or complete
     - Resource requirements aggregated across pending items
     - _Requirements: 12.4, 12.5_
