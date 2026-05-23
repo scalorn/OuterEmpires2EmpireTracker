@@ -233,3 +233,151 @@ export interface CommodityDef {
   name: string;
   category: string;
 }
+
+// =============================================================================
+// Build Plan domain
+// =============================================================================
+
+export interface BuildPlan {
+  uuid: string;
+  name: string;
+  items: BuildPlanItem[];
+}
+
+export interface BuildPlanItem {
+  uuid: string;
+  blueprintUUID: string;
+  blueprintName: string;
+  quantity: number;
+  status: 'pending' | 'allocated' | 'complete';
+  assignedColonyUUID?: string;
+}
+
+// =============================================================================
+// Supply Chain domain
+// =============================================================================
+
+export interface SupplyChain {
+  uuid: string;
+  name: string;
+  sourceColonyUUID: string;
+  sourceColonyName: string;
+  destinationColonyUUID: string;
+  destinationColonyName: string;
+  steps: SupplyChainStep[];
+}
+
+export interface SupplyChainStep {
+  uuid: string;
+  resourceOrCommodity: string;
+  quantity: number;
+  processingType: string;
+  sequence: number;
+}
+
+// =============================================================================
+// Stock Target domain
+// =============================================================================
+
+export interface StockProfile {
+  uuid: string;
+  name: string;
+  assignedColonyUUID?: string;
+  assignedColonyName?: string;
+  items: StockTargetItem[];
+}
+
+export interface StockTargetItem {
+  uuid: string;
+  itemType: string;
+  name: string;
+  purity?: string;
+  targetQuantity: number;
+  currentQuantity?: number;
+}
+
+// =============================================================================
+// Pricing Plan domain
+// =============================================================================
+
+export interface PricingPlan {
+  uuid: string;
+  name: string;
+  items: PricingPlanItem[];
+}
+
+export interface PricingPlanItem {
+  uuid: string;
+  itemName: string;
+  itemType: string;
+  unitPrice: number;
+}
+
+// =============================================================================
+// Shared Data domain
+// =============================================================================
+
+export interface SharedDataSummary {
+  characterUUID: string;
+  characterName: string;
+  faction: string;
+  sharedTypes: ('blueprints' | 'surveys' | 'colonies')[];
+}
+
+// =============================================================================
+// Supporting entities
+// =============================================================================
+
+export interface ExternalCharacter {
+  uuid: string;
+  name: string;
+  faction?: string;
+  notes?: string;
+}
+
+export interface Station {
+  uuid: string;
+  name: string;
+  systemName: string;
+  stationType?: string;
+}
+
+export interface Asteroid {
+  uuid: string;
+  name: string;
+  systemName: string;
+  linkedSurveyUUID?: string;
+}
+
+// =============================================================================
+// Baseline data (reference data from server)
+// =============================================================================
+
+export interface BaselineData {
+  blueprintTypes: string[];
+  shipClasses: ShipClassDef[];
+  techLevels: TechLevelDef[];
+  commodities: CommodityDef[];
+  resources: string[];
+  purities: string[];
+}
+
+export interface ShipClassDef {
+  name: string;
+  slots: SlotDefinition[];
+}
+
+export interface SlotDefinition {
+  slotType: string;
+  count: number;
+}
+
+export interface TechLevelDef {
+  level: number;
+  name: string;
+}
+
+export interface CommodityDef {
+  name: string;
+  category: string;
+}
