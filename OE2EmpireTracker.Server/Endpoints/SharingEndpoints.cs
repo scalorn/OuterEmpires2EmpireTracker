@@ -189,9 +189,9 @@ public static class SharingEndpoints
             }
         }
 
-        // Find all sharing rules that target this character
+        // Find all sharing rules that target this character, grouped by owner
         var allCharacters = await storage.GetAllCharactersAsync();
-        var aggregated = new List<JsonElement>();
+        var groups = new List<SharedWithMeGroup>();
 
         foreach (var character in allCharacters)
         {
@@ -217,6 +217,7 @@ public static class SharingEndpoints
                 continue;
             }
 
+            var characterEntities = new List<JsonElement>();
             try
             {
                 var json = JsonSerializer.Serialize(entities);
@@ -225,21 +226,41 @@ public static class SharingEndpoints
                 {
                     foreach (var item in doc.RootElement.EnumerateArray())
                     {
-                        aggregated.Add(item.Clone());
+                        characterEntities.Add(item.Clone());
                     }
                 }
             }
             catch (JsonException)
             {
                 // Skip malformed data
+                continue;
             }
+
+            if (characterEntities.Count == 0)
+            {
+                continue;
+            }
+
+            // Apply cross-reference filtering (Req 15) per group
+            var filtered = await CrossReferenceFilter.FilterAsync(
+                characterEntities, uuid, storage);
+
+            groups.Add(new SharedWithMeGroup(
+                character.UUID,
+                character.Name,
+                filtered.ToArray()));
         }
 
-        // Apply cross-reference filtering (Req 15): null out UUID references
-        // to entities the viewer cannot access.
-        var filtered = await CrossReferenceFilter.FilterAsync(aggregated, uuid, storage);
-        return Results.Ok(filtered);
+        return Results.Ok(groups);
     }
+
+    /// <summary>
+    /// Response group for the SharedWithMe endpoint, grouping entities by owner character.
+    /// </summary>
+    private record SharedWithMeGroup(
+        string ownerCharacterUUID,
+        string ownerCharacterName,
+        JsonElement[] entities);
 
     // --- Helpers ---
 

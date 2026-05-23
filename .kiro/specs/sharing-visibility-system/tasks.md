@@ -60,7 +60,7 @@ graph TD
   - Output: Modified SharingEndpoints.cs with validation for empty TargetUUID, OwnerCharacterUUID override, and Id generation
   - Verification: getDiagnostics clean; manual API test with empty UUID returns 400
 
-- [-] 3.2 Write property tests for sharing rule validation and normalization
+- [x] 3.2 Write property tests for sharing rule validation and normalization
   - Satisfies: Correctness Properties 3 and 4
   - Inputs: SharingEndpoints.cs validation logic
   - Output: `OE2EmpireTracker.Tests/Server/SharingValidationTests.cs`, `OE2EmpireTracker.Tests/Server/SharingNormalizationTests.cs`
@@ -88,7 +88,7 @@ graph TD
 
 ### Phase 3: Server — SharedWithMe Enhancement
 
-- [~] 4.1 Enhance SharedWithMe endpoint to return owner-grouped response
+- [-] 4.1 Enhance SharedWithMe endpoint to return owner-grouped response
   - Satisfies: Req 2, Criterion 3 ("display entities grouped by sharer character with sharer's name visible")
   - Inputs: Server SharingEndpoints.cs (GetSharedWithMe method)
   - Output: Modified GetSharedWithMe to return `SharedWithMeGroup[]` with ownerCharacterUUID and ownerCharacterName
