@@ -21,6 +21,7 @@ import { StockTargetForm } from './pages/authenticated/StockTargetForm';
 import { PricingPlanForm } from './pages/authenticated/PricingPlanForm';
 import { SupplyChainForm } from './pages/authenticated/SupplyChainForm';
 import { MarketForm } from './pages/authenticated/MarketForm';
+import { SharedDataView } from './pages/authenticated/SharedDataView';
 import { useWebSocket } from './ws/useWebSocket';
 
 const router = createBrowserRouter([
@@ -52,6 +53,7 @@ const router = createBrowserRouter([
           { path: 'stock-targets', element: <StockTargetForm /> },
           { path: 'supply-chains', element: <SupplyChainForm /> },
           { path: 'market', element: <MarketForm /> },
+          { path: 'shared', element: <SharedDataView /> },
         ],
       },
       { path: '*', element: <NotFound /> },
