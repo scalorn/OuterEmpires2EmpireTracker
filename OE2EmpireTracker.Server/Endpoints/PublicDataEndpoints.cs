@@ -62,7 +62,7 @@ public static class PublicDataEndpoints
             var rules = await storage.GetSharingRulesForCharacterAsync(character.UUID);
             var hasPublicData = rules.Any(r =>
                 r.TargetType == SharingTargetType.Public &&
-                (r.DataType == null || r.DataType == dataType));
+                (r.DataType == null || r.DataType == dataType || r.DataType == "All"));
 
             if (!hasPublicData)
             {

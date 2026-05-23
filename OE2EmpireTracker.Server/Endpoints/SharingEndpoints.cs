@@ -136,7 +136,7 @@ public static class SharingEndpoints
             var hasShared = rules.Any(r =>
                 r.TargetType == SharingTargetType.Faction &&
                 r.TargetUUID == uuid &&
-                (r.DataType == null || r.DataType == dataType));
+                (r.DataType == null || r.DataType == dataType || r.DataType == "All"));
 
             if (!hasShared)
             {
@@ -205,7 +205,7 @@ public static class SharingEndpoints
             var hasShared = rules.Any(r =>
                 r.TargetType == SharingTargetType.Character &&
                 r.TargetUUID == uuid &&
-                (r.DataType == null || r.DataType == dataType));
+                (r.DataType == null || r.DataType == dataType || r.DataType == "All"));
 
             if (!hasShared)
             {
