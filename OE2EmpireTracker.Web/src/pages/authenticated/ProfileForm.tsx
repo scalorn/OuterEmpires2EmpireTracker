@@ -193,3 +193,74 @@ export function ProfileForm() {
         </div>
       </div>
 
+      {!selectedId && !isNewMode ? (
+        <EmptyState title="No profile selected" message="Select a profile from the list or create a new one." />
+      ) : (
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="max-w-lg space-y-4">
+            <div>
+              <label htmlFor="profile-name" className="mb-1 block text-sm text-gray-400">Name</label>
+              <input
+                id="profile-name"
+                type="text"
+                value={form.name}
+                onChange={(e) => handleFieldChange('name', e.target.value)}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+              />
+            </div>
+            <div>
+              <label htmlFor="profile-faction" className="mb-1 block text-sm text-gray-400">Faction</label>
+              <input
+                id="profile-faction"
+                type="text"
+                value={form.faction}
+                onChange={(e) => handleFieldChange('faction', e.target.value)}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+              />
+            </div>
+            <div>
+              <label htmlFor="profile-credits" className="mb-1 block text-sm text-gray-400">Total Credits</label>
+              <input
+                id="profile-credits"
+                type="number"
+                value={form.totalCredits}
+                onChange={(e) => handleFieldChange('totalCredits', Number(e.target.value) || 0)}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+              />
+            </div>
+            <div>
+              <label htmlFor="profile-skillpoints" className="mb-1 block text-sm text-gray-400">Skill Points</label>
+              <input
+                id="profile-skillpoints"
+                type="number"
+                value={form.skillPoints}
+                onChange={(e) => handleFieldChange('skillPoints', Number(e.target.value) || 0)}
+                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+      <MasterDetailLayout
+        listPanel={listPanel}
+        detailPanel={detailPanel}
+        selectedId={selectedId}
+        onBack={handleBack}
+      />
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Delete Profile"
+        message={`Are you sure you want to delete "${form.name || 'this profile'}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={() => void handleDelete()}
+        onCancel={() => setShowDeleteConfirm(false)}
+        variant="danger"
+      />
+    </>
+  );
+}
