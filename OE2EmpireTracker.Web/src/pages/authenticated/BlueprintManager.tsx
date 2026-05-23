@@ -23,13 +23,13 @@ export function BlueprintManager() {
   if (isLoading) return <LoadingSpinner message="Loading blueprints..." />;
   if (isError) return <RetryableError message="Failed to load blueprints." onRetry={() => void refetch()} />;
 
-  const blueprints = (Array.isArray(data) ? data : []) as Record<string, unknown>[];
+  const blueprints = (Array.isArray(data) ? data : []) as unknown as Record<string, unknown>[];
 
   const handleCreate = () => {
     const uuid = crypto.randomUUID();
     createOrUpdate.mutate({
       entityUUID: uuid,
-      data: { UUID: uuid, Name: 'New Blueprint', BlueprintType: 'Ship', TechLevel: '1' },
+      data: { uuid, name: 'New Blueprint', blueprintType: 'Ship', techLevel: 1 },
     });
   };
 
@@ -42,7 +42,7 @@ export function BlueprintManager() {
   const handleSaveEdit = (uuid: string) => {
     const bp = blueprints.find((b) => String(b.UUID ?? b.uuid) === uuid);
     if (bp) {
-      createOrUpdate.mutate({ entityUUID: uuid, data: { ...bp, Name: editName } });
+      createOrUpdate.mutate({ entityUUID: uuid, data: { name: editName } });
     }
     setEditingId(null);
   };
