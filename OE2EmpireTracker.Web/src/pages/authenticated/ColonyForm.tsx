@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useColonies, useColonyDetail, useColonyMutations } from '../../api/hooks/useColonies';
 import { useBaseline } from '../../api/hooks/useBaseline';
 import { useAuthStore } from '../../auth/store';
+import { useVisibilityRecovery } from '../../hooks/useVisibilityRecovery';
 import { MasterDetailLayout } from '../../components/common/MasterDetailLayout';
 import { FilterBar, type FilterDefinition, type FilterValues } from '../../components/common/FilterBar';
 import { FilteredDropdown } from '../../components/common/FilteredDropdown';
@@ -10,6 +11,7 @@ import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 import { CountdownTimer } from '../../components/common/CountdownTimer';
+import { queryKeys } from '../../api/hooks/queryKeys';
 import { computeDaysSinceImport, getStalenessInfo } from '../../utils/stalenessUtils';
 import type { Colony, ColonyStructure } from '../../api/types/domain';
 import type { ColonyPlannerRequest, PlannerStructure } from '../../api/types/generated';
@@ -40,6 +42,13 @@ const FILTER_DEFS: FilterDefinition[] = [
 export function ColonyForm() {
   const { characterUUID } = useAuthStore();
   const { data, isLoading, isError, refetch } = useColonies(characterUUID);
+
+  // Recalculate timers from end timestamps when tab regains focus
+  const visibilityKeys = useMemo(
+    () => (characterUUID ? [queryKeys.colonies(characterUUID) as string[]] : []),
+    [characterUUID],
+  );
+  useVisibilityRecovery(visibilityKeys);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>('structures');

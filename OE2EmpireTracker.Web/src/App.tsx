@@ -79,9 +79,10 @@ const router = createBrowserRouter([
 ]);
 
 export function App() {
-  useWebSocket();
+  const { status, retry } = useWebSocket();
   return (
     <ErrorBoundary>
+      <ConnectionBanner status={status} onRetry={retry} />
       <RouterProvider router={router} />
     </ErrorBoundary>
   );

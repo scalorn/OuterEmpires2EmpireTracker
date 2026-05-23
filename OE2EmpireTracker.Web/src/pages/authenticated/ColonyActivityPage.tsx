@@ -1,9 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useColonies } from '../../api/hooks/useColonies';
 import { useAuthStore } from '../../auth/store';
+import { useVisibilityRecovery } from '../../hooks/useVisibilityRecovery';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { TimerGroup } from '../../components/domain/TimerGroup';
+import { queryKeys } from '../../api/hooks/queryKeys';
 import type { Colony, ColonyStructure } from '../../api/types/domain';
 
 /**
@@ -56,6 +58,13 @@ export function ColonyActivityPage() {
   const { characterUUID } = useAuthStore();
   const { data, isLoading, isError, refetch } = useColonies(characterUUID);
   const [inactivityMode, setInactivityMode] = useState(false);
+
+  // Recalculate timers from end timestamps when tab regains focus
+  const visibilityKeys = useMemo(
+    () => (characterUUID ? [queryKeys.colonies(characterUUID) as string[]] : []),
+    [characterUUID],
+  );
+  useVisibilityRecovery(visibilityKeys);
 
   const colonies = useMemo(() => (Array.isArray(data) ? data : []) as Colony[], [data]);
 
