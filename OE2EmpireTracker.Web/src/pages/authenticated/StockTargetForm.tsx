@@ -5,28 +5,40 @@ import { useColonies } from '../../api/hooks/useColonies';
 import { useUnsavedChanges } from '../../hooks/useUnsavedChanges';
 import { MasterDetailLayout } from '../../components/common/MasterDetailLayout';
 import { FilteredDropdown } from '../../components/common/FilteredDropdown';
+import { EditableGrid, type GridColumn } from '../../components/common/EditableGrid';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
-import type { StockProfile } from '../../api/types/domain';
+import type { StockProfile, StockTargetItem } from '../../api/types/domain';
 
 interface FormState {
   name: string;
   assignedColonyUUID: string;
+  items: StockTargetItem[];
 }
 
 const emptyForm: FormState = {
   name: '',
   assignedColonyUUID: '',
+  items: [],
 };
 
 function formFromProfile(profile: StockProfile): FormState {
   return {
     name: profile.name,
     assignedColonyUUID: profile.assignedColonyUUID ?? '',
+    items: profile.items ?? [],
   };
 }
+
+const itemColumns: GridColumn<StockTargetItem>[] = [
+  { key: 'itemType', header: 'Item Type', type: 'text' },
+  { key: 'name', header: 'Name', type: 'text' },
+  { key: 'purity', header: 'Purity', type: 'text' },
+  { key: 'targetQuantity', header: 'Target Qty', type: 'number' },
+  { key: 'currentQuantity', header: 'Current Qty', type: 'readonly' },
+];
 
 export function StockTargetForm() {
   const { characterUUID } = useAuthStore();
@@ -79,17 +91,54 @@ export function StockTargetForm() {
   }, []);
 
   const handleFieldChange = useCallback(
-    (field: keyof FormState, value: string) => {
+    (field: keyof Omit<FormState, 'items'>, value: string) => {
       setForm((prev) => ({ ...prev, [field]: value }));
       setIsDirty(true);
     },
     [],
   );
 
+  // Item management handlers
+  const handleItemChange = useCallback((index: number, row: StockTargetItem) => {
+    setForm((prev) => {
+      const updated = [...prev.items];
+      updated[index] = row;
+      return { ...prev, items: updated };
+    });
+    setIsDirty(true);
+  }, []);
+
+  const handleItemAdd = useCallback(() => {
+    setForm((prev) => ({
+      ...prev,
+      items: [
+        ...prev.items,
+        { uuid: crypto.randomUUID(), itemType: '', name: '', purity: '', targetQuantity: 0 },
+      ],
+    }));
+    setIsDirty(true);
+  }, []);
+
+  const handleItemRemove = useCallback((index: number) => {
+    setForm((prev) => ({
+      ...prev,
+      items: prev.items.filter((_, i) => i !== index),
+    }));
+    setIsDirty(true);
+  }, []);
+
   const handleSave = useCallback(async () => {
+    const items = form.items.map((item) => ({
+      itemType: item.itemType,
+      name: item.name,
+      purity: item.purity || undefined,
+      targetQuantity: item.targetQuantity,
+    }));
+
     const data = {
       name: form.name,
       assignedColonyUUID: form.assignedColonyUUID || undefined,
+      items,
     };
 
     if (isNewMode) {
@@ -160,119 +209,3 @@ export function StockTargetForm() {
       )}
     </div>
   );
-
-  const detailPanel = (
-    <div className="flex h-full flex-col">
-      <div className="border-b border-gray-700 p-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">
-            {isNewMode ? 'New Stock Profile' : 'Stock Profile Details'}
-          </h2>
-          <div className="flex gap-2">
-            <button
-              onClick={handleNew}
-              className="rounded bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700"
-            >
-              New
-            </button>
-            <button
-              onClick={() => void handleSave()}
-              disabled={!isDirty && !isNewMode}
-              className="rounded bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
-            >
-              {save.isPending ? 'Saving...' : 'Save'}
-            </button>
-            <button
-              onClick={() => setShowDeleteConfirm(true)}
-              disabled={isNewMode || !selectedId}
-              className="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:opacity-50"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {!selectedId && !isNewMode ? (
-        <EmptyState title="No profile selected" message="Select a stock profile from the list or create a new one." />
-      ) : (
-        <div className="flex-1 overflow-y-auto p-4">
-          <div className="max-w-lg space-y-4">
-            <div>
-              <label htmlFor="stock-profile-name" className="mb-1 block text-sm text-gray-400">Profile Name</label>
-              <input
-                id="stock-profile-name"
-                type="text"
-                value={form.name}
-                onChange={(e) => handleFieldChange('name', e.target.value)}
-                className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
-              />
-            </div>
-            <div>
-              <label htmlFor="stock-profile-colony" className="mb-1 block text-sm text-gray-400">Assigned Colony</label>
-              <FilteredDropdown
-                options={colonyOptions}
-                value={form.assignedColonyUUID}
-                onChange={(value) => handleFieldChange('assignedColonyUUID', value)}
-                placeholder="Select a colony..."
-              />
-            </div>
-
-            {/* Stock target items section will be added in task 17.2 */}
-            {!isNewMode && selectedProfile && selectedProfile.items.length > 0 && (
-              <div className="pt-4">
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">
-                  Stock Target Items
-                </h3>
-                <div className="rounded border border-gray-600 bg-gray-800 p-3">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="text-left text-xs text-gray-500">
-                        <th className="pb-1 font-normal">Item</th>
-                        <th className="pb-1 font-normal">Type</th>
-                        <th className="pb-1 font-normal">Target Qty</th>
-                        <th className="pb-1 font-normal">Current Qty</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedProfile.items.map((item) => (
-                        <tr key={item.uuid} className="border-t border-gray-700/50">
-                          <td className="py-1 text-gray-300">
-                            {item.name}{item.purity ? ` (${item.purity})` : ''}
-                          </td>
-                          <td className="py-1 text-gray-400">{item.itemType}</td>
-                          <td className="py-1 text-gray-300">{item.targetQuantity}</td>
-                          <td className="py-1 text-gray-400">{item.currentQuantity ?? '—'}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-
-  return (
-    <>
-      <MasterDetailLayout
-        listPanel={listPanel}
-        detailPanel={detailPanel}
-        selectedId={selectedId}
-        onBack={handleBack}
-      />
-      <ConfirmDialog
-        isOpen={showDeleteConfirm}
-        title="Delete Stock Profile"
-        message={`Are you sure you want to delete "${form.name || 'this profile'}"? This action cannot be undone.`}
-        confirmLabel="Delete"
-        onConfirm={() => void handleDelete()}
-        onCancel={() => setShowDeleteConfirm(false)}
-        variant="danger"
-      />
-    </>
-  );
-}

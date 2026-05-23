@@ -141,7 +141,7 @@ export function MarketForm() {
         )}
 
         {activeTab === 'summary' && (
-          <EmptyState title="Summary" message="Profit/loss summary will be implemented in a future task." />
+          <SummaryTab />
         )}
       </div>
 
