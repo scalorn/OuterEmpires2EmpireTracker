@@ -20,6 +20,7 @@ using OE2EmpireTracker.Forms.ColonyV2;
 using OE2EmpireTracker.Forms.Contacts;
 using OE2EmpireTracker.Forms.Market;
 using OE2EmpireTracker.Forms.PlayerProfile;
+using OE2EmpireTracker.Forms.Sharing;
 using OE2EmpireTracker.Forms.Station;
 using OE2EmpireTracker.Forms.Survey;
 using OE2EmpireTracker.Models;
@@ -53,6 +54,7 @@ namespace OE2EmpireTracker
             { "FormAsteroid", (w, n) => w.OpenMdiChildWithNumber<Forms.Asteroid.FormAsteroid>(n) },
             { "FormSupplyChain", (w, n) => w.OpenMdiChildWithNumber<Forms.SupplyChain.FormSupplyChain>(n) },
             { "FormStockTargets", (w, n) => w.OpenMdiChildWithNumber<Forms.StockTargets.FormStockTargets>(n) },
+            { "FormSharing", (w, n) => w.OpenMdiChildWithNumber<FormSharing>(n) },
         };
 
         private int _isProgrammaticUpdate = 0;
@@ -288,6 +290,11 @@ namespace OE2EmpireTracker
             OpenMdiChild<Forms.StockTargets.FormStockTargets>();
         }
 
+        private void SharingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMdiChild<FormSharing>();
+        }
+
         private void SystemsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormSystem>();
@@ -458,6 +465,9 @@ namespace OE2EmpireTracker
             stationsToolStripMenuItem.Enabled = hasPlayer;
             marketToolStripMenuItem.Enabled = hasPlayer;
             asteroidsToolStripMenuItem.Enabled = hasPlayer;
+
+            // Sharing requires a connected player
+            sharingToolStripMenuItem.Enabled = hasPlayer;
 
             // Player dropdown
             cmbCurrentPlayer.Enabled = hasPlayer;

@@ -144,13 +144,13 @@ graph TD
   - Output: `OE2EmpireTracker/Forms/Sharing/FormSharing.cs`, `FormSharing.Designer.cs`, `FormSharing.resx`
   - Verification: getDiagnostics clean; form opens in designer
 
-- [-] 8.2 Implement FormSharing behavior (load, save, add, delete, validation)
+- [x] 8.2 Implement FormSharing behavior (load, save, add, delete, validation)
   - Satisfies: Req 3, Criteria 2, 4-8 ("load rules on open"; "add rule"; "save rules"; "delete rule"; "error on save"; "reload on player change"); Req 5, Criterion 5 ("Public in Target Type dropdown"); Req 6, Criterion 6 ("rule appears immediately"); Req 7, Criterion 5 ("disable save with empty UUID")
   - Inputs: FormSharing.Designer.cs, RemoteFactionClient, SharingRuleDto
   - Output: Modified FormSharing.cs with full behavior implementation
   - Verification: getDiagnostics clean; solution builds
 
-- [~] 8.3 Wire FormSharing into MainWindow menu
+- [x] 8.3 Wire FormSharing into MainWindow menu
   - Satisfies: Req 3, Criterion 1 ("accessible from main menu under Sharing menu item")
   - Inputs: MainWindow.cs (or MainWindow.Designer.cs menu structure)
   - Output: Modified MainWindow with "Sharing" menu item opening FormSharing
