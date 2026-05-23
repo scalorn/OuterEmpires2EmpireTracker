@@ -14,8 +14,9 @@ const DATA_TYPES = [
 
 /**
  * Shared Data View — displays data shared with the current character.
- * Uses the /shared-with-me/{dataType} endpoint grouped by owner.
- * TODO(task 5.2): Full restructure with per-type tabs and grouped display.
+ * Top-level tabs: Blueprints | Surveys | Colonies.
+ * Per tab: fetches /shared-with-me/{dataType} and displays entities grouped
+ * by ownerCharacterName.
  */
 export function SharedDataView() {
   const { characterUUID } = useAuthStore();
@@ -31,35 +32,72 @@ export function SharedDataView() {
 
       <TabBar tabs={DATA_TYPES} activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="flex-1 overflow-y-auto" role="tabpanel">
-        {isLoading && <LoadingSpinner message={`Loading shared ${activeTab}...`} />}
+      <div
+        className="flex-1 overflow-y-auto"
+        role="tabpanel"
+        id={`tabpanel-${activeTab}`}
+        aria-labelledby={`tab-${activeTab}`}
+      >
+        {isLoading && <LoadingSpinner message={`Loading shared ${activeTab.toLowerCase()}...`} />}
+
         {isError && (
           <RetryableError
-            message={`Failed to load shared ${activeTab}.`}
+            message={`Failed to load shared ${activeTab.toLowerCase()}.`}
             onRetry={() => void refetch()}
           />
         )}
+
         {!isLoading && !isError && (!data || data.length === 0) && (
-          <EmptyState
-            title="No shared data"
-            message="No data has been shared with you yet."
-          />
+          <EmptyState message="No data has been shared with you yet." />
         )}
+
         {!isLoading && !isError && data && data.length > 0 && (
-          <ul className="divide-y divide-gray-700">
+          <div className="divide-y divide-gray-700">
             {data.map((group) => (
-              <li key={group.ownerCharacterUUID} className="px-4 py-3">
-                <div className="text-sm font-medium text-gray-200">
+              <section key={group.ownerCharacterUUID} className="px-4 py-3">
+                <h3 className="mb-2 text-sm font-medium text-gray-200">
                   {group.ownerCharacterName}
-                </div>
-                <div className="text-xs text-gray-500">
-                  {group.entities.length} item{group.entities.length !== 1 ? 's' : ''}
-                </div>
-              </li>
+                </h3>
+                {group.entities.length === 0 ? (
+                  <p className="text-xs text-gray-500">No items</p>
+                ) : (
+                  <ul className="space-y-1">
+                    {group.entities.map((entity, idx) => (
+                      <li
+                        key={getEntityKey(entity, idx)}
+                        className="rounded bg-gray-800 px-3 py-2 text-xs text-gray-300"
+                      >
+                        {getEntityDisplayName(entity)}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>
   );
+}
+
+/** Extract a stable key from an entity object, falling back to index. */
+function getEntityKey(entity: unknown, index: number): string {
+  if (entity && typeof entity === 'object') {
+    const obj = entity as Record<string, unknown>;
+    if (typeof obj.uuid === 'string') return obj.uuid;
+    if (typeof obj.id === 'string') return obj.id;
+  }
+  return String(index);
+}
+
+/** Extract a human-readable display name from an entity object. */
+function getEntityDisplayName(entity: unknown): string {
+  if (entity && typeof entity === 'object') {
+    const obj = entity as Record<string, unknown>;
+    if (typeof obj.name === 'string') return obj.name;
+    if (typeof obj.title === 'string') return obj.title;
+    if (typeof obj.uuid === 'string') return obj.uuid;
+  }
+  return 'Unknown item';
 }

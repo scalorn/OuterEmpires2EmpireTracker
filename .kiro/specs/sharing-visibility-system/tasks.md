@@ -96,13 +96,13 @@ graph TD
 
 ### Phase 4: Web UI — Shared Data View
 
-- [-] 5.1 Rewire shared-data.ts API module to use /shared-with-me/{dataType}
+- [x] 5.1 Rewire shared-data.ts API module to use /shared-with-me/{dataType}
   - Satisfies: Req 2, Criteria 1-2 ("call GET /shared-with-me/{dataType}"; "remove non-existent getSharedCharacters call")
   - Inputs: Web UI shared-data.ts (or equivalent API module)
   - Output: Modified API module calling correct endpoint; SharedWithMeGroup interface added
   - Verification: TypeScript compiles clean
 
-- [~] 5.2 Restructure SharedDataView.tsx with data-type tabs and error/empty states
+- [x] 5.2 Restructure SharedDataView.tsx with data-type tabs and error/empty states
   - Satisfies: Req 2, Criteria 3-5 ("display grouped by sharer"; "empty state message"; "retryable error")
   - Inputs: SharedDataView.tsx, shared-data.ts API module
   - Output: Modified SharedDataView.tsx with tab-per-dataType layout, grouped display, empty state, RetryableError
