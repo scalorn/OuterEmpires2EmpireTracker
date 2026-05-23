@@ -425,3 +425,75 @@ export function BuildPlannerForm() {
               )}
             </div>
 
+            {/* Resource requirements aggregation */}
+            {aggregatedResources.length > 0 && (
+              <div>
+                <h3 className="mb-2 text-sm font-semibold text-gray-300">
+                  Resource Requirements (Pending Items)
+                </h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-700 text-gray-400">
+                        <th className="px-3 py-2">Resource</th>
+                        <th className="px-3 py-2">Purity</th>
+                        <th className="px-3 py-2">Total Qty</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {aggregatedResources.map((res) => (
+                        <tr
+                          key={`${res.resourceName}|${res.purity}`}
+                          className="border-b border-gray-800 text-gray-300"
+                        >
+                          <td className="px-3 py-2">{res.resourceName}</td>
+                          <td className="px-3 py-2">{res.purity || '—'}</td>
+                          <td className="px-3 py-2">{res.totalQuantity}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+      <MasterDetailLayout
+        listPanel={listPanel}
+        detailPanel={detailPanel}
+        selectedId={selectedId}
+        onBack={handleBack}
+      />
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Delete Build Plan"
+        message={`Are you sure you want to delete "${form.name || 'this build plan'}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={() => void handleDelete()}
+        onCancel={() => setShowDeleteConfirm(false)}
+        variant="danger"
+      />
+    </>
+  );
+}
+
+/** Small status badge for build plan item status. */
+function StatusBadge({ status }: { status: BuildPlanItem['status'] }) {
+  const styles: Record<string, string> = {
+    pending: 'bg-gray-600 text-gray-200',
+    allocated: 'bg-yellow-800 text-yellow-200',
+    complete: 'bg-green-800 text-green-200',
+  };
+
+  return (
+    <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${styles[status] ?? ''}`}>
+      {status}
+    </span>
+  );
+}
