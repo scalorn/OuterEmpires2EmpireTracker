@@ -118,3 +118,31 @@ describe('FilterBar (new interface)', () => {
   });
 });
 
+describe('FilterBar (legacy interface)', () => {
+  it('renders text and select fields using legacy props', () => {
+    const fields = [
+      { key: 'name', label: 'Name', type: 'text' as const, placeholder: 'Filter name' },
+      {
+        key: 'status',
+        label: 'Status',
+        type: 'select' as const,
+        options: [{ value: 'active', label: 'Active' }],
+      },
+    ];
+    const values = { name: '', status: '' };
+    render(<FilterBar fields={fields} values={values} onChange={() => {}} />);
+    expect(screen.getByPlaceholderText('Filter name')).toBeInTheDocument();
+    expect(screen.getByLabelText('Status')).toBeInTheDocument();
+  });
+
+  it('calls legacy onChange with key and value', () => {
+    const handleChange = vi.fn();
+    const fields = [
+      { key: 'name', label: 'Name', type: 'text' as const },
+    ];
+    const values = { name: '' };
+    render(<FilterBar fields={fields} values={values} onChange={handleChange} />);
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'test' } });
+    expect(handleChange).toHaveBeenCalledWith('name', 'test');
+  });
+});

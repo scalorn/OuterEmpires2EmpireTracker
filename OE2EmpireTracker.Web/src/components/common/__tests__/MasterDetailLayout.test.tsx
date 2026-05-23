@@ -1,5 +1,4 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MasterDetailLayout } from '../MasterDetailLayout';
 
@@ -29,11 +28,8 @@ describe('MasterDetailLayout', () => {
     const listContainer = screen.getByTestId('list-panel').parentElement!;
     const detailContainer = screen.getByTestId('detail-panel').parentElement!;
 
-    // List panel container should have 'flex' (visible), not 'hidden'
     expect(listContainer.className).toContain('flex');
     expect(listContainer.className).not.toMatch(/\bhidden\b/);
-
-    // Detail panel container should have 'hidden' on mobile
     expect(detailContainer.className).toContain('hidden');
   });
 
@@ -48,15 +44,12 @@ describe('MasterDetailLayout', () => {
     const listContainer = screen.getByTestId('list-panel').parentElement!;
     const detailContainer = screen.getByTestId('detail-panel').parentElement!;
 
-    // List panel container should be hidden on mobile
     expect(listContainer.className).toContain('hidden');
-
-    // Detail panel container should be visible
     expect(detailContainer.className).toContain('flex');
     expect(detailContainer.className).not.toMatch(/\bhidden\b/);
   });
 
-  it('renders back button on mobile when item is selected and onBack provided', () => {
+  it('renders back button when item is selected and onBack provided', () => {
     const onBack = vi.fn();
     render(
       <MasterDetailLayout
@@ -93,8 +86,7 @@ describe('MasterDetailLayout', () => {
     expect(screen.queryByText('Back to list')).not.toBeInTheDocument();
   });
 
-  it('calls onBack when back button is clicked', async () => {
-    const user = userEvent.setup();
+  it('calls onBack when back button is clicked', () => {
     const onBack = vi.fn();
     render(
       <MasterDetailLayout
@@ -104,7 +96,7 @@ describe('MasterDetailLayout', () => {
         onBack={onBack}
       />
     );
-    await user.click(screen.getByText('Back to list'));
+    fireEvent.click(screen.getByText('Back to list'));
     expect(onBack).toHaveBeenCalledTimes(1);
   });
 
@@ -157,7 +149,6 @@ describe('MasterDetailLayout', () => {
     const listContainer = screen.getByTestId('list-panel').parentElement!;
     const detailContainer = screen.getByTestId('detail-panel').parentElement!;
 
-    // Both panels should have md:flex so they're visible on tablet+
     expect(listContainer.className).toContain('md:flex');
     expect(detailContainer.className).toContain('md:flex');
   });
