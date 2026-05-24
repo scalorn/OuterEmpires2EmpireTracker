@@ -76,16 +76,13 @@ type ViewMode = 'table' | 'cards';
 export function BlueprintBrowser() {
   const [filters, setFilters] = useState<BlueprintFilters>({});
   const [viewMode, setViewMode] = useState<ViewMode>('table');
-  const { data, isLoading, isError, refetch } = usePublicBlueprints(filters);
+  const { data, isLoading, isFetching, isError, refetch } = usePublicBlueprints(filters);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value || undefined }));
   };
 
   const handleClear = () => setFilters({});
-
-  if (isLoading) return <LoadingSpinner message="Loading blueprints..." />;
-  if (isError) return <RetryableError message="Failed to load blueprints." onRetry={() => void refetch()} />;
 
   const items = (data as { items?: unknown[] })?.items ?? (Array.isArray(data) ? data : []);
   const blueprints = items as Record<string, unknown>[];
@@ -118,19 +115,26 @@ export function BlueprintBrowser() {
         onClear={handleClear}
       />
 
-      {blueprints.length === 0 ? (
+      {isLoading && !data && <LoadingSpinner message="Loading blueprints..." />}
+      {isError && <RetryableError message="Failed to load blueprints." onRetry={() => void refetch()} />}
+      {!isError && data && blueprints.length === 0 && (
         <EmptyState title="No blueprints found" message="Try adjusting your filters." />
-      ) : viewMode === 'table' ? (
-        <DataTable
-          data={blueprints}
-          columns={columns}
-          keyExtractor={(item) => String(item.UUID ?? item.uuid ?? Math.random())}
-        />
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {blueprints.map((bp) => (
-            <BlueprintCard key={String(bp.UUID ?? bp.uuid)} blueprint={bp} />
-          ))}
+      )}
+      {!isError && blueprints.length > 0 && (
+        <div className={isFetching ? 'opacity-60 transition-opacity' : ''}>
+          {viewMode === 'table' ? (
+            <DataTable
+              data={blueprints}
+              columns={columns}
+              keyExtractor={(item) => String(item.UUID ?? item.uuid ?? Math.random())}
+            />
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {blueprints.map((bp) => (
+                <BlueprintCard key={String(bp.UUID ?? bp.uuid)} blueprint={bp} />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

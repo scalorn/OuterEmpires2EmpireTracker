@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { blueprintsApi } from '../endpoints/blueprints';
 import { publicApi, type BlueprintFilters } from '../endpoints/public';
 import { queryKeys } from './queryKeys';
@@ -25,6 +25,7 @@ export function usePublicBlueprints(filters?: BlueprintFilters) {
   return useQuery({
     queryKey: queryKeys.publicBlueprints(filters),
     queryFn: () => publicApi.getPublicBlueprints(filters),
+    placeholderData: keepPreviousData,
   });
 }
 
