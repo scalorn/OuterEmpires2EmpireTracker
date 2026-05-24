@@ -156,9 +156,54 @@ public class JsonFileStorageBackend : IStorageBackend
 
     // --- Colony Summaries ---
 
-    public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
+    public async Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
     {
-        throw new NotImplementedException();
+        await _lock.WaitAsync();
+        try
+        {
+            // Look up the system name from star systems data
+            var systemsPath = Path.Combine(_dataPath, "global", "star-systems.json");
+            var systems = await ReadListUnlockedAsync<StarSystem>(systemsPath);
+            var system = systems.FirstOrDefault(s => s.Id == systemId);
+            if (system == null)
+            {
+                return Array.Empty<ColonySummary>();
+            }
+
+            var systemName = system.Name;
+            var results = new List<ColonySummary>();
+
+            // Scan all character directories for colonies in this system
+            var charsDir = Path.Combine(_dataPath, "characters");
+            if (!Directory.Exists(charsDir))
+            {
+                return results;
+            }
+
+            foreach (var dir in Directory.GetDirectories(charsDir))
+            {
+                var coloniesPath = Path.Combine(dir, "colonies.json");
+                var colonies = await ReadListUnlockedAsync<Colony>(coloniesPath);
+                foreach (var colony in colonies)
+                {
+                    if (string.Equals(colony.SystemName, systemName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        results.Add(new ColonySummary
+                        {
+                            ColonyName = colony.ColonyName ?? string.Empty,
+                            Size = colony.Structures?.Count ?? 0,
+                            PlanetName = colony.PlanetName ?? string.Empty,
+                        });
+                    }
+                }
+            }
+
+            return results;
+        }
+        finally
+        {
+            _lock.Release();
+        }
     }
 
     // --- Tokens ---

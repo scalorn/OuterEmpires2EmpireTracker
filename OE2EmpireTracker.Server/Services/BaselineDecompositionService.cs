@@ -36,7 +36,7 @@ public class BaselineDecompositionService
 
     /// <summary>
     /// Decomposes a baseline JSON payload into individual canonical records.
-    /// Throws <see cref="JsonException"/> on invalid JSON.
+    /// Throws <see cref="System.Text.Json.JsonException"/> on invalid JSON.
     /// Throws <see cref="InvalidOperationException"/> if no sections are present.
     /// </summary>
     /// <param name="json">The raw JSON payload string.</param>
@@ -49,7 +49,7 @@ public class BaselineDecompositionService
         {
             document = JsonDocument.Parse(json);
         }
-        catch (JsonException ex)
+        catch (System.Text.Json.JsonException ex)
         {
             _logger.LogError(ex, "Failed to parse baseline JSON payload");
             throw;
@@ -75,7 +75,8 @@ public class BaselineDecompositionService
             if (root.TryGetProperty("Blueprint", out var blueprintSection))
             {
                 var blueprintJson = blueprintSection.GetRawText();
-                var blueprints = JsonConvert.DeserializeObject<List<Blueprint>>(blueprintJson);
+                var blueprints = JsonConvert.DeserializeObject<List<Blueprint>>(blueprintJson)
+                    ?? new List<Blueprint>();
 
                 foreach (var blueprint in blueprints)
                 {

@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json;
+using OE2EmpireTracker.Server.Services;
 using OE2EmpireTracker.Server.Storage;
 
 using OE2EmpireTracker.Services;
@@ -65,7 +66,31 @@ public static class DataEndpoints
             return Results.BadRequest(new { error = "Request body is required" });
         }
 
-        // Validate JSON
+        // Baseline uploads are routed through the decomposition service
+        if (string.Equals(dataType, "baseline", StringComparison.OrdinalIgnoreCase))
+        {
+            var decompositionService = httpContext.RequestServices
+                .GetRequiredService<BaselineDecompositionService>();
+
+            try
+            {
+                await decompositionService.DecomposeAsync(body, storage);
+            }
+            catch (JsonException)
+            {
+                return Results.BadRequest(new { error = "Invalid JSON body" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+
+            LogMutation(httpContext, "Decomposed", "Global/baseline", "baseline");
+
+            return Results.Ok(new { decomposed = true });
+        }
+
+        // Non-baseline dataTypes: validate JSON and store directly
         try
         {
             JsonDocument.Parse(body);

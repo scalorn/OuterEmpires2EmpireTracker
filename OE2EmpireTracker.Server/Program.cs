@@ -10,6 +10,7 @@ using OE2EmpireTracker.Server.Endpoints.Typed;
 using OE2EmpireTracker.Server.Middleware;
 using OE2EmpireTracker.Server.Processing;
 using OE2EmpireTracker.Server.Push;
+using OE2EmpireTracker.Server.Services;
 using OE2EmpireTracker.Server.Storage;
 
 // --- CLI: --regenerate-owner-token ---
@@ -82,6 +83,9 @@ switch (backendType)
 // Register WebSocket hub and event dispatcher
 builder.Services.AddSingleton<WebSocketHub>();
 builder.Services.AddSingleton<EventDispatcher>();
+
+// Register baseline decomposition service
+builder.Services.AddSingleton<BaselineDecompositionService>();
 
 // Register background processor as hosted service
 builder.Services.AddSingleton<ServerBackgroundProcessor>();

@@ -64,6 +64,12 @@ internal class StubStorageBackend : IStorageBackend
 
     // ===== Not implemented — not used by AuthorizationHelper =====
 
+    public Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync() => throw new NotImplementedException();
+
+    public Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems) => throw new NotImplementedException();
+
+    public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId) => throw new NotImplementedException();
+
     public Task InitializeAsync(CancellationToken ct = default) => throw new NotImplementedException();
 
     public Task<bool> ValidateConnectionAsync(CancellationToken ct = default) => throw new NotImplementedException();

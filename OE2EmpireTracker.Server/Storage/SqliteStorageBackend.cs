@@ -746,8 +746,55 @@ CREATE TABLE IF NOT EXISTS StarSystems (
 
     // --- Colony Summaries ---
 
-    public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
-        => throw new NotImplementedException();
+    public async Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
+    {
+        // Step 1: Look up the system name from the StarSystems table
+        using var conn = await OpenConnectionAsync();
+        string? systemName = null;
+
+        using (var sysCmd = conn.CreateCommand())
+        {
+            sysCmd.CommandText = "SELECT Data FROM StarSystems WHERE Id = @id";
+            sysCmd.Parameters.AddWithValue("@id", systemId);
+            var sysResult = await sysCmd.ExecuteScalarAsync();
+            if (sysResult is string sysJson)
+            {
+                var system = JsonConvert.DeserializeObject<StarSystem>(sysJson);
+                systemName = system?.Name;
+            }
+        }
+
+        if (string.IsNullOrEmpty(systemName))
+        {
+            return Array.Empty<ColonySummary>();
+        }
+
+        // Step 2: Query all colonies from CharacterData and filter by SystemName
+        var summaries = new List<ColonySummary>();
+
+        using (var cmd = conn.CreateCommand())
+        {
+            cmd.CommandText = "SELECT Data FROM CharacterData WHERE DataType = 'Colony'";
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var json = reader.GetString(0);
+                var colony = JsonConvert.DeserializeObject<Colony>(json);
+                if (colony != null &&
+                    string.Equals(colony.SystemName, systemName, StringComparison.OrdinalIgnoreCase))
+                {
+                    summaries.Add(new ColonySummary
+                    {
+                        ColonyName = colony.ColonyName ?? string.Empty,
+                        Size = colony.Structures?.Count ?? 0,
+                        PlanetName = colony.PlanetName ?? string.Empty,
+                    });
+                }
+            }
+        }
+
+        return summaries;
+    }
 
     // --- Private Helpers ---
 

@@ -35,21 +35,21 @@ Decomposes the monolithic baseline upload into individual canonical records and 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Storage backend implementations — JsonFile
-  - [-] 4.1 Implement star system methods in JsonFileStorageBackend
+  - [x] 4.1 Implement star system methods in JsonFileStorageBackend
     - Implement `GetAllStarSystemsAsync` (read from JSON file)
     - Implement `UpsertStarSystemsAsync` (write/overwrite star systems)
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
-  - [~] 4.2 Implement GetColonySummariesForSystemAsync in JsonFileStorageBackend
+  - [-] 4.2 Implement GetColonySummariesForSystemAsync in JsonFileStorageBackend
     - Scan all characters' colonies, filter by system, project to ColonySummary
     - Return only ColonyName, Size (structure count), PlanetName
     - _Requirements: 7.1, 7.2, 7.3_
 
 - [ ] 5. Storage backend implementations — Sqlite
-  - [-] 5.1 Implement star system methods in SqliteStorageBackend
+  - [x] 5.1 Implement star system methods in SqliteStorageBackend
     - Implement `GetAllStarSystemsAsync` and `UpsertStarSystemsAsync`
     - Use existing SQLite patterns from the file
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
-  - [~] 5.2 Implement GetColonySummariesForSystemAsync in SqliteStorageBackend
+  - [-] 5.2 Implement GetColonySummariesForSystemAsync in SqliteStorageBackend
     - Query colonies by system, project to ColonySummary
     - _Requirements: 7.1, 7.2, 7.3_
 
@@ -57,18 +57,18 @@ Decomposes the monolithic baseline upload into individual canonical records and 
   - [-] 6.1 Implement star system and colony summary methods in PostgresStorageBackend
     - Implement `GetAllStarSystemsAsync`, `UpsertStarSystemsAsync`, `GetColonySummariesForSystemAsync`
     - _Requirements: 8.1, 8.3, 7.1_
-  - [-] 6.2 Implement star system and colony summary methods in DynamoStorageBackend
+  - [x] 6.2 Implement star system and colony summary methods in DynamoStorageBackend
     - Implement `GetAllStarSystemsAsync`, `UpsertStarSystemsAsync`, `GetColonySummariesForSystemAsync`
     - _Requirements: 8.1, 8.3, 7.1_
 
 - [ ] 7. DataEndpoints modification — route baseline to decomposition
-  - [~] 7.1 Modify PutGlobalData to invoke BaselineDecompositionService for baseline uploads
+  - [-] 7.1 Modify PutGlobalData to invoke BaselineDecompositionService for baseline uploads
     - When `dataType == "baseline"`, call `DecomposeAsync` instead of storing blob
     - Return 200 with `{ decomposed: true }` on success
     - Return 400 on decomposition failure
     - Non-baseline dataTypes continue unchanged
     - _Requirements: 9.1, 9.2, 9.3_
-  - [~] 7.2 Register BaselineDecompositionService in Program.cs DI container
+  - [-] 7.2 Register BaselineDecompositionService in Program.cs DI container
     - Add `builder.Services.AddSingleton<BaselineDecompositionService>()`
     - _Requirements: 9.3_
 
