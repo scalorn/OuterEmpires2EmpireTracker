@@ -24,7 +24,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Call `UpsertGlobalDataAsync` for each present section
     - Throw on invalid JSON, throw if no sections processed
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.10, 1.11_
-  - [-] 2.2 Add blueprint decomposition to BaselineDecompositionService
+  - [x] 2.2 Add blueprint decomposition to BaselineDecompositionService
     - Deserialize Blueprint array from payload using Newtonsoft
     - Call `UpsertBlueprintAsync("", blueprint)` for each blueprint
     - Throw on any single blueprint upsert failure

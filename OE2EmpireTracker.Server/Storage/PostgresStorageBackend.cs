@@ -403,6 +403,53 @@ CREATE TABLE IF NOT EXISTS StarSystems (
         await cmd.ExecuteNonQueryAsync();
     }
 
+    // --- Star Systems ---
+
+    public async Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync()
+    {
+        using var conn = await OpenConnectionAsync();
+        using var cmd = new NpgsqlCommand("SELECT Data FROM StarSystems", conn);
+
+        var list = new List<StarSystem>();
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            var json = reader.GetString(0);
+            var system = JsonConvert.DeserializeObject<StarSystem>(json);
+            if (system != null)
+            {
+                list.Add(system);
+            }
+        }
+
+        return list;
+    }
+
+    public async Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems)
+    {
+        using var conn = await OpenConnectionAsync();
+        using var transaction = await conn.BeginTransactionAsync();
+
+        foreach (var system in systems)
+        {
+            using var cmd = new NpgsqlCommand(
+                @"INSERT INTO StarSystems (Id, Data) VALUES (@id, @data)
+                ON CONFLICT (Id) DO UPDATE SET Data = @data",
+                conn,
+                transaction);
+            cmd.Parameters.AddWithValue("@id", system.Id);
+            cmd.Parameters.AddWithValue("@data", JsonConvert.SerializeObject(system, SerializerSettings));
+            await cmd.ExecuteNonQueryAsync();
+        }
+
+        await transaction.CommitAsync();
+    }
+
+    // --- Colony Summaries ---
+
+    public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
+        => throw new NotImplementedException();
+
     // --- Faction Permission Entities ---
 
     public Task<IReadOnlyList<FactionCapability>> GetFactionCapabilitiesAsync(string factionUUID)
