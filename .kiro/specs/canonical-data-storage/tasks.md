@@ -113,7 +113,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Populate Type, Tech Level, Ship Class dropdowns from server data
     - Show empty dropdowns without error when data unavailable
     - _Requirements: 10.2, 10.3, 10.4, 10.7, 13.2, 13.6_
-  - [-] 12.2 Add Evolution filter and column to BlueprintBrowser
+  - [x] 12.2 Add Evolution filter and column to BlueprintBrowser
     - Derive evolution values from blueprint data or ResearchTime reference data
     - Add Evolution filter dropdown
     - Display columns: Type, Name, Tech Level, Evolution, Nickname
@@ -123,13 +123,13 @@ Decomposes the monolithic baseline upload into individual canonical records and 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 14. Server unit tests — BaselineDecompositionService
-  - [~] 14.1 Write unit tests for BaselineDecompositionService reference data decomposition
+  - [-] 14.1 Write unit tests for BaselineDecompositionService reference data decomposition
     - Valid payload with all sections → all stored
     - Payload missing some sections → only present sections stored
     - Invalid JSON → throws JsonException
     - Empty object (no known sections) → throws InvalidOperationException
     - _Requirements: 1.1–1.8, 1.10, 1.11_
-  - [~] 14.2 Write unit tests for BaselineDecompositionService blueprint decomposition
+  - [-] 14.2 Write unit tests for BaselineDecompositionService blueprint decomposition
     - Blueprint array present → each blueprint upserted with characterUUID=""
     - Empty Blueprint array → no upserts, no error
     - Duplicate UUID → upsert (overwrite)
@@ -144,12 +144,12 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - **Validates: Requirements 11.1**
 
 - [ ] 15. Server unit tests — Public endpoints and visibility
-  - [~] 15.1 Write unit tests for public systems/planets/asteroids/colonies endpoints
+  - [-] 15.1 Write unit tests for public systems/planets/asteroids/colonies endpoints
     - Systems returns all systems; empty array when none
     - Colony summary returns only name/size/planet; never internals
     - Planets/asteroids return empty array when none exist
     - _Requirements: 5.1, 5.4, 6.3, 6.4, 7.1, 7.2_
-  - [~] 15.2 Write unit tests for enhanced public blueprints endpoint
+  - [-] 15.2 Write unit tests for enhanced public blueprints endpoint
     - Includes global blueprints (characterUUID="")
     - Combines global + shared in single result set
     - Non-public data type returns 404
@@ -160,7 +160,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - **Validates: Requirements 12.1–12.5**
 
 - [ ] 16. Server unit tests — Storage and additivity
-  - [~] 16.1 Write unit tests for storage backend star system methods
+  - [-] 16.1 Write unit tests for storage backend star system methods
     - UpsertStarSystemsAsync stores and retrieves correctly
     - Upsert with same Id overwrites (upsert semantics)
     - GetAllStarSystemsAsync returns empty list initially
