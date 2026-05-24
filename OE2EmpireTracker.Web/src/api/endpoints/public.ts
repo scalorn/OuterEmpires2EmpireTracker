@@ -7,6 +7,42 @@ export interface PaginatedResponse<T> {
   pageSize: number;
 }
 
+export interface StarSystem {
+  id: number;
+  name: string;
+  x: number;
+  y: number;
+  quadrant: string;
+  sector: string;
+  region: string;
+  locality: string;
+  spectralClass: string;
+  factionId: number;
+  factionName: string;
+  factionColor: string;
+  hasOrbital: boolean;
+  hasSpaceport: boolean;
+  hasStarbase: boolean;
+}
+
+export interface Planet {
+  id: number;
+  name: string;
+  systemId: number;
+}
+
+export interface AsteroidSummary {
+  uuid: string;
+  name: string;
+  systemId: number;
+}
+
+export interface ColonySummary {
+  colonyName: string;
+  size: number;
+  planetName: string;
+}
+
 export interface BlueprintFilters {
   type?: string;
   techLevel?: string;
@@ -51,4 +87,20 @@ export const publicApi = {
   /** Fetch global/baseline data by type (e.g. BlueprintType, ShipClass, TechLevel). */
   getGlobalData: <T = unknown>(dataType: string) =>
     apiClient.get(`api/v1/public/global/${dataType}`).json<T[]>(),
+
+  /** Fetch all star systems in the galaxy. */
+  getSystems: () =>
+    apiClient.get('api/v1/public/systems').json<StarSystem[]>(),
+
+  /** Fetch all planets in a specific star system. */
+  getSystemPlanets: (systemId: number) =>
+    apiClient.get(`api/v1/public/systems/${systemId}/planets`).json<Planet[]>(),
+
+  /** Fetch all asteroids in a specific star system. */
+  getSystemAsteroids: (systemId: number) =>
+    apiClient.get(`api/v1/public/systems/${systemId}/asteroids`).json<AsteroidSummary[]>(),
+
+  /** Fetch colony summaries (name, size, planet) for a specific star system. */
+  getSystemColonies: (systemId: number) =>
+    apiClient.get(`api/v1/public/systems/${systemId}/colonies`).json<ColonySummary[]>(),
 };
