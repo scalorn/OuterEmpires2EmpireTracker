@@ -21,6 +21,7 @@ public class BaselineDecompositionService
         "Commodity",
         "RefiningRecipe",
         "ResearchTime",
+        "Resource",
     ];
 
     private readonly ILogger<BaselineDecompositionService> _logger;

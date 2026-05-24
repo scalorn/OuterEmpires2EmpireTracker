@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { usePublicSurveys } from '../../api/hooks/useSurveys';
+import { useGlobalData } from '../../api/hooks/useBlueprints';
 import { FilterBar, type FilterField } from '../../components/common/FilterBar';
 import { DataTable, type Column } from '../../components/common/DataTable';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
@@ -21,19 +22,6 @@ function getResources(survey: Record<string, unknown>): Array<{ resource: string
   }));
 }
 
-/** Valid mineable resource names (matches WinForms Resource.Resources list). */
-const VALID_RESOURCES = [
-  'Acidic Inorganics', 'Acidic Organics', 'Alkali Inorganics', 'Alkali Metals',
-  'Alkali Organics', 'Alkaline Earth Metals', 'Complex Metallics', 'Complex Non-Metallics',
-  'Halogens', 'Heavy Alkali Metals', 'Heavy Alkaline Earth Metals', 'Heavy Noble Gases',
-  'Heavy Post-Trans Metals', 'Heavy Trans-Metals', 'Lanthanide Volatiles', 'Lanthanides',
-  'Light Halogens', 'Metallics', 'Metaloids', 'Noble Gases', 'Non-Metallics',
-  'Post-Trans Metals', 'Strong Acidic Inorganics', 'Strong Alkali Inorganics',
-  'Strong Alkali Organics', 'Superheavy Exotics', 'Trans-Metals', 'Transuranic Volatiles',
-];
-
-const RESOURCE_OPTIONS = VALID_RESOURCES.map((n) => ({ value: n, label: n }));
-
 const PURITY_OPTIONS = [
   { value: 'High', label: 'High' },
   { value: 'Medium', label: 'Medium' },
@@ -44,14 +32,6 @@ const PURITY_OPTIONS = [
 const TYPE_OPTIONS = [
   { value: 'planet', label: 'Planet' },
   { value: 'asteroid', label: 'Asteroid' },
-];
-
-const filterFields: FilterField[] = [
-  { key: 'search', label: 'Search', type: 'text', placeholder: 'System, planet, or surveyor...' },
-  { key: 'resourceType', label: 'Resource', type: 'select', options: RESOURCE_OPTIONS },
-  { key: 'surveyType', label: 'Type', type: 'select', options: TYPE_OPTIONS },
-  { key: 'purityLevel', label: 'Purity', type: 'select', options: PURITY_OPTIONS },
-  { key: 'minAmount', label: 'Min Amount', type: 'text', placeholder: 'Min yield...' },
 ];
 
 const columns: Column<Record<string, unknown>>[] = [
@@ -94,11 +74,31 @@ export function SurveyBrowser() {
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const { data, isLoading, isError, refetch } = usePublicSurveys();
 
+  // Fetch resource list from baseline data (served via API)
+  const { data: resourceData = [] } = useGlobalData<{ Name?: string }>('Resource');
+
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value || undefined }));
   };
 
   const handleClear = () => setFilters({});
+
+  // Build resource options from API data
+  const resourceOptions = useMemo(() =>
+    resourceData
+      .filter((r) => r.Name)
+      .map((r) => ({ value: r.Name!, label: r.Name! })),
+    [resourceData],
+  );
+
+  // Build filter fields with dynamic resource options
+  const filterFields: FilterField[] = useMemo(() => [
+    { key: 'search', label: 'Search', type: 'text', placeholder: 'System, planet, or surveyor...' },
+    { key: 'resourceType', label: 'Resource', type: 'select', options: resourceOptions },
+    { key: 'surveyType', label: 'Type', type: 'select', options: TYPE_OPTIONS },
+    { key: 'purityLevel', label: 'Purity', type: 'select', options: PURITY_OPTIONS },
+    { key: 'minAmount', label: 'Min Amount', type: 'text', placeholder: 'Min yield...' },
+  ], [resourceOptions]);
 
   const items = (data as { items?: unknown[] })?.items ?? (Array.isArray(data) ? data : []);
   const allSurveys = items as Record<string, unknown>[];
