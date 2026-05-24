@@ -84,12 +84,12 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
 - [ ] 9. PublicDataEndpoints — colonies and blueprint enhancement
-  - [-] 9.1 Add colony summary endpoint to PublicDataEndpoints
+  - [x] 9.1 Add colony summary endpoint to PublicDataEndpoints
     - `GET /api/v1/public/systems/{systemId}/colonies` → colony summaries (name, size, planet only)
     - Return empty array when no colonies exist
     - Never expose structures, resources, or inventories
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 12.1_
-  - [-] 9.2 Enhance public blueprints endpoint to include global blueprints
+  - [x] 9.2 Enhance public blueprints endpoint to include global blueprints
     - Include blueprints with characterUUID="" in results
     - Combine with existing shared-blueprint logic
     - Maintain pagination with combined total count
@@ -108,12 +108,12 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - _Requirements: 10.5, 13.5_
 
 - [ ] 12. Blueprint Browser enhancement — data-driven filters
-  - [-] 12.1 Fetch reference data for filter dropdowns in BlueprintBrowser
+  - [x] 12.1 Fetch reference data for filter dropdowns in BlueprintBrowser
     - On mount, fetch BlueprintType, TechLevel, ShipClass from `getGlobalData`
     - Populate Type, Tech Level, Ship Class dropdowns from server data
     - Show empty dropdowns without error when data unavailable
     - _Requirements: 10.2, 10.3, 10.4, 10.7, 13.2, 13.6_
-  - [~] 12.2 Add Evolution filter and column to BlueprintBrowser
+  - [-] 12.2 Add Evolution filter and column to BlueprintBrowser
     - Derive evolution values from blueprint data or ResearchTime reference data
     - Add Evolution filter dropdown
     - Display columns: Type, Name, Tech Level, Evolution, Nickname

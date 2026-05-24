@@ -20,6 +20,7 @@ function buildFilterFields(
   blueprintTypes: BaselineItem[],
   techLevels: BaselineItem[],
   shipClasses: BaselineItem[],
+  evolutionValues: string[],
 ): FilterField[] {
   const fields: FilterField[] = [
     {
@@ -40,6 +41,12 @@ function buildFilterFields(
       type: 'select',
       options: shipClasses.map((c) => ({ value: c.Name ?? c.Id ?? '', label: c.Name ?? c.Id ?? '' })),
     },
+    {
+      key: 'evolution',
+      label: 'Evolution',
+      type: 'select',
+      options: evolutionValues.map((v) => ({ value: v, label: v })),
+    },
     { key: 'search', label: 'Search', type: 'text', placeholder: 'Search blueprints...' },
   ];
 
@@ -48,6 +55,11 @@ function buildFilterFields(
 
 const columns: Column<Record<string, unknown>>[] = [
   {
+    key: 'BluePrintType',
+    header: 'Type',
+    render: (item) => String(item.BluePrintType ?? item.BlueprintType ?? item.blueprintType ?? ''),
+  },
+  {
     key: 'Name',
     header: 'Name',
     render: (item) => (
@@ -55,11 +67,6 @@ const columns: Column<Record<string, unknown>>[] = [
         {String(item.Name ?? item.name ?? 'Unknown')}
       </Link>
     ),
-  },
-  {
-    key: 'BluePrintType',
-    header: 'Type',
-    render: (item) => String(item.BluePrintType ?? item.BlueprintType ?? item.blueprintType ?? ''),
   },
   { key: 'TechLevel', header: 'Tech Level' },
   {
@@ -97,10 +104,20 @@ export function BlueprintBrowser() {
   const items = (data as { items?: unknown[] })?.items ?? (Array.isArray(data) ? data : []);
   const allBlueprints = items as Record<string, unknown>[];
 
+  // Derive distinct evolution values from loaded blueprint data
+  const evolutionValues = useMemo(() => {
+    const values = new Set<string>();
+    for (const bp of allBlueprints) {
+      const evo = String(bp.Evolution ?? bp.evolution ?? '');
+      if (evo) values.add(evo);
+    }
+    return Array.from(values).sort();
+  }, [allBlueprints]);
+
   // Build filter fields from baseline data
   const filterFields = useMemo(
-    () => buildFilterFields(blueprintTypes, techLevels, shipClasses),
-    [blueprintTypes, techLevels, shipClasses],
+    () => buildFilterFields(blueprintTypes, techLevels, shipClasses, evolutionValues),
+    [blueprintTypes, techLevels, shipClasses, evolutionValues],
   );
 
   // Client-side filtering for all filter fields
@@ -125,6 +142,13 @@ export function BlueprintBrowser() {
       result = result.filter((bp) => {
         const val = String(bp.ShipClass ?? bp.shipClass ?? '');
         return val === filters.shipClass;
+      });
+    }
+
+    if (filters.evolution) {
+      result = result.filter((bp) => {
+        const val = String(bp.Evolution ?? bp.evolution ?? '');
+        return val === filters.evolution;
       });
     }
 
