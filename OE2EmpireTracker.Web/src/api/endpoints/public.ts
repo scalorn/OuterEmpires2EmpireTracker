@@ -103,4 +103,8 @@ export const publicApi = {
   /** Fetch colony summaries (name, size, planet) for a specific star system. */
   getSystemColonies: (systemId: number) =>
     apiClient.get(`api/v1/public/systems/${systemId}/colonies`).json<ColonySummary[]>(),
+
+  /** Fetch a single blueprint's full detail by UUID. */
+  getBlueprintDetail: (uuid: string) =>
+    apiClient.get(`api/v1/public/blueprints/${uuid}`).json<Record<string, unknown>>(),
 };

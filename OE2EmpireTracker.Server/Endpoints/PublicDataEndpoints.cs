@@ -14,6 +14,7 @@ public static class PublicDataEndpoints
             .AllowAnonymous();
 
         publicGroup.MapGet("/blueprints", GetPublicBlueprints);
+        publicGroup.MapGet("/blueprints/{uuid}", GetPublicBlueprintDetail);
         publicGroup.MapGet("/surveys", GetPublicSurveys);
         publicGroup.MapGet("/colonies", GetPublicColonies);
         publicGroup.MapGet("/systems", GetPublicSystems);
@@ -64,6 +65,65 @@ public static class PublicDataEndpoints
             .ToArray();
 
         return Results.Ok(new PaginatedResult(items, page, pageSize, totalCount));
+    }
+
+    private static async Task<IResult> GetPublicBlueprintDetail(
+        HttpContext httpContext,
+        IStorageBackend storage,
+        string uuid)
+    {
+        // Search global blueprints first
+        var globalBlueprints = await storage.GetAllBlueprintsAsync(string.Empty);
+        var blueprint = globalBlueprints.FirstOrDefault(b =>
+            string.Equals(b.UUID, uuid, StringComparison.OrdinalIgnoreCase));
+
+        // If not found in global, search character-shared blueprints
+        if (blueprint == null)
+        {
+            var allCharacters = await storage.GetAllCharactersAsync();
+            foreach (var character in allCharacters)
+            {
+                var rules = await storage.GetSharingRulesForCharacterAsync(character.UUID);
+                var hasPublicData = rules.Any(r =>
+                    r.TargetType == SharingTargetType.Public &&
+                    (r.DataType == null || r.DataType == "Blueprints" || r.DataType == "All"));
+
+                if (!hasPublicData)
+                {
+                    continue;
+                }
+
+                var blueprints = await storage.GetAllBlueprintsAsync(character.UUID);
+                blueprint = blueprints.FirstOrDefault(b =>
+                    string.Equals(b.UUID, uuid, StringComparison.OrdinalIgnoreCase));
+
+                if (blueprint != null)
+                {
+                    break;
+                }
+            }
+        }
+
+        if (blueprint == null)
+        {
+            return Results.NotFound(new { error = "Blueprint not found" });
+        }
+
+        // Return full blueprint detail without private fields
+        return Results.Ok(new
+        {
+            uuid = blueprint.UUID ?? string.Empty,
+            name = blueprint.Name ?? string.Empty,
+            nickName = blueprint.NickName ?? string.Empty,
+            bluePrintType = blueprint.BluePrintType ?? string.Empty,
+            techLevel = blueprint.TechLevel ?? string.Empty,
+            evolution = blueprint.Evolution,
+            shipClass = blueprint.Class,
+            description = blueprint.Description ?? string.Empty,
+            copyCost = blueprint.CopyCost,
+            properties = blueprint.Properties?.Properties ?? new Dictionary<string, string>(),
+            resources = blueprint.Resources ?? new Dictionary<string, string>(),
+        });
     }
 
     private static async Task<IResult> GetPublicSurveys(

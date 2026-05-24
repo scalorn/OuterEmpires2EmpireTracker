@@ -38,6 +38,15 @@ export function useGlobalData<T = unknown>(dataType: string) {
   });
 }
 
+/** Fetch a single blueprint's full detail by UUID from the public API. */
+export function usePublicBlueprintDetail(uuid?: string | null) {
+  return useQuery({
+    queryKey: ['publicBlueprintDetail', uuid],
+    queryFn: () => publicApi.getBlueprintDetail(uuid!),
+    enabled: !!uuid,
+  });
+}
+
 export function useBlueprintMutations() {
   const queryClient = useQueryClient();
   const charUUID = useAuthStore((s) => s.characterUUID);

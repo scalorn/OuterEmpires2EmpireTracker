@@ -1,32 +1,27 @@
 import { useParams, Link } from 'react-router-dom';
-import { usePublicBlueprints } from '../../api/hooks/useBlueprints';
+import { usePublicBlueprintDetail } from '../../api/hooks/useBlueprints';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
 
 export function BlueprintDetail() {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, isError, refetch } = usePublicBlueprints();
+  const { data: blueprint, isLoading, isError, refetch } = usePublicBlueprintDetail(id);
 
   if (isLoading) return <LoadingSpinner message="Loading blueprint..." />;
   if (isError) return <RetryableError message="Failed to load blueprint." onRetry={() => void refetch()} />;
-
-  const items = (data as { items?: unknown[] })?.items ?? (Array.isArray(data) ? data : []);
-  const blueprint = (items as Record<string, unknown>[]).find(
-    (bp) => String(bp.UUID ?? bp.uuid) === id
-  );
 
   if (!blueprint) {
     return <EmptyState title="Blueprint not found" message="The requested blueprint does not exist." />;
   }
 
-  const name = String(blueprint.Name ?? blueprint.name ?? 'Unknown');
-  const type = String(blueprint.BlueprintType ?? blueprint.blueprintType ?? '—');
-  const techLevel = String(blueprint.TechLevel ?? blueprint.techLevel ?? '—');
-  const shipClass = String(blueprint.ShipClass ?? blueprint.shipClass ?? '—');
-  const owner = String(blueprint.OwnerName ?? blueprint.ownerName ?? '');
-  const evolution = blueprint.EvolutionChain ?? blueprint.evolutionChain;
-  const manufacturing = blueprint.ManufacturingRequirements ?? blueprint.manufacturingRequirements;
+  const name = String(blueprint.name ?? 'Unknown');
+  const type = String(blueprint.bluePrintType ?? '—');
+  const techLevel = String(blueprint.techLevel ?? '—');
+  const shipClass = String(blueprint.shipClass ?? '—');
+  const evolution = blueprint.evolution;
+  const properties = blueprint.properties as Record<string, string> | undefined;
+  const resources = blueprint.resources as Record<string, string> | undefined;
 
   return (
     <div>
@@ -50,47 +45,40 @@ export function BlueprintDetail() {
               <dt className="text-gray-400">Ship Class</dt>
               <dd className="text-white">{shipClass}</dd>
             </div>
-            {owner && (
-              <div className="flex justify-between">
-                <dt className="text-gray-400">Owner</dt>
-                <dd className="text-white">{owner}</dd>
-              </div>
-            )}
+            <div className="flex justify-between">
+              <dt className="text-gray-400">Evolution</dt>
+              <dd className="text-white">{String(evolution ?? '—')}</dd>
+            </div>
           </dl>
         </section>
 
-        {evolution != null ? (
+        {properties && Object.keys(properties).length > 0 && (
           <section className="rounded border border-gray-700 p-4">
-            <h2 className="mb-3 text-lg font-semibold text-gray-200">Evolution Chain</h2>
-            {Array.isArray(evolution) ? (
-              <ol className="list-inside list-decimal space-y-1 text-sm text-gray-300">
-                {(evolution as string[]).map((step: string, i: number) => (
-                  <li key={i}>{step}</li>
-                ))}
-              </ol>
-            ) : (
-              <p className="text-sm text-gray-400">{String(evolution as string)}</p>
-            )}
+            <h2 className="mb-3 text-lg font-semibold text-gray-200">Blueprint Properties</h2>
+            <dl className="space-y-2 text-sm">
+              {Object.entries(properties).map(([key, value]) => (
+                <div key={key} className="flex justify-between">
+                  <dt className="text-gray-400">{key}</dt>
+                  <dd className="text-white">{value}</dd>
+                </div>
+              ))}
+            </dl>
           </section>
-        ) : null}
+        )}
 
-        {manufacturing != null ? (
+        {resources && Object.keys(resources).length > 0 && (
           <section className="rounded border border-gray-700 p-4 lg:col-span-2">
-            <h2 className="mb-3 text-lg font-semibold text-gray-200">Manufacturing Requirements</h2>
-            {Array.isArray(manufacturing) ? (
-              <ul className="space-y-1 text-sm text-gray-300">
-                {(manufacturing as Record<string, unknown>[]).map((req: Record<string, unknown>, i: number) => (
-                  <li key={i} className="flex justify-between border-b border-gray-700 py-1">
-                    <span>{String(req.ResourceName ?? req.resourceName ?? req.name ?? 'Unknown')}</span>
-                    <span className="text-gray-400">{String(req.Quantity ?? req.quantity ?? '')}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-gray-400">{String(manufacturing as string)}</p>
-            )}
+            <h2 className="mb-3 text-lg font-semibold text-gray-200">Resources</h2>
+            <dl className="space-y-2 text-sm">
+              {Object.entries(resources).map(([key, value]) => (
+                <div key={key} className="flex justify-between border-b border-gray-700 py-1">
+                  <dt className="text-gray-300">{key}</dt>
+                  <dd className="text-gray-400">{value}</dd>
+                </div>
+              ))}
+            </dl>
           </section>
-        ) : null}
+        )}
       </div>
     </div>
   );
