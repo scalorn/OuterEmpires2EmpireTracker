@@ -29,6 +29,15 @@ export function usePublicBlueprints(filters?: BlueprintFilters) {
   });
 }
 
+/** Fetch global/baseline data (BlueprintType, ShipClass, TechLevel, etc.) from the public API. */
+export function useGlobalData<T = unknown>(dataType: string) {
+  return useQuery({
+    queryKey: ['globalData', dataType],
+    queryFn: () => publicApi.getGlobalData<T>(dataType),
+    staleTime: Infinity, // Baseline data rarely changes
+  });
+}
+
 export function useBlueprintMutations() {
   const queryClient = useQueryClient();
   const charUUID = useAuthStore((s) => s.characterUUID);

@@ -45,4 +45,8 @@ export const publicApi = {
         ...(filters?.search && { search: filters.search }),
       },
     }).json<PaginatedResponse<unknown>>(),
+
+  /** Fetch global/baseline data by type (e.g. BlueprintType, ShipClass, TechLevel). */
+  getGlobalData: <T = unknown>(dataType: string) =>
+    apiClient.get(`api/v1/public/global/${dataType}`).json<T[]>(),
 };

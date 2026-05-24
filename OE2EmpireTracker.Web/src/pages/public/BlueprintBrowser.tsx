@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { usePublicBlueprints } from '../../api/hooks/useBlueprints';
+import { usePublicBlueprints, useGlobalData } from '../../api/hooks/useBlueprints';
 import { FilterBar, type FilterField } from '../../components/common/FilterBar';
 import { DataTable, type Column } from '../../components/common/DataTable';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
@@ -10,50 +10,38 @@ import { Link } from 'react-router-dom';
 import { AuthPrompt } from '../../components/common/AuthPrompt';
 import type { BlueprintFilters } from '../../api/endpoints/public';
 
-/** Extract sorted unique non-empty values for a field from the dataset. */
-function uniqueValues(items: Record<string, unknown>[], ...keys: string[]): string[] {
-  const set = new Set<string>();
-  for (const item of items) {
-    for (const key of keys) {
-      const val = item[key];
-      if (typeof val === 'string' && val.trim()) set.add(val.trim());
-    }
-  }
-  return Array.from(set).sort();
+interface BaselineItem {
+  Id?: string;
+  Name?: string;
 }
 
-/** Build filter field definitions dynamically from the loaded data. */
-function buildFilterFields(blueprints: Record<string, unknown>[]): FilterField[] {
-  const types = uniqueValues(blueprints, 'BluePrintType', 'BlueprintType', 'blueprintType');
-  const techLevels = uniqueValues(blueprints, 'TechLevel', 'techLevel');
-  const classes = uniqueValues(blueprints, 'ShipClass', 'shipClass', 'Class', 'class')
-    .filter((v) => isNaN(Number(v))); // Exclude numeric class IDs
-
+/** Build filter field definitions from baseline data (same source as WinForms). */
+function buildFilterFields(
+  blueprintTypes: BaselineItem[],
+  techLevels: BaselineItem[],
+  shipClasses: BaselineItem[],
+): FilterField[] {
   const fields: FilterField[] = [
     {
       key: 'type',
       label: 'Type',
       type: 'select',
-      options: types.map((t) => ({ value: t, label: t })),
+      options: blueprintTypes.map((t) => ({ value: t.Id ?? t.Name ?? '', label: t.Name ?? t.Id ?? '' })),
     },
     {
       key: 'techLevel',
       label: 'Tech Level',
       type: 'select',
-      options: techLevels.map((t) => ({ value: t, label: t })),
+      options: techLevels.map((t) => ({ value: t.Name ?? t.Id ?? '', label: t.Name ?? t.Id ?? '' })),
     },
-  ];
-
-  if (classes.length > 0) {
-    fields.push({
+    {
       key: 'shipClass',
       label: 'Ship Class',
       type: 'select',
-      options: classes.map((c) => ({ value: c, label: c })),
-    });
-  }
-
-  fields.push({ key: 'search', label: 'Search', type: 'text', placeholder: 'Search blueprints...' });
+      options: shipClasses.map((c) => ({ value: c.Name ?? c.Id ?? '', label: c.Name ?? c.Id ?? '' })),
+    },
+    { key: 'search', label: 'Search', type: 'text', placeholder: 'Search blueprints...' },
+  ];
 
   return fields;
 }
@@ -92,7 +80,12 @@ export function BlueprintBrowser() {
   const [filters, setFilters] = useState<BlueprintFilters>({});
   const [viewMode, setViewMode] = useState<ViewMode>('table');
 
-  // Fetch all public blueprints (no server-side filtering — server doesn't support it)
+  // Fetch baseline/global data for filter dropdowns (same data as WinForms EmpireContext)
+  const { data: blueprintTypes = [] } = useGlobalData<BaselineItem>('BlueprintType');
+  const { data: techLevels = [] } = useGlobalData<BaselineItem>('TechLevel');
+  const { data: shipClasses = [] } = useGlobalData<BaselineItem>('ShipClass');
+
+  // Fetch all public blueprints
   const { data, isLoading, isFetching, isError, refetch } = usePublicBlueprints({});
 
   const handleFilterChange = (key: string, value: string) => {
@@ -104,8 +97,11 @@ export function BlueprintBrowser() {
   const items = (data as { items?: unknown[] })?.items ?? (Array.isArray(data) ? data : []);
   const allBlueprints = items as Record<string, unknown>[];
 
-  // Build filter field definitions dynamically from the loaded data
-  const filterFields = useMemo(() => buildFilterFields(allBlueprints), [allBlueprints]);
+  // Build filter fields from baseline data
+  const filterFields = useMemo(
+    () => buildFilterFields(blueprintTypes, techLevels, shipClasses),
+    [blueprintTypes, techLevels, shipClasses],
+  );
 
   // Client-side filtering for all filter fields
   const blueprints = useMemo(() => {

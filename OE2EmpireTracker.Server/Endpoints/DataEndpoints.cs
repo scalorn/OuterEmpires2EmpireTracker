@@ -12,12 +12,18 @@ public static class DataEndpoints
 {
     public static void MapDataEndpoints(this WebApplication app)
     {
-        // Global/baseline data
+        // Global/baseline data (authenticated — supports read and write)
         var global = app.MapGroup("/api/v1/global")
             .RequireAuthorization("Authenticated");
 
         global.MapGet("/{dataType}", GetGlobalData);
         global.MapPut("/{dataType}", PutGlobalData);
+
+        // Public read-only access to global/baseline data (no auth required)
+        var publicGlobal = app.MapGroup("/api/v1/public/global")
+            .AllowAnonymous();
+
+        publicGlobal.MapGet("/{dataType}", GetGlobalData);
 
         // Sync
         app.MapGet("/api/v1/sync", GetSync)
