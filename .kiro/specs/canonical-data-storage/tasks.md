@@ -99,7 +99,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 11. Web UI API layer — new public endpoint functions
-  - [-] 11.1 Add systems/planets/asteroids/colonies functions to public.ts
+  - [x] 11.1 Add systems/planets/asteroids/colonies functions to public.ts
     - Add `getSystems()`, `getSystemPlanets(systemId)`, `getSystemAsteroids(systemId)`, `getSystemColonies(systemId)`
     - Add TypeScript interfaces: `StarSystem`, `AsteroidSummary`, `ColonySummary`
     - _Requirements: 13.1, 13.2_

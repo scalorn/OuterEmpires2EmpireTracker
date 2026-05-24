@@ -17,6 +17,8 @@ public static class PublicDataEndpoints
         publicGroup.MapGet("/surveys", GetPublicSurveys);
         publicGroup.MapGet("/colonies", GetPublicColonies);
         publicGroup.MapGet("/systems", GetPublicSystems);
+        publicGroup.MapGet("/systems/{systemId}/planets", GetPublicPlanets);
+        publicGroup.MapGet("/systems/{systemId}/asteroids", GetPublicAsteroids);
     }
 
     private static async Task<IResult> GetPublicBlueprints(
@@ -52,6 +54,61 @@ public static class PublicDataEndpoints
     {
         var systems = await storage.GetAllStarSystemsAsync();
         return Results.Ok(systems);
+    }
+
+    private static async Task<IResult> GetPublicPlanets(
+        HttpContext httpContext,
+        IStorageBackend storage,
+        int systemId)
+    {
+        var json = await storage.GetGlobalDataAsync($"Planets_{systemId}");
+        if (json == null)
+        {
+            return Results.Ok(Array.Empty<object>());
+        }
+
+        var planets = Newtonsoft.Json.JsonConvert.DeserializeObject<List<object>>(json)
+            ?? new List<object>();
+        return Results.Ok(planets);
+    }
+
+    private static async Task<IResult> GetPublicAsteroids(
+        HttpContext httpContext,
+        IStorageBackend storage,
+        int systemId)
+    {
+        // Look up system name from star systems
+        var systems = await storage.GetAllStarSystemsAsync();
+        var system = systems.FirstOrDefault(s => s.Id == systemId);
+        if (system == null)
+        {
+            return Results.Ok(Array.Empty<AsteroidSummary>());
+        }
+
+        var systemName = system.Name;
+        var allCharacters = await storage.GetAllCharactersAsync();
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var results = new List<AsteroidSummary>();
+
+        foreach (var character in allCharacters)
+        {
+            var asteroids = await storage.GetAllAsteroidsAsync(character.UUID);
+            foreach (var asteroid in asteroids)
+            {
+                if (string.Equals(asteroid.SystemName, systemName, StringComparison.OrdinalIgnoreCase)
+                    && seen.Add(asteroid.UUID))
+                {
+                    results.Add(new AsteroidSummary
+                    {
+                        UUID = asteroid.UUID,
+                        Name = asteroid.Name ?? string.Empty,
+                        SystemId = systemId,
+                    });
+                }
+            }
+        }
+
+        return Results.Ok(results);
     }
 
     private static async Task<IResult> GetPublicDataAsync(
