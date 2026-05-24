@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { usePublicBlueprints } from '../../api/hooks/useBlueprints';
 import { FilterBar, type FilterField } from '../../components/common/FilterBar';
 import { DataTable, type Column } from '../../components/common/DataTable';
@@ -10,44 +10,53 @@ import { Link } from 'react-router-dom';
 import { AuthPrompt } from '../../components/common/AuthPrompt';
 import type { BlueprintFilters } from '../../api/endpoints/public';
 
-const filterFields: FilterField[] = [
-  {
-    key: 'type',
-    label: 'Type',
-    type: 'select',
-    options: [
-      { value: 'Ship', label: 'Ship' },
-      { value: 'Structure', label: 'Structure' },
-      { value: 'Module', label: 'Module' },
-      { value: 'Weapon', label: 'Weapon' },
-    ],
-  },
-  {
-    key: 'techLevel',
-    label: 'Tech Level',
-    type: 'select',
-    options: [
-      { value: '1', label: 'TL1' },
-      { value: '2', label: 'TL2' },
-      { value: '3', label: 'TL3' },
-      { value: '4', label: 'TL4' },
-      { value: '5', label: 'TL5' },
-    ],
-  },
-  {
-    key: 'shipClass',
-    label: 'Ship Class',
-    type: 'select',
-    options: [
-      { value: 'Fighter', label: 'Fighter' },
-      { value: 'Frigate', label: 'Frigate' },
-      { value: 'Destroyer', label: 'Destroyer' },
-      { value: 'Cruiser', label: 'Cruiser' },
-      { value: 'Battleship', label: 'Battleship' },
-    ],
-  },
-  { key: 'search', label: 'Search', type: 'text', placeholder: 'Search blueprints...' },
-];
+/** Extract sorted unique non-empty values for a field from the dataset. */
+function uniqueValues(items: Record<string, unknown>[], ...keys: string[]): string[] {
+  const set = new Set<string>();
+  for (const item of items) {
+    for (const key of keys) {
+      const val = item[key];
+      if (typeof val === 'string' && val.trim()) set.add(val.trim());
+    }
+  }
+  return Array.from(set).sort();
+}
+
+/** Build filter field definitions dynamically from the loaded data. */
+function buildFilterFields(blueprints: Record<string, unknown>[]): FilterField[] {
+  const types = uniqueValues(blueprints, 'BluePrintType', 'BlueprintType', 'blueprintType');
+  const techLevels = uniqueValues(blueprints, 'TechLevel', 'techLevel');
+  const classes = uniqueValues(blueprints, 'ShipClass', 'shipClass', 'Class', 'class')
+    .filter((v) => isNaN(Number(v))); // Exclude numeric class IDs
+
+  const fields: FilterField[] = [
+    {
+      key: 'type',
+      label: 'Type',
+      type: 'select',
+      options: types.map((t) => ({ value: t, label: t })),
+    },
+    {
+      key: 'techLevel',
+      label: 'Tech Level',
+      type: 'select',
+      options: techLevels.map((t) => ({ value: t, label: t })),
+    },
+  ];
+
+  if (classes.length > 0) {
+    fields.push({
+      key: 'shipClass',
+      label: 'Ship Class',
+      type: 'select',
+      options: classes.map((c) => ({ value: c, label: c })),
+    });
+  }
+
+  fields.push({ key: 'search', label: 'Search', type: 'text', placeholder: 'Search blueprints...' });
+
+  return fields;
+}
 
 const columns: Column<Record<string, unknown>>[] = [
   {
@@ -59,15 +68,21 @@ const columns: Column<Record<string, unknown>>[] = [
       </Link>
     ),
   },
-  { key: 'BlueprintType', header: 'Type' },
-  { key: 'TechLevel', header: 'Tech Level' },
-  { key: 'ShipClass', header: 'Ship Class' },
   {
-    key: 'OwnerName',
-    header: 'Owner',
-    render: (item) => (
-      <span className="text-gray-400">{String(item.OwnerName ?? item.ownerName ?? '—')}</span>
-    ),
+    key: 'BluePrintType',
+    header: 'Type',
+    render: (item) => String(item.BluePrintType ?? item.BlueprintType ?? item.blueprintType ?? ''),
+  },
+  { key: 'TechLevel', header: 'Tech Level' },
+  {
+    key: 'Evolution',
+    header: 'Evolution',
+    render: (item) => String(item.Evolution ?? item.evolution ?? ''),
+  },
+  {
+    key: 'NickName',
+    header: 'Nickname',
+    render: (item) => String(item.NickName ?? item.nickName ?? ''),
   },
 ];
 
@@ -77,13 +92,8 @@ export function BlueprintBrowser() {
   const [filters, setFilters] = useState<BlueprintFilters>({});
   const [viewMode, setViewMode] = useState<ViewMode>('table');
 
-  // Only pass server-supported filters (not search) to the API
-  const serverFilters: BlueprintFilters = {
-    ...(filters.type && { type: filters.type }),
-    ...(filters.techLevel && { techLevel: filters.techLevel }),
-    ...(filters.shipClass && { shipClass: filters.shipClass }),
-  };
-  const { data, isLoading, isFetching, isError, refetch } = usePublicBlueprints(serverFilters);
+  // Fetch all public blueprints (no server-side filtering — server doesn't support it)
+  const { data, isLoading, isFetching, isError, refetch } = usePublicBlueprints({});
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value || undefined }));
@@ -94,16 +104,48 @@ export function BlueprintBrowser() {
   const items = (data as { items?: unknown[] })?.items ?? (Array.isArray(data) ? data : []);
   const allBlueprints = items as Record<string, unknown>[];
 
-  // Client-side search filtering
-  const searchTerm = (filters.search ?? '').toLowerCase();
-  const blueprints = searchTerm
-    ? allBlueprints.filter((bp) => {
+  // Build filter field definitions dynamically from the loaded data
+  const filterFields = useMemo(() => buildFilterFields(allBlueprints), [allBlueprints]);
+
+  // Client-side filtering for all filter fields
+  const blueprints = useMemo(() => {
+    let result = allBlueprints;
+
+    if (filters.type) {
+      result = result.filter((bp) => {
+        const val = String(bp.BluePrintType ?? bp.BlueprintType ?? bp.blueprintType ?? '');
+        return val === filters.type;
+      });
+    }
+
+    if (filters.techLevel) {
+      result = result.filter((bp) => {
+        const val = String(bp.TechLevel ?? bp.techLevel ?? '');
+        return val === filters.techLevel;
+      });
+    }
+
+    if (filters.shipClass) {
+      result = result.filter((bp) => {
+        const val = String(bp.ShipClass ?? bp.shipClass ?? '');
+        return val === filters.shipClass;
+      });
+    }
+
+    const searchTerm = (filters.search ?? '').toLowerCase();
+    if (searchTerm) {
+      result = result.filter((bp) => {
         const name = String(bp.Name ?? bp.name ?? '').toLowerCase();
-        const bpType = String(bp.BlueprintType ?? bp.blueprintType ?? '').toLowerCase();
+        const bpType = String(bp.BluePrintType ?? bp.BlueprintType ?? bp.blueprintType ?? '').toLowerCase();
         const shipClass = String(bp.ShipClass ?? bp.shipClass ?? '').toLowerCase();
-        return name.includes(searchTerm) || bpType.includes(searchTerm) || shipClass.includes(searchTerm);
-      })
-    : allBlueprints;
+        const nickName = String(bp.NickName ?? bp.nickName ?? '').toLowerCase();
+        return name.includes(searchTerm) || bpType.includes(searchTerm) ||
+          shipClass.includes(searchTerm) || nickName.includes(searchTerm);
+      });
+    }
+
+    return result;
+  }, [allBlueprints, filters]);
 
   return (
     <div>
