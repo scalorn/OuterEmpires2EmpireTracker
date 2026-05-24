@@ -114,6 +114,7 @@ Press **F1** on any form for context-sensitive help, or use **Help → Contents*
 - [Background Processing](docs/background-processing.md)
 - [Window State](docs/window-state.md)
 - [Preferences](docs/preferences.md)
+- [Sharing](docs/sharing.md)
 
 ## About
 
