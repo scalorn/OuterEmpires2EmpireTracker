@@ -38,23 +38,34 @@ const filterFields: FilterField[] = [
 
 const columns: Column<Record<string, unknown>>[] = [
   {
-    key: 'System',
+    key: 'systemName',
     header: 'System',
     render: (item) => (
-      <Link to={`/surveys/${item.UUID ?? item.uuid}`} className="text-blue-400 hover:underline">
-        {String(item.System ?? item.system ?? 'Unknown')}
+      <Link to={`/surveys/${item.surveyID ?? item.UUID ?? item.uuid}`} className="text-blue-400 hover:underline">
+        {String(item.systemName ?? item.SystemName ?? item.System ?? 'Unknown')}
       </Link>
     ),
   },
-  { key: 'Planet', header: 'Planet' },
-  { key: 'ResourceType', header: 'Resource' },
-  { key: 'Purity', header: 'Purity' },
   {
-    key: 'OwnerName',
+    key: 'planetName',
+    header: 'Planet',
+    render: (item) => String(item.planetName ?? item.PlanetName ?? item.Planet ?? ''),
+  },
+  {
+    key: 'scannedBy',
     header: 'Surveyor',
     render: (item) => (
-      <span className="text-gray-400">{String(item.OwnerName ?? item.ownerName ?? '—')}</span>
+      <span className="text-gray-400">{String(item.scannedBy ?? item.ScannedBy ?? item.OwnerName ?? '—')}</span>
     ),
+  },
+  {
+    key: 'dateTime',
+    header: 'Date',
+    render: (item) => {
+      const dt = item.dateTime ?? item.DateTime;
+      if (!dt) return '—';
+      try { return new Date(String(dt)).toLocaleDateString(); } catch { return String(dt); }
+    },
   },
 ];
 
