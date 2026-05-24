@@ -49,7 +49,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Implement `GetAllStarSystemsAsync` and `UpsertStarSystemsAsync`
     - Use existing SQLite patterns from the file
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
-  - [-] 5.2 Implement GetColonySummariesForSystemAsync in SqliteStorageBackend
+  - [x] 5.2 Implement GetColonySummariesForSystemAsync in SqliteStorageBackend
     - Query colonies by system, project to ColonySummary
     - _Requirements: 7.1, 7.2, 7.3_
 
