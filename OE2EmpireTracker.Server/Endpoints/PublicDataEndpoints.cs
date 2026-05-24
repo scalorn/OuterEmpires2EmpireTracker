@@ -31,11 +31,11 @@ public static class PublicDataEndpoints
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var publicEntities = new List<object>();
+        var publicBlueprints = new List<BlueprintSummary>();
 
         // Include global blueprints (characterUUID="")
         var globalBlueprints = await storage.GetAllBlueprintsAsync(string.Empty);
-        publicEntities.AddRange(globalBlueprints.Cast<object>());
+        publicBlueprints.AddRange(globalBlueprints.Select(ProjectToSummary));
 
         // Include character-shared blueprints
         var allCharacters = await storage.GetAllCharactersAsync();
@@ -53,13 +53,14 @@ public static class PublicDataEndpoints
             }
 
             var blueprints = await storage.GetAllBlueprintsAsync(character.UUID);
-            publicEntities.AddRange(blueprints.Cast<object>());
+            publicBlueprints.AddRange(blueprints.Select(ProjectToSummary));
         }
 
-        var totalCount = publicEntities.Count;
-        var items = publicEntities
+        var totalCount = publicBlueprints.Count;
+        var items = publicBlueprints
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .Cast<object>()
             .ToArray();
 
         return Results.Ok(new PaginatedResult(items, page, pageSize, totalCount));
@@ -206,6 +207,21 @@ public static class PublicDataEndpoints
             "Colonies" => (await storage.GetAllColoniesAsync(characterUUID))
                 .Cast<object>().ToList(),
             _ => Array.Empty<object>(),
+        };
+    }
+
+    private static BlueprintSummary ProjectToSummary(Blueprint bp)
+    {
+        return new BlueprintSummary
+        {
+            UUID = bp.UUID ?? string.Empty,
+            Name = bp.Name ?? string.Empty,
+            NickName = bp.NickName ?? string.Empty,
+            BluePrintType = bp.BluePrintType ?? string.Empty,
+            TechLevel = bp.TechLevel ?? string.Empty,
+            Evolution = bp.Evolution,
+            Class = bp.Class,
+            Description = bp.Description ?? string.Empty,
         };
     }
 

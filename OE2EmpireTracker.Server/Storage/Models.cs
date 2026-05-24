@@ -116,3 +116,16 @@ public class AsteroidSummary
     public string Name { get; set; } = string.Empty;
     public int SystemId { get; set; }
 }
+
+/// <summary>Public blueprint summary — excludes private fields like OwnerUUID and Resources.</summary>
+public class BlueprintSummary
+{
+    public string UUID { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string NickName { get; set; } = string.Empty;
+    public string BluePrintType { get; set; } = string.Empty;
+    public string TechLevel { get; set; } = string.Empty;
+    public int Evolution { get; set; }
+    public int Class { get; set; }
+    public string Description { get; set; } = string.Empty;
+}
