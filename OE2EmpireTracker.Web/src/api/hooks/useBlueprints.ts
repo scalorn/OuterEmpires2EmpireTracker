@@ -24,7 +24,7 @@ export function useBlueprintDetail(charUUID?: string | null, entityUUID?: string
 export function usePublicBlueprints(filters?: BlueprintFilters) {
   return useQuery({
     queryKey: queryKeys.publicBlueprints(filters),
-    queryFn: () => publicApi.getPublicBlueprints(filters),
+    queryFn: () => publicApi.getPublicBlueprints(filters, 1, 10000),
     placeholderData: keepPreviousData,
   });
 }

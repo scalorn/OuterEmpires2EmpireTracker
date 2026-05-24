@@ -29,7 +29,7 @@ public static class PublicDataEndpoints
         int pageSize = 20)
     {
         page = Math.Max(1, page);
-        pageSize = Math.Clamp(pageSize, 1, 100);
+        pageSize = Math.Clamp(pageSize, 1, 10000);
 
         var publicBlueprints = new List<BlueprintSummary>();
 

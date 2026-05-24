@@ -17,9 +17,14 @@ if (-not (Test-Path $ServerProject)) {
 Write-Host "[1/5] Building frontend..." -ForegroundColor Yellow
 Push-Location $WebDir
 try {
-    npm run build
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "ERROR: Frontend build failed (exit code $LASTEXITCODE)" -ForegroundColor Red
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $buildOutput = npm run build 2>&1
+    $buildExit = $LASTEXITCODE
+    $ErrorActionPreference = $prevEAP
+    if ($buildExit -ne 0) {
+        Write-Host ($buildOutput | Out-String)
+        Write-Host "ERROR: Frontend build failed (exit code $buildExit)" -ForegroundColor Red
         exit 1
     }
     Write-Host "  Frontend build OK" -ForegroundColor Green
