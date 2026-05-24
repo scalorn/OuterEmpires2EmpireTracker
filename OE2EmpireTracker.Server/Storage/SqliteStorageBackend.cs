@@ -63,6 +63,11 @@ CREATE TABLE IF NOT EXISTS CharacterPreferences (
     CharacterUUID TEXT PRIMARY KEY,
     Data TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS StarSystems (
+    Id INTEGER PRIMARY KEY,
+    Data TEXT NOT NULL
+);
 ";
 
     private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings()
@@ -696,6 +701,53 @@ CREATE TABLE IF NOT EXISTS CharacterPreferences (
     public Task<ExternalCharacter?> GetExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
     public Task UpsertExternalCharacterAsync(string characterUUID, ExternalCharacter entity) => throw new NotImplementedException();
     public Task DeleteExternalCharacterAsync(string characterUUID, string entityUUID) => throw new NotImplementedException();
+
+    // --- Star Systems ---
+
+    public async Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync()
+    {
+        using var conn = await OpenConnectionAsync();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT Data FROM StarSystems";
+
+        var list = new List<StarSystem>();
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            var json = reader.GetString(0);
+            var system = JsonConvert.DeserializeObject<StarSystem>(json);
+            if (system != null)
+            {
+                list.Add(system);
+            }
+        }
+
+        return list;
+    }
+
+    public async Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems)
+    {
+        using var conn = await OpenConnectionAsync();
+        using var transaction = conn.BeginTransaction();
+
+        foreach (var system in systems)
+        {
+            using var cmd = conn.CreateCommand();
+            cmd.Transaction = transaction;
+            cmd.CommandText = @"INSERT INTO StarSystems (Id, Data) VALUES (@id, @data)
+                ON CONFLICT(Id) DO UPDATE SET Data = @data";
+            cmd.Parameters.AddWithValue("@id", system.Id);
+            cmd.Parameters.AddWithValue("@data", JsonConvert.SerializeObject(system, SerializerSettings));
+            await cmd.ExecuteNonQueryAsync();
+        }
+
+        transaction.Commit();
+    }
+
+    // --- Colony Summaries ---
+
+    public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
+        => throw new NotImplementedException();
 
     // --- Private Helpers ---
 

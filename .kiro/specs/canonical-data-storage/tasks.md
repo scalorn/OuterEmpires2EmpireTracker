@@ -18,13 +18,13 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - _Requirements: 8.1, 8.3, 7.1_
 
 - [ ] 2. BaselineDecompositionService — core logic
-  - [-] 2.1 Create BaselineDecompositionService with reference data decomposition
+  - [x] 2.1 Create BaselineDecompositionService with reference data decomposition
     - New file: `Server/Services/BaselineDecompositionService.cs`
     - Parse JSON payload, extract known section keys (GameConstants, ShipClass, BlueprintType, TechLevel, Commodity, RefiningRecipe, ResearchTime)
     - Call `UpsertGlobalDataAsync` for each present section
     - Throw on invalid JSON, throw if no sections processed
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.10, 1.11_
-  - [~] 2.2 Add blueprint decomposition to BaselineDecompositionService
+  - [-] 2.2 Add blueprint decomposition to BaselineDecompositionService
     - Deserialize Blueprint array from payload using Newtonsoft
     - Call `UpsertBlueprintAsync("", blueprint)` for each blueprint
     - Throw on any single blueprint upsert failure
@@ -35,7 +35,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Storage backend implementations — JsonFile
-  - [~] 4.1 Implement star system methods in JsonFileStorageBackend
+  - [-] 4.1 Implement star system methods in JsonFileStorageBackend
     - Implement `GetAllStarSystemsAsync` (read from JSON file)
     - Implement `UpsertStarSystemsAsync` (write/overwrite star systems)
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
@@ -45,7 +45,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - _Requirements: 7.1, 7.2, 7.3_
 
 - [ ] 5. Storage backend implementations — Sqlite
-  - [~] 5.1 Implement star system methods in SqliteStorageBackend
+  - [-] 5.1 Implement star system methods in SqliteStorageBackend
     - Implement `GetAllStarSystemsAsync` and `UpsertStarSystemsAsync`
     - Use existing SQLite patterns from the file
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
@@ -54,10 +54,10 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - _Requirements: 7.1, 7.2, 7.3_
 
 - [ ] 6. Storage backend implementations — Postgres and Dynamo
-  - [~] 6.1 Implement star system and colony summary methods in PostgresStorageBackend
+  - [-] 6.1 Implement star system and colony summary methods in PostgresStorageBackend
     - Implement `GetAllStarSystemsAsync`, `UpsertStarSystemsAsync`, `GetColonySummariesForSystemAsync`
     - _Requirements: 8.1, 8.3, 7.1_
-  - [~] 6.2 Implement star system and colony summary methods in DynamoStorageBackend
+  - [-] 6.2 Implement star system and colony summary methods in DynamoStorageBackend
     - Implement `GetAllStarSystemsAsync`, `UpsertStarSystemsAsync`, `GetColonySummariesForSystemAsync`
     - _Requirements: 8.1, 8.3, 7.1_
 

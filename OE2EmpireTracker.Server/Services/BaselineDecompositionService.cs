@@ -1,5 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
 
 namespace OE2EmpireTracker.Server.Services;
@@ -67,6 +69,23 @@ public class BaselineDecompositionService
                     processedCount++;
                     _logger.LogInformation("Decomposed section '{SectionKey}'", key);
                 }
+            }
+
+            // Blueprint decomposition: store each blueprint individually with empty owner
+            if (root.TryGetProperty("Blueprint", out var blueprintSection))
+            {
+                var blueprintJson = blueprintSection.GetRawText();
+                var blueprints = JsonConvert.DeserializeObject<List<Blueprint>>(blueprintJson);
+
+                foreach (var blueprint in blueprints)
+                {
+                    await storage.UpsertBlueprintAsync(string.Empty, blueprint);
+                }
+
+                processedCount++;
+                _logger.LogInformation(
+                    "Decomposed {Count} blueprints as global records",
+                    blueprints.Count);
             }
 
             if (processedCount == 0)

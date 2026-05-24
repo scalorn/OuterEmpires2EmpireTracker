@@ -63,6 +63,11 @@ CREATE TABLE IF NOT EXISTS CharacterPreferences (
     CharacterUUID TEXT PRIMARY KEY,
     Data TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS StarSystems (
+    Id INTEGER PRIMARY KEY,
+    Data TEXT NOT NULL
+);
 ";
 
     private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings()

@@ -131,6 +131,36 @@ public class JsonFileStorageBackend : IStorageBackend
         await WriteAtomicAsync(path, json);
     }
 
+    // --- Star Systems ---
+
+    public async Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync()
+    {
+        var path = Path.Combine(_dataPath, "global", "star-systems.json");
+        await _lock.WaitAsync();
+        try
+        {
+            return await ReadListUnlockedAsync<StarSystem>(path);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    public async Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems)
+    {
+        var path = Path.Combine(_dataPath, "global", "star-systems.json");
+        var json = JsonConvert.SerializeObject(systems, SerializerSettings);
+        await WriteAtomicAsync(path, json);
+    }
+
+    // --- Colony Summaries ---
+
+    public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
+    {
+        throw new NotImplementedException();
+    }
+
     // --- Tokens ---
 
     public async Task<ApiToken?> FindTokenByHashAsync(string tokenHash)
