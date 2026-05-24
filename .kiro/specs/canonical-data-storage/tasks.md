@@ -62,7 +62,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - _Requirements: 8.1, 8.3, 7.1_
 
 - [ ] 7. DataEndpoints modification — route baseline to decomposition
-  - [-] 7.1 Modify PutGlobalData to invoke BaselineDecompositionService for baseline uploads
+  - [x] 7.1 Modify PutGlobalData to invoke BaselineDecompositionService for baseline uploads
     - When `dataType == "baseline"`, call `DecomposeAsync` instead of storing blob
     - Return 200 with `{ decomposed: true }` on success
     - Return 400 on decomposition failure
