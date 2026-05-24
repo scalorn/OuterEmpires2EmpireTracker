@@ -55,29 +55,33 @@ function buildFilterFields(
 
 const columns: Column<Record<string, unknown>>[] = [
   {
-    key: 'BluePrintType',
+    key: 'bluePrintType',
     header: 'Type',
-    render: (item) => String(item.BluePrintType ?? item.BlueprintType ?? item.blueprintType ?? ''),
+    render: (item) => String(item.bluePrintType ?? item.BluePrintType ?? item.BlueprintType ?? ''),
   },
   {
-    key: 'Name',
+    key: 'name',
     header: 'Name',
     render: (item) => (
-      <Link to={`/blueprints/${item.UUID ?? item.uuid}`} className="text-blue-400 hover:underline">
-        {String(item.Name ?? item.name ?? 'Unknown')}
+      <Link to={`/blueprints/${item.uuid ?? item.UUID}`} className="text-blue-400 hover:underline">
+        {String(item.name ?? item.Name ?? 'Unknown')}
       </Link>
     ),
   },
-  { key: 'TechLevel', header: 'Tech Level' },
   {
-    key: 'Evolution',
-    header: 'Evolution',
-    render: (item) => String(item.Evolution ?? item.evolution ?? ''),
+    key: 'techLevel',
+    header: 'Tech Level',
+    render: (item) => String(item.techLevel ?? item.TechLevel ?? ''),
   },
   {
-    key: 'NickName',
+    key: 'evolution',
+    header: 'Evolution',
+    render: (item) => String(item.evolution ?? item.Evolution ?? ''),
+  },
+  {
+    key: 'nickName',
     header: 'Nickname',
-    render: (item) => String(item.NickName ?? item.nickName ?? ''),
+    render: (item) => String(item.nickName ?? item.NickName ?? ''),
   },
 ];
 
@@ -126,28 +130,28 @@ export function BlueprintBrowser() {
 
     if (filters.type) {
       result = result.filter((bp) => {
-        const val = String(bp.BluePrintType ?? bp.BlueprintType ?? bp.blueprintType ?? '');
+        const val = String(bp.bluePrintType ?? bp.BluePrintType ?? bp.BlueprintType ?? bp.blueprintType ?? '');
         return val === filters.type;
       });
     }
 
     if (filters.techLevel) {
       result = result.filter((bp) => {
-        const val = String(bp.TechLevel ?? bp.techLevel ?? '');
+        const val = String(bp.techLevel ?? bp.TechLevel ?? '');
         return val === filters.techLevel;
       });
     }
 
     if (filters.shipClass) {
       result = result.filter((bp) => {
-        const val = String(bp.ShipClass ?? bp.shipClass ?? '');
+        const val = String(bp.class ?? bp.shipClass ?? bp.ShipClass ?? '');
         return val === filters.shipClass;
       });
     }
 
     if (filters.evolution) {
       result = result.filter((bp) => {
-        const val = String(bp.Evolution ?? bp.evolution ?? '');
+        const val = String(bp.evolution ?? bp.Evolution ?? '');
         return val === filters.evolution;
       });
     }
@@ -155,10 +159,10 @@ export function BlueprintBrowser() {
     const searchTerm = (filters.search ?? '').toLowerCase();
     if (searchTerm) {
       result = result.filter((bp) => {
-        const name = String(bp.Name ?? bp.name ?? '').toLowerCase();
-        const bpType = String(bp.BluePrintType ?? bp.BlueprintType ?? bp.blueprintType ?? '').toLowerCase();
-        const shipClass = String(bp.ShipClass ?? bp.shipClass ?? '').toLowerCase();
-        const nickName = String(bp.NickName ?? bp.nickName ?? '').toLowerCase();
+        const name = String(bp.name ?? bp.Name ?? '').toLowerCase();
+        const bpType = String(bp.bluePrintType ?? bp.BluePrintType ?? '').toLowerCase();
+        const shipClass = String(bp.class ?? bp.shipClass ?? bp.ShipClass ?? '').toLowerCase();
+        const nickName = String(bp.nickName ?? bp.NickName ?? '').toLowerCase();
         return name.includes(searchTerm) || bpType.includes(searchTerm) ||
           shipClass.includes(searchTerm) || nickName.includes(searchTerm);
       });
