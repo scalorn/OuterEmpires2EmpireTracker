@@ -55,6 +55,8 @@ export interface SurveyFilters {
   system?: string;
   resourceType?: string;
   purityLevel?: string;
+  surveyType?: string;
+  minAmount?: string;
   search?: string;
 }
 
