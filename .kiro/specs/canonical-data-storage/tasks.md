@@ -34,12 +34,12 @@ Decomposes the monolithic baseline upload into individual canonical records and 
 - [~] 3. Checkpoint — Verify decomposition service compiles
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Storage backend implementations — JsonFile
+- [x] 4. Storage backend implementations — JsonFile
   - [x] 4.1 Implement star system methods in JsonFileStorageBackend
     - Implement `GetAllStarSystemsAsync` (read from JSON file)
     - Implement `UpsertStarSystemsAsync` (write/overwrite star systems)
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
-  - [-] 4.2 Implement GetColonySummariesForSystemAsync in JsonFileStorageBackend
+  - [x] 4.2 Implement GetColonySummariesForSystemAsync in JsonFileStorageBackend
     - Scan all characters' colonies, filter by system, project to ColonySummary
     - Return only ColonyName, Size (structure count), PlanetName
     - _Requirements: 7.1, 7.2, 7.3_
@@ -53,31 +53,31 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Query colonies by system, project to ColonySummary
     - _Requirements: 7.1, 7.2, 7.3_
 
-- [ ] 6. Storage backend implementations — Postgres and Dynamo
-  - [-] 6.1 Implement star system and colony summary methods in PostgresStorageBackend
+- [x] 6. Storage backend implementations — Postgres and Dynamo
+  - [x] 6.1 Implement star system and colony summary methods in PostgresStorageBackend
     - Implement `GetAllStarSystemsAsync`, `UpsertStarSystemsAsync`, `GetColonySummariesForSystemAsync`
     - _Requirements: 8.1, 8.3, 7.1_
   - [x] 6.2 Implement star system and colony summary methods in DynamoStorageBackend
     - Implement `GetAllStarSystemsAsync`, `UpsertStarSystemsAsync`, `GetColonySummariesForSystemAsync`
     - _Requirements: 8.1, 8.3, 7.1_
 
-- [ ] 7. DataEndpoints modification — route baseline to decomposition
+- [x] 7. DataEndpoints modification — route baseline to decomposition
   - [x] 7.1 Modify PutGlobalData to invoke BaselineDecompositionService for baseline uploads
     - When `dataType == "baseline"`, call `DecomposeAsync` instead of storing blob
     - Return 200 with `{ decomposed: true }` on success
     - Return 400 on decomposition failure
     - Non-baseline dataTypes continue unchanged
     - _Requirements: 9.1, 9.2, 9.3_
-  - [-] 7.2 Register BaselineDecompositionService in Program.cs DI container
+  - [x] 7.2 Register BaselineDecompositionService in Program.cs DI container
     - Add `builder.Services.AddSingleton<BaselineDecompositionService>()`
     - _Requirements: 9.3_
 
 - [ ] 8. PublicDataEndpoints — systems, planets, asteroids
-  - [~] 8.1 Add systems endpoint to PublicDataEndpoints
+  - [-] 8.1 Add systems endpoint to PublicDataEndpoints
     - `GET /api/v1/public/systems` → returns all star systems as JSON array
     - Return empty array when no systems stored
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
-  - [~] 8.2 Add planets and asteroids endpoints to PublicDataEndpoints
+  - [-] 8.2 Add planets and asteroids endpoints to PublicDataEndpoints
     - `GET /api/v1/public/systems/{systemId}/planets` → planets for system
     - `GET /api/v1/public/systems/{systemId}/asteroids` → asteroid summaries for system
     - Return empty arrays when none exist
@@ -99,11 +99,11 @@ Decomposes the monolithic baseline upload into individual canonical records and 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 11. Web UI API layer — new public endpoint functions
-  - [~] 11.1 Add systems/planets/asteroids/colonies functions to public.ts
+  - [-] 11.1 Add systems/planets/asteroids/colonies functions to public.ts
     - Add `getSystems()`, `getSystemPlanets(systemId)`, `getSystemAsteroids(systemId)`, `getSystemColonies(systemId)`
     - Add TypeScript interfaces: `StarSystem`, `AsteroidSummary`, `ColonySummary`
     - _Requirements: 13.1, 13.2_
-  - [~] 11.2 Add evolution filter to BlueprintFilters interface in public.ts
+  - [-] 11.2 Add evolution filter to BlueprintFilters interface in public.ts
     - Add `evolution?: string` to `BlueprintFilters`
     - _Requirements: 10.5, 13.5_
 

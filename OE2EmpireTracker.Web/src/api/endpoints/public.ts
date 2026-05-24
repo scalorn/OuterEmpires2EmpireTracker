@@ -11,6 +11,7 @@ export interface BlueprintFilters {
   type?: string;
   techLevel?: string;
   shipClass?: string;
+  evolution?: string;
   search?: string;
 }
 
@@ -30,6 +31,7 @@ export const publicApi = {
         ...(filters?.type && { type: filters.type }),
         ...(filters?.techLevel && { techLevel: filters.techLevel }),
         ...(filters?.shipClass && { shipClass: filters.shipClass }),
+        ...(filters?.evolution && { evolution: filters.evolution }),
         ...(filters?.search && { search: filters.search }),
       },
     }).json<PaginatedResponse<unknown>>(),

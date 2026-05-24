@@ -16,6 +16,7 @@ public static class PublicDataEndpoints
         publicGroup.MapGet("/blueprints", GetPublicBlueprints);
         publicGroup.MapGet("/surveys", GetPublicSurveys);
         publicGroup.MapGet("/colonies", GetPublicColonies);
+        publicGroup.MapGet("/systems", GetPublicSystems);
     }
 
     private static async Task<IResult> GetPublicBlueprints(
@@ -43,6 +44,14 @@ public static class PublicDataEndpoints
         int pageSize = 20)
     {
         return await GetPublicDataAsync(storage, "Colonies", page, pageSize);
+    }
+
+    private static async Task<IResult> GetPublicSystems(
+        HttpContext httpContext,
+        IStorageBackend storage)
+    {
+        var systems = await storage.GetAllStarSystemsAsync();
+        return Results.Ok(systems);
     }
 
     private static async Task<IResult> GetPublicDataAsync(
