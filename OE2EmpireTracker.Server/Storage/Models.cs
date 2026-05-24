@@ -100,3 +100,19 @@ public class ServerCharacter
     public string? FactionUUID { get; set; }
     public EntityMetadata Metadata { get; set; } = new EntityMetadata();
 }
+
+/// <summary>Public colony summary (name + size only).</summary>
+public class ColonySummary
+{
+    public string ColonyName { get; set; } = string.Empty;
+    public int Size { get; set; }
+    public string PlanetName { get; set; } = string.Empty;
+}
+
+/// <summary>Public asteroid summary for system view.</summary>
+public class AsteroidSummary
+{
+    public string UUID { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public int SystemId { get; set; }
+}

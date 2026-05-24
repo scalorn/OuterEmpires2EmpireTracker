@@ -28,6 +28,13 @@ public interface IStorageBackend
     Task<string?> GetGlobalDataAsync(string dataType);
     Task UpsertGlobalDataAsync(string dataType, string json);
 
+    // Star Systems (global, not per-character)
+    Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync();
+    Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems);
+
+    // Colony summaries for a system (derived from per-character data)
+    Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId);
+
     // Tokens
     Task<ApiToken?> FindTokenByHashAsync(string tokenHash);
     Task<IReadOnlyList<ApiToken>> GetAllTokensAsync();
