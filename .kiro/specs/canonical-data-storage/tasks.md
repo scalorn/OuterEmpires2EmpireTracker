@@ -72,24 +72,24 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Add `builder.Services.AddSingleton<BaselineDecompositionService>()`
     - _Requirements: 9.3_
 
-- [ ] 8. PublicDataEndpoints — systems, planets, asteroids
-  - [-] 8.1 Add systems endpoint to PublicDataEndpoints
+- [x] 8. PublicDataEndpoints — systems, planets, asteroids
+  - [x] 8.1 Add systems endpoint to PublicDataEndpoints
     - `GET /api/v1/public/systems` → returns all star systems as JSON array
     - Return empty array when no systems stored
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
-  - [-] 8.2 Add planets and asteroids endpoints to PublicDataEndpoints
+  - [x] 8.2 Add planets and asteroids endpoints to PublicDataEndpoints
     - `GET /api/v1/public/systems/{systemId}/planets` → planets for system
     - `GET /api/v1/public/systems/{systemId}/asteroids` → asteroid summaries for system
     - Return empty arrays when none exist
     - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
 - [ ] 9. PublicDataEndpoints — colonies and blueprint enhancement
-  - [~] 9.1 Add colony summary endpoint to PublicDataEndpoints
+  - [-] 9.1 Add colony summary endpoint to PublicDataEndpoints
     - `GET /api/v1/public/systems/{systemId}/colonies` → colony summaries (name, size, planet only)
     - Return empty array when no colonies exist
     - Never expose structures, resources, or inventories
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 12.1_
-  - [~] 9.2 Enhance public blueprints endpoint to include global blueprints
+  - [-] 9.2 Enhance public blueprints endpoint to include global blueprints
     - Include blueprints with characterUUID="" in results
     - Combine with existing shared-blueprint logic
     - Maintain pagination with combined total count
@@ -98,17 +98,17 @@ Decomposes the monolithic baseline upload into individual canonical records and 
 - [~] 10. Checkpoint — Verify all server endpoints compile and existing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Web UI API layer — new public endpoint functions
+- [x] 11. Web UI API layer — new public endpoint functions
   - [x] 11.1 Add systems/planets/asteroids/colonies functions to public.ts
     - Add `getSystems()`, `getSystemPlanets(systemId)`, `getSystemAsteroids(systemId)`, `getSystemColonies(systemId)`
     - Add TypeScript interfaces: `StarSystem`, `AsteroidSummary`, `ColonySummary`
     - _Requirements: 13.1, 13.2_
-  - [-] 11.2 Add evolution filter to BlueprintFilters interface in public.ts
+  - [x] 11.2 Add evolution filter to BlueprintFilters interface in public.ts
     - Add `evolution?: string` to `BlueprintFilters`
     - _Requirements: 10.5, 13.5_
 
 - [ ] 12. Blueprint Browser enhancement — data-driven filters
-  - [~] 12.1 Fetch reference data for filter dropdowns in BlueprintBrowser
+  - [-] 12.1 Fetch reference data for filter dropdowns in BlueprintBrowser
     - On mount, fetch BlueprintType, TechLevel, ShipClass from `getGlobalData`
     - Populate Type, Tech Level, Ship Class dropdowns from server data
     - Show empty dropdowns without error when data unavailable

@@ -19,6 +19,7 @@ public static class PublicDataEndpoints
         publicGroup.MapGet("/systems", GetPublicSystems);
         publicGroup.MapGet("/systems/{systemId}/planets", GetPublicPlanets);
         publicGroup.MapGet("/systems/{systemId}/asteroids", GetPublicAsteroids);
+        publicGroup.MapGet("/systems/{systemId}/colonies", GetPublicColonySummaries);
     }
 
     private static async Task<IResult> GetPublicBlueprints(
@@ -27,7 +28,41 @@ public static class PublicDataEndpoints
         int page = 1,
         int pageSize = 20)
     {
-        return await GetPublicDataAsync(storage, "Blueprints", page, pageSize);
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 100);
+
+        var publicEntities = new List<object>();
+
+        // Include global blueprints (characterUUID="")
+        var globalBlueprints = await storage.GetAllBlueprintsAsync(string.Empty);
+        publicEntities.AddRange(globalBlueprints.Cast<object>());
+
+        // Include character-shared blueprints
+        var allCharacters = await storage.GetAllCharactersAsync();
+
+        foreach (var character in allCharacters)
+        {
+            var rules = await storage.GetSharingRulesForCharacterAsync(character.UUID);
+            var hasPublicData = rules.Any(r =>
+                r.TargetType == SharingTargetType.Public &&
+                (r.DataType == null || r.DataType == "Blueprints" || r.DataType == "All"));
+
+            if (!hasPublicData)
+            {
+                continue;
+            }
+
+            var blueprints = await storage.GetAllBlueprintsAsync(character.UUID);
+            publicEntities.AddRange(blueprints.Cast<object>());
+        }
+
+        var totalCount = publicEntities.Count;
+        var items = publicEntities
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToArray();
+
+        return Results.Ok(new PaginatedResult(items, page, pageSize, totalCount));
     }
 
     private static async Task<IResult> GetPublicSurveys(
@@ -109,6 +144,15 @@ public static class PublicDataEndpoints
         }
 
         return Results.Ok(results);
+    }
+
+    private static async Task<IResult> GetPublicColonySummaries(
+        HttpContext httpContext,
+        IStorageBackend storage,
+        int systemId)
+    {
+        var summaries = await storage.GetColonySummariesForSystemAsync(systemId);
+        return Results.Ok(summaries);
     }
 
     private static async Task<IResult> GetPublicDataAsync(
