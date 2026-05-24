@@ -305,7 +305,17 @@ namespace OE2EmpireTracker.Client
         public async Task UploadGlobalDataAsync(string dataType, string json)
         {
             string path = string.Format("/global/{0}", dataType);
-            await PutStringAsync(path, json).ConfigureAwait(false);
+
+            // Baseline uploads are large and trigger server-side decomposition
+            // (867+ blueprint upserts). Use a longer timeout than the default 30s.
+            if (string.Equals(dataType, "baseline", StringComparison.OrdinalIgnoreCase))
+            {
+                await PutStringWithTimeoutAsync(path, json, TimeSpan.FromMinutes(5)).ConfigureAwait(false);
+            }
+            else
+            {
+                await PutStringAsync(path, json).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -476,7 +486,7 @@ namespace OE2EmpireTracker.Client
             }
 
             _httpClient = new HttpClient(handler);
-            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+            _httpClient.Timeout = TimeSpan.FromMinutes(5);
 
             // Set the Authorization header using the SecureString token.
             string token = CredentialStore.SecureStringToString(_bearerToken);
@@ -1023,6 +1033,27 @@ namespace OE2EmpireTracker.Client
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _httpClient.PutAsync(_serverUrl + ApiPrefix + path, content).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "PUT {0}{1}{2} failed", _serverUrl, ApiPrefix, path);
+                SetConnected(false, ex.Message);
+                throw;
+            }
+        }
+
+        private async Task PutStringWithTimeoutAsync(string path, string json, TimeSpan timeout)
+        {
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                using (var cts = new CancellationTokenSource(timeout))
+                {
+                    var response = await _httpClient.PutAsync(
+                        _serverUrl + ApiPrefix + path, content, cts.Token).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode();
+                }
             }
             catch (HttpRequestException ex)
             {
