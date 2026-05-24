@@ -76,7 +76,14 @@ type ViewMode = 'table' | 'cards';
 export function BlueprintBrowser() {
   const [filters, setFilters] = useState<BlueprintFilters>({});
   const [viewMode, setViewMode] = useState<ViewMode>('table');
-  const { data, isLoading, isFetching, isError, refetch } = usePublicBlueprints(filters);
+
+  // Only pass server-supported filters (not search) to the API
+  const serverFilters: BlueprintFilters = {
+    ...(filters.type && { type: filters.type }),
+    ...(filters.techLevel && { techLevel: filters.techLevel }),
+    ...(filters.shipClass && { shipClass: filters.shipClass }),
+  };
+  const { data, isLoading, isFetching, isError, refetch } = usePublicBlueprints(serverFilters);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value || undefined }));
@@ -85,7 +92,18 @@ export function BlueprintBrowser() {
   const handleClear = () => setFilters({});
 
   const items = (data as { items?: unknown[] })?.items ?? (Array.isArray(data) ? data : []);
-  const blueprints = items as Record<string, unknown>[];
+  const allBlueprints = items as Record<string, unknown>[];
+
+  // Client-side search filtering
+  const searchTerm = (filters.search ?? '').toLowerCase();
+  const blueprints = searchTerm
+    ? allBlueprints.filter((bp) => {
+        const name = String(bp.Name ?? bp.name ?? '').toLowerCase();
+        const bpType = String(bp.BlueprintType ?? bp.blueprintType ?? '').toLowerCase();
+        const shipClass = String(bp.ShipClass ?? bp.shipClass ?? '').toLowerCase();
+        return name.includes(searchTerm) || bpType.includes(searchTerm) || shipClass.includes(searchTerm);
+      })
+    : allBlueprints;
 
   return (
     <div>
