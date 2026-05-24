@@ -1,7 +1,7 @@
 // This file is auto-generated. Do not edit manually.
 // Regenerate with: npm run generate-types
 // Generated from: Models.cs, PermissionModels.cs
-// Generated at: 2026-05-24T08:00:23.111Z
+// Generated at: 2026-05-24T12:41:23.685Z
 
 export type TokenRole = 'Owner' | 'FactionLeader' | 'Character';
 
@@ -72,6 +72,29 @@ export interface ServerCharacter {
   name: string;
   factionUUID: string | null;
   metadata: EntityMetadata;
+}
+
+export interface ColonySummary {
+  colonyName: string;
+  size: number;
+  planetName: string;
+}
+
+export interface AsteroidSummary {
+  uuid: string;
+  name: string;
+  systemId: number;
+}
+
+export interface BlueprintSummary {
+  uuid: string;
+  name: string;
+  nickName: string;
+  bluePrintType: string;
+  techLevel: string;
+  evolution: number;
+  class: number;
+  description: string;
 }
 
 export interface FactionCapability {
