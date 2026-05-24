@@ -160,6 +160,34 @@ public class DynamoStorageBackend : IStorageBackend
         await PutItemDataAsync("Global#Data", dataType, json);
     }
 
+    // --- Star Systems ---
+
+    public async Task<IReadOnlyList<StarSystem>> GetAllStarSystemsAsync()
+    {
+        var json = await GetItemDataAsync("Global#Data", "StarSystems");
+        if (json != null)
+        {
+            return JsonConvert.DeserializeObject<List<StarSystem>>(json) ?? new List<StarSystem>();
+        }
+
+        return new List<StarSystem>();
+    }
+
+    public async Task UpsertStarSystemsAsync(IReadOnlyList<StarSystem> systems)
+    {
+        await PutItemDataAsync(
+            "Global#Data",
+            "StarSystems",
+            JsonConvert.SerializeObject(systems, SerializerSettings));
+    }
+
+    // --- Colony Summaries ---
+
+    public Task<IReadOnlyList<ColonySummary>> GetColonySummariesForSystemAsync(int systemId)
+    {
+        throw new NotImplementedException();
+    }
+
     // --- Tokens ---
 
     public async Task<ApiToken?> FindTokenByHashAsync(string tokenHash)
