@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { surveysApi } from '../endpoints/surveys';
-import { publicApi, type SurveyFilters } from '../endpoints/public';
+import { publicApi } from '../endpoints/public';
 import { queryKeys } from './queryKeys';
 import { useAuthStore } from '../../auth/store';
 import type { Survey } from '../types/domain';
@@ -21,10 +21,11 @@ export function useSurveyDetail(charUUID?: string | null, entityUUID?: string | 
   });
 }
 
-export function usePublicSurveys(filters?: SurveyFilters) {
+export function usePublicSurveys() {
   return useQuery({
-    queryKey: queryKeys.publicSurveys(filters),
-    queryFn: () => publicApi.getPublicSurveys(filters),
+    queryKey: ['publicSurveys'],
+    queryFn: () => publicApi.getPublicSurveys(undefined, 1, 10000),
+    placeholderData: (prev) => prev,
   });
 }
 

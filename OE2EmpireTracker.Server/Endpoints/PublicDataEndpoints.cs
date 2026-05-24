@@ -223,7 +223,7 @@ public static class PublicDataEndpoints
         int pageSize)
     {
         page = Math.Max(1, page);
-        pageSize = Math.Clamp(pageSize, 1, 100);
+        pageSize = Math.Clamp(pageSize, 1, 10000);
 
         var allCharacters = await storage.GetAllCharactersAsync();
         var publicEntities = new List<object>();

@@ -74,7 +74,7 @@ type ViewMode = 'table' | 'cards';
 export function SurveyBrowser() {
   const [filters, setFilters] = useState<SurveyFilters>({});
   const [viewMode, setViewMode] = useState<ViewMode>('table');
-  const { data, isLoading, isError, refetch } = usePublicSurveys(filters);
+  const { data, isLoading, isError, refetch } = usePublicSurveys();
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value || undefined }));
@@ -82,11 +82,27 @@ export function SurveyBrowser() {
 
   const handleClear = () => setFilters({});
 
-  if (isLoading) return <LoadingSpinner message="Loading surveys..." />;
-  if (isError) return <RetryableError message="Failed to load surveys." onRetry={() => void refetch()} />;
-
   const items = (data as { items?: unknown[] })?.items ?? (Array.isArray(data) ? data : []);
-  const surveys = items as Record<string, unknown>[];
+  const allSurveys = items as Record<string, unknown>[];
+
+  // Client-side filtering
+  const surveys = allSurveys.filter((s) => {
+    if (filters.system) {
+      const sys = String(s.systemName ?? s.SystemName ?? '').toLowerCase();
+      if (!sys.includes(filters.system.toLowerCase())) return false;
+    }
+    if (filters.search) {
+      const term = filters.search.toLowerCase();
+      const sys = String(s.systemName ?? s.SystemName ?? '').toLowerCase();
+      const planet = String(s.planetName ?? s.PlanetName ?? '').toLowerCase();
+      const scanned = String(s.scannedBy ?? s.ScannedBy ?? '').toLowerCase();
+      if (!sys.includes(term) && !planet.includes(term) && !scanned.includes(term)) return false;
+    }
+    return true;
+  });
+
+  if (isLoading && !data) return <LoadingSpinner message="Loading surveys..." />;
+  if (isError) return <RetryableError message="Failed to load surveys." onRetry={() => void refetch()} />;
 
   return (
     <div>
