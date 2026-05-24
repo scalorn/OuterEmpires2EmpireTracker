@@ -17,7 +17,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Add `GetColonySummariesForSystemAsync(int systemId)` returning `IReadOnlyList<ColonySummary>`
     - _Requirements: 8.1, 8.3, 7.1_
 
-- [ ] 2. BaselineDecompositionService — core logic
+- [x] 2. BaselineDecompositionService — core logic
   - [x] 2.1 Create BaselineDecompositionService with reference data decomposition
     - New file: `Server/Services/BaselineDecompositionService.cs`
     - Parse JSON payload, extract known section keys (GameConstants, ShipClass, BlueprintType, TechLevel, Commodity, RefiningRecipe, ResearchTime)
@@ -31,7 +31,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Skip silently if Blueprint section is absent
     - _Requirements: 1.9, 2.1, 2.2, 2.3_
 
-- [~] 3. Checkpoint — Verify decomposition service compiles
+- [x] 3. Checkpoint — Verify decomposition service compiles
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 4. Storage backend implementations — JsonFile
@@ -44,7 +44,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Return only ColonyName, Size (structure count), PlanetName
     - _Requirements: 7.1, 7.2, 7.3_
 
-- [ ] 5. Storage backend implementations — Sqlite
+- [x] 5. Storage backend implementations — Sqlite
   - [x] 5.1 Implement star system methods in SqliteStorageBackend
     - Implement `GetAllStarSystemsAsync` and `UpsertStarSystemsAsync`
     - Use existing SQLite patterns from the file
@@ -83,7 +83,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Return empty arrays when none exist
     - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 9. PublicDataEndpoints — colonies and blueprint enhancement
+- [x] 9. PublicDataEndpoints — colonies and blueprint enhancement
   - [x] 9.1 Add colony summary endpoint to PublicDataEndpoints
     - `GET /api/v1/public/systems/{systemId}/colonies` → colony summaries (name, size, planet only)
     - Return empty array when no colonies exist
@@ -95,7 +95,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Maintain pagination with combined total count
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 12.2_
 
-- [~] 10. Checkpoint — Verify all server endpoints compile and existing tests pass
+- [x] 10. Checkpoint — Verify all server endpoints compile and existing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 11. Web UI API layer — new public endpoint functions
@@ -107,7 +107,7 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Add `evolution?: string` to `BlueprintFilters`
     - _Requirements: 10.5, 13.5_
 
-- [ ] 12. Blueprint Browser enhancement — data-driven filters
+- [x] 12. Blueprint Browser enhancement — data-driven filters
   - [x] 12.1 Fetch reference data for filter dropdowns in BlueprintBrowser
     - On mount, fetch BlueprintType, TechLevel, ShipClass from `getGlobalData`
     - Populate Type, Tech Level, Ship Class dropdowns from server data
@@ -119,70 +119,70 @@ Decomposes the monolithic baseline upload into individual canonical records and 
     - Display columns: Type, Name, Tech Level, Evolution, Nickname
     - _Requirements: 10.5, 10.6, 13.3, 13.4_
 
-- [~] 13. Checkpoint — Verify web UI compiles (TypeScript check)
+- [x] 13. Checkpoint — Verify web UI compiles (TypeScript check)
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 14. Server unit tests — BaselineDecompositionService
-  - [-] 14.1 Write unit tests for BaselineDecompositionService reference data decomposition
+- [x] 14. Server unit tests — BaselineDecompositionService
+  - [x] 14.1 Write unit tests for BaselineDecompositionService reference data decomposition
     - Valid payload with all sections → all stored
     - Payload missing some sections → only present sections stored
     - Invalid JSON → throws JsonException
     - Empty object (no known sections) → throws InvalidOperationException
     - _Requirements: 1.1–1.8, 1.10, 1.11_
-  - [-] 14.2 Write unit tests for BaselineDecompositionService blueprint decomposition
+  - [x] 14.2 Write unit tests for BaselineDecompositionService blueprint decomposition
     - Blueprint array present → each blueprint upserted with characterUUID=""
     - Empty Blueprint array → no upserts, no error
     - Duplicate UUID → upsert (overwrite)
     - _Requirements: 1.9, 2.1, 2.3, 2.4_
-  - [~] 14.3 Write property test for decomposition round-trip (Property 1)
+  - [x] 14.3 Write property test for decomposition round-trip (Property 1)
     - **Property 1: Decomposition Round-Trip**
     - For any valid payload with section S, decompose then read(S) produces equivalent data
     - **Validates: Requirements 1.2–1.8, 11.4**
-  - [~] 14.4 Write property test for decomposition idempotency (Property 2)
+  - [x] 14.4 Write property test for decomposition idempotency (Property 2)
     - **Property 2: Decomposition Idempotency**
     - Decomposing the same payload twice produces identical stored state
     - **Validates: Requirements 11.1**
 
-- [ ] 15. Server unit tests — Public endpoints and visibility
-  - [-] 15.1 Write unit tests for public systems/planets/asteroids/colonies endpoints
+- [x] 15. Server unit tests — Public endpoints and visibility
+  - [x] 15.1 Write unit tests for public systems/planets/asteroids/colonies endpoints
     - Systems returns all systems; empty array when none
     - Colony summary returns only name/size/planet; never internals
     - Planets/asteroids return empty array when none exist
     - _Requirements: 5.1, 5.4, 6.3, 6.4, 7.1, 7.2_
-  - [-] 15.2 Write unit tests for enhanced public blueprints endpoint
+  - [x] 15.2 Write unit tests for enhanced public blueprints endpoint
     - Includes global blueprints (characterUUID="")
     - Combines global + shared in single result set
     - Non-public data type returns 404
     - _Requirements: 4.1, 4.3, 12.2, 12.5_
-  - [~] 15.3 Write property test for visibility isolation (Property 4)
+  - [x] 15.3 Write property test for visibility isolation (Property 4)
     - **Property 4: Visibility Isolation**
     - No public endpoint response contains private entity fields
     - **Validates: Requirements 12.1–12.5**
 
-- [ ] 16. Server unit tests — Storage and additivity
-  - [-] 16.1 Write unit tests for storage backend star system methods
+- [x] 16. Server unit tests — Storage and additivity
+  - [x] 16.1 Write unit tests for storage backend star system methods
     - UpsertStarSystemsAsync stores and retrieves correctly
     - Upsert with same Id overwrites (upsert semantics)
     - GetAllStarSystemsAsync returns empty list initially
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
-  - [~] 16.2 Write property test for blueprint additivity (Property 3)
+  - [x] 16.2 Write property test for blueprint additivity (Property 3)
     - **Property 3: Blueprint Additivity**
     - Sequential uploads with overlapping blueprints produce the union
     - **Validates: Requirements 11.2**
-  - [~] 16.3 Write property test for colony summary projection (Property 5)
+  - [x] 16.3 Write property test for colony summary projection (Property 5)
     - **Property 5: Colony Summary Projection**
     - Colony summary fields == {ColonyName, Size, PlanetName} only
     - **Validates: Requirements 7.2, 7.3**
 
-- [ ] 17. Web UI tests — BlueprintBrowser
-  - [~] 17.1 Write Vitest tests for BlueprintBrowser data-driven filters
+- [x] 17. Web UI tests — BlueprintBrowser
+  - [x] 17.1 Write Vitest tests for BlueprintBrowser data-driven filters
     - Renders with empty reference data (no errors)
     - Populates dropdowns from API responses
     - Displays correct columns (Type, Name, Tech Level, Evolution, Nickname)
     - Filters apply correctly to combined global+shared results
     - _Requirements: 10.2, 10.5, 10.6, 10.7, 13.1, 13.6_
 
-- [~] 18. Final checkpoint — Full build and test verification
+- [x] 18. Final checkpoint — Full build and test verification
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
