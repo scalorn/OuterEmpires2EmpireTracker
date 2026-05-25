@@ -7,6 +7,7 @@ import { StructureSummary } from './StructureSummary';
 import { publicApi } from '../../api/endpoints/public';
 import { extractBlueprintProperties } from '../../utils/blueprintHelpers';
 import { useColonyPlannerBuildOrder } from '../../api/hooks/useColonyPlanner';
+import type { PlannedStructure } from './computeColonyStatus';
 
 export function ColonyPlanner() {
   const structures = usePlannerStore((s) => s.structures);
@@ -14,7 +15,7 @@ export function ColonyPlanner() {
   const addStructure = usePlannerStore((s) => s.addStructure);
   const cacheBlueprint = usePlannerStore((s) => s.cacheBlueprint);
   const clearPlan = usePlannerStore((s) => s.clearPlan);
-  const applyOptimizedOrder = usePlannerStore((s) => s.applyOptimizedOrder);
+  const replaceStructures = usePlannerStore((s) => s.replaceStructures);
 
   const [error, setError] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -66,59 +67,73 @@ export function ColonyPlanner() {
         structures: wireStructures,
       });
       if (result.optimizedOrder && result.optimizedOrder.length > 0) {
-        // Identify inserted structures (UUIDs not in local plan)
-        const localUUIDs = new Set(structures.map((s) => s.blueprintUUID));
-        const insertedEntries = result.optimizedOrder.filter(
-          (entry) => !localUUIDs.has(entry.flatpackBlueprintUUID)
-        );
-
-        // For each inserted structure, fetch blueprint details and add to plan
-        for (const entry of insertedEntries) {
-          const uuid = entry.flatpackBlueprintUUID;
-
-          // Find the corresponding step for name and type info
-          const stepIndex = result.optimizedOrder.indexOf(entry);
-          const step = result.steps[stepIndex];
-          const name = step?.structureName ?? 'Support Structure';
-          const blueprintType = step?.blueprintType ?? '';
-          const subType = blueprintType.toLowerCase().startsWith('flatpacks/')
-            ? blueprintType.slice('Flatpacks/'.length)
-            : blueprintType;
-
-          // Fetch properties (use cache if available)
-          let properties = blueprintCache[uuid];
-          if (!properties) {
-            try {
-              const detail = await publicApi.getBlueprintDetail(uuid);
-              properties = extractBlueprintProperties(detail);
-              cacheBlueprint(uuid, properties);
-            } catch {
-              // If we can't fetch details, use zeroed properties
-              properties = {
-                powerProvided: 0,
-                powerRequired: 0,
-                habitationProvision: 0,
-                foodProvision: 0,
-                entertainmentProvided: 0,
-                warehouseCapacity: 0,
-                workerSlots: 0,
-              };
-            }
-          }
-
-          addStructure({
-            id: crypto.randomUUID(),
-            blueprintUUID: uuid,
-            name,
-            subType,
-            state: 'Staged',
-            buildQueuePosition: entry.buildQueueSequence,
-            properties,
-          });
+        // Build the complete structure list from the optimizer response.
+        // The optimizedOrder array is positional — index = build sequence.
+        // It may contain duplicate blueprint UUIDs (e.g. 3 reactors) and
+        // structures not in the original plan (optimizer-inserted support).
+        const localByUUID = new Map<string, PlannedStructure[]>();
+        for (const s of structures) {
+          const list = localByUUID.get(s.blueprintUUID) ?? [];
+          list.push(s);
+          localByUUID.set(s.blueprintUUID, list);
         }
 
-        // Now apply the full reordering (updates positions for all structures)
-        applyOptimizedOrder(result.optimizedOrder);
+        const newStructures: PlannedStructure[] = [];
+
+        for (let i = 0; i < result.optimizedOrder.length; i++) {
+          const entry = result.optimizedOrder[i];
+          const uuid = entry.flatpackBlueprintUUID;
+
+          // Try to reuse an existing local structure (preserves state, id)
+          const localList = localByUUID.get(uuid);
+          if (localList && localList.length > 0) {
+            const existing = localList.shift()!;
+            newStructures.push({
+              ...existing,
+              buildQueuePosition: i + 1,
+            });
+          } else {
+            // Inserted by optimizer — create a new structure
+            const step = result.steps[i];
+            const name = step?.structureName ?? 'Support Structure';
+            const blueprintType = step?.blueprintType ?? '';
+            const subType = blueprintType.toLowerCase().startsWith('flatpacks/')
+              ? blueprintType.slice('Flatpacks/'.length)
+              : blueprintType;
+
+            // Get properties (use cache or fetch)
+            let properties = blueprintCache[uuid];
+            if (!properties) {
+              try {
+                const detail = await publicApi.getBlueprintDetail(uuid);
+                properties = extractBlueprintProperties(detail);
+                cacheBlueprint(uuid, properties);
+              } catch {
+                properties = {
+                  powerProvided: 0,
+                  powerRequired: 0,
+                  habitationProvision: 0,
+                  foodProvision: 0,
+                  entertainmentProvided: 0,
+                  warehouseCapacity: 0,
+                  workerSlots: 0,
+                };
+              }
+            }
+
+            newStructures.push({
+              id: crypto.randomUUID(),
+              blueprintUUID: uuid,
+              name,
+              subType,
+              state: 'Staged',
+              buildQueuePosition: i + 1,
+              properties,
+            });
+          }
+        }
+
+        replaceStructures(newStructures);
       }
     } catch (err) {
       const message =

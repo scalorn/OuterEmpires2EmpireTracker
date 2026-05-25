@@ -39,6 +39,7 @@ export interface PlannerState {
   moveStructureUp: (id: string) => void;
   moveStructureDown: (id: string) => void;
   applyOptimizedOrder: (optimizedOrder: OptimizedOrderEntry[]) => void;
+  replaceStructures: (structures: PlannedStructure[]) => void;
 }
 
 export const usePlannerStore = create<PlannerState>()((set) => ({
@@ -148,4 +149,10 @@ export const usePlannerStore = create<PlannerState>()((set) => ({
       });
       return { structures, status: computeColonyStatus(structures) };
     }),
+
+  replaceStructures: (structures) =>
+    set(() => ({
+      structures,
+      status: computeColonyStatus(structures),
+    })),
 }));
