@@ -1,7 +1,7 @@
 // This file is auto-generated. Do not edit manually.
 // Regenerate with: npm run generate-types
 // Generated from: Models.cs, PermissionModels.cs
-// Generated at: 2026-05-25T17:32:14.776Z
+// Generated at: 2026-05-25T19:54:25.923Z
 
 export type TokenRole = 'Owner' | 'FactionLeader' | 'Character';
 
@@ -240,7 +240,7 @@ export interface PlannerStructure {
   isStaged: boolean;
   isOnline: boolean;
   buildQueueSequence: number;
-  assignedWorkers?: Record<string, string>;
+  assignedWorkers?: Record<string, boolean>;
 }
 
 export interface ColonyStatusResult {

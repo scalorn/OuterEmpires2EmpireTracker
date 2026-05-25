@@ -454,7 +454,9 @@ function StructuresTab({ colony, colonyUUID }: { colony: Colony; colonyUUID: str
       isStaged: s.status === 'staged',
       isOnline: s.status === 'online',
       buildQueueSequence: s.buildQueueSequence,
-      assignedWorkers: s.assignedWorkers ?? {},
+      assignedWorkers: Object.fromEntries(
+        Object.entries(s.assignedWorkers ?? {}).map(([k, v]) => [k, v === 'True' || v === 'true']),
+      ),
     }));
     const request: ColonyPlannerRequest = { structures: plannerStructures };
     optimizeBuildOrder.mutate(request, {
