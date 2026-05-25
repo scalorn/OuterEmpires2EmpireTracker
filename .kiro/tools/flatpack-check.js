@@ -30,7 +30,7 @@ for (const file of FILES) {
     if (!fs.existsSync(file)) continue;
 
     const label = path.basename(path.dirname(file)) + '/' + path.basename(file);
-    const raw = fs.readFileSync(file, 'utf8');
+    const raw = fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, '');
     let data;
     try {
         data = JSON.parse(raw);

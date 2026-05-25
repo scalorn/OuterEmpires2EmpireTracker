@@ -137,7 +137,7 @@ Display asteroid max reserves on the survey detail page. Implementation spans th
     - _Requirements: 3.2, 3.4, 4.1, 4.2, 4.5, 4.6_
     - _Output: OE2EmpireTracker.Web/src/pages/public/__tests__/SurveyDetail.test.tsx_
 
-- [-] 8. Final checkpoint - Ensure all tests pass
+- [x] 8. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

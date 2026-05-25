@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Server.Storage;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Server.Tests.Storage;
 
@@ -145,7 +146,7 @@ public class ColonySummaryPropertyTests
                     .Select(s => new ColonyStructure { UUID = Guid.NewGuid().ToString() })
                     .ToList(),
                 Commodities = new List<CommodityRequested>(),
-                LastImportDateTime = DateTime.UtcNow.ToString("o"),
+                LastImportDateTime = SystemClock.UtcNow.ToString("o"),
             };
             await _backend.UpsertColonyAsync(scenario.CharacterUUID, colony);
         }
