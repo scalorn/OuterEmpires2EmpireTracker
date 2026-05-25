@@ -48,3 +48,15 @@ export function formatResourceQuantity(qty: number): string {
   }
   return qty.toLocaleString();
 }
+
+/**
+ * Formats an asteroid max reserve value for display.
+ * Returns "-" for undefined/null, "0" for zero, integer with thousands separators otherwise.
+ */
+export function formatMaxReserve(value: number | undefined | null): string {
+  if (value === undefined || value === null) return '-';
+  return value.toLocaleString(undefined, {
+    maximumFractionDigits: 0,
+    useGrouping: true,
+  });
+}

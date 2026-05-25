@@ -1,4 +1,5 @@
 import { apiClient } from '../client';
+import type { Asteroid } from '../types/domain';
 
 export interface PaginatedResponse<T> {
   items: T[];
@@ -109,4 +110,8 @@ export const publicApi = {
   /** Fetch a single blueprint's full detail by UUID. */
   getBlueprintDetail: (uuid: string) =>
     apiClient.get(`api/v1/public/blueprints/${uuid}`).json<Record<string, unknown>>(),
+
+  /** Fetch a single asteroid's detail (reserves) by UUID. */
+  getAsteroidDetail: (uuid: string) =>
+    apiClient.get(`api/v1/public/asteroids/${uuid}`).json<Asteroid>(),
 };

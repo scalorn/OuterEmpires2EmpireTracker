@@ -83,6 +83,7 @@ export interface Survey {
   scannerBlueprint?: string;
   resources: SurveyResource[];
   assignedRigCount?: number;
+  asteroidUUID?: string;
 }
 
 export interface SurveyResource {
@@ -327,6 +328,15 @@ export interface Asteroid {
   name: string;
   systemName: string;
   linkedSurveyUUID?: string;
+  reserves: AsteroidReserve[];
+}
+
+export interface AsteroidReserve {
+  resourceName: string;
+  purity: string;
+  maxReserve: number;
+  currentReserve?: number;
+  resetTimestamp?: string;
 }
 
 // =============================================================================

@@ -19,6 +19,7 @@ public static class PublicDataEndpoints
         publicGroup.MapGet("/colonies", GetPublicColonies);
         publicGroup.MapGet("/systems", GetPublicSystems);
         publicGroup.MapGet("/systems/{systemId}/planets", GetPublicPlanets);
+        publicGroup.MapGet("/asteroids/{uuid}", GetPublicAsteroidDetail);
         publicGroup.MapGet("/systems/{systemId}/asteroids", GetPublicAsteroids);
         publicGroup.MapGet("/systems/{systemId}/colonies", GetPublicColonySummaries);
     }
@@ -214,6 +215,38 @@ public static class PublicDataEndpoints
     {
         var summaries = await storage.GetColonySummariesForSystemAsync(systemId);
         return Results.Ok(summaries);
+    }
+
+    private static async Task<IResult> GetPublicAsteroidDetail(
+        HttpContext httpContext,
+        IStorageBackend storage,
+        string uuid)
+    {
+        var allCharacters = await storage.GetAllCharactersAsync();
+
+        foreach (var character in allCharacters)
+        {
+            var asteroids = await storage.GetAllAsteroidsAsync(character.UUID);
+            var asteroid = asteroids.FirstOrDefault(a =>
+                string.Equals(a.UUID, uuid, StringComparison.OrdinalIgnoreCase));
+
+            if (asteroid != null)
+            {
+                return Results.Ok(new
+                {
+                    uuid = asteroid.UUID,
+                    name = asteroid.Name,
+                    reserves = asteroid.Reserves.Select(r => new
+                    {
+                        resourceName = r.ResourceName,
+                        purity = r.Purity,
+                        maxReserve = r.MaxReserve,
+                    }),
+                });
+            }
+        }
+
+        return Results.NotFound(new { error = "Asteroid not found" });
     }
 
     private static async Task<IResult> GetPublicDataAsync(
