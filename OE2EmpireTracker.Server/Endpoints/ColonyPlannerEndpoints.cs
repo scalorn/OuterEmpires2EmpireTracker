@@ -96,7 +96,7 @@ public static class ColonyPlannerEndpoints
             return Results.BadRequest(new { error = "Invalid JSON body" });
         }
 
-        if (request == null || request.Structures == null)
+        if (request == null || request.Structures == null || request.Structures.Count == 0)
         {
             return Results.BadRequest(new { error = "structures field is required" });
         }
@@ -267,9 +267,18 @@ public static class ColonyPlannerEndpoints
 
     private sealed class BuildOrderResponse
     {
+        public List<OptimizedOrderEntryResponse> OptimizedOrder { get; set; } = new ();
+
         public List<BuildOrderStepResponse> Steps { get; set; } = new ();
 
         public string TotalTimeEstimate { get; set; } = string.Empty;
+    }
+
+    private sealed class OptimizedOrderEntryResponse
+    {
+        public string FlatpackBlueprintUUID { get; set; } = string.Empty;
+
+        public int BuildQueueSequence { get; set; }
     }
 
     private sealed class BuildOrderStepResponse

@@ -11,6 +11,13 @@ vi.mock('../../api/endpoints/public', () => ({
   },
 }));
 
+const mockMutateAsync = vi.fn();
+vi.mock('../../api/hooks/useColonyPlanner', () => ({
+  useColonyPlannerBuildOrder: () => ({
+    mutateAsync: mockMutateAsync,
+  }),
+}));
+
 vi.mock('../../api/hooks/useFlatpacks', () => ({
   useFlatpacks: () => ({
     data: [
@@ -212,5 +219,207 @@ describe('ColonyPlanner integration', () => {
 
     // Structure should NOT be added to the list
     expect(screen.getByText(/no structures added yet/i)).toBeInTheDocument();
+  });
+});
+
+
+describe('Optimize Build Order button', () => {
+  beforeEach(() => {
+    usePlannerStore.setState({ structures: [], blueprintCache: {}, status: null });
+    vi.clearAllMocks();
+  });
+
+  it('displays "Optimize Build Order" button', () => {
+    renderWithProviders();
+    expect(screen.getByRole('button', { name: /optimize build order/i })).toBeInTheDocument();
+  });
+
+  it('button is disabled when structure list is empty', () => {
+    renderWithProviders();
+    const button = screen.getByRole('button', { name: /optimize build order/i });
+    expect(button).toBeDisabled();
+  });
+
+  it('button is disabled when structure list has only 1 item', () => {
+    usePlannerStore.getState().addStructure({
+      id: 'test-id-1',
+      blueprintUUID: 'uuid-1',
+      name: 'Iron Mining Rig',
+      subType: 'MiningRig',
+      state: 'Staged',
+      buildQueuePosition: 1,
+      properties: {
+        powerProvided: 0,
+        powerRequired: 50,
+        habitationProvision: 0,
+        foodProvision: 10,
+        entertainmentProvided: 0,
+        warehouseCapacity: 100,
+        workerSlots: 8,
+      },
+    });
+
+    renderWithProviders();
+    const button = screen.getByRole('button', { name: /optimize build order/i });
+    expect(button).toBeDisabled();
+  });
+
+  it('button is enabled when structure list has 2+ items', () => {
+    usePlannerStore.getState().addStructure({
+      id: 'test-id-1',
+      blueprintUUID: 'uuid-1',
+      name: 'Iron Mining Rig',
+      subType: 'MiningRig',
+      state: 'Staged',
+      buildQueuePosition: 1,
+      properties: {
+        powerProvided: 0,
+        powerRequired: 50,
+        habitationProvision: 0,
+        foodProvision: 10,
+        entertainmentProvided: 0,
+        warehouseCapacity: 100,
+        workerSlots: 8,
+      },
+    });
+    usePlannerStore.getState().addStructure({
+      id: 'test-id-2',
+      blueprintUUID: 'uuid-2',
+      name: 'Steel Refinery',
+      subType: 'Refinery',
+      state: 'Staged',
+      buildQueuePosition: 2,
+      properties: {
+        powerProvided: 0,
+        powerRequired: 30,
+        habitationProvision: 0,
+        foodProvision: 5,
+        entertainmentProvided: 0,
+        warehouseCapacity: 50,
+        workerSlots: 4,
+      },
+    });
+
+    renderWithProviders();
+    const button = screen.getByRole('button', { name: /optimize build order/i });
+    expect(button).not.toBeDisabled();
+  });
+
+  it('shows spinner and disables button during request', async () => {
+    // Use a deferred promise to control when the mutation resolves
+    let resolveRequest!: (value: unknown) => void;
+    mockMutateAsync.mockImplementation(
+      () => new Promise((resolve) => { resolveRequest = resolve; })
+    );
+
+    usePlannerStore.getState().addStructure({
+      id: 'test-id-1',
+      blueprintUUID: 'uuid-1',
+      name: 'Iron Mining Rig',
+      subType: 'MiningRig',
+      state: 'Staged',
+      buildQueuePosition: 1,
+      properties: {
+        powerProvided: 0,
+        powerRequired: 50,
+        habitationProvision: 0,
+        foodProvision: 10,
+        entertainmentProvided: 0,
+        warehouseCapacity: 100,
+        workerSlots: 8,
+      },
+    });
+    usePlannerStore.getState().addStructure({
+      id: 'test-id-2',
+      blueprintUUID: 'uuid-2',
+      name: 'Steel Refinery',
+      subType: 'Refinery',
+      state: 'Staged',
+      buildQueuePosition: 2,
+      properties: {
+        powerProvided: 0,
+        powerRequired: 30,
+        habitationProvision: 0,
+        foodProvision: 5,
+        entertainmentProvided: 0,
+        warehouseCapacity: 50,
+        workerSlots: 4,
+      },
+    });
+
+    renderWithProviders();
+    const button = screen.getByRole('button', { name: /optimize build order/i });
+    fireEvent.click(button);
+
+    // Button should now show "Optimizing…" and be disabled
+    await waitFor(() => {
+      expect(screen.getByText('Optimizing…')).toBeInTheDocument();
+    });
+    const optimizingButton = screen.getByRole('button', { name: /optimizing/i });
+    expect(optimizingButton).toBeDisabled();
+
+    // Resolve the request to clean up
+    resolveRequest({ optimizedOrder: [] });
+    await waitFor(() => {
+      expect(screen.getByText('Optimize Build Order')).toBeInTheDocument();
+    });
+  });
+
+  it('shows error message on API failure without modifying structure list', async () => {
+    mockMutateAsync.mockRejectedValue(new Error('Server unavailable'));
+
+    usePlannerStore.getState().addStructure({
+      id: 'test-id-1',
+      blueprintUUID: 'uuid-1',
+      name: 'Iron Mining Rig',
+      subType: 'MiningRig',
+      state: 'Staged',
+      buildQueuePosition: 1,
+      properties: {
+        powerProvided: 0,
+        powerRequired: 50,
+        habitationProvision: 0,
+        foodProvision: 10,
+        entertainmentProvided: 0,
+        warehouseCapacity: 100,
+        workerSlots: 8,
+      },
+    });
+    usePlannerStore.getState().addStructure({
+      id: 'test-id-2',
+      blueprintUUID: 'uuid-2',
+      name: 'Steel Refinery',
+      subType: 'Refinery',
+      state: 'Staged',
+      buildQueuePosition: 2,
+      properties: {
+        powerProvided: 0,
+        powerRequired: 30,
+        habitationProvision: 0,
+        foodProvision: 5,
+        entertainmentProvided: 0,
+        warehouseCapacity: 50,
+        workerSlots: 4,
+      },
+    });
+
+    renderWithProviders();
+    const button = screen.getByRole('button', { name: /optimize build order/i });
+    fireEvent.click(button);
+
+    // Wait for error message to appear
+    await waitFor(() => {
+      expect(screen.getByText('Server unavailable')).toBeInTheDocument();
+    });
+
+    // Error should be in the red banner
+    const errorElement = screen.getByText('Server unavailable');
+    expect(errorElement).toHaveClass('text-red-300');
+
+    // Structures should remain unchanged
+    const structures = usePlannerStore.getState().structures;
+    expect(structures).toHaveLength(2);
+    expect(structures[0].buildQueuePosition).toBe(1);
+    expect(structures[1].buildQueuePosition).toBe(2);
   });
 });

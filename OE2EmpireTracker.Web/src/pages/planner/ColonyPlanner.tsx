@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { usePlannerStore } from './plannerStore';
+import { usePlannerStore, mapToWireFormat } from './plannerStore';
 import { FlatpackDropdown } from './FlatpackDropdown';
 import { StructureList } from './StructureList';
 import { StatusDisplay } from './StatusDisplay';
@@ -7,7 +7,6 @@ import { StructureSummary } from './StructureSummary';
 import { publicApi } from '../../api/endpoints/public';
 import { extractBlueprintProperties } from '../../utils/blueprintHelpers';
 import { useColonyPlannerBuildOrder } from '../../api/hooks/useColonyPlanner';
-import type { PlannerStructure } from '../../api/types/generated';
 
 export function ColonyPlanner() {
   const structures = usePlannerStore((s) => s.structures);
@@ -60,14 +59,7 @@ export function ColonyPlanner() {
     setIsOptimizing(true);
     setError(null);
 
-    const wireStructures: PlannerStructure[] = structures.map((s) => ({
-      flatpackBlueprintUUID: s.blueprintUUID,
-      isBuilt: s.state === 'Built',
-      isStaged: s.state === 'Staged',
-      isOnline: s.state === 'Online',
-      buildQueueSequence: s.buildQueuePosition,
-      assignedWorkers: {},
-    }));
+    const wireStructures = mapToWireFormat(structures);
 
     try {
       const result = await buildOrderMutation.mutateAsync({

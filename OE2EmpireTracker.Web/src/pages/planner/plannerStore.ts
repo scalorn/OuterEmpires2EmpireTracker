@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { computeColonyStatus } from './computeColonyStatus';
 import type { PlannedStructure, ColonyStatus, StructureState } from './computeColonyStatus';
 import type { BlueprintProperties } from '../../utils/blueprintHelpers';
+import type { PlannerStructure } from '../../api/types/generated';
 
 export type { PlannedStructure, ColonyStatus, StructureState } from './computeColonyStatus';
 export type { BlueprintProperties } from '../../utils/blueprintHelpers';
@@ -9,6 +10,21 @@ export type { BlueprintProperties } from '../../utils/blueprintHelpers';
 export interface OptimizedOrderEntry {
   flatpackBlueprintUUID: string;
   buildQueueSequence: number;
+}
+
+/**
+ * Maps local PlannedStructure[] to the wire format expected by the build-order endpoint.
+ * Pure function extracted for testability.
+ */
+export function mapToWireFormat(structures: PlannedStructure[]): PlannerStructure[] {
+  return structures.map((s) => ({
+    flatpackBlueprintUUID: s.blueprintUUID,
+    isBuilt: s.state === 'Built',
+    isStaged: s.state === 'Staged',
+    isOnline: s.state === 'Online',
+    buildQueueSequence: s.buildQueuePosition,
+    assignedWorkers: {},
+  }));
 }
 
 export interface PlannerState {

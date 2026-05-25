@@ -6,7 +6,7 @@
  */
 import { describe, it, expect, beforeEach } from 'vitest';
 import fc from 'fast-check';
-import { usePlannerStore } from './plannerStore';
+import { usePlannerStore, mapToWireFormat } from './plannerStore';
 import { computeColonyStatus } from './computeColonyStatus';
 import type { PlannedStructure, OptimizedOrderEntry } from './plannerStore';
 
@@ -397,6 +397,90 @@ describe('plannerStore property-based tests', () => {
             }
           }
         ),
+        { numRuns: 100 }
+      );
+    });
+  });
+
+  // Feature: colony-planner-reorder, Property 5: Wire format mapping correctness
+  /**
+   * Property 5: Wire format mapping correctness
+   *
+   * For any list of planned structures, the mapping to the build-order request wire
+   * format SHALL correctly translate: `blueprintUUID` → `flatpackBlueprintUUID`,
+   * `state === 'Built'` → `isBuilt: true`, `state === 'Staged'` → `isStaged: true`,
+   * `state === 'Online'` → `isOnline: true`, and `buildQueuePosition` → `buildQueueSequence`.
+   *
+   * **Validates: Requirements 2.2**
+   */
+  describe('Property 5: Wire format mapping correctness', () => {
+    it('blueprintUUID maps to flatpackBlueprintUUID for every structure', () => {
+      fc.assert(
+        fc.property(arbNonCCStructureList, (structures) => {
+          const wire = mapToWireFormat(structures as PlannedStructure[]);
+
+          for (let i = 0; i < structures.length; i++) {
+            expect(wire[i].flatpackBlueprintUUID).toBe(structures[i].blueprintUUID);
+          }
+        }),
+        { numRuns: 100 }
+      );
+    });
+
+    it('state maps to exactly one true boolean flag', () => {
+      fc.assert(
+        fc.property(arbNonCCStructureList, (structures) => {
+          const wire = mapToWireFormat(structures as PlannedStructure[]);
+
+          for (let i = 0; i < structures.length; i++) {
+            const s = structures[i];
+            const w = wire[i];
+
+            expect(w.isBuilt).toBe(s.state === 'Built');
+            expect(w.isStaged).toBe(s.state === 'Staged');
+            expect(w.isOnline).toBe(s.state === 'Online');
+
+            // Exactly one flag is true (states are mutually exclusive)
+            const trueCount = [w.isBuilt, w.isStaged, w.isOnline].filter(Boolean).length;
+            expect(trueCount).toBe(1);
+          }
+        }),
+        { numRuns: 100 }
+      );
+    });
+
+    it('buildQueuePosition maps to buildQueueSequence', () => {
+      fc.assert(
+        fc.property(arbNonCCStructureList, (structures) => {
+          const wire = mapToWireFormat(structures as PlannedStructure[]);
+
+          for (let i = 0; i < structures.length; i++) {
+            expect(wire[i].buildQueueSequence).toBe(structures[i].buildQueuePosition);
+          }
+        }),
+        { numRuns: 100 }
+      );
+    });
+
+    it('assignedWorkers is always an empty object', () => {
+      fc.assert(
+        fc.property(arbNonCCStructureList, (structures) => {
+          const wire = mapToWireFormat(structures as PlannedStructure[]);
+
+          for (const w of wire) {
+            expect(w.assignedWorkers).toEqual({});
+          }
+        }),
+        { numRuns: 100 }
+      );
+    });
+
+    it('output array length equals input array length', () => {
+      fc.assert(
+        fc.property(arbNonCCStructureList, (structures) => {
+          const wire = mapToWireFormat(structures as PlannedStructure[]);
+          expect(wire.length).toBe(structures.length);
+        }),
         { numRuns: 100 }
       );
     });

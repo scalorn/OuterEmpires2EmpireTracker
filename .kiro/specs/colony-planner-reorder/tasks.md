@@ -36,7 +36,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `plannerStore.property.test.ts` created_
     - _Verification: `npx vitest run` from OE2EmpireTracker.Web/_
 
-- [ ] 2. Implement StructureList sorting and disable logic
+- [x] 2. Implement StructureList sorting and disable logic
   - [x] 2.1 Add sort-by-`buildQueuePosition` and compute disable flags in StructureList
     - Sort structures by `buildQueuePosition` ascending before rendering
     - Compute `isMoveUpDisabled` and `isMoveDownDisabled` for each structure based on: CC status, position, CC protection, single-item list
@@ -47,15 +47,15 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `StructureList.tsx` modified_
     - _Verification: `npm run build` from OE2EmpireTracker.Web/_
 
-  - [-] 2.2 Write property test for disable logic correctness
+  - [x] 2.2 Write property test for disable logic correctness
     - **Property 2: Disable logic correctness**
     - **Validates: Requirements 1.3, 1.4, 1.5, 1.6, 1.7**
     - _Inputs: `StructureList.tsx`, `plannerStore.ts`_
     - _Output: `StructureList.property.test.ts` created_
     - _Verification: `npx vitest run` from OE2EmpireTracker.Web/_
 
-- [ ] 3. Add Up/Down buttons to StructureItem
-  - [-] 3.1 Extend StructureItem props and render move buttons
+- [x] 3. Add Up/Down buttons to StructureItem
+  - [x] 3.1 Extend StructureItem props and render move buttons
     - Add `onMoveUp`, `onMoveDown`, `isMoveUpDisabled`, `isMoveDownDisabled` to `StructureItemProps`
     - Render Up (▲) and Down (▼) buttons with disabled states and appropriate aria-labels
     - Buttons disabled when corresponding `isMove*Disabled` prop is true
@@ -88,7 +88,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `ColonyPlanner.tsx` modified_
     - _Verification: `npm run build` from OE2EmpireTracker.Web/_
 
-  - [~] 5.3 Write unit tests for Optimize Build Order button
+  - [-] 5.3 Write unit tests for Optimize Build Order button
     - Test button exists with correct text
     - Test button disabled when list empty or has 1 item
     - Test button disabled + spinner during request
@@ -98,7 +98,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `ColonyPlanner.test.tsx` modified_
     - _Verification: `npx vitest run` from OE2EmpireTracker.Web/_
 
-  - [~] 5.4 Write property test for wire format mapping
+  - [-] 5.4 Write property test for wire format mapping
     - **Property 5: Wire format mapping correctness**
     - **Validates: Requirements 2.2**
     - _Inputs: `plannerStore.ts`, `ColonyPlanner.tsx`_
@@ -109,7 +109,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Enhance server endpoint to use real BuildOrderOptimizer
-  - [~] 7.1 Add `OptimizedOrderEntryResponse` model and update `BuildOrderResponse`
+  - [-] 7.1 Add `OptimizedOrderEntryResponse` model and update `BuildOrderResponse`
     - Add `OptimizedOrderEntryResponse` class with `FlatpackBlueprintUUID` and `BuildQueueSequence`
     - Add `OptimizedOrder` list property to `BuildOrderResponse`
     - Add empty-structures validation (return 400 when `Structures` is empty list)
