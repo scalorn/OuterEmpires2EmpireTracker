@@ -238,3 +238,53 @@ describe('StructureList property-based tests', () => {
       );
     });
 
+    it('full disable logic correctness for mixed lists with CC at position 1', () => {
+      fc.assert(
+        fc.property(arbStructureListWithCC, (structures) => {
+          const flags = computeDisableFlags(structures);
+          const sorted = [...structures].sort((a, b) => a.buildQueuePosition - b.buildQueuePosition);
+
+          for (let i = 0; i < sorted.length; i++) {
+            const structure = sorted[i];
+            const isCC = structure.subType === 'ColonyCommandCentre';
+            const isFirst = i === 0;
+            const isLast = i === sorted.length - 1;
+            const isSingleItem = sorted.length === 1;
+            const ccAtFirst = sorted[0]?.subType === 'ColonyCommandCentre';
+            const isSecondWithCCFirst = i === 1 && ccAtFirst;
+
+            const expectedUp = isCC || isFirst || isSecondWithCCFirst || isSingleItem;
+            const expectedDown = isCC || isLast || isSingleItem;
+
+            expect(flags[i].isMoveUpDisabled).toBe(expectedUp);
+            expect(flags[i].isMoveDownDisabled).toBe(expectedDown);
+          }
+        }),
+        { numRuns: 100 }
+      );
+    });
+
+    it('full disable logic correctness for lists without CC', () => {
+      fc.assert(
+        fc.property(arbNonCCStructureList, (structures) => {
+          const flags = computeDisableFlags(structures);
+          const sorted = [...structures].sort((a, b) => a.buildQueuePosition - b.buildQueuePosition);
+
+          for (let i = 0; i < sorted.length; i++) {
+            // No CC in this list, so isCC=false and ccAtFirst=false always
+            const isFirst = i === 0;
+            const isLast = i === sorted.length - 1;
+            const isSingleItem = sorted.length === 1;
+
+            const expectedUp = isFirst || isSingleItem;
+            const expectedDown = isLast || isSingleItem;
+
+            expect(flags[i].isMoveUpDisabled).toBe(expectedUp);
+            expect(flags[i].isMoveDownDisabled).toBe(expectedDown);
+          }
+        }),
+        { numRuns: 100 }
+      );
+    });
+  });
+});
