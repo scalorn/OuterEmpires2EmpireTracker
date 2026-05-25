@@ -32,7 +32,8 @@ The web planner is inspired by the WinForms ColonyStatusCalculator but is intent
 3. THE Flatpack_Dropdown SHALL display each Flatpack_Blueprint by its human-readable name (the `extendedName` field), not by UUID
 4. WHEN the user types in the Flatpack_Dropdown, THE Flatpack_Dropdown SHALL filter the displayed options to match the search text against blueprint name (case-insensitive substring match)
 5. THE Flatpack_Dropdown SHALL group flatpack options by their sub-type extracted from the `bluePrintType` after the "Flatpacks/" prefix (groups: MiningRig, Refinery, ResearchLaboratory, Manufactory, ColonyCommandCentre, CommodityFactory)
-6. IF the Server_API returns an error, THEN THE Flatpack_Dropdown SHALL display an error message and a retry option
+6. IF the Server_API returns an error, THEN THE Flatpack_Dropdown SHALL display an error message and a retry option regardless of any previously cached data
+7. WHEN the Server_API fetch succeeds after a previous error, THE Flatpack_Dropdown SHALL hide any previously displayed error messages and retry options
 
 
 ### Requirement 2: Add Structure to Plan
@@ -42,11 +43,12 @@ The web planner is inspired by the WinForms ColonyStatusCalculator but is intent
 #### Acceptance Criteria
 
 1. WHEN the user selects a flatpack from the Flatpack_Dropdown and clicks Add, THE Colony_Planner SHALL fetch the full blueprint detail from `/api/v1/public/blueprints/{uuid}` to obtain the Blueprint_Properties
-2. WHEN the blueprint detail is fetched, THE Colony_Planner SHALL add a new entry to the Structure_List containing the blueprint name, type, properties, and a default state of Staged
+2. WHEN the blueprint detail is fetched successfully, THE Colony_Planner SHALL add a new entry to the Structure_List containing the blueprint name, type, properties, and a default state of Staged
 3. THE Structure_List SHALL display the structure name (from the blueprint `extendedName`) and the structure sub-type (MiningRig, Refinery, etc.) for each added entry
 4. THE Colony_Planner SHALL allow the user to add multiple instances of the same Flatpack_Blueprint
 5. WHEN a structure is added, THE Colony_Planner SHALL assign it a sequential build queue position
-6. IF the blueprint detail fetch fails, THEN THE Colony_Planner SHALL display an error message and not add the structure to the plan
+6. IF the blueprint detail fetch fails, THEN THE Colony_Planner SHALL display an error message and SHALL NOT add the structure to the Structure_List
+7. WHEN the blueprint detail fetch succeeds, THE Colony_Planner SHALL NOT display any error messages related to the fetch operation
 
 ### Requirement 3: Remove Structure from Plan
 
@@ -55,7 +57,7 @@ The web planner is inspired by the WinForms ColonyStatusCalculator but is intent
 #### Acceptance Criteria
 
 1. WHEN the user clicks Remove on a structure in the Structure_List, THE Colony_Planner SHALL remove that structure from the plan
-2. WHEN a structure is removed, THE Colony_Status_Display SHALL recompute the colony status automatically
+2. WHEN a structure is removed, THE Colony_Status_Display SHALL recompute the colony status automatically; IF the status computation fails due to a system error, THEN THE Colony_Planner SHALL complete the removal and display an error indicating the status computation failure
 3. THE Colony_Planner SHALL allow the user to remove any structure regardless of its position in the list
 
 
@@ -70,10 +72,10 @@ The web planner is inspired by the WinForms ColonyStatusCalculator but is intent
 3. THE Colony_Status_Display SHALL compute Habitation status as: HabitationProvision (sum of "Habitation Provision" from Online structures) versus HabitationRequired (total workers across all Built and Online structures)
 4. THE Colony_Status_Display SHALL compute Food status as: FoodProvision (sum of "Food Provision" from ALL structures regardless of state) versus FoodRequired (total workers across all Built and Online structures)
 5. THE Colony_Status_Display SHALL compute Entertainment status as: EntertainmentProvided (sum of "Entertainment Provided" from Online structures) versus EntertainmentRequired (total workers multiplied by 2)
-6. THE Colony_Status_Display SHALL compute Warehouse status as: WarehouseCapacity (sum of "Warehouse Capacity" from Online structures) versus WarehouseRequired (fixed at 0, since the web planner has no inventory)
+6. THE Colony_Status_Display SHALL compute Warehouse status as: WarehouseCapacity (sum of "Warehouse Capacity" from Online structures) versus WarehouseRequired (configurable value, defaulting to 0 for the web planner since it has no inventory)
 7. THE Colony_Status_Display SHALL use the "Ideal" worker calculation: when a structure is Online, all worker slots defined in its Blueprint_Properties are considered filled
-8. WHEN the Structure_List is empty, THE Colony_Status_Display SHALL display a prompt to add structures
-9. THE Colony_Status_Display SHALL indicate deficit (red) or surplus (green) for each Status_Category
+8. WHEN the Structure_List is empty, THE Colony_Status_Display SHALL display a neutral state with a prompt to add structures (not surplus or deficit indicators)
+9. THE Colony_Status_Display SHALL indicate deficit (red) or surplus (green) for each Status_Category when the Structure_List contains at least one structure
 
 
 ### Requirement 5: Structure State Toggle
@@ -97,7 +99,7 @@ The web planner is inspired by the WinForms ColonyStatusCalculator but is intent
 
 1. THE Colony_Planner SHALL be accessible without authentication
 2. THE Colony_Planner SHALL use only public API endpoints (under `/api/v1/public/`) for fetching blueprint data
-3. THE Colony_Planner SHALL store the plan only in client-side state (no server persistence)
+3. THE Colony_Planner SHALL store the plan only in client-side state (no server persistence); THE server SHALL NOT cache, store, or persist any anonymous user plan data
 4. WHEN the user navigates away from the Colony_Planner page, THE Planner_Store SHALL retain the plan state for the duration of the browser session
 
 
@@ -109,7 +111,7 @@ The web planner is inspired by the WinForms ColonyStatusCalculator but is intent
 
 1. WHEN the user clicks a Clear/Reset button, THE Colony_Planner SHALL remove all structures from the Structure_List
 2. WHEN the plan is cleared, THE Colony_Status_Display SHALL reset to the empty state prompt
-3. THE Colony_Planner SHALL confirm the clear action before removing structures if the plan contains entries
+3. IF the plan contains one or more entries, THEN THE Colony_Planner SHALL confirm the clear action before removing structures; IF the plan is empty, THEN THE Colony_Planner SHALL skip the confirmation dialog
 
 ### Requirement 8: Structure Display
 
@@ -133,5 +135,5 @@ The web planner is inspired by the WinForms ColonyStatusCalculator but is intent
 2. THE Colony_Planner SHALL cache fetched blueprint details in the Planner_Store to avoid redundant API calls when the same blueprint type is added multiple times
 3. THE Colony_Planner SHALL read the following Blueprint_Properties keys for status computation: "Power Provided", "Power Required", "Habitation Provision", "Food Provision", "Entertainment Provided", "Warehouse Capacity"
 4. THE Colony_Planner SHALL determine ideal worker count per structure by summing the numeric values of worker slot properties (e.g. "Blue Collar Workers", "White Collar Workers", "Specialists") from the Blueprint_Properties
-5. IF a Blueprint_Properties key is missing or non-numeric, THEN THE Colony_Planner SHALL treat that value as 0
+5. IF a Blueprint_Properties key is missing or non-numeric, THEN THE Colony_Planner SHALL treat only that specific property value as 0 (other properties with valid values SHALL still be used normally)
 
