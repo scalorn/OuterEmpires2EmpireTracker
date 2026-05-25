@@ -741,7 +741,7 @@ namespace OE2EmpireTracker.Services
             }
 
             // Fall back to global blueprints outside the lock
-            return EmpireContext.GetInstance()?.FindGlobalBlueprint(id);
+            return EmpireContext.GetInstanceIfLoaded()?.FindGlobalBlueprint(id);
         }
 
         public void InvalidateBlueprintCache()
@@ -2887,7 +2887,7 @@ namespace OE2EmpireTracker.Services
             if (_allBlueprintsCache == null)
             {
                 _allBlueprintsCache = new List<Blueprint>(_blueprintList);
-                var ec = EmpireContext.GetInstance();
+                var ec = EmpireContext.GetInstanceIfLoaded();
                 if (ec?.GlobalBlueprintList != null)
                     _allBlueprintsCache.AddRange(ec.GlobalBlueprintList);
             }
@@ -3521,7 +3521,7 @@ namespace OE2EmpireTracker.Services
                 var result = _blueprintList
                     .Select(b => new ReadOnlyBlueprint(b))
                     .ToList();
-                var ec = EmpireContext.GetInstance();
+                var ec = EmpireContext.GetInstanceIfLoaded();
                 if (ec?.GlobalBlueprintList != null)
                 {
                     foreach (var gb in ec.GlobalBlueprintList)
