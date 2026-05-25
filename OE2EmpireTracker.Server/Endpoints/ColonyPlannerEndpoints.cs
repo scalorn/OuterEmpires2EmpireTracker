@@ -105,8 +105,21 @@ public static class ColonyPlannerEndpoints
             return Results.BadRequest(new { error = "structures field is required" });
         }
 
-        var result = await CalculateBuildOrder(request, httpContext);
-        return Results.Ok(result);
+        try
+        {
+            var result = await CalculateBuildOrder(request, httpContext);
+            return Results.Ok(result);
+        }
+        catch (Exception ex)
+        {
+            var logger = httpContext.RequestServices.GetRequiredService<ILoggerFactory>()
+                .CreateLogger("ColonyPlannerEndpoints");
+            logger.LogError(ex, "Build order optimization failed");
+            return Results.Problem(
+                detail: ex.Message,
+                statusCode: 500,
+                title: "Optimization failed");
+        }
     }
 
     // --- Computation Methods ---
