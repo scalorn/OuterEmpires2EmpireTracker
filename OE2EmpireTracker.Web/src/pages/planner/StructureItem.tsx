@@ -30,7 +30,7 @@ const STATE_STYLES: Record<StructureState, { border: string; badge: string; labe
 
 const STATES: StructureState[] = ['Staged', 'Built', 'Online'];
 
-export function StructureItem({ structure, onStateChange, onRemove, onMoveUp: _onMoveUp, onMoveDown: _onMoveDown, isMoveUpDisabled: _isMoveUpDisabled, isMoveDownDisabled: _isMoveDownDisabled }: StructureItemProps) {
+export function StructureItem({ structure, onStateChange, onRemove, onMoveUp, onMoveDown, isMoveUpDisabled, isMoveDownDisabled }: StructureItemProps) {
   const style = STATE_STYLES[structure.state];
 
   return (
@@ -57,22 +57,44 @@ export function StructureItem({ structure, onStateChange, onRemove, onMoveUp: _o
       </div>
 
       <div className="mt-3 flex items-center justify-between">
-        <div className="inline-flex rounded border border-gray-600" role="group" aria-label="Structure state">
-          {STATES.map((s) => (
+        <div className="flex items-center gap-2">
+          <div className="inline-flex rounded border border-gray-600" role="group" aria-label="Reorder">
             <button
-              key={s}
               type="button"
-              onClick={() => onStateChange(structure.id, s)}
-              className={`px-2 py-1 text-xs font-medium transition-colors first:rounded-l last:rounded-r ${
-                structure.state === s
-                  ? 'bg-gray-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
-              }`}
-              aria-pressed={structure.state === s}
+              onClick={() => onMoveUp(structure.id)}
+              disabled={isMoveUpDisabled}
+              className="px-2 py-1 text-xs font-medium transition-colors first:rounded-l last:rounded-r bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-800 disabled:hover:text-gray-400"
+              aria-label="Move up"
             >
-              {s}
+              ▲
             </button>
-          ))}
+            <button
+              type="button"
+              onClick={() => onMoveDown(structure.id)}
+              disabled={isMoveDownDisabled}
+              className="px-2 py-1 text-xs font-medium transition-colors first:rounded-l last:rounded-r bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-800 disabled:hover:text-gray-400"
+              aria-label="Move down"
+            >
+              ▼
+            </button>
+          </div>
+          <div className="inline-flex rounded border border-gray-600" role="group" aria-label="Structure state">
+            {STATES.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => onStateChange(structure.id, s)}
+                className={`px-2 py-1 text-xs font-medium transition-colors first:rounded-l last:rounded-r ${
+                  structure.state === s
+                    ? 'bg-gray-600 text-white'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
+                }`}
+                aria-pressed={structure.state === s}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
         </div>
         <button
           type="button"

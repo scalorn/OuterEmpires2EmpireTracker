@@ -1,5 +1,6 @@
 import { usePlannerStore } from './plannerStore';
 import { StructureItem } from './StructureItem';
+import { computeDisableFlags } from './computeDisableFlags';
 
 export function StructureList() {
   const structures = usePlannerStore((s) => s.structures);
@@ -9,6 +10,7 @@ export function StructureList() {
   const moveStructureDown = usePlannerStore((s) => s.moveStructureDown);
 
   const sorted = [...structures].sort((a, b) => a.buildQueuePosition - b.buildQueuePosition);
+  const flags = computeDisableFlags(structures);
 
   return (
     <div>
@@ -19,30 +21,18 @@ export function StructureList() {
         </p>
       ) : (
         <div className="space-y-2" role="list">
-          {sorted.map((structure, index) => {
-            const isCC = structure.subType === 'ColonyCommandCentre';
-            const isFirst = index === 0;
-            const isLast = index === sorted.length - 1;
-            const isSingleItem = sorted.length === 1;
-            const ccAtFirst = sorted[0]?.subType === 'ColonyCommandCentre';
-            const isSecondWithCCFirst = index === 1 && ccAtFirst;
-
-            const isMoveUpDisabled = isCC || isFirst || isSecondWithCCFirst || isSingleItem;
-            const isMoveDownDisabled = isCC || isLast || isSingleItem;
-
-            return (
-              <StructureItem
-                key={structure.id}
-                structure={structure}
-                onStateChange={setStructureState}
-                onRemove={removeStructure}
-                onMoveUp={moveStructureUp}
-                onMoveDown={moveStructureDown}
-                isMoveUpDisabled={isMoveUpDisabled}
-                isMoveDownDisabled={isMoveDownDisabled}
-              />
-            );
-          })}
+          {sorted.map((structure, index) => (
+            <StructureItem
+              key={structure.id}
+              structure={structure}
+              onStateChange={setStructureState}
+              onRemove={removeStructure}
+              onMoveUp={moveStructureUp}
+              onMoveDown={moveStructureDown}
+              isMoveUpDisabled={flags[index].isMoveUpDisabled}
+              isMoveDownDisabled={flags[index].isMoveDownDisabled}
+            />
+          ))}
         </div>
       )}
     </div>

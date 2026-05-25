@@ -6,6 +6,8 @@ import { StatusDisplay } from './StatusDisplay';
 import { StructureSummary } from './StructureSummary';
 import { publicApi } from '../../api/endpoints/public';
 import { extractBlueprintProperties } from '../../utils/blueprintHelpers';
+import { useColonyPlannerBuildOrder } from '../../api/hooks/useColonyPlanner';
+import type { PlannerStructure } from '../../api/types/generated';
 
 export function ColonyPlanner() {
   const structures = usePlannerStore((s) => s.structures);
@@ -13,9 +15,15 @@ export function ColonyPlanner() {
   const addStructure = usePlannerStore((s) => s.addStructure);
   const cacheBlueprint = usePlannerStore((s) => s.cacheBlueprint);
   const clearPlan = usePlannerStore((s) => s.clearPlan);
+  const applyOptimizedOrder = usePlannerStore((s) => s.applyOptimizedOrder);
 
   const [error, setError] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [isOptimizing, setIsOptimizing] = useState(false);
+
+  const buildOrderMutation = useColonyPlannerBuildOrder();
+
+  const isOptimizeDisabled = structures.length <= 1 || isOptimizing;
 
   const handleAdd = async (uuid: string, name: string, subType: string) => {
     setIsAdding(true);
@@ -48,6 +56,35 @@ export function ColonyPlanner() {
     }
   };
 
+  const handleOptimize = async () => {
+    setIsOptimizing(true);
+    setError(null);
+
+    const wireStructures: PlannerStructure[] = structures.map((s) => ({
+      flatpackBlueprintUUID: s.blueprintUUID,
+      isBuilt: s.state === 'Built',
+      isStaged: s.state === 'Staged',
+      isOnline: s.state === 'Online',
+      buildQueueSequence: s.buildQueuePosition,
+      assignedWorkers: {},
+    }));
+
+    try {
+      const result = await buildOrderMutation.mutateAsync({
+        structures: wireStructures,
+      });
+      if (result.optimizedOrder) {
+        applyOptimizedOrder(result.optimizedOrder);
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Failed to optimize build order. Please try again.';
+      setError(message);
+    } finally {
+      setIsOptimizing(false);
+    }
+  };
+
   const handleClear = () => {
     if (structures.length > 0) {
       const confirmed = window.confirm(
@@ -63,12 +100,47 @@ export function ColonyPlanner() {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white">Colony Planner</h1>
-        <button
-          onClick={handleClear}
-          className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-        >
-          Clear Plan
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleOptimize}
+            disabled={isOptimizeDisabled}
+            className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isOptimizing ? (
+              <span className="flex items-center gap-2">
+                <svg
+                  className="h-4 w-4 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Optimizing…
+              </span>
+            ) : (
+              'Optimize Build Order'
+            )}
+          </button>
+          <button
+            onClick={handleClear}
+            className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+          >
+            Clear Plan
+          </button>
+        </div>
       </div>
 
       {error && (

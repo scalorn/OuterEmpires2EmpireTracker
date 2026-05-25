@@ -6,7 +6,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
 
 ## Tasks
 
-- [ ] 1. Implement store reorder actions
+- [x] 1. Implement store reorder actions
   - [x] 1.1 Add `moveStructureUp` and `moveStructureDown` actions to plannerStore
     - Add `moveStructureUp(id)` and `moveStructureDown(id)` to `PlannerState` interface
     - Implement swap logic: find target structure, find neighbor by `buildQueuePosition`, swap positions
@@ -27,7 +27,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `plannerStore.ts` modified_
     - _Verification: `npm run build` from OE2EmpireTracker.Web/_
 
-  - [-] 1.3 Write property tests for store reorder actions
+  - [x] 1.3 Write property tests for store reorder actions
     - **Property 1: Move swap preserves all other positions**
     - **Property 3: Status invariant after reorder**
     - **Property 6: Apply optimized order correctness**
@@ -37,7 +37,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Verification: `npx vitest run` from OE2EmpireTracker.Web/_
 
 - [ ] 2. Implement StructureList sorting and disable logic
-  - [-] 2.1 Add sort-by-`buildQueuePosition` and compute disable flags in StructureList
+  - [x] 2.1 Add sort-by-`buildQueuePosition` and compute disable flags in StructureList
     - Sort structures by `buildQueuePosition` ascending before rendering
     - Compute `isMoveUpDisabled` and `isMoveDownDisabled` for each structure based on: CC status, position, CC protection, single-item list
     - Pass `onMoveUp`, `onMoveDown`, `isMoveUpDisabled`, `isMoveDownDisabled` props to `StructureItem`
@@ -47,7 +47,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `StructureList.tsx` modified_
     - _Verification: `npm run build` from OE2EmpireTracker.Web/_
 
-  - [~] 2.2 Write property test for disable logic correctness
+  - [-] 2.2 Write property test for disable logic correctness
     - **Property 2: Disable logic correctness**
     - **Validates: Requirements 1.3, 1.4, 1.5, 1.6, 1.7**
     - _Inputs: `StructureList.tsx`, `plannerStore.ts`_
@@ -55,7 +55,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Verification: `npx vitest run` from OE2EmpireTracker.Web/_
 
 - [ ] 3. Add Up/Down buttons to StructureItem
-  - [~] 3.1 Extend StructureItem props and render move buttons
+  - [-] 3.1 Extend StructureItem props and render move buttons
     - Add `onMoveUp`, `onMoveDown`, `isMoveUpDisabled`, `isMoveDownDisabled` to `StructureItemProps`
     - Render Up (▲) and Down (▼) buttons with disabled states and appropriate aria-labels
     - Buttons disabled when corresponding `isMove*Disabled` prop is true
@@ -68,7 +68,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Add Optimize Build Order button to ColonyPlanner
-  - [-] 5.1 Add `OptimizedOrderEntry` type and update `BuildOrderResult` in generated types
+  - [x] 5.1 Add `OptimizedOrderEntry` type and update `BuildOrderResult` in generated types
     - Add `OptimizedOrderEntry` interface (`flatpackBlueprintUUID: string`, `buildQueueSequence: number`)
     - Add optional `optimizedOrder?: OptimizedOrderEntry[]` field to `BuildOrderResult`
     - _Requirements: 2.3_
@@ -76,7 +76,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `generated.ts` modified_
     - _Verification: `npm run build` from OE2EmpireTracker.Web/_
 
-  - [~] 5.2 Add "Optimize Build Order" button with loading/error/disable states
+  - [-] 5.2 Add "Optimize Build Order" button with loading/error/disable states
     - Add button in planner actions area with text "Optimize Build Order"
     - Disable when structures list is empty or has only 1 item
     - Show loading indicator and disable button while request is in progress
