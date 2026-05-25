@@ -91,3 +91,27 @@ public int X { get; set; }
 **Root cause:** The audit hook was an `askAgent` type (advisory) rather than `runCommand` (blocking). Subagents treated the instruction as optional guidance rather than a hard gate.
 
 **Rule:** Every audit finding is a real issue that must be fixed before proceeding. There is no such thing as "pre-existing," "accepted baseline," or "not my fault." If the audit exits with code 1, you stop and fix. The postTaskExecution hook now runs audit as a `runCommand` — if it fails, the hook output shows the failure and the agent must address it.
+
+
+## Test Verification
+
+### ALL test suites must pass — not just the ones you touched
+
+**What went wrong:** During the asteroid-reserves-display spec execution, the orchestrator only verified TypeScript (vitest) and the specific server tests the subagent wrote. It never ran the full `dotnet test OE2EmpireTracker.Server.Tests` suite. 29 pre-existing failures were committed without investigation because the orchestrator assumed "if the build passes and my specific tests pass, everything is fine."
+
+**Root cause:** The postTaskExecution hooks only ran MSBuild (compile check) and audit. No hook ran the full test suite. The orchestrator treated hook failures with no output as "infrastructure issues" instead of investigating.
+
+**Rule:** Before any commit, ALL test suites must pass:
+1. `dotnet test OE2EmpireTracker.Server.Tests --no-build` (server tests)
+2. `npx vitest run` (from OE2EmpireTracker.Web — TypeScript tests)
+3. `vstest.console` against `OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll` (WinForms tests)
+
+If any test fails, investigate and fix it. Do NOT dismiss failures as "pre-existing" or "not caused by my changes." The steering already says this but it was ignored — the hooks now enforce it.
+
+### Hook failures with no output must be investigated immediately
+
+**What went wrong:** The audit hook exited with code 1 but produced no output. The agent dismissed it as "infrastructure issue" and continued. It turned out to be real audit findings.
+
+**Root cause:** The agent treated "no output" as "nothing to act on" rather than "something is broken and needs investigation."
+
+**Rule:** If a hook exits with code 1 (failure) but produces no output, run the command manually with full output to see what's happening. Never dismiss a hook failure without understanding it.

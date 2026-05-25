@@ -1,0 +1,12 @@
+{
+  "name": "Run Server Tests After Task",
+  "description": "After every spec task completes, runs the .NET server test suite. Exit code 1 means test failures exist and the agent MUST fix them before proceeding. Uses --no-build because the full-solution-build hook already compiled.",
+  "version": "1.0.0",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "dotnet test OE2EmpireTracker.Server.Tests --no-build --verbosity quiet"
+  }
+}

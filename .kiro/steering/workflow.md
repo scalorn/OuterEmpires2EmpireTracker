@@ -31,10 +31,15 @@
 
 ## Testing
 - Use `getDiagnostics` to verify code compiles cleanly after changes
-- Do NOT use `dotnet test` — it is incompatible with this project (see tech.md)
-- Use `vstest.console` against the built test DLL when tests need to run from CLI
+- Do NOT use `dotnet test` — it is incompatible with this project (see tech.md) — **EXCEPTION: OE2EmpireTracker.Server.Tests is a .NET 8 SDK-style project where `dotnet test` DOES work**
+- Use `vstest.console` against the built test DLL when WinForms tests need to run from CLI
 - When the running app locks the exe, use `getDiagnostics` instead of building
 - **ALL tests must pass before committing. Zero exceptions.** If any test fails, you MUST investigate and fix it before proceeding. You may NOT dismiss failures as `pre-existing`, `environment issue`, or `not caused by my changes`. Tests do not randomly break — if they fail, something changed, and it is your responsibility to find out what. If the failure is genuinely unrelated to your work, fix it anyway or explain to the user exactly what broke and why, and get explicit approval before committing with failures.
+- **Full test verification before commit requires ALL THREE suites:**
+  1. `dotnet test OE2EmpireTracker.Server.Tests --no-build` (server integration + property tests)
+  2. `npx vitest run` from OE2EmpireTracker.Web/ (TypeScript unit + property tests)
+  3. `vstest.console` against OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll (WinForms NUnit tests)
+- **If a postTaskExecution hook fails (exit code 1), you MUST investigate before proceeding.** Run the command manually to see full output. Never dismiss hook failures.
 
 ## Error Recovery and Tooling
 - **When you encounter a recurring error or friction**, stop and ask: can I write or improve a tool, script, or steering rule to prevent this from happening again? If yes, do it before retrying.
