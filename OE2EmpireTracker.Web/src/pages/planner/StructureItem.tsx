@@ -4,6 +4,10 @@ interface StructureItemProps {
   structure: PlannedStructure;
   onStateChange: (id: string, state: StructureState) => void;
   onRemove: (id: string) => void;
+  onMoveUp: (id: string) => void;
+  onMoveDown: (id: string) => void;
+  isMoveUpDisabled: boolean;
+  isMoveDownDisabled: boolean;
 }
 
 const STATE_STYLES: Record<StructureState, { border: string; badge: string; label: string }> = {
@@ -26,7 +30,7 @@ const STATE_STYLES: Record<StructureState, { border: string; badge: string; labe
 
 const STATES: StructureState[] = ['Staged', 'Built', 'Online'];
 
-export function StructureItem({ structure, onStateChange, onRemove }: StructureItemProps) {
+export function StructureItem({ structure, onStateChange, onRemove, onMoveUp: _onMoveUp, onMoveDown: _onMoveDown, isMoveUpDisabled: _isMoveUpDisabled, isMoveDownDisabled: _isMoveDownDisabled }: StructureItemProps) {
   const style = STATE_STYLES[structure.state];
 
   return (

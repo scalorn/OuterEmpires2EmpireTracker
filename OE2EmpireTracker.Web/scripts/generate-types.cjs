@@ -244,7 +244,13 @@ export interface ColonyStatusResult {
   warehouseRequired: number;
 }
 
+export interface OptimizedOrderEntry {
+  flatpackBlueprintUUID: string;
+  buildQueueSequence: number;
+}
+
 export interface BuildOrderResult {
+  optimizedOrder?: OptimizedOrderEntry[];
   steps: BuildOrderStep[];
   totalTimeEstimate: string;
 }

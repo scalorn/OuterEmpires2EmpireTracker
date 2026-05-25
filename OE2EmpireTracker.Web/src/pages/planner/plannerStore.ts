@@ -6,6 +6,11 @@ import type { BlueprintProperties } from '../../utils/blueprintHelpers';
 export type { PlannedStructure, ColonyStatus, StructureState } from './computeColonyStatus';
 export type { BlueprintProperties } from '../../utils/blueprintHelpers';
 
+export interface OptimizedOrderEntry {
+  flatpackBlueprintUUID: string;
+  buildQueueSequence: number;
+}
+
 export interface PlannerState {
   structures: PlannedStructure[];
   blueprintCache: Record<string, BlueprintProperties>;
@@ -15,6 +20,9 @@ export interface PlannerState {
   setStructureState: (id: string, state: StructureState) => void;
   cacheBlueprint: (uuid: string, properties: BlueprintProperties) => void;
   clearPlan: () => void;
+  moveStructureUp: (id: string) => void;
+  moveStructureDown: (id: string) => void;
+  applyOptimizedOrder: (optimizedOrder: OptimizedOrderEntry[]) => void;
 }
 
 export const usePlannerStore = create<PlannerState>()((set) => ({
@@ -51,4 +59,77 @@ export const usePlannerStore = create<PlannerState>()((set) => ({
     }),
 
   clearPlan: () => set({ structures: [], status: null }),
+
+  moveStructureUp: (id) =>
+    set((state) => {
+      const target = state.structures.find((s) => s.id === id);
+      if (!target) return state;
+      // No-op if target is CC
+      if (target.subType === 'ColonyCommandCentre') return state;
+
+      // Find the neighbor with the next-lower buildQueuePosition
+      const neighborsAbove = state.structures.filter(
+        (s) => s.buildQueuePosition < target.buildQueuePosition
+      );
+      if (neighborsAbove.length === 0) return state;
+
+      const neighbor = neighborsAbove.reduce((closest, s) =>
+        s.buildQueuePosition > closest.buildQueuePosition ? s : closest
+      );
+
+      // No-op if neighbor is CC (CC protection: nothing can move above CC)
+      if (neighbor.subType === 'ColonyCommandCentre') return state;
+
+      // Swap positions
+      const structures = state.structures.map((s) => {
+        if (s.id === target.id)
+          return { ...s, buildQueuePosition: neighbor.buildQueuePosition };
+        if (s.id === neighbor.id)
+          return { ...s, buildQueuePosition: target.buildQueuePosition };
+        return s;
+      });
+      return { structures, status: computeColonyStatus(structures) };
+    }),
+
+  moveStructureDown: (id) =>
+    set((state) => {
+      const target = state.structures.find((s) => s.id === id);
+      if (!target) return state;
+      // No-op if target is CC
+      if (target.subType === 'ColonyCommandCentre') return state;
+
+      // Find the neighbor with the next-higher buildQueuePosition
+      const neighborsBelow = state.structures.filter(
+        (s) => s.buildQueuePosition > target.buildQueuePosition
+      );
+      if (neighborsBelow.length === 0) return state;
+
+      const neighbor = neighborsBelow.reduce((closest, s) =>
+        s.buildQueuePosition < closest.buildQueuePosition ? s : closest
+      );
+
+      // Swap positions
+      const structures = state.structures.map((s) => {
+        if (s.id === target.id)
+          return { ...s, buildQueuePosition: neighbor.buildQueuePosition };
+        if (s.id === neighbor.id)
+          return { ...s, buildQueuePosition: target.buildQueuePosition };
+        return s;
+      });
+      return { structures, status: computeColonyStatus(structures) };
+    }),
+
+  applyOptimizedOrder: (optimizedOrder) =>
+    set((state) => {
+      const structures = state.structures.map((s) => {
+        const entry = optimizedOrder.find(
+          (e) => e.flatpackBlueprintUUID === s.blueprintUUID
+        );
+        if (entry) {
+          return { ...s, buildQueuePosition: entry.buildQueueSequence };
+        }
+        return s;
+      });
+      return { structures, status: computeColonyStatus(structures) };
+    }),
 }));
