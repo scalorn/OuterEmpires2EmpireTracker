@@ -18,7 +18,7 @@ export function useFlatpacks() {
     refetchOnWindowFocus: false,
     select: (data): FlatpackOption[] =>
       data.items
-        .filter((item): item is { uuid: string; extendedName: string; bluePrintType: string } =>
+        .filter((item): item is { uuid: string; name: string; bluePrintType: string } =>
           typeof item === 'object' &&
           item !== null &&
           'bluePrintType' in item &&
@@ -27,7 +27,7 @@ export function useFlatpacks() {
         )
         .map((item) => ({
           uuid: item.uuid,
-          name: item.extendedName,
+          name: item.name,
           subType: extractSubType(item.bluePrintType),
         })),
   });

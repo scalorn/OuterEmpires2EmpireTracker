@@ -159,7 +159,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/pages/planner/ColonyPlanner.tsx`_
   - _Verification: TypeScript compiles, page renders with all sub-components, add/clear flows work_
 
-- [-] 11. Property-based tests for computeColonyStatus
+- [x] 11. Property-based tests for computeColonyStatus
   - Create `OE2EmpireTracker.Web/src/pages/planner/computeColonyStatus.property.test.ts`
   - Implement fast-check arbitraries for PlannedStructure and BlueprintProperties
   - Property 1: Pure function (deterministic) — same input produces same output
@@ -173,7 +173,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/pages/planner/computeColonyStatus.property.test.ts`_
   - _Verification: `npx vitest run src/pages/planner/computeColonyStatus.property.test.ts` passes_
 
-- [-] 12. Unit tests for blueprintHelpers
+- [x] 12. Unit tests for blueprintHelpers
   - Create `OE2EmpireTracker.Web/src/utils/blueprintHelpers.test.ts`
   - Test `isFlatpack`: includes "Flatpacks/MiningRig", excludes "Ships/Fighter", case-insensitive
   - Test `extractSubType`: "Flatpacks/MiningRig" produces "MiningRig", "Flatpacks/CommodityFactory/Agridome" produces "CommodityFactory/Agridome"
@@ -184,7 +184,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/utils/blueprintHelpers.test.ts`_
   - _Verification: `npx vitest run src/utils/blueprintHelpers.test.ts` passes_
 
-- [-] 13. Unit tests for plannerStore
+- [x] 13. Unit tests for plannerStore
   - Create `OE2EmpireTracker.Web/src/pages/planner/plannerStore.test.ts`
   - Test addStructure: adds to list, recomputes status
   - Test removeStructure: removes by id, preserves others, recomputes (Property 9)
@@ -196,7 +196,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/pages/planner/plannerStore.test.ts`_
   - _Verification: `npx vitest run src/pages/planner/plannerStore.test.ts` passes_
 
-- [-] 14. Component integration tests
+- [x] 14. Component integration tests
   - Create `OE2EmpireTracker.Web/src/pages/planner/ColonyPlanner.test.tsx`
   - Test: adding a structure updates status display
   - Test: removing a structure updates status display
