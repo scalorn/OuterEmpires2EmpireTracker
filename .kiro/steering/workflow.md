@@ -39,6 +39,7 @@
   1. `dotnet test OE2EmpireTracker.Server.Tests --no-build` (server integration + property tests)
   2. `npx vitest run` from OE2EmpireTracker.Web/ (TypeScript unit + property tests)
   3. `vstest.console` against OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll (WinForms NUnit tests)
+- **Frontend build verification: Use `npm run build` from OE2EmpireTracker.Web/, NOT `tsc --noEmit` alone.** The build script runs `generate-types` first (regenerates generated.ts from server schema), then `tsc --noEmit`, then `vite build`. Running `tsc --noEmit` alone skips type generation and may miss type conflicts with the generated file.
 - **If a postTaskExecution hook fails (exit code 1), you MUST investigate before proceeding.** Run the command manually to see full output. Never dismiss hook failures.
 
 ## Error Recovery and Tooling

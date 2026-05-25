@@ -115,3 +115,12 @@ If any test fails, investigate and fix it. Do NOT dismiss failures as "pre-exist
 **Root cause:** The agent treated "no output" as "nothing to act on" rather than "something is broken and needs investigation."
 
 **Rule:** If a hook exits with code 1 (failure) but produces no output, run the command manually with full output to see what's happening. Never dismiss a hook failure without understanding it.
+
+
+### Frontend verification must use `npm run build`, not `tsc --noEmit`
+
+**What went wrong:** After fixing API contract mismatches, the agent ran `tsc --noEmit` which passed. But the production build (`npm run build`) failed because it first runs `generate-types` which regenerates `generated.ts` from the server schema. The regenerated types had `assignedWorkers: Record<string, boolean>` which conflicted with the domain type's `Record<string, string>`.
+
+**Root cause:** `tsc --noEmit` checks source files as they exist on disk. The production build regenerates `generated.ts` first, which may introduce new type conflicts. Skipping the generation step means you're checking against stale types.
+
+**Rule:** Always use `npm run build` (from OE2EmpireTracker.Web/) for frontend verification. Never use `tsc --noEmit` alone — it skips the type generation step and gives false confidence.
