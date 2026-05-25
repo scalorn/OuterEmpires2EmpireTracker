@@ -2,16 +2,7 @@ import { usePlannerStore } from './plannerStore';
 import { ColonyStatusBar } from '../../components/domain/ColonyStatusBar';
 
 export function StatusDisplay() {
-  const { status, isComputing } = usePlannerStore();
-
-  if (isComputing) {
-    return (
-      <div className="rounded border border-gray-700 p-4">
-        <h2 className="mb-3 text-lg font-semibold text-gray-200">Colony Status</h2>
-        <p className="text-sm text-gray-400">Computing...</p>
-      </div>
-    );
-  }
+  const status = usePlannerStore((s) => s.status);
 
   if (!status) {
     return (
@@ -29,13 +20,13 @@ export function StatusDisplay() {
         label="Power"
         provided={status.powerProvided}
         required={status.powerRequired}
-        color="yellow"
+        color="green"
       />
       <ColonyStatusBar
         label="Habitation"
         provided={status.habitationProvision}
         required={status.habitationRequired}
-        color="blue"
+        color="green"
       />
       <ColonyStatusBar
         label="Food"
@@ -47,13 +38,13 @@ export function StatusDisplay() {
         label="Entertainment"
         provided={status.entertainmentProvided}
         required={status.entertainmentRequired}
-        color="purple"
+        color="green"
       />
       <ColonyStatusBar
         label="Warehouse"
         provided={status.warehouseCapacity}
         required={status.warehouseRequired}
-        color="blue"
+        color="green"
       />
     </div>
   );

@@ -79,7 +79,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/pages/planner/plannerStore.ts`_
   - _Verification: TypeScript compiles, unit tests in task 13_
 
-- [-] 4. Create useFlatpacks TanStack Query hook
+- [x] 4. Create useFlatpacks TanStack Query hook
   - Create `OE2EmpireTracker.Web/src/api/hooks/useFlatpacks.ts`
   - Implement TanStack Query hook fetching from `/api/v1/public/blueprints`
   - Filter results using `isFlatpack` from blueprintHelpers
@@ -90,7 +90,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/api/hooks/useFlatpacks.ts`_
   - _Verification: TypeScript compiles, hook returns filtered flatpack list_
 
-- [~] 5. Create FlatpackDropdown component
+- [x] 5. Create FlatpackDropdown component
   - Create `OE2EmpireTracker.Web/src/pages/planner/FlatpackDropdown.tsx`
   - Searchable dropdown using Radix Popover (or existing project pattern)
   - Group options by sub-type (MiningRig, Refinery, ResearchLaboratory, Manufactory, ColonyCommandCentre, CommodityFactory)
@@ -102,7 +102,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/pages/planner/FlatpackDropdown.tsx`_
   - _Verification: TypeScript compiles, component renders with grouped options_
 
-- [~] 6. Create StructureItem component
+- [x] 6. Create StructureItem component
   - Create `OE2EmpireTracker.Web/src/pages/planner/StructureItem.tsx`
   - Display structure name, sub-type, current state (Staged/Built/Online)
   - State toggle control (three-state: Staged, Built, Online)
@@ -114,7 +114,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/pages/planner/StructureItem.tsx`_
   - _Verification: TypeScript compiles, component renders with state toggle_
 
-- [~] 7. Create StructureList component
+- [x] 7. Create StructureList component
   - Create `OE2EmpireTracker.Web/src/pages/planner/StructureList.tsx`
   - Render list of `StructureItem` components from plannerStore
   - Wire remove button to `removeStructure` store action
@@ -125,7 +125,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/pages/planner/StructureList.tsx`_
   - _Verification: TypeScript compiles, list renders and responds to actions_
 
-- [~] 8. Create/modify StatusDisplay component
+- [x] 8. Create/modify StatusDisplay component
   - Modify `OE2EmpireTracker.Web/src/pages/planner/StatusDisplay.tsx`
   - Read `status` from plannerStore (local computation result, not server response)
   - Display five Status_Categories: Power, Habitation, Food, Entertainment, Warehouse
@@ -137,7 +137,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/pages/planner/StatusDisplay.tsx`_
   - _Verification: TypeScript compiles, displays surplus/deficit correctly_
 
-- [~] 9. Create StructureSummary component
+- [x] 9. Create StructureSummary component
   - Create `OE2EmpireTracker.Web/src/pages/planner/StructureSummary.tsx`
   - Display count of each structure sub-type in the plan
   - Display total number of structures
@@ -147,7 +147,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/pages/planner/StructureSummary.tsx`_
   - _Verification: TypeScript compiles, summary counts match store state_
 
-- [~] 10. Wire ColonyPlanner page with all components
+- [-] 10. Wire ColonyPlanner page with all components
   - Modify `OE2EmpireTracker.Web/src/pages/planner/ColonyPlanner.tsx`
   - Remove existing StructurePanel (UUID text input) and server-side status call
   - Compose: FlatpackDropdown, StructureList, StatusDisplay, StructureSummary
