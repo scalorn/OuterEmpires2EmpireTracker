@@ -76,7 +76,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `generated.ts` modified_
     - _Verification: `npm run build` from OE2EmpireTracker.Web/_
 
-  - [-] 5.2 Add "Optimize Build Order" button with loading/error/disable states
+  - [x] 5.2 Add "Optimize Build Order" button with loading/error/disable states
     - Add button in planner actions area with text "Optimize Build Order"
     - Disable when structures list is empty or has only 1 item
     - Show loading indicator and disable button while request is in progress

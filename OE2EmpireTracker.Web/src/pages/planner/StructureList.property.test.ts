@@ -69,7 +69,7 @@ const arbStructureListWithCC = fc
       id: fc.uuid(),
       blueprintUUID: fc.uuid(),
       name: fc.constant('Colony Command Centre'),
-      subType: fc.constant('ColonyCommandCentre'),
+      subType: fc.constant('ColonyCommandCentre' as const),
       state: arbStructureState,
       properties: arbBlueprintProperties,
     }),
@@ -88,10 +88,10 @@ const arbStructureListWithCC = fc
   .map(([cc, rest]) => [
     { ...cc, buildQueuePosition: 1 },
     ...rest.map((item, idx) => ({ ...item, buildQueuePosition: idx + 2 })),
-  ]);
+  ] as PlannedStructure[]);
 
 /**
- * Generates a list with a CC at a random (non-first) position and non-CC structures elsewhere.
+ * Generates a list with a CC at a random (non-first) position among non-CC structures.
  */
 const arbStructureListWithCCNotFirst = fc
   .tuple(
@@ -99,7 +99,7 @@ const arbStructureListWithCCNotFirst = fc
       id: fc.uuid(),
       blueprintUUID: fc.uuid(),
       name: fc.constant('Colony Command Centre'),
-      subType: fc.constant('ColonyCommandCentre'),
+      subType: fc.constant('ColonyCommandCentre' as const),
       state: arbStructureState,
       properties: arbBlueprintProperties,
     }),
@@ -113,19 +113,20 @@ const arbStructureListWithCCNotFirst = fc
         properties: arbBlueprintProperties,
       }),
       { minLength: 2, maxLength: 19 }
-    )
+    ),
+    fc.nat({ max: 100 })
   )
-  .map(([cc, rest]) => {
-    // Place CC somewhere other than first
-    const ccIdx = 1 + Math.floor(Math.random() * (rest.length - 1));
-    const all: PlannedStructure[] = rest.map((item, idx) => ({
-      ...item,
-      buildQueuePosition: idx < ccIdx ? idx + 1 : idx + 2,
-    }));
+  .map(([cc, rest, seed]) => {
+    // Place CC somewhere other than first (index 1..rest.length-1)
+    const ccIdx = 1 + (seed % (rest.length));
+    const all: PlannedStructure[] = [];
+    for (let i = 0; i < rest.length; i++) {
+      const pos = i < ccIdx ? i + 1 : i + 2;
+      all.push({ ...rest[i], buildQueuePosition: pos } as PlannedStructure);
+    }
     all.splice(ccIdx, 0, { ...cc, buildQueuePosition: ccIdx + 1 } as PlannedStructure);
     return all;
   });
-
 
 // --- Properties ---
 
@@ -144,10 +145,10 @@ describe('StructureList property-based tests', () => {
    * **Validates: Requirements 1.3, 1.4, 1.5, 1.6, 1.7**
    */
   describe('Property 2: Disable logic correctness', () => {
-    it('move-up disabled iff: CC, first, second-with-CC-first, or single item (no CC in list)', () => {
+    it('move-up disabled iff: first or single item (no CC in list)', () => {
       fc.assert(
         fc.property(arbNonCCStructureList, (structures) => {
-          const flags = computeDisableFlags(structures as PlannedStructure[]);
+          const flags = computeDisableFlags(structures);
           const sorted = [...structures].sort((a, b) => a.buildQueuePosition - b.buildQueuePosition);
 
           for (let i = 0; i < sorted.length; i++) {
@@ -162,16 +163,15 @@ describe('StructureList property-based tests', () => {
       );
     });
 
-    it('move-down disabled iff: CC, last, or single item (no CC in list)', () => {
+    it('move-down disabled iff: last or single item (no CC in list)', () => {
       fc.assert(
         fc.property(arbNonCCStructureList, (structures) => {
-          const flags = computeDisableFlags(structures as PlannedStructure[]);
+          const flags = computeDisableFlags(structures);
           const sorted = [...structures].sort((a, b) => a.buildQueuePosition - b.buildQueuePosition);
 
           for (let i = 0; i < sorted.length; i++) {
             const isLast = i === sorted.length - 1;
             const isSingleItem = sorted.length === 1;
-            // No CC in this list
             const expectedDown = isLast || isSingleItem;
             expect(flags[i].isMoveDownDisabled).toBe(expectedDown);
           }
@@ -179,3 +179,62 @@ describe('StructureList property-based tests', () => {
         { numRuns: 100 }
       );
     });
+
+    it('CC always has both buttons disabled (CC at position 1)', () => {
+      fc.assert(
+        fc.property(arbStructureListWithCC, (structures) => {
+          const flags = computeDisableFlags(structures);
+          const sorted = [...structures].sort((a, b) => a.buildQueuePosition - b.buildQueuePosition);
+
+          const ccIndex = sorted.findIndex((s) => s.subType === 'ColonyCommandCentre');
+          expect(flags[ccIndex].isMoveUpDisabled).toBe(true);
+          expect(flags[ccIndex].isMoveDownDisabled).toBe(true);
+        }),
+        { numRuns: 100 }
+      );
+    });
+
+    it('structure at position 2 with CC at position 1 has move-up disabled', () => {
+      fc.assert(
+        fc.property(arbStructureListWithCC, (structures) => {
+          const flags = computeDisableFlags(structures);
+          const sorted = [...structures].sort((a, b) => a.buildQueuePosition - b.buildQueuePosition);
+
+          // With CC at position 1, the structure at index 1 (position 2) should have move-up disabled
+          if (sorted.length >= 2) {
+            expect(flags[1].isMoveUpDisabled).toBe(true);
+          }
+        }),
+        { numRuns: 100 }
+      );
+    });
+
+    it('structure at position 2 with CC at position 1 can still move down (if not last)', () => {
+      fc.assert(
+        fc.property(arbStructureListWithCC, (structures) => {
+          const flags = computeDisableFlags(structures);
+          const sorted = [...structures].sort((a, b) => a.buildQueuePosition - b.buildQueuePosition);
+
+          // Structure at index 1 should be able to move down if it's not the last
+          if (sorted.length >= 3) {
+            expect(flags[1].isMoveDownDisabled).toBe(false);
+          }
+        }),
+        { numRuns: 100 }
+      );
+    });
+
+    it('CC at non-first position still has both buttons disabled', () => {
+      fc.assert(
+        fc.property(arbStructureListWithCCNotFirst, (structures) => {
+          const flags = computeDisableFlags(structures);
+          const sorted = [...structures].sort((a, b) => a.buildQueuePosition - b.buildQueuePosition);
+
+          const ccIndex = sorted.findIndex((s) => s.subType === 'ColonyCommandCentre');
+          expect(flags[ccIndex].isMoveUpDisabled).toBe(true);
+          expect(flags[ccIndex].isMoveDownDisabled).toBe(true);
+        }),
+        { numRuns: 100 }
+      );
+    });
+
