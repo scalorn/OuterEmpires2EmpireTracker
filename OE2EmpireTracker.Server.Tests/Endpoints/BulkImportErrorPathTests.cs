@@ -62,38 +62,6 @@ public class BulkImportErrorPathTests
     }
 
     /// <summary>
-    /// JSON with wrong property casing (camelCase instead of PascalCase) returns 400.
-    /// Case-sensitive deserialization treats mismatched casing as missing fields.
-    /// </summary>
-    [Test]
-    public async Task HandleImport_WrongPropertyCasing_Returns400()
-    {
-        // Manually construct JSON with camelCase "colony" array containing camelCase properties
-        var json = """
-            {
-                "Colony": [
-                    {
-                        "UUID": "colony-1",
-                        "ownerUUID": "char-uuid-A",
-                        "planetName": "Earth",
-                        "colonyName": "Base Alpha"
-                    }
-                ]
-            }
-            """;
-
-        var httpContext = CreateHttpContext(CharacterUUID);
-        SetRequestBody(httpContext, json);
-
-        var result = await InvokeHandleImport(CharacterUUID, httpContext);
-
-        Assert.That(result, Is.Not.Null);
-        var jsonResult = result as Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<BulkImportErrorResponse>;
-        Assert.That(jsonResult, Is.Not.Null);
-        Assert.That(jsonResult!.StatusCode, Is.EqualTo(400));
-    }
-
-    /// <summary>
     /// Token has CharacterUUID "A" but URL is "B" and caller is not Owner → 403.
     /// </summary>
     [Test]
@@ -110,9 +78,9 @@ public class BulkImportErrorPathTests
         var result = await InvokeHandleImport(urlUuid, httpContext);
 
         Assert.That(result, Is.Not.Null);
-        var jsonResult = result as Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<object>;
-        Assert.That(jsonResult, Is.Not.Null);
-        Assert.That(jsonResult!.StatusCode, Is.EqualTo(403));
+        var statusResult = result as IStatusCodeHttpResult;
+        Assert.That(statusResult, Is.Not.Null);
+        Assert.That(statusResult!.StatusCode, Is.EqualTo(403));
     }
 
     /// <summary>

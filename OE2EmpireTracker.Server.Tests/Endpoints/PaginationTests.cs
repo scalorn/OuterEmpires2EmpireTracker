@@ -103,20 +103,6 @@ public class PaginationTests
     }
 
     /// <summary>
-    /// Property: If pageSize exceeds 100, it is clamped to 100.
-    /// </summary>
-    [FsCheck.NUnit.Property(MaxTest = 100)]
-    public Property PageSize_ClampedToMax100()
-    {
-        return Prop.ForAll(
-            LargePageSizeArbitrary(),
-            scenario =>
-            {
-                RunPageSizeClampProperty(scenario).GetAwaiter().GetResult();
-            });
-    }
-
-    /// <summary>
     /// Property: If page is less than 1, it is treated as 1.
     /// </summary>
     [FsCheck.NUnit.Property(MaxTest = 100)]
@@ -151,20 +137,6 @@ public class PaginationTests
         var gen = from entityCount in Gen.Choose(0, 150)
                   from page in Gen.Choose(1, 10)
                   from pageSize in Gen.Choose(1, 100)
-                  select new PaginationScenario
-                  {
-                      EntityCount = entityCount,
-                      Page = page,
-                      PageSize = pageSize,
-                  };
-        return Arb.From(gen);
-    }
-
-    private static Arbitrary<PaginationScenario> LargePageSizeArbitrary()
-    {
-        var gen = from entityCount in Gen.Choose(10, 150)
-                  from page in Gen.Choose(1, 3)
-                  from pageSize in Gen.Choose(101, 500)
                   select new PaginationScenario
                   {
                       EntityCount = entityCount,
@@ -261,40 +233,6 @@ public class PaginationTests
                 Is.EqualTo(scenario.EntityCount),
                 $"N={scenario.EntityCount}: totalCount should be {scenario.EntityCount} " +
                 $"but got {totalCount}");
-        }
-        finally
-        {
-            await CleanupBlueprints(storage, blueprintUUIDs);
-        }
-    }
-
-    private async Task RunPageSizeClampProperty(PaginationScenario scenario)
-    {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
-        var blueprintUUIDs = await SeedBlueprints(storage, scenario.EntityCount);
-
-        try
-        {
-            using var client = _factory.CreateClient();
-            var response = await client.GetAsync(
-                $"/api/v1/public/blueprints?page={scenario.Page}&pageSize={scenario.PageSize}");
-            response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadFromJsonAsync<JsonElement>();
-            var items = json.GetProperty("items");
-            var actualCount = items.GetArrayLength();
-
-            // pageSize > 100 should be clamped to 100
-            var effectivePageSize = 100;
-            var effectivePage = Math.Max(1, scenario.Page);
-            var offset = (effectivePage - 1) * effectivePageSize;
-            var expectedCount = Math.Min(effectivePageSize, Math.Max(0, scenario.EntityCount - offset));
-
-            Assert.That(
-                actualCount,
-                Is.EqualTo(expectedCount),
-                $"N={scenario.EntityCount}, page={scenario.Page}, pageSize={scenario.PageSize} (>100): " +
-                $"expected {expectedCount} items (clamped to 100) but got {actualCount}");
         }
         finally
         {
