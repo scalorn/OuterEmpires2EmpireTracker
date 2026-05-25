@@ -1,7 +1,7 @@
 // This file is auto-generated. Do not edit manually.
 // Regenerate with: npm run generate-types
 // Generated from: Models.cs, PermissionModels.cs
-// Generated at: 2026-05-25T17:17:37.685Z
+// Generated at: 2026-05-25T17:32:14.776Z
 
 export type TokenRole = 'Owner' | 'FactionLeader' | 'Character';
 
