@@ -13,6 +13,24 @@ import { useUnsavedChanges } from '../../hooks/useUnsavedChanges';
 import { applyFilters, type FilterConfig } from '../../utils/filterUtils';
 import type { Survey, SurveyResource } from '../../api/types/domain';
 
+/** Helper to convert the server's dict-based resources to an array for display. */
+function resourcesToArray(resources: Record<string, SurveyResource>): { key: string; resource: string; purity: string; amount: string }[] {
+  return Object.entries(resources).map(([key, val]) => ({
+    key,
+    resource: val.resource,
+    purity: val.purity,
+    amount: val.amount,
+  }));
+}
+
+/** Row type used in the editable grid. */
+interface ResourceRow {
+  key: string;
+  resource: string;
+  purity: string;
+  amount: string;
+}
+
 /**
  * SurveyForm — master-detail layout for managing planet and asteroid resource surveys.
  *
@@ -50,8 +68,8 @@ export function SurveyForm() {
       key: 'surveyType',
       label: 'Survey Type',
       options: [
-        { value: 'Planet', label: 'Planet' },
-        { value: 'Asteroid', label: 'Asteroid' },
+        { value: 'planet', label: 'Planet' },
+        { value: 'asteroid', label: 'Asteroid' },
       ],
     },
     {
@@ -89,7 +107,7 @@ export function SurveyForm() {
     const purityFilter = (filterValues.purity as string) ?? '';
     if (purityFilter) {
       result = result.filter((s) =>
-        s.resources.some((r) => r.purity === purityFilter),
+        Object.values(s.resources).some((r) => r.purity === purityFilter),
       );
     }
 
@@ -98,7 +116,7 @@ export function SurveyForm() {
     const minYield = Number(minYieldStr);
     if (minYieldStr && !isNaN(minYield) && minYield > 0) {
       result = result.filter((s) =>
-        s.resources.some((r) => r.amount >= minYield),
+        Object.values(s.resources).some((r) => Number(r.amount) >= minYield),
       );
     }
 
@@ -174,7 +192,6 @@ export function SurveyForm() {
                 <SortHeader field="planetName" label="Planet" current={sortField} asc={sortAsc} onSort={handleSort} />
                 <SortHeader field="systemName" label="System" current={sortField} asc={sortAsc} onSort={handleSort} />
                 <SortHeader field="surveyType" label="Type" current={sortField} asc={sortAsc} onSort={handleSort} />
-                <SortHeader field="scanDate" label="Scan Date" current={sortField} asc={sortAsc} onSort={handleSort} />
               </tr>
             </thead>
             <tbody>
@@ -190,7 +207,6 @@ export function SurveyForm() {
                   <td className="px-3 py-2 text-white">{survey.planetName}</td>
                   <td className="px-3 py-2 text-gray-300">{survey.systemName}</td>
                   <td className="px-3 py-2 text-gray-300">{survey.surveyType}</td>
-                  <td className="px-3 py-2 text-gray-300">{survey.scanDate ?? '—'}</td>
                 </tr>
               ))}
             </tbody>
@@ -230,7 +246,7 @@ interface SurveyDetailPanelProps {
 
 function SurveyDetailPanel({ survey, purities, onNew }: SurveyDetailPanelProps) {
   const [nickName, setNickName] = useState(survey.nickName ?? '');
-  const [resources, setResources] = useState<SurveyResource[]>(survey.resources);
+  const [resources, setResources] = useState<ResourceRow[]>(resourcesToArray(survey.resources));
   const [isDirty, setIsDirty] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -243,7 +259,7 @@ function SurveyDetailPanel({ survey, purities, onNew }: SurveyDetailPanelProps) 
   if (survey.uuid !== prevUuid) {
     setPrevUuid(survey.uuid);
     setNickName(survey.nickName ?? '');
-    setResources(survey.resources);
+    setResources(resourcesToArray(survey.resources));
     setIsDirty(false);
   }
 
@@ -252,7 +268,7 @@ function SurveyDetailPanel({ survey, purities, onNew }: SurveyDetailPanelProps) 
     setIsDirty(true);
   };
 
-  const handleRowChange = useCallback((index: number, row: SurveyResource) => {
+  const handleRowChange = useCallback((index: number, row: ResourceRow) => {
     setResources((prev) => {
       const updated = [...prev];
       updated[index] = row;
@@ -264,7 +280,7 @@ function SurveyDetailPanel({ survey, purities, onNew }: SurveyDetailPanelProps) 
   const handleRowAdd = useCallback(() => {
     setResources((prev) => [
       ...prev,
-      { resourceName: '', purity: '', amount: 0, maxReserve: undefined },
+      { key: `new-${Date.now()}`, resource: '', purity: '', amount: '0' },
     ]);
     setIsDirty(true);
   }, []);
@@ -275,9 +291,15 @@ function SurveyDetailPanel({ survey, purities, onNew }: SurveyDetailPanelProps) 
   }, []);
 
   const handleSave = useCallback(async () => {
+    // Convert array back to dict for the server
+    const resourcesDict: Record<string, SurveyResource> = {};
+    for (const row of resources) {
+      const dictKey = row.resource || row.key;
+      resourcesDict[dictKey] = { resource: row.resource, purity: row.purity, amount: row.amount };
+    }
     await save.mutateAsync({
       entityUUID: survey.uuid,
-      data: { nickName, resources },
+      data: { nickName, resources: resourcesDict },
     });
     setIsDirty(false);
   }, [save, survey.uuid, nickName, resources]);
@@ -288,24 +310,21 @@ function SurveyDetailPanel({ survey, purities, onNew }: SurveyDetailPanelProps) 
     onNew();
   }, [remove, survey.uuid, onNew]);
 
-  const isDeleteDisabled = (survey.assignedRigCount ?? 0) > 0;
+  const isDeleteDisabled = false;
 
-  const isAsteroid = survey.surveyType === 'Asteroid';
+  const isAsteroid = survey.surveyType === 'asteroid';
 
-  const resourceColumns: GridColumn<SurveyResource>[] = useMemo(() => {
-    const cols: GridColumn<SurveyResource>[] = [
-      { key: 'resourceName', header: 'Resource', type: 'text' },
+  const resourceColumns: GridColumn<ResourceRow>[] = useMemo(() => {
+    const cols: GridColumn<ResourceRow>[] = [
+      { key: 'resource', header: 'Resource', type: 'text' },
       {
         key: 'purity',
         header: 'Purity',
         type: 'select',
         options: purities.map((p) => ({ value: p, label: p })),
       },
-      { key: 'amount', header: 'Amount', type: 'number' },
+      { key: 'amount', header: 'Amount', type: 'text' },
     ];
-    if (isAsteroid) {
-      cols.push({ key: 'maxReserve', header: 'Max Reserve', type: 'number' });
-    }
     return cols;
   }, [purities, isAsteroid]);
 
@@ -354,22 +373,19 @@ function SurveyDetailPanel({ survey, purities, onNew }: SurveyDetailPanelProps) 
           />
         </div>
         <DetailField label="Scanned By" value={survey.scannedBy ?? '—'} />
-        <DetailField label="Scan Date" value={survey.scanDate ?? '—'} />
-        <DetailField label="Sensor Abundance" value={survey.sensorAbundance != null ? String(survey.sensorAbundance) : '—'} />
-        <DetailField label="Purity Modifier" value={survey.purityModifier != null ? String(survey.purityModifier) : '—'} />
-        <DetailField label="Scan Level" value={survey.scanLevel != null ? String(survey.scanLevel) : '—'} />
-        <DetailField label="Scanner Blueprint" value={survey.scannerBlueprint ?? '—'} />
+        <DetailField label="Date" value={survey.dateTime ?? '—'} />
+        <DetailField label="Scanner Blueprint" value={survey.scannerBlueprintUUID ?? '—'} />
       </div>
 
       {/* Resource grid */}
       <h3 className="mb-2 text-sm font-semibold text-white">Resources</h3>
-      <EditableGrid<SurveyResource>
+      <EditableGrid<ResourceRow>
         columns={resourceColumns}
         rows={resources}
         onRowChange={handleRowChange}
         onRowAdd={handleRowAdd}
         onRowRemove={handleRowRemove}
-        keyExtractor={(row) => `${row.resourceName}-${row.purity}-${row.amount}`}
+        keyExtractor={(row) => `${row.resource}-${row.purity}-${row.amount}`}
       />
 
       <ConfirmDialog

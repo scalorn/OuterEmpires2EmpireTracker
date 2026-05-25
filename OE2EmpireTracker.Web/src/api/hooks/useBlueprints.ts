@@ -52,8 +52,8 @@ export function useBlueprintMutations() {
   const charUUID = useAuthStore((s) => s.characterUUID);
 
   const create = useMutation({
-    mutationFn: (data: Omit<Blueprint, 'uuid'>) =>
-      blueprintsApi.create(charUUID!, data),
+    mutationFn: (data: Partial<Blueprint>) =>
+      blueprintsApi.create(charUUID!, data as Omit<Blueprint, 'uuid'>),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.characterData(charUUID!, 'Blueprints') });
     },

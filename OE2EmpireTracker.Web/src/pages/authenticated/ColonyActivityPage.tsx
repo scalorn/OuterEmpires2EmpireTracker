@@ -81,13 +81,16 @@ export function ColonyActivityPage() {
     for (const colony of colonies) {
       for (const structure of colony.structures ?? []) {
         if (!structure.processingEndUtc) continue;
-        const activityType = deriveActivityType(structure.blueprintType);
+        if (!structure.blueprintType) continue;
+        const bpType = structure.blueprintType;
+        const procEnd = structure.processingEndUtc;
+        const activityType = deriveActivityType(bpType);
         if (!activityType) continue;
 
         groups[activityType].push({
           id: structure.uuid,
-          label: structure.blueprintType,
-          targetTime: structure.processingEndUtc,
+          label: bpType,
+          targetTime: procEnd,
           colonyName: colony.colonyName,
         });
       }
@@ -104,7 +107,9 @@ export function ColonyActivityPage() {
       for (const structure of colony.structures ?? []) {
         if (structure.status !== 'online') continue;
         if (structure.processingEndUtc) continue;
-        const activityType = deriveActivityType(structure.blueprintType);
+        const bpType = structure.blueprintType;
+        if (!bpType) continue;
+        const activityType = deriveActivityType(bpType);
         if (!activityType) continue;
 
         idle.push({ structure, colonyName: colony.colonyName, activityType });

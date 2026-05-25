@@ -340,11 +340,11 @@ const emptyPurchase: PurchaseForm = {
 const TRANSACTION_FILTERS: FilterDefinition[] = [
   {
     type: 'dropdown',
-    key: 'type',
+    key: 'transactionType',
     label: 'Type',
     options: [
-      { value: 'Buy', label: 'Buy' },
-      { value: 'Sell', label: 'Sell' },
+      { value: 'buy', label: 'Buy' },
+      { value: 'sell', label: 'Sell' },
     ],
   },
   { type: 'text', key: 'item', placeholder: 'Filter by item...' },
@@ -354,7 +354,7 @@ const TRANSACTION_FILTERS: FilterDefinition[] = [
 ];
 
 const defaultFilterValues: FilterValues = {
-  type: '',
+  transactionType: '',
   item: '',
   counterparty: '',
   faction: '',
@@ -376,20 +376,20 @@ function TransactionsTab() {
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
-      const typeFilter = filterValues.type as string;
-      if (typeFilter && tx.type !== typeFilter) return false;
+      const typeFilter = filterValues.transactionType as string;
+      if (typeFilter && tx.transactionType !== typeFilter) return false;
 
       const itemFilter = (filterValues.item as string).toLowerCase();
       if (itemFilter && !tx.itemName.toLowerCase().includes(itemFilter)) return false;
 
       const counterpartyFilter = (filterValues.counterparty as string).toLowerCase();
-      if (counterpartyFilter && !(tx.counterparty ?? '').toLowerCase().includes(counterpartyFilter)) return false;
+      if (counterpartyFilter && !tx.counterparty.toLowerCase().includes(counterpartyFilter)) return false;
 
       const factionFilter = (filterValues.faction as string).toLowerCase();
-      if (factionFilter && !(tx.faction ?? '').toLowerCase().includes(factionFilter)) return false;
+      if (factionFilter && !tx.counterpartyFaction.toLowerCase().includes(factionFilter)) return false;
 
       const stationFilter = (filterValues.station as string).toLowerCase();
-      if (stationFilter && !tx.stationName.toLowerCase().includes(stationFilter)) return false;
+      if (stationFilter && !tx.stationUUID.toLowerCase().includes(stationFilter)) return false;
 
       return true;
     });
@@ -412,8 +412,8 @@ function TransactionsTab() {
     await recordPurchase.mutateAsync({
       itemName: purchase.itemName.trim(),
       quantity,
-      price,
-      stationName: purchase.stationName.trim(),
+      pricePerUnit: price,
+      stationUUID: purchase.stationName.trim(),
       counterparty: purchase.counterparty.trim() || undefined,
     });
 
@@ -459,18 +459,18 @@ function TransactionsTab() {
                 {filteredTransactions.map((tx) => (
                   <tr key={tx.uuid} className="border-b border-gray-700 hover:bg-gray-750">
                     <td className="px-3 py-2">
-                      <span className={tx.type === 'Buy' ? 'text-red-400' : 'text-green-400'}>
-                        {tx.type}
+                      <span className={tx.transactionType === 'buy' ? 'text-red-400' : 'text-green-400'}>
+                        {tx.transactionType === 'buy' ? 'Buy' : 'Sell'}
                       </span>
                     </td>
                     <td className="px-3 py-2 text-white">{tx.itemName}</td>
                     <td className="px-3 py-2 text-gray-300">{tx.quantity}</td>
-                    <td className="px-3 py-2 text-gray-300">{tx.price.toLocaleString()}</td>
-                    <td className="px-3 py-2 text-gray-300">{tx.stationName}</td>
-                    <td className="px-3 py-2 text-gray-300">{tx.counterparty ?? '—'}</td>
-                    <td className="px-3 py-2 text-gray-300">{tx.faction ?? '—'}</td>
+                    <td className="px-3 py-2 text-gray-300">{tx.totalPrice.toLocaleString()}</td>
+                    <td className="px-3 py-2 text-gray-300">{tx.stationUUID}</td>
+                    <td className="px-3 py-2 text-gray-300">{tx.counterparty || '—'}</td>
+                    <td className="px-3 py-2 text-gray-300">{tx.counterpartyFaction || '—'}</td>
                     <td className="px-3 py-2 text-gray-300">
-                      {new Date(tx.transactionDate).toLocaleDateString()}
+                      {tx.timestamp ? new Date(tx.timestamp).toLocaleDateString() : '—'}
                     </td>
                   </tr>
                 ))}
@@ -573,11 +573,10 @@ function SummaryTab() {
     let buy = 0;
     let sell = 0;
     for (const tx of transactions) {
-      const amount = tx.price * tx.quantity;
-      if (tx.type === 'Buy') {
-        buy += amount;
+      if (tx.transactionType === 'buy') {
+        buy += tx.totalPrice;
       } else {
-        sell += amount;
+        sell += tx.totalPrice;
       }
     }
     return { buyTotal: buy, sellTotal: sell, profitLoss: sell - buy };

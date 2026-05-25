@@ -15,7 +15,7 @@ import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
-import type { BuildPlan, BuildPlanItem, BlueprintResource } from '../../api/types/domain';
+import type { BuildPlan, BuildPlanItem } from '../../api/types/domain';
 
 interface FormState {
   name: string;
@@ -37,7 +37,7 @@ function formFromPlan(plan: BuildPlan): FormState {
 /** Aggregate resource requirements for all pending items in the plan. */
 function aggregateResources(
   items: BuildPlanItem[],
-  blueprintLookup: Map<string, BlueprintResource[]>,
+  blueprintLookup: Map<string, Record<string, string>>,
 ): { resourceName: string; purity: string; totalQuantity: number }[] {
   const pending = items.filter((i) => i.status === 'pending');
   const totals = new Map<string, { resourceName: string; purity: string; totalQuantity: number }>();
@@ -45,16 +45,17 @@ function aggregateResources(
   for (const item of pending) {
     const resources = blueprintLookup.get(item.blueprintUUID);
     if (!resources) continue;
-    for (const res of resources) {
-      const key = `${res.resourceName}|${res.purity ?? ''}`;
+    for (const [resName, qty] of Object.entries(resources)) {
+      const key = resName;
       const existing = totals.get(key);
+      const quantity = Number(qty) || 0;
       if (existing) {
-        existing.totalQuantity += res.quantity * item.quantity;
+        existing.totalQuantity += quantity * item.quantity;
       } else {
         totals.set(key, {
-          resourceName: res.resourceName,
-          purity: res.purity ?? '',
-          totalQuantity: res.quantity * item.quantity,
+          resourceName: resName,
+          purity: '',
+          totalQuantity: quantity * item.quantity,
         });
       }
     }
@@ -100,10 +101,10 @@ export function BuildPlannerForm() {
 
   // Blueprint resource lookup for aggregation
   const blueprintResourceLookup = useMemo(() => {
-    const map = new Map<string, BlueprintResource[]>();
+    const map = new Map<string, Record<string, string>>();
     if (blueprints) {
       for (const bp of blueprints) {
-        map.set(bp.uuid, bp.resources ?? []);
+        map.set(bp.uuid, bp.resources ?? {});
       }
     }
     return map;

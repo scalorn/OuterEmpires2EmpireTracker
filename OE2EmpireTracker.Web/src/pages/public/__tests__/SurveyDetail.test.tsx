@@ -71,7 +71,7 @@ function mockQueryResult<T>(data: T, overrides = {}) {
 function makeAsteroidSurvey(id: string) {
   return {
     surveyID: id,
-    surveyType: 'Asteroid',
+    surveyType: 'asteroid',
     asteroidUUID: 'ast-uuid-001',
     systemName: 'Alpha Centauri',
     planetName: 'Asteroid Belt 1',
@@ -88,7 +88,7 @@ function makeAsteroidSurvey(id: string) {
 function makePlanetSurvey(id: string) {
   return {
     surveyID: id,
-    surveyType: 'Planet',
+    surveyType: 'planet',
     systemName: 'Sol',
     planetName: 'Earth',
     scannedBy: 'Player2',

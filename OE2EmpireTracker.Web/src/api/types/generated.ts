@@ -240,7 +240,7 @@ export interface PlannerStructure {
   isStaged: boolean;
   isOnline: boolean;
   buildQueueSequence: number;
-  assignedWorkers?: Record<string, boolean>;
+  assignedWorkers?: Record<string, string>;
 }
 
 export interface ColonyStatusResult {

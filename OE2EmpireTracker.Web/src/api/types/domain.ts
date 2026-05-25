@@ -20,11 +20,39 @@ export interface Colony {
 export interface ColonyStructure {
   uuid: string;
   flatpackBlueprintUUID: string;
-  blueprintType: string;
-  status: 'staged' | 'building' | 'built' | 'online';
+  displaySequence: number;
+  buildingID: number;
   buildQueueSequence: number;
-  assignedWorkers: Record<string, boolean>;
+  properties: Record<string, string>;
+  assignedWorkers: Record<string, string>;
+  buildCompletionTime?: CountDownTime | null;
+  processCompletionTime?: CountDownTime | null;
+  miningSurvey?: string | null;
+  miningSurveyResource?: string | null;
+  miningLeftOvers: number;
+  refiningResource?: string | null;
+  refiningResourcePurity?: string | null;
+  researchingBlueprintUUID?: string | null;
+  manufacturingBlueprintUUID?: string | null;
+  manufacturingCommodityName?: string | null;
+  manufacturingQuantity: number;
+  manufacturingCompleted: number;
+  stagingResources: boolean;
+  currentAttitude: string;
+  contentmentIndex: number;
+  wageLevel: number;
+  // UI-computed fields (derived from properties/blueprint lookup, not on wire)
+  blueprintType?: string;
+  status?: string;
   processingEndUtc?: string;
+}
+
+export interface CountDownTime {
+  startTime: string;
+  repeatIntervalSeconds: number;
+  isRepeating: boolean;
+  timeRemaining: number;
+  intervalsPassed: number;
 }
 
 export interface WarehouseItem {
@@ -49,20 +77,17 @@ export interface CommodityRequest {
 export interface Blueprint {
   uuid: string;
   name: string;
-  blueprintType: string;
+  bluePrintType: string;
   shipClass?: string;
-  techLevel: number;
+  techLevel: string;
   evolution: number;
   nickName?: string;
-  isGlobal: boolean;
-  properties: Record<string, number>;
-  resources: BlueprintResource[];
-}
-
-export interface BlueprintResource {
-  resourceName: string;
-  quantity: number;
-  purity?: string;
+  ownerUUID: string;
+  class: number;
+  copyCost: number;
+  baseBlueprintUUID?: string;
+  properties: Record<string, string>;
+  resources: Record<string, string>;
 }
 
 // =============================================================================
@@ -73,24 +98,20 @@ export interface Survey {
   uuid: string;
   planetName: string;
   systemName: string;
-  surveyType: 'Planet' | 'Asteroid';
+  surveyType: 'planet' | 'asteroid';
   nickName?: string;
   scannedBy?: string;
-  scanDate?: string;
-  sensorAbundance?: number;
-  purityModifier?: number;
-  scanLevel?: number;
-  scannerBlueprint?: string;
-  resources: SurveyResource[];
-  assignedRigCount?: number;
+  dateTime?: string;
+  scannerBlueprintUUID?: string;
   asteroidUUID?: string;
+  properties?: Record<string, string>;
+  resources: Record<string, SurveyResource>;
 }
 
 export interface SurveyResource {
-  resourceName: string;
+  resource: string;
   purity: string;
-  amount: number;
-  maxReserve?: number;
+  amount: string;
 }
 
 // =============================================================================
@@ -205,14 +226,23 @@ export interface MarketListing {
 
 export interface MarketTransaction {
   uuid: string;
-  type: 'Buy' | 'Sell';
+  ownerUUID: string;
+  transactionType: 'buy' | 'sell';
+  itemType: string;
+  itemReferenceID: string;
   itemName: string;
   quantity: number;
-  price: number;
-  stationName: string;
-  counterparty?: string;
-  faction?: string;
-  transactionDate: string;
+  pricePerUnit: number;
+  totalPrice: number;
+  counterparty: string;
+  counterpartyFaction: string;
+  stationUUID: string;
+  timestamp: string;
+  notes: string;
+  listingUUID: string;
+  currentHP: number;
+  maxHP: number;
+  maxRepairPercent: number;
 }
 
 // =============================================================================

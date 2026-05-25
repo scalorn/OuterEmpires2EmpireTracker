@@ -388,7 +388,7 @@ function CommodityRequestsTab({ colony }: { colony: Colony }) {
 
 // --- Structures Tab ---
 
-const STATUS_COLORS: Record<ColonyStructure['status'], { bg: string; text: string; label: string }> = {
+const STATUS_COLORS: Record<string, { bg: string; text: string; label: string }> = {
   staged: { bg: 'bg-gray-600', text: 'text-gray-200', label: 'Staged' },
   building: { bg: 'bg-yellow-600', text: 'text-yellow-100', label: 'Building' },
   built: { bg: 'bg-blue-600', text: 'text-blue-100', label: 'Built' },
@@ -406,7 +406,7 @@ function computeColonyStatus(colony: Colony) {
   let warehouseCapacity = 0;
 
   for (const s of onlineStructures) {
-    const type = s.blueprintType.toLowerCase();
+    const type = (s.blueprintType ?? '').toLowerCase();
     if (type.includes('reactor') || type.includes('power')) power++;
     if (type.includes('habitat') || type.includes('habitation')) habitation++;
     if (type.includes('farm') || type.includes('food')) food++;
@@ -454,7 +454,7 @@ function StructuresTab({ colony, colonyUUID }: { colony: Colony; colonyUUID: str
       isStaged: s.status === 'staged',
       isOnline: s.status === 'online',
       buildQueueSequence: s.buildQueueSequence,
-      assignedWorkers: s.assignedWorkers,
+      assignedWorkers: s.assignedWorkers ?? {},
     }));
     const request: ColonyPlannerRequest = { structures: plannerStructures };
     optimizeBuildOrder.mutate(request, {
@@ -462,7 +462,7 @@ function StructuresTab({ colony, colonyUUID }: { colony: Colony; colonyUUID: str
         // Persist the reordered structures back to the colony
         const reordered = structures.map((s) => {
           const step = result.steps.find(
-            (st) => st.blueprintType === s.blueprintType,
+            (st) => st.blueprintType === (s.blueprintType ?? ''),
           );
           return { ...s, buildQueueSequence: step?.sequence ?? s.buildQueueSequence };
         });
@@ -558,7 +558,7 @@ function StatusCard({ label, value }: { label: string; value: string | number })
 }
 
 function StructureRow({ structure }: { structure: ColonyStructure }) {
-  const statusStyle = STATUS_COLORS[structure.status] ?? STATUS_COLORS.staged;
+  const statusStyle = STATUS_COLORS[structure.status ?? 'staged'] ?? STATUS_COLORS.staged;
   const assignedCount = Object.values(structure.assignedWorkers ?? {}).filter(Boolean).length;
   const totalSlots = Object.keys(structure.assignedWorkers ?? {}).length;
 
@@ -566,7 +566,7 @@ function StructureRow({ structure }: { structure: ColonyStructure }) {
     <div className="flex items-center gap-3 rounded border border-gray-700 bg-gray-800/50 px-3 py-2">
       {/* Blueprint type */}
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-white">{structure.blueprintType}</p>
+        <p className="truncate text-sm font-medium text-white">{structure.blueprintType ?? 'Unknown'}</p>
       </div>
 
       {/* Status badge */}

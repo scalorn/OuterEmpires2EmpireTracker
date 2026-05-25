@@ -13,57 +13,60 @@ import { EmptyState } from '../../components/common/EmptyState';
 import { EditableGrid, type GridColumn } from '../../components/common/EditableGrid';
 import { TabBar } from '../../components/common/TabBar';
 import { applyFilters, type FilterConfig } from '../../utils/filterUtils';
-import type { Blueprint, BlueprintResource } from '../../api/types/domain';
+import type { Blueprint } from '../../api/types/domain';
 
 interface BlueprintFormState {
   name: string;
   blueprintType: string;
   shipClass: string;
-  techLevel: number;
+  techLevel: string;
   evolution: number;
   nickName: string;
-  isGlobal: boolean;
 }
 
 interface PropertyRow {
   key: string;
-  value: number;
+  value: string;
 }
 
 const emptyForm: BlueprintFormState = {
   name: '',
   blueprintType: '',
   shipClass: '',
-  techLevel: 1,
+  techLevel: '',
   evolution: 0,
   nickName: '',
-  isGlobal: false,
 };
 
 function formFromBlueprint(bp: Blueprint): BlueprintFormState {
   return {
     name: bp.name,
-    blueprintType: bp.blueprintType,
+    blueprintType: bp.bluePrintType,
     shipClass: bp.shipClass ?? '',
     techLevel: bp.techLevel,
     evolution: bp.evolution,
     nickName: bp.nickName ?? '',
-    isGlobal: bp.isGlobal,
   };
 }
 
-function propertiesToRows(properties: Record<string, number>): PropertyRow[] {
+function propertiesToRows(properties: Record<string, string>): PropertyRow[] {
   return Object.entries(properties).map(([key, value]) => ({ key, value }));
 }
 
-function rowsToProperties(rows: PropertyRow[]): Record<string, number> {
-  const result: Record<string, number> = {};
+function rowsToProperties(rows: PropertyRow[]): Record<string, string> {
+  const result: Record<string, string> = {};
   for (const row of rows) {
     if (row.key.trim()) {
       result[row.key.trim()] = row.value;
     }
   }
   return result;
+}
+
+/** Row type for the blueprint resources grid (key=resource name, value=quantity string). */
+interface ResourceEntry {
+  resourceName: string;
+  quantity: string;
 }
 
 const BLUEPRINT_TABS = [
@@ -95,7 +98,7 @@ export function BlueprintForm() {
   const [isNewMode, setIsNewMode] = useState(false);
   const [form, setForm] = useState<BlueprintFormState>(emptyForm);
   const [properties, setProperties] = useState<PropertyRow[]>([]);
-  const [resources, setResources] = useState<BlueprintResource[]>([]);
+  const [resources, setResources] = useState<ResourceEntry[]>([]);
   const [activeTab, setActiveTab] = useState('details');
   const [isDirty, setIsDirty] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -142,13 +145,13 @@ export function BlueprintForm() {
     if (techLevels.length > 0) {
       return techLevels.map((tl) => ({ value: String(tl.level), label: tl.name }));
     }
-    const levels = new Set<number>();
+    const levels = new Set<string>();
     for (const bp of blueprints) {
-      levels.add(bp.techLevel);
+      if (bp.techLevel) levels.add(bp.techLevel);
     }
     return Array.from(levels)
-      .sort((a, b) => a - b)
-      .map((l) => ({ value: String(l), label: `TL ${l}` }));
+      .sort()
+      .map((l) => ({ value: l, label: l }));
   }, [techLevels, blueprints]);
 
   // --- Grid column definitions ---
@@ -158,9 +161,9 @@ export function BlueprintForm() {
     { key: 'value', header: 'Value', type: 'number' as const },
   ], []);
 
-  const resourceColumns: GridColumn<BlueprintResource>[] = useMemo(() => [
+  const resourceColumns: GridColumn<ResourceEntry>[] = useMemo(() => [
     { key: 'resourceName', header: 'Resource', type: 'text' as const },
-    { key: 'quantity', header: 'Quantity', type: 'number' as const },
+    { key: 'quantity', header: 'Quantity', type: 'text' as const },
     {
       key: 'purity',
       header: 'Purity',
@@ -213,7 +216,7 @@ export function BlueprintForm() {
     if (bpType) {
       filters.push({
         type: 'dropdown',
-        field: 'blueprintType',
+        field: 'bluePrintType',
         selected: bpType,
       });
     }
@@ -229,13 +232,10 @@ export function BlueprintForm() {
 
     let result = applyFilters(blueprints, filters);
 
-    // Tech level filter (numeric comparison)
+    // Tech level filter
     const techLevelStr = (filterValues.techLevel as string) ?? '';
     if (techLevelStr) {
-      const tl = Number(techLevelStr);
-      if (!isNaN(tl)) {
-        result = result.filter((bp) => bp.techLevel === tl);
-      }
+      result = result.filter((bp) => bp.techLevel === techLevelStr);
     }
 
     // Evolution filter (numeric comparison)
@@ -285,7 +285,7 @@ export function BlueprintForm() {
     if (bp) {
       setForm(formFromBlueprint(bp));
       setProperties(propertiesToRows(bp.properties));
-      setResources([...bp.resources]);
+      setResources(Object.entries(bp.resources).map(([k, v]) => ({ resourceName: k, quantity: v })));
       setIsDirty(false);
     }
   }, [blueprints]);
@@ -326,7 +326,7 @@ export function BlueprintForm() {
   }, []);
 
   const handlePropertyAdd = useCallback(() => {
-    setProperties((prev) => [...prev, { key: '', value: 0 }]);
+    setProperties((prev) => [...prev, { key: '', value: '0' }]);
     setIsDirty(true);
   }, []);
 
@@ -337,7 +337,7 @@ export function BlueprintForm() {
 
   // --- Resources handlers ---
 
-  const handleResourceChange = useCallback((index: number, row: BlueprintResource) => {
+  const handleResourceChange = useCallback((index: number, row: ResourceEntry) => {
     setResources((prev) => {
       const next = [...prev];
       next[index] = row;
@@ -347,7 +347,7 @@ export function BlueprintForm() {
   }, []);
 
   const handleResourceAdd = useCallback(() => {
-    setResources((prev) => [...prev, { resourceName: '', quantity: 0, purity: '' }]);
+    setResources((prev) => [...prev, { resourceName: '', quantity: '0' }]);
     setIsDirty(true);
   }, []);
 
@@ -360,17 +360,22 @@ export function BlueprintForm() {
 
   const handleSave = useCallback(async () => {
     const propsRecord = rowsToProperties(properties);
+    const resourcesRecord: Record<string, string> = {};
+    for (const r of resources) {
+      if (r.resourceName.trim()) {
+        resourcesRecord[r.resourceName.trim()] = r.quantity;
+      }
+    }
     if (isNewMode) {
       const result = await create.mutateAsync({
         name: form.name,
-        blueprintType: form.blueprintType,
+        bluePrintType: form.blueprintType,
         shipClass: form.shipClass || undefined,
         techLevel: form.techLevel,
         evolution: form.evolution,
         nickName: form.nickName || undefined,
-        isGlobal: form.isGlobal,
         properties: propsRecord,
-        resources,
+        resources: resourcesRecord,
       });
       setSelectedId(result.uuid);
       setIsNewMode(false);
@@ -379,14 +384,13 @@ export function BlueprintForm() {
         entityUUID: selectedId,
         data: {
           name: form.name,
-          blueprintType: form.blueprintType,
+          bluePrintType: form.blueprintType,
           shipClass: form.shipClass || undefined,
           techLevel: form.techLevel,
           evolution: form.evolution,
           nickName: form.nickName || undefined,
-          isGlobal: form.isGlobal,
           properties: propsRecord,
-          resources,
+          resources: resourcesRecord,
         },
       });
     }
@@ -410,7 +414,7 @@ export function BlueprintForm() {
   if (selectedBlueprint && detailUUID !== lastSyncedUUID && !isNewMode && !isDirty) {
     setForm(formFromBlueprint(selectedBlueprint));
     setProperties(propertiesToRows(selectedBlueprint.properties));
-    setResources([...selectedBlueprint.resources]);
+    setResources(Object.entries(selectedBlueprint.resources).map(([k, v]) => ({ resourceName: k, quantity: v })));
     setLastSyncedUUID(detailUUID ?? null);
   }
 
@@ -435,7 +439,7 @@ export function BlueprintForm() {
           <table className="w-full text-left text-sm">
             <thead className="sticky top-0 bg-gray-800 text-xs uppercase text-gray-400">
               <tr>
-                <SortHeader field="blueprintType" label="Type" current={sortField} asc={sortAsc} onSort={handleSort} />
+                <SortHeader field="bluePrintType" label="Type" current={sortField} asc={sortAsc} onSort={handleSort} />
                 <SortHeader field="name" label="Name" current={sortField} asc={sortAsc} onSort={handleSort} />
                 <SortHeader field="techLevel" label="TL" current={sortField} asc={sortAsc} onSort={handleSort} />
                 <SortHeader field="evolution" label="Evo" current={sortField} asc={sortAsc} onSort={handleSort} />
@@ -452,7 +456,7 @@ export function BlueprintForm() {
                     selectedId === bp.uuid ? 'bg-gray-700' : '',
                   ].join(' ')}
                 >
-                  <td className="px-3 py-2 text-gray-300">{bp.blueprintType}</td>
+                  <td className="px-3 py-2 text-gray-300">{bp.bluePrintType}</td>
                   <td className="px-3 py-2 text-white">{bp.name}</td>
                   <td className="px-3 py-2 text-gray-300">{bp.techLevel}</td>
                   <td className="px-3 py-2 text-gray-300">{bp.evolution}</td>
@@ -539,7 +543,7 @@ export function BlueprintForm() {
                 <p className="mb-3 text-sm text-gray-400">
                   Manufacturing resource requirements. Edit values inline.
                 </p>
-                <EditableGrid<BlueprintResource>
+                <EditableGrid<ResourceEntry>
                   columns={resourceColumns}
                   rows={resources}
                   onRowChange={handleResourceChange}
@@ -654,16 +658,6 @@ function DetailsTab({ form, blueprintTypes, shipClasses, onFieldChange }: Detail
           onChange={(e) => onFieldChange('nickName', e.target.value)}
           className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
         />
-      </div>
-      <div className="flex items-center gap-2">
-        <input
-          id="bp-global"
-          type="checkbox"
-          checked={form.isGlobal}
-          onChange={(e) => onFieldChange('isGlobal', e.target.checked)}
-          className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600"
-        />
-        <label htmlFor="bp-global" className="text-sm text-gray-400">Global Blueprint</label>
       </div>
     </div>
   );

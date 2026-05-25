@@ -20,12 +20,12 @@ import { describe, it, expect } from 'vitest';
  * Pure function representing the combined fetch-enabled logic.
  * The component checks surveyType, the hook checks asteroidUUID truthiness.
  */
-function isFetchEnabled(surveyType: 'Planet' | 'Asteroid', asteroidUUID?: string | null): boolean {
-  return surveyType === 'Asteroid' && !!asteroidUUID && asteroidUUID.length > 0;
+function isFetchEnabled(surveyType: 'planet' | 'asteroid', asteroidUUID?: string | null): boolean {
+  return surveyType === 'asteroid' && !!asteroidUUID && asteroidUUID.length > 0;
 }
 
 /** Arbitrary for survey type */
-const surveyTypeArb = fc.constantFrom('Planet' as const, 'Asteroid' as const);
+const surveyTypeArb = fc.constantFrom('planet' as const, 'asteroid' as const);
 
 /** Arbitrary for asteroidUUID including edge cases: valid strings, empty, null, undefined */
 const asteroidUUIDArb = fc.oneof(
@@ -45,7 +45,7 @@ describe('Property 3: Fetch-enabled logic', () => {
         (surveyType, asteroidUUID) => {
           const result = isFetchEnabled(surveyType, asteroidUUID);
           const expected =
-            surveyType === 'Asteroid' &&
+            surveyType === 'asteroid' &&
             asteroidUUID !== null &&
             asteroidUUID !== undefined &&
             asteroidUUID.length > 0;
@@ -61,7 +61,7 @@ describe('Property 3: Fetch-enabled logic', () => {
       fc.property(
         asteroidUUIDArb,
         (asteroidUUID) => {
-          const result = isFetchEnabled('Planet', asteroidUUID);
+          const result = isFetchEnabled('planet', asteroidUUID);
           expect(result).toBe(false);
         },
       ),
@@ -74,7 +74,7 @@ describe('Property 3: Fetch-enabled logic', () => {
       fc.property(
         fc.constantFrom(null, undefined, ''),
         (asteroidUUID) => {
-          const result = isFetchEnabled('Asteroid', asteroidUUID);
+          const result = isFetchEnabled('asteroid', asteroidUUID);
           expect(result).toBe(false);
         },
       ),
@@ -87,7 +87,7 @@ describe('Property 3: Fetch-enabled logic', () => {
       fc.property(
         fc.string({ minLength: 1 }),
         (asteroidUUID) => {
-          const result = isFetchEnabled('Asteroid', asteroidUUID);
+          const result = isFetchEnabled('asteroid', asteroidUUID);
           expect(result).toBe(true);
         },
       ),

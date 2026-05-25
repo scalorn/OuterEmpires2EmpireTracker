@@ -5,11 +5,12 @@ export type { MarketTransaction };
 
 export interface RecordPurchaseRequest {
   itemName: string;
+  itemType?: string;
   quantity: number;
-  price: number;
-  stationName: string;
+  pricePerUnit: number;
   counterparty?: string;
-  faction?: string;
+  counterpartyFaction?: string;
+  stationUUID?: string;
 }
 
 /**
@@ -23,15 +24,9 @@ export const marketTransactionsApi = {
   get: (charUUID: string, entityUUID: string) =>
     apiClient.get(`api/v1/characters/${charUUID}/market-transactions/${entityUUID}`).json<MarketTransaction>(),
 
-  create: (charUUID: string, data: Omit<MarketTransaction, 'uuid'>) =>
-    apiClient.post(`api/v1/characters/${charUUID}/market-transactions`, { json: data }).json<MarketTransaction>(),
-
-  update: (charUUID: string, entityUUID: string, data: Partial<MarketTransaction>) =>
-    apiClient.put(`api/v1/characters/${charUUID}/market-transactions/${entityUUID}`, { json: data }).json<MarketTransaction>(),
-
   delete: (charUUID: string, entityUUID: string) =>
     apiClient.delete(`api/v1/characters/${charUUID}/market-transactions/${entityUUID}`).json<void>(),
 
   recordPurchase: (charUUID: string, data: RecordPurchaseRequest) =>
-    apiClient.post(`api/v1/characters/${charUUID}/market-transactions`, { json: { ...data, type: 'Buy', transactionDate: new Date().toISOString() } }).json<MarketTransaction>(),
+    apiClient.post(`api/v1/characters/${charUUID}/market-transactions/record-purchase`, { json: data }).json<MarketTransaction>(),
 };

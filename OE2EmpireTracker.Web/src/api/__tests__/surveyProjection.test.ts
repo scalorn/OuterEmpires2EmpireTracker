@@ -10,10 +10,10 @@ import * as fc from 'fast-check';
  * asteroidUUID is a non-null, non-empty string.
  */
 function shouldIncludeAsteroidUUID(
-  surveyType: 'Planet' | 'Asteroid',
+  surveyType: 'planet' | 'asteroid',
   asteroidUUID?: string | null
 ): boolean {
-  return surveyType === 'Asteroid' && !!asteroidUUID && asteroidUUID.length > 0;
+  return surveyType === 'asteroid' && !!asteroidUUID && asteroidUUID.length > 0;
 }
 
 /**
@@ -26,7 +26,7 @@ const arbAsteroidUUID = fc.oneof(
   fc.constant(undefined)
 );
 
-const arbSurveyType = fc.constantFrom('Planet' as const, 'Asteroid' as const);
+const arbSurveyType = fc.constantFrom('planet' as const, 'asteroid' as const);
 
 describe('surveyProjection - Property 2: AsteroidUUID inclusion', () => {
   it('includes asteroidUUID iff surveyType is Asteroid AND UUID is non-empty string', () => {
@@ -34,7 +34,7 @@ describe('surveyProjection - Property 2: AsteroidUUID inclusion', () => {
       fc.property(arbSurveyType, arbAsteroidUUID, (surveyType, asteroidUUID) => {
         const included = shouldIncludeAsteroidUUID(surveyType, asteroidUUID);
 
-        const isAsteroid = surveyType === 'Asteroid';
+        const isAsteroid = surveyType === 'asteroid';
         const hasNonEmptyUUID =
           asteroidUUID !== null && asteroidUUID !== undefined && asteroidUUID.length > 0;
 
@@ -48,7 +48,7 @@ describe('surveyProjection - Property 2: AsteroidUUID inclusion', () => {
   it('always excludes asteroidUUID for Planet surveys regardless of UUID value', () => {
     fc.assert(
       fc.property(arbAsteroidUUID, (asteroidUUID) => {
-        const included = shouldIncludeAsteroidUUID('Planet', asteroidUUID);
+        const included = shouldIncludeAsteroidUUID('planet', asteroidUUID);
         expect(included).toBe(false);
       }),
       { numRuns: 100 }
@@ -60,7 +60,7 @@ describe('surveyProjection - Property 2: AsteroidUUID inclusion', () => {
       fc.property(
         fc.constantFrom('' as string, null as null, undefined as undefined),
         (asteroidUUID) => {
-          const included = shouldIncludeAsteroidUUID('Asteroid', asteroidUUID);
+          const included = shouldIncludeAsteroidUUID('asteroid', asteroidUUID);
           expect(included).toBe(false);
         }
       ),
@@ -71,7 +71,7 @@ describe('surveyProjection - Property 2: AsteroidUUID inclusion', () => {
   it('includes asteroidUUID for Asteroid surveys with non-empty UUID', () => {
     fc.assert(
       fc.property(fc.string({ minLength: 1, maxLength: 36 }), (asteroidUUID) => {
-        const included = shouldIncludeAsteroidUUID('Asteroid', asteroidUUID);
+        const included = shouldIncludeAsteroidUUID('asteroid', asteroidUUID);
         expect(included).toBe(true);
       }),
       { numRuns: 100 }

@@ -62,7 +62,7 @@ export function AsteroidsForm() {
   const surveyOptions = useMemo(() => {
     if (!surveys) return [{ value: '', label: '(none)' }];
     const opts = surveys
-      .filter((s) => s.surveyType === 'Asteroid')
+      .filter((s) => s.surveyType === 'asteroid')
       .map((s) => ({
         value: s.uuid,
         label: `${s.planetName} (${s.systemName})`,

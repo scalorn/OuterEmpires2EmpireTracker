@@ -57,7 +57,7 @@ export function DailyBuildPage() {
         isStaged: s.status === 'staged',
         isOnline: s.status === 'online',
         buildQueueSequence: s.buildQueueSequence,
-        assignedWorkers: s.assignedWorkers,
+        assignedWorkers: s.assignedWorkers ?? {},
       }));
 
       buildOrderMutation.mutate({ structures });

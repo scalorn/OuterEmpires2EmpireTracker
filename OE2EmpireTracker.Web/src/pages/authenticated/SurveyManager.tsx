@@ -28,7 +28,7 @@ export function SurveyManager() {
     const uuid = crypto.randomUUID();
     createOrUpdate.mutate({
       entityUUID: uuid,
-      data: { systemName: 'New System', planetName: 'Unknown', surveyType: 'Planet', resources: [] },
+      data: { systemName: 'New System', planetName: 'Unknown', surveyType: 'planet', resources: {} },
     });
   };
 

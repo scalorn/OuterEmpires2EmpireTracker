@@ -39,11 +39,11 @@ function computeStats(
     if (!bp) continue;
 
     const props = bp.properties ?? {};
-    mass += props['Mass'] ?? props['mass'] ?? 0;
-    powerBalance += props['Power'] ?? props['power'] ?? 0;
-    cargoCapacity += props['Cargo'] ?? props['cargo'] ?? 0;
-    defenceRating += props['Defence'] ?? props['defence'] ?? 0;
-    propulsion += props['Propulsion'] ?? props['propulsion'] ?? 0;
+    mass += Number(props['Mass'] ?? props['mass'] ?? 0);
+    powerBalance += Number(props['Power'] ?? props['power'] ?? 0);
+    cargoCapacity += Number(props['Cargo'] ?? props['cargo'] ?? 0);
+    defenceRating += Number(props['Defence'] ?? props['defence'] ?? 0);
+    propulsion += Number(props['Propulsion'] ?? props['propulsion'] ?? 0);
   }
 
   return { mass, powerBalance, cargoCapacity, defenceRating, propulsion };
@@ -184,7 +184,7 @@ export function ShipTemplateForm() {
     (slotType: string) => {
       const bpType = SLOT_TYPE_TO_BLUEPRINT_TYPE[slotType.toLowerCase()] ?? slotType;
       return blueprintList.filter(
-        (bp) => bp.blueprintType.toLowerCase() === bpType.toLowerCase(),
+        (bp) => bp.bluePrintType.toLowerCase() === bpType.toLowerCase(),
       );
     },
     [blueprintList],
