@@ -14,6 +14,7 @@ Welcome to the OE2 Empire Tracker documentation. This application helps you mana
 - [Delivery Routes](delivery-routes.md) — Route planning, auto-fill, and delivery execution
 - [Delivery Execution](delivery-execution.md) — Step-by-step delivery with cargo tracking and fulfillment
 - [Build Planner](build-planner.md) — Manufacturing planning, resource checks, and delivery generation
+- [Colony Planner (Web)](colony-planner.md) — Public web-based colony structure planning with reorder and build order optimization
 - [Pricing Plans](pricing-plans.md) — Resource pricing, cost computation, and valuation scenarios
 - [Supply Chains](supply-chains.md) — Resource pipeline modeling, stage thresholds, and automated deliveries
 - [Ships](ships.md) — Ship templates, fleet tracking, components, and cargo management

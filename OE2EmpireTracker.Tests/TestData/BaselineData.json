@@ -29454,5 +29454,91 @@
       "Evolution": 14,
       "ResearchTimeSeconds": 2592000
     }
+  ],
+  "Resource": [
+    {
+      "Name": "Acidic Inorganics"
+    },
+    {
+      "Name": "Acidic Organics"
+    },
+    {
+      "Name": "Alkali Inorganics"
+    },
+    {
+      "Name": "Alkali Metals"
+    },
+    {
+      "Name": "Alkali Organics"
+    },
+    {
+      "Name": "Alkaline Earth Metals"
+    },
+    {
+      "Name": "Complex Metallics"
+    },
+    {
+      "Name": "Complex Non-Metallics"
+    },
+    {
+      "Name": "Halogens"
+    },
+    {
+      "Name": "Heavy Alkali Metals"
+    },
+    {
+      "Name": "Heavy Alkaline Earth Metals"
+    },
+    {
+      "Name": "Heavy Noble Gases"
+    },
+    {
+      "Name": "Heavy Post-Trans Metals"
+    },
+    {
+      "Name": "Heavy Trans-Metals"
+    },
+    {
+      "Name": "Lanthanide Volatiles"
+    },
+    {
+      "Name": "Lanthanides"
+    },
+    {
+      "Name": "Light Halogens"
+    },
+    {
+      "Name": "Metallics"
+    },
+    {
+      "Name": "Metaloids"
+    },
+    {
+      "Name": "Noble Gases"
+    },
+    {
+      "Name": "Non-Metallics"
+    },
+    {
+      "Name": "Post-Trans Metals"
+    },
+    {
+      "Name": "Strong Acidic Inorganics"
+    },
+    {
+      "Name": "Strong Alkali Inorganics"
+    },
+    {
+      "Name": "Strong Alkali Organics"
+    },
+    {
+      "Name": "Superheavy Exotics"
+    },
+    {
+      "Name": "Trans-Metals"
+    },
+    {
+      "Name": "Transuranic Volatiles"
+    }
   ]
 }

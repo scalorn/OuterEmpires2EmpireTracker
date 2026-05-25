@@ -64,7 +64,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `StructureItem.tsx` modified_
     - _Verification: `npm run build` from OE2EmpireTracker.Web/_
 
-- [~] 4. Checkpoint - Verify manual reorder works end-to-end
+- [x] 4. Checkpoint - Verify manual reorder works end-to-end
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 5. Add Optimize Build Order button to ColonyPlanner
@@ -105,10 +105,10 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `plannerStore.property.test.ts` updated_
     - _Verification: `npx vitest run` from OE2EmpireTracker.Web/_
 
-- [~] 6. Checkpoint - Verify frontend optimize flow
+- [x] 6. Checkpoint - Verify frontend optimize flow
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Enhance server endpoint to use real BuildOrderOptimizer
+- [x] 7. Enhance server endpoint to use real BuildOrderOptimizer
   - [x] 7.1 Add `OptimizedOrderEntryResponse` model and update `BuildOrderResponse`
     - Add `OptimizedOrderEntryResponse` class with `FlatpackBlueprintUUID` and `BuildQueueSequence`
     - Add `OptimizedOrder` list property to `BuildOrderResponse`
@@ -129,7 +129,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `ColonyPlannerEndpoints.cs` modified_
     - _Verification: `dotnet build OE2EmpireTracker.Server`_
 
-  - [~] 7.3 Write server integration tests for build-order endpoint
+  - [x] 7.3 Write server integration tests for build-order endpoint
     - Test valid request invokes optimizer and returns `optimizedOrder`
     - Test response contains `steps` + `totalTimeEstimate` for backward compat
     - Test missing body → 400, invalid JSON → 400, empty structures → 400
@@ -140,7 +140,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `OE2EmpireTracker.Server.Tests/Endpoints/ColonyPlannerBuildOrderTests.cs` created_
     - _Verification: `dotnet test OE2EmpireTracker.Server.Tests --no-build`_
 
-- [~] 8. Final checkpoint - Ensure all tests pass
+- [x] 8. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

@@ -75,6 +75,10 @@ Every form remembers its position, size, column widths, sort order, and filter s
 
 Run a shared server so your faction can coordinate. The server stores all player data centrally, syncs between multiple tracker instances, and runs colony processing even when your PC is off. Supports self-hosted (single file, no dependencies) or cloud deployment (PostgreSQL, DynamoDB). See `OE2EmpireTracker.Server/README.md` for setup.
 
+### Colony Planner (Web)
+
+The server hosts a public Colony Planner page at `/planner` — no login needed. Add structures to a plan, reorder them with Up/Down buttons, and click **Optimize Build Order** to let the server compute a construction sequence that satisfies power, habitation, food, and entertainment constraints at every step. Useful for planning a new colony expansion before you start building in-game.
+
 ## Why Not a Spreadsheet?
 
 | Spreadsheet | Empire Tracker |
