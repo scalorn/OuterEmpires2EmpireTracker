@@ -18,8 +18,8 @@ export function SurveyDetail() {
 
   const surveyType = String(survey?.surveyType ?? survey?.SurveyType ?? '');
   const asteroidUUID = String(survey?.asteroidUUID ?? survey?.AsteroidUUID ?? '');
-  const isAsteroidSurvey = surveyType === 'Asteroid';
-  const shouldFetchAsteroid = isAsteroidSurvey && asteroidUUID.length > 0;
+  const isAsteroidSurvey = surveyType.toLowerCase() === 'asteroid';
+  const shouldFetchAsteroid = isAsteroidSurvey && asteroidUUID.length > 0 && asteroidUUID !== 'undefined';
 
   const {
     data: asteroidData,
