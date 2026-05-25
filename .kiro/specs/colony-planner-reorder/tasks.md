@@ -67,7 +67,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
 - [~] 4. Checkpoint - Verify manual reorder works end-to-end
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Add Optimize Build Order button to ColonyPlanner
+- [x] 5. Add Optimize Build Order button to ColonyPlanner
   - [x] 5.1 Add `OptimizedOrderEntry` type and update `BuildOrderResult` in generated types
     - Add `OptimizedOrderEntry` interface (`flatpackBlueprintUUID: string`, `buildQueueSequence: number`)
     - Add optional `optimizedOrder?: OptimizedOrderEntry[]` field to `BuildOrderResult`
@@ -88,7 +88,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `ColonyPlanner.tsx` modified_
     - _Verification: `npm run build` from OE2EmpireTracker.Web/_
 
-  - [-] 5.3 Write unit tests for Optimize Build Order button
+  - [x] 5.3 Write unit tests for Optimize Build Order button
     - Test button exists with correct text
     - Test button disabled when list empty or has 1 item
     - Test button disabled + spinner during request
@@ -98,7 +98,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `ColonyPlanner.test.tsx` modified_
     - _Verification: `npx vitest run` from OE2EmpireTracker.Web/_
 
-  - [-] 5.4 Write property test for wire format mapping
+  - [x] 5.4 Write property test for wire format mapping
     - **Property 5: Wire format mapping correctness**
     - **Validates: Requirements 2.2**
     - _Inputs: `plannerStore.ts`, `ColonyPlanner.tsx`_
@@ -109,7 +109,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Enhance server endpoint to use real BuildOrderOptimizer
-  - [-] 7.1 Add `OptimizedOrderEntryResponse` model and update `BuildOrderResponse`
+  - [x] 7.1 Add `OptimizedOrderEntryResponse` model and update `BuildOrderResponse`
     - Add `OptimizedOrderEntryResponse` class with `FlatpackBlueprintUUID` and `BuildQueueSequence`
     - Add `OptimizedOrder` list property to `BuildOrderResponse`
     - Add empty-structures validation (return 400 when `Structures` is empty list)
@@ -118,7 +118,7 @@ This plan implements manual structure reordering (move up/down with CC protectio
     - _Output: `ColonyPlannerEndpoints.cs` modified_
     - _Verification: `dotnet build OE2EmpireTracker.Server`_
 
-  - [~] 7.2 Wire `BuildOrderOptimizer` into `OptimizeBuildOrder` method
+  - [x] 7.2 Wire `BuildOrderOptimizer` into `OptimizeBuildOrder` method
     - Replace stub `CalculateBuildOrder` with real optimizer invocation
     - Map `PlannerStructureDto` list → `Colony` object with `ColonyStructure` entries
     - Call `BuildOrderOptimizer.Optimize(colony)` via DI-registered `PlayerContext`

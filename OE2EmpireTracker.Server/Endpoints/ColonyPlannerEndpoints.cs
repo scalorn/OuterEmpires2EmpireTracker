@@ -1,4 +1,8 @@
 using System.Text.Json;
+using OE2EmpireTracker.Constants;
+using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Server.Storage;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Server.Endpoints;
 
@@ -101,7 +105,7 @@ public static class ColonyPlannerEndpoints
             return Results.BadRequest(new { error = "structures field is required" });
         }
 
-        var result = CalculateBuildOrder(request);
+        var result = await CalculateBuildOrder(request, httpContext);
         return Results.Ok(result);
     }
 
@@ -169,18 +173,83 @@ public static class ColonyPlannerEndpoints
         };
     }
 
-    private static BuildOrderResponse CalculateBuildOrder(ColonyPlannerRequest request)
+    private static async Task<BuildOrderResponse> CalculateBuildOrder(
+        ColonyPlannerRequest request,
+        HttpContext httpContext)
     {
+        // Map PlannerStructureDto list → Colony with ColonyStructure entries
+        var colony = new Colony
+        {
+            UUID = Guid.NewGuid().ToString(),
+            Structures = new List<ColonyStructure>(),
+        };
+
+        foreach (var dto in request.Structures!)
+        {
+            var cs = new ColonyStructure
+            {
+                UUID = Guid.NewGuid().ToString(),
+                FlatpackBlueprintUUID = dto.FlatpackBlueprintUUID,
+                BuildQueueSequence = dto.BuildQueueSequence,
+            };
+
+            if (dto.IsBuilt)
+            {
+                cs.Properties.SetProperty(GameConstants.PropBuilt, true);
+            }
+
+            if (dto.IsStaged)
+            {
+                cs.Properties.SetProperty(GameConstants.PropStaged, true);
+            }
+
+            if (dto.IsOnline)
+            {
+                cs.Properties.SetProperty(GameConstants.PropOnline, true);
+            }
+
+            colony.Structures.Add(cs);
+        }
+
+        // Load global blueprints from storage to provide to the optimizer
+        var storage = httpContext.RequestServices.GetRequiredService<IStorageBackend>();
+        var globalBlueprints = await storage.GetAllBlueprintsAsync(string.Empty);
+
+        // Create a minimal PlayerContext with the global blueprints for the optimizer
+        var playerRoot = new PlayerRoot
+        {
+            Blueprint = globalBlueprints.ToArray(),
+        };
+
+        var playerContext = new PlayerContext(playerRoot);
+        var optimizer = new BuildOrderOptimizer(playerContext);
+
+        // Run the optimizer
+        var optimizedStructures = optimizer.Optimize(colony);
+
+        // Map result to OptimizedOrderEntryResponse[] (UUID + 0-based sequence)
+        var optimizedOrder = new List<OptimizedOrderEntryResponse>();
+        for (int i = 0; i < optimizedStructures.Count; i++)
+        {
+            optimizedOrder.Add(new OptimizedOrderEntryResponse
+            {
+                FlatpackBlueprintUUID = optimizedStructures[i].FlatpackBlueprintUUID ?? string.Empty,
+                BuildQueueSequence = i,
+            });
+        }
+
+        // Preserve steps and totalTimeEstimate for backward compatibility
         var steps = new List<BuildOrderStepResponse>();
         var sequence = 1;
 
-        foreach (var structure in request.Structures!.Where(s => !s.IsBuilt))
+        foreach (var structure in optimizedStructures)
         {
+            var bp = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
             steps.Add(new BuildOrderStepResponse
             {
                 Sequence = sequence++,
-                StructureName = structure.FlatpackBlueprintUUID ?? "Unknown",
-                BlueprintType = "Structure",
+                StructureName = bp?.ExtendedName ?? structure.FlatpackBlueprintUUID ?? "Unknown",
+                BlueprintType = bp?.BluePrintType ?? "Structure",
                 ResourcesRequired = new List<ResourceRequirementResponse>
                 {
                     new () { ResourceName = "Construction Materials", Quantity = 100 },
@@ -191,6 +260,7 @@ public static class ColonyPlannerEndpoints
 
         return new BuildOrderResponse
         {
+            OptimizedOrder = optimizedOrder,
             Steps = steps,
             TotalTimeEstimate = $"{steps.Count * 90}m",
         };
