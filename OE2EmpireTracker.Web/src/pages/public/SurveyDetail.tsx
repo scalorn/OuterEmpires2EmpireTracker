@@ -1,5 +1,8 @@
 import { useParams, Link } from 'react-router-dom';
 import { usePublicSurveys } from '../../api/hooks/useSurveys';
+import { usePublicAsteroidDetail } from '../../api/hooks/useAsteroids';
+import { matchReserveToResource } from '../../utils/reserveMatching';
+import { formatMaxReserve } from '../../utils/formatters';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { RetryableError } from '../../components/common/RetryableError';
 import { EmptyState } from '../../components/common/EmptyState';
@@ -8,13 +11,24 @@ export function SurveyDetail() {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, isError, refetch } = usePublicSurveys();
 
-  if (isLoading) return <LoadingSpinner message="Loading survey..." />;
-  if (isError) return <RetryableError message="Failed to load survey." onRetry={() => void refetch()} />;
-
   const items = (data as { items?: unknown[] })?.items ?? (Array.isArray(data) ? data : []);
   const survey = (items as Record<string, unknown>[]).find(
     (s) => String(s.surveyID ?? s.SurveyID ?? s.UUID ?? s.uuid) === id
   );
+
+  const surveyType = String(survey?.surveyType ?? survey?.SurveyType ?? '');
+  const asteroidUUID = String(survey?.asteroidUUID ?? survey?.AsteroidUUID ?? '');
+  const isAsteroidSurvey = surveyType === 'Asteroid';
+  const shouldFetchAsteroid = isAsteroidSurvey && asteroidUUID.length > 0;
+
+  const {
+    data: asteroidData,
+    isLoading: isAsteroidLoading,
+    isError: isAsteroidError,
+  } = usePublicAsteroidDetail(shouldFetchAsteroid ? asteroidUUID : null);
+
+  if (isLoading) return <LoadingSpinner message="Loading survey..." />;
+  if (isError) return <RetryableError message="Failed to load survey." onRetry={() => void refetch()} />;
 
   if (!survey) {
     return <EmptyState title="Survey not found" message="The requested survey does not exist." />;
@@ -25,6 +39,11 @@ export function SurveyDetail() {
   const scannedBy = String(survey.scannedBy ?? survey.ScannedBy ?? '');
   const dateTime = String(survey.dateTime ?? survey.DateTime ?? '');
   const resources = survey.resources ?? survey.Resources;
+
+  // Determine whether to show the Max Reserve column
+  const showMaxReserve = isAsteroidSurvey;
+  const reserves = asteroidData?.reserves ?? [];
+  const asteroidFetchFailed = isAsteroidError || (!isAsteroidLoading && shouldFetchAsteroid && !asteroidData);
 
   return (
     <div>
@@ -64,18 +83,55 @@ export function SurveyDetail() {
         {resources != null && typeof resources === 'object' ? (
           <section className="rounded border border-gray-700 p-4 lg:col-span-2">
             <h2 className="mb-3 text-lg font-semibold text-gray-200">Resources</h2>
-            <ul className="space-y-1 text-sm">
-              {Object.entries(resources as Record<string, Record<string, unknown>>).map(([key, res]) => (
-                <li key={key} className="flex justify-between border-b border-gray-700 py-1">
-                  <span className="text-gray-300">
-                    {String(res.resource ?? res.Resource ?? key)}
-                  </span>
-                  <span className="text-gray-400">
-                    {String(res.purity ?? res.Purity ?? '')} — {String(res.amount ?? res.Amount ?? '')}/h
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {showMaxReserve && isAsteroidLoading && (
+              <div className="mb-3 flex items-center gap-2 text-sm text-gray-400" role="status">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-600 border-t-blue-500" />
+                <span>Loading reserves...</span>
+              </div>
+            )}
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-700 text-left text-gray-400">
+                  <th className="py-1">Resource</th>
+                  <th className="py-1">Purity</th>
+                  <th className="py-1 text-right">Amount/h</th>
+                  {showMaxReserve && <th className="py-1 text-right">Max Reserve</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(resources as Record<string, Record<string, unknown>>).map(([key, res]) => {
+                  const resourceName = String(res.resource ?? res.Resource ?? res.resourceName ?? res.ResourceName ?? key);
+                  const purity = String(res.purity ?? res.Purity ?? '');
+                  const amount = String(res.amount ?? res.Amount ?? '');
+
+                  let maxReserveDisplay: string | undefined;
+                  if (showMaxReserve) {
+                    if (isAsteroidLoading) {
+                      maxReserveDisplay = '…';
+                    } else if (asteroidFetchFailed) {
+                      maxReserveDisplay = '-';
+                    } else {
+                      const matched = matchReserveToResource(
+                        { resourceName, purity },
+                        reserves
+                      );
+                      maxReserveDisplay = formatMaxReserve(matched?.maxReserve ?? null);
+                    }
+                  }
+
+                  return (
+                    <tr key={key} className="border-b border-gray-700">
+                      <td className="py-1 text-gray-300">{resourceName}</td>
+                      <td className="py-1 text-gray-400">{purity}</td>
+                      <td className="py-1 text-right text-gray-400">{amount}/h</td>
+                      {showMaxReserve && (
+                        <td className="py-1 text-right text-gray-300">{maxReserveDisplay}</td>
+                      )}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </section>
         ) : null}
       </div>

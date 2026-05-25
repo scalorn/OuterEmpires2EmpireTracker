@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { asteroidsApi } from '../endpoints/asteroids';
+import { publicApi } from '../endpoints/public';
 import { queryKeys } from './queryKeys';
 import { useAuthStore } from '../../auth/store';
 import type { Asteroid } from '../types/domain';
@@ -43,4 +44,14 @@ export function useAsteroidMutations() {
   });
 
   return { save, remove };
+}
+
+export function usePublicAsteroidDetail(asteroidUUID?: string | null) {
+  return useQuery({
+    queryKey: ['public', 'asteroids', asteroidUUID],
+    queryFn: () => publicApi.getAsteroidDetail(asteroidUUID!),
+    enabled: !!asteroidUUID,
+    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes — reserve data changes infrequently
+  });
 }

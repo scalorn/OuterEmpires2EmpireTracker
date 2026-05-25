@@ -6,7 +6,7 @@ Display asteroid max reserves on the survey detail page. Implementation spans th
 
 ## Tasks
 
-- [ ] 1. Add public asteroid detail endpoint
+- [x] 1. Add public asteroid detail endpoint
   - [x] 1.1 Implement GET /api/v1/public/asteroids/{uuid} endpoint in PublicDataEndpoints.cs
     - Add endpoint that searches all characters' asteroid data by UUID
     - Project response to include only uuid, name, and reserves (resourceName, purity, maxReserve)
@@ -17,7 +17,7 @@ Display asteroid max reserves on the survey detail page. Implementation spans th
     - _Output: OE2EmpireTracker.Server/Endpoints/PublicDataEndpoints.cs_
     - _Verification: Build succeeds, endpoint compiles cleanly_
 
-  - [-] 1.2 Write integration tests for public asteroid endpoint
+  - [x] 1.2 Write integration tests for public asteroid endpoint
     - Test 200 response returns correct shape (uuid, name, reserves array)
     - Test 404 response for non-existent UUID
     - Test that CurrentReserve and ResetTimestamp are NOT in response
@@ -27,7 +27,7 @@ Display asteroid max reserves on the survey detail page. Implementation spans th
     - _Output: OE2EmpireTracker.Tests/Server/PublicAsteroidEndpointTests.cs_
     - _Verification: Tests pass via vstest.console_
 
-- [ ] 2. Update TypeScript types and API client
+- [x] 2. Update TypeScript types and API client
   - [x] 2.1 Add AsteroidReserve interface and update Asteroid interface in domain.ts
     - Add `AsteroidReserve` interface with resourceName (string), purity (string), maxReserve (number), optional currentReserve and resetTimestamp
     - Add `reserves: AsteroidReserve[]` field to Asteroid interface
@@ -37,7 +37,7 @@ Display asteroid max reserves on the survey detail page. Implementation spans th
     - _Output: OE2EmpireTracker.Web/src/api/types/domain.ts_
     - _Verification: TypeScript compiles cleanly_
 
-  - [-] 2.2 Add getAsteroidDetail method to public API client
+  - [x] 2.2 Add getAsteroidDetail method to public API client
     - Add `getAsteroidDetail(uuid: string)` method to public endpoints
     - Method calls GET `api/v1/public/asteroids/${uuid}` and returns typed Asteroid
     - _Requirements: 3.1_
@@ -45,7 +45,7 @@ Display asteroid max reserves on the survey detail page. Implementation spans th
     - _Output: OE2EmpireTracker.Web/src/api/endpoints/public.ts_
     - _Verification: TypeScript compiles cleanly_
 
-  - [~] 2.3 Add usePublicAsteroidDetail hook in useAsteroids.ts
+  - [x] 2.3 Add usePublicAsteroidDetail hook in useAsteroids.ts
     - Create hook with `enabled: !!asteroidUUID` conditional fetching
     - Configure retry: false, staleTime: 5 minutes
     - Query key: ['public', 'asteroids', asteroidUUID]
@@ -54,8 +54,8 @@ Display asteroid max reserves on the survey detail page. Implementation spans th
     - _Output: OE2EmpireTracker.Web/src/api/hooks/useAsteroids.ts_
     - _Verification: TypeScript compiles cleanly_
 
-- [ ] 3. Implement pure logic functions
-  - [-] 3.1 Create matchReserveToResource function in reserveMatching.ts
+- [x] 3. Implement pure logic functions
+  - [x] 3.1 Create matchReserveToResource function in reserveMatching.ts
     - Create new file `src/utils/reserveMatching.ts`
     - Implement case-insensitive matching by resourceName AND purity
     - Return matched AsteroidReserve or undefined
@@ -64,7 +64,7 @@ Display asteroid max reserves on the survey detail page. Implementation spans th
     - _Output: OE2EmpireTracker.Web/src/utils/reserveMatching.ts_
     - _Verification: TypeScript compiles cleanly_
 
-  - [-] 3.2 Add formatMaxReserve function in formatters.ts
+  - [x] 3.2 Add formatMaxReserve function in formatters.ts
     - Return "-" for undefined/null values
     - Return integer with thousands separators for numeric values (no decimals)
     - Display zero as "0" not as a dash
@@ -73,11 +73,11 @@ Display asteroid max reserves on the survey detail page. Implementation spans th
     - _Output: OE2EmpireTracker.Web/src/utils/formatters.ts_
     - _Verification: TypeScript compiles cleanly_
 
-- [~] 4. Checkpoint - Ensure all code compiles
+- [x] 4. Checkpoint - Ensure all code compiles
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Wire reserves display into SurveyDetail page
-  - [~] 5.1 Update SurveyDetail.tsx to fetch and display asteroid reserves
+- [x] 5. Wire reserves display into SurveyDetail page
+  - [x] 5.1 Update SurveyDetail.tsx to fetch and display asteroid reserves
     - Call usePublicAsteroidDetail when surveyType === 'Asteroid' and asteroidUUID is non-empty
     - Show loading indicator while asteroid data is loading
     - Add "Max Reserve" column to resource table for asteroid surveys
@@ -90,45 +90,45 @@ Display asteroid max reserves on the survey detail page. Implementation spans th
     - _Output: OE2EmpireTracker.Web/src/pages/public/SurveyDetail.tsx_
     - _Verification: TypeScript compiles cleanly, manual visual check_
 
-- [ ] 6. Property-based tests for pure logic
-  - [~] 6.1 Write property test for endpoint projection (Property 1)
+- [x] 6. Property-based tests for pure logic
+  - [x] 6.1 Write property test for endpoint projection (Property 1)
     - **Property 1: Public endpoint projection strips private fields**
     - For any AsteroidReserve with currentReserve/resetTimestamp, the projected response must not contain those fields
     - **Validates: Requirements 1.3**
     - _Output: OE2EmpireTracker.Web/src/api/__tests__/asteroidProjection.test.ts_
 
-  - [~] 6.2 Write property test for asteroidUUID inclusion (Property 2)
+  - [x] 6.2 Write property test for asteroidUUID inclusion (Property 2)
     - **Property 2: AsteroidUUID inclusion in survey response**
     - asteroidUUID included iff surveyType is 'Asteroid' AND UUID is non-empty string
     - **Validates: Requirements 2.2, 2.3**
     - _Output: OE2EmpireTracker.Web/src/api/__tests__/surveyProjection.test.ts_
 
-  - [~] 6.3 Write property test for fetch-enabled logic (Property 3)
+  - [x] 6.3 Write property test for fetch-enabled logic (Property 3)
     - **Property 3: Fetch-enabled logic**
     - Fetch enabled iff surveyType === 'Asteroid' AND asteroidUUID is non-null, non-empty
     - **Validates: Requirements 3.1, 3.5**
     - _Output: OE2EmpireTracker.Web/src/hooks/__tests__/usePublicAsteroidDetail.test.ts_
 
-  - [~] 6.4 Write property test for resource-to-reserve matching (Property 4)
+  - [x] 6.4 Write property test for resource-to-reserve matching (Property 4)
     - **Property 4: Resource-to-reserve matching with case-insensitive comparison**
     - Match iff resourceName equal (case-insensitive) AND purity equal (case-insensitive)
     - **Validates: Requirements 3.3, 3.6, 4.3**
     - _Output: OE2EmpireTracker.Web/src/utils/__tests__/reserveMatching.test.ts_
 
-  - [~] 6.5 Write property test for max reserve formatting (Property 5)
+  - [x] 6.5 Write property test for max reserve formatting (Property 5)
     - **Property 5: Max reserve formatting**
     - Non-negative integers produce digits + thousands separators only, zero displays as "0", undefined/null produce "-"
     - **Validates: Requirements 4.1, 4.4**
     - _Output: OE2EmpireTracker.Web/src/utils/__tests__/formatMaxReserve.test.ts_
 
-  - [~] 6.6 Write property test for reserves field default (Property 6)
+  - [x] 6.6 Write property test for reserves field default (Property 6)
     - **Property 6: Reserves field defaults to empty array**
     - When server response has null/undefined/omitted reserves, parsed Asteroid has reserves = []
     - **Validates: Requirements 5.1**
     - _Output: OE2EmpireTracker.Web/src/api/__tests__/asteroidParsing.test.ts_
 
-- [ ] 7. Unit tests for UI states
-  - [~] 7.1 Write unit tests for SurveyDetail reserve display states
+- [x] 7. Unit tests for UI states
+  - [x] 7.1 Write unit tests for SurveyDetail reserve display states
     - Test loading indicator shown during fetch
     - Test fetch failure shows resources without reserves (no error message)
     - Test Planet survey hides max reserve column
@@ -137,7 +137,7 @@ Display asteroid max reserves on the survey detail page. Implementation spans th
     - _Requirements: 3.2, 3.4, 4.1, 4.2, 4.5, 4.6_
     - _Output: OE2EmpireTracker.Web/src/pages/public/__tests__/SurveyDetail.test.tsx_
 
-- [~] 8. Final checkpoint - Ensure all tests pass
+- [-] 8. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
