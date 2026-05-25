@@ -42,7 +42,7 @@ graph TD
 
 ## Tasks
 
-- [-] 1. Create blueprintHelpers utility
+- [x] 1. Create blueprintHelpers utility
   - Create `OE2EmpireTracker.Web/src/utils/blueprintHelpers.ts`
   - Implement `isFlatpack(blueprint)` — case-insensitive check for `bluePrintType` starting with "Flatpacks/"
   - Implement `extractSubType(bluePrintType)` — extracts sub-type after "Flatpacks/" prefix
@@ -53,7 +53,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/utils/blueprintHelpers.ts`_
   - _Verification: TypeScript compiles, unit tests in task 12_
 
-- [-] 2. Create computeColonyStatus pure function
+- [x] 2. Create computeColonyStatus pure function
   - Create `OE2EmpireTracker.Web/src/pages/planner/computeColonyStatus.ts`
   - Implement the pure function following the computation rules from design.md:
     - Online: contributes all provisions + workers
@@ -68,7 +68,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/pages/planner/computeColonyStatus.ts`_
   - _Verification: TypeScript compiles, property-based tests in task 11_
 
-- [~] 3. Create/modify plannerStore with blueprint cache and local computation
+- [x] 3. Create/modify plannerStore with blueprint cache and local computation
   - Modify `OE2EmpireTracker.Web/src/pages/planner/plannerStore.ts`
   - Implement Zustand store with `PlannerState` interface from design.md
   - Actions: `addStructure`, `removeStructure`, `setStructureState`, `cacheBlueprint`, `clearPlan`
@@ -79,7 +79,7 @@ graph TD
   - _Output: `OE2EmpireTracker.Web/src/pages/planner/plannerStore.ts`_
   - _Verification: TypeScript compiles, unit tests in task 13_
 
-- [~] 4. Create useFlatpacks TanStack Query hook
+- [-] 4. Create useFlatpacks TanStack Query hook
   - Create `OE2EmpireTracker.Web/src/api/hooks/useFlatpacks.ts`
   - Implement TanStack Query hook fetching from `/api/v1/public/blueprints`
   - Filter results using `isFlatpack` from blueprintHelpers

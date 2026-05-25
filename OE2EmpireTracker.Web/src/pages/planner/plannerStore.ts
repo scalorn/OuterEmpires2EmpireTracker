@@ -1,47 +1,54 @@
 import { create } from 'zustand';
-import type { PlannerStructure, ColonyStatusResult, BuildOrderResult } from '../../api/types/generated';
+import { computeColonyStatus } from './computeColonyStatus';
+import type { PlannedStructure, ColonyStatus, StructureState } from './computeColonyStatus';
+import type { BlueprintProperties } from '../../utils/blueprintHelpers';
 
-interface PlannerState {
-  structures: PlannerStructure[];
-  status: ColonyStatusResult | null;
-  buildOrder: BuildOrderResult | null;
-  isComputing: boolean;
-  addStructure: (structure: PlannerStructure) => void;
-  removeStructure: (index: number) => void;
-  updateStructure: (index: number, structure: PlannerStructure) => void;
-  setStructures: (structures: PlannerStructure[]) => void;
-  setStatus: (status: ColonyStatusResult | null) => void;
-  setBuildOrder: (buildOrder: BuildOrderResult | null) => void;
-  setIsComputing: (isComputing: boolean) => void;
-  reset: () => void;
+export type { PlannedStructure, ColonyStatus, StructureState } from './computeColonyStatus';
+export type { BlueprintProperties } from '../../utils/blueprintHelpers';
+
+export interface PlannerState {
+  structures: PlannedStructure[];
+  blueprintCache: Record<string, BlueprintProperties>;
+  status: ColonyStatus | null;
+  addStructure: (structure: PlannedStructure) => void;
+  removeStructure: (id: string) => void;
+  setStructureState: (id: string, state: StructureState) => void;
+  cacheBlueprint: (uuid: string, properties: BlueprintProperties) => void;
+  clearPlan: () => void;
 }
 
-const initialState = {
-  structures: [] as PlannerStructure[],
-  status: null as ColonyStatusResult | null,
-  buildOrder: null as BuildOrderResult | null,
-  isComputing: false,
-};
-
 export const usePlannerStore = create<PlannerState>()((set) => ({
-  ...initialState,
+  structures: [],
+  blueprintCache: {},
+  status: null,
 
   addStructure: (structure) =>
-    set((state) => ({ structures: [...state.structures, structure] })),
+    set((state) => {
+      const structures = [...state.structures, structure];
+      return { structures, status: computeColonyStatus(structures) };
+    }),
 
-  removeStructure: (index) =>
-    set((state) => ({
-      structures: state.structures.filter((_, i) => i !== index),
-    })),
+  removeStructure: (id) =>
+    set((state) => {
+      const structures = state.structures.filter((s) => s.id !== id);
+      return { structures, status: computeColonyStatus(structures) };
+    }),
 
-  updateStructure: (index, structure) =>
-    set((state) => ({
-      structures: state.structures.map((s, i) => (i === index ? structure : s)),
-    })),
+  setStructureState: (id, newState) =>
+    set((state) => {
+      const structures = state.structures.map((s) =>
+        s.id === id ? { ...s, state: newState } : s
+      );
+      return { structures, status: computeColonyStatus(structures) };
+    }),
 
-  setStructures: (structures) => set({ structures }),
-  setStatus: (status) => set({ status }),
-  setBuildOrder: (buildOrder) => set({ buildOrder }),
-  setIsComputing: (isComputing) => set({ isComputing }),
-  reset: () => set(initialState),
+  cacheBlueprint: (uuid, properties) =>
+    set((state) => {
+      if (state.blueprintCache[uuid]) return state;
+      return {
+        blueprintCache: { ...state.blueprintCache, [uuid]: properties },
+      };
+    }),
+
+  clearPlan: () => set({ structures: [], status: null }),
 }));
