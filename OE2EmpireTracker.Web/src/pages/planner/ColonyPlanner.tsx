@@ -65,7 +65,59 @@ export function ColonyPlanner() {
       const result = await buildOrderMutation.mutateAsync({
         structures: wireStructures,
       });
-      if (result.optimizedOrder) {
+      if (result.optimizedOrder && result.optimizedOrder.length > 0) {
+        // Identify inserted structures (UUIDs not in local plan)
+        const localUUIDs = new Set(structures.map((s) => s.blueprintUUID));
+        const insertedEntries = result.optimizedOrder.filter(
+          (entry) => !localUUIDs.has(entry.flatpackBlueprintUUID)
+        );
+
+        // For each inserted structure, fetch blueprint details and add to plan
+        for (const entry of insertedEntries) {
+          const uuid = entry.flatpackBlueprintUUID;
+
+          // Find the corresponding step for name and type info
+          const stepIndex = result.optimizedOrder.indexOf(entry);
+          const step = result.steps[stepIndex];
+          const name = step?.structureName ?? 'Support Structure';
+          const blueprintType = step?.blueprintType ?? '';
+          const subType = blueprintType.toLowerCase().startsWith('flatpacks/')
+            ? blueprintType.slice('Flatpacks/'.length)
+            : blueprintType;
+
+          // Fetch properties (use cache if available)
+          let properties = blueprintCache[uuid];
+          if (!properties) {
+            try {
+              const detail = await publicApi.getBlueprintDetail(uuid);
+              properties = extractBlueprintProperties(detail);
+              cacheBlueprint(uuid, properties);
+            } catch {
+              // If we can't fetch details, use zeroed properties
+              properties = {
+                powerProvided: 0,
+                powerRequired: 0,
+                habitationProvision: 0,
+                foodProvision: 0,
+                entertainmentProvided: 0,
+                warehouseCapacity: 0,
+                workerSlots: 0,
+              };
+            }
+          }
+
+          addStructure({
+            id: crypto.randomUUID(),
+            blueprintUUID: uuid,
+            name,
+            subType,
+            state: 'Staged',
+            buildQueuePosition: entry.buildQueueSequence,
+            properties,
+          });
+        }
+
+        // Now apply the full reordering (updates positions for all structures)
         applyOptimizedOrder(result.optimizedOrder);
       }
     } catch (err) {
