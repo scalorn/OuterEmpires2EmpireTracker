@@ -80,7 +80,7 @@ Enrich the local PlayerProfile, PlayerRank, and PlayerSkill data models to align
     - _Requirements: 7.2, 7.3, 7.4, 9.7, 9.8, 9.9_
     - _Files: OE2EmpireTracker.Common/Services/GameApiSyncScheduler.cs_
 
-- [-] 5. Checkpoint - Verify model and merge logic
+- [x] 5. Checkpoint - Verify model and merge logic
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 6. ReadOnly wrapper updates
@@ -140,7 +140,7 @@ Enrich the local PlayerProfile, PlayerRank, and PlayerSkill data models to align
     - _Requirements: 13.1, 13.2, 13.3, 13.4_
     - _Files: OE2EmpireTracker.Server/Endpoints/Typed/PlayerProfileEndpoints.cs_
 
-- [~] 10. Checkpoint - Verify all non-UI code compiles
+- [x] 10. Checkpoint - Verify all non-UI code compiles
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 11. UI changes — FormPlayerProfile rank labels
@@ -157,7 +157,7 @@ Enrich the local PlayerProfile, PlayerRank, and PlayerSkill data models to align
     - _Requirements: 10.1, 10.2, 10.3, 13.1, 13.2, 13.3_
     - _Files: OE2EmpireTracker/Forms/PlayerProfile/FormPlayerProfile.cs_
 
-- [ ] 12. UI changes — PlayerSkillBlock metadata display
+- [x] 12. UI changes — PlayerSkillBlock metadata display
   - [x] 12.1 Add metadata labels to PlayerSkillBlock Designer
     - Add lblEffectDescription, lblAmountPerLevel, lblTrainingProgress, lblRemainingTime labels
     - Position below/beside skill name
@@ -171,7 +171,7 @@ Enrich the local PlayerProfile, PlayerRank, and PlayerSkill data models to align
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6_
     - _Files: OE2EmpireTracker/Forms/PlayerProfile/PlayerSkillBlock.cs_
 
-- [~] 13. Checkpoint - Verify UI compiles and renders
+- [x] 13. Checkpoint - Verify UI compiles and renders
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 14. Tests — PlayerRankJsonConverter
@@ -219,7 +219,7 @@ Enrich the local PlayerProfile, PlayerRank, and PlayerSkill data models to align
     - _Requirements: 13.6, 13.7_
     - _Files: OE2EmpireTracker.Tests/* (multiple test files, grouped by rename pattern)_
 
-- [~] 17. Final checkpoint - Ensure all tests pass
+- [x] 17. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

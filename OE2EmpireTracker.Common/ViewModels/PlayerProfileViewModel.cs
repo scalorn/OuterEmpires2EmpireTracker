@@ -27,6 +27,10 @@ namespace OE2EmpireTracker.ViewModels
         private string _citizenId = string.Empty;
         private string _registrationDate = string.Empty;
         private string _activeTime = string.Empty;
+        private int _characterId;
+        private string _firstName = string.Empty;
+        private string _lastName = string.Empty;
+        private int _activeTimeMinutes;
 
         private LocalRankData _publicRank = new LocalRankData();
         private LocalRankData _privateRank = new LocalRankData();
@@ -62,11 +66,20 @@ namespace OE2EmpireTracker.ViewModels
 
         public string ActiveTime { get => _activeTime; set => _activeTime = value; }
 
+        public int CharacterId { get => _characterId; set => _characterId = value; }
+
+        public string FirstName { get => _firstName; set => _firstName = value; }
+
+        public string LastName { get => _lastName; set => _lastName = value; }
+
+        public int ActiveTimeMinutes { get => _activeTimeMinutes; set => _activeTimeMinutes = value; }
+
         public LocalRankData PublicRank => _publicRank;
 
         public LocalRankData PrivateRank => _privateRank;
 
         public LocalRankData MilitaryRank => _militaryRank;
+
         /// <summary>
         /// Gets a value indicating whether any local field differs from the original snapshot.
         /// </summary>
@@ -89,6 +102,10 @@ namespace OE2EmpireTracker.ViewModels
                 if (_citizenId != _original.CitizenId) return true;
                 if (_registrationDate != _original.RegistrationDate) return true;
                 if (_activeTime != _original.ActiveTime) return true;
+                if (_characterId != _original.CharacterId) return true;
+                if (_firstName != _original.FirstName) return true;
+                if (_lastName != _original.LastName) return true;
+                if (_activeTimeMinutes != _original.ActiveTimeMinutes) return true;
 
                 if (IsRankDirty(_publicRank, _original.Public)) return true;
                 if (IsRankDirty(_privateRank, _original.Private)) return true;
@@ -158,6 +175,10 @@ namespace OE2EmpireTracker.ViewModels
             _citizenId = ro.CitizenId;
             _registrationDate = ro.RegistrationDate;
             _activeTime = ro.ActiveTime;
+            _characterId = ro.CharacterId;
+            _firstName = ro.FirstName;
+            _lastName = ro.LastName;
+            _activeTimeMinutes = ro.ActiveTimeMinutes;
 
             CopyRank(_publicRank, ro.Public);
             CopyRank(_privateRank, ro.Private);
@@ -201,6 +222,10 @@ namespace OE2EmpireTracker.ViewModels
             _citizenId = string.Empty;
             _registrationDate = string.Empty;
             _activeTime = string.Empty;
+            _characterId = 0;
+            _firstName = string.Empty;
+            _lastName = string.Empty;
+            _activeTimeMinutes = 0;
             _publicRank = new LocalRankData();
             _privateRank = new LocalRankData();
             _militaryRank = new LocalRankData();
