@@ -28,7 +28,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Verification: vstest.console passes_
 
 
-- [ ] 2. Implement FormatActiveTime helper method
+- [x] 2. Implement FormatActiveTime helper method
   - [x] 2.1 Create static FormatActiveTime method on PlayerProfileViewModel
     - Implement conversion: totalMinutes → "{D}d {H}h {M}m" with leading-zero omission rules
     - If totalMinutes <= 0: return "—" (em-dash U+2014)
@@ -39,7 +39,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified PlayerProfileViewModel.cs with FormatActiveTime static method_
     - _Verification: getDiagnostics clean_
 
-  - [-] 2.2 Write property test: ActiveTimeMinutes formatting round-trip
+  - [x] 2.2 Write property test: ActiveTimeMinutes formatting round-trip
     - **Property 4: ActiveTimeMinutes formatting round-trip**
     - **Validates: Requirements 2.2, 2.3, 2.6, 5.2**
     - For any non-negative int totalMinutes, parse the output D/H/M components and verify D×1440 + H×60 + M == totalMinutes
@@ -48,7 +48,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: New test method in PlayerProfileViewModelPropertyTests.cs_
     - _Verification: vstest.console passes_
 
-  - [-] 2.3 Write unit tests for FormatActiveTime edge cases
+  - [x] 2.3 Write unit tests for FormatActiveTime edge cases
     - Test specific examples: 0 → "—", 1 → "1m", 59 → "59m", 60 → "1h 0m", 1440 → "1d 0h 0m", -5 → "—"
     - _Satisfies: Req 2, Criteria 2, 3, 6_
     - _Inputs: OE2EmpireTracker.Tests/ViewModels/PlayerProfileViewModelPropertyTests.cs_
@@ -57,7 +57,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 
 - [ ] 3. Implement PlayerSkillBlock dynamic height
-  - [-] 3.1 Add height calculation logic to PlayerSkillBlock SkillData setter
+  - [x] 3.1 Add height calculation logic to PlayerSkillBlock SkillData setter
     - When any metadata present (EffectDescription non-empty, AmountPerLevel > 0, TrainingPercentageComplete > 0, RemainingMinutes > 0): set height to 42px
     - When no metadata: set height to 24px
     - Update MinimumSize, MaximumSize, and Size properties
@@ -67,7 +67,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified PlayerSkillBlock.cs_
     - _Verification: getDiagnostics clean, build succeeds_
 
-  - [~] 3.2 Write property test: PlayerSkillBlock height calculation
+  - [-] 3.2 Write property test: PlayerSkillBlock height calculation
     - **Property 5: PlayerSkillBlock height calculation**
     - **Validates: Requirements 3.1, 3.2, 3.6**
     - For any LocalSkillData, height is 42 when any metadata field is non-zero/non-empty, 24 otherwise
@@ -80,7 +80,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 
 - [ ] 5. Implement PlayerSkillBlock progress bar
-  - [~] 5.1 Add custom-painted progress bar Panel to PlayerSkillBlock
+  - [-] 5.1 Add custom-painted progress bar Panel to PlayerSkillBlock
     - Add Panel control (60×12 px) on metadata row at y=26, after AmountPerLevel label
     - Implement Paint handler: fill width = (clamp(TrainingPercentageComplete, 0, 100) / 100.0) × 60
     - Fill color: SystemColors.Highlight; background: SystemColors.ControlLight

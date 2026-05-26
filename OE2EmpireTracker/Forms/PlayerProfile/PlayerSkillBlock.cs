@@ -109,10 +109,13 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.lblAmountPerLevel.Text = string.Format("+{0}% per level", _skillData.AmountPerLevel);
             this.lblAmountPerLevel.Visible = hasAmount;
 
-            // Training percentage (Req 11.3)
+            // Training percentage progress bar (Req 4)
             bool hasTrainingPct = _skillData.TrainingPercentageComplete > 0;
-            this.lblTrainingProgress.Text = string.Format("{0}%", _skillData.TrainingPercentageComplete);
-            this.lblTrainingProgress.Visible = hasTrainingPct;
+            this.pnlTrainingProgress.Visible = hasTrainingPct;
+            if (hasTrainingPct)
+            {
+                this.pnlTrainingProgress.Invalidate();
+            }
 
             // Remaining time (Req 11.4)
             bool hasRemaining = _skillData.RemainingMinutes > 0;
@@ -150,6 +153,38 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             result += string.Format("{0}m", minutes);
             result += " 0s";
             return result.Trim();
+        }
+
+        private void PnlTrainingProgress_Paint(object sender, PaintEventArgs e)
+        {
+            int pct = _skillData != null ? _skillData.TrainingPercentageComplete : 0;
+            int clamped = Math.Max(0, Math.Min(100, pct));
+            int fillWidth = (int)((clamped / 100.0) * 60);
+
+            Graphics g = e.Graphics;
+
+            // Background is handled by Panel.BackColor = SystemColors.ControlLight
+            // Draw fill bar
+            if (fillWidth > 0)
+            {
+                using (var brush = new SolidBrush(SystemColors.Highlight))
+                {
+                    g.FillRectangle(brush, 0, 0, fillWidth, 12);
+                }
+            }
+
+            // Draw centered percentage text
+            string text = string.Format("{0}%", clamped);
+            using (var font = new Font(this.Font.FontFamily, 7f, FontStyle.Regular))
+            {
+                TextRenderer.DrawText(
+                    g,
+                    text,
+                    font,
+                    new Rectangle(0, 0, 60, 12),
+                    SystemColors.ControlText,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+            }
         }
 
         private void UpdateCompletion()

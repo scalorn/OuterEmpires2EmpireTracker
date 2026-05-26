@@ -39,7 +39,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.timerCountdown = new System.Windows.Forms.Timer(this.components);
             this.lblEffectDescription = new System.Windows.Forms.Label();
             this.lblAmountPerLevel = new System.Windows.Forms.Label();
-            this.lblTrainingProgress = new System.Windows.Forms.Label();
+            this.pnlTrainingProgress = new System.Windows.Forms.Panel();
             this.lblRemainingTime = new System.Windows.Forms.Label();
             this.flowLayoutPanel20.SuspendLayout();
             this.SuspendLayout();
@@ -159,15 +159,16 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.lblAmountPerLevel.TabIndex = 15;
             this.lblAmountPerLevel.Visible = false;
             // 
-            // lblTrainingProgress
+            // pnlTrainingProgress
             // 
-            this.lblTrainingProgress.AutoSize = true;
-            this.lblTrainingProgress.Location = new System.Drawing.Point(290, 26);
-            this.lblTrainingProgress.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblTrainingProgress.Name = "lblTrainingProgress";
-            this.lblTrainingProgress.Size = new System.Drawing.Size(0, 13);
-            this.lblTrainingProgress.TabIndex = 16;
-            this.lblTrainingProgress.Visible = false;
+            this.pnlTrainingProgress.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.pnlTrainingProgress.Location = new System.Drawing.Point(290, 26);
+            this.pnlTrainingProgress.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.pnlTrainingProgress.Name = "pnlTrainingProgress";
+            this.pnlTrainingProgress.Size = new System.Drawing.Size(60, 12);
+            this.pnlTrainingProgress.TabIndex = 16;
+            this.pnlTrainingProgress.Visible = false;
+            this.pnlTrainingProgress.Paint += new System.Windows.Forms.PaintEventHandler(this.PnlTrainingProgress_Paint);
             // 
             // lblRemainingTime
             // 
@@ -184,7 +185,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.lblEffectDescription);
             this.Controls.Add(this.lblAmountPerLevel);
-            this.Controls.Add(this.lblTrainingProgress);
+            this.Controls.Add(this.pnlTrainingProgress);
             this.Controls.Add(this.lblRemainingTime);
             this.Controls.Add(this.flowLayoutPanel20);
             this.MaximumSize = new System.Drawing.Size(450, 24);
@@ -210,7 +211,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private System.Windows.Forms.Timer timerCountdown;
         private System.Windows.Forms.Label lblEffectDescription;
         private System.Windows.Forms.Label lblAmountPerLevel;
-        private System.Windows.Forms.Label lblTrainingProgress;
+        private System.Windows.Forms.Panel pnlTrainingProgress;
         private System.Windows.Forms.Label lblRemainingTime;
     }
 }
