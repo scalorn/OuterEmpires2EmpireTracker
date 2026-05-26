@@ -145,14 +145,14 @@ Implement a public ship template builder page at `/ship-builder` following the C
 - [x] 10. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Integration testing
-  - [-] 11.1 Write integration test for ShipBuilder page
+- [x] 11. Integration testing
+  - [x] 11.1 Write integration test for ShipBuilder page
     - Create `OE2EmpireTracker.Web/src/pages/ship-builder/ShipBuilder.test.tsx`
     - Test: select hull → slots appear, install component → stats update, clear build → reset
     - Test: URL restore on load, error states for failed fetches
     - _Requirements: 1.1, 2.3, 2.4, 4.5, 5.1, 7.4, 8.1, 11.2, 11.5, 11.6, 11.7_
 
-- [~] 12. Final checkpoint - Ensure all tests pass and build succeeds
+- [x] 12. Final checkpoint - Ensure all tests pass and build succeeds
   - Ensure all tests pass, ask the user if questions arise.
   - Run `npm run build` from OE2EmpireTracker.Web/ to verify production build
 

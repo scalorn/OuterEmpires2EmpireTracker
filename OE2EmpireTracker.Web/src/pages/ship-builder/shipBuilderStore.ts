@@ -85,7 +85,7 @@ async function fetchDetail(
       uuid: response.uuid as string,
       name: (response.extendedName as string) || (response.name as string),
       bluePrintType: response.bluePrintType as string,
-      class: response.class as number,
+      class: (response.shipClass as number) ?? (response.class as number),
       properties: response.properties as Record<string, string>,
     };
 
