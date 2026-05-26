@@ -40,6 +40,22 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="GameApiCredentialManager"/> class
+        /// with a custom secrets file path. Used for testing.
+        /// </summary>
+        /// <param name="secretsFilePath">The full path to the secrets file.</param>
+        internal GameApiCredentialManager(string secretsFilePath)
+        {
+            _secretsFilePath = secretsFilePath;
+            Load();
+        }
+
+        /// <summary>
+        /// Gets the full path to the secrets file used by this instance.
+        /// </summary>
+        internal string SecretsFilePath => _secretsFilePath;
+
+        /// <summary>
         /// Encrypts and stores a game API key for the specified character.
         /// </summary>
         /// <param name="playerUUID">The character's unique identifier.</param>

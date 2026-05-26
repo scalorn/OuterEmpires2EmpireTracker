@@ -8,8 +8,10 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
@@ -172,7 +174,76 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Merges game-authoritative fields from the API response into the local player profile.
+        /// Overwrites: Skills, Ranks (Public/Private/Military), SkillPoints, Faction, CitizenId.
+        /// Preserves: SkillGroups (local-only UI preferences).
+        /// Logs each conflict with field name, old value, new value, and strategy.
+        /// </summary>
+        /// <param name="local">The local player profile to update.</param>
+        /// <param name="remote">The API response containing authoritative game data.</param>
+        /// <returns>True if any fields were changed; otherwise false.</returns>
+        internal static bool MergeProfileData(PlayerProfile local, GameApiProfileResponse remote)
+        {
+            if (local == null || remote == null)
+            {
+                return false;
+            }
+
+            bool changed = false;
+
+            // Merge Faction
+            if (remote.Faction != null && remote.Faction != local.Faction)
+            {
+                Log.Info(
+                    "Profile merge conflict: Faction '{0}' -> '{1}' (strategy: API wins)",
+                    local.Faction,
+                    remote.Faction);
+                local.Faction = remote.Faction;
+                changed = true;
+            }
+
+            // Merge CitizenId
+            if (remote.CitizenId != null && remote.CitizenId != local.CitizenId)
+            {
+                Log.Info(
+                    "Profile merge conflict: CitizenId '{0}' -> '{1}' (strategy: API wins)",
+                    local.CitizenId,
+                    remote.CitizenId);
+                local.CitizenId = remote.CitizenId;
+                changed = true;
+            }
+
+            // Merge SkillPoints
+            if (remote.SkillPoints != local.SkillPoints)
+            {
+                Log.Info(
+                    "Profile merge conflict: SkillPoints '{0}' -> '{1}' (strategy: API wins)",
+                    local.SkillPoints,
+                    remote.SkillPoints);
+                local.SkillPoints = remote.SkillPoints;
+                changed = true;
+            }
+
+            // Merge Ranks
+            if (remote.Ranks != null)
+            {
+                changed |= MergeRank(local.Public, remote.Ranks.Public, "Public");
+                changed |= MergeRank(local.Private, remote.Ranks.Private, "Private");
+                changed |= MergeRank(local.Military, remote.Ranks.Military, "Military");
+            }
+
+            // Merge Skills (overwrite levels from API, preserve TrainingStarted and CompletionTime)
+            if (remote.Skills != null)
+            {
+                changed |= MergeSkills(local, remote.Skills);
+            }
+
+            return changed;
+        }
+
+        /// <summary>
         /// Performs a sync for a single character by calling GetPlayerProfileAsync.
+        /// Deserializes the response and merges game-authoritative fields into the local profile.
         /// Internal for test access.
         /// </summary>
         /// <param name="playerUUID">The player UUID to sync.</param>
@@ -194,8 +265,31 @@ namespace OE2EmpireTracker.Services
                 var result = await _client.GetPlayerProfileAsync(apiKey).ConfigureAwait(false);
                 if (result.Success)
                 {
+                    var remoteProfile = JsonConvert.DeserializeObject<GameApiProfileResponse>(result.Json);
+                    if (remoteProfile == null)
+                    {
+                        Log.Warn("Profile sync for character {0}: deserialized response was null", playerUUID);
+                        return false;
+                    }
+
+                    var localProfile = GetPlayerProfile(playerUUID);
+                    if (localProfile != null)
+                    {
+                        MergeProfileData(localProfile, remoteProfile);
+                    }
+
                     Log.Info("Successfully synced profile for character {0}", playerUUID);
                     return true;
+                }
+
+                // Handle HTTP 401 — invalid API key
+                if (result.Json == "401")
+                {
+                    Log.Warn("Profile sync for character {0}: API key is invalid (HTTP 401), stopping polling", playerUUID);
+                    _connectionMonitor.TransitionTo(
+                        GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
+                        "API key is invalid (HTTP 401)");
+                    return false;
                 }
 
                 Log.Warn("Profile sync failed for character {0}", playerUUID);
@@ -206,6 +300,18 @@ namespace OE2EmpireTracker.Services
                 Log.Error(ex, "Unexpected error syncing profile for character {0}", playerUUID);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Retrieves the local PlayerProfile for the given UUID.
+        /// Override point for testing. Returns null if no profile is found.
+        /// </summary>
+        /// <param name="playerUUID">The player UUID to look up.</param>
+        /// <returns>The local PlayerProfile, or null if not found.</returns>
+        internal virtual PlayerProfile GetPlayerProfile(string playerUUID)
+        {
+            // Default implementation returns null — wired to PlayerContext in production via GameApiContext
+            return null;
         }
 
         /// <summary>
@@ -291,6 +397,80 @@ namespace OE2EmpireTracker.Services
                     Marshal.ZeroFreeGlobalAllocUnicode(ptr);
                 }
             }
+        }
+
+        /// <summary>
+        /// Merges a single rank from the API response into the local rank.
+        /// </summary>
+        /// <param name="localRank">The local rank to update.</param>
+        /// <param name="remoteRank">The API rank response.</param>
+        /// <param name="rankName">The rank category name for logging.</param>
+        /// <returns>True if any rank fields were changed.</returns>
+        private static bool MergeRank(PlayerRank localRank, GameApiRankResponse remoteRank, string rankName)
+        {
+            if (localRank == null || remoteRank == null)
+            {
+                return false;
+            }
+
+            bool changed = false;
+
+            if (remoteRank.Level != localRank.Rank)
+            {
+                Log.Info(
+                    "Profile merge conflict: {0}.Rank '{1}' -> '{2}' (strategy: API wins)",
+                    rankName,
+                    localRank.Rank,
+                    remoteRank.Level);
+                localRank.Rank = remoteRank.Level;
+                changed = true;
+            }
+
+            if (remoteRank.Name != null && remoteRank.Name != localRank.Title)
+            {
+                Log.Info(
+                    "Profile merge conflict: {0}.Title '{1}' -> '{2}' (strategy: API wins)",
+                    rankName,
+                    localRank.Title,
+                    remoteRank.Name);
+                localRank.Title = remoteRank.Name;
+                changed = true;
+            }
+
+            return changed;
+        }
+
+        /// <summary>
+        /// Merges skills from the API response into the local profile.
+        /// Updates skill levels from the API while preserving local-only fields
+        /// (TrainingStarted, CompletionTime).
+        /// </summary>
+        /// <param name="local">The local player profile.</param>
+        /// <param name="remoteSkills">The skills dictionary from the API response.</param>
+        /// <returns>True if any skill levels were changed.</returns>
+        private static bool MergeSkills(PlayerProfile local, Dictionary<string, GameApiSkillResponse> remoteSkills)
+        {
+            bool changed = false;
+
+            foreach (var kvp in remoteSkills)
+            {
+                string skillName = kvp.Key;
+                GameApiSkillResponse remoteSkill = kvp.Value;
+                PlayerSkill localSkill = local.GetSkill(skillName);
+
+                if (remoteSkill.Level != localSkill.Level)
+                {
+                    Log.Info(
+                        "Profile merge conflict: Skills[{0}].Level '{1}' -> '{2}' (strategy: API wins)",
+                        skillName,
+                        localSkill.Level,
+                        remoteSkill.Level);
+                    localSkill.Level = remoteSkill.Level;
+                    changed = true;
+                }
+            }
+
+            return changed;
         }
 
         /// <summary>

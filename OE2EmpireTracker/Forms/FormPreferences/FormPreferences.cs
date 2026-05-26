@@ -3,7 +3,9 @@
 // </copyright>
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,16 +18,23 @@ using OE2EmpireTracker.Services;
 namespace OE2EmpireTracker.Forms
 {
     /// <summary>
-    /// Preferences dialog with Thresholds and Server tabs.
+    /// Preferences dialog with Thresholds, Server, and Game API tabs.
     /// </summary>
     public partial class FormPreferences : Form
     {
+        private const string GameApiKeyPlaceholder = "\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF";
+
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Tracks the operating mode at form open to detect mode changes on save.
         /// </summary>
         private OperatingMode _originalMode;
+
+        /// <summary>
+        /// Tracks the original polling interval to detect changes on save.
+        /// </summary>
+        private int _originalPollingInterval;
 
         public FormPreferences()
         {
@@ -35,6 +44,7 @@ namespace OE2EmpireTracker.Forms
             btnResetDefaults.Click += BtnResetDefaults_Click;
             btnTestConnection.Click += BtnTestConnection_Click;
             btnPushLocalToServer.Click += BtnPushLocalToServer_Click;
+            btnTestGameApiConnection.Click += BtnTestGameApiConnection_Click;
 
             // Populate operating mode dropdown
             cmbOperatingMode.Items.Add("Local Only");
@@ -58,6 +68,7 @@ namespace OE2EmpireTracker.Forms
             var prefs = PreferencesStore.GetInstance().Preferences;
             PopulateThresholdFields(prefs.Thresholds);
             PopulateServerFields(prefs.ServerConnection);
+            PopulateGameApiFields(prefs.GameApiConnection);
         }
 
         private void PopulateThresholdFields(ThresholdPreferences thresholds)
@@ -90,6 +101,31 @@ namespace OE2EmpireTracker.Forms
 
             _originalMode = settings.Mode;
             cmbOperatingMode.SelectedIndex = (int)settings.Mode;
+        }
+
+        private void PopulateGameApiFields(GameApiConnectionSettings settings)
+        {
+            var sw = Stopwatch.StartNew();
+
+            txtGameApiUrl.Text = settings.ServerUrl ?? string.Empty;
+            nudPollingInterval.Value = Math.Max(1, Math.Min(60, settings.PollingIntervalMinutes));
+            chkGameApiEnabled.Checked = settings.Enabled;
+            _originalPollingInterval = settings.PollingIntervalMinutes;
+
+            // Show placeholder dots if a key is stored for the current player
+            string playerUUID = PlayerContext.GetInstance().CurrentPlayerUUID;
+            var credManager = new GameApiCredentialManager();
+            if (!string.IsNullOrEmpty(playerUUID) && credManager.HasKey(playerUUID))
+            {
+                txtGameApiKey.Text = GameApiKeyPlaceholder;
+            }
+            else
+            {
+                txtGameApiKey.Text = string.Empty;
+            }
+
+            sw.Stop();
+            Log.Debug("PERF PopulateGameApiFields: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void BtnOK_Click(object sender, EventArgs e)
@@ -149,6 +185,10 @@ namespace OE2EmpireTracker.Forms
 
             // Save thresholds
             store.Preferences.Thresholds = thresholds;
+
+            // Save Game API settings
+            SaveGameApiSettings(store);
+
             store.Save();
 
             DialogResult = DialogResult.OK;
@@ -376,6 +416,141 @@ namespace OE2EmpireTracker.Forms
             finally
             {
                 btnPushLocalToServer.Enabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Saves Game API settings to preferences, encrypts the API key if changed,
+        /// and updates the sync scheduler polling interval immediately.
+        /// </summary>
+        private void SaveGameApiSettings(PreferencesStore store)
+        {
+            var gameApiSettings = store.Preferences.GameApiConnection;
+            gameApiSettings.ServerUrl = txtGameApiUrl.Text.Trim();
+            gameApiSettings.Enabled = chkGameApiEnabled.Checked;
+
+            int newPollingInterval = (int)nudPollingInterval.Value;
+            gameApiSettings.PollingIntervalMinutes = newPollingInterval;
+
+            // Encrypt and store API key if the user changed it from the placeholder
+            string keyText = txtGameApiKey.Text;
+            if (keyText != GameApiKeyPlaceholder && !string.IsNullOrEmpty(keyText))
+            {
+                string playerUUID = PlayerContext.GetInstance().CurrentPlayerUUID;
+                if (!string.IsNullOrEmpty(playerUUID))
+                {
+                    var credManager = new GameApiCredentialManager();
+                    credManager.StoreKey(playerUUID, keyText);
+                    Log.Info("Game API key stored for character {0}", playerUUID);
+                }
+            }
+
+            // Update polling interval on the sync scheduler immediately if it changed
+            if (newPollingInterval != _originalPollingInterval)
+            {
+                GameApiContext.Instance?.SyncScheduler.UpdatePollingInterval(newPollingInterval);
+                Log.Info(
+                    "Game API polling interval updated from {0} to {1} minutes",
+                    _originalPollingInterval,
+                    newPollingInterval);
+            }
+        }
+
+        /// <summary>
+        /// Tests the Game API connection by creating a temporary client and calling CheckHealthAsync.
+        /// </summary>
+        private async void BtnTestGameApiConnection_Click(object sender, EventArgs e)
+        {
+            string url = txtGameApiUrl.Text.Trim();
+            if (string.IsNullOrEmpty(url))
+            {
+                lblTestResult.ForeColor = Color.Red;
+                lblTestResult.Text = "Please enter a server URL.";
+                return;
+            }
+
+            // Resolve the API key to use for the test
+            string apiKey = ResolveGameApiKey();
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                lblTestResult.ForeColor = Color.Red;
+                lblTestResult.Text = "Please enter an API key.";
+                return;
+            }
+
+            btnTestGameApiConnection.Enabled = false;
+            lblTestResult.ForeColor = SystemColors.ControlText;
+            lblTestResult.Text = "Testing...";
+
+            try
+            {
+                using (var client = new GameApiClient(url))
+                {
+                    var result = await client.CheckHealthAsync(apiKey).ConfigureAwait(true);
+                    if (result.Success)
+                    {
+                        lblTestResult.ForeColor = Color.Green;
+                        lblTestResult.Text = "Connection successful.";
+                    }
+                    else
+                    {
+                        lblTestResult.ForeColor = Color.Red;
+                        lblTestResult.Text = result.Message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex, "Game API test connection failed");
+                lblTestResult.ForeColor = Color.Red;
+                lblTestResult.Text = "Failed: " + ex.Message;
+            }
+            finally
+            {
+                btnTestGameApiConnection.Enabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Resolves the API key to use for testing. If the user entered a new key, uses that.
+        /// If the placeholder is shown, retrieves the stored key for the current player.
+        /// </summary>
+        private string ResolveGameApiKey()
+        {
+            string keyText = txtGameApiKey.Text;
+            if (keyText != GameApiKeyPlaceholder && !string.IsNullOrEmpty(keyText))
+            {
+                return keyText;
+            }
+
+            // Retrieve stored key for current player
+            string playerUUID = PlayerContext.GetInstance().CurrentPlayerUUID;
+            if (string.IsNullOrEmpty(playerUUID))
+            {
+                return null;
+            }
+
+            var credManager = new GameApiCredentialManager();
+            SecureString secureKey = credManager.GetKey(playerUUID);
+            if (secureKey == null)
+            {
+                return null;
+            }
+
+            IntPtr ptr = IntPtr.Zero;
+            try
+            {
+                ptr = Marshal.SecureStringToGlobalAllocUnicode(secureKey);
+                return Marshal.PtrToStringUni(ptr);
+            }
+            finally
+            {
+                if (ptr != IntPtr.Zero)
+                {
+                    Marshal.ZeroFreeGlobalAllocUnicode(ptr);
+                }
+
+                secureKey.Dispose();
             }
         }
 

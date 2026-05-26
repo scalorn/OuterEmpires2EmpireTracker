@@ -524,6 +524,8 @@
     <Compile Include="Services\EmpireContextSystemRepositoryTests.cs" />
     <Compile Include="Services\SystemImporterTests.cs" />
     <Compile Include="Services\DistanceCalculatorTests.cs" />
+    <Compile Include="Services\GameApiCredentialManagerTests.cs" />
+    <Compile Include="Services\GameApiSettingsTests.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />
     <None Include="app.config" />

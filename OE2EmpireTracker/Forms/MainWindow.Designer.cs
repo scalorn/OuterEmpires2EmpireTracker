@@ -77,6 +77,7 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.tslConnectionStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslRealtimeIndicator = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tslGameApiStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerNextProcess = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -449,7 +450,8 @@
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tslConnectionStatus,
-            this.tslRealtimeIndicator});
+            this.tslRealtimeIndicator,
+            this.tslGameApiStatus});
             this.statusStrip.Location = new System.Drawing.Point(0, 707);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1064, 22);
@@ -464,6 +466,11 @@
             // 
             this.tslRealtimeIndicator.Name = "tslRealtimeIndicator";
             this.tslRealtimeIndicator.Size = new System.Drawing.Size(0, 17);
+            // 
+            // tslGameApiStatus
+            // 
+            this.tslGameApiStatus.Name = "tslGameApiStatus";
+            this.tslGameApiStatus.Size = new System.Drawing.Size(0, 17);
             // 
             // MainWindow
             // 
@@ -537,6 +544,7 @@
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel tslConnectionStatus;
         private System.Windows.Forms.ToolStripStatusLabel tslRealtimeIndicator;
+        private System.Windows.Forms.ToolStripStatusLabel tslGameApiStatus;
     }
 }
 

@@ -72,6 +72,13 @@ namespace OE2EmpireTracker
 
         private DateTime _lastCheckTime;
 
+        // Game API status bar tracking
+        private System.Windows.Forms.Timer _gameApiFailureTimer;
+
+        private string _gameApiNormalStatus;
+
+        private DateTime? _gameApiLastSyncUtc;
+
         public MainWindow()
         {
             context = EmpireContext.GetInstance();
@@ -87,6 +94,11 @@ namespace OE2EmpireTracker
 
             // Initialize remote server infrastructure (no-op if LocalOnly)
             Client.ServerContext.Initialize();
+
+            // Initialize game API infrastructure (no-op if disabled or no keys configured)
+            Client.GameApiContext.Initialize();
+            SubscribeToGameApiStatus();
+
             UpdateConnectionStatusIndicator();
             SubscribeToConnectionStatus();
 
@@ -155,7 +167,12 @@ namespace OE2EmpireTracker
             }
 
             UnsubscribeFromConnectionStatus();
+            UnsubscribeFromGameApiStatus();
             playerContext.PlayerProfilesChanged -= OnPlayerProfilesChanged;
+
+            // Shut down game API infrastructure
+            Client.GameApiContext.Reset();
+
             base.OnFormClosed(e);
         }
 
@@ -344,6 +361,246 @@ namespace OE2EmpireTracker
             {
                 ctx.Client.ConnectionStatusChanged -= OnConnectionStatusChanged;
                 ctx.Client.RealtimeModeChanged -= OnRealtimeModeChanged;
+            }
+        }
+
+        // -----------------------------------------------------------------------
+        // Game API Status Bar
+        // -----------------------------------------------------------------------
+
+        /// <summary>
+        /// Formats the elapsed time since the last game API sync.
+        /// Returns "Xs ago", "Xm ago", or "Xh ago".
+        /// </summary>
+        private string FormatGameApiElapsedTime(DateTime? lastSyncUtc)
+        {
+            if (!lastSyncUtc.HasValue)
+            {
+                return "never";
+            }
+
+            TimeSpan elapsed = SystemClock.UtcNow - lastSyncUtc.Value;
+            if (elapsed.TotalSeconds < 0)
+            {
+                return "0s ago";
+            }
+
+            if (elapsed.TotalHours >= 1)
+            {
+                return string.Format("{0}h ago", (int)elapsed.TotalHours);
+            }
+
+            if (elapsed.TotalMinutes >= 1)
+            {
+                return string.Format("{0}m ago", (int)elapsed.TotalMinutes);
+            }
+
+            return string.Format("{0}s ago", (int)elapsed.TotalSeconds);
+        }
+
+        /// <summary>
+        /// Subscribes to GameApiContext events for status bar updates.
+        /// If GameApiContext is not initialized (disabled/not configured), sets the label to "Not Configured".
+        /// </summary>
+        private void SubscribeToGameApiStatus()
+        {
+            var gameApi = Client.GameApiContext.Instance;
+            if (gameApi == null)
+            {
+                tslGameApiStatus.Text = "Game API: Not Configured";
+                return;
+            }
+
+            gameApi.ConnectionMonitor.StatusChanged += OnGameApiConnectionStatusChanged;
+            gameApi.SyncScheduler.SyncStatusChanged += OnGameApiSyncStatusChanged;
+
+            // Set initial status based on current connection state
+            UpdateGameApiStatusLabel(gameApi.ConnectionMonitor.CurrentState);
+        }
+
+        /// <summary>
+        /// Unsubscribes from GameApiContext events and disposes the failure timer.
+        /// </summary>
+        private void UnsubscribeFromGameApiStatus()
+        {
+            var gameApi = Client.GameApiContext.Instance;
+            if (gameApi != null)
+            {
+                gameApi.ConnectionMonitor.StatusChanged -= OnGameApiConnectionStatusChanged;
+                gameApi.SyncScheduler.SyncStatusChanged -= OnGameApiSyncStatusChanged;
+            }
+
+            if (_gameApiFailureTimer != null)
+            {
+                _gameApiFailureTimer.Stop();
+                _gameApiFailureTimer.Dispose();
+                _gameApiFailureTimer = null;
+            }
+        }
+
+        /// <summary>
+        /// Handles connection monitor status changes for the game API.
+        /// Updates the status bar label on the UI thread.
+        /// </summary>
+        private void OnGameApiConnectionStatusChanged(object sender, Client.GameApiConnectionStatusChangedEventArgs e)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            BeginInvoke((Action)(() => UpdateGameApiStatusLabel(e.NewState)));
+        }
+
+        /// <summary>
+        /// Handles sync scheduler status changes for the game API.
+        /// Shows syncing indicator, updates last sync time, or shows failure for 30 seconds.
+        /// </summary>
+        private void OnGameApiSyncStatusChanged(object sender, GameApiSyncStatusChangedEventArgs e)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            BeginInvoke((Action)(() => HandleGameApiSyncStatusChange(e)));
+        }
+
+        /// <summary>
+        /// Processes a sync status change on the UI thread.
+        /// </summary>
+        private void HandleGameApiSyncStatusChange(GameApiSyncStatusChangedEventArgs e)
+        {
+            if (e.IsSyncing)
+            {
+                _gameApiNormalStatus = tslGameApiStatus.Text;
+                tslGameApiStatus.Text = "Game API: Syncing...";
+                return;
+            }
+
+            if (e.Success)
+            {
+                _gameApiLastSyncUtc = e.LastSyncUtc;
+                string elapsed = FormatGameApiElapsedTime(_gameApiLastSyncUtc);
+                tslGameApiStatus.Text = string.Format("Game API: Connected \u00B7 Last sync: {0}", elapsed);
+                _gameApiNormalStatus = tslGameApiStatus.Text;
+            }
+            else if (!string.IsNullOrEmpty(e.ErrorMessage))
+            {
+                // Save current normal status before showing error
+                if (string.IsNullOrEmpty(_gameApiNormalStatus))
+                {
+                    _gameApiNormalStatus = "Game API: Connected";
+                }
+
+                tslGameApiStatus.Text = string.Format("Game API: {0}", e.ErrorMessage);
+
+                // Start 30-second timer to revert
+                if (_gameApiFailureTimer != null)
+                {
+                    _gameApiFailureTimer.Stop();
+                    _gameApiFailureTimer.Dispose();
+                }
+
+                _gameApiFailureTimer = new System.Windows.Forms.Timer();
+                _gameApiFailureTimer.Interval = 30000;
+                _gameApiFailureTimer.Tick += OnGameApiFailureTimerTick;
+                _gameApiFailureTimer.Start();
+            }
+        }
+
+        /// <summary>
+        /// Reverts the game API status label to the normal status after the 30-second failure display.
+        /// </summary>
+        private void OnGameApiFailureTimerTick(object sender, EventArgs e)
+        {
+            if (_gameApiFailureTimer != null)
+            {
+                _gameApiFailureTimer.Stop();
+                _gameApiFailureTimer.Dispose();
+                _gameApiFailureTimer = null;
+            }
+
+            if (!string.IsNullOrEmpty(_gameApiNormalStatus))
+            {
+                tslGameApiStatus.Text = _gameApiNormalStatus;
+            }
+        }
+
+        /// <summary>
+        /// Updates the game API status label based on the current connection state.
+        /// </summary>
+        private void UpdateGameApiStatusLabel(GameApiConnectionMonitor.ConnectionState state)
+        {
+            switch (state)
+            {
+                case GameApiConnectionMonitor.ConnectionState.NotConfigured:
+                    tslGameApiStatus.Text = "Game API: Not Configured";
+                    break;
+                case GameApiConnectionMonitor.ConnectionState.Connected:
+                    string elapsed = FormatGameApiElapsedTime(_gameApiLastSyncUtc);
+                    if (_gameApiLastSyncUtc.HasValue)
+                    {
+                        tslGameApiStatus.Text = string.Format("Game API: Connected \u00B7 Last sync: {0}", elapsed);
+                    }
+                    else
+                    {
+                        tslGameApiStatus.Text = "Game API: Connected";
+                    }
+
+                    break;
+                case GameApiConnectionMonitor.ConnectionState.Disconnected:
+                    tslGameApiStatus.Text = "Game API: Disconnected";
+                    break;
+                case GameApiConnectionMonitor.ConnectionState.DisconnectedCircuitOpen:
+                    tslGameApiStatus.Text = "Game API: Disconnected (Circuit Open)";
+                    break;
+                case GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey:
+                    tslGameApiStatus.Text = "Game API: Disconnected (Invalid Key)";
+                    break;
+                case GameApiConnectionMonitor.ConnectionState.Syncing:
+                    tslGameApiStatus.Text = "Game API: Syncing...";
+                    break;
+                case GameApiConnectionMonitor.ConnectionState.RateLimited:
+                    tslGameApiStatus.Text = "Game API: Rate Limited";
+                    break;
+                default:
+                    tslGameApiStatus.Text = "Game API: Unknown";
+                    break;
+            }
+
+            _gameApiNormalStatus = tslGameApiStatus.Text;
+        }
+
+        /// <summary>
+        /// Refreshes the game API elapsed time display in the status bar.
+        /// Only updates if the label currently shows a "Connected · Last sync:" pattern.
+        /// </summary>
+        private void RefreshGameApiElapsedTime()
+        {
+            if (_gameApiLastSyncUtc == null)
+            {
+                return;
+            }
+
+            // Only refresh if we're showing the normal connected status (not a failure message)
+            if (_gameApiFailureTimer != null)
+            {
+                return;
+            }
+
+            var gameApi = Client.GameApiContext.Instance;
+            if (gameApi == null)
+            {
+                return;
+            }
+
+            if (gameApi.ConnectionMonitor.CurrentState == GameApiConnectionMonitor.ConnectionState.Connected)
+            {
+                string elapsed = FormatGameApiElapsedTime(_gameApiLastSyncUtc);
+                string newText = string.Format("Game API: Connected \u00B7 Last sync: {0}", elapsed);
+                tslGameApiStatus.Text = newText;
+                _gameApiNormalStatus = newText;
             }
         }
 
@@ -547,6 +804,9 @@ namespace OE2EmpireTracker
             _lastCheckTime = now;
 
             toolStripPerformance.Text = string.Format("Mem: {0:F0} MB | CPU: {1:F1}%", memMB, cpuPercent);
+
+            // Refresh game API elapsed time display
+            RefreshGameApiElapsedTime();
         }
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)

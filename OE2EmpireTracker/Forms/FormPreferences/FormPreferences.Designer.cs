@@ -18,6 +18,18 @@ namespace OE2EmpireTracker.Forms
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabThresholds = new System.Windows.Forms.TabPage();
             this.tabServer = new System.Windows.Forms.TabPage();
+            this.tabGameApi = new System.Windows.Forms.TabPage();
+            this.grpGameApi = new System.Windows.Forms.GroupBox();
+            this.lblGameApiUrl = new System.Windows.Forms.Label();
+            this.txtGameApiUrl = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblGameApiKey = new System.Windows.Forms.Label();
+            this.txtGameApiKey = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblPollingInterval = new System.Windows.Forms.Label();
+            this.nudPollingInterval = new System.Windows.Forms.NumericUpDown();
+            this.lblPollingMinutes = new System.Windows.Forms.Label();
+            this.chkGameApiEnabled = new System.Windows.Forms.CheckBox();
+            this.btnTestGameApiConnection = new System.Windows.Forms.Button();
+            this.lblTestResult = new System.Windows.Forms.Label();
             this.grpStructureCount = new System.Windows.Forms.GroupBox();
             this.lblStructureYellow = new System.Windows.Forms.Label();
             this.txtStructureYellow = new System.Windows.Forms.TextBox();
@@ -60,6 +72,9 @@ namespace OE2EmpireTracker.Forms
             this.tabControl.SuspendLayout();
             this.tabThresholds.SuspendLayout();
             this.tabServer.SuspendLayout();
+            this.tabGameApi.SuspendLayout();
+            this.grpGameApi.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPollingInterval)).BeginInit();
             this.grpStructureCount.SuspendLayout();
             this.grpWorkerRequest.SuspendLayout();
             this.grpColonyImport.SuspendLayout();
@@ -73,6 +88,7 @@ namespace OE2EmpireTracker.Forms
             // 
             this.tabControl.Controls.Add(this.tabThresholds);
             this.tabControl.Controls.Add(this.tabServer);
+            this.tabControl.Controls.Add(this.tabGameApi);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
@@ -106,6 +122,120 @@ namespace OE2EmpireTracker.Forms
             this.tabServer.TabIndex = 1;
             this.tabServer.Text = "Server";
             this.tabServer.UseVisualStyleBackColor = true;
+            // 
+            // tabGameApi
+            // 
+            this.tabGameApi.Controls.Add(this.grpGameApi);
+            this.tabGameApi.Location = new System.Drawing.Point(4, 22);
+            this.tabGameApi.Name = "tabGameApi";
+            this.tabGameApi.Padding = new System.Windows.Forms.Padding(3);
+            this.tabGameApi.Size = new System.Drawing.Size(490, 444);
+            this.tabGameApi.TabIndex = 2;
+            this.tabGameApi.Text = "Game API";
+            this.tabGameApi.UseVisualStyleBackColor = true;
+            // 
+            // grpGameApi
+            // 
+            this.grpGameApi.Controls.Add(this.lblGameApiUrl);
+            this.grpGameApi.Controls.Add(this.txtGameApiUrl);
+            this.grpGameApi.Controls.Add(this.lblGameApiKey);
+            this.grpGameApi.Controls.Add(this.txtGameApiKey);
+            this.grpGameApi.Controls.Add(this.lblPollingInterval);
+            this.grpGameApi.Controls.Add(this.nudPollingInterval);
+            this.grpGameApi.Controls.Add(this.lblPollingMinutes);
+            this.grpGameApi.Controls.Add(this.chkGameApiEnabled);
+            this.grpGameApi.Controls.Add(this.btnTestGameApiConnection);
+            this.grpGameApi.Controls.Add(this.lblTestResult);
+            this.grpGameApi.Location = new System.Drawing.Point(12, 12);
+            this.grpGameApi.Name = "grpGameApi";
+            this.grpGameApi.Size = new System.Drawing.Size(460, 240);
+            this.grpGameApi.TabIndex = 0;
+            this.grpGameApi.TabStop = false;
+            this.grpGameApi.Text = "Game API Connection";
+            // 
+            // lblGameApiUrl
+            // 
+            this.lblGameApiUrl.AutoSize = true;
+            this.lblGameApiUrl.Location = new System.Drawing.Point(15, 28);
+            this.lblGameApiUrl.Name = "lblGameApiUrl";
+            this.lblGameApiUrl.Size = new System.Drawing.Size(63, 13);
+            this.lblGameApiUrl.Text = "Server URL:";
+            // 
+            // txtGameApiUrl
+            // 
+            this.txtGameApiUrl.Location = new System.Drawing.Point(130, 25);
+            this.txtGameApiUrl.Name = "txtGameApiUrl";
+            this.txtGameApiUrl.Size = new System.Drawing.Size(320, 20);
+            this.txtGameApiUrl.TabIndex = 1;
+            // 
+            // lblGameApiKey
+            // 
+            this.lblGameApiKey.AutoSize = true;
+            this.lblGameApiKey.Location = new System.Drawing.Point(15, 63);
+            this.lblGameApiKey.Name = "lblGameApiKey";
+            this.lblGameApiKey.Size = new System.Drawing.Size(48, 13);
+            this.lblGameApiKey.Text = "API Key:";
+            // 
+            // txtGameApiKey
+            // 
+            this.txtGameApiKey.Location = new System.Drawing.Point(130, 60);
+            this.txtGameApiKey.Name = "txtGameApiKey";
+            this.txtGameApiKey.PasswordChar = '\u25CF';
+            this.txtGameApiKey.Size = new System.Drawing.Size(320, 20);
+            this.txtGameApiKey.TabIndex = 2;
+            // 
+            // lblPollingInterval
+            // 
+            this.lblPollingInterval.AutoSize = true;
+            this.lblPollingInterval.Location = new System.Drawing.Point(15, 98);
+            this.lblPollingInterval.Name = "lblPollingInterval";
+            this.lblPollingInterval.Size = new System.Drawing.Size(83, 13);
+            this.lblPollingInterval.Text = "Polling Interval:";
+            // 
+            // nudPollingInterval
+            // 
+            this.nudPollingInterval.Location = new System.Drawing.Point(130, 96);
+            this.nudPollingInterval.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
+            this.nudPollingInterval.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudPollingInterval.Name = "nudPollingInterval";
+            this.nudPollingInterval.Size = new System.Drawing.Size(60, 20);
+            this.nudPollingInterval.TabIndex = 3;
+            this.nudPollingInterval.Value = new decimal(new int[] { 5, 0, 0, 0 });
+            // 
+            // lblPollingMinutes
+            // 
+            this.lblPollingMinutes.AutoSize = true;
+            this.lblPollingMinutes.Location = new System.Drawing.Point(196, 98);
+            this.lblPollingMinutes.Name = "lblPollingMinutes";
+            this.lblPollingMinutes.Size = new System.Drawing.Size(44, 13);
+            this.lblPollingMinutes.Text = "minutes";
+            // 
+            // chkGameApiEnabled
+            // 
+            this.chkGameApiEnabled.AutoSize = true;
+            this.chkGameApiEnabled.Location = new System.Drawing.Point(18, 133);
+            this.chkGameApiEnabled.Name = "chkGameApiEnabled";
+            this.chkGameApiEnabled.Size = new System.Drawing.Size(65, 17);
+            this.chkGameApiEnabled.TabIndex = 4;
+            this.chkGameApiEnabled.Text = "Enabled";
+            this.chkGameApiEnabled.UseVisualStyleBackColor = true;
+            // 
+            // btnTestGameApiConnection
+            // 
+            this.btnTestGameApiConnection.Location = new System.Drawing.Point(18, 165);
+            this.btnTestGameApiConnection.Name = "btnTestGameApiConnection";
+            this.btnTestGameApiConnection.Size = new System.Drawing.Size(110, 23);
+            this.btnTestGameApiConnection.TabIndex = 5;
+            this.btnTestGameApiConnection.Text = "Test Connection";
+            this.btnTestGameApiConnection.UseVisualStyleBackColor = true;
+            // 
+            // lblTestResult
+            // 
+            this.lblTestResult.AutoSize = true;
+            this.lblTestResult.Location = new System.Drawing.Point(134, 170);
+            this.lblTestResult.Name = "lblTestResult";
+            this.lblTestResult.Size = new System.Drawing.Size(0, 13);
+            this.lblTestResult.TabIndex = 6;
             // 
             // grpStructureCount
             // 
@@ -471,6 +601,10 @@ namespace OE2EmpireTracker.Forms
             this.tabControl.ResumeLayout(false);
             this.tabThresholds.ResumeLayout(false);
             this.tabServer.ResumeLayout(false);
+            this.tabGameApi.ResumeLayout(false);
+            this.grpGameApi.ResumeLayout(false);
+            this.grpGameApi.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPollingInterval)).EndInit();
             this.grpStructureCount.ResumeLayout(false);
             this.grpStructureCount.PerformLayout();
             this.grpWorkerRequest.ResumeLayout(false);
@@ -532,5 +666,17 @@ namespace OE2EmpireTracker.Forms
         internal System.Windows.Forms.Button btnOK;
         internal System.Windows.Forms.Button btnCancel;
         internal System.Windows.Forms.Button btnResetDefaults;
+        private System.Windows.Forms.TabPage tabGameApi;
+        private System.Windows.Forms.GroupBox grpGameApi;
+        private System.Windows.Forms.Label lblGameApiUrl;
+        internal OE2EmpireTracker.Controls.ValidatedTextBox txtGameApiUrl;
+        private System.Windows.Forms.Label lblGameApiKey;
+        internal OE2EmpireTracker.Controls.ValidatedTextBox txtGameApiKey;
+        private System.Windows.Forms.Label lblPollingInterval;
+        internal System.Windows.Forms.NumericUpDown nudPollingInterval;
+        private System.Windows.Forms.Label lblPollingMinutes;
+        internal System.Windows.Forms.CheckBox chkGameApiEnabled;
+        internal System.Windows.Forms.Button btnTestGameApiConnection;
+        internal System.Windows.Forms.Label lblTestResult;
     }
 }

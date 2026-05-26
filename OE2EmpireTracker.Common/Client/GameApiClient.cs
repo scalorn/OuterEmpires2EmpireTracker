@@ -113,6 +113,12 @@ namespace OE2EmpireTracker.Client
                     return (true, "Connected");
                 }
 
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API health check received HTTP 401 — API key is invalid");
+                    return (false, "Health check failed: HTTP 401");
+                }
+
                 return (false, string.Format("Health check failed: HTTP {0}", (int)response.StatusCode));
             }
             catch (BrokenCircuitException)
@@ -153,6 +159,12 @@ namespace OE2EmpireTracker.Client
                 {
                     string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetPlayerProfile received HTTP 401 — API key is invalid");
+                    return (false, "401");
                 }
 
                 Log.Warn("Game API GetPlayerProfile failed: HTTP {0}", (int)response.StatusCode);

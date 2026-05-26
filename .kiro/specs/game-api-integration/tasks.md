@@ -53,15 +53,15 @@ This plan implements the Game API integration infrastructure: credential managem
     - Output: `OE2EmpireTracker.Common/Services/GameApiConnectionMonitor.cs`, `OE2EmpireTracker.Common/Client/GameApiConnectionStatusChangedEventArgs.cs`
     - Verification: getDiagnostics clean compile
 
-- [ ] 5. Implement GameApiSyncScheduler and profile merge
-  - [-] 5.1 Implement GameApiSyncScheduler - timer and round-robin
+- [x] 5. Implement GameApiSyncScheduler and profile merge
+  - [x] 5.1 Implement GameApiSyncScheduler - timer and round-robin
     - Create `OE2EmpireTracker.Common/Services/GameApiSyncScheduler.cs` with timer-based polling, round-robin character selection, Start/Stop/UpdatePollingInterval/SyncNowAsync methods, SyncStatusChanged event, and `GameApiSyncStatusChangedEventArgs.cs`. Suspends when disconnected, resumes on reconnect.
     - _Satisfies: Req 5, Criteria 1, 4, 7, 8; Req 9, Criteria 2, 3 (polling at interval, round-robin, skip failed character, manual sync now, suspend when unreachable, resume on reconnect)_
     - Inputs: design.md component 4, GameApiClient.cs, GameApiCredentialManager.cs, GameApiConnectionMonitor.cs
     - Output: `OE2EmpireTracker.Common/Services/GameApiSyncScheduler.cs`, `OE2EmpireTracker.Common/Services/GameApiSyncStatusChangedEventArgs.cs`
     - Verification: getDiagnostics clean compile
 
-  - [~] 5.2 Implement Player Profile merge logic and DTO
+  - [x] 5.2 Implement Player Profile merge logic and DTO
     - Create `OE2EmpireTracker.Common/Models/GameApiProfileResponse.cs` with DTO classes (GameApiProfileResponse, GameApiSkillResponse, GameApiRanksResponse, GameApiRankResponse) using JsonProperty attributes. Add profile merge method to GameApiSyncScheduler that overwrites game-authoritative fields (Skills, Ranks, SkillPoints, Faction, CitizenId) while preserving local-only fields (SkillGroups), with conflict logging and LastProfileSyncUtc update only on success.
     - _Satisfies: Req 5, Criteria 2, 3, 5, 6; Req 6, Criteria 1, 2, 3 (API wins for game fields, preserve SkillGroups, log conflicts, update LastProfileSyncUtc only on success)_
     - Inputs: GameApiSyncScheduler.cs, existing PlayerProfile model, design.md data models
@@ -69,30 +69,30 @@ This plan implements the Game API integration infrastructure: credential managem
     - Verification: getDiagnostics clean compile
 
 
-- [ ] 6. Implement GameApiContext singleton and wire into Program.cs
-  - [~] 6.1 Implement GameApiContext singleton
+- [x] 6. Implement GameApiContext singleton and wire into Program.cs
+  - [x] 6.1 Implement GameApiContext singleton
     - Create `OE2EmpireTracker.Common/Client/GameApiContext.cs` with Initialize/Reset/Dispose lifecycle, owning CredentialManager, Client, ConnectionMonitor, SyncScheduler, and LastSyncTimes dictionary. Follows startup sequence from design: read settings, check enabled, create components, start monitor and scheduler.
     - _Satisfies: Req 2, Req 4, Req 5, Req 9, Req 10 (top-level coordination, startup sequence, offline suspension, settings loading)_
     - Inputs: design.md component 5, all service/client classes from tasks 2-5
     - Output: `OE2EmpireTracker.Common/Client/GameApiContext.cs`
     - Verification: getDiagnostics clean compile
 
-  - [~] 6.2 Wire GameApiContext initialization into Program.cs and handle HTTP 401
+  - [x] 6.2 Wire GameApiContext initialization into Program.cs and handle HTTP 401
     - Add `GameApiContext.Initialize()` call in Program.cs after ServerContext initialization, and `GameApiContext.Reset()` in shutdown path. Add HTTP 401 handling in GameApiClient: transition to DisconnectedInvalidKey, stop polling for that character, log authentication failure.
     - _Satisfies: Req 9, Criteria 1-5 (offline operation, suspend polling, resume on reconnect, preserve HTML import, 401 handling); Req 10, Criterion 2 (load settings on startup)_
     - Inputs: existing Program.cs, GameApiClient.cs, GameApiConnectionMonitor.cs
     - Output: modified Program.cs, modified GameApiClient.cs
     - Verification: getDiagnostics clean compile
 
-- [ ] 7. Add Game API UI integration
-  - [~] 7.1 Add Game API tab to Preferences form
+- [x] 7. Add Game API UI integration
+  - [x] 7.1 Add Game API tab to Preferences form
     - Add "Game API" tab to FormPreferences with controls: txtGameApiUrl, txtGameApiKey (PasswordChar='*'), nudPollingInterval (min:1, max:60, default:5), chkGameApiEnabled, btnTestConnection, lblTestResult. Implement save logic: persist settings to UIPreferences.GameApiConnection, encrypt API key via CredentialManager, update polling interval on SyncScheduler immediately.
     - _Satisfies: Req 7, Criteria 1-8 (Game API section, masked key, URL input, polling interval, test connection, encrypt on save, apply interval immediately, persist to UIPreferences.json)_
     - Inputs: existing FormPreferences.cs, GameApiCredentialManager, GameApiContext, PreferencesStore
     - Output: modified FormPreferences.cs and FormPreferences.Designer.cs
     - Verification: getDiagnostics clean compile
 
-  - [~] 7.2 Add Game API status to MainWindow status bar
+  - [x] 7.2 Add Game API status to MainWindow status bar
     - Add ToolStripStatusLabel to MainWindow status bar, subscribe to GameApiContext events (ConnectionMonitor.StatusChanged, SyncScheduler.SyncStatusChanged), display connection state and last sync elapsed time. Show failure reason for 30s then revert. Suppress sync updates when not configured.
     - _Satisfies: Req 8, Criteria 1-5 (status states, elapsed time, syncing indicator, failure display for 30s, not-configured suppression)_
     - Inputs: existing MainWindow.cs, GameApiContext, design.md component 7
@@ -101,14 +101,14 @@ This plan implements the Game API integration infrastructure: credential managem
 
 
 - [ ] 8. Tests - Credential Manager and Settings
-  - [~] 8.1 Tests - GameApiCredentialManager (Property: Credential Isolation)
+  - [x] 8.1 Tests - GameApiCredentialManager (Property: Credential Isolation)
     - Write NUnit + FsCheck property tests: store/retrieve round-trip, remove isolation (removing key A doesn't affect key B), corruption recovery (corrupted file to empty state), file location validation. Use FsCheck 2.16.6 LINQ query syntax generators.
     - _Satisfies: Correctness Property 1 (Credential Confidentiality), Correctness Property 7 (Credential Isolation)_
     - Inputs: GameApiCredentialManager.cs, existing CredentialStore test patterns
     - Output: `OE2EmpireTracker.Tests/Services/GameApiCredentialManagerTests.cs`
     - Verification: vstest.console passes all tests
 
-  - [~] 8.2 Tests - Settings persistence round-trip
+  - [-] 8.2 Tests - Settings persistence round-trip
     - Write NUnit tests: serialize/deserialize round-trip for GameApiConnectionSettings, missing section produces defaults, PascalCase property names in JSON output, integration with UIPreferences save/load.
     - _Satisfies: Req 10, Criteria 1-4 (persistence, load on startup, defaults, serialization pattern)_
     - Inputs: GameApiConnectionSettings.cs, UIPreferences.cs
