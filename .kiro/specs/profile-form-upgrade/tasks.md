@@ -79,7 +79,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 5. Implement PlayerSkillBlock progress bar
+- [x] 5. Implement PlayerSkillBlock progress bar
   - [x] 5.1 Add custom-painted progress bar Panel to PlayerSkillBlock
     - Add Panel control (60×12 px) on metadata row at y=26, after AmountPerLevel label
     - Implement Paint handler: fill width = (clamp(TrainingPercentageComplete, 0, 100) / 100.0) × 60
@@ -91,7 +91,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified PlayerSkillBlock.cs and Designer.cs_
     - _Verification: getDiagnostics clean, build succeeds_
 
-  - [-] 5.2 Write property test: Progress bar width and visibility
+  - [x] 5.2 Write property test: Progress bar width and visibility
     - **Property 6: Progress bar width and visibility**
     - **Validates: Requirements 4.1, 4.2, 4.3, 4.4**
     - For any int TrainingPercentageComplete: hidden when 0, visible otherwise
@@ -111,7 +111,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified PlayerSkillBlock.cs_
     - _Verification: getDiagnostics clean, build succeeds_
 
-  - [~] 6.2 Write property test: Remaining time label visibility
+  - [-] 6.2 Write property test: Remaining time label visibility
     - **Property 7: Remaining time label visibility**
     - **Validates: Requirements 5.1, 5.3, 5.5**
     - For any int RemainingMinutes: label visible iff RemainingMinutes > 0; negative treated as 0
@@ -124,7 +124,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 
 - [ ] 8. Add identity fields to FormPlayerProfile
-  - [~] 8.1 Add CharacterId, FirstName, LastName labels to FormPlayerProfile
+  - [-] 8.1 Add CharacterId, FirstName, LastName labels to FormPlayerProfile
     - Add lblCharacterId / lblCharacterIdValue after Player Name row
     - Show CharacterId value or "—" when <= 0
     - Add lblFirstName / lblFirstNameValue — hide row when empty

@@ -42,6 +42,15 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpPlayerName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPlayerName = new System.Windows.Forms.Label();
             this.txtPlayerName = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.flpCharacterId = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblCharacterId = new System.Windows.Forms.Label();
+            this.lblCharacterIdValue = new System.Windows.Forms.Label();
+            this.flpFirstName = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblFirstName = new System.Windows.Forms.Label();
+            this.lblFirstNameValue = new System.Windows.Forms.Label();
+            this.flpLastName = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblLastName = new System.Windows.Forms.Label();
+            this.lblLastNameValue = new System.Windows.Forms.Label();
             this.flpTotalCredits = new System.Windows.Forms.FlowLayoutPanel();
             this.lblTotalCredits = new System.Windows.Forms.Label();
             this.txtTotalCredits = new OE2EmpireTracker.Controls.ValidatedTextBox();
