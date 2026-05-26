@@ -102,5 +102,17 @@ namespace OE2EmpireTracker.Models
         public int Level { get; set; } = 0;
         public bool TrainingStarted { get; set; } = false;
         public CountDownTime CompletionTime { get; set; } = new CountDownTime();
+
+        // Skill metadata from Game API
+        public int SkillId { get; set; } = 0;
+        public string EffectDescription { get; set; } = string.Empty;
+        public int AmountPerLevel { get; set; } = 0;
+        public string SkillGroupName { get; set; } = string.Empty;
+        public bool IsUnlocked { get; set; } = false;
+
+        // Training progress from Game API
+        public int TargetLevel { get; set; } = 0;
+        public int TrainingPercentageComplete { get; set; } = 0;
+        public int RemainingMinutes { get; set; } = 0;
     }
 }

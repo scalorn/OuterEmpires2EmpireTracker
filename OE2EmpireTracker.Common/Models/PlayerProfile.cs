@@ -37,6 +37,14 @@ namespace OE2EmpireTracker.Models
 
         public string ActiveTime { get; set; } = string.Empty;
 
+        public int CharacterId { get; set; } = 0;
+
+        public string FirstName { get; set; } = string.Empty;
+
+        public string LastName { get; set; } = string.Empty;
+
+        public int ActiveTimeMinutes { get; set; } = 0;
+
         public Dictionary<string, PlayerSkill> Skills { get; set; } = new Dictionary<string, PlayerSkill>();
 
         private Dictionary<string, bool> SkillGroups { get; set; } = new Dictionary<string, bool>();

@@ -51,8 +51,7 @@
           }
         },
         "Contract Management": {
-          "Level": 4,
-          "TrainingStarted": true,
+          "Level": 5,
           "CompletionTime": {
             "StartTime": "2026-04-23T21:54:33.7137819Z",
             "EndTime": "2026-05-13T09:30:39.7137819Z"
@@ -171,92 +170,6 @@
             "StartTime": "2026-04-23T21:54:33.7137819Z",
             "EndTime": "2026-04-23T21:54:33.7137819Z"
           }
-        }
-      }
-    },
-    {
-      "UUID": "f3e11ab0-a5d0-4e57-8f1a-2c8d2a781315",
-      "Name": "Niabus",
-      "Faction": "",
-      "FactionUUID": "",
-      "Public": {
-        "Title": ""
-      },
-      "Private": {
-        "Title": ""
-      },
-      "Military": {
-        "Title": ""
-      },
-      "CitizenId": "",
-      "RegistrationDate": "",
-      "ActiveTime": "",
-      "Skills": {
-        "AAA Healthcare": {
-          "CompletionTime": {}
-        },
-        "Broker": {
-          "CompletionTime": {}
-        },
-        "Builder": {
-          "CompletionTime": {}
-        },
-        "Contract Management": {
-          "CompletionTime": {}
-        },
-        "Damage Control": {
-          "CompletionTime": {}
-        },
-        "Energy Efficiency": {
-          "CompletionTime": {}
-        },
-        "Engineering Capacity": {
-          "CompletionTime": {}
-        },
-        "Extraction Focus": {
-          "CompletionTime": {}
-        },
-        "Foreman": {
-          "CompletionTime": {}
-        },
-        "Founder": {
-          "CompletionTime": {}
-        },
-        "Human Resources": {
-          "CompletionTime": {}
-        },
-        "Job Opportunities": {
-          "CompletionTime": {}
-        },
-        "Production Focus": {
-          "CompletionTime": {}
-        },
-        "Quartermaster": {
-          "CompletionTime": {}
-        },
-        "Refining Focus": {
-          "CompletionTime": {}
-        },
-        "Research Focus": {
-          "CompletionTime": {}
-        },
-        "Research Methods": {
-          "CompletionTime": {}
-        },
-        "Research Review": {
-          "CompletionTime": {}
-        },
-        "Scanning Methods": {
-          "CompletionTime": {}
-        },
-        "Self Made Millionaire": {
-          "CompletionTime": {}
-        },
-        "Sounds As A Pound": {
-          "CompletionTime": {}
-        },
-        "Surveying Methods": {
-          "CompletionTime": {}
         }
       }
     }
