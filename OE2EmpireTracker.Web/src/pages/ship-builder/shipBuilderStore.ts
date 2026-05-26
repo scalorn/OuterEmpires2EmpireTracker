@@ -12,6 +12,27 @@ import { publicApi, type PaginatedResponse } from '../../api/endpoints/public';
 
 export type { BlueprintDetail } from './computeShipStats';
 
+/**
+ * Builds the extended display name for a blueprint, matching the WinForms pattern:
+ * "C{class} Ev({evolution}) {name} ({techLevel}) [{nickName}]"
+ * Each part is only included if it has a meaningful value.
+ */
+function buildExtendedName(
+  name: string,
+  shipClass: number,
+  evolution: number,
+  techLevel: string | null | undefined,
+  nickName: string | null | undefined,
+): string {
+  const parts: string[] = [];
+  if (shipClass > 0) parts.push(`C${shipClass}`);
+  if (evolution > 0) parts.push(`Ev(${evolution})`);
+  if (name) parts.push(name);
+  if (techLevel) parts.push(`(${techLevel})`);
+  if (nickName) parts.push(`[${nickName}]`);
+  return parts.join(' ');
+}
+
 export interface BlueprintSummary {
   uuid: string;
   name: string;              // extendedName from API
@@ -137,14 +158,16 @@ export const useShipBuilderStore = create<ShipBuilderState>((set, get) => ({
       const response = await publicApi.getPublicBlueprints(undefined, 1, 10000) as PaginatedResponse<{
         uuid: string;
         name: string;
-        extendedName: string;
+        nickName: string;
         bluePrintType: string;
+        techLevel: string;
+        evolution: number;
         class: number;
       }>;
 
       const blueprintList: BlueprintSummary[] = response.items.map((item) => ({
         uuid: item.uuid,
-        name: item.extendedName || item.name,
+        name: buildExtendedName(item.name, item.class, item.evolution, item.techLevel, item.nickName),
         bluePrintType: item.bluePrintType,
         class: item.class,
       }));

@@ -25,7 +25,7 @@ export function HullSelector() {
       .filter((bp) => bp.bluePrintType === 'Hull')
       .map((bp) => ({
         value: bp.uuid,
-        label: `${bp.name} (Class ${bp.class})`,
+        label: bp.name,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [blueprintList]);

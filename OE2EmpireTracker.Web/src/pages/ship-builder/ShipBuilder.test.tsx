@@ -21,8 +21,8 @@ const REACTOR_UUID = '00000000-0000-0000-0000-000000000002';
 
 const mockBlueprintList = {
   items: [
-    { uuid: HULL_UUID, name: 'Corvette', extendedName: 'Corvette Mk II', bluePrintType: 'Hull', class: 4 },
-    { uuid: REACTOR_UUID, name: 'Reactor', extendedName: 'Reactor Alpha', bluePrintType: 'Reactor', class: 4 },
+    { uuid: HULL_UUID, name: 'Corvette', nickName: '', bluePrintType: 'Hull', techLevel: 'MilSpec', evolution: 0, class: 4 },
+    { uuid: REACTOR_UUID, name: 'Reactor', nickName: '', bluePrintType: 'Reactor', techLevel: 'Standard', evolution: 2, class: 4 },
   ],
   totalCount: 2,
   page: 1,
@@ -32,9 +32,11 @@ const mockBlueprintList = {
 const mockHullDetail = {
   uuid: HULL_UUID,
   name: 'Corvette',
-  extendedName: 'Corvette Mk II',
+  nickName: '',
   bluePrintType: 'Hull',
-  class: 4,
+  techLevel: 'MilSpec',
+  evolution: 0,
+  shipClass: 4,
   properties: {
     'Mass': '500',
     'Reactor Slots': '2',
@@ -46,9 +48,11 @@ const mockHullDetail = {
 const mockReactorDetail = {
   uuid: REACTOR_UUID,
   name: 'Reactor',
-  extendedName: 'Reactor Alpha',
+  nickName: '',
   bluePrintType: 'Reactor',
-  class: 4,
+  techLevel: 'Standard',
+  evolution: 2,
+  shipClass: 4,
   properties: {
     'Mass': '50',
     'Power Provided': '200',
@@ -120,7 +124,7 @@ describe('ShipBuilder integration', () => {
     });
 
     // Click the hull option
-    const hullOption = screen.getByRole('option', { name: /Corvette Mk II/i });
+    const hullOption = screen.getByRole('option', { name: /C4 Corvette/i });
     fireEvent.click(hullOption);
 
     // Wait for slots to appear — hull has Reactor Slots: 2 and Shield Slots: 1

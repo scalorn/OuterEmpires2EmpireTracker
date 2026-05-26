@@ -17,9 +17,11 @@ const mockGetDetail = vi.mocked(publicApi.getBlueprintDetail);
 const mockHullResponse = {
   uuid: 'hull-001',
   name: 'Corvette',
-  extendedName: 'Corvette Mk II',
+  nickName: '',
   bluePrintType: 'Hull',
-  class: 4,
+  techLevel: 'MilSpec',
+  evolution: 0,
+  shipClass: 4,
   properties: {
     'Mass': '500',
     'Reactor Slots': '2',
@@ -31,9 +33,11 @@ const mockHullResponse = {
 const mockReactorResponse = {
   uuid: 'reactor-001',
   name: 'Reactor Alpha',
-  extendedName: 'Reactor Alpha Mk I',
+  nickName: '',
   bluePrintType: 'Reactor',
-  class: 4,
+  techLevel: 'Standard',
+  evolution: 2,
+  shipClass: 4,
   properties: {
     'Mass': '50',
     'Power Provided': '200',
@@ -64,8 +68,8 @@ describe('shipBuilderStore', () => {
     it('sets blueprintList on success', async () => {
       mockGetBlueprints.mockResolvedValue({
         items: [
-          { uuid: 'hull-001', name: 'Corvette', extendedName: 'Corvette Mk II', bluePrintType: 'Hull', class: 4 },
-          { uuid: 'reactor-001', name: 'Reactor', extendedName: 'Reactor Alpha', bluePrintType: 'Reactor', class: 4 },
+          { uuid: 'hull-001', name: 'Corvette', nickName: '', bluePrintType: 'Hull', techLevel: 'MilSpec', evolution: 0, class: 4 },
+          { uuid: 'reactor-001', name: 'Reactor', nickName: '', bluePrintType: 'Reactor', techLevel: 'Standard', evolution: 2, class: 4 },
         ],
         totalCount: 2,
         page: 1,
@@ -78,7 +82,7 @@ describe('shipBuilderStore', () => {
       expect(state.blueprintList).toHaveLength(2);
       expect(state.blueprintList[0]).toEqual({
         uuid: 'hull-001',
-        name: 'Corvette Mk II',
+        name: 'C4 Corvette (MilSpec)',
         bluePrintType: 'Hull',
         class: 4,
       });
@@ -109,7 +113,7 @@ describe('shipBuilderStore', () => {
       expect(state.selectedHullUUID).toBe('hull-001');
       expect(state.hullDetail).not.toBeNull();
       expect(state.hullDetail!.uuid).toBe('hull-001');
-      expect(state.hullDetail!.name).toBe('Corvette Mk II');
+      expect(state.hullDetail!.name).toBe('Corvette');
       // Hull has 2 Reactor slots + 1 Shield slot = 3 total slots
       expect(state.slots).toHaveLength(3);
       expect(state.slots.filter(s => s.slotType === 'Reactor')).toHaveLength(2);
