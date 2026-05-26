@@ -93,6 +93,29 @@ namespace OE2EmpireTracker.Tests.ViewModels
                    select profile;
         }
 
+        private static Gen<PlayerProfile> GenPlayerProfileWithIdentity()
+        {
+            var nameGen = from len in Gen.Choose(0, 50)
+                          from chars in Gen.ArrayOf(len, Gen.Elements(
+                              "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ".ToCharArray()))
+                          select new string(chars);
+
+            return from characterId in Gen.Choose(0, 999999)
+                   from firstName in nameGen
+                   from lastName in nameGen
+                   from activeTimeMinutes in Gen.Choose(0, 5000000)
+                   let profile = new PlayerProfile
+                   {
+                       UUID = Guid.NewGuid().ToString(),
+                       Name = "TestPlayer",
+                       CharacterId = characterId,
+                       FirstName = firstName,
+                       LastName = lastName,
+                       ActiveTimeMinutes = activeTimeMinutes,
+                   }
+                   select profile;
+        }
+
         private static PlayerProfile BuildProfile(
             string name, string faction, string factionUuid, decimal credits, int skillPoints,
             string citizenId, string regDate, string activeTime,
@@ -192,6 +215,45 @@ namespace OE2EmpireTracker.Tests.ViewModels
                 }
 
                 return true;
+            });
+        }
+
+        // -----------------------------------------------------------------------
+        // Property: LoadFrom round-trip preserves identity and time fields
+        // Feature: profile-form-upgrade, Property 1: LoadFrom round-trip preserves identity and time fields
+        // **Validates: Requirements 1.1, 2.1**
+        // -----------------------------------------------------------------------
+
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property LoadFrom_RoundTrip_PreservesIdentityAndTimeFields()
+        {
+            return Prop.ForAll(Arb.From(GenPlayerProfileWithIdentity()), profile =>
+            {
+                var ro = new ReadOnlyPlayerProfile(profile);
+                var vm = new PlayerProfileViewModel(playerContext);
+                vm.LoadFrom(ro);
+
+                if (vm.CharacterId != ro.CharacterId)
+                {
+                    return false.Label("CharacterId mismatch: expected " + ro.CharacterId + " got " + vm.CharacterId);
+                }
+
+                if (vm.FirstName != ro.FirstName)
+                {
+                    return false.Label("FirstName mismatch: expected '" + ro.FirstName + "' got '" + vm.FirstName + "'");
+                }
+
+                if (vm.LastName != ro.LastName)
+                {
+                    return false.Label("LastName mismatch: expected '" + ro.LastName + "' got '" + vm.LastName + "'");
+                }
+
+                if (vm.ActiveTimeMinutes != ro.ActiveTimeMinutes)
+                {
+                    return false.Label("ActiveTimeMinutes mismatch: expected " + ro.ActiveTimeMinutes + " got " + vm.ActiveTimeMinutes);
+                }
+
+                return true.Label("All identity and time fields preserved");
             });
         }
 

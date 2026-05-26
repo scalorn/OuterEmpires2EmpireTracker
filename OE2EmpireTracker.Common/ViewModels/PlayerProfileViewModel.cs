@@ -118,6 +118,37 @@ namespace OE2EmpireTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Converts total minutes to a human-readable duration string.
+        /// Format: "{D}d {H}h {M}m" with leading-zero omission.
+        /// Returns "\u2014" (em-dash) for zero or negative values.
+        /// </summary>
+        /// <param name="totalMinutes">Total minutes to format.</param>
+        /// <returns>Formatted duration string or em-dash.</returns>
+        public static string FormatActiveTime(int totalMinutes)
+        {
+            if (totalMinutes <= 0)
+            {
+                return "\u2014";
+            }
+
+            int days = totalMinutes / 1440;
+            int hours = (totalMinutes % 1440) / 60;
+            int minutes = totalMinutes % 60;
+
+            if (days > 0)
+            {
+                return $"{days}d {hours}h {minutes}m";
+            }
+
+            if (hours > 0)
+            {
+                return $"{hours}h {minutes}m";
+            }
+
+            return $"{minutes}m";
+        }
+
         public LocalSkillData GetSkill(string skillName)
         {
             if (!_skills.ContainsKey(skillName))
