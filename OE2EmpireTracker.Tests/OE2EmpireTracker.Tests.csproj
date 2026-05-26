@@ -259,6 +259,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\DesktopSyncMigrationTests.cs" />
+    <Compile Include="Client\GameApiClient429Tests.cs" />
+    <Compile Include="Client\GameApiRateLimiterTests.cs" />
     <Compile Include="Services\BackgroundProcessorTests.cs" />
     <Compile Include="Services\BuildPlanServiceTests.cs" />
     <Compile Include="Services\BuildPlanExecutionPropertyTests.cs" />
@@ -525,6 +527,8 @@
     <Compile Include="Services\SystemImporterTests.cs" />
     <Compile Include="Services\DistanceCalculatorTests.cs" />
     <Compile Include="Services\GameApiCredentialManagerTests.cs" />
+    <Compile Include="Services\GameApiProfileMergeTests.cs" />
+    <Compile Include="Services\GameApiSyncSchedulerTests.cs" />
     <Compile Include="Services\GameApiSettingsTests.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />

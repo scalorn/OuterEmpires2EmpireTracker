@@ -100,7 +100,7 @@ This plan implements the Game API integration infrastructure: credential managem
     - Verification: getDiagnostics clean compile
 
 
-- [ ] 8. Tests - Credential Manager and Settings
+- [x] 8. Tests - Credential Manager and Settings
   - [x] 8.1 Tests - GameApiCredentialManager (Property: Credential Isolation)
     - Write NUnit + FsCheck property tests: store/retrieve round-trip, remove isolation (removing key A doesn't affect key B), corruption recovery (corrupted file to empty state), file location validation. Use FsCheck 2.16.6 LINQ query syntax generators.
     - _Satisfies: Correctness Property 1 (Credential Confidentiality), Correctness Property 7 (Credential Isolation)_
@@ -108,22 +108,22 @@ This plan implements the Game API integration infrastructure: credential managem
     - Output: `OE2EmpireTracker.Tests/Services/GameApiCredentialManagerTests.cs`
     - Verification: vstest.console passes all tests
 
-  - [-] 8.2 Tests - Settings persistence round-trip
+  - [x] 8.2 Tests - Settings persistence round-trip
     - Write NUnit tests: serialize/deserialize round-trip for GameApiConnectionSettings, missing section produces defaults, PascalCase property names in JSON output, integration with UIPreferences save/load.
     - _Satisfies: Req 10, Criteria 1-4 (persistence, load on startup, defaults, serialization pattern)_
     - Inputs: GameApiConnectionSettings.cs, UIPreferences.cs
     - Output: `OE2EmpireTracker.Tests/Services/GameApiSettingsTests.cs`
     - Verification: vstest.console passes all tests
 
-- [ ] 9. Tests - Rate limiter and HTTP 429
-  - [~] 9.1 Tests - Rate limiter (Property: Rate Limit Compliance)
+- [x] 9. Tests - Rate limiter and HTTP 429
+  - [x] 9.1 Tests - Rate limiter (Property: Rate Limit Compliance)
     - Write NUnit + FsCheck property tests: token exhaustion blocks requests, sliding window resets after time passes, dynamic limit update changes behavior. Use FsCheck 2.16.6 LINQ query syntax.
     - _Satisfies: Correctness Property 2 (Rate Limit Compliance)_
     - Inputs: GameApiClient.cs (rate limiter methods)
     - Output: `OE2EmpireTracker.Tests/Client/GameApiRateLimiterTests.cs`
     - Verification: vstest.console passes all tests
 
-  - [~] 9.2 Tests - HTTP 429 handling
+  - [x] 9.2 Tests - HTTP 429 handling
     - Write NUnit tests with mock HttpMessageHandler: 429 with Retry-After header pauses for specified duration, 429 without header pauses 60s, requests resume after pause expires, X-RateLimit-Limit header updates internal limit.
     - _Satisfies: Req 3, Criteria 2, 3, 4 (429 handling with and without Retry-After, dynamic limit update)_
     - Inputs: GameApiClient.cs
@@ -131,14 +131,14 @@ This plan implements the Game API integration infrastructure: credential managem
     - Verification: vstest.console passes all tests
 
 - [ ] 10. Tests - Profile merge and sync scheduling
-  - [~] 10.1 Tests - Profile merge (Property: Merge Idempotency)
+  - [x] 10.1 Tests - Profile merge (Property: Merge Idempotency)
     - Write NUnit + FsCheck property tests: API-authoritative fields overwritten, local-only fields preserved (SkillGroups), idempotent application (merge twice = same result), conflict logging emitted. Use FsCheck 2.16.6 LINQ query syntax.
     - _Satisfies: Correctness Property 3 (Merge Idempotency)_
     - Inputs: GameApiSyncScheduler.cs (merge method), PlayerProfile model
     - Output: `OE2EmpireTracker.Tests/Services/GameApiProfileMergeTests.cs`
     - Verification: vstest.console passes all tests
 
-  - [~] 10.2 Tests - Round-robin scheduling (Property: Round-Robin Fairness)
+  - [-] 10.2 Tests - Round-robin scheduling (Property: Round-Robin Fairness)
     - Write NUnit + FsCheck property tests: each character synced at least floor(N/K) times over N cycles with K characters, failed character skipped and retried next cycle, manual SyncNow syncs all characters.
     - _Satisfies: Correctness Property 6 (Round-Robin Fairness)_
     - Inputs: GameApiSyncScheduler.cs
