@@ -20,6 +20,11 @@ namespace OE2EmpireTracker.Models
         public ServerConnectionSettings ServerConnection { get; set; } = new ServerConnectionSettings();
 
         /// <summary>
+        /// Gets or sets the game API connection settings (URL, polling interval, enabled flag).
+        /// </summary>
+        public GameApiConnectionSettings GameApiConnection { get; set; } = new GameApiConnectionSettings();
+
+        /// <summary>
         /// Time horizon in hours for flatpack auto-fill. 0 = include all unbuilt structures.
         /// When > 0, only includes structures whose build will complete within this many hours.
         /// </summary>
