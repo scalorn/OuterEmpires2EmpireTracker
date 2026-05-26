@@ -27,10 +27,11 @@ namespace OE2EmpireTracker.Tests.Services
 
         private static Gen<string> SafeStringGen()
         {
-            return Gen.Elements("abcdefghijklmnopqrstuvwxyz0123456789 -_".ToCharArray())
-                .ArrayOf()
-                .Where(a => a.Length > 0)
-                .Select(a => new string(a));
+            return from prefix in Gen.Elements("abcdefghijklmnopqrstuvwxyz".ToCharArray())
+                   from rest in Gen.Elements("abcdefghijklmnopqrstuvwxyz0123456789 -_".ToCharArray())
+                       .ArrayOf()
+                       .Select(a => new string(a))
+                   select prefix + rest;
         }
 
         /// <summary>

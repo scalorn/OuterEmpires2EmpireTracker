@@ -28,7 +28,9 @@ namespace OE2EmpireTracker.Tests.Services
 
         private static Gen<string> SafeStringGen()
         {
-            return Arb.Generate<NonEmptyString>().Select(s => s.Get);
+            return from prefix in Gen.Elements("a", "b", "c", "x", "z")
+                   from suffix in Arb.Generate<NonEmptyString>().Select(s => s.Get)
+                   select prefix + suffix;
         }
 
         private static Gen<AsteroidReserve> ValidReserveGen()
