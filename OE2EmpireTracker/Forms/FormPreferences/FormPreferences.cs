@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -36,6 +37,11 @@ namespace OE2EmpireTracker.Forms
         /// </summary>
         private int _originalPollingInterval;
 
+        /// <summary>
+        /// Maps character dropdown index to player UUID for the Game API tab.
+        /// </summary>
+        private List<string> _gameApiCharacterUUIDs = new List<string>();
+
         public FormPreferences()
         {
             InitializeComponent();
@@ -45,6 +51,7 @@ namespace OE2EmpireTracker.Forms
             btnTestConnection.Click += BtnTestConnection_Click;
             btnPushLocalToServer.Click += BtnPushLocalToServer_Click;
             btnTestGameApiConnection.Click += BtnTestGameApiConnection_Click;
+            cmbGameApiCharacter.SelectedIndexChanged += CmbGameApiCharacter_SelectedIndexChanged;
 
             // Populate operating mode dropdown
             cmbOperatingMode.Items.Add("Local Only");
@@ -114,8 +121,33 @@ namespace OE2EmpireTracker.Forms
             chkGameApiEnabled.Checked = settings.Enabled;
             _originalPollingInterval = settings.PollingIntervalMinutes;
 
-            // Show placeholder dots if a secret is stored for the current player
-            string playerUUID = PlayerContext.GetInstance().CurrentPlayerUUID;
+            // Populate character dropdown with all player profiles
+            cmbGameApiCharacter.Items.Clear();
+            _gameApiCharacterUUIDs.Clear();
+            var profiles = PlayerContext.GetInstance().GetReadOnlyPlayerProfileList();
+            string currentPlayerUUID = PlayerContext.GetInstance().CurrentPlayerUUID;
+            int selectedIndex = -1;
+            for (int i = 0; i < profiles.Count; i++)
+            {
+                cmbGameApiCharacter.Items.Add(profiles[i].Name);
+                _gameApiCharacterUUIDs.Add(profiles[i].UUID);
+                if (profiles[i].UUID == currentPlayerUUID)
+                {
+                    selectedIndex = i;
+                }
+            }
+
+            if (selectedIndex >= 0)
+            {
+                cmbGameApiCharacter.SelectedIndex = selectedIndex;
+            }
+            else if (cmbGameApiCharacter.Items.Count > 0)
+            {
+                cmbGameApiCharacter.SelectedIndex = 0;
+            }
+
+            // Show placeholder dots if a secret is stored for the selected character
+            string playerUUID = GetSelectedCharacterUUID();
             var credManager = new GameApiCredentialManager();
             if (!string.IsNullOrEmpty(playerUUID) && credManager.HasKey(playerUUID))
             {
@@ -440,7 +472,7 @@ namespace OE2EmpireTracker.Forms
             string secretText = txtGameApiSecret.Text;
             if (secretText != GameApiSecretPlaceholder && !string.IsNullOrEmpty(secretText))
             {
-                string playerUUID = PlayerContext.GetInstance().CurrentPlayerUUID;
+                string playerUUID = GetSelectedCharacterUUID();
                 if (!string.IsNullOrEmpty(playerUUID))
                 {
                     try
@@ -553,7 +585,7 @@ namespace OE2EmpireTracker.Forms
 
         /// <summary>
         /// Resolves the secret to use for testing. If the user entered a new secret, uses that.
-        /// If the placeholder is shown, retrieves the stored secret for the current player.
+        /// If the placeholder is shown, retrieves the stored secret for the selected character.
         /// </summary>
         private string ResolveGameApiSecret()
         {
@@ -563,8 +595,8 @@ namespace OE2EmpireTracker.Forms
                 return secretText;
             }
 
-            // Retrieve stored secret for current player
-            string playerUUID = PlayerContext.GetInstance().CurrentPlayerUUID;
+            // Retrieve stored secret for selected character
+            string playerUUID = GetSelectedCharacterUUID();
             if (string.IsNullOrEmpty(playerUUID))
             {
                 return null;
@@ -591,6 +623,44 @@ namespace OE2EmpireTracker.Forms
                 }
 
                 secureSecret.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Gets the UUID of the currently selected character in the Game API dropdown.
+        /// </summary>
+        private string GetSelectedCharacterUUID()
+        {
+            int index = cmbGameApiCharacter.SelectedIndex;
+            if (index >= 0 && index < _gameApiCharacterUUIDs.Count)
+            {
+                return _gameApiCharacterUUIDs[index];
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Updates the secret field when the character selection changes.
+        /// Shows placeholder if the selected character has a stored secret, or empty if not.
+        /// </summary>
+        private void CmbGameApiCharacter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string playerUUID = GetSelectedCharacterUUID();
+            if (string.IsNullOrEmpty(playerUUID))
+            {
+                txtGameApiSecret.Text = string.Empty;
+                return;
+            }
+
+            var credManager = new GameApiCredentialManager();
+            if (credManager.HasKey(playerUUID))
+            {
+                txtGameApiSecret.Text = GameApiSecretPlaceholder;
+            }
+            else
+            {
+                txtGameApiSecret.Text = string.Empty;
             }
         }
 

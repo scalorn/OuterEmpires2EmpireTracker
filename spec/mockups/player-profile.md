@@ -32,7 +32,7 @@ MDI child form. Left-list / right-detail with scrollable skill groups.
 │ │                         │ │   Research Focus    [5/5] ██████████                  │
 │ │                         │ │   ...more skill groups...                             │
 │ └─────────────────────────┘ │                                                      │
-│                             │ [Import] [New] [Save] [Delete]                       │
+│                             │ [Import] [Sync API] [New] [Save] [Delete]            │
 └─────────────────────────────┴───────────────────────────────────────────────────────┘
 ```
 
@@ -53,6 +53,6 @@ Controls:
       - `chkColonyDirector`, `chkColonyFounder`, `chkColonyOperations`
       - `chkCommander`, `chkEngineer`, `chkEntrepeneur`
       - `chkJobManagement`, `chkResearcher`, `chkSurveyor`, `chkTrader`
-  - `flpCommands`: `cmdImport`, `cmdNew`, `cmdSave`, `cmdDelete`
+  - `flpCommands`: `cmdImport`, `cmdSyncApi`, `cmdNew`, `cmdSave`, `cmdDelete`
 
 Satisfies: REQ-PLR-010 (player profile management), REQ-PLR-020 (skill tracking)

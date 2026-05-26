@@ -96,6 +96,7 @@ Controls:
   - `txtGameApiUrl` (ValidatedTextBox) — game API server URL
   - `txtGameApiAppId` (ValidatedTextBox) — registered application GUID
   - `txtGameApiClientId` (ValidatedTextBox) — player account identifier
+  - `cmbGameApiCharacter` (ComboBox, DropDownList) — selects which character to enter/view the secret for
   - `txtGameApiSecret` (ValidatedTextBox, PasswordChar='●') — per-character secret
   - `nudPollingInterval` (NumericUpDown) — polling interval in minutes (1-60)
   - `chkGameApiEnabled` (CheckBox) — enable/disable game API integration

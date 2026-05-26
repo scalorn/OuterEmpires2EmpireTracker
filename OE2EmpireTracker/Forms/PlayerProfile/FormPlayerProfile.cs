@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
+using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
@@ -651,6 +652,78 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                     "Import Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Triggers an immediate Game API sync for the currently-selected profile.
+        /// </summary>
+        private async void CmdSyncApi_Click(object sender, EventArgs e)
+        {
+            var gameApi = GameApiContext.Instance;
+            if (gameApi == null)
+            {
+                MessageBox.Show(
+                    "Game API is not configured or enabled.\nGo to File \u2192 Preferences \u2192 Game API to set it up.",
+                    "Game API Not Available",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            string playerUUID = viewModel.UUID;
+            if (string.IsNullOrEmpty(playerUUID))
+            {
+                return;
+            }
+
+            if (!gameApi.CredentialManager.HasKey(playerUUID))
+            {
+                MessageBox.Show(
+                    string.Format("No API secret configured for '{0}'.\nGo to File \u2192 Preferences \u2192 Game API to enter the secret for this character.", viewModel.Name),
+                    "No Secret Configured",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            cmdSyncApi.Enabled = false;
+            cmdSyncApi.Text = "Syncing...";
+
+            try
+            {
+                bool success = await gameApi.SyncScheduler.SyncCharacterAsync(playerUUID).ConfigureAwait(true);
+                if (success)
+                {
+                    PopulateForm();
+                    MessageBox.Show(
+                        string.Format("Profile synced successfully for '{0}'.", viewModel.Name),
+                        "Sync Complete",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        string.Format("Sync failed for '{0}'. Check the log for details.", viewModel.Name),
+                        "Sync Failed",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Manual API sync failed for {0}", playerUUID);
+                MessageBox.Show(
+                    "Sync failed: " + ex.Message,
+                    "Sync Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                cmdSyncApi.Enabled = true;
+                cmdSyncApi.Text = "Sync API";
             }
         }
 

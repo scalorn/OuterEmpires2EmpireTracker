@@ -146,6 +146,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.pskBroker = new OE2EmpireTracker.Forms.PlayerProfile.PlayerSkillBlock();
             this.flpCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdImport = new System.Windows.Forms.Button();
+            this.cmdSyncApi = new System.Windows.Forms.Button();
             this.cmdNew = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
@@ -1563,6 +1564,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.flpCommands.AutoSize = true;
             this.flpCommands.Controls.Add(this.cmdImport);
+            this.flpCommands.Controls.Add(this.cmdSyncApi);
             this.flpCommands.Controls.Add(this.cmdNew);
             this.flpCommands.Controls.Add(this.cmdSave);
             this.flpCommands.Controls.Add(this.cmdDelete);
@@ -1582,6 +1584,16 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.cmdImport.Text = "Import";
             this.cmdImport.UseVisualStyleBackColor = true;
             this.cmdImport.Click += new System.EventHandler(this.CmdImport_Click);
+            // 
+            // cmdSyncApi
+            // 
+            this.cmdSyncApi.Location = new System.Drawing.Point(84, 3);
+            this.cmdSyncApi.Name = "cmdSyncApi";
+            this.cmdSyncApi.Size = new System.Drawing.Size(75, 23);
+            this.cmdSyncApi.TabIndex = 5;
+            this.cmdSyncApi.Text = "Sync API";
+            this.cmdSyncApi.UseVisualStyleBackColor = true;
+            this.cmdSyncApi.Click += new System.EventHandler(this.CmdSyncApi_Click);
             // 
             // cmdNew
             // 
@@ -1736,6 +1748,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPublicRank;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button cmdImport;
+        private System.Windows.Forms.Button cmdSyncApi;
         private System.Windows.Forms.Button cmdNew;
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdDelete;
