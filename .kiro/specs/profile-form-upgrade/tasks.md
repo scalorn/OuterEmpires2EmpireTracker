@@ -153,7 +153,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 
 - [ ] 9. Add active time display to FormPlayerProfile
-  - [-] 9.1 Add Active Time label and formatted value to FormPlayerProfile
+  - [x] 9.1 Add Active Time label and formatted value to FormPlayerProfile
     - Add lblActiveTime / lblActiveTimeValue after First/Last Name rows
     - Display FormatActiveTime(ActiveTimeMinutes) from ViewModel
     - Update PopulateForm to set active time label
