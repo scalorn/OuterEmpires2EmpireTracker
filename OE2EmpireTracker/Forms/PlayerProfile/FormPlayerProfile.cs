@@ -130,6 +130,13 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         {
             var sw = Stopwatch.StartNew();
             txtPlayerName.Text = viewModel.Name;
+            lblCharacterIdValue.Text = viewModel.CharacterId > 0
+                ? viewModel.CharacterId.ToString()
+                : "\u2014";
+            lblFirstNameValue.Text = viewModel.FirstName ?? string.Empty;
+            flpFirstName.Visible = !string.IsNullOrEmpty(viewModel.FirstName);
+            lblLastNameValue.Text = viewModel.LastName ?? string.Empty;
+            flpLastName.Visible = !string.IsNullOrEmpty(viewModel.LastName);
             cmbFaction.Text = viewModel.Faction;
             txtTotalCredits.Text = viewModel.TotalCredits.ToString();
             txtSkillPoints.Text = viewModel.SkillPoints.ToString();

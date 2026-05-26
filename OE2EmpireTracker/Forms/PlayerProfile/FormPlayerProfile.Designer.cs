@@ -169,6 +169,9 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpPlayerData.SuspendLayout();
             this.flpPlayerDetails.SuspendLayout();
             this.flpPlayerName.SuspendLayout();
+            this.flpCharacterId.SuspendLayout();
+            this.flpFirstName.SuspendLayout();
+            this.flpLastName.SuspendLayout();
             this.flpTotalCredits.SuspendLayout();
             this.flpFaction.SuspendLayout();
             this.flpPublicRankBlock.SuspendLayout();
@@ -323,6 +326,9 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpPlayerDetails.AutoScroll = true;
             this.flpPlayerDetails.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpPlayerDetails.Controls.Add(this.flpPlayerName);
+            this.flpPlayerDetails.Controls.Add(this.flpCharacterId);
+            this.flpPlayerDetails.Controls.Add(this.flpFirstName);
+            this.flpPlayerDetails.Controls.Add(this.flpLastName);
             this.flpPlayerDetails.Controls.Add(this.flpTotalCredits);
             this.flpPlayerDetails.Controls.Add(this.flpFaction);
             this.flpPlayerDetails.Controls.Add(this.flpPublicRankBlock);
@@ -376,6 +382,105 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.txtPlayerName.Size = new System.Drawing.Size(200, 20);
             this.txtPlayerName.TabIndex = 0;
             this.txtPlayerName.TextChanged += new System.EventHandler(this.TxtPlayerName_TextChanged);
+            // 
+            // flpCharacterId
+            // 
+            this.flpCharacterId.AutoSize = true;
+            this.flpCharacterId.Controls.Add(this.lblCharacterId);
+            this.flpCharacterId.Controls.Add(this.lblCharacterIdValue);
+            this.flpCharacterId.Location = new System.Drawing.Point(2, 32);
+            this.flpCharacterId.Margin = new System.Windows.Forms.Padding(2);
+            this.flpCharacterId.Name = "flpCharacterId";
+            this.flpCharacterId.Size = new System.Drawing.Size(310, 26);
+            this.flpCharacterId.TabIndex = 20;
+            // 
+            // lblCharacterId
+            // 
+            this.lblCharacterId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCharacterId.Location = new System.Drawing.Point(2, 4);
+            this.lblCharacterId.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblCharacterId.Name = "lblCharacterId";
+            this.lblCharacterId.Size = new System.Drawing.Size(100, 17);
+            this.lblCharacterId.TabIndex = 0;
+            this.lblCharacterId.Text = "Character ID";
+            this.lblCharacterId.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblCharacterIdValue
+            // 
+            this.lblCharacterIdValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCharacterIdValue.Location = new System.Drawing.Point(107, 4);
+            this.lblCharacterIdValue.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblCharacterIdValue.Name = "lblCharacterIdValue";
+            this.lblCharacterIdValue.Size = new System.Drawing.Size(200, 17);
+            this.lblCharacterIdValue.TabIndex = 1;
+            this.lblCharacterIdValue.Text = "\u2014";
+            this.lblCharacterIdValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // flpFirstName
+            // 
+            this.flpFirstName.AutoSize = true;
+            this.flpFirstName.Controls.Add(this.lblFirstName);
+            this.flpFirstName.Controls.Add(this.lblFirstNameValue);
+            this.flpFirstName.Location = new System.Drawing.Point(2, 62);
+            this.flpFirstName.Margin = new System.Windows.Forms.Padding(2);
+            this.flpFirstName.Name = "flpFirstName";
+            this.flpFirstName.Size = new System.Drawing.Size(310, 26);
+            this.flpFirstName.TabIndex = 21;
+            this.flpFirstName.Visible = false;
+            // 
+            // lblFirstName
+            // 
+            this.lblFirstName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFirstName.Location = new System.Drawing.Point(2, 4);
+            this.lblFirstName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblFirstName.Name = "lblFirstName";
+            this.lblFirstName.Size = new System.Drawing.Size(100, 17);
+            this.lblFirstName.TabIndex = 0;
+            this.lblFirstName.Text = "First Name";
+            this.lblFirstName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblFirstNameValue
+            // 
+            this.lblFirstNameValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFirstNameValue.Location = new System.Drawing.Point(107, 4);
+            this.lblFirstNameValue.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblFirstNameValue.Name = "lblFirstNameValue";
+            this.lblFirstNameValue.Size = new System.Drawing.Size(200, 17);
+            this.lblFirstNameValue.TabIndex = 1;
+            this.lblFirstNameValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // flpLastName
+            // 
+            this.flpLastName.AutoSize = true;
+            this.flpLastName.Controls.Add(this.lblLastName);
+            this.flpLastName.Controls.Add(this.lblLastNameValue);
+            this.flpLastName.Location = new System.Drawing.Point(2, 92);
+            this.flpLastName.Margin = new System.Windows.Forms.Padding(2);
+            this.flpLastName.Name = "flpLastName";
+            this.flpLastName.Size = new System.Drawing.Size(310, 26);
+            this.flpLastName.TabIndex = 22;
+            this.flpLastName.Visible = false;
+            // 
+            // lblLastName
+            // 
+            this.lblLastName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLastName.Location = new System.Drawing.Point(2, 4);
+            this.lblLastName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblLastName.Name = "lblLastName";
+            this.lblLastName.Size = new System.Drawing.Size(100, 17);
+            this.lblLastName.TabIndex = 0;
+            this.lblLastName.Text = "Last Name";
+            this.lblLastName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblLastNameValue
+            // 
+            this.lblLastNameValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLastNameValue.Location = new System.Drawing.Point(107, 4);
+            this.lblLastNameValue.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblLastNameValue.Name = "lblLastNameValue";
+            this.lblLastNameValue.Size = new System.Drawing.Size(200, 17);
+            this.lblLastNameValue.TabIndex = 1;
+            this.lblLastNameValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // flpTotalCredits
             // 
@@ -1692,6 +1797,12 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpPlayerDetails.PerformLayout();
             this.flpPlayerName.ResumeLayout(false);
             this.flpPlayerName.PerformLayout();
+            this.flpCharacterId.ResumeLayout(false);
+            this.flpCharacterId.PerformLayout();
+            this.flpFirstName.ResumeLayout(false);
+            this.flpFirstName.PerformLayout();
+            this.flpLastName.ResumeLayout(false);
+            this.flpLastName.PerformLayout();
             this.flpTotalCredits.ResumeLayout(false);
             this.flpTotalCredits.PerformLayout();
             this.flpFaction.ResumeLayout(false);
@@ -1784,6 +1895,15 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private System.Windows.Forms.FlowLayoutPanel flpPlayerName;
         private System.Windows.Forms.Label lblPlayerName;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPlayerName;
+        private System.Windows.Forms.FlowLayoutPanel flpCharacterId;
+        private System.Windows.Forms.Label lblCharacterId;
+        private System.Windows.Forms.Label lblCharacterIdValue;
+        private System.Windows.Forms.FlowLayoutPanel flpFirstName;
+        private System.Windows.Forms.Label lblFirstName;
+        private System.Windows.Forms.Label lblFirstNameValue;
+        private System.Windows.Forms.FlowLayoutPanel flpLastName;
+        private System.Windows.Forms.Label lblLastName;
+        private System.Windows.Forms.Label lblLastNameValue;
         private System.Windows.Forms.FlowLayoutPanel flpTotalCredits;
         private System.Windows.Forms.Label lblTotalCredits;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtTotalCredits;
