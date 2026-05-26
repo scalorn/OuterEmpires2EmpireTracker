@@ -16,30 +16,21 @@ Colony sync runs after profile sync in the same polling cycle. It fetches the co
 
 ## Implementation Phasing
 
-This feature is implemented in two phases with a discovery gate between them.
+### Phase 1: Infrastructure + Discovery (COMPLETE)
+- ✅ Data model expansion (new properties on Colony, ColonyStructure, Item + sub-models)
+- ✅ Data model migration (CurrentAttitude/ContentmentIndex relocation)
+- ✅ Colony response DTOs
+- ✅ GameApiClient colony endpoint methods
+- ✅ API Data Discovery test fixture
+- ✅ Discovery gate passed — mapping report produced, typeC codes confirmed
 
-### Phase 1: Infrastructure + Discovery (implement first)
-- Data model expansion (new properties on Colony, ColonyStructure, Item + sub-models)
-- Data model migration (CurrentAttitude/ContentmentIndex relocation)
-- Colony response DTOs
-- GameApiClient colony endpoint methods
-- API Data Discovery test fixture
-- **GATE: Run discovery tests, produce mapping report, confirm typeC/typeId mappings**
-
-### Phase 2: Merge Logic + Integration (replan after discovery)
+### Phase 2: Merge Logic + Integration (ready to implement)
 - ColonyMergeService (dedup, field merge, building merge, warehouse merge)
+- TypeC mapping using confirmed codes: R→Resource, Sc→Survey, W→WorkDetail, S→ShipPart, Bp→Blueprint, F→Flatpack, C→Commodity, Sh→ShipHull
 - GameApiSyncScheduler colony sync integration
 - Persistence and UI notification
 - Error handling and scope awareness
-- All property-based and unit tests for merge logic
-
-Phase 2 tasks are provisional. The mapping report from Phase 1 may reveal:
-- Different typeC codes than assumed
-- Additional fields not in the swagger schema
-- Data format surprises (e.g. unexpected null patterns, enum values)
-- Building name mismatches that affect dedup strategy
-
-The tasks.md will mark Phase 2 tasks as dependent on the discovery gate.
+- Unit tests and property-based tests for merge logic
 
 ## Architecture
 
@@ -523,26 +514,30 @@ FOR each apiItem in apiItems:
     Add to colony.Items
 ```
 
-**TypeC Mapping (PROVISIONAL — pending discovery):**
+**TypeC Mapping (CONFIRMED from discovery — 74 colonies, 738 items):**
 
-The following mapping is a best guess based on swagger documentation. The actual `typeC` values must be confirmed by running the API Data Discovery test fixture (Req 16) against real data. The swagger hints at short codes (`"R"`, `"C"`, `"S"`, `"Bp"`, `"Sh"`) rather than full words.
+| TypeC Code | Local ItemTypeEnum | Count | Example |
+|------------|-------------------|-------|---------|
+| `R` | Resource | 398 | Lanthanides (Unrefined, Med Purity) |
+| `Sc` | Survey | 151 | Survey Report: Alef Wynthoril I (06BA4C5) |
+| `W` | WorkDetail | 148 | White Collar Detail |
+| `S` | ShipPart | 21 | Patrol |
+| `Bp` | Blueprint | 16 | Patrol |
+| `F` | Flatpack | 4 | Flatpack: Refinery |
+| `C` | Commodity | 0 (not observed) | — |
+| `Sh` | ShipHull | 0 (not observed) | — |
+| Unknown | None (logged as warning) | — | — |
 
-Provisional mapping:
-- `"R"` or `"resource"` → Resource
-- `"C"` or `"commodity"` → Commodity
-- `"Bp"` or `"blueprint"` → Blueprint
-- `"flatpack"` → Flatpack
-- `"Sh"` or `"hull"` → ShipHull
-- `"part"` → ShipPart
-- `"S"` or `"survey"` → Survey
-- Unknown → None (logged as warning)
+**Notes from discovery:**
+- `Sc` (not `S`) is the survey code — important distinction
+- `S` appears to be ship-related items (e.g. "Patrol" ship)
+- `C` (Commodity) and `Sh` (ShipHull) were not observed in any warehouse but are expected based on the swagger type filter docs
+- `Bp` is Blueprint (confirmed — "Patrol" blueprint)
+- `F` is Flatpack (confirmed — "Flatpack: Refinery")
+- No `cargoItemId` field was found in actual responses (only the fields in the DTO)
+- All 3,260 buildings had `statusId = 1` (fully operational) — no construction observed
 
-**This mapping will be revised after the discovery phase.** The implementation plan is phased:
-1. Phase 1: Implement DTOs, data model expansion, API client methods, and discovery test fixture
-2. Phase 1 gate: Run discovery tests against real API, produce mapping report
-3. Phase 2: Implement merge logic using confirmed mappings from the report
-
-Tasks beyond the discovery gate are provisional and will be replanned based on findings.
+**Implementation approach:** Map known codes directly. Log unknown codes as warnings and map to `ItemTypeEnum.None`. The `S` code needs clarification — it could be ShipHull or ShipPart. For now, map `S` → ShipPart since the swagger docs list `Sh` separately (likely ShipHull).
 
 ### 6. GameApiSyncScheduler — Colony Sync Integration
 

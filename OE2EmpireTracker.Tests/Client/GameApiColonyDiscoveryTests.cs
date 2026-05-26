@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -14,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Client
 {
@@ -37,26 +39,52 @@ namespace OE2EmpireTracker.Tests.Client
         private string accessToken;
 
         /// <summary>
-        /// Reads credentials from environment variables, authenticates, and obtains an access token.
+        /// Loads credentials from the app's existing credential store and preferences.
         /// Skips all tests if credentials are not configured.
         /// </summary>
         [OneTimeSetUp]
         public async Task OneTimeSetUp()
         {
-            this.appId = Environment.GetEnvironmentVariable("OE2_APP_ID");
-            string clientId = Environment.GetEnvironmentVariable("OE2_CLIENT_ID");
-            string secret = Environment.GetEnvironmentVariable("OE2_SECRET");
+            // Register DPAPI protection functions (same as other tests that use credentials)
+            GameApiCredentialManager.RegisterProtectionFunctions(
+                OE2EmpireTracker.Client.CredentialStore.Protect,
+                OE2EmpireTracker.Client.CredentialStore.Unprotect);
 
-            if (string.IsNullOrEmpty(this.appId) ||
-                string.IsNullOrEmpty(clientId) ||
-                string.IsNullOrEmpty(secret))
+            // Load settings from the app's preferences store
+            var settings = PreferencesStore.GetInstance().Preferences.GameApiConnection;
+            if (settings == null || !settings.Enabled)
             {
-                Assert.Ignore("Game API credentials not configured. Set OE2_APP_ID, OE2_CLIENT_ID, OE2_SECRET environment variables.");
+                Assert.Ignore("Game API integration is not configured or disabled in preferences.");
             }
 
-            this.client = new GameApiClient("https://oe2-pub-api-dev.azure-api.net");
+            if (string.IsNullOrEmpty(settings.AppId) || string.IsNullOrEmpty(settings.ClientId))
+            {
+                Assert.Ignore("Game API AppId or ClientId not configured in preferences.");
+            }
 
-            var tokenResult = await this.client.ExchangeTokenAsync(this.appId, clientId, secret).ConfigureAwait(false);
+            this.appId = settings.AppId;
+
+            // Load the stored secret from the credential manager
+            var credManager = new GameApiCredentialManager();
+            var configuredPlayers = credManager.GetConfiguredPlayerUUIDs();
+            if (configuredPlayers.Count == 0)
+            {
+                Assert.Ignore("No characters have configured game API secrets.");
+            }
+
+            string playerUUID = configuredPlayers[0];
+            var secureSecret = credManager.GetKey(playerUUID);
+            if (secureSecret == null)
+            {
+                Assert.Ignore("No secret found for player " + playerUUID);
+            }
+
+            // Convert SecureString to plain string for token exchange
+            string secret = new System.Net.NetworkCredential(string.Empty, secureSecret).Password;
+
+            this.client = new GameApiClient(settings.ServerUrl);
+
+            var tokenResult = await this.client.ExchangeTokenAsync(this.appId, settings.ClientId, secret).ConfigureAwait(false);
             if (!tokenResult.Success)
             {
                 Assert.Ignore("Token exchange failed: " + tokenResult.ErrorMessage);
@@ -68,6 +96,8 @@ namespace OE2EmpireTracker.Tests.Client
             {
                 Directory.CreateDirectory(TestResultsDir);
             }
+
+            TestContext.WriteLine("Authenticated as player {0}, token obtained", playerUUID);
         }
 
         /// <summary>
@@ -117,80 +147,83 @@ namespace OE2EmpireTracker.Tests.Client
         }
 
         /// <summary>
-        /// Pulls buildings for the first colony with RemoteAccess greater than 0.
-        /// Writes raw JSON to TestResults/colony-buildings-raw.json.
+        /// Pulls buildings for ALL colonies with RemoteAccess greater than 0.
+        /// Writes combined raw JSON to TestResults/colony-buildings-all.json.
         /// </summary>
         [Test]
         [Order(2)]
         public async Task PullColonyBuildings()
         {
-            int colonyId = await GetFirstRemoteAccessColonyId().ConfigureAwait(false);
+            var colonies = await GetAllRemoteAccessColonies().ConfigureAwait(false);
+            var allBuildings = new List<object>();
+            int totalBuildings = 0;
 
-            var result = await this.client.GetColonyBuildingsAsync(this.appId, this.accessToken, colonyId).ConfigureAwait(false);
-
-            Assert.That(result.Success, Is.True, "GetColonyBuildingsAsync failed for colonyId=" + colonyId + ". Json: " + (result.Json ?? "(null)"));
-            Assert.That(result.Json, Is.Not.Null.And.Not.Empty, "Buildings JSON is empty");
-
-            string outputPath = Path.Combine(TestResultsDir, "colony-buildings-raw.json");
-            File.WriteAllText(outputPath, FormatJson(result.Json), Encoding.UTF8);
-
-            TestContext.WriteLine("Buildings written to: " + outputPath);
-            TestContext.WriteLine("Response length: " + result.Json.Length + " characters");
-
-            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyBuildingsResponse>>(result.Json);
-            Assert.That(envelope, Is.Not.Null, "Failed to deserialize buildings envelope");
-            Assert.That(envelope.Success, Is.True, "API returned success=false: " + envelope.ReturnString);
-            Assert.That(envelope.Data, Is.Not.Null, "Buildings data is null");
-
-            TestContext.WriteLine("Buildings returned: " + envelope.Data.Buildings.Count);
-            foreach (var building in envelope.Data.Buildings)
+            foreach (var colony in colonies)
             {
-                TestContext.WriteLine(
-                    "  [{0}] typeId={1} name={2} online={3} statusId={4}",
-                    building.BuildingId,
-                    building.ColonyBuildingTypeId,
-                    building.BlueprintDesignName,
-                    building.BuildingOnline,
-                    building.StatusId);
+                var result = await this.client.GetColonyBuildingsAsync(this.appId, this.accessToken, colony.ColonyId).ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    TestContext.WriteLine("  SKIPPED [{0}] {1}: {2}", colony.ColonyId, colony.ColonyName, result.Json ?? "failed");
+                    continue;
+                }
+
+                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyBuildingsResponse>>(result.Json);
+                if (envelope?.Data?.Buildings == null)
+                {
+                    continue;
+                }
+
+                allBuildings.Add(new { colony.ColonyId, colony.ColonyName, Buildings = envelope.Data.Buildings });
+                totalBuildings += envelope.Data.Buildings.Count;
+
+                TestContext.WriteLine("  [{0}] {1}: {2} buildings", colony.ColonyId, colony.ColonyName, envelope.Data.Buildings.Count);
             }
+
+            string outputPath = Path.Combine(TestResultsDir, "colony-buildings-all.json");
+            File.WriteAllText(outputPath, JsonConvert.SerializeObject(allBuildings, Formatting.Indented), Encoding.UTF8);
+
+            TestContext.WriteLine("Total buildings across all colonies: " + totalBuildings);
+            TestContext.WriteLine("Buildings written to: " + outputPath);
         }
 
         /// <summary>
-        /// Pulls warehouse contents for the first colony with RemoteAccess greater than 0.
-        /// Writes raw JSON to TestResults/colony-warehouse-raw.json.
+        /// Pulls warehouse contents for ALL colonies with RemoteAccess greater than 0.
+        /// Writes combined raw JSON to TestResults/colony-warehouse-all.json.
         /// </summary>
         [Test]
         [Order(3)]
         public async Task PullColonyWarehouse()
         {
-            int colonyId = await GetFirstRemoteAccessColonyId().ConfigureAwait(false);
+            var colonies = await GetAllRemoteAccessColonies().ConfigureAwait(false);
+            var allItems = new List<GameApiWarehouseItem>();
+            int colonyCount = 0;
 
-            var result = await this.client.GetColonyWarehouseAsync(this.appId, this.accessToken, colonyId).ConfigureAwait(false);
-
-            Assert.That(result.Success, Is.True, "GetColonyWarehouseAsync failed for colonyId=" + colonyId + ". Json: " + (result.Json ?? "(null)"));
-            Assert.That(result.Json, Is.Not.Null.And.Not.Empty, "Warehouse JSON is empty");
-
-            string outputPath = Path.Combine(TestResultsDir, "colony-warehouse-raw.json");
-            File.WriteAllText(outputPath, FormatJson(result.Json), Encoding.UTF8);
-
-            TestContext.WriteLine("Warehouse written to: " + outputPath);
-            TestContext.WriteLine("Response length: " + result.Json.Length + " characters");
-
-            var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWarehouseResponse>>(result.Json);
-            Assert.That(envelope, Is.Not.Null, "Failed to deserialize warehouse envelope");
-            Assert.That(envelope.Success, Is.True, "API returned success=false: " + envelope.ReturnString);
-            Assert.That(envelope.Data, Is.Not.Null, "Warehouse data is null");
-
-            TestContext.WriteLine("Warehouse items returned: " + envelope.Data.Contents.Count);
-            foreach (var item in envelope.Data.Contents)
+            foreach (var colony in colonies)
             {
-                TestContext.WriteLine(
-                    "  typeC={0} typeId={1} name={2} amount={3}",
-                    item.TypeC,
-                    item.TypeId,
-                    item.ResourceName,
-                    item.Amount);
+                var result = await this.client.GetColonyWarehouseAsync(this.appId, this.accessToken, colony.ColonyId).ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    TestContext.WriteLine("  SKIPPED [{0}] {1}: {2}", colony.ColonyId, colony.ColonyName, result.Json ?? "failed");
+                    continue;
+                }
+
+                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWarehouseResponse>>(result.Json);
+                if (envelope?.Data?.Contents == null)
+                {
+                    continue;
+                }
+
+                allItems.AddRange(envelope.Data.Contents);
+                colonyCount++;
+
+                TestContext.WriteLine("  [{0}] {1}: {2} items", colony.ColonyId, colony.ColonyName, envelope.Data.Contents.Count);
             }
+
+            string outputPath = Path.Combine(TestResultsDir, "colony-warehouse-all.json");
+            File.WriteAllText(outputPath, JsonConvert.SerializeObject(allItems, Formatting.Indented), Encoding.UTF8);
+
+            TestContext.WriteLine("Total warehouse items across {0} colonies: {1}", colonyCount, allItems.Count);
+            TestContext.WriteLine("Warehouse written to: " + outputPath);
         }
 
         /// <summary>
@@ -202,20 +235,31 @@ namespace OE2EmpireTracker.Tests.Client
         public void ProduceMappingReport()
         {
             string colonyListPath = Path.Combine(TestResultsDir, "colony-list-raw.json");
-            string buildingsPath = Path.Combine(TestResultsDir, "colony-buildings-raw.json");
-            string warehousePath = Path.Combine(TestResultsDir, "colony-warehouse-raw.json");
+            string buildingsPath = Path.Combine(TestResultsDir, "colony-buildings-all.json");
+            string warehousePath = Path.Combine(TestResultsDir, "colony-warehouse-all.json");
 
             Assert.That(File.Exists(colonyListPath), Is.True, "colony-list-raw.json not found. Run PullColonyList first.");
-            Assert.That(File.Exists(buildingsPath), Is.True, "colony-buildings-raw.json not found. Run PullColonyBuildings first.");
-            Assert.That(File.Exists(warehousePath), Is.True, "colony-warehouse-raw.json not found. Run PullColonyWarehouse first.");
+            Assert.That(File.Exists(buildingsPath), Is.True, "colony-buildings-all.json not found. Run PullColonyBuildings first.");
+            Assert.That(File.Exists(warehousePath), Is.True, "colony-warehouse-all.json not found. Run PullColonyWarehouse first.");
 
             string colonyListJson = File.ReadAllText(colonyListPath);
             string buildingsJson = File.ReadAllText(buildingsPath);
             string warehouseJson = File.ReadAllText(warehousePath);
 
             var colonyEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyListResponse>>(colonyListJson);
-            var buildingsEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyBuildingsResponse>>(buildingsJson);
-            var warehouseEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWarehouseResponse>>(warehouseJson);
+
+            // Buildings file is an array of {ColonyId, ColonyName, Buildings} objects
+            var buildingsData = JsonConvert.DeserializeObject<List<ColonyBuildingsBundle>>(buildingsJson);
+            var allBuildings = new GameApiColonyBuildingsResponse
+            {
+                Buildings = buildingsData?.SelectMany(b => b.Buildings ?? new List<GameApiColonyBuilding>()).ToList()
+                    ?? new List<GameApiColonyBuilding>()
+            };
+
+            // Warehouse file is a direct List<GameApiWarehouseItem>
+            var allWarehouseItems = JsonConvert.DeserializeObject<List<GameApiWarehouseItem>>(warehouseJson)
+                ?? new List<GameApiWarehouseItem>();
+            var warehouseData = new GameApiColonyWarehouseResponse { Contents = allWarehouseItems };
 
             var report = new StringBuilder();
             report.AppendLine("# API Mapping Report");
@@ -224,13 +268,13 @@ namespace OE2EmpireTracker.Tests.Client
             report.AppendLine();
 
             // Section 1: TypeC values discovered
-            AppendTypeCSection(report, warehouseEnvelope.Data);
+            AppendTypeCSection(report, warehouseData);
 
             // Section 2: StatusId values discovered
-            AppendStatusIdSection(report, buildingsEnvelope.Data);
+            AppendStatusIdSection(report, allBuildings);
 
             // Section 3: ColonyBuildingTypeId values discovered
-            AppendBuildingTypeIdSection(report, buildingsEnvelope.Data);
+            AppendBuildingTypeIdSection(report, allBuildings);
 
             // Section 4: Colony list field comparison
             AppendColonyFieldComparison(report, colonyListJson);
@@ -261,6 +305,14 @@ namespace OE2EmpireTracker.Tests.Client
 
         private async Task<int> GetFirstRemoteAccessColonyId()
         {
+            var colonies = await GetAllRemoteAccessColonies().ConfigureAwait(false);
+            var colony = colonies.First();
+            TestContext.WriteLine("Using colony: [{0}] {1} (RemoteAccess={2})", colony.ColonyId, colony.ColonyName, colony.RemoteAccess);
+            return colony.ColonyId;
+        }
+
+        private async Task<List<GameApiColonyListItem>> GetAllRemoteAccessColonies()
+        {
             string colonyListPath = Path.Combine(TestResultsDir, "colony-list-raw.json");
 
             string json;
@@ -278,19 +330,19 @@ namespace OE2EmpireTracker.Tests.Client
             var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyListResponse>>(json);
             Assert.That(envelope?.Data?.Colonies, Is.Not.Null.And.Not.Empty, "No colonies in response");
 
-            var colony = envelope.Data.Colonies.FirstOrDefault(c => c.RemoteAccess > 0);
-            Assert.That(colony, Is.Not.Null, "No colony with RemoteAccess > 0 found");
+            var colonies = envelope.Data.Colonies.Where(c => c.RemoteAccess > 0).ToList();
+            Assert.That(colonies, Is.Not.Empty, "No colony with RemoteAccess > 0 found");
 
-            TestContext.WriteLine("Using colony: [{0}] {1} (RemoteAccess={2})", colony.ColonyId, colony.ColonyName, colony.RemoteAccess);
-            return colony.ColonyId;
+            TestContext.WriteLine("Found {0} colonies with RemoteAccess > 0", colonies.Count);
+            return colonies;
         }
 
         private static string FormatJson(string json)
         {
             try
             {
-                var obj = JToken.Parse(json);
-                return obj.ToString(Formatting.Indented);
+                var obj = JsonConvert.DeserializeObject(json);
+                return JsonConvert.SerializeObject(obj, Formatting.Indented);
             }
             catch
             {
@@ -453,13 +505,18 @@ namespace OE2EmpireTracker.Tests.Client
             report.AppendLine("## Buildings Field Comparison");
             report.AppendLine();
 
-            var parsed = JObject.Parse(buildingsJson);
-            var dataToken = parsed["data"];
+            // buildingsJson is an array of {ColonyId, ColonyName, Buildings} bundles
+            var bundles = JArray.Parse(buildingsJson);
             JArray buildingsArray = null;
 
-            if (dataToken != null && dataToken["buildings"] is JArray arr)
+            foreach (var bundle in bundles)
             {
-                buildingsArray = arr;
+                var buildings = bundle["Buildings"] as JArray;
+                if (buildings != null && buildings.Count > 0)
+                {
+                    buildingsArray = buildings;
+                    break;
+                }
             }
 
             if (buildingsArray == null || buildingsArray.Count == 0)
@@ -527,14 +584,8 @@ namespace OE2EmpireTracker.Tests.Client
             report.AppendLine("## Warehouse Field Comparison");
             report.AppendLine();
 
-            var parsed = JObject.Parse(warehouseJson);
-            var dataToken = parsed["data"];
-            JArray contentsArray = null;
-
-            if (dataToken != null && dataToken["contents"] is JArray arr)
-            {
-                contentsArray = arr;
-            }
+            // warehouseJson is a direct array of warehouse items
+            var contentsArray = JArray.Parse(warehouseJson);
 
             if (contentsArray == null || contentsArray.Count == 0)
             {
@@ -767,5 +818,17 @@ namespace OE2EmpireTracker.Tests.Client
 
             return mapped.Contains(localProp);
         }
+    }
+
+    /// <summary>
+    /// Helper class for deserializing the combined buildings JSON file.
+    /// </summary>
+    internal class ColonyBuildingsBundle
+    {
+        public int ColonyId { get; set; }
+
+        public string ColonyName { get; set; } = string.Empty;
+
+        public List<GameApiColonyBuilding> Buildings { get; set; } = new List<GameApiColonyBuilding>();
     }
 }
