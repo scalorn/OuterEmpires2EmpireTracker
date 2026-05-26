@@ -130,7 +130,7 @@ This plan implements the Game API integration infrastructure: credential managem
     - Output: `OE2EmpireTracker.Tests/Client/GameApiClient429Tests.cs`
     - Verification: vstest.console passes all tests
 
-- [ ] 10. Tests - Profile merge and sync scheduling
+- [x] 10. Tests - Profile merge and sync scheduling
   - [x] 10.1 Tests - Profile merge (Property: Merge Idempotency)
     - Write NUnit + FsCheck property tests: API-authoritative fields overwritten, local-only fields preserved (SkillGroups), idempotent application (merge twice = same result), conflict logging emitted. Use FsCheck 2.16.6 LINQ query syntax.
     - _Satisfies: Correctness Property 3 (Merge Idempotency)_
@@ -138,7 +138,7 @@ This plan implements the Game API integration infrastructure: credential managem
     - Output: `OE2EmpireTracker.Tests/Services/GameApiProfileMergeTests.cs`
     - Verification: vstest.console passes all tests
 
-  - [-] 10.2 Tests - Round-robin scheduling (Property: Round-Robin Fairness)
+  - [x] 10.2 Tests - Round-robin scheduling (Property: Round-Robin Fairness)
     - Write NUnit + FsCheck property tests: each character synced at least floor(N/K) times over N cycles with K characters, failed character skipped and retried next cycle, manual SyncNow syncs all characters.
     - _Satisfies: Correctness Property 6 (Round-Robin Fairness)_
     - Inputs: GameApiSyncScheduler.cs
@@ -146,7 +146,7 @@ This plan implements the Game API integration infrastructure: credential managem
     - Verification: vstest.console passes all tests
 
 - [ ] 11. Tests - Connection state machine
-  - [~] 11.1 Tests - Connection state machine (Property: State Machine Validity)
+  - [-] 11.1 Tests - Connection state machine (Property: State Machine Validity)
     - Write NUnit + FsCheck property tests: valid transitions only (no Connected to Connected without Disconnected), backoff doubling (1s to 2s to 4s...to 60s cap), event raised on every transition, exception in handler does not prevent transition.
     - _Satisfies: Correctness Property 5 (State Machine Validity)_
     - Inputs: GameApiConnectionMonitor.cs
