@@ -233,13 +233,21 @@ namespace OE2EmpireTracker.Services
         {
             try
             {
+                string dir = Path.GetDirectoryName(_secretsFilePath);
+                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                    Log.Info("Created game API secrets directory: {0}", dir);
+                }
+
                 string json = JsonConvert.SerializeObject(_protectedKeys, Formatting.Indented);
                 SafeFileWriter.WriteAllText(_secretsFilePath, json);
                 Log.Debug("Saved {0} game API credential(s) to {1}", _protectedKeys.Count, _secretsFilePath);
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
-                Log.Error(ex, "I/O error saving game API secrets file to {0}", _secretsFilePath);
+                Log.Error(ex, "Error saving game API secrets file to {0}", _secretsFilePath);
+                throw;
             }
         }
 

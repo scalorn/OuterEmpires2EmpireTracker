@@ -439,9 +439,21 @@ namespace OE2EmpireTracker.Forms
                 string playerUUID = PlayerContext.GetInstance().CurrentPlayerUUID;
                 if (!string.IsNullOrEmpty(playerUUID))
                 {
-                    var credManager = new GameApiCredentialManager();
-                    credManager.StoreKey(playerUUID, keyText);
-                    Log.Info("Game API key stored for character {0}", playerUUID);
+                    try
+                    {
+                        var credManager = new GameApiCredentialManager();
+                        credManager.StoreKey(playerUUID, keyText);
+                        Log.Info("Game API key stored for character {0}", playerUUID);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Failed to store Game API key for character {0}", playerUUID);
+                        MessageBox.Show(
+                            "Failed to save API key: " + ex.Message,
+                            "Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    }
                 }
             }
 
