@@ -93,6 +93,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             lvwPlayerProfiles.Columns.Clear();
             lvwPlayerProfiles.Columns.Add("Name", 200);
             lvwPlayerProfiles.Columns.Add("Faction", 200);
+            lvwPlayerProfiles.Columns.Add("ID", 60);
 
             PopulateListView();
             PopulateForm();
@@ -386,13 +387,25 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             var sw = Stopwatch.StartNew();
             var profiles = viewModel.GetFilteredProfiles(txtNameFilter.Text);
 
+            string selectedUUID = null;
+            if (lvwPlayerProfiles.SelectedItems.Count > 0)
+            {
+                selectedUUID = (lvwPlayerProfiles.SelectedItems[0].Tag as ReadOnlyPlayerProfile)?.UUID;
+            }
+
             lvwPlayerProfiles.Items.Clear();
             foreach (var profile in profiles)
             {
                 var item = new ListViewItem(profile.Name);
                 item.SubItems.Add(profile.Faction);
+                item.SubItems.Add(profile.CharacterId == 0 ? string.Empty : profile.CharacterId.ToString());
                 item.Tag = profile;
                 lvwPlayerProfiles.Items.Add(item);
+            }
+
+            if (!string.IsNullOrEmpty(selectedUUID))
+            {
+                SelectProfileInList(selectedUUID);
             }
 
             sw.Stop();
