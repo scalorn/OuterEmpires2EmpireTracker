@@ -152,7 +152,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Verification: vstest.console passes_
 
 
-- [ ] 9. Add active time display to FormPlayerProfile
+- [x] 9. Add active time display to FormPlayerProfile
   - [x] 9.1 Add Active Time label and formatted value to FormPlayerProfile
     - Add lblActiveTime / lblActiveTimeValue after First/Last Name rows
     - Display FormatActiveTime(ActiveTimeMinutes) from ViewModel
@@ -186,7 +186,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 12. Wire PopulateListView refresh on PlayerProfilesChanged event
+- [x] 12. Wire PopulateListView refresh on PlayerProfilesChanged event
   - [x] 12.1 Ensure ListView refresh on PlayerProfilesChanged preserves selection
     - Verify PopulateListView is called when PlayerProfilesChanged fires
     - Ensure currently selected profile is preserved after refresh
@@ -196,7 +196,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified FormPlayerProfile.cs (if wiring not already present)_
     - _Verification: getDiagnostics clean, build succeeds_
 
-- [ ] 13. Verify metadata row layout and FlowLayoutPanel reflow
+- [x] 13. Verify metadata row layout and FlowLayoutPanel reflow
   - [x] 13.1 Ensure PlayerSkillBlock metadata row positioning and parent reflow
     - Verify EffectDescription label at x=48, y=26
     - Verify AmountPerLevel label at x=200, y=26
@@ -208,7 +208,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Verification pass (may require minor adjustments to PlayerSkillBlock.cs)_
     - _Verification: getDiagnostics clean, build succeeds, visual inspection_
 
-- [-] 14. Final checkpoint - Ensure all tests pass
+- [x] 14. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 

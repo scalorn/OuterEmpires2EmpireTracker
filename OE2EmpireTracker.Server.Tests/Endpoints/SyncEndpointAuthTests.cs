@@ -19,7 +19,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class SyncEndpointAuthTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private HttpClient _memberClient = null!;
     private HttpClient _nonMemberClient = null!;
@@ -34,9 +33,8 @@ public class SyncEndpointAuthTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         // Create a faction
         var factionResponse = _ownerClient
@@ -56,7 +54,7 @@ public class SyncEndpointAuthTests
             .GetAwaiter().GetResult();
         var memberToken = memberJson.GetProperty("token").GetString()!;
         _memberCharUUID = memberJson.GetProperty("characterUUID").GetString()!;
-        _memberClient = _factory.CreateAuthenticatedClient(memberToken);
+        _memberClient = factory.CreateAuthenticatedClient(memberToken);
 
         // Create non-member character with its own token
         var nonMemberResponse = _ownerClient
@@ -67,7 +65,7 @@ public class SyncEndpointAuthTests
             .GetAwaiter().GetResult();
         var nonMemberToken = nonMemberJson.GetProperty("token").GetString()!;
         _nonMemberCharUUID = nonMemberJson.GetProperty("characterUUID").GetString()!;
-        _nonMemberClient = _factory.CreateAuthenticatedClient(nonMemberToken);
+        _nonMemberClient = factory.CreateAuthenticatedClient(nonMemberToken);
 
         // Get the seeded clearance levels for the faction
         var levelsResponse = _ownerClient
@@ -106,7 +104,6 @@ public class SyncEndpointAuthTests
         _memberClient.Dispose();
         _nonMemberClient.Dispose();
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>

@@ -20,7 +20,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints.Typed;
 [TestFixture]
 public class DeliveryPlanSplitTripsTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charToken = string.Empty;
     private string _charUUID = string.Empty;
@@ -31,9 +30,8 @@ public class DeliveryPlanSplitTripsTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         var createResponse = _ownerClient
             .PostAsJsonAsync("/api/v1/tokens", new { characterName = "SplitTripsChar" })
@@ -52,7 +50,6 @@ public class DeliveryPlanSplitTripsTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -62,7 +59,7 @@ public class DeliveryPlanSplitTripsTests
     [Test]
     public async Task SplitTrips_CreatesMultiplePlans()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Create plan with 3 items of quantity 10 each (total volume = 30)
         var planUuid = await CreatePlanWithItemsAsync(client, 3, 10);
@@ -86,7 +83,7 @@ public class DeliveryPlanSplitTripsTests
     [Test]
     public async Task SplitTrips_OriginalPlanUnchanged()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreatePlanWithItemsAsync(client, 3, 10);
 
         // Get original plan state
@@ -115,7 +112,7 @@ public class DeliveryPlanSplitTripsTests
     [Test]
     public async Task SplitTrips_MissingCargoCapacity_Returns400()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreatePlanWithItemsAsync(client, 2, 10);
 
         var response = await client.PostAsJsonAsync(
@@ -134,7 +131,7 @@ public class DeliveryPlanSplitTripsTests
     [Test]
     public async Task SplitTrips_NegativeCargoCapacity_Returns400()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreatePlanWithItemsAsync(client, 2, 10);
 
         var response = await client.PostAsJsonAsync(
@@ -151,7 +148,7 @@ public class DeliveryPlanSplitTripsTests
     [Test]
     public async Task SplitTrips_PlanNotFound_Returns404()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await client.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/delivery-plans/nonexistent-uuid/split-trips",
@@ -167,7 +164,7 @@ public class DeliveryPlanSplitTripsTests
     [Test]
     public async Task SplitTrips_LargeCapacity_CreatesSinglePlan()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // 3 items × 10 qty = 30 total volume
         var planUuid = await CreatePlanWithItemsAsync(client, 3, 10);
@@ -189,7 +186,7 @@ public class DeliveryPlanSplitTripsTests
     [Test]
     public async Task SplitTrips_NoItems_ReturnsEmptyList()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Create plan with no items
         var response = await client.PostAsJsonAsync(

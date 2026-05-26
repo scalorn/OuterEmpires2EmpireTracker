@@ -21,7 +21,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class CharacterEndpointAuthTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private HttpClient _charAClient = null!;
     private HttpClient _charBClient = null!;
@@ -34,9 +33,8 @@ public class CharacterEndpointAuthTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         // Create character A with its own token
         var responseA = _ownerClient
@@ -47,7 +45,7 @@ public class CharacterEndpointAuthTests
             .GetAwaiter().GetResult();
         var tokenA = jsonA.GetProperty("token").GetString()!;
         _charAUUID = jsonA.GetProperty("characterUUID").GetString()!;
-        _charAClient = _factory.CreateAuthenticatedClient(tokenA);
+        _charAClient = factory.CreateAuthenticatedClient(tokenA);
 
         // Create character B with its own token
         var responseB = _ownerClient
@@ -58,7 +56,7 @@ public class CharacterEndpointAuthTests
             .GetAwaiter().GetResult();
         var tokenB = jsonB.GetProperty("token").GetString()!;
         _charBUUID = jsonB.GetProperty("characterUUID").GetString()!;
-        _charBClient = _factory.CreateAuthenticatedClient(tokenB);
+        _charBClient = factory.CreateAuthenticatedClient(tokenB);
     }
 
     /// <summary>
@@ -70,7 +68,6 @@ public class CharacterEndpointAuthTests
         _charAClient.Dispose();
         _charBClient.Dispose();
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>

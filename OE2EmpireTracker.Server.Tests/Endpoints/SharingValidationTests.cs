@@ -28,7 +28,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class SharingValidationTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _characterUUID = null!;
 
@@ -38,9 +37,8 @@ public class SharingValidationTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         // Create a character to own the sharing rules
         var response = _ownerClient
@@ -59,7 +57,6 @@ public class SharingValidationTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -279,7 +276,7 @@ public class SharingValidationTests
             "Expected 400 for invalid rules");
 
         // Verify original rules are still intact (not overwritten)
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
         var persistedRules = await storage.GetSharingRulesForCharacterAsync(
             _characterUUID);
 

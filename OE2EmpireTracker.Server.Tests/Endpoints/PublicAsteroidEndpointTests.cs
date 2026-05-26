@@ -24,8 +24,7 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class PublicAsteroidEndpointTests
 {
-    private TestServerFactory _factory = null!;
-    private string _charUUID = null!;
+        private string _charUUID = null!;
 
     /// <summary>
     /// Sets up the test server and seeds an asteroid with reserves.
@@ -33,10 +32,7 @@ public class PublicAsteroidEndpointTests
     [OneTimeSetUp]
     public async Task Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         _charUUID = Guid.NewGuid().ToString();
         await storage.UpsertCharacterAsync(new ServerCharacter
@@ -80,7 +76,6 @@ public class PublicAsteroidEndpointTests
     [OneTimeTearDown]
     public void TearDown()
     {
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -91,7 +86,7 @@ public class PublicAsteroidEndpointTests
     [Test]
     public async Task GetPublicAsteroidDetail_ExistingUUID_Returns200WithCorrectShape()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
         var response = await client.GetAsync("/api/v1/public/asteroids/ast-test-001");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -136,7 +131,7 @@ public class PublicAsteroidEndpointTests
     [Test]
     public async Task GetPublicAsteroidDetail_NonExistentUUID_Returns404()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
         var response = await client.GetAsync("/api/v1/public/asteroids/non-existent-uuid");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
@@ -157,7 +152,7 @@ public class PublicAsteroidEndpointTests
     [Test]
     public async Task GetPublicAsteroidDetail_ResponseExcludesPrivateFields()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
         var response = await client.GetAsync("/api/v1/public/asteroids/ast-test-001");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -186,7 +181,7 @@ public class PublicAsteroidEndpointTests
     public async Task GetPublicAsteroidDetail_AccessibleWithoutAuthToken()
     {
         // CreateClient() does NOT add any auth headers
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
         var response = await client.GetAsync("/api/v1/public/asteroids/ast-test-001");
 
         // Should succeed without auth — not 401 or 403
@@ -202,7 +197,7 @@ public class PublicAsteroidEndpointTests
     [Test]
     public async Task GetPublicAsteroidDetail_CaseInsensitiveUUIDMatch()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
         var response = await client.GetAsync("/api/v1/public/asteroids/AST-TEST-001");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));

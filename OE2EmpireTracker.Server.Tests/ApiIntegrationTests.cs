@@ -109,25 +109,12 @@ public class TestServerFactory : WebApplicationFactory<Program>
 [TestFixture]
 public class AuthTests
 {
-    private TestServerFactory _factory = null!;
-
-    [OneTimeSetUp]
-    public void Setup()
-    {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-    }
-
-    [OneTimeTearDown]
-    public void TearDown()
-    {
-        _factory.Dispose();
-    }
+    private TestServerFactory Factory => SharedTestServer.Factory;
 
     [Test]
     public async Task Unauthenticated_Request_Returns_401()
     {
-        var client = _factory.CreateClient();
+        var client = Factory.CreateClient();
         var response = await client.GetAsync("/api/v1/factions");
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
     }
@@ -135,7 +122,7 @@ public class AuthTests
     [Test]
     public async Task Valid_Owner_Token_Returns_200()
     {
-        var client = _factory.CreateAuthenticatedClient();
+        var client = Factory.CreateAuthenticatedClient();
         var response = await client.GetAsync("/api/v1/factions");
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
     }
@@ -143,7 +130,7 @@ public class AuthTests
     [Test]
     public async Task Revoked_Token_Returns_401()
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = Factory.Services.GetRequiredService<IStorageBackend>();
         var plainToken = "revoke-test-token";
         var hash = TokenService.HashToken(plainToken);
         var token = new ApiToken
@@ -157,7 +144,7 @@ public class AuthTests
         };
         await storage.UpsertTokenAsync(token);
 
-        var client = _factory.CreateAuthenticatedClient(plainToken);
+        var client = Factory.CreateAuthenticatedClient(plainToken);
         var response = await client.GetAsync("/api/v1/factions");
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
     }
@@ -170,22 +157,18 @@ public class AuthTests
 [TestFixture]
 public class FactionCrudTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _client = null!;
 
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _client = _factory.CreateAuthenticatedClient();
+        _client = SharedTestServer.Factory.CreateAuthenticatedClient();
     }
 
     [OneTimeTearDown]
     public void TearDown()
     {
         _client.Dispose();
-        _factory.Dispose();
     }
 
     [Test]
@@ -282,22 +265,18 @@ public class FactionCrudTests
 [TestFixture]
 public class CharacterCrudTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _client = null!;
 
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _client = _factory.CreateAuthenticatedClient();
+        _client = SharedTestServer.Factory.CreateAuthenticatedClient();
     }
 
     [OneTimeTearDown]
     public void TearDown()
     {
         _client.Dispose();
-        _factory.Dispose();
     }
 
     [Test]
@@ -368,22 +347,20 @@ public class CharacterCrudTests
 [TestFixture]
 public class TokenManagementTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _client = null!;
+
+    private TestServerFactory Factory => SharedTestServer.Factory;
 
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _client = _factory.CreateAuthenticatedClient();
+        _client = Factory.CreateAuthenticatedClient();
     }
 
     [OneTimeTearDown]
     public void TearDown()
     {
         _client.Dispose();
-        _factory.Dispose();
     }
 
     [Test]
@@ -422,7 +399,7 @@ public class TokenManagementTests
         var charToken = createJson.GetProperty("token").GetString()!;
 
         // Use the character token
-        using var charClient = _factory.CreateAuthenticatedClient(charToken);
+        using var charClient = Factory.CreateAuthenticatedClient(charToken);
 
         // Should be able to read factions (Authenticated policy)
         var readResponse = await charClient.GetAsync("/api/v1/factions");

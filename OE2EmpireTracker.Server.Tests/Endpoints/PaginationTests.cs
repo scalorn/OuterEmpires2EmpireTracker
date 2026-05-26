@@ -29,8 +29,7 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class PaginationTests
 {
-    private TestServerFactory _factory = null!;
-    private string _characterUUID = null!;
+        private string _characterUUID = null!;
 
     /// <summary>
     /// Sets up the test server factory and seeds a character with Public sharing rules.
@@ -38,10 +37,7 @@ public class PaginationTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
         _characterUUID = Guid.NewGuid().ToString();
 
         // Create a character with a Public sharing rule for Blueprints
@@ -70,7 +66,6 @@ public class PaginationTests
     [OneTimeTearDown]
     public void TearDown()
     {
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -182,12 +177,12 @@ public class PaginationTests
 
     private async Task RunItemCountProperty(PaginationScenario scenario)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
         var blueprintUUIDs = await SeedBlueprints(storage, scenario.EntityCount);
 
         try
         {
-            using var client = _factory.CreateClient();
+            using var client = SharedTestServer.Factory.CreateClient();
             var response = await client.GetAsync(
                 $"/api/v1/public/blueprints?page={scenario.Page}&pageSize={scenario.PageSize}");
             response.EnsureSuccessStatusCode();
@@ -215,12 +210,12 @@ public class PaginationTests
 
     private async Task RunTotalCountProperty(PaginationScenario scenario)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
         var blueprintUUIDs = await SeedBlueprints(storage, scenario.EntityCount);
 
         try
         {
-            using var client = _factory.CreateClient();
+            using var client = SharedTestServer.Factory.CreateClient();
             var response = await client.GetAsync(
                 $"/api/v1/public/blueprints?page={scenario.Page}&pageSize={scenario.PageSize}");
             response.EnsureSuccessStatusCode();
@@ -242,12 +237,12 @@ public class PaginationTests
 
     private async Task RunPageClampProperty(PaginationScenario scenario)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
         var blueprintUUIDs = await SeedBlueprints(storage, scenario.EntityCount);
 
         try
         {
-            using var client = _factory.CreateClient();
+            using var client = SharedTestServer.Factory.CreateClient();
 
             // Request with page < 1
             var response = await client.GetAsync(
@@ -285,12 +280,12 @@ public class PaginationTests
 
     private async Task RunSliceCorrectnessProperty(PaginationScenario scenario)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
         var blueprintUUIDs = await SeedBlueprints(storage, scenario.EntityCount);
 
         try
         {
-            using var client = _factory.CreateClient();
+            using var client = SharedTestServer.Factory.CreateClient();
 
             // Get all items (page=1, pageSize=100 may not be enough for >100 items)
             // Fetch multiple pages to build the full ordered list

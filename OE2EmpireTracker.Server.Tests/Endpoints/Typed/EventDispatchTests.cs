@@ -24,7 +24,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints.Typed;
 [TestFixture]
 public class EventDispatchTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charToken = string.Empty;
     private string _charUUID = string.Empty;
@@ -35,9 +34,8 @@ public class EventDispatchTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         var createResponse = _ownerClient
             .PostAsJsonAsync("/api/v1/tokens", new { characterName = "EventTestChar" })
@@ -56,7 +54,6 @@ public class EventDispatchTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -68,7 +65,7 @@ public class EventDispatchTests
     [Test]
     public async Task Create_Returns201_EventDispatchedSuccessfully()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/asteroids",
@@ -88,7 +85,7 @@ public class EventDispatchTests
     [Test]
     public async Task Update_Returns200_EventDispatchedSuccessfully()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Create first
         var createResponse = await charClient.PostAsJsonAsync(
@@ -113,7 +110,7 @@ public class EventDispatchTests
     [Test]
     public async Task Delete_Returns204_EventDispatchedSuccessfully()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Create first
         var createResponse = await charClient.PostAsJsonAsync(
@@ -137,7 +134,7 @@ public class EventDispatchTests
     [Test]
     public async Task Create_ResponseContainsCorrectEntityType()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/asteroids",
@@ -158,7 +155,7 @@ public class EventDispatchTests
     [Test]
     public async Task Create_ResponseContainsEntityUUID()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/asteroids",
@@ -183,7 +180,7 @@ public class EventDispatchTests
     [Test]
     public async Task Create_EntityStoredUnderCorrectOwnerCharacter()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/asteroids",
@@ -208,7 +205,7 @@ public class EventDispatchTests
     [Test]
     public async Task Delete_EntityNoLongerAccessible_NoRollback()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Create
         var createResponse = await charClient.PostAsJsonAsync(

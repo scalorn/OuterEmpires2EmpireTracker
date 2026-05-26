@@ -23,7 +23,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints.Typed;
 [TestFixture]
 public class ColonyEndpointsDedupTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charToken = string.Empty;
     private string _charUUID = string.Empty;
@@ -34,9 +33,8 @@ public class ColonyEndpointsDedupTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         var createResponse = _ownerClient
             .PostAsJsonAsync("/api/v1/tokens", new { characterName = "ColonyDedupTestChar" })
@@ -55,7 +53,6 @@ public class ColonyEndpointsDedupTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -65,7 +62,7 @@ public class ColonyEndpointsDedupTests
     [Test]
     public async Task Create_NewColony_Returns201()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/colonies",
@@ -85,7 +82,7 @@ public class ColonyEndpointsDedupTests
     [Test]
     public async Task Create_DuplicatePlanetAndSystem_Returns200Merged()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // First create
         var firstResponse = await charClient.PostAsJsonAsync(
@@ -111,7 +108,7 @@ public class ColonyEndpointsDedupTests
     [Test]
     public async Task Create_DuplicateCaseInsensitive_Returns200Merged()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // First create with lowercase
         var firstResponse = await charClient.PostAsJsonAsync(
@@ -137,7 +134,7 @@ public class ColonyEndpointsDedupTests
     [Test]
     public async Task Create_SamePlanetDifferentSystem_Returns201()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // First create
         var firstResponse = await charClient.PostAsJsonAsync(

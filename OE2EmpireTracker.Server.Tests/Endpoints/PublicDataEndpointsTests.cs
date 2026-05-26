@@ -25,16 +25,14 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class PublicDataEndpointsTests
 {
-    private TestServerFactory _factory = null!;
-
+    
     /// <summary>
     /// Sets up the test server factory and seeds the owner token.
     /// </summary>
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
+        var factory = SharedTestServer.Factory;
     }
 
     /// <summary>
@@ -43,7 +41,6 @@ public class PublicDataEndpointsTests
     [OneTimeTearDown]
     public void TearDown()
     {
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -54,7 +51,7 @@ public class PublicDataEndpointsTests
     [Test]
     public async Task GetPublicBlueprints_IncludesGlobalBlueprints()
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         // Seed global blueprints (characterUUID="")
         var globalBp1 = new Blueprint { UUID = "global-bp-001", Name = "Global Laser Mk1" };
@@ -64,7 +61,7 @@ public class PublicDataEndpointsTests
 
         try
         {
-            using var client = _factory.CreateClient();
+            using var client = SharedTestServer.Factory.CreateClient();
             var response = await client.GetAsync("/api/v1/public/blueprints?pageSize=100");
             response.EnsureSuccessStatusCode();
 
@@ -103,7 +100,7 @@ public class PublicDataEndpointsTests
     [Test]
     public async Task GetPublicBlueprints_CombinesGlobalAndSharedBlueprints()
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         // Seed global blueprints
         var globalBp = new Blueprint { UUID = "combined-global-bp", Name = "Global Engine" };
@@ -134,7 +131,7 @@ public class PublicDataEndpointsTests
 
         try
         {
-            using var client = _factory.CreateClient();
+            using var client = SharedTestServer.Factory.CreateClient();
             var response = await client.GetAsync("/api/v1/public/blueprints?pageSize=100");
             response.EnsureSuccessStatusCode();
 
@@ -182,7 +179,7 @@ public class PublicDataEndpointsTests
     [Test]
     public async Task GetPublicGlobalData_NonPublicDataType_Returns404()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
 
         // Request a data type that doesn't exist in global storage
         var response = await client.GetAsync("/api/v1/public/global/PlayerProfiles");
@@ -207,7 +204,7 @@ public class PublicDataEndpointsTests
     [Test]
     public async Task GetPublicSystems_WithSystemsStored_ReturnsAllSystems()
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         var systems = new List<StarSystem>
         {
@@ -239,7 +236,7 @@ public class PublicDataEndpointsTests
 
         await storage.UpsertStarSystemsAsync(systems);
 
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
         var response = await client.GetAsync("/api/v1/public/systems");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -293,7 +290,7 @@ public class PublicDataEndpointsTests
     [Test]
     public async Task GetPublicColonySummaries_ReturnsOnlyNameSizePlanet()
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         // Ensure a system exists
         var systems = new List<StarSystem>
@@ -321,7 +318,7 @@ public class PublicDataEndpointsTests
 
         try
         {
-            using var client = _factory.CreateClient();
+            using var client = SharedTestServer.Factory.CreateClient();
             var response = await client.GetAsync("/api/v1/public/systems/700/colonies");
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -383,7 +380,7 @@ public class PublicDataEndpointsTests
     [Test]
     public async Task GetPublicPlanets_WithNoPlanets_ReturnsEmptyArray()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
         var response = await client.GetAsync("/api/v1/public/systems/9999/planets");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -401,7 +398,7 @@ public class PublicDataEndpointsTests
     [Test]
     public async Task GetPublicAsteroids_WithNoAsteroids_ReturnsEmptyArray()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
         var response = await client.GetAsync("/api/v1/public/systems/9999/asteroids");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));

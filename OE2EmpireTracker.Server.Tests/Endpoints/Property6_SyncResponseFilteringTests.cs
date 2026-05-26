@@ -22,8 +22,9 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class Property6_SyncResponseFilteringTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
+
+    private TestServerFactory Factory => SharedTestServer.Factory;
 
     /// <summary>
     /// Sets up the test server and seeds the owner token.
@@ -31,9 +32,7 @@ public class Property6_SyncResponseFilteringTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        _ownerClient = SharedTestServer.Factory.CreateAuthenticatedClient();
     }
 
     /// <summary>
@@ -43,7 +42,6 @@ public class Property6_SyncResponseFilteringTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -90,7 +88,7 @@ public class Property6_SyncResponseFilteringTests
             }
 
             // Call sync as the caller
-            using var callerClient = _factory.CreateAuthenticatedClient(callerToken);
+            using var callerClient = Factory.CreateAuthenticatedClient(callerToken);
             var syncResp = await callerClient.GetAsync("/api/v1/sync");
             Assert.That(syncResp.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
@@ -181,7 +179,7 @@ public class Property6_SyncResponseFilteringTests
                 if (isShared)
                 {
                     // Create a sharing rule from the other character targeting the caller
-                    using var otherClient = _factory.CreateAuthenticatedClient(otherToken);
+                    using var otherClient = Factory.CreateAuthenticatedClient(otherToken);
                     await otherClient.PutAsJsonAsync(
                         $"/api/v1/characters/{otherUUID}/sharing",
                         new[]
@@ -199,7 +197,7 @@ public class Property6_SyncResponseFilteringTests
             }
 
             // Call sync as the caller
-            using var callerClient = _factory.CreateAuthenticatedClient(callerToken);
+            using var callerClient = Factory.CreateAuthenticatedClient(callerToken);
             var syncResp = await callerClient.GetAsync("/api/v1/sync");
             Assert.That(syncResp.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
@@ -306,7 +304,7 @@ public class Property6_SyncResponseFilteringTests
             bool otherShares = rng.Next(2) == 1;
             if (otherShares)
             {
-                using var otherClient = _factory.CreateAuthenticatedClient(otherToken);
+                using var otherClient = Factory.CreateAuthenticatedClient(otherToken);
                 await otherClient.PutAsJsonAsync(
                     $"/api/v1/characters/{otherUUID}/sharing",
                     new[]
@@ -322,7 +320,7 @@ public class Property6_SyncResponseFilteringTests
             }
 
             // Call sync as the caller
-            using var callerClient = _factory.CreateAuthenticatedClient(callerToken);
+            using var callerClient = Factory.CreateAuthenticatedClient(callerToken);
             var syncResp = await callerClient.GetAsync("/api/v1/sync");
             Assert.That(syncResp.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 

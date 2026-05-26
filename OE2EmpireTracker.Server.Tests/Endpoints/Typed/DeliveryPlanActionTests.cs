@@ -20,7 +20,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints.Typed;
 [TestFixture]
 public class DeliveryPlanActionTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charToken = string.Empty;
     private string _charUUID = string.Empty;
@@ -31,9 +30,8 @@ public class DeliveryPlanActionTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         var createResponse = _ownerClient
             .PostAsJsonAsync("/api/v1/tokens", new { characterName = "DeliveryActionChar" })
@@ -52,7 +50,6 @@ public class DeliveryPlanActionTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -62,7 +59,7 @@ public class DeliveryPlanActionTests
     [Test]
     public async Task AddDropOff_ReturnsUpdatedPlan()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreateDeliveryPlanAsync(client);
 
         var response = await client.PostAsJsonAsync(
@@ -86,7 +83,7 @@ public class DeliveryPlanActionTests
     [Test]
     public async Task AddPickUp_ReturnsUpdatedPlan()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreateDeliveryPlanAsync(client);
 
         var response = await client.PostAsJsonAsync(
@@ -110,7 +107,7 @@ public class DeliveryPlanActionTests
     [Test]
     public async Task RemoveDropOff_RemovesItemsByIndex()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreateDeliveryPlanAsync(client);
 
         // Add two drop-off items first
@@ -153,7 +150,7 @@ public class DeliveryPlanActionTests
     [Test]
     public async Task RemovePickUp_RemovesItemsByIndex()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreateDeliveryPlanAsync(client);
 
         // Add two pick-up items
@@ -196,7 +193,7 @@ public class DeliveryPlanActionTests
     [Test]
     public async Task MarkDelivered_MarksItemDelivered()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreateDeliveryPlanAsync(client);
 
         // Add a drop-off item at sequence 1
@@ -228,7 +225,7 @@ public class DeliveryPlanActionTests
     [Test]
     public async Task MarkDelivered_PickUpListType_MarksPickUpItem()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreateDeliveryPlanAsync(client);
 
         // Add a pick-up item at sequence 2
@@ -260,7 +257,7 @@ public class DeliveryPlanActionTests
     [Test]
     public async Task MarkStopComplete_MarksStopCompleted()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreateDeliveryPlanAsync(client);
 
         // Add a drop-off item to create a stop at sequence 1
@@ -290,7 +287,7 @@ public class DeliveryPlanActionTests
     [Test]
     public async Task MarkComplete_MarksPlanCompleted()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreateDeliveryPlanAsync(client);
 
         var response = await client.PutAsJsonAsync(
@@ -309,7 +306,7 @@ public class DeliveryPlanActionTests
     [Test]
     public async Task AssignShip_SetsShipUUID()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreateDeliveryPlanAsync(client);
 
         var response = await client.PutAsJsonAsync(
@@ -328,7 +325,7 @@ public class DeliveryPlanActionTests
     [Test]
     public async Task AddDropOff_PlanNotFound_Returns404()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await client.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/delivery-plans/nonexistent-uuid/drop-off",
@@ -348,7 +345,7 @@ public class DeliveryPlanActionTests
     [Test]
     public async Task MarkDelivered_InvalidStopSequence_Returns404()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var planUuid = await CreateDeliveryPlanAsync(client);
 
         // Add a stop at sequence 1

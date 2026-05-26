@@ -20,10 +20,11 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class PreservedEndpointTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charUUID = string.Empty;
     private string _charToken = string.Empty;
+
+    private TestServerFactory Factory => SharedTestServer.Factory;
 
     /// <summary>
     /// Sets up the test server with an owner token and a character for testing.
@@ -31,9 +32,8 @@ public class PreservedEndpointTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         // Create a character with its own token
         var createResponse = _ownerClient
@@ -53,7 +53,6 @@ public class PreservedEndpointTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
 
@@ -180,7 +179,7 @@ public class PreservedEndpointTests
     [Test]
     public async Task PutGlobalData_NonOwner_Returns403()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = Factory.CreateAuthenticatedClient(_charToken);
         var testData = JsonSerializer.Serialize(new { data = "should-fail" });
         var content = new StringContent(testData, Encoding.UTF8, "application/json");
 

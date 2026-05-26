@@ -24,7 +24,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints.Typed;
 [TestFixture]
 public class MutationLoggingTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charToken = string.Empty;
     private string _charUUID = string.Empty;
@@ -35,9 +34,8 @@ public class MutationLoggingTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         var createResponse = _ownerClient
             .PostAsJsonAsync("/api/v1/tokens", new { characterName = "LogTestChar" })
@@ -56,7 +54,6 @@ public class MutationLoggingTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -67,7 +64,7 @@ public class MutationLoggingTests
     [Test]
     public async Task Post_Create_LogsSuccessfully_Returns201()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/asteroids",
@@ -91,7 +88,7 @@ public class MutationLoggingTests
     [Test]
     public async Task Put_Update_LogsSuccessfully_Returns200()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Create first
         var createResponse = await charClient.PostAsJsonAsync(
@@ -123,7 +120,7 @@ public class MutationLoggingTests
     [Test]
     public async Task Delete_LogsSuccessfully_Returns204()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Create first
         var createResponse = await charClient.PostAsJsonAsync(
@@ -153,7 +150,7 @@ public class MutationLoggingTests
     [Test]
     public void LoggerFactory_IsRegistered_CanCreateLoggers()
     {
-        var loggerFactory = _factory.Services.GetRequiredService<ILoggerFactory>();
+        var loggerFactory = SharedTestServer.Factory.Services.GetRequiredService<ILoggerFactory>();
         Assert.That(loggerFactory, Is.Not.Null);
 
         var logger = loggerFactory.CreateLogger("TypedEndpoint.Asteroid");
@@ -168,7 +165,7 @@ public class MutationLoggingTests
     [Test]
     public async Task MultipleMutations_AllLogSuccessfully()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Create
         var create1 = await charClient.PostAsJsonAsync(

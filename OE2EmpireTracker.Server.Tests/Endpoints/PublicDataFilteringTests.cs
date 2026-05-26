@@ -29,7 +29,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class PublicDataFilteringTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
 
     /// <summary>
@@ -38,9 +37,7 @@ public class PublicDataFilteringTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        _ownerClient = SharedTestServer.Factory.CreateAuthenticatedClient();
     }
 
     /// <summary>
@@ -50,7 +47,6 @@ public class PublicDataFilteringTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -325,7 +321,7 @@ public class PublicDataFilteringTests
         string dataType,
         string endpoint)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         // Seed characters, rules, and entities
         foreach (var character in scenario.Characters)
@@ -334,7 +330,7 @@ public class PublicDataFilteringTests
         }
 
         // Request with large pageSize to get all results
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
         var response = await client.GetAsync($"{endpoint}?pageSize=100");
         response.EnsureSuccessStatusCode();
 
@@ -411,14 +407,14 @@ public class PublicDataFilteringTests
 
     private async Task RunExclusionScenario(FilteringScenario scenario)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         foreach (var character in scenario.Characters)
         {
             await SeedCharacterData(storage, character);
         }
 
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
         var dataTypes = new[] { "Blueprints", "Surveys", "Colonies" };
         var endpoints = new[]
         {
@@ -470,7 +466,7 @@ public class PublicDataFilteringTests
 
     private async Task RunNullDataTypeScenario(NullDataTypeScenario scenario)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         var character = new TestCharacter
         {
@@ -490,7 +486,7 @@ public class PublicDataFilteringTests
 
         await SeedCharacterData(storage, character);
 
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
 
         // All three endpoints should include this character's data
         var bpResponse = await client.GetAsync(
@@ -538,7 +534,7 @@ public class PublicDataFilteringTests
     private async Task RunSpecificDataTypeScenario(
         SpecificDataTypeScenario scenario)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         var character = new TestCharacter
         {
@@ -562,7 +558,7 @@ public class PublicDataFilteringTests
 
         await SeedCharacterData(storage, character);
 
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
 
         var endpointMap = new Dictionary<string, (string Url, List<string> UUIDs)>
         {

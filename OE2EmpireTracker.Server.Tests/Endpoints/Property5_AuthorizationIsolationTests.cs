@@ -23,10 +23,11 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class Property5_AuthorizationIsolationTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private List<(string Token, string UUID)> _characters = null!;
     private List<string> _factionUUIDs = null!;
+
+    private TestServerFactory Factory => SharedTestServer.Factory;
 
     /// <summary>
     /// Sets up the test server and creates multiple isolated characters and factions.
@@ -34,9 +35,8 @@ public class Property5_AuthorizationIsolationTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
         _characters = new List<(string Token, string UUID)>();
         _factionUUIDs = new List<string>();
 
@@ -75,7 +75,6 @@ public class Property5_AuthorizationIsolationTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -105,7 +104,7 @@ public class Property5_AuthorizationIsolationTests
 
             var (_, targetUUID) = _characters[targetIdx];
 
-            using var client = _factory.CreateAuthenticatedClient(callerToken);
+            using var client = Factory.CreateAuthenticatedClient(callerToken);
 
             // Test all hardened character endpoints
             var endpoints = new[]
@@ -166,7 +165,7 @@ public class Property5_AuthorizationIsolationTests
             int factionIdx = rng.Next(_factionUUIDs.Count);
             var factionUUID = _factionUUIDs[factionIdx];
 
-            using var client = _factory.CreateAuthenticatedClient(callerToken);
+            using var client = Factory.CreateAuthenticatedClient(callerToken);
 
             // Test all hardened faction sub-resource endpoints
             var endpoints = new[]
@@ -221,7 +220,7 @@ public class Property5_AuthorizationIsolationTests
             int callerIdx = rng.Next(_characters.Count);
             var (callerToken, callerUUID) = _characters[callerIdx];
 
-            using var client = _factory.CreateAuthenticatedClient(callerToken);
+            using var client = Factory.CreateAuthenticatedClient(callerToken);
 
             // Randomly choose between character and faction endpoints
             bool testCharacter = rng.Next(2) == 0;

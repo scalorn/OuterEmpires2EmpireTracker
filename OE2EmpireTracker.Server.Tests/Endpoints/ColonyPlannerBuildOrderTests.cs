@@ -28,16 +28,14 @@ public class ColonyPlannerBuildOrderTests
 {
     private const string BuildOrderUrl = "/api/v1/colony-planner/build-order";
 
-    private TestServerFactory _factory = null!;
-
+    
     /// <summary>
     /// Sets up the test server factory.
     /// </summary>
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
+        var factory = SharedTestServer.Factory;
     }
 
     /// <summary>
@@ -46,7 +44,6 @@ public class ColonyPlannerBuildOrderTests
     [OneTimeTearDown]
     public void TearDown()
     {
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -56,7 +53,7 @@ public class ColonyPlannerBuildOrderTests
     [Test]
     public async Task ValidRequest_WithMultipleStructures_Returns200WithOptimizedOrder()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
 
         var requestBody = new
         {
@@ -122,7 +119,7 @@ public class ColonyPlannerBuildOrderTests
     [Test]
     public async Task ValidRequest_ResponseContainsStepsAndTotalTimeEstimate()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
 
         var requestBody = new
         {
@@ -185,7 +182,7 @@ public class ColonyPlannerBuildOrderTests
     [Test]
     public async Task MissingBody_Returns400WithError()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
 
         var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
         var response = await client.PostAsync(BuildOrderUrl, content);
@@ -210,7 +207,7 @@ public class ColonyPlannerBuildOrderTests
     [Test]
     public async Task InvalidJson_Returns400WithError()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
 
         var content = new StringContent(
             "{ this is not valid json }",
@@ -238,7 +235,7 @@ public class ColonyPlannerBuildOrderTests
     [Test]
     public async Task EmptyStructures_Returns400WithError()
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
 
         var requestBody = new { structures = Array.Empty<object>() };
         var response = await client.PostAsJsonAsync(BuildOrderUrl, requestBody);
@@ -266,7 +263,7 @@ public class ColonyPlannerBuildOrderTests
     public async Task NoAuthToken_DoesNotReturn401Or403_PublicEndpoint()
     {
         // Use the shared factory but create a plain client (no auth headers)
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
 
         var requestBody = new
         {
@@ -329,7 +326,7 @@ public class ColonyPlannerBuildOrderTests
 
     private async Task RunInvalidRequestCheck(InvalidRequestBody scenario)
     {
-        using var client = _factory.CreateClient();
+        using var client = SharedTestServer.Factory.CreateClient();
 
         var content = new StringContent(
             scenario.Body,

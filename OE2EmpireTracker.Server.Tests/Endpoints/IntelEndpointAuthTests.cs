@@ -21,7 +21,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class IntelEndpointAuthTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private HttpClient _charAClient = null!;
     private HttpClient _charBClient = null!;
@@ -38,9 +37,8 @@ public class IntelEndpointAuthTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         // Create character A with its own token
         var responseA = _ownerClient
@@ -51,7 +49,7 @@ public class IntelEndpointAuthTests
             .GetAwaiter().GetResult();
         var tokenA = jsonA.GetProperty("token").GetString()!;
         _charAUUID = jsonA.GetProperty("characterUUID").GetString()!;
-        _charAClient = _factory.CreateAuthenticatedClient(tokenA);
+        _charAClient = factory.CreateAuthenticatedClient(tokenA);
 
         // Create character B with its own token
         var responseB = _ownerClient
@@ -62,7 +60,7 @@ public class IntelEndpointAuthTests
             .GetAwaiter().GetResult();
         var tokenB = jsonB.GetProperty("token").GetString()!;
         _charBUUID = jsonB.GetProperty("characterUUID").GetString()!;
-        _charBClient = _factory.CreateAuthenticatedClient(tokenB);
+        _charBClient = factory.CreateAuthenticatedClient(tokenB);
 
         // Create a faction for classify tests
         var factionResponse = _ownerClient
@@ -82,7 +80,7 @@ public class IntelEndpointAuthTests
             .GetAwaiter().GetResult();
         var leaderToken = leaderJson.GetProperty("token").GetString()!;
         _leaderCharUUID = leaderJson.GetProperty("characterUUID").GetString()!;
-        _leaderClient = _factory.CreateAuthenticatedClient(leaderToken);
+        _leaderClient = factory.CreateAuthenticatedClient(leaderToken);
 
         // Add the leader character as a faction leader
         _ownerClient
@@ -102,7 +100,6 @@ public class IntelEndpointAuthTests
         _charBClient.Dispose();
         _leaderClient.Dispose();
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>

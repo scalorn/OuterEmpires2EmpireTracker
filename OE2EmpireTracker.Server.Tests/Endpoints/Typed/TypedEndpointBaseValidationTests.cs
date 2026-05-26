@@ -27,7 +27,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints.Typed;
 [TestFixture]
 public class TypedEndpointBaseValidationTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charToken = string.Empty;
     private string _charUUID = string.Empty;
@@ -38,9 +37,8 @@ public class TypedEndpointBaseValidationTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         // Create a character token
         var createResponse = _ownerClient
@@ -60,7 +58,6 @@ public class TypedEndpointBaseValidationTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -70,7 +67,7 @@ public class TypedEndpointBaseValidationTests
     [Test]
     public async Task Create_EmptyBody_Returns400()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
 
         var response = await charClient.PostAsync(
@@ -90,7 +87,7 @@ public class TypedEndpointBaseValidationTests
     [Test]
     public async Task Create_InvalidJson_Returns400()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var content = new StringContent(
             "{ this is not valid json }", Encoding.UTF8, "application/json");
 
@@ -111,7 +108,7 @@ public class TypedEndpointBaseValidationTests
     [Test]
     public async Task Create_MissingRequiredField_Returns400()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Send a body without the required "name" field
         var response = await charClient.PostAsJsonAsync(
@@ -132,7 +129,7 @@ public class TypedEndpointBaseValidationTests
     [Test]
     public async Task Create_WhitespaceRequiredField_Returns400()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/asteroids",
@@ -187,7 +184,7 @@ public class TypedEndpointBaseValidationTests
     [Test]
     public async Task Create_WrongContentType_Returns415()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var content = new StringContent(
             "<xml>not json</xml>", Encoding.UTF8, "text/xml");
 
@@ -208,7 +205,7 @@ public class TypedEndpointBaseValidationTests
     [Test]
     public async Task Update_WrongContentType_Returns415()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var content = new StringContent(
             "plain text body", Encoding.UTF8, "text/plain");
 
@@ -225,7 +222,7 @@ public class TypedEndpointBaseValidationTests
     [Test]
     public async Task Update_InvalidJson_Returns400()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // First create an asteroid to have a valid entity UUID
         var createResponse = await charClient.PostAsJsonAsync(
@@ -250,7 +247,7 @@ public class TypedEndpointBaseValidationTests
     [Test]
     public async Task Create_ExtraFields_IgnoredSuccessfully()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/asteroids",

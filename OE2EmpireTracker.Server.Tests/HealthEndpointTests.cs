@@ -1,6 +1,5 @@
 using System.Net;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
 
 namespace OE2EmpireTracker.Server.Tests;
@@ -8,21 +7,18 @@ namespace OE2EmpireTracker.Server.Tests;
 [TestFixture]
 public class HealthEndpointTests
 {
-    private WebApplicationFactory<Program> _factory = null!;
     private HttpClient _client = null!;
 
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new WebApplicationFactory<Program>();
-        _client = _factory.CreateClient();
+        _client = SharedTestServer.Factory.CreateClient();
     }
 
     [OneTimeTearDown]
     public void TearDown()
     {
         _client.Dispose();
-        _factory.Dispose();
     }
 
     [Test]

@@ -30,7 +30,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class SharingNormalizationTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _characterUUID = null!;
 
@@ -40,9 +39,8 @@ public class SharingNormalizationTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         // Create a character to own the sharing rules
         var response = _ownerClient
@@ -61,7 +59,6 @@ public class SharingNormalizationTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -258,7 +255,7 @@ public class SharingNormalizationTests
         response.EnsureSuccessStatusCode();
 
         // Verify persisted rules have the authenticated character's UUID
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
         var persisted = await storage.GetSharingRulesForCharacterAsync(_characterUUID);
 
         foreach (var rule in persisted)
@@ -281,7 +278,7 @@ public class SharingNormalizationTests
         response.EnsureSuccessStatusCode();
 
         // Verify persisted rules all have non-empty Ids
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
         var persisted = await storage.GetSharingRulesForCharacterAsync(_characterUUID);
 
         Assert.That(
@@ -314,7 +311,7 @@ public class SharingNormalizationTests
         response.EnsureSuccessStatusCode();
 
         // Verify persisted rules preserve the submitted Ids
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
         var persisted = await storage.GetSharingRulesForCharacterAsync(_characterUUID);
 
         var submittedIds = scenario.Rules

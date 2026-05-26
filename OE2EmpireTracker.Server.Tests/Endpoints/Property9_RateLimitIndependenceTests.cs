@@ -21,9 +21,10 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class Property9_RateLimitIndependenceTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private List<(string Token, string TokenId, string CharUUID)> _characters = null!;
+
+    private TestServerFactory Factory => SharedTestServer.Factory;
 
     /// <summary>
     /// Sets up the test server and creates multiple character tokens for rate limit testing.
@@ -31,9 +32,8 @@ public class Property9_RateLimitIndependenceTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
         _characters = new List<(string Token, string TokenId, string CharUUID)>();
 
         // Create 4 characters for pairwise rate limit independence testing
@@ -59,7 +59,6 @@ public class Property9_RateLimitIndependenceTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -107,7 +106,7 @@ public class Property9_RateLimitIndependenceTests
                 $"Iteration {iteration}: Failed to set rate limit for Token B");
 
             // Exhaust Token A's rate limit by making requests until 429
-            using var clientA = _factory.CreateAuthenticatedClient(tokenA);
+            using var clientA = Factory.CreateAuthenticatedClient(tokenA);
             bool tokenAHit429 = false;
 
             for (int req = 0; req < 10; req++)
@@ -127,7 +126,7 @@ public class Property9_RateLimitIndependenceTests
                 $"(rate limit may not have been applied)");
 
             // Now verify Token B can still make requests successfully
-            using var clientB = _factory.CreateAuthenticatedClient(tokenB);
+            using var clientB = Factory.CreateAuthenticatedClient(tokenB);
             var responseB = await clientB.GetAsync("/api/v1/factions");
 
             Assert.That(
@@ -161,7 +160,7 @@ public class Property9_RateLimitIndependenceTests
         for (int charIdx = 0; charIdx < _characters.Count; charIdx++)
         {
             var (token, _, _) = _characters[charIdx];
-            using var client = _factory.CreateAuthenticatedClient(token);
+            using var client = Factory.CreateAuthenticatedClient(token);
 
             for (int req = 0; req < 5; req++)
             {
@@ -209,7 +208,7 @@ public class Property9_RateLimitIndependenceTests
             new { requestsPerMinute = 300 });
 
         // Exhaust Token A's rate limit
-        using var clientA = _factory.CreateAuthenticatedClient(tokenA);
+        using var clientA = Factory.CreateAuthenticatedClient(tokenA);
         bool tokenAHit429 = false;
 
         for (int req = 0; req < 10; req++)
@@ -228,7 +227,7 @@ public class Property9_RateLimitIndependenceTests
             "Token A never hit 429");
 
         // Token B calls the bulk import endpoint with an empty (but valid) payload
-        using var clientB = _factory.CreateAuthenticatedClient(tokenB);
+        using var clientB = Factory.CreateAuthenticatedClient(tokenB);
         var importBody = new StringContent(
             "{}",
             System.Text.Encoding.UTF8,

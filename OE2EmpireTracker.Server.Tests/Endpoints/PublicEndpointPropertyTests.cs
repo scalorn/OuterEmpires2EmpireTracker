@@ -52,16 +52,14 @@ public class PublicEndpointPropertyTests
         "lastImportDateTime",
     };
 
-    private TestServerFactory _factory = null!;
-
+    
     /// <summary>
     /// Sets up the test server factory and seeds the owner token.
     /// </summary>
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
+        var factory = SharedTestServer.Factory;
     }
 
     /// <summary>
@@ -70,7 +68,6 @@ public class PublicEndpointPropertyTests
     [OneTimeTearDown]
     public void TearDown()
     {
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -221,7 +218,7 @@ public class PublicEndpointPropertyTests
 
     private async Task RunColonyVisibilityCheck(ColonyScenario scenario)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         // Seed system
         await storage.UpsertStarSystemsAsync(new List<StarSystem>
@@ -261,7 +258,7 @@ public class PublicEndpointPropertyTests
 
         try
         {
-            using var client = _factory.CreateClient();
+            using var client = SharedTestServer.Factory.CreateClient();
             var response = await client.GetAsync(
                 $"/api/v1/public/systems/{scenario.SystemId}/colonies");
             response.EnsureSuccessStatusCode();
@@ -282,7 +279,7 @@ public class PublicEndpointPropertyTests
 
     private async Task RunBlueprintVisibilityCheck(BlueprintScenario scenario)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         // Seed global blueprints
         foreach (var bp in scenario.Blueprints)
@@ -296,7 +293,7 @@ public class PublicEndpointPropertyTests
 
         try
         {
-            using var client = _factory.CreateClient();
+            using var client = SharedTestServer.Factory.CreateClient();
             var response = await client.GetAsync(
                 "/api/v1/public/blueprints?pageSize=100");
             response.EnsureSuccessStatusCode();
@@ -320,7 +317,7 @@ public class PublicEndpointPropertyTests
 
     private async Task RunSystemVisibilityCheck(SystemScenario scenario)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         var systems = scenario.Systems.Select(s => new StarSystem
         {
@@ -334,7 +331,7 @@ public class PublicEndpointPropertyTests
 
         try
         {
-            using var client = _factory.CreateClient();
+            using var client = SharedTestServer.Factory.CreateClient();
             var response = await client.GetAsync("/api/v1/public/systems");
             response.EnsureSuccessStatusCode();
 
@@ -350,7 +347,7 @@ public class PublicEndpointPropertyTests
 
     private async Task RunAsteroidVisibilityCheck(AsteroidScenario scenario)
     {
-        var storage = _factory.Services.GetRequiredService<IStorageBackend>();
+        var storage = SharedTestServer.Factory.Services.GetRequiredService<IStorageBackend>();
 
         // Seed system
         await storage.UpsertStarSystemsAsync(new List<StarSystem>
@@ -378,7 +375,7 @@ public class PublicEndpointPropertyTests
 
         try
         {
-            using var client = _factory.CreateClient();
+            using var client = SharedTestServer.Factory.CreateClient();
             var response = await client.GetAsync(
                 $"/api/v1/public/systems/{scenario.SystemId}/asteroids");
             response.EnsureSuccessStatusCode();

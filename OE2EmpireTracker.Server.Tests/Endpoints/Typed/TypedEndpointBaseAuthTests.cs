@@ -26,7 +26,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints.Typed;
 [TestFixture]
 public class TypedEndpointBaseAuthTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charToken = string.Empty;
     private string _charUUID = string.Empty;
@@ -38,9 +37,8 @@ public class TypedEndpointBaseAuthTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         // Create a character token
         var createResponse = _ownerClient
@@ -69,7 +67,6 @@ public class TypedEndpointBaseAuthTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -79,7 +76,7 @@ public class TypedEndpointBaseAuthTests
     [Test]
     public async Task GetAll_MismatchedCharacterUUID_Returns403()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.GetAsync(
             $"/api/v1/characters/{_otherCharUUID}/asteroids");
@@ -94,7 +91,7 @@ public class TypedEndpointBaseAuthTests
     [Test]
     public async Task GetOne_MismatchedCharacterUUID_Returns403()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.GetAsync(
             $"/api/v1/characters/{_otherCharUUID}/asteroids/some-entity-uuid");
@@ -109,7 +106,7 @@ public class TypedEndpointBaseAuthTests
     [Test]
     public async Task Create_MismatchedCharacterUUID_Returns403()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_otherCharUUID}/asteroids",
@@ -125,7 +122,7 @@ public class TypedEndpointBaseAuthTests
     [Test]
     public async Task GetAll_MatchingCharacterUUID_PassesThrough()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.GetAsync(
             $"/api/v1/characters/{_charUUID}/asteroids");
@@ -166,7 +163,7 @@ public class TypedEndpointBaseAuthTests
     [Test]
     public async Task Forbidden_Response_ContainsNoEntityData()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.GetAsync(
             $"/api/v1/characters/{_otherCharUUID}/asteroids");
@@ -194,7 +191,7 @@ public class TypedEndpointBaseAuthTests
     [Test]
     public async Task Delete_MismatchedCharacterUUID_Returns403()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.DeleteAsync(
             $"/api/v1/characters/{_otherCharUUID}/asteroids/some-uuid");

@@ -21,7 +21,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class BulkImportValidRequestTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charToken = string.Empty;
     private string _charUUID = string.Empty;
@@ -32,9 +31,8 @@ public class BulkImportValidRequestTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         var createResponse = _ownerClient
             .PostAsJsonAsync("/api/v1/tokens", new { characterName = "BulkImportTestChar" })
@@ -53,7 +51,6 @@ public class BulkImportValidRequestTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -63,7 +60,7 @@ public class BulkImportValidRequestTests
     [Test]
     public async Task HandleImport_ValidPlayerRoot_Returns200WithCounts()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var payload = new
         {
@@ -120,7 +117,7 @@ public class BulkImportValidRequestTests
     [Test]
     public async Task HandleImport_EmptyCollections_Returns200WithZeroCounts()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var payload = new
         {
@@ -150,7 +147,7 @@ public class BulkImportValidRequestTests
     [Test]
     public async Task HandleImport_UnrecognizedCollectionKey_Ignored()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var payload = new
         {

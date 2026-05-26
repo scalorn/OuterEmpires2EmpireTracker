@@ -20,7 +20,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints.Typed;
 [TestFixture]
 public class MarketEndpointTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charToken = string.Empty;
     private string _charUUID = string.Empty;
@@ -31,9 +30,8 @@ public class MarketEndpointTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         var createResponse = _ownerClient
             .PostAsJsonAsync("/api/v1/tokens", new { characterName = "MarketTestChar" })
@@ -52,7 +50,6 @@ public class MarketEndpointTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -62,7 +59,7 @@ public class MarketEndpointTests
     [Test]
     public async Task RecordSale_ValidRequest_Returns201WithTransaction()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var listingUuid = await CreateMarketListingAsync(client);
 
         var response = await client.PostAsJsonAsync(
@@ -85,7 +82,7 @@ public class MarketEndpointTests
     [Test]
     public async Task RecordSale_ZeroQuantity_Returns422()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var listingUuid = await CreateMarketListingAsync(client);
 
         var response = await client.PostAsJsonAsync(
@@ -102,7 +99,7 @@ public class MarketEndpointTests
     [Test]
     public async Task RecordSale_ZeroPrice_Returns422()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var listingUuid = await CreateMarketListingAsync(client);
 
         var response = await client.PostAsJsonAsync(
@@ -119,7 +116,7 @@ public class MarketEndpointTests
     [Test]
     public async Task RecordSale_ListingNotFound_Returns404()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await client.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/market-listings/nonexistent-uuid/record-sale",
@@ -135,7 +132,7 @@ public class MarketEndpointTests
     [Test]
     public async Task RecordPurchase_ValidRequest_Returns201()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await client.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/market-transactions/record-purchase",
@@ -164,7 +161,7 @@ public class MarketEndpointTests
     [Test]
     public async Task RecordPurchase_MissingItemName_Returns400()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await client.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/market-transactions/record-purchase",
@@ -180,7 +177,7 @@ public class MarketEndpointTests
     [Test]
     public async Task RecordPurchase_ZeroQuantity_Returns400()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await client.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/market-transactions/record-purchase",
@@ -196,7 +193,7 @@ public class MarketEndpointTests
     [Test]
     public async Task ProfitLoss_WithTransactions_ReturnsComputedSummary()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Create a listing and record a sale
         var listingUuid = await CreateMarketListingAsync(client);
@@ -227,7 +224,7 @@ public class MarketEndpointTests
     [Test]
     public async Task ProfitLoss_InvalidStartDate_Returns400()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await client.GetAsync(
             $"/api/v1/characters/{_charUUID}/market-transactions/profit-loss?startDate=not-a-date");
@@ -244,7 +241,7 @@ public class MarketEndpointTests
     [Test]
     public async Task ProfitLoss_InvalidEndDate_Returns400()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await client.GetAsync(
             $"/api/v1/characters/{_charUUID}/market-transactions/profit-loss?endDate=invalid");

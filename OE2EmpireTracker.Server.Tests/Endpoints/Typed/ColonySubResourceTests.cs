@@ -23,7 +23,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints.Typed;
 [TestFixture]
 public class ColonySubResourceTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charToken = string.Empty;
     private string _charUUID = string.Empty;
@@ -35,9 +34,8 @@ public class ColonySubResourceTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         var createResponse = _ownerClient
             .PostAsJsonAsync("/api/v1/tokens", new { characterName = "ColonySubResChar" })
@@ -49,7 +47,7 @@ public class ColonySubResourceTests
         _charUUID = createJson.GetProperty("characterUUID").GetString()!;
 
         // Create a colony to use for sub-resource tests
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var colonyResponse = charClient
             .PostAsJsonAsync(
                 $"/api/v1/characters/{_charUUID}/colonies",
@@ -68,7 +66,6 @@ public class ColonySubResourceTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     // ---- Structure sub-resource tests ----
@@ -80,7 +77,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task AddStructure_ValidRequest_Returns200()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/colonies/{_colonyUuid}/structures",
@@ -99,7 +96,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task AddStructure_MissingFlatpackUUID_Returns400()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/colonies/{_colonyUuid}/structures",
@@ -115,7 +112,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task AddStructure_MissingColony_Returns404()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/colonies/nonexistent-uuid/structures",
@@ -131,7 +128,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task RemoveStructure_ValidRequest_Returns204()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // First add a structure to get its UUID
         var addResponse = await charClient.PostAsJsonAsync(
@@ -156,7 +153,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task RemoveStructure_MissingColony_Returns404()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.DeleteAsync(
             $"/api/v1/characters/{_charUUID}/colonies/nonexistent-uuid/structures/some-uuid");
@@ -173,7 +170,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task AddItem_ValidRequest_Returns200()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/colonies/{_colonyUuid}/items",
@@ -189,7 +186,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task AddItem_MissingColony_Returns404()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/colonies/nonexistent-uuid/items",
@@ -205,7 +202,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task RemoveItem_ValidRequest_Returns204()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // First add an item with a known UUID
         var response = await charClient.PostAsJsonAsync(
@@ -227,7 +224,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task UpdateItem_ValidQuantity_Returns200()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // First add an item
         var addResponse = await charClient.PostAsJsonAsync(
@@ -250,7 +247,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task UpdateItem_NegativeQuantity_Returns400()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // First add an item
         await charClient.PostAsJsonAsync(
@@ -274,7 +271,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task AddCommodityRequest_ValidRequest_Returns200()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/colonies/{_colonyUuid}/commodity-requests",
@@ -290,7 +287,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task AddCommodityRequest_MissingCommodityName_Returns400()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/colonies/{_colonyUuid}/commodity-requests",
@@ -306,7 +303,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task AddCommodityRequest_MissingColony_Returns404()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/colonies/nonexistent-uuid/commodity-requests",
@@ -322,7 +319,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task RemoveCommodityRequest_ValidRequest_Returns204()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // First add a commodity request
         await charClient.PostAsJsonAsync(
@@ -343,7 +340,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task UpdateCommodityRequest_ValidRequest_Returns200()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // First add a commodity request
         await charClient.PostAsJsonAsync(
@@ -365,7 +362,7 @@ public class ColonySubResourceTests
     [Test]
     public async Task RemoveCommodityRequest_MissingColony_Returns404()
     {
-        using var charClient = _factory.CreateAuthenticatedClient(_charToken);
+        using var charClient = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await charClient.DeleteAsync(
             $"/api/v1/characters/{_charUUID}/colonies/nonexistent-uuid/commodity-requests/Steel");

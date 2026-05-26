@@ -20,7 +20,6 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints.Typed;
 [TestFixture]
 public class BlueprintImportMoveTests
 {
-    private TestServerFactory _factory = null!;
     private HttpClient _ownerClient = null!;
     private string _charToken = string.Empty;
     private string _charUUID = string.Empty;
@@ -31,9 +30,8 @@ public class BlueprintImportMoveTests
     [OneTimeSetUp]
     public void Setup()
     {
-        _factory = new TestServerFactory();
-        _factory.SeedOwnerToken();
-        _ownerClient = _factory.CreateAuthenticatedClient();
+        var factory = SharedTestServer.Factory;
+        _ownerClient = factory.CreateAuthenticatedClient();
 
         var createResponse = _ownerClient
             .PostAsJsonAsync("/api/v1/tokens", new { characterName = "BlueprintTestChar" })
@@ -52,7 +50,6 @@ public class BlueprintImportMoveTests
     public void TearDown()
     {
         _ownerClient.Dispose();
-        _factory.Dispose();
     }
 
     /// <summary>
@@ -62,7 +59,7 @@ public class BlueprintImportMoveTests
     [Test]
     public async Task Import_NewBlueprint_Returns201()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var newUuid = Guid.NewGuid().ToString();
 
         var response = await client.PostAsJsonAsync(
@@ -87,7 +84,7 @@ public class BlueprintImportMoveTests
     [Test]
     public async Task Import_ExistingBlueprint_Returns200()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
         var bpUuid = Guid.NewGuid().ToString();
 
         // First import creates
@@ -123,7 +120,7 @@ public class BlueprintImportMoveTests
     [Test]
     public async Task MoveToGlobal_ExistingBlueprint_Returns200()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Create a blueprint first
         var createResponse = await client.PostAsJsonAsync(
@@ -149,7 +146,7 @@ public class BlueprintImportMoveTests
     [Test]
     public async Task MoveToGlobal_NotFound_Returns404()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await client.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/blueprints/nonexistent-uuid/move-to-global",
@@ -165,7 +162,7 @@ public class BlueprintImportMoveTests
     [Test]
     public async Task MoveToPlayer_ExistingBlueprint_Returns200()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         // Create a blueprint and move to global first
         var createResponse = await client.PostAsJsonAsync(
@@ -195,7 +192,7 @@ public class BlueprintImportMoveTests
     [Test]
     public async Task MoveToPlayer_NotFound_Returns404()
     {
-        using var client = _factory.CreateAuthenticatedClient(_charToken);
+        using var client = SharedTestServer.Factory.CreateAuthenticatedClient(_charToken);
 
         var response = await client.PostAsJsonAsync(
             $"/api/v1/characters/{_charUUID}/blueprints/nonexistent-uuid/move-to-player",
