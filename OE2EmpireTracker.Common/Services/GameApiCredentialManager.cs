@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security;
-using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 using NLog;
@@ -17,10 +16,15 @@ namespace OE2EmpireTracker.Services
     /// <summary>
     /// Manages per-character game API key storage using DPAPI encryption.
     /// Keys are stored in a dedicated secrets file separate from Remote Faction Service credentials.
+    /// Protection functions are injected to avoid assembly version conflicts between
+    /// .NET Standard 2.0 (Common) and .NET Framework 4.8.1 (main app).
     /// </summary>
     public class GameApiCredentialManager
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        private static Func<string, string> _protectFunc;
+        private static Func<string, SecureString> _unprotectFunc;
 
         private readonly string _secretsFilePath;
 
@@ -56,6 +60,21 @@ namespace OE2EmpireTracker.Services
         internal string SecretsFilePath => _secretsFilePath;
 
         /// <summary>
+        /// Registers the DPAPI protect/unprotect functions. Must be called once at startup
+        /// before any credential operations. Typically wired to CredentialStore.Protect/Unprotect.
+        /// </summary>
+        /// <param name="protectFunc">Function that encrypts a plain string and returns base64 blob.</param>
+        /// <param name="unprotectFunc">Function that decrypts a base64 blob and returns SecureString.</param>
+        public static void RegisterProtectionFunctions(
+            Func<string, string> protectFunc,
+            Func<string, SecureString> unprotectFunc)
+        {
+            _protectFunc = protectFunc ?? throw new ArgumentNullException(nameof(protectFunc));
+            _unprotectFunc = unprotectFunc ?? throw new ArgumentNullException(nameof(unprotectFunc));
+            Log.Info("GameApiCredentialManager: protection functions registered");
+        }
+
+        /// <summary>
         /// Encrypts and stores a game API key for the specified character.
         /// </summary>
         /// <param name="playerUUID">The character's unique identifier.</param>
@@ -72,7 +91,8 @@ namespace OE2EmpireTracker.Services
                 throw new ArgumentNullException(nameof(plainTextKey));
             }
 
-            string protectedBase64 = Protect(plainTextKey);
+            EnsureProtectionRegistered();
+            string protectedBase64 = _protectFunc(plainTextKey);
             _protectedKeys[playerUUID] = protectedBase64;
             Log.Info("Stored API key for character {0}", playerUUID);
             Save();
@@ -95,8 +115,9 @@ namespace OE2EmpireTracker.Services
                 return null;
             }
 
+            EnsureProtectionRegistered();
             string protectedBase64 = _protectedKeys[playerUUID];
-            return Unprotect(protectedBase64);
+            return _unprotectFunc(protectedBase64);
         }
 
         /// <summary>
@@ -142,44 +163,16 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Encrypts a plain-text string using DPAPI (CurrentUser scope) and returns a base64-encoded blob.
-        /// Mirrors the existing CredentialStore.Protect pattern.
+        /// Throws if protection functions have not been registered.
         /// </summary>
-        private static string Protect(string plainText)
+        private static void EnsureProtectionRegistered()
         {
-            byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
-            byte[] protectedBytes = ProtectedData.Protect(plainBytes, null, DataProtectionScope.CurrentUser);
-            Array.Clear(plainBytes, 0, plainBytes.Length);
-            Log.Debug("Protected game API key ({0} bytes → {1} bytes)", plainText.Length, protectedBytes.Length);
-            return Convert.ToBase64String(protectedBytes);
-        }
-
-        /// <summary>
-        /// Decrypts a DPAPI-protected base64 blob and returns the result as a <see cref="SecureString"/>.
-        /// Mirrors the existing CredentialStore.Unprotect pattern.
-        /// </summary>
-        private static SecureString Unprotect(string protectedBase64)
-        {
-            byte[] protectedBytes = Convert.FromBase64String(protectedBase64);
-            byte[] plainBytes = ProtectedData.Unprotect(protectedBytes, null, DataProtectionScope.CurrentUser);
-
-            var secure = new SecureString();
-            try
+            if (_protectFunc == null || _unprotectFunc == null)
             {
-                string plainText = Encoding.UTF8.GetString(plainBytes);
-                foreach (char c in plainText)
-                {
-                    secure.AppendChar(c);
-                }
-
-                secure.MakeReadOnly();
+                throw new InvalidOperationException(
+                    "GameApiCredentialManager protection functions not registered. " +
+                    "Call RegisterProtectionFunctions() at startup.");
             }
-            finally
-            {
-                Array.Clear(plainBytes, 0, plainBytes.Length);
-            }
-
-            return secure;
         }
 
         /// <summary>

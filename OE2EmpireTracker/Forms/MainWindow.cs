@@ -95,6 +95,11 @@ namespace OE2EmpireTracker
             // Initialize remote server infrastructure (no-op if LocalOnly)
             Client.ServerContext.Initialize();
 
+            // Register DPAPI protection functions for game API credential manager
+            GameApiCredentialManager.RegisterProtectionFunctions(
+                Client.CredentialStore.Protect,
+                Client.CredentialStore.Unprotect);
+
             // Initialize game API infrastructure (no-op if disabled or no keys configured)
             Client.GameApiContext.Initialize();
             SubscribeToGameApiStatus();

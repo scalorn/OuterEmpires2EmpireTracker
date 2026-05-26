@@ -24,6 +24,15 @@ namespace OE2EmpireTracker.Tests.Services
     {
         private string _tempDir;
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            // Register DPAPI protection functions for the credential manager
+            GameApiCredentialManager.RegisterProtectionFunctions(
+                OE2EmpireTracker.Client.CredentialStore.Protect,
+                OE2EmpireTracker.Client.CredentialStore.Unprotect);
+        }
+
         [SetUp]
         public void SetUp()
         {
