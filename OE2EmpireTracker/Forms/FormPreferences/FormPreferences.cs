@@ -22,7 +22,7 @@ namespace OE2EmpireTracker.Forms
     /// </summary>
     public partial class FormPreferences : Form
     {
-        private const string GameApiKeyPlaceholder = "\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF";
+        private const string GameApiSecretPlaceholder = "\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF\u25CF";
 
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -108,20 +108,22 @@ namespace OE2EmpireTracker.Forms
             var sw = Stopwatch.StartNew();
 
             txtGameApiUrl.Text = settings.ServerUrl ?? string.Empty;
+            txtGameApiAppId.Text = settings.AppId ?? string.Empty;
+            txtGameApiClientId.Text = settings.ClientId ?? string.Empty;
             nudPollingInterval.Value = Math.Max(1, Math.Min(60, settings.PollingIntervalMinutes));
             chkGameApiEnabled.Checked = settings.Enabled;
             _originalPollingInterval = settings.PollingIntervalMinutes;
 
-            // Show placeholder dots if a key is stored for the current player
+            // Show placeholder dots if a secret is stored for the current player
             string playerUUID = PlayerContext.GetInstance().CurrentPlayerUUID;
             var credManager = new GameApiCredentialManager();
             if (!string.IsNullOrEmpty(playerUUID) && credManager.HasKey(playerUUID))
             {
-                txtGameApiKey.Text = GameApiKeyPlaceholder;
+                txtGameApiSecret.Text = GameApiSecretPlaceholder;
             }
             else
             {
-                txtGameApiKey.Text = string.Empty;
+                txtGameApiSecret.Text = string.Empty;
             }
 
             sw.Stop();
@@ -420,21 +422,23 @@ namespace OE2EmpireTracker.Forms
         }
 
         /// <summary>
-        /// Saves Game API settings to preferences, encrypts the API key if changed,
+        /// Saves Game API settings to preferences, encrypts the secret if changed,
         /// and updates the sync scheduler polling interval immediately.
         /// </summary>
         private void SaveGameApiSettings(PreferencesStore store)
         {
             var gameApiSettings = store.Preferences.GameApiConnection;
             gameApiSettings.ServerUrl = txtGameApiUrl.Text.Trim();
+            gameApiSettings.AppId = txtGameApiAppId.Text.Trim();
+            gameApiSettings.ClientId = txtGameApiClientId.Text.Trim();
             gameApiSettings.Enabled = chkGameApiEnabled.Checked;
 
             int newPollingInterval = (int)nudPollingInterval.Value;
             gameApiSettings.PollingIntervalMinutes = newPollingInterval;
 
-            // Encrypt and store API key if the user changed it from the placeholder
-            string keyText = txtGameApiKey.Text;
-            if (keyText != GameApiKeyPlaceholder && !string.IsNullOrEmpty(keyText))
+            // Encrypt and store secret if the user changed it from the placeholder
+            string secretText = txtGameApiSecret.Text;
+            if (secretText != GameApiSecretPlaceholder && !string.IsNullOrEmpty(secretText))
             {
                 string playerUUID = PlayerContext.GetInstance().CurrentPlayerUUID;
                 if (!string.IsNullOrEmpty(playerUUID))
@@ -442,14 +446,14 @@ namespace OE2EmpireTracker.Forms
                     try
                     {
                         var credManager = new GameApiCredentialManager();
-                        credManager.StoreKey(playerUUID, keyText);
-                        Log.Info("Game API key stored for character {0}", playerUUID);
+                        credManager.StoreKey(playerUUID, secretText);
+                        Log.Info("Game API secret stored for character {0}", playerUUID);
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex, "Failed to store Game API key for character {0}", playerUUID);
+                        Log.Error(ex, "Failed to store Game API secret for character {0}", playerUUID);
                         MessageBox.Show(
-                            "Failed to save API key: " + ex.Message,
+                            "Failed to save secret: " + ex.Message,
                             "Error",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
@@ -469,7 +473,7 @@ namespace OE2EmpireTracker.Forms
         }
 
         /// <summary>
-        /// Tests the Game API connection by creating a temporary client and calling CheckHealthAsync.
+        /// Tests the Game API connection by performing a token exchange with the entered credentials.
         /// </summary>
         private async void BtnTestGameApiConnection_Click(object sender, EventArgs e)
         {
@@ -481,20 +485,37 @@ namespace OE2EmpireTracker.Forms
                 return;
             }
 
-            // Resolve the API key to use for the test
-            string apiKey = ResolveGameApiKey();
-            if (string.IsNullOrEmpty(apiKey))
+            string appId = txtGameApiAppId.Text.Trim();
+            if (string.IsNullOrEmpty(appId))
             {
                 lblTestResult.ForeColor = Color.Red;
-                lblTestResult.Text = "Please enter an API key.";
+                lblTestResult.Text = "Please enter an App ID.";
+                return;
+            }
+
+            string clientId = txtGameApiClientId.Text.Trim();
+            if (string.IsNullOrEmpty(clientId))
+            {
+                lblTestResult.ForeColor = Color.Red;
+                lblTestResult.Text = "Please enter a Client ID.";
+                return;
+            }
+
+            // Resolve the secret to use for the test
+            string secret = ResolveGameApiSecret();
+            if (string.IsNullOrEmpty(secret))
+            {
+                lblTestResult.ForeColor = Color.Red;
+                lblTestResult.Text = "Please enter a secret.";
                 return;
             }
 
             Log.Info(
-                "Game API test connection: URL='{0}', key length={1}, current player UUID='{2}'",
+                "Game API test connection: URL='{0}', appId='{1}', clientId='{2}', secret length={3}",
                 url,
-                apiKey.Length,
-                PlayerContext.GetInstance().CurrentPlayerUUID ?? "(null)");
+                appId,
+                clientId,
+                secret.Length);
 
             btnTestGameApiConnection.Enabled = false;
             lblTestResult.ForeColor = SystemColors.ControlText;
@@ -504,12 +525,12 @@ namespace OE2EmpireTracker.Forms
             {
                 using (var client = new GameApiClient(url))
                 {
-                    var result = await client.CheckHealthAsync(apiKey).ConfigureAwait(true);
+                    var result = await client.TestConnectionAsync(appId, clientId, secret).ConfigureAwait(true);
                     Log.Info("Game API test connection result: Success={0}, Message='{1}'", result.Success, result.Message);
                     if (result.Success)
                     {
                         lblTestResult.ForeColor = Color.Green;
-                        lblTestResult.Text = "Connection successful.";
+                        lblTestResult.Text = result.Message;
                     }
                     else
                     {
@@ -531,18 +552,18 @@ namespace OE2EmpireTracker.Forms
         }
 
         /// <summary>
-        /// Resolves the API key to use for testing. If the user entered a new key, uses that.
-        /// If the placeholder is shown, retrieves the stored key for the current player.
+        /// Resolves the secret to use for testing. If the user entered a new secret, uses that.
+        /// If the placeholder is shown, retrieves the stored secret for the current player.
         /// </summary>
-        private string ResolveGameApiKey()
+        private string ResolveGameApiSecret()
         {
-            string keyText = txtGameApiKey.Text;
-            if (keyText != GameApiKeyPlaceholder && !string.IsNullOrEmpty(keyText))
+            string secretText = txtGameApiSecret.Text;
+            if (secretText != GameApiSecretPlaceholder && !string.IsNullOrEmpty(secretText))
             {
-                return keyText;
+                return secretText;
             }
 
-            // Retrieve stored key for current player
+            // Retrieve stored secret for current player
             string playerUUID = PlayerContext.GetInstance().CurrentPlayerUUID;
             if (string.IsNullOrEmpty(playerUUID))
             {
@@ -550,8 +571,8 @@ namespace OE2EmpireTracker.Forms
             }
 
             var credManager = new GameApiCredentialManager();
-            SecureString secureKey = credManager.GetKey(playerUUID);
-            if (secureKey == null)
+            SecureString secureSecret = credManager.GetKey(playerUUID);
+            if (secureSecret == null)
             {
                 return null;
             }
@@ -559,7 +580,7 @@ namespace OE2EmpireTracker.Forms
             IntPtr ptr = IntPtr.Zero;
             try
             {
-                ptr = Marshal.SecureStringToGlobalAllocUnicode(secureKey);
+                ptr = Marshal.SecureStringToGlobalAllocUnicode(secureSecret);
                 return Marshal.PtrToStringUni(ptr);
             }
             finally
@@ -569,7 +590,7 @@ namespace OE2EmpireTracker.Forms
                     Marshal.ZeroFreeGlobalAllocUnicode(ptr);
                 }
 
-                secureKey.Dispose();
+                secureSecret.Dispose();
             }
         }
 

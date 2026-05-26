@@ -23,6 +23,15 @@ namespace OE2EmpireTracker.Tests.Services
     {
         private readonly List<string> _tempFiles = new List<string>();
 
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            // Register DPAPI protection functions for the credential manager
+            GameApiCredentialManager.RegisterProtectionFunctions(
+                OE2EmpireTracker.Client.CredentialStore.Protect,
+                OE2EmpireTracker.Client.CredentialStore.Unprotect);
+        }
+
         [TearDown]
         public void TearDown()
         {
@@ -77,9 +86,9 @@ namespace OE2EmpireTracker.Tests.Services
                     var credManager = CreateCredentialManagerWithKeys(param.K);
                     var client = new GameApiClient("http://localhost:99999");
                     var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
-                    var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID);
+                    var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
-                    var scheduler = new GameApiSyncScheduler(client, credManager, monitor);
+                    var scheduler = new GameApiSyncScheduler(client, credManager, monitor, "test-app-id", "test-client-id");
                     scheduler.CurrentRoundRobinIndex = 0;
 
                     // Track how many times each character index is visited
@@ -135,9 +144,9 @@ namespace OE2EmpireTracker.Tests.Services
                     var credManager = CreateCredentialManagerWithKeys(param.K);
                     var client = new GameApiClient("http://localhost:99999");
                     var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
-                    var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID);
+                    var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
-                    var scheduler = new GameApiSyncScheduler(client, credManager, monitor);
+                    var scheduler = new GameApiSyncScheduler(client, credManager, monitor, "test-app-id", "test-client-id");
                     scheduler.CurrentRoundRobinIndex = param.StartIndex;
 
                     int expectedAfter = (param.StartIndex + 1) % param.K;
@@ -169,9 +178,9 @@ namespace OE2EmpireTracker.Tests.Services
             var credManager = CreateCredentialManagerWithKeys(3);
             var client = new GameApiClient("http://localhost:99999");
             var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
-            var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID);
+            var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
-            var scheduler = new GameApiSyncScheduler(client, credManager, monitor);
+            var scheduler = new GameApiSyncScheduler(client, credManager, monitor, "test-app-id", "test-client-id");
 
             // SyncNowAsync calls SyncCharacterAsync for every configured character.
             // Even though the HTTP calls fail (no real server), the method completes
@@ -193,9 +202,9 @@ namespace OE2EmpireTracker.Tests.Services
             var credManager = CreateCredentialManagerWithKeys(3);
             var client = new GameApiClient("http://localhost:99999");
             var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
-            var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID);
+            var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
-            var scheduler = new GameApiSyncScheduler(client, credManager, monitor);
+            var scheduler = new GameApiSyncScheduler(client, credManager, monitor, "test-app-id", "test-client-id");
             scheduler.CurrentRoundRobinIndex = 2;
 
             scheduler.PerformRoundRobinSyncAsync().GetAwaiter().GetResult();
@@ -218,9 +227,9 @@ namespace OE2EmpireTracker.Tests.Services
             var credManager = CreateCredentialManagerWithKeys(4);
             var client = new GameApiClient("http://localhost:99999");
             var firstUUID = credManager.GetConfiguredPlayerUUIDs()[0];
-            var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID);
+            var monitor = new GameApiConnectionMonitor(client, credManager, firstUUID, "test-app-id", "test-client-id");
 
-            var scheduler = new GameApiSyncScheduler(client, credManager, monitor);
+            var scheduler = new GameApiSyncScheduler(client, credManager, monitor, "test-app-id", "test-client-id");
             scheduler.CurrentRoundRobinIndex = 1;
 
             // This will fail (no real server) but index should still advance

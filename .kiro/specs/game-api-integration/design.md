@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the technical design for integrating OE2 Empire Tracker with the Outer Empires 2 game API. The design introduces a parallel HTTP client infrastructure (separate from the existing RemoteFactionClient) that authenticates via per-character API keys, enforces rate limits, monitors connectivity, and periodically synchronizes Player Profile data from the game server.
+This document describes the technical design for integrating OE2 Empire Tracker with the Outer Empires 2 game API. The design introduces a parallel HTTP client infrastructure (separate from the existing RemoteFactionClient) that authenticates via OAuth2 client_credentials flow (appId + clientId + per-character secret → JWT), enforces rate limits, monitors connectivity, and periodically synchronizes Player Profile data from the game server.
 
 The architecture follows the existing patterns: singleton contexts, service-layer mutations, DPAPI credential storage, Polly resilience policies, and PreferencesStore-based settings persistence.
 
@@ -23,7 +23,7 @@ The architecture follows the existing patterns: singleton contexts, service-laye
         │                      │                      │
 ┌───────▼───────┐  ┌──────────▼──────────┐  ┌───────▼───────────┐
 │ GameApiClient │  │ GameApiSyncScheduler │  │ ConnectionMonitor │
-│ (HTTP + Polly)│  │ (Timer + round-robin)│  │ (Health checks)   │
+│ (HTTP + Polly)│  │ (Timer + round-robin)│  │ (Token exchange)  │
 └───────┬───────┘  └──────────┬──────────┘  └───────────────────┘
         │                      │
         │              ┌───────▼───────┐
@@ -40,8 +40,8 @@ The architecture follows the existing patterns: singleton contexts, service-laye
 **Startup Sequence:**
 1. `Program.cs` calls `GameApiContext.Initialize()` after `ServerContext.Initialize()`
 2. GameApiContext reads settings from `PreferencesStore.Preferences.GameApiConnection`
-3. If enabled with a server URL, creates credential manager, client, monitor, and scheduler
-4. ConnectionMonitor performs initial health check within 10 seconds
+3. If enabled with a server URL, AppId, and ClientId, creates credential manager, client, monitor, and scheduler
+4. ConnectionMonitor performs initial token exchange within 5 seconds
 5. SyncScheduler begins polling at the configured interval
 
 ## Components and Interfaces
@@ -84,7 +84,7 @@ public class GameApiCredentialManager
 **File:** `OE2EmpireTracker.Common/Client/GameApiClient.cs`
 **Satisfies:** Req 2, Req 3
 
-A dedicated HTTP client for the game API, independent of RemoteFactionClient. Uses Polly for resilience.
+A dedicated HTTP client for the game API, independent of RemoteFactionClient. Uses Polly for resilience and OAuth2 client_credentials flow for authentication.
 
 ```csharp
 public class GameApiClient : IDisposable
@@ -92,14 +92,18 @@ public class GameApiClient : IDisposable
     private readonly HttpClient _httpClient;
     private readonly AsyncRetryPolicy<HttpResponseMessage> _retryPolicy;
     private readonly AsyncCircuitBreakerPolicy<HttpResponseMessage> _circuitBreakerPolicy;
+    private readonly Dictionary<string, CachedToken> _tokenCache;
     private SemaphoreSlim _rateLimiter;
     private int _rateLimitRequestsPerMinute;
     private DateTime _rateLimitPauseUntil;
 
     public GameApiClient(string serverUrl);
     public bool IsCircuitOpen { get; }
-    public async Task<(bool Success, string Message)> CheckHealthAsync(string playerUUID);
-    public async Task<(bool Success, string Json)> GetPlayerProfileAsync(string playerUUID);
+    public async Task<(bool Success, string Message)> TestConnectionAsync(string appId, string clientId, string secret);
+    public async Task<(bool Success, GameApiTokenResponse Token, string ErrorMessage)> ExchangeTokenAsync(string appId, string clientId, string secret);
+    public async Task<(bool Success, string Json)> GetCharacterAsync(string appId, string accessToken);
+    public async Task<(bool Success, string Json)> GetCharacterSkillsAsync(string appId, string accessToken);
+    public void InvalidateToken(string clientId, string secret);
     public void Dispose();
 }
 ```
@@ -114,9 +118,13 @@ public class GameApiClient : IDisposable
 - If no `Retry-After`: pause for 60 seconds.
 - Implemented via `_rateLimitPauseUntil` DateTime check in `AcquireRateLimitTokenAsync`.
 
-**Authentication:**
-- Each request sets `X-API-Key` header using `CredentialStore.SecureStringToString(key)` immediately before sending.
-- The GameApiClient receives the SecureString from GameApiCredentialManager per-request (not stored long-term).
+**Authentication (OAuth2 client_credentials flow):**
+- Token exchange: `POST /v1/auth/token` with JSON body `{ appId, clientId, secret, grantType: "client_credentials" }`.
+- Response wrapped in `GameApiServiceResponse<GameApiTokenResponse>` envelope with `accessToken`, `tokenType`, `expiresIn`, `characterId`, `scopes`, `subscription`.
+- Tokens cached per-character (keyed by clientId + secret hash) with 60-second expiry buffer.
+- Authenticated data requests use two headers: `Authorization: Bearer <accessToken>` and `X-App-Id: <appId>`.
+- Token exchange does NOT go through retry/circuit-breaker pipeline (anonymous endpoint, immediate feedback).
+- No /health endpoint exists; token exchange serves as the connectivity test.
 
 
 ### 3. GameApiConnectionMonitor
@@ -124,7 +132,7 @@ public class GameApiClient : IDisposable
 **File:** `OE2EmpireTracker.Common/Services/GameApiConnectionMonitor.cs`
 **Satisfies:** Req 4
 
-Monitors game API reachability via periodic health checks and manages connection state transitions.
+Monitors game API reachability via periodic token exchange attempts and manages connection state transitions.
 
 ```csharp
 public class GameApiConnectionMonitor : IDisposable
@@ -164,7 +172,7 @@ DisconnectedInvalidKey ──[new key provided]──► Connected (via restart)
 
 **Backoff:** Starts at 1000ms, doubles each failure, caps at 60000ms. Resets on successful health check.
 
-**Startup:** Within 10 seconds of `Start()`, performs initial health check. Transitions to Connected or Disconnected based on result.
+**Startup:** Within 10 seconds of `Start()`, performs initial token exchange. Transitions to Connected or Disconnected based on result.
 
 **Event safety:** State transitions proceed even if event handler throws (catch around event raise).
 
@@ -231,12 +239,12 @@ public class GameApiContext : IDisposable
 
 **Initialization Flow:**
 1. Read `GameApiConnection` settings from `PreferencesStore.GetInstance().Preferences`
-2. If `Enabled == false` or `ServerUrl` is empty → log and return (no context created)
+2. If `Enabled == false` or `ServerUrl` is empty or `AppId` is empty or `ClientId` is empty → log and return (no context created)
 3. Create `GameApiCredentialManager` (loads secrets file)
-4. If no characters have configured keys → log and return
+4. If no characters have configured secrets → log and return
 5. Create `GameApiClient(serverUrl)`
-6. Create `GameApiConnectionMonitor(client)` → `Start(pollingIntervalMinutes)`
-7. Create `GameApiSyncScheduler(client, credentialManager, connectionMonitor)` → `Start(pollingIntervalMinutes)`
+6. Create `GameApiConnectionMonitor(client, credentialManager, firstPlayerUUID, appId, clientId)` → `Start(pollingIntervalMinutes)`
+7. Create `GameApiSyncScheduler(client, credentialManager, connectionMonitor, appId, clientId)` → `Start(pollingIntervalMinutes)`
 8. Store as singleton `_instance`
 
 ### 6. Preferences UI — Game API Tab
@@ -248,20 +256,22 @@ Adds a "Game API" tab to the existing Preferences form:
 
 | Control | Type | Binding |
 |---------|------|---------|
-| txtGameApiUrl | TextBox | GameApiConnection.ServerUrl |
-| txtGameApiKey | TextBox (PasswordChar='●') | GameApiCredentialManager (encrypt on save) |
+| txtGameApiUrl | ValidatedTextBox | GameApiConnection.ServerUrl |
+| txtGameApiAppId | ValidatedTextBox | GameApiConnection.AppId |
+| txtGameApiClientId | ValidatedTextBox | GameApiConnection.ClientId |
+| txtGameApiSecret | ValidatedTextBox (PasswordChar='●') | GameApiCredentialManager (encrypt on save) |
 | nudPollingInterval | NumericUpDown (min:1, max:60, default:5) | GameApiConnection.PollingIntervalMinutes |
 | chkGameApiEnabled | CheckBox | GameApiConnection.Enabled |
-| btnTestConnection | Button | Calls GameApiClient.CheckHealthAsync() |
+| btnTestGameApiConnection | Button | Calls GameApiClient.TestConnectionAsync(appId, clientId, secret) |
 | lblTestResult | Label | Displays test result message |
 
 **Save behavior:**
-1. Persist `ServerUrl`, `PollingIntervalMinutes`, `Enabled` to `UIPreferences.GameApiConnection`
-2. If API key changed: call `GameApiCredentialManager.StoreKey(currentPlayerUUID, plainKey)`
+1. Persist `ServerUrl`, `AppId`, `ClientId`, `PollingIntervalMinutes`, `Enabled` to `UIPreferences.GameApiConnection`
+2. If secret changed: call `GameApiCredentialManager.StoreKey(currentPlayerUUID, plainSecret)`
 3. If polling interval changed: call `GameApiContext.Instance?.SyncScheduler.UpdatePollingInterval(newValue)`
 4. Call `PreferencesStore.GetInstance().Save()`
 
-**API key display:** Always masked (PasswordChar='●'). On load, if key exists, show placeholder dots. Only store if content changes from placeholder.
+**Secret display:** Always masked (PasswordChar='●'). On load, if secret exists for current player, show placeholder dots. Only store if content changes from placeholder.
 
 ### 7. Status Bar Integration
 
@@ -295,6 +305,8 @@ Adds a `ToolStripStatusLabel` to the existing status bar.
 public class GameApiConnectionSettings
 {
     public string ServerUrl { get; set; } = string.Empty;
+    public string AppId { get; set; } = string.Empty;
+    public string ClientId { get; set; } = string.Empty;
     public int PollingIntervalMinutes { get; set; } = 5;
     public bool Enabled { get; set; } = false;
 }
@@ -445,26 +457,35 @@ sequenceDiagram
     alt Connected
         Sync->>Sync: Get next character UUID (round-robin)
         Sync->>Cred: GetKey(playerUUID)
-        Sync->>Client: GetPlayerProfileAsync(playerUUID)
+        Sync->>Client: ExchangeTokenAsync(appId, clientId, secret)
         Client->>Client: AcquireRateLimitToken()
-        Client->>Client: Send GET /api/v1/profile (X-API-Key)
-        alt Success (200)
-            Client-->>Sync: (true, json)
-            Sync->>Sync: Deserialize GameApiProfileResponse
-            Sync->>PC: Get PlayerProfile by UUID
-            Sync->>Sync: MergeProfileData(local, remote)
-            Sync->>PC: WriteContext() via service
-            Sync->>Sync: Update LastSyncUtc
-            Sync-->>Timer: Raise SyncStatusChanged(success)
-        else HTTP 401
-            Client-->>Sync: (false, "Unauthorized")
+        Client->>Client: POST /v1/auth/token (client_credentials)
+        alt Token Success
+            Client-->>Sync: (true, tokenResponse)
+            Sync->>Client: GetCharacterAsync(appId, accessToken)
+            Client->>Client: Send GET /v1/character (Bearer + X-App-Id)
+            alt Success (200)
+                Client-->>Sync: (true, json)
+                Sync->>Sync: Deserialize GameApiProfileResponse
+                Sync->>PC: Get PlayerProfile by UUID
+                Sync->>Sync: MergeProfileData(local, remote)
+                Sync->>PC: WriteContext() via service
+                Sync->>Sync: Update LastSyncUtc
+                Sync-->>Timer: Raise SyncStatusChanged(success)
+            else HTTP 401
+                Client-->>Sync: (false, "401")
+                Sync->>Client: InvalidateToken(clientId, secret)
+                Sync->>Mon: TransitionTo(DisconnectedInvalidKey)
+            else HTTP 429
+                Client->>Client: HandleRateLimitResponse()
+                Sync-->>Timer: Retry next cycle
+            else Network/Server error
+                Client-->>Sync: (false, errorMessage)
+                Sync-->>Timer: Skip, continue next cycle
+            end
+        else Token Failure (401)
+            Client-->>Sync: (false, null, "invalid credentials")
             Sync->>Mon: TransitionTo(DisconnectedInvalidKey)
-        else HTTP 429
-            Client->>Client: HandleRateLimitResponse()
-            Sync-->>Timer: Retry next cycle
-        else Network/Server error
-            Client-->>Sync: (false, errorMessage)
-            Sync-->>Timer: Skip, continue next cycle
         end
     else Disconnected
         Sync->>Sync: Suspend (no-op)

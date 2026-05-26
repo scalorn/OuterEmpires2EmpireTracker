@@ -13,6 +13,7 @@ namespace OE2EmpireTracker.Client
     /// Top-level singleton coordinating all game API components.
     /// Owns the credential manager, HTTP client, connection monitor, and sync scheduler.
     /// Follows the startup sequence: read settings, check enabled, create components, start monitor and scheduler.
+    /// Uses OAuth2 client_credentials flow (appId + clientId + secret) for authentication.
     /// </summary>
     public class GameApiContext : IDisposable
     {
@@ -50,12 +51,12 @@ namespace OE2EmpireTracker.Client
         public GameApiClient Client { get; }
 
         /// <summary>
-        /// Gets the credential manager for per-character API keys.
+        /// Gets the credential manager for per-character secrets.
         /// </summary>
         public GameApiCredentialManager CredentialManager { get; }
 
         /// <summary>
-        /// Gets the connection monitor for health checks.
+        /// Gets the connection monitor for connectivity checks.
         /// </summary>
         public GameApiConnectionMonitor ConnectionMonitor { get; }
 
@@ -72,7 +73,7 @@ namespace OE2EmpireTracker.Client
         /// <summary>
         /// Initializes the game API context singleton.
         /// Reads settings from preferences, creates all components, and starts the monitor and scheduler.
-        /// If the integration is disabled or no characters have configured keys, logs and returns without creating a context.
+        /// If the integration is disabled or no characters have configured secrets, logs and returns without creating a context.
         /// </summary>
         public static void Initialize()
         {
@@ -101,18 +102,40 @@ namespace OE2EmpireTracker.Client
                 return;
             }
 
+            if (string.IsNullOrEmpty(settings.AppId))
+            {
+                Log.Info("GameApiContext: AppId is empty, skipping initialization");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(settings.ClientId))
+            {
+                Log.Info("GameApiContext: ClientId is empty, skipping initialization");
+                return;
+            }
+
             var credentialManager = new GameApiCredentialManager();
             var configuredPlayers = credentialManager.GetConfiguredPlayerUUIDs();
             if (configuredPlayers.Count == 0)
             {
-                Log.Info("GameApiContext: No characters have configured API keys, skipping initialization");
+                Log.Info("GameApiContext: No characters have configured secrets, skipping initialization");
                 return;
             }
 
             string firstPlayerUUID = configuredPlayers[0];
             var client = new GameApiClient(settings.ServerUrl);
-            var connectionMonitor = new GameApiConnectionMonitor(client, credentialManager, firstPlayerUUID);
-            var syncScheduler = new GameApiSyncScheduler(client, credentialManager, connectionMonitor);
+            var connectionMonitor = new GameApiConnectionMonitor(
+                client,
+                credentialManager,
+                firstPlayerUUID,
+                settings.AppId,
+                settings.ClientId);
+            var syncScheduler = new GameApiSyncScheduler(
+                client,
+                credentialManager,
+                connectionMonitor,
+                settings.AppId,
+                settings.ClientId);
 
             _instance = new GameApiContext(credentialManager, client, connectionMonitor, syncScheduler);
 
@@ -120,8 +143,10 @@ namespace OE2EmpireTracker.Client
             syncScheduler.Start(settings.PollingIntervalMinutes);
 
             Log.Info(
-                "GameApiContext initialized: server={0}, polling={1}min, characters={2}",
+                "GameApiContext initialized: server={0}, appId={1}, clientId={2}, polling={3}min, characters={4}",
                 settings.ServerUrl,
+                settings.AppId,
+                settings.ClientId,
                 settings.PollingIntervalMinutes,
                 configuredPlayers.Count);
         }

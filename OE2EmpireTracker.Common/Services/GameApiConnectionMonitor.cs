@@ -13,7 +13,7 @@ using OE2EmpireTracker.Client;
 namespace OE2EmpireTracker.Services
 {
     /// <summary>
-    /// Monitors game API connectivity via periodic health checks.
+    /// Monitors game API connectivity via periodic token exchange attempts.
     /// Implements exponential backoff reconnection and raises status change events.
     /// </summary>
     public class GameApiConnectionMonitor : IDisposable
@@ -26,6 +26,8 @@ namespace OE2EmpireTracker.Services
         private readonly GameApiClient _client;
         private readonly GameApiCredentialManager _credentialManager;
         private readonly string _playerUUID;
+        private readonly string _appId;
+        private readonly string _clientId;
 
         private Timer _pollingTimer;
         private int _pollingIntervalMs;
@@ -35,17 +37,23 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="GameApiConnectionMonitor"/> class.
         /// </summary>
-        /// <param name="client">The game API client used for health checks.</param>
-        /// <param name="credentialManager">The credential manager for retrieving API keys.</param>
-        /// <param name="playerUUID">The player UUID whose API key to use for health checks.</param>
+        /// <param name="client">The game API client used for token exchange.</param>
+        /// <param name="credentialManager">The credential manager for retrieving secrets.</param>
+        /// <param name="playerUUID">The player UUID whose secret to use for connectivity checks.</param>
+        /// <param name="appId">The registered application GUID.</param>
+        /// <param name="clientId">The player's account identifier.</param>
         public GameApiConnectionMonitor(
             GameApiClient client,
             GameApiCredentialManager credentialManager,
-            string playerUUID)
+            string playerUUID,
+            string appId,
+            string clientId)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _credentialManager = credentialManager ?? throw new ArgumentNullException(nameof(credentialManager));
             _playerUUID = playerUUID ?? throw new ArgumentNullException(nameof(playerUUID));
+            _appId = appId ?? string.Empty;
+            _clientId = clientId ?? string.Empty;
             _currentBackoffMs = InitialBackoffMs;
             CurrentState = ConnectionState.NotConfigured;
             StatusMessage = "Not configured";
@@ -61,7 +69,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public enum ConnectionState
         {
-            /// <summary>No API key is configured.</summary>
+            /// <summary>No credentials are configured.</summary>
             NotConfigured,
 
             /// <summary>The game API is reachable and responding.</summary>
@@ -73,7 +81,7 @@ namespace OE2EmpireTracker.Services
             /// <summary>The circuit breaker is open due to repeated failures.</summary>
             DisconnectedCircuitOpen,
 
-            /// <summary>The API key is invalid (HTTP 401).</summary>
+            /// <summary>The credentials are invalid (HTTP 401).</summary>
             DisconnectedInvalidKey,
 
             /// <summary>A sync operation is in progress.</summary>
@@ -94,10 +102,10 @@ namespace OE2EmpireTracker.Services
         public string StatusMessage { get; private set; }
 
         /// <summary>
-        /// Starts the connection monitor with periodic health checks.
-        /// Performs an initial health check within 10 seconds of calling Start.
+        /// Starts the connection monitor with periodic connectivity checks via token exchange.
+        /// Performs an initial check within 5 seconds of calling Start.
         /// </summary>
-        /// <param name="pollingIntervalMinutes">The interval between health checks in minutes.</param>
+        /// <param name="pollingIntervalMinutes">The interval between checks in minutes.</param>
         public void Start(int pollingIntervalMinutes)
         {
             if (pollingIntervalMinutes < 1)
@@ -109,13 +117,19 @@ namespace OE2EmpireTracker.Services
 
             if (!_credentialManager.HasKey(_playerUUID))
             {
-                TransitionTo(ConnectionState.NotConfigured, "No API key configured");
+                TransitionTo(ConnectionState.NotConfigured, "No secret configured");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(_appId) || string.IsNullOrEmpty(_clientId))
+            {
+                TransitionTo(ConnectionState.NotConfigured, "App ID or Client ID not configured");
                 return;
             }
 
             Log.Info("GameApiConnectionMonitor starting with {0} minute polling interval", pollingIntervalMinutes);
 
-            // Perform initial health check within 10 seconds
+            // Perform initial check within 5 seconds
             _pollingTimer = new Timer(OnPollingTimerElapsed, null, TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
         }
 
@@ -132,7 +146,7 @@ namespace OE2EmpireTracker.Services
         /// Updates the polling interval without restarting the monitor.
         /// The new interval takes effect after the current polling cycle completes.
         /// </summary>
-        /// <param name="pollingIntervalMinutes">The new interval between health checks in minutes.</param>
+        /// <param name="pollingIntervalMinutes">The new interval between checks in minutes.</param>
         public void UpdatePollingInterval(int pollingIntervalMinutes)
         {
             if (pollingIntervalMinutes < 1)
@@ -170,7 +184,7 @@ namespace OE2EmpireTracker.Services
             StatusMessage = message ?? string.Empty;
 
             Log.Info(
-                "Game API connection state: {0} → {1} ({2})",
+                "Game API connection state: {0} \u2192 {1} ({2})",
                 oldState,
                 newState,
                 message);
@@ -221,7 +235,7 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Timer callback that performs a health check and schedules the next poll.
+        /// Timer callback that performs a connectivity check and schedules the next poll.
         /// </summary>
         private async void OnPollingTimerElapsed(object state)
         {
@@ -230,24 +244,24 @@ namespace OE2EmpireTracker.Services
                 return;
             }
 
-            await PerformHealthCheckAsync().ConfigureAwait(false);
+            await PerformConnectivityCheckAsync().ConfigureAwait(false);
             ScheduleNextPoll();
         }
 
         /// <summary>
-        /// Performs a health check against the game API and transitions state accordingly.
+        /// Performs a connectivity check via token exchange and transitions state accordingly.
         /// </summary>
-        private async Task PerformHealthCheckAsync()
+        private async Task PerformConnectivityCheckAsync()
         {
-            SecureString secureKey = _credentialManager.GetKey(_playerUUID);
-            if (secureKey == null)
+            SecureString secureSecret = _credentialManager.GetKey(_playerUUID);
+            if (secureSecret == null)
             {
-                TransitionTo(ConnectionState.NotConfigured, "No API key configured");
+                TransitionTo(ConnectionState.NotConfigured, "No secret configured");
                 return;
             }
 
-            string apiKey = SecureStringToString(secureKey);
-            secureKey.Dispose();
+            string secret = SecureStringToString(secureSecret);
+            secureSecret.Dispose();
 
             try
             {
@@ -255,11 +269,11 @@ namespace OE2EmpireTracker.Services
                 {
                     TransitionTo(
                         ConnectionState.DisconnectedCircuitOpen,
-                        "Circuit breaker is open — too many consecutive failures");
+                        "Circuit breaker is open \u2014 too many consecutive failures");
                     return;
                 }
 
-                var result = await _client.CheckHealthAsync(apiKey).ConfigureAwait(false);
+                var result = await _client.TestConnectionAsync(_appId, _clientId, secret).ConfigureAwait(false);
 
                 if (result.Success)
                 {
@@ -268,26 +282,26 @@ namespace OE2EmpireTracker.Services
                 }
                 else
                 {
-                    HandleHealthCheckFailure(result.Message);
+                    HandleConnectivityFailure(result.Message);
                 }
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Unexpected error during game API health check");
-                HandleHealthCheckFailure(ex.Message);
+                Log.Error(ex, "Unexpected error during game API connectivity check");
+                HandleConnectivityFailure(ex.Message);
             }
         }
 
         /// <summary>
-        /// Handles a failed health check by transitioning to the appropriate disconnected state
+        /// Handles a failed connectivity check by transitioning to the appropriate disconnected state
         /// and applying exponential backoff.
         /// </summary>
         /// <param name="failureMessage">The failure reason message.</param>
-        private void HandleHealthCheckFailure(string failureMessage)
+        private void HandleConnectivityFailure(string failureMessage)
         {
             if (failureMessage != null && failureMessage.Contains("401"))
             {
-                TransitionTo(ConnectionState.DisconnectedInvalidKey, "API key is invalid (HTTP 401)");
+                TransitionTo(ConnectionState.DisconnectedInvalidKey, "Credentials are invalid (HTTP 401)");
                 return;
             }
 
@@ -295,11 +309,11 @@ namespace OE2EmpireTracker.Services
             {
                 TransitionTo(
                     ConnectionState.DisconnectedCircuitOpen,
-                    "Circuit breaker is open — too many consecutive failures");
+                    "Circuit breaker is open \u2014 too many consecutive failures");
             }
             else
             {
-                TransitionTo(ConnectionState.Disconnected, failureMessage ?? "Health check failed");
+                TransitionTo(ConnectionState.Disconnected, failureMessage ?? "Connectivity check failed");
             }
 
             // Apply exponential backoff
@@ -368,7 +382,7 @@ namespace OE2EmpireTracker.Services
             {
                 Log.Warn(
                     ex,
-                    "StatusChanged event handler threw an exception during {0} → {1} transition",
+                    "StatusChanged event handler threw an exception during {0} \u2192 {1} transition",
                     oldState,
                     newState);
             }

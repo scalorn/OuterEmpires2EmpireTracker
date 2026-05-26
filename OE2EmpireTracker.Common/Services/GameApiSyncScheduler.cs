@@ -18,6 +18,7 @@ namespace OE2EmpireTracker.Services
     /// <summary>
     /// Manages periodic Player Profile synchronization across all configured characters.
     /// Uses round-robin character selection and suspends when the connection monitor reports disconnected.
+    /// Authenticates via OAuth2 token exchange (appId + clientId + secret).
     /// </summary>
     public class GameApiSyncScheduler : IDisposable
     {
@@ -26,6 +27,8 @@ namespace OE2EmpireTracker.Services
         private readonly GameApiClient _client;
         private readonly GameApiCredentialManager _credentialManager;
         private readonly GameApiConnectionMonitor _connectionMonitor;
+        private readonly string _appId;
+        private readonly string _clientId;
 
         private Timer _pollingTimer;
         private int _pollingIntervalMs;
@@ -36,16 +39,22 @@ namespace OE2EmpireTracker.Services
         /// Initializes a new instance of the <see cref="GameApiSyncScheduler"/> class.
         /// </summary>
         /// <param name="client">The game API client used for profile requests.</param>
-        /// <param name="credentialManager">The credential manager for retrieving API keys.</param>
+        /// <param name="credentialManager">The credential manager for retrieving secrets.</param>
         /// <param name="connectionMonitor">The connection monitor for detecting connect/disconnect transitions.</param>
+        /// <param name="appId">The registered application GUID.</param>
+        /// <param name="clientId">The player's account identifier.</param>
         public GameApiSyncScheduler(
             GameApiClient client,
             GameApiCredentialManager credentialManager,
-            GameApiConnectionMonitor connectionMonitor)
+            GameApiConnectionMonitor connectionMonitor,
+            string appId,
+            string clientId)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _credentialManager = credentialManager ?? throw new ArgumentNullException(nameof(credentialManager));
             _connectionMonitor = connectionMonitor ?? throw new ArgumentNullException(nameof(connectionMonitor));
+            _appId = appId ?? string.Empty;
+            _clientId = clientId ?? string.Empty;
         }
 
         /// <summary>
@@ -132,7 +141,7 @@ namespace OE2EmpireTracker.Services
             IReadOnlyList<string> playerUUIDs = _credentialManager.GetConfiguredPlayerUUIDs();
             if (playerUUIDs.Count == 0)
             {
-                Log.Warn("SyncNowAsync called but no characters have configured API keys");
+                Log.Warn("SyncNowAsync called but no characters have configured secrets");
                 return;
             }
 
@@ -242,7 +251,7 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Performs a sync for a single character by calling GetPlayerProfileAsync.
+        /// Performs a sync for a single character by exchanging a token and calling GetCharacterAsync.
         /// Deserializes the response and merges game-authoritative fields into the local profile.
         /// Internal for test access.
         /// </summary>
@@ -250,22 +259,43 @@ namespace OE2EmpireTracker.Services
         /// <returns>True if the sync succeeded; otherwise false.</returns>
         internal async Task<bool> SyncCharacterAsync(string playerUUID)
         {
-            SecureString secureKey = _credentialManager.GetKey(playerUUID);
-            if (secureKey == null)
+            SecureString secureSecret = _credentialManager.GetKey(playerUUID);
+            if (secureSecret == null)
             {
-                Log.Warn("No API key found for character {0}, skipping sync", playerUUID);
+                Log.Warn("No secret found for character {0}, skipping sync", playerUUID);
                 return false;
             }
 
-            string apiKey = SecureStringToString(secureKey);
-            secureKey.Dispose();
+            string secret = SecureStringToString(secureSecret);
+            secureSecret.Dispose();
 
             try
             {
-                var result = await _client.GetPlayerProfileAsync(apiKey).ConfigureAwait(false);
+                // Exchange token first
+                var tokenResult = await _client.ExchangeTokenAsync(_appId, _clientId, secret).ConfigureAwait(false);
+                if (!tokenResult.Success)
+                {
+                    if (tokenResult.ErrorMessage != null && tokenResult.ErrorMessage.Contains("401"))
+                    {
+                        Log.Warn("Profile sync for character {0}: credentials are invalid (HTTP 401), stopping polling", playerUUID);
+                        _connectionMonitor.TransitionTo(
+                            GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
+                            "Credentials are invalid (HTTP 401)");
+                    }
+                    else
+                    {
+                        Log.Warn("Profile sync for character {0}: token exchange failed: {1}", playerUUID, tokenResult.ErrorMessage);
+                    }
+
+                    return false;
+                }
+
+                // Use the token to fetch character data
+                var result = await _client.GetCharacterAsync(_appId, tokenResult.Token.AccessToken).ConfigureAwait(false);
                 if (result.Success)
                 {
-                    var remoteProfile = JsonConvert.DeserializeObject<GameApiProfileResponse>(result.Json);
+                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiProfileResponse>>(result.Json);
+                    GameApiProfileResponse remoteProfile = envelope?.Data;
                     if (remoteProfile == null)
                     {
                         Log.Warn("Profile sync for character {0}: deserialized response was null", playerUUID);
@@ -282,13 +312,14 @@ namespace OE2EmpireTracker.Services
                     return true;
                 }
 
-                // Handle HTTP 401 — invalid API key
+                // Handle HTTP 401 — token expired or invalid
                 if (result.Json == "401")
                 {
-                    Log.Warn("Profile sync for character {0}: API key is invalid (HTTP 401), stopping polling", playerUUID);
+                    Log.Warn("Profile sync for character {0}: token rejected (HTTP 401), invalidating cache", playerUUID);
+                    _client.InvalidateToken(_clientId, secret);
                     _connectionMonitor.TransitionTo(
                         GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
-                        "API key is invalid (HTTP 401)");
+                        "Credentials are invalid (HTTP 401)");
                     return false;
                 }
 

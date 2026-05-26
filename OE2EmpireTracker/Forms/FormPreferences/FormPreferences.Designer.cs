@@ -22,8 +22,12 @@ namespace OE2EmpireTracker.Forms
             this.grpGameApi = new System.Windows.Forms.GroupBox();
             this.lblGameApiUrl = new System.Windows.Forms.Label();
             this.txtGameApiUrl = new OE2EmpireTracker.Controls.ValidatedTextBox();
-            this.lblGameApiKey = new System.Windows.Forms.Label();
-            this.txtGameApiKey = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblGameApiAppId = new System.Windows.Forms.Label();
+            this.txtGameApiAppId = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblGameApiClientId = new System.Windows.Forms.Label();
+            this.txtGameApiClientId = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblGameApiSecret = new System.Windows.Forms.Label();
+            this.txtGameApiSecret = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.lblPollingInterval = new System.Windows.Forms.Label();
             this.nudPollingInterval = new System.Windows.Forms.NumericUpDown();
             this.lblPollingMinutes = new System.Windows.Forms.Label();
@@ -138,8 +142,12 @@ namespace OE2EmpireTracker.Forms
             // 
             this.grpGameApi.Controls.Add(this.lblGameApiUrl);
             this.grpGameApi.Controls.Add(this.txtGameApiUrl);
-            this.grpGameApi.Controls.Add(this.lblGameApiKey);
-            this.grpGameApi.Controls.Add(this.txtGameApiKey);
+            this.grpGameApi.Controls.Add(this.lblGameApiAppId);
+            this.grpGameApi.Controls.Add(this.txtGameApiAppId);
+            this.grpGameApi.Controls.Add(this.lblGameApiClientId);
+            this.grpGameApi.Controls.Add(this.txtGameApiClientId);
+            this.grpGameApi.Controls.Add(this.lblGameApiSecret);
+            this.grpGameApi.Controls.Add(this.txtGameApiSecret);
             this.grpGameApi.Controls.Add(this.lblPollingInterval);
             this.grpGameApi.Controls.Add(this.nudPollingInterval);
             this.grpGameApi.Controls.Add(this.lblPollingMinutes);
@@ -148,10 +156,10 @@ namespace OE2EmpireTracker.Forms
             this.grpGameApi.Controls.Add(this.lblTestResult);
             this.grpGameApi.Location = new System.Drawing.Point(12, 12);
             this.grpGameApi.Name = "grpGameApi";
-            this.grpGameApi.Size = new System.Drawing.Size(460, 240);
+            this.grpGameApi.Size = new System.Drawing.Size(460, 310);
             this.grpGameApi.TabIndex = 0;
             this.grpGameApi.TabStop = false;
-            this.grpGameApi.Text = "Game API Connection";
+            this.grpGameApi.Text = "Game API Connection (OAuth2)";
             // 
             // lblGameApiUrl
             // 
@@ -168,44 +176,74 @@ namespace OE2EmpireTracker.Forms
             this.txtGameApiUrl.Size = new System.Drawing.Size(320, 20);
             this.txtGameApiUrl.TabIndex = 1;
             // 
-            // lblGameApiKey
+            // lblGameApiAppId
             // 
-            this.lblGameApiKey.AutoSize = true;
-            this.lblGameApiKey.Location = new System.Drawing.Point(15, 63);
-            this.lblGameApiKey.Name = "lblGameApiKey";
-            this.lblGameApiKey.Size = new System.Drawing.Size(48, 13);
-            this.lblGameApiKey.Text = "API Key:";
+            this.lblGameApiAppId.AutoSize = true;
+            this.lblGameApiAppId.Location = new System.Drawing.Point(15, 63);
+            this.lblGameApiAppId.Name = "lblGameApiAppId";
+            this.lblGameApiAppId.Size = new System.Drawing.Size(40, 13);
+            this.lblGameApiAppId.Text = "App ID:";
             // 
-            // txtGameApiKey
+            // txtGameApiAppId
             // 
-            this.txtGameApiKey.Location = new System.Drawing.Point(130, 60);
-            this.txtGameApiKey.Name = "txtGameApiKey";
-            this.txtGameApiKey.PasswordChar = '\u25CF';
-            this.txtGameApiKey.Size = new System.Drawing.Size(320, 20);
-            this.txtGameApiKey.TabIndex = 2;
+            this.txtGameApiAppId.Location = new System.Drawing.Point(130, 60);
+            this.txtGameApiAppId.Name = "txtGameApiAppId";
+            this.txtGameApiAppId.Size = new System.Drawing.Size(320, 20);
+            this.txtGameApiAppId.TabIndex = 2;
+            // 
+            // lblGameApiClientId
+            // 
+            this.lblGameApiClientId.AutoSize = true;
+            this.lblGameApiClientId.Location = new System.Drawing.Point(15, 98);
+            this.lblGameApiClientId.Name = "lblGameApiClientId";
+            this.lblGameApiClientId.Size = new System.Drawing.Size(52, 13);
+            this.lblGameApiClientId.Text = "Client ID:";
+            // 
+            // txtGameApiClientId
+            // 
+            this.txtGameApiClientId.Location = new System.Drawing.Point(130, 95);
+            this.txtGameApiClientId.Name = "txtGameApiClientId";
+            this.txtGameApiClientId.Size = new System.Drawing.Size(320, 20);
+            this.txtGameApiClientId.TabIndex = 3;
+            // 
+            // lblGameApiSecret
+            // 
+            this.lblGameApiSecret.AutoSize = true;
+            this.lblGameApiSecret.Location = new System.Drawing.Point(15, 133);
+            this.lblGameApiSecret.Name = "lblGameApiSecret";
+            this.lblGameApiSecret.Size = new System.Drawing.Size(41, 13);
+            this.lblGameApiSecret.Text = "Secret:";
+            // 
+            // txtGameApiSecret
+            // 
+            this.txtGameApiSecret.Location = new System.Drawing.Point(130, 130);
+            this.txtGameApiSecret.Name = "txtGameApiSecret";
+            this.txtGameApiSecret.PasswordChar = '\u25CF';
+            this.txtGameApiSecret.Size = new System.Drawing.Size(320, 20);
+            this.txtGameApiSecret.TabIndex = 4;
             // 
             // lblPollingInterval
             // 
             this.lblPollingInterval.AutoSize = true;
-            this.lblPollingInterval.Location = new System.Drawing.Point(15, 98);
+            this.lblPollingInterval.Location = new System.Drawing.Point(15, 168);
             this.lblPollingInterval.Name = "lblPollingInterval";
             this.lblPollingInterval.Size = new System.Drawing.Size(83, 13);
             this.lblPollingInterval.Text = "Polling Interval:";
             // 
             // nudPollingInterval
             // 
-            this.nudPollingInterval.Location = new System.Drawing.Point(130, 96);
+            this.nudPollingInterval.Location = new System.Drawing.Point(130, 166);
             this.nudPollingInterval.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
             this.nudPollingInterval.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             this.nudPollingInterval.Name = "nudPollingInterval";
             this.nudPollingInterval.Size = new System.Drawing.Size(60, 20);
-            this.nudPollingInterval.TabIndex = 3;
+            this.nudPollingInterval.TabIndex = 5;
             this.nudPollingInterval.Value = new decimal(new int[] { 5, 0, 0, 0 });
             // 
             // lblPollingMinutes
             // 
             this.lblPollingMinutes.AutoSize = true;
-            this.lblPollingMinutes.Location = new System.Drawing.Point(196, 98);
+            this.lblPollingMinutes.Location = new System.Drawing.Point(196, 168);
             this.lblPollingMinutes.Name = "lblPollingMinutes";
             this.lblPollingMinutes.Size = new System.Drawing.Size(44, 13);
             this.lblPollingMinutes.Text = "minutes";
@@ -213,29 +251,29 @@ namespace OE2EmpireTracker.Forms
             // chkGameApiEnabled
             // 
             this.chkGameApiEnabled.AutoSize = true;
-            this.chkGameApiEnabled.Location = new System.Drawing.Point(18, 133);
+            this.chkGameApiEnabled.Location = new System.Drawing.Point(18, 203);
             this.chkGameApiEnabled.Name = "chkGameApiEnabled";
             this.chkGameApiEnabled.Size = new System.Drawing.Size(65, 17);
-            this.chkGameApiEnabled.TabIndex = 4;
+            this.chkGameApiEnabled.TabIndex = 6;
             this.chkGameApiEnabled.Text = "Enabled";
             this.chkGameApiEnabled.UseVisualStyleBackColor = true;
             // 
             // btnTestGameApiConnection
             // 
-            this.btnTestGameApiConnection.Location = new System.Drawing.Point(18, 165);
+            this.btnTestGameApiConnection.Location = new System.Drawing.Point(18, 235);
             this.btnTestGameApiConnection.Name = "btnTestGameApiConnection";
             this.btnTestGameApiConnection.Size = new System.Drawing.Size(110, 23);
-            this.btnTestGameApiConnection.TabIndex = 5;
+            this.btnTestGameApiConnection.TabIndex = 7;
             this.btnTestGameApiConnection.Text = "Test Connection";
             this.btnTestGameApiConnection.UseVisualStyleBackColor = true;
             // 
             // lblTestResult
             // 
             this.lblTestResult.AutoSize = true;
-            this.lblTestResult.Location = new System.Drawing.Point(134, 170);
+            this.lblTestResult.Location = new System.Drawing.Point(134, 240);
             this.lblTestResult.Name = "lblTestResult";
             this.lblTestResult.Size = new System.Drawing.Size(0, 13);
-            this.lblTestResult.TabIndex = 6;
+            this.lblTestResult.TabIndex = 8;
             // 
             // grpStructureCount
             // 
@@ -670,8 +708,12 @@ namespace OE2EmpireTracker.Forms
         private System.Windows.Forms.GroupBox grpGameApi;
         private System.Windows.Forms.Label lblGameApiUrl;
         internal OE2EmpireTracker.Controls.ValidatedTextBox txtGameApiUrl;
-        private System.Windows.Forms.Label lblGameApiKey;
-        internal OE2EmpireTracker.Controls.ValidatedTextBox txtGameApiKey;
+        private System.Windows.Forms.Label lblGameApiAppId;
+        internal OE2EmpireTracker.Controls.ValidatedTextBox txtGameApiAppId;
+        private System.Windows.Forms.Label lblGameApiClientId;
+        internal OE2EmpireTracker.Controls.ValidatedTextBox txtGameApiClientId;
+        private System.Windows.Forms.Label lblGameApiSecret;
+        internal OE2EmpireTracker.Controls.ValidatedTextBox txtGameApiSecret;
         private System.Windows.Forms.Label lblPollingInterval;
         internal System.Windows.Forms.NumericUpDown nudPollingInterval;
         private System.Windows.Forms.Label lblPollingMinutes;

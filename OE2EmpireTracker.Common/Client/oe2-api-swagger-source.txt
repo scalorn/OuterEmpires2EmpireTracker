@@ -1,0 +1,2 @@
+Downloaded from https://oe2-pub-api-dev.azure-api.net/swagger.json
+See swagger UI at https://oe2-pub-api-dev.azure-api.net/swagger/ui#/

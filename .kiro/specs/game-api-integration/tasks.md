@@ -32,8 +32,8 @@ This plan implements the Game API integration infrastructure: credential managem
 
 - [x] 3. Implement GameApiClient - HTTP infrastructure and Polly policies
   - [x] 3.1 Create GameApiClient with Polly resilience
-    - Create `OE2EmpireTracker.Common/Client/GameApiClient.cs` with HttpClient, Polly retry policy (exponential backoff 1s/2s/4s, max 3 attempts on HTTP 5xx), circuit breaker (3 consecutive failures, 30s break duration), `CheckHealthAsync`, `GetPlayerProfileAsync` methods, X-API-Key header authentication, and IDisposable cleanup.
-    - _Satisfies: Req 2, Criteria 1-6 (separate client, X-API-Key auth, retry policy, circuit breaker, IDisposable, health check method)_
+    - Create `OE2EmpireTracker.Common/Client/GameApiClient.cs` with HttpClient, Polly retry policy (exponential backoff 1s/2s/4s, max 3 attempts on HTTP 5xx), circuit breaker (3 consecutive failures, 30s break duration), `TestConnectionAsync`, `ExchangeTokenAsync`, `GetCharacterAsync`, `GetCharacterSkillsAsync` methods, OAuth2 client_credentials flow (Bearer + X-App-Id headers), token caching with 60s expiry buffer, and IDisposable cleanup.
+    - _Satisfies: Req 2, Criteria 1-7 (separate client, OAuth2 auth, retry policy, circuit breaker, IDisposable, connectivity test via token exchange, token caching)_
     - Inputs: design.md component 2, existing RemoteFactionClient.cs for pattern reference
     - Output: `OE2EmpireTracker.Common/Client/GameApiClient.cs`
     - Verification: getDiagnostics clean compile
@@ -86,8 +86,8 @@ This plan implements the Game API integration infrastructure: credential managem
 
 - [x] 7. Add Game API UI integration
   - [x] 7.1 Add Game API tab to Preferences form
-    - Add "Game API" tab to FormPreferences with controls: txtGameApiUrl, txtGameApiKey (PasswordChar='*'), nudPollingInterval (min:1, max:60, default:5), chkGameApiEnabled, btnTestConnection, lblTestResult. Implement save logic: persist settings to UIPreferences.GameApiConnection, encrypt API key via CredentialManager, update polling interval on SyncScheduler immediately.
-    - _Satisfies: Req 7, Criteria 1-8 (Game API section, masked key, URL input, polling interval, test connection, encrypt on save, apply interval immediately, persist to UIPreferences.json)_
+    - Add "Game API" tab to FormPreferences with controls: txtGameApiUrl, txtGameApiAppId, txtGameApiClientId, txtGameApiSecret (PasswordChar='●'), nudPollingInterval (min:1, max:60, default:5), chkGameApiEnabled, btnTestGameApiConnection, lblTestResult. Implement save logic: persist settings to UIPreferences.GameApiConnection, encrypt secret via CredentialManager, update polling interval on SyncScheduler immediately.
+    - _Satisfies: Req 7, Criteria 1-8 (Game API tab, masked secret, URL input, App ID, Client ID, polling interval, test connection via token exchange, encrypt on save, apply interval immediately, persist to UIPreferences.json)_
     - Inputs: existing FormPreferences.cs, GameApiCredentialManager, GameApiContext, PreferencesStore
     - Output: modified FormPreferences.cs and FormPreferences.Designer.cs
     - Verification: getDiagnostics clean compile

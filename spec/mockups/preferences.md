@@ -65,9 +65,10 @@ Server tab:
 Controls:
 - Form: `FormBorderStyle=FixedDialog`, `MaximizeBox=false`, `MinimizeBox=false`, `StartPosition=CenterParent`
 - `AcceptButton=btnOK`, `CancelButton=btnCancel`
-- `tabControl` (TabControl) — two tabs: Thresholds, Server
+- `tabControl` (TabControl) — three tabs: Thresholds, Server, Game API
 - `tabThresholds` (TabPage) — threshold settings
 - `tabServer` (TabPage) — server connection settings
+- `tabGameApi` (TabPage) — game API OAuth2 connection settings
 - `grpStructureCount` (GroupBox) — structure warning thresholds:
   - `txtStructureYellow` (TextBox) — integer count
   - `txtStructureRed` (TextBox) — integer count
@@ -91,6 +92,15 @@ Controls:
   - `cmbOperatingMode` (ComboBox, DropDownList) — Local Only / Server Only / Server + Local
   - `lblConnectionStatus` (Label) — shows test connection result
   - `btnPushLocalToServer` (Button) — reads local PlayerData.json and BaselineData.json from disk and uploads to server (bootstrapping)
+- `grpGameApi` (GroupBox) — Game API OAuth2 connection:
+  - `txtGameApiUrl` (ValidatedTextBox) — game API server URL
+  - `txtGameApiAppId` (ValidatedTextBox) — registered application GUID
+  - `txtGameApiClientId` (ValidatedTextBox) — player account identifier
+  - `txtGameApiSecret` (ValidatedTextBox, PasswordChar='●') — per-character secret
+  - `nudPollingInterval` (NumericUpDown) — polling interval in minutes (1-60)
+  - `chkGameApiEnabled` (CheckBox) — enable/disable game API integration
+  - `btnTestGameApiConnection` (Button) — tests connection via token exchange
+  - `lblTestResult` (Label) — shows test connection result
 - `btnOK` (Button), `btnCancel` (Button, DialogResult=Cancel), `btnResetDefaults` (Button)
 - All time values use countdown format: `Xd Xh Xm Xs`
 

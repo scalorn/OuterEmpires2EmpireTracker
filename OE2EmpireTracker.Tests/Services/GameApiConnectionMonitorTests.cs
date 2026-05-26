@@ -28,11 +28,16 @@ namespace OE2EmpireTracker.Tests.Services
         [SetUp]
         public void SetUp()
         {
+            // Register DPAPI protection functions for the credential manager
+            GameApiCredentialManager.RegisterProtectionFunctions(
+                OE2EmpireTracker.Client.CredentialStore.Protect,
+                OE2EmpireTracker.Client.CredentialStore.Unprotect);
+
             _tempSecretsPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + "-secrets.dat");
             _credentialManager = new GameApiCredentialManager(_tempSecretsPath);
             _credentialManager.StoreKey("test-uuid", "test-api-key-12345");
             _client = new GameApiClient("http://localhost:99999");
-            _monitor = new GameApiConnectionMonitor(_client, _credentialManager, "test-uuid");
+            _monitor = new GameApiConnectionMonitor(_client, _credentialManager, "test-uuid", "test-app-id", "test-client-id");
         }
 
         [TearDown]
@@ -69,7 +74,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 // Arrange: create a fresh monitor and transition to the target state
                 using (var client = new GameApiClient("http://localhost:99999"))
-                using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid"))
+                using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid", "test-app-id", "test-client-id"))
                 {
                     // First transition to the target state (from NotConfigured)
                     if (targetState != GameApiConnectionMonitor.ConnectionState.NotConfigured)
@@ -129,7 +134,7 @@ namespace OE2EmpireTracker.Tests.Services
             return Prop.ForAll(Arb.From(transitionGen), transition =>
             {
                 using (var client = new GameApiClient("http://localhost:99999"))
-                using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid"))
+                using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid", "test-app-id", "test-client-id"))
                 {
                     // Set up source state
                     if (transition.Source != GameApiConnectionMonitor.ConnectionState.NotConfigured)
@@ -183,7 +188,7 @@ namespace OE2EmpireTracker.Tests.Services
             return Prop.ForAll(Arb.From(targetGen), targetState =>
             {
                 using (var client = new GameApiClient("http://localhost:99999"))
-                using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid"))
+                using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid", "test-app-id", "test-client-id"))
                 {
                     // Subscribe a handler that throws
                     monitor.StatusChanged += (s, e) =>
@@ -220,7 +225,7 @@ namespace OE2EmpireTracker.Tests.Services
             return Prop.ForAll(Arb.From(failureCountGen), failureCount =>
             {
                 using (var client = new GameApiClient("http://localhost:99999"))
-                using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid"))
+                using (var monitor = new GameApiConnectionMonitor(client, _credentialManager, "test-uuid", "test-app-id", "test-client-id"))
                 {
                     // First transition to Connected so HandleHealthCheckFailure
                     // can transition to Disconnected
@@ -228,9 +233,9 @@ namespace OE2EmpireTracker.Tests.Services
                         GameApiConnectionMonitor.ConnectionState.Connected,
                         "initial");
 
-                    // Use reflection to invoke private HandleHealthCheckFailure
+                    // Use reflection to invoke private HandleConnectivityFailure
                     var method = typeof(GameApiConnectionMonitor).GetMethod(
-                        "HandleHealthCheckFailure",
+                        "HandleConnectivityFailure",
                         BindingFlags.NonPublic | BindingFlags.Instance);
 
                     // Use reflection to read _currentBackoffMs
