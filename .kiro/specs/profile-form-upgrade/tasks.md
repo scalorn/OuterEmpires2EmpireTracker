@@ -163,7 +163,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified FormPlayerProfile.cs and Designer.cs_
     - _Verification: getDiagnostics clean, build succeeds_
 
-- [ ] 10. Add ListView ID column to FormPlayerProfile
+- [x] 10. Add ListView ID column to FormPlayerProfile
   - [x] 10.1 Add "ID" column to profile ListView and update PopulateListView
     - Add third column "ID" (width 60px) after "Name" and "Faction"
     - Display CharacterId as string, or empty string when CharacterId == 0
@@ -174,7 +174,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified FormPlayerProfile.cs and Designer.cs_
     - _Verification: getDiagnostics clean, build succeeds_
 
-  - [-] 10.2 Write property test: ListView CharacterId column display
+  - [x] 10.2 Write property test: ListView CharacterId column display
     - **Property 8: ListView CharacterId column display**
     - **Validates: Requirements 6.1, 6.2, 6.5**
     - For any int CharacterId: SubItem at index 2 contains CharacterId as string when > 0, empty string when == 0
@@ -187,7 +187,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 
 - [ ] 12. Wire PopulateListView refresh on PlayerProfilesChanged event
-  - [-] 12.1 Ensure ListView refresh on PlayerProfilesChanged preserves selection
+  - [x] 12.1 Ensure ListView refresh on PlayerProfilesChanged preserves selection
     - Verify PopulateListView is called when PlayerProfilesChanged fires
     - Ensure currently selected profile is preserved after refresh
     - Verify CharacterId values update when Profile_Sync completes
@@ -197,7 +197,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Verification: getDiagnostics clean, build succeeds_
 
 - [ ] 13. Verify metadata row layout and FlowLayoutPanel reflow
-  - [~] 13.1 Ensure PlayerSkillBlock metadata row positioning and parent reflow
+  - [x] 13.1 Ensure PlayerSkillBlock metadata row positioning and parent reflow
     - Verify EffectDescription label at x=48, y=26
     - Verify AmountPerLevel label at x=200, y=26
     - Verify progress bar color: SystemColors.Highlight fill, SystemColors.ControlLight background
