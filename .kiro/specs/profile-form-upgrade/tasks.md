@@ -182,7 +182,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: New test method in FormPlayerProfilePropertyTests.cs_
     - _Verification: vstest.console passes_
 
-- [-] 11. Checkpoint - Verify FormPlayerProfile enhancements
+- [x] 11. Checkpoint - Verify FormPlayerProfile enhancements
   - Ensure all tests pass, ask the user if questions arise.
 
 
@@ -208,7 +208,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Verification pass (may require minor adjustments to PlayerSkillBlock.cs)_
     - _Verification: getDiagnostics clean, build succeeds, visual inspection_
 
-- [~] 14. Final checkpoint - Ensure all tests pass
+- [-] 14. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 
