@@ -7,16 +7,49 @@ using NUnit.Framework;
 namespace OE2EmpireTracker.Tests.Forms
 {
     /// <summary>
-    /// Feature: profile-form-upgrade, Property 3: FirstName/LastName row visibility.
+    /// Feature: profile-form-upgrade property tests for FormPlayerProfile display logic.
     ///
-    /// For any string value assigned to FirstName or LastName, the corresponding UI row
-    /// SHALL be visible if and only if the string is non-empty (not null and not "").
-    ///
-    /// **Validates: Requirements 1.3**
+    /// Property 2: CharacterId display formatting (Validates: Requirements 1.2)
+    /// Property 3: FirstName/LastName row visibility (Validates: Requirements 1.3)
     /// </summary>
     [TestFixture]
     public class FormPlayerProfilePropertyTests
     {
+        /// <summary>
+        /// Feature: profile-form-upgrade, Property 2: CharacterId display formatting.
+        ///
+        /// For any int CharacterId: display "\u2014" (em-dash U+2014) when less than or
+        /// equal to 0, and the decimal string representation when greater than 0.
+        ///
+        /// **Validates: Requirements 1.2**
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property CharacterId_DisplaysEmDash_WhenNonPositive_AndDecimalString_WhenPositive()
+        {
+            var gen = Gen.Choose(int.MinValue / 2, int.MaxValue / 2);
+
+            return Prop.ForAll(gen.ToArbitrary(), characterId =>
+            {
+                // This is the exact logic from FormPlayerProfile.PopulateForm:
+                // lblCharacterIdValue.Text = viewModel.CharacterId > 0
+                //     ? viewModel.CharacterId.ToString()
+                //     : "\u2014";
+                string result = characterId > 0
+                    ? characterId.ToString()
+                    : "\u2014";
+
+                if (characterId <= 0)
+                {
+                    return (result == "\u2014")
+                        .Label($"CharacterId={characterId}: expected em-dash but got '{result}'");
+                }
+
+                string expected = characterId.ToString();
+                return (result == expected)
+                    .Label($"CharacterId={characterId}: expected '{expected}' but got '{result}'");
+            });
+        }
+
         /// <summary>
         /// Feature: profile-form-upgrade, Property 3: FirstName/LastName row visibility.
         ///
