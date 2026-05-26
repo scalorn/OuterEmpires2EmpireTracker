@@ -7,31 +7,31 @@ Implement a public ship template builder page at `/ship-builder` following the C
 ## Tasks
 
 - [ ] 1. Implement slot type constants and mappings
-  - [-] 1.1 Create `slotTypes.ts` with all slot type constants, mappings, and helper functions
+  - [x] 1.1 Create `slotTypes.ts` with all slot type constants, mappings, and helper functions
     - Create `OE2EmpireTracker.Web/src/pages/ship-builder/slotTypes.ts`
     - Implement `HULL_PROPERTY_TO_SLOT_TYPE`, `BLUEPRINT_TYPE_TO_SLOT_TYPE`, `SLOT_TYPE_DISPLAY_NAMES`, `SLOT_GROUPS` constants
     - Implement `getCompatibleBlueprintTypes(slotType)` and `generateSlotsFromHull(properties)` functions
     - _Requirements: 2.4, 3.1, 3.4, 4.2, 10.1, 13.1, 13.2_
-  - [~] 1.2 Write unit tests for slot type mappings
+  - [-] 1.2 Write unit tests for slot type mappings
     - Create `OE2EmpireTracker.Web/src/pages/ship-builder/slotTypes.test.ts`
     - Test `generateSlotsFromHull` with various hull properties (zero, positive, missing)
     - Test `getCompatibleBlueprintTypes` for each slot type
     - Test display name completeness (every slot type has a display name)
     - _Requirements: 2.4, 13.1, 13.2_
-  - [~] 1.3 Write property test for slot generation (Property 9)
+  - [-] 1.3 Write property test for slot generation (Property 9)
     - **Property 9: Slot generation matches hull properties**
     - **Validates: Requirements 2.4**
     - Add to `slotTypes.test.ts` or create `slotTypes.property.test.ts`
     - For any hull with property "X Slots": N (N > 0), `generateSlotsFromHull` produces exactly N slots of the corresponding type
 
 - [ ] 2. Implement stats computation pure function
-  - [-] 2.1 Create `computeShipStats.ts` with the pure computation function
+  - [x] 2.1 Create `computeShipStats.ts` with the pure computation function
     - Create `OE2EmpireTracker.Web/src/pages/ship-builder/computeShipStats.ts`
     - Define `ShipStats`, `WeaponSustainEntry`, `MiningSustainEntry` interfaces
     - Implement Phase 1: accumulate raw stats (additive sums, ScanLevel max, eng capacity, power/shield/weapon draws)
     - Implement Phase 2: compute derived stats (AccelerationFactor, TurnRate, JumpFuelPerJAS, JumpFuelRange, ShieldUptime, WeaponSustainTime, per-type sustainability)
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
-  - [~] 2.2 Write unit tests for `computeShipStats`
+  - [-] 2.2 Write unit tests for `computeShipStats`
     - Create `OE2EmpireTracker.Web/src/pages/ship-builder/computeShipStats.test.ts`
     - Test additive sums, ScanLevel max, derived stats, edge cases (zero mass, no components, infinite sustain)
     - _Requirements: 5.2, 5.4, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
@@ -62,17 +62,17 @@ Implement a public ship template builder page at `/ship-builder` following the C
     - **Validates: Requirements 9.2**
 
 - [ ] 3. Implement URL codec
-  - [-] 3.1 Create `urlCodec.ts` with encode/decode functions
+  - [x] 3.1 Create `urlCodec.ts` with encode/decode functions
     - Create `OE2EmpireTracker.Web/src/pages/ship-builder/urlCodec.ts`
     - Implement `encodeBuild(hullUUID, slots)` — compact hash fragment format
     - Implement `decodeBuild(hash)` — parse hash back to hull + component UUIDs
     - Define `DecodedBuild` and `DecodeError` interfaces
     - _Requirements: 11.1, 11.4, 11.7_
-  - [~] 3.2 Write unit tests for URL codec
+  - [-] 3.2 Write unit tests for URL codec
     - Create `OE2EmpireTracker.Web/src/pages/ship-builder/urlCodec.test.ts`
     - Test encode/decode round-trip, empty slots, malformed input, invalid UUIDs, missing hull
     - _Requirements: 11.1, 11.4, 11.5, 11.6, 11.7_
-  - [~] 3.3 Write property test: URL encode/decode round-trip (Property 11)
+  - [-] 3.3 Write property test: URL encode/decode round-trip (Property 11)
     - **Property 11: URL encode/decode round-trip**
     - **Validates: Requirements 11.1, 11.2, 11.3, 11.4**
 
