@@ -17,6 +17,13 @@ namespace OE2EmpireTracker.Tests.Models
         public void FixtureSetUp()
         {
             TestHelper.SetEmpireFilePath();
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            PlayerContext.Reset();
+            PlayerContext.FilePath = "nonexistent_player_data.json";
             EmpireContext.Reset();
         }
 

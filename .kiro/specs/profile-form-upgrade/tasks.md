@@ -75,7 +75,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: New test file OE2EmpireTracker.Tests/Forms/PlayerSkillBlockPropertyTests.cs_
     - _Verification: vstest.console passes_
 
-- [-] 4. Checkpoint - Verify ViewModel and SkillBlock height logic
+- [x] 4. Checkpoint - Verify ViewModel and SkillBlock height logic
   - Ensure all tests pass, ask the user if questions arise.
 
 
@@ -119,7 +119,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: New test method in PlayerSkillBlockPropertyTests.cs_
     - _Verification: vstest.console passes_
 
-- [~] 7. Checkpoint - Verify PlayerSkillBlock enhancements
+- [-] 7. Checkpoint - Verify PlayerSkillBlock enhancements
   - Ensure all tests pass, ask the user if questions arise.
 
 
