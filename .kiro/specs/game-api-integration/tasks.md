@@ -145,8 +145,8 @@ This plan implements the Game API integration infrastructure: credential managem
     - Output: `OE2EmpireTracker.Tests/Services/GameApiSyncSchedulerTests.cs`
     - Verification: vstest.console passes all tests
 
-- [ ] 11. Tests - Connection state machine
-  - [-] 11.1 Tests - Connection state machine (Property: State Machine Validity)
+- [x] 11. Tests - Connection state machine
+  - [x] 11.1 Tests - Connection state machine (Property: State Machine Validity)
     - Write NUnit + FsCheck property tests: valid transitions only (no Connected to Connected without Disconnected), backoff doubling (1s to 2s to 4s...to 60s cap), event raised on every transition, exception in handler does not prevent transition.
     - _Satisfies: Correctness Property 5 (State Machine Validity)_
     - Inputs: GameApiConnectionMonitor.cs

@@ -478,6 +478,12 @@ namespace OE2EmpireTracker.Forms
                 return;
             }
 
+            Log.Info(
+                "Game API test connection: URL='{0}', key length={1}, current player UUID='{2}'",
+                url,
+                apiKey.Length,
+                PlayerContext.GetInstance().CurrentPlayerUUID ?? "(null)");
+
             btnTestGameApiConnection.Enabled = false;
             lblTestResult.ForeColor = SystemColors.ControlText;
             lblTestResult.Text = "Testing...";
@@ -487,6 +493,7 @@ namespace OE2EmpireTracker.Forms
                 using (var client = new GameApiClient(url))
                 {
                     var result = await client.CheckHealthAsync(apiKey).ConfigureAwait(true);
+                    Log.Info("Game API test connection result: Success={0}, Message='{1}'", result.Success, result.Message);
                     if (result.Success)
                     {
                         lblTestResult.ForeColor = Color.Green;

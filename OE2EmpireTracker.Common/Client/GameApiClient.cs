@@ -47,6 +47,8 @@ namespace OE2EmpireTracker.Client
             _httpClient.Timeout = TimeSpan.FromSeconds(30);
             _rateLimiter = new SemaphoreSlim(30, 30);
 
+            Log.Info("GameApiClient created: serverUrl='{0}' (normalized from '{1}')", _serverUrl, serverUrl);
+
             _retryPolicy = Policy
                 .HandleResult<HttpResponseMessage>(r => IsTransientError(r.StatusCode))
                 .WaitAndRetryAsync(
@@ -98,18 +100,23 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(apiKey))
             {
+                Log.Warn("CheckHealthAsync called with empty API key");
                 return (false, "API key is not configured");
             }
+
+            string healthUrl = _serverUrl + "/health";
+            Log.Info("Game API health check: GET {0}", healthUrl);
 
             try
             {
                 var response = await ExecuteWithPoliciesAsync(
                     HttpMethod.Get,
-                    _serverUrl + "/health",
+                    healthUrl,
                     apiKey).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {
+                    Log.Info("Game API health check succeeded: HTTP {0}", (int)response.StatusCode);
                     return (true, "Connected");
                 }
 
@@ -119,19 +126,38 @@ namespace OE2EmpireTracker.Client
                     return (false, "Health check failed: HTTP 401");
                 }
 
+                string body = string.Empty;
+                try
+                {
+                    body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                }
+                catch
+                {
+                    // Ignore body read failures
+                }
+
+                Log.Warn(
+                    "Game API health check failed: HTTP {0} ({1}). URL: {2}. Body: {3}",
+                    (int)response.StatusCode,
+                    response.ReasonPhrase,
+                    healthUrl,
+                    string.IsNullOrEmpty(body) ? "(empty)" : body.Substring(0, Math.Min(body.Length, 500)));
+
                 return (false, string.Format("Health check failed: HTTP {0}", (int)response.StatusCode));
             }
             catch (BrokenCircuitException)
             {
+                Log.Warn("Game API health check blocked by circuit breaker. URL: {0}", healthUrl);
                 return (false, "Circuit breaker is open — too many consecutive failures");
             }
             catch (HttpRequestException ex)
             {
-                Log.Warn(ex, "Game API health check failed for {0}", _serverUrl);
+                Log.Warn(ex, "Game API health check failed for {0}", healthUrl);
                 return (false, string.Format("Connection failed: {0}", ex.Message));
             }
             catch (TaskCanceledException)
             {
+                Log.Warn("Game API health check timed out for {0}", healthUrl);
                 return (false, "Health check timed out");
             }
         }
@@ -363,6 +389,12 @@ namespace OE2EmpireTracker.Client
             string requestUrl,
             string apiKey)
         {
+            Log.Debug(
+                "Game API request: {0} {1} (key length: {2})",
+                method,
+                requestUrl,
+                apiKey?.Length ?? 0);
+
             await AcquireRateLimitTokenAsync().ConfigureAwait(false);
 
             var response = await _retryPolicy.ExecuteAsync(
@@ -372,6 +404,13 @@ namespace OE2EmpireTracker.Client
                     request.Headers.Add("X-API-Key", apiKey);
                     return _httpClient.SendAsync(request);
                 })).ConfigureAwait(false);
+
+            Log.Debug(
+                "Game API response: {0} {1} → HTTP {2} ({3})",
+                method,
+                requestUrl,
+                (int)response.StatusCode,
+                response.ReasonPhrase);
 
             HandleRateLimitResponse(response);
             UpdateRateLimitFromHeaders(response);
