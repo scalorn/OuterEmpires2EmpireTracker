@@ -80,7 +80,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 
 - [ ] 5. Implement PlayerSkillBlock progress bar
-  - [-] 5.1 Add custom-painted progress bar Panel to PlayerSkillBlock
+  - [x] 5.1 Add custom-painted progress bar Panel to PlayerSkillBlock
     - Add Panel control (60×12 px) on metadata row at y=26, after AmountPerLevel label
     - Implement Paint handler: fill width = (clamp(TrainingPercentageComplete, 0, 100) / 100.0) × 60
     - Fill color: SystemColors.Highlight; background: SystemColors.ControlLight
