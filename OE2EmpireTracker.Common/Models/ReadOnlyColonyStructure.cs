@@ -43,8 +43,10 @@ namespace OE2EmpireTracker.Models
         public int ManufacturingQuantity => _entity.ManufacturingQuantity;
         public int ManufacturingCompleted => _entity.ManufacturingCompleted;
         public bool StagingResources => _entity.StagingResources;
+#pragma warning disable CS0618 // Obsolete members exposed for backward compatibility
         public string CurrentAttitude => _entity.CurrentAttitude;
         public int ContentmentIndex => _entity.ContentmentIndex;
+#pragma warning restore CS0618
         public int WageLevel => _entity.WageLevel;
 
         public IReadOnlyDictionary<string, ReadOnlyColonyStructureStatus> Statuses =>

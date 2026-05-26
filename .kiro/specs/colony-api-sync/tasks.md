@@ -1,0 +1,128 @@
+# Tasks
+
+- [x] 1. Create building sub-model classes
+  - [x] 1.1 Create BuildingSubModels.cs with building sub-model classes
+    - Create `OE2EmpireTracker.Common/Models/BuildingSubModels.cs`
+    - Implement BuildingStatusEffect, BuildingIndustry, BuildingDetailRequirement, BuildingAttribute, BuildingExtraProperty
+    - All classes with [JsonProperty] attributes for camelCase naming
+    - All string properties default to empty string, collections initialized to empty lists
+    - _Requirements: 17.5, 17.6, 17.7, 17.8, 17.9_
+    - _Verification: getDiagnostics on the new file shows zero errors_
+  - [x] 1.2 Create ItemProperty.cs sub-model class
+    - Create `OE2EmpireTracker.Common/Models/ItemProperty.cs`
+    - Implement ItemProperty with ModTypeId, PropertyName, FriendlyPropertyName, PropertyValue, Unit
+    - [JsonProperty] attributes for camelCase naming
+    - _Requirements: 17.10_
+    - _Verification: getDiagnostics on the new file shows zero errors_
+- [x] 2. Expand Colony model
+  - [x] 2.1 Add new API-sourced properties to Colony.cs
+    - Add SystemId (int), ColonySize (int), Distance (decimal), SurfaceVariation (int), AtmosVariation (int), HexValue (string), SystemObjectTypeName (string), ImagePreFix (string), ManufacturingBlocked (int)
+    - Add WorkerCurrentAttitude (int), ContentmentIndex (int) as migrated fields
+    - All with [JsonProperty] attributes, strings default to empty, ints default to 0
+    - _Requirements: 17.1, 18.1, 18.2_
+    - _Verification: getDiagnostics on Colony.cs shows zero errors_
+  - [x] 2.2 Add migration logic to Colony.cs
+    - Add [OnDeserialized] callback that calls MigrateWorkerFields()
+    - MigrateWorkerFields: if WorkerCurrentAttitude == 0, parse from first structure CurrentAttitude string
+    - MigrateWorkerFields: if ContentmentIndex == 0, copy from first structure non-zero ContentmentIndex
+    - Clear deprecated fields on all structures after migration
+    - _Requirements: 18.6, 18.7, 18.8, 18.9_
+    - _Verification: getDiagnostics on Colony.cs shows zero errors_
+- [x] 3. Expand ColonyStructure model
+  - [x] 3.1 Add new API-sourced properties to ColonyStructure.cs
+    - Add ColonyBuildingTypeId (int), ResourceId (int), ResourceIcon (string), ManufactureAmountPerRun (int)
+    - Add DurabilityCurrent (decimal), DurabilityMax (decimal)
+    - Add OpsStatusEffects, Industries, DetailsRequired, SupportDetailsRequired, BuildingAttributes, ExtraProperties collections (all initialized to empty lists)
+    - _Requirements: 17.2, 17.11_
+    - _Verification: getDiagnostics on ColonyStructure.cs shows zero errors_
+  - [x] 3.2 Deprecate CurrentAttitude and ContentmentIndex on ColonyStructure.cs
+    - Mark CurrentAttitude with [Obsolete] attribute, retain [JsonProperty] for deserialization
+    - Mark ContentmentIndex with [Obsolete] attribute, retain [JsonProperty] for deserialization
+    - Add ShouldSerializeCurrentAttitude() => false and ShouldSerializeContentmentIndex() => false
+    - _Requirements: 18.3, 18.4, 18.5_
+    - _Verification: getDiagnostics on ColonyStructure.cs shows zero errors_
+- [x] 4. Expand Item model
+  - [x] 4.1 Add new API-sourced properties to Item.cs
+    - Add Mass (decimal?), GameItemId (int?), JobRef (int?), JobDeliveryLoc (int?)
+    - Add HealthPercentage (decimal?), LastRepairHealthPercentage (decimal?), Evolution (int?)
+    - Add ShipPartType (string), JobName (string), JobTrack (string)
+    - Add ItemProperties (List of ItemProperty) initialized to empty list
+    - All with [JsonProperty] attributes, strings default to empty, nullables default to null
+    - _Requirements: 17.3, 17.4, 17.11, 17.12_
+    - _Verification: getDiagnostics on Item.cs shows zero errors_
+- [x] 5. Build data model checkpoint
+  - Build full solution, verify zero errors and zero warnings
+- [x] 6. Create colony list DTOs
+  - [x] 6.1 Create GameApiColonyResponse.cs with colony list DTOs
+    - Create `OE2EmpireTracker.Common/Models/GameApiColonyResponse.cs`
+    - Implement GameApiColonyListResponse wrapping List of GameApiColonyListItem
+    - Implement GameApiColonyListItem with all 24 properties from design
+    - All with [JsonProperty] attributes mapping to exact API field names
+    - _Requirements: 4.1, 4.2, 4.13_
+    - _Verification: getDiagnostics on the new file shows zero errors_
+- [x] 7. Create building DTOs
+  - [x] 7.1 Add GameApiColonyBuildingsResponse and GameApiColonyBuilding DTOs
+    - Add to `OE2EmpireTracker.Common/Models/GameApiColonyResponse.cs`
+    - Implement GameApiColonyBuildingsResponse (Buildings list, Summary, ColonyCapacities)
+    - Implement GameApiColonyBuilding with all 21 properties plus nested collections
+    - Implement GameApiBuildingStatusEffect, GameApiBuildingIndustry, GameApiBuildingDetailRequirement, GameApiBuildingAttribute, GameApiBuildingExtraProperty
+    - _Requirements: 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.13_
+    - _Verification: getDiagnostics on the file shows zero errors_
+- [x] 8. Create warehouse DTOs
+  - [x] 8.1 Add GameApiColonyWarehouseResponse and GameApiWarehouseItem DTOs
+    - Add to `OE2EmpireTracker.Common/Models/GameApiColonyResponse.cs`
+    - Implement GameApiColonyWarehouseResponse (Contents list, WarehouseCapacity)
+    - Implement GameApiWarehouseItem with all 17 properties from assetCargoItem schema
+    - Implement GameApiItemProperty sub-DTO
+    - _Requirements: 4.10, 4.11, 4.12, 4.13_
+    - _Verification: getDiagnostics on the file shows zero errors_
+- [x] 9. Build DTOs checkpoint
+  - Build full solution, verify zero errors and zero warnings
+- [x] 10. Add colony endpoint methods to GameApiClient
+  - [x] 10.1 Add GetColonyListAsync method to GameApiClient.cs
+    - Add GetColonyListAsync(string appId, string accessToken) returning (bool Success, string Json)
+    - Validate accessToken not null/empty, return (false, null) if invalid
+    - Call AcquireRateLimitTokenAsync, then ExecuteWithPoliciesAsync with colony list URL
+    - Handle 200 (success), 401, 403, exceptions
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7_
+    - _Verification: getDiagnostics on GameApiClient.cs shows zero errors_
+  - [x] 10.2 Add GetColonyBuildingsAsync method to GameApiClient.cs
+    - Add GetColonyBuildingsAsync(string appId, string accessToken, int colonyId) returning (bool Success, string Json)
+    - Same pattern as GetColonyListAsync but with colonyId in URL path
+    - Handle 200, 401, 403, 404, exceptions
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
+    - _Verification: getDiagnostics on GameApiClient.cs shows zero errors_
+  - [x] 10.3 Add GetColonyWarehouseAsync method to GameApiClient.cs
+    - Add GetColonyWarehouseAsync(string appId, string accessToken, int colonyId) returning (bool Success, string Json)
+    - Same pattern as GetColonyBuildingsAsync with warehouse URL
+    - Handle 200, 401, 403, 404, exceptions
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
+    - _Verification: getDiagnostics on GameApiClient.cs shows zero errors_
+- [x] 11. Build API client checkpoint
+  - Build full solution, verify zero errors and zero warnings
+- [x] 12. Write migration tests
+  - [x] 12.1 Write unit tests for Colony deserialization migration
+    - Create `OE2EmpireTracker.Tests/Models/ColonyMigrationTests.cs`
+    - Test: legacy JSON with CurrentAttitude on structure migrates to Colony.WorkerCurrentAttitude
+    - Test: legacy JSON with ContentmentIndex on structure migrates to Colony.ContentmentIndex
+    - Test: deprecated fields cleared after migration
+    - Test: migration is idempotent
+    - Test: invalid CurrentAttitude string defaults to 0
+    - Test: already-migrated data skips reprocessing
+    - _Requirements: 18.4, 18.6, 18.7, 18.8, 18.9_
+    - _Verification: vstest.console runs these tests and all pass_
+- [ ] 13. Create API discovery test fixture
+  - [-] 13.1 Create GameApiColonyDiscoveryTests.cs test fixture
+    - Create `OE2EmpireTracker.Tests/Client/GameApiColonyDiscoveryTests.cs`
+    - NUnit TestFixture marked Explicit (manual execution only)
+    - Test: PullColonyList authenticates, calls GET /v1/colonies, writes raw JSON to TestResults/colony-list-raw.json
+    - Test: PullColonyBuildings calls GET /v1/colonies/{id}/buildings for first colony with RemoteAccess > 0, writes raw JSON
+    - Test: PullColonyWarehouse calls GET /v1/colonies/{id}/warehouse, writes raw JSON
+    - Test: ProduceMappingReport deserializes responses, compares to local model, writes report to .kiro/specs/colony-api-sync/api-mapping-report.md
+    - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5, 16.6_
+    - _Verification: getDiagnostics on the test file shows zero errors_
+- [~] 14. Phase 1 complete checkpoint
+  - Build full solution, verify zero errors and zero warnings
+  - All migration tests pass via vstest.console
+  - DISCOVERY GATE: Run the Explicit discovery tests manually against the real API
+  - Produce the mapping report and confirm typeC/typeId mappings before proceeding to Phase 2

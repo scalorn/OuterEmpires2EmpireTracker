@@ -259,6 +259,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\DesktopSyncMigrationTests.cs" />
+    <Compile Include="Client\GameApiColonyDiscoveryTests.cs" />
     <Compile Include="Client\GameApiClient429Tests.cs" />
     <Compile Include="Client\GameApiRateLimiterTests.cs" />
     <Compile Include="Services\BackgroundProcessorTests.cs" />
@@ -277,6 +278,7 @@
     <Compile Include="Services\ColonyActivityCollectorTests.cs" />
     <Compile Include="Services\ColonyInactivityCollectorTests.cs" />
     <Compile Include="Services\ColonyBuildEligibilityTests.cs" />
+    <Compile Include="Models\ColonyMigrationTests.cs" />
     <Compile Include="Models\ColonyBuildCompletionTests.cs" />
     <Compile Include="Models\ColonyProcessingTests.cs" />
     <Compile Include="Models\ColonyStructureTests.cs" />

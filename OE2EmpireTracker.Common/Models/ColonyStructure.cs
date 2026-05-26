@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Constants;
 
 namespace OE2EmpireTracker.Models
@@ -83,8 +84,48 @@ namespace OE2EmpireTracker.Models
         [JsonIgnore]
         public StructureStatusDelta StatusDelta { get; set; }
 
+        [JsonProperty("colonyBuildingTypeId")]
+        public int ColonyBuildingTypeId { get; set; }
+
+        [JsonProperty("resourceId")]
+        public int ResourceId { get; set; }
+
+        [JsonProperty("resourceIcon")]
+        public string ResourceIcon { get; set; } = string.Empty;
+
+        [JsonProperty("manufactureAmountPerRun")]
+        public int ManufactureAmountPerRun { get; set; }
+
+        [JsonProperty("durabilityCurrent")]
+        public decimal DurabilityCurrent { get; set; }
+
+        [JsonProperty("durabilityMax")]
+        public decimal DurabilityMax { get; set; }
+
+        [JsonProperty("opsStatusEffects")]
+        public List<BuildingStatusEffect> OpsStatusEffects { get; set; } = new List<BuildingStatusEffect>();
+
+        [JsonProperty("industries")]
+        public List<BuildingIndustry> Industries { get; set; } = new List<BuildingIndustry>();
+
+        [JsonProperty("detailsRequired")]
+        public List<BuildingDetailRequirement> DetailsRequired { get; set; } = new List<BuildingDetailRequirement>();
+
+        [JsonProperty("supportDetailsRequired")]
+        public List<BuildingDetailRequirement> SupportDetailsRequired { get; set; } = new List<BuildingDetailRequirement>();
+
+        [JsonProperty("buildingAttributes")]
+        public List<BuildingAttribute> BuildingAttributes { get; set; } = new List<BuildingAttribute>();
+
+        [JsonProperty("extraProperties")]
+        public List<BuildingExtraProperty> ExtraProperties { get; set; } = new List<BuildingExtraProperty>();
+
+        [JsonProperty("currentAttitude")]
+        [Obsolete("Migrated to Colony.WorkerCurrentAttitude")]
         public string CurrentAttitude { get; set; } = string.Empty;
 
+        [JsonProperty("contentmentIndex")]
+        [Obsolete("Migrated to Colony.ContentmentIndex")]
         public int ContentmentIndex { get; set; }
 
         public int WageLevel { get; set; }
@@ -99,5 +140,15 @@ namespace OE2EmpireTracker.Models
         private DateTime Completion { get; set; }
 
         private DateTime WageAdjustmentTime { get; set; }
+
+        /// <summary>
+        /// Newtonsoft.Json ShouldSerialize convention: suppresses serialization of deprecated CurrentAttitude.
+        /// </summary>
+        public bool ShouldSerializeCurrentAttitude() => false;
+
+        /// <summary>
+        /// Newtonsoft.Json ShouldSerialize convention: suppresses serialization of deprecated ContentmentIndex.
+        /// </summary>
+        public bool ShouldSerializeContentmentIndex() => false;
     }
 }

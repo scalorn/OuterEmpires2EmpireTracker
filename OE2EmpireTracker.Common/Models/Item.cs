@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
@@ -106,5 +107,38 @@ namespace OE2EmpireTracker.Models
         public int MaxHP { get; set; } = 0;
 
         public decimal MaxRepairPercent { get; set; } = 0m;
+
+        [JsonProperty]
+        public decimal? Mass { get; set; }
+
+        [JsonProperty]
+        public int? GameItemId { get; set; }
+
+        [JsonProperty]
+        public int? JobRef { get; set; }
+
+        [JsonProperty]
+        public int? JobDeliveryLoc { get; set; }
+
+        [JsonProperty]
+        public decimal? HealthPercentage { get; set; }
+
+        [JsonProperty]
+        public decimal? LastRepairHealthPercentage { get; set; }
+
+        [JsonProperty]
+        public int? Evolution { get; set; }
+
+        [JsonProperty]
+        public string ShipPartType { get; set; } = string.Empty;
+
+        [JsonProperty]
+        public string JobName { get; set; } = string.Empty;
+
+        [JsonProperty]
+        public string JobTrack { get; set; } = string.Empty;
+
+        [JsonProperty]
+        public List<ItemProperty> ItemProperties { get; set; } = new List<ItemProperty>();
     }
 }

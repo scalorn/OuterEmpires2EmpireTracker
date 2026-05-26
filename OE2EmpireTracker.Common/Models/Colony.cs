@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 using Newtonsoft.Json;
 using NLog;
@@ -46,6 +47,39 @@ namespace OE2EmpireTracker.Models
         public List<CommodityRequested> Commodities { get; set; }
 
         public string LastImportDateTime { get; set; }
+
+        [JsonProperty("systemId")]
+        public int SystemId { get; set; }
+
+        [JsonProperty("colonySize")]
+        public int ColonySize { get; set; }
+
+        [JsonProperty("distance")]
+        public decimal Distance { get; set; }
+
+        [JsonProperty("surfaceVariation")]
+        public int SurfaceVariation { get; set; }
+
+        [JsonProperty("atmosVariation")]
+        public int AtmosVariation { get; set; }
+
+        [JsonProperty("hexValue")]
+        public string HexValue { get; set; } = string.Empty;
+
+        [JsonProperty("systemObjectTypeName")]
+        public string SystemObjectTypeName { get; set; } = string.Empty;
+
+        [JsonProperty("imagePreFix")]
+        public string ImagePreFix { get; set; } = string.Empty;
+
+        [JsonProperty("manufacturingBlocked")]
+        public int ManufacturingBlocked { get; set; }
+
+        [JsonProperty("workerCurrentAttitude")]
+        public int WorkerCurrentAttitude { get; set; }
+
+        [JsonProperty("contentmentIndex")]
+        public int ContentmentIndex { get; set; }
 
         public OE2EmpireTracker.Models.LockTracking Locks { get; set; }
 
@@ -276,6 +310,46 @@ namespace OE2EmpireTracker.Models
             foreach (var (structure, bp) in ready)
                 if (bp.BluePrintType == BlueprintTypes.ResearchLaboratory)
                     ProcessResearchLab(context, structure);
+        }
+
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context)
+        {
+            MigrateWorkerFields();
+        }
+
+        private void MigrateWorkerFields()
+        {
+#pragma warning disable CS0618 // Obsolete members accessed intentionally for migration
+            if (WorkerCurrentAttitude == 0 && Structures != null)
+            {
+                var source = Structures.FirstOrDefault(s =>
+                    !string.IsNullOrEmpty(s.CurrentAttitude));
+                if (source != null)
+                {
+                    int.TryParse(source.CurrentAttitude, out int parsed);
+                    WorkerCurrentAttitude = parsed;
+                }
+            }
+
+            if (ContentmentIndex == 0 && Structures != null)
+            {
+                var source = Structures.FirstOrDefault(s => s.ContentmentIndex != 0);
+                if (source != null)
+                {
+                    ContentmentIndex = source.ContentmentIndex;
+                }
+            }
+
+            if (Structures != null)
+            {
+                foreach (var s in Structures)
+                {
+                    s.CurrentAttitude = string.Empty;
+                    s.ContentmentIndex = 0;
+                }
+            }
+#pragma warning restore CS0618
         }
 
         /// <summary>

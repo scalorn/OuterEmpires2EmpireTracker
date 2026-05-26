@@ -372,6 +372,204 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
+        /// Retrieves the colony list from the game API.
+        /// Requires a valid access token and app ID.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetColonyListAsync(string appId, string accessToken)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    _serverUrl + "/v1/colonies",
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetColonyList received HTTP 401 \u2014 token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetColonyList received HTTP 403 \u2014 colony.list.read scope not granted");
+                    return (false, "403");
+                }
+
+                Log.Warn("Game API GetColonyList failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetColonyList blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetColonyList request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetColonyList request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the buildings for a specific colony from the game API.
+        /// </summary>
+        /// <param name="appId">The application identifier for the API request header.</param>
+        /// <param name="accessToken">The OAuth access token for authorization.</param>
+        /// <param name="colonyId">The colony identifier to fetch buildings for.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetColonyBuildingsAsync(string appId, string accessToken, int colonyId)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    _serverUrl + "/v1/colonies/" + colonyId + "/buildings",
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetColonyBuildings received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetColonyBuildings received HTTP 403 — colony.buildings.read scope not granted");
+                    return (false, "403");
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Log.Warn("Game API GetColonyBuildings received HTTP 404 — colony not found or not owned");
+                    return (false, "404");
+                }
+
+                Log.Warn("Game API GetColonyBuildings failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetColonyBuildings blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetColonyBuildings request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetColonyBuildings request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the warehouse contents for a specific colony from the game API.
+        /// </summary>
+        /// <param name="appId">The application identifier for the API request header.</param>
+        /// <param name="accessToken">The OAuth access token for authorization.</param>
+        /// <param name="colonyId">The colony identifier to fetch warehouse for.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetColonyWarehouseAsync(string appId, string accessToken, int colonyId)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    _serverUrl + "/v1/colonies/" + colonyId + "/warehouse",
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetColonyWarehouse received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetColonyWarehouse received HTTP 403 — colony.warehouse.read scope not granted");
+                    return (false, "403");
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Log.Warn("Game API GetColonyWarehouse received HTTP 404 — colony not found or not owned");
+                    return (false, "404");
+                }
+
+                Log.Warn("Game API GetColonyWarehouse failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetColonyWarehouse blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetColonyWarehouse request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetColonyWarehouse request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
         /// Invalidates any cached token for the given credentials.
         /// Call this when a 401 is received to force re-authentication on next request.
         /// </summary>

@@ -1,3 +1,4 @@
+#pragma warning disable CS0618 // Tests intentionally exercise deprecated members
 using System;
 using System.IO;
 using Newtonsoft.Json;
@@ -304,8 +305,8 @@ namespace OE2EmpireTracker.Tests.Models
             Assert.That(restored.FlatpackBlueprintUUID, Is.EqualTo(structure.FlatpackBlueprintUUID));
             Assert.That(restored.DisplaySequence, Is.EqualTo(structure.DisplaySequence));
             Assert.That(restored.BuildQueueSequence, Is.EqualTo(structure.BuildQueueSequence));
-            Assert.That(restored.CurrentAttitude, Is.EqualTo(structure.CurrentAttitude));
-            Assert.That(restored.ContentmentIndex, Is.EqualTo(structure.ContentmentIndex));
+            Assert.That(restored.CurrentAttitude, Is.EqualTo(string.Empty), "Deprecated field not serialized");
+            Assert.That(restored.ContentmentIndex, Is.EqualTo(0), "Deprecated field not serialized");
             Assert.That(restored.WageLevel, Is.EqualTo(structure.WageLevel));
         }
 
@@ -369,8 +370,8 @@ namespace OE2EmpireTracker.Tests.Models
             Assert.That(restored.FlatpackBlueprintUUID, Is.EqualTo(structure.FlatpackBlueprintUUID));
             Assert.That(restored.DisplaySequence, Is.EqualTo(structure.DisplaySequence));
             Assert.That(restored.BuildQueueSequence, Is.EqualTo(structure.BuildQueueSequence));
-            Assert.That(restored.CurrentAttitude, Is.EqualTo(structure.CurrentAttitude));
-            Assert.That(restored.ContentmentIndex, Is.EqualTo(structure.ContentmentIndex));
+            Assert.That(restored.CurrentAttitude, Is.EqualTo(string.Empty), "Deprecated field not serialized");
+            Assert.That(restored.ContentmentIndex, Is.EqualTo(0), "Deprecated field not serialized");
             Assert.That(restored.WageLevel, Is.EqualTo(structure.WageLevel));
             Assert.That(restored.MiningSurvey, Is.EqualTo(structure.MiningSurvey));
             Assert.That(restored.MiningSurveyResource, Is.EqualTo(structure.MiningSurveyResource));
