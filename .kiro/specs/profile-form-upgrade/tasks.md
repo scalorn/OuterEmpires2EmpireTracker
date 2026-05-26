@@ -29,7 +29,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 
 - [ ] 2. Implement FormatActiveTime helper method
-  - [-] 2.1 Create static FormatActiveTime method on PlayerProfileViewModel
+  - [x] 2.1 Create static FormatActiveTime method on PlayerProfileViewModel
     - Implement conversion: totalMinutes → "{D}d {H}h {M}m" with leading-zero omission rules
     - If totalMinutes <= 0: return "—" (em-dash U+2014)
     - Omit "0d" when D==0; omit "0h" only when both D==0 and H==0
