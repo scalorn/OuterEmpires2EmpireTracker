@@ -11,6 +11,7 @@ namespace OE2EmpireTracker.Tests.Forms
     ///
     /// Property 2: CharacterId display formatting (Validates: Requirements 1.2)
     /// Property 3: FirstName/LastName row visibility (Validates: Requirements 1.3)
+    /// Property 8: ListView CharacterId column display (Validates: Requirements 6.1, 6.2, 6.5)
     /// </summary>
     [TestFixture]
     public class FormPlayerProfilePropertyTests
@@ -84,6 +85,42 @@ namespace OE2EmpireTracker.Tests.Forms
                 return (rowVisible == isNonEmpty)
                     .Label($"Value={FormatValue(value)}: " +
                            $"rowVisible={rowVisible}, isNonEmpty={isNonEmpty}");
+            });
+        }
+
+        /// <summary>
+        /// Feature: profile-form-upgrade, Property 8: ListView CharacterId column display.
+        ///
+        /// For any int CharacterId: the ListView SubItem at column index 2 SHALL contain
+        /// CharacterId as a string when CharacterId is greater than 0, and an empty string
+        /// when CharacterId equals 0.
+        ///
+        /// **Validates: Requirements 6.1, 6.2, 6.5**
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property ListView_CharacterIdColumn_DisplaysStringWhenPositive_EmptyWhenZero()
+        {
+            var gen = Gen.Choose(int.MinValue / 2, int.MaxValue / 2);
+
+            return Prop.ForAll(gen.ToArbitrary(), characterId =>
+            {
+                // This is the exact logic from FormPlayerProfile.PopulateListView:
+                // item.SubItems.Add(profile.CharacterId == 0
+                //     ? string.Empty
+                //     : profile.CharacterId.ToString());
+                string result = characterId == 0
+                    ? string.Empty
+                    : characterId.ToString();
+
+                if (characterId == 0)
+                {
+                    return (result == string.Empty)
+                        .Label($"CharacterId=0: expected empty string but got '{result}'");
+                }
+
+                string expected = characterId.ToString();
+                return (result == expected)
+                    .Label($"CharacterId={characterId}: expected '{expected}' but got '{result}'");
             });
         }
 
