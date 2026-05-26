@@ -101,7 +101,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Verification: vstest.console passes_
 
 
-- [ ] 6. Implement PlayerSkillBlock remaining time label
+- [x] 6. Implement PlayerSkillBlock remaining time label
   - [x] 6.1 Add remaining time label to PlayerSkillBlock metadata row
     - Display FormatActiveTime(RemainingMinutes) after progress bar (or after AmountPerLevel if no progress bar)
     - Set Visible = false when RemainingMinutes <= 0
@@ -111,7 +111,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified PlayerSkillBlock.cs_
     - _Verification: getDiagnostics clean, build succeeds_
 
-  - [-] 6.2 Write property test: Remaining time label visibility
+  - [x] 6.2 Write property test: Remaining time label visibility
     - **Property 7: Remaining time label visibility**
     - **Validates: Requirements 5.1, 5.3, 5.5**
     - For any int RemainingMinutes: label visible iff RemainingMinutes > 0; negative treated as 0
@@ -124,7 +124,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 
 - [ ] 8. Add identity fields to FormPlayerProfile
-  - [-] 8.1 Add CharacterId, FirstName, LastName labels to FormPlayerProfile
+  - [x] 8.1 Add CharacterId, FirstName, LastName labels to FormPlayerProfile
     - Add lblCharacterId / lblCharacterIdValue after Player Name row
     - Show CharacterId value or "—" when <= 0
     - Add lblFirstName / lblFirstNameValue — hide row when empty
@@ -135,7 +135,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified FormPlayerProfile.cs and Designer.cs_
     - _Verification: getDiagnostics clean, build succeeds_
 
-  - [~] 8.2 Write property test: CharacterId display formatting
+  - [-] 8.2 Write property test: CharacterId display formatting
     - **Property 2: CharacterId display formatting**
     - **Validates: Requirements 1.2**
     - For any int CharacterId: display "—" when <= 0, decimal string when > 0
@@ -143,7 +143,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: New test file OE2EmpireTracker.Tests/Forms/FormPlayerProfilePropertyTests.cs_
     - _Verification: vstest.console passes_
 
-  - [~] 8.3 Write property test: FirstName/LastName row visibility
+  - [-] 8.3 Write property test: FirstName/LastName row visibility
     - **Property 3: FirstName/LastName row visibility**
     - **Validates: Requirements 1.3**
     - For any string value: row visible iff string is non-empty (not null and not "")
@@ -153,7 +153,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 
 - [ ] 9. Add active time display to FormPlayerProfile
-  - [~] 9.1 Add Active Time label and formatted value to FormPlayerProfile
+  - [-] 9.1 Add Active Time label and formatted value to FormPlayerProfile
     - Add lblActiveTime / lblActiveTimeValue after First/Last Name rows
     - Display FormatActiveTime(ActiveTimeMinutes) from ViewModel
     - Update PopulateForm to set active time label

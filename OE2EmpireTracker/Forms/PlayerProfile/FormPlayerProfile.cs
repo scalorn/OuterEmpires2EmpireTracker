@@ -137,6 +137,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             flpFirstName.Visible = !string.IsNullOrEmpty(viewModel.FirstName);
             lblLastNameValue.Text = viewModel.LastName ?? string.Empty;
             flpLastName.Visible = !string.IsNullOrEmpty(viewModel.LastName);
+            lblActiveTimeValue.Text = PlayerProfileViewModel.FormatActiveTime(viewModel.ActiveTimeMinutes);
             cmbFaction.Text = viewModel.Faction;
             txtTotalCredits.Text = viewModel.TotalCredits.ToString();
             txtSkillPoints.Text = viewModel.SkillPoints.ToString();

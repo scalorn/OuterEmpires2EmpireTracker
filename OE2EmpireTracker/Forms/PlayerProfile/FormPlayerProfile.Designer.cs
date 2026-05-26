@@ -51,6 +51,9 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpLastName = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLastName = new System.Windows.Forms.Label();
             this.lblLastNameValue = new System.Windows.Forms.Label();
+            this.flpActiveTime = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblActiveTime = new System.Windows.Forms.Label();
+            this.lblActiveTimeValue = new System.Windows.Forms.Label();
             this.flpTotalCredits = new System.Windows.Forms.FlowLayoutPanel();
             this.lblTotalCredits = new System.Windows.Forms.Label();
             this.txtTotalCredits = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -172,6 +175,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpCharacterId.SuspendLayout();
             this.flpFirstName.SuspendLayout();
             this.flpLastName.SuspendLayout();
+            this.flpActiveTime.SuspendLayout();
             this.flpTotalCredits.SuspendLayout();
             this.flpFaction.SuspendLayout();
             this.flpPublicRankBlock.SuspendLayout();
@@ -329,6 +333,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpPlayerDetails.Controls.Add(this.flpCharacterId);
             this.flpPlayerDetails.Controls.Add(this.flpFirstName);
             this.flpPlayerDetails.Controls.Add(this.flpLastName);
+            this.flpPlayerDetails.Controls.Add(this.flpActiveTime);
             this.flpPlayerDetails.Controls.Add(this.flpTotalCredits);
             this.flpPlayerDetails.Controls.Add(this.flpFaction);
             this.flpPlayerDetails.Controls.Add(this.flpPublicRankBlock);
@@ -481,6 +486,39 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.lblLastNameValue.Size = new System.Drawing.Size(200, 17);
             this.lblLastNameValue.TabIndex = 1;
             this.lblLastNameValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // flpActiveTime
+            // 
+            this.flpActiveTime.AutoSize = true;
+            this.flpActiveTime.Controls.Add(this.lblActiveTime);
+            this.flpActiveTime.Controls.Add(this.lblActiveTimeValue);
+            this.flpActiveTime.Location = new System.Drawing.Point(2, 122);
+            this.flpActiveTime.Margin = new System.Windows.Forms.Padding(2);
+            this.flpActiveTime.Name = "flpActiveTime";
+            this.flpActiveTime.Size = new System.Drawing.Size(310, 26);
+            this.flpActiveTime.TabIndex = 23;
+            // 
+            // lblActiveTime
+            // 
+            this.lblActiveTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblActiveTime.Location = new System.Drawing.Point(2, 4);
+            this.lblActiveTime.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblActiveTime.Name = "lblActiveTime";
+            this.lblActiveTime.Size = new System.Drawing.Size(100, 17);
+            this.lblActiveTime.TabIndex = 0;
+            this.lblActiveTime.Text = "Active Time";
+            this.lblActiveTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblActiveTimeValue
+            // 
+            this.lblActiveTimeValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblActiveTimeValue.Location = new System.Drawing.Point(107, 4);
+            this.lblActiveTimeValue.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.lblActiveTimeValue.Name = "lblActiveTimeValue";
+            this.lblActiveTimeValue.Size = new System.Drawing.Size(200, 17);
+            this.lblActiveTimeValue.TabIndex = 1;
+            this.lblActiveTimeValue.Text = "\u2014";
+            this.lblActiveTimeValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // flpTotalCredits
             // 
@@ -1803,6 +1841,8 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpFirstName.PerformLayout();
             this.flpLastName.ResumeLayout(false);
             this.flpLastName.PerformLayout();
+            this.flpActiveTime.ResumeLayout(false);
+            this.flpActiveTime.PerformLayout();
             this.flpTotalCredits.ResumeLayout(false);
             this.flpTotalCredits.PerformLayout();
             this.flpFaction.ResumeLayout(false);
@@ -1904,6 +1944,9 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private System.Windows.Forms.FlowLayoutPanel flpLastName;
         private System.Windows.Forms.Label lblLastName;
         private System.Windows.Forms.Label lblLastNameValue;
+        private System.Windows.Forms.FlowLayoutPanel flpActiveTime;
+        private System.Windows.Forms.Label lblActiveTime;
+        private System.Windows.Forms.Label lblActiveTimeValue;
         private System.Windows.Forms.FlowLayoutPanel flpTotalCredits;
         private System.Windows.Forms.Label lblTotalCredits;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtTotalCredits;
