@@ -27,9 +27,12 @@ export function SlotItem({ slot }: SlotItemProps) {
     const filtered = blueprintList.filter(
       (bp) => compatibleTypes.includes(bp.bluePrintType) && bp.class === hullDetail.class,
     );
+    const sorted = filtered
+      .map((bp) => ({ value: bp.uuid, label: bp.name }))
+      .sort((a, b) => a.label.localeCompare(b.label));
     return [
       { value: '', label: '— None —' },
-      ...filtered.map((bp) => ({ value: bp.uuid, label: bp.name })),
+      ...sorted,
     ];
   }, [blueprintList, hullDetail, slot.slotType]);
 

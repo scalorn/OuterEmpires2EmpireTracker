@@ -26,7 +26,8 @@ export function HullSelector() {
       .map((bp) => ({
         value: bp.uuid,
         label: `${bp.name} (Class ${bp.class})`,
-      }));
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [blueprintList]);
 
   const isHullLoading = selectedHullUUID !== null && loadingUUIDs.has(selectedHullUUID);
