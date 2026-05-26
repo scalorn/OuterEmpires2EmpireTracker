@@ -56,7 +56,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Verification: vstest.console passes_
 
 
-- [ ] 3. Implement PlayerSkillBlock dynamic height
+- [x] 3. Implement PlayerSkillBlock dynamic height
   - [x] 3.1 Add height calculation logic to PlayerSkillBlock SkillData setter
     - When any metadata present (EffectDescription non-empty, AmountPerLevel > 0, TrainingPercentageComplete > 0, RemainingMinutes > 0): set height to 42px
     - When no metadata: set height to 24px
@@ -67,7 +67,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified PlayerSkillBlock.cs_
     - _Verification: getDiagnostics clean, build succeeds_
 
-  - [-] 3.2 Write property test: PlayerSkillBlock height calculation
+  - [x] 3.2 Write property test: PlayerSkillBlock height calculation
     - **Property 5: PlayerSkillBlock height calculation**
     - **Validates: Requirements 3.1, 3.2, 3.6**
     - For any LocalSkillData, height is 42 when any metadata field is non-zero/non-empty, 24 otherwise
@@ -91,7 +91,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified PlayerSkillBlock.cs and Designer.cs_
     - _Verification: getDiagnostics clean, build succeeds_
 
-  - [~] 5.2 Write property test: Progress bar width and visibility
+  - [-] 5.2 Write property test: Progress bar width and visibility
     - **Property 6: Progress bar width and visibility**
     - **Validates: Requirements 4.1, 4.2, 4.3, 4.4**
     - For any int TrainingPercentageComplete: hidden when 0, visible otherwise
@@ -102,7 +102,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 
 - [ ] 6. Implement PlayerSkillBlock remaining time label
-  - [~] 6.1 Add remaining time label to PlayerSkillBlock metadata row
+  - [x] 6.1 Add remaining time label to PlayerSkillBlock metadata row
     - Display FormatActiveTime(RemainingMinutes) after progress bar (or after AmountPerLevel if no progress bar)
     - Set Visible = false when RemainingMinutes <= 0
     - Treat negative RemainingMinutes as 0 (hide label)

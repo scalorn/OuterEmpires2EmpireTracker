@@ -119,7 +119,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             // Remaining time (Req 11.4)
             bool hasRemaining = _skillData.RemainingMinutes > 0;
-            this.lblRemainingTime.Text = FormatMinutesAsCountdown(_skillData.RemainingMinutes);
+            this.lblRemainingTime.Text = PlayerProfileViewModel.FormatActiveTime(_skillData.RemainingMinutes);
             this.lblRemainingTime.Visible = hasRemaining;
 
             // Dynamic height based on metadata presence (Req 3)
@@ -131,28 +131,6 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 this.MaximumSize = new Size(450, targetHeight);
                 this.Size = new Size(450, targetHeight);
             }
-        }
-
-        private static string FormatMinutesAsCountdown(int totalMinutes)
-        {
-            int days = totalMinutes / (24 * 60);
-            int hours = (totalMinutes % (24 * 60)) / 60;
-            int minutes = totalMinutes % 60;
-
-            string result = string.Empty;
-            if (days > 0)
-            {
-                result += string.Format("{0}d ", days);
-            }
-
-            if (days > 0 || hours > 0)
-            {
-                result += string.Format("{0}h ", hours);
-            }
-
-            result += string.Format("{0}m", minutes);
-            result += " 0s";
-            return result.Trim();
         }
 
         private void PnlTrainingProgress_Paint(object sender, PaintEventArgs e)
