@@ -196,7 +196,7 @@ namespace OE2EmpireTracker.Parsers
                 {
                     string title = NormalizeWhitespace(titleNodes[0].InnerText);
                     if (!string.IsNullOrEmpty(title))
-                        rank.Title = title;
+                        rank.RankName = title;
                 }
 
                 // Extract rank level from LevelTrack_LevelNumber -- text is like "Rank 42"
@@ -218,8 +218,8 @@ namespace OE2EmpireTracker.Parsers
                     string[] parts = xpText.Split('/');
                     if (parts.Length == 2)
                     {
-                        rank.CurrentXP = ParseFormattedNumber(parts[0].Trim());
-                        rank.NextXP = ParseFormattedNumber(parts[1].Trim());
+                        rank.CurrentXp = ParseFormattedNumber(parts[0].Trim());
+                        rank.XpToNextLevel = ParseFormattedNumber(parts[1].Trim());
                     }
                 }
             }

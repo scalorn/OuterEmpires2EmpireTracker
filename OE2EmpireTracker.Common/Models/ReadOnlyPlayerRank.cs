@@ -15,9 +15,9 @@ namespace OE2EmpireTracker.Models
         }
 
         public int Rank => _entity.Rank;
-        public long CurrentXP => _entity.CurrentXP;
-        public long NextXP => _entity.NextXP;
-        public string Title => _entity.Title;
+        public long CurrentXp => _entity.CurrentXp;
+        public long XpToNextLevel => _entity.XpToNextLevel;
+        public string RankName => _entity.RankName;
 
         public override bool Equals(object obj)
         {
@@ -28,6 +28,6 @@ namespace OE2EmpireTracker.Models
 
         public override int GetHashCode() => _entity.GetHashCode();
 
-        public override string ToString() => _entity.Title;
+        public override string ToString() => _entity.RankName;
     }
 }

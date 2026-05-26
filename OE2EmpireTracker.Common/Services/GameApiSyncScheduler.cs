@@ -233,6 +233,54 @@ namespace OE2EmpireTracker.Services
                 changed = true;
             }
 
+            // Merge CharacterId (Req 1, 9.1)
+            if (remote.CharacterId != 0 && remote.CharacterId != local.CharacterId)
+            {
+                Log.Info(
+                    "Profile merge conflict: CharacterId '{0}' -> '{1}' (strategy: API wins)",
+                    local.CharacterId,
+                    remote.CharacterId);
+                local.CharacterId = remote.CharacterId;
+                changed = true;
+            }
+
+            // Merge FirstName (Req 2, 9.2)
+            if (remote.FirstName != null && remote.FirstName != local.FirstName)
+            {
+                Log.Info(
+                    "Profile merge conflict: FirstName '{0}' -> '{1}' (strategy: API wins)",
+                    local.FirstName,
+                    remote.FirstName);
+                local.FirstName = remote.FirstName;
+                changed = true;
+            }
+
+            // Merge LastName (Req 2, 9.2)
+            if (remote.LastName != null && remote.LastName != local.LastName)
+            {
+                Log.Info(
+                    "Profile merge conflict: LastName '{0}' -> '{1}' (strategy: API wins)",
+                    local.LastName,
+                    remote.LastName);
+                local.LastName = remote.LastName;
+                changed = true;
+            }
+
+            // Merge ActiveTimeMinutes (Req 3, 9.3)
+            if (remote.ActiveTimeMinutes != 0 || local.ActiveTimeMinutes != 0)
+            {
+                int value = remote.ActiveTimeMinutes < 0 ? 0 : remote.ActiveTimeMinutes;
+                if (value != local.ActiveTimeMinutes)
+                {
+                    Log.Info(
+                        "Profile merge conflict: ActiveTimeMinutes '{0}' -> '{1}' (strategy: API wins, clamped)",
+                        local.ActiveTimeMinutes,
+                        value);
+                    local.ActiveTimeMinutes = value;
+                    changed = true;
+                }
+            }
+
             // Merge Ranks
             if (remote.Ranks != null)
             {
@@ -244,7 +292,7 @@ namespace OE2EmpireTracker.Services
             // Merge Skills (overwrite levels from API, preserve TrainingStarted and CompletionTime)
             if (remote.Skills != null)
             {
-                changed |= MergeSkills(local, remote.Skills);
+                changed |= MergeSkills(local, remote.Skills, remote.SkillInTraining);
             }
 
             return changed;
@@ -457,14 +505,36 @@ namespace OE2EmpireTracker.Services
                 changed = true;
             }
 
-            if (remoteRank.Name != null && remoteRank.Name != localRank.Title)
+            if (remoteRank.LevelName != null && remoteRank.LevelName != localRank.RankName)
             {
                 Log.Info(
-                    "Profile merge conflict: {0}.Title '{1}' -> '{2}' (strategy: API wins)",
+                    "Profile merge conflict: {0}.RankName '{1}' -> '{2}' (strategy: API wins)",
                     rankName,
-                    localRank.Title,
-                    remoteRank.Name);
-                localRank.Title = remoteRank.Name;
+                    localRank.RankName,
+                    remoteRank.LevelName);
+                localRank.RankName = remoteRank.LevelName;
+                changed = true;
+            }
+
+            if (remoteRank.XpToNextLevel != localRank.XpToNextLevel)
+            {
+                Log.Info(
+                    "Profile merge conflict: {0}.XpToNextLevel '{1}' -> '{2}' (strategy: API wins)",
+                    rankName,
+                    localRank.XpToNextLevel,
+                    remoteRank.XpToNextLevel);
+                localRank.XpToNextLevel = remoteRank.XpToNextLevel;
+                changed = true;
+            }
+
+            if (remoteRank.CurrentXp != localRank.CurrentXp)
+            {
+                Log.Info(
+                    "Profile merge conflict: {0}.CurrentXp '{1}' -> '{2}' (strategy: API wins)",
+                    rankName,
+                    localRank.CurrentXp,
+                    remoteRank.CurrentXp);
+                localRank.CurrentXp = remoteRank.CurrentXp;
                 changed = true;
             }
 
@@ -473,13 +543,17 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Merges skills from the API response into the local profile.
-        /// Updates skill levels from the API while preserving local-only fields
-        /// (TrainingStarted, CompletionTime).
+        /// Updates skill levels, metadata, and training progress from the API
+        /// while preserving local-only fields (TrainingStarted, CompletionTime).
         /// </summary>
         /// <param name="local">The local player profile.</param>
         /// <param name="remoteSkills">The skills dictionary from the API response.</param>
-        /// <returns>True if any skill levels were changed.</returns>
-        private static bool MergeSkills(PlayerProfile local, Dictionary<string, GameApiSkillResponse> remoteSkills)
+        /// <param name="skillInTraining">The skill currently in training, or null if none.</param>
+        /// <returns>True if any skill fields were changed.</returns>
+        private static bool MergeSkills(
+            PlayerProfile local,
+            Dictionary<string, GameApiSkillResponse> remoteSkills,
+            GameApiSkillInTrainingResponse skillInTraining)
         {
             bool changed = false;
 
@@ -498,6 +572,81 @@ namespace OE2EmpireTracker.Services
                         remoteSkill.Level);
                     localSkill.Level = remoteSkill.Level;
                     changed = true;
+                }
+
+                // Merge metadata (Req 6, 9.6)
+                if (remoteSkill.SkillId != localSkill.SkillId)
+                {
+                    localSkill.SkillId = remoteSkill.SkillId;
+                    changed = true;
+                }
+
+                string effectDesc = remoteSkill.EffectDescription ?? string.Empty;
+                if (effectDesc != localSkill.EffectDescription)
+                {
+                    localSkill.EffectDescription = effectDesc;
+                    changed = true;
+                }
+
+                if (remoteSkill.AmountPerLevel != localSkill.AmountPerLevel)
+                {
+                    localSkill.AmountPerLevel = remoteSkill.AmountPerLevel;
+                    changed = true;
+                }
+
+                string groupName = remoteSkill.SkillGroupName ?? string.Empty;
+                if (groupName != localSkill.SkillGroupName)
+                {
+                    localSkill.SkillGroupName = groupName;
+                    changed = true;
+                }
+
+                if (remoteSkill.IsUnlocked != localSkill.IsUnlocked)
+                {
+                    localSkill.IsUnlocked = remoteSkill.IsUnlocked;
+                    changed = true;
+                }
+
+                // Merge training progress (Req 7, 9.7, 9.8)
+                bool isTraining = skillInTraining != null &&
+                    string.Equals(skillInTraining.SkillName, skillName, StringComparison.OrdinalIgnoreCase);
+
+                int targetLevel = isTraining ? skillInTraining.TargetLevel : 0;
+                int pctComplete = isTraining ? skillInTraining.TrainingPercentageComplete : 0;
+                int remainingMin = isTraining ? skillInTraining.RemainingMinutes : 0;
+
+                if (targetLevel != localSkill.TargetLevel)
+                {
+                    localSkill.TargetLevel = targetLevel;
+                    changed = true;
+                }
+
+                if (pctComplete != localSkill.TrainingPercentageComplete)
+                {
+                    localSkill.TrainingPercentageComplete = pctComplete;
+                    changed = true;
+                }
+
+                if (remainingMin != localSkill.RemainingMinutes)
+                {
+                    localSkill.RemainingMinutes = remainingMin;
+                    changed = true;
+                }
+            }
+
+            // Reset training fields for skills NOT in remoteSkills (Req 7.3, 7.4)
+            foreach (var kvp in local.Skills)
+            {
+                if (!remoteSkills.ContainsKey(kvp.Key))
+                {
+                    PlayerSkill skill = kvp.Value;
+                    if (skill.TargetLevel != 0 || skill.TrainingPercentageComplete != 0 || skill.RemainingMinutes != 0)
+                    {
+                        skill.TargetLevel = 0;
+                        skill.TrainingPercentageComplete = 0;
+                        skill.RemainingMinutes = 0;
+                        changed = true;
+                    }
                 }
             }
 

@@ -116,19 +116,19 @@ namespace OE2EmpireTracker.Tests.ViewModels
             };
 
             profile.Public.Rank = pubRank;
-            profile.Public.CurrentXP = pubCurXP;
-            profile.Public.NextXP = pubNextXP;
-            profile.Public.Title = pubTitle;
+            profile.Public.CurrentXp = pubCurXP;
+            profile.Public.XpToNextLevel = pubNextXP;
+            profile.Public.RankName = pubTitle;
 
             profile.Private.Rank = privRank;
-            profile.Private.CurrentXP = privCurXP;
-            profile.Private.NextXP = privNextXP;
-            profile.Private.Title = privTitle;
+            profile.Private.CurrentXp = privCurXP;
+            profile.Private.XpToNextLevel = privNextXP;
+            profile.Private.RankName = privTitle;
 
             profile.Military.Rank = milRank;
-            profile.Military.CurrentXP = milCurXP;
-            profile.Military.NextXP = milNextXP;
-            profile.Military.Title = milTitle;
+            profile.Military.CurrentXp = milCurXP;
+            profile.Military.XpToNextLevel = milNextXP;
+            profile.Military.RankName = milTitle;
 
             for (int i = 0; i < selectedSkills.Length && i < skills.Length; i++)
             {
@@ -249,9 +249,9 @@ namespace OE2EmpireTracker.Tests.ViewModels
         private static bool RankMatches(LocalRankData local, ReadOnlyPlayerRank ro)
         {
             return local.Rank == ro.Rank
-                && local.CurrentXP == ro.CurrentXP
-                && local.NextXP == ro.NextXP
-                && local.Title == ro.Title;
+                && local.CurrentXp == ro.CurrentXp
+                && local.XpToNextLevel == ro.XpToNextLevel
+                && local.RankName == ro.RankName;
         }
 
         private static string MutateSingleField(
@@ -284,38 +284,38 @@ namespace OE2EmpireTracker.Tests.ViewModels
                     vm.PublicRank.Rank = ro.Public.Rank + 1;
                     return "PublicRank.Rank";
                 case 8:
-                    vm.PublicRank.CurrentXP = ro.Public.CurrentXP + 1;
-                    return "PublicRank.CurrentXP";
+                    vm.PublicRank.CurrentXp = ro.Public.CurrentXp + 1;
+                    return "PublicRank.CurrentXp";
                 case 9:
-                    vm.PublicRank.NextXP = ro.Public.NextXP + 1;
-                    return "PublicRank.NextXP";
+                    vm.PublicRank.XpToNextLevel = ro.Public.XpToNextLevel + 1;
+                    return "PublicRank.XpToNextLevel";
                 case 10:
-                    vm.PublicRank.Title = (ro.Public.Title ?? string.Empty) + "X";
-                    return "PublicRank.Title";
+                    vm.PublicRank.RankName = (ro.Public.RankName ?? string.Empty) + "X";
+                    return "PublicRank.RankName";
                 case 11:
                     vm.PrivateRank.Rank = ro.Private.Rank + 1;
                     return "PrivateRank.Rank";
                 case 12:
-                    vm.PrivateRank.CurrentXP = ro.Private.CurrentXP + 1;
-                    return "PrivateRank.CurrentXP";
+                    vm.PrivateRank.CurrentXp = ro.Private.CurrentXp + 1;
+                    return "PrivateRank.CurrentXp";
                 case 13:
-                    vm.PrivateRank.NextXP = ro.Private.NextXP + 1;
-                    return "PrivateRank.NextXP";
+                    vm.PrivateRank.XpToNextLevel = ro.Private.XpToNextLevel + 1;
+                    return "PrivateRank.XpToNextLevel";
                 case 14:
-                    vm.PrivateRank.Title = (ro.Private.Title ?? string.Empty) + "X";
-                    return "PrivateRank.Title";
+                    vm.PrivateRank.RankName = (ro.Private.RankName ?? string.Empty) + "X";
+                    return "PrivateRank.RankName";
                 case 15:
                     vm.MilitaryRank.Rank = ro.Military.Rank + 1;
                     return "MilitaryRank.Rank";
                 case 16:
-                    vm.MilitaryRank.CurrentXP = ro.Military.CurrentXP + 1;
-                    return "MilitaryRank.CurrentXP";
+                    vm.MilitaryRank.CurrentXp = ro.Military.CurrentXp + 1;
+                    return "MilitaryRank.CurrentXp";
                 case 17:
-                    vm.MilitaryRank.NextXP = ro.Military.NextXP + 1;
-                    return "MilitaryRank.NextXP";
+                    vm.MilitaryRank.XpToNextLevel = ro.Military.XpToNextLevel + 1;
+                    return "MilitaryRank.XpToNextLevel";
                 case 18:
-                    vm.MilitaryRank.Title = (ro.Military.Title ?? string.Empty) + "X";
-                    return "MilitaryRank.Title";
+                    vm.MilitaryRank.RankName = (ro.Military.RankName ?? string.Empty) + "X";
+                    return "MilitaryRank.RankName";
                 case 19:
                     // Change a skill field if any skills exist
                     var skills = ro.Skills;

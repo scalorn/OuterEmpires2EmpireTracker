@@ -1,4 +1,4 @@
-﻿namespace OE2EmpireTracker.Forms.PlayerProfile
+namespace OE2EmpireTracker.Forms.PlayerProfile
 {
     partial class PlayerSkillBlock
     {
@@ -37,6 +37,10 @@
             this.txtCompletion = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.cmdStart = new System.Windows.Forms.Button();
             this.timerCountdown = new System.Windows.Forms.Timer(this.components);
+            this.lblEffectDescription = new System.Windows.Forms.Label();
+            this.lblAmountPerLevel = new System.Windows.Forms.Label();
+            this.lblTrainingProgress = new System.Windows.Forms.Label();
+            this.lblRemainingTime = new System.Windows.Forms.Label();
             this.flowLayoutPanel20.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -135,9 +139,53 @@
             // 
             this.timerCountdown.Tick += new System.EventHandler(this.TimerCountdown_Tick);
             // 
+            // lblEffectDescription
+            // 
+            this.lblEffectDescription.AutoSize = true;
+            this.lblEffectDescription.Location = new System.Drawing.Point(48, 26);
+            this.lblEffectDescription.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblEffectDescription.Name = "lblEffectDescription";
+            this.lblEffectDescription.Size = new System.Drawing.Size(0, 13);
+            this.lblEffectDescription.TabIndex = 14;
+            this.lblEffectDescription.Visible = false;
+            // 
+            // lblAmountPerLevel
+            // 
+            this.lblAmountPerLevel.AutoSize = true;
+            this.lblAmountPerLevel.Location = new System.Drawing.Point(200, 26);
+            this.lblAmountPerLevel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblAmountPerLevel.Name = "lblAmountPerLevel";
+            this.lblAmountPerLevel.Size = new System.Drawing.Size(0, 13);
+            this.lblAmountPerLevel.TabIndex = 15;
+            this.lblAmountPerLevel.Visible = false;
+            // 
+            // lblTrainingProgress
+            // 
+            this.lblTrainingProgress.AutoSize = true;
+            this.lblTrainingProgress.Location = new System.Drawing.Point(290, 26);
+            this.lblTrainingProgress.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblTrainingProgress.Name = "lblTrainingProgress";
+            this.lblTrainingProgress.Size = new System.Drawing.Size(0, 13);
+            this.lblTrainingProgress.TabIndex = 16;
+            this.lblTrainingProgress.Visible = false;
+            // 
+            // lblRemainingTime
+            // 
+            this.lblRemainingTime.AutoSize = true;
+            this.lblRemainingTime.Location = new System.Drawing.Point(350, 26);
+            this.lblRemainingTime.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblRemainingTime.Name = "lblRemainingTime";
+            this.lblRemainingTime.Size = new System.Drawing.Size(0, 13);
+            this.lblRemainingTime.TabIndex = 17;
+            this.lblRemainingTime.Visible = false;
+            // 
             // PlayerSkillBlock
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Controls.Add(this.lblEffectDescription);
+            this.Controls.Add(this.lblAmountPerLevel);
+            this.Controls.Add(this.lblTrainingProgress);
+            this.Controls.Add(this.lblRemainingTime);
             this.Controls.Add(this.flowLayoutPanel20);
             this.MaximumSize = new System.Drawing.Size(450, 24);
             this.MinimumSize = new System.Drawing.Size(450, 24);
@@ -146,6 +194,7 @@
             this.flowLayoutPanel20.ResumeLayout(false);
             this.flowLayoutPanel20.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -159,5 +208,9 @@
         private Controls.ValidatedTextBox txtCompletion;
         private System.Windows.Forms.Button cmdStart;
         private System.Windows.Forms.Timer timerCountdown;
+        private System.Windows.Forms.Label lblEffectDescription;
+        private System.Windows.Forms.Label lblAmountPerLevel;
+        private System.Windows.Forms.Label lblTrainingProgress;
+        private System.Windows.Forms.Label lblRemainingTime;
     }
 }

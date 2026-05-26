@@ -174,17 +174,17 @@ namespace OE2EmpireTracker.Tests.Models
         {
             var rank = new PlayerRank();
             Assert.That(rank.Rank, Is.EqualTo(0));
-            Assert.That(rank.CurrentXP, Is.EqualTo(0L));
-            Assert.That(rank.NextXP, Is.EqualTo(0L));
+            Assert.That(rank.CurrentXp, Is.EqualTo(0L));
+            Assert.That(rank.XpToNextLevel, Is.EqualTo(0L));
         }
 
         [Test]
         public void Properties_CanBeSetAndRead()
         {
-            var rank = new PlayerRank { Rank = 5, CurrentXP = 1000, NextXP = 2000 };
+            var rank = new PlayerRank { Rank = 5, CurrentXp = 1000, XpToNextLevel = 2000 };
             Assert.That(rank.Rank, Is.EqualTo(5));
-            Assert.That(rank.CurrentXP, Is.EqualTo(1000L));
-            Assert.That(rank.NextXP, Is.EqualTo(2000L));
+            Assert.That(rank.CurrentXp, Is.EqualTo(1000L));
+            Assert.That(rank.XpToNextLevel, Is.EqualTo(2000L));
         }
     }
 

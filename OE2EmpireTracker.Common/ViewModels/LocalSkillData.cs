@@ -18,6 +18,26 @@ namespace OE2EmpireTracker.ViewModels
         public DateTime CompletionEndTime { get; set; }
 
         /// <summary>
+        /// Gets the effect description from the API (read-only metadata, not editable in UI).
+        /// </summary>
+        public string EffectDescription { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets the amount per level from the API (read-only metadata, not editable in UI).
+        /// </summary>
+        public int AmountPerLevel { get; set; }
+
+        /// <summary>
+        /// Gets the training percentage complete from the API (read-only metadata, not editable in UI).
+        /// </summary>
+        public int TrainingPercentageComplete { get; set; }
+
+        /// <summary>
+        /// Gets the remaining minutes from the API (read-only metadata, not editable in UI).
+        /// </summary>
+        public int RemainingMinutes { get; set; }
+
+        /// <summary>
         /// Gets the computed seconds remaining until CompletionEndTime.
         /// </summary>
         public long TimeRemaining => Math.Max(0, (long)(CompletionEndTime - SystemClock.UtcNow).TotalSeconds);

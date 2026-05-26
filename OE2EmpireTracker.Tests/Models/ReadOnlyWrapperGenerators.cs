@@ -350,7 +350,7 @@ namespace OE2EmpireTracker.Tests.Models
             from currentXp in Gen.Choose(0, 100000)
             from nextXp in Gen.Choose(0, 100000)
             from title in GenName()
-            select new PlayerRank { Rank = rank, CurrentXP = (long)currentXp, NextXP = (long)nextXp, Title = title };
+            select new PlayerRank { Rank = rank, CurrentXp = (long)currentXp, XpToNextLevel = (long)nextXp, RankName = title };
 
         public static Gen<PlayerSkill> GenPlayerSkill() =>
             from level in Gen.Choose(0, 10)

@@ -34,19 +34,19 @@ namespace OE2EmpireTracker.Tests.Models
             };
 
             _profile.Public.Rank = 3;
-            _profile.Public.CurrentXP = 500;
-            _profile.Public.NextXP = 1000;
-            _profile.Public.Title = "Commander";
+            _profile.Public.CurrentXp = 500;
+            _profile.Public.XpToNextLevel = 1000;
+            _profile.Public.RankName = "Commander";
 
             _profile.Private.Rank = 2;
-            _profile.Private.CurrentXP = 200;
-            _profile.Private.NextXP = 400;
-            _profile.Private.Title = "Merchant";
+            _profile.Private.CurrentXp = 200;
+            _profile.Private.XpToNextLevel = 400;
+            _profile.Private.RankName = "Merchant";
 
             _profile.Military.Rank = 1;
-            _profile.Military.CurrentXP = 50;
-            _profile.Military.NextXP = 100;
-            _profile.Military.Title = "Recruit";
+            _profile.Military.CurrentXp = 50;
+            _profile.Military.XpToNextLevel = 100;
+            _profile.Military.RankName = "Recruit";
 
             var foremanSkill = _profile.GetSkill("Foreman");
             foremanSkill.Level = 3;
@@ -229,21 +229,21 @@ namespace OE2EmpireTracker.Tests.Models
         public void PublicRank_WrapsCorrectly()
         {
             Assert.That(_readOnly.Public.Rank, Is.EqualTo(3));
-            Assert.That(_readOnly.Public.Title, Is.EqualTo("Commander"));
+            Assert.That(_readOnly.Public.RankName, Is.EqualTo("Commander"));
         }
 
         [Test]
         public void PrivateRank_WrapsCorrectly()
         {
             Assert.That(_readOnly.Private.Rank, Is.EqualTo(2));
-            Assert.That(_readOnly.Private.Title, Is.EqualTo("Merchant"));
+            Assert.That(_readOnly.Private.RankName, Is.EqualTo("Merchant"));
         }
 
         [Test]
         public void MilitaryRank_WrapsCorrectly()
         {
             Assert.That(_readOnly.Military.Rank, Is.EqualTo(1));
-            Assert.That(_readOnly.Military.Title, Is.EqualTo("Recruit"));
+            Assert.That(_readOnly.Military.RankName, Is.EqualTo("Recruit"));
         }
 
         // -------------------------------------------------------------------

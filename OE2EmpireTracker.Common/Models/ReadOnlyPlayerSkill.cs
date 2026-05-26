@@ -17,6 +17,22 @@ namespace OE2EmpireTracker.Models
 
         public int Level => _entity.Level;
 
+        public int SkillId => _entity.SkillId;
+
+        public string EffectDescription => _entity.EffectDescription;
+
+        public int AmountPerLevel => _entity.AmountPerLevel;
+
+        public string SkillGroupName => _entity.SkillGroupName;
+
+        public bool IsUnlocked => _entity.IsUnlocked;
+
+        public int TargetLevel => _entity.TargetLevel;
+
+        public int TrainingPercentageComplete => _entity.TrainingPercentageComplete;
+
+        public int RemainingMinutes => _entity.RemainingMinutes;
+
         /// <summary>
         /// Gets a value indicating whether training has been started for this skill.
         /// </summary>

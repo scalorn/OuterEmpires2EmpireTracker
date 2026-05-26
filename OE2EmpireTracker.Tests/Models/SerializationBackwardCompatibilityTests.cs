@@ -17,7 +17,7 @@ namespace OE2EmpireTracker.Tests.Models
         /// Property 6: For any PlayerProfile serialized to JSON, removing the new fields
         /// (CitizenId, RegistrationDate, ActiveTime) and deserializing back should produce
         /// an object where those fields are string.Empty (not null).
-        /// Similarly for PlayerRank.Title.
+        /// Similarly for PlayerRank.RankName.
         /// **Validates: Requirements 9.7**
         /// </summary>
         [FsCheck.NUnit.Property(MaxTest = 25)]
@@ -72,9 +72,9 @@ namespace OE2EmpireTracker.Tests.Models
                           select new PlayerRank
                           {
                               Rank = rank,
-                              CurrentXP = currentXP,
-                              NextXP = nextXP,
-                              Title = "Some Title"
+                              CurrentXp = currentXP,
+                              XpToNextLevel = nextXP,
+                              RankName = "Some Title"
                           };
 
             return Prop.ForAll(
@@ -85,13 +85,13 @@ namespace OE2EmpireTracker.Tests.Models
                     var jObj = JObject.Parse(json);
 
                     // Remove the new field to simulate old save data
-                    jObj.Remove("Title");
+                    jObj.Remove("RankName");
 
                     var deserialized = JsonConvert.DeserializeObject<PlayerRank>(jObj.ToString());
 
-                    return (deserialized.Title == string.Empty
-                            && deserialized.Title != null)
-                        .Label("PlayerRank.Title should default to string.Empty when missing from JSON");
+                    return (deserialized.RankName == string.Empty
+                            && deserialized.RankName != null)
+                        .Label("PlayerRank.RankName should default to string.Empty when missing from JSON");
                 });
         }
     }

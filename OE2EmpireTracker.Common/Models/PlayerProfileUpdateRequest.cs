@@ -30,27 +30,27 @@ namespace OE2EmpireTracker.Models
 
         public int PublicRank { get; set; }
 
-        public long PublicCurrentXP { get; set; }
+        public long PublicCurrentXp { get; set; }
 
-        public long PublicNextXP { get; set; }
+        public long PublicXpToNextLevel { get; set; }
 
-        public string PublicTitle { get; set; }
+        public string PublicRankName { get; set; }
 
         public int PrivateRank { get; set; }
 
-        public long PrivateCurrentXP { get; set; }
+        public long PrivateCurrentXp { get; set; }
 
-        public long PrivateNextXP { get; set; }
+        public long PrivateXpToNextLevel { get; set; }
 
-        public string PrivateTitle { get; set; }
+        public string PrivateRankName { get; set; }
 
         public int MilitaryRank { get; set; }
 
-        public long MilitaryCurrentXP { get; set; }
+        public long MilitaryCurrentXp { get; set; }
 
-        public long MilitaryNextXP { get; set; }
+        public long MilitaryXpToNextLevel { get; set; }
 
-        public string MilitaryTitle { get; set; }
+        public string MilitaryRankName { get; set; }
 
         public Dictionary<string, SkillUpdateData> Skills { get; set; }
 

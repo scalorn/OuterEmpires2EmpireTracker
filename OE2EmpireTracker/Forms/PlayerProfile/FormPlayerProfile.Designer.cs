@@ -53,6 +53,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpPublicRank = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPublicRank = new System.Windows.Forms.Label();
             this.txtPublicRank = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblPublicRankName = new System.Windows.Forms.Label();
             this.flpPublicRankCurXP = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPublicRankCurXP = new System.Windows.Forms.Label();
             this.txtPublicRankCurXP = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -63,6 +64,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpPrivateRank = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPrivateRank = new System.Windows.Forms.Label();
             this.txtPrivateRank = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblPrivateRankName = new System.Windows.Forms.Label();
             this.flpPrivateRankCurXP = new System.Windows.Forms.FlowLayoutPanel();
             this.lblPrivateRankCurXP = new System.Windows.Forms.Label();
             this.txtPrivateRankCurXP = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -73,6 +75,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpMilitaryRank = new System.Windows.Forms.FlowLayoutPanel();
             this.lblMilitaryRank = new System.Windows.Forms.Label();
             this.txtMilitaryRank = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblMilitaryRankName = new System.Windows.Forms.Label();
             this.flpMilitaryRankCurXP = new System.Windows.Forms.FlowLayoutPanel();
             this.lblMilitaryRankCurXP = new System.Windows.Forms.Label();
             this.txtMilitaryRankCurXP = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -454,6 +457,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpPublicRank.AutoSize = true;
             this.flpPublicRank.Controls.Add(this.lblPublicRank);
             this.flpPublicRank.Controls.Add(this.txtPublicRank);
+            this.flpPublicRank.Controls.Add(this.lblPublicRankName);
             this.flpPublicRank.Location = new System.Drawing.Point(2, 2);
             this.flpPublicRank.Margin = new System.Windows.Forms.Padding(2);
             this.flpPublicRank.Name = "flpPublicRank";
@@ -478,6 +482,17 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.txtPublicRank.Name = "txtPublicRank";
             this.txtPublicRank.Size = new System.Drawing.Size(201, 20);
             this.txtPublicRank.TabIndex = 7;
+            // 
+            // lblPublicRankName
+            // 
+            this.lblPublicRankName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblPublicRankName.AutoSize = true;
+            this.lblPublicRankName.Location = new System.Drawing.Point(311, 5);
+            this.lblPublicRankName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPublicRankName.Name = "lblPublicRankName";
+            this.lblPublicRankName.Size = new System.Drawing.Size(0, 13);
+            this.lblPublicRankName.TabIndex = 8;
+            this.lblPublicRankName.Visible = false;
             // 
             // flpPublicRankCurXP
             // 
@@ -559,6 +574,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpPrivateRank.AutoSize = true;
             this.flpPrivateRank.Controls.Add(this.lblPrivateRank);
             this.flpPrivateRank.Controls.Add(this.txtPrivateRank);
+            this.flpPrivateRank.Controls.Add(this.lblPrivateRankName);
             this.flpPrivateRank.Location = new System.Drawing.Point(2, 2);
             this.flpPrivateRank.Margin = new System.Windows.Forms.Padding(2);
             this.flpPrivateRank.Name = "flpPrivateRank";
@@ -583,6 +599,17 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.txtPrivateRank.Name = "txtPrivateRank";
             this.txtPrivateRank.Size = new System.Drawing.Size(201, 20);
             this.txtPrivateRank.TabIndex = 7;
+            // 
+            // lblPrivateRankName
+            // 
+            this.lblPrivateRankName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblPrivateRankName.AutoSize = true;
+            this.lblPrivateRankName.Location = new System.Drawing.Point(311, 5);
+            this.lblPrivateRankName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPrivateRankName.Name = "lblPrivateRankName";
+            this.lblPrivateRankName.Size = new System.Drawing.Size(0, 13);
+            this.lblPrivateRankName.TabIndex = 8;
+            this.lblPrivateRankName.Visible = false;
             // 
             // flpPrivateRankCurXP
             // 
@@ -664,6 +691,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.flpMilitaryRank.AutoSize = true;
             this.flpMilitaryRank.Controls.Add(this.lblMilitaryRank);
             this.flpMilitaryRank.Controls.Add(this.txtMilitaryRank);
+            this.flpMilitaryRank.Controls.Add(this.lblMilitaryRankName);
             this.flpMilitaryRank.Location = new System.Drawing.Point(2, 2);
             this.flpMilitaryRank.Margin = new System.Windows.Forms.Padding(2);
             this.flpMilitaryRank.Name = "flpMilitaryRank";
@@ -688,6 +716,17 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             this.txtMilitaryRank.Name = "txtMilitaryRank";
             this.txtMilitaryRank.Size = new System.Drawing.Size(201, 20);
             this.txtMilitaryRank.TabIndex = 7;
+            // 
+            // lblMilitaryRankName
+            // 
+            this.lblMilitaryRankName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMilitaryRankName.AutoSize = true;
+            this.lblMilitaryRankName.Location = new System.Drawing.Point(311, 5);
+            this.lblMilitaryRankName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblMilitaryRankName.Name = "lblMilitaryRankName";
+            this.lblMilitaryRankName.Size = new System.Drawing.Size(0, 13);
+            this.lblMilitaryRankName.TabIndex = 8;
+            this.lblMilitaryRankName.Visible = false;
             // 
             // flpMilitaryRankCurXP
             // 
@@ -1746,6 +1785,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private System.Windows.Forms.FlowLayoutPanel flpPublicRank;
         private System.Windows.Forms.Label lblPublicRank;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPublicRank;
+        private System.Windows.Forms.Label lblPublicRankName;
         private System.Windows.Forms.FlowLayoutPanel flpCommands;
         private System.Windows.Forms.Button cmdImport;
         private System.Windows.Forms.Button cmdSyncApi;
@@ -1763,6 +1803,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private System.Windows.Forms.FlowLayoutPanel flpPrivateRank;
         private System.Windows.Forms.Label lblPrivateRank;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPrivateRank;
+        private System.Windows.Forms.Label lblPrivateRankName;
         private System.Windows.Forms.FlowLayoutPanel flpPrivateRankCurXP;
         private System.Windows.Forms.Label lblPrivateRankCurXP;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtPrivateRankCurXP;
@@ -1773,6 +1814,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private System.Windows.Forms.FlowLayoutPanel flpMilitaryRank;
         private System.Windows.Forms.Label lblMilitaryRank;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtMilitaryRank;
+        private System.Windows.Forms.Label lblMilitaryRankName;
         private System.Windows.Forms.FlowLayoutPanel flpMilitaryRankCurXP;
         private System.Windows.Forms.Label lblMilitaryRankCurXP;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtMilitaryRankCurXP;

@@ -65,21 +65,21 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void ParseScalorn_PublicRank_Title()
         {
             var profile = ParseScalorn();
-            Assert.That(profile.Public.Title, Is.EqualTo("Under Secretary (Grade 3)"));
+            Assert.That(profile.Public.RankName, Is.EqualTo("Under Secretary (Grade 3)"));
         }
 
         [Test]
         public void ParseScalorn_PublicRank_CurrentXP()
         {
             var profile = ParseScalorn();
-            Assert.That(profile.Public.CurrentXP, Is.EqualTo(1010379L));
+            Assert.That(profile.Public.CurrentXp, Is.EqualTo(1010379L));
         }
 
         [Test]
         public void ParseScalorn_PublicRank_NextXP()
         {
             var profile = ParseScalorn();
-            Assert.That(profile.Public.NextXP, Is.EqualTo(3063750L));
+            Assert.That(profile.Public.XpToNextLevel, Is.EqualTo(3063750L));
         }
 
         // Requirement 3.1, 3.2, 3.3: Private rank
@@ -94,21 +94,21 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void ParseScalorn_PrivateRank_Title()
         {
             var profile = ParseScalorn();
-            Assert.That(profile.Private.Title, Is.EqualTo("Chief Operations Officer (Grade 3)"));
+            Assert.That(profile.Private.RankName, Is.EqualTo("Chief Operations Officer (Grade 3)"));
         }
 
         [Test]
         public void ParseScalorn_PrivateRank_CurrentXP()
         {
             var profile = ParseScalorn();
-            Assert.That(profile.Private.CurrentXP, Is.EqualTo(1299791L));
+            Assert.That(profile.Private.CurrentXp, Is.EqualTo(1299791L));
         }
 
         [Test]
         public void ParseScalorn_PrivateRank_NextXP()
         {
             var profile = ParseScalorn();
-            Assert.That(profile.Private.NextXP, Is.EqualTo(3063750L));
+            Assert.That(profile.Private.XpToNextLevel, Is.EqualTo(3063750L));
         }
 
         // Requirement 3.1, 3.2, 3.3: Military rank
@@ -123,21 +123,21 @@ namespace OE2EmpireTracker.Tests.Parsers
         public void ParseScalorn_MilitaryRank_Title()
         {
             var profile = ParseScalorn();
-            Assert.That(profile.Military.Title, Is.EqualTo("Spacer (Grade 1)"));
+            Assert.That(profile.Military.RankName, Is.EqualTo("Spacer (Grade 1)"));
         }
 
         [Test]
         public void ParseScalorn_MilitaryRank_CurrentXP()
         {
             var profile = ParseScalorn();
-            Assert.That(profile.Military.CurrentXP, Is.EqualTo(2402L));
+            Assert.That(profile.Military.CurrentXp, Is.EqualTo(2402L));
         }
 
         [Test]
         public void ParseScalorn_MilitaryRank_NextXP()
         {
             var profile = ParseScalorn();
-            Assert.That(profile.Military.NextXP, Is.EqualTo(5400L));
+            Assert.That(profile.Military.XpToNextLevel, Is.EqualTo(5400L));
         }
 
         // Requirement 4.1: Skill points
@@ -367,11 +367,11 @@ namespace OE2EmpireTracker.Tests.Parsers
         {
             var profile = new PlayerProfile();
             profile.Public.Rank = 10;
-            profile.Public.CurrentXP = 500;
+            profile.Public.CurrentXp = 500;
             string html = "<div id='ui_character_detail'><div class='ui_text_white'>Test Name</div></div>";
             _parser.ProcessHtml(profile, html);
             Assert.That(profile.Public.Rank, Is.EqualTo(10));
-            Assert.That(profile.Public.CurrentXP, Is.EqualTo(500));
+            Assert.That(profile.Public.CurrentXp, Is.EqualTo(500));
         }
 
         // Requirement 2.2: Missing credit element -- TotalCredits unchanged

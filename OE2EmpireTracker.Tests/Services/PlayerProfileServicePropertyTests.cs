@@ -111,17 +111,17 @@ namespace OE2EmpireTracker.Tests.Services
                        RegistrationDate = regDate,
                        ActiveTime = activeTime,
                        PublicRank = pubRank,
-                       PublicCurrentXP = pubCurXP,
-                       PublicNextXP = pubNextXP,
-                       PublicTitle = pubTitle,
+                       PublicCurrentXp = pubCurXP,
+                       PublicXpToNextLevel = pubNextXP,
+                       PublicRankName = pubTitle,
                        PrivateRank = privRank,
-                       PrivateCurrentXP = privCurXP,
-                       PrivateNextXP = privNextXP,
-                       PrivateTitle = privTitle,
+                       PrivateCurrentXp = privCurXP,
+                       PrivateXpToNextLevel = privNextXP,
+                       PrivateRankName = privTitle,
                        MilitaryRank = milRank,
-                       MilitaryCurrentXP = milCurXP,
-                       MilitaryNextXP = milNextXP,
-                       MilitaryTitle = milTitle,
+                       MilitaryCurrentXp = milCurXP,
+                       MilitaryXpToNextLevel = milNextXP,
+                       MilitaryRankName = milTitle,
                        Skills = skills,
                        SkillGroups = groups,
                    };
@@ -160,17 +160,17 @@ namespace OE2EmpireTracker.Tests.Services
                        RegistrationDate = regDate,
                        ActiveTime = activeTime,
                        PublicRank = pubRank,
-                       PublicCurrentXP = pubCurXP,
-                       PublicNextXP = pubNextXP,
-                       PublicTitle = pubTitle,
+                       PublicCurrentXp = pubCurXP,
+                       PublicXpToNextLevel = pubNextXP,
+                       PublicRankName = pubTitle,
                        PrivateRank = privRank,
-                       PrivateCurrentXP = privCurXP,
-                       PrivateNextXP = privNextXP,
-                       PrivateTitle = privTitle,
+                       PrivateCurrentXp = privCurXP,
+                       PrivateXpToNextLevel = privNextXP,
+                       PrivateRankName = privTitle,
                        MilitaryRank = milRank,
-                       MilitaryCurrentXP = milCurXP,
-                       MilitaryNextXP = milNextXP,
-                       MilitaryTitle = milTitle,
+                       MilitaryCurrentXp = milCurXP,
+                       MilitaryXpToNextLevel = milNextXP,
+                       MilitaryRankName = milTitle,
                        Skills = skills,
                        SkillGroups = groups,
                    };
@@ -216,19 +216,19 @@ namespace OE2EmpireTracker.Tests.Services
                 if (result.ActiveTime != request.ActiveTime) return false;
 
                 if (result.Public.Rank != request.PublicRank) return false;
-                if (result.Public.CurrentXP != request.PublicCurrentXP) return false;
-                if (result.Public.NextXP != request.PublicNextXP) return false;
-                if (result.Public.Title != request.PublicTitle) return false;
+                if (result.Public.CurrentXp != request.PublicCurrentXp) return false;
+                if (result.Public.XpToNextLevel != request.PublicXpToNextLevel) return false;
+                if (result.Public.RankName != request.PublicRankName) return false;
 
                 if (result.Private.Rank != request.PrivateRank) return false;
-                if (result.Private.CurrentXP != request.PrivateCurrentXP) return false;
-                if (result.Private.NextXP != request.PrivateNextXP) return false;
-                if (result.Private.Title != request.PrivateTitle) return false;
+                if (result.Private.CurrentXp != request.PrivateCurrentXp) return false;
+                if (result.Private.XpToNextLevel != request.PrivateXpToNextLevel) return false;
+                if (result.Private.RankName != request.PrivateRankName) return false;
 
                 if (result.Military.Rank != request.MilitaryRank) return false;
-                if (result.Military.CurrentXP != request.MilitaryCurrentXP) return false;
-                if (result.Military.NextXP != request.MilitaryNextXP) return false;
-                if (result.Military.Title != request.MilitaryTitle) return false;
+                if (result.Military.CurrentXp != request.MilitaryCurrentXp) return false;
+                if (result.Military.XpToNextLevel != request.MilitaryXpToNextLevel) return false;
+                if (result.Military.RankName != request.MilitaryRankName) return false;
 
                 // Skills
                 if (request.Skills != null)
@@ -283,19 +283,19 @@ namespace OE2EmpireTracker.Tests.Services
                 if (result.ActiveTime != request.ActiveTime) return false;
 
                 if (result.Public.Rank != request.PublicRank) return false;
-                if (result.Public.CurrentXP != request.PublicCurrentXP) return false;
-                if (result.Public.NextXP != request.PublicNextXP) return false;
-                if (result.Public.Title != request.PublicTitle) return false;
+                if (result.Public.CurrentXp != request.PublicCurrentXp) return false;
+                if (result.Public.XpToNextLevel != request.PublicXpToNextLevel) return false;
+                if (result.Public.RankName != request.PublicRankName) return false;
 
                 if (result.Private.Rank != request.PrivateRank) return false;
-                if (result.Private.CurrentXP != request.PrivateCurrentXP) return false;
-                if (result.Private.NextXP != request.PrivateNextXP) return false;
-                if (result.Private.Title != request.PrivateTitle) return false;
+                if (result.Private.CurrentXp != request.PrivateCurrentXp) return false;
+                if (result.Private.XpToNextLevel != request.PrivateXpToNextLevel) return false;
+                if (result.Private.RankName != request.PrivateRankName) return false;
 
                 if (result.Military.Rank != request.MilitaryRank) return false;
-                if (result.Military.CurrentXP != request.MilitaryCurrentXP) return false;
-                if (result.Military.NextXP != request.MilitaryNextXP) return false;
-                if (result.Military.Title != request.MilitaryTitle) return false;
+                if (result.Military.CurrentXp != request.MilitaryCurrentXp) return false;
+                if (result.Military.XpToNextLevel != request.MilitaryXpToNextLevel) return false;
+                if (result.Military.RankName != request.MilitaryRankName) return false;
 
                 // Skills
                 if (request.Skills != null)

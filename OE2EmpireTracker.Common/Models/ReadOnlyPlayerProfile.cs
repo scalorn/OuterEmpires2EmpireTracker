@@ -36,6 +36,14 @@ namespace OE2EmpireTracker.Models
 
         public string ActiveTime => _entity.ActiveTime;
 
+        public int CharacterId => _entity.CharacterId;
+
+        public string FirstName => _entity.FirstName;
+
+        public string LastName => _entity.LastName;
+
+        public int ActiveTimeMinutes => _entity.ActiveTimeMinutes;
+
         // Rank properties - wrapped
         public ReadOnlyPlayerRank Public => new ReadOnlyPlayerRank(_entity.Public);
         public ReadOnlyPlayerRank Private => new ReadOnlyPlayerRank(_entity.Private);

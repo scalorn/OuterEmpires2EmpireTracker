@@ -654,7 +654,7 @@ namespace OE2EmpireTracker.Tests.Services
             from rank in Gen.Choose(0, 10)
             from curXp in Gen.Choose(0, 10000)
             from nextXp in Gen.Choose(0, 10000)
-            select new PlayerRank { Rank = rank, CurrentXP = curXp, NextXP = nextXp };
+            select new PlayerRank { Rank = rank, CurrentXp = curXp, XpToNextLevel = nextXp };
 
         // ---------------------------------------------------------------
         // PlayerSkill

@@ -35,23 +35,23 @@ public sealed class PlayerProfileService
             Public = new PlayerRank
             {
                 Rank = request.PublicRank,
-                CurrentXP = request.PublicCurrentXP,
-                NextXP = request.PublicNextXP,
-                Title = request.PublicTitle ?? string.Empty,
+                CurrentXp = request.PublicCurrentXp,
+                XpToNextLevel = request.PublicXpToNextLevel,
+                RankName = request.PublicRankName ?? string.Empty,
             },
             Private = new PlayerRank
             {
                 Rank = request.PrivateRank,
-                CurrentXP = request.PrivateCurrentXP,
-                NextXP = request.PrivateNextXP,
-                Title = request.PrivateTitle ?? string.Empty,
+                CurrentXp = request.PrivateCurrentXp,
+                XpToNextLevel = request.PrivateXpToNextLevel,
+                RankName = request.PrivateRankName ?? string.Empty,
             },
             Military = new PlayerRank
             {
                 Rank = request.MilitaryRank,
-                CurrentXP = request.MilitaryCurrentXP,
-                NextXP = request.MilitaryNextXP,
-                Title = request.MilitaryTitle ?? string.Empty,
+                CurrentXp = request.MilitaryCurrentXp,
+                XpToNextLevel = request.MilitaryXpToNextLevel,
+                RankName = request.MilitaryRankName ?? string.Empty,
             },
         };
 
@@ -88,17 +88,17 @@ public sealed class PlayerProfileService
         profile.RegistrationDate = request.RegistrationDate;
         profile.ActiveTime = request.ActiveTime;
         profile.Public.Rank = request.PublicRank;
-        profile.Public.CurrentXP = request.PublicCurrentXP;
-        profile.Public.NextXP = request.PublicNextXP;
-        profile.Public.Title = request.PublicTitle ?? string.Empty;
+        profile.Public.CurrentXp = request.PublicCurrentXp;
+        profile.Public.XpToNextLevel = request.PublicXpToNextLevel;
+        profile.Public.RankName = request.PublicRankName ?? string.Empty;
         profile.Private.Rank = request.PrivateRank;
-        profile.Private.CurrentXP = request.PrivateCurrentXP;
-        profile.Private.NextXP = request.PrivateNextXP;
-        profile.Private.Title = request.PrivateTitle ?? string.Empty;
+        profile.Private.CurrentXp = request.PrivateCurrentXp;
+        profile.Private.XpToNextLevel = request.PrivateXpToNextLevel;
+        profile.Private.RankName = request.PrivateRankName ?? string.Empty;
         profile.Military.Rank = request.MilitaryRank;
-        profile.Military.CurrentXP = request.MilitaryCurrentXP;
-        profile.Military.NextXP = request.MilitaryNextXP;
-        profile.Military.Title = request.MilitaryTitle ?? string.Empty;
+        profile.Military.CurrentXp = request.MilitaryCurrentXp;
+        profile.Military.XpToNextLevel = request.MilitaryXpToNextLevel;
+        profile.Military.RankName = request.MilitaryRankName ?? string.Empty;
 
         if (request.Skills is not null)
         {

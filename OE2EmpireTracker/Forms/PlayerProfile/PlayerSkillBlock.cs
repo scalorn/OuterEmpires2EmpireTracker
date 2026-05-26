@@ -98,6 +98,48 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
                 timerCountdown.Start();
                 UpdateCompletion();
             }
+
+            // Effect description (Req 11.1)
+            bool hasEffect = !string.IsNullOrEmpty(_skillData.EffectDescription);
+            this.lblEffectDescription.Text = _skillData.EffectDescription;
+            this.lblEffectDescription.Visible = hasEffect;
+
+            // Amount per level (Req 11.2)
+            bool hasAmount = _skillData.AmountPerLevel > 0;
+            this.lblAmountPerLevel.Text = string.Format("+{0}% per level", _skillData.AmountPerLevel);
+            this.lblAmountPerLevel.Visible = hasAmount;
+
+            // Training percentage (Req 11.3)
+            bool hasTrainingPct = _skillData.TrainingPercentageComplete > 0;
+            this.lblTrainingProgress.Text = string.Format("{0}%", _skillData.TrainingPercentageComplete);
+            this.lblTrainingProgress.Visible = hasTrainingPct;
+
+            // Remaining time (Req 11.4)
+            bool hasRemaining = _skillData.RemainingMinutes > 0;
+            this.lblRemainingTime.Text = FormatMinutesAsCountdown(_skillData.RemainingMinutes);
+            this.lblRemainingTime.Visible = hasRemaining;
+        }
+
+        private static string FormatMinutesAsCountdown(int totalMinutes)
+        {
+            int days = totalMinutes / (24 * 60);
+            int hours = (totalMinutes % (24 * 60)) / 60;
+            int minutes = totalMinutes % 60;
+
+            string result = string.Empty;
+            if (days > 0)
+            {
+                result += string.Format("{0}d ", days);
+            }
+
+            if (days > 0 || hours > 0)
+            {
+                result += string.Format("{0}h ", hours);
+            }
+
+            result += string.Format("{0}m", minutes);
+            result += " 0s";
+            return result.Trim();
         }
 
         private void UpdateCompletion()

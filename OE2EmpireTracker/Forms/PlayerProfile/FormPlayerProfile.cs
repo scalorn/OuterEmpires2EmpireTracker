@@ -135,16 +135,19 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             txtSkillPoints.Text = viewModel.SkillPoints.ToString();
 
             txtPublicRank.Text = viewModel.PublicRank.Rank.ToString();
-            txtPublicRankCurXP.Text = viewModel.PublicRank.CurrentXP.ToString();
-            txtPublicRankNextXP.Text = viewModel.PublicRank.NextXP.ToString();
+            txtPublicRankCurXP.Text = viewModel.PublicRank.CurrentXp.ToString();
+            txtPublicRankNextXP.Text = viewModel.PublicRank.XpToNextLevel.ToString();
+            UpdateRankNameLabel(lblPublicRankName, viewModel.PublicRank.RankName);
 
             txtPrivateRank.Text = viewModel.PrivateRank.Rank.ToString();
-            txtPrivateRankCurXP.Text = viewModel.PrivateRank.CurrentXP.ToString();
-            txtPrivateRankNextXP.Text = viewModel.PrivateRank.NextXP.ToString();
+            txtPrivateRankCurXP.Text = viewModel.PrivateRank.CurrentXp.ToString();
+            txtPrivateRankNextXP.Text = viewModel.PrivateRank.XpToNextLevel.ToString();
+            UpdateRankNameLabel(lblPrivateRankName, viewModel.PrivateRank.RankName);
 
             txtMilitaryRank.Text = viewModel.MilitaryRank.Rank.ToString();
-            txtMilitaryRankCurXP.Text = viewModel.MilitaryRank.CurrentXP.ToString();
-            txtMilitaryRankNextXP.Text = viewModel.MilitaryRank.NextXP.ToString();
+            txtMilitaryRankCurXP.Text = viewModel.MilitaryRank.CurrentXp.ToString();
+            txtMilitaryRankNextXP.Text = viewModel.MilitaryRank.XpToNextLevel.ToString();
+            UpdateRankNameLabel(lblMilitaryRankName, viewModel.MilitaryRank.RankName);
 
             foreach (var entry in _skillGroups)
             {
@@ -295,6 +298,19 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         {
             skillBlock.SkillData = viewModel.GetSkill(skill);
             skillBlock.PopulateForm();
+        }
+
+        private void UpdateRankNameLabel(Label label, string rankName)
+        {
+            if (string.IsNullOrEmpty(rankName))
+            {
+                label.Visible = false;
+            }
+            else
+            {
+                label.Text = rankName;
+                label.Visible = true;
+            }
         }
 
         private void TrainingStatusChanged(object sender, EventArgs e)
@@ -490,13 +506,13 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private void TxtPublicRankCurXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            viewModel.PublicRank.CurrentXP = long.TryParse(txtPublicRankCurXP.Text, out var x) ? x : 0;
+            viewModel.PublicRank.CurrentXp = long.TryParse(txtPublicRankCurXP.Text, out var x) ? x : 0;
         }
 
         private void TxtPublicRankNextXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            viewModel.PublicRank.NextXP = long.TryParse(txtPublicRankNextXP.Text, out var x) ? x : 0;
+            viewModel.PublicRank.XpToNextLevel = long.TryParse(txtPublicRankNextXP.Text, out var x) ? x : 0;
         }
 
         private void TxtPrivateRank_TextChanged(object sender, EventArgs e)
@@ -508,13 +524,13 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private void TxtPrivateRankCurXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            viewModel.PrivateRank.CurrentXP = long.TryParse(txtPrivateRankCurXP.Text, out var x) ? x : 0;
+            viewModel.PrivateRank.CurrentXp = long.TryParse(txtPrivateRankCurXP.Text, out var x) ? x : 0;
         }
 
         private void TxtPrivateRankNextXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            viewModel.PrivateRank.NextXP = long.TryParse(txtPrivateRankNextXP.Text, out var x) ? x : 0;
+            viewModel.PrivateRank.XpToNextLevel = long.TryParse(txtPrivateRankNextXP.Text, out var x) ? x : 0;
         }
 
         private void TxtMilitaryRank_TextChanged(object sender, EventArgs e)
@@ -526,13 +542,13 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
         private void TxtMilitaryRankCurXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            viewModel.MilitaryRank.CurrentXP = long.TryParse(txtMilitaryRankCurXP.Text, out var x) ? x : 0;
+            viewModel.MilitaryRank.CurrentXp = long.TryParse(txtMilitaryRankCurXP.Text, out var x) ? x : 0;
         }
 
         private void TxtMilitaryRankNextXP_TextChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
-            viewModel.MilitaryRank.NextXP = long.TryParse(txtMilitaryRankNextXP.Text, out var x) ? x : 0;
+            viewModel.MilitaryRank.XpToNextLevel = long.TryParse(txtMilitaryRankNextXP.Text, out var x) ? x : 0;
         }
 
         private void CmbFaction_TextChanged(object sender, EventArgs e)

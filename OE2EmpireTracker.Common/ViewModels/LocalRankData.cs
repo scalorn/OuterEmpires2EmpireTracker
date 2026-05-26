@@ -8,10 +8,10 @@ namespace OE2EmpireTracker.ViewModels
     {
         public int Rank { get; set; }
 
-        public long CurrentXP { get; set; }
+        public long CurrentXp { get; set; }
 
-        public long NextXP { get; set; }
+        public long XpToNextLevel { get; set; }
 
-        public string Title { get; set; } = string.Empty;
+        public string RankName { get; set; } = string.Empty;
     }
 }

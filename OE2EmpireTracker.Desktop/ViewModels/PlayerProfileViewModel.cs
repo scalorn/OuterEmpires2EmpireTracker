@@ -70,7 +70,7 @@ public sealed partial class PlayerProfileViewModel : DocumentViewModel
             Profiles.Add(new ProfileRowViewModel
             {
                 ProfileName = profile.Name ?? string.Empty,
-                PublicRank = profile.Public?.Title ?? string.Empty,
+                PublicRank = profile.Public?.RankName ?? string.Empty,
                 SkillCount = profile.Skills?.Count ?? 0,
             });
         }

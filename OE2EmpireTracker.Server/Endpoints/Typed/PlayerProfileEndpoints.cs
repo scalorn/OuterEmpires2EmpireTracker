@@ -151,23 +151,23 @@ public class PlayerProfileEndpoints : TypedEndpointBase<PlayerProfile, PlayerPro
             Public = new PlayerRank
             {
                 Rank = dto.PublicRank,
-                CurrentXP = dto.PublicCurrentXP,
-                NextXP = dto.PublicNextXP,
-                Title = dto.PublicTitle ?? string.Empty,
+                CurrentXp = dto.PublicCurrentXp,
+                XpToNextLevel = dto.PublicXpToNextLevel,
+                RankName = dto.PublicRankName ?? string.Empty,
             },
             Private = new PlayerRank
             {
                 Rank = dto.PrivateRank,
-                CurrentXP = dto.PrivateCurrentXP,
-                NextXP = dto.PrivateNextXP,
-                Title = dto.PrivateTitle ?? string.Empty,
+                CurrentXp = dto.PrivateCurrentXp,
+                XpToNextLevel = dto.PrivateXpToNextLevel,
+                RankName = dto.PrivateRankName ?? string.Empty,
             },
             Military = new PlayerRank
             {
                 Rank = dto.MilitaryRank,
-                CurrentXP = dto.MilitaryCurrentXP,
-                NextXP = dto.MilitaryNextXP,
-                Title = dto.MilitaryTitle ?? string.Empty,
+                CurrentXp = dto.MilitaryCurrentXp,
+                XpToNextLevel = dto.MilitaryXpToNextLevel,
+                RankName = dto.MilitaryRankName ?? string.Empty,
             },
             Skills = dto.Skills != null
                 ? ConvertSkills(dto.Skills)
@@ -209,25 +209,25 @@ public class PlayerProfileEndpoints : TypedEndpointBase<PlayerProfile, PlayerPro
         existing.Public = new PlayerRank
         {
             Rank = dto.PublicRank,
-            CurrentXP = dto.PublicCurrentXP,
-            NextXP = dto.PublicNextXP,
-            Title = dto.PublicTitle ?? existing.Public.Title,
+            CurrentXp = dto.PublicCurrentXp,
+            XpToNextLevel = dto.PublicXpToNextLevel,
+            RankName = dto.PublicRankName ?? existing.Public.RankName,
         };
 
         existing.Private = new PlayerRank
         {
             Rank = dto.PrivateRank,
-            CurrentXP = dto.PrivateCurrentXP,
-            NextXP = dto.PrivateNextXP,
-            Title = dto.PrivateTitle ?? existing.Private.Title,
+            CurrentXp = dto.PrivateCurrentXp,
+            XpToNextLevel = dto.PrivateXpToNextLevel,
+            RankName = dto.PrivateRankName ?? existing.Private.RankName,
         };
 
         existing.Military = new PlayerRank
         {
             Rank = dto.MilitaryRank,
-            CurrentXP = dto.MilitaryCurrentXP,
-            NextXP = dto.MilitaryNextXP,
-            Title = dto.MilitaryTitle ?? existing.Military.Title,
+            CurrentXp = dto.MilitaryCurrentXp,
+            XpToNextLevel = dto.MilitaryXpToNextLevel,
+            RankName = dto.MilitaryRankName ?? existing.Military.RankName,
         };
 
         if (dto.Skills != null)

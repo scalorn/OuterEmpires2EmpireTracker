@@ -173,6 +173,10 @@ namespace OE2EmpireTracker.ViewModels
                     TrainingStarted = roSkill.TrainingStarted,
                     CompletionStartTime = roSkill.CompletionStartTime,
                     CompletionEndTime = roSkill.CompletionEndTime,
+                    EffectDescription = roSkill.EffectDescription,
+                    AmountPerLevel = roSkill.AmountPerLevel,
+                    TrainingPercentageComplete = roSkill.TrainingPercentageComplete,
+                    RemainingMinutes = roSkill.RemainingMinutes,
                 };
             }
 
@@ -221,17 +225,17 @@ namespace OE2EmpireTracker.ViewModels
                 RegistrationDate = _registrationDate,
                 ActiveTime = _activeTime,
                 PublicRank = _publicRank.Rank,
-                PublicCurrentXP = _publicRank.CurrentXP,
-                PublicNextXP = _publicRank.NextXP,
-                PublicTitle = _publicRank.Title,
+                PublicCurrentXp = _publicRank.CurrentXp,
+                PublicXpToNextLevel = _publicRank.XpToNextLevel,
+                PublicRankName = _publicRank.RankName,
                 PrivateRank = _privateRank.Rank,
-                PrivateCurrentXP = _privateRank.CurrentXP,
-                PrivateNextXP = _privateRank.NextXP,
-                PrivateTitle = _privateRank.Title,
+                PrivateCurrentXp = _privateRank.CurrentXp,
+                PrivateXpToNextLevel = _privateRank.XpToNextLevel,
+                PrivateRankName = _privateRank.RankName,
                 MilitaryRank = _militaryRank.Rank,
-                MilitaryCurrentXP = _militaryRank.CurrentXP,
-                MilitaryNextXP = _militaryRank.NextXP,
-                MilitaryTitle = _militaryRank.Title,
+                MilitaryCurrentXp = _militaryRank.CurrentXp,
+                MilitaryXpToNextLevel = _militaryRank.XpToNextLevel,
+                MilitaryRankName = _militaryRank.RankName,
                 Skills = _skills.ToDictionary(
                     kvp => kvp.Key,
                     kvp => new SkillUpdateData
@@ -260,17 +264,17 @@ namespace OE2EmpireTracker.ViewModels
                 RegistrationDate = _registrationDate,
                 ActiveTime = _activeTime,
                 PublicRank = _publicRank.Rank,
-                PublicCurrentXP = _publicRank.CurrentXP,
-                PublicNextXP = _publicRank.NextXP,
-                PublicTitle = _publicRank.Title,
+                PublicCurrentXp = _publicRank.CurrentXp,
+                PublicXpToNextLevel = _publicRank.XpToNextLevel,
+                PublicRankName = _publicRank.RankName,
                 PrivateRank = _privateRank.Rank,
-                PrivateCurrentXP = _privateRank.CurrentXP,
-                PrivateNextXP = _privateRank.NextXP,
-                PrivateTitle = _privateRank.Title,
+                PrivateCurrentXp = _privateRank.CurrentXp,
+                PrivateXpToNextLevel = _privateRank.XpToNextLevel,
+                PrivateRankName = _privateRank.RankName,
                 MilitaryRank = _militaryRank.Rank,
-                MilitaryCurrentXP = _militaryRank.CurrentXP,
-                MilitaryNextXP = _militaryRank.NextXP,
-                MilitaryTitle = _militaryRank.Title,
+                MilitaryCurrentXp = _militaryRank.CurrentXp,
+                MilitaryXpToNextLevel = _militaryRank.XpToNextLevel,
+                MilitaryRankName = _militaryRank.RankName,
                 Skills = _skills.ToDictionary(
                     kvp => kvp.Key,
                     kvp => new SkillUpdateData
@@ -287,17 +291,17 @@ namespace OE2EmpireTracker.ViewModels
         private static void CopyRank(LocalRankData local, ReadOnlyPlayerRank ro)
         {
             local.Rank = ro.Rank;
-            local.CurrentXP = ro.CurrentXP;
-            local.NextXP = ro.NextXP;
-            local.Title = ro.Title;
+            local.CurrentXp = ro.CurrentXp;
+            local.XpToNextLevel = ro.XpToNextLevel;
+            local.RankName = ro.RankName;
         }
 
         private static bool IsRankDirty(LocalRankData local, ReadOnlyPlayerRank original)
         {
             return local.Rank != original.Rank
-                || local.CurrentXP != original.CurrentXP
-                || local.NextXP != original.NextXP
-                || local.Title != original.Title;
+                || local.CurrentXp != original.CurrentXp
+                || local.XpToNextLevel != original.XpToNextLevel
+                || local.RankName != original.RankName;
         }
 
         private bool IsSkillsDirty()

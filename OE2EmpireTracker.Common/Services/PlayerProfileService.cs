@@ -46,12 +46,12 @@ namespace OE2EmpireTracker.Services
             profile.ActiveTime = request.ActiveTime;
 
             // Apply ranks
-            ApplyRank(profile.Public, request.PublicRank, request.PublicCurrentXP,
-                      request.PublicNextXP, request.PublicTitle);
-            ApplyRank(profile.Private, request.PrivateRank, request.PrivateCurrentXP,
-                      request.PrivateNextXP, request.PrivateTitle);
-            ApplyRank(profile.Military, request.MilitaryRank, request.MilitaryCurrentXP,
-                      request.MilitaryNextXP, request.MilitaryTitle);
+            ApplyRank(profile.Public, request.PublicRank, request.PublicCurrentXp,
+                      request.PublicXpToNextLevel, request.PublicRankName);
+            ApplyRank(profile.Private, request.PrivateRank, request.PrivateCurrentXp,
+                      request.PrivateXpToNextLevel, request.PrivateRankName);
+            ApplyRank(profile.Military, request.MilitaryRank, request.MilitaryCurrentXp,
+                      request.MilitaryXpToNextLevel, request.MilitaryRankName);
 
             // Apply skills
             if (request.Skills != null)
@@ -102,12 +102,12 @@ namespace OE2EmpireTracker.Services
                 profile.Name, profile.UUID);
 
             // Apply ranks
-            ApplyRank(profile.Public, request.PublicRank, request.PublicCurrentXP,
-                      request.PublicNextXP, request.PublicTitle);
-            ApplyRank(profile.Private, request.PrivateRank, request.PrivateCurrentXP,
-                      request.PrivateNextXP, request.PrivateTitle);
-            ApplyRank(profile.Military, request.MilitaryRank, request.MilitaryCurrentXP,
-                      request.MilitaryNextXP, request.MilitaryTitle);
+            ApplyRank(profile.Public, request.PublicRank, request.PublicCurrentXp,
+                      request.PublicXpToNextLevel, request.PublicRankName);
+            ApplyRank(profile.Private, request.PrivateRank, request.PrivateCurrentXp,
+                      request.PrivateXpToNextLevel, request.PrivateRankName);
+            ApplyRank(profile.Military, request.MilitaryRank, request.MilitaryCurrentXp,
+                      request.MilitaryXpToNextLevel, request.MilitaryRankName);
 
             // Apply skills
             if (request.Skills != null)
@@ -209,12 +209,12 @@ namespace OE2EmpireTracker.Services
             existing.RegistrationDate = parsed.RegistrationDate;
             existing.ActiveTime = parsed.ActiveTime;
 
-            ApplyRank(existing.Public, parsed.Public.Rank, parsed.Public.CurrentXP,
-                      parsed.Public.NextXP, parsed.Public.Title);
-            ApplyRank(existing.Private, parsed.Private.Rank, parsed.Private.CurrentXP,
-                      parsed.Private.NextXP, parsed.Private.Title);
-            ApplyRank(existing.Military, parsed.Military.Rank, parsed.Military.CurrentXP,
-                      parsed.Military.NextXP, parsed.Military.Title);
+            ApplyRank(existing.Public, parsed.Public.Rank, parsed.Public.CurrentXp,
+                      parsed.Public.XpToNextLevel, parsed.Public.RankName);
+            ApplyRank(existing.Private, parsed.Private.Rank, parsed.Private.CurrentXp,
+                      parsed.Private.XpToNextLevel, parsed.Private.RankName);
+            ApplyRank(existing.Military, parsed.Military.Rank, parsed.Military.CurrentXp,
+                      parsed.Military.XpToNextLevel, parsed.Military.RankName);
 
             foreach (SkillGroupName group in Enum.GetValues(typeof(SkillGroupName)))
             {
@@ -230,12 +230,12 @@ namespace OE2EmpireTracker.Services
             }
         }
 
-        private static void ApplyRank(PlayerRank rank, int level, long curXP, long nextXP, string title)
+        private static void ApplyRank(PlayerRank rank, int level, long curXp, long xpToNext, string rankName)
         {
             rank.Rank = level;
-            rank.CurrentXP = curXP;
-            rank.NextXP = nextXP;
-            rank.Title = title;
+            rank.CurrentXp = curXp;
+            rank.XpToNextLevel = xpToNext;
+            rank.RankName = rankName;
         }
     }
 }

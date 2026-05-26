@@ -49,6 +49,36 @@ namespace OE2EmpireTracker.Client
         public string RegistrationDate { get; set; }
 
         /// <summary>
+        /// Gets or sets the character ID.
+        /// </summary>
+        [JsonProperty("characterId")]
+        public int CharacterId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the character's first name.
+        /// </summary>
+        [JsonProperty("firstName")]
+        public string FirstName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the character's last name.
+        /// </summary>
+        [JsonProperty("lastName")]
+        public string LastName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the active time in minutes.
+        /// </summary>
+        [JsonProperty("activeTimeMinutes")]
+        public int ActiveTimeMinutes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the skill currently in training.
+        /// </summary>
+        [JsonProperty("skillInTraining")]
+        public GameApiSkillInTrainingResponse SkillInTraining { get; set; }
+
+        /// <summary>
         /// Gets or sets the skills dictionary keyed by skill name.
         /// </summary>
         [JsonProperty("skills")]
@@ -77,6 +107,36 @@ namespace OE2EmpireTracker.Client
         /// </summary>
         [JsonProperty("experience")]
         public long Experience { get; set; }
+
+        /// <summary>
+        /// Gets or sets the skill ID.
+        /// </summary>
+        [JsonProperty("skillId")]
+        public int SkillId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the effect description.
+        /// </summary>
+        [JsonProperty("effectDescription")]
+        public string EffectDescription { get; set; }
+
+        /// <summary>
+        /// Gets or sets the amount per level.
+        /// </summary>
+        [JsonProperty("amountPerLevel")]
+        public int AmountPerLevel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the skill group name.
+        /// </summary>
+        [JsonProperty("skillGroupName")]
+        public string SkillGroupName { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the skill is unlocked.
+        /// </summary>
+        [JsonProperty("isUnlocked")]
+        public bool IsUnlocked { get; set; }
     }
 
     /// <summary>
@@ -119,5 +179,23 @@ namespace OE2EmpireTracker.Client
         /// </summary>
         [JsonProperty("level")]
         public int Level { get; set; }
+
+        /// <summary>
+        /// Gets or sets the level name (rank title from the API).
+        /// </summary>
+        [JsonProperty("levelName")]
+        public string LevelName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the XP required to reach the next level.
+        /// </summary>
+        [JsonProperty("xpToNextLevel")]
+        public long XpToNextLevel { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current XP for this rank.
+        /// </summary>
+        [JsonProperty("currentXp")]
+        public long CurrentXp { get; set; }
     }
 }
