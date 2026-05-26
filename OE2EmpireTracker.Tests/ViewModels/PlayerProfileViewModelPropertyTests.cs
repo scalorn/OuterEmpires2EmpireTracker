@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using FsCheck;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
@@ -255,6 +256,93 @@ namespace OE2EmpireTracker.Tests.ViewModels
 
                 return true.Label("All identity and time fields preserved");
             });
+        }
+
+        // -----------------------------------------------------------------------
+        // Unit tests: FormatActiveTime edge cases
+        // Feature: profile-form-upgrade
+        // Satisfies: Req 2, Criteria 2, 3, 6
+        // -----------------------------------------------------------------------
+
+        [TestCase(0, "\u2014")]
+        [TestCase(1, "1m")]
+        [TestCase(59, "59m")]
+        [TestCase(60, "1h 0m")]
+        [TestCase(1440, "1d 0h 0m")]
+        [TestCase(-5, "\u2014")]
+        public void FormatActiveTime_EdgeCases(int totalMinutes, string expected)
+        {
+            string result = PlayerProfileViewModel.FormatActiveTime(totalMinutes);
+            Assert.That(result, Is.EqualTo(expected));
+        }
+
+        // -----------------------------------------------------------------------
+        // Property 4: ActiveTimeMinutes formatting round-trip
+        // Feature: profile-form-upgrade, Property 4: ActiveTimeMinutes formatting round-trip
+        // **Validates: Requirements 2.2, 2.3, 2.6, 5.2**
+        // -----------------------------------------------------------------------
+
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property FormatActiveTime_RoundTrip_PreservesTotalMinutes()
+        {
+            var positiveMinutesGen = Gen.Choose(1, 5000000);
+
+            return Prop.ForAll(Arb.From(positiveMinutesGen), totalMinutes =>
+            {
+                string formatted = PlayerProfileViewModel.FormatActiveTime(totalMinutes);
+
+                int reconstructed = ParseFormattedTime(formatted);
+
+                return (reconstructed == totalMinutes).Label(
+                    "Round-trip failed: input=" + totalMinutes +
+                    " formatted='" + formatted + "' reconstructed=" + reconstructed);
+            });
+        }
+
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property FormatActiveTime_ZeroOrNegative_ReturnsEmDash()
+        {
+            var nonPositiveGen = Gen.Choose(-10000, 0);
+
+            return Prop.ForAll(Arb.From(nonPositiveGen), totalMinutes =>
+            {
+                string formatted = PlayerProfileViewModel.FormatActiveTime(totalMinutes);
+
+                return (formatted == "\u2014").Label(
+                    "Expected em-dash for input=" + totalMinutes +
+                    " but got '" + formatted + "'");
+            });
+        }
+
+        /// <summary>
+        /// Parses a formatted time string (e.g. "2d 3h 15m", "1h 0m", "45m")
+        /// back into total minutes.
+        /// </summary>
+        private static int ParseFormattedTime(string formatted)
+        {
+            int days = 0;
+            int hours = 0;
+            int minutes = 0;
+
+            var dayMatch = Regex.Match(formatted, @"(\d+)d");
+            if (dayMatch.Success)
+            {
+                days = int.Parse(dayMatch.Groups[1].Value);
+            }
+
+            var hourMatch = Regex.Match(formatted, @"(\d+)h");
+            if (hourMatch.Success)
+            {
+                hours = int.Parse(hourMatch.Groups[1].Value);
+            }
+
+            var minuteMatch = Regex.Match(formatted, @"(\d+)m");
+            if (minuteMatch.Success)
+            {
+                minutes = int.Parse(minuteMatch.Groups[1].Value);
+            }
+
+            return (days * 1440) + (hours * 60) + minutes;
         }
 
         // -----------------------------------------------------------------------

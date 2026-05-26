@@ -6,7 +6,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 ## Tasks
 
-- [ ] 1. Add identity and time properties to PlayerProfileViewModel
+- [x] 1. Add identity and time properties to PlayerProfileViewModel
   - [x] 1.1 Add CharacterId, FirstName, LastName, ActiveTimeMinutes properties and LoadFrom/Reset logic
     - Add four new properties: CharacterId (int), FirstName (string), LastName (string), ActiveTimeMinutes (int)
     - Update LoadFrom to copy from ReadOnlyPlayerProfile snapshot
@@ -17,7 +17,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified PlayerProfileViewModel.cs (whichever is the active one)_
     - _Verification: getDiagnostics clean, existing property tests still pass_
 
-  - [-] 1.2 Write property test: LoadFrom round-trip preserves identity and time fields
+  - [x] 1.2 Write property test: LoadFrom round-trip preserves identity and time fields
     - **Property 1: LoadFrom round-trip preserves identity and time fields**
     - **Validates: Requirements 1.1, 2.1**
     - Extend or add test in PlayerProfileViewModelPropertyTests.cs
@@ -39,7 +39,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: Modified PlayerProfileViewModel.cs with FormatActiveTime static method_
     - _Verification: getDiagnostics clean_
 
-  - [~] 2.2 Write property test: ActiveTimeMinutes formatting round-trip
+  - [-] 2.2 Write property test: ActiveTimeMinutes formatting round-trip
     - **Property 4: ActiveTimeMinutes formatting round-trip**
     - **Validates: Requirements 2.2, 2.3, 2.6, 5.2**
     - For any non-negative int totalMinutes, parse the output D/H/M components and verify D×1440 + H×60 + M == totalMinutes
@@ -48,7 +48,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
     - _Output: New test method in PlayerProfileViewModelPropertyTests.cs_
     - _Verification: vstest.console passes_
 
-  - [~] 2.3 Write unit tests for FormatActiveTime edge cases
+  - [-] 2.3 Write unit tests for FormatActiveTime edge cases
     - Test specific examples: 0 → "—", 1 → "1m", 59 → "59m", 60 → "1h 0m", 1440 → "1d 0h 0m", -5 → "—"
     - _Satisfies: Req 2, Criteria 2, 3, 6_
     - _Inputs: OE2EmpireTracker.Tests/ViewModels/PlayerProfileViewModelPropertyTests.cs_
@@ -57,7 +57,7 @@ This plan implements the profile form upgrade in vertical slices: ViewModel prop
 
 
 - [ ] 3. Implement PlayerSkillBlock dynamic height
-  - [~] 3.1 Add height calculation logic to PlayerSkillBlock SkillData setter
+  - [-] 3.1 Add height calculation logic to PlayerSkillBlock SkillData setter
     - When any metadata present (EffectDescription non-empty, AmountPerLevel > 0, TrainingPercentageComplete > 0, RemainingMinutes > 0): set height to 42px
     - When no metadata: set height to 24px
     - Update MinimumSize, MaximumSize, and Size properties

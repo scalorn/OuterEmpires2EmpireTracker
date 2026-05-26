@@ -118,6 +118,16 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             bool hasRemaining = _skillData.RemainingMinutes > 0;
             this.lblRemainingTime.Text = FormatMinutesAsCountdown(_skillData.RemainingMinutes);
             this.lblRemainingTime.Visible = hasRemaining;
+
+            // Dynamic height based on metadata presence (Req 3)
+            bool hasMetadata = hasEffect || hasAmount || hasTrainingPct || hasRemaining;
+            int targetHeight = hasMetadata ? 42 : 24;
+            if (this.Height != targetHeight)
+            {
+                this.MinimumSize = new Size(450, targetHeight);
+                this.MaximumSize = new Size(450, targetHeight);
+                this.Size = new Size(450, targetHeight);
+            }
         }
 
         private static string FormatMinutesAsCountdown(int totalMinutes)
