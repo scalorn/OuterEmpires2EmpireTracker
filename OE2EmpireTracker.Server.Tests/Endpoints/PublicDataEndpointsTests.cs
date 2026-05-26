@@ -23,9 +23,9 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 /// **Validates: Requirements 4.1, 4.3, 12.2, 12.5**
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class PublicDataEndpointsTests
 {
-    
     /// <summary>
     /// Sets up the test server factory and seeds the owner token.
     /// </summary>

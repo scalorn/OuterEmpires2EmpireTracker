@@ -4,6 +4,13 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using NUnit.Framework;
+
+// Run test fixtures in parallel (up to 4 concurrently).
+// Tests use unique UUIDs for data isolation so they don't conflict.
+[assembly: Parallelizable(ParallelScope.Fixtures)]
+[assembly: LevelOfParallelism(4)]
+
 // SA1009: False positive with null-forgiving operator (!) after closing parenthesis.
 // StyleCop 1.1.118 does not handle this C# 8+ syntax correctly.
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:ClosingParenthesisMustBeSpacedCorrectly", Justification = "False positive with null-forgiving operator")]

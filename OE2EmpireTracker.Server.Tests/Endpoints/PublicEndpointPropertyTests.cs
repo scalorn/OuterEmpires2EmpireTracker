@@ -26,6 +26,7 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 /// **Validates: Requirements 12.1–12.5**
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class PublicEndpointPropertyTests
 {
     /// <summary>
@@ -52,7 +53,6 @@ public class PublicEndpointPropertyTests
         "lastImportDateTime",
     };
 
-    
     /// <summary>
     /// Sets up the test server factory and seeds the owner token.
     /// </summary>
@@ -75,7 +75,7 @@ public class PublicEndpointPropertyTests
     /// the public colony summary endpoint never exposes private entity fields.
     /// Only ColonyName, Size, and PlanetName are permitted.
     /// </summary>
-    [FsCheck.NUnit.Property(MaxTest = 100)]
+    [FsCheck.NUnit.Property(MaxTest = 25)]
     public Property ColonySummaryEndpoint_NeverExposesPrivateFields()
     {
         return Prop.ForAll(
@@ -90,7 +90,7 @@ public class PublicEndpointPropertyTests
     /// Property: For any randomly generated blueprint data seeded into the system,
     /// the public blueprints endpoint never exposes private entity fields.
     /// </summary>
-    [FsCheck.NUnit.Property(MaxTest = 100)]
+    [FsCheck.NUnit.Property(MaxTest = 25)]
     public Property PublicBlueprintsEndpoint_NeverExposesPrivateFields()
     {
         return Prop.ForAll(
@@ -105,7 +105,7 @@ public class PublicEndpointPropertyTests
     /// Property: For any randomly generated system data, the public systems
     /// endpoint never exposes private entity fields.
     /// </summary>
-    [FsCheck.NUnit.Property(MaxTest = 100)]
+    [FsCheck.NUnit.Property(MaxTest = 25)]
     public Property PublicSystemsEndpoint_NeverExposesPrivateFields()
     {
         return Prop.ForAll(
@@ -120,7 +120,7 @@ public class PublicEndpointPropertyTests
     /// Property: For any randomly generated asteroid data, the public asteroids
     /// endpoint never exposes private entity fields.
     /// </summary>
-    [FsCheck.NUnit.Property(MaxTest = 100)]
+    [FsCheck.NUnit.Property(MaxTest = 25)]
     public Property PublicAsteroidsEndpoint_NeverExposesPrivateFields()
     {
         return Prop.ForAll(

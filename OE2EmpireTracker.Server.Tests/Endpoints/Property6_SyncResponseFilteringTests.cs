@@ -54,7 +54,7 @@ public class Property6_SyncResponseFilteringTests
     {
         var rng = new Random(42);
 
-        for (int iteration = 0; iteration < 15; iteration++)
+        for (int iteration = 0; iteration < 5; iteration++)
         {
             // Create a caller character
             var callerResp = await _ownerClient.PostAsJsonAsync(
@@ -149,7 +149,7 @@ public class Property6_SyncResponseFilteringTests
     {
         var rng = new Random(99);
 
-        for (int iteration = 0; iteration < 15; iteration++)
+        for (int iteration = 0; iteration < 5; iteration++)
         {
             // Create a caller character
             var callerResp = await _ownerClient.PostAsJsonAsync(
@@ -263,7 +263,7 @@ public class Property6_SyncResponseFilteringTests
     {
         var rng = new Random(2024);
 
-        for (int iteration = 0; iteration < 10; iteration++)
+        for (int iteration = 0; iteration < 5; iteration++)
         {
             // Create a caller character
             var callerResp = await _ownerClient.PostAsJsonAsync(

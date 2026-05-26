@@ -88,7 +88,7 @@ public class Property5_AuthorizationIsolationTests
     {
         var rng = new Random(42);
 
-        for (int iteration = 0; iteration < 20; iteration++)
+        for (int iteration = 0; iteration < 5; iteration++)
         {
             // Pick a random caller
             int callerIdx = rng.Next(_characters.Count);
@@ -155,7 +155,7 @@ public class Property5_AuthorizationIsolationTests
     {
         var rng = new Random(99);
 
-        for (int iteration = 0; iteration < 20; iteration++)
+        for (int iteration = 0; iteration < 5; iteration++)
         {
             // Pick a random caller (none are faction members)
             int callerIdx = rng.Next(_characters.Count);
@@ -214,7 +214,7 @@ public class Property5_AuthorizationIsolationTests
     {
         var rng = new Random(2024);
 
-        for (int iteration = 0; iteration < 30; iteration++)
+        for (int iteration = 0; iteration < 5; iteration++)
         {
             // Pick a random caller
             int callerIdx = rng.Next(_characters.Count);

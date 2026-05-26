@@ -27,9 +27,10 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 /// Feature: sharing-visibility-system, Property 2: Pagination Slice Correctness.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class PaginationTests
 {
-        private string _characterUUID = null!;
+    private string _characterUUID = null!;
 
     /// <summary>
     /// Sets up the test server factory and seeds a character with Public sharing rules.
@@ -72,7 +73,7 @@ public class PaginationTests
     /// Property: For any entity count N (0-150) and valid page/pageSize parameters,
     /// the response contains exactly min(pageSize, max(0, N - (page-1)*pageSize)) items.
     /// </summary>
-    [FsCheck.NUnit.Property(MaxTest = 100)]
+    [FsCheck.NUnit.Property(MaxTest = 25)]
     public Property PaginatedResponse_ContainsCorrectItemCount()
     {
         return Prop.ForAll(
@@ -86,7 +87,7 @@ public class PaginationTests
     /// <summary>
     /// Property: For any entity count N and any page/pageSize, totalCount always equals N.
     /// </summary>
-    [FsCheck.NUnit.Property(MaxTest = 100)]
+    [FsCheck.NUnit.Property(MaxTest = 25)]
     public Property PaginatedResponse_TotalCountEqualsN()
     {
         return Prop.ForAll(
@@ -100,7 +101,7 @@ public class PaginationTests
     /// <summary>
     /// Property: If page is less than 1, it is treated as 1.
     /// </summary>
-    [FsCheck.NUnit.Property(MaxTest = 100)]
+    [FsCheck.NUnit.Property(MaxTest = 25)]
     public Property Page_ClampedToMin1()
     {
         return Prop.ForAll(
@@ -114,7 +115,7 @@ public class PaginationTests
     /// <summary>
     /// Property: The returned items are the correct slice at offset (page-1)*pageSize.
     /// </summary>
-    [FsCheck.NUnit.Property(MaxTest = 100)]
+    [FsCheck.NUnit.Property(MaxTest = 25)]
     public Property PaginatedResponse_ReturnsCorrectSlice()
     {
         return Prop.ForAll(

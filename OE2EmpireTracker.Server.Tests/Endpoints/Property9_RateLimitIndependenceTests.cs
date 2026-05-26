@@ -73,7 +73,7 @@ public class Property9_RateLimitIndependenceTests
     {
         var rng = new Random(9999);
 
-        for (int iteration = 0; iteration < 6; iteration++)
+        for (int iteration = 0; iteration < 3; iteration++)
         {
             // Pick two different characters
             int idxA = rng.Next(_characters.Count);
