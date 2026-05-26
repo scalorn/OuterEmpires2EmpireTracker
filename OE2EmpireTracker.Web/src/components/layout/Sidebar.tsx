@@ -17,6 +17,7 @@ const publicNavItems: NavItem[] = [
   { label: 'Blueprints', to: '/blueprints' },
   { label: 'Surveys', to: '/surveys' },
   { label: 'Colony Planner', to: '/planner' },
+  { label: 'Ship Builder', to: '/ship-builder' },
 ];
 
 const authenticatedNavGroups: NavGroup[] = [

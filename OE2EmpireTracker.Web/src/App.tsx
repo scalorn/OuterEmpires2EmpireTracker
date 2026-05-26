@@ -9,6 +9,7 @@ import { BlueprintDetail } from './pages/public/BlueprintDetail';
 import { SurveyBrowser } from './pages/public/SurveyBrowser';
 import { SurveyDetail } from './pages/public/SurveyDetail';
 import { ColonyPlanner } from './pages/planner/ColonyPlanner';
+import ShipBuilder from './pages/ship-builder/ShipBuilder';
 import { Dashboard } from './pages/authenticated/Dashboard';
 import { ColonyForm } from './pages/authenticated/ColonyForm';
 import { BlueprintForm } from './pages/authenticated/BlueprintForm';
@@ -45,6 +46,7 @@ const router = createBrowserRouter([
       { path: 'surveys', element: <SurveyBrowser /> },
       { path: 'surveys/:id', element: <SurveyDetail /> },
       { path: 'planner', element: <ColonyPlanner /> },
+      { path: 'ship-builder', element: <ShipBuilder /> },
       { path: 'login', element: <LoginPage /> },
       {
         path: 'app',
