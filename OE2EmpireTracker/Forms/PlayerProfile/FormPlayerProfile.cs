@@ -118,6 +118,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.PlayerProfileDataChanged += OnPlayerProfileDataChanged;
+            playerContext.PlayerProfilesChanged += OnPlayerProfilesChanged;
 
             // Clear the programmatic guard set at constructor start.
             Shown += (s, ev) => _isProgrammaticUpdate--;
@@ -222,6 +223,7 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
             playerContext.CurrentPlayerChanged -= OnCurrentPlayerChanged;
             playerContext.PlayerProfileDataChanged -= OnPlayerProfileDataChanged;
+            playerContext.PlayerProfilesChanged -= OnPlayerProfilesChanged;
             base.OnFormClosed(e);
         }
 
@@ -244,6 +246,25 @@ namespace OE2EmpireTracker.Forms.PlayerProfile
             if (viewModel.UUID == e.PlayerUUID)
             {
                 PopulateForm();
+            }
+
+            PopulateListView();
+        }
+
+        private void OnPlayerProfilesChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                try
+                {
+                    BeginInvoke(new Action(() => OnPlayerProfilesChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+
+                return;
             }
 
             PopulateListView();

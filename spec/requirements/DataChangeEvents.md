@@ -62,7 +62,7 @@ The user expects that when data changes (via background processing, import, or a
 | FormBlueprintV2 | Yes | BlueprintDataChanged, PricingDataChanged |
 | FormShipTemplate | Yes | PricingDataChanged |
 | FormSurvey | Yes | SurveyDataChanged, ColonyDataChanged |
-| FormPlayerProfile | Yes | PlayerProfileDataChanged |
+| FormPlayerProfile | Yes | PlayerProfileDataChanged, PlayerProfilesChanged |
 | FormDeliveryRoute | Yes | DeliveryDataChanged, ShipDataChanged, ShipTemplateDataChanged |
 | FormDeliveryExecution | Yes | DeliveryDataChanged |
 | FormBuildPlanner | Yes | BuildPlanDataChanged, ColonyDataChanged |
