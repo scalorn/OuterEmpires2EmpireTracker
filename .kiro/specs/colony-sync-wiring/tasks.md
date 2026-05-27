@@ -121,13 +121,13 @@ graph TD
   - Output: Modified `FormColonyV2.cs` with SyncSelectedColonyAsync method, status timer handler, error handling
   - Verification: getDiagnostics; build solution
 
-- [-] 11. Unit tests — ProductionSyncScheduler
+- [x] 11. Unit tests — ProductionSyncScheduler
   - Satisfies: Req 1, Criteria 2-5 (delegation correctness)
   - Inputs: `OE2EmpireTracker/Services/ProductionSyncScheduler.cs`, `OE2EmpireTracker/Services/PlayerContext.cs`
   - Output: New file `OE2EmpireTracker.Tests/Services/ProductionSyncSchedulerTests.cs`
   - Verification: Build solution; run vstest.console; trxparse.js shows all pass
 
-- [~] 12. Unit tests — MergeWorkers
+- [-] 12. Unit tests — MergeWorkers
   - Satisfies: Req 12, Criteria 2-5 (commodity mapping, Delivered logic, empty list, change detection)
   - Satisfies: Req 13, Criteria 1-3 (attitude, workforce overview, wages)
   - Inputs: `OE2EmpireTracker/Services/ColonyMergeService.cs`, `OE2EmpireTracker/Models/GameApiColonyWorkersResponse.cs`
