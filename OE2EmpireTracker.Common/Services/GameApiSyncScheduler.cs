@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
+using Polly.CircuitBreaker;
 
 namespace OE2EmpireTracker.Services
 {
@@ -370,6 +371,17 @@ namespace OE2EmpireTracker.Services
                         Log.Error(colonyEx, "Colony sync failed for character {0}, profile sync result preserved", playerUUID);
                     }
 
+                    // Asset sync runs after colony sync (Req 8.1)
+                    // Wrapped in try/catch so asset failures don't affect profile/colony sync (Req 8.4)
+                    try
+                    {
+                        await SyncAssetsAsync(playerUUID, tokenResult.Token.AccessToken).ConfigureAwait(false);
+                    }
+                    catch (Exception assetEx)
+                    {
+                        Log.Error(assetEx, "Asset sync failed for character {0}, profile/colony sync results preserved", playerUUID);
+                    }
+
                     return true;
                 }
 
@@ -432,6 +444,39 @@ namespace OE2EmpireTracker.Services
         /// Override point for testing. In production, calls PlayerContext.OnColonyDataChanged.
         /// </summary>
         internal virtual void RaiseColonyDataChanged()
+        {
+            // Default implementation is a no-op — wired to PlayerContext in production via GameApiContext
+        }
+
+        /// <summary>
+        /// Retrieves the mutable station list for the given player UUID.
+        /// Override point for testing. Returns null if no stations are found.
+        /// </summary>
+        /// <param name="playerUUID">The player UUID to look up.</param>
+        /// <returns>The mutable station list, or null if not found.</returns>
+        internal virtual List<Station> GetPlayerStations(string playerUUID)
+        {
+            // Default implementation returns null — wired to PlayerContext in production via GameApiContext
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves the mutable ship list for the given player UUID.
+        /// Override point for testing. Returns null if no ships are found.
+        /// </summary>
+        /// <param name="playerUUID">The player UUID to look up.</param>
+        /// <returns>The mutable ship list, or null if not found.</returns>
+        internal virtual List<Ship> GetPlayerShips(string playerUUID)
+        {
+            // Default implementation returns null — wired to PlayerContext in production via GameApiContext
+            return null;
+        }
+
+        /// <summary>
+        /// Raises the AssetDataChanged event to notify UI subscribers.
+        /// Override point for testing. In production, calls PlayerContext.OnAssetDataChanged.
+        /// </summary>
+        internal virtual void RaiseAssetDataChanged()
         {
             // Default implementation is a no-op — wired to PlayerContext in production via GameApiContext
         }
@@ -661,6 +706,211 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Fetches asset locations from the game API, iterates each location with assets,
+        /// retrieves cargo details, and merges into the appropriate local model (colony, station, or ship).
+        /// Handles 401 (invalidate credentials + abort), 403 (log + skip), 404 (log + skip location),
+        /// malformed JSON (log + skip), and circuit breaker open (log + abort).
+        /// </summary>
+        /// <param name="playerUUID">The player UUID whose assets to sync.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        internal virtual async Task SyncAssetsAsync(string playerUUID, string accessToken)
+        {
+            Log.Info("Asset sync starting for character {0}", playerUUID);
+
+            int locationsSynced = 0;
+            int itemsProcessed = 0;
+            int errorsEncountered = 0;
+
+            // 1. Fetch asset locations list
+            var listResult = await _client.GetAssetLocationsAsync(_appId, accessToken).ConfigureAwait(false);
+
+            if (!listResult.Success)
+            {
+                if (listResult.Json == "401")
+                {
+                    Log.Warn("Asset sync for character {0}: token rejected (HTTP 401), invalidating", playerUUID);
+                    _connectionMonitor.TransitionTo(
+                        GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
+                        "Credentials are invalid (HTTP 401)");
+                    return;
+                }
+
+                if (listResult.Json == "403")
+                {
+                    Log.Info("Asset sync skipped: assets.locations.read scope not granted");
+                    return;
+                }
+
+                Log.Warn("Asset sync failed: could not fetch asset locations for character {0}", playerUUID);
+                errorsEncountered++;
+                Log.Info(
+                    "Asset sync complete for character {0}: {1} locations synced, {2} items processed, {3} errors",
+                    playerUUID,
+                    locationsSynced,
+                    itemsProcessed,
+                    errorsEncountered);
+                return;
+            }
+
+            // 2. Deserialize locations list
+            GameApiAssetLocationsResponse locationsResponse;
+            try
+            {
+                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetLocationsResponse>>(listResult.Json);
+                locationsResponse = envelope?.Data;
+                if (locationsResponse == null)
+                {
+                    Log.Warn("Asset sync for character {0}: deserialized locations response was null", playerUUID);
+                    return;
+                }
+            }
+            catch (JsonException ex)
+            {
+                string truncated = listResult.Json?.Length > 500
+                    ? listResult.Json.Substring(0, 500)
+                    : listResult.Json;
+                Log.Error(ex, "Asset sync: malformed JSON in locations response: {0}", truncated);
+                return;
+            }
+
+            // 3. Filter to locations with assetCount > 0
+            var activeLocations = locationsResponse.Locations.Where(l => l.AssetCount > 0).ToList();
+            Log.Info(
+                "Asset sync: {0} total locations, {1} with assets for character {2}",
+                locationsResponse.Locations.Count,
+                activeLocations.Count,
+                playerUUID);
+
+            // Get local data references
+            var localColonies = GetPlayerColonies(playerUUID);
+            var localStations = GetPlayerStations(playerUUID);
+            var localShips = GetPlayerShips(playerUUID);
+            bool anyChanges = false;
+
+            // 4. Iterate each location with assets
+            foreach (var location in activeLocations)
+            {
+                try
+                {
+                    var detailResult = await _client.GetAssetLocationDetailAsync(
+                        _appId,
+                        accessToken,
+                        location.LocationId,
+                        location.LocationType).ConfigureAwait(false);
+
+                    if (!detailResult.Success)
+                    {
+                        if (detailResult.Json == "401")
+                        {
+                            Log.Warn(
+                                "Asset sync for character {0}: detail request for location {1} returned HTTP 401, aborting cycle",
+                                playerUUID,
+                                location.LocationId);
+                            _connectionMonitor.TransitionTo(
+                                GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
+                                "Credentials are invalid (HTTP 401)");
+                            return;
+                        }
+
+                        if (detailResult.Json == "403")
+                        {
+                            Log.Info(
+                                "Asset sync: location {0} ({1}) returned HTTP 403, skipping",
+                                location.LocationId,
+                                location.LocationName);
+                            errorsEncountered++;
+                            continue;
+                        }
+
+                        if (detailResult.Json == "404")
+                        {
+                            Log.Warn(
+                                "Asset sync: location {0} ({1}) returned HTTP 404, skipping",
+                                location.LocationId,
+                                location.LocationName);
+                            errorsEncountered++;
+                            continue;
+                        }
+
+                        Log.Warn(
+                            "Asset sync: failed to fetch detail for location {0} ({1}), skipping",
+                            location.LocationId,
+                            location.LocationName);
+                        errorsEncountered++;
+                        continue;
+                    }
+
+                    // Deserialize detail response
+                    GameApiAssetDetailResponse detailResponse;
+                    try
+                    {
+                        var detailEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(detailResult.Json);
+                        detailResponse = detailEnvelope?.Data;
+                        if (detailResponse == null)
+                        {
+                            Log.Warn(
+                                "Asset sync: deserialized detail response was null for location {0}, skipping",
+                                location.LocationId);
+                            errorsEncountered++;
+                            continue;
+                        }
+                    }
+                    catch (JsonException ex)
+                    {
+                        string truncated = detailResult.Json?.Length > 500
+                            ? detailResult.Json.Substring(0, 500)
+                            : detailResult.Json;
+                        Log.Error(
+                            ex,
+                            "Asset sync: malformed JSON in detail response for location {0}: {1}",
+                            location.LocationId,
+                            truncated);
+                        errorsEncountered++;
+                        continue;
+                    }
+
+                    // Route to appropriate merge method based on location type
+                    bool merged = RouteAssetMerge(
+                        location,
+                        detailResponse.Cargo,
+                        localColonies,
+                        localStations,
+                        localShips);
+
+                    if (merged)
+                    {
+                        anyChanges = true;
+                    }
+
+                    locationsSynced++;
+                    itemsProcessed += detailResponse.Cargo.Count;
+                }
+                catch (BrokenCircuitException)
+                {
+                    Log.Warn("Asset sync: circuit breaker open, aborting asset sync cycle");
+                    errorsEncountered++;
+                    break;
+                }
+            }
+
+            // 5. Persist and notify if changes occurred
+            if (anyChanges)
+            {
+                WriteContext();
+                RaiseAssetDataChanged();
+            }
+
+            // 6. Log summary
+            Log.Info(
+                "Asset sync complete for character {0}: {1} locations synced, {2} items processed, {3} errors",
+                playerUUID,
+                locationsSynced,
+                itemsProcessed,
+                errorsEncountered);
+        }
+
+        /// <summary>
         /// Performs a single round-robin sync cycle. Advances to the next character
         /// and attempts to sync their profile. If the character fails, it is skipped
         /// and will be retried on the next cycle.
@@ -718,6 +968,164 @@ namespace OE2EmpireTracker.Services
 
                 _disposed = true;
             }
+        }
+
+        /// <summary>
+        /// Routes asset cargo items to the appropriate merge method based on location type.
+        /// For colonies, matches by ColonyId. For stations, matches by GameLocationId (creates if not found).
+        /// For ships, matches by GameLocationId (creates if not found).
+        /// </summary>
+        /// <param name="location">The asset location entry with type and ID information.</param>
+        /// <param name="cargoItems">The list of cargo items to merge.</param>
+        /// <param name="localColonies">The local colony list (may be null).</param>
+        /// <param name="localStations">The local station list (may be null).</param>
+        /// <param name="localShips">The local ship list (may be null).</param>
+        /// <returns>True if any changes were made; false otherwise.</returns>
+        private static bool RouteAssetMerge(
+            GameApiAssetLocationEntry location,
+            List<GameApiAssetCargoItem> cargoItems,
+            List<Colony> localColonies,
+            List<Station> localStations,
+            List<Ship> localShips)
+        {
+            if (string.Equals(location.LocationType, "Co", StringComparison.OrdinalIgnoreCase))
+            {
+                return MergeColonyLocation(location, cargoItems, localColonies);
+            }
+
+            if (string.Equals(location.LocationType, "St", StringComparison.OrdinalIgnoreCase))
+            {
+                return MergeStationLocation(location, cargoItems, localStations);
+            }
+
+            if (string.Equals(location.LocationType, "Sh", StringComparison.OrdinalIgnoreCase))
+            {
+                return MergeShipLocation(location, cargoItems, localShips);
+            }
+
+            Log.Warn(
+                "Asset sync: unknown location type '{0}' for location {1}, skipping",
+                location.LocationType,
+                location.LocationId);
+            return false;
+        }
+
+        /// <summary>
+        /// Merges asset cargo items into a colony matched by ColonyId.
+        /// </summary>
+        /// <param name="location">The asset location entry.</param>
+        /// <param name="cargoItems">The cargo items to merge.</param>
+        /// <param name="localColonies">The local colony list.</param>
+        /// <returns>True if any changes were made; false otherwise.</returns>
+        private static bool MergeColonyLocation(
+            GameApiAssetLocationEntry location,
+            List<GameApiAssetCargoItem> cargoItems,
+            List<Colony> localColonies)
+        {
+            if (localColonies == null)
+            {
+                Log.Debug("Asset sync: no local colonies available, skipping colony location {0}", location.LocationId);
+                return false;
+            }
+
+            var colony = localColonies.FirstOrDefault(c => c.ColonyId == location.LocationId);
+            if (colony == null)
+            {
+                Log.Debug(
+                    "Asset sync: no local colony matches locationId={0} ({1}), skipping",
+                    location.LocationId,
+                    location.LocationName);
+                return false;
+            }
+
+            return AssetMergeService.MergeColonyAssets(cargoItems, colony);
+        }
+
+        /// <summary>
+        /// Merges asset cargo items into a station matched by GameLocationId.
+        /// Creates a new station if no match is found.
+        /// </summary>
+        /// <param name="location">The asset location entry.</param>
+        /// <param name="cargoItems">The cargo items to merge.</param>
+        /// <param name="localStations">The local station list.</param>
+        /// <returns>True if any changes were made; false otherwise.</returns>
+        private static bool MergeStationLocation(
+            GameApiAssetLocationEntry location,
+            List<GameApiAssetCargoItem> cargoItems,
+            List<Station> localStations)
+        {
+            if (localStations == null)
+            {
+                Log.Debug("Asset sync: no local stations available, skipping station location {0}", location.LocationId);
+                return false;
+            }
+
+            var station = localStations.FirstOrDefault(s => s.GameLocationId == location.LocationId);
+            if (station == null)
+            {
+                station = new Station
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    Name = location.LocationName,
+                    GameLocationId = location.LocationId,
+                    SystemName = location.SystemName,
+                    SystemId = location.SystemId,
+                };
+                station.Holds[AssetMergeService.DefaultHoldName] = new ItemBag();
+                localStations.Add(station);
+                Log.Info(
+                    "Asset sync: created new station '{0}' (locationId={1}) in system '{2}'",
+                    location.LocationName,
+                    location.LocationId,
+                    location.SystemName);
+            }
+
+            ItemBag targetHold;
+            if (!station.Holds.TryGetValue(AssetMergeService.DefaultHoldName, out targetHold))
+            {
+                targetHold = new ItemBag();
+                station.Holds[AssetMergeService.DefaultHoldName] = targetHold;
+            }
+
+            return AssetMergeService.MergeStationAssets(cargoItems, station, targetHold);
+        }
+
+        /// <summary>
+        /// Merges asset cargo items into a ship matched by GameLocationId.
+        /// Creates a new ship if no match is found.
+        /// </summary>
+        /// <param name="location">The asset location entry.</param>
+        /// <param name="cargoItems">The cargo items to merge.</param>
+        /// <param name="localShips">The local ship list.</param>
+        /// <returns>True if any changes were made; false otherwise.</returns>
+        private static bool MergeShipLocation(
+            GameApiAssetLocationEntry location,
+            List<GameApiAssetCargoItem> cargoItems,
+            List<Ship> localShips)
+        {
+            if (localShips == null)
+            {
+                Log.Debug("Asset sync: no local ships available, skipping ship location {0}", location.LocationId);
+                return false;
+            }
+
+            var ship = localShips.FirstOrDefault(s => s.GameLocationId == location.LocationId);
+            if (ship == null)
+            {
+                ship = new Ship
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    Name = location.LocationName,
+                    GameLocationId = location.LocationId,
+                };
+                localShips.Add(ship);
+                Log.Info(
+                    "Asset sync: created new ship '{0}' (locationId={1})",
+                    location.LocationName,
+                    location.LocationId);
+            }
+
+            return AssetMergeService.MergeShipAssets(cargoItems, ship);
         }
 
         /// <summary>

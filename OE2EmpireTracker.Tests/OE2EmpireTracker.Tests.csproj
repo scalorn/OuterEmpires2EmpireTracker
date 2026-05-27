@@ -536,9 +536,14 @@
     <Compile Include="Services\ColonyMergeServiceWorkersTests.cs" />
     <Compile Include="Services\ColonyMergeServiceColonyIdTests.cs" />
     <Compile Include="Services\ColonyMergePropertyTests.cs" />
+    <Compile Include="Services\AssetMergeServicePropertyTests.cs" />
+    <Compile Include="Services\AssetMergeServiceStationTests.cs" />
+    <Compile Include="Services\AssetMergeServiceTests.cs" />
+    <Compile Include="Services\AssetMergeServiceShipTests.cs" />
     <Compile Include="Services\GameApiProfileMergeTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerColonyTests.cs" />
+    <Compile Include="Services\GameApiSyncSchedulerAssetTests.cs" />
     <Compile Include="Services\ProductionSyncSchedulerTests.cs" />
     <Compile Include="Services\GameApiSettingsTests.cs" />
     <Compile Include="Services\GameApiConnectionMonitorTests.cs" />
