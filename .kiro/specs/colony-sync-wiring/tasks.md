@@ -52,14 +52,14 @@ graph TD
 
 ## Tasks
 
-- [-] 1. Add ColonyId property to Colony model
+- [x] 1. Add ColonyId property to Colony model
   - Satisfies: Req 7, Criterion 1 ("Colony model SHALL expose a ColonyId property (int)")
   - Satisfies: Req 7, Criterion 2 ("ColonyMergeService SHALL populate ColonyId on matched colonies")
   - Inputs: `OE2EmpireTracker/Models/Colony.cs`, `OE2EmpireTracker/Services/ColonyMergeService.cs`
   - Output: Modified `Colony.cs` with ColonyId property; modified `ColonyMergeService.cs` to set ColonyId in MergeColonyList
   - Verification: getDiagnostics on both files; build solution
 
-- [~] 2. Add Workers API response DTOs
+- [-] 2. Add Workers API response DTOs
   - Satisfies: Req 11, Criteria 1-7 (all DTO definitions)
   - Inputs: Design doc DTO section
   - Output: New file `OE2EmpireTracker/Models/GameApiColonyWorkersResponse.cs` containing GameApiColonyWorkersResponse, GameApiCommodityDemand, GameApiWorkforceOverview, GameApiColonyWorkerDetail, GameApiColonyWages, GameApiColonyModifier, GameApiColonyCapacities
