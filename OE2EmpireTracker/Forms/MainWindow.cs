@@ -846,6 +846,10 @@ namespace OE2EmpireTracker
                     _backgroundProcessor = null;
                 }
 
+                // Reset game API before context reset — scheduler holds old PlayerContext reference
+                UnsubscribeFromGameApiStatus();
+                Client.GameApiContext.Reset();
+
                 EmpireContext.Reset();
                 PlayerContext.FilePath = string.Empty;
                 context = EmpireContext.GetInstance();
@@ -854,6 +858,11 @@ namespace OE2EmpireTracker
 
                 _backgroundProcessor = new BackgroundProcessor(playerContext, GetBackgroundProcessingIntervalMs);
                 _backgroundProcessor.Start();
+
+                // Re-initialize game API with new PlayerContext
+                Client.GameApiContext.Initialize();
+                SubscribeToGameApiStatus();
+                UpdateConnectionStatusIndicator();
 
                 PopulatePlayerDropdown();
                 UpdateNoPlayerGuard();
@@ -1240,6 +1249,10 @@ namespace OE2EmpireTracker
 
             CloseAllMdiChildren();
 
+            // Reset game API before context reset — scheduler holds old PlayerContext reference
+            UnsubscribeFromGameApiStatus();
+            Client.GameApiContext.Reset();
+
             EmpireContext.Reset();
             PlayerContext.FilePath = filePath;
             context = EmpireContext.GetInstance();
@@ -1248,6 +1261,11 @@ namespace OE2EmpireTracker
 
             _backgroundProcessor = new BackgroundProcessor(playerContext, GetBackgroundProcessingIntervalMs);
             _backgroundProcessor.Start();
+
+            // Re-initialize game API with new PlayerContext
+            Client.GameApiContext.Initialize();
+            SubscribeToGameApiStatus();
+            UpdateConnectionStatusIndicator();
 
             PopulatePlayerDropdown();
             UpdateNoPlayerGuard();
