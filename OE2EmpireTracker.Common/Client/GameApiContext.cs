@@ -130,12 +130,13 @@ namespace OE2EmpireTracker.Client
                 firstPlayerUUID,
                 settings.AppId,
                 settings.ClientId);
-            var syncScheduler = new GameApiSyncScheduler(
+            var syncScheduler = new ProductionSyncScheduler(
                 client,
                 credentialManager,
                 connectionMonitor,
                 settings.AppId,
-                settings.ClientId);
+                settings.ClientId,
+                EmpireContext.PlayerContext);
 
             _instance = new GameApiContext(credentialManager, client, connectionMonitor, syncScheduler);
 

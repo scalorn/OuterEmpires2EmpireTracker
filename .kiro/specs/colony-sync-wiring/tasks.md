@@ -91,7 +91,7 @@ graph TD
   - Output: Modified `PlayerContext.cs` with new internal method
   - Verification: getDiagnostics; build solution
 
-- [~] 7. Wire ProductionSyncScheduler into GameApiContext.Initialize
+- [-] 7. Wire ProductionSyncScheduler into GameApiContext.Initialize
   - Satisfies: Req 1, Criterion 1 (Production_Scheduler instantiated instead of base)
   - Satisfies: Req 2, Criterion 1 (SyncScheduler property type unchanged)
   - Satisfies: Req 2, Criterion 3 (dispose behavior unchanged)
