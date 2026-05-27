@@ -627,6 +627,7 @@ namespace OE2EmpireTracker.Services
                 PlanetName = apiColony.SystemObjectName,
                 SystemName = apiColony.SystemName,
                 ColonyName = apiColony.ColonyName,
+                ColonyId = apiColony.ColonyId,
                 SystemId = apiColony.SystemId,
                 ColonySize = apiColony.ColonySize,
                 Distance = (decimal)apiColony.Distance,
@@ -672,6 +673,7 @@ namespace OE2EmpireTracker.Services
             changed |= MergeStringField(local, "ImagePreFix", local.ImagePreFix, apiColony.ImagePreFix, v => local.ImagePreFix = v);
 
             // Numeric fields: always overwrite (0 is valid game state)
+            changed |= MergeNumericField(local, "ColonyId", local.ColonyId, apiColony.ColonyId, v => local.ColonyId = v);
             changed |= MergeNumericField(local, "SystemId", local.SystemId, apiColony.SystemId, v => local.SystemId = v);
             changed |= MergeNumericField(local, "ColonySize", local.ColonySize, apiColony.ColonySize, v => local.ColonySize = v);
             changed |= MergeDecimalField(local, "Distance", local.Distance, (decimal)apiColony.Distance, v => local.Distance = v);

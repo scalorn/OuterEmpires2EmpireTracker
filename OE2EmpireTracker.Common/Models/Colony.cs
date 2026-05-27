@@ -48,6 +48,10 @@ namespace OE2EmpireTracker.Models
 
         public string LastImportDateTime { get; set; }
 
+        [JsonProperty("colonyId")]
+        [DefaultValue(0)]
+        public int ColonyId { get; set; }
+
         [JsonProperty("systemId")]
         public int SystemId { get; set; }
 
