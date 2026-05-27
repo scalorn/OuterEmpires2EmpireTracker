@@ -127,14 +127,14 @@ graph TD
   - Output: New file `OE2EmpireTracker.Tests/Services/ProductionSyncSchedulerTests.cs`
   - Verification: Build solution; run vstest.console; trxparse.js shows all pass
 
-- [-] 12. Unit tests — MergeWorkers
+- [x] 12. Unit tests — MergeWorkers
   - Satisfies: Req 12, Criteria 2-5 (commodity mapping, Delivered logic, empty list, change detection)
   - Satisfies: Req 13, Criteria 1-3 (attitude, workforce overview, wages)
   - Inputs: `OE2EmpireTracker/Services/ColonyMergeService.cs`, `OE2EmpireTracker/Models/GameApiColonyWorkersResponse.cs`
   - Output: New file `OE2EmpireTracker.Tests/Services/ColonyMergeServiceWorkersTests.cs`
   - Verification: Build solution; run vstest.console; trxparse.js shows all pass
 
-- [~] 13. Unit tests — ColonyId merge
+- [-] 13. Unit tests — ColonyId merge
   - Satisfies: Req 7, Criteria 1-2 (ColonyId defaults to 0, populated on merge)
   - Inputs: `OE2EmpireTracker/Models/Colony.cs`, `OE2EmpireTracker/Services/ColonyMergeService.cs`
   - Output: New file `OE2EmpireTracker.Tests/Services/ColonyMergeServiceColonyIdTests.cs`

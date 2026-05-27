@@ -533,6 +533,7 @@
     <Compile Include="Services\GameApiCredentialManagerTests.cs" />
     <Compile Include="Services\ColonyMergeServiceTests.cs" />
     <Compile Include="Services\ColonyMergeServiceWorkersTests.cs" />
+    <Compile Include="Services\ColonyMergeServiceColonyIdTests.cs" />
     <Compile Include="Services\ColonyMergePropertyTests.cs" />
     <Compile Include="Services\GameApiProfileMergeTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerTests.cs" />
