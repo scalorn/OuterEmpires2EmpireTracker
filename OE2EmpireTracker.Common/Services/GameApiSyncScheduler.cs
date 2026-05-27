@@ -517,6 +517,7 @@ namespace OE2EmpireTracker.Services
             // 4. Fetch per-colony details — buildings + warehouse (Req 5.4, 5.5, 14.2, 14.3, 14.4)
             bool buildingsScopeAvailable = true;
             bool warehouseScopeAvailable = true;
+            bool workersScopeAvailable = true;
 
             foreach (var apiColony in colonyListResponse.Colonies)
             {
@@ -605,6 +606,40 @@ namespace OE2EmpireTracker.Services
                     else if (warehouseResult.Json != "404")
                     {
                         Log.Warn("Colony sync: warehouse fetch failed for colonyId={0}", apiColony.ColonyId);
+                    }
+                }
+
+                // Workers (Req 14.1, 14.2, 14.3, 14.4)
+                if (workersScopeAvailable)
+                {
+                    var workersResult = await _client.GetColonyWorkersAsync(_appId, accessToken, apiColony.ColonyId).ConfigureAwait(false);
+                    if (workersResult.Success)
+                    {
+                        try
+                        {
+                            var wkEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWorkersResponse>>(workersResult.Json);
+                            if (wkEnvelope?.Data != null)
+                            {
+                                bool workersChanged = ColonyMergeService.MergeWorkers(wkEnvelope.Data, colony);
+                                if (workersChanged && mergeResult.Updated == 0)
+                                {
+                                    mergeResult.Updated++;
+                                }
+                            }
+                        }
+                        catch (JsonException ex)
+                        {
+                            Log.Error(ex, "Colony sync: malformed workers JSON for colonyId={0}", apiColony.ColonyId);
+                        }
+                    }
+                    else if (workersResult.Json == "403")
+                    {
+                        workersScopeAvailable = false;
+                        Log.Info("Colony sync: colony.workers.read scope not available, skipping workers for all colonies");
+                    }
+                    else if (workersResult.Json != "404")
+                    {
+                        Log.Warn("Colony sync: workers fetch failed for colonyId={0}", apiColony.ColonyId);
                     }
                 }
             }

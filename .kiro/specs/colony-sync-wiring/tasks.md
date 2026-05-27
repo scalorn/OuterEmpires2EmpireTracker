@@ -91,7 +91,7 @@ graph TD
   - Output: Modified `PlayerContext.cs` with new internal method
   - Verification: getDiagnostics; build solution
 
-- [-] 7. Wire ProductionSyncScheduler into GameApiContext.Initialize
+- [x] 7. Wire ProductionSyncScheduler into GameApiContext.Initialize
   - Satisfies: Req 1, Criterion 1 (Production_Scheduler instantiated instead of base)
   - Satisfies: Req 2, Criterion 1 (SyncScheduler property type unchanged)
   - Satisfies: Req 2, Criterion 3 (dispose behavior unchanged)
@@ -99,7 +99,7 @@ graph TD
   - Output: Modified `GameApiContext.cs` — replace `new GameApiSyncScheduler(...)` with `new ProductionSyncScheduler(...)`
   - Verification: getDiagnostics; build solution
 
-- [~] 8. Add workers integration to GameApiSyncScheduler.SyncColoniesAsync
+- [-] 8. Add workers integration to GameApiSyncScheduler.SyncColoniesAsync
   - Satisfies: Req 14, Criteria 1-4 (automatic scheduler fetches workers, scope caching, error handling)
   - Inputs: `OE2EmpireTracker/Services/GameApiSyncScheduler.cs`
   - Output: Modified `GameApiSyncScheduler.cs` with workersScopeAvailable flag and workers fetch block
