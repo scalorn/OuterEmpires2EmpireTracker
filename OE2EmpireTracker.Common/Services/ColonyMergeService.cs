@@ -741,6 +741,15 @@ namespace OE2EmpireTracker.Services
             string ownerUUID,
             ColonyMergeResult result)
         {
+            Log.Debug(
+                "MergeColonyList: matching API colony ColonyId={0} Planet='{1}' System='{2}' Name='{3}' against {4} local colonies for owner {5}",
+                apiColony.ColonyId,
+                apiColony.SystemObjectName,
+                apiColony.SystemName,
+                apiColony.ColonyName,
+                localColonies.Count,
+                ownerUUID);
+
             // Find local match by PlanetName + SystemName (case-insensitive, same owner)
             var match = localColonies.FirstOrDefault(c =>
                 string.Equals(c.OwnerUUID, ownerUUID, StringComparison.OrdinalIgnoreCase) &&
@@ -749,6 +758,13 @@ namespace OE2EmpireTracker.Services
 
             if (match != null)
             {
+                Log.Debug(
+                    "MergeColonyList: matched API ColonyId={0} to local UUID={1} (Planet='{2}' System='{3}')",
+                    apiColony.ColonyId,
+                    match.UUID,
+                    match.PlanetName,
+                    match.SystemName);
+
                 bool changed = MergeAllColonyFields(match, apiColony);
                 match.LastImportDateTime = SystemClock.UtcNow.ToString("o");
                 result.ColonyIdToUUIDMap[apiColony.ColonyId] = match.UUID;
@@ -760,11 +776,29 @@ namespace OE2EmpireTracker.Services
             }
             else
             {
+                Log.Info(
+                    "MergeColonyList: no local colony matched API ColonyId={0} Planet='{1}' System='{2}' — creating new. Local candidates: [{3}]",
+                    apiColony.ColonyId,
+                    apiColony.SystemObjectName,
+                    apiColony.SystemName,
+                    FormatLocalColonyCandidates(localColonies, ownerUUID));
+
                 var newColony = CreateColonyFromApi(apiColony, ownerUUID);
                 localColonies.Add(newColony);
                 result.ColonyIdToUUIDMap[apiColony.ColonyId] = newColony.UUID;
                 result.Created++;
             }
+        }
+
+        /// <summary>
+        /// Formats a summary of local colonies for the given owner, for diagnostic logging.
+        /// </summary>
+        private static string FormatLocalColonyCandidates(List<Colony> localColonies, string ownerUUID)
+        {
+            var candidates = localColonies
+                .Where(c => string.Equals(c.OwnerUUID, ownerUUID, StringComparison.OrdinalIgnoreCase))
+                .Select(c => "'" + c.PlanetName + "' @ '" + c.SystemName + "'");
+            return string.Join(", ", candidates);
         }
 
         /// <summary>
