@@ -177,6 +177,158 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Merges worker data from the game API into the colony.
+        /// Updates workforce allocation fields, wages, attitude, and commodity demands.
+        /// </summary>
+        /// <param name="apiWorkers">The workers response from the game API.</param>
+        /// <param name="colony">The local colony to update.</param>
+        /// <returns>True if any data changed; otherwise false.</returns>
+        public static bool MergeWorkers(GameApiColonyWorkersResponse apiWorkers, Colony colony)
+        {
+            if (apiWorkers == null || colony == null)
+            {
+                Log.Warn("MergeWorkers: apiWorkers or colony is null, returning false");
+                return false;
+            }
+
+            bool changed = false;
+
+            // 1. Update WorkerCurrentAttitude
+            if (colony.WorkerCurrentAttitude != apiWorkers.WorkerCurrentAttitude)
+            {
+                Log.Debug(
+                    "MergeWorkers: colony {0} WorkerCurrentAttitude: {1} -> {2}",
+                    colony.UUID,
+                    colony.WorkerCurrentAttitude,
+                    apiWorkers.WorkerCurrentAttitude);
+                colony.WorkerCurrentAttitude = apiWorkers.WorkerCurrentAttitude;
+                changed = true;
+            }
+
+            // 2. Update workforce allocation fields from WorkforceOverview
+            if (apiWorkers.WorkforceOverview != null)
+            {
+                changed |= MergeWorkforceField(colony, "BlueCollarAllocated", colony.BlueCollarAllocated, apiWorkers.WorkforceOverview.BlueCollarAllocated, v => colony.BlueCollarAllocated = v);
+                changed |= MergeWorkforceField(colony, "BlueCollarUnallocated", colony.BlueCollarUnallocated, apiWorkers.WorkforceOverview.BlueCollarUnallocated, v => colony.BlueCollarUnallocated = v);
+                changed |= MergeWorkforceField(colony, "WhiteCollarAllocated", colony.WhiteCollarAllocated, apiWorkers.WorkforceOverview.WhiteCollarAllocated, v => colony.WhiteCollarAllocated = v);
+                changed |= MergeWorkforceField(colony, "WhiteCollarUnallocated", colony.WhiteCollarUnallocated, apiWorkers.WorkforceOverview.WhiteCollarUnallocated, v => colony.WhiteCollarUnallocated = v);
+                changed |= MergeWorkforceField(colony, "SpecialistAllocated", colony.SpecialistAllocated, apiWorkers.WorkforceOverview.SpecialistAllocated, v => colony.SpecialistAllocated = v);
+                changed |= MergeWorkforceField(colony, "SpecialistUnallocated", colony.SpecialistUnallocated, apiWorkers.WorkforceOverview.SpecialistUnallocated, v => colony.SpecialistUnallocated = v);
+            }
+
+            // 3. Update WageLevel from Wages
+            if (apiWorkers.Wages != null)
+            {
+                if (colony.WageLevel != apiWorkers.Wages.CurrentWagePercentage)
+                {
+                    Log.Debug(
+                        "MergeWorkers: colony {0} WageLevel: {1} -> {2}",
+                        colony.UUID,
+                        colony.WageLevel,
+                        apiWorkers.Wages.CurrentWagePercentage);
+                    colony.WageLevel = apiWorkers.Wages.CurrentWagePercentage;
+                    changed = true;
+                }
+            }
+
+            // 4. Map commodity demands
+            var newCommodities = MapCommodityDemands(apiWorkers.WorkforceCommodityDemands);
+
+            // 5. Compare old vs new commodities list
+            if (!CommodityListsEqual(colony.Commodities, newCommodities))
+            {
+                colony.Commodities = newCommodities;
+                changed = true;
+                Log.Debug(
+                    "MergeWorkers: colony {0} Commodities updated ({1} demands)",
+                    colony.UUID,
+                    newCommodities.Count);
+            }
+
+            Log.Info(
+                "MergeWorkers: completed for colony {0} — hasChanges={1}",
+                colony.UUID,
+                changed);
+
+            return changed;
+        }
+
+        /// <summary>
+        /// Maps API commodity demands to local CommodityRequested list.
+        /// </summary>
+        private static List<CommodityRequested> MapCommodityDemands(List<GameApiCommodityDemand> demands)
+        {
+            if (demands == null || demands.Count == 0)
+            {
+                return new List<CommodityRequested>();
+            }
+
+            return demands.Select(d => new CommodityRequested
+            {
+                Name = d.TypeName,
+                Requested = d.Amount,
+                NeedBy = d.RequiredBy,
+                Fulfilled = d.Fulfilled,
+                Delivered = d.Fulfilled ? d.Amount : 0,
+            }).ToList();
+        }
+
+        /// <summary>
+        /// Compares two CommodityRequested lists for equality.
+        /// </summary>
+        private static bool CommodityListsEqual(List<CommodityRequested> local, List<CommodityRequested> mapped)
+        {
+            if (local == null && mapped == null)
+            {
+                return true;
+            }
+
+            if (local == null || mapped == null)
+            {
+                return false;
+            }
+
+            if (local.Count != mapped.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < local.Count; i++)
+            {
+                if (!string.Equals(local[i].Name, mapped[i].Name, StringComparison.Ordinal) ||
+                    local[i].Requested != mapped[i].Requested ||
+                    local[i].NeedBy != mapped[i].NeedBy ||
+                    local[i].Fulfilled != mapped[i].Fulfilled ||
+                    local[i].Delivered != mapped[i].Delivered)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Merges a single workforce integer field. Returns true if changed.
+        /// </summary>
+        private static bool MergeWorkforceField(Colony colony, string fieldName, int localValue, int apiValue, Action<int> setter)
+        {
+            if (localValue != apiValue)
+            {
+                Log.Debug(
+                    "MergeWorkers: colony {0} {1}: {2} -> {3}",
+                    colony.UUID,
+                    fieldName,
+                    localValue,
+                    apiValue);
+                setter(apiValue);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Finds a local structure matching the API building.
         /// First tries matching by BuildingID (for previously synced structures),
         /// then falls back to BlueprintDesignName (case-insensitive).

@@ -65,13 +65,13 @@ graph TD
   - Output: New file `OE2EmpireTracker/Models/GameApiColonyWorkersResponse.cs` containing GameApiColonyWorkersResponse, GameApiCommodityDemand, GameApiWorkforceOverview, GameApiColonyWorkerDetail, GameApiColonyWages, GameApiColonyModifier, GameApiColonyCapacities
   - Verification: getDiagnostics; build solution
 
-- [-] 3. Add GetColonyWorkersAsync to GameApiClient
+- [x] 3. Add GetColonyWorkersAsync to GameApiClient
   - Satisfies: Req 10, Criteria 1-3 (client method, pattern, endpoint)
   - Inputs: `OE2EmpireTracker/Client/GameApiClient.cs` (existing GetColonyBuildingsAsync as pattern)
   - Output: Modified `GameApiClient.cs` with new GetColonyWorkersAsync method
   - Verification: getDiagnostics; build solution
 
-- [~] 4. Implement ColonyMergeService.MergeWorkers
+- [-] 4. Implement ColonyMergeService.MergeWorkers
   - Satisfies: Req 12, Criteria 1-5 (commodity demand mapping and change detection)
   - Satisfies: Req 13, Criteria 1-3 (workforce overview and wages update)
   - Inputs: `OE2EmpireTracker/Services/ColonyMergeService.cs`, `OE2EmpireTracker/Models/Colony.cs` (for workforce fields)

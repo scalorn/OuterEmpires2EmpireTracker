@@ -85,6 +85,34 @@ namespace OE2EmpireTracker.Models
         [JsonProperty("contentmentIndex")]
         public int ContentmentIndex { get; set; }
 
+        [JsonProperty("blueCollarAllocated")]
+        [DefaultValue(0)]
+        public int BlueCollarAllocated { get; set; }
+
+        [JsonProperty("blueCollarUnallocated")]
+        [DefaultValue(0)]
+        public int BlueCollarUnallocated { get; set; }
+
+        [JsonProperty("whiteCollarAllocated")]
+        [DefaultValue(0)]
+        public int WhiteCollarAllocated { get; set; }
+
+        [JsonProperty("whiteCollarUnallocated")]
+        [DefaultValue(0)]
+        public int WhiteCollarUnallocated { get; set; }
+
+        [JsonProperty("specialistAllocated")]
+        [DefaultValue(0)]
+        public int SpecialistAllocated { get; set; }
+
+        [JsonProperty("specialistUnallocated")]
+        [DefaultValue(0)]
+        public int SpecialistUnallocated { get; set; }
+
+        [JsonProperty("wageLevel")]
+        [DefaultValue(0)]
+        public int WageLevel { get; set; }
+
         public OE2EmpireTracker.Models.LockTracking Locks { get; set; }
 
         [JsonIgnore]
