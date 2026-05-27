@@ -1,4 +1,4 @@
-﻿// <copyright file="GameApiFullDiscoveryTests.cs" company="OE2EmpireTracker">
+// <copyright file="GameApiFullDiscoveryTests.cs" company="OE2EmpireTracker">
 // Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
 
@@ -18,10 +18,9 @@ namespace OE2EmpireTracker.Tests.Client
 {
     /// <summary>
     /// Comprehensive API data discovery test fixture for all game API read endpoints.
-    /// Marked Explicit â€” requires real game API credentials via preferences/credential store.
+    /// Marked Explicit - requires real game API credentials via preferences/credential store.
     /// Produces raw JSON output organized by endpoint category.
     /// Feature: game-api-discovery-tool
-    /// **Validates: Requirements 2.1, 2.3, 2.5, 12.1, 12.2, 12.3, 12.4**
     /// </summary>
     [TestFixture]
     [Explicit("Requires real game API credentials configured in preferences")]
@@ -48,12 +47,10 @@ namespace OE2EmpireTracker.Tests.Client
         {
             this.results = new List<EndpointResult>();
 
-            // Register DPAPI protection functions
             GameApiCredentialManager.RegisterProtectionFunctions(
                 CredentialStore.Protect,
                 CredentialStore.Unprotect);
 
-            // Load settings from the app's preferences store
             var settings = PreferencesStore.GetInstance().Preferences.GameApiConnection;
             if (settings == null || !settings.Enabled)
             {
@@ -67,7 +64,6 @@ namespace OE2EmpireTracker.Tests.Client
 
             this.appId = settings.AppId;
 
-            // Load the stored secret from the credential manager
             var credManager = new GameApiCredentialManager();
             var configuredPlayers = credManager.GetConfiguredPlayerUUIDs();
             if (configuredPlayers.Count == 0)
@@ -82,7 +78,6 @@ namespace OE2EmpireTracker.Tests.Client
                 Assert.Ignore("No secret found for player " + this.playerUUID);
             }
 
-            // Convert SecureString to plain string for token exchange
             string secret = new System.Net.NetworkCredential(string.Empty, secureSecret).Password;
 
             this.client = new GameApiClient(settings.ServerUrl);
@@ -95,7 +90,6 @@ namespace OE2EmpireTracker.Tests.Client
 
             this.accessToken = tokenResult.Token.AccessToken;
 
-            // Create output directory tree at spec/game-api-data/
             this.outputDir = Path.GetFullPath(Path.Combine(
                 TestContext.CurrentContext.TestDirectory,
                 "..", "..", "..", "spec", "game-api-data"));
@@ -116,7 +110,6 @@ namespace OE2EmpireTracker.Tests.Client
 
         /// <summary>
         /// Writes _metadata.json with run summary and disposes the client.
-        /// **Validates: Requirements 11.3**
         /// </summary>
         [OneTimeTearDown]
         public void OneTimeTearDown()
@@ -164,9 +157,7 @@ namespace OE2EmpireTracker.Tests.Client
         }
 
         /// <summary>
-        /// Pulls the character profile from GET /v1/character and saves to character/profile.json.
-        /// Handles 403 gracefully by recording the endpoint as skipped.
-        /// **Validates: Requirements 3.1, 11.1, 11.4, 12.4**
+        /// Pulls the character profile and saves to character/profile.json.
         /// </summary>
         [Test]
         [Order(1)]
@@ -187,14 +178,12 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("character", "/v1/character", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("character", "/v1/character", "Exception during call");
             }
         }
 
         /// <summary>
-        /// Pulls the character skills from GET /v1/character/skills and saves to character/skills.json.
-        /// Handles 403 gracefully by recording the endpoint as skipped.
-        /// **Validates: Requirements 3.2, 11.1, 11.4, 12.4**
+        /// Pulls the character skills and saves to character/skills.json.
         /// </summary>
         [Test]
         [Order(2)]
@@ -215,14 +204,13 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("character", "/v1/character/skills", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("character", "/v1/character/skills", "Exception during call");
             }
         }
 
         /// <summary>
-        /// Pulls the colony list from GET /v1/colonies and saves to colonies/list.json.
-        /// Stores the raw JSON in a field so PullColonyDetails can extract colony IDs.
-        /// **Validates: Requirements 4.1, 11.1, 11.4, 12.5**
+        /// Pulls the colony list and saves to colonies/list.json.
+        /// Stores the raw JSON for PullColonyDetails to extract colony IDs.
         /// </summary>
         [Test]
         [Order(3)]
@@ -245,15 +233,13 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("colonies", "/v1/colonies", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("colonies", "/v1/colonies", "Exception during call");
             }
         }
 
         /// <summary>
         /// Iterates colonies from the list response and pulls summary, buildings, warehouse,
         /// and workers for each colony. Saves to colonies/{colonyId}/ subdirectories.
-        /// Handles errors gracefully per endpoint without aborting the loop.
-        /// **Validates: Requirements 4.2, 4.3, 4.4, 4.5, 11.1, 11.2, 11.4, 12.5**
         /// </summary>
         [Test]
         [Order(4)]
@@ -365,14 +351,12 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("colonies", "/v1/colonies/{id}", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("colonies", "/v1/colonies/{id}", "Exception during colony iteration");
             }
         }
 
         /// <summary>
-        /// Pulls the banking balance from GET /v1/banking/balance and saves to banking/balance.json.
-        /// Handles 403 gracefully by recording the endpoint as skipped.
-        /// **Validates: Requirements 5.1, 11.1, 11.4**
+        /// Pulls the banking balance and saves to banking/balance.json.
         /// </summary>
         [Test]
         [Order(5)]
@@ -393,14 +377,13 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("banking", "/v1/banking/balance", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("banking", "/v1/banking/balance", "Exception during call");
             }
         }
 
         /// <summary>
-        /// Pulls the banking transactions from GET /v1/banking/transactions and saves to banking/transactions.json.
-        /// Handles 403 gracefully by recording the endpoint as skipped.
-        /// **Validates: Requirements 5.2, 11.1, 11.4**
+        /// Paginates through ALL banking transactions using offset/limit.
+        /// Saves each page to banking/transactions-page-{N}.json and a combined transactions-all.json.
         /// </summary>
         [Test]
         [Order(6)]
@@ -408,28 +391,56 @@ namespace OE2EmpireTracker.Tests.Client
         {
             try
             {
-                var result = await this.client.GetBankingTransactionsAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                if (!result.Success)
+                int offset = 0;
+                int limit = 50;
+                int pageNumber = 0;
+                var allTransactions = new JArray();
+
+                while (true)
                 {
-                    RecordSkipped("banking", "/v1/banking/transactions", result.Json ?? "Unknown error");
-                    return;
+                    var result = await this.client.GetBankingTransactionsAsync(this.appId, this.accessToken, offset, limit).ConfigureAwait(false);
+                    if (!result.Success)
+                    {
+                        RecordSkipped("banking", "/v1/banking/transactions?offset=" + offset, result.Json ?? "Unknown error");
+                        break;
+                    }
+
+                    string pagePath = Path.Combine(this.outputDir, "banking", "transactions-page-" + pageNumber + ".json");
+                    File.WriteAllText(pagePath, FormatJson(result.Json), Encoding.UTF8);
+                    RecordSuccess("banking", "/v1/banking/transactions?offset=" + offset);
+
+                    var envelope = JObject.Parse(result.Json);
+                    var transactions = envelope["data"]?["transactions"] as JArray;
+                    if (transactions == null || transactions.Count == 0)
+                    {
+                        break;
+                    }
+
+                    foreach (var tx in transactions)
+                    {
+                        allTransactions.Add(tx);
+                    }
+
+                    offset += limit;
+                    pageNumber++;
                 }
 
-                string path = Path.Combine(this.outputDir, "banking", "transactions.json");
-                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
-                RecordSuccess("banking", "/v1/banking/transactions");
+                if (allTransactions.Count > 0)
+                {
+                    string combinedPath = Path.Combine(this.outputDir, "banking", "transactions-all.json");
+                    File.WriteAllText(combinedPath, FormatJson(JsonConvert.SerializeObject(allTransactions)), Encoding.UTF8);
+                    TestContext.WriteLine("Banking transactions: {0} total records across {1} pages", allTransactions.Count, pageNumber);
+                }
             }
             catch (Exception)
             {
-                RecordSkipped("banking", "/v1/banking/transactions", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("banking", "/v1/banking/transactions", "Unexpected error during pagination");
             }
         }
 
         /// <summary>
-        /// Pulls the asset locations list from GET /v1/assets/locations and saves to assets/locations.json.
-        /// Stores the raw JSON in a field so PullAssetLocationDetails can extract location IDs.
-        /// Handles 403 gracefully by recording the endpoint as skipped.
-        /// **Validates: Requirements 6.1, 11.1, 11.4**
+        /// Pulls the asset locations list and saves to assets/locations.json.
+        /// Stores the raw JSON for PullAssetLocationDetails to extract location IDs.
         /// </summary>
         [Test]
         [Order(7)]
@@ -452,15 +463,13 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("assets", "/v1/assets/locations", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("assets", "/v1/assets/locations", "Exception during call");
             }
         }
 
         /// <summary>
         /// Iterates asset locations from the list response and pulls detail for each location.
         /// Saves to assets/{locationType}-{locationId}.json.
-        /// Handles errors gracefully per location without aborting the loop.
-        /// **Validates: Requirements 6.2, 11.1, 11.2, 11.4**
         /// </summary>
         [Test]
         [Order(8)]
@@ -515,14 +524,12 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("assets", "/v1/assets/locations/{id}", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("assets", "/v1/assets/locations/{id}", "Exception during location iteration");
             }
         }
 
         /// <summary>
-        /// Pulls accepted jobs from GET /v1/jobs/accepted and saves to jobs/accepted.json.
-        /// Handles errors gracefully by recording the endpoint as skipped.
-        /// **Validates: Requirements 7.1, 11.1, 11.4**
+        /// Pulls accepted jobs and saves to jobs/accepted.json.
         /// </summary>
         [Test]
         [Order(9)]
@@ -543,14 +550,13 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("jobs", "/v1/jobs/accepted", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("jobs", "/v1/jobs/accepted", "Exception during call");
             }
         }
 
         /// <summary>
-        /// Pulls the kill mail list from GET /v1/killmails and saves to killmails/list.json.
-        /// Stores the raw JSON in a field so PullKillMailDetails can extract kill mail IDs.
-        /// **Validates: Requirements 8.1, 11.1, 11.4**
+        /// Pulls the kill mail list and saves to killmails/list.json.
+        /// Stores the raw JSON for PullKillMailDetails to extract kill mail IDs.
         /// </summary>
         [Test]
         [Order(10)]
@@ -573,15 +579,13 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("killmails", "/v1/killmails", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("killmails", "/v1/killmails", "Exception during call");
             }
         }
 
         /// <summary>
-        /// Iterates up to 5 kill mails from the list response and pulls detail for each.
-        /// Saves to killmails/{killMailId}.json. Handles errors gracefully per kill mail
-        /// without aborting the loop.
-        /// **Validates: Requirements 8.2, 11.1, 11.2, 11.4**
+        /// Iterates kill mails from the list response and pulls detail for each.
+        /// Saves to killmails/{killMailId}.json.
         /// </summary>
         [Test]
         [Order(11)]
@@ -603,7 +607,7 @@ namespace OE2EmpireTracker.Tests.Client
 
             try
             {
-                foreach (var killMail in killMails.Take(5))
+                foreach (var killMail in killMails)
                 {
                     int killMailId = killMail["killMailId"]?.Value<int>() ?? 0;
                     if (killMailId == 0)
@@ -633,14 +637,14 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("killmails", "/v1/killmails/{id}", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("killmails", "/v1/killmails/{id}", "Exception during kill mail iteration");
             }
         }
 
         /// <summary>
-        /// Pulls the mail list from GET /v1/mail and saves to mail/list.json.
-        /// Stores the raw JSON in a field so PullMailDetails can extract mail IDs.
-        /// **Validates: Requirements 9.1, 11.1, 11.4**
+        /// Paginates through ALL mail using offset/limit.
+        /// Saves each page to mail/list-page-{N}.json and collects all mail IDs.
+        /// Stores the collected IDs as a serialized List of int in this.mailListJson.
         /// </summary>
         [Test]
         [Order(12)]
@@ -648,29 +652,57 @@ namespace OE2EmpireTracker.Tests.Client
         {
             try
             {
-                var result = await this.client.GetMailListAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                if (!result.Success)
+                int offset = 0;
+                int limit = 50;
+                int pageNumber = 0;
+                var allMailIds = new List<int>();
+
+                while (true)
                 {
-                    RecordSkipped("mail", "/v1/mail", result.Json ?? "Unknown error");
-                    return;
+                    var result = await this.client.GetMailListAsync(this.appId, this.accessToken, offset, limit).ConfigureAwait(false);
+                    if (!result.Success)
+                    {
+                        RecordSkipped("mail", "/v1/mail?offset=" + offset, result.Json ?? "Unknown error");
+                        break;
+                    }
+
+                    string pagePath = Path.Combine(this.outputDir, "mail", "list-page-" + pageNumber + ".json");
+                    File.WriteAllText(pagePath, FormatJson(result.Json), Encoding.UTF8);
+                    RecordSuccess("mail", "/v1/mail?offset=" + offset);
+
+                    var envelope = JObject.Parse(result.Json);
+                    var mails = envelope["data"]?["mail"] as JArray;
+                    if (mails == null || mails.Count == 0)
+                    {
+                        break;
+                    }
+
+                    foreach (var mail in mails)
+                    {
+                        int mailId = mail["mailId"]?.Value<int>() ?? 0;
+                        if (mailId > 0)
+                        {
+                            allMailIds.Add(mailId);
+                        }
+                    }
+
+                    offset += limit;
+                    pageNumber++;
                 }
 
-                this.mailListJson = result.Json;
+                TestContext.WriteLine("Mail: {0} total mail IDs collected across {1} pages", allMailIds.Count, pageNumber);
 
-                string path = Path.Combine(this.outputDir, "mail", "list.json");
-                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
-                RecordSuccess("mail", "/v1/mail");
+                this.mailListJson = JsonConvert.SerializeObject(allMailIds);
             }
             catch (Exception)
             {
-                RecordSkipped("mail", "/v1/mail", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("mail", "/v1/mail", "Unexpected error during pagination");
             }
         }
 
         /// <summary>
-        /// Iterates up to 5 mails from the list response and pulls detail for each.
-        /// Saves to mail/{mailId}.json. Handles errors gracefully per mail without aborting the loop.
-        /// **Validates: Requirements 9.2, 11.1, 11.2, 11.4**
+        /// Fetches ALL mails by deserializing the collected mail IDs from PullMailList.
+        /// Saves each mail to mail/{mailId}.json.
         /// </summary>
         [Test]
         [Order(13)]
@@ -682,25 +714,19 @@ namespace OE2EmpireTracker.Tests.Client
                 return;
             }
 
-            var envelope = JObject.Parse(this.mailListJson);
-            var mails = envelope["data"]?["mail"] as JArray;
-            if (mails == null || mails.Count == 0)
-            {
-                RecordSkipped("mail", "/v1/mail/{mailId}", "No mails found in list response");
-                return;
-            }
-
             try
             {
-                var mailsToFetch = mails.Take(5);
-                foreach (var mail in mailsToFetch)
+                var mailIds = JsonConvert.DeserializeObject<List<int>>(this.mailListJson);
+                if (mailIds == null || mailIds.Count == 0)
                 {
-                    int mailId = mail["mailId"]?.Value<int>() ?? 0;
-                    if (mailId == 0)
-                    {
-                        continue;
-                    }
+                    RecordSkipped("mail", "/v1/mail/{mailId}", "No mail IDs collected");
+                    return;
+                }
 
+                TestContext.WriteLine("Fetching detail for {0} mails...", mailIds.Count);
+
+                foreach (int mailId in mailIds)
+                {
                     try
                     {
                         var detailResult = await this.client.GetMailDetailAsync(this.appId, this.accessToken, mailId).ConfigureAwait(false);
@@ -723,14 +749,12 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("mail", "/v1/mail/{mailId}", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("mail", "/v1/mail/{mailId}", "Unexpected error during mail detail fetch");
             }
         }
 
         /// <summary>
-        /// Pulls the ship configuration from GET /v1/ship/configuration and saves to ship/configuration.json.
-        /// Handles 403 gracefully by recording the endpoint as skipped.
-        /// **Validates: Requirements 10.1, 11.1, 11.4**
+        /// Pulls the ship configuration and saves to ship/configuration.json.
         /// </summary>
         [Test]
         [Order(14)]
@@ -751,14 +775,12 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("ship", "/v1/ship/configuration", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("ship", "/v1/ship/configuration", "Exception during call");
             }
         }
 
         /// <summary>
-        /// Pulls the ship cargo from GET /v1/ship/cargo and saves to ship/cargo.json.
-        /// Handles 403 gracefully by recording the endpoint as skipped.
-        /// **Validates: Requirements 10.2, 11.1, 11.4**
+        /// Pulls the ship cargo and saves to ship/cargo.json.
         /// </summary>
         [Test]
         [Order(15)]
@@ -779,15 +801,15 @@ namespace OE2EmpireTracker.Tests.Client
             }
             catch (Exception)
             {
-                RecordSkipped("ship", "/v1/ship/cargo", "Circuit breaker open â€” API unavailable");
+                RecordSkipped("ship", "/v1/ship/cargo", "Exception during call");
             }
         }
 
         /// <summary>
         /// Records a successful endpoint call.
         /// </summary>
-        /// <param name="category">The endpoint category (e.g. "character", "banking").</param>
-        /// <param name="endpoint">The endpoint path (e.g. "/v1/character").</param>
+        /// <param name="category">The endpoint category.</param>
+        /// <param name="endpoint">The endpoint path.</param>
         private void RecordSuccess(string category, string endpoint)
         {
             this.results.Add(new EndpointResult
@@ -798,7 +820,7 @@ namespace OE2EmpireTracker.Tests.Client
                 HttpStatus = 200,
             });
 
-            TestContext.WriteLine("[OK] {0} â€” {1}", category, endpoint);
+            TestContext.WriteLine("[OK] {0} - {1}", category, endpoint);
         }
 
         /// <summary>
@@ -817,12 +839,13 @@ namespace OE2EmpireTracker.Tests.Client
                 SkipReason = reason,
             });
 
-            TestContext.WriteLine("[SKIP] {0} â€” {1}: {2}", category, endpoint, reason);
+            TestContext.WriteLine("[SKIP] {0} - {1}: {2}", category, endpoint, reason);
         }
 
         /// <summary>
         /// Pretty-prints JSON with indentation for human readability.
-        /// Returns the original string if parsing fails.
+        /// Uses DeserializeObject + SerializeObject to avoid JToken.Parse issues
+        /// with nunit3-console's bundled Newtonsoft.Json.
         /// </summary>
         /// <param name="json">The raw JSON string to format.</param>
         /// <returns>The formatted JSON string.</returns>
@@ -830,8 +853,8 @@ namespace OE2EmpireTracker.Tests.Client
         {
             try
             {
-                object parsed = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                return Newtonsoft.Json.JsonConvert.SerializeObject(parsed, Newtonsoft.Json.Formatting.Indented);
+                var obj = JsonConvert.DeserializeObject(json);
+                return JsonConvert.SerializeObject(obj, Formatting.Indented);
             }
             catch
             {

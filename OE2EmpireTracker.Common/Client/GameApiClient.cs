@@ -707,6 +707,19 @@ namespace OE2EmpireTracker.Client
         /// <returns>A tuple indicating success and the raw JSON response body.</returns>
         public async Task<(bool Success, string Json)> GetBankingTransactionsAsync(string appId, string accessToken)
         {
+            return await GetBankingTransactionsAsync(appId, accessToken, 0, 50).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Retrieves a page of banking transactions from the game API.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <param name="offset">The zero-based offset for pagination.</param>
+        /// <param name="limit">The maximum number of records to return per page.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetBankingTransactionsAsync(string appId, string accessToken, int offset, int limit)
+        {
             if (string.IsNullOrEmpty(accessToken))
             {
                 return (false, null);
@@ -718,7 +731,7 @@ namespace OE2EmpireTracker.Client
 
                 var response = await ExecuteWithPoliciesAsync(
                     HttpMethod.Get,
-                    _serverUrl + "/v1/banking/transactions",
+                    _serverUrl + "/v1/banking/transactions?offset=" + offset + "&limit=" + limit,
                     appId,
                     accessToken).ConfigureAwait(false);
 
@@ -1281,6 +1294,19 @@ namespace OE2EmpireTracker.Client
         /// <returns>A tuple indicating success and the raw JSON response body.</returns>
         public async Task<(bool Success, string Json)> GetMailListAsync(string appId, string accessToken)
         {
+            return await GetMailListAsync(appId, accessToken, 0, 50).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Retrieves a page of mail from the game API.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <param name="offset">The zero-based offset for pagination.</param>
+        /// <param name="limit">The maximum number of records to return per page.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetMailListAsync(string appId, string accessToken, int offset, int limit)
+        {
             if (string.IsNullOrEmpty(accessToken))
             {
                 return (false, null);
@@ -1292,7 +1318,7 @@ namespace OE2EmpireTracker.Client
 
                 var response = await ExecuteWithPoliciesAsync(
                     HttpMethod.Get,
-                    _serverUrl + "/v1/mail",
+                    _serverUrl + "/v1/mail?offset=" + offset + "&limit=" + limit,
                     appId,
                     accessToken).ConfigureAwait(false);
 
