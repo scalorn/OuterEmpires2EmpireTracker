@@ -830,8 +830,8 @@ namespace OE2EmpireTracker.Tests.Client
         {
             try
             {
-                var token = JToken.Parse(json);
-                return token.ToString(Formatting.Indented);
+                object parsed = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                return Newtonsoft.Json.JsonConvert.SerializeObject(parsed, Newtonsoft.Json.Formatting.Indented);
             }
             catch
             {
