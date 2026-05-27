@@ -397,7 +397,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             if (_isProgrammaticUpdate > 0) return;
             Log.Debug("V2.OnColonyDataChanged: colonyUUID={0}", e.ColonyUUID);
-            if (!string.IsNullOrEmpty(_selectedColonyUUID) && _selectedColonyUUID == e.ColonyUUID)
+
+            // Refresh if the event is for the selected colony OR if it's a bulk update (empty UUID = all colonies changed)
+            if (!string.IsNullOrEmpty(_selectedColonyUUID) &&
+                (string.IsNullOrEmpty(e.ColonyUUID) || _selectedColonyUUID == e.ColonyUUID))
             {
                 PopulateForm();
                 RefreshAdminReport();
