@@ -123,8 +123,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdBootstrap = new System.Windows.Forms.Button();
             this.cmdOptimize = new System.Windows.Forms.Button();
             this.cmdGenerateBuildPlan = new System.Windows.Forms.Button();
+            this.cmdSync = new System.Windows.Forms.Button();
+            this.toolTipSync = new System.Windows.Forms.ToolTip();
             this.components = new System.ComponentModel.Container();
             this.timerAdminRefresh = new System.Windows.Forms.Timer(this.components);
+            this.timerSyncCooldown = new System.Windows.Forms.Timer(this.components);
+            this.timerSyncStatus = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
@@ -224,6 +228,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpIdentity.Controls.Add(this.flpPlanetName);
             this.flpIdentity.Controls.Add(this.flpColonyName);
             this.flpIdentity.Controls.Add(this.flpSystemName);
+            this.flpIdentity.Controls.Add(this.cmdSync);
             this.flpIdentity.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpIdentity.Location = new System.Drawing.Point(2, 2);
             this.flpIdentity.Margin = new System.Windows.Forms.Padding(2);
@@ -507,6 +512,26 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // timerAdminRefresh
             // 
             this.timerAdminRefresh.Interval = 60000;
+            // 
+            // timerSyncCooldown
+            // 
+            this.timerSyncCooldown.Interval = 10000;
+            // 
+            // timerSyncStatus
+            // 
+            this.timerSyncStatus.Interval = 2000;
+            // 
+            // cmdSync
+            // 
+            this.cmdSync.Enabled = false;
+            this.cmdSync.Location = new System.Drawing.Point(3, 3);
+            this.cmdSync.Margin = new System.Windows.Forms.Padding(3);
+            this.cmdSync.Name = "cmdSync";
+            this.cmdSync.Size = new System.Drawing.Size(75, 25);
+            this.cmdSync.TabIndex = 3;
+            this.cmdSync.Text = "Sync";
+            this.cmdSync.UseVisualStyleBackColor = true;
+            this.toolTipSync.SetToolTip(this.cmdSync, "Sync buildings, warehouse, and workers from game API");
             // 
             // tabPWorkers
             // 
@@ -1115,5 +1140,9 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.ContextMenuStrip cmsOverflowRules;
         private System.Windows.Forms.ToolStripMenuItem tsmiAddOverflowRule;
         private System.Windows.Forms.ToolStripMenuItem tsmiRemoveOverflowRule;
+        private System.Windows.Forms.Button cmdSync;
+        private System.Windows.Forms.ToolTip toolTipSync;
+        private System.Windows.Forms.Timer timerSyncCooldown;
+        private System.Windows.Forms.Timer timerSyncStatus;
     }
 }

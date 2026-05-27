@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using NLog;
+using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
@@ -72,6 +73,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private int _calcGeneration = 0;
 
         private bool _structureTypesPopulated = false;
+
+        private bool _syncCooldownActive = false;
 
         /// <summary>Parallel list of Blueprint objects matching cmbFlatpacks display items, for UUID lookup via SelectedFullIndex.</summary>
         private List<Models.Blueprint> _flatpackBlueprints = new List<Models.Blueprint>();
@@ -159,6 +162,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Wire admin refresh timer (11.1)
             timerAdminRefresh.Tick += TimerAdminRefresh_Tick;
             timerAdminRefresh.Start();
+
+            // Wire sync button and timers (colony-sync-wiring, task 9)
+            cmdSync.Click += CmdSync_Click;
+            timerSyncCooldown.Tick += TimerSyncCooldown_Tick;
+            timerSyncStatus.Tick += TimerSyncStatus_Tick;
+            UpdateSyncButtonState();
 
             // Wire overflow tab handlers (task 38)
             cmbOverflowDestType.Items.Add(DestinationType.Colony);
@@ -656,6 +665,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     SetCalculatingState(false);
                     PopulateForm();
                     UpdateDeleteButtonState();
+                    UpdateSyncButtonState();
                     UpdateTitle();
                     return;
                 }
@@ -696,6 +706,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                             SetCalculatingState(false);
                             PopulateForm();
                             UpdateDeleteButtonState();
+                            UpdateSyncButtonState();
                             RefreshAdminReport();
                             UpdateTabWarnings();
                             UpdateTitle();
@@ -1536,6 +1547,43 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             timerAdminRefresh.Interval = Math.Max(intervalMs, 1000);
             RefreshAdminReport();
             UpdateTabWarnings();
+        }
+
+        // -------------------------------------------------------------------
+        // Sync button — UI state and timers (colony-sync-wiring, task 9)
+        // -------------------------------------------------------------------
+
+        private void UpdateSyncButtonState()
+        {
+            bool colonySelected = !string.IsNullOrEmpty(_selectedColonyUUID);
+            bool apiAvailable = GameApiContext.Instance != null;
+            bool hasColonyId = false;
+
+            if (colonySelected)
+            {
+                var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+                hasColonyId = colony != null && colony.ColonyId != 0;
+            }
+
+            cmdSync.Enabled = colonySelected && apiAvailable && hasColonyId && !_syncCooldownActive;
+        }
+
+        private void CmdSync_Click(object sender, EventArgs e)
+        {
+            // Stub — actual sync logic implemented in Task 10
+        }
+
+        private void TimerSyncCooldown_Tick(object sender, EventArgs e)
+        {
+            timerSyncCooldown.Stop();
+            _syncCooldownActive = false;
+            UpdateSyncButtonState();
+        }
+
+        private void TimerSyncStatus_Tick(object sender, EventArgs e)
+        {
+            timerSyncStatus.Stop();
+            cmdSync.Text = "Sync";
         }
 
         // -------------------------------------------------------------------

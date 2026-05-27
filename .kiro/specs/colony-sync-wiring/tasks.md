@@ -99,13 +99,13 @@ graph TD
   - Output: Modified `GameApiContext.cs` — replace `new GameApiSyncScheduler(...)` with `new ProductionSyncScheduler(...)`
   - Verification: getDiagnostics; build solution
 
-- [-] 8. Add workers integration to GameApiSyncScheduler.SyncColoniesAsync
+- [x] 8. Add workers integration to GameApiSyncScheduler.SyncColoniesAsync
   - Satisfies: Req 14, Criteria 1-4 (automatic scheduler fetches workers, scope caching, error handling)
   - Inputs: `OE2EmpireTracker/Services/GameApiSyncScheduler.cs`
   - Output: Modified `GameApiSyncScheduler.cs` with workersScopeAvailable flag and workers fetch block
   - Verification: getDiagnostics; build solution
 
-- [~] 9. Add Sync button to FormColonyV2 — UI controls and Designer
+- [-] 9. Add Sync button to FormColonyV2 — UI controls and Designer
   - Satisfies: Req 3, Criteria 1-5 (button placement, text, tooltip, enabled/disabled states)
   - Satisfies: Req 6, Criteria 1-3 (cooldown timer)
   - Inputs: `OE2EmpireTracker/Forms/ColonyV2/FormColonyV2.Designer.cs`, `OE2EmpireTracker/Forms/ColonyV2/FormColonyV2.cs`
