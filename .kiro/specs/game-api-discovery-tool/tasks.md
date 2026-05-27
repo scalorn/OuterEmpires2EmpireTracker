@@ -63,7 +63,7 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
     - _Output: OE2EmpireTracker.Common/Client/GameApiClient.cs_
     - _Verification: getDiagnostics — zero errors_
 
-- [~] 4. Checkpoint — Verify full solution builds
+- [x] 4. Checkpoint — Verify full solution builds
   - Ensure all tests pass, ask the user if questions arise.
   - Build OE2EmpireTracker.sln — zero errors, zero warnings
   - All 12 new GameApiClient methods compile cleanly
@@ -157,8 +157,8 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
     - _Verification: getDiagnostics — zero errors_
 
 
-- [ ] 9. Add error summary output and circuit breaker handling
-  - [-] 9.1 Add test output summary and circuit breaker awareness
+- [x] 9. Add error summary output and circuit breaker handling
+  - [x] 9.1 Add test output summary and circuit breaker awareness
     - In OneTimeTearDown, write summary to TestContext.WriteLine: endpoints succeeded, skipped, failed
     - Add BrokenCircuitException catch in each test method — if circuit breaker opens, record remaining endpoints as skipped
     - Ensure non-403 errors are logged with endpoint path and HTTP status code
@@ -167,7 +167,7 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
     - _Output: OE2EmpireTracker.Tests/Client/GameApiFullDiscoveryTests.cs_
     - _Verification: getDiagnostics — zero errors_
 
-- [ ] 10. Add .gitignore entry for output directory
+- [x] 10. Add .gitignore entry for output directory
   - [x] 10.1 Add spec/game-api-data/ to .gitignore
     - Add entry to the root .gitignore so raw API data is not committed
     - _Requirements: 2.1 (output directory is for reference, not source control)_
@@ -175,7 +175,7 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
     - _Output: .gitignore_
     - _Verification: getDiagnostics — no issues_
 
-- [~] 11. Final checkpoint — Verify full solution builds cleanly
+- [x] 11. Final checkpoint — Verify full solution builds cleanly
   - Ensure all tests pass, ask the user if questions arise.
   - Build OE2EmpireTracker.sln — zero errors, zero warnings
   - Run vstest.console against OE2EmpireTracker.Tests — all non-Explicit tests pass

@@ -260,6 +260,7 @@
   <ItemGroup>
     <Compile Include="Client\DesktopSyncMigrationTests.cs" />
     <Compile Include="Client\GameApiColonyDiscoveryTests.cs" />
+    <Compile Include="Client\GameApiFullDiscoveryTests.cs" />
     <Compile Include="Client\GameApiClient429Tests.cs" />
     <Compile Include="Client\GameApiRateLimiterTests.cs" />
     <Compile Include="Services\BackgroundProcessorTests.cs" />
