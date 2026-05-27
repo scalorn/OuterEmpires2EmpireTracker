@@ -101,10 +101,6 @@ namespace OE2EmpireTracker
                 Client.CredentialStore.Protect,
                 Client.CredentialStore.Unprotect);
 
-            // Initialize game API infrastructure (no-op if disabled or no keys configured)
-            Client.GameApiContext.Initialize();
-            SubscribeToGameApiStatus();
-
             UpdateConnectionStatusIndicator();
             SubscribeToConnectionStatus();
 
@@ -121,6 +117,12 @@ namespace OE2EmpireTracker
             _lastCheckTime = SystemClock.UtcNow;
 
             TryAutoOpenLastFile();
+
+            // Initialize game API AFTER TryAutoOpenLastFile — the file load resets
+            // EmpireContext/PlayerContext, so the scheduler must bind to the final instance.
+            Client.GameApiContext.Initialize();
+            SubscribeToGameApiStatus();
+
             RestoreOpenForms();
         }
 
