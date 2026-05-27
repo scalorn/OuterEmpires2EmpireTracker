@@ -71,21 +71,21 @@ graph TD
   - Output: Modified `GameApiClient.cs` with new GetColonyWorkersAsync method
   - Verification: getDiagnostics; build solution
 
-- [-] 4. Implement ColonyMergeService.MergeWorkers
+- [x] 4. Implement ColonyMergeService.MergeWorkers
   - Satisfies: Req 12, Criteria 1-5 (commodity demand mapping and change detection)
   - Satisfies: Req 13, Criteria 1-3 (workforce overview and wages update)
   - Inputs: `OE2EmpireTracker/Services/ColonyMergeService.cs`, `OE2EmpireTracker/Models/Colony.cs` (for workforce fields)
   - Output: Modified `Colony.cs` with workforce allocation fields; modified `ColonyMergeService.cs` with MergeWorkers method
   - Verification: getDiagnostics; build solution
 
-- [~] 5. Create ProductionSyncScheduler subclass
+- [x] 5. Create ProductionSyncScheduler subclass
   - Satisfies: Req 1, Criteria 2-5 (GetPlayerProfile, GetPlayerColonies, WriteContext, RaiseColonyDataChanged)
   - Satisfies: Req 2, Criterion 2 (same constructor parameters plus PlayerContext)
   - Inputs: `OE2EmpireTracker/Services/GameApiSyncScheduler.cs` (base class)
   - Output: New file `OE2EmpireTracker/Services/ProductionSyncScheduler.cs`
   - Verification: getDiagnostics; build solution
 
-- [~] 6. Add PlayerContext.GetMutableColoniesForOwner
+- [x] 6. Add PlayerContext.GetMutableColoniesForOwner
   - Satisfies: Req 1, Criterion 3 (return mutable colony list filtered by OwnerUUID)
   - Inputs: `OE2EmpireTracker/Services/PlayerContext.cs`
   - Output: Modified `PlayerContext.cs` with new internal method

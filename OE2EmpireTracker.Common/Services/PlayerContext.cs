@@ -3727,6 +3727,20 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Returns the mutable colony list filtered by owner UUID.
+        /// Used by <see cref="ProductionSyncScheduler"/> for colony sync.
+        /// </summary>
+        /// <param name="ownerUUID">The player UUID to filter colonies by.</param>
+        /// <returns>A list of colonies owned by the specified player.</returns>
+        internal List<Colony> GetMutableColoniesForOwner(string ownerUUID)
+        {
+            lock (_listLock)
+            {
+                return _colonyList.Where(c => c.OwnerUUID == ownerUUID).ToList();
+            }
+        }
+
+        /// <summary>
         /// Returns the mutable PricingPlan entity. Only called by PricingPlanService.
         /// </summary>
         internal PricingPlan FindMutablePricingPlan(string uuid)
