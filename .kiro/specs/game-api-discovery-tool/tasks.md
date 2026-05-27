@@ -69,8 +69,8 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
   - All 12 new GameApiClient methods compile cleanly
 
 
-- [ ] 5. Create GameApiFullDiscoveryTests fixture with setup and teardown
-  - [-] 5.1 Create the test fixture class with OneTimeSetUp and OneTimeTearDown
+- [x] 5. Create GameApiFullDiscoveryTests fixture with setup and teardown
+  - [x] 5.1 Create the test fixture class with OneTimeSetUp and OneTimeTearDown
     - File: OE2EmpireTracker.Tests/Client/GameApiFullDiscoveryTests.cs
     - [TestFixture], [Explicit] attributes
     - OneTimeSetUp: load credentials (same pattern as GameApiColonyDiscoveryTests), exchange token, create output directory tree at spec/game-api-data/ with all subdirectories
@@ -81,8 +81,8 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
     - _Output: OE2EmpireTracker.Tests/Client/GameApiFullDiscoveryTests.cs_
     - _Verification: getDiagnostics — zero errors_
 
-- [ ] 6. Implement character and colony test methods
-  - [~] 6.1 Add PullCharacterProfile and PullCharacterSkills test methods
+- [x] 6. Implement character and colony test methods
+  - [x] 6.1 Add PullCharacterProfile and PullCharacterSkills test methods
     - [Test, Order(1)] PullCharacterProfile — calls GetCharacterAsync, saves to character/profile.json
     - [Test, Order(2)] PullCharacterSkills — calls GetCharacterSkillsAsync, saves to character/skills.json
     - Handle 403 gracefully (log and continue via RecordSkipped)
@@ -92,7 +92,7 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
     - _Output: OE2EmpireTracker.Tests/Client/GameApiFullDiscoveryTests.cs_
     - _Verification: getDiagnostics — zero errors_
 
-  - [~] 6.2 Add PullColonyList and PullColonyDetails test methods
+  - [x] 6.2 Add PullColonyList and PullColonyDetails test methods
     - [Test, Order(3)] PullColonyList — calls GetColonyListAsync, saves to colonies/list.json
     - [Test, Order(4)] PullColonyDetails — iterates colonies from list, calls GetColonySummaryAsync, GetColonyBuildingsAsync, GetColonyWarehouseAsync, GetColonyWorkersAsync per colony
     - Saves to colonies/{colonyId}/summary.json, buildings.json, warehouse.json, workers.json
@@ -103,8 +103,8 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
     - _Verification: getDiagnostics — zero errors_
 
 
-- [ ] 7. Implement banking and assets test methods
-  - [~] 7.1 Add PullBankingBalance and PullBankingTransactions test methods
+- [x] 7. Implement banking and assets test methods
+  - [x] 7.1 Add PullBankingBalance and PullBankingTransactions test methods
     - [Test, Order(5)] PullBankingBalance — calls GetBankingBalanceAsync, saves to banking/balance.json
     - [Test, Order(6)] PullBankingTransactions — calls GetBankingTransactionsAsync, saves to banking/transactions.json
     - _Requirements: 5.1, 5.2, 11.1, 11.4_
@@ -112,7 +112,7 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
     - _Output: OE2EmpireTracker.Tests/Client/GameApiFullDiscoveryTests.cs_
     - _Verification: getDiagnostics — zero errors_
 
-  - [~] 7.2 Add PullAssetLocations and PullAssetLocationDetails test methods
+  - [x] 7.2 Add PullAssetLocations and PullAssetLocationDetails test methods
     - [Test, Order(7)] PullAssetLocations — calls GetAssetLocationsAsync, saves to assets/locations.json
     - [Test, Order(8)] PullAssetLocationDetails — iterates locations from list, calls GetAssetLocationDetailAsync per location
     - Extract locationId and locationType from list response using JObject/JArray
@@ -122,15 +122,15 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
     - _Output: OE2EmpireTracker.Tests/Client/GameApiFullDiscoveryTests.cs_
     - _Verification: getDiagnostics — zero errors_
 
-- [ ] 8. Implement jobs, killmail, mail, and ship test methods
-  - [~] 8.1 Add PullAcceptedJobs test method
+- [x] 8. Implement jobs, killmail, mail, and ship test methods
+  - [x] 8.1 Add PullAcceptedJobs test method
     - [Test, Order(9)] PullAcceptedJobs — calls GetAcceptedJobsAsync, saves to jobs/accepted.json
     - _Requirements: 7.1, 11.1, 11.4_
     - _Inputs: OE2EmpireTracker.Tests/Client/GameApiFullDiscoveryTests.cs_
     - _Output: OE2EmpireTracker.Tests/Client/GameApiFullDiscoveryTests.cs_
     - _Verification: getDiagnostics — zero errors_
 
-  - [~] 8.2 Add PullKillMailList and PullKillMailDetails test methods
+  - [x] 8.2 Add PullKillMailList and PullKillMailDetails test methods
     - [Test, Order(10)] PullKillMailList — calls GetKillMailListAsync, saves to killmails/list.json
     - [Test, Order(11)] PullKillMailDetails — iterates up to 5 kill mails from list, calls GetKillMailDetailAsync
     - Saves to killmails/{killMailId}.json
@@ -139,7 +139,7 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
     - _Output: OE2EmpireTracker.Tests/Client/GameApiFullDiscoveryTests.cs_
     - _Verification: getDiagnostics — zero errors_
 
-  - [~] 8.3 Add PullMailList and PullMailDetails test methods
+  - [x] 8.3 Add PullMailList and PullMailDetails test methods
     - [Test, Order(12)] PullMailList — calls GetMailListAsync, saves to mail/list.json
     - [Test, Order(13)] PullMailDetails — iterates up to 5 mails from list, calls GetMailDetailAsync
     - Saves to mail/{mailId}.json
@@ -148,7 +148,7 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
     - _Output: OE2EmpireTracker.Tests/Client/GameApiFullDiscoveryTests.cs_
     - _Verification: getDiagnostics — zero errors_
 
-  - [~] 8.4 Add PullShipConfiguration and PullShipCargo test methods
+  - [x] 8.4 Add PullShipConfiguration and PullShipCargo test methods
     - [Test, Order(14)] PullShipConfiguration — calls GetShipConfigurationAsync, saves to ship/configuration.json
     - [Test, Order(15)] PullShipCargo — calls GetShipCargoAsync, saves to ship/cargo.json
     - _Requirements: 10.1, 10.2, 11.1, 11.4_
@@ -158,7 +158,7 @@ Expand the existing `GameApiColonyDiscoveryTests` pattern into a comprehensive `
 
 
 - [ ] 9. Add error summary output and circuit breaker handling
-  - [~] 9.1 Add test output summary and circuit breaker awareness
+  - [-] 9.1 Add test output summary and circuit breaker awareness
     - In OneTimeTearDown, write summary to TestContext.WriteLine: endpoints succeeded, skipped, failed
     - Add BrokenCircuitException catch in each test method — if circuit breaker opens, record remaining endpoints as skipped
     - Ensure non-403 errors are logged with endpoint path and HTTP status code
