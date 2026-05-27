@@ -390,9 +390,14 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public void OnColonyDataChanged(string colonyUUID)
         {
-            Log.Debug("PlayerContext.OnColonyDataChanged: colonyUUID='{0}', subscribers={1}", colonyUUID, ColonyDataChanged?.GetInvocationList()?.Length ?? 0);
+            Log.Debug("PlayerContext.OnColonyDataChanged: colonyUUID='{0}', subscribers={1}, hashCode={2}", colonyUUID, ColonyDataChanged?.GetInvocationList()?.Length ?? 0, this.GetHashCode());
             ColonyDataChanged?.Invoke(this, new ColonyDataChangedEventArgs(colonyUUID));
         }
+
+        /// <summary>
+        /// Gets the number of subscribers to the ColonyDataChanged event (diagnostic only).
+        /// </summary>
+        internal int ColonyDataChangedSubscriberCount => ColonyDataChanged?.GetInvocationList()?.Length ?? 0;
 
         /// <summary>
         /// Notifies subscribers that blueprint data has changed externally.

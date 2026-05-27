@@ -193,6 +193,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // Subscribe to context events
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.ColonyDataChanged += OnColonyDataChanged;
+            Log.Info("V2 constructor: subscribed to ColonyDataChanged on PlayerContext hashCode={0}, subscribers after={1}", playerContext.GetHashCode(), playerContext.ColonyDataChangedSubscriberCount);
 
             // Diagnostic: log splitter state after construction
             Log.Info(
