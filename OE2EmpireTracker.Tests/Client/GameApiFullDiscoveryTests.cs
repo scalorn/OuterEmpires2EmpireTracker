@@ -473,7 +473,7 @@ namespace OE2EmpireTracker.Tests.Client
             }
 
             var envelope = JObject.Parse(this.assetLocationsJson);
-            var locations = envelope["data"] as JArray;
+            var locations = envelope["data"]?["locations"] as JArray;
             if (locations == null || locations.Count == 0)
             {
                 RecordSkipped("assets", "/v1/assets/locations/{id}", "No locations found in list response");
@@ -594,7 +594,7 @@ namespace OE2EmpireTracker.Tests.Client
             }
 
             var envelope = JObject.Parse(this.killMailListJson);
-            var killMails = envelope["data"] as JArray;
+            var killMails = envelope["data"]?["killMails"] as JArray;
             if (killMails == null || killMails.Count == 0)
             {
                 RecordSkipped("killmails", "/v1/killmails/{id}", "No kill mails found in list response");
@@ -683,7 +683,7 @@ namespace OE2EmpireTracker.Tests.Client
             }
 
             var envelope = JObject.Parse(this.mailListJson);
-            var mails = envelope["data"] as JArray;
+            var mails = envelope["data"]?["mail"] as JArray;
             if (mails == null || mails.Count == 0)
             {
                 RecordSkipped("mail", "/v1/mail/{mailId}", "No mails found in list response");
