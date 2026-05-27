@@ -570,6 +570,74 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
+        /// Retrieves the workers data for a specific colony from the game API.
+        /// </summary>
+        /// <param name="appId">The application identifier for the API request header.</param>
+        /// <param name="accessToken">The OAuth access token for authorization.</param>
+        /// <param name="colonyId">The colony identifier to fetch workers for.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetColonyWorkersAsync(string appId, string accessToken, int colonyId)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    _serverUrl + "/v1/colonies/" + colonyId + "/workers",
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetColonyWorkers received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetColonyWorkers received HTTP 403 — colony.workers.read scope not granted");
+                    return (false, "403");
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Log.Warn("Game API GetColonyWorkers received HTTP 404 — colony not found or not owned");
+                    return (false, "404");
+                }
+
+                Log.Warn("Game API GetColonyWorkers failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetColonyWorkers blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetColonyWorkers request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetColonyWorkers request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
         /// Invalidates any cached token for the given credentials.
         /// Call this when a 401 is received to force re-authentication on next request.
         /// </summary>

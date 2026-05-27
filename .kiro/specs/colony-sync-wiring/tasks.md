@@ -59,13 +59,13 @@ graph TD
   - Output: Modified `Colony.cs` with ColonyId property; modified `ColonyMergeService.cs` to set ColonyId in MergeColonyList
   - Verification: getDiagnostics on both files; build solution
 
-- [-] 2. Add Workers API response DTOs
+- [x] 2. Add Workers API response DTOs
   - Satisfies: Req 11, Criteria 1-7 (all DTO definitions)
   - Inputs: Design doc DTO section
   - Output: New file `OE2EmpireTracker/Models/GameApiColonyWorkersResponse.cs` containing GameApiColonyWorkersResponse, GameApiCommodityDemand, GameApiWorkforceOverview, GameApiColonyWorkerDetail, GameApiColonyWages, GameApiColonyModifier, GameApiColonyCapacities
   - Verification: getDiagnostics; build solution
 
-- [~] 3. Add GetColonyWorkersAsync to GameApiClient
+- [-] 3. Add GetColonyWorkersAsync to GameApiClient
   - Satisfies: Req 10, Criteria 1-3 (client method, pattern, endpoint)
   - Inputs: `OE2EmpireTracker/Client/GameApiClient.cs` (existing GetColonyBuildingsAsync as pattern)
   - Output: Modified `GameApiClient.cs` with new GetColonyWorkersAsync method
