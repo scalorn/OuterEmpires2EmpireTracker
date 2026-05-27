@@ -235,12 +235,41 @@ namespace OE2EmpireTracker.Services
             var newCommodities = MapCommodityDemands(apiWorkers.WorkforceCommodityDemands);
 
             // 5. Compare old vs new commodities list
+            int oldCount = colony.Commodities?.Count ?? 0;
+            int oldFulfilled = colony.Commodities?.Count(c => c.Fulfilled) ?? 0;
+            int oldUnfulfilled = oldCount - oldFulfilled;
+            int newFulfilled = newCommodities.Count(c => c.Fulfilled);
+            int newUnfulfilled = newCommodities.Count - newFulfilled;
+
+            Log.Debug(
+                "MergeWorkers: colony {0} commodity comparison — old: {1} total ({2} fulfilled, {3} unfulfilled), new: {4} total ({5} fulfilled, {6} unfulfilled)",
+                colony.UUID,
+                oldCount,
+                oldFulfilled,
+                oldUnfulfilled,
+                newCommodities.Count,
+                newFulfilled,
+                newUnfulfilled);
+
             if (!CommodityListsEqual(colony.Commodities, newCommodities))
             {
+                Log.Debug(
+                    "MergeWorkers: colony {0} Commodities REPLACING list — old names: [{1}], new names: [{2}]",
+                    colony.UUID,
+                    colony.Commodities != null ? string.Join(", ", colony.Commodities.Select(c => c.Name + (c.Fulfilled ? "(F)" : "(U)"))) : "null",
+                    string.Join(", ", newCommodities.Select(c => c.Name + (c.Fulfilled ? "(F)" : "(U)"))));
+
                 colony.Commodities = newCommodities;
                 changed = true;
                 Log.Debug(
                     "MergeWorkers: colony {0} Commodities updated ({1} demands)",
+                    colony.UUID,
+                    newCommodities.Count);
+            }
+            else
+            {
+                Log.Debug(
+                    "MergeWorkers: colony {0} Commodities unchanged (lists equal, {1} demands)",
                     colony.UUID,
                     newCommodities.Count);
             }
@@ -260,17 +289,34 @@ namespace OE2EmpireTracker.Services
         {
             if (demands == null || demands.Count == 0)
             {
+                Log.Debug("MapCommodityDemands: no demands to map (null or empty)");
                 return new List<CommodityRequested>();
             }
 
-            return demands.Select(d => new CommodityRequested
+            var result = new List<CommodityRequested>();
+            foreach (var d in demands)
             {
-                Name = d.TypeName,
-                Requested = d.Amount,
-                NeedBy = d.RequiredBy,
-                Fulfilled = d.Fulfilled,
-                Delivered = d.Fulfilled ? d.Amount : 0,
-            }).ToList();
+                var mapped = new CommodityRequested
+                {
+                    Name = d.TypeName,
+                    Requested = d.Amount,
+                    NeedBy = d.RequiredBy,
+                    Fulfilled = d.Fulfilled,
+                    Delivered = d.Fulfilled ? d.Amount : 0,
+                };
+                result.Add(mapped);
+
+                Log.Debug(
+                    "MapCommodityDemands: id={0} name='{1}' amount={2} requiredBy={3:o} fulfilled={4} → Delivered={5}",
+                    d.Id,
+                    d.TypeName,
+                    d.Amount,
+                    d.RequiredBy,
+                    d.Fulfilled,
+                    mapped.Delivered);
+            }
+
+            return result;
         }
 
         /// <summary>
