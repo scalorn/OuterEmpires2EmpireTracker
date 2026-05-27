@@ -405,6 +405,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 (string.IsNullOrEmpty(e.ColonyUUID) || _selectedColonyUUID == e.ColonyUUID))
             {
                 PopulateForm();
+
+                // Force-refresh commodity grid even if Workers tab isn't active —
+                // background sync may have updated commodity demands
+                if (_workersDirty)
+                {
+                    PopulateCommodityRequestGrid();
+                    _workersDirty = false;
+                }
+
                 RefreshAdminReport();
                 UpdateTabWarnings();
             }
