@@ -4,10 +4,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Constants;
@@ -222,6 +226,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmsOverflowRules.Opening += CmsOverflowRules_Opening;
 
             UpdateTitle();
+        }
+
+        private enum SyncStatus
+        {
+            Done,
+            Error,
         }
 
         public void BeginProgrammaticUpdate() { _isProgrammaticUpdate++; }
@@ -1568,9 +1578,68 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmdSync.Enabled = colonySelected && apiAvailable && hasColonyId && !_syncCooldownActive;
         }
 
-        private void CmdSync_Click(object sender, EventArgs e)
+        private async void CmdSync_Click(object sender, EventArgs e)
         {
-            // Stub — actual sync logic implemented in Task 10
+            await SyncSelectedColonyAsync().ConfigureAwait(true);
+        }
+
+        private async Task SyncSelectedColonyAsync()
+        {
+            if (string.IsNullOrEmpty(_selectedColonyUUID))
+            {
+                return;
+            }
+
+            var colony = playerContext.FindMutableColony(_selectedColonyUUID);
+            if (colony == null)
+            {
+                return;
+            }
+
+            if (colony.ColonyId == 0)
+            {
+                MessageBox.Show(
+                    "This colony has not been synced from the API yet.",
+                    "Sync Not Available",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            var gameApi = GameApiContext.Instance;
+            if (gameApi == null)
+            {
+                return;
+            }
+
+            // Disable button and show syncing status
+            cmdSync.Enabled = false;
+            cmdSync.Text = "Syncing...";
+
+            string colonyUUID = _selectedColonyUUID;
+            int colonyId = colony.ColonyId;
+            string ownerUUID = colony.OwnerUUID;
+
+            try
+            {
+                var result = await Task.Run(() => ExecuteSyncAsync(gameApi, colonyId, ownerUUID, colonyUUID)).ConfigureAwait(true);
+                ApplySyncResult(result, colonyUUID);
+            }
+            catch (ObjectDisposedException)
+            {
+                // Form closed during sync — discard
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Manual colony sync failed for colony {0}", colonyUUID);
+                try
+                {
+                    ShowSyncStatus("Error");
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+            }
         }
 
         private void TimerSyncCooldown_Tick(object sender, EventArgs e)
@@ -1584,6 +1653,189 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             timerSyncStatus.Stop();
             cmdSync.Text = "Sync";
+        }
+
+        private async Task<SyncResult> ExecuteSyncAsync(GameApiContext gameApi, int colonyId, string ownerUUID, string colonyUUID)
+        {
+            var settings = PreferencesStore.GetInstance().Preferences.GameApiConnection;
+            string appId = settings.AppId;
+            string clientId = settings.ClientId;
+
+            // Get secret for the colony owner
+            SecureString secureSecret = gameApi.CredentialManager.GetKey(ownerUUID);
+            if (secureSecret == null)
+            {
+                Log.Warn("Manual sync: no secret found for owner {0}", ownerUUID);
+                return new SyncResult { Status = SyncStatus.Error };
+            }
+
+            string secret = CredentialStore.SecureStringToString(secureSecret);
+            secureSecret.Dispose();
+
+            // Exchange token
+            var tokenResult = await gameApi.Client.ExchangeTokenAsync(appId, clientId, secret).ConfigureAwait(false);
+            if (!tokenResult.Success)
+            {
+                if (tokenResult.ErrorMessage != null && tokenResult.ErrorMessage.Contains("401"))
+                {
+                    Log.Warn("Manual sync: token exchange failed (HTTP 401) for colony {0}", colonyId);
+                    return new SyncResult { Status = SyncStatus.Error, TransitionToInvalidKey = true };
+                }
+
+                Log.Warn("Manual sync: token exchange failed for colony {0}: {1}", colonyId, tokenResult.ErrorMessage);
+                return new SyncResult { Status = SyncStatus.Error };
+            }
+
+            string accessToken = tokenResult.Token.AccessToken;
+            bool anyChanges = false;
+            bool buildingsSucceeded = false;
+            bool warehouseSucceeded = false;
+
+            // Fetch buildings
+            var buildingsResult = await gameApi.Client.GetColonyBuildingsAsync(appId, accessToken, colonyId).ConfigureAwait(false);
+            if (buildingsResult.Success)
+            {
+                try
+                {
+                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyBuildingsResponse>>(buildingsResult.Json);
+                    if (envelope?.Data?.Buildings != null)
+                    {
+                        var colony = playerContext.FindMutableColony(colonyUUID);
+                        if (colony != null)
+                        {
+                            bool changed = ColonyMergeService.MergeBuildings(envelope.Data.Buildings, colony);
+                            if (changed)
+                            {
+                                anyChanges = true;
+                            }
+
+                            buildingsSucceeded = true;
+                        }
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    Log.Error(ex, "Manual sync: malformed buildings JSON for colony {0}", colonyId);
+                }
+            }
+            else if (buildingsResult.Json == "401")
+            {
+                Log.Warn("Manual sync: buildings fetch returned 401 for colony {0}", colonyId);
+                return new SyncResult { Status = SyncStatus.Error, AnyChanges = anyChanges, TransitionToInvalidKey = true };
+            }
+            else if (buildingsResult.Json == "403")
+            {
+                Log.Warn("Manual sync: buildings scope not granted for colony {0}", colonyId);
+                return new SyncResult { Status = SyncStatus.Error, AnyChanges = anyChanges };
+            }
+            else if (buildingsResult.Json == "404")
+            {
+                Log.Warn("Manual sync: colony {0} not found on server", colonyId);
+                return new SyncResult { Status = SyncStatus.Error, AnyChanges = anyChanges };
+            }
+
+            // Fetch warehouse
+            var warehouseResult = await gameApi.Client.GetColonyWarehouseAsync(appId, accessToken, colonyId).ConfigureAwait(false);
+            if (warehouseResult.Success)
+            {
+                try
+                {
+                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWarehouseResponse>>(warehouseResult.Json);
+                    if (envelope?.Data?.Contents != null)
+                    {
+                        var colony = playerContext.FindMutableColony(colonyUUID);
+                        if (colony != null)
+                        {
+                            bool changed = ColonyMergeService.MergeWarehouse(envelope.Data.Contents, colony);
+                            if (changed)
+                            {
+                                anyChanges = true;
+                            }
+
+                            warehouseSucceeded = true;
+                        }
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    Log.Error(ex, "Manual sync: malformed warehouse JSON for colony {0}", colonyId);
+                }
+            }
+            else
+            {
+                Log.Warn("Manual sync: warehouse fetch failed for colony {0} (status={1})", colonyId, warehouseResult.Json);
+            }
+
+            // Fetch workers
+            var workersResult = await gameApi.Client.GetColonyWorkersAsync(appId, accessToken, colonyId).ConfigureAwait(false);
+            if (workersResult.Success)
+            {
+                try
+                {
+                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWorkersResponse>>(workersResult.Json);
+                    if (envelope?.Data != null)
+                    {
+                        var colony = playerContext.FindMutableColony(colonyUUID);
+                        if (colony != null)
+                        {
+                            bool changed = ColonyMergeService.MergeWorkers(envelope.Data, colony);
+                            if (changed)
+                            {
+                                anyChanges = true;
+                            }
+                        }
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    Log.Error(ex, "Manual sync: malformed workers JSON for colony {0}", colonyId);
+                }
+            }
+            else
+            {
+                Log.Warn("Manual sync: workers fetch failed for colony {0} (status={1})", colonyId, workersResult.Json);
+            }
+
+            // Persist if any changes occurred (partial success: persist whatever succeeded)
+            if (anyChanges)
+            {
+                playerContext.WriteContext();
+                playerContext.OnColonyDataChanged(colonyUUID);
+            }
+
+            bool allSucceeded = buildingsSucceeded && warehouseSucceeded;
+            return new SyncResult
+            {
+                Status = allSucceeded ? SyncStatus.Done : (buildingsSucceeded ? SyncStatus.Done : SyncStatus.Error),
+                AnyChanges = anyChanges,
+            };
+        }
+
+        private void ApplySyncResult(SyncResult result, string colonyUUID)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            if (result.TransitionToInvalidKey)
+            {
+                var gameApi = GameApiContext.Instance;
+                gameApi?.ConnectionMonitor.TransitionTo(
+                    GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
+                    "Credentials are invalid (HTTP 401)");
+            }
+
+            string statusText = result.Status == SyncStatus.Done ? "Done" : "Error";
+            ShowSyncStatus(statusText);
+        }
+
+        private void ShowSyncStatus(string statusText)
+        {
+            cmdSync.Text = statusText;
+            _syncCooldownActive = true;
+            timerSyncCooldown.Start();
+            timerSyncStatus.Start();
         }
 
         // -------------------------------------------------------------------
@@ -3402,6 +3654,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         {
             bool hasSelection = dgvOverflowRules.CurrentRow != null;
             tsmiRemoveOverflowRule.Enabled = hasSelection;
+        }
+
+        private class SyncResult
+        {
+            public SyncStatus Status { get; set; }
+
+            public bool AnyChanges { get; set; }
+
+            public bool TransitionToInvalidKey { get; set; }
         }
     }
 }

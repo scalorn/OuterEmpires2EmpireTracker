@@ -105,14 +105,14 @@ graph TD
   - Output: Modified `GameApiSyncScheduler.cs` with workersScopeAvailable flag and workers fetch block
   - Verification: getDiagnostics; build solution
 
-- [-] 9. Add Sync button to FormColonyV2 — UI controls and Designer
+- [x] 9. Add Sync button to FormColonyV2 — UI controls and Designer
   - Satisfies: Req 3, Criteria 1-5 (button placement, text, tooltip, enabled/disabled states)
   - Satisfies: Req 6, Criteria 1-3 (cooldown timer)
   - Inputs: `OE2EmpireTracker/Forms/ColonyV2/FormColonyV2.Designer.cs`, `OE2EmpireTracker/Forms/ColonyV2/FormColonyV2.cs`
   - Output: Modified Designer.cs with cmdSync button and timers; modified FormColonyV2.cs with enable/disable logic, cooldown timer handler, and UpdateSyncButtonState helper
   - Verification: getDiagnostics; build solution
 
-- [~] 10. Implement FormColonyV2 sync execution logic
+- [-] 10. Implement FormColonyV2 sync execution logic
   - Satisfies: Req 4, Criteria 1-7 (sync execution, token exchange, merge calls, partial success, ColonyId check)
   - Satisfies: Req 5, Criteria 1-5 (status feedback)
   - Satisfies: Req 8, Criteria 1-2 (automatic refresh after sync)
