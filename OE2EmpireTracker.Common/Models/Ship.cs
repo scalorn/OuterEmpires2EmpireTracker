@@ -17,6 +17,9 @@ namespace OE2EmpireTracker.Models
         public DestinationType LocationType { get; set; } = DestinationType.Station;
         public string LocationUUID { get; set; } = string.Empty;
 
+        [JsonProperty("gameLocationId")]
+        public int? GameLocationId { get; set; }
+
         public ItemBag Cargo { get; set; } = new ItemBag();
         public ItemBag Hopper { get; set; } = new ItemBag();
 

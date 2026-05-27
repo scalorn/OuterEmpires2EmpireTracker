@@ -30,6 +30,15 @@ namespace OE2EmpireTracker.Models
 
         public string OwnerUUID { get; set; } = string.Empty;
 
+        [JsonProperty("gameLocationId")]
+        public int? GameLocationId { get; set; }
+
+        [JsonProperty("systemName")]
+        public string SystemName { get; set; } = string.Empty;
+
+        [JsonProperty("systemId")]
+        public int? SystemId { get; set; }
+
         public Dictionary<string, ItemBag> Holds { get; set; } = new Dictionary<string, ItemBag>();
 
         public List<ShipComponentSlot> Components { get; set; } = new List<ShipComponentSlot>();
