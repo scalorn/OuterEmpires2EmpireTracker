@@ -1,0 +1,3572 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OuterEmpires 2 Public API",
+    "description": "Public API for third-party tools and companion apps to access OuterEmpires 2 character data.\n\n## Overview\n\nThis is an OAuth2-style API. The third-party application exchanges a per-character `client_id` and `secret` for a short-lived JSON Web Token (JWT). This token allows calls to the data endpoints. **Tokens are scoped to a single character** — each secret a player issues authorises exactly one of their characters, so an app that wants to read data for two characters needs two secrets.\n\n## Identifiers\n\nThree identifiers are involved in the auth flow:\n\n- **`app_id`** — a GUID identifying your registered third-party application. App developers register an application with Outer Empires and receive an `app_id`. The `app_id` is used by the app to identify itself when exchanging a secret for a token and when calling data endpoints.\n\n- **`client_id`** — the player's account identifier within OE2, this is public information and safe to share. Can be found in the API settings tab in-game.\n\n- **`secret`** — an opaque per-character credential. The player generates the secret in-game for one of their characters and selects the scopes they wish to grant. Each secret is bound to a single character on a single account. Secrets are confidential and should be stored and transmitted with the same care as a password.\n\n## Scopes\n\nScopes let the player decide exactly what data a given secret — and any token minted from it — is allowed to read. The player selects scopes when they create the secret in-game; the token issued at exchange time carries only the scopes the player approved. Each endpoint declares a required scope and rejects tokens that do not carry it, so an app can only see the slice of data the player actually consented to share.\n\n| Scope | Grants access to |\n|-------|------------------|\n| `assets.locations.read` | List of locations where the character holds assets, and per-location asset breakdowns |\n| `banking.balance.read` | Current banking balance |\n| `banking.transactions.read` | Banking transaction history |\n| `character.info.read` | Public character profile (name, corporation, etc.) |\n| `character.skills.read` | Character skills and skill-in-training |\n| `colony.list.read` | List of the character's colonies |\n| `colony.summary.read` | Per-colony summary information |\n| `colony.buildings.read` | Per-colony building list and attributes |\n| `colony.warehouse.read` | Per-colony warehouse contents |\n| `colony.workers.read` | Per-colony workforce information |\n| `jobs.accepted.read` | Jobs the character has accepted |\n| `killmail.list.read` | Kill mail summary list (kills and deaths) |\n| `killmail.detail.read` | Full kill mail detail (fit, attackers, victim) |\n| `mail.list.read` | In-game mail headers (inbox and sent) |\n| `mail.body.read` | Body of a specific in-game mail |\n| `ship.configuration.read` | Active ship fit and modules |\n| `ship.cargo.read` | Active ship cargo hold contents |\n\n## Token exchange\n\nExchange the secret for a JWT with a single call:\n\n```http\nPOST /v1/auth/token\nContent-Type: application/json\n\n{\n  \"app_id\": \"<your registered app_id GUID>\",\n  \"client_id\": \"<player's client/account id>\",\n  \"secret\": \"<the per-character secret the player issued>\",\n  \"grant_type\": \"client_credentials\"\n}\n```\n\nA successful response returns the JWT, its lifetime, the `character_id` it is bound to, and the granted scopes:\n\n```json\n{\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJSUzI1NiIs...\",\n    \"tokenType\": \"Bearer\",\n    \"expiresIn\": 3600,\n    \"characterId\": 12345,\n    \"scopes\": [\"character.info.read\", \"character.skills.read\"],\n    \"subscription\": \"standard\"\n  }\n}\n```\n\nTokens are short-lived (~1 hour). When a token expires, repeat the exchange with the same secret to mint a new one.\n\n## Calling data endpoints\n\nEvery authenticated endpoint requires **two** headers:\n\n- `Authorization: Bearer <accessToken>` — the JWT returned by `/v1/auth/token`.\n- `X-App-Id: <app_id>` — the same `app_id` used at token exchange. The API verifies the header matches the `app_id` claim baked into the JWT; a mismatch returns `401 Unauthorized`.\n\nThe endpoint then enforces that the JWT carries the scope it requires. A missing scope returns `403 Forbidden`. All read operations act on the single character the secret was issued for — the API does not accept a character id in the request path or query.\n\n## Errors\n\nEvery response body is wrapped in a `ServiceResponse<T>` envelope with `success`, `returnCode`, `returnString`, and `data` fields. The HTTP status code mirrors `returnCode` on error responses, and `returnString` contains a human-readable message suitable for debugging (not for end users)."
+  },
+  "servers": [
+    {
+      "url": "https://oe2-pub-api-dev.azure-api.net"
+    }
+  ],
+  "paths": {
+    "/v1/assets/locations": {
+      "get": {
+        "tags": [
+          "Assets"
+        ],
+        "summary": "List locations where the character holds assets",
+        "description": "Returns the set of locations (stations, colonies, ships, etc.) where the character currently holds any assets, with a summary of what's at each. Use the `locationId` + `locationType` pair from each entry to drill into the per-location detail via `GET /v1/assets/locations/{locationId}`.\n\nSupports optional free-text search and an item-type filter to narrow the result set.\n\n**Required scope:** `assets.locations.read`",
+        "operationId": "GetAssetsLocations",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Free-text substring search across resource, crate, and location names. Maximum 200 characters.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Item type-code filter. 1-2 character code (e.g. `R`, `C`, `S`, `Bp`, `Sh`). Omit to include all types.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Locations holding any of the character's assets, with per-location summary counts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_assetLocations"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/assets/locations/{locationId}": {
+      "get": {
+        "tags": [
+          "Assets"
+        ],
+        "summary": "Get the character's assets at a single location",
+        "description": "Returns the full breakdown of the character's assets at one location: resources, crates, ships, blueprints, etc. The `locationId` and `locationType` together identify the location and must be the pair returned by `GET /v1/assets/locations`.\n\nSupports optional free-text search and an item-type filter to narrow the result set.\n\n**Required scope:** `assets.locations.read`",
+        "operationId": "GetAssetsLocationDetail",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationId",
+            "in": "path",
+            "description": "Id of a location returned by `GET /v1/assets/locations`. Must be paired with the matching `locationType` query parameter from the same entry — the id alone is not unique across location types.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "locationType",
+            "in": "query",
+            "description": "Location type-code for the `locationId`. 1-2 character code (e.g. `St`, `Co`, `Sh`). Required — use the `locationType` value returned alongside the matching `locationId` by `GET /v1/assets/locations`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Free-text substring search across resource, crate, and ship names. Maximum 200 characters.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Item type-code filter. 1-2 character code (e.g. `R`, `C`, `S`, `Bp`, `Sh`). Omit to include all types.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full asset breakdown at the requested location.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_assetLocationDetail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/auth/token": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Exchange a player-issued secret for an access token",
+        "description": "Exchanges an `app_id` + `client_id` + `secret` triple for a short-lived JWT access token (~1 hour). The minted token is bound to the single character the secret was issued for, and carries only the scopes the player approved when they created the secret.\n\nThis endpoint is anonymous — callers do not yet have a token. The response includes the `characterId` so the caller knows which character the token applies to, and the `scopes` array so the caller knows which endpoints it can call.\n\nWhen the token expires, repeat this exchange with the same secret to mint a new one.",
+        "operationId": "ExchangeToken",
+        "requestBody": {
+          "description": "Token exchange request. `grantType` must be `client_credentials`.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tokenRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token successfully minted. The `accessToken` should be sent in the `Authorization: Bearer ...` header on subsequent requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_tokenResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/banking/balance": {
+      "get": {
+        "tags": [
+          "Banking"
+        ],
+        "summary": "Get the character's current banking balance",
+        "description": "Returns the character's current banking balance.\n\n**Required scope:** `banking.balance.read`",
+        "operationId": "GetBankingBalance",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current banking balance for the character.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_bankingBalance"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/banking/transactions": {
+      "get": {
+        "tags": [
+          "Banking"
+        ],
+        "summary": "List the character's banking transactions",
+        "description": "Returns a paged, optionally date-filtered list of banking transactions (credits and debits) for the character, newest first.\n\n**Required scope:** `banking.transactions.read`",
+        "operationId": "GetBankingTransactions",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Zero-based pagination offset. Must be 0 or greater. Default 0.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Page size. Must be between 50 and 250 inclusive. Default 50.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "description": "Return only transactions on or after this date/time. ISO 8601 (e.g. `2026-01-01T00:00:00Z`). Optional.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "description": "Return only transactions on or before this date/time. ISO 8601. Must be on or after `dateFrom` if both are supplied. Optional.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paged list of banking transactions, newest first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_bankingTransactions"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/character": {
+      "get": {
+        "tags": [
+          "Character"
+        ],
+        "summary": "Get the character's public profile",
+        "description": "Returns the basic profile of the character.\n\n**Required scope:** `character.info.read`",
+        "operationId": "GetCharacter",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The character's public profile.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_publicCharacter"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/character/skills": {
+      "get": {
+        "tags": [
+          "Character"
+        ],
+        "summary": "Get the character's trained skills and skill-in-training",
+        "description": "Returns the list of skills the character has trained (with current level) and the skill currently being trained (with progress and completion time, if any).\n\n**Required scope:** `character.skills.read`",
+        "operationId": "GetCharacterSkills",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trained skills and the skill currently in training.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_characterSkills"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/colonies": {
+      "get": {
+        "tags": [
+          "Colony"
+        ],
+        "summary": "List the character's colonies",
+        "description": "Returns the set of colonies the character owns, with enough summary information to choose one to drill into. Use each entry's `id` as the `colonyId` for the per-colony endpoints under `/v1/colonies/{colonyId}`.\n\n**Required scope:** `colony.list.read`",
+        "operationId": "GetColonyList",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of the character's colonies.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_colonyList"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/colonies/{colonyId}": {
+      "get": {
+        "tags": [
+          "Colony"
+        ],
+        "summary": "Get summary information for a single colony",
+        "description": "Returns headline information for one of the character's colonies: name, location, capacities, durability, modifiers, recent notices, and workforce overview.\n\n**Colony requirement:** the colony must have a Remote Operations Array building installed and online — without one the colony cannot be queried remotely and the call will fail.\n\n**Required scope:** `colony.summary.read`",
+        "operationId": "GetColonySummary",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "colonyId",
+            "in": "path",
+            "description": "Id of one of the character's colonies. Use the `id` of any entry returned by `GET /v1/colonies`. Requesting a colony the character does not own returns 404.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary information for the requested colony.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_colonySummary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/colonies/{colonyId}/buildings": {
+      "get": {
+        "tags": [
+          "Colony"
+        ],
+        "summary": "List buildings at a single colony",
+        "description": "Returns the list of buildings present at a colony, including each building's level, status, and attributes (production rates, capacities, etc.).\n\n**Colony requirement:** the colony must have a Remote Operations Array building installed and online — without one the colony cannot be queried remotely and the call will fail.\n\n**Required scope:** `colony.buildings.read`",
+        "operationId": "GetColonyBuildings",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "colonyId",
+            "in": "path",
+            "description": "Id of one of the character's colonies. Use the `id` of any entry returned by `GET /v1/colonies`. Requesting a colony the character does not own returns 404.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Buildings at the requested colony with their levels, statuses, and attributes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_colonyBuildings"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/colonies/{colonyId}/warehouse": {
+      "get": {
+        "tags": [
+          "Colony"
+        ],
+        "summary": "Get warehouse contents for a single colony",
+        "description": "Returns the contents of the colony's warehouse: resources, components, and other stored items, with quantities.\n\n**Colony requirement:** the colony must have a Remote Operations Array building installed and online — without one the colony cannot be queried remotely and the call will fail.\n\n**Required scope:** `colony.warehouse.read`",
+        "operationId": "GetColonyWarehouse",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "colonyId",
+            "in": "path",
+            "description": "Id of one of the character's colonies. Use the `id` of any entry returned by `GET /v1/colonies`. Requesting a colony the character does not own returns 404.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Warehouse contents at the requested colony.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_colonyWarehouse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/colonies/{colonyId}/workers": {
+      "get": {
+        "tags": [
+          "Colony"
+        ],
+        "summary": "Get workforce information for a single colony",
+        "description": "Returns workforce information for a colony: worker counts by class, assignments, happiness, and any other workforce-related state.\n\n**Colony requirement:** the colony must have a Remote Operations Array building installed and online — without one the colony cannot be queried remotely and the call will fail.\n\n**Required scope:** `colony.workers.read`",
+        "operationId": "GetColonyWorkers",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "colonyId",
+            "in": "path",
+            "description": "Id of one of the character's colonies. Use the `id` of any entry returned by `GET /v1/colonies`. Requesting a colony the character does not own returns 404.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workforce information at the requested colony.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_colonyWorkers"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/jobs/accepted": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "List jobs the character has accepted",
+        "description": "Returns the jobs the character has currently accepted but not yet completed, with each job's source, reward, deadline, and progress.\n\n**Required scope:** `jobs.accepted.read`",
+        "operationId": "GetAcceptedJobs",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Jobs the character has accepted and not yet completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_acceptedJobs"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/killmails": {
+      "get": {
+        "tags": [
+          "KillMail"
+        ],
+        "summary": "List the character's kill mails",
+        "description": "Returns a paged summary list of the character's kill mails (both kills and deaths), newest first. Each entry contains enough information to display a feed row; use `GET /v1/killmails/{killMailId}` for the full mail.\n\nSupports filters to include kills only, deaths only, or restrict to PvP/PvE engagements.\n\n**Required scope:** `killmail.list.read`",
+        "operationId": "GetKillMailList",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "kills",
+            "in": "query",
+            "description": "Include mails where the character was an attacker. Default `true`. At least one of `kills` or `deaths` must be `true`.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "deaths",
+            "in": "query",
+            "description": "Include mails where the character was the victim. Default `true`. At least one of `kills` or `deaths` must be `true`.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pvp",
+            "in": "query",
+            "description": "Engagement filter: `true` for PvP only, `false` for PvE only. Omit to include both.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Zero-based pagination offset. Must be 0 or greater. Default 0.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Page size. Must be between 1 and 100 inclusive. Default 25.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paged list of kill mail summaries, newest first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_killMailList"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/killmails/{killMailId}": {
+      "get": {
+        "tags": [
+          "KillMail"
+        ],
+        "summary": "Get the full detail of a single kill mail",
+        "description": "Returns the complete kill mail for one engagement: victim, attackers, damage breakdown, location, and the fit (ship and modules) that was destroyed. The mail must be one of the character's own (a kill they participated in or a loss they suffered).\n\n**Required scope:** `killmail.detail.read`",
+        "operationId": "GetKillMailDetail",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "killMailId",
+            "in": "path",
+            "description": "Id of a kill mail listed under `GET /v1/killmails`. Requesting a mail the character was not involved in returns 404.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full detail for the requested kill mail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_killMail"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/mail": {
+      "get": {
+        "tags": [
+          "Mail"
+        ],
+        "summary": "List in-game mail headers",
+        "description": "Returns a paged list of in-game mail headers (sender, subject, date, read/unread state) for the character. Mail bodies are not included — use `GET /v1/mail/{mailId}` to fetch a single mail body.\n\nDefaults to the received inbox; pass `sent=true` to list mail the character has sent. Use `mailType` to filter to a single category (e.g. corporation mail, alliance mail).\n\n**Required scope:** `mail.list.read`",
+        "operationId": "GetMailList",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sent",
+            "in": "query",
+            "description": "Mailbox to list. `false` returns the received inbox (default); `true` returns mail the character has sent.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Zero-based pagination offset. Must be 0 or greater. Default 0.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Page size. Must be between 1 and 100 inclusive. Default 50.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "mailType",
+            "in": "query",
+            "description": "Mail-category filter. 1-2 character code. Known values: `A` = player-to-player mail (e.g. correspondence between characters), `C` = construction/manufacturing notifications (e.g. \"Manufacturing Run Complete\"), `R` = research notifications (e.g. \"Research Completed in colony: …\"), `S` = system notifications (e.g. skill-training completion, daily financial reports). Default `A`.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paged list of mail headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_mailList"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/mail/{mailId}": {
+      "get": {
+        "tags": [
+          "Mail"
+        ],
+        "summary": "Get the body of a single in-game mail",
+        "description": "Returns the full body and header metadata for one in-game mail. The mail must belong to the character (received or sent).\n\n**Required scope:** `mail.body.read`",
+        "operationId": "GetMailBody",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mailId",
+            "in": "path",
+            "description": "Id of a mail listed under `GET /v1/mail`. Must belong to the character (received or sent). Requesting a mail that is not the character's returns 404.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full body and headers of the requested mail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_mailBody"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/ship/configuration": {
+      "get": {
+        "tags": [
+          "Ship"
+        ],
+        "summary": "Get the active ship's configuration and fit",
+        "description": "Returns the configuration of the ship the character is currently flying: hull, fitted modules, slot layout, and component-level properties.\n\n**Required scope:** `ship.configuration.read`",
+        "operationId": "GetShipConfiguration",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Active ship configuration and fitted modules.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_shipConfiguration"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    },
+    "/v1/ship/cargo": {
+      "get": {
+        "tags": [
+          "Ship"
+        ],
+        "summary": "Get the active ship's cargo hold contents",
+        "description": "Returns the contents of the cargo hold(s) of the ship the character is currently flying, including item identities, quantities, and per-item properties.\n\n**Required scope:** `ship.cargo.read`",
+        "operationId": "GetShipCargo",
+        "parameters": [
+          {
+            "name": "X-App-Id",
+            "in": "header",
+            "description": "The `app_id` GUID of the calling third-party application. Must match the `app_id` claim of the bearer token — a mismatch returns 401 Unauthorized.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cargo hold contents of the active ship.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serviceResponse_shipCargo"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer_auth": [ ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "acceptedJob": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "jobName": {
+            "type": "string"
+          },
+          "jobType": {
+            "type": "string"
+          },
+          "track": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "xp": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "credits": {
+            "type": "number",
+            "format": "double"
+          },
+          "bonus": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completeByBonus": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "characterId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "charName": {
+            "type": "string"
+          },
+          "info1": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "systemName1": {
+            "type": "string"
+          },
+          "info2": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "systemName2": {
+            "type": "string"
+          },
+          "jobIssuedLocId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "jobIssuedLocationName": {
+            "type": "string"
+          },
+          "jobIssuedLocationReputation": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "acceptedJobs": {
+        "type": "object",
+        "properties": {
+          "jobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/acceptedJob"
+            }
+          }
+        }
+      },
+      "appStatusResponseDto": {
+        "type": "object",
+        "properties": {
+          "appId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "rateLimit": {
+            "$ref": "#/components/schemas/rateLimitDto"
+          }
+        }
+      },
+      "assetCargoItem": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "typeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "jobRef": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "jobDeliveryLoc": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "healthPercentage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "lastRepairHealthPercentage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "resourceName": {
+            "type": "string"
+          },
+          "evolution": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "icon": {
+            "type": "string"
+          },
+          "typeC": {
+            "type": "string"
+          },
+          "mass": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "volume": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/assetCargoProperty"
+            }
+          },
+          "jobName": {
+            "type": "string"
+          },
+          "jobTrack": {
+            "type": "string"
+          },
+          "shipPartType": {
+            "type": "string"
+          }
+        }
+      },
+      "assetCargoProperty": {
+        "type": "object",
+        "properties": {
+          "modTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "propertyName": {
+            "type": "string"
+          },
+          "friendlyPropertyName": {
+            "type": "string"
+          },
+          "propertyValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "evolution": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "originalPropertyValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "researchPositive": {
+            "type": "boolean"
+          },
+          "canResearch": {
+            "type": "boolean"
+          }
+        }
+      },
+      "assetLocation": {
+        "type": "object",
+        "properties": {
+          "locationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "locationType": {
+            "type": "string"
+          },
+          "locationName": {
+            "type": "string"
+          },
+          "systemName": {
+            "type": "string"
+          },
+          "systemId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assetCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "assetLocationDetail": {
+        "type": "object",
+        "properties": {
+          "cargo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/assetCargoItem"
+            }
+          },
+          "ships": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/assetShip"
+            }
+          }
+        }
+      },
+      "assetLocations": {
+        "type": "object",
+        "properties": {
+          "locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/assetLocation"
+            }
+          }
+        }
+      },
+      "assetShip": {
+        "type": "object",
+        "properties": {
+          "shipTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "shipTypeName": {
+            "type": "string"
+          },
+          "assetName": {
+            "type": "string"
+          },
+          "shipName": {
+            "type": "string"
+          },
+          "primaryCareer": {
+            "type": "string"
+          },
+          "licenseLevel": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "shipSize": {
+            "type": "string"
+          },
+          "transponder": {
+            "type": "string"
+          }
+        }
+      },
+      "bankingBalance": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "bankingTransaction": {
+        "type": "object",
+        "properties": {
+          "transactionDT": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "creditChange": {
+            "type": "number",
+            "format": "double"
+          },
+          "oldBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "newBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "transactionType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "characterId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "systemObjectId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "systemId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        }
+      },
+      "bankingTransactions": {
+        "type": "object",
+        "properties": {
+          "totalRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalChange": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalIncome": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalExpenses": {
+            "type": "number",
+            "format": "double"
+          },
+          "transactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/bankingTransaction"
+            }
+          }
+        }
+      },
+      "characterLevel": {
+        "type": "object",
+        "properties": {
+          "track": {
+            "type": "string"
+          },
+          "levelId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "levelName": {
+            "type": "string"
+          },
+          "currentXP": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "xpToNextLevel": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "characterSkills": {
+        "type": "object",
+        "properties": {
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/skill"
+            }
+          },
+          "skillInTraining": {
+            "$ref": "#/components/schemas/skillInTraining"
+          }
+        }
+      },
+      "colonyBuilding": {
+        "type": "object",
+        "properties": {
+          "buildingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "colonyBuildingTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "blueprintDesignName": {
+            "type": "string"
+          },
+          "buildingOnline": {
+            "type": "boolean"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "opsStatusEffects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyBuildingStatusEffect"
+            }
+          },
+          "constructingBuildingFinish": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "industries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyBuildingIndustry"
+            }
+          },
+          "durabilityCurrent": {
+            "type": "number",
+            "format": "double"
+          },
+          "durabilityMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "detailsRequired": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyBuildingDetailRequirement"
+            }
+          },
+          "supportDetailsRequired": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyBuildingDetailRequirement"
+            }
+          },
+          "buildingAttributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyBuildingAttribute"
+            }
+          },
+          "extraProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyBuildingExtraProperty"
+            }
+          },
+          "resourceId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "resourceIcon": {
+            "type": "string"
+          },
+          "resourceName": {
+            "type": "string"
+          },
+          "manufactureAmountPerRun": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "manufactureNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextFinish": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "colonyBuildingAttribute": {
+        "type": "object",
+        "properties": {
+          "modTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "propertyName": {
+            "type": "string"
+          },
+          "friendlyPropertyName": {
+            "type": "string"
+          },
+          "propertyValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "unit": {
+            "type": "string"
+          }
+        }
+      },
+      "colonyBuildingDetailRequirement": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "detailTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberRequired": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workerStatusId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "colonyBuildingExtraProperty": {
+        "type": "object",
+        "properties": {
+          "info1": {
+            "type": "string"
+          },
+          "info2": {
+            "type": "string"
+          },
+          "info3": {
+            "type": "string"
+          },
+          "info4": {
+            "type": "string"
+          }
+        }
+      },
+      "colonyBuildingIndustry": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "colonyBuildings": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "$ref": "#/components/schemas/colonyBuildingsSummary"
+          },
+          "colonyCapacities": {
+            "$ref": "#/components/schemas/colonyCapacities"
+          },
+          "buildings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyBuilding"
+            }
+          }
+        }
+      },
+      "colonyBuildingsSummary": {
+        "type": "object",
+        "properties": {
+          "totalStructures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullyOperational": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "partiallyOperational": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "offlineS": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "upgrading": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "constructing": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "repairing": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "damaged": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ruined": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "systemObjectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "manufacturingBlocked": {
+            "type": "boolean"
+          }
+        }
+      },
+      "colonyBuildingStatusEffect": {
+        "type": "object",
+        "properties": {
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "modTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "change": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "colonyCapacities": {
+        "type": "object",
+        "properties": {
+          "powerDraw": {
+            "type": "number",
+            "format": "double"
+          },
+          "powerGenerated": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "luxuriesNeeded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "luxuriesAvailable": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "habitationNeeded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "habitationAvailable": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouseUsed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouseCapacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "foodNeeded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "foodAvailable": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "colonyCommodityDemand": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "typeC": {
+            "type": "string"
+          },
+          "commodityType": {
+            "type": "string"
+          },
+          "typeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "typeName": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requiredBy": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fulfilled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "colonyDurability": {
+        "type": "object",
+        "properties": {
+          "maxColonyDurability": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentColonyDurability": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "colonyIndustry": {
+        "type": "object",
+        "properties": {
+          "sum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "industryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "industryName": {
+            "type": "string"
+          }
+        }
+      },
+      "colonyList": {
+        "type": "object",
+        "properties": {
+          "colonies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyListItem"
+            }
+          }
+        }
+      },
+      "colonyListItem": {
+        "type": "object",
+        "properties": {
+          "colonyId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "colonyName": {
+            "type": "string"
+          },
+          "systemObjectName": {
+            "type": "string"
+          },
+          "systemName": {
+            "type": "string"
+          },
+          "systemId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "colonySize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "remoteAccess": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "distance": {
+            "type": "number",
+            "format": "double"
+          },
+          "surfaceVariation": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "atmosVariation": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hexValue": {
+            "type": "string"
+          },
+          "systemObjectTypeName": {
+            "type": "string"
+          },
+          "imagePreFix": {
+            "type": "string"
+          },
+          "hasManufacturing": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "manufacturingInProgress": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasMining": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "miningInProgress": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasRefining": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "refiningInProgress": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasResearch": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "researchInProgress": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "manufacturingBlocked": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workerCurrentAttitude": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "contentmentIndex": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "colonyModifier": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "description": {
+            "type": "string"
+          },
+          "modifierNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "positive": {
+            "type": "boolean"
+          },
+          "temporary": {
+            "type": "boolean"
+          }
+        }
+      },
+      "colonyNotice": {
+        "type": "object",
+        "properties": {
+          "noticeText": {
+            "type": "string"
+          },
+          "noticeDt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "colonyOperation": {
+        "type": "object",
+        "properties": {
+          "operationType": {
+            "type": "string"
+          }
+        }
+      },
+      "colonyOperationalEfficiency": {
+        "type": "object",
+        "properties": {
+          "modTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "propertyName": {
+            "type": "string"
+          },
+          "friendlyPropertyName": {
+            "type": "string"
+          },
+          "propertyValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "unit": {
+            "type": "string"
+          }
+        }
+      },
+      "colonySummary": {
+        "type": "object",
+        "properties": {
+          "colonyId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "colonyName": {
+            "type": "string"
+          },
+          "canLand": {
+            "type": "boolean"
+          },
+          "characterName": {
+            "type": "string"
+          },
+          "colonySize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isOwnColony": {
+            "type": "boolean"
+          },
+          "systemObjectName": {
+            "type": "string"
+          },
+          "systemName": {
+            "type": "string"
+          },
+          "assetValue": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasCommandCenter": {
+            "type": "boolean"
+          },
+          "timeToFirstBuildingComplete": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mustSolidifyClaim": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "imagePreFix": {
+            "type": "string"
+          },
+          "surfaceVariation": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "atmosVariation": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hexValue": {
+            "type": "string"
+          },
+          "notices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyNotice"
+            }
+          },
+          "industriesPresent": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyIndustry"
+            }
+          },
+          "operationsPresent": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyOperation"
+            }
+          },
+          "colonyDurability": {
+            "$ref": "#/components/schemas/colonyDurability"
+          },
+          "operationalEfficiencies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyOperationalEfficiency"
+            }
+          }
+        }
+      },
+      "colonyWages": {
+        "type": "object",
+        "properties": {
+          "currentWagePercentage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "galacticWageStandard": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentWageBillPerCycle": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lastWageChange": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "colonyWarehouse": {
+        "type": "object",
+        "properties": {
+          "warehouseCapacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canAccess": {
+            "type": "boolean"
+          },
+          "contents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/assetCargoItem"
+            }
+          }
+        }
+      },
+      "colonyWorker": {
+        "type": "object",
+        "properties": {
+          "workerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workerTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "buildingTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "downTools": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "colonyWorkers": {
+        "type": "object",
+        "properties": {
+          "workerCurrentAttitude": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "colonyModifiers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyModifier"
+            }
+          },
+          "colonyCapacities": {
+            "$ref": "#/components/schemas/colonyCapacities"
+          },
+          "workforceCommodityDemands": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyCommodityDemand"
+            }
+          },
+          "workforceOverview": {
+            "$ref": "#/components/schemas/colonyWorkforceOverview"
+          },
+          "workforceDetail": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/colonyWorker"
+            }
+          },
+          "wages": {
+            "$ref": "#/components/schemas/colonyWages"
+          }
+        }
+      },
+      "colonyWorkforceOverview": {
+        "type": "object",
+        "properties": {
+          "blueCollarAllocated": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "blueCollarUnallocated": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "whiteCollarAllocated": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "whiteCollarUnallocated": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "specialistAllocated": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "specialistUnallocated": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "killMail": {
+        "type": "object",
+        "properties": {
+          "killMailId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "destroyedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "systemName": {
+            "type": "string"
+          },
+          "locationX": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "locationY": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "victim": {
+            "$ref": "#/components/schemas/killMailVictim"
+          },
+          "attackers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/killMailAttacker"
+            }
+          }
+        }
+      },
+      "killMailAttacker": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "characterName": {
+            "type": "string"
+          },
+          "isNpc": {
+            "type": "boolean"
+          },
+          "isFinalBlow": {
+            "type": "boolean"
+          },
+          "factionName": {
+            "type": "string"
+          },
+          "factionTag": {
+            "type": "string"
+          },
+          "shipTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "shipTypeName": {
+            "type": "string"
+          },
+          "shipName": {
+            "type": "string"
+          },
+          "estimatedValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalDamage": {
+            "type": "number",
+            "format": "double"
+          },
+          "energyDamage": {
+            "type": "number",
+            "format": "double"
+          },
+          "kineticDamage": {
+            "type": "number",
+            "format": "double"
+          },
+          "missileDamage": {
+            "type": "number",
+            "format": "double"
+          },
+          "pSex": {
+            "type": "string"
+          },
+          "pStyle": {
+            "type": "string"
+          },
+          "pFrame": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pBackground": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pNeck": {
+            "type": "string"
+          },
+          "pFace": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pHair": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pMouth": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pNose": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pEyes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pBrow": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pBeard": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pClothes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/killMailFitPart"
+            }
+          }
+        }
+      },
+      "killMailFitPart": {
+        "type": "object",
+        "properties": {
+          "shipPartsId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "shipPartTypesId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "partTypeName": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "isWeapon": {
+            "type": "boolean"
+          },
+          "bluePrintId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bluePrintName": {
+            "type": "string"
+          },
+          "evolution": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "healthPercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "lastRepairHealthPercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "containingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "containingAmount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "killMailList": {
+        "type": "object",
+        "properties": {
+          "totalRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killMails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/killMailListItem"
+            }
+          }
+        }
+      },
+      "killMailListItem": {
+        "type": "object",
+        "properties": {
+          "killMailId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "destroyedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "systemName": {
+            "type": "string"
+          },
+          "isDeath": {
+            "type": "boolean"
+          },
+          "isFinalBlow": {
+            "type": "boolean"
+          },
+          "isPvP": {
+            "type": "boolean"
+          },
+          "victimCharacterId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "victimName": {
+            "type": "string"
+          },
+          "victimFactionName": {
+            "type": "string"
+          },
+          "victimFactionTag": {
+            "type": "string"
+          },
+          "victimShipTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "victimShipTypeName": {
+            "type": "string"
+          },
+          "victimShipName": {
+            "type": "string"
+          },
+          "victimEstimatedValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "killerCharacterId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killerName": {
+            "type": "string"
+          },
+          "killerIsNpc": {
+            "type": "boolean"
+          },
+          "killerFactionName": {
+            "type": "string"
+          },
+          "killerFactionTag": {
+            "type": "string"
+          },
+          "killerShipTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "killerShipTypeName": {
+            "type": "string"
+          },
+          "killerShipName": {
+            "type": "string"
+          }
+        }
+      },
+      "killMailVictim": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "characterName": {
+            "type": "string"
+          },
+          "factionName": {
+            "type": "string"
+          },
+          "factionTag": {
+            "type": "string"
+          },
+          "shipTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "shipTypeName": {
+            "type": "string"
+          },
+          "shipName": {
+            "type": "string"
+          },
+          "fuelCap": {
+            "type": "number",
+            "format": "double"
+          },
+          "powerCap": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxSpeed": {
+            "type": "number",
+            "format": "double"
+          },
+          "jumpRange": {
+            "type": "number",
+            "format": "double"
+          },
+          "estimatedValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "pSex": {
+            "type": "string"
+          },
+          "pStyle": {
+            "type": "string"
+          },
+          "pFrame": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pBackground": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pNeck": {
+            "type": "string"
+          },
+          "pFace": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pHair": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pMouth": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pNose": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pEyes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pBrow": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pBeard": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pClothes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/killMailFitPart"
+            }
+          }
+        }
+      },
+      "mailBody": {
+        "type": "object",
+        "properties": {
+          "mailId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "characterIdFrom": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fromName": {
+            "type": "string"
+          },
+          "characterIdTo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "toName": {
+            "type": "string"
+          },
+          "sentTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "mailRead": {
+            "type": "boolean"
+          },
+          "mailType": {
+            "type": "string"
+          },
+          "mailContent": {
+            "type": "string"
+          }
+        }
+      },
+      "mailHeader": {
+        "type": "object",
+        "properties": {
+          "mailId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "characterIdFrom": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fromName": {
+            "type": "string"
+          },
+          "characterIdTo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "toName": {
+            "type": "string"
+          },
+          "sentTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "mailRead": {
+            "type": "boolean"
+          },
+          "mailType": {
+            "type": "string"
+          }
+        }
+      },
+      "mailList": {
+        "type": "object",
+        "properties": {
+          "totalRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mail": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/mailHeader"
+            }
+          }
+        }
+      },
+      "publicCharacter": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "activeTimeMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "levels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/characterLevel"
+            }
+          }
+        }
+      },
+      "rateLimitDto": {
+        "type": "object",
+        "properties": {
+          "calls": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "period": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "serviceResponse_acceptedJobs": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/acceptedJobs"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_assetLocationDetail": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/assetLocationDetail"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_assetLocations": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/assetLocations"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_bankingBalance": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/bankingBalance"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_bankingTransactions": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/bankingTransactions"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_characterSkills": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/characterSkills"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_colonyBuildings": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/colonyBuildings"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_colonyList": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/colonyList"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_colonySummary": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/colonySummary"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_colonyWarehouse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/colonyWarehouse"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_colonyWorkers": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/colonyWorkers"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_killMail": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/killMail"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_killMailList": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/killMailList"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_mailBody": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/mailBody"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_mailList": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/mailList"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_publicCharacter": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/publicCharacter"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_shipCargo": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/shipCargo"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_shipConfiguration": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/shipConfiguration"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "serviceResponse_tokenResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "returnCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnString": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/tokenResponseDto"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/validationError"
+            }
+          }
+        }
+      },
+      "shipCargo": {
+        "type": "object",
+        "properties": {
+          "cargo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/assetCargoItem"
+            }
+          }
+        }
+      },
+      "shipComponent": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "evolution": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "blueprintType": {
+            "type": "string"
+          },
+          "Id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "healthPercentage": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "lastRepairHealthPercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/shipComponentProperty"
+            }
+          },
+          "munitionDetails": {
+            "$ref": "#/components/schemas/shipComponentMunition"
+          }
+        }
+      },
+      "shipComponentMunition": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "evolution": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "containingAmount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "containingType": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "icon": {
+            "type": "string"
+          },
+          "munitionProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/shipComponentProperty"
+            }
+          }
+        }
+      },
+      "shipComponentProperty": {
+        "type": "object",
+        "properties": {
+          "propertyName": {
+            "type": "string"
+          },
+          "friendlyPropertyName": {
+            "type": "string"
+          },
+          "propertyValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "unit": {
+            "type": "string"
+          }
+        }
+      },
+      "shipConfiguration": {
+        "type": "object",
+        "properties": {
+          "shipId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/shipSummary"
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/shipComponent"
+            }
+          }
+        }
+      },
+      "shipSummary": {
+        "type": "object",
+        "properties": {
+          "shipAssetName": {
+            "type": "string"
+          },
+          "shipName": {
+            "type": "string"
+          },
+          "shipTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "shipType": {
+            "type": "string"
+          },
+          "baseModelType": {
+            "type": "string"
+          },
+          "transponder": {
+            "type": "string"
+          },
+          "shipTypeDescription": {
+            "type": "string"
+          },
+          "fuelCap": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentFuel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "engCap": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "availableEngCap": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentCargo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cargoCap": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentHopper": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hopperCap": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "powerCap": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "availablePower": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "powerRegenPerSecond": {
+            "type": "number",
+            "format": "double"
+          },
+          "jumpRange": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxSpeed": {
+            "type": "number",
+            "format": "double"
+          },
+          "smallWeaponMounts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mediumWeaponMounts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "largeWeaponMounts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "locationId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "locationName": {
+            "type": "string"
+          },
+          "systemName": {
+            "type": "string"
+          },
+          "transitionCheck": {
+            "type": "boolean"
+          },
+          "systemId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "transitionText": {
+            "type": "string"
+          },
+          "shipSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isDamaged": {
+            "type": "boolean"
+          },
+          "overallIntegrity": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalMass": {
+            "type": "number",
+            "format": "double"
+          },
+          "cargoMass": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxAcceleration": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxTurnRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "jumpFuelConsumptionPerSecond": {
+            "type": "number",
+            "format": "double"
+          },
+          "maxJumpRange": {
+            "type": "number",
+            "format": "double"
+          },
+          "xCoord": {
+            "type": "number",
+            "format": "double"
+          },
+          "yCoord": {
+            "type": "number",
+            "format": "double"
+          },
+          "angle": {
+            "type": "number",
+            "format": "double"
+          },
+          "shipId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "skill": {
+        "type": "object",
+        "properties": {
+          "skillId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "skillName": {
+            "type": "string"
+          },
+          "skillLevel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "effectDescription": {
+            "type": "string"
+          },
+          "amountPerLevel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "skillGroupId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "skillGroupName": {
+            "type": "string"
+          },
+          "skillGroupDescription": {
+            "type": "string"
+          },
+          "isUnlocked": {
+            "type": "boolean"
+          }
+        }
+      },
+      "skillInTraining": {
+        "type": "object",
+        "properties": {
+          "skillId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "skillName": {
+            "type": "string"
+          },
+          "targetLevel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startDT": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishDT": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "trainingPercentageComplete": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "remainingMinutes": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "tokenRequestDto": {
+        "type": "object",
+        "properties": {
+          "appId": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "secret": {
+            "type": "string"
+          },
+          "grantType": {
+            "type": "string"
+          }
+        }
+      },
+      "tokenResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "tokenType": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "characterId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "subscription": {
+            "type": "string"
+          }
+        }
+      },
+      "validationError": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer_auth": {
+        "type": "http",
+        "description": "JWT Authorization header using the Bearer scheme. Enter your token in the text input below (without 'Bearer ' prefix).",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "Assets"
+    },
+    {
+      "name": "Banking"
+    },
+    {
+      "name": "Character"
+    },
+    {
+      "name": "Colony"
+    },
+    {
+      "name": "Jobs"
+    },
+    {
+      "name": "KillMail"
+    },
+    {
+      "name": "Mail"
+    },
+    {
+      "name": "Ship"
+    }
+  ]
+}
