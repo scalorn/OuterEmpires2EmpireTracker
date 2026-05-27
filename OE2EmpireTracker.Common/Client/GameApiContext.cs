@@ -140,6 +140,8 @@ namespace OE2EmpireTracker.Client
 
             _instance = new GameApiContext(credentialManager, client, connectionMonitor, syncScheduler);
 
+            GameApiMetricsCollector.Initialize();
+
             connectionMonitor.Start(settings.PollingIntervalMinutes);
             syncScheduler.Start(settings.PollingIntervalMinutes);
 
@@ -164,6 +166,8 @@ namespace OE2EmpireTracker.Client
                 _instance = null;
                 Log.Info("GameApiContext reset");
             }
+
+            GameApiMetricsCollector.Reset();
         }
 
         /// <summary>

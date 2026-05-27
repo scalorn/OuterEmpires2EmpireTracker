@@ -350,6 +350,7 @@
     <Compile Include="Forms\PricingPlanValidationPropertyTests.cs" />
     <Compile Include="Forms\SharingValidationTests.cs" />
     <Compile Include="Forms\ShipTemplatePricingTests.cs" />
+    <Compile Include="Forms\FormGameApiStatusTests.cs" />
     <Compile Include="Forms\FormPlayerProfilePropertyTests.cs" />
     <Compile Include="Forms\PlayerSkillBlockPropertyTests.cs" />
     <Compile Include="ViewModels\BaseBlueprintCandidatesTests.cs" />
@@ -547,6 +548,9 @@
     <Compile Include="Services\ProductionSyncSchedulerTests.cs" />
     <Compile Include="Services\GameApiSettingsTests.cs" />
     <Compile Include="Services\GameApiConnectionMonitorTests.cs" />
+    <Compile Include="Services\GameApiMetricsCollectorCounterTests.cs" />
+    <Compile Include="Services\GameApiMetricsCollectorOutstandingTests.cs" />
+    <Compile Include="Services\GameApiMetricsCollectorTpsResetTests.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="GlobalSetup.cs" />
     <None Include="app.config" />

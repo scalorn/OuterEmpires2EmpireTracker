@@ -1638,41 +1638,101 @@ namespace OE2EmpireTracker.Client
                 appId,
                 accessToken?.Length ?? 0);
 
+            string relativePath = ExtractRelativePath(requestUrl);
+            GameApiMetricsCollector.Instance?.OnRequestStarted(relativePath, method.Method);
+
             await AcquireRateLimitTokenAsync().ConfigureAwait(false);
 
             var stopwatch = Stopwatch.StartNew();
 
-            var response = await _retryPolicy.ExecuteAsync(
-                () => _circuitBreakerPolicy.ExecuteAsync(() =>
-                {
-                    var request = new HttpRequestMessage(method, requestUrl);
-                    request.Headers.Add("Authorization", "Bearer " + accessToken);
-                    request.Headers.Add("X-App-Id", appId);
-                    return _httpClient.SendAsync(request);
-                })).ConfigureAwait(false);
-
-            stopwatch.Stop();
-
-            string responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-            Log.Debug(
-                "Game API response: {0} {1} → HTTP {2} ({3}) | {4}ms | bodyLen={5}",
-                method,
-                requestUrl,
-                (int)response.StatusCode,
-                response.ReasonPhrase,
-                stopwatch.ElapsedMilliseconds,
-                responseBody?.Length ?? 0);
-
-            if (Log.IsDebugEnabled && !string.IsNullOrEmpty(responseBody))
+            try
             {
-                Log.Debug("Game API response body: {0}", responseBody);
+                var response = await _retryPolicy.ExecuteAsync(
+                    () => _circuitBreakerPolicy.ExecuteAsync(() =>
+                    {
+                        var request = new HttpRequestMessage(method, requestUrl);
+                        request.Headers.Add("Authorization", "Bearer " + accessToken);
+                        request.Headers.Add("X-App-Id", appId);
+                        return _httpClient.SendAsync(request);
+                    })).ConfigureAwait(false);
+
+                stopwatch.Stop();
+
+                string responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                long bytesReceived = responseBody != null ? Encoding.UTF8.GetByteCount(responseBody) : 0;
+
+                Log.Debug(
+                    "Game API response: {0} {1} → HTTP {2} ({3}) | {4}ms | bodyLen={5}",
+                    method,
+                    requestUrl,
+                    (int)response.StatusCode,
+                    response.ReasonPhrase,
+                    stopwatch.ElapsedMilliseconds,
+                    responseBody?.Length ?? 0);
+
+                if (Log.IsDebugEnabled && !string.IsNullOrEmpty(responseBody))
+                {
+                    Log.Debug("Game API response body: {0}", responseBody);
+                }
+
+                GameApiMetricsCollector.Instance?.OnRequestCompleted(
+                    relativePath,
+                    method.Method,
+                    (int)response.StatusCode,
+                    stopwatch.ElapsedMilliseconds,
+                    0,
+                    bytesReceived);
+
+                HandleRateLimitResponse(response);
+                UpdateRateLimitFromHeaders(response);
+
+                return response;
+            }
+            catch (BrokenCircuitException ex)
+            {
+                stopwatch.Stop();
+                GameApiMetricsCollector.Instance?.OnRequestFailed(
+                    relativePath, method.Method, "CircuitBreakerRejection", ex.Message);
+                throw;
+            }
+            catch (HttpRequestException ex)
+            {
+                stopwatch.Stop();
+                GameApiMetricsCollector.Instance?.OnRequestFailed(
+                    relativePath, method.Method, "NetworkError", ex.Message);
+                throw;
+            }
+            catch (TaskCanceledException ex)
+            {
+                stopwatch.Stop();
+                GameApiMetricsCollector.Instance?.OnRequestFailed(
+                    relativePath, method.Method, "Timeout", ex.Message);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Extracts the relative path (AbsolutePath) from a full request URL.
+        /// Returns the original string if parsing fails.
+        /// </summary>
+        /// <param name="requestUrl">The full request URL.</param>
+        /// <returns>The relative path portion of the URL.</returns>
+        private string ExtractRelativePath(string requestUrl)
+        {
+            if (string.IsNullOrEmpty(requestUrl))
+            {
+                return string.Empty;
             }
 
-            HandleRateLimitResponse(response);
-            UpdateRateLimitFromHeaders(response);
-
-            return response;
+            try
+            {
+                var uri = new Uri(requestUrl);
+                return uri.AbsolutePath;
+            }
+            catch (UriFormatException)
+            {
+                return requestUrl;
+            }
         }
     }
 }

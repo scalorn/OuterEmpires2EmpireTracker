@@ -78,6 +78,8 @@
             this.tslConnectionStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslRealtimeIndicator = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslGameApiStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsGameApiStatusMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerNextProcess = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -89,6 +91,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
+            this.toolsToolStripMenuItem,
             this.windowToolStripMenuItem,
             this.helpToolStripMenuItem,
             this.cmbCurrentPlayer,
@@ -405,6 +408,21 @@
             this.cmbCurrentPlayer.Size = new System.Drawing.Size(160, 22);
             this.cmbCurrentPlayer.SelectedIndexChanged += new System.EventHandler(this.CmbCurrentPlayer_SelectedIndexChanged);
             // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolsGameApiStatusMenuItem});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 22);
+            this.toolsToolStripMenuItem.Text = "&Tools";
+            // 
+            // toolsGameApiStatusMenuItem
+            // 
+            this.toolsGameApiStatusMenuItem.Name = "toolsGameApiStatusMenuItem";
+            this.toolsGameApiStatusMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.toolsGameApiStatusMenuItem.Text = "Game API Status";
+            this.toolsGameApiStatusMenuItem.Click += new System.EventHandler(this.ToolsGameApiStatusMenuItem_Click);
+            // 
             // windowToolStripMenuItem
             // 
             this.windowToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -528,6 +546,8 @@
         private System.Windows.Forms.ToolStripMenuItem stockTargetsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sharingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem systemsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolsGameApiStatusMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deliveryExecutionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyDailyBuildToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colonyActivityToolStripMenuItem;

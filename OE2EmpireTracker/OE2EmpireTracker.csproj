@@ -364,6 +364,12 @@
     <Compile Include="Forms\Contacts\FormContacts.Designer.cs">
       <DependentUpon>FormContacts.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\GameApiStatus\FormGameApiStatus.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GameApiStatus\FormGameApiStatus.Designer.cs">
+      <DependentUpon>FormGameApiStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Sharing\FormSharing.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -431,6 +437,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ColonyActivity\FormColonyActivity.resx">
       <DependentUpon>FormColonyActivity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\GameApiStatus\FormGameApiStatus.resx">
+      <DependentUpon>FormGameApiStatus.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ColonyDailyBuild\FormColonyDailyBuild.resx">
       <DependentUpon>FormColonyDailyBuild.cs</DependentUpon>

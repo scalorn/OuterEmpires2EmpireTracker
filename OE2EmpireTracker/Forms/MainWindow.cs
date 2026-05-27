@@ -18,6 +18,7 @@ using OE2EmpireTracker.Forms.ColonyActivity;
 using OE2EmpireTracker.Forms.ColonyDailyBuild;
 using OE2EmpireTracker.Forms.ColonyV2;
 using OE2EmpireTracker.Forms.Contacts;
+using OE2EmpireTracker.Forms.GameApiStatus;
 using OE2EmpireTracker.Forms.Market;
 using OE2EmpireTracker.Forms.PlayerProfile;
 using OE2EmpireTracker.Forms.Sharing;
@@ -320,6 +321,24 @@ namespace OE2EmpireTracker
         private void SystemsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<FormSystem>();
+        }
+
+        private void ToolsGameApiStatusMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (Form child in MdiChildren)
+            {
+                if (child is FormGameApiStatus existing)
+                {
+                    existing.Activate();
+                    return;
+                }
+            }
+
+            var form = new FormGameApiStatus();
+            form.MdiParent = this;
+            form.Tag = 1;
+            WindowStateHelper.RestoreState(form, form.GetType().Name, 1);
+            form.Show();
         }
 
         private void DeliveryExecutionToolStripMenuItem_Click(object sender, EventArgs e)
