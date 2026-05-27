@@ -112,7 +112,7 @@ graph TD
   - Output: Modified Designer.cs with cmdSync button and timers; modified FormColonyV2.cs with enable/disable logic, cooldown timer handler, and UpdateSyncButtonState helper
   - Verification: getDiagnostics; build solution
 
-- [-] 10. Implement FormColonyV2 sync execution logic
+- [x] 10. Implement FormColonyV2 sync execution logic
   - Satisfies: Req 4, Criteria 1-7 (sync execution, token exchange, merge calls, partial success, ColonyId check)
   - Satisfies: Req 5, Criteria 1-5 (status feedback)
   - Satisfies: Req 8, Criteria 1-2 (automatic refresh after sync)
@@ -121,7 +121,7 @@ graph TD
   - Output: Modified `FormColonyV2.cs` with SyncSelectedColonyAsync method, status timer handler, error handling
   - Verification: getDiagnostics; build solution
 
-- [~] 11. Unit tests — ProductionSyncScheduler
+- [-] 11. Unit tests — ProductionSyncScheduler
   - Satisfies: Req 1, Criteria 2-5 (delegation correctness)
   - Inputs: `OE2EmpireTracker/Services/ProductionSyncScheduler.cs`, `OE2EmpireTracker/Services/PlayerContext.cs`
   - Output: New file `OE2EmpireTracker.Tests/Services/ProductionSyncSchedulerTests.cs`

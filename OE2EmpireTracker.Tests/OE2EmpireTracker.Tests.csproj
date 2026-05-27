@@ -536,6 +536,7 @@
     <Compile Include="Services\GameApiProfileMergeTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerColonyTests.cs" />
+    <Compile Include="Services\ProductionSyncSchedulerTests.cs" />
     <Compile Include="Services\GameApiSettingsTests.cs" />
     <Compile Include="Services\GameApiConnectionMonitorTests.cs" />
     <Compile Include="TestHelper.cs" />
