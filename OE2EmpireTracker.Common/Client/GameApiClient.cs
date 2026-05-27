@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -840,12 +841,15 @@ namespace OE2EmpireTracker.Client
             string accessToken)
         {
             Log.Debug(
-                "Game API request: {0} {1} (token length: {2})",
+                "Game API request: {0} {1} | appId={2} | tokenLen={3}",
                 method,
                 requestUrl,
+                appId,
                 accessToken?.Length ?? 0);
 
             await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+            var stopwatch = Stopwatch.StartNew();
 
             var response = await _retryPolicy.ExecuteAsync(
                 () => _circuitBreakerPolicy.ExecuteAsync(() =>
@@ -856,12 +860,23 @@ namespace OE2EmpireTracker.Client
                     return _httpClient.SendAsync(request);
                 })).ConfigureAwait(false);
 
+            stopwatch.Stop();
+
+            string responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
             Log.Debug(
-                "Game API response: {0} {1} \u2192 HTTP {2} ({3})",
+                "Game API response: {0} {1} → HTTP {2} ({3}) | {4}ms | bodyLen={5}",
                 method,
                 requestUrl,
                 (int)response.StatusCode,
-                response.ReasonPhrase);
+                response.ReasonPhrase,
+                stopwatch.ElapsedMilliseconds,
+                responseBody?.Length ?? 0);
+
+            if (Log.IsDebugEnabled && !string.IsNullOrEmpty(responseBody))
+            {
+                Log.Debug("Game API response body: {0}", responseBody);
+            }
 
             HandleRateLimitResponse(response);
             UpdateRateLimitFromHeaders(response);

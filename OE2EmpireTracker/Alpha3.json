@@ -78903,13 +78903,6 @@
           "Fulfilled": true
         },
         {
-          "Name": "Assemblatrons",
-          "Requested": 46,
-          "Delivered": 46,
-          "NeedBy": "2026-05-23T08:01:23",
-          "Fulfilled": true
-        },
-        {
           "Name": "Human Facilities",
           "Requested": 49,
           "Delivered": 49,
@@ -92474,13 +92467,6 @@
           "Requested": 39,
           "Delivered": 39,
           "NeedBy": "2026-05-27T10:01:06",
-          "Fulfilled": true
-        },
-        {
-          "Name": "Drillcore Chassis",
-          "Requested": 36,
-          "Delivered": 36,
-          "NeedBy": "2026-05-23T08:01:25",
           "Fulfilled": true
         },
         {

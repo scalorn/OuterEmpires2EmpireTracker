@@ -134,7 +134,7 @@ graph TD
   - Output: New file `OE2EmpireTracker.Tests/Services/ColonyMergeServiceWorkersTests.cs`
   - Verification: Build solution; run vstest.console; trxparse.js shows all pass
 
-- [-] 13. Unit tests — ColonyId merge
+- [x] 13. Unit tests — ColonyId merge
   - Satisfies: Req 7, Criteria 1-2 (ColonyId defaults to 0, populated on merge)
   - Inputs: `OE2EmpireTracker/Models/Colony.cs`, `OE2EmpireTracker/Services/ColonyMergeService.cs`
   - Output: New file `OE2EmpireTracker.Tests/Services/ColonyMergeServiceColonyIdTests.cs`
