@@ -414,3 +414,5 @@ spec-kit/
 
 # Code metrics build artifact
 *.Metrics.xml
+# Game API discovery tool raw output (reference only, not source control)
+spec/game-api-data/
