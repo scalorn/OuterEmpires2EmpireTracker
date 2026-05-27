@@ -264,7 +264,7 @@ namespace OE2EmpireTracker.Tests.Client
             var report = new StringBuilder();
             report.AppendLine("# API Mapping Report");
             report.AppendLine();
-            report.AppendLine("Generated: " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC"));
+            report.AppendLine("Generated: " + SystemClock.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC"));
             report.AppendLine();
 
             // Section 1: TypeC values discovered

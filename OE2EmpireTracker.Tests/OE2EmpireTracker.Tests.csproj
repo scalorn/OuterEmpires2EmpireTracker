@@ -531,6 +531,7 @@
     <Compile Include="Services\SystemImporterTests.cs" />
     <Compile Include="Services\DistanceCalculatorTests.cs" />
     <Compile Include="Services\GameApiCredentialManagerTests.cs" />
+    <Compile Include="Services\ColonyMergeServiceTests.cs" />
     <Compile Include="Services\GameApiProfileMergeTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerTests.cs" />
     <Compile Include="Services\GameApiSettingsTests.cs" />
