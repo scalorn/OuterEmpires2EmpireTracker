@@ -532,8 +532,10 @@
     <Compile Include="Services\DistanceCalculatorTests.cs" />
     <Compile Include="Services\GameApiCredentialManagerTests.cs" />
     <Compile Include="Services\ColonyMergeServiceTests.cs" />
+    <Compile Include="Services\ColonyMergePropertyTests.cs" />
     <Compile Include="Services\GameApiProfileMergeTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerTests.cs" />
+    <Compile Include="Services\GameApiSyncSchedulerColonyTests.cs" />
     <Compile Include="Services\GameApiSettingsTests.cs" />
     <Compile Include="Services\GameApiConnectionMonitorTests.cs" />
     <Compile Include="TestHelper.cs" />

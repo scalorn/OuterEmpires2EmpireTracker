@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
@@ -357,6 +358,18 @@ namespace OE2EmpireTracker.Services
                     }
 
                     Log.Info("Successfully synced profile for character {0}", playerUUID);
+
+                    // Colony sync runs after profile sync succeeds (Req 5.1)
+                    // Wrapped in try/catch so colony failures don't affect profile result (Req 5.2)
+                    try
+                    {
+                        await SyncColoniesAsync(playerUUID, tokenResult.Token.AccessToken).ConfigureAwait(false);
+                    }
+                    catch (Exception colonyEx)
+                    {
+                        Log.Error(colonyEx, "Colony sync failed for character {0}, profile sync result preserved", playerUUID);
+                    }
+
                     return true;
                 }
 
@@ -391,6 +404,225 @@ namespace OE2EmpireTracker.Services
         {
             // Default implementation returns null — wired to PlayerContext in production via GameApiContext
             return null;
+        }
+
+        /// <summary>
+        /// Retrieves the mutable colony list for the given player UUID.
+        /// Override point for testing. Returns null if no colonies are found.
+        /// </summary>
+        /// <param name="playerUUID">The player UUID to look up.</param>
+        /// <returns>The mutable colony list, or null if not found.</returns>
+        internal virtual List<Colony> GetPlayerColonies(string playerUUID)
+        {
+            // Default implementation returns null — wired to PlayerContext in production via GameApiContext
+            return null;
+        }
+
+        /// <summary>
+        /// Persists the current player context to disk.
+        /// Override point for testing. In production, calls PlayerContext.WriteContext().
+        /// </summary>
+        internal virtual void WriteContext()
+        {
+            // Default implementation is a no-op — wired to PlayerContext in production via GameApiContext
+        }
+
+        /// <summary>
+        /// Raises the ColonyDataChanged event to notify UI subscribers.
+        /// Override point for testing. In production, calls PlayerContext.OnColonyDataChanged.
+        /// </summary>
+        internal virtual void RaiseColonyDataChanged()
+        {
+            // Default implementation is a no-op — wired to PlayerContext in production via GameApiContext
+        }
+
+        /// <summary>
+        /// Fetches the colony list from the game API and merges it into local data.
+        /// Called after profile sync succeeds. Handles 401 (token invalid) and 403 (scope missing).
+        /// Colony sync failures are logged but do not affect the profile sync result.
+        /// </summary>
+        /// <param name="playerUUID">The player UUID whose colonies to sync.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        internal async Task SyncColoniesAsync(string playerUUID, string accessToken)
+        {
+            Log.Info("Colony sync starting for character {0}", playerUUID);
+
+            // 1. Fetch colony list (Req 5.1)
+            var listResult = await _client.GetColonyListAsync(_appId, accessToken).ConfigureAwait(false);
+
+            if (!listResult.Success)
+            {
+                // Handle HTTP 401 — same as profile 401 (Req 5.6)
+                if (listResult.Json == "401")
+                {
+                    Log.Warn("Colony sync for character {0}: token rejected (HTTP 401), invalidating", playerUUID);
+                    _connectionMonitor.TransitionTo(
+                        GameApiConnectionMonitor.ConnectionState.DisconnectedInvalidKey,
+                        "Credentials are invalid (HTTP 401)");
+                    return;
+                }
+
+                // Handle HTTP 403 — scope not granted (Req 5.5, 13.4)
+                if (listResult.Json == "403")
+                {
+                    Log.Info("Colony sync skipped: colony.list.read scope not granted");
+                    return;
+                }
+
+                Log.Warn("Colony sync failed: could not fetch colony list for character {0}", playerUUID);
+                return;
+            }
+
+            // 2. Deserialize — fail-fast before mutation (Req 5.3, 15.5)
+            GameApiColonyListResponse colonyListResponse;
+            try
+            {
+                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyListResponse>>(listResult.Json);
+                colonyListResponse = envelope?.Data;
+                if (colonyListResponse == null)
+                {
+                    Log.Warn("Colony sync for character {0}: deserialized response was null", playerUUID);
+                    return;
+                }
+            }
+            catch (JsonException ex)
+            {
+                string truncated = listResult.Json?.Length > 500
+                    ? listResult.Json.Substring(0, 500)
+                    : listResult.Json;
+                Log.Error(ex, "Colony sync: malformed JSON response: {0}", truncated);
+                return;
+            }
+
+            // Req 5.7 — log count received
+            Log.Info(
+                "Received {0} colonies from game API for character {1}",
+                colonyListResponse.Colonies.Count,
+                playerUUID);
+
+            // 3. Merge colony list (Req 5.3, 13.1)
+            var localColonies = GetPlayerColonies(playerUUID);
+            if (localColonies == null)
+            {
+                Log.Warn("Colony sync for character {0}: no local colony list available", playerUUID);
+                return;
+            }
+
+            var mergeResult = ColonyMergeService.MergeColonyList(
+                colonyListResponse.Colonies,
+                localColonies,
+                playerUUID);
+
+            // 4. Fetch per-colony details — buildings + warehouse (Req 5.4, 5.5, 14.2, 14.3, 14.4)
+            bool buildingsScopeAvailable = true;
+            bool warehouseScopeAvailable = true;
+
+            foreach (var apiColony in colonyListResponse.Colonies)
+            {
+                if (apiColony.RemoteAccess <= 0)
+                {
+                    Log.Debug(
+                        "Skipping detail sync for colony {0} (colonyId={1}): no Remote Operations Array",
+                        apiColony.ColonyName,
+                        apiColony.ColonyId);
+                    continue;
+                }
+
+                if (!mergeResult.ColonyIdToUUIDMap.TryGetValue(apiColony.ColonyId, out string colonyUUID))
+                {
+                    continue;
+                }
+
+                var colony = FindMutableColony(colonyUUID, localColonies);
+                if (colony == null)
+                {
+                    continue;
+                }
+
+                // Buildings (Req 14.2, 13.6)
+                if (buildingsScopeAvailable)
+                {
+                    var buildingsResult = await _client.GetColonyBuildingsAsync(_appId, accessToken, apiColony.ColonyId).ConfigureAwait(false);
+                    if (buildingsResult.Success)
+                    {
+                        try
+                        {
+                            var bEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyBuildingsResponse>>(buildingsResult.Json);
+                            if (bEnvelope?.Data?.Buildings != null)
+                            {
+                                bool buildingsChanged = ColonyMergeService.MergeBuildings(bEnvelope.Data.Buildings, colony);
+                                if (buildingsChanged && mergeResult.Updated == 0)
+                                {
+                                    mergeResult.Updated++;
+                                }
+                            }
+                        }
+                        catch (JsonException ex)
+                        {
+                            Log.Error(ex, "Colony sync: malformed buildings JSON for colonyId={0}", apiColony.ColonyId);
+                        }
+                    }
+                    else if (buildingsResult.Json == "403")
+                    {
+                        buildingsScopeAvailable = false;
+                        Log.Info("Colony sync: colony.buildings.read scope not available, skipping buildings for all colonies");
+                    }
+                    else if (buildingsResult.Json != "404")
+                    {
+                        Log.Warn("Colony sync: buildings fetch failed for colonyId={0}", apiColony.ColonyId);
+                    }
+                }
+
+                // Warehouse (Req 14.3, 13.6)
+                if (warehouseScopeAvailable)
+                {
+                    var warehouseResult = await _client.GetColonyWarehouseAsync(_appId, accessToken, apiColony.ColonyId).ConfigureAwait(false);
+                    if (warehouseResult.Success)
+                    {
+                        try
+                        {
+                            var wEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWarehouseResponse>>(warehouseResult.Json);
+                            if (wEnvelope?.Data?.Contents != null)
+                            {
+                                bool warehouseChanged = ColonyMergeService.MergeWarehouse(wEnvelope.Data.Contents, colony);
+                                if (warehouseChanged && mergeResult.Updated == 0)
+                                {
+                                    mergeResult.Updated++;
+                                }
+                            }
+                        }
+                        catch (JsonException ex)
+                        {
+                            Log.Error(ex, "Colony sync: malformed warehouse JSON for colonyId={0}", apiColony.ColonyId);
+                        }
+                    }
+                    else if (warehouseResult.Json == "403")
+                    {
+                        warehouseScopeAvailable = false;
+                        Log.Info("Colony sync: colony.warehouse.read scope not available, skipping warehouse for all colonies");
+                    }
+                    else if (warehouseResult.Json != "404")
+                    {
+                        Log.Warn("Colony sync: warehouse fetch failed for colonyId={0}", apiColony.ColonyId);
+                    }
+                }
+            }
+
+            // 5. Persist and notify (Req 11.1, 11.2, 11.3, 12.1, 12.3)
+            if (mergeResult.HasChanges)
+            {
+                WriteContext();
+                RaiseColonyDataChanged();
+            }
+
+            // Req 5.7 — log merge outcome
+            Log.Info(
+                "Colony sync complete for character {0}: {1} created, {2} updated, {3} skipped",
+                playerUUID,
+                mergeResult.Created,
+                mergeResult.Updated,
+                mergeResult.Skipped);
         }
 
         /// <summary>
@@ -451,6 +683,18 @@ namespace OE2EmpireTracker.Services
 
                 _disposed = true;
             }
+        }
+
+        /// <summary>
+        /// Finds a mutable colony by UUID in the local colony list.
+        /// </summary>
+        /// <param name="colonyUUID">The UUID of the colony to find.</param>
+        /// <param name="localColonies">The local colony list to search.</param>
+        /// <returns>The colony if found; otherwise null.</returns>
+        private static Colony FindMutableColony(string colonyUUID, List<Colony> localColonies)
+        {
+            return localColonies.FirstOrDefault(c =>
+                string.Equals(c.UUID, colonyUUID, StringComparison.Ordinal));
         }
 
         /// <summary>

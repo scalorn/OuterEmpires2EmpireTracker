@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Common.Models;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -374,6 +376,638 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(existingColony.ContentmentIndex, Is.EqualTo(0));
             Assert.That(existingColony.WorkerCurrentAttitude, Is.EqualTo(0));
+        }
+
+        // -------------------------------------------------------------------
+        // MergeBuildings Tests
+        // Validates: Requirements 8.1-8.18
+        // -------------------------------------------------------------------
+
+        // -------------------------------------------------------------------
+        // Test 9: New building creates structure
+        // Validates: Requirements 8.1, 8.2, 8.3
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeBuildings_NewBuilding_CreatesStructure()
+        {
+            var colony = new Colony
+            {
+                UUID = "colony-uuid-001",
+                OwnerUUID = OwnerUUID,
+                Structures = new List<ColonyStructure>(),
+            };
+
+            var apiBuildings = new List<GameApiColonyBuilding>
+            {
+                new GameApiColonyBuilding
+                {
+                    BuildingId = 101,
+                    ColonyBuildingTypeId = 5,
+                    BlueprintDesignName = "Mining Rig",
+                    BuildingOnline = true,
+                    StatusId = 1,
+                },
+            };
+
+            bool changed = ColonyMergeService.MergeBuildings(apiBuildings, colony);
+
+            Assert.That(changed, Is.True);
+            Assert.That(colony.Structures.Count, Is.EqualTo(1));
+
+            var structure = colony.Structures[0];
+            Assert.That(structure.BuildingID, Is.EqualTo(101));
+            Assert.That(structure.ColonyBuildingTypeId, Is.EqualTo(5));
+            Assert.That(structure.UUID, Is.Not.Null.And.Not.Empty);
+
+            bool built;
+            structure.Properties.GetBoolean(GameConstants.PropBuilt, false, out built);
+            Assert.That(built, Is.True);
+
+            bool online;
+            structure.Properties.GetBoolean(GameConstants.PropOnline, false, out online);
+            Assert.That(online, Is.True);
+        }
+
+        // -------------------------------------------------------------------
+        // Test 10: Existing building updates status
+        // Validates: Requirements 8.1, 8.2
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeBuildings_ExistingBuilding_UpdatesStatus()
+        {
+            var existingStructure = new ColonyStructure
+            {
+                UUID = "structure-uuid-001",
+                BuildingID = 200,
+                ColonyBuildingTypeId = 3,
+            };
+            existingStructure.Properties.SetProperty(GameConstants.PropBuilt, true);
+            existingStructure.Properties.SetProperty(GameConstants.PropOnline, true);
+
+            var colony = new Colony
+            {
+                UUID = "colony-uuid-002",
+                OwnerUUID = OwnerUUID,
+                Structures = new List<ColonyStructure> { existingStructure },
+            };
+
+            var apiBuildings = new List<GameApiColonyBuilding>
+            {
+                new GameApiColonyBuilding
+                {
+                    BuildingId = 200,
+                    ColonyBuildingTypeId = 3,
+                    BlueprintDesignName = "Refinery",
+                    BuildingOnline = false,
+                    StatusId = 1,
+                },
+            };
+
+            bool changed = ColonyMergeService.MergeBuildings(apiBuildings, colony);
+
+            Assert.That(changed, Is.True);
+            Assert.That(colony.Structures.Count, Is.EqualTo(1));
+
+            bool online;
+            existingStructure.Properties.GetBoolean(GameConstants.PropOnline, false, out online);
+            Assert.That(online, Is.False);
+        }
+
+        // -------------------------------------------------------------------
+        // Test 11: Existing building replaces collections
+        // Validates: Requirements 8.13, 8.14, 8.17
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeBuildings_ExistingBuilding_ReplacesCollections()
+        {
+            var existingStructure = new ColonyStructure
+            {
+                UUID = "structure-uuid-002",
+                BuildingID = 300,
+                ColonyBuildingTypeId = 7,
+                OpsStatusEffects = new List<BuildingStatusEffect>
+                {
+                    new BuildingStatusEffect { StatusId = 1, ModTypeId = 1, Change = 0.5m },
+                },
+                Industries = new List<BuildingIndustry>
+                {
+                    new BuildingIndustry { Id = 10, Name = "Old Industry" },
+                },
+                BuildingAttributes = new List<BuildingAttribute>
+                {
+                    new BuildingAttribute { ModTypeId = 1, PropertyName = "OldProp" },
+                },
+            };
+            existingStructure.Properties.SetProperty(GameConstants.PropBuilt, true);
+            existingStructure.Properties.SetProperty(GameConstants.PropOnline, true);
+
+            var colony = new Colony
+            {
+                UUID = "colony-uuid-003",
+                OwnerUUID = OwnerUUID,
+                Structures = new List<ColonyStructure> { existingStructure },
+            };
+
+            var apiBuildings = new List<GameApiColonyBuilding>
+            {
+                new GameApiColonyBuilding
+                {
+                    BuildingId = 300,
+                    ColonyBuildingTypeId = 7,
+                    BlueprintDesignName = "Factory",
+                    BuildingOnline = true,
+                    StatusId = 1,
+                    OpsStatusEffects = new List<GameApiBuildingStatusEffect>
+                    {
+                        new GameApiBuildingStatusEffect { StatusId = 2, ModTypeId = 3, Change = 1.5 },
+                        new GameApiBuildingStatusEffect { StatusId = 3, ModTypeId = 4, Change = 2.0 },
+                    },
+                    Industries = new List<GameApiBuildingIndustry>
+                    {
+                        new GameApiBuildingIndustry { Id = 20, Name = "New Industry" },
+                    },
+                    BuildingAttributes = new List<GameApiBuildingAttribute>
+                    {
+                        new GameApiBuildingAttribute { ModTypeId = 5, PropertyName = "NewProp", PropertyValue = "Val" },
+                    },
+                },
+            };
+
+            bool changed = ColonyMergeService.MergeBuildings(apiBuildings, colony);
+
+            Assert.That(changed, Is.True);
+
+            // OpsStatusEffects replaced
+            Assert.That(existingStructure.OpsStatusEffects.Count, Is.EqualTo(2));
+            Assert.That(existingStructure.OpsStatusEffects[0].StatusId, Is.EqualTo(2));
+            Assert.That(existingStructure.OpsStatusEffects[1].Change, Is.EqualTo(2.0m));
+
+            // Industries replaced
+            Assert.That(existingStructure.Industries.Count, Is.EqualTo(1));
+            Assert.That(existingStructure.Industries[0].Name, Is.EqualTo("New Industry"));
+
+            // BuildingAttributes replaced
+            Assert.That(existingStructure.BuildingAttributes.Count, Is.EqualTo(1));
+            Assert.That(existingStructure.BuildingAttributes[0].PropertyName, Is.EqualTo("NewProp"));
+        }
+
+        // -------------------------------------------------------------------
+        // Test 12: Preserves local-only fields
+        // Validates: Requirements 8.5
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeBuildings_PreservesLocalOnlyFields()
+        {
+            var existingStructure = new ColonyStructure
+            {
+                UUID = "structure-uuid-003",
+                BuildingID = 400,
+                ColonyBuildingTypeId = 2,
+                ManufacturingBlueprintUUID = "bp-uuid-999",
+                BuildQueueSequence = 5,
+                ProcessCompletionTime = new CountDownTime(),
+            };
+            existingStructure.ProcessCompletionTime.TimeRemaining = 3600;
+            existingStructure.Properties.SetProperty(GameConstants.PropBuilt, true);
+            existingStructure.Properties.SetProperty(GameConstants.PropOnline, true);
+
+            var colony = new Colony
+            {
+                UUID = "colony-uuid-004",
+                OwnerUUID = OwnerUUID,
+                Structures = new List<ColonyStructure> { existingStructure },
+            };
+
+            var apiBuildings = new List<GameApiColonyBuilding>
+            {
+                new GameApiColonyBuilding
+                {
+                    BuildingId = 400,
+                    ColonyBuildingTypeId = 2,
+                    BlueprintDesignName = "Manufactory",
+                    BuildingOnline = true,
+                    StatusId = 1,
+                },
+            };
+
+            ColonyMergeService.MergeBuildings(apiBuildings, colony);
+
+            Assert.That(existingStructure.ManufacturingBlueprintUUID, Is.EqualTo("bp-uuid-999"));
+            Assert.That(existingStructure.BuildQueueSequence, Is.EqualTo(5));
+            Assert.That(existingStructure.ProcessCompletionTime, Is.Not.Null);
+        }
+
+        // -------------------------------------------------------------------
+        // Test 13: Missing from API not removed
+        // Validates: Requirements 8.4
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeBuildings_MissingFromApi_NotRemoved()
+        {
+            var localOnlyStructure = new ColonyStructure
+            {
+                UUID = "structure-uuid-004",
+                BuildingID = 500,
+                ColonyBuildingTypeId = 1,
+            };
+            localOnlyStructure.Properties.SetProperty(GameConstants.PropBuilt, true);
+            localOnlyStructure.Properties.SetProperty(GameConstants.PropOnline, true);
+
+            var colony = new Colony
+            {
+                UUID = "colony-uuid-005",
+                OwnerUUID = OwnerUUID,
+                Structures = new List<ColonyStructure> { localOnlyStructure },
+            };
+
+            // API returns a different building — local structure 500 is not in the response
+            var apiBuildings = new List<GameApiColonyBuilding>
+            {
+                new GameApiColonyBuilding
+                {
+                    BuildingId = 600,
+                    ColonyBuildingTypeId = 9,
+                    BlueprintDesignName = "Research Lab",
+                    BuildingOnline = true,
+                    StatusId = 1,
+                },
+            };
+
+            ColonyMergeService.MergeBuildings(apiBuildings, colony);
+
+            // Local structure still present, plus the new one
+            Assert.That(colony.Structures.Count, Is.EqualTo(2));
+            Assert.That(colony.Structures.Any(s => s.BuildingID == 500), Is.True);
+            Assert.That(colony.Structures.Any(s => s.BuildingID == 600), Is.True);
+        }
+
+        // -------------------------------------------------------------------
+        // Test 14: ResourceName sets MiningSurveyResource if local empty
+        // Validates: Requirements 8.6
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeBuildings_ResourceName_SetsIfLocalEmpty()
+        {
+            var existingStructure = new ColonyStructure
+            {
+                UUID = "structure-uuid-005",
+                BuildingID = 700,
+                ColonyBuildingTypeId = 4,
+                MiningSurveyResource = null,
+            };
+            existingStructure.Properties.SetProperty(GameConstants.PropBuilt, true);
+            existingStructure.Properties.SetProperty(GameConstants.PropOnline, true);
+
+            var colony = new Colony
+            {
+                UUID = "colony-uuid-006",
+                OwnerUUID = OwnerUUID,
+                Structures = new List<ColonyStructure> { existingStructure },
+            };
+
+            var apiBuildings = new List<GameApiColonyBuilding>
+            {
+                new GameApiColonyBuilding
+                {
+                    BuildingId = 700,
+                    ColonyBuildingTypeId = 4,
+                    BlueprintDesignName = "Mining Rig",
+                    BuildingOnline = true,
+                    StatusId = 1,
+                    ResourceName = "Lanthanides",
+                },
+            };
+
+            ColonyMergeService.MergeBuildings(apiBuildings, colony);
+
+            Assert.That(existingStructure.MiningSurveyResource, Is.EqualTo("Lanthanides"));
+
+            // Now verify it does NOT overwrite if local already has a value
+            existingStructure.MiningSurveyResource = "Iron";
+
+            var apiBuildings2 = new List<GameApiColonyBuilding>
+            {
+                new GameApiColonyBuilding
+                {
+                    BuildingId = 700,
+                    ColonyBuildingTypeId = 4,
+                    BlueprintDesignName = "Mining Rig",
+                    BuildingOnline = true,
+                    StatusId = 1,
+                    ResourceName = "Copper",
+                },
+            };
+
+            ColonyMergeService.MergeBuildings(apiBuildings2, colony);
+
+            Assert.That(existingStructure.MiningSurveyResource, Is.EqualTo("Iron"));
+        }
+
+        // -------------------------------------------------------------------
+        // Test 15: ConstructionTimer sets BuildCompletionTime if local null
+        // Validates: Requirements 8.7
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeBuildings_ConstructionTimer_SetsIfLocalNull()
+        {
+            var existingStructure = new ColonyStructure
+            {
+                UUID = "structure-uuid-006",
+                BuildingID = 800,
+                ColonyBuildingTypeId = 6,
+                BuildCompletionTime = null,
+            };
+            existingStructure.Properties.SetProperty(GameConstants.PropBuilt, false);
+            existingStructure.Properties.SetProperty(GameConstants.PropOnline, false);
+
+            var colony = new Colony
+            {
+                UUID = "colony-uuid-007",
+                OwnerUUID = OwnerUUID,
+                Structures = new List<ColonyStructure> { existingStructure },
+            };
+
+            var finishTime = FrozenTime.AddHours(2);
+            var apiBuildings = new List<GameApiColonyBuilding>
+            {
+                new GameApiColonyBuilding
+                {
+                    BuildingId = 800,
+                    ColonyBuildingTypeId = 6,
+                    BlueprintDesignName = "Commodity Factory",
+                    BuildingOnline = false,
+                    StatusId = 0,
+                    ConstructingBuildingFinish = finishTime,
+                },
+            };
+
+            ColonyMergeService.MergeBuildings(apiBuildings, colony);
+
+            Assert.That(existingStructure.BuildCompletionTime, Is.Not.Null);
+            Assert.That(existingStructure.BuildCompletionTime.TimeRemaining, Is.EqualTo(7200));
+
+            // Now verify it does NOT overwrite if local already has a timer
+            var existingTimer = existingStructure.BuildCompletionTime;
+
+            var apiBuildings2 = new List<GameApiColonyBuilding>
+            {
+                new GameApiColonyBuilding
+                {
+                    BuildingId = 800,
+                    ColonyBuildingTypeId = 6,
+                    BlueprintDesignName = "Commodity Factory",
+                    BuildingOnline = false,
+                    StatusId = 0,
+                    ConstructingBuildingFinish = FrozenTime.AddHours(5),
+                },
+            };
+
+            ColonyMergeService.MergeBuildings(apiBuildings2, colony);
+
+            // Should still be the original timer, not overwritten
+            Assert.That(existingStructure.BuildCompletionTime, Is.SameAs(existingTimer));
+        }
+
+        // -------------------------------------------------------------------
+        // MergeWarehouse Tests
+        // Validates: Requirements 9.1-9.14
+        // -------------------------------------------------------------------
+
+        // -------------------------------------------------------------------
+        // Test: New warehouse item creates with correct mapping
+        // Validates: Requirements 9.3
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeWarehouse_NewItem_CreatesWithMapping()
+        {
+            var colony = new Colony
+            {
+                UUID = "colony-wh-001",
+                OwnerUUID = OwnerUUID,
+                Items = new ItemBag(),
+            };
+
+            var apiItems = new List<GameApiWarehouseItem>
+            {
+                new GameApiWarehouseItem
+                {
+                    ResourceName = "Iron",
+                    TypeC = "R",
+                    Amount = 500,
+                    Id = 42,
+                },
+            };
+
+            var result = ColonyMergeService.MergeWarehouse(apiItems, colony);
+
+            Assert.That(result, Is.True);
+            Assert.That(colony.Items.Count(), Is.EqualTo(1));
+
+            var item = colony.Items.Items.Values.First();
+            Assert.That(item.Name, Is.EqualTo("Iron"));
+            Assert.That(item.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Resource));
+            Assert.That(item.Quantity, Is.EqualTo(500));
+            Assert.That(item.UUID, Is.Not.Null.And.Not.Empty);
+        }
+
+        // -------------------------------------------------------------------
+        // Test: Existing item gets quantity updated
+        // Validates: Requirements 9.1, 9.2
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeWarehouse_ExistingItem_UpdatesQuantity()
+        {
+            var existingItem = new Item(ItemType.ItemTypeEnum.Resource, "Iron")
+            {
+                UUID = "item-uuid-001",
+                Quantity = 100,
+                BaseItemTypeID = "Iron",
+            };
+
+            var colony = new Colony
+            {
+                UUID = "colony-wh-002",
+                OwnerUUID = OwnerUUID,
+                Items = new ItemBag(),
+            };
+            colony.Items.AddItem(existingItem);
+
+            var apiItems = new List<GameApiWarehouseItem>
+            {
+                new GameApiWarehouseItem
+                {
+                    ResourceName = "Iron",
+                    TypeC = "R",
+                    Amount = 750,
+                },
+            };
+
+            var result = ColonyMergeService.MergeWarehouse(apiItems, colony);
+
+            Assert.That(result, Is.True);
+            Assert.That(colony.Items.Count(), Is.EqualTo(1));
+            Assert.That(existingItem.Quantity, Is.EqualTo(750));
+        }
+
+        // -------------------------------------------------------------------
+        // Test: Zero amount sets quantity to zero (not removal)
+        // Validates: Requirements 9.5
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeWarehouse_ZeroAmount_SetsToZero()
+        {
+            var existingItem = new Item(ItemType.ItemTypeEnum.Resource, "Copper")
+            {
+                UUID = "item-uuid-002",
+                Quantity = 200,
+                BaseItemTypeID = "Copper",
+            };
+
+            var colony = new Colony
+            {
+                UUID = "colony-wh-003",
+                OwnerUUID = OwnerUUID,
+                Items = new ItemBag(),
+            };
+            colony.Items.AddItem(existingItem);
+
+            var apiItems = new List<GameApiWarehouseItem>
+            {
+                new GameApiWarehouseItem
+                {
+                    ResourceName = "Copper",
+                    TypeC = "R",
+                    Amount = 0,
+                },
+            };
+
+            var result = ColonyMergeService.MergeWarehouse(apiItems, colony);
+
+            Assert.That(result, Is.True);
+            Assert.That(colony.Items.Count(), Is.EqualTo(1));
+            Assert.That(existingItem.Quantity, Is.EqualTo(0));
+        }
+
+        // -------------------------------------------------------------------
+        // Test: Local item missing from API is not removed
+        // Validates: Requirements 9.4
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeWarehouse_MissingFromApi_NotRemoved()
+        {
+            var existingItem = new Item(ItemType.ItemTypeEnum.Resource, "Gold")
+            {
+                UUID = "item-uuid-003",
+                Quantity = 50,
+                BaseItemTypeID = "Gold",
+            };
+
+            var colony = new Colony
+            {
+                UUID = "colony-wh-004",
+                OwnerUUID = OwnerUUID,
+                Items = new ItemBag(),
+            };
+            colony.Items.AddItem(existingItem);
+
+            // API returns a different item — Gold is not in the response
+            var apiItems = new List<GameApiWarehouseItem>
+            {
+                new GameApiWarehouseItem
+                {
+                    ResourceName = "Silver",
+                    TypeC = "R",
+                    Amount = 300,
+                },
+            };
+
+            ColonyMergeService.MergeWarehouse(apiItems, colony);
+
+            // Gold should still be present
+            Assert.That(colony.Items.Count(), Is.EqualTo(2));
+            Assert.That(colony.Items.Items.ContainsKey("item-uuid-003"), Is.True);
+            Assert.That(existingItem.Quantity, Is.EqualTo(50));
+        }
+
+        // -------------------------------------------------------------------
+        // Test: Unknown TypeC maps to ItemTypeEnum.None
+        // Validates: Requirements 9.3 (TypeC mapping)
+        // -------------------------------------------------------------------
+
+        [Test]
+        public void MergeWarehouse_UnknownTypeC_MapsToNone()
+        {
+            var colony = new Colony
+            {
+                UUID = "colony-wh-005",
+                OwnerUUID = OwnerUUID,
+                Items = new ItemBag(),
+            };
+
+            var apiItems = new List<GameApiWarehouseItem>
+            {
+                new GameApiWarehouseItem
+                {
+                    ResourceName = "Mystery Item",
+                    TypeC = "ZZ",
+                    Amount = 10,
+                },
+            };
+
+            ColonyMergeService.MergeWarehouse(apiItems, colony);
+
+            var item = colony.Items.Items.Values.First();
+            Assert.That(item.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.None));
+            Assert.That(item.Name, Is.EqualTo("Mystery Item"));
+        }
+
+        // -------------------------------------------------------------------
+        // Test: TypeC mapping for all known codes
+        // Validates: Requirements 9.3 (TypeC mapping)
+        // -------------------------------------------------------------------
+
+        [TestCase("R", ItemType.ItemTypeEnum.Resource)]
+        [TestCase("Sc", ItemType.ItemTypeEnum.Survey)]
+        [TestCase("W", ItemType.ItemTypeEnum.WorkDetail)]
+        [TestCase("S", ItemType.ItemTypeEnum.ShipPart)]
+        [TestCase("Bp", ItemType.ItemTypeEnum.Blueprint)]
+        [TestCase("F", ItemType.ItemTypeEnum.Flatpack)]
+        public void MergeWarehouse_TypeCMapping_AllKnownCodes(
+            string typeC,
+            ItemType.ItemTypeEnum expectedType)
+        {
+            var colony = new Colony
+            {
+                UUID = "colony-wh-006",
+                OwnerUUID = OwnerUUID,
+                Items = new ItemBag(),
+            };
+
+            var apiItems = new List<GameApiWarehouseItem>
+            {
+                new GameApiWarehouseItem
+                {
+                    ResourceName = "Test Item " + typeC,
+                    TypeC = typeC,
+                    Amount = 1,
+                },
+            };
+
+            ColonyMergeService.MergeWarehouse(apiItems, colony);
+
+            var item = colony.Items.Items.Values.First();
+            Assert.That(item.ItemType, Is.EqualTo(expectedType));
         }
     }
 }
