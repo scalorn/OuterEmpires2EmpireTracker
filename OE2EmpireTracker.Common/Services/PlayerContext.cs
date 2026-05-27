@@ -390,6 +390,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         public void OnColonyDataChanged(string colonyUUID)
         {
+            Log.Debug("PlayerContext.OnColonyDataChanged: colonyUUID='{0}', subscribers={1}", colonyUUID, ColonyDataChanged?.GetInvocationList()?.Length ?? 0);
             ColonyDataChanged?.Invoke(this, new ColonyDataChangedEventArgs(colonyUUID));
         }
 

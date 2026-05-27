@@ -381,6 +381,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
         private void OnColonyDataChanged(object sender, ColonyDataChangedEventArgs e)
         {
+            Log.Debug("V2.OnColonyDataChanged ENTRY: colonyUUID='{0}' IsDisposed={1} InvokeRequired={2} _selectedColonyUUID='{3}'", e.ColonyUUID, IsDisposed, InvokeRequired, _selectedColonyUUID);
             if (IsDisposed) return;
             if (InvokeRequired)
             {
