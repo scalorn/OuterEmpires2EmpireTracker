@@ -374,8 +374,8 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
                 {
                     try
                     {
-                        var obj = Newtonsoft.Json.Linq.JToken.Parse(result.Json);
-                        this.txtTestResult.Text = obj.ToString(Newtonsoft.Json.Formatting.Indented);
+                        var obj = Newtonsoft.Json.JsonConvert.DeserializeObject(result.Json);
+                        this.txtTestResult.Text = Newtonsoft.Json.JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.Indented);
                     }
                     catch
                     {
