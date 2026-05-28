@@ -3747,6 +3747,36 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Returns the mutable station list for the given owner UUID.
+        /// Used by the asset sync to match and create stations.
+        /// </summary>
+        /// <param name="ownerUUID">The player UUID to filter stations by.</param>
+        /// <returns>A list of stations owned by the specified player or government-owned.</returns>
+        internal List<Station> GetMutableStationsForOwner(string ownerUUID)
+        {
+            lock (_listLock)
+            {
+                return _stationList.Where(s =>
+                    s.OwnerUUID == ownerUUID ||
+                    s.Ownership == StationOwnership.Government).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Returns the mutable ship list for the given owner UUID.
+        /// Used by the asset sync to match and create ships.
+        /// </summary>
+        /// <param name="ownerUUID">The player UUID to filter ships by.</param>
+        /// <returns>A list of ships owned by the specified player.</returns>
+        internal List<Ship> GetMutableShipsForOwner(string ownerUUID)
+        {
+            lock (_listLock)
+            {
+                return _shipList.Where(s => s.OwnerUUID == ownerUUID).ToList();
+            }
+        }
+
+        /// <summary>
         /// Returns the mutable PricingPlan entity. Only called by PricingPlanService.
         /// </summary>
         internal PricingPlan FindMutablePricingPlan(string uuid)

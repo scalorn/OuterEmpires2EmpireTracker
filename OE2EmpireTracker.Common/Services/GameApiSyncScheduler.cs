@@ -492,6 +492,26 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Adds a newly created station to the player's data.
+        /// Override point for testing. In production, calls PlayerContext.AddStation.
+        /// </summary>
+        /// <param name="station">The station to add.</param>
+        internal virtual void AddStation(Station station)
+        {
+            // Default no-op — overridden in ProductionSyncScheduler
+        }
+
+        /// <summary>
+        /// Adds a newly created ship to the player's data.
+        /// Override point for testing. In production, calls PlayerContext.AddShip.
+        /// </summary>
+        /// <param name="ship">The ship to add.</param>
+        internal virtual void AddShip(Ship ship)
+        {
+            // Default no-op — overridden in ProductionSyncScheduler
+        }
+
+        /// <summary>
         /// Creates a <see cref="BlueprintLinkageService"/> for use during colony warehouse sync.
         /// Override point for testing. In production, returns a real instance wired to contexts.
         /// </summary>
@@ -1015,201 +1035,6 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Routes asset cargo items to the appropriate merge method based on location type.
-        /// For colonies, matches by ColonyId. For stations, matches by GameLocationId (creates if not found).
-        /// For ships, matches by GameLocationId (creates if not found).
-        /// </summary>
-        /// <param name="location">The asset location entry with type and ID information.</param>
-        /// <param name="cargoItems">The list of cargo items to merge.</param>
-        /// <param name="localColonies">The local colony list (may be null).</param>
-        /// <param name="localStations">The local station list (may be null).</param>
-        /// <param name="localShips">The local ship list (may be null).</param>
-        /// <returns>True if any changes were made; false otherwise.</returns>
-        private static bool RouteAssetMerge(
-            GameApiAssetLocationEntry location,
-            List<GameApiAssetCargoItem> cargoItems,
-            List<Colony> localColonies,
-            List<Station> localStations,
-            List<Ship> localShips)
-        {
-            if (string.Equals(location.LocationType, "Co", StringComparison.OrdinalIgnoreCase))
-            {
-                return MergeColonyLocation(location, cargoItems, localColonies);
-            }
-
-            if (string.Equals(location.LocationType, "St", StringComparison.OrdinalIgnoreCase))
-            {
-                return MergeStationLocation(location, cargoItems, localStations);
-            }
-
-            if (string.Equals(location.LocationType, "Sh", StringComparison.OrdinalIgnoreCase))
-            {
-                return MergeShipLocation(location, cargoItems, localShips);
-            }
-
-            Log.Warn(
-                "Asset sync: unknown location type '{0}' for location {1}, skipping",
-                location.LocationType,
-                location.LocationId);
-            return false;
-        }
-
-        /// <summary>
-        /// Merges asset cargo items into a colony matched by ColonyId.
-        /// </summary>
-        /// <param name="location">The asset location entry.</param>
-        /// <param name="cargoItems">The cargo items to merge.</param>
-        /// <param name="localColonies">The local colony list.</param>
-        /// <returns>True if any changes were made; false otherwise.</returns>
-        private static bool MergeColonyLocation(
-            GameApiAssetLocationEntry location,
-            List<GameApiAssetCargoItem> cargoItems,
-            List<Colony> localColonies)
-        {
-            if (localColonies == null)
-            {
-                Log.Debug("Asset sync: no local colonies available, skipping colony location {0}", location.LocationId);
-                return false;
-            }
-
-            var colony = localColonies.FirstOrDefault(c => c.ColonyId == location.LocationId);
-            if (colony == null)
-            {
-                Log.Debug(
-                    "Asset sync: no local colony matches locationId={0} ({1}), skipping",
-                    location.LocationId,
-                    location.LocationName);
-                return false;
-            }
-
-            return AssetMergeService.MergeColonyAssets(cargoItems, colony);
-        }
-
-        /// <summary>
-        /// Merges asset cargo items into a station matched by GameLocationId.
-        /// Creates a new station if no match is found.
-        /// </summary>
-        /// <param name="location">The asset location entry.</param>
-        /// <param name="cargoItems">The cargo items to merge.</param>
-        /// <param name="localStations">The local station list.</param>
-        /// <returns>True if any changes were made; false otherwise.</returns>
-        private static bool MergeStationLocation(
-            GameApiAssetLocationEntry location,
-            List<GameApiAssetCargoItem> cargoItems,
-            List<Station> localStations)
-        {
-            if (localStations == null)
-            {
-                Log.Debug("Asset sync: no local stations available, skipping station location {0}", location.LocationId);
-                return false;
-            }
-
-            var station = localStations.FirstOrDefault(s => s.GameLocationId == location.LocationId);
-            if (station == null)
-            {
-                station = new Station
-                {
-                    UUID = Guid.NewGuid().ToString(),
-                    Name = location.LocationName,
-                    GameLocationId = location.LocationId,
-                    SystemName = location.SystemName,
-                    SystemId = location.SystemId,
-                };
-                station.Holds[AssetMergeService.DefaultHoldName] = new ItemBag();
-                localStations.Add(station);
-                Log.Info(
-                    "Asset sync: created new station '{0}' (locationId={1}) in system '{2}'",
-                    location.LocationName,
-                    location.LocationId,
-                    location.SystemName);
-            }
-
-            ItemBag targetHold;
-            if (!station.Holds.TryGetValue(AssetMergeService.DefaultHoldName, out targetHold))
-            {
-                targetHold = new ItemBag();
-                station.Holds[AssetMergeService.DefaultHoldName] = targetHold;
-            }
-
-            return AssetMergeService.MergeStationAssets(cargoItems, station, targetHold);
-        }
-
-        /// <summary>
-        /// Merges asset cargo items into a ship matched by GameLocationId.
-        /// Creates a new ship if no match is found.
-        /// </summary>
-        /// <param name="location">The asset location entry.</param>
-        /// <param name="cargoItems">The cargo items to merge.</param>
-        /// <param name="localShips">The local ship list.</param>
-        /// <returns>True if any changes were made; false otherwise.</returns>
-        private static bool MergeShipLocation(
-            GameApiAssetLocationEntry location,
-            List<GameApiAssetCargoItem> cargoItems,
-            List<Ship> localShips)
-        {
-            if (localShips == null)
-            {
-                Log.Debug("Asset sync: no local ships available, skipping ship location {0}", location.LocationId);
-                return false;
-            }
-
-            var ship = localShips.FirstOrDefault(s => s.GameLocationId == location.LocationId);
-            if (ship == null)
-            {
-                ship = new Ship
-                {
-                    UUID = Guid.NewGuid().ToString(),
-                    Name = location.LocationName,
-                    GameLocationId = location.LocationId,
-                };
-                localShips.Add(ship);
-                Log.Info(
-                    "Asset sync: created new ship '{0}' (locationId={1})",
-                    location.LocationName,
-                    location.LocationId);
-            }
-
-            return AssetMergeService.MergeShipAssets(cargoItems, ship);
-        }
-
-        /// <summary>
-        /// Finds a mutable colony by UUID in the local colony list.
-        /// </summary>
-        /// <param name="colonyUUID">The UUID of the colony to find.</param>
-        /// <param name="localColonies">The local colony list to search.</param>
-        /// <returns>The colony if found; otherwise null.</returns>
-        private static Colony FindMutableColony(string colonyUUID, List<Colony> localColonies)
-        {
-            return localColonies.FirstOrDefault(c =>
-                string.Equals(c.UUID, colonyUUID, StringComparison.Ordinal));
-        }
-
-        /// <summary>
-        /// Converts a SecureString to a plain-text string for API calls.
-        /// </summary>
-        private static string SecureStringToString(SecureString secureString)
-        {
-            if (secureString == null)
-            {
-                return null;
-            }
-
-            IntPtr ptr = IntPtr.Zero;
-            try
-            {
-                ptr = Marshal.SecureStringToGlobalAllocUnicode(secureString);
-                return Marshal.PtrToStringUni(ptr);
-            }
-            finally
-            {
-                if (ptr != IntPtr.Zero)
-                {
-                    Marshal.ZeroFreeGlobalAllocUnicode(ptr);
-                }
-            }
-        }
-
-        /// <summary>
         /// Merges a single rank from the API response into the local rank.
         /// </summary>
         /// <param name="localRank">The local rank to update.</param>
@@ -1382,6 +1207,203 @@ namespace OE2EmpireTracker.Services
             }
 
             return changed;
+        }
+
+        /// <summary>
+        /// Routes asset cargo items to the appropriate merge method based on location type.
+        /// For colonies, matches by ColonyId. For stations, matches by GameLocationId (creates if not found).
+        /// For ships, matches by GameLocationId (creates if not found).
+        /// </summary>
+        /// <param name="location">The asset location entry with type and ID information.</param>
+        /// <param name="cargoItems">The list of cargo items to merge.</param>
+        /// <param name="localColonies">The local colony list (may be null).</param>
+        /// <param name="localStations">The local station list (may be null).</param>
+        /// <param name="localShips">The local ship list (may be null).</param>
+        /// <returns>True if any changes were made; false otherwise.</returns>
+        private bool RouteAssetMerge(
+            GameApiAssetLocationEntry location,
+            List<GameApiAssetCargoItem> cargoItems,
+            List<Colony> localColonies,
+            List<Station> localStations,
+            List<Ship> localShips)
+        {
+            if (string.Equals(location.LocationType, "Co", StringComparison.OrdinalIgnoreCase))
+            {
+                return MergeColonyLocation(location, cargoItems, localColonies);
+            }
+
+            if (string.Equals(location.LocationType, "St", StringComparison.OrdinalIgnoreCase))
+            {
+                return MergeStationLocation(location, cargoItems, localStations);
+            }
+
+            if (string.Equals(location.LocationType, "Sh", StringComparison.OrdinalIgnoreCase))
+            {
+                return MergeShipLocation(location, cargoItems, localShips);
+            }
+
+            Log.Warn(
+                "Asset sync: unknown location type '{0}' for location {1}, skipping",
+                location.LocationType,
+                location.LocationId);
+            return false;
+        }
+
+        /// <summary>
+        /// Merges asset cargo items into a colony matched by ColonyId.
+        /// </summary>
+        /// <param name="location">The asset location entry.</param>
+        /// <param name="cargoItems">The cargo items to merge.</param>
+        /// <param name="localColonies">The local colony list.</param>
+        /// <returns>True if any changes were made; false otherwise.</returns>
+        private bool MergeColonyLocation(
+            GameApiAssetLocationEntry location,
+            List<GameApiAssetCargoItem> cargoItems,
+            List<Colony> localColonies)
+        {
+            if (localColonies == null)
+            {
+                Log.Debug("Asset sync: no local colonies available, skipping colony location {0}", location.LocationId);
+                return false;
+            }
+
+            var colony = localColonies.FirstOrDefault(c => c.ColonyId == location.LocationId);
+            if (colony == null)
+            {
+                Log.Debug(
+                    "Asset sync: no local colony matches locationId={0} ({1}), skipping",
+                    location.LocationId,
+                    location.LocationName);
+                return false;
+            }
+
+            return AssetMergeService.MergeColonyAssets(cargoItems, colony);
+        }
+
+        /// <summary>
+        /// Merges asset cargo items into a station matched by GameLocationId.
+        /// Creates a new station if no match is found.
+        /// </summary>
+        /// <param name="location">The asset location entry.</param>
+        /// <param name="cargoItems">The cargo items to merge.</param>
+        /// <param name="localStations">The local station list.</param>
+        /// <returns>True if any changes were made; false otherwise.</returns>
+        private bool MergeStationLocation(
+            GameApiAssetLocationEntry location,
+            List<GameApiAssetCargoItem> cargoItems,
+            List<Station> localStations)
+        {
+            if (localStations == null)
+            {
+                Log.Debug("Asset sync: no local stations available, skipping station location {0}", location.LocationId);
+                return false;
+            }
+
+            var station = localStations.FirstOrDefault(s => s.GameLocationId == location.LocationId);
+            if (station == null)
+            {
+                station = new Station
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    Name = location.LocationName,
+                    GameLocationId = location.LocationId,
+                    SystemName = location.SystemName,
+                    SystemId = location.SystemId,
+                };
+                station.Holds[AssetMergeService.DefaultHoldName] = new ItemBag();
+                AddStation(station);
+                localStations.Add(station);
+                Log.Info(
+                    "Asset sync: created new station '{0}' (locationId={1}) in system '{2}'",
+                    location.LocationName,
+                    location.LocationId,
+                    location.SystemName);
+            }
+
+            ItemBag targetHold;
+            if (!station.Holds.TryGetValue(AssetMergeService.DefaultHoldName, out targetHold))
+            {
+                targetHold = new ItemBag();
+                station.Holds[AssetMergeService.DefaultHoldName] = targetHold;
+            }
+
+            return AssetMergeService.MergeStationAssets(cargoItems, station, targetHold);
+        }
+
+        /// <summary>
+        /// Merges asset cargo items into a ship matched by GameLocationId.
+        /// Creates a new ship if no match is found.
+        /// </summary>
+        /// <param name="location">The asset location entry.</param>
+        /// <param name="cargoItems">The cargo items to merge.</param>
+        /// <param name="localShips">The local ship list.</param>
+        /// <returns>True if any changes were made; false otherwise.</returns>
+        private bool MergeShipLocation(
+            GameApiAssetLocationEntry location,
+            List<GameApiAssetCargoItem> cargoItems,
+            List<Ship> localShips)
+        {
+            if (localShips == null)
+            {
+                Log.Debug("Asset sync: no local ships available, skipping ship location {0}", location.LocationId);
+                return false;
+            }
+
+            var ship = localShips.FirstOrDefault(s => s.GameLocationId == location.LocationId);
+            if (ship == null)
+            {
+                ship = new Ship
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    Name = location.LocationName,
+                    GameLocationId = location.LocationId,
+                };
+                localShips.Add(ship);
+                AddShip(ship);
+                Log.Info(
+                    "Asset sync: created new ship '{0}' (locationId={1})",
+                    location.LocationName,
+                    location.LocationId);
+            }
+
+            return AssetMergeService.MergeShipAssets(cargoItems, ship);
+        }
+
+        /// <summary>
+        /// Finds a mutable colony by UUID in the local colony list.
+        /// </summary>
+        /// <param name="colonyUUID">The UUID of the colony to find.</param>
+        /// <param name="localColonies">The local colony list to search.</param>
+        /// <returns>The colony if found; otherwise null.</returns>
+        private Colony FindMutableColony(string colonyUUID, List<Colony> localColonies)
+        {
+            return localColonies.FirstOrDefault(c =>
+                string.Equals(c.UUID, colonyUUID, StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Converts a SecureString to a plain-text string for API calls.
+        /// </summary>
+        private string SecureStringToString(SecureString secureString)
+        {
+            if (secureString == null)
+            {
+                return null;
+            }
+
+            IntPtr ptr = IntPtr.Zero;
+            try
+            {
+                ptr = Marshal.SecureStringToGlobalAllocUnicode(secureString);
+                return Marshal.PtrToStringUni(ptr);
+            }
+            finally
+            {
+                if (ptr != IntPtr.Zero)
+                {
+                    Marshal.ZeroFreeGlobalAllocUnicode(ptr);
+                }
+            }
         }
 
         /// <summary>

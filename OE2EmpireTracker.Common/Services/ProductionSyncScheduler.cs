@@ -50,6 +50,32 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <inheritdoc/>
+        internal override List<Station> GetPlayerStations(string playerUUID)
+        {
+            return _playerContext.GetMutableStationsForOwner(playerUUID);
+        }
+
+        /// <inheritdoc/>
+        internal override List<Ship> GetPlayerShips(string playerUUID)
+        {
+            return _playerContext.GetMutableShipsForOwner(playerUUID);
+        }
+
+        /// <inheritdoc/>
+        internal override void AddStation(Station station)
+        {
+            station.OwnerUUID = _playerContext.CurrentPlayerUUID;
+            _playerContext.AddStation(station);
+        }
+
+        /// <inheritdoc/>
+        internal override void AddShip(Ship ship)
+        {
+            ship.OwnerUUID = _playerContext.CurrentPlayerUUID;
+            _playerContext.AddShip(ship);
+        }
+
+        /// <inheritdoc/>
         internal override void WriteContext()
         {
             _playerContext.WriteContext();
