@@ -795,14 +795,14 @@ namespace OE2EmpireTracker.Tests.Services
                 Items = new ItemBag(),
             };
 
-            var apiItems = new List<GameApiWarehouseItem>
+            var apiItems = new List<GameApiAssetCargoItem>
             {
-                new GameApiWarehouseItem
+                new GameApiAssetCargoItem
                 {
                     ResourceName = "Iron",
                     TypeC = "R",
                     Amount = 500,
-                    Id = 42,
+                    CargoItemId = 42,
                 },
             };
 
@@ -831,6 +831,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = "item-uuid-001",
                 Quantity = 100,
                 BaseItemTypeID = "Iron",
+                GameItemId = 101,
             };
 
             var colony = new Colony
@@ -841,13 +842,14 @@ namespace OE2EmpireTracker.Tests.Services
             };
             colony.Items.AddItem(existingItem);
 
-            var apiItems = new List<GameApiWarehouseItem>
+            var apiItems = new List<GameApiAssetCargoItem>
             {
-                new GameApiWarehouseItem
+                new GameApiAssetCargoItem
                 {
                     ResourceName = "Iron",
                     TypeC = "R",
                     Amount = 750,
+                    CargoItemId = 101,
                 },
             };
 
@@ -871,6 +873,7 @@ namespace OE2EmpireTracker.Tests.Services
                 UUID = "item-uuid-002",
                 Quantity = 200,
                 BaseItemTypeID = "Copper",
+                GameItemId = 102,
             };
 
             var colony = new Colony
@@ -881,13 +884,14 @@ namespace OE2EmpireTracker.Tests.Services
             };
             colony.Items.AddItem(existingItem);
 
-            var apiItems = new List<GameApiWarehouseItem>
+            var apiItems = new List<GameApiAssetCargoItem>
             {
-                new GameApiWarehouseItem
+                new GameApiAssetCargoItem
                 {
                     ResourceName = "Copper",
                     TypeC = "R",
                     Amount = 0,
+                    CargoItemId = 102,
                 },
             };
 
@@ -922,9 +926,9 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Items.AddItem(existingItem);
 
             // API returns a different item — Gold is not in the response
-            var apiItems = new List<GameApiWarehouseItem>
+            var apiItems = new List<GameApiAssetCargoItem>
             {
-                new GameApiWarehouseItem
+                new GameApiAssetCargoItem
                 {
                     ResourceName = "Silver",
                     TypeC = "R",
@@ -955,9 +959,9 @@ namespace OE2EmpireTracker.Tests.Services
                 Items = new ItemBag(),
             };
 
-            var apiItems = new List<GameApiWarehouseItem>
+            var apiItems = new List<GameApiAssetCargoItem>
             {
-                new GameApiWarehouseItem
+                new GameApiAssetCargoItem
                 {
                     ResourceName = "Mystery Item",
                     TypeC = "ZZ",
@@ -994,9 +998,9 @@ namespace OE2EmpireTracker.Tests.Services
                 Items = new ItemBag(),
             };
 
-            var apiItems = new List<GameApiWarehouseItem>
+            var apiItems = new List<GameApiAssetCargoItem>
             {
-                new GameApiWarehouseItem
+                new GameApiAssetCargoItem
                 {
                     ResourceName = "Test Item " + typeC,
                     TypeC = typeC,

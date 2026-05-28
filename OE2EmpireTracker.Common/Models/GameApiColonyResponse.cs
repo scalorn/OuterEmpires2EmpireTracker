@@ -461,7 +461,7 @@ namespace OE2EmpireTracker.Client
         /// Gets or sets the list of items in the colony warehouse.
         /// </summary>
         [JsonProperty("contents")]
-        public List<GameApiWarehouseItem> Contents { get; set; } = new List<GameApiWarehouseItem>();
+        public List<GameApiAssetCargoItem> Contents { get; set; } = new List<GameApiAssetCargoItem>();
 
         /// <summary>
         /// Gets or sets the warehouse capacity.

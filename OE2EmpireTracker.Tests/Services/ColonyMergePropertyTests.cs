@@ -264,7 +264,7 @@ namespace OE2EmpireTracker.Tests.Services
                 foreach (var colony in localColonies)
                 {
                     ColonyMergeService.MergeWarehouse(
-                        new List<GameApiWarehouseItem>(), colony);
+                        new List<GameApiAssetCargoItem>(), colony);
                 }
 
                 int colonyCountAfter = localColonies.Count;

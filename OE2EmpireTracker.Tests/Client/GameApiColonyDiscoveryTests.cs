@@ -195,7 +195,7 @@ namespace OE2EmpireTracker.Tests.Client
         public async Task PullColonyWarehouse()
         {
             var colonies = await GetAllRemoteAccessColonies().ConfigureAwait(false);
-            var allItems = new List<GameApiWarehouseItem>();
+            var allItems = new List<GameApiAssetCargoItem>();
             int colonyCount = 0;
 
             foreach (var colony in colonies)
@@ -256,9 +256,9 @@ namespace OE2EmpireTracker.Tests.Client
                     ?? new List<GameApiColonyBuilding>()
             };
 
-            // Warehouse file is a direct List<GameApiWarehouseItem>
-            var allWarehouseItems = JsonConvert.DeserializeObject<List<GameApiWarehouseItem>>(warehouseJson)
-                ?? new List<GameApiWarehouseItem>();
+            // Warehouse file is a direct List<GameApiAssetCargoItem>
+            var allWarehouseItems = JsonConvert.DeserializeObject<List<GameApiAssetCargoItem>>(warehouseJson)
+                ?? new List<GameApiAssetCargoItem>();
             var warehouseData = new GameApiColonyWarehouseResponse { Contents = allWarehouseItems };
 
             var report = new StringBuilder();
@@ -596,7 +596,7 @@ namespace OE2EmpireTracker.Tests.Client
 
             var apiFields = GetAllFieldNames(contentsArray[0] as JObject);
 
-            var dtoProps = typeof(GameApiWarehouseItem).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            var dtoProps = typeof(GameApiAssetCargoItem).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .ToDictionary(p => p.Name, p => p, StringComparer.OrdinalIgnoreCase);
 
             var localProps = typeof(Item).GetProperties(BindingFlags.Public | BindingFlags.Instance)
