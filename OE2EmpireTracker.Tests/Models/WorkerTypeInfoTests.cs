@@ -59,9 +59,9 @@ namespace OE2EmpireTracker.Tests.Models
         // UnassignedKey is "Unassigned" + DetailKey (item type ID, no spaces)
         // -----------------------------------------------------------------------
 
-        [TestCase(0, "UnassignedBlueCollarDetail")]
-        [TestCase(1, "UnassignedWhiteCollarDetail")]
-        [TestCase(2, "UnassignedSpecialistDetail")]
+        [TestCase(0, "UnassignedBlue Collar Detail")]
+        [TestCase(1, "UnassignedWhite Collar Detail")]
+        [TestCase(2, "UnassignedSpecialist Detail")]
         public void WorkerTypes_UnassignedKey_IsUnassignedPlusDetailKey(int index, string expected)
         {
             Assert.That(WorkerDetail.WorkerTypes[index].UnassignedKey, Is.EqualTo(expected));

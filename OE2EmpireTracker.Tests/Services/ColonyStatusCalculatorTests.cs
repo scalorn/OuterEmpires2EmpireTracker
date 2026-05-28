@@ -330,9 +330,9 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var colony = new Colony();
             // Add a BlueCollarDetail worker to the warehouse
-            var workerItem = new Item(ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail");
+            var workerItem = new Item(ItemType.ItemTypeEnum.WorkDetail, "Blue Collar Detail");
             workerItem.UUID = Guid.NewGuid().ToString();
-            workerItem.BaseItemTypeID = "BlueCollarDetail";
+            workerItem.BaseItemTypeID = "Blue Collar Detail";
             workerItem.Quantity = 1;
             colony.Items.AddItem(workerItem);
 
@@ -390,9 +390,9 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var colony = new Colony();
-            var workerItem = new Item(ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail");
+            var workerItem = new Item(ItemType.ItemTypeEnum.WorkDetail, "Blue Collar Detail");
             workerItem.UUID = Guid.NewGuid().ToString();
-            workerItem.BaseItemTypeID = "BlueCollarDetail";
+            workerItem.BaseItemTypeID = "Blue Collar Detail";
             workerItem.Quantity = 1;
             colony.Items.AddItem(workerItem);
 
@@ -419,14 +419,14 @@ namespace OE2EmpireTracker.Tests.Services
         public void UnallocatedWorker_LockedWorker_NotAvailable()
         {
             var colony = new Colony();
-            var workerItem = new Item(ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail");
+            var workerItem = new Item(ItemType.ItemTypeEnum.WorkDetail, "Blue Collar Detail");
             workerItem.UUID = Guid.NewGuid().ToString();
-            workerItem.BaseItemTypeID = "BlueCollarDetail";
+            workerItem.BaseItemTypeID = "Blue Collar Detail";
             workerItem.Quantity = 1;
             colony.Items.AddItem(workerItem);
 
             // Lock the only worker
-            colony.Locks.LockItem("some-process", ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail", 1);
+            colony.Locks.LockItem("some-process", ItemType.ItemTypeEnum.WorkDetail, "Blue Collar Detail", 1);
 
             var structure = MakeStructure(built: true, online: true);
             colony.Structures.Add(structure);
@@ -557,14 +557,14 @@ namespace OE2EmpireTracker.Tests.Services
         public void ActualWorkers_IsUnassignedWorkerAvailable_TrueWhenInWarehouse()
         {
             var colony = new Colony();
-            var item = new Item(ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail");
+            var item = new Item(ItemType.ItemTypeEnum.WorkDetail, "Blue Collar Detail");
             item.UUID = Guid.NewGuid().ToString();
-            item.BaseItemTypeID = "BlueCollarDetail";
+            item.BaseItemTypeID = "Blue Collar Detail";
             item.Quantity = 2;
             colony.Items.AddItem(item);
 
             var workers = new ActualColonyStructureWorkers(colony);
-            Assert.That(workers.IsUnassignedWorkerAvailable("BlueCollarDetail"), Is.True);
+            Assert.That(workers.IsUnassignedWorkerAvailable("Blue Collar Detail"), Is.True);
         }
 
         [Test]
@@ -572,44 +572,44 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var colony = new Colony();
             var workers = new ActualColonyStructureWorkers(colony);
-            Assert.That(workers.IsUnassignedWorkerAvailable("BlueCollarDetail"), Is.False);
+            Assert.That(workers.IsUnassignedWorkerAvailable("Blue Collar Detail"), Is.False);
         }
 
         [Test]
         public void ActualWorkers_IsUnassignedWorkerAvailable_FalseWhenAllLocked()
         {
             var colony = new Colony();
-            var item = new Item(ItemType.ItemTypeEnum.WorkDetail, "WhiteCollarDetail");
+            var item = new Item(ItemType.ItemTypeEnum.WorkDetail, "White Collar Detail");
             item.UUID = Guid.NewGuid().ToString();
-            item.BaseItemTypeID = "WhiteCollarDetail";
+            item.BaseItemTypeID = "White Collar Detail";
             item.Quantity = 1;
             colony.Items.AddItem(item);
-            colony.Locks.LockItem("proc-1", ItemType.ItemTypeEnum.WorkDetail, "WhiteCollarDetail", 1);
+            colony.Locks.LockItem("proc-1", ItemType.ItemTypeEnum.WorkDetail, "White Collar Detail", 1);
 
             var workers = new ActualColonyStructureWorkers(colony);
-            Assert.That(workers.IsUnassignedWorkerAvailable("WhiteCollarDetail"), Is.False);
+            Assert.That(workers.IsUnassignedWorkerAvailable("White Collar Detail"), Is.False);
         }
 
         [Test]
         public void ActualWorkers_IsUnassignedWorkerAvailable_TrueWhenPartiallyLocked()
         {
             var colony = new Colony();
-            var item = new Item(ItemType.ItemTypeEnum.WorkDetail, "SpecialistDetail");
+            var item = new Item(ItemType.ItemTypeEnum.WorkDetail, "Specialist Detail");
             item.UUID = Guid.NewGuid().ToString();
-            item.BaseItemTypeID = "SpecialistDetail";
+            item.BaseItemTypeID = "Specialist Detail";
             item.Quantity = 3;
             colony.Items.AddItem(item);
-            colony.Locks.LockItem("proc-1", ItemType.ItemTypeEnum.WorkDetail, "SpecialistDetail", 2);
+            colony.Locks.LockItem("proc-1", ItemType.ItemTypeEnum.WorkDetail, "Specialist Detail", 2);
 
             var workers = new ActualColonyStructureWorkers(colony);
-            Assert.That(workers.IsUnassignedWorkerAvailable("SpecialistDetail"), Is.True);
+            Assert.That(workers.IsUnassignedWorkerAvailable("Specialist Detail"), Is.True);
         }
 
         [Test]
         public void ActualWorkers_NullColony_FallbackReturnsTrue()
         {
             var workers = new ActualColonyStructureWorkers(null);
-            Assert.That(workers.IsUnassignedWorkerAvailable("BlueCollarDetail"), Is.True);
+            Assert.That(workers.IsUnassignedWorkerAvailable("Blue Collar Detail"), Is.True);
         }
 
         // -----------------------------------------------------------------------

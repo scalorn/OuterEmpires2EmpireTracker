@@ -95,7 +95,7 @@ namespace OE2EmpireTracker.Models
             UnassignedPropertyKey = unassignedPropertyKey;
         }
 
-        /// <summary>Item type ID for WorkDetail items (e.g. "BlueCollarDetail"). No spaces.</summary>
+        /// <summary>Item type ID for WorkDetail items (e.g. "Blue Collar Detail"). Matches game API resourceName.</summary>
         public string DetailKey { get; }
 
         /// <summary>Worker key prefix used in AssignedWorkers (e.g. "BlueCollar").</summary>

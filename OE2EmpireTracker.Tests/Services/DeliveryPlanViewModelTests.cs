@@ -875,8 +875,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(added, Is.EqualTo(2)); // 1 BlueCollar gap + 1 WhiteCollar gap
             var stop = vm.Stops.First(s => s.ColonyUUID == "c1");
-            var blueDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "BlueCollarDetail");
-            var whiteDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "WhiteCollarDetail");
+            var blueDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "Blue Collar Detail");
+            var whiteDrop = stop.DropOff.FirstOrDefault(d => d.BaseItemTypeID == "White Collar Detail");
             Assert.That(blueDrop, Is.Not.Null);
             Assert.That(blueDrop.Quantity, Is.EqualTo(1));
             Assert.That(blueDrop.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.WorkDetail));

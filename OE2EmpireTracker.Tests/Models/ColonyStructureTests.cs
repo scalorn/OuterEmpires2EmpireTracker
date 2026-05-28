@@ -418,14 +418,14 @@ namespace OE2EmpireTracker.Tests.Models
         public void GetUnallocatedPresent_DefaultsToFalse()
         {
             var status = new ColonyStructureStatus();
-            Assert.That(status.GetUnallocatedPresent("BlueCollarDetail"), Is.False);
-            Assert.That(status.GetUnallocatedPresent("WhiteCollarDetail"), Is.False);
-            Assert.That(status.GetUnallocatedPresent("SpecialistDetail"), Is.False);
+            Assert.That(status.GetUnallocatedPresent("Blue Collar Detail"), Is.False);
+            Assert.That(status.GetUnallocatedPresent("White Collar Detail"), Is.False);
+            Assert.That(status.GetUnallocatedPresent("Specialist Detail"), Is.False);
         }
 
-        [TestCase("BlueCollarDetail")]
-        [TestCase("WhiteCollarDetail")]
-        [TestCase("SpecialistDetail")]
+        [TestCase("Blue Collar Detail")]
+        [TestCase("White Collar Detail")]
+        [TestCase("Specialist Detail")]
         public void SetThenGetUnallocatedPresent_RoundTrips(string detailKey)
         {
             var status = new ColonyStructureStatus();

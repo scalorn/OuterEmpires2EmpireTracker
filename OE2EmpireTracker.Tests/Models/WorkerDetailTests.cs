@@ -28,19 +28,19 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void WorkerDetails_ContainsBlueCollarDetail()
         {
-            Assert.That(WorkerDetail.WorkerDetails.Any(w => w.ID == "BlueCollarDetail"), Is.True);
+            Assert.That(WorkerDetail.WorkerDetails.Any(w => w.ID == "Blue Collar Detail"), Is.True);
         }
 
         [Test]
         public void WorkerDetails_ContainsWhiteCollarDetail()
         {
-            Assert.That(WorkerDetail.WorkerDetails.Any(w => w.ID == "WhiteCollarDetail"), Is.True);
+            Assert.That(WorkerDetail.WorkerDetails.Any(w => w.ID == "White Collar Detail"), Is.True);
         }
 
         [Test]
         public void WorkerDetails_ContainsSpecialistDetail()
         {
-            Assert.That(WorkerDetail.WorkerDetails.Any(w => w.ID == "SpecialistDetail"), Is.True);
+            Assert.That(WorkerDetail.WorkerDetails.Any(w => w.ID == "Specialist Detail"), Is.True);
         }
 
         [Test]
@@ -94,9 +94,9 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void WorkerDetailMapByID_LookupReturnsCorrectName()
         {
-            Assert.That(WorkerDetail.WorkerDetailMapByID["BlueCollarDetail"].Name, Is.EqualTo("Blue Collar Detail"));
-            Assert.That(WorkerDetail.WorkerDetailMapByID["WhiteCollarDetail"].Name, Is.EqualTo("White Collar Detail"));
-            Assert.That(WorkerDetail.WorkerDetailMapByID["SpecialistDetail"].Name, Is.EqualTo("Specialist Detail"));
+            Assert.That(WorkerDetail.WorkerDetailMapByID["Blue Collar Detail"].Name, Is.EqualTo("Blue Collar Detail"));
+            Assert.That(WorkerDetail.WorkerDetailMapByID["White Collar Detail"].Name, Is.EqualTo("White Collar Detail"));
+            Assert.That(WorkerDetail.WorkerDetailMapByID["Specialist Detail"].Name, Is.EqualTo("Specialist Detail"));
         }
 
         [Test]
@@ -124,9 +124,9 @@ namespace OE2EmpireTracker.Tests.Models
         [Test]
         public void WorkerDetailMapByName_LookupReturnsCorrectID()
         {
-            Assert.That(WorkerDetail.WorkerDetailMapByName["Blue Collar Detail"].ID, Is.EqualTo("BlueCollarDetail"));
-            Assert.That(WorkerDetail.WorkerDetailMapByName["White Collar Detail"].ID, Is.EqualTo("WhiteCollarDetail"));
-            Assert.That(WorkerDetail.WorkerDetailMapByName["Specialist Detail"].ID, Is.EqualTo("SpecialistDetail"));
+            Assert.That(WorkerDetail.WorkerDetailMapByName["Blue Collar Detail"].ID, Is.EqualTo("Blue Collar Detail"));
+            Assert.That(WorkerDetail.WorkerDetailMapByName["White Collar Detail"].ID, Is.EqualTo("White Collar Detail"));
+            Assert.That(WorkerDetail.WorkerDetailMapByName["Specialist Detail"].ID, Is.EqualTo("Specialist Detail"));
         }
 
         [Test]
@@ -162,9 +162,9 @@ namespace OE2EmpireTracker.Tests.Models
         {
             // These IDs are used as property bag keys in ColonyStatusCalculator
             // for worker slot parsing. Verify they haven't drifted.
-            Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey("BlueCollarDetail"), Is.True);
-            Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey("WhiteCollarDetail"), Is.True);
-            Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey("SpecialistDetail"), Is.True);
+            Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey("Blue Collar Detail"), Is.True);
+            Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey("White Collar Detail"), Is.True);
+            Assert.That(WorkerDetail.WorkerDetailMapByID.ContainsKey("Specialist Detail"), Is.True);
         }
     }
 }

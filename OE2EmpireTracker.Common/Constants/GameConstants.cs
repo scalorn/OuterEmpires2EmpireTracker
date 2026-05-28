@@ -88,12 +88,12 @@ namespace OE2EmpireTracker.Constants
 
         public const string PropUnassignedSpecialistDetail = "Unassigned Specialist Detail";
 
-        // Worker detail item type IDs (no spaces, used as BaseItemTypeID for WorkDetail items)
-        public const string WorkerIdBlueCollar = "BlueCollarDetail";
+        // Worker detail item type IDs (with spaces, matching game API resourceName)
+        public const string WorkerIdBlueCollar = "Blue Collar Detail";
 
-        public const string WorkerIdWhiteCollar = "WhiteCollarDetail";
+        public const string WorkerIdWhiteCollar = "White Collar Detail";
 
-        public const string WorkerIdSpecialist = "SpecialistDetail";
+        public const string WorkerIdSpecialist = "Specialist Detail";
 
         // --- Item Volume by Type (REQ-DM-025) ---
 

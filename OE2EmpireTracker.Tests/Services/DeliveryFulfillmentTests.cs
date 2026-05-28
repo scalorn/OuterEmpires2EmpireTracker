@@ -128,10 +128,10 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var colony = new Colony();
 
-            var result = DeliveryFulfillment.DeliverWorkers(colony, "BlueCollarDetail", "Blue Collar", 3, true);
+            var result = DeliveryFulfillment.DeliverWorkers(colony, "Blue Collar Detail", "Blue Collar", 3, true);
 
             Assert.That(result, Is.True);
-            var count = colony.Items.CountByType(ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail");
+            var count = colony.Items.CountByType(ItemType.ItemTypeEnum.WorkDetail, "Blue Collar Detail");
             Assert.That(count, Is.EqualTo(3));
         }
 
@@ -139,13 +139,13 @@ namespace OE2EmpireTracker.Tests.Services
         public void DeliverWorkers_ExistingWorker_AddsToQuantity()
         {
             var colony = new Colony();
-            var existing = new Item(ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail");
+            var existing = new Item(ItemType.ItemTypeEnum.WorkDetail, "Blue Collar Detail");
             existing.UUID = Guid.NewGuid().ToString();
-            existing.BaseItemTypeID = "BlueCollarDetail";
+            existing.BaseItemTypeID = "Blue Collar Detail";
             existing.Quantity = 2;
             colony.Items.AddItem(existing);
 
-            DeliveryFulfillment.DeliverWorkers(colony, "BlueCollarDetail", "Blue Collar", 3, true);
+            DeliveryFulfillment.DeliverWorkers(colony, "Blue Collar Detail", "Blue Collar", 3, true);
 
             Assert.That(existing.Quantity, Is.EqualTo(5));
         }
@@ -154,13 +154,13 @@ namespace OE2EmpireTracker.Tests.Services
         public void DeliverWorkers_Undelivered_SubtractsQuantity()
         {
             var colony = new Colony();
-            var existing = new Item(ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail");
+            var existing = new Item(ItemType.ItemTypeEnum.WorkDetail, "Blue Collar Detail");
             existing.UUID = Guid.NewGuid().ToString();
-            existing.BaseItemTypeID = "BlueCollarDetail";
+            existing.BaseItemTypeID = "Blue Collar Detail";
             existing.Quantity = 5;
             colony.Items.AddItem(existing);
 
-            DeliveryFulfillment.DeliverWorkers(colony, "BlueCollarDetail", "Blue Collar", 3, false);
+            DeliveryFulfillment.DeliverWorkers(colony, "Blue Collar Detail", "Blue Collar", 3, false);
 
             Assert.That(existing.Quantity, Is.EqualTo(2));
         }
@@ -169,13 +169,13 @@ namespace OE2EmpireTracker.Tests.Services
         public void DeliverWorkers_Undelivered_ClampsToZero()
         {
             var colony = new Colony();
-            var existing = new Item(ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail");
+            var existing = new Item(ItemType.ItemTypeEnum.WorkDetail, "Blue Collar Detail");
             existing.UUID = Guid.NewGuid().ToString();
-            existing.BaseItemTypeID = "BlueCollarDetail";
+            existing.BaseItemTypeID = "Blue Collar Detail";
             existing.Quantity = 1;
             colony.Items.AddItem(existing);
 
-            DeliveryFulfillment.DeliverWorkers(colony, "BlueCollarDetail", "Blue Collar", 5, false);
+            DeliveryFulfillment.DeliverWorkers(colony, "Blue Collar Detail", "Blue Collar", 5, false);
 
             Assert.That(existing.Quantity, Is.EqualTo(0));
         }
@@ -183,7 +183,7 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void DeliverWorkers_NullColony_ReturnsFalse()
         {
-            var result = DeliveryFulfillment.DeliverWorkers(null, "BlueCollarDetail", "Blue Collar", 1, true);
+            var result = DeliveryFulfillment.DeliverWorkers(null, "Blue Collar Detail", "Blue Collar", 1, true);
             Assert.That(result, Is.False);
         }
 
@@ -191,7 +191,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void DeliverWorkers_ZeroQuantity_ReturnsFalse()
         {
             var colony = new Colony();
-            var result = DeliveryFulfillment.DeliverWorkers(colony, "BlueCollarDetail", "Blue Collar", 0, true);
+            var result = DeliveryFulfillment.DeliverWorkers(colony, "Blue Collar Detail", "Blue Collar", 0, true);
             Assert.That(result, Is.False);
         }
 
@@ -200,9 +200,9 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var colony = new Colony();
 
-            DeliveryFulfillment.DeliverWorkers(colony, "BlueCollarDetail", "Blue Collar", 1, true);
+            DeliveryFulfillment.DeliverWorkers(colony, "Blue Collar Detail", "Blue Collar", 1, true);
 
-            var items = colony.Items.FindByType(ItemType.ItemTypeEnum.WorkDetail, "BlueCollarDetail");
+            var items = colony.Items.FindByType(ItemType.ItemTypeEnum.WorkDetail, "Blue Collar Detail");
             Assert.That(items.Count, Is.EqualTo(1));
             Assert.That(items[0].Volume, Is.EqualTo(OE2EmpireTracker.Constants.GameConstants.WorkerVolume));
         }
