@@ -908,7 +908,7 @@ namespace OE2EmpireTracker.Tests.Services
         // -------------------------------------------------------------------
 
         [Test]
-        public void MergeWarehouse_MissingFromApi_NotRemoved()
+        public void MergeWarehouse_MissingFromApi_IsRemoved()
         {
             var existingItem = new Item(ItemType.ItemTypeEnum.Resource, "Gold")
             {
@@ -930,6 +930,7 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 new GameApiAssetCargoItem
                 {
+                    CargoItemId = 9999,
                     ResourceName = "Silver",
                     TypeC = "R",
                     Amount = 300,
@@ -938,10 +939,10 @@ namespace OE2EmpireTracker.Tests.Services
 
             ColonyMergeService.MergeWarehouse(apiItems, colony);
 
-            // Gold should still be present
-            Assert.That(colony.Items.Count(), Is.EqualTo(2));
-            Assert.That(colony.Items.Items.ContainsKey("item-uuid-003"), Is.True);
-            Assert.That(existingItem.Quantity, Is.EqualTo(50));
+            // Gold should be removed (game API is authoritative)
+            Assert.That(colony.Items.Items.ContainsKey("item-uuid-003"), Is.False);
+            // Only Silver remains
+            Assert.That(colony.Items.Count(), Is.EqualTo(1));
         }
 
         // -------------------------------------------------------------------

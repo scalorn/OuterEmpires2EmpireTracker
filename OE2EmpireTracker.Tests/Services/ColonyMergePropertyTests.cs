@@ -261,6 +261,8 @@ namespace OE2EmpireTracker.Tests.Services
                 }
 
                 // Merge with empty warehouse for each colony
+                // NOTE: Game API is authoritative for warehouse — empty response means empty warehouse.
+                // Items WILL be removed. This is correct behavior.
                 foreach (var colony in localColonies)
                 {
                     ColonyMergeService.MergeWarehouse(
@@ -271,9 +273,11 @@ namespace OE2EmpireTracker.Tests.Services
                 int structureCountAfter = localColonies.Sum(c => c.Structures.Count);
                 int itemCountAfter = localColonies.Sum(c => c.Items.Count());
 
+                // Colonies and structures are never removed by empty merge.
+                // Warehouse items ARE removed (game API is authoritative).
                 return (colonyCountAfter >= colonyCountBefore
                     && structureCountAfter >= structureCountBefore
-                    && itemCountAfter >= itemCountBefore).ToProperty();
+                    && itemCountAfter == 0).ToProperty();
             }).QuickCheckThrowOnFailure();
         }
 

@@ -155,13 +155,19 @@ namespace OE2EmpireTracker.Services
             }
 
             bool hasChanges = false;
+            var touchedUUIDs = new HashSet<string>();
 
             foreach (var apiItem in apiItems)
             {
                 try
                 {
-                    bool itemChanged = AssetMergeService.ProcessSingleAssetItem(apiItem, colony.Items);
-                    hasChanges |= itemChanged;
+                    string touchedUUID = AssetMergeService.ProcessSingleAssetItemAndReturnUUID(apiItem, colony.Items);
+                    if (touchedUUID != null)
+                    {
+                        touchedUUIDs.Add(touchedUUID);
+                    }
+
+                    hasChanges = true;
                 }
                 catch (Exception ex)
                 {
@@ -173,54 +179,50 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
-            // Remove stale items: local items with a GameItemId that no longer exist in the API response.
-            // Exception: items with a lock and 0 quantity are locally-staged (not yet in game).
-            var apiGameItemIds = new HashSet<int>(apiItems.Select(a => a.CargoItemId));
+            // Remove or zero items that were NOT touched by this sync.
+            // Game API is authoritative — anything not in the response doesn't exist in game.
             var allLocalItems = colony.Items.Items.Values.ToList();
-
             Log.Debug(
-                "MergeWarehouse: stale check — colony {0}, API has {1} items (GameItemIds), local has {2} items total, {3} with GameItemId>0",
+                "MergeWarehouse: colony {0} — touched {1} items, local has {2} total",
                 colony.UUID,
-                apiGameItemIds.Count,
-                allLocalItems.Count,
-                allLocalItems.Count(i => i.GameItemId.HasValue && i.GameItemId.Value > 0));
+                touchedUUIDs.Count,
+                allLocalItems.Count);
 
-            var staleItems = allLocalItems
-                .Where(i => i.GameItemId.HasValue && i.GameItemId.Value > 0 && !apiGameItemIds.Contains(i.GameItemId.Value))
-                .Where(i => !(i.Quantity == 0 && colony.Locks != null &&
-                    colony.Locks.GetLockedQuantity(i.ItemType, GetLockKey(i)) > 0))
+            var untouchedItems = allLocalItems
+                .Where(i => !touchedUUIDs.Contains(i.UUID))
                 .ToList();
 
-            // Log items that have NO GameItemId (won't be cleaned up by this logic)
-            var noGameIdItems = allLocalItems
-                .Where(i => !i.GameItemId.HasValue || i.GameItemId.Value == 0)
-                .ToList();
-            if (noGameIdItems.Count > 0)
+            foreach (var item in untouchedItems)
             {
-                Log.Debug(
-                    "MergeWarehouse: colony {0} has {1} items with no GameItemId (not eligible for stale removal): [{2}]",
-                    colony.UUID,
-                    noGameIdItems.Count,
-                    string.Join(", ", noGameIdItems.Select(i => $"'{i.Name}' type={i.ItemType} qty={i.Quantity}")));
-            }
+                bool hasLock = colony.Locks != null &&
+                    colony.Locks.GetLockedQuantity(item.ItemType, GetLockKey(item)) > 0;
 
-            if (staleItems.Count > 0)
-            {
-                Log.Info(
-                    "MergeWarehouse: removing {0} stale items from colony {1}",
-                    staleItems.Count,
-                    colony.UUID);
-            }
-
-            foreach (var stale in staleItems)
-            {
-                colony.Items.Remove(stale.UUID);
-                hasChanges = true;
-                Log.Info(
-                    "MergeWarehouse: removed stale item UUID={0} Name='{1}' GameItemId={2} (no longer in API response)",
-                    stale.UUID,
-                    stale.Name,
-                    stale.GameItemId);
+                if (hasLock)
+                {
+                    // Locked item: zero the quantity but keep it (staging reservation)
+                    if (item.Quantity != 0)
+                    {
+                        Log.Info(
+                            "MergeWarehouse: zeroing locked item UUID={0} Name='{1}' Qty={2}→0 (has lock, not in API)",
+                            item.UUID,
+                            item.Name,
+                            item.Quantity);
+                        item.Quantity = 0;
+                        hasChanges = true;
+                    }
+                }
+                else
+                {
+                    // No lock: remove entirely
+                    colony.Items.Remove(item.UUID);
+                    hasChanges = true;
+                    Log.Info(
+                        "MergeWarehouse: removed item UUID={0} Name='{1}' GameItemId={2} Qty={3} (not in API, no lock)",
+                        item.UUID,
+                        item.Name,
+                        item.GameItemId,
+                        item.Quantity);
+                }
             }
 
             return hasChanges;
