@@ -1302,6 +1302,28 @@ namespace OE2EmpireTracker.Services
             var station = localStations.FirstOrDefault(s => s.GameLocationId == location.LocationId);
             if (station == null)
             {
+                // Fallback: match by parsed name for pre-existing manually-created stations
+                string parsedName = ParseStationName(location.LocationName, location.SystemName);
+                station = localStations.FirstOrDefault(s =>
+                    s.GameLocationId == 0 &&
+                    string.Equals(s.Name, parsedName, StringComparison.OrdinalIgnoreCase));
+
+                if (station != null)
+                {
+                    // Adopt the pre-existing station by setting its GameLocationId
+                    station.GameLocationId = location.LocationId;
+                    station.SystemName = location.SystemName;
+                    station.SystemId = location.SystemId;
+                    Log.Info(
+                        "Asset sync: adopted existing station '{0}' UUID={1} (set locationId={2})",
+                        station.Name,
+                        station.UUID,
+                        location.LocationId);
+                }
+            }
+
+            if (station == null)
+            {
                 station = new Station
                 {
                     UUID = Guid.NewGuid().ToString(),
@@ -1350,6 +1372,25 @@ namespace OE2EmpireTracker.Services
             }
 
             var ship = localShips.FirstOrDefault(s => s.GameLocationId == location.LocationId);
+            if (ship == null)
+            {
+                // Fallback: match by parsed name for pre-existing manually-created ships
+                string parsedName = ParseShipName(location.LocationName);
+                ship = localShips.FirstOrDefault(s =>
+                    s.GameLocationId == 0 &&
+                    string.Equals(s.Name, parsedName, StringComparison.OrdinalIgnoreCase));
+
+                if (ship != null)
+                {
+                    ship.GameLocationId = location.LocationId;
+                    Log.Info(
+                        "Asset sync: adopted existing ship '{0}' UUID={1} (set locationId={2})",
+                        ship.Name,
+                        ship.UUID,
+                        location.LocationId);
+                }
+            }
+
             if (ship == null)
             {
                 ship = new Ship
