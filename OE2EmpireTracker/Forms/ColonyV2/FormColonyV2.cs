@@ -1756,7 +1756,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                         var colony = playerContext.FindMutableColony(colonyUUID);
                         if (colony != null)
                         {
-                            bool changed = ColonyMergeService.MergeWarehouse(envelope.Data.Contents, colony);
+                            var blueprintLinkage = new BlueprintLinkageService(playerContext, empireContext);
+                            var surveyLinkage = new SurveyLinkageService(playerContext);
+                            bool changed = ColonyMergeService.MergeWarehouse(
+                                envelope.Data.Contents, colony, blueprintLinkage, surveyLinkage);
                             if (changed)
                             {
                                 anyChanges = true;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -44,6 +44,10 @@ namespace OE2EmpireTracker.Services
 
         private Dictionary<string, Commodity> _commodityNameCache;
 
+        private List<PropertyTypeDefinition> _propertyTypeRegistry = new List<PropertyTypeDefinition>();
+
+        private Dictionary<int, PropertyTypeDefinition> _propertyTypeCache;
+
         private SystemRepository _systemRepository;
 
         /// <summary>
@@ -71,6 +75,7 @@ namespace OE2EmpireTracker.Services
             InitRefiningRecipes(baselineRoot);
             InitResearchTimes(baselineRoot);
             InitGlobalBlueprints(baselineRoot);
+            InitPropertyTypes(baselineRoot);
 
             // Wire up static dependencies for Common-portable models
             Constants.GameConstants.SetGameConfig(GameConstants);
@@ -111,6 +116,7 @@ namespace OE2EmpireTracker.Services
             InitRefiningRecipes(baselineRoot);
             InitResearchTimes(baselineRoot);
             InitGlobalBlueprints(baselineRoot);
+            InitPropertyTypes(baselineRoot);
 
             // Wire up static dependencies for Common-portable models
             Constants.GameConstants.SetGameConfig(GameConstants);
@@ -162,6 +168,8 @@ namespace OE2EmpireTracker.Services
 
         public IReadOnlyList<Commodity> CommodityList => _commodityList;
 
+        public IReadOnlyList<PropertyTypeDefinition> PropertyTypeRegistry => _propertyTypeRegistry;
+
         public SystemRepository SystemRepository => _systemRepository;
 
         public static EmpireContext GetInstance()
@@ -208,6 +216,7 @@ namespace OE2EmpireTracker.Services
             baselineRoot.Commodity = _commodityList?.ToArray();
             baselineRoot.RefiningRecipe = new List<RefiningRecipe>(RefiningRecipes.Recipes).ToArray();
             baselineRoot.ResearchTime = new List<ResearchTimeEntry>(ResearchTimeLookup.ResearchTimes).ToArray();
+            baselineRoot.PropertyType = _propertyTypeRegistry.ToArray();
 
             baselineRoot = SerializationSorter.SortBaselineRoot(baselineRoot);
 
@@ -505,6 +514,48 @@ namespace OE2EmpireTracker.Services
 
         // â”€â”€ Task 6.2: Mutation methods for GlobalBlueprint (UUID cache) â”€â”€
 
+        /// <summary>
+        /// Finds a PropertyTypeDefinition by its ModTypeId using a dictionary cache for O(1) lookup.
+        /// Returns null if no definition matches.
+        /// </summary>
+        public PropertyTypeDefinition FindPropertyType(int modTypeId)
+        {
+            if (_propertyTypeCache == null)
+            {
+                _propertyTypeCache = _propertyTypeRegistry.ToDictionary(p => p.ModTypeId);
+            }
+
+            _propertyTypeCache.TryGetValue(modTypeId, out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Creates or updates a PropertyTypeDefinition in the registry keyed by ModTypeId.
+        /// If a definition with the same ModTypeId exists, its metadata fields are updated.
+        /// Otherwise, the definition is added to the registry.
+        /// </summary>
+        public void UpsertPropertyType(PropertyTypeDefinition definition)
+        {
+            if (_propertyTypeCache == null)
+            {
+                _propertyTypeCache = _propertyTypeRegistry.ToDictionary(p => p.ModTypeId);
+            }
+
+            if (_propertyTypeCache.TryGetValue(definition.ModTypeId, out var existing))
+            {
+                existing.PropertyName = definition.PropertyName;
+                existing.FriendlyPropertyName = definition.FriendlyPropertyName;
+                existing.Unit = definition.Unit;
+                existing.ResearchPositive = definition.ResearchPositive;
+                existing.CanResearch = definition.CanResearch;
+            }
+            else
+            {
+                _propertyTypeRegistry.Add(definition);
+                _propertyTypeCache[definition.ModTypeId] = definition;
+            }
+        }
+
         public void AddGlobalBlueprint(Blueprint item)
         {
             if (!string.IsNullOrEmpty(item.UUID))
@@ -793,6 +844,17 @@ namespace OE2EmpireTracker.Services
 
                 return null;
             };
+        }
+
+        /// <summary>
+        /// Initializes the PropertyTypeRegistry from baseline data.
+        /// </summary>
+        private void InitPropertyTypes(BaselineRoot root)
+        {
+            _propertyTypeRegistry = root.PropertyType != null
+                ? new List<PropertyTypeDefinition>(root.PropertyType)
+                : new List<PropertyTypeDefinition>();
+            _propertyTypeCache = null;
         }
 
         private void RunMigrationsIfConfigured()

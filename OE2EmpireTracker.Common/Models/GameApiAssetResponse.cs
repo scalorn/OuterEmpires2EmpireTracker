@@ -221,5 +221,23 @@ namespace OE2EmpireTracker.Client
         /// </summary>
         [JsonProperty("evolution")]
         public int Evolution { get; set; }
+
+        /// <summary>
+        /// Gets or sets the original (base) property value before research modifications.
+        /// </summary>
+        [JsonProperty("originalPropertyValue")]
+        public decimal OriginalPropertyValue { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether research improves this property (positive direction).
+        /// </summary>
+        [JsonProperty("researchPositive")]
+        public bool ResearchPositive { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this property can be researched.
+        /// </summary>
+        [JsonProperty("canResearch")]
+        public bool CanResearch { get; set; }
     }
 }

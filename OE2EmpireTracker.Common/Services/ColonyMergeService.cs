@@ -137,11 +137,18 @@ namespace OE2EmpireTracker.Services
         /// Merges a list of API warehouse items into the colony's ItemBag.
         /// Delegates to AssetMergeService.ProcessSingleAssetItem for each item,
         /// using the same DTO and processing code as the asset sync.
+        /// Optionally invokes blueprint and survey linkage services for qualifying items.
         /// </summary>
         /// <param name="apiItems">The warehouse items returned by the game API.</param>
         /// <param name="colony">The local colony whose Items bag will be updated.</param>
+        /// <param name="blueprintLinkage">Optional blueprint linkage service for Bp/S items with properties.</param>
+        /// <param name="surveyLinkage">Optional survey linkage service for Sc items.</param>
         /// <returns>True if any item was created or updated; otherwise false.</returns>
-        public static bool MergeWarehouse(List<GameApiAssetCargoItem> apiItems, Colony colony)
+        public static bool MergeWarehouse(
+            List<GameApiAssetCargoItem> apiItems,
+            Colony colony,
+            BlueprintLinkageService blueprintLinkage = null,
+            SurveyLinkageService surveyLinkage = null)
         {
             if (apiItems == null || colony == null)
             {
@@ -165,6 +172,26 @@ namespace OE2EmpireTracker.Services
                     if (touchedUUID != null)
                     {
                         touchedUUIDs.Add(touchedUUID);
+
+                        // Blueprint linkage for Bp/S items with properties
+                        if (blueprintLinkage != null && HasBlueprintProperties(apiItem))
+                        {
+                            Item localItem;
+                            if (colony.Items.Items.TryGetValue(touchedUUID, out localItem))
+                            {
+                                blueprintLinkage.ProcessItem(apiItem, localItem, colony.OwnerUUID);
+                            }
+                        }
+
+                        // Survey linkage for Sc items
+                        if (surveyLinkage != null && IsSurveyItem(apiItem))
+                        {
+                            Item localItem;
+                            if (colony.Items.Items.TryGetValue(touchedUUID, out localItem))
+                            {
+                                surveyLinkage.ProcessItem(apiItem, localItem, colony.OwnerUUID);
+                            }
+                        }
                     }
 
                     hasChanges = true;
@@ -226,19 +253,6 @@ namespace OE2EmpireTracker.Services
             }
 
             return hasChanges;
-        }
-
-        /// <summary>
-        /// Gets the lock key for an item (Name + "|" + ResourcePurity for resources, just Name otherwise).
-        /// </summary>
-        private static string GetLockKey(Item item)
-        {
-            if (item.ItemType == ItemType.ItemTypeEnum.Resource && !string.IsNullOrEmpty(item.ResourcePurity))
-            {
-                return item.Name + "|" + item.ResourcePurity;
-            }
-
-            return item.Name ?? string.Empty;
         }
 
         /// <summary>
@@ -345,6 +359,45 @@ namespace OE2EmpireTracker.Services
                 changed);
 
             return changed;
+        }
+
+        /// <summary>
+        /// Gets the lock key for an item (Name + "|" + ResourcePurity for resources, just Name otherwise).
+        /// </summary>
+        private static string GetLockKey(Item item)
+        {
+            if (item.ItemType == ItemType.ItemTypeEnum.Resource && !string.IsNullOrEmpty(item.ResourcePurity))
+            {
+                return item.Name + "|" + item.ResourcePurity;
+            }
+
+            return item.Name ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Determines whether an API item qualifies for blueprint linkage.
+        /// Returns true if typeC is "Bp" or "S" and the item has non-empty properties.
+        /// </summary>
+        private static bool HasBlueprintProperties(GameApiAssetCargoItem apiItem)
+        {
+            var typeC = apiItem.TypeC?.Trim();
+            if (string.IsNullOrEmpty(typeC))
+            {
+                return false;
+            }
+
+            bool isBlueprintType = string.Equals(typeC, "Bp", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(typeC, "S", StringComparison.OrdinalIgnoreCase);
+
+            return isBlueprintType && apiItem.Properties != null && apiItem.Properties.Count > 0;
+        }
+
+        /// <summary>
+        /// Determines whether an API item is a survey item (typeC = "Sc").
+        /// </summary>
+        private static bool IsSurveyItem(GameApiAssetCargoItem apiItem)
+        {
+            return string.Equals(apiItem.TypeC?.Trim(), "Sc", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

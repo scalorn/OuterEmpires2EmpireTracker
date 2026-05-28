@@ -1,4 +1,4 @@
-// <copyright file="ItemProperty.cs" company="OE2EmpireTracker">
+// <copyright file="PropertyTypeDefinition.cs" company="OE2EmpireTracker">
 // Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
 
@@ -7,18 +7,19 @@ using Newtonsoft.Json;
 namespace OE2EmpireTracker.Models
 {
     /// <summary>
-    /// Represents a property attached to an item in the game API response.
+    /// Represents property type metadata learned from the game API.
+    /// Stored in BaselineData.json and keyed by ModTypeId in the runtime cache.
     /// </summary>
-    public class ItemProperty
+    public class PropertyTypeDefinition
     {
         /// <summary>
-        /// Gets or sets the mod type identifier.
+        /// Gets or sets the mod type identifier that uniquely identifies this property type.
         /// </summary>
         [JsonProperty("modTypeId")]
         public int ModTypeId { get; set; }
 
         /// <summary>
-        /// Gets or sets the property name.
+        /// Gets or sets the internal property name.
         /// </summary>
         [JsonProperty("propertyName")]
         public string PropertyName { get; set; } = string.Empty;
@@ -30,22 +31,10 @@ namespace OE2EmpireTracker.Models
         public string FriendlyPropertyName { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the property value.
-        /// </summary>
-        [JsonProperty("propertyValue")]
-        public string PropertyValue { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the unit of measurement.
+        /// Gets or sets the unit of measurement for this property.
         /// </summary>
         [JsonProperty("unit")]
         public string Unit { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets or sets the original (base) property value before research.
-        /// </summary>
-        [JsonProperty("originalPropertyValue")]
-        public string OriginalPropertyValue { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets a value indicating whether research improves this property (positive direction).

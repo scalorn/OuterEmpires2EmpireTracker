@@ -506,11 +506,13 @@
     <Compile Include="Services\SupplyChainMutationGuardTests.cs" />
     <Compile Include="Services\SurveyServicePropertyTests.cs" />
     <Compile Include="Services\SurveyServiceTests.cs" />
+    <Compile Include="Services\SurveyLinkageServiceTests.cs" />
     <Compile Include="Services\SurveyMutationGuardTests.cs" />
     <Compile Include="Services\ColonyServicePropertyTests.cs" />
     <Compile Include="Services\ColonyServiceTests.cs" />
     <Compile Include="Services\ColonyMutationGuardTests.cs" />
     <Compile Include="Services\BlueprintServicePropertyTests.cs" />
+    <Compile Include="Services\BlueprintLinkageServiceTests.cs" />
     <Compile Include="Services\BlueprintMutationGuardTests.cs" />
     <Compile Include="Services\PricingPlanServicePropertyTests.cs" />
     <Compile Include="Services\PricingPlanServiceTests.cs" />

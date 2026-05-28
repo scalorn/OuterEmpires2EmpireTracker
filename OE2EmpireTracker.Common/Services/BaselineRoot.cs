@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -21,5 +22,8 @@ namespace OE2EmpireTracker.Services
         public RefiningRecipe[] RefiningRecipe { get; set; }
 
         public ResearchTimeEntry[] ResearchTime { get; set; }
+
+        [JsonProperty("propertyType")]
+        public PropertyTypeDefinition[] PropertyType { get; set; }
     }
 }

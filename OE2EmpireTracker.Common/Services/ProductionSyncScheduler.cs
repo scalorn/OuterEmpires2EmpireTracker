@@ -66,5 +66,17 @@ namespace OE2EmpireTracker.Services
         {
             _playerContext.OnColonyDataChanged(colonyUUID);
         }
+
+        /// <inheritdoc/>
+        internal override BlueprintLinkageService CreateBlueprintLinkageService()
+        {
+            return new BlueprintLinkageService(_playerContext, EmpireContext.GetInstance());
+        }
+
+        /// <inheritdoc/>
+        internal override SurveyLinkageService CreateSurveyLinkageService()
+        {
+            return new SurveyLinkageService(_playerContext);
+        }
     }
 }

@@ -492,6 +492,26 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Creates a <see cref="BlueprintLinkageService"/> for use during colony warehouse sync.
+        /// Override point for testing. In production, returns a real instance wired to contexts.
+        /// </summary>
+        /// <returns>A blueprint linkage service, or null if linkage is not available.</returns>
+        internal virtual BlueprintLinkageService CreateBlueprintLinkageService()
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="SurveyLinkageService"/> for use during colony warehouse sync.
+        /// Override point for testing. In production, returns a real instance wired to contexts.
+        /// </summary>
+        /// <returns>A survey linkage service, or null if linkage is not available.</returns>
+        internal virtual SurveyLinkageService CreateSurveyLinkageService()
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Fetches the colony list from the game API and merges it into local data.
         /// Called after profile sync succeeds. Handles 401 (token invalid) and 403 (scope missing).
         /// Colony sync failures are logged but do not affect the profile sync result.
@@ -644,7 +664,10 @@ namespace OE2EmpireTracker.Services
                             var wEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWarehouseResponse>>(warehouseResult.Json);
                             if (wEnvelope?.Data?.Contents != null)
                             {
-                                bool warehouseChanged = ColonyMergeService.MergeWarehouse(wEnvelope.Data.Contents, colony);
+                                var blueprintLinkage = CreateBlueprintLinkageService();
+                                var surveyLinkage = CreateSurveyLinkageService();
+                                bool warehouseChanged = ColonyMergeService.MergeWarehouse(
+                                    wEnvelope.Data.Contents, colony, blueprintLinkage, surveyLinkage);
                                 colonyChanged |= warehouseChanged;
                                 if (warehouseChanged && mergeResult.Updated == 0)
                                 {

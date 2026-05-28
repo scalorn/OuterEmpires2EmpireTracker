@@ -560,7 +560,10 @@ namespace OE2EmpireTracker.Services
                     PropertyName = prop.PropertyName ?? string.Empty,
                     FriendlyPropertyName = prop.FriendlyPropertyName ?? string.Empty,
                     PropertyValue = prop.PropertyValue.ToString(),
+                    OriginalPropertyValue = prop.OriginalPropertyValue.ToString(),
                     Unit = prop.Unit ?? string.Empty,
+                    ResearchPositive = prop.ResearchPositive,
+                    CanResearch = prop.CanResearch,
                 });
             }
 
@@ -589,8 +592,11 @@ namespace OE2EmpireTracker.Services
                 if (a[i].ModTypeId != b[i].ModTypeId
                     || !string.Equals(a[i].PropertyName, b[i].PropertyName, StringComparison.Ordinal)
                     || !string.Equals(a[i].PropertyValue, b[i].PropertyValue, StringComparison.Ordinal)
+                    || !string.Equals(a[i].OriginalPropertyValue, b[i].OriginalPropertyValue, StringComparison.Ordinal)
                     || !string.Equals(a[i].Unit, b[i].Unit, StringComparison.Ordinal)
-                    || !string.Equals(a[i].FriendlyPropertyName, b[i].FriendlyPropertyName, StringComparison.Ordinal))
+                    || !string.Equals(a[i].FriendlyPropertyName, b[i].FriendlyPropertyName, StringComparison.Ordinal)
+                    || a[i].ResearchPositive != b[i].ResearchPositive
+                    || a[i].CanResearch != b[i].CanResearch)
                 {
                     return false;
                 }
