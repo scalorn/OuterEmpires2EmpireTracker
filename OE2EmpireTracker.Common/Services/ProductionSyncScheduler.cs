@@ -104,5 +104,12 @@ namespace OE2EmpireTracker.Services
         {
             return new SurveyLinkageService(_playerContext);
         }
+
+        /// <inheritdoc/>
+        internal override void RaiseAssetDataChanged()
+        {
+            _playerContext.OnStationDataChanged();
+            _playerContext.OnShipDataChanged(string.Empty);
+        }
     }
 }
