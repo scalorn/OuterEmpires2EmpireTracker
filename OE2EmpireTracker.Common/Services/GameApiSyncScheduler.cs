@@ -596,6 +596,8 @@ namespace OE2EmpireTracker.Services
                     continue;
                 }
 
+                bool colonyChanged = false;
+
                 // Buildings (Req 14.2, 13.6)
                 if (buildingsScopeAvailable)
                 {
@@ -608,6 +610,7 @@ namespace OE2EmpireTracker.Services
                             if (bEnvelope?.Data?.Buildings != null)
                             {
                                 bool buildingsChanged = ColonyMergeService.MergeBuildings(bEnvelope.Data.Buildings, colony);
+                                colonyChanged |= buildingsChanged;
                                 if (buildingsChanged && mergeResult.Updated == 0)
                                 {
                                     mergeResult.Updated++;
@@ -642,6 +645,7 @@ namespace OE2EmpireTracker.Services
                             if (wEnvelope?.Data?.Contents != null)
                             {
                                 bool warehouseChanged = ColonyMergeService.MergeWarehouse(wEnvelope.Data.Contents, colony);
+                                colonyChanged |= warehouseChanged;
                                 if (warehouseChanged && mergeResult.Updated == 0)
                                 {
                                     mergeResult.Updated++;
@@ -676,6 +680,7 @@ namespace OE2EmpireTracker.Services
                             if (wkEnvelope?.Data != null)
                             {
                                 bool workersChanged = ColonyMergeService.MergeWorkers(wkEnvelope.Data, colony);
+                                colonyChanged |= workersChanged;
                                 if (workersChanged && mergeResult.Updated == 0)
                                 {
                                     mergeResult.Updated++;
@@ -698,8 +703,11 @@ namespace OE2EmpireTracker.Services
                     }
                 }
 
-                // Notify UI that this colony's data has been updated (per-colony, not end-of-batch)
-                RaiseColonyDataChanged(colonyUUID);
+                // Notify UI only if this colony actually had changes
+                if (colonyChanged)
+                {
+                    RaiseColonyDataChanged(colonyUUID);
+                }
             }
 
             // 5. Persist and notify (Req 11.1, 11.2, 11.3, 12.1, 12.3)

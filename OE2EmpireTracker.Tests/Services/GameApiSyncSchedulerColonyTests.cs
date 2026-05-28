@@ -282,10 +282,10 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(localColonies.Count, Is.EqualTo(2));
             Assert.That(_scheduler.WriteContextCallCount, Is.EqualTo(1));
 
-            // Should have made: 1 colony list + 1 buildings (403) + 1 warehouse (403)
-            // Second colony's buildings and warehouse should be skipped due to caching
-            // Total: 1 + 1 + 1 = 3 requests (not 5)
-            Assert.That(requestCount, Is.EqualTo(3));
+            // Should have made: 1 colony list + 1 buildings (403) + 1 warehouse (403) + 1 workers (403)
+            // Second colony's buildings, warehouse, and workers should be skipped due to caching
+            // Total: 1 + 1 + 1 + 1 = 4 requests (not 7)
+            Assert.That(requestCount, Is.EqualTo(4));
         }
 
         // -------------------------------------------------------------------
@@ -304,6 +304,7 @@ namespace OE2EmpireTracker.Tests.Services
                 PlanetName = "Planet Alpha",
                 SystemName = "Sol System",
                 ColonyName = "Test Colony",
+                ColonyId = 42,
                 SystemId = 7,
                 ColonySize = 3,
             };
