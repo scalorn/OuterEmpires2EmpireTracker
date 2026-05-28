@@ -449,6 +449,16 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Notifies subscribers that a specific colony's data has changed.
+        /// Override point for testing. In production, calls PlayerContext.OnColonyDataChanged(colonyUUID).
+        /// </summary>
+        /// <param name="colonyUUID">The UUID of the colony that changed.</param>
+        internal virtual void RaiseColonyDataChanged(string colonyUUID)
+        {
+            // Default implementation is a no-op — wired to PlayerContext in production via GameApiContext
+        }
+
+        /// <summary>
         /// Retrieves the mutable station list for the given player UUID.
         /// Override point for testing. Returns null if no stations are found.
         /// </summary>
@@ -687,6 +697,9 @@ namespace OE2EmpireTracker.Services
                         Log.Warn("Colony sync: workers fetch failed for colonyId={0}", apiColony.ColonyId);
                     }
                 }
+
+                // Notify UI that this colony's data has been updated (per-colony, not end-of-batch)
+                RaiseColonyDataChanged(colonyUUID);
             }
 
             // 5. Persist and notify (Req 11.1, 11.2, 11.3, 12.1, 12.3)

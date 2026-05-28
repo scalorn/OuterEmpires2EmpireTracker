@@ -60,5 +60,11 @@ namespace OE2EmpireTracker.Services
         {
             _playerContext.OnColonyDataChanged(string.Empty);
         }
+
+        /// <inheritdoc/>
+        internal override void RaiseColonyDataChanged(string colonyUUID)
+        {
+            _playerContext.OnColonyDataChanged(colonyUUID);
+        }
     }
 }

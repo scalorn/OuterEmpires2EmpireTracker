@@ -40470,10 +40470,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7596571Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2342925Z",
       "colonyId": 586,
       "systemId": 13926,
       "colonySize": 45,
+      "distance": 219.0,
       "surfaceVariation": 1,
       "atmosVariation": 5,
       "hexValue": "0xF2FBD6",
@@ -45993,10 +45994,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8077077Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3068264Z",
       "colonyId": 583,
       "systemId": 1146,
       "colonySize": 45,
+      "distance": 220.0,
       "surfaceVariation": 7,
       "atmosVariation": 6,
       "hexValue": "0xF7F8F5",
@@ -53436,10 +53438,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8017095Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2998247Z",
       "colonyId": 554,
       "systemId": 13704,
       "colonySize": 61,
+      "distance": 201.0,
       "surfaceVariation": 3,
       "hexValue": "0xE6CFF9",
       "systemObjectTypeName": "Planet",
@@ -57380,10 +57383,11 @@
           "NeedBy": "2026-06-01T14:01:01.69Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8067076Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3058264Z",
       "colonyId": 582,
       "systemId": 1146,
       "colonySize": 32,
+      "distance": 220.0,
       "surfaceVariation": 2,
       "hexValue": "0xAEFDED",
       "systemObjectTypeName": "Planet",
@@ -64913,10 +64917,11 @@
           "NeedBy": "2026-06-02T14:01:17.63Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7806617Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2662994Z",
       "colonyId": 560,
       "systemId": 6845,
       "colonySize": 61,
+      "distance": 211.0,
       "surfaceVariation": 3,
       "hexValue": "0xCBD3F8",
       "systemObjectTypeName": "Planet",
@@ -72732,10 +72737,11 @@
           "NeedBy": "2026-06-01T14:00:57.31Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8127092Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3138282Z",
       "colonyId": 525,
       "systemId": 16657,
       "colonySize": 62,
+      "distance": 201.0,
       "surfaceVariation": 7,
       "hexValue": "0xD6CEFE",
       "systemObjectTypeName": "Moon",
@@ -77648,10 +77654,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7756604Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2592978Z",
       "colonyId": 576,
       "systemId": 6673,
       "colonySize": 38,
+      "distance": 225.0,
       "surfaceVariation": 1,
       "hexValue": "0xC9B0BF",
       "systemObjectTypeName": "Planet",
@@ -80756,10 +80763,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7846628Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2723010Z",
       "colonyId": 565,
       "systemId": 6845,
       "colonySize": 25,
+      "distance": 211.0,
       "surfaceVariation": 6,
       "hexValue": "0xF3FFEC",
       "systemObjectTypeName": "Planet",
@@ -86202,11 +86210,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7926645Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2853039Z",
       "colonyId": 534,
       "systemId": 15973,
       "colonySize": 45,
-      "distance": 190.0,
+      "distance": 184.0,
       "surfaceVariation": 1,
       "hexValue": "0xA7D3E6",
       "systemObjectTypeName": "Planet",
@@ -91789,10 +91797,11 @@
           "NeedBy": "2026-06-03T15:01:07.903Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8017095Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2988252Z",
       "colonyId": 553,
       "systemId": 13704,
       "colonySize": 47,
+      "distance": 201.0,
       "surfaceVariation": 5,
       "hexValue": "0xDBD4C9",
       "systemObjectTypeName": "Planet",
@@ -96583,11 +96592,11 @@
           "NeedBy": "2026-06-02T14:01:16.017Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7946648Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2873038Z",
       "colonyId": 537,
       "systemId": 15973,
       "colonySize": 39,
-      "distance": 190.0,
+      "distance": 184.0,
       "surfaceVariation": 7,
       "atmosVariation": 3,
       "hexValue": "0xF6D8F1",
@@ -100577,10 +100586,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8187104Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3238304Z",
       "colonyId": 521,
       "systemId": 16657,
       "colonySize": 32,
+      "distance": 201.0,
       "surfaceVariation": 7,
       "atmosVariation": 6,
       "hexValue": "0xDEE4DE",
@@ -106438,11 +106448,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7936647Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2863042Z",
       "colonyId": 536,
       "systemId": 15973,
       "colonySize": 49,
-      "distance": 190.0,
+      "distance": 184.0,
       "surfaceVariation": 7,
       "atmosVariation": 3,
       "hexValue": "0xD5F9D5",
@@ -111236,10 +111246,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7766608Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2602983Z",
       "colonyId": 577,
       "systemId": 6673,
       "colonySize": 38,
+      "distance": 225.0,
       "surfaceVariation": 3,
       "hexValue": "0xF1D7E2",
       "systemObjectTypeName": "Planet",
@@ -118937,10 +118948,11 @@
           "NeedBy": "2026-06-01T14:01:00.67Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7706596Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2512955Z",
       "colonyId": 570,
       "systemId": 6673,
       "colonySize": 61,
+      "distance": 225.0,
       "surfaceVariation": 2,
       "hexValue": "0xD5E3FC",
       "systemObjectTypeName": "Planet",
@@ -126433,10 +126445,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7976655Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2923056Z",
       "colonyId": 548,
       "systemId": 13704,
       "colonySize": 59,
+      "distance": 201.0,
       "surfaceVariation": 5,
       "atmosVariation": 6,
       "hexValue": "0xF8F6FB",
@@ -132110,10 +132123,11 @@
           "NeedBy": "2026-06-03T15:01:13.14Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8077077Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3078274Z",
       "colonyId": 584,
       "systemId": 1146,
       "colonySize": 47,
+      "distance": 220.0,
       "surfaceVariation": 7,
       "atmosVariation": 6,
       "hexValue": "0xFBFCFE",
@@ -139549,10 +139563,11 @@
           "NeedBy": "2026-06-03T15:01:14.507Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7636578Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2412938Z",
       "colonyId": 600,
       "systemId": 476,
       "colonySize": 62,
+      "distance": 205.0,
       "surfaceVariation": 3,
       "hexValue": "0xF6F7D9",
       "systemObjectTypeName": "Planet",
@@ -146092,10 +146107,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7986657Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2953062Z",
       "colonyId": 550,
       "systemId": 13704,
       "colonySize": 54,
+      "distance": 201.0,
       "surfaceVariation": 4,
       "hexValue": "0xAFAFCD",
       "systemObjectTypeName": "Planet",
@@ -151238,10 +151254,11 @@
           "NeedBy": "2026-06-01T14:01:00.88Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7726604Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2532968Z",
       "colonyId": 572,
       "systemId": 6673,
       "colonySize": 41,
+      "distance": 225.0,
       "surfaceVariation": 3,
       "hexValue": "0xC8FFF5",
       "systemObjectTypeName": "Planet",
@@ -156276,10 +156293,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8147096Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3178293Z",
       "colonyId": 523,
       "systemId": 16657,
       "colonySize": 40,
+      "distance": 201.0,
       "surfaceVariation": 7,
       "atmosVariation": 6,
       "hexValue": "0xF8F6FF",
@@ -159386,11 +159404,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7886639Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2793023Z",
       "colonyId": 592,
       "systemId": 8174,
       "colonySize": 25,
-      "distance": 196.0,
+      "distance": 190.0,
       "surfaceVariation": 2,
       "hexValue": "0xA0F8EB",
       "systemObjectTypeName": "Planet",
@@ -166945,10 +166963,11 @@
           "NeedBy": "2026-06-03T15:01:04.533Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8107084Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3118278Z",
       "colonyId": 516,
       "systemId": 16657,
       "colonySize": 62,
+      "distance": 201.0,
       "surfaceVariation": 5,
       "hexValue": "0xFAC5DE",
       "systemObjectTypeName": "Planet",
@@ -171531,10 +171550,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7866631Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2753016Z",
       "colonyId": 567,
       "systemId": 6845,
       "colonySize": 38,
+      "distance": 211.0,
       "surfaceVariation": 7,
       "atmosVariation": 2,
       "hexValue": "0xC8D8E4",
@@ -175733,11 +175753,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7676586Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2472946Z",
       "colonyId": 596,
       "systemId": 2471,
       "colonySize": 34,
-      "distance": 191.0,
+      "distance": 186.0,
       "surfaceVariation": 7,
       "hexValue": "0xD3EDD1",
       "systemObjectTypeName": "Moon",
@@ -179889,11 +179909,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7906639Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2813030Z",
       "colonyId": 594,
       "systemId": 8174,
       "colonySize": 34,
-      "distance": 196.0,
+      "distance": 190.0,
       "surfaceVariation": 7,
       "hexValue": "0xFEF6F5",
       "systemObjectTypeName": "Moon",
@@ -184487,10 +184507,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7616575Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2372932Z",
       "colonyId": 588,
       "systemId": 13926,
       "colonySize": 38,
+      "distance": 219.0,
       "surfaceVariation": 7,
       "atmosVariation": 1,
       "hexValue": "0xFFFCF5",
@@ -190486,10 +190507,11 @@
           "NeedBy": "2026-06-03T15:01:13.603Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7626576Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2382933Z",
       "colonyId": 589,
       "systemId": 13926,
       "colonySize": 48,
+      "distance": 219.0,
       "surfaceVariation": 6,
       "hexValue": "0xBF9ABD",
       "systemObjectTypeName": "Planet",
@@ -198095,10 +198117,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7686591Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2482959Z",
       "colonyId": 568,
       "systemId": 6673,
       "colonySize": 60,
+      "distance": 225.0,
       "surfaceVariation": 6,
       "hexValue": "0xC9F9FF",
       "systemObjectTypeName": "Planet",
@@ -201582,10 +201605,11 @@
           "NeedBy": "2026-06-02T14:01:17.937Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7836626Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2713007Z",
       "colonyId": 564,
       "systemId": 6845,
       "colonySize": 27,
+      "distance": 211.0,
       "surfaceVariation": 5,
       "hexValue": "0xEEAAFB",
       "systemObjectTypeName": "Planet",
@@ -204688,10 +204712,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8177104Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3218301Z",
       "colonyId": 522,
       "systemId": 16657,
       "colonySize": 25,
+      "distance": 201.0,
       "surfaceVariation": 2,
       "hexValue": "0xCFE3CF",
       "systemObjectTypeName": "Planet",
@@ -207796,10 +207821,11 @@
           "NeedBy": "2026-06-01T14:01:00.327Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7856628Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2743016Z",
       "colonyId": 566,
       "systemId": 6845,
       "colonySize": 25,
+      "distance": 211.0,
       "surfaceVariation": 7,
       "atmosVariation": 4,
       "hexValue": "0xDFCBD9",
@@ -212707,10 +212733,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7816620Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2683001Z",
       "colonyId": 562,
       "systemId": 6845,
       "colonySize": 39,
+      "distance": 211.0,
       "surfaceVariation": 6,
       "hexValue": "0xFFFFFF",
       "systemObjectTypeName": "Planet",
@@ -220228,10 +220255,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8177104Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3228301Z",
       "colonyId": 520,
       "systemId": 16657,
       "colonySize": 61,
+      "distance": 201.0,
       "surfaceVariation": 4,
       "hexValue": "0xFFFFFF",
       "systemObjectTypeName": "Planet",
@@ -226987,10 +227015,11 @@
           "NeedBy": "2026-06-03T15:01:07.66Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7996660Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2963064Z",
       "colonyId": 551,
       "systemId": 13704,
       "colonySize": 55,
+      "distance": 201.0,
       "surfaceVariation": 7,
       "atmosVariation": 5,
       "hexValue": "0xF3E4D9",
@@ -234230,10 +234259,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8027065Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3008256Z",
       "colonyId": 555,
       "systemId": 13704,
       "colonySize": 60,
+      "distance": 201.0,
       "surfaceVariation": 4,
       "hexValue": "0xFADDCA",
       "systemObjectTypeName": "Planet",
@@ -238335,10 +238365,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7796615Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2652985Z",
       "colonyId": 559,
       "systemId": 6845,
       "colonySize": 32,
+      "distance": 211.0,
       "surfaceVariation": 7,
       "atmosVariation": 1,
       "hexValue": "0xFAF8F8",
@@ -245105,11 +245136,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7916640Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2823036Z",
       "colonyId": 532,
       "systemId": 15973,
       "colonySize": 55,
-      "distance": 190.0,
+      "distance": 184.0,
       "surfaceVariation": 2,
       "atmosVariation": 7,
       "hexValue": "0xEACECF",
@@ -249318,10 +249349,11 @@
           "NeedBy": "2026-06-01T14:01:02.13Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7606572Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2362921Z",
       "colonyId": 587,
       "systemId": 13926,
       "colonySize": 34,
+      "distance": 219.0,
       "surfaceVariation": 7,
       "hexValue": "0xD2CBED",
       "systemObjectTypeName": "Moon",
@@ -255545,10 +255577,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8006662Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2978331Z",
       "colonyId": 552,
       "systemId": 13704,
       "colonySize": 53,
+      "distance": 201.0,
       "surfaceVariation": 7,
       "atmosVariation": 5,
       "hexValue": "0xF6DFDE",
@@ -259415,10 +259448,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8057072Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3048265Z",
       "colonyId": 581,
       "systemId": 1146,
       "colonySize": 32,
+      "distance": 220.0,
       "surfaceVariation": 2,
       "hexValue": "0xE8C2AD",
       "systemObjectTypeName": "Planet",
@@ -263315,10 +263349,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7716594Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2522965Z",
       "colonyId": 571,
       "systemId": 6673,
       "colonySize": 32,
+      "distance": 225.0,
       "surfaceVariation": 7,
       "hexValue": "0xE5F1D0",
       "systemObjectTypeName": "Moon",
@@ -270180,10 +270215,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8117088Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3128284Z",
       "colonyId": 524,
       "systemId": 16657,
       "colonySize": 56,
+      "distance": 201.0,
       "surfaceVariation": 7,
       "hexValue": "0xFFEBCD",
       "systemObjectTypeName": "Moon",
@@ -277490,10 +277526,11 @@
           "NeedBy": "2026-06-02T14:01:20.91Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7636578Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2392932Z",
       "colonyId": 599,
       "systemId": 476,
       "colonySize": 61,
+      "distance": 205.0,
       "surfaceVariation": 5,
       "atmosVariation": 3,
       "hexValue": "0xF6FCFD",
@@ -285320,10 +285357,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8157105Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3188293Z",
       "colonyId": 518,
       "systemId": 16657,
       "colonySize": 62,
+      "distance": 201.0,
       "surfaceVariation": 1,
       "hexValue": "0x9DF1F7",
       "systemObjectTypeName": "Planet",
@@ -292828,11 +292866,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7946648Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2893048Z",
       "colonyId": 535,
       "systemId": 15973,
       "colonySize": 62,
-      "distance": 190.0,
+      "distance": 184.0,
       "surfaceVariation": 1,
       "hexValue": "0xF6F5C8",
       "systemObjectTypeName": "Planet",
@@ -300691,10 +300729,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8097082Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3108277Z",
       "colonyId": 515,
       "systemId": 16657,
       "colonySize": 61,
+      "distance": 201.0,
       "surfaceVariation": 6,
       "atmosVariation": 7,
       "hexValue": "0xF6FCFE",
@@ -304404,10 +304443,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7656582Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2432943Z",
       "colonyId": 602,
       "systemId": 476,
       "colonySize": 31,
+      "distance": 205.0,
       "surfaceVariation": 4,
       "hexValue": "0xE1DBCB",
       "systemObjectTypeName": "Planet",
@@ -311684,10 +311724,11 @@
           "NeedBy": "2026-06-01T14:00:57.387Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8137105Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3168288Z",
       "colonyId": 526,
       "systemId": 16657,
       "colonySize": 54,
+      "distance": 201.0,
       "surfaceVariation": 7,
       "atmosVariation": 1,
       "hexValue": "0xCADAD5",
@@ -316070,10 +316111,11 @@
           "NeedBy": "2026-06-03T15:01:12.653Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7776610Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2612979Z",
       "colonyId": 578,
       "systemId": 6673,
       "colonySize": 34,
+      "distance": 225.0,
       "surfaceVariation": 7,
       "atmosVariation": 4,
       "hexValue": "0xE0E4CA",
@@ -320693,10 +320735,11 @@
           "NeedBy": "2026-06-03T15:01:14.27Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8037068Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3028259Z",
       "colonyId": 597,
       "systemId": 2323,
       "colonySize": 38,
+      "distance": 227.0,
       "surfaceVariation": 1,
       "hexValue": "0xCB9DDA",
       "systemObjectTypeName": "Planet",
@@ -328265,41 +328308,12 @@
           "extraProperties": []
         }
       ],
-      "Commodities": [
-        {
-          "Name": "Coreseeker Guidance Bits",
-          "Requested": 45,
-          "NeedBy": "2026-06-03T15:01:13.25Z"
-        },
-        {
-          "Name": "Exoskeleton Waldos",
-          "Requested": 37,
-          "NeedBy": "2026-06-02T14:01:19.583Z"
-        },
-        {
-          "Name": "Holomap Units",
-          "Requested": 26,
-          "Delivered": 26,
-          "NeedBy": "2026-05-28T10:01:23.293Z",
-          "Fulfilled": true
-        },
-        {
-          "Name": "Macroscope Chassis",
-          "Requested": 31,
-          "Delivered": 31,
-          "NeedBy": "2026-05-29T11:01:19.203Z",
-          "Fulfilled": true
-        },
-        {
-          "Name": "Weathermate Interconnects",
-          "Requested": 34,
-          "NeedBy": "2026-06-01T14:01:01.927Z"
-        }
-      ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7586566Z",
+      "Commodities": [],
+      "LastImportDateTime": "2026-05-28T00:08:28.2332921Z",
       "colonyId": 585,
       "systemId": 13926,
       "colonySize": 61,
+      "distance": 219.0,
       "surfaceVariation": 4,
       "atmosVariation": 7,
       "hexValue": "0xD8D4E7",
@@ -335767,10 +335781,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7776610Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2622988Z",
       "colonyId": 579,
       "systemId": 6673,
       "colonySize": 60,
+      "distance": 225.0,
       "surfaceVariation": 7,
       "atmosVariation": 3,
       "hexValue": "0xF4E0F4",
@@ -340786,10 +340801,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7746603Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2572976Z",
       "colonyId": 575,
       "systemId": 6673,
       "colonySize": 40,
+      "distance": 225.0,
       "surfaceVariation": 2,
       "hexValue": "0xE0D8D1",
       "systemObjectTypeName": "Planet",
@@ -347509,10 +347525,11 @@
           "NeedBy": "2026-06-02T14:01:16.427Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7956650Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2903052Z",
       "colonyId": 546,
       "systemId": 13704,
       "colonySize": 54,
+      "distance": 201.0,
       "surfaceVariation": 5,
       "hexValue": "0xCBFCCC",
       "systemObjectTypeName": "Planet",
@@ -354928,10 +354945,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7646580Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2422941Z",
       "colonyId": 601,
       "systemId": 476,
       "colonySize": 64,
+      "distance": 205.0,
       "surfaceVariation": 1,
       "hexValue": "0xF698D7",
       "systemObjectTypeName": "Planet",
@@ -358484,10 +358502,11 @@
           "NeedBy": "2026-06-03T15:01:11.797Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7696592Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2502961Z",
       "colonyId": 569,
       "systemId": 6673,
       "colonySize": 26,
+      "distance": 225.0,
       "surfaceVariation": 4,
       "hexValue": "0xBCB8F1",
       "systemObjectTypeName": "Planet",
@@ -365914,10 +365933,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7816620Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2672997Z",
       "colonyId": 561,
       "systemId": 6845,
       "colonySize": 60,
+      "distance": 211.0,
       "surfaceVariation": 7,
       "atmosVariation": 4,
       "hexValue": "0xECF3DA",
@@ -373103,10 +373123,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7786612Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2632986Z",
       "colonyId": 558,
       "systemId": 6845,
       "colonySize": 56,
+      "distance": 211.0,
       "surfaceVariation": 1,
       "atmosVariation": 4,
       "hexValue": "0xCFF9CC",
@@ -376231,10 +376252,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7986657Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2943056Z",
       "colonyId": 549,
       "systemId": 13704,
       "colonySize": 25,
+      "distance": 201.0,
       "surfaceVariation": 4,
       "hexValue": "0xACB8BA",
       "systemObjectTypeName": "Planet",
@@ -380362,10 +380384,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7666585Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2452941Z",
       "colonyId": 603,
       "systemId": 476,
       "colonySize": 34,
+      "distance": 205.0,
       "surfaceVariation": 6,
       "hexValue": "0xFEE7F8",
       "systemObjectTypeName": "Planet",
@@ -385091,11 +385114,11 @@
           "NeedBy": "2026-06-01T14:00:57.877Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7916640Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2843030Z",
       "colonyId": 533,
       "systemId": 15973,
       "colonySize": 39,
-      "distance": 190.0,
+      "distance": 184.0,
       "surfaceVariation": 7,
       "atmosVariation": 3,
       "hexValue": "0xF8FEFA",
@@ -388189,10 +388212,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8047071Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3038255Z",
       "colonyId": 598,
       "systemId": 2323,
       "colonySize": 26,
+      "distance": 227.0,
       "surfaceVariation": 2,
       "hexValue": "0xC0AF9C",
       "systemObjectTypeName": "Planet",
@@ -391823,10 +391847,11 @@
           "NeedBy": "2026-06-03T15:01:11.227Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7826623Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2703010Z",
       "colonyId": 563,
       "systemId": 6845,
       "colonySize": 27,
+      "distance": 211.0,
       "surfaceVariation": 4,
       "hexValue": "0xF9E5D9",
       "systemObjectTypeName": "Planet",
@@ -395233,10 +395258,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7726604Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2552973Z",
       "colonyId": 573,
       "systemId": 6673,
       "colonySize": 26,
+      "distance": 225.0,
       "surfaceVariation": 2,
       "hexValue": "0xC1D4BB",
       "systemObjectTypeName": "Planet",
@@ -400010,10 +400036,11 @@
           "NeedBy": "2026-06-01T14:00:58.74Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7966654Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2913054Z",
       "colonyId": 547,
       "systemId": 13704,
       "colonySize": 39,
+      "distance": 201.0,
       "surfaceVariation": 7,
       "hexValue": "0xCAD2D0",
       "systemObjectTypeName": "Moon",
@@ -407797,10 +407824,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8127092Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3158286Z",
       "colonyId": 517,
       "systemId": 16657,
       "colonySize": 60,
+      "distance": 201.0,
       "surfaceVariation": 7,
       "atmosVariation": 1,
       "hexValue": "0xFDFEF9",
@@ -410293,11 +410321,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7676586Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2462953Z",
       "colonyId": 595,
       "systemId": 2471,
       "colonySize": 19,
-      "distance": 191.0,
+      "distance": 186.0,
       "surfaceVariation": 1,
       "hexValue": "0x9DC9B0",
       "systemObjectTypeName": "Planet",
@@ -414490,11 +414518,11 @@
           "NeedBy": "2026-06-02T14:01:20.307Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7896637Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2803032Z",
       "colonyId": 593,
       "systemId": 8174,
       "colonySize": 34,
-      "distance": 196.0,
+      "distance": 190.0,
       "surfaceVariation": 7,
       "hexValue": "0xF3FDCB",
       "systemObjectTypeName": "Moon",
@@ -417044,10 +417072,11 @@
           "NeedBy": "2026-06-03T15:01:12.297Z"
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7736599Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2562966Z",
       "colonyId": 574,
       "systemId": 6673,
       "colonySize": 20,
+      "distance": 225.0,
       "surfaceVariation": 6,
       "hexValue": "0xA8C0CD",
       "systemObjectTypeName": "Planet",
@@ -423515,10 +423544,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8087080Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3088271Z",
       "colonyId": 531,
       "systemId": 11196,
       "colonySize": 54,
+      "distance": 198.0,
       "surfaceVariation": 1,
       "hexValue": "0xF0CC9F",
       "systemObjectTypeName": "Planet",
@@ -427931,10 +427961,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.8167114Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.3208291Z",
       "colonyId": 519,
       "systemId": 16657,
       "colonySize": 25,
+      "distance": 201.0,
       "surfaceVariation": 1,
       "hexValue": "0xDDF3CC",
       "systemObjectTypeName": "Planet",
@@ -434729,11 +434760,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7876631Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2763010Z",
       "colonyId": 590,
       "systemId": 8174,
       "colonySize": 55,
-      "distance": 196.0,
+      "distance": 190.0,
       "surfaceVariation": 5,
       "hexValue": "0xDACEFC",
       "systemObjectTypeName": "Planet",
@@ -440276,11 +440307,11 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-28T00:02:52.7876631Z",
+      "LastImportDateTime": "2026-05-28T00:08:28.2773020Z",
       "colonyId": 591,
       "systemId": 8174,
       "colonySize": 45,
-      "distance": 196.0,
+      "distance": 190.0,
       "surfaceVariation": 2,
       "hexValue": "0xF3DBE2",
       "systemObjectTypeName": "Planet",
