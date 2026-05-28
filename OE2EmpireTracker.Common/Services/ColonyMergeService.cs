@@ -993,16 +993,28 @@ namespace OE2EmpireTracker.Services
         {
             var mappedType = MapTypeC(apiItem.TypeC);
 
-            // Find local match by Name + ItemType (case-insensitive name match)
+            // For resources, parse the combined name into base name + purity
+            string matchName = apiItem.ResourceName;
+            string purity = string.Empty;
+            if (mappedType == ItemType.ItemTypeEnum.Resource)
+            {
+                var (baseName, extractedPurity) = AssetMergeService.ExtractResourcePurity(apiItem.ResourceName);
+                matchName = baseName;
+                purity = extractedPurity;
+            }
+
+            // Find local match by parsed Name + ItemType + ResourcePurity (case-insensitive)
             var match = colony.Items.Items.Values.FirstOrDefault(i =>
-                string.Equals(i.Name, apiItem.ResourceName, StringComparison.OrdinalIgnoreCase) &&
-                i.ItemType == mappedType);
+                i.ItemType == mappedType &&
+                string.Equals(i.Name, matchName, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(i.ResourcePurity ?? string.Empty, purity, StringComparison.OrdinalIgnoreCase));
 
             if (match != null)
             {
                 Log.Debug(
-                    "MergeWarehouse: MATCHED item '{0}' (type={1}) to local UUID={2} GameItemId={3}",
-                    apiItem.ResourceName,
+                    "MergeWarehouse: MATCHED item '{0}' purity='{1}' (type={2}) to local UUID={3} GameItemId={4}",
+                    matchName,
+                    purity,
                     mappedType,
                     match.UUID,
                     match.GameItemId);
@@ -1010,19 +1022,13 @@ namespace OE2EmpireTracker.Services
             }
             else
             {
-                // Log all existing items of same type for diagnosis
-                var sameTypeItems = colony.Items.Items.Values
-                    .Where(i => i.ItemType == mappedType && i.Name != null && i.Name.Contains("Alkali Inorganics"))
-                    .Select(i => $"UUID={i.UUID} Name='{i.Name}' GameItemId={i.GameItemId} Qty={i.Quantity}")
-                    .ToList();
-
                 Log.Debug(
-                    "MergeWarehouse: NO MATCH for '{0}' (type={1}) — creating new. Existing same-name items: [{2}]",
-                    apiItem.ResourceName,
-                    mappedType,
-                    sameTypeItems.Count > 0 ? string.Join("; ", sameTypeItems) : "none");
+                    "MergeWarehouse: NO MATCH for '{0}' purity='{1}' (type={2}) — creating new",
+                    matchName,
+                    purity,
+                    mappedType);
 
-                CreateNewItem(apiItem, mappedType, colony);
+                CreateNewItem(apiItem, mappedType, matchName, purity, colony);
                 return true;
             }
         }
@@ -1152,9 +1158,9 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Creates a new Item from API data and adds it to the colony's ItemBag.
         /// </summary>
-        private static void CreateNewItem(GameApiWarehouseItem apiItem, ItemType.ItemTypeEnum mappedType, Colony colony)
+        private static void CreateNewItem(GameApiWarehouseItem apiItem, ItemType.ItemTypeEnum mappedType, string parsedName, string purity, Colony colony)
         {
-            var newItem = new Item(mappedType, apiItem.ResourceName ?? string.Empty)
+            var newItem = new Item(mappedType, parsedName)
             {
                 UUID = Guid.NewGuid().ToString(),
                 Quantity = apiItem.Amount,
@@ -1170,15 +1176,17 @@ namespace OE2EmpireTracker.Services
                 JobName = apiItem.JobName ?? string.Empty,
                 JobTrack = apiItem.JobTrack ?? string.Empty,
                 ShipPartType = apiItem.ShipPartType ?? string.Empty,
+                ResourcePurity = purity,
                 ItemProperties = MapItemProperties(apiItem.Properties),
             };
 
             colony.Items.AddItem(newItem);
 
             Log.Info(
-                "MergeWarehouse: created new item UUID={0} Name='{1}' Type={2} Qty={3}",
+                "MergeWarehouse: created new item UUID={0} Name='{1}' Purity='{2}' Type={3} Qty={4}",
                 newItem.UUID,
                 newItem.Name,
+                purity,
                 newItem.ItemType,
                 newItem.Quantity);
         }
