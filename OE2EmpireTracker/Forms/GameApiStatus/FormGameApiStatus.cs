@@ -6,9 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Runtime.InteropServices;
+using System.Security;
 using System.Threading;
 using System.Windows.Forms;
 using NLog;
+using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
@@ -48,6 +51,8 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
 
             this.btnReset.Click += this.BtnReset_Click;
             this.btnCopyToClipboard.Click += this.BtnCopyToClipboard_Click;
+            this.btnTestFetch.Click += this.BtnTestFetch_Click;
+            this.cboTestLocationType.SelectedIndex = 0;
 
             GameApiMetricsCollector.Instance.MetricsUpdated += this.OnMetricsUpdated;
 
@@ -118,6 +123,33 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             sb.Append("Circuit Breaker: Closed");
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Converts a <see cref="SecureString"/> to a plain-text string for API calls.
+        /// </summary>
+        /// <param name="secureString">The secure string to convert.</param>
+        /// <returns>The plain-text value, or null if the input is null.</returns>
+        private static string SecureStringToPlainText(SecureString secureString)
+        {
+            if (secureString == null)
+            {
+                return null;
+            }
+
+            IntPtr ptr = IntPtr.Zero;
+            try
+            {
+                ptr = Marshal.SecureStringToGlobalAllocUnicode(secureString);
+                return Marshal.PtrToStringUni(ptr);
+            }
+            finally
+            {
+                if (ptr != IntPtr.Zero)
+                {
+                    Marshal.ZeroFreeGlobalAllocUnicode(ptr);
+                }
+            }
         }
 
         /// <inheritdoc/>
@@ -279,6 +311,89 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
                     this.btnCopyToClipboard.Text = "Copy to Clipboard";
                 };
                 revertTimer.Start();
+            }
+        }
+
+        private async void BtnTestFetch_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(this.txtTestLocationId.Text.Trim(), out int locationId))
+            {
+                this.txtTestResult.Text = "Error: Location ID must be a number";
+                return;
+            }
+
+            string locationType = this.cboTestLocationType.SelectedItem?.ToString() ?? "Co";
+            this.btnTestFetch.Enabled = false;
+            this.txtTestResult.Text = "Fetching...";
+
+            try
+            {
+                var context = GameApiContext.Instance;
+                if (context == null)
+                {
+                    this.txtTestResult.Text = "Error: Game API is not initialized. Check Preferences.";
+                    return;
+                }
+
+                var settings = PreferencesStore.GetInstance().Preferences.GameApiConnection;
+                string playerUUID = EmpireContext.PlayerContext.CurrentPlayerUUID;
+                if (string.IsNullOrEmpty(playerUUID))
+                {
+                    this.txtTestResult.Text = "Error: No player selected.";
+                    return;
+                }
+
+                SecureString secureSecret = context.CredentialManager.GetKey(playerUUID);
+                if (secureSecret == null)
+                {
+                    this.txtTestResult.Text = "Error: No API key configured for current player.";
+                    return;
+                }
+
+                string secret = SecureStringToPlainText(secureSecret);
+                secureSecret.Dispose();
+
+                var tokenResult = await context.Client.ExchangeTokenAsync(
+                    settings.AppId,
+                    settings.ClientId,
+                    secret).ConfigureAwait(true);
+
+                if (!tokenResult.Success)
+                {
+                    this.txtTestResult.Text = "Token exchange failed: " + (tokenResult.ErrorMessage ?? "unknown");
+                    return;
+                }
+
+                var result = await context.Client.GetAssetLocationDetailAsync(
+                    settings.AppId,
+                    tokenResult.Token.AccessToken,
+                    locationId,
+                    locationType).ConfigureAwait(true);
+
+                if (result.Success)
+                {
+                    try
+                    {
+                        var obj = Newtonsoft.Json.Linq.JToken.Parse(result.Json);
+                        this.txtTestResult.Text = obj.ToString(Newtonsoft.Json.Formatting.Indented);
+                    }
+                    catch
+                    {
+                        this.txtTestResult.Text = result.Json;
+                    }
+                }
+                else
+                {
+                    this.txtTestResult.Text = "Failed: " + (result.Json ?? "null");
+                }
+            }
+            catch (Exception ex)
+            {
+                this.txtTestResult.Text = "Exception: " + ex.Message;
+            }
+            finally
+            {
+                this.btnTestFetch.Enabled = true;
             }
         }
 

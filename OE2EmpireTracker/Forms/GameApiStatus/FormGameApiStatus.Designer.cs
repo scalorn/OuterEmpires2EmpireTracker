@@ -62,6 +62,14 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             this.lblResetTimestamp = new System.Windows.Forms.Label();
             this.btnReset = new System.Windows.Forms.Button();
             this.btnCopyToClipboard = new System.Windows.Forms.Button();
+            this.pnlTestApi = new System.Windows.Forms.Panel();
+            this.pnlTestApiInput = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblTestLocationId = new System.Windows.Forms.Label();
+            this.txtTestLocationId = new System.Windows.Forms.TextBox();
+            this.lblTestLocationType = new System.Windows.Forms.Label();
+            this.cboTestLocationType = new System.Windows.Forms.ComboBox();
+            this.btnTestFetch = new System.Windows.Forms.Button();
+            this.txtTestResult = new System.Windows.Forms.TextBox();
 
             this.pnlSummary.SuspendLayout();
             this.pnlMiddle.SuspendLayout();
@@ -69,6 +77,8 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             this.pnlTransfer.SuspendLayout();
             this.pnlState.SuspendLayout();
             this.pnlControls.SuspendLayout();
+            this.pnlTestApi.SuspendLayout();
+            this.pnlTestApiInput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHistory)).BeginInit();
             this.SuspendLayout();
             //
@@ -366,12 +376,86 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             this.colBytes.ReadOnly = true;
             this.colBytes.Width = 70;
             //
+            // pnlTestApi
+            //
+            this.pnlTestApi.Controls.Add(this.txtTestResult);
+            this.pnlTestApi.Controls.Add(this.pnlTestApiInput);
+            this.pnlTestApi.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlTestApi.Location = new System.Drawing.Point(0, 361);
+            this.pnlTestApi.Name = "pnlTestApi";
+            this.pnlTestApi.Size = new System.Drawing.Size(784, 200);
+            //
+            // pnlTestApiInput
+            //
+            this.pnlTestApiInput.Controls.Add(this.lblTestLocationId);
+            this.pnlTestApiInput.Controls.Add(this.txtTestLocationId);
+            this.pnlTestApiInput.Controls.Add(this.lblTestLocationType);
+            this.pnlTestApiInput.Controls.Add(this.cboTestLocationType);
+            this.pnlTestApiInput.Controls.Add(this.btnTestFetch);
+            this.pnlTestApiInput.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTestApiInput.Location = new System.Drawing.Point(0, 0);
+            this.pnlTestApiInput.Name = "pnlTestApiInput";
+            this.pnlTestApiInput.Padding = new System.Windows.Forms.Padding(4);
+            this.pnlTestApiInput.Size = new System.Drawing.Size(784, 32);
+            //
+            // lblTestLocationId
+            //
+            this.lblTestLocationId.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTestLocationId.AutoSize = true;
+            this.lblTestLocationId.Location = new System.Drawing.Point(7, 9);
+            this.lblTestLocationId.Name = "lblTestLocationId";
+            this.lblTestLocationId.Size = new System.Drawing.Size(70, 13);
+            this.lblTestLocationId.Text = "Location ID:";
+            //
+            // txtTestLocationId
+            //
+            this.txtTestLocationId.Location = new System.Drawing.Point(83, 7);
+            this.txtTestLocationId.Name = "txtTestLocationId";
+            this.txtTestLocationId.Size = new System.Drawing.Size(80, 20);
+            //
+            // lblTestLocationType
+            //
+            this.lblTestLocationType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTestLocationType.AutoSize = true;
+            this.lblTestLocationType.Location = new System.Drawing.Point(169, 9);
+            this.lblTestLocationType.Name = "lblTestLocationType";
+            this.lblTestLocationType.Size = new System.Drawing.Size(35, 13);
+            this.lblTestLocationType.Text = "Type:";
+            //
+            // cboTestLocationType
+            //
+            this.cboTestLocationType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTestLocationType.Items.AddRange(new object[] { "Co", "St", "Sh", "Cr" });
+            this.cboTestLocationType.Location = new System.Drawing.Point(210, 6);
+            this.cboTestLocationType.Name = "cboTestLocationType";
+            this.cboTestLocationType.Size = new System.Drawing.Size(55, 21);
+            //
+            // btnTestFetch
+            //
+            this.btnTestFetch.Location = new System.Drawing.Point(271, 5);
+            this.btnTestFetch.Name = "btnTestFetch";
+            this.btnTestFetch.Size = new System.Drawing.Size(60, 23);
+            this.btnTestFetch.Text = "Fetch";
+            this.btnTestFetch.UseVisualStyleBackColor = true;
+            //
+            // txtTestResult
+            //
+            this.txtTestResult.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtTestResult.Location = new System.Drawing.Point(0, 32);
+            this.txtTestResult.Multiline = true;
+            this.txtTestResult.Name = "txtTestResult";
+            this.txtTestResult.ReadOnly = true;
+            this.txtTestResult.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtTestResult.Size = new System.Drawing.Size(784, 168);
+            this.txtTestResult.WordWrap = false;
+            //
             // FormGameApiStatus
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.dgvHistory);
+            this.Controls.Add(this.pnlTestApi);
             this.Controls.Add(this.pnlControls);
             this.Controls.Add(this.pnlMiddle);
             this.Controls.Add(this.pnlTpsGraph);
@@ -390,6 +474,10 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             this.pnlState.PerformLayout();
             this.pnlControls.ResumeLayout(false);
             this.pnlControls.PerformLayout();
+            this.pnlTestApi.ResumeLayout(false);
+            this.pnlTestApi.PerformLayout();
+            this.pnlTestApiInput.ResumeLayout(false);
+            this.pnlTestApiInput.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHistory)).EndInit();
             this.ResumeLayout(false);
         }
@@ -429,5 +517,13 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
         private System.Windows.Forms.Label lblResetTimestamp;
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.Button btnCopyToClipboard;
+        private System.Windows.Forms.Panel pnlTestApi;
+        private System.Windows.Forms.FlowLayoutPanel pnlTestApiInput;
+        private System.Windows.Forms.Label lblTestLocationId;
+        private System.Windows.Forms.TextBox txtTestLocationId;
+        private System.Windows.Forms.Label lblTestLocationType;
+        private System.Windows.Forms.ComboBox cboTestLocationType;
+        private System.Windows.Forms.Button btnTestFetch;
+        private System.Windows.Forms.TextBox txtTestResult;
     }
 }
