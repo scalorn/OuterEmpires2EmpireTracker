@@ -4,6 +4,8 @@
 
 using System;
 using System.Linq;
+using FsCheck;
+using FsCheck.NUnit;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
@@ -175,6 +177,42 @@ namespace OE2EmpireTracker.Tests.Services
             var stub = surveys.FirstOrDefault(s => s.PlanetName == "Planet X");
             Assert.That(stub, Is.Not.Null);
             Assert.That(stub.SurveyID, Is.EqualTo("FF00AA"));
+        }
+
+        // -------------------------------------------------------------------
+        // Property 2: Survey Linkage Uniqueness
+        // Validates: Requirements 11.2
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Processing the same survey item N times produces exactly one
+        /// survey per planet name. No duplicate stubs are created.
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 50)]
+        public void SurveyIdempotency_ProcessSameItemNTimes_ExactlyOneSurveyPerPlanet(PositiveInt repeatCount)
+        {
+            TestHelper.ResetWithCachedData();
+            var context = PlayerContext.GetInstance();
+            context.CurrentPlayerUUID = "test-player-uuid";
+            var svc = new SurveyLinkageService(context);
+
+            var apiItem = new GameApiAssetCargoItem
+            {
+                TypeC = "Sc",
+                ResourceName = "Survey Report: Test Planet (AABB11)",
+            };
+
+            int n = repeatCount.Get;
+            for (int i = 0; i < n; i++)
+            {
+                var localItem = new Item { UUID = Guid.NewGuid().ToString() };
+                svc.ProcessItem(apiItem, localItem, "test-player-uuid");
+            }
+
+            var surveys = context.GetCurrentPlayerSurveys();
+            var matching = surveys.Where(s =>
+                string.Equals(s.PlanetName, "Test Planet", StringComparison.OrdinalIgnoreCase)).ToList();
+            Assert.That(matching.Count, Is.EqualTo(1));
         }
     }
 }

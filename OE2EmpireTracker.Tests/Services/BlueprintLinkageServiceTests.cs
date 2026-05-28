@@ -2,8 +2,10 @@
 // Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using FsCheck;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
@@ -493,7 +495,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void ProcessItem_PreservesExistingProperties_NotInApiResponse()
         {
             // Pre-add a blueprint with a custom property
-            var existing = new Blueprint
+            var existing = new OE2EmpireTracker.Models.Blueprint
             {
                 UUID = "existing-preserve-uuid",
                 Name = "Preserve Props Blueprint",
@@ -539,6 +541,257 @@ namespace OE2EmpireTracker.Tests.Services
             // Defence should be updated to new value
             existing.Properties.GetDecimal("Defence", 0, out decimal defVal);
             Assert.That(defVal, Is.EqualTo(60.0m));
+        }
+
+        // -------------------------------------------------------------------
+        // Property 1: Idempotency — process same item N times, assert exactly
+        // one blueprint per dedup key.
+        // Validates: Requirements 11.1
+        // -------------------------------------------------------------------
+
+        [FsCheck.NUnit.Property(MaxTest = 50)]
+        public void BlueprintIdempotency_ProcessSameItemNTimes_ExactlyOneBlueprint(PositiveInt repeatCount)
+        {
+            TestHelper.ResetWithCachedData();
+            var localPlayerContext = PlayerContext.GetInstance();
+            var localEmpireContext = EmpireContext.GetInstance();
+            localPlayerContext.CurrentPlayerUUID = "test-player-uuid";
+            var localService = new BlueprintLinkageService(localPlayerContext, localEmpireContext);
+
+            var apiItem = new GameApiAssetCargoItem
+            {
+                TypeC = "Bp",
+                ResourceName = "Idempotent Blueprint",
+                Evolution = 1,
+                ShipPartType = "Sh",
+                Properties = new List<GameApiAssetItemProperty>
+                {
+                    new GameApiAssetItemProperty
+                    {
+                        ModTypeId = 1,
+                        PropertyName = "defence",
+                        FriendlyPropertyName = "Defence",
+                        PropertyValue = 45.5m,
+                        OriginalPropertyValue = 30.0m,
+                        Unit = "%",
+                        ResearchPositive = true,
+                        CanResearch = true,
+                    },
+                },
+            };
+
+            int n = repeatCount.Get;
+            for (int i = 0; i < n; i++)
+            {
+                var localItem = new Item { UUID = Guid.NewGuid().ToString() };
+                localService.ProcessItem(apiItem, localItem, "test-player-uuid");
+            }
+
+            var blueprints = localPlayerContext.GetCurrentPlayerBlueprints();
+            var matching = blueprints.Where(b => b.Name == "Idempotent Blueprint" && b.Evolution == 1).ToList();
+            Assert.That(matching.Count, Is.EqualTo(1));
+        }
+
+        // -------------------------------------------------------------------
+        // Property 4: Property Preservation — existing properties not in API
+        // are never removed after merge.
+        // Validates: Requirements 6.1, 6.2
+        // -------------------------------------------------------------------
+
+        [FsCheck.NUnit.Property(MaxTest = 50)]
+        public void PropertyPreservation_ExistingPropertiesNeverRemoved(PositiveInt repeatCount)
+        {
+            TestHelper.ResetWithCachedData();
+            var localPlayerContext = PlayerContext.GetInstance();
+            var localEmpireContext = EmpireContext.GetInstance();
+            localPlayerContext.CurrentPlayerUUID = "test-player-uuid";
+            var localService = new BlueprintLinkageService(localPlayerContext, localEmpireContext);
+
+            // Pre-add a blueprint with extra properties not in the API response
+            var existing = new OE2EmpireTracker.Models.Blueprint
+            {
+                UUID = "preserve-prop-test-uuid",
+                Name = "Preservation Test BP",
+                Evolution = 1,
+                BluePrintType = "Shield",
+                OwnerUUID = "test-player-uuid",
+            };
+            existing.Properties.SetProperty("ExtraAlpha", "100");
+            existing.Properties.SetProperty("ExtraBeta", "200");
+            existing.Properties.SetProperty("Defence", "10.0");
+            localPlayerContext.AddBlueprint(existing);
+
+            // API response only has Defence — ExtraAlpha and ExtraBeta are not present
+            var apiItem = new GameApiAssetCargoItem
+            {
+                TypeC = "Bp",
+                ResourceName = "Preservation Test BP",
+                Evolution = 1,
+                ShipPartType = "Sh",
+                Properties = new List<GameApiAssetItemProperty>
+                {
+                    new GameApiAssetItemProperty
+                    {
+                        ModTypeId = 1,
+                        PropertyName = "defence",
+                        FriendlyPropertyName = "Defence",
+                        PropertyValue = 55.0m,
+                        OriginalPropertyValue = 30.0m,
+                        Unit = "%",
+                        ResearchPositive = true,
+                        CanResearch = true,
+                    },
+                },
+            };
+
+            int n = repeatCount.Get;
+            for (int i = 0; i < n; i++)
+            {
+                var localItem = new Item { UUID = Guid.NewGuid().ToString() };
+                localService.ProcessItem(apiItem, localItem, "test-player-uuid");
+            }
+
+            // Extra properties must still exist after N merge iterations
+            Assert.That(existing.Properties.ContainsKey("ExtraAlpha"), Is.True);
+            Assert.That(existing.Properties.ContainsKey("ExtraBeta"), Is.True);
+            existing.Properties.GetString("ExtraAlpha", string.Empty, out string alphaVal);
+            existing.Properties.GetString("ExtraBeta", string.Empty, out string betaVal);
+            Assert.That(alphaVal, Is.EqualTo("100"));
+            Assert.That(betaVal, Is.EqualTo("200"));
+        }
+
+        // -------------------------------------------------------------------
+        // Property 7: Ownership Correctness — Evo > 0 → player,
+        // Evo = 0 → global.
+        // Validates: Requirements 1.4, 1.5
+        // -------------------------------------------------------------------
+
+        [FsCheck.NUnit.Property(MaxTest = 50)]
+        public void OwnershipRouting_EvoGreaterThan0IsPlayer_Evo0IsGlobal(int rawEvolution)
+        {
+            int evolution = Math.Abs(rawEvolution % 6);
+
+            TestHelper.ResetWithCachedData();
+            var localPlayerContext = PlayerContext.GetInstance();
+            var localEmpireContext = EmpireContext.GetInstance();
+            localPlayerContext.CurrentPlayerUUID = "test-player-uuid";
+            var localService = new BlueprintLinkageService(localPlayerContext, localEmpireContext);
+
+            string bpName = "Ownership BP Evo" + evolution;
+            var apiItem = new GameApiAssetCargoItem
+            {
+                TypeC = "Bp",
+                ResourceName = bpName,
+                Evolution = evolution,
+                ShipPartType = "Sh",
+                Properties = new List<GameApiAssetItemProperty>
+                {
+                    new GameApiAssetItemProperty
+                    {
+                        ModTypeId = 1,
+                        PropertyName = "defence",
+                        FriendlyPropertyName = "Defence",
+                        PropertyValue = 40.0m,
+                        OriginalPropertyValue = 30.0m,
+                        Unit = "%",
+                        ResearchPositive = true,
+                        CanResearch = true,
+                    },
+                },
+            };
+            var localItem = new Item { UUID = Guid.NewGuid().ToString() };
+
+            localService.ProcessItem(apiItem, localItem, "test-player-uuid");
+
+            if (evolution > 0)
+            {
+                var playerBps = localPlayerContext.GetCurrentPlayerBlueprints();
+                var found = playerBps.FirstOrDefault(b => b.Name == bpName && b.Evolution == evolution);
+                Assert.That(found, Is.Not.Null, "Evo > 0 should create player blueprint");
+                Assert.That(found.OwnerUUID, Is.EqualTo("test-player-uuid"));
+            }
+            else
+            {
+                var globalBps = localEmpireContext.GlobalBlueprintList;
+                var found = globalBps.FirstOrDefault(b => b.Name == bpName && b.Evolution == evolution);
+                Assert.That(found, Is.Not.Null, "Evo = 0 should create global blueprint");
+                Assert.That(found.OwnerUUID, Is.EqualTo(string.Empty));
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // Property 5: PropertyTypeRegistry Completeness — after processing,
+        // every modTypeId in properties exists in registry.
+        // Validates: Requirements 7.1, 7.5
+        // -------------------------------------------------------------------
+
+        [FsCheck.NUnit.Property(MaxTest = 50)]
+        public void PropertyTypeRegistryCompleteness_AllModTypeIdsRegistered(PositiveInt modTypeIdSeed)
+        {
+            TestHelper.ResetWithCachedData();
+            var localPlayerContext = PlayerContext.GetInstance();
+            var localEmpireContext = EmpireContext.GetInstance();
+            localPlayerContext.CurrentPlayerUUID = "test-player-uuid";
+            var localService = new BlueprintLinkageService(localPlayerContext, localEmpireContext);
+
+            int modTypeId1 = modTypeIdSeed.Get;
+            int modTypeId2 = modTypeId1 + 1;
+            int modTypeId3 = modTypeId1 + 2;
+
+            var apiItem = new GameApiAssetCargoItem
+            {
+                TypeC = "Bp",
+                ResourceName = "Registry Completeness BP " + modTypeId1,
+                Evolution = 1,
+                ShipPartType = "Sh",
+                Properties = new List<GameApiAssetItemProperty>
+                {
+                    new GameApiAssetItemProperty
+                    {
+                        ModTypeId = modTypeId1,
+                        PropertyName = "prop_a",
+                        FriendlyPropertyName = "Prop A",
+                        PropertyValue = 10.0m,
+                        OriginalPropertyValue = 5.0m,
+                        Unit = "%",
+                        ResearchPositive = true,
+                        CanResearch = true,
+                    },
+                    new GameApiAssetItemProperty
+                    {
+                        ModTypeId = modTypeId2,
+                        PropertyName = "prop_b",
+                        FriendlyPropertyName = "Prop B",
+                        PropertyValue = 20.0m,
+                        OriginalPropertyValue = 15.0m,
+                        Unit = "MW",
+                        ResearchPositive = false,
+                        CanResearch = true,
+                    },
+                    new GameApiAssetItemProperty
+                    {
+                        ModTypeId = modTypeId3,
+                        PropertyName = "prop_c",
+                        FriendlyPropertyName = "Prop C",
+                        PropertyValue = 30.0m,
+                        OriginalPropertyValue = 25.0m,
+                        Unit = "pts",
+                        ResearchPositive = true,
+                        CanResearch = false,
+                    },
+                },
+            };
+            var localItem = new Item { UUID = Guid.NewGuid().ToString() };
+
+            localService.ProcessItem(apiItem, localItem, "test-player-uuid");
+
+            // Every modTypeId from the properties must now exist in the registry
+            foreach (var prop in apiItem.Properties)
+            {
+                var registered = localEmpireContext.FindPropertyType(prop.ModTypeId);
+                Assert.That(registered, Is.Not.Null, "ModTypeId " + prop.ModTypeId + " should be in registry");
+                Assert.That(registered.PropertyName, Is.EqualTo(prop.PropertyName));
+            }
         }
     }
 }

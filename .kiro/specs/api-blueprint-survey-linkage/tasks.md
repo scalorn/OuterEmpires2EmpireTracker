@@ -43,7 +43,7 @@ This plan implements the blueprint and survey linkage feature in discrete, verif
     - _Requirements: 7.2, 7.3, 7.4, 7.5_
     - _Verification: getDiagnostics, build solution_
 
-- [~] 4. Checkpoint - Verify model layer compiles
+- [x] 4. Checkpoint - Verify model layer compiles
   - Ensure all tests pass, ask the user if questions arise.
 
 
@@ -89,7 +89,7 @@ This plan implements the blueprint and survey linkage feature in discrete, verif
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 10.4, 11.2, 12.3, 12.4_
     - _Verification: getDiagnostics, build solution_
 
-- [~] 7. Checkpoint - Verify service layer compiles
+- [x] 7. Checkpoint - Verify service layer compiles
   - Ensure all tests pass, ask the user if questions arise.
 
 
@@ -117,10 +117,10 @@ This plan implements the blueprint and survey linkage feature in discrete, verif
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
     - _Verification: getDiagnostics, build solution_
 
-- [~] 9. Checkpoint - Full build and existing tests pass
+- [x] 9. Checkpoint - Full build and existing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Write unit tests for BlueprintLinkageService
+- [x] 10. Write unit tests for BlueprintLinkageService
   - [x] 10.1 Create BlueprintLinkageServiceTests with creation and update tests
     - Create `OE2EmpireTracker.Tests/Services/BlueprintLinkageServiceTests.cs`
     - Test: ProcessItem_WithBlueprintProperties_CreatesNewBlueprint
@@ -130,7 +130,7 @@ This plan implements the blueprint and survey linkage feature in discrete, verif
     - _Requirements: 1.1, 1.2, 1.3, 1.7, 5.1_
     - _Verification: vstest.console, all tests pass_
 
-  - [-] 10.2 Add ship part and type classification tests
+  - [x] 10.2 Add ship part and type classification tests
     - Continue in `OE2EmpireTracker.Tests/Services/BlueprintLinkageServiceTests.cs`
     - Test: ProcessItem_ShipPart_MapsShipPartTypeCorrectly
     - Test: ProcessItem_Hull_ClassifiesAsHullType
@@ -139,7 +139,7 @@ This plan implements the blueprint and survey linkage feature in discrete, verif
     - _Requirements: 2.1, 2.2, 3.1, 3.2, 3.3, 3.4_
     - _Verification: vstest.console, all tests pass_
 
-  - [-] 10.3 Add ownership routing and registry tests
+  - [x] 10.3 Add ownership routing and registry tests
     - Continue in `OE2EmpireTracker.Tests/Services/BlueprintLinkageServiceTests.cs`
     - Test: ProcessItem_Evo0_CreatesGlobalBlueprint
     - Test: ProcessItem_EvoGreaterThan0_CreatesPlayerBlueprint
@@ -161,38 +161,38 @@ This plan implements the blueprint and survey linkage feature in discrete, verif
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 11.2_
     - _Verification: vstest.console, all tests pass_
 
-- [ ] 12. Write property-based tests for idempotency and correctness
-  - [~] 12.1 Write FsCheck property test for blueprint idempotency
+- [x] 12. Write property-based tests for idempotency and correctness
+  - [x] 12.1 Write FsCheck property test for blueprint idempotency
     - Continue in `OE2EmpireTracker.Tests/Services/BlueprintLinkageServiceTests.cs`
     - **Property 1: Idempotency** — process same item N times, assert exactly one blueprint per dedup key
     - **Validates: Requirements 11.1**
     - _Verification: vstest.console, property test passes_
 
-  - [~] 12.2 Write FsCheck property test for survey idempotency
+  - [x] 12.2 Write FsCheck property test for survey idempotency
     - Continue in `OE2EmpireTracker.Tests/Services/SurveyLinkageServiceTests.cs`
     - **Property 2: Survey Linkage Uniqueness** — process same survey N times, assert exactly one survey per planet name
     - **Validates: Requirements 11.2**
     - _Verification: vstest.console, property test passes_
 
-  - [~] 12.3 Write FsCheck property test for property preservation
+  - [x] 12.3 Write FsCheck property test for property preservation
     - Continue in `OE2EmpireTracker.Tests/Services/BlueprintLinkageServiceTests.cs`
     - **Property 4: Property Preservation** — existing properties not in API are never removed after merge
     - **Validates: Requirements 6.1, 6.2**
     - _Verification: vstest.console, property test passes_
 
-  - [~] 12.4 Write FsCheck property test for ownership routing
+  - [x] 12.4 Write FsCheck property test for ownership routing
     - Continue in `OE2EmpireTracker.Tests/Services/BlueprintLinkageServiceTests.cs`
     - **Property 7: Ownership Correctness** — Evo > 0 → player, Evo = 0 → global
     - **Validates: Requirements 1.4, 1.5**
     - _Verification: vstest.console, property test passes_
 
-  - [~] 12.5 Write FsCheck property test for PropertyTypeRegistry completeness
+  - [x] 12.5 Write FsCheck property test for PropertyTypeRegistry completeness
     - Continue in `OE2EmpireTracker.Tests/Services/BlueprintLinkageServiceTests.cs`
     - **Property 5: PropertyTypeRegistry Completeness** — after processing, every modTypeId in properties exists in registry
     - **Validates: Requirements 7.1, 7.5**
     - _Verification: vstest.console, property test passes_
 
-- [~] 13. Final checkpoint - Full build, all tests pass, audit clean
+- [-] 13. Final checkpoint - Full build, all tests pass, audit clean
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
