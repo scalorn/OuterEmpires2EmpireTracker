@@ -121,7 +121,7 @@ This plan implements the blueprint and survey linkage feature in discrete, verif
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 10. Write unit tests for BlueprintLinkageService
-  - [-] 10.1 Create BlueprintLinkageServiceTests with creation and update tests
+  - [x] 10.1 Create BlueprintLinkageServiceTests with creation and update tests
     - Create `OE2EmpireTracker.Tests/Services/BlueprintLinkageServiceTests.cs`
     - Test: ProcessItem_WithBlueprintProperties_CreatesNewBlueprint
     - Test: ProcessItem_WithExistingMatch_UpdatesProperties
@@ -130,7 +130,7 @@ This plan implements the blueprint and survey linkage feature in discrete, verif
     - _Requirements: 1.1, 1.2, 1.3, 1.7, 5.1_
     - _Verification: vstest.console, all tests pass_
 
-  - [~] 10.2 Add ship part and type classification tests
+  - [-] 10.2 Add ship part and type classification tests
     - Continue in `OE2EmpireTracker.Tests/Services/BlueprintLinkageServiceTests.cs`
     - Test: ProcessItem_ShipPart_MapsShipPartTypeCorrectly
     - Test: ProcessItem_Hull_ClassifiesAsHullType
@@ -139,7 +139,7 @@ This plan implements the blueprint and survey linkage feature in discrete, verif
     - _Requirements: 2.1, 2.2, 3.1, 3.2, 3.3, 3.4_
     - _Verification: vstest.console, all tests pass_
 
-  - [~] 10.3 Add ownership routing and registry tests
+  - [-] 10.3 Add ownership routing and registry tests
     - Continue in `OE2EmpireTracker.Tests/Services/BlueprintLinkageServiceTests.cs`
     - Test: ProcessItem_Evo0_CreatesGlobalBlueprint
     - Test: ProcessItem_EvoGreaterThan0_CreatesPlayerBlueprint
@@ -149,8 +149,8 @@ This plan implements the blueprint and survey linkage feature in discrete, verif
     - _Verification: vstest.console, all tests pass_
 
 
-- [ ] 11. Write unit tests for SurveyLinkageService
-  - [-] 11.1 Create SurveyLinkageServiceTests with all unit tests
+- [x] 11. Write unit tests for SurveyLinkageService
+  - [x] 11.1 Create SurveyLinkageServiceTests with all unit tests
     - Create `OE2EmpireTracker.Tests/Services/SurveyLinkageServiceTests.cs`
     - Test: ProcessItem_MatchesExistingSurvey_LinksByUUID
     - Test: ProcessItem_NoExistingSurvey_CreatesStub
