@@ -361,6 +361,13 @@ namespace OE2EmpireTracker.Services
             changed |= SetStringIfDifferent(ref local, l => l.ResourcePurity, newPurity, (l, v) => l.ResourcePurity = v);
             changed |= UpdateItemProperties(local, apiItem.Properties);
 
+            // Hulls have typeC="S" but shipPartType="Hu" — override to ShipHull
+            if (mappedType == ItemType.ItemTypeEnum.ShipPart &&
+                string.Equals(apiItem.ShipPartType?.Trim(), "Hu", StringComparison.OrdinalIgnoreCase))
+            {
+                mappedType = ItemType.ItemTypeEnum.ShipHull;
+            }
+
             if (local.ItemType != mappedType)
             {
                 local.ItemType = mappedType;
@@ -387,6 +394,13 @@ namespace OE2EmpireTracker.Services
                 var (baseName, extractedPurity) = ExtractResourcePurity(apiItem.ResourceName);
                 name = baseName;
                 purity = extractedPurity;
+            }
+
+            // Hulls have typeC="S" but shipPartType="Hu" — override to ShipHull
+            if (mappedType == ItemType.ItemTypeEnum.ShipPart &&
+                string.Equals(apiItem.ShipPartType?.Trim(), "Hu", StringComparison.OrdinalIgnoreCase))
+            {
+                mappedType = ItemType.ItemTypeEnum.ShipHull;
             }
 
             // BaseItemTypeID is used as the lookup key in ItemBag.CountByType/FindByType.
