@@ -154,7 +154,7 @@ namespace OE2EmpireTracker.Client
         /// Gets or sets the volume of the item.
         /// </summary>
         [JsonProperty("volume")]
-        public int? Volume { get; set; }
+        public double? Volume { get; set; }
 
         /// <summary>
         /// Gets or sets the item properties (modifications, stats).

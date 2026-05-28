@@ -455,7 +455,7 @@ namespace OE2EmpireTracker.Services
             return false;
         }
 
-        private static bool SetVolumeIfDifferent(Item local, int? newVolume)
+        private static bool SetVolumeIfDifferent(Item local, double? newVolume)
         {
             decimal target = newVolume.HasValue ? (decimal)newVolume.Value : 0m;
             if (local.Volume != target)
