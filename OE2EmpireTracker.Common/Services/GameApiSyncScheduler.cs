@@ -1343,7 +1343,12 @@ namespace OE2EmpireTracker.Services
             }
 
             ItemBag targetHold;
-            if (!station.Holds.TryGetValue(AssetMergeService.DefaultHoldName, out targetHold))
+            if (station.Holds.Count > 0)
+            {
+                // Use the first existing hold (may be named by UUID or "default")
+                targetHold = station.Holds.Values.First();
+            }
+            else if (!station.Holds.TryGetValue(AssetMergeService.DefaultHoldName, out targetHold))
             {
                 targetHold = new ItemBag();
                 station.Holds[AssetMergeService.DefaultHoldName] = targetHold;
