@@ -1000,10 +1000,28 @@ namespace OE2EmpireTracker.Services
 
             if (match != null)
             {
+                Log.Debug(
+                    "MergeWarehouse: MATCHED item '{0}' (type={1}) to local UUID={2} GameItemId={3}",
+                    apiItem.ResourceName,
+                    mappedType,
+                    match.UUID,
+                    match.GameItemId);
                 return UpdateExistingItem(match, apiItem);
             }
             else
             {
+                // Log all existing items of same type for diagnosis
+                var sameTypeItems = colony.Items.Items.Values
+                    .Where(i => i.ItemType == mappedType && i.Name != null && i.Name.Contains("Alkali Inorganics"))
+                    .Select(i => $"UUID={i.UUID} Name='{i.Name}' GameItemId={i.GameItemId} Qty={i.Quantity}")
+                    .ToList();
+
+                Log.Debug(
+                    "MergeWarehouse: NO MATCH for '{0}' (type={1}) — creating new. Existing same-name items: [{2}]",
+                    apiItem.ResourceName,
+                    mappedType,
+                    sameTypeItems.Count > 0 ? string.Join("; ", sameTypeItems) : "none");
+
                 CreateNewItem(apiItem, mappedType, colony);
                 return true;
             }

@@ -254,8 +254,28 @@ namespace OE2EmpireTracker.Services
 
             if (match != null)
             {
+                Log.Debug(
+                    "AssetMerge: MATCHED cargoItemId={0} name='{1}' to local UUID={2} Name='{3}'",
+                    apiItem.CargoItemId,
+                    apiItem.ResourceName,
+                    match.UUID,
+                    match.Name);
                 return UpdateExistingAssetItem(match, apiItem);
             }
+
+            // Log existing items with similar names for diagnosis
+            var similarItems = targetBag.Items.Values
+                .Where(i => i.Name != null && apiItem.ResourceName != null &&
+                    i.Name.Contains(apiItem.ResourceName.Split('(')[0].Trim()))
+                .Select(i => $"UUID={i.UUID} Name='{i.Name}' GameItemId={i.GameItemId} Qty={i.Quantity}")
+                .ToList();
+
+            Log.Debug(
+                "AssetMerge: NO MATCH for cargoItemId={0} name='{1}' type={2} — creating new. Similar local items: [{3}]",
+                apiItem.CargoItemId,
+                apiItem.ResourceName,
+                mappedType,
+                similarItems.Count > 0 ? string.Join("; ", similarItems) : "none");
 
             var newItem = CreateAssetItem(apiItem, mappedType);
             targetBag.AddItem(newItem);
