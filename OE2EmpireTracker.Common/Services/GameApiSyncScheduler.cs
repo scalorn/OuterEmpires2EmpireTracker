@@ -940,7 +940,8 @@ namespace OE2EmpireTracker.Services
                         detailResponse.Cargo,
                         localColonies,
                         localStations,
-                        localShips);
+                        localShips,
+                        playerUUID);
 
                     if (merged)
                     {
@@ -1225,7 +1226,8 @@ namespace OE2EmpireTracker.Services
             List<GameApiAssetCargoItem> cargoItems,
             List<Colony> localColonies,
             List<Station> localStations,
-            List<Ship> localShips)
+            List<Ship> localShips,
+            string playerUUID)
         {
             if (string.Equals(location.LocationType, "Co", StringComparison.OrdinalIgnoreCase))
             {
@@ -1234,7 +1236,7 @@ namespace OE2EmpireTracker.Services
 
             if (string.Equals(location.LocationType, "St", StringComparison.OrdinalIgnoreCase))
             {
-                return MergeStationLocation(location, cargoItems, localStations);
+                return MergeStationLocation(location, cargoItems, localStations, playerUUID);
             }
 
             if (string.Equals(location.LocationType, "Sh", StringComparison.OrdinalIgnoreCase))
@@ -1287,11 +1289,13 @@ namespace OE2EmpireTracker.Services
         /// <param name="location">The asset location entry.</param>
         /// <param name="cargoItems">The cargo items to merge.</param>
         /// <param name="localStations">The local station list.</param>
+        /// <param name="playerUUID">The player UUID used as the hold key.</param>
         /// <returns>True if any changes were made; false otherwise.</returns>
         private bool MergeStationLocation(
             GameApiAssetLocationEntry location,
             List<GameApiAssetCargoItem> cargoItems,
-            List<Station> localStations)
+            List<Station> localStations,
+            string playerUUID)
         {
             if (localStations == null)
             {
@@ -1332,7 +1336,7 @@ namespace OE2EmpireTracker.Services
                     SystemName = location.SystemName,
                     SystemId = location.SystemId,
                 };
-                station.Holds[AssetMergeService.DefaultHoldName] = new ItemBag();
+                station.Holds[playerUUID] = new ItemBag();
                 AddStation(station);
                 localStations.Add(station);
                 Log.Info(
@@ -1343,15 +1347,10 @@ namespace OE2EmpireTracker.Services
             }
 
             ItemBag targetHold;
-            if (station.Holds.Count > 0)
-            {
-                // Use the first existing hold (may be named by UUID or "default")
-                targetHold = station.Holds.Values.First();
-            }
-            else if (!station.Holds.TryGetValue(AssetMergeService.DefaultHoldName, out targetHold))
+            if (!station.Holds.TryGetValue(playerUUID, out targetHold))
             {
                 targetHold = new ItemBag();
-                station.Holds[AssetMergeService.DefaultHoldName] = targetHold;
+                station.Holds[playerUUID] = targetHold;
             }
 
             return AssetMergeService.MergeStationAssets(cargoItems, station, targetHold);
