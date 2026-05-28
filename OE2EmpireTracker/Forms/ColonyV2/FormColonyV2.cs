@@ -2266,6 +2266,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             }
 
             var seen = new HashSet<CommodityRequested>();
+            Log.Debug("PopulateCommodityRequestGrid: requests.Count={0}, existingRows.Count={1}", requests.Count, existingRows.Count);
             foreach (CommodityRequested request in requests)
             {
                 seen.Add(request);
@@ -2306,6 +2307,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             dgvCommodityRequests.CellValidating += DgvCommodityRequests_CellValidating;
 
+            Log.Debug("PopulateCommodityRequestGrid: final grid rows={0}", dgvCommodityRequests.Rows.Count);
             UpdateWorkerTabTitle();
             sw.Stop();
             Log.Info("PERF PopulateCommodityRequestGrid: {0}ms", sw.ElapsedMilliseconds);
