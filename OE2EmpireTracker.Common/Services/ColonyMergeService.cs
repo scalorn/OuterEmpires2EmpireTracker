@@ -176,11 +176,41 @@ namespace OE2EmpireTracker.Services
             // Remove stale items: local items with a GameItemId that no longer exist in the API response.
             // Exception: items with a lock and 0 quantity are locally-staged (not yet in game).
             var apiGameItemIds = new HashSet<int>(apiItems.Select(a => a.CargoItemId));
-            var staleItems = colony.Items.Items.Values
+            var allLocalItems = colony.Items.Items.Values.ToList();
+
+            Log.Debug(
+                "MergeWarehouse: stale check — colony {0}, API has {1} items (GameItemIds), local has {2} items total, {3} with GameItemId>0",
+                colony.UUID,
+                apiGameItemIds.Count,
+                allLocalItems.Count,
+                allLocalItems.Count(i => i.GameItemId.HasValue && i.GameItemId.Value > 0));
+
+            var staleItems = allLocalItems
                 .Where(i => i.GameItemId.HasValue && i.GameItemId.Value > 0 && !apiGameItemIds.Contains(i.GameItemId.Value))
                 .Where(i => !(i.Quantity == 0 && colony.Locks != null &&
                     colony.Locks.GetLockedQuantity(i.ItemType, GetLockKey(i)) > 0))
                 .ToList();
+
+            // Log items that have NO GameItemId (won't be cleaned up by this logic)
+            var noGameIdItems = allLocalItems
+                .Where(i => !i.GameItemId.HasValue || i.GameItemId.Value == 0)
+                .ToList();
+            if (noGameIdItems.Count > 0)
+            {
+                Log.Debug(
+                    "MergeWarehouse: colony {0} has {1} items with no GameItemId (not eligible for stale removal): [{2}]",
+                    colony.UUID,
+                    noGameIdItems.Count,
+                    string.Join(", ", noGameIdItems.Select(i => $"'{i.Name}' type={i.ItemType} qty={i.Quantity}")));
+            }
+
+            if (staleItems.Count > 0)
+            {
+                Log.Info(
+                    "MergeWarehouse: removing {0} stale items from colony {1}",
+                    staleItems.Count,
+                    colony.UUID);
+            }
 
             foreach (var stale in staleItems)
             {
