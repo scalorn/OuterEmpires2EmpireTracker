@@ -166,7 +166,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ItemType = ItemType.ItemTypeEnum.Commodity,
                 Mass = 2.0m,
                 Volume = 4m,
-                BaseItemTypeID = "55",
+                BaseItemTypeID = "Fuel Cells",
                 ResourcePurity = string.Empty,
                 ShipPartType = string.Empty,
                 JobName = string.Empty,

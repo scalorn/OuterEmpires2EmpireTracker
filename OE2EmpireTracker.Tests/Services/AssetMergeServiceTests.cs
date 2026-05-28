@@ -196,7 +196,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Quantity = 30,
                 ItemType = ItemType.ItemTypeEnum.Resource,
                 Volume = 5m,
-                BaseItemTypeID = "8",
+                BaseItemTypeID = "Titanium",
                 ResourcePurity = string.Empty,
                 ShipPartType = string.Empty,
                 JobName = string.Empty,

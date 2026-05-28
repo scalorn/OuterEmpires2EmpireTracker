@@ -357,7 +357,7 @@ namespace OE2EmpireTracker.Services
             changed |= SetNullableIntIfDifferent(ref local, l => l.JobDeliveryLoc, apiItem.JobDeliveryLoc, (l, v) => l.JobDeliveryLoc = v);
             changed |= SetStringIfDifferent(ref local, l => l.JobName, apiItem.JobName, (l, v) => l.JobName = v);
             changed |= SetStringIfDifferent(ref local, l => l.JobTrack, apiItem.JobTrack, (l, v) => l.JobTrack = v);
-            changed |= SetStringIfDifferent(ref local, l => l.BaseItemTypeID, apiItem.TypeId.ToString(), (l, v) => l.BaseItemTypeID = v);
+            changed |= SetStringIfDifferent(ref local, l => l.BaseItemTypeID, newName, (l, v) => l.BaseItemTypeID = v);
             changed |= SetStringIfDifferent(ref local, l => l.ResourcePurity, newPurity, (l, v) => l.ResourcePurity = v);
             changed |= UpdateItemProperties(local, apiItem.Properties);
 
@@ -389,6 +389,11 @@ namespace OE2EmpireTracker.Services
                 purity = extractedPurity;
             }
 
+            // BaseItemTypeID is used as the lookup key in ItemBag.CountByType/FindByType.
+            // For most item types, it should be the item name (matching what the tool uses internally).
+            // The numeric TypeId is stored but not used for lookups.
+            string baseItemTypeId = name;
+
             var item = new Item
             {
                 UUID = Guid.NewGuid().ToString(),
@@ -406,7 +411,7 @@ namespace OE2EmpireTracker.Services
                 JobDeliveryLoc = apiItem.JobDeliveryLoc,
                 JobName = apiItem.JobName ?? string.Empty,
                 JobTrack = apiItem.JobTrack ?? string.Empty,
-                BaseItemTypeID = apiItem.TypeId.ToString(),
+                BaseItemTypeID = baseItemTypeId,
                 ResourcePurity = purity,
                 ItemProperties = MapProperties(apiItem.Properties),
             };
