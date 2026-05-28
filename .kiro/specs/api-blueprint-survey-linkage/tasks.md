@@ -192,7 +192,7 @@ This plan implements the blueprint and survey linkage feature in discrete, verif
     - **Validates: Requirements 7.1, 7.5**
     - _Verification: vstest.console, property test passes_
 
-- [-] 13. Final checkpoint - Full build, all tests pass, audit clean
+- [x] 13. Final checkpoint - Full build, all tests pass, audit clean
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

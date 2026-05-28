@@ -5,7 +5,6 @@
 using System;
 using System.Linq;
 using FsCheck;
-using FsCheck.NUnit;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
@@ -188,9 +187,11 @@ namespace OE2EmpireTracker.Tests.Services
         /// Processing the same survey item N times produces exactly one
         /// survey per planet name. No duplicate stubs are created.
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 50)]
-        public void SurveyIdempotency_ProcessSameItemNTimes_ExactlyOneSurveyPerPlanet(PositiveInt repeatCount)
+        [Test]
+        public void SurveyIdempotency_ProcessSameItemNTimes_ExactlyOneSurveyPerPlanet()
         {
+            Prop.ForAll<PositiveInt>(repeatCount =>
+            {
             TestHelper.ResetWithCachedData();
             var context = PlayerContext.GetInstance();
             context.CurrentPlayerUUID = "test-player-uuid";
@@ -213,6 +214,7 @@ namespace OE2EmpireTracker.Tests.Services
             var matching = surveys.Where(s =>
                 string.Equals(s.PlanetName, "Test Planet", StringComparison.OrdinalIgnoreCase)).ToList();
             Assert.That(matching.Count, Is.EqualTo(1));
+            }).QuickCheckThrowOnFailure();
         }
     }
 }

@@ -10,10 +10,10 @@ using NUnit.Framework;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
-using Blueprint = OE2EmpireTracker.Models.Blueprint;
 
 namespace OE2EmpireTracker.Tests.Services
 {
+    using Blueprint = OE2EmpireTracker.Models.Blueprint;
     /// <summary>
     /// Unit tests for BlueprintLinkageService.
     /// Validates: Requirements 1.1, 1.2, 1.3, 1.7, 2.1, 2.2, 3.1, 3.2, 3.3, 3.4, 5.1.
@@ -549,9 +549,11 @@ namespace OE2EmpireTracker.Tests.Services
         // Validates: Requirements 11.1
         // -------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 50)]
-        public void BlueprintIdempotency_ProcessSameItemNTimes_ExactlyOneBlueprint(PositiveInt repeatCount)
+        [Test]
+        public void BlueprintIdempotency_ProcessSameItemNTimes_ExactlyOneBlueprint()
         {
+            Prop.ForAll<PositiveInt>(repeatCount =>
+            {
             TestHelper.ResetWithCachedData();
             var localPlayerContext = PlayerContext.GetInstance();
             var localEmpireContext = EmpireContext.GetInstance();
@@ -590,6 +592,7 @@ namespace OE2EmpireTracker.Tests.Services
             var blueprints = localPlayerContext.GetCurrentPlayerBlueprints();
             var matching = blueprints.Where(b => b.Name == "Idempotent Blueprint" && b.Evolution == 1).ToList();
             Assert.That(matching.Count, Is.EqualTo(1));
+            }).QuickCheckThrowOnFailure();
         }
 
         // -------------------------------------------------------------------
@@ -598,9 +601,11 @@ namespace OE2EmpireTracker.Tests.Services
         // Validates: Requirements 6.1, 6.2
         // -------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 50)]
-        public void PropertyPreservation_ExistingPropertiesNeverRemoved(PositiveInt repeatCount)
+        [Test]
+        public void PropertyPreservation_ExistingPropertiesNeverRemoved()
         {
+            Prop.ForAll<PositiveInt>(repeatCount =>
+            {
             TestHelper.ResetWithCachedData();
             var localPlayerContext = PlayerContext.GetInstance();
             var localEmpireContext = EmpireContext.GetInstance();
@@ -658,6 +663,7 @@ namespace OE2EmpireTracker.Tests.Services
             existing.Properties.GetString("ExtraBeta", string.Empty, out string betaVal);
             Assert.That(alphaVal, Is.EqualTo("100"));
             Assert.That(betaVal, Is.EqualTo("200"));
+            }).QuickCheckThrowOnFailure();
         }
 
         // -------------------------------------------------------------------
@@ -666,9 +672,11 @@ namespace OE2EmpireTracker.Tests.Services
         // Validates: Requirements 1.4, 1.5
         // -------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 50)]
-        public void OwnershipRouting_EvoGreaterThan0IsPlayer_Evo0IsGlobal(int rawEvolution)
+        [Test]
+        public void OwnershipRouting_EvoGreaterThan0IsPlayer_Evo0IsGlobal()
         {
+            Prop.ForAll<int>(rawEvolution =>
+            {
             int evolution = Math.Abs(rawEvolution % 6);
 
             TestHelper.ResetWithCachedData();
@@ -717,6 +725,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Assert.That(found, Is.Not.Null, "Evo = 0 should create global blueprint");
                 Assert.That(found.OwnerUUID, Is.EqualTo(string.Empty));
             }
+            }).QuickCheckThrowOnFailure();
         }
 
         // -------------------------------------------------------------------
@@ -725,9 +734,11 @@ namespace OE2EmpireTracker.Tests.Services
         // Validates: Requirements 7.1, 7.5
         // -------------------------------------------------------------------
 
-        [FsCheck.NUnit.Property(MaxTest = 50)]
-        public void PropertyTypeRegistryCompleteness_AllModTypeIdsRegistered(PositiveInt modTypeIdSeed)
+        [Test]
+        public void PropertyTypeRegistryCompleteness_AllModTypeIdsRegistered()
         {
+            Prop.ForAll<PositiveInt>(modTypeIdSeed =>
+            {
             TestHelper.ResetWithCachedData();
             var localPlayerContext = PlayerContext.GetInstance();
             var localEmpireContext = EmpireContext.GetInstance();
@@ -792,6 +803,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Assert.That(registered, Is.Not.Null, "ModTypeId " + prop.ModTypeId + " should be in registry");
                 Assert.That(registered.PropertyName, Is.EqualTo(prop.PropertyName));
             }
+            }).QuickCheckThrowOnFailure();
         }
     }
 }
