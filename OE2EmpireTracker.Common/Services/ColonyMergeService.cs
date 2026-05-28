@@ -173,7 +173,40 @@ namespace OE2EmpireTracker.Services
                 }
             }
 
+            // Remove stale items: local items with a GameItemId that no longer exist in the API response.
+            // Exception: items with a lock and 0 quantity are locally-staged (not yet in game).
+            var apiGameItemIds = new HashSet<int>(apiItems.Select(a => a.CargoItemId));
+            var staleItems = colony.Items.Items.Values
+                .Where(i => i.GameItemId.HasValue && i.GameItemId.Value > 0 && !apiGameItemIds.Contains(i.GameItemId.Value))
+                .Where(i => !(i.Quantity == 0 && colony.Locks != null &&
+                    colony.Locks.GetLockedQuantity(i.ItemType, GetLockKey(i)) > 0))
+                .ToList();
+
+            foreach (var stale in staleItems)
+            {
+                colony.Items.Remove(stale.UUID);
+                hasChanges = true;
+                Log.Info(
+                    "MergeWarehouse: removed stale item UUID={0} Name='{1}' GameItemId={2} (no longer in API response)",
+                    stale.UUID,
+                    stale.Name,
+                    stale.GameItemId);
+            }
+
             return hasChanges;
+        }
+
+        /// <summary>
+        /// Gets the lock key for an item (Name + "|" + ResourcePurity for resources, just Name otherwise).
+        /// </summary>
+        private static string GetLockKey(Item item)
+        {
+            if (item.ItemType == ItemType.ItemTypeEnum.Resource && !string.IsNullOrEmpty(item.ResourcePurity))
+            {
+                return item.Name + "|" + item.ResourcePurity;
+            }
+
+            return item.Name ?? string.Empty;
         }
 
         /// <summary>
