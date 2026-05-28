@@ -1305,7 +1305,7 @@ namespace OE2EmpireTracker.Services
                 // Fallback: match by parsed name for pre-existing manually-created stations
                 string parsedName = ParseStationName(location.LocationName, location.SystemName);
                 station = localStations.FirstOrDefault(s =>
-                    s.GameLocationId == 0 &&
+                    (s.GameLocationId == null || s.GameLocationId == 0) &&
                     string.Equals(s.Name, parsedName, StringComparison.OrdinalIgnoreCase));
 
                 if (station != null)
@@ -1377,7 +1377,7 @@ namespace OE2EmpireTracker.Services
                 // Fallback: match by parsed name for pre-existing manually-created ships
                 string parsedName = ParseShipName(location.LocationName);
                 ship = localShips.FirstOrDefault(s =>
-                    s.GameLocationId == 0 &&
+                    (s.GameLocationId == null || s.GameLocationId == 0) &&
                     string.Equals(s.Name, parsedName, StringComparison.OrdinalIgnoreCase));
 
                 if (ship != null)
