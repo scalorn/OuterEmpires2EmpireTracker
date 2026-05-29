@@ -56,6 +56,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.chkStageResources = new System.Windows.Forms.CheckBox();
             this.cmdStart = new System.Windows.Forms.Button();
             this.cmdDone = new System.Windows.Forms.Button();
+            this.cmdStop = new System.Windows.Forms.Button();
             this.flpStructureCommands = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdUp = new System.Windows.Forms.Button();
             this.cmdDown = new System.Windows.Forms.Button();
@@ -267,6 +268,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpSelection.Controls.Add(this.chkStageResources);
             this.flpSelection.Controls.Add(this.cmdStart);
             this.flpSelection.Controls.Add(this.cmdDone);
+            this.flpSelection.Controls.Add(this.cmdStop);
             this.flpSelection.Location = new System.Drawing.Point(3, 115);
             this.flpSelection.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.flpSelection.Name = "flpSelection";
@@ -354,6 +356,15 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.cmdDone.TabIndex = 5;
             this.cmdDone.Text = "Done";
             this.cmdDone.UseVisualStyleBackColor = true;
+            // 
+            // cmdStop
+            // 
+            this.cmdStop.Location = new System.Drawing.Point(567, 3);
+            this.cmdStop.Name = "cmdStop";
+            this.cmdStop.Size = new System.Drawing.Size(50, 23);
+            this.cmdStop.TabIndex = 6;
+            this.cmdStop.Text = "Stop";
+            this.cmdStop.UseVisualStyleBackColor = true;
             // 
             // flpStructureCommands
             // 
@@ -445,6 +456,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.CheckBox chkStageResources;
         private System.Windows.Forms.Button cmdStart;
         private System.Windows.Forms.Button cmdDone;
+        private System.Windows.Forms.Button cmdStop;
         private System.Windows.Forms.FlowLayoutPanel flpStructureCommands;
         private System.Windows.Forms.Button cmdUp;
         private System.Windows.Forms.Button cmdDown;

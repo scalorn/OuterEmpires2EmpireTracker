@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -58,6 +58,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmbSelection.SelectedItemChanged += CmbSelection_SelectedItemChanged;
             cmdStart.Click += CmdStart_Click;
             cmdDone.Click += CmdDone_Click;
+            cmdStop.Click += CmdStop_Click;
             txtCompletionTime.Enter += TxtCompletionTime_Enter;
             txtCompletionTime.Leave += TxtCompletionTime_Leave;
             chkStageResources.CheckedChanged += ChkStageResources_CheckedChanged;
@@ -145,6 +146,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             chkStageResources.Checked = false;
             cmdStart.Visible = false;
             cmdDone.Visible = false;
+            cmdStop.Visible = false;
 
             // Detach data
             ViewModel = null;
@@ -494,6 +496,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             flpManufacturing.Visible = true;
             cmdStart.Visible = false;
             cmdDone.Visible = true;
+            cmdStop.Visible = false;
             txtQuantity.Visible = false;
             chkStageResources.Visible = false;
             chkBuilt.Enabled = false;
@@ -525,6 +528,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 cmdStart.Text = "Build";
                 cmdStart.Visible = true;
                 cmdDone.Visible = false;
+                cmdStop.Visible = false;
                 flpManufacturing.Visible = true;
                 txtQuantity.Visible = false;
                 chkStageResources.Visible = false;
@@ -620,6 +624,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmdStart.Text = "Start";
             cmdStart.Visible = showCmdStart && !showCompletionTime;
             cmdDone.Visible = showCompletionTime;
+            cmdStop.Visible = showCompletionTime;
 
             // Timer row
             if (showCompletionTime)
@@ -833,6 +838,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmdStart.Text = "Start";
             cmdStart.Visible = showCmdStart && !showCompletionTime;
             cmdDone.Visible = showCompletionTime;
+            cmdStop.Visible = showCompletionTime;
 
             // Timer row
             if (showCompletionTime)
@@ -1055,6 +1061,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmdStart.Text = "Start";
             cmdStart.Visible = showCmdStart && !showCompletionTime;
             cmdDone.Visible = showCompletionTime;
+            cmdStop.Visible = showCompletionTime;
 
             // Timer row
             if (showCompletionTime)
@@ -1223,6 +1230,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmdStart.Text = "Start";
             cmdStart.Visible = showCmdStart && !showCompletionTime;
             cmdDone.Visible = showCompletionTime;
+            cmdStop.Visible = showCompletionTime;
 
             // Stage Resources checkbox: visible when not manufacturing
             if (showCompletionTime)
@@ -1400,6 +1408,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             cmdStart.Text = "Start";
             cmdStart.Visible = showCmdStart && !showCompletionTime;
             cmdDone.Visible = showCompletionTime;
+            cmdStop.Visible = showCompletionTime;
 
             // Stage Resources checkbox: visible when not manufacturing
             if (showCompletionTime)
@@ -2107,6 +2116,61 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     HandleManufactoryControls();
                 else if (_blueprint.BluePrintType.IsCommodityFactory())
                     HandleCommodityFactoryControls();
+            }
+
+            OnColonyStructureDataChanged(structural: false);
+        }
+
+        private void CmdStop_Click(object sender, EventArgs e)
+        {
+            if (ViewModel == null || Colony == null) return;
+            var structureData = ViewModel.Data;
+
+            Log.Debug("V2.CmdStop_Click: structure={0} bpType={1}",
+                structureData.UUID, _blueprint?.BluePrintType ?? "(none)");
+
+            if (!Colony.ColonyLock.TryEnterWriteLock(Models.Colony.WriteLockTimeoutMs))
+            {
+                Log.Warn("ColonyStructureV2: write lock timeout on colony {0}", Colony.UUID);
+                return;
+            }
+
+            try
+            {
+                structureData.ProcessCompletionTime = null;
+            }
+            finally
+            {
+                Colony.ColonyLock.ExitWriteLock();
+            }
+
+            timerCountdown.Stop();
+            txtCompletionTime.Text = string.Empty;
+            rtbProgressStatus.Text = string.Empty;
+
+            // Refresh the appropriate controls
+            if (_blueprint != null)
+            {
+                if (_blueprint.BluePrintType == BlueprintTypes.MiningRig)
+                {
+                    HandleMiningRigControls();
+                }
+                else if (_blueprint.BluePrintType == BlueprintTypes.Refinery)
+                {
+                    HandleRefineryControls();
+                }
+                else if (_blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
+                {
+                    HandleResearchLabControls();
+                }
+                else if (_blueprint.BluePrintType == BlueprintTypes.Manufactory)
+                {
+                    HandleManufactoryControls();
+                }
+                else if (_blueprint.BluePrintType.IsCommodityFactory())
+                {
+                    HandleCommodityFactoryControls();
+                }
             }
 
             OnColonyStructureDataChanged(structural: false);
