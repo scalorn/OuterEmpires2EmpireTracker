@@ -39,6 +39,9 @@ namespace OE2EmpireTracker.Services
             DateTime parsed;
             if (!SurveyDateTimeParser.TryParseIso(colony.LastImportDateTime, out parsed))
             {
+                Log.Debug("CollectColonyImportStaleness: colony={0}, LastImportDateTime='{1}' -- UNPARSEABLE",
+                    colony.ColonyName, colony.LastImportDateTime ?? "(null)");
+
                 // Unparseable or null/empty -- treat as maximally stale
                 rows.Add(new ActivityRow
                 {
@@ -56,6 +59,9 @@ namespace OE2EmpireTracker.Services
             long elapsedSeconds = (long)(SystemClock.UtcNow - parsed).TotalSeconds;
             if (elapsedSeconds > 86400)
             {
+                Log.Debug("CollectColonyImportStaleness: colony={0}, LastImportDateTime='{1}', parsed={2:O}, elapsed={3}s (>{4}s threshold)",
+                    colony.ColonyName, colony.LastImportDateTime, parsed, elapsedSeconds, 86400);
+
                 rows.Add(new ActivityRow
                 {
                     Type = ActivityType.ColonyImportStaleness,

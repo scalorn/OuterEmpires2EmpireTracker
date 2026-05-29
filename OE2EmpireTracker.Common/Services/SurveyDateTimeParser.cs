@@ -85,6 +85,16 @@ namespace OE2EmpireTracker.Services
             if (string.IsNullOrEmpty(input))
                 return false;
 
+            // Accept round-trip "o" format (with fractional seconds + Z), plus legacy formats
+            if (DateTime.TryParse(
+                input,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal | DateTimeStyles.RoundtripKind,
+                out result))
+            {
+                return true;
+            }
+
             string[] formats = { "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ss" };
             return DateTime.TryParseExact(
                 input,
