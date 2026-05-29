@@ -28,12 +28,11 @@ namespace OE2EmpireTracker.Services
             foreach (var kvp in colony.Items.Items)
             {
                 Item item = kvp.Value;
-                decimal itemVolume = item.Quantity * item.Volume;
-                totalVolume += itemVolume;
-                if (itemVolume > 0)
+                totalVolume += item.Volume;
+                if (item.Volume > 0)
                 {
-                    Log.Debug("  ComputeWarehouseVolume: item={0}, type={1}, qty={2}, vol={3}, itemVol={4}",
-                        item.Name, item.ItemType, item.Quantity, item.Volume, itemVolume);
+                    Log.Debug("  ComputeWarehouseVolume: item={0}, type={1}, qty={2}, vol={3}",
+                        item.Name, item.ItemType, item.Quantity, item.Volume);
                 }
             }
 
