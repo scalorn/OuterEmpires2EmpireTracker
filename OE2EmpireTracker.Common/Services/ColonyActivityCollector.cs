@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
@@ -23,9 +24,46 @@ namespace OE2EmpireTracker.Services
             {
                 CollectStructureActivities(colony, playerContext, rows);
                 CollectCommodityActivities(colony, rows);
+                CollectOverflowPredictions(colony, playerContext, rows);
             }
 
             return rows;
+        }
+
+        /// <summary>
+        /// Evaluates active overflow rules for the colony and emits prediction rows
+        /// when a threshold is already exceeded or will be exceeded within the
+        /// configured prediction horizon.
+        /// </summary>
+        public static void CollectOverflowPredictions(
+            Colony colony, PlayerContext playerContext, List<ActivityRow> rows)
+        {
+            int horizonHours = PreferencesStore.GetInstance()
+                .Preferences.Thresholds.OverflowPredictionHorizonHours;
+
+            var rules = playerContext.WarehouseOverflowRuleList;
+
+            foreach (var rule in rules)
+            {
+                if (!rule.IsActive)
+                {
+                    continue;
+                }
+
+                if (rule.ColonyUUID != colony.UUID)
+                {
+                    continue;
+                }
+
+                if (rule.RuleType == OverflowRuleType.SpecificResource)
+                {
+                    EvaluateSpecificResourceRule(colony, playerContext, rule, horizonHours, rows);
+                }
+                else if (rule.RuleType == OverflowRuleType.TotalWarehouse)
+                {
+                    EvaluateTotalWarehouseRule(colony, playerContext, rule, horizonHours, rows);
+                }
+            }
         }
 
         private static void CollectStructureActivities(
@@ -191,6 +229,109 @@ namespace OE2EmpireTracker.Services
                     ProcessDetails = $"{commodity.Name} x{commodity.Requested}",
                     CountDown = null,
                     NeedBy = commodity.NeedBy
+                });
+            }
+        }
+
+        private static void EvaluateSpecificResourceRule(
+            Colony colony,
+            PlayerContext playerContext,
+            WarehouseOverflowRule rule,
+            int horizonHours,
+            List<ActivityRow> rows)
+        {
+            var items = colony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
+            int currentStockpile = items.Sum(i => i.Quantity);
+
+            if (currentStockpile >= rule.TriggerThreshold)
+            {
+                rows.Add(new ActivityRow
+                {
+                    Type = ActivityType.OverflowPrediction,
+                    SystemName = colony.SystemName,
+                    ColonyName = colony.ColonyName,
+                    SourceName = "Overflow Rule",
+                    ProcessDetails = $"Overflow triggered -- {rule.ResourceName} ({rule.ResourcePurity})",
+                    CountDown = null,
+                    NeedBy = DateTime.MinValue
+                });
+                return;
+            }
+
+            decimal netRate = ColonyResourceRateCalculator.GetNetHourlyRate(
+                colony, playerContext, rule.ResourceName, rule.ResourcePurity);
+
+            if (netRate <= 0m)
+            {
+                return;
+            }
+
+            decimal hoursUntilTrigger = (rule.TriggerThreshold - currentStockpile) / netRate;
+
+            if (hoursUntilTrigger <= horizonHours)
+            {
+                long seconds = (long)(hoursUntilTrigger * 3600m);
+                string formattedTime = ActivityRow.FormatSeconds(seconds);
+                rows.Add(new ActivityRow
+                {
+                    Type = ActivityType.OverflowPrediction,
+                    SystemName = colony.SystemName,
+                    ColonyName = colony.ColonyName,
+                    SourceName = "Overflow Rule",
+                    ProcessDetails = $"Overflow in {formattedTime} -- {rule.ResourceName} ({rule.ResourcePurity})",
+                    CountDown = null,
+                    NeedBy = DateTime.MinValue
+                });
+            }
+        }
+
+        private static void EvaluateTotalWarehouseRule(
+            Colony colony,
+            PlayerContext playerContext,
+            WarehouseOverflowRule rule,
+            int horizonHours,
+            List<ActivityRow> rows)
+        {
+            decimal currentVolume = ColonyResourceRateCalculator.ComputeWarehouseVolume(colony);
+
+            if (currentVolume >= rule.TriggerThreshold)
+            {
+                rows.Add(new ActivityRow
+                {
+                    Type = ActivityType.OverflowPrediction,
+                    SystemName = colony.SystemName,
+                    ColonyName = colony.ColonyName,
+                    SourceName = "Overflow Rule",
+                    ProcessDetails = "Overflow triggered -- Total Warehouse",
+                    CountDown = null,
+                    NeedBy = DateTime.MinValue
+                });
+                return;
+            }
+
+            decimal netVolumeRate = ColonyResourceRateCalculator.GetNetWarehouseVolumeGrowthRate(
+                colony, playerContext);
+
+            if (netVolumeRate <= 0m)
+            {
+                return;
+            }
+
+            decimal hoursUntilTrigger = (rule.TriggerThreshold - currentVolume) / netVolumeRate;
+
+            if (hoursUntilTrigger <= horizonHours)
+            {
+                long seconds = (long)(hoursUntilTrigger * 3600m);
+                string formattedTime = ActivityRow.FormatSeconds(seconds);
+                rows.Add(new ActivityRow
+                {
+                    Type = ActivityType.OverflowPrediction,
+                    SystemName = colony.SystemName,
+                    ColonyName = colony.ColonyName,
+                    SourceName = "Overflow Rule",
+                    ProcessDetails = $"Overflow in {formattedTime} -- Total Warehouse",
+                    CountDown = null,
+                    NeedBy = DateTime.MinValue
                 });
             }
         }

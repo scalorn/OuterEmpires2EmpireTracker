@@ -278,6 +278,7 @@
     <Compile Include="Models\BlueprintTypeTests.cs" />
     <Compile Include="Services\ColonyActivityCollectorTests.cs" />
     <Compile Include="Services\ColonyInactivityCollectorTests.cs" />
+    <Compile Include="Services\ColonyResourceRateCalculatorTests.cs" />
     <Compile Include="Services\ColonyBuildEligibilityTests.cs" />
     <Compile Include="Models\ColonyMigrationTests.cs" />
     <Compile Include="Models\ColonyBuildCompletionTests.cs" />

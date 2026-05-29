@@ -44,6 +44,19 @@ namespace OE2EmpireTracker.Models
         public long CountdownRefreshRateSeconds { get; set; } = 1;
 
         /// <summary>
+        /// Hours into the future to predict overflow rule triggers. Default 48h.
+        /// Valid range: 1-336 (1 hour to 14 days).
+        /// </summary>
+        public int OverflowPredictionHorizonHours { get; set; } = 48;
+
+        /// <summary>
+        /// Hours of stockpile sustainability required before a refiner is considered
+        /// adequately supplied despite mining shortfall. Default 24h.
+        /// Valid range: 1-168 (1 hour to 7 days).
+        /// </summary>
+        public int UnderutilizedRefiningStockpileHours { get; set; } = 24;
+
+        /// <summary>
         /// Validates a ThresholdPreferences instance. Returns true with error=null if valid,
         /// false with a descriptive error message if invalid.
         /// </summary>
@@ -100,6 +113,18 @@ namespace OE2EmpireTracker.Models
             if (prefs.CountdownRefreshRateSeconds <= 0)
             {
                 error = "Countdown Refresh Rate must be a positive number of seconds.";
+                return false;
+            }
+
+            if (prefs.OverflowPredictionHorizonHours < 1 || prefs.OverflowPredictionHorizonHours > 336)
+            {
+                error = "Overflow Prediction Horizon must be between 1 and 336 hours.";
+                return false;
+            }
+
+            if (prefs.UnderutilizedRefiningStockpileHours < 1 || prefs.UnderutilizedRefiningStockpileHours > 168)
+            {
+                error = "Underutilized Refining Stockpile Hours must be between 1 and 168 hours.";
                 return false;
             }
 

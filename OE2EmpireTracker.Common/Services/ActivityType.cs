@@ -9,6 +9,7 @@ namespace OE2EmpireTracker.Services
         Research,
         Mining,
         Refining,
-        ColonyImportStaleness
+        ColonyImportStaleness,
+        OverflowPrediction
     }
 }

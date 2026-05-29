@@ -23,6 +23,7 @@ namespace OE2EmpireTracker.Services
             {
                 CollectIdleStructures(colony, playerContext, rows);
                 CollectUnderutilizedRefiners(colony, playerContext, rows);
+                CollectDepletionETAs(colony, playerContext, rows);
                 CollectColonyImportStaleness(colony, rows);
             }
 
@@ -62,6 +63,94 @@ namespace OE2EmpireTracker.Services
                     ColonyName = colony.ColonyName,
                     SourceName = "Colony Import",
                     ProcessDetails = ActivityRow.FormatSeconds(elapsedSeconds) + " since last import",
+                    CountDown = null,
+                    NeedBy = DateTime.MinValue
+                });
+            }
+        }
+
+        /// <summary>
+        /// Emits ActivityRow entries for each refining group that has a finite depletion ETA
+        /// (consumption exceeds mining). Shows "Depleted" when stockpile is zero.
+        /// Skips groups where mining meets or exceeds consumption (sustained).
+        /// </summary>
+        private static void CollectDepletionETAs(
+            Colony colony, PlayerContext playerContext, List<ActivityRow> rows)
+        {
+            if (colony.Structures == null)
+            {
+                return;
+            }
+
+            // Collect distinct resource+purity combinations from active refiners
+            var refiningGroups = new HashSet<string>();
+            foreach (var structure in colony.Structures)
+            {
+                if (!IsBuiltAndOnline(structure))
+                {
+                    continue;
+                }
+
+                if (!HasActiveProcess(structure))
+                {
+                    continue;
+                }
+
+                var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                if (blueprint == null || blueprint.BluePrintType != BlueprintTypes.Refinery)
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(structure.RefiningResource) ||
+                    string.IsNullOrEmpty(structure.RefiningResourcePurity))
+                {
+                    continue;
+                }
+
+                refiningGroups.Add(structure.RefiningResource + "|" + structure.RefiningResourcePurity);
+            }
+
+            foreach (var groupKey in refiningGroups)
+            {
+                string[] parts = groupKey.Split('|');
+                string resource = parts[0];
+                string purity = parts[1];
+
+                decimal totalMining = ColonyResourceRateCalculator.GetTotalMiningRate(
+                    colony, playerContext, resource, purity);
+                decimal totalConsumption = ColonyResourceRateCalculator.GetTotalRefiningConsumption(
+                    colony, playerContext, resource, purity);
+
+                // Mining meets or exceeds consumption — sustained, no row emitted
+                if (totalMining >= totalConsumption)
+                {
+                    continue;
+                }
+
+                decimal netConsumptionRate = totalConsumption - totalMining;
+                int stockpile = GetWarehouseStockpile(colony, resource, purity);
+
+                string processDetails;
+                if (stockpile == 0)
+                {
+                    processDetails = $"Depleted -- {resource} ({purity})";
+                }
+                else
+                {
+                    decimal depletionHours = stockpile / netConsumptionRate;
+                    long depletionSeconds = (long)(depletionHours * 3600m);
+                    string formattedEta = ActivityRow.FormatSeconds(depletionSeconds);
+                    processDetails = $"Depletion: {formattedEta} -- {resource} ({purity})";
+                }
+
+                rows.Add(new ActivityRow
+                {
+                    Type = ActivityType.Refining,
+                    SystemName = colony.SystemName,
+                    ColonyName = colony.ColonyName,
+                    SourceName = "Resource Depletion",
+                    ProcessDetails = processDetails,
                     CountDown = null,
                     NeedBy = DateTime.MinValue
                 });
@@ -171,41 +260,6 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Returns the mining output rate for a miner, reading the survey resource amount
-        /// and applying the ExtractionFocus skill bonus (1.0 + level * 0.01).
-        /// Returns 0 if the survey or resource cannot be found.
-        /// </summary>
-        private static decimal GetMiningOutputRate(ColonyStructure miner, PlayerContext playerContext, Colony colony)
-        {
-            if (string.IsNullOrEmpty(miner.MiningSurvey) ||
-                string.IsNullOrEmpty(miner.MiningSurveyResource))
-                return 0m;
-
-            Survey survey = playerContext.FindSurvey(miner.MiningSurvey);
-            if (survey == null || !survey.Resources.ContainsKey(miner.MiningSurveyResource))
-                return 0m;
-
-            SurveyResource resource = survey.Resources[miner.MiningSurveyResource];
-
-            decimal amount;
-            if (!decimal.TryParse(resource.Amount, out amount))
-                return 0m;
-
-            // Get ExtractionFocus skill level from colony owner
-            int extractionFocusLevel = 0;
-            if (!string.IsNullOrEmpty(colony.OwnerUUID))
-            {
-                var owner = playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == colony.OwnerUUID);
-                if (owner != null)
-                {
-                    extractionFocusLevel = owner.GetSkill(SkillName.ExtractionFocus).Level;
-                }
-            }
-
-            return amount * (1.0m + (extractionFocusLevel * 0.01m));
-        }
-
-        /// <summary>
         /// Returns the per-cycle consumption rate for a refiner.
         /// Normal refining: GameConstants.RefiningBaseRate (25).
         /// Synthetic refining: RefiningRecipe.ConsumeRate.
@@ -236,32 +290,52 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Detects active refiners whose total consumption exceeds mining supply
         /// for their resource+purity combination. Flags excess refiners starting
-        /// from highest DisplaySequence, with warehouse stockpile exemption.
+        /// from highest DisplaySequence, with warehouse stockpile sustainability exemption.
+        /// A refining group is exempt if the stockpile can sustain the group's excess
+        /// consumption for the configured UnderutilizedRefiningStockpileHours threshold.
         /// </summary>
         private static void CollectUnderutilizedRefiners(
             Colony colony, PlayerContext playerContext, List<ActivityRow> rows)
         {
-            if (colony.Structures == null) return;
+            if (colony.Structures == null)
+            {
+                return;
+            }
 
-            // Collect active miners and active refiners
-            var activeMiners = new List<ColonyStructure>();
+            // Collect active refiners
             var activeRefiners = new List<ColonyStructure>();
 
             foreach (var structure in colony.Structures)
             {
-                if (!IsBuiltAndOnline(structure)) continue;
-                if (!HasActiveProcess(structure)) continue;
+                if (!IsBuiltAndOnline(structure))
+                {
+                    continue;
+                }
+
+                if (!HasActiveProcess(structure))
+                {
+                    continue;
+                }
 
                 var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
-                if (blueprint == null) continue;
+                if (blueprint == null)
+                {
+                    continue;
+                }
 
-                if (blueprint.BluePrintType == BlueprintTypes.MiningRig)
-                    activeMiners.Add(structure);
-                else if (blueprint.BluePrintType == BlueprintTypes.Refinery)
+                if (blueprint.BluePrintType == BlueprintTypes.Refinery)
+                {
                     activeRefiners.Add(structure);
+                }
             }
 
-            if (activeRefiners.Count == 0) return;
+            if (activeRefiners.Count == 0)
+            {
+                return;
+            }
+
+            int thresholdHours = PreferencesStore.GetInstance()
+                .Preferences.Thresholds.UnderutilizedRefiningStockpileHours;
 
             // Group active refiners by resource+purity
             var refinerGroups = activeRefiners
@@ -275,36 +349,29 @@ namespace OE2EmpireTracker.Services
                 string resource = refinersInGroup[0].RefiningResource;
                 string purity = refinersInGroup[0].RefiningResourcePurity;
 
-                // Sum mining output rate for this resource+purity across all active miners
-                decimal totalMiningOutput = 0m;
-                foreach (var miner in activeMiners)
+                // Use ColonyResourceRateCalculator for rate computations
+                decimal totalMiningOutput = ColonyResourceRateCalculator.GetTotalMiningRate(
+                    colony, playerContext, resource, purity);
+                decimal totalConsumption = ColonyResourceRateCalculator.GetTotalRefiningConsumption(
+                    colony, playerContext, resource, purity);
+
+                // If mining output meets or exceeds consumption, no underutilization (Req 2.4)
+                if (totalConsumption <= totalMiningOutput)
                 {
-                    if (string.IsNullOrEmpty(miner.MiningSurvey) ||
-                        string.IsNullOrEmpty(miner.MiningSurveyResource))
-                        continue;
-
-                    Survey survey = playerContext.FindSurvey(miner.MiningSurvey);
-                    if (survey == null || !survey.Resources.ContainsKey(miner.MiningSurveyResource))
-                        continue;
-
-                    SurveyResource surveyResource = survey.Resources[miner.MiningSurveyResource];
-                    if (surveyResource.Resource == resource && surveyResource.Purity == purity)
-                    {
-                        totalMiningOutput += GetMiningOutputRate(miner, playerContext, colony);
-                    }
+                    continue;
                 }
 
-                // Sum refining consumption rate for this resource+purity
-                decimal totalConsumption = 0m;
-                foreach (var refiner in refinersInGroup)
+                // Per-group sustainability check (Req 2.1, 2.2, 2.3)
+                decimal excessConsumption = totalConsumption - totalMiningOutput;
+                decimal requiredStockpile = excessConsumption * thresholdHours;
+                int stockpile = GetWarehouseStockpile(colony, resource, purity);
+
+                if (stockpile >= requiredStockpile)
                 {
-                    totalConsumption += GetRefiningConsumptionRate(refiner);
+                    continue; // Group exempt — stockpile sustains excess consumption
                 }
 
-                // If consumption doesn't exceed mining output, no underutilization
-                if (totalConsumption <= totalMiningOutput) continue;
-
-                // Calculate how much supply each refiner gets, in priority order (lowest BuildQueueSequence first)
+                // Calculate how much supply each refiner gets, in priority order
                 var priorityOrder = CollectionSortHelper.OrderStructures(refinersInGroup);
                 var refinerAvailable = new Dictionary<string, decimal>();
 
@@ -324,15 +391,17 @@ namespace OE2EmpireTracker.Services
                     int consumeRate = GetRefiningConsumptionRate(refiner);
                     decimal available = refinerAvailable[refiner.UUID];
 
-                    if (available >= consumeRate) continue; // Fully supplied
-
-                    // Check warehouse stockpile exemption
-                    int stockpile = GetWarehouseStockpile(colony, resource, purity);
-                    if (stockpile >= consumeRate) continue; // Warehouse has enough
+                    if (available >= consumeRate)
+                    {
+                        continue; // Fully supplied
+                    }
 
                     // Flag as underutilized
                     string sourceName = BuildSourceName(refiner, playerContext);
-                    if (sourceName == null) continue;
+                    if (sourceName == null)
+                    {
+                        continue;
+                    }
 
                     int availableInt = (int)Math.Floor((double)available);
                     rows.Add(new ActivityRow
