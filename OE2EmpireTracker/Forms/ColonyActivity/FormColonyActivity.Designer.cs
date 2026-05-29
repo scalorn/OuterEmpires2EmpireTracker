@@ -26,6 +26,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             this.chkMining = new System.Windows.Forms.CheckBox();
             this.chkRefining = new System.Windows.Forms.CheckBox();
             this.chkColonyImportStaleness = new System.Windows.Forms.CheckBox();
+            this.chkOverflow = new System.Windows.Forms.CheckBox();
             this.chkShowInactive = new System.Windows.Forms.CheckBox();
             this.txtFilter = new OE2EmpireTracker.Controls.ValidatedTextBox();
             this.dgvActivities = new System.Windows.Forms.DataGridView();
@@ -65,6 +66,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             this.flpFilters.Controls.Add(this.chkMining);
             this.flpFilters.Controls.Add(this.chkRefining);
             this.flpFilters.Controls.Add(this.chkColonyImportStaleness);
+            this.flpFilters.Controls.Add(this.chkOverflow);
             this.flpFilters.Controls.Add(this.chkShowInactive);
             this.flpFilters.Controls.Add(this.txtFilter);
             this.flpFilters.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
@@ -165,13 +167,25 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             this.chkColonyImportStaleness.Text = "Import Staleness";
             this.chkColonyImportStaleness.UseVisualStyleBackColor = true;
             // 
+            // chkOverflow
+            // 
+            this.chkOverflow.AutoSize = true;
+            this.chkOverflow.Checked = true;
+            this.chkOverflow.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkOverflow.Location = new System.Drawing.Point(660, 3);
+            this.chkOverflow.Name = "chkOverflow";
+            this.chkOverflow.Size = new System.Drawing.Size(67, 17);
+            this.chkOverflow.TabIndex = 8;
+            this.chkOverflow.Text = "Overflow";
+            this.chkOverflow.UseVisualStyleBackColor = true;
+            // 
             // chkShowInactive
             // 
             this.chkShowInactive.AutoSize = true;
             this.chkShowInactive.Location = new System.Drawing.Point(660, 3);
             this.chkShowInactive.Name = "chkShowInactive";
             this.chkShowInactive.Size = new System.Drawing.Size(96, 17);
-            this.chkShowInactive.TabIndex = 8;
+            this.chkShowInactive.TabIndex = 9;
             this.chkShowInactive.Text = "Show Inactive";
             this.chkShowInactive.UseVisualStyleBackColor = true;
             // 
@@ -180,7 +194,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             this.txtFilter.Location = new System.Drawing.Point(660, 3);
             this.txtFilter.Name = "txtFilter";
             this.txtFilter.Size = new System.Drawing.Size(200, 20);
-            this.txtFilter.TabIndex = 9;
+            this.txtFilter.TabIndex = 10;
             // 
             // dgvActivities
             // 
@@ -285,6 +299,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
         private System.Windows.Forms.CheckBox chkMining;
         private System.Windows.Forms.CheckBox chkRefining;
         private System.Windows.Forms.CheckBox chkColonyImportStaleness;
+        private System.Windows.Forms.CheckBox chkOverflow;
         private System.Windows.Forms.CheckBox chkShowInactive;
         private OE2EmpireTracker.Controls.ValidatedTextBox txtFilter;
         private System.Windows.Forms.DataGridView dgvActivities;

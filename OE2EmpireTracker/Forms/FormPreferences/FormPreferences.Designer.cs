@@ -19,6 +19,11 @@ namespace OE2EmpireTracker.Forms
             this.tabThresholds = new System.Windows.Forms.TabPage();
             this.tabServer = new System.Windows.Forms.TabPage();
             this.tabGameApi = new System.Windows.Forms.TabPage();
+            this.grpWarehouseThresholds = new System.Windows.Forms.GroupBox();
+            this.lblOverflowHorizon = new System.Windows.Forms.Label();
+            this.nudOverflowHorizon = new System.Windows.Forms.NumericUpDown();
+            this.lblUnderutilizedStockpile = new System.Windows.Forms.Label();
+            this.nudUnderutilizedStockpile = new System.Windows.Forms.NumericUpDown();
             this.grpGameApi = new System.Windows.Forms.GroupBox();
             this.lblGameApiUrl = new System.Windows.Forms.Label();
             this.txtGameApiUrl = new OE2EmpireTracker.Controls.ValidatedTextBox();
@@ -80,7 +85,10 @@ namespace OE2EmpireTracker.Forms
             this.tabServer.SuspendLayout();
             this.tabGameApi.SuspendLayout();
             this.grpGameApi.SuspendLayout();
+            this.grpWarehouseThresholds.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPollingInterval)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudOverflowHorizon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudUnderutilizedStockpile)).BeginInit();
             this.grpStructureCount.SuspendLayout();
             this.grpWorkerRequest.SuspendLayout();
             this.grpColonyImport.SuspendLayout();
@@ -99,7 +107,7 @@ namespace OE2EmpireTracker.Forms
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(498, 470);
+            this.tabControl.Size = new System.Drawing.Size(498, 550);
             this.tabControl.TabIndex = 0;
             // 
             // tabThresholds
@@ -110,10 +118,11 @@ namespace OE2EmpireTracker.Forms
             this.tabThresholds.Controls.Add(this.grpBackgroundProcessing);
             this.tabThresholds.Controls.Add(this.grpAdminReport);
             this.tabThresholds.Controls.Add(this.grpCountdownDisplay);
+            this.tabThresholds.Controls.Add(this.grpWarehouseThresholds);
             this.tabThresholds.Location = new System.Drawing.Point(4, 22);
             this.tabThresholds.Name = "tabThresholds";
             this.tabThresholds.Padding = new System.Windows.Forms.Padding(3);
-            this.tabThresholds.Size = new System.Drawing.Size(490, 444);
+            this.tabThresholds.Size = new System.Drawing.Size(490, 524);
             this.tabThresholds.TabIndex = 0;
             this.tabThresholds.Text = "Thresholds";
             this.tabThresholds.UseVisualStyleBackColor = true;
@@ -124,7 +133,7 @@ namespace OE2EmpireTracker.Forms
             this.tabServer.Location = new System.Drawing.Point(4, 22);
             this.tabServer.Name = "tabServer";
             this.tabServer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabServer.Size = new System.Drawing.Size(490, 444);
+            this.tabServer.Size = new System.Drawing.Size(490, 524);
             this.tabServer.TabIndex = 1;
             this.tabServer.Text = "Server";
             this.tabServer.UseVisualStyleBackColor = true;
@@ -135,7 +144,7 @@ namespace OE2EmpireTracker.Forms
             this.tabGameApi.Location = new System.Drawing.Point(4, 22);
             this.tabGameApi.Name = "tabGameApi";
             this.tabGameApi.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGameApi.Size = new System.Drawing.Size(490, 444);
+            this.tabGameApi.Size = new System.Drawing.Size(490, 524);
             this.tabGameApi.TabIndex = 2;
             this.tabGameApi.Text = "Game API";
             this.tabGameApi.UseVisualStyleBackColor = true;
@@ -503,6 +512,55 @@ namespace OE2EmpireTracker.Forms
             this.txtCountdownRefresh.Size = new System.Drawing.Size(100, 20);
             this.txtCountdownRefresh.TabIndex = 9;
             // 
+            // grpWarehouseThresholds
+            // 
+            this.grpWarehouseThresholds.Controls.Add(this.lblOverflowHorizon);
+            this.grpWarehouseThresholds.Controls.Add(this.nudOverflowHorizon);
+            this.grpWarehouseThresholds.Controls.Add(this.lblUnderutilizedStockpile);
+            this.grpWarehouseThresholds.Controls.Add(this.nudUnderutilizedStockpile);
+            this.grpWarehouseThresholds.Location = new System.Drawing.Point(12, 438);
+            this.grpWarehouseThresholds.Name = "grpWarehouseThresholds";
+            this.grpWarehouseThresholds.Size = new System.Drawing.Size(460, 75);
+            this.grpWarehouseThresholds.TabIndex = 6;
+            this.grpWarehouseThresholds.TabStop = false;
+            this.grpWarehouseThresholds.Text = "Warehouse Thresholds";
+            // 
+            // lblOverflowHorizon
+            // 
+            this.lblOverflowHorizon.AutoSize = true;
+            this.lblOverflowHorizon.Location = new System.Drawing.Point(15, 25);
+            this.lblOverflowHorizon.Name = "lblOverflowHorizon";
+            this.lblOverflowHorizon.Size = new System.Drawing.Size(172, 13);
+            this.lblOverflowHorizon.Text = "Overflow prediction horizon hours:";
+            // 
+            // nudOverflowHorizon
+            // 
+            this.nudOverflowHorizon.Location = new System.Drawing.Point(220, 22);
+            this.nudOverflowHorizon.Maximum = new decimal(new int[] { 336, 0, 0, 0 });
+            this.nudOverflowHorizon.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudOverflowHorizon.Name = "nudOverflowHorizon";
+            this.nudOverflowHorizon.Size = new System.Drawing.Size(60, 20);
+            this.nudOverflowHorizon.TabIndex = 10;
+            this.nudOverflowHorizon.Value = new decimal(new int[] { 48, 0, 0, 0 });
+            // 
+            // lblUnderutilizedStockpile
+            // 
+            this.lblUnderutilizedStockpile.AutoSize = true;
+            this.lblUnderutilizedStockpile.Location = new System.Drawing.Point(15, 50);
+            this.lblUnderutilizedStockpile.Name = "lblUnderutilizedStockpile";
+            this.lblUnderutilizedStockpile.Size = new System.Drawing.Size(199, 13);
+            this.lblUnderutilizedStockpile.Text = "Underutilized refining stockpile hours:";
+            // 
+            // nudUnderutilizedStockpile
+            // 
+            this.nudUnderutilizedStockpile.Location = new System.Drawing.Point(220, 47);
+            this.nudUnderutilizedStockpile.Maximum = new decimal(new int[] { 168, 0, 0, 0 });
+            this.nudUnderutilizedStockpile.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudUnderutilizedStockpile.Name = "nudUnderutilizedStockpile";
+            this.nudUnderutilizedStockpile.Size = new System.Drawing.Size(60, 20);
+            this.nudUnderutilizedStockpile.TabIndex = 11;
+            this.nudUnderutilizedStockpile.Value = new decimal(new int[] { 24, 0, 0, 0 });
+            // 
             // grpServerConnection
             // 
             this.grpServerConnection.Controls.Add(this.lblServerUrl);
@@ -614,7 +672,7 @@ namespace OE2EmpireTracker.Forms
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(230, 480);
+            this.btnOK.Location = new System.Drawing.Point(230, 560);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 10;
@@ -624,7 +682,7 @@ namespace OE2EmpireTracker.Forms
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(311, 480);
+            this.btnCancel.Location = new System.Drawing.Point(311, 560);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 11;
@@ -633,7 +691,7 @@ namespace OE2EmpireTracker.Forms
             // 
             // btnResetDefaults
             // 
-            this.btnResetDefaults.Location = new System.Drawing.Point(411, 480);
+            this.btnResetDefaults.Location = new System.Drawing.Point(411, 560);
             this.btnResetDefaults.Name = "btnResetDefaults";
             this.btnResetDefaults.Size = new System.Drawing.Size(75, 23);
             this.btnResetDefaults.TabIndex = 12;
@@ -646,7 +704,7 @@ namespace OE2EmpireTracker.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(498, 515);
+            this.ClientSize = new System.Drawing.Size(498, 595);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
@@ -664,6 +722,8 @@ namespace OE2EmpireTracker.Forms
             this.grpGameApi.ResumeLayout(false);
             this.grpGameApi.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPollingInterval)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudOverflowHorizon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudUnderutilizedStockpile)).EndInit();
             this.grpStructureCount.ResumeLayout(false);
             this.grpStructureCount.PerformLayout();
             this.grpWorkerRequest.ResumeLayout(false);
@@ -676,6 +736,8 @@ namespace OE2EmpireTracker.Forms
             this.grpAdminReport.PerformLayout();
             this.grpCountdownDisplay.ResumeLayout(false);
             this.grpCountdownDisplay.PerformLayout();
+            this.grpWarehouseThresholds.ResumeLayout(false);
+            this.grpWarehouseThresholds.PerformLayout();
             this.grpServerConnection.ResumeLayout(false);
             this.grpServerConnection.PerformLayout();
             this.ResumeLayout(false);
@@ -743,5 +805,10 @@ namespace OE2EmpireTracker.Forms
         internal System.Windows.Forms.CheckBox chkGameApiEnabled;
         internal System.Windows.Forms.Button btnTestGameApiConnection;
         internal System.Windows.Forms.Label lblTestResult;
+        private System.Windows.Forms.GroupBox grpWarehouseThresholds;
+        private System.Windows.Forms.Label lblOverflowHorizon;
+        internal System.Windows.Forms.NumericUpDown nudOverflowHorizon;
+        private System.Windows.Forms.Label lblUnderutilizedStockpile;
+        internal System.Windows.Forms.NumericUpDown nudUnderutilizedStockpile;
     }
 }

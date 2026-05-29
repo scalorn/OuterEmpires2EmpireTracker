@@ -59,7 +59,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
 - [~] 3. Checkpoint - Verify rate calculator compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Implement stockpile-aware underutilization detection in ColonyInactivityCollector
+- [x] 4. Implement stockpile-aware underutilization detection in ColonyInactivityCollector
   - [x] 4.1 Refactor underutilization check to use rate calculator and stockpile threshold
     - Replace per-refiner `stockpile >= consumeRate` check with per-group sustainability check
     - Compute `excessConsumption = totalGroupConsumption - totalGroupMiningOutput` using ColonyResourceRateCalculator
@@ -72,7 +72,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Verification: getDiagnostics clean compile_
 
 
-  - [-] 4.2 Write unit tests for stockpile-aware underutilization
+  - [x] 4.2 Write unit tests for stockpile-aware underutilization
     - Test refining group exempt when stockpile sustains excess consumption for threshold hours
     - Test refining group flagged when stockpile insufficient
     - Test group not flagged when mining meets or exceeds consumption
@@ -82,7 +82,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Output: ColonyInactivityCollectorTests.cs (new or modified)_
     - _Verification: vstest.console passes_
 
-- [ ] 5. Implement resource depletion ETA in ColonyInactivityCollector
+- [x] 5. Implement resource depletion ETA in ColonyInactivityCollector
   - [x] 5.1 Add CollectDepletionETAs method to ColonyInactivityCollector
     - Implement `CollectDepletionETAs(Colony, PlayerContext, List<ActivityRow>)`
     - For each refining group where consumption > mining: compute `depletionHours = stockpile / (consumption - mining)`
@@ -94,7 +94,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Output: ColonyInactivityCollector.cs modified_
     - _Verification: getDiagnostics clean compile_
 
-  - [-] 5.2 Write unit tests for depletion ETA calculation
+  - [x] 5.2 Write unit tests for depletion ETA calculation
     - Test correct ETA when consumption exceeds mining with known stockpile
     - Test "Depleted" when stockpile is zero and consumption exceeds mining
     - Test no row emitted when mining meets or exceeds consumption ("Sustained")
@@ -105,7 +105,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Verification: vstest.console passes_
 
 
-- [ ] 6. Implement overflow prediction in ColonyActivityCollector
+- [x] 6. Implement overflow prediction in ColonyActivityCollector
   - [x] 6.1 Add CollectOverflowPredictions method to ColonyActivityCollector
     - Implement `CollectOverflowPredictions(Colony, PlayerContext, List<ActivityRow>)`
     - For SpecificResource rules: compute time until stockpile reaches threshold using net accumulation rate
@@ -121,7 +121,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Output: ColonyActivityCollector.cs modified_
     - _Verification: getDiagnostics clean compile_
 
-  - [-] 6.2 Write unit tests for overflow prediction
+  - [x] 6.2 Write unit tests for overflow prediction
     - Test SpecificResource rule: correct time calculation with known rate and threshold
     - Test TotalWarehouse rule: correct time calculation with known volume growth rate
     - Test "triggered" when threshold already exceeded
@@ -137,8 +137,8 @@ This plan implements warehouse volume display, corrected underutilized refining 
 - [~] 7. Checkpoint - Verify all service-layer logic compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Add Warehouse section to ColonyAdminReportBuilder
-  - [-] 8.1 Implement RenderWarehouseSection in ColonyAdminReportBuilder
+- [x] 8. Add Warehouse section to ColonyAdminReportBuilder
+  - [x] 8.1 Implement RenderWarehouseSection in ColonyAdminReportBuilder
     - Add `RenderWarehouseSection(RtfBuilder, Colony, PlayerContext, bool) → bool`
     - Display "{used} / {max}" volume using `ColonyResourceRateCalculator.ComputeWarehouseVolume`
     - Omit section entirely when WarehouseCapacity == 0
@@ -153,7 +153,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Verification: getDiagnostics clean compile_
 
 - [ ] 9. Add Resource Depletion section to ColonyAdminReportBuilder
-  - [~] 9.1 Implement RenderResourceDepletionSection in ColonyAdminReportBuilder
+  - [-] 9.1 Implement RenderResourceDepletionSection in ColonyAdminReportBuilder
     - Add `RenderResourceDepletionSection(RtfBuilder, Colony, PlayerContext, bool) → bool`
     - For each refining group: show depletion ETA using `ColonyResourceRateCalculator` rates
     - Display "Sustained" when mining meets or exceeds consumption
@@ -167,7 +167,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
 
 
 - [ ] 10. Wire overflow checkbox into FormColonyActivity
-  - [~] 10.1 Add chkOverflow checkbox to FormColonyActivity
+  - [-] 10.1 Add chkOverflow checkbox to FormColonyActivity
     - Add `chkOverflow` checkbox to `flpFilters` in Designer.cs
     - Wire `chkOverflow.CheckedChanged += ChkFilter_CheckedChanged`
     - Set `chkOverflow.Visible = !inactivityMode` (visible only in active mode)
@@ -179,7 +179,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Verification: getDiagnostics clean compile_
 
 - [ ] 11. Add preference fields to FormPreferences
-  - [~] 11.1 Add nudOverflowHorizon and nudUnderutilizedStockpile to FormPreferences
+  - [-] 11.1 Add nudOverflowHorizon and nudUnderutilizedStockpile to FormPreferences
     - Add `nudOverflowHorizon` NumericUpDown (Min=1, Max=336, Default=48) with label "Overflow prediction horizon hours"
     - Add `nudUnderutilizedStockpile` NumericUpDown (Min=1, Max=168, Default=24) with label "Underutilized refining stockpile hours"
     - Place both in the Thresholds section

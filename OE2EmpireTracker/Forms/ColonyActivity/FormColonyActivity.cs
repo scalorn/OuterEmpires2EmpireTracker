@@ -43,6 +43,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             chkMining.CheckedChanged += ChkFilter_CheckedChanged;
             chkRefining.CheckedChanged += ChkFilter_CheckedChanged;
             chkColonyImportStaleness.CheckedChanged += ChkFilter_CheckedChanged;
+            chkOverflow.CheckedChanged += ChkFilter_CheckedChanged;
             chkShowInactive.CheckedChanged += ChkShowInactive_CheckedChanged;
 
             // Wire text filter
@@ -159,6 +160,8 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             if (chkRefining.Checked) types.Add(ActivityType.Refining);
             if (chkShowInactive.Checked && chkColonyImportStaleness.Checked)
                 types.Add(ActivityType.ColonyImportStaleness);
+            if (!chkShowInactive.Checked && chkOverflow.Checked)
+                types.Add(ActivityType.OverflowPrediction);
             return types;
         }
 
@@ -172,6 +175,7 @@ namespace OE2EmpireTracker.Forms.ColonyActivity
             // Hide CommodityRequest checkbox and CountDown column in Inactivity Mode
             chkCommodityRequest.Visible = !inactivityMode;
             chkColonyImportStaleness.Visible = inactivityMode;
+            chkOverflow.Visible = !inactivityMode;
             colCountDown.Visible = !inactivityMode;
 
             var selectedTypes = GetSelectedActivityTypes();

@@ -89,6 +89,8 @@ namespace OE2EmpireTracker.Forms
             txtBackgroundInterval.Text = ActivityRow.FormatSeconds(thresholds.BackgroundProcessingIntervalSeconds);
             txtAdminRefresh.Text = ActivityRow.FormatSeconds(thresholds.AdminRefreshIntervalSeconds);
             txtCountdownRefresh.Text = ActivityRow.FormatSeconds(thresholds.CountdownRefreshRateSeconds);
+            nudOverflowHorizon.Value = Math.Max(1, Math.Min(336, thresholds.OverflowPredictionHorizonHours));
+            nudUnderutilizedStockpile.Value = Math.Max(1, Math.Min(168, thresholds.UnderutilizedRefiningStockpileHours));
         }
 
         private void PopulateServerFields(ServerConnectionSettings settings)
@@ -740,6 +742,8 @@ namespace OE2EmpireTracker.Forms
                 BackgroundProcessingIntervalSeconds = backgroundInterval,
                 AdminRefreshIntervalSeconds = adminRefresh,
                 CountdownRefreshRateSeconds = countdownRefresh,
+                OverflowPredictionHorizonHours = (int)nudOverflowHorizon.Value,
+                UnderutilizedRefiningStockpileHours = (int)nudUnderutilizedStockpile.Value,
             };
 
             if (!ThresholdPreferences.Validate(prefs, out string error))

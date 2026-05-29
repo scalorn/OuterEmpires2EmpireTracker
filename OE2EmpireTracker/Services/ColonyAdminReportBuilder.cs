@@ -76,8 +76,14 @@ namespace OE2EmpireTracker.Services
             // Section 3: Inactivity
             hasContent |= RenderInactivitySection(builder, inactivities, hasContent);
 
-            // Section 4: Activity (non-repeating + aggregated mining/refining)
+            // Section 4: Warehouse (between Inactivity and Activity)
+            hasContent |= RenderWarehouseSection(builder, colony, playerContext, hasContent);
+
+            // Section 5: Activity (non-repeating + aggregated mining/refining)
             hasContent |= RenderActivitySection(builder, otherActivityRows, colony, playerContext, hasContent);
+
+            // Section 6: Resource Depletion (after Refining aggregation)
+            hasContent |= RenderResourceDepletionSection(builder, colony, playerContext, hasContent);
 
             if (!hasContent)
                 return string.Empty;
@@ -177,6 +183,138 @@ namespace OE2EmpireTracker.Services
             }
 
             return anyRendered;
+        }
+
+        // ----- Warehouse Section -----
+
+        private static bool RenderWarehouseSection(
+            RtfBuilder builder,
+            Colony colony,
+            PlayerContext playerContext,
+            bool needsLeadingNewline)
+        {
+            var calc = new ColonyStatusCalculator(colony);
+            decimal warehouseCapacity = calc.FinalActualStatus.WarehouseCapacity;
+
+            if (warehouseCapacity == 0m)
+            {
+                return false;
+            }
+
+            decimal usedVolume = ColonyResourceRateCalculator.ComputeWarehouseVolume(colony);
+
+            if (needsLeadingNewline) builder.Append("\n", TextColor);
+            builder.Append("Warehouse\n", HeaderColor);
+            builder.Append($"  {usedVolume} / {warehouseCapacity}\n", TextColor);
+
+            // Overflow predictions from active rules
+            RenderOverflowPredictions(builder, colony, playerContext);
+
+            return true;
+        }
+
+        private static void RenderOverflowPredictions(
+            RtfBuilder builder,
+            Colony colony,
+            PlayerContext playerContext)
+        {
+            int horizonHours = PreferencesStore.GetInstance()
+                .Preferences.Thresholds.OverflowPredictionHorizonHours;
+
+            var rules = playerContext.WarehouseOverflowRuleList;
+
+            foreach (var rule in rules)
+            {
+                if (!rule.IsActive)
+                {
+                    continue;
+                }
+
+                if (rule.ColonyUUID != colony.UUID)
+                {
+                    continue;
+                }
+
+                if (rule.RuleType == OverflowRuleType.SpecificResource)
+                {
+                    RenderSpecificResourceOverflow(builder, colony, playerContext, rule, horizonHours);
+                }
+                else if (rule.RuleType == OverflowRuleType.TotalWarehouse)
+                {
+                    RenderTotalWarehouseOverflow(builder, colony, playerContext, rule, horizonHours);
+                }
+            }
+        }
+
+        private static void RenderSpecificResourceOverflow(
+            RtfBuilder builder,
+            Colony colony,
+            PlayerContext playerContext,
+            WarehouseOverflowRule rule,
+            int horizonHours)
+        {
+            var items = colony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
+            int currentStockpile = items.Sum(i => i.Quantity);
+
+            if (currentStockpile >= rule.TriggerThreshold)
+            {
+                builder.Append(
+                    $"  Overflow triggered -- {rule.ResourceName} ({rule.ResourcePurity})\n",
+                    CountdownColor);
+                return;
+            }
+
+            decimal netRate = ColonyResourceRateCalculator.GetNetHourlyRate(
+                colony, playerContext, rule.ResourceName, rule.ResourcePurity);
+
+            if (netRate <= 0m)
+            {
+                return;
+            }
+
+            decimal hoursUntilTrigger = (rule.TriggerThreshold - currentStockpile) / netRate;
+
+            if (hoursUntilTrigger <= horizonHours)
+            {
+                DateTime triggerTime = SystemClock.UtcNow.AddHours((double)hoursUntilTrigger).ToLocalTime();
+                builder.Append(
+                    $"  Overflow at {triggerTime}\n",
+                    CountdownColor);
+            }
+        }
+
+        private static void RenderTotalWarehouseOverflow(
+            RtfBuilder builder,
+            Colony colony,
+            PlayerContext playerContext,
+            WarehouseOverflowRule rule,
+            int horizonHours)
+        {
+            decimal currentVolume = ColonyResourceRateCalculator.ComputeWarehouseVolume(colony);
+
+            if (currentVolume >= rule.TriggerThreshold)
+            {
+                builder.Append("  Overflow triggered -- Total Warehouse\n", CountdownColor);
+                return;
+            }
+
+            decimal netVolumeRate = ColonyResourceRateCalculator.GetNetWarehouseVolumeGrowthRate(
+                colony, playerContext);
+
+            if (netVolumeRate <= 0m)
+            {
+                return;
+            }
+
+            decimal hoursUntilTrigger = (rule.TriggerThreshold - currentVolume) / netVolumeRate;
+
+            if (hoursUntilTrigger <= horizonHours)
+            {
+                DateTime triggerTime = SystemClock.UtcNow.AddHours((double)hoursUntilTrigger).ToLocalTime();
+                builder.Append(
+                    $"  Overflow at {triggerTime}\n",
+                    CountdownColor);
+            }
         }
 
         // ----- Activity Section -----
@@ -460,6 +598,107 @@ namespace OE2EmpireTracker.Services
             }
 
             return true;
+        }
+
+        // ----- Resource Depletion Section -----
+
+        private static bool RenderResourceDepletionSection(
+            RtfBuilder builder,
+            Colony colony,
+            PlayerContext playerContext,
+            bool needsLeadingNewline)
+        {
+            if (colony.Structures == null)
+            {
+                return false;
+            }
+
+            // Collect distinct refining groups from active refiners
+            var refiningGroups = CollectRefiningGroups(colony, playerContext);
+
+            if (refiningGroups.Count == 0)
+            {
+                return false;
+            }
+
+            if (needsLeadingNewline)
+            {
+                builder.Append("\n", TextColor);
+            }
+
+            builder.Append("Resource Depletion\n", HeaderColor);
+
+            foreach (var group in refiningGroups.OrderBy(g => g.Resource).ThenBy(g => g.Purity))
+            {
+                decimal miningRate = ColonyResourceRateCalculator.GetTotalMiningRate(
+                    colony, playerContext, group.Resource, group.Purity);
+                decimal consumptionRate = ColonyResourceRateCalculator.GetTotalRefiningConsumption(
+                    colony, playerContext, group.Resource, group.Purity);
+
+                if (miningRate >= consumptionRate)
+                {
+                    builder.Append($"  {group.Resource} ({group.Purity}) -- Sustained\n", TextColor);
+                    continue;
+                }
+
+                var items = colony.Items.FindResource(group.Resource, group.Purity);
+                int stockpile = items.Sum(i => i.Quantity);
+
+                if (stockpile == 0)
+                {
+                    builder.Append($"  {group.Resource} ({group.Purity}) -- Depleted\n", CountdownColor);
+                    continue;
+                }
+
+                decimal excessConsumption = consumptionRate - miningRate;
+                decimal depletionHours = stockpile / excessConsumption;
+                long depletionSeconds = (long)(depletionHours * 3600m);
+                string formattedEta = ActivityRow.FormatSeconds(depletionSeconds);
+
+                builder.Append($"  {group.Resource} ({group.Purity}) -- {formattedEta}\n", CountdownColor);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Collects distinct resource+purity pairs from active refiners in the colony.
+        /// </summary>
+        private static List<(string Resource, string Purity)> CollectRefiningGroups(
+            Colony colony,
+            PlayerContext playerContext)
+        {
+            var groups = new HashSet<(string Resource, string Purity)>();
+
+            foreach (var structure in colony.Structures)
+            {
+                if (!structure.IsBuiltAndOnline)
+                {
+                    continue;
+                }
+
+                if (structure.ProcessCompletionTime == null ||
+                    structure.ProcessCompletionTime.TimeRemaining <= 0)
+                {
+                    continue;
+                }
+
+                var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
+                if (blueprint == null || blueprint.BluePrintType != BlueprintTypes.Refinery)
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(structure.RefiningResource) ||
+                    string.IsNullOrEmpty(structure.RefiningResourcePurity))
+                {
+                    continue;
+                }
+
+                groups.Add((structure.RefiningResource, structure.RefiningResourcePurity));
+            }
+
+            return groups.ToList();
         }
     }
 }
