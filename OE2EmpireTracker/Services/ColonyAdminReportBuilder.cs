@@ -194,6 +194,7 @@ namespace OE2EmpireTracker.Services
             bool needsLeadingNewline)
         {
             var calc = new ColonyStatusCalculator(colony);
+            calc.CalculateBuilt();
             decimal warehouseCapacity = calc.FinalActualStatus.WarehouseCapacity;
 
             if (warehouseCapacity == 0m)

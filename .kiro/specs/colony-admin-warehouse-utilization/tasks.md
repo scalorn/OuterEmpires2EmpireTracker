@@ -56,7 +56,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Output: ColonyResourceRateCalculatorTests.cs (new)_
     - _Verification: vstest.console passes_
 
-- [~] 3. Checkpoint - Verify rate calculator compiles and tests pass
+- [x] 3. Checkpoint - Verify rate calculator compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 4. Implement stockpile-aware underutilization detection in ColonyInactivityCollector
@@ -134,7 +134,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Verification: vstest.console passes_
 
 
-- [~] 7. Checkpoint - Verify all service-layer logic compiles and tests pass
+- [x] 7. Checkpoint - Verify all service-layer logic compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 8. Add Warehouse section to ColonyAdminReportBuilder
@@ -152,8 +152,8 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Output: ColonyAdminReportBuilder.cs modified_
     - _Verification: getDiagnostics clean compile_
 
-- [ ] 9. Add Resource Depletion section to ColonyAdminReportBuilder
-  - [-] 9.1 Implement RenderResourceDepletionSection in ColonyAdminReportBuilder
+- [x] 9. Add Resource Depletion section to ColonyAdminReportBuilder
+  - [x] 9.1 Implement RenderResourceDepletionSection in ColonyAdminReportBuilder
     - Add `RenderResourceDepletionSection(RtfBuilder, Colony, PlayerContext, bool) → bool`
     - For each refining group: show depletion ETA using `ColonyResourceRateCalculator` rates
     - Display "Sustained" when mining meets or exceeds consumption
@@ -166,8 +166,8 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Verification: getDiagnostics clean compile_
 
 
-- [ ] 10. Wire overflow checkbox into FormColonyActivity
-  - [-] 10.1 Add chkOverflow checkbox to FormColonyActivity
+- [x] 10. Wire overflow checkbox into FormColonyActivity
+  - [x] 10.1 Add chkOverflow checkbox to FormColonyActivity
     - Add `chkOverflow` checkbox to `flpFilters` in Designer.cs
     - Wire `chkOverflow.CheckedChanged += ChkFilter_CheckedChanged`
     - Set `chkOverflow.Visible = !inactivityMode` (visible only in active mode)
@@ -178,8 +178,8 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Output: FormColonyActivity.cs modified, FormColonyActivity.Designer.cs modified_
     - _Verification: getDiagnostics clean compile_
 
-- [ ] 11. Add preference fields to FormPreferences
-  - [-] 11.1 Add nudOverflowHorizon and nudUnderutilizedStockpile to FormPreferences
+- [x] 11. Add preference fields to FormPreferences
+  - [x] 11.1 Add nudOverflowHorizon and nudUnderutilizedStockpile to FormPreferences
     - Add `nudOverflowHorizon` NumericUpDown (Min=1, Max=336, Default=48) with label "Overflow prediction horizon hours"
     - Add `nudUnderutilizedStockpile` NumericUpDown (Min=1, Max=168, Default=24) with label "Underutilized refining stockpile hours"
     - Place both in the Thresholds section
@@ -189,12 +189,12 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Output: FormPreferences.cs modified, FormPreferences.Designer.cs modified_
     - _Verification: getDiagnostics clean compile_
 
-- [~] 12. Checkpoint - Verify full solution builds with zero warnings
+- [x] 12. Checkpoint - Verify full solution builds with zero warnings
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 13. Wire depletion ETA display in Colony Activity form
-  - [~] 13.1 Ensure depletion ETA rows display when Refining checkbox is checked in inactivity mode
+- [x] 13. Wire depletion ETA display in Colony Activity form
+  - [x] 13.1 Ensure depletion ETA rows display when Refining checkbox is checked in inactivity mode
     - Verify ColonyInactivityCollector.CollectDepletionETAs is called during inactivity collection
     - Ensure ActivityRow Type=Refining rows from depletion are included when Refining filter is active
     - Verify "Depleted" rows are emitted for zero-stockpile groups
@@ -203,8 +203,8 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Output: ColonyInactivityCollector.cs modified (if wiring needed)_
     - _Verification: getDiagnostics clean compile_
 
-- [ ] 14. Verify preference live-reload behavior
-  - [~] 14.1 Confirm preferences are read fresh on each collector/builder invocation
+- [x] 14. Verify preference live-reload behavior
+  - [x] 14.1 Confirm preferences are read fresh on each collector/builder invocation
     - Verify ColonyInactivityCollector reads `UnderutilizedRefiningStockpileHours` fresh each call (no caching)
     - Verify ColonyActivityCollector reads `OverflowPredictionHorizonHours` fresh each call (no caching)
     - Verify ColonyAdminReportBuilder reads both preferences fresh each call
@@ -214,7 +214,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Output: No changes if pattern already followed; fix if caching detected_
     - _Verification: getDiagnostics clean compile, code review confirms no caching_
 
-- [~] 15. Final checkpoint - Full build, all tests pass, audit clean
+- [x] 15. Final checkpoint - Full build, all tests pass, audit clean
   - Ensure all tests pass, ask the user if questions arise.
   - Run `node .kiro/tools/audit.js` and verify no new findings.
   - Build solution with zero warnings.
