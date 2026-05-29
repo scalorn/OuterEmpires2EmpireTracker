@@ -91,7 +91,7 @@ public sealed partial class ColonyOverflowRowViewModel : ObservableObject
     private string _purity = string.Empty;
 
     [ObservableProperty]
-    private int _threshold;
+    private decimal _threshold;
 
     [ObservableProperty]
     private string _destination = string.Empty;

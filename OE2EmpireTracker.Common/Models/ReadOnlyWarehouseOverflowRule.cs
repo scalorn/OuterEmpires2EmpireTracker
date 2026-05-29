@@ -20,7 +20,8 @@ namespace OE2EmpireTracker.Models
         public string ColonyUUID => _entity.ColonyUUID;
         public string ResourceName => _entity.ResourceName;
         public string ResourcePurity => _entity.ResourcePurity;
-        public int TriggerThreshold => _entity.TriggerThreshold;
+        public OverflowRuleType RuleType => _entity.RuleType;
+        public decimal TriggerThreshold => _entity.TriggerThreshold;
         public DestinationType DestinationType => _entity.DestinationType;
         public string DestinationUUID => _entity.DestinationUUID;
         public string DeliveryRouteUUID => _entity.DeliveryRouteUUID;

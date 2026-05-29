@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
 
@@ -527,15 +528,18 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Checks warehouse overflow rules for all colonies. For each active rule
-        /// where the colony's resource quantity exceeds the threshold, logs the
-        /// overflow. Returns the count of overflow detections.
+        /// Checks warehouse overflow rules for all colonies. Dispatches each active
+        /// rule to the appropriate evaluator based on RuleType. Returns the count of
+        /// overflow detections.
         /// Delivery generation will be wired in task 39.
         /// </summary>
         private int CheckWarehouseOverflow(List<Colony> colonies)
         {
             var rules = _playerContext.WarehouseOverflowRuleList;
-            if (rules == null || rules.Count == 0) return 0;
+            if (rules == null || rules.Count == 0)
+            {
+                return 0;
+            }
 
             int overflowCount = 0;
             var activeRules = rules.Where(r => r.IsActive).ToList();
@@ -543,28 +547,127 @@ namespace OE2EmpireTracker.Services
             foreach (var rule in activeRules)
             {
                 var colony = colonies.FirstOrDefault(c => c.UUID == rule.ColonyUUID);
-                if (colony == null) continue;
-                if (colony.Items == null) continue;
-
-                var items = colony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
-                int currentQty = items.Sum(i => i.Quantity);
-
-                if (currentQty > rule.TriggerThreshold && rule.TriggerThreshold > 0)
+                if (colony == null || colony.Items == null)
                 {
-                    int excess = currentQty - rule.TriggerThreshold;
-                    Log.Info(
-                        "Overflow detected: colony={0} resource={1}({2}) current={3} threshold={4} excess={5}",
-                        colony.ColonyName,
-                        rule.ResourceName,
-                        rule.ResourcePurity,
-                        currentQty,
-                        rule.TriggerThreshold,
-                        excess);
-                    overflowCount++;
+                    continue;
+                }
+
+                switch (rule.RuleType)
+                {
+                    case OverflowRuleType.SpecificResource:
+                        if (EvaluateSpecificResourceRule(rule, colony))
+                        {
+                            overflowCount++;
+                        }
+
+                        break;
+                    case OverflowRuleType.TotalWarehouse:
+                        if (EvaluateTotalWarehouseRule(rule, colony))
+                        {
+                            overflowCount++;
+                        }
+
+                        break;
+                    default:
+                        Log.Warn("Unknown RuleType {0} for rule {1}, skipping", rule.RuleType, rule.UUID);
+                        break;
                 }
             }
 
             return overflowCount;
+        }
+
+        /// <summary>
+        /// Evaluates a SpecificResource overflow rule. Filters colony items by
+        /// ResourceName and ResourcePurity, computes volume using per-unit volume
+        /// constants, and checks against the threshold. Returns true if overflow
+        /// is detected.
+        /// </summary>
+        private bool EvaluateSpecificResourceRule(WarehouseOverflowRule rule, Colony colony)
+        {
+            var items = colony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
+            decimal currentVolume = items.Sum(i => i.Quantity * GameConstants.VolumeResource);
+
+            if (currentVolume > rule.TriggerThreshold && rule.TriggerThreshold > 0m)
+            {
+                decimal excess = currentVolume - rule.TriggerThreshold;
+                Log.Info(
+                    "Overflow detected: colony={0} resource={1}({2}) volume={3} threshold={4} excess={5}",
+                    colony.ColonyName,
+                    rule.ResourceName,
+                    rule.ResourcePurity,
+                    currentVolume,
+                    rule.TriggerThreshold,
+                    excess);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Evaluates a TotalWarehouse overflow rule. Computes the total volume of
+        /// all items in the colony warehouse and checks against the threshold.
+        /// Returns true if overflow is detected.
+        /// </summary>
+        private bool EvaluateTotalWarehouseRule(WarehouseOverflowRule rule, Colony colony)
+        {
+            decimal totalVolume = ComputeWarehouseVolume(colony.Items);
+
+            if (totalVolume > rule.TriggerThreshold && rule.TriggerThreshold > 0m)
+            {
+                decimal excess = totalVolume - rule.TriggerThreshold;
+                Log.Info(
+                    "Total warehouse overflow: colony={0} volume={1} threshold={2} excess={3}",
+                    colony.ColonyName,
+                    totalVolume,
+                    rule.TriggerThreshold,
+                    excess);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Computes the total volume of all items in an <see cref="ItemBag"/>
+        /// by summing (quantity × per-unit volume) for every item.
+        /// </summary>
+        private decimal ComputeWarehouseVolume(ItemBag items)
+        {
+            decimal total = 0m;
+            foreach (var kvp in items.Items)
+            {
+                var item = kvp.Value;
+                decimal unitVolume = GetItemUnitVolume(item);
+                total += item.Quantity * unitVolume;
+            }
+
+            return total;
+        }
+
+        /// <summary>
+        /// Returns the per-unit volume for an item based on its <see cref="ItemType.ItemTypeEnum"/>.
+        /// Resources = 1, Commodities = 10, Workers = 50, Blueprints/Surveys = 0,
+        /// Manufactured/other items use the item's Volume property.
+        /// </summary>
+        private decimal GetItemUnitVolume(Item item)
+        {
+            switch (item.ItemType)
+            {
+                case ItemType.ItemTypeEnum.Resource:
+                    return GameConstants.VolumeResource;
+                case ItemType.ItemTypeEnum.Commodity:
+                    return GameConstants.VolumeCommodity;
+                case ItemType.ItemTypeEnum.WorkDetail:
+                    return GameConstants.VolumeWorkDetail;
+                case ItemType.ItemTypeEnum.Blueprint:
+                    return GameConstants.VolumeBlueprint;
+                case ItemType.ItemTypeEnum.Survey:
+                    return GameConstants.VolumeSurvey;
+                default:
+                    return item.Volume;
+            }
         }
 
         /// <summary>

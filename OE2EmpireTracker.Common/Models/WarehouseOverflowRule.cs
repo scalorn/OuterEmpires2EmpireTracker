@@ -11,7 +11,11 @@ namespace OE2EmpireTracker.Models
         public string ColonyUUID { get; set; } = string.Empty;
         public string ResourceName { get; set; } = string.Empty;
         public string ResourcePurity { get; set; } = string.Empty;
-        public int TriggerThreshold { get; set; } = 0;
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public OverflowRuleType RuleType { get; set; } = OverflowRuleType.SpecificResource;
+
+        public decimal TriggerThreshold { get; set; } = 0m;
 
         [JsonConverter(typeof(StringEnumConverter))]
         public DestinationType DestinationType { get; set; } = DestinationType.Station;

@@ -174,6 +174,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             UpdateSyncButtonState();
 
             // Wire overflow tab handlers (task 38)
+            cmbOverflowRuleType.Items.Add("SpecificResource");
+            cmbOverflowRuleType.Items.Add("TotalWarehouse");
+            cmbOverflowRuleType.SelectedIndex = 0;
+            cmbOverflowRuleType.SelectedIndexChanged += CmbOverflowRuleType_SelectedIndexChanged;
             cmbOverflowDestType.Items.Add(DestinationType.Colony);
             cmbOverflowDestType.Items.Add(DestinationType.Station);
             if (cmbOverflowDestType.Items.Count > 0) cmbOverflowDestType.SelectedIndex = 0;
@@ -3320,30 +3324,48 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                     routeName = route?.Name ?? rule.DeliveryRouteUUID;
                 }
 
-                int currentQty = 0;
-                if (colony.Items != null)
+                string displayResource = rule.RuleType == OverflowRuleType.TotalWarehouse
+                    ? string.Empty : rule.ResourceName;
+                string displayPurity = rule.RuleType == OverflowRuleType.TotalWarehouse
+                    ? string.Empty : rule.ResourcePurity;
+
+                string currentDisplay = "\u2014";
+                decimal currentVolume = 0m;
+                if (colony.Items != null && rule.RuleType == OverflowRuleType.SpecificResource)
                 {
                     var matchingItems = colony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
-                    currentQty = matchingItems.Sum(i => i.Quantity);
+                    currentVolume = matchingItems.Sum(i => (decimal)i.Quantity);
+                    currentDisplay = currentVolume.ToString();
                 }
 
                 int rowIdx = dgvOverflowRules.Rows.Add(
-                    rule.ResourceName,
-                    rule.ResourcePurity,
+                    rule.RuleType.ToString(),
+                    displayResource,
+                    displayPurity,
                     rule.TriggerThreshold.ToString(),
-                    currentQty.ToString(),
+                    currentDisplay,
                     destName,
                     routeName,
                     rule.IsActive);
                 dgvOverflowRules.Rows[rowIdx].Tag = rule;
 
                 var currentCell = dgvOverflowRules.Rows[rowIdx].Cells[colOverflowCurrent.Index];
-                if (currentQty >= rule.TriggerThreshold && rule.TriggerThreshold > 0)
+                if (rule.RuleType == OverflowRuleType.TotalWarehouse)
+                {
+                    currentCell.Style.ForeColor = System.Drawing.Color.Gray;
+                }
+                else if (currentVolume >= rule.TriggerThreshold && rule.TriggerThreshold > 0)
+                {
                     currentCell.Style.ForeColor = System.Drawing.Color.Red;
-                else if (rule.TriggerThreshold > 0 && currentQty >= rule.TriggerThreshold * 0.8)
+                }
+                else if (rule.TriggerThreshold > 0 && currentVolume >= rule.TriggerThreshold * 0.8m)
+                {
                     currentCell.Style.ForeColor = System.Drawing.Color.DarkGoldenrod;
+                }
                 else
+                {
                     currentCell.Style.ForeColor = System.Drawing.Color.Green;
+                }
 
                 if (!rule.IsActive)
                 {
@@ -3462,6 +3484,14 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             Log.Info("PERF PopulateOverflowRouteCombo: {0}ms", sw.ElapsedMilliseconds);
         }
 
+        private void CmbOverflowRuleType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0) return;
+            bool isTotalWarehouse = cmbOverflowRuleType.SelectedItem?.ToString() == "TotalWarehouse";
+            cmbOverflowResource.Enabled = !isTotalWarehouse;
+            cmbOverflowPurity.Enabled = !isTotalWarehouse;
+        }
+
         private void CmbOverflowDestType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isProgrammaticUpdate > 0) return;
@@ -3471,10 +3501,21 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private void CmdAddOverflowRule_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(_selectedColonyUUID)) return;
-            string resource = cmbOverflowResource.SelectedItem?.ToString() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(resource)) return;
-            string purity = cmbOverflowPurity.SelectedItem?.ToString() ?? string.Empty;
-            if (!int.TryParse(txtOverflowThreshold.Text.Trim(), out int threshold) || threshold <= 0)
+
+            var ruleType = cmbOverflowRuleType.SelectedItem?.ToString() == "TotalWarehouse"
+                ? OverflowRuleType.TotalWarehouse
+                : OverflowRuleType.SpecificResource;
+
+            string resource = string.Empty;
+            string purity = string.Empty;
+            if (ruleType == OverflowRuleType.SpecificResource)
+            {
+                resource = cmbOverflowResource.SelectedItem?.ToString() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(resource)) return;
+                purity = cmbOverflowPurity.SelectedItem?.ToString() ?? string.Empty;
+            }
+
+            if (!decimal.TryParse(txtOverflowThreshold.Text.Trim(), out decimal threshold) || threshold <= 0)
             {
                 MessageBox.Show(
                     "Enter a valid threshold.",
@@ -3494,24 +3535,12 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             if (routeIdx >= 0 && routeIdx < _overflowRouteUUIDs.Count)
                 routeUUID = _overflowRouteUUIDs[routeIdx];
 
-            var existing = playerContext.WarehouseOverflowRuleList
-                .FirstOrDefault(r => r.ColonyUUID == _selectedColonyUUID &&
-                    r.ResourceName == resource && r.ResourcePurity == purity);
-            if (existing != null)
-            {
-                MessageBox.Show(
-                    "A rule for this resource and purity already exists.",
-                    "Duplicate",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
-            }
-
             var rule = new WarehouseOverflowRule
             {
                 UUID = Guid.NewGuid().ToString(),
                 OwnerUUID = playerContext.CurrentPlayerUUID ?? string.Empty,
                 ColonyUUID = _selectedColonyUUID,
+                RuleType = ruleType,
                 ResourceName = resource,
                 ResourcePurity = purity,
                 TriggerThreshold = threshold,
@@ -3521,10 +3550,48 @@ namespace OE2EmpireTracker.Forms.ColonyV2
                 IsActive = true
             };
 
+            var errors = OverflowRuleValidator.Validate(rule);
+            if (errors.Count > 0)
+            {
+                MessageBox.Show(
+                    string.Join(Environment.NewLine, errors),
+                    "Validation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            WarehouseOverflowRule existing;
+            if (ruleType == OverflowRuleType.TotalWarehouse)
+            {
+                existing = playerContext.WarehouseOverflowRuleList
+                    .FirstOrDefault(r => r.ColonyUUID == _selectedColonyUUID &&
+                        r.RuleType == OverflowRuleType.TotalWarehouse);
+            }
+            else
+            {
+                existing = playerContext.WarehouseOverflowRuleList
+                    .FirstOrDefault(r => r.ColonyUUID == _selectedColonyUUID &&
+                        r.ResourceName == resource && r.ResourcePurity == purity);
+            }
+
+            if (existing != null)
+            {
+                string dupMsg = ruleType == OverflowRuleType.TotalWarehouse
+                    ? "A TotalWarehouse rule already exists for this colony."
+                    : "A rule for this resource and purity already exists.";
+                MessageBox.Show(
+                    dupMsg,
+                    "Duplicate",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
             playerContext.AddWarehouseOverflowRule(rule);
             playerContext.WriteContext();
             PopulateOverflowGrid();
-            Log.Info("Added overflow rule: {0} ({1}) threshold={2}", resource, purity, threshold);
+            Log.Info("Added overflow rule: type={0} resource={1} ({2}) threshold={3}", ruleType, resource, purity, threshold);
         }
 
         private void CmdRemoveOverflowRule_Click(object sender, EventArgs e)

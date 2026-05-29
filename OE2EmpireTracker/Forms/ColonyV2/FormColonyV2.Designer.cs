@@ -68,6 +68,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.tabPWarehousing = new System.Windows.Forms.TabPage();
             this.tabPOverflow = new System.Windows.Forms.TabPage();
             this.dgvOverflowRules = new System.Windows.Forms.DataGridView();
+            this.colOverflowRuleType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colOverflowResource = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colOverflowPurity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colOverflowThreshold = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -76,6 +77,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.colOverflowRoute = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colOverflowActive = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.flpOverflowAdd = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblOverflowRuleType = new System.Windows.Forms.Label();
+            this.cmbOverflowRuleType = new System.Windows.Forms.ComboBox();
             this.lblOverflowResource = new System.Windows.Forms.Label();
             this.cmbOverflowResource = new OE2EmpireTracker.Controls.FilteredTextComboSet();
             this.lblOverflowPurity = new System.Windows.Forms.Label();
@@ -677,7 +680,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.dgvOverflowRules.AllowUserToOrderColumns = true;
             this.dgvOverflowRules.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvOverflowRules.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colOverflowResource, this.colOverflowPurity, this.colOverflowThreshold, this.colOverflowCurrent,
+            this.colOverflowRuleType, this.colOverflowResource, this.colOverflowPurity, this.colOverflowThreshold, this.colOverflowCurrent,
             this.colOverflowDest, this.colOverflowRoute, this.colOverflowActive});
             this.dgvOverflowRules.ContextMenuStrip = this.cmsOverflowRules;
             this.dgvOverflowRules.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -685,6 +688,10 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.dgvOverflowRules.Name = "dgvOverflowRules";
             this.dgvOverflowRules.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvOverflowRules.Size = new System.Drawing.Size(788, 200);
+            this.colOverflowRuleType.HeaderText = "Rule Type";
+            this.colOverflowRuleType.Name = "colOverflowRuleType";
+            this.colOverflowRuleType.ReadOnly = true;
+            this.colOverflowRuleType.Width = 110;
             this.colOverflowResource.HeaderText = "Resource";
             this.colOverflowResource.Name = "colOverflowResource";
             this.colOverflowResource.ReadOnly = true;
@@ -716,6 +723,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             // flpOverflowAdd
             //
             this.flpOverflowAdd.AutoSize = true;
+            this.flpOverflowAdd.Controls.Add(this.lblOverflowRuleType);
+            this.flpOverflowAdd.Controls.Add(this.cmbOverflowRuleType);
             this.flpOverflowAdd.Controls.Add(this.lblOverflowResource);
             this.flpOverflowAdd.Controls.Add(this.cmbOverflowResource);
             this.flpOverflowAdd.Controls.Add(this.lblOverflowPurity);
@@ -725,6 +734,13 @@ namespace OE2EmpireTracker.Forms.ColonyV2
             this.flpOverflowAdd.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flpOverflowAdd.Name = "flpOverflowAdd";
             this.flpOverflowAdd.Size = new System.Drawing.Size(788, 30);
+            this.lblOverflowRuleType.AutoSize = true;
+            this.lblOverflowRuleType.Text = "Rule Type:";
+            this.lblOverflowRuleType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblOverflowRuleType.Name = "lblOverflowRuleType";
+            this.cmbOverflowRuleType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOverflowRuleType.Size = new System.Drawing.Size(130, 21);
+            this.cmbOverflowRuleType.Name = "cmbOverflowRuleType";
             this.lblOverflowResource.AutoSize = true;
             this.lblOverflowResource.Text = "Resource:";
             this.lblOverflowResource.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -1107,6 +1123,7 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.Timer timerAdminRefresh;
         private System.Windows.Forms.TabPage tabPOverflow;
         private System.Windows.Forms.DataGridView dgvOverflowRules;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colOverflowRuleType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colOverflowResource;
         private System.Windows.Forms.DataGridViewTextBoxColumn colOverflowPurity;
         private System.Windows.Forms.DataGridViewTextBoxColumn colOverflowThreshold;
@@ -1115,6 +1132,8 @@ namespace OE2EmpireTracker.Forms.ColonyV2
         private System.Windows.Forms.DataGridViewTextBoxColumn colOverflowRoute;
         private System.Windows.Forms.DataGridViewCheckBoxColumn colOverflowActive;
         private System.Windows.Forms.FlowLayoutPanel flpOverflowAdd;
+        private System.Windows.Forms.Label lblOverflowRuleType;
+        private System.Windows.Forms.ComboBox cmbOverflowRuleType;
         private System.Windows.Forms.Label lblOverflowResource;
         private OE2EmpireTracker.Controls.FilteredTextComboSet cmbOverflowResource;
         private System.Windows.Forms.Label lblOverflowPurity;
