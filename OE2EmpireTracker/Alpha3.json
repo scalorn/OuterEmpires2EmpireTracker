@@ -35038,7 +35038,7 @@
         "b123d252-89b1-426c-8e79-8c3a2d5f19aa": {
   "UUID": "b123d252-89b1-426c-8e79-8c3a2d5f19aa",
   "ItemType": "Survey",
-  "BaseItemTypeID": "Survey Report: Alef Wynthoril II (AC10659)",
+  "BaseItemTypeID": "d038e40a-5a9a-4803-a8e8-bab9bf2d703d",
   "Name": "Survey Report: Alef Wynthoril II (AC10659)",
   "Quantity": 1,
   "Mass": 0.0,
@@ -35091,7 +35091,7 @@
         "e0a7aa5a-20f3-4e60-a955-4788a978da4d": {
   "UUID": "e0a7aa5a-20f3-4e60-a955-4788a978da4d",
   "ItemType": "Survey",
-  "BaseItemTypeID": "Survey Report: Alef Wynthoril II (81BF9AA)",
+  "BaseItemTypeID": "d038e40a-5a9a-4803-a8e8-bab9bf2d703d",
   "Name": "Survey Report: Alef Wynthoril II (81BF9AA)",
   "Quantity": 1,
   "Mass": 0.0,
@@ -35124,6 +35124,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.763469Z",
+            "EndTime": "2026-05-29T15:49:30.763469Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -35210,6 +35214,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7784721Z",
+            "EndTime": "2026-05-29T15:49:30.7784721Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -35304,6 +35312,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7795006Z",
+            "EndTime": "2026-05-29T15:49:30.7795006Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -35400,6 +35412,10 @@
           "AssignedWorkers": {
             "Specialist Detail(s)": "6512",
             "Specialist1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8074999Z",
+            "EndTime": "2026-05-29T15:49:30.8074999Z"
           },
           "ManufacturingQuantity": 50,
           "colonyBuildingTypeId": 45,
@@ -35502,6 +35518,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.764469Z",
+            "EndTime": "2026-05-29T15:49:30.764469Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -35591,6 +35611,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6918",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7874959Z",
+            "EndTime": "2026-05-29T15:49:30.7874959Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -35700,6 +35724,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8085001Z",
+            "EndTime": "2026-05-29T15:49:30.8085001Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -35801,6 +35829,10 @@
             "Blue Collar Detail(s)": "6283",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8105009Z",
+            "EndTime": "2026-05-29T15:49:30.8105009Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -35898,6 +35930,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7654692Z",
+            "EndTime": "2026-05-29T15:49:30.7654692Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -35983,6 +36019,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7674698Z",
+            "EndTime": "2026-05-29T15:49:30.7674698Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -36071,6 +36111,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7884961Z",
+            "EndTime": "2026-05-29T15:49:30.7884961Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -36182,6 +36226,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6752",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7974979Z",
+            "EndTime": "2026-05-29T15:49:30.7974979Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.6519543Z",
@@ -36311,6 +36359,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7804938Z",
+            "EndTime": "2026-05-29T15:49:30.7804938Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -36407,6 +36459,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6712",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8115006Z",
+            "EndTime": "2026-05-29T15:49:30.8115006Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -36509,6 +36565,10 @@
             "Blue Collar Detail(s)": "6917",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.812501Z",
+            "EndTime": "2026-05-29T15:49:30.812501Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -36610,6 +36670,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5853",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8064996Z",
+            "EndTime": "2026-05-29T15:49:30.8064996Z"
           },
           "colonyBuildingTypeId": 44,
           "resourceIcon": "",
@@ -36716,6 +36780,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7684699Z",
+            "EndTime": "2026-05-29T15:49:30.7684699Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -36805,6 +36873,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7984977Z",
+            "EndTime": "2026-05-29T15:49:30.7984977Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.6519543Z",
@@ -36938,6 +37010,10 @@
             "Blue Collar Detail(s)": "7092",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7894959Z",
+            "EndTime": "2026-05-29T15:49:30.7894959Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -37043,6 +37119,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7694701Z",
+            "EndTime": "2026-05-29T15:49:30.7694701Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -37131,6 +37211,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7914963Z",
+            "EndTime": "2026-05-29T15:49:30.7914963Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -37241,6 +37325,10 @@
             "Blue Collar Detail(s)": "6511",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8135019Z",
+            "EndTime": "2026-05-29T15:49:30.8135019Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -37342,6 +37430,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8014987Z",
+            "EndTime": "2026-05-29T15:49:30.8014987Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:31:54.721784Z",
@@ -37475,6 +37567,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7994979Z",
+            "EndTime": "2026-05-29T15:49:30.7994979Z"
+          },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.6519543Z",
             "EndTime": "2026-05-29T15:59:59.6519543Z",
@@ -37602,6 +37698,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7704702Z",
+            "EndTime": "2026-05-29T15:49:30.7704702Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -37691,6 +37791,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6452",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7924965Z",
+            "EndTime": "2026-05-29T15:49:30.7924965Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -37797,6 +37901,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7714704Z",
+            "EndTime": "2026-05-29T15:49:30.7714704Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -37882,6 +37990,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7734709Z",
+            "EndTime": "2026-05-29T15:49:30.7734709Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -37970,6 +38082,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "7091",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8155016Z",
+            "EndTime": "2026-05-29T15:49:30.8155016Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -38073,6 +38189,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6958",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8004984Z",
+            "EndTime": "2026-05-29T15:49:30.8004984Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.6519543Z",
@@ -38205,6 +38325,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8024989Z",
+            "EndTime": "2026-05-29T15:49:30.8024989Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:48.721784Z",
@@ -38343,6 +38467,10 @@
           "AssignedWorkers": {
             "White Collar Detail(s)": "5852",
             "WhiteCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7614682Z",
+            "EndTime": "2026-05-29T15:49:30.7614682Z"
           },
           "colonyBuildingTypeId": 33,
           "resourceIcon": "",
@@ -38545,6 +38673,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7744711Z",
+            "EndTime": "2026-05-29T15:49:30.7744711Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -38630,6 +38762,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7754713Z",
+            "EndTime": "2026-05-29T15:49:30.7754713Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -38720,6 +38856,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6932",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8034992Z",
+            "EndTime": "2026-05-29T15:49:30.8034992Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.721784Z",
@@ -38853,6 +38993,10 @@
             "Blue Collar Detail(s)": "6713",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7934983Z",
+            "EndTime": "2026-05-29T15:49:30.7934983Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -38958,6 +39102,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7774723Z",
+            "EndTime": "2026-05-29T15:49:30.7774723Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -39044,6 +39192,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.781494Z",
+            "EndTime": "2026-05-29T15:49:30.781494Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -39138,6 +39290,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7834945Z",
+            "EndTime": "2026-05-29T15:49:30.7834945Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -39235,6 +39391,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8044992Z",
+            "EndTime": "2026-05-29T15:49:30.8044992Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:31:54.721784Z",
@@ -39368,6 +39528,10 @@
             "Specialist Detail(s)": "5404",
             "Specialist1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7964978Z",
+            "EndTime": "2026-05-29T15:49:30.7964978Z"
+          },
           "colonyBuildingTypeId": 39,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -39473,6 +39637,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7844948Z",
+            "EndTime": "2026-05-29T15:49:30.7844948Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -39570,6 +39738,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5851",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.7954968Z",
+            "EndTime": "2026-05-29T15:49:30.7954968Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -39677,6 +39849,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.785496Z",
+            "EndTime": "2026-05-29T15:49:30.785496Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -39774,6 +39950,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6714",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:30.8044992Z",
+            "EndTime": "2026-05-29T15:49:30.8044992Z"
           },
           "colonyBuildingTypeId": 43,
           "resourceIcon": "J7",
@@ -39879,7 +40059,7 @@
           "NeedBy": "2026-06-01T14:01:02.02Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8558084Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1862312Z",
       "colonyId": 586,
       "systemId": 13926,
       "colonySize": 45,
@@ -44828,7 +45008,7 @@
         }
       ],
       "Commodities": [],
-      "LastImportDateTime": "2026-05-29T15:28:19.8998429Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2293368Z",
       "colonyId": 583,
       "systemId": 1146,
       "colonySize": 45,
@@ -51628,7 +51808,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8948417Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2248261Z",
       "colonyId": 554,
       "systemId": 13704,
       "colonySize": 61,
@@ -55217,7 +55397,7 @@
           "NeedBy": "2026-06-01T14:01:01.69Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8988426Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2293368Z",
       "colonyId": 582,
       "systemId": 1146,
       "colonySize": 32,
@@ -62111,7 +62291,7 @@
           "NeedBy": "2026-06-02T14:01:17.63Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8748385Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2052684Z",
       "colonyId": 560,
       "systemId": 6845,
       "colonySize": 61,
@@ -62157,6 +62337,54 @@
   "JobDeliveryLoc": 0,
   "LastRepairHealthPercentage": 100.0,
   "Evolution": 0,
+  "ShipPartType": "",
+  "JobName": "",
+  "JobTrack": "",
+  "ItemProperties": []
+},
+        "05a93086-2b10-4ce4-a879-af0e8658190a": {
+  "UUID": "05a93086-2b10-4ce4-a879-af0e8658190a",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Noble Gases",
+  "Name": "Noble Gases",
+  "ResourcePurity": "Refined",
+  "Volume": 1.0,
+  "ShipPartType": "",
+  "JobName": "",
+  "JobTrack": "",
+  "ItemProperties": []
+},
+        "074cbb85-f02b-4096-997f-95268e976716": {
+  "UUID": "074cbb85-f02b-4096-997f-95268e976716",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Heavy Alkaline Earth Metals",
+  "Name": "Heavy Alkaline Earth Metals",
+  "ResourcePurity": "Refined",
+  "Volume": 1.0,
+  "ShipPartType": "",
+  "JobName": "",
+  "JobTrack": "",
+  "ItemProperties": []
+},
+        "1672ead5-0de2-4149-bae1-e9d38de1611b": {
+  "UUID": "1672ead5-0de2-4149-bae1-e9d38de1611b",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Alkali Inorganics",
+  "Name": "Alkali Inorganics",
+  "ResourcePurity": "Refined",
+  "Volume": 1.0,
+  "ShipPartType": "",
+  "JobName": "",
+  "JobTrack": "",
+  "ItemProperties": []
+},
+        "28ab59a9-785c-4150-9711-3147c103b7f9": {
+  "UUID": "28ab59a9-785c-4150-9711-3147c103b7f9",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Complex Non-Metallics",
+  "Name": "Complex Non-Metallics",
+  "ResourcePurity": "Refined",
+  "Volume": 1.0,
   "ShipPartType": "",
   "JobName": "",
   "JobTrack": "",
@@ -62332,6 +62560,18 @@
   "JobDeliveryLoc": 0,
   "LastRepairHealthPercentage": 100.0,
   "Evolution": 0,
+  "ShipPartType": "",
+  "JobName": "",
+  "JobTrack": "",
+  "ItemProperties": []
+},
+        "9bf5c01d-382a-4cdf-a06a-c06df6385f0d": {
+  "UUID": "9bf5c01d-382a-4cdf-a06a-c06df6385f0d",
+  "ItemType": "Resource",
+  "BaseItemTypeID": "Heavy Post-Trans Metals",
+  "Name": "Heavy Post-Trans Metals",
+  "ResourcePurity": "Refined",
+  "Volume": 1.0,
   "ShipPartType": "",
   "JobName": "",
   "JobTrack": "",
@@ -63205,11 +63445,16 @@
             "Blue Collar Detail(s)": "6000",
             "BlueCollar1": "True"
           },
+          "ProcessCompletionTime": {
+            "StartTime": "2026-05-29T15:49:38.216462Z",
+            "EndTime": "2026-05-29T16:49:38.216462Z",
+            "RepeatIntervalSeconds": 3600,
+            "IsRepeating": true
+          },
           "MiningSurvey": "c1fbe45e-ce95-5977-b5da-3e7dfeba55d5",
           "MiningSurveyResource": "Refinery Flatpack",
           "ManufacturingBlueprintUUID": "ea1ef8d1-3a12-5730-a386-91b5fcd03363",
-          "ManufacturingQuantity": 148,
-          "ManufacturingCompleted": 106,
+          "ManufacturingQuantity": 12,
           "colonyBuildingTypeId": 43,
           "resourceId": 392,
           "resourceIcon": "J7",
@@ -69192,7 +69437,7 @@
           "NeedBy": "2026-06-01T14:00:57.31Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9038445Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2343384Z",
       "colonyId": 525,
       "systemId": 16657,
       "colonySize": 62,
@@ -69209,6 +69454,13 @@
       "specialistUnallocated": 1,
       "wageLevel": 120,
       "Locks": {
+        "29278e1c-fec2-4eb4-99c0-9ad7f4e605d4": {
+          "Resource:Alkali Inorganics|Refined": 1122,
+          "Resource:Complex Non-Metallics|Refined": 1353,
+          "Resource:Heavy Alkaline Earth Metals|Refined": 1155,
+          "Resource:Heavy Post-Trans Metals|Refined": 1254,
+          "Resource:Noble Gases|Refined": 7513
+        },
         "14729ce3-eebc-5090-b90b-fdc7dd1eb442": {
           "WorkDetail:White Collar Detail": 1,
           "WorkDetail:Specialist Detail": 1
@@ -73486,7 +73738,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8703273Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2002342Z",
       "colonyId": 576,
       "systemId": 6673,
       "colonySize": 38,
@@ -76282,7 +76534,7 @@
           "NeedBy": "2026-06-05T15:01:16.947Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8788377Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2082664Z",
       "colonyId": 565,
       "systemId": 6845,
       "colonySize": 25,
@@ -81286,7 +81538,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8858401Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2153053Z",
       "colonyId": 534,
       "systemId": 15973,
       "colonySize": 45,
@@ -86494,7 +86746,7 @@
           "NeedBy": "2026-06-05T15:01:14.457Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8938413Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2243003Z",
       "colonyId": 553,
       "systemId": 13704,
       "colonySize": 47,
@@ -90853,7 +91105,7 @@
           "NeedBy": "2026-06-02T14:01:16.017Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8878405Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2172972Z",
       "colonyId": 537,
       "systemId": 15973,
       "colonySize": 39,
@@ -94421,7 +94673,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9098460Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2403727Z",
       "colonyId": 521,
       "systemId": 16657,
       "colonySize": 32,
@@ -99890,7 +100142,7 @@
           "NeedBy": "2026-06-05T15:01:13.27Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8868399Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2162978Z",
       "colonyId": 536,
       "systemId": 15973,
       "colonySize": 49,
@@ -104121,7 +104373,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8708434Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2012350Z",
       "colonyId": 577,
       "systemId": 6673,
       "colonySize": 38,
@@ -110992,7 +111244,7 @@
           "NeedBy": "2026-06-05T15:01:18.3Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8658108Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1962332Z",
       "colonyId": 570,
       "systemId": 6673,
       "colonySize": 61,
@@ -117754,7 +118006,7 @@
           "NeedBy": "2026-06-05T15:01:14.023Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8908405Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2202982Z",
       "colonyId": 548,
       "systemId": 13704,
       "colonySize": 59,
@@ -122940,7 +123192,7 @@
           "NeedBy": "2026-06-03T15:01:13.14Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8998429Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2303366Z",
       "colonyId": 584,
       "systemId": 1146,
       "colonySize": 47,
@@ -129761,7 +130013,7 @@
           "NeedBy": "2026-06-05T15:01:23.047Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8598101Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1892317Z",
       "colonyId": 600,
       "systemId": 476,
       "colonySize": 62,
@@ -135706,7 +135958,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8918413Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2212986Z",
       "colonyId": 550,
       "systemId": 13704,
       "colonySize": 54,
@@ -140246,7 +140498,7 @@
           "NeedBy": "2026-06-01T14:01:00.88Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8668111Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1972333Z",
       "colonyId": 572,
       "systemId": 6673,
       "colonySize": 41,
@@ -144905,7 +145157,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9058444Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2363719Z",
       "colonyId": 523,
       "systemId": 16657,
       "colonySize": 40,
@@ -147690,7 +147942,7 @@
           "NeedBy": "2026-06-04T15:01:18.307Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8828385Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2122673Z",
       "colonyId": 592,
       "systemId": 8174,
       "colonySize": 25,
@@ -154582,7 +154834,7 @@
           "NeedBy": "2026-06-03T15:01:04.533Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9018434Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2323373Z",
       "colonyId": 516,
       "systemId": 16657,
       "colonySize": 62,
@@ -158830,7 +159082,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8798380Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2102672Z",
       "colonyId": 567,
       "systemId": 6845,
       "colonySize": 38,
@@ -162662,7 +162914,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8628105Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1932322Z",
       "colonyId": 596,
       "systemId": 2471,
       "colonySize": 34,
@@ -166514,7 +166766,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8838396Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2132674Z",
       "colonyId": 594,
       "systemId": 8174,
       "colonySize": 34,
@@ -166546,23 +166798,10 @@
       "SystemName": "Alef Wynthoril",
       "ColonyName": "Alef Wynthoril II M2",
       "Items": {
-        "0583efa7-e717-46e9-b92b-ef7827cdeb82": {
-  "UUID": "0583efa7-e717-46e9-b92b-ef7827cdeb82",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Noble Gases",
-  "Name": "Noble Gases",
-  "Quantity": 3,
-  "ResourcePurity": "Refined",
-  "Volume": 1.0,
-  "ShipPartType": "",
-  "JobName": "",
-  "JobTrack": "",
-  "ItemProperties": []
-},
         "10bb7880-ad44-4b94-8520-e2fd50febeb3": {
   "UUID": "10bb7880-ad44-4b94-8520-e2fd50febeb3",
   "ItemType": "Survey",
-  "BaseItemTypeID": "Survey Report: Alef Wynthoril II M2 (D581379)",
+  "BaseItemTypeID": "f490ae27-b7c8-4218-8e7e-2b2abc80d2e3",
   "Name": "Survey Report: Alef Wynthoril II M2 (D581379)",
   "Quantity": 1,
   "Mass": 0.0,
@@ -166571,19 +166810,6 @@
   "JobDeliveryLoc": 0,
   "LastRepairHealthPercentage": 100.0,
   "Evolution": 0,
-  "ShipPartType": "",
-  "JobName": "",
-  "JobTrack": "",
-  "ItemProperties": []
-},
-        "69ab07b1-6347-4ec4-8596-daf667fe6050": {
-  "UUID": "69ab07b1-6347-4ec4-8596-daf667fe6050",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Strong Alkali Organics",
-  "Name": "Strong Alkali Organics",
-  "Quantity": 15,
-  "ResourcePurity": "Refined",
-  "Volume": 1.0,
   "ShipPartType": "",
   "JobName": "",
   "JobTrack": "",
@@ -166646,7 +166872,7 @@
         "de50977d-66c6-4091-9e07-aa90ab878833": {
   "UUID": "de50977d-66c6-4091-9e07-aa90ab878833",
   "ItemType": "Survey",
-  "BaseItemTypeID": "Survey Report: Alef Wynthoril II M2 (26C2657)",
+  "BaseItemTypeID": "f490ae27-b7c8-4218-8e7e-2b2abc80d2e3",
   "Name": "Survey Report: Alef Wynthoril II M2 (26C2657)",
   "Quantity": 1,
   "Mass": 0.0,
@@ -166673,19 +166899,6 @@
   "JobDeliveryLoc": 0,
   "LastRepairHealthPercentage": 100.0,
   "Evolution": 0,
-  "ShipPartType": "",
-  "JobName": "",
-  "JobTrack": "",
-  "ItemProperties": []
-},
-        "f67ce032-5269-43cf-a4eb-9dcfa64dfaee": {
-  "UUID": "f67ce032-5269-43cf-a4eb-9dcfa64dfaee",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Strong Alkali Inorganics",
-  "Name": "Strong Alkali Inorganics",
-  "Quantity": 35,
-  "ResourcePurity": "Refined",
-  "Volume": 1.0,
   "ShipPartType": "",
   "JobName": "",
   "JobTrack": "",
@@ -166732,6 +166945,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6453",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8185636Z",
+            "EndTime": "2026-05-29T15:49:34.8185636Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -166843,6 +167060,10 @@
             "Blue Collar Detail(s)": "6093",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8366192Z",
+            "EndTime": "2026-05-29T15:49:34.8366192Z"
+          },
           "colonyBuildingTypeId": 44,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -166951,6 +167172,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8396196Z",
+            "EndTime": "2026-05-29T15:49:34.8396196Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -167048,6 +167273,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.7950076Z",
+            "EndTime": "2026-05-29T15:49:34.7950076Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -167138,6 +167367,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6753",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8285897Z",
+            "EndTime": "2026-05-29T15:49:34.8285897Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.721784Z",
@@ -167266,6 +167499,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.7965155Z",
+            "EndTime": "2026-05-29T15:49:34.7965155Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -167351,6 +167588,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.7975156Z",
+            "EndTime": "2026-05-29T15:49:34.7975156Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -167439,6 +167680,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6284",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8406203Z",
+            "EndTime": "2026-05-29T15:49:34.8406203Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -167547,6 +167792,10 @@
           "AssignedWorkers": {
             "White Collar Detail(s)": "5857",
             "WhiteCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.7934887Z",
+            "EndTime": "2026-05-29T15:49:34.7934887Z"
           },
           "colonyBuildingTypeId": 33,
           "resourceIcon": "",
@@ -167754,6 +168003,10 @@
             "Specialist Detail(s)": "5406",
             "Specialist1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8275893Z",
+            "EndTime": "2026-05-29T15:49:34.8275893Z"
+          },
           "colonyBuildingTypeId": 39,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -167858,6 +168111,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.7995159Z",
+            "EndTime": "2026-05-29T15:49:34.7995159Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -167946,6 +168203,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6513",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8426205Z",
+            "EndTime": "2026-05-29T15:49:34.8426205Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -168048,6 +168309,10 @@
             "Blue Collar Detail(s)": "6715",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8436207Z",
+            "EndTime": "2026-05-29T15:49:34.8436207Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -168145,6 +168410,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8015165Z",
+            "EndTime": "2026-05-29T15:49:34.8015165Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -168230,6 +168499,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.802517Z",
+            "EndTime": "2026-05-29T15:49:34.802517Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -168316,6 +168589,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8095406Z",
+            "EndTime": "2026-05-29T15:49:34.8095406Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -168412,6 +168689,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6919",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8456212Z",
+            "EndTime": "2026-05-29T15:49:34.8456212Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -168514,6 +168795,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6716",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8205639Z",
+            "EndTime": "2026-05-29T15:49:34.8205639Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -168620,6 +168905,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8045171Z",
+            "EndTime": "2026-05-29T15:49:34.8045171Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -168705,6 +168994,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8055495Z",
+            "EndTime": "2026-05-29T15:49:34.8055495Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -168794,6 +169087,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6717",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8351107Z",
+            "EndTime": "2026-05-29T15:49:34.8351107Z"
           },
           "colonyBuildingTypeId": 43,
           "resourceIcon": "J7",
@@ -168907,6 +169204,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.821564Z",
+            "EndTime": "2026-05-29T15:49:34.821564Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -169013,6 +169314,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.811541Z",
+            "EndTime": "2026-05-29T15:49:34.811541Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -169107,6 +169412,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8125414Z",
+            "EndTime": "2026-05-29T15:49:34.8125414Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -169204,6 +169513,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8315907Z",
+            "EndTime": "2026-05-29T15:49:34.8315907Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.721784Z",
@@ -169337,6 +169650,10 @@
             "Blue Collar Detail(s)": "5858",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8225643Z",
+            "EndTime": "2026-05-29T15:49:34.8225643Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -169446,6 +169763,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8295898Z",
+            "EndTime": "2026-05-29T15:49:34.8295898Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.721784Z",
@@ -169575,6 +169896,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8145416Z",
+            "EndTime": "2026-05-29T15:49:34.8145416Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -169668,6 +169993,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8075402Z",
+            "EndTime": "2026-05-29T15:49:34.8075402Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -169754,6 +170083,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8155713Z",
+            "EndTime": "2026-05-29T15:49:34.8155713Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -169852,6 +170185,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6959",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8305903Z",
+            "EndTime": "2026-05-29T15:49:34.8305903Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.721784Z",
@@ -169981,6 +170318,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8165627Z",
+            "EndTime": "2026-05-29T15:49:34.8165627Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -170074,6 +170415,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8085407Z",
+            "EndTime": "2026-05-29T15:49:34.8085407Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -170163,6 +170508,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8325904Z",
+            "EndTime": "2026-05-29T15:49:34.8325904Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.721784Z",
@@ -170295,6 +170644,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8250816Z",
+            "EndTime": "2026-05-29T15:49:34.8250816Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -170405,6 +170758,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6939",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8335906Z",
+            "EndTime": "2026-05-29T15:49:34.8335906Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.721784Z",
@@ -170537,6 +170894,10 @@
             "Specialist Detail(s)": "6514",
             "Specialist1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.8376193Z",
+            "EndTime": "2026-05-29T15:49:34.8376193Z"
+          },
           "ManufacturingQuantity": 50,
           "colonyBuildingTypeId": 45,
           "resourceId": 5446,
@@ -170643,6 +171004,10 @@
             "Blue Collar Detail(s)": "6920",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:34.826589Z",
+            "EndTime": "2026-05-29T15:49:34.826589Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -170746,7 +171111,7 @@
           "NeedBy": "2026-06-05T15:01:21.78Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8578098Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1872314Z",
       "colonyId": 588,
       "systemId": 13926,
       "colonySize": 38,
@@ -170815,45 +171180,6 @@
   "JobTrack": "",
   "ItemProperties": []
 },
-        "6499f6ed-0e0c-4b54-83ad-e2556536e973": {
-  "UUID": "6499f6ed-0e0c-4b54-83ad-e2556536e973",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Heavy Noble Gases",
-  "Name": "Heavy Noble Gases",
-  "Quantity": 102,
-  "ResourcePurity": "Refined",
-  "Volume": 1.0,
-  "ShipPartType": "",
-  "JobName": "",
-  "JobTrack": "",
-  "ItemProperties": []
-},
-        "748336e9-e43b-4bb9-baa0-2dedd8c03995": {
-  "UUID": "748336e9-e43b-4bb9-baa0-2dedd8c03995",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Trans-Metals",
-  "Name": "Trans-Metals",
-  "Quantity": 86,
-  "ResourcePurity": "Refined",
-  "Volume": 1.0,
-  "ShipPartType": "",
-  "JobName": "",
-  "JobTrack": "",
-  "ItemProperties": []
-},
-        "7973dcc1-21b7-4aa2-a467-f9e697e1dd15": {
-  "UUID": "7973dcc1-21b7-4aa2-a467-f9e697e1dd15",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Metallics",
-  "Name": "Metallics",
-  "Quantity": 71,
-  "ResourcePurity": "Refined",
-  "Volume": 1.0,
-  "ShipPartType": "",
-  "JobName": "",
-  "JobTrack": "",
-  "ItemProperties": []
-},
         "8f3be181-95af-495e-9548-da2821058bdf": {
   "UUID": "8f3be181-95af-495e-9548-da2821058bdf",
   "ItemType": "Resource",
@@ -170885,19 +171211,6 @@
   "JobDeliveryLoc": 0,
   "LastRepairHealthPercentage": 100.0,
   "Evolution": 0,
-  "ShipPartType": "",
-  "JobName": "",
-  "JobTrack": "",
-  "ItemProperties": []
-},
-        "96b94a49-ac86-4ee8-bb55-d4a050755f61": {
-  "UUID": "96b94a49-ac86-4ee8-bb55-d4a050755f61",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Transuranic Volatiles",
-  "Name": "Transuranic Volatiles",
-  "Quantity": 15,
-  "ResourcePurity": "Refined",
-  "Volume": 1.0,
   "ShipPartType": "",
   "JobName": "",
   "JobTrack": "",
@@ -170942,7 +171255,7 @@
         "b6778915-a8b3-41f6-ba68-3f0c34b62f49": {
   "UUID": "b6778915-a8b3-41f6-ba68-3f0c34b62f49",
   "ItemType": "Survey",
-  "BaseItemTypeID": "Survey Report: Alef Wynthoril III (145359F)",
+  "BaseItemTypeID": "c9a42f63-f17b-4951-b347-70c4e4d62451",
   "Name": "Survey Report: Alef Wynthoril III (145359F)",
   "Quantity": 1,
   "Mass": 0.0,
@@ -170977,7 +171290,7 @@
         "c77db77d-3d4a-43d7-94e9-a5069530f029": {
   "UUID": "c77db77d-3d4a-43d7-94e9-a5069530f029",
   "ItemType": "Survey",
-  "BaseItemTypeID": "Survey Report: Alef Wynthoril III (362B0D0)",
+  "BaseItemTypeID": "c9a42f63-f17b-4951-b347-70c4e4d62451",
   "Name": "Survey Report: Alef Wynthoril III (362B0D0)",
   "Quantity": 1,
   "Mass": 0.0,
@@ -170986,19 +171299,6 @@
   "JobDeliveryLoc": 0,
   "LastRepairHealthPercentage": 100.0,
   "Evolution": 0,
-  "ShipPartType": "",
-  "JobName": "",
-  "JobTrack": "",
-  "ItemProperties": []
-},
-        "f595dc3c-6ec5-4e29-a81b-4c2505675fdd": {
-  "UUID": "f595dc3c-6ec5-4e29-a81b-4c2505675fdd",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Alkali Organics",
-  "Name": "Alkali Organics",
-  "Quantity": 15,
-  "ResourcePurity": "Refined",
-  "Volume": 1.0,
   "ShipPartType": "",
   "JobName": "",
   "JobTrack": "",
@@ -171026,6 +171326,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5491",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.1306983Z",
+            "EndTime": "2026-05-29T15:49:37.1306983Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -171128,6 +171432,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6285",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0211361Z",
+            "EndTime": "2026-05-29T15:49:37.0211361Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -171239,6 +171547,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5617",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0351399Z",
+            "EndTime": "2026-05-29T15:49:37.0351399Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.722784Z",
@@ -171372,6 +171684,10 @@
             "Specialist Detail(s)": "5014",
             "Specialist1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0291373Z",
+            "EndTime": "2026-05-29T15:49:37.0291373Z"
+          },
           "colonyBuildingTypeId": 39,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -171486,6 +171802,10 @@
           "AssignedWorkers": {
             "White Collar Detail(s)": "5013",
             "WhiteCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:36.9905087Z",
+            "EndTime": "2026-05-29T15:49:36.9905087Z"
           },
           "colonyBuildingTypeId": 33,
           "resourceIcon": "",
@@ -171693,6 +172013,10 @@
             "Blue Collar Detail(s)": "5110",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.1276963Z",
+            "EndTime": "2026-05-29T15:49:37.1276963Z"
+          },
           "colonyBuildingTypeId": 44,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -171802,6 +172126,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5160",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0221366Z",
+            "EndTime": "2026-05-29T15:49:37.0221366Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -171913,6 +172241,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5772",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0301381Z",
+            "EndTime": "2026-05-29T15:49:37.0301381Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.722784Z",
@@ -172045,6 +172377,10 @@
             "Blue Collar Detail(s)": "5159",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.1316997Z",
+            "EndTime": "2026-05-29T15:49:37.1316997Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -172147,6 +172483,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5507",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0311386Z",
+            "EndTime": "2026-05-29T15:49:37.0311386Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.722784Z",
@@ -172278,6 +172618,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.1336989Z",
+            "EndTime": "2026-05-29T15:49:37.1336989Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -172375,6 +172719,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:36.9915083Z",
+            "EndTime": "2026-05-29T15:49:36.9915083Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -172463,6 +172811,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5256",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.1357007Z",
+            "EndTime": "2026-05-29T15:49:37.1357007Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -172562,6 +172914,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0106235Z",
+            "EndTime": "2026-05-29T15:49:37.0106235Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -172655,6 +173011,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:36.9935092Z",
+            "EndTime": "2026-05-29T15:49:36.9935092Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -172745,6 +173105,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5649",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.032139Z",
+            "EndTime": "2026-05-29T15:49:37.032139Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.722784Z",
@@ -172878,6 +173242,10 @@
             "Blue Collar Detail(s)": "6094",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.1256966Z",
+            "EndTime": "2026-05-29T15:49:37.1256966Z"
+          },
           "colonyBuildingTypeId": 43,
           "resourceIcon": "J7",
           "durabilityCurrent": 100.0,
@@ -172991,6 +173359,10 @@
             "Blue Collar Detail(s)": "5580",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0231368Z",
+            "EndTime": "2026-05-29T15:49:37.0231368Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -173096,6 +173468,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:36.9950266Z",
+            "EndTime": "2026-05-29T15:49:36.9950266Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -173185,6 +173561,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5407",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0251373Z",
+            "EndTime": "2026-05-29T15:49:37.0251373Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -173295,6 +173675,10 @@
             "Blue Collar Detail(s)": "5736",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.1377004Z",
+            "EndTime": "2026-05-29T15:49:37.1377004Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -173393,6 +173777,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0126233Z",
+            "EndTime": "2026-05-29T15:49:37.0126233Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -173486,6 +173874,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:36.9960194Z",
+            "EndTime": "2026-05-29T15:49:36.9960194Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -173572,6 +173964,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0146246Z",
+            "EndTime": "2026-05-29T15:49:37.0146246Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -173669,6 +174065,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5737",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0261376Z",
+            "EndTime": "2026-05-29T15:49:37.0261376Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -173775,6 +174175,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:36.9980197Z",
+            "EndTime": "2026-05-29T15:49:36.9980197Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -173864,6 +174268,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5941",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0271379Z",
+            "EndTime": "2026-05-29T15:49:37.0271379Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -173970,6 +174378,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:36.9990207Z",
+            "EndTime": "2026-05-29T15:49:36.9990207Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -174056,6 +174468,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0156243Z",
+            "EndTime": "2026-05-29T15:49:37.0156243Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -174153,6 +174569,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5257",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0281377Z",
+            "EndTime": "2026-05-29T15:49:37.0281377Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -174260,6 +174680,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0171501Z",
+            "EndTime": "2026-05-29T15:49:37.0171501Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -174354,6 +174778,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0191362Z",
+            "EndTime": "2026-05-29T15:49:37.0191362Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -174452,6 +174880,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6384",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.03614Z",
+            "EndTime": "2026-05-29T15:49:37.03614Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.722784Z",
@@ -174586,6 +175018,10 @@
             "Blue Collar Detail(s)": "5751",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0331395Z",
+            "EndTime": "2026-05-29T15:49:37.0331395Z"
+          },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.722784Z",
             "EndTime": "2026-05-29T16:29:30.722784Z",
@@ -174714,6 +175150,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0201351Z",
+            "EndTime": "2026-05-29T15:49:37.0201351Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -174807,6 +175247,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0000194Z",
+            "EndTime": "2026-05-29T15:49:37.0000194Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -174892,6 +175336,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0020212Z",
+            "EndTime": "2026-05-29T15:49:37.0020212Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -174980,6 +175428,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5940",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.1387Z",
+            "EndTime": "2026-05-29T15:49:37.1387Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -175095,6 +175547,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0030211Z",
+            "EndTime": "2026-05-29T15:49:37.0030211Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -175185,6 +175641,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6324",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0371406Z",
+            "EndTime": "2026-05-29T15:49:37.0371406Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.722784Z",
@@ -175313,6 +175773,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0040217Z",
+            "EndTime": "2026-05-29T15:49:37.0040217Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -175423,6 +175887,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0060221Z",
+            "EndTime": "2026-05-29T15:49:37.0060221Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -175513,6 +175981,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6095",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.1246966Z",
+            "EndTime": "2026-05-29T15:49:37.1246966Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.722784Z",
@@ -175641,6 +176113,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0080229Z",
+            "EndTime": "2026-05-29T15:49:37.0080229Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -175759,6 +176235,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6286",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.1256966Z",
+            "EndTime": "2026-05-29T15:49:37.1256966Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.722784Z",
@@ -175893,6 +176373,10 @@
             "Blue Collar Detail(s)": "5997",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0341395Z",
+            "EndTime": "2026-05-29T15:49:37.0341395Z"
+          },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:30.722784Z",
             "EndTime": "2026-05-29T16:29:30.722784Z",
@@ -176024,6 +176508,10 @@
             "Specialist Detail(s)": "5301",
             "Specialist1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.1286968Z",
+            "EndTime": "2026-05-29T15:49:37.1286968Z"
+          },
           "ManufacturingQuantity": 5,
           "colonyBuildingTypeId": 45,
           "resourceId": 5601,
@@ -176125,6 +176613,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:37.0096305Z",
+            "EndTime": "2026-05-29T15:49:37.0096305Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -176215,7 +176707,7 @@
           "NeedBy": "2026-06-03T15:01:13.603Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8578098Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1882311Z",
       "colonyId": 589,
       "systemId": 13926,
       "colonySize": 48,
@@ -183321,7 +183813,7 @@
           "NeedBy": "2026-06-01T14:01:00.497Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8638108Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1942328Z",
       "colonyId": 568,
       "systemId": 6673,
       "colonySize": 60,
@@ -186440,7 +186932,7 @@
           "NeedBy": "2026-06-02T14:01:17.937Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8778375Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2072663Z",
       "colonyId": 564,
       "systemId": 6845,
       "colonySize": 27,
@@ -189247,7 +189739,7 @@
           "NeedBy": "2026-06-04T15:01:12.533Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9078455Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2383725Z",
       "colonyId": 522,
       "systemId": 16657,
       "colonySize": 25,
@@ -192049,7 +192541,7 @@
           "NeedBy": "2026-06-01T14:01:00.327Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8798380Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2092665Z",
       "colonyId": 566,
       "systemId": 6845,
       "colonySize": 25,
@@ -196473,7 +196965,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8758364Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2062659Z",
       "colonyId": 562,
       "systemId": 6845,
       "colonySize": 39,
@@ -202920,7 +203412,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9088453Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2393725Z",
       "colonyId": 520,
       "systemId": 16657,
       "colonySize": 61,
@@ -209131,7 +209623,7 @@
           "NeedBy": "2026-06-03T15:01:07.66Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8928410Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2222986Z",
       "colonyId": 551,
       "systemId": 13704,
       "colonySize": 55,
@@ -215845,7 +216337,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8958419Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2253477Z",
       "colonyId": 555,
       "systemId": 13704,
       "colonySize": 60,
@@ -219394,7 +219886,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8738369Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2042365Z",
       "colonyId": 559,
       "systemId": 6845,
       "colonySize": 32,
@@ -225529,7 +226021,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8848394Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2142686Z",
       "colonyId": 532,
       "systemId": 15973,
       "colonySize": 55,
@@ -225583,7 +226075,7 @@
         "32558a9e-ece4-44ca-bb31-b9926768c6e1": {
   "UUID": "32558a9e-ece4-44ca-bb31-b9926768c6e1",
   "ItemType": "Survey",
-  "BaseItemTypeID": "Survey Report: Alef Wynthoril II M1 (97DA317)",
+  "BaseItemTypeID": "f7f23828-aefb-4d25-bb95-147b21bb954a",
   "Name": "Survey Report: Alef Wynthoril II M1 (97DA317)",
   "Quantity": 1,
   "Mass": 0.0,
@@ -225600,7 +226092,7 @@
         "5af64900-0aab-487a-9651-e50986962bc9": {
   "UUID": "5af64900-0aab-487a-9651-e50986962bc9",
   "ItemType": "Survey",
-  "BaseItemTypeID": "Survey Report: Alef Wynthoril II M1 (69B8551)",
+  "BaseItemTypeID": "f7f23828-aefb-4d25-bb95-147b21bb954a",
   "Name": "Survey Report: Alef Wynthoril II M1 (69B8551)",
   "Quantity": 1,
   "Mass": 0.0,
@@ -225725,6 +226217,10 @@
             "Specialist Detail(s)": "6438",
             "Specialist1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.665246Z",
+            "EndTime": "2026-05-29T15:49:32.665246Z"
+          },
           "ManufacturingQuantity": 50,
           "colonyBuildingTypeId": 45,
           "resourceIcon": "",
@@ -225822,6 +226318,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "7032",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6502424Z",
+            "EndTime": "2026-05-29T15:49:32.6502424Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -225929,6 +226429,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.643241Z",
+            "EndTime": "2026-05-29T15:49:32.643241Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -226026,6 +226530,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5854",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6512427Z",
+            "EndTime": "2026-05-29T15:49:32.6512427Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -226136,6 +226644,10 @@
             "Blue Collar Detail(s)": "6091",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6662462Z",
+            "EndTime": "2026-05-29T15:49:32.6662462Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -226233,6 +226745,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6272485Z",
+            "EndTime": "2026-05-29T15:49:32.6272485Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -226319,6 +226835,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6442409Z",
+            "EndTime": "2026-05-29T15:49:32.6442409Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -226413,6 +226933,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6462417Z",
+            "EndTime": "2026-05-29T15:49:32.6462417Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -226510,6 +227034,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5856",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6632453Z",
+            "EndTime": "2026-05-29T15:49:32.6632453Z"
           },
           "colonyBuildingTypeId": 44,
           "resourceIcon": "",
@@ -226617,6 +227145,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.647242Z",
+            "EndTime": "2026-05-29T15:49:32.647242Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -226710,6 +227242,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6302404Z",
+            "EndTime": "2026-05-29T15:49:32.6302404Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -226798,6 +227334,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "7031",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6682464Z",
+            "EndTime": "2026-05-29T15:49:32.6682464Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -226900,6 +227440,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6620",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6622455Z",
+            "EndTime": "2026-05-29T15:49:32.6622455Z"
           },
           "colonyBuildingTypeId": 43,
           "resourceIcon": "J7",
@@ -227014,6 +227558,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6821",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6592444Z",
+            "EndTime": "2026-05-29T15:49:32.6592444Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:48.721784Z",
@@ -227147,6 +227695,10 @@
             "Blue Collar Detail(s)": "6619",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6522428Z",
+            "EndTime": "2026-05-29T15:49:32.6522428Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -227252,6 +227804,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6332459Z",
+            "EndTime": "2026-05-29T15:49:32.6332459Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -227340,6 +227896,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6819",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6692468Z",
+            "EndTime": "2026-05-29T15:49:32.6692468Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -227442,6 +228002,10 @@
             "Blue Collar Detail(s)": "6092",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.670247Z",
+            "EndTime": "2026-05-29T15:49:32.670247Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -227542,6 +228106,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6542432Z",
+            "EndTime": "2026-05-29T15:49:32.6542432Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -227653,6 +228221,10 @@
             "Blue Collar Detail(s)": "6090",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6552434Z",
+            "EndTime": "2026-05-29T15:49:32.6552434Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -227758,6 +228330,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6352396Z",
+            "EndTime": "2026-05-29T15:49:32.6352396Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -227848,6 +228424,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6885",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.657244Z",
+            "EndTime": "2026-05-29T15:49:32.657244Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.7076105Z",
@@ -227976,6 +228556,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6362395Z",
+            "EndTime": "2026-05-29T15:49:32.6362395Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -228061,6 +228645,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6382397Z",
+            "EndTime": "2026-05-29T15:49:32.6382397Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -228150,6 +228738,10 @@
           "AssignedWorkers": {
             "Specialist Detail(s)": "5405",
             "Specialist1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6562436Z",
+            "EndTime": "2026-05-29T15:49:32.6562436Z"
           },
           "colonyBuildingTypeId": 39,
           "resourceIcon": "",
@@ -228256,6 +228848,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6482421Z",
+            "EndTime": "2026-05-29T15:49:32.6482421Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -228354,6 +228950,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "7033",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6602449Z",
+            "EndTime": "2026-05-29T15:49:32.6602449Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:48.721784Z",
@@ -228482,6 +229082,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6392405Z",
+            "EndTime": "2026-05-29T15:49:32.6392405Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -228567,6 +229171,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6402402Z",
+            "EndTime": "2026-05-29T15:49:32.6402402Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -228712,6 +229320,10 @@
             "Blue Collar Detail(s)": "6667",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6582441Z",
+            "EndTime": "2026-05-29T15:49:32.6582441Z"
+          },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.7076105Z",
             "EndTime": "2026-05-29T15:59:59.7076105Z",
@@ -228844,6 +229456,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "7090",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6612448Z",
+            "EndTime": "2026-05-29T15:49:32.6612448Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:48.721784Z",
@@ -228982,6 +229598,10 @@
           "AssignedWorkers": {
             "White Collar Detail(s)": "5855",
             "WhiteCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6247188Z",
+            "EndTime": "2026-05-29T15:49:32.6247188Z"
           },
           "colonyBuildingTypeId": 33,
           "resourceIcon": "",
@@ -229184,6 +229804,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6422409Z",
+            "EndTime": "2026-05-29T15:49:32.6422409Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -229272,6 +229896,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6618",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:32.6722474Z",
+            "EndTime": "2026-05-29T15:49:32.6722474Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -229383,7 +230011,7 @@
           "NeedBy": "2026-06-05T15:01:21.587Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8568092Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1872314Z",
       "colonyId": 587,
       "systemId": 13926,
       "colonySize": 34,
@@ -235187,7 +235815,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8938413Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2232992Z",
       "colonyId": 552,
       "systemId": 13704,
       "colonySize": 53,
@@ -238748,7 +239376,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8978426Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2283365Z",
       "colonyId": 581,
       "systemId": 1146,
       "colonySize": 32,
@@ -242319,7 +242947,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8658108Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1962332Z",
       "colonyId": 571,
       "systemId": 6673,
       "colonySize": 32,
@@ -248405,7 +249033,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9028433Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2333375Z",
       "colonyId": 524,
       "systemId": 16657,
       "colonySize": 56,
@@ -248622,6 +249250,10 @@
             "Blue Collar Detail(s)": "6977",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2460766Z",
+            "EndTime": "2026-05-29T15:49:41.2460766Z"
+          },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.0421182Z",
             "EndTime": "2026-05-29T15:59:59.0421182Z",
@@ -248753,6 +249385,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2600795Z",
+            "EndTime": "2026-05-29T15:49:41.2600795Z"
+          },
           "colonyBuildingTypeId": 43,
           "resourceIcon": "J7",
           "durabilityCurrent": 100.0,
@@ -248865,6 +249501,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2510776Z",
+            "EndTime": "2026-05-29T15:49:41.2510776Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.3791058Z",
@@ -248994,6 +249634,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.3249967Z",
+            "EndTime": "2026-05-29T15:49:40.3249967Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -249091,6 +249735,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2520777Z",
+            "EndTime": "2026-05-29T15:49:41.2520777Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.3820936Z",
@@ -249223,6 +249871,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.7849552Z",
+            "EndTime": "2026-05-29T15:49:40.7849552Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -249331,6 +249983,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.8139616Z",
+            "EndTime": "2026-05-29T15:49:40.8139616Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -249441,6 +250097,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.844977Z",
+            "EndTime": "2026-05-29T15:49:40.844977Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -249549,6 +250209,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2650806Z",
+            "EndTime": "2026-05-29T15:49:41.2650806Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -249649,6 +250313,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2880863Z",
+            "EndTime": "2026-05-29T15:49:41.2880863Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -249746,6 +250414,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.3580364Z",
+            "EndTime": "2026-05-29T15:49:39.3580364Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -249835,6 +250507,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2540783Z",
+            "EndTime": "2026-05-29T15:49:41.2540783Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.3810938Z",
@@ -249966,6 +250642,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2900862Z",
+            "EndTime": "2026-05-29T15:49:41.2900862Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -250063,6 +250743,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.3590364Z",
+            "EndTime": "2026-05-29T15:49:39.3590364Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -250151,6 +250835,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.9074477Z",
+            "EndTime": "2026-05-29T15:49:40.9074477Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -250260,6 +250948,10 @@
           "AssignedWorkers": {
             "Specialist1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2640805Z",
+            "EndTime": "2026-05-29T15:49:41.2640805Z"
+          },
           "ManufacturingQuantity": 47,
           "colonyBuildingTypeId": 45,
           "resourceId": 5708,
@@ -250363,6 +251055,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.3863187Z",
+            "EndTime": "2026-05-29T15:49:40.3863187Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -250456,6 +251152,10 @@
             "Unassigned Specialist Detail(s)": "1"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.3610365Z",
+            "EndTime": "2026-05-29T15:49:39.3610365Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -250545,6 +251245,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2550783Z",
+            "EndTime": "2026-05-29T15:49:41.2550783Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.3800937Z",
@@ -250677,6 +251381,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2620808Z",
+            "EndTime": "2026-05-29T15:49:41.2620808Z"
+          },
           "colonyBuildingTypeId": 44,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -250782,6 +251490,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.3630377Z",
+            "EndTime": "2026-05-29T15:49:39.3630377Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -250867,6 +251579,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.4185612Z",
+            "EndTime": "2026-05-29T15:49:39.4185612Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -250952,6 +251668,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.4500783Z",
+            "EndTime": "2026-05-29T15:49:39.4500783Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -251038,6 +251758,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.4188287Z",
+            "EndTime": "2026-05-29T15:49:40.4188287Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -251133,6 +251857,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2920866Z",
+            "EndTime": "2026-05-29T15:49:41.2920866Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -251236,6 +251964,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6776",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2470766Z",
+            "EndTime": "2026-05-29T15:49:41.2470766Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.0421182Z",
@@ -251364,6 +252096,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.5461185Z",
+            "EndTime": "2026-05-29T15:49:39.5461185Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -251450,6 +252186,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.4808037Z",
+            "EndTime": "2026-05-29T15:49:40.4808037Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -251544,6 +252284,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.5428379Z",
+            "EndTime": "2026-05-29T15:49:40.5428379Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -251638,6 +252382,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.632883Z",
+            "EndTime": "2026-05-29T15:49:40.632883Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -251732,6 +252480,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.6348838Z",
+            "EndTime": "2026-05-29T15:49:40.6348838Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -251825,6 +252577,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.6392588Z",
+            "EndTime": "2026-05-29T15:49:39.6392588Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -251914,6 +252670,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2560788Z",
+            "EndTime": "2026-05-29T15:49:41.2560788Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.3820936Z",
@@ -252047,6 +252807,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.248077Z",
+            "EndTime": "2026-05-29T15:49:41.248077Z"
+          },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.0421182Z",
             "EndTime": "2026-05-29T15:59:59.0421182Z",
@@ -252174,6 +252938,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.7022963Z",
+            "EndTime": "2026-05-29T15:49:39.7022963Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -252263,6 +253031,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2570793Z",
+            "EndTime": "2026-05-29T15:49:41.2570793Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.0461193Z",
@@ -252401,6 +253173,10 @@
           "AssignedWorkers": {
             "White Collar Detail(s)": "5834",
             "WhiteCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.3255362Z",
+            "EndTime": "2026-05-29T15:49:39.3255362Z"
           },
           "colonyBuildingTypeId": 33,
           "resourceIcon": "",
@@ -252603,6 +253379,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.7655695Z",
+            "EndTime": "2026-05-29T15:49:39.7655695Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -252691,6 +253471,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.9669798Z",
+            "EndTime": "2026-05-29T15:49:40.9669798Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -252801,6 +253585,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.0880176Z",
+            "EndTime": "2026-05-29T15:49:41.0880176Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -252906,6 +253694,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.8570022Z",
+            "EndTime": "2026-05-29T15:49:39.8570022Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -252993,6 +253785,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.3181135Z",
+            "EndTime": "2026-05-29T15:49:41.3181135Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -253091,6 +253887,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.9182616Z",
+            "EndTime": "2026-05-29T15:49:39.9182616Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -253178,6 +253978,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.3791663Z",
+            "EndTime": "2026-05-29T15:49:41.3791663Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -253276,6 +254080,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:39.9793559Z",
+            "EndTime": "2026-05-29T15:49:39.9793559Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -253365,6 +254173,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2580791Z",
+            "EndTime": "2026-05-29T15:49:41.2580791Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.3810938Z",
@@ -253493,6 +254305,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.0422052Z",
+            "EndTime": "2026-05-29T15:49:40.0422052Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -253583,6 +254399,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6956",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2490772Z",
+            "EndTime": "2026-05-29T15:49:41.2490772Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.0461193Z",
@@ -253711,6 +254531,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.102381Z",
+            "EndTime": "2026-05-29T15:49:40.102381Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -253798,6 +254622,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.4386851Z",
+            "EndTime": "2026-05-29T15:49:41.4386851Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -253899,6 +254727,10 @@
           },
           "AssignedWorkers": {
             "Specialist1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2450766Z",
+            "EndTime": "2026-05-29T15:49:41.2450766Z"
           },
           "colonyBuildingTypeId": 39,
           "resourceIcon": "",
@@ -254005,6 +254837,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.6939105Z",
+            "EndTime": "2026-05-29T15:49:40.6939105Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -254101,6 +254937,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.1505361Z",
+            "EndTime": "2026-05-29T15:49:41.1505361Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -254211,6 +255051,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2115631Z",
+            "EndTime": "2026-05-29T15:49:41.2115631Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -254320,6 +255164,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2430754Z",
+            "EndTime": "2026-05-29T15:49:41.2430754Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -254428,6 +255276,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.5307192Z",
+            "EndTime": "2026-05-29T15:49:41.5307192Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -254526,6 +255378,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.7549375Z",
+            "EndTime": "2026-05-29T15:49:40.7549375Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -254624,6 +255480,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6569",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2500775Z",
+            "EndTime": "2026-05-29T15:49:41.2500775Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.0461193Z",
@@ -254752,6 +255612,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.1969487Z",
+            "EndTime": "2026-05-29T15:49:40.1969487Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -254837,6 +255701,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:40.2619668Z",
+            "EndTime": "2026-05-29T15:49:40.2619668Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -254926,6 +255794,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:41.2590794Z",
+            "EndTime": "2026-05-29T15:49:41.2590794Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.3800937Z",
@@ -255052,7 +255924,7 @@
           "NeedBy": "2026-06-02T14:01:20.91Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8588095Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1892317Z",
       "colonyId": 599,
       "systemId": 476,
       "colonySize": 61,
@@ -262045,7 +262917,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9068446Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2373727Z",
       "colonyId": 518,
       "systemId": 16657,
       "colonySize": 62,
@@ -269003,7 +269875,7 @@
           "NeedBy": "2026-06-04T15:01:13.54Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8878405Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2182980Z",
       "colonyId": 535,
       "systemId": 15973,
       "colonySize": 62,
@@ -275921,7 +276793,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9018434Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2313369Z",
       "colonyId": 515,
       "systemId": 16657,
       "colonySize": 61,
@@ -279323,7 +280195,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8608101Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1912321Z",
       "colonyId": 602,
       "systemId": 476,
       "colonySize": 31,
@@ -285958,7 +286830,7 @@
           "NeedBy": "2026-06-01T14:00:57.387Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9048435Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2353817Z",
       "colonyId": 526,
       "systemId": 16657,
       "colonySize": 54,
@@ -289886,7 +290758,7 @@
           "NeedBy": "2026-06-03T15:01:12.653Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8718370Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2022345Z",
       "colonyId": 578,
       "systemId": 6673,
       "colonySize": 34,
@@ -294119,7 +294991,7 @@
           "NeedBy": "2026-06-03T15:01:14.27Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8968419Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2263358Z",
       "colonyId": 597,
       "systemId": 2323,
       "colonySize": 38,
@@ -294191,7 +295063,7 @@
         "2a603ee0-f527-47b2-8433-38c7f4547f62": {
   "UUID": "2a603ee0-f527-47b2-8433-38c7f4547f62",
   "ItemType": "Survey",
-  "BaseItemTypeID": "Survey Report: Alef Wynthoril I (06BA4C5)",
+  "BaseItemTypeID": "e56ec2a9-2658-4584-8a3d-304b9f2d8c03",
   "Name": "Survey Report: Alef Wynthoril I (06BA4C5)",
   "Quantity": 1,
   "Mass": 0.0,
@@ -294229,7 +295101,7 @@
   "ItemType": "Resource",
   "BaseItemTypeID": "Non-Metallics",
   "Name": "Non-Metallics",
-  "Quantity": 3099,
+  "Quantity": 3124,
   "ResourcePurity": "High",
   "Volume": 3124.0,
   "Mass": 15620.0,
@@ -294243,23 +295115,10 @@
   "JobTrack": "",
   "ItemProperties": []
 },
-        "45110106-8de9-4d29-9d41-2fd54a8bf4a9": {
-  "UUID": "45110106-8de9-4d29-9d41-2fd54a8bf4a9",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Non-Metallics",
-  "Name": "Non-Metallics",
-  "Quantity": 127,
-  "ResourcePurity": "Refined",
-  "Volume": 1.0,
-  "ShipPartType": "",
-  "JobName": "",
-  "JobTrack": "",
-  "ItemProperties": []
-},
         "4726b606-af65-485d-bbb7-37c49aac7eb7": {
   "UUID": "4726b606-af65-485d-bbb7-37c49aac7eb7",
   "ItemType": "Survey",
-  "BaseItemTypeID": "Survey Report: Alef Wynthoril I (6862EA7)",
+  "BaseItemTypeID": "e56ec2a9-2658-4584-8a3d-304b9f2d8c03",
   "Name": "Survey Report: Alef Wynthoril I (6862EA7)",
   "Quantity": 1,
   "Mass": 0.0,
@@ -294328,25 +295187,12 @@
   "JobTrack": "",
   "ItemProperties": []
 },
-        "a130482c-b2e7-4f6c-af0f-36eeeb0521e3": {
-  "UUID": "a130482c-b2e7-4f6c-af0f-36eeeb0521e3",
-  "ItemType": "Resource",
-  "BaseItemTypeID": "Alkali Inorganics",
-  "Name": "Alkali Inorganics",
-  "Quantity": 127,
-  "ResourcePurity": "Refined",
-  "Volume": 1.0,
-  "ShipPartType": "",
-  "JobName": "",
-  "JobTrack": "",
-  "ItemProperties": []
-},
         "a1e56265-9fce-40e2-a9e7-7bef97b26a7c": {
   "UUID": "a1e56265-9fce-40e2-a9e7-7bef97b26a7c",
   "ItemType": "Resource",
   "BaseItemTypeID": "Alkali Inorganics",
   "Name": "Alkali Inorganics",
-  "Quantity": 5854,
+  "Quantity": 5879,
   "ResourcePurity": "High",
   "Volume": 5879.0,
   "Mass": 29395.0,
@@ -294451,6 +295297,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4680012Z",
+            "EndTime": "2026-05-29T15:49:28.4680012Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -294537,6 +295387,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4880273Z",
+            "EndTime": "2026-05-29T15:49:28.4880273Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -294635,6 +295489,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6617",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5100343Z",
+            "EndTime": "2026-05-29T15:49:28.5100343Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.8754521Z",
@@ -294769,6 +295627,10 @@
             "Blue Collar Detail(s)": "7089",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5110341Z",
+            "EndTime": "2026-05-29T15:49:28.5110341Z"
+          },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.8764524Z",
             "EndTime": "2026-05-29T15:59:59.8764524Z",
@@ -294901,6 +295763,10 @@
             "Blue Collar Detail(s)": "6088",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4990305Z",
+            "EndTime": "2026-05-29T15:49:28.4990305Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -295010,6 +295876,10 @@
             "Blue Collar Detail(s)": "6750",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5254513Z",
+            "EndTime": "2026-05-29T15:49:28.5254513Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -295107,6 +295977,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4700019Z",
+            "EndTime": "2026-05-29T15:49:28.4700019Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -295194,6 +296068,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5274526Z",
+            "EndTime": "2026-05-29T15:49:28.5274526Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -295293,6 +296171,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4890288Z",
+            "EndTime": "2026-05-29T15:49:28.4890288Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -295387,6 +296269,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4900287Z",
+            "EndTime": "2026-05-29T15:49:28.4900287Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -295484,6 +296370,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.512035Z",
+            "EndTime": "2026-05-29T15:49:28.512035Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.8764524Z",
@@ -295612,6 +296502,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4710017Z",
+            "EndTime": "2026-05-29T15:49:28.4710017Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -295697,6 +296591,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4720022Z",
+            "EndTime": "2026-05-29T15:49:28.4720022Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -295786,6 +296684,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "7029",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5000302Z",
+            "EndTime": "2026-05-29T15:49:28.5000302Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -295896,6 +296798,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5130347Z",
+            "EndTime": "2026-05-29T15:49:28.5130347Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.8764524Z",
@@ -296028,6 +296934,10 @@
             "Blue Collar Detail(s)": "7028",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5284531Z",
+            "EndTime": "2026-05-29T15:49:28.5284531Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -296128,6 +297038,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5294533Z",
+            "EndTime": "2026-05-29T15:49:28.5294533Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -296225,6 +297139,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4730021Z",
+            "EndTime": "2026-05-29T15:49:28.4730021Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -296310,6 +297228,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4750027Z",
+            "EndTime": "2026-05-29T15:49:28.4750027Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -296400,6 +297322,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "7030",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5130347Z",
+            "EndTime": "2026-05-29T15:49:28.5130347Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.8764524Z",
@@ -296529,6 +297455,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.492029Z",
+            "EndTime": "2026-05-29T15:49:28.492029Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -296622,6 +297552,10 @@
             "Unassigned Specialist Detail(s)": "1"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.476003Z",
+            "EndTime": "2026-05-29T15:49:28.476003Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -296707,6 +297641,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4770033Z",
+            "EndTime": "2026-05-29T15:49:28.4770033Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -296793,6 +297731,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4930286Z",
+            "EndTime": "2026-05-29T15:49:28.4930286Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -296891,6 +297833,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6884",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5140348Z",
+            "EndTime": "2026-05-29T15:49:28.5140348Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.8764524Z",
@@ -297024,6 +297970,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5154621Z",
+            "EndTime": "2026-05-29T15:49:28.5154621Z"
+          },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.4773958Z",
             "EndTime": "2026-05-29T15:59:59.4773958Z",
@@ -297155,6 +298105,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5164501Z",
+            "EndTime": "2026-05-29T15:49:28.5164501Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.4783966Z",
@@ -297288,6 +298242,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5174506Z",
+            "EndTime": "2026-05-29T15:49:28.5174506Z"
+          },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.1681087Z",
             "EndTime": "2026-05-29T15:59:59.1681087Z",
@@ -297420,6 +298378,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5184508Z",
+            "EndTime": "2026-05-29T15:49:28.5184508Z"
+          },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:31:54.7207833Z",
             "EndTime": "2026-05-29T16:31:54.7207833Z",
@@ -297551,6 +298513,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5010313Z",
+            "EndTime": "2026-05-29T15:49:28.5010313Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -297656,6 +298622,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4780031Z",
+            "EndTime": "2026-05-29T15:49:28.4780031Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -297744,6 +298714,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6089",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5304645Z",
+            "EndTime": "2026-05-29T15:49:28.5304645Z"
           },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
@@ -297852,6 +298826,10 @@
           "AssignedWorkers": {
             "White Collar Detail(s)": "5908",
             "WhiteCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4660007Z",
+            "EndTime": "2026-05-29T15:49:28.4660007Z"
           },
           "colonyBuildingTypeId": 33,
           "resourceIcon": "",
@@ -298058,6 +299036,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5020326Z",
+            "EndTime": "2026-05-29T15:49:28.5020326Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -298167,6 +299149,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6581",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5214508Z",
+            "EndTime": "2026-05-29T15:49:28.5214508Z"
           },
           "colonyBuildingTypeId": 43,
           "resourceIcon": "J7",
@@ -298280,6 +299266,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5140348Z",
+            "EndTime": "2026-05-29T15:49:28.5140348Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.8764524Z",
@@ -298413,6 +299403,10 @@
             "Specialist Detail(s)": "5403",
             "Specialist1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5090335Z",
+            "EndTime": "2026-05-29T15:49:28.5090335Z"
+          },
           "colonyBuildingTypeId": 39,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -298517,6 +299511,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4800048Z",
+            "EndTime": "2026-05-29T15:49:28.4800048Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -298605,6 +299603,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5030322Z",
+            "EndTime": "2026-05-29T15:49:28.5030322Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -298716,6 +299718,10 @@
             "Blue Collar Detail(s)": "6751",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5050328Z",
+            "EndTime": "2026-05-29T15:49:28.5050328Z"
+          },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -298824,6 +299830,10 @@
           "AssignedWorkers": {
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5314594Z",
+            "EndTime": "2026-05-29T15:49:28.5314594Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -298925,6 +299935,10 @@
             "Blue Collar Detail(s)": "6282",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5324594Z",
+            "EndTime": "2026-05-29T15:49:28.5324594Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -299022,6 +300036,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4810357Z",
+            "EndTime": "2026-05-29T15:49:28.4810357Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -299111,6 +300129,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6580",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5060331Z",
+            "EndTime": "2026-05-29T15:49:28.5060331Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -299222,6 +300244,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6783",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5184508Z",
+            "EndTime": "2026-05-29T15:49:28.5184508Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T15:29:31.7207833Z",
@@ -299350,6 +300376,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.482027Z",
+            "EndTime": "2026-05-29T15:49:28.482027Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -299439,6 +300469,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "5909",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5224516Z",
+            "EndTime": "2026-05-29T15:49:28.5224516Z"
           },
           "colonyBuildingTypeId": 44,
           "resourceIcon": "",
@@ -299549,6 +300583,10 @@
             "Specialist Detail(s)": "6383",
             "Specialist1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5244514Z",
+            "EndTime": "2026-05-29T15:49:28.5244514Z"
+          },
           "ResearchingBlueprintUUID": "346f7d14-b97a-58c7-9899-39cc4f6206dd",
           "ManufacturingQuantity": 60,
           "ManufacturingCompleted": 13,
@@ -299657,6 +300695,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5194517Z",
+            "EndTime": "2026-05-29T15:49:28.5194517Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.8592041Z",
@@ -299785,6 +300827,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4830276Z",
+            "EndTime": "2026-05-29T15:49:28.4830276Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -299873,6 +300919,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.507033Z",
+            "EndTime": "2026-05-29T15:49:28.507033Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -299983,6 +301033,10 @@
             "Blue Collar Detail(s)": "6579",
             "BlueCollar1": "True"
           },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5334604Z",
+            "EndTime": "2026-05-29T15:49:28.5334604Z"
+          },
           "colonyBuildingTypeId": 46,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -300084,6 +301138,10 @@
           "AssignedWorkers": {
             "Blue Collar Detail(s)": "6087",
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5080334Z",
+            "EndTime": "2026-05-29T15:49:28.5080334Z"
           },
           "colonyBuildingTypeId": 36,
           "resourceIcon": "",
@@ -300191,6 +301249,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4940298Z",
+            "EndTime": "2026-05-29T15:49:28.4940298Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -300285,6 +301347,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4950301Z",
+            "EndTime": "2026-05-29T15:49:28.4950301Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -300379,6 +301445,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4970301Z",
+            "EndTime": "2026-05-29T15:49:28.4970301Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -300472,6 +301542,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4840277Z",
+            "EndTime": "2026-05-29T15:49:28.4840277Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -300557,6 +301631,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4850282Z",
+            "EndTime": "2026-05-29T15:49:28.4850282Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -300646,6 +301724,10 @@
           },
           "AssignedWorkers": {
             "BlueCollar1": "True"
+          },
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.5204509Z",
+            "EndTime": "2026-05-29T15:49:28.5204509Z"
           },
           "ProcessCompletionTime": {
             "StartTime": "2026-05-29T14:59:59.8602043Z",
@@ -300775,6 +301857,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4980304Z",
+            "EndTime": "2026-05-29T15:49:28.4980304Z"
+          },
           "colonyBuildingTypeId": 35,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -300868,6 +301954,10 @@
             "Staged": "False"
           },
           "AssignedWorkers": {},
+          "BuildCompletionTime": {
+            "StartTime": "2026-05-29T15:49:28.4870289Z",
+            "EndTime": "2026-05-29T15:49:28.4870289Z"
+          },
           "colonyBuildingTypeId": 34,
           "resourceIcon": "",
           "durabilityCurrent": 100.0,
@@ -300973,7 +302063,7 @@
           "NeedBy": "2026-06-01T14:01:01.927Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8548088Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1852305Z",
       "colonyId": 585,
       "systemId": 13926,
       "colonySize": 61,
@@ -307764,7 +308854,7 @@
           "NeedBy": "2026-06-01T14:01:01.44Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8718370Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2022345Z",
       "colonyId": 579,
       "systemId": 6673,
       "colonySize": 60,
@@ -312241,7 +313331,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8688123Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1992337Z",
       "colonyId": 575,
       "systemId": 6673,
       "colonySize": 40,
@@ -318380,7 +319470,7 @@
           "NeedBy": "2026-06-05T15:01:13.8Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8888404Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2192986Z",
       "colonyId": 546,
       "systemId": 13704,
       "colonySize": 54,
@@ -325320,7 +326410,7 @@
           "NeedBy": "2026-06-04T15:01:19.04Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8608101Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1902316Z",
       "colonyId": 601,
       "systemId": 476,
       "colonySize": 64,
@@ -328310,7 +329400,7 @@
           "NeedBy": "2026-06-03T15:01:11.797Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8648109Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1952331Z",
       "colonyId": 569,
       "systemId": 6673,
       "colonySize": 26,
@@ -335035,7 +336125,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8748385Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2052684Z",
       "colonyId": 561,
       "systemId": 6845,
       "colonySize": 60,
@@ -341444,7 +342534,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8728369Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2032347Z",
       "colonyId": 558,
       "systemId": 6845,
       "colonySize": 56,
@@ -344250,7 +345340,7 @@
           "NeedBy": "2026-06-04T15:01:14.49Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8908405Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2212986Z",
       "colonyId": 549,
       "systemId": 13704,
       "colonySize": 25,
@@ -348075,7 +349165,7 @@
           "NeedBy": "2026-06-04T15:01:19.217Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8618111Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1922326Z",
       "colonyId": 603,
       "systemId": 476,
       "colonySize": 34,
@@ -352438,7 +353528,7 @@
           "NeedBy": "2026-06-01T14:00:57.877Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8858401Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2153053Z",
       "colonyId": 533,
       "systemId": 15973,
       "colonySize": 39,
@@ -355282,7 +356372,7 @@
           "NeedBy": "2026-06-05T15:01:22.88Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8968419Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2273353Z",
       "colonyId": 598,
       "systemId": 2323,
       "colonySize": 26,
@@ -358548,7 +359638,7 @@
           "NeedBy": "2026-06-03T15:01:11.227Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8768507Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2072663Z",
       "colonyId": 563,
       "systemId": 6845,
       "colonySize": 27,
@@ -361447,7 +362537,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8678119Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1982336Z",
       "colonyId": 573,
       "systemId": 6673,
       "colonySize": 26,
@@ -365789,7 +366879,7 @@
           "NeedBy": "2026-06-01T14:00:58.74Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8898404Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2192986Z",
       "colonyId": 547,
       "systemId": 13704,
       "colonySize": 39,
@@ -372931,7 +374021,7 @@
           "NeedBy": "2026-06-04T15:01:12.023Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9038445Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2348630Z",
       "colonyId": 517,
       "systemId": 16657,
       "colonySize": 60,
@@ -375057,7 +376147,7 @@
           "NeedBy": "2026-06-04T15:01:18.49Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8628105Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1932322Z",
       "colonyId": 595,
       "systemId": 2471,
       "colonySize": 19,
@@ -378885,7 +379975,7 @@
           "NeedBy": "2026-06-02T14:01:20.307Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8828385Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2132674Z",
       "colonyId": 593,
       "systemId": 8174,
       "colonySize": 34,
@@ -381192,7 +382282,7 @@
           "NeedBy": "2026-06-03T15:01:12.297Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8688123Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.1992337Z",
       "colonyId": 574,
       "systemId": 6673,
       "colonySize": 20,
@@ -387134,7 +388224,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9008428Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2313369Z",
       "colonyId": 531,
       "systemId": 11196,
       "colonySize": 54,
@@ -390928,7 +392018,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.9068446Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2373727Z",
       "colonyId": 519,
       "systemId": 16657,
       "colonySize": 25,
@@ -397161,7 +398251,7 @@
           "Fulfilled": true
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8808386Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2102672Z",
       "colonyId": 590,
       "systemId": 8174,
       "colonySize": 55,
@@ -402190,7 +403280,7 @@
           "NeedBy": "2026-06-04T15:01:18.13Z"
         }
       ],
-      "LastImportDateTime": "2026-05-29T15:28:19.8818385Z",
+      "LastImportDateTime": "2026-05-29T15:49:27.2112673Z",
       "colonyId": 591,
       "systemId": 8174,
       "colonySize": 45,

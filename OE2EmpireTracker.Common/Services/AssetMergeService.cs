@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 
@@ -27,7 +28,7 @@ namespace OE2EmpireTracker.Services
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private static readonly Regex PurityRegex = new Regex(
-            @"\(.*?(High Purity|Med Purity|Low Purity)\)$",
+            @"\(((?:Unrefined|Refined)(?:,\s*)?)?(?:(High Purity|Med Purity|Low Purity))?\)$",
             RegexOptions.Compiled);
 
         /// <summary>
@@ -145,16 +146,34 @@ namespace OE2EmpireTracker.Services
             }
 
             string baseName = resourceName.Substring(0, lastParen).TrimEnd();
-            string purity = match.Groups[1].Value;
 
-            // Normalize: strip " Purity" suffix and normalize abbreviations
-            // "High Purity" -> "High", "Med Purity" -> "Medium", "Low Purity" -> "Low"
-            if (purity.EndsWith(" Purity", System.StringComparison.OrdinalIgnoreCase))
+            string refinementState = match.Groups[1].Value.TrimEnd(',', ' ');
+            string purityValue = match.Groups[2].Value;
+
+            string purity;
+            if (string.Equals(refinementState, "Refined", System.StringComparison.OrdinalIgnoreCase) &&
+                string.IsNullOrEmpty(purityValue))
             {
-                purity = purity.Substring(0, purity.Length - " Purity".Length).Trim();
+                // "Alkali Inorganics (Refined)" -> purity = "Refined"
+                purity = GameConstants.PurityRefined;
             }
+            else if (!string.IsNullOrEmpty(purityValue))
+            {
+                // "Heavy Post-Trans Metals (Unrefined, Med Purity)" or "Iron (High Purity)"
+                purity = purityValue;
 
-            purity = SurveyParser.NormalizePurity(purity);
+                // Normalize: strip " Purity" suffix and normalize abbreviations
+                if (purity.EndsWith(" Purity", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    purity = purity.Substring(0, purity.Length - " Purity".Length).Trim();
+                }
+
+                purity = SurveyParser.NormalizePurity(purity);
+            }
+            else
+            {
+                purity = string.Empty;
+            }
 
             return (baseName, purity);
         }
