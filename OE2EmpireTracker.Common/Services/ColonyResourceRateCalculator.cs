@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 
@@ -11,6 +12,7 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class ColonyResourceRateCalculator
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Computes total warehouse volume using standard volume constants.
         /// Formula: totalVolume = Σ(item.Quantity × VolumeForType(item.ItemType))
@@ -86,51 +88,74 @@ namespace OE2EmpireTracker.Services
             int extractionFocusLevel = GetOwnerExtractionFocusLevel(colony, playerContext);
             decimal extractionMultiplier = 1.0m + (extractionFocusLevel * GameConstants.ExtractionFocusRatePerLevel);
 
+            Log.Debug("GetTotalMiningRate: colony={0}, resource={1}, purity={2}, extractionFocusLevel={3}, multiplier={4}",
+                colony.ColonyName, resource, purity, extractionFocusLevel, extractionMultiplier);
+
             decimal totalRate = 0m;
+            int structureCount = 0;
+            int skippedNotBuiltOnline = 0;
+            int skippedNoActiveProcess = 0;
+            int skippedNotMiningRig = 0;
+            int skippedNoSurvey = 0;
+            int skippedWrongResource = 0;
+
             foreach (var structure in colony.Structures)
             {
                 if (!structure.IsBuiltAndOnline)
                 {
+                    skippedNotBuiltOnline++;
                     continue;
                 }
 
                 if (!HasActiveProcess(structure))
                 {
+                    skippedNoActiveProcess++;
                     continue;
                 }
 
                 var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (blueprint == null || blueprint.BluePrintType != BlueprintTypes.MiningRig)
                 {
+                    skippedNotMiningRig++;
                     continue;
                 }
 
                 if (string.IsNullOrEmpty(structure.MiningSurvey) ||
                     string.IsNullOrEmpty(structure.MiningSurveyResource))
                 {
+                    skippedNoSurvey++;
                     continue;
                 }
 
                 Survey survey = playerContext.FindSurvey(structure.MiningSurvey);
                 if (survey == null || !survey.Resources.ContainsKey(structure.MiningSurveyResource))
                 {
+                    skippedNoSurvey++;
                     continue;
                 }
 
                 SurveyResource surveyResource = survey.Resources[structure.MiningSurveyResource];
                 if (surveyResource.Resource != resource || surveyResource.Purity != purity)
                 {
+                    skippedWrongResource++;
                     continue;
                 }
 
                 decimal amount;
                 if (!decimal.TryParse(surveyResource.Amount, out amount))
                 {
+                    Log.Debug("  Miner #{0}: could not parse amount '{1}'", structure.DisplaySequence, surveyResource.Amount);
                     continue;
                 }
 
-                totalRate += amount * extractionMultiplier;
+                decimal rate = amount * extractionMultiplier;
+                totalRate += rate;
+                structureCount++;
+                Log.Debug("  Miner #{0}: amount={1}, rate={2}", structure.DisplaySequence, amount, rate);
             }
+
+            Log.Debug("GetTotalMiningRate result: {0} miners matched, totalRate={1}, skipped: notBuiltOnline={2}, noActiveProcess={3}, notMiningRig={4}, noSurvey={5}, wrongResource={6}",
+                structureCount, totalRate, skippedNotBuiltOnline, skippedNoActiveProcess, skippedNotMiningRig, skippedNoSurvey, skippedWrongResource);
 
             return totalRate;
         }
@@ -148,33 +173,53 @@ namespace OE2EmpireTracker.Services
                 return 0m;
             }
 
+            Log.Debug("GetTotalRefiningConsumption: colony={0}, resource={1}, purity={2}",
+                colony.ColonyName, resource, purity);
+
             decimal totalConsumption = 0m;
+            int refinerCount = 0;
+            int skippedNotBuiltOnline = 0;
+            int skippedNoActiveProcess = 0;
+            int skippedNotRefinery = 0;
+            int skippedWrongResource = 0;
+
             foreach (var structure in colony.Structures)
             {
                 if (!structure.IsBuiltAndOnline)
                 {
+                    skippedNotBuiltOnline++;
                     continue;
                 }
 
                 if (!HasActiveProcess(structure))
                 {
+                    skippedNoActiveProcess++;
                     continue;
                 }
 
                 var blueprint = playerContext.FindBlueprint(structure.FlatpackBlueprintUUID);
                 if (blueprint == null || blueprint.BluePrintType != BlueprintTypes.Refinery)
                 {
+                    skippedNotRefinery++;
                     continue;
                 }
 
                 if (structure.RefiningResource != resource ||
                     structure.RefiningResourcePurity != purity)
                 {
+                    skippedWrongResource++;
                     continue;
                 }
 
-                totalConsumption += GetRefinerConsumptionRate(structure);
+                int consumeRate = GetRefinerConsumptionRate(structure);
+                totalConsumption += consumeRate;
+                refinerCount++;
+                Log.Debug("  Refiner #{0}: resource={1} ({2}), consumeRate={3}",
+                    structure.DisplaySequence, structure.RefiningResource, structure.RefiningResourcePurity, consumeRate);
             }
+
+            Log.Debug("GetTotalRefiningConsumption result: {0} refiners matched, totalConsumption={1}, skipped: notBuiltOnline={2}, noActiveProcess={3}, notRefinery={4}, wrongResource={5}",
+                refinerCount, totalConsumption, skippedNotBuiltOnline, skippedNoActiveProcess, skippedNotRefinery, skippedWrongResource);
 
             return totalConsumption;
         }
@@ -189,6 +234,31 @@ namespace OE2EmpireTracker.Services
         {
             return GetTotalMiningRate(colony, playerContext, resource, purity)
                 - GetTotalRefiningConsumption(colony, playerContext, resource, purity);
+        }
+
+        /// <summary>
+        /// Returns the warehouse stockpile for a resource+purity, with fallback
+        /// for items stored with "X Purity" format from game API imports.
+        /// </summary>
+        public static int GetWarehouseStockpile(Colony colony, string resource, string purity)
+        {
+            if (colony?.Items == null)
+            {
+                return 0;
+            }
+
+            var items = colony.Items.FindResource(resource, purity);
+            int total = items.Sum(i => i.Quantity);
+
+            // Fallback: try "X Purity" format for items imported before normalization fix
+            if (total == 0 && !string.IsNullOrEmpty(purity) &&
+                !purity.EndsWith("Purity", System.StringComparison.OrdinalIgnoreCase))
+            {
+                var fallbackItems = colony.Items.FindResource(resource, purity + " Purity");
+                total = fallbackItems.Sum(i => i.Quantity);
+            }
+
+            return total;
         }
 
         /// <summary>

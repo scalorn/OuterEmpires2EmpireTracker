@@ -122,14 +122,18 @@ namespace OE2EmpireTracker.Services
                 decimal totalConsumption = ColonyResourceRateCalculator.GetTotalRefiningConsumption(
                     colony, playerContext, resource, purity);
 
+                int stockpile = GetWarehouseStockpile(colony, resource, purity);
+                Log.Debug("CollectDepletionETAs: colony={0}, resource={1} ({2}), mining={3}, consumption={4}, stockpile={5}",
+                    colony.ColonyName, resource, purity, totalMining, totalConsumption, stockpile);
+
                 // Mining meets or exceeds consumption — sustained, no row emitted
                 if (totalMining >= totalConsumption)
                 {
+                    Log.Debug("  -> Sustained (mining >= consumption)");
                     continue;
                 }
 
                 decimal netConsumptionRate = totalConsumption - totalMining;
-                int stockpile = GetWarehouseStockpile(colony, resource, purity);
 
                 string processDetails;
                 if (stockpile == 0)
@@ -283,8 +287,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static int GetWarehouseStockpile(Colony colony, string resource, string purity)
         {
-            var items = colony.Items.FindResource(resource, purity);
-            return items.Sum(i => i.Quantity);
+            return ColonyResourceRateCalculator.GetWarehouseStockpile(colony, resource, purity);
         }
 
         /// <summary>
@@ -355,19 +358,27 @@ namespace OE2EmpireTracker.Services
                 decimal totalConsumption = ColonyResourceRateCalculator.GetTotalRefiningConsumption(
                     colony, playerContext, resource, purity);
 
+                int stockpile = GetWarehouseStockpile(colony, resource, purity);
+                Log.Debug("CollectUnderutilizedRefiners: colony={0}, resource={1} ({2}), refiners={3}, mining={4}, consumption={5}, stockpile={6}, thresholdHours={7}",
+                    colony.ColonyName, resource, purity, refinersInGroup.Count, totalMiningOutput, totalConsumption, stockpile, thresholdHours);
+
                 // If mining output meets or exceeds consumption, no underutilization (Req 2.4)
                 if (totalConsumption <= totalMiningOutput)
                 {
+                    Log.Debug("  -> Not underutilized (mining >= consumption)");
                     continue;
                 }
 
                 // Per-group sustainability check (Req 2.1, 2.2, 2.3)
                 decimal excessConsumption = totalConsumption - totalMiningOutput;
                 decimal requiredStockpile = excessConsumption * thresholdHours;
-                int stockpile = GetWarehouseStockpile(colony, resource, purity);
+
+                Log.Debug("  excessConsumption={0}, requiredStockpile={1}, stockpile={2}, exempt={3}",
+                    excessConsumption, requiredStockpile, stockpile, stockpile >= requiredStockpile);
 
                 if (stockpile >= requiredStockpile)
                 {
+                    Log.Debug("  -> Group exempt (stockpile sustains excess)");
                     continue; // Group exempt — stockpile sustains excess consumption
                 }
 

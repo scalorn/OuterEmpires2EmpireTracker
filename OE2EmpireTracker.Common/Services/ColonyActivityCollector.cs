@@ -240,8 +240,7 @@ namespace OE2EmpireTracker.Services
             int horizonHours,
             List<ActivityRow> rows)
         {
-            var items = colony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
-            int currentStockpile = items.Sum(i => i.Quantity);
+            int currentStockpile = ColonyResourceRateCalculator.GetWarehouseStockpile(colony, rule.ResourceName, rule.ResourcePurity);
 
             if (currentStockpile >= rule.TriggerThreshold)
             {

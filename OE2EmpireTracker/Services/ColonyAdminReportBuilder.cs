@@ -254,8 +254,7 @@ namespace OE2EmpireTracker.Services
             WarehouseOverflowRule rule,
             int horizonHours)
         {
-            var items = colony.Items.FindResource(rule.ResourceName, rule.ResourcePurity);
-            int currentStockpile = items.Sum(i => i.Quantity);
+            int currentStockpile = ColonyResourceRateCalculator.GetWarehouseStockpile(colony, rule.ResourceName, rule.ResourcePurity);
 
             if (currentStockpile >= rule.TriggerThreshold)
             {
@@ -642,8 +641,7 @@ namespace OE2EmpireTracker.Services
                     continue;
                 }
 
-                var items = colony.Items.FindResource(group.Resource, group.Purity);
-                int stockpile = items.Sum(i => i.Quantity);
+                int stockpile = ColonyResourceRateCalculator.GetWarehouseStockpile(colony, group.Resource, group.Purity);
 
                 if (stockpile == 0)
                 {

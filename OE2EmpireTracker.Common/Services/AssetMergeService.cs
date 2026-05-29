@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using NLog;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
 
 namespace OE2EmpireTracker.Services
 {
@@ -145,6 +146,15 @@ namespace OE2EmpireTracker.Services
 
             string baseName = resourceName.Substring(0, lastParen).TrimEnd();
             string purity = match.Groups[1].Value;
+
+            // Normalize: strip " Purity" suffix and normalize abbreviations
+            // "High Purity" -> "High", "Med Purity" -> "Medium", "Low Purity" -> "Low"
+            if (purity.EndsWith(" Purity", System.StringComparison.OrdinalIgnoreCase))
+            {
+                purity = purity.Substring(0, purity.Length - " Purity".Length).Trim();
+            }
+
+            purity = SurveyParser.NormalizePurity(purity);
 
             return (baseName, purity);
         }
