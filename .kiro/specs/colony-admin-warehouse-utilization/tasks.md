@@ -24,7 +24,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Verification: getDiagnostics clean compile_
 
 
-- [ ] 2. Create ColonyResourceRateCalculator static utility class
+- [x] 2. Create ColonyResourceRateCalculator static utility class
   - [x] 2.1 Implement ComputeWarehouseVolume and GetNetWarehouseVolumeGrowthRate
     - Create new file `OE2EmpireTracker.Common/Services/ColonyResourceRateCalculator.cs`
     - Implement `ComputeWarehouseVolume(Colony)` using volume constants (Resources=1, Commodities=10, Workers=50, Blueprints/Surveys=0)
@@ -45,7 +45,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Verification: getDiagnostics clean compile_
 
 
-  - [-] 2.3 Write unit tests for ColonyResourceRateCalculator
+  - [x] 2.3 Write unit tests for ColonyResourceRateCalculator
     - Test ComputeWarehouseVolume with mixed item types (resources, commodities, workers, blueprints)
     - Test GetNetHourlyRate with known colony setups (multiple miners, multiple refiners, mixed purities)
     - Test GetTotalMiningRate and GetTotalRefiningConsumption with ExtractionFocus skill bonus
@@ -60,7 +60,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Implement stockpile-aware underutilization detection in ColonyInactivityCollector
-  - [-] 4.1 Refactor underutilization check to use rate calculator and stockpile threshold
+  - [x] 4.1 Refactor underutilization check to use rate calculator and stockpile threshold
     - Replace per-refiner `stockpile >= consumeRate` check with per-group sustainability check
     - Compute `excessConsumption = totalGroupConsumption - totalGroupMiningOutput` using ColonyResourceRateCalculator
     - Compute `requiredStockpile = excessConsumption × UnderutilizedRefiningStockpileHours`
@@ -72,7 +72,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Verification: getDiagnostics clean compile_
 
 
-  - [~] 4.2 Write unit tests for stockpile-aware underutilization
+  - [-] 4.2 Write unit tests for stockpile-aware underutilization
     - Test refining group exempt when stockpile sustains excess consumption for threshold hours
     - Test refining group flagged when stockpile insufficient
     - Test group not flagged when mining meets or exceeds consumption
@@ -83,7 +83,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Verification: vstest.console passes_
 
 - [ ] 5. Implement resource depletion ETA in ColonyInactivityCollector
-  - [-] 5.1 Add CollectDepletionETAs method to ColonyInactivityCollector
+  - [x] 5.1 Add CollectDepletionETAs method to ColonyInactivityCollector
     - Implement `CollectDepletionETAs(Colony, PlayerContext, List<ActivityRow>)`
     - For each refining group where consumption > mining: compute `depletionHours = stockpile / (consumption - mining)`
     - Emit ActivityRow with Type=Refining, ProcessDetails showing formatted ETA
@@ -94,7 +94,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Output: ColonyInactivityCollector.cs modified_
     - _Verification: getDiagnostics clean compile_
 
-  - [~] 5.2 Write unit tests for depletion ETA calculation
+  - [-] 5.2 Write unit tests for depletion ETA calculation
     - Test correct ETA when consumption exceeds mining with known stockpile
     - Test "Depleted" when stockpile is zero and consumption exceeds mining
     - Test no row emitted when mining meets or exceeds consumption ("Sustained")
@@ -106,7 +106,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
 
 
 - [ ] 6. Implement overflow prediction in ColonyActivityCollector
-  - [-] 6.1 Add CollectOverflowPredictions method to ColonyActivityCollector
+  - [x] 6.1 Add CollectOverflowPredictions method to ColonyActivityCollector
     - Implement `CollectOverflowPredictions(Colony, PlayerContext, List<ActivityRow>)`
     - For SpecificResource rules: compute time until stockpile reaches threshold using net accumulation rate
     - For TotalWarehouse rules: compute time until total volume reaches threshold using net volume growth rate
@@ -121,7 +121,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
     - _Output: ColonyActivityCollector.cs modified_
     - _Verification: getDiagnostics clean compile_
 
-  - [~] 6.2 Write unit tests for overflow prediction
+  - [-] 6.2 Write unit tests for overflow prediction
     - Test SpecificResource rule: correct time calculation with known rate and threshold
     - Test TotalWarehouse rule: correct time calculation with known volume growth rate
     - Test "triggered" when threshold already exceeded
@@ -138,7 +138,7 @@ This plan implements warehouse volume display, corrected underutilized refining 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Add Warehouse section to ColonyAdminReportBuilder
-  - [~] 8.1 Implement RenderWarehouseSection in ColonyAdminReportBuilder
+  - [-] 8.1 Implement RenderWarehouseSection in ColonyAdminReportBuilder
     - Add `RenderWarehouseSection(RtfBuilder, Colony, PlayerContext, bool) → bool`
     - Display "{used} / {max}" volume using `ColonyResourceRateCalculator.ComputeWarehouseVolume`
     - Omit section entirely when WarehouseCapacity == 0

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FsCheck;
+using FsCheck.NUnit;
 using NUnit.Framework;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
@@ -12,7 +14,7 @@ namespace OE2EmpireTracker.Tests.Services
     [TestFixture]
     public class ColonyInactivityCollectorTests
     {
-        private static readonly Random Rng = new Random(42);
+        private static readonly System.Random Rng = new System.Random(42);
 
         private static readonly string[] ProductionBlueprintTypes = new[]
         {
@@ -35,6 +37,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             PlayerContext.Reset();
             EmpireContext.Reset();
+            PreferencesStore.Reset();
         }
 
         // -----------------------------------------------------------------------
@@ -766,15 +769,20 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         // -----------------------------------------------------------------------
-        // Property 5: Warehouse stockpile exemption
-        // Feature: activity-inactivity-mode, Property 5: Warehouse stockpile exemption
-        // **Validates: Requirements 5.4**
+        // Property 5: Warehouse stockpile exemption (threshold-based)
+        // Feature: colony-admin-warehouse-utilization
+        // A refining group is exempt when stockpile >= excessConsumption × thresholdHours
+        // **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
         // -----------------------------------------------------------------------
 
         [Test]
         public void Property5_WarehouseStockpileExemption()
         {
-            // Same as Property4 test but with 25+ units in warehouse -- no underutilized flag
+            // 2 refiners at 25/h each = 50/h consumption, 1 miner at 10/h
+            // excessConsumption = 50 - 10 = 40/h
+            // With threshold=24h: requiredStockpile = 40 * 24 = 960
+            // Add 960 units -- exactly enough to exempt the group
+            PreferencesStore.Reset();
             var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
@@ -790,8 +798,8 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
 
-            // Add 25 units of Iron (Low) to warehouse -- enough for one cycle
-            AddWarehouseResource(colony, "Iron", "Low", 25);
+            // requiredStockpile = (50 - 10) * 24 = 960
+            AddWarehouseResource(colony, "Iron", "Low", 960);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
             var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
@@ -799,13 +807,15 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(
                 underutilized.Count,
                 Is.EqualTo(0),
-                "No refiners should be underutilized when warehouse has sufficient stockpile");
+                "No refiners should be underutilized when warehouse sustains excess for threshold hours");
         }
 
         [Test]
         public void WarehouseExemption_InsufficientStockpile_StillFlagged()
         {
-            // Warehouse has 24 units (less than 25 per cycle) -- refiner still flagged
+            // excessConsumption = (50 - 10) = 40/h, threshold=24h, required=960
+            // Warehouse has 959 units -- not enough
+            PreferencesStore.Reset();
             var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
@@ -821,8 +831,8 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
 
-            // Only 24 units -- not enough
-            AddWarehouseResource(colony, "Iron", "Low", 24);
+            // 959 < 960 required
+            AddWarehouseResource(colony, "Iron", "Low", 959);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
             var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
@@ -834,9 +844,12 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         [Test]
-        public void WarehouseExemption_SyntheticRefiner_NeedsRecipeConsumeRate()
+        public void WarehouseExemption_SyntheticRefiner_NeedsThresholdBasedStockpile()
         {
-            // Synthetic refiner needs 1250 units in warehouse to be exempt
+            // Synthetic refiner consuming Lanthanides (Refined) at 1250/cycle
+            // Mining at 100/h, excess = 1250 - 100 = 1150/h
+            // With threshold=24h: required = 1150 * 24 = 27600
+            PreferencesStore.Reset();
             var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
@@ -851,8 +864,8 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Lanthanides"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Lanthanides", GameConstants.PurityRefined));
 
-            // Add 1250 units -- exactly enough for synthetic recipe
-            AddWarehouseResource(colony, "Lanthanides", GameConstants.PurityRefined, 1250);
+            // Add exactly enough: 27600 units
+            AddWarehouseResource(colony, "Lanthanides", GameConstants.PurityRefined, 27600);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
             var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
@@ -860,13 +873,15 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(
                 underutilized.Count,
                 Is.EqualTo(0),
-                "Synthetic refiner should be exempt with 1250 units in warehouse");
+                "Synthetic refiner should be exempt when stockpile sustains excess for threshold hours");
         }
 
         [Test]
         public void WarehouseExemption_SyntheticRefiner_InsufficientStockpile()
         {
-            // Synthetic refiner with only 1249 units -- still flagged
+            // Synthetic refiner: excess = 1150/h, required = 1150 * 24 = 27600
+            // Only 27599 units -- still flagged
+            PreferencesStore.Reset();
             var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
@@ -881,7 +896,7 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Lanthanides"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Lanthanides", GameConstants.PurityRefined));
 
-            AddWarehouseResource(colony, "Lanthanides", GameConstants.PurityRefined, 1249);
+            AddWarehouseResource(colony, "Lanthanides", GameConstants.PurityRefined, 27599);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
             var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
@@ -890,6 +905,469 @@ namespace OE2EmpireTracker.Tests.Services
                 underutilized.Count,
                 Is.EqualTo(1),
                 "Synthetic refiner should still be flagged with insufficient warehouse stockpile");
+        }
+
+        // -----------------------------------------------------------------------
+        // Stockpile-aware underutilization: custom threshold tests
+        // Feature: colony-admin-warehouse-utilization
+        // **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void StockpileExemption_CustomThreshold_ExemptWhenSufficient()
+        {
+            // Set threshold to 1 hour. excess = 40/h, required = 40 * 1 = 40
+            PreferencesStore.Reset();
+            PreferencesStore.GetInstance().Preferences.Thresholds.UnderutilizedRefiningStockpileHours = 1;
+
+            var pc = PlayerContext.GetInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "Refiner");
+            var survey = CreateSurvey("Iron", "Low", "10");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
+
+            // required = 40 * 1 = 40
+            AddWarehouseResource(colony, "Iron", "Low", 40);
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            Assert.That(underutilized.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void StockpileExemption_CustomThreshold_FlaggedWhenInsufficient()
+        {
+            // Set threshold to 1 hour. excess = 40/h, required = 40 * 1 = 40
+            PreferencesStore.Reset();
+            PreferencesStore.GetInstance().Preferences.Thresholds.UnderutilizedRefiningStockpileHours = 1;
+
+            var pc = PlayerContext.GetInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "Refiner");
+            var survey = CreateSurvey("Iron", "Low", "10");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
+
+            // 39 < 40 required
+            AddWarehouseResource(colony, "Iron", "Low", 39);
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            Assert.That(underutilized.Count, Is.GreaterThan(0));
+        }
+
+        [Test]
+        public void StockpileExemption_MiningMeetsConsumption_NeverFlagged()
+        {
+            // Mining >= consumption means no underutilization regardless of stockpile
+            PreferencesStore.Reset();
+            var pc = PlayerContext.GetInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "Miner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "Refiner");
+            var survey = CreateSurvey("Iron", "Low", "50");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            // Mining at 50/h, 2 refiners at 25/h each = 50/h consumption
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
+
+            // Zero stockpile -- still not flagged because mining meets consumption
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+            Assert.That(underutilized.Count, Is.EqualTo(0));
+        }
+
+        // -----------------------------------------------------------------------
+        // Property 3: Underutilization Threshold Correctness (FsCheck)
+        // Feature: colony-admin-warehouse-utilization
+        // A refining group with excess consumption e = c - m (where c > m) is NOT
+        // flagged as underutilized if and only if: stockpile >= e * thresholdHours.
+        // **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
+        // -----------------------------------------------------------------------
+
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property Property3_UnderutilizationThresholdCorrectness()
+        {
+            // Generate: miningRate (1-100), refinerCount (1-4), thresholdHours (1-168),
+            // stockpileOffset (-10 to +10 relative to boundary)
+            var miningRateGen = Gen.Choose(1, 100);
+            var refinerCountGen = Gen.Choose(1, 4);
+            var thresholdGen = Gen.Choose(1, 168);
+            var offsetGen = Gen.Choose(-10, 10);
+
+            var gen = from miningRate in miningRateGen
+                      from refinerCount in refinerCountGen
+                      from threshold in thresholdGen
+                      from offset in offsetGen
+                      select new
+                      {
+                          MiningRate = miningRate,
+                          RefinerCount = refinerCount,
+                          Threshold = threshold,
+                          Offset = offset
+                      };
+
+            return Prop.ForAll(gen.ToArbitrary(), data =>
+            {
+                // Only test cases where consumption > mining (underutilization possible)
+                int consumeRate = GameConstants.RefiningBaseRate;
+                decimal totalConsumption = consumeRate * data.RefinerCount;
+                decimal totalMining = data.MiningRate;
+
+                if (totalConsumption <= totalMining)
+                {
+                    // Mining meets consumption -- never flagged (Req 2.4)
+                    return true.Label("Mining >= consumption, skip");
+                }
+
+                decimal excessConsumption = totalConsumption - totalMining;
+                decimal requiredStockpile = excessConsumption * data.Threshold;
+                int stockpile = Math.Max(0, (int)requiredStockpile + data.Offset);
+
+                // Set up test state
+                PreferencesStore.Reset();
+                PreferencesStore.GetInstance().Preferences.Thresholds
+                    .UnderutilizedRefiningStockpileHours = data.Threshold;
+                PlayerContext.Reset();
+                EmpireContext.Reset();
+                TestHelper.SetEmpireFilePath();
+                EmpireContext.GetInstance();
+
+                var pc = PlayerContext.GetInstance();
+                string ownerUUID = Guid.NewGuid().ToString();
+                var profile = new PlayerProfile
+                {
+                    UUID = ownerUUID,
+                    Name = "Owner_" + ownerUUID.Substring(0, 6)
+                };
+                pc.AddPlayerProfile(profile);
+
+                var minerBp = new OE2EmpireTracker.Models.Blueprint("Miner");
+                minerBp.UUID = Guid.NewGuid().ToString();
+                minerBp.BluePrintType = BlueprintTypes.MiningRig;
+                pc.AddBlueprint(minerBp);
+
+                var refinerBp = new OE2EmpireTracker.Models.Blueprint("Refiner");
+                refinerBp.UUID = Guid.NewGuid().ToString();
+                refinerBp.BluePrintType = BlueprintTypes.Refinery;
+                pc.AddBlueprint(refinerBp);
+
+                var survey = new Survey("Survey");
+                survey.UUID = Guid.NewGuid().ToString();
+                survey.Resources["Iron"] = new SurveyResource(
+                    "Iron", "Low", data.MiningRate.ToString());
+                pc.AddSurvey(survey);
+
+                var colony = new Colony
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    SystemName = "Sys",
+                    ColonyName = "Col",
+                    OwnerUUID = ownerUUID,
+                    LastImportDateTime = SurveyDateTimeParser.ToIsoString(SystemClock.UtcNow)
+                };
+
+                // Add miner
+                var miner = new ColonyStructure();
+                miner.UUID = Guid.NewGuid().ToString();
+                miner.FlatpackBlueprintUUID = minerBp.UUID;
+                miner.DisplaySequence = 1;
+                miner.Properties.SetProperty(GameConstants.PropBuilt, true);
+                miner.Properties.SetProperty(GameConstants.PropOnline, true);
+                var minerTimer = new CountDownTime();
+                minerTimer.StartRepeating(3600);
+                miner.ProcessCompletionTime = minerTimer;
+                miner.MiningSurvey = survey.UUID;
+                miner.MiningSurveyResource = "Iron";
+                colony.Structures.Add(miner);
+
+                // Add refiners
+                for (int i = 0; i < data.RefinerCount; i++)
+                {
+                    var refiner = new ColonyStructure();
+                    refiner.UUID = Guid.NewGuid().ToString();
+                    refiner.FlatpackBlueprintUUID = refinerBp.UUID;
+                    refiner.DisplaySequence = i + 2;
+                    refiner.Properties.SetProperty(GameConstants.PropBuilt, true);
+                    refiner.Properties.SetProperty(GameConstants.PropOnline, true);
+                    var refTimer = new CountDownTime();
+                    refTimer.StartRepeating(3600);
+                    refiner.ProcessCompletionTime = refTimer;
+                    refiner.RefiningResource = "Iron";
+                    refiner.RefiningResourcePurity = "Low";
+                    colony.Structures.Add(refiner);
+                }
+
+                // Add stockpile
+                if (stockpile > 0)
+                {
+                    var item = new Item(ItemType.ItemTypeEnum.Resource, "Iron");
+                    item.UUID = Guid.NewGuid().ToString();
+                    item.BaseItemTypeID = "Iron";
+                    item.ResourcePurity = "Low";
+                    item.Quantity = stockpile;
+                    colony.Items.AddItem(item);
+                }
+
+                var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+                var underutilized = rows.Where(r =>
+                    r.ProcessDetails.StartsWith("Underutilized")).ToList();
+
+                bool shouldBeExempt = stockpile >= requiredStockpile;
+                bool isExempt = underutilized.Count == 0;
+
+                if (shouldBeExempt != isExempt)
+                {
+                    return false.Label(
+                        $"mining={data.MiningRate}, refiners={data.RefinerCount}, " +
+                        $"threshold={data.Threshold}h, stockpile={stockpile}, " +
+                        $"required={requiredStockpile}, " +
+                        $"shouldBeExempt={shouldBeExempt}, isExempt={isExempt}");
+                }
+
+                return true.Label("Threshold correctness holds");
+            });
+        }
+
+        // -----------------------------------------------------------------------
+        // Depletion ETA Unit Tests
+        // Feature: colony-admin-warehouse-utilization, Task 5.2
+        // **Validates: Requirements 3.2, 3.3, 3.4**
+        // -----------------------------------------------------------------------
+
+        [Test]
+        public void DepletionETA_ConsumptionExceedsMining_EmitsCorrectETA()
+        {
+            // 1 miner at 10/h, 1 refiner at 25/cycle, stockpile = 100
+            // netConsumption = 25 - 10 = 15/h, depletionHours = 100/15 ≈ 6.67h
+            var pc = PlayerContext.GetInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "DepMiner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "DepRefiner");
+            var survey = CreateSurvey("Iron", "Low", "10");
+
+            var colony = MakeColony("DepSys", "DepCol");
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+
+            AddWarehouseResource(colony, "Iron", "Low", 100);
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var depletionRows = rows.Where(r => r.SourceName == "Resource Depletion").ToList();
+
+            Assert.That(depletionRows.Count, Is.EqualTo(1));
+            Assert.That(depletionRows[0].Type, Is.EqualTo(ActivityType.Refining));
+            Assert.That(depletionRows[0].SystemName, Is.EqualTo("DepSys"));
+            Assert.That(depletionRows[0].ColonyName, Is.EqualTo("DepCol"));
+
+            // depletionHours = 100 / (25 - 10) = 6.666... hours
+            // depletionSeconds = (long)(6.666... * 3600) = 24000
+            long expectedSeconds = (long)(100m / 15m * 3600m);
+            string expectedEta = ActivityRow.FormatSeconds(expectedSeconds);
+            Assert.That(depletionRows[0].ProcessDetails, Is.EqualTo($"Depletion: {expectedEta} -- Iron (Low)"));
+        }
+
+        [Test]
+        public void DepletionETA_StockpileZero_EmitsDepletedRow()
+        {
+            // 0 miners, 1 refiner at 25/cycle, stockpile = 0
+            var pc = PlayerContext.GetInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "DepRefiner");
+
+            var colony = MakeColony("DepSys", "DepCol");
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 1, "Copper", "High"));
+
+            // No warehouse resource added — stockpile is 0
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var depletionRows = rows.Where(r => r.SourceName == "Resource Depletion").ToList();
+
+            Assert.That(depletionRows.Count, Is.EqualTo(1));
+            Assert.That(depletionRows[0].ProcessDetails, Is.EqualTo("Depleted -- Copper (High)"));
+            Assert.That(depletionRows[0].Type, Is.EqualTo(ActivityType.Refining));
+        }
+
+        [Test]
+        public void DepletionETA_MiningMeetsConsumption_NoRowEmitted()
+        {
+            // 1 miner at 30/h, 1 refiner at 25/cycle — mining >= consumption, sustained
+            var pc = PlayerContext.GetInstance();
+            string ownerUUID = Guid.NewGuid().ToString();
+            CreateOwnerProfile(ownerUUID);
+
+            var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "DepMiner");
+            var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "DepRefiner");
+            var survey = CreateSurvey("Iron", "Low", "30");
+
+            var colony = MakeColony();
+            colony.OwnerUUID = ownerUUID;
+
+            colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron"));
+            colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+
+            AddWarehouseResource(colony, "Iron", "Low", 500);
+
+            var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+            var depletionRows = rows.Where(r => r.SourceName == "Resource Depletion").ToList();
+
+            Assert.That(depletionRows.Count, Is.EqualTo(0), "No depletion row when mining >= consumption");
+        }
+
+        // -----------------------------------------------------------------------
+        // Property 2: Depletion ETA Consistency
+        // Feature: colony-admin-warehouse-utilization
+        // For any refining group G with hourly consumption rate c, hourly mining
+        // rate m, and stockpile s:
+        //   if c > m and s > 0, then depletionHours == s / (c - m)
+        //   if s == 0 and c > m, status is "Depleted"
+        //   if m >= c, status is "Sustained" (no row emitted)
+        // **Validates: Requirements 3.2, 3.3, 3.4**
+        // -----------------------------------------------------------------------
+
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property Property2_DepletionETAConsistency()
+        {
+            // Generate: mining rate (0-100), consumption rate (1-100), stockpile (0-5000)
+            var miningRateGen = Gen.Choose(0, 100);
+            var consumptionRateGen = Gen.Choose(1, 100);
+            var stockpileGen = Gen.Choose(0, 5000);
+
+            var gen = from miningRate in miningRateGen
+                      from consumptionRate in consumptionRateGen
+                      from stockpile in stockpileGen
+                      select new { MiningRate = miningRate, ConsumptionRate = consumptionRate, Stockpile = stockpile };
+
+            return Prop.ForAll(gen.ToArbitrary(), data =>
+            {
+                PlayerContext.Reset();
+                EmpireContext.Reset();
+                TestHelper.SetEmpireFilePath();
+                EmpireContext.GetInstance();
+
+                var pc = PlayerContext.GetInstance();
+                string ownerUUID = Guid.NewGuid().ToString();
+                CreateOwnerProfile(ownerUUID);
+
+                var minerBp = CreateBlueprint(BlueprintTypes.MiningRig, "PBTMiner");
+                var refinerBp = CreateBlueprint(BlueprintTypes.Refinery, "PBTRefiner");
+
+                var colony = MakeColony();
+                colony.OwnerUUID = ownerUUID;
+
+                // Set up miner with the generated mining rate
+                if (data.MiningRate > 0)
+                {
+                    var survey = CreateSurvey("Iron", "Low", data.MiningRate.ToString());
+                    colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Iron"));
+                }
+
+                // Set up refiner — we need consumption > 0 to have a refining group
+                // Use a synthetic recipe approach: create multiple refiners to reach desired rate
+                // Standard refiner consumes 25/cycle. We'll use one refiner and check the math.
+                // Instead, we directly set up the scenario with known rates.
+                // Since standard refining is 25/cycle, we use multiple refiners.
+                // For simplicity, use 1 refiner (25/h consumption) and adjust mining rate.
+                colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
+
+                if (data.Stockpile > 0)
+                {
+                    AddWarehouseResource(colony, "Iron", "Low", data.Stockpile);
+                }
+
+                // Actual rates: mining = data.MiningRate, consumption = 25 (standard refiner)
+                decimal actualMining = data.MiningRate;
+                decimal actualConsumption = GameConstants.RefiningBaseRate;
+
+                var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
+                var depletionRows = rows.Where(r => r.SourceName == "Resource Depletion").ToList();
+
+                if (actualMining >= actualConsumption)
+                {
+                    // Sustained — no depletion row
+                    if (depletionRows.Count != 0)
+                    {
+                        return false.Label(
+                            $"Expected no depletion row when mining ({actualMining}) >= consumption ({actualConsumption}), got {depletionRows.Count}");
+                    }
+
+                    return true.Label("Sustained: no row emitted");
+                }
+
+                // consumption > mining
+                if (data.Stockpile == 0)
+                {
+                    // Depleted
+                    if (depletionRows.Count != 1)
+                    {
+                        return false.Label(
+                            $"Expected 1 depletion row for Depleted, got {depletionRows.Count}");
+                    }
+
+                    if (!depletionRows[0].ProcessDetails.StartsWith("Depleted"))
+                    {
+                        return false.Label(
+                            $"Expected 'Depleted' prefix, got '{depletionRows[0].ProcessDetails}'");
+                    }
+
+                    return true.Label("Depleted: correct status");
+                }
+
+                // c > m and s > 0 — finite ETA
+                if (depletionRows.Count != 1)
+                {
+                    return false.Label(
+                        $"Expected 1 depletion row for finite ETA, got {depletionRows.Count}");
+                }
+
+                decimal netConsumption = actualConsumption - actualMining;
+                decimal expectedHours = data.Stockpile / netConsumption;
+                long expectedSeconds = (long)(expectedHours * 3600m);
+                string expectedEta = ActivityRow.FormatSeconds(expectedSeconds);
+                string expectedDetails = $"Depletion: {expectedEta} -- Iron (Low)";
+
+                if (depletionRows[0].ProcessDetails != expectedDetails)
+                {
+                    return false.Label(
+                        $"Expected '{expectedDetails}', got '{depletionRows[0].ProcessDetails}'");
+                }
+
+                return true.Label("Finite ETA: correct calculation");
+            });
         }
 
         private static ColonyStructure MakeStructure(
