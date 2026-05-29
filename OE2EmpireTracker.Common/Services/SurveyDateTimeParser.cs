@@ -85,13 +85,16 @@ namespace OE2EmpireTracker.Services
             if (string.IsNullOrEmpty(input))
                 return false;
 
-            // Accept round-trip "o" format (with fractional seconds + Z), plus legacy formats
+            // Accept round-trip "o" format (with fractional seconds + Z)
             if (DateTime.TryParse(
                 input,
                 CultureInfo.InvariantCulture,
-                DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal | DateTimeStyles.RoundtripKind,
+                DateTimeStyles.RoundtripKind,
                 out result))
             {
+                // Ensure UTC
+                if (result.Kind == DateTimeKind.Local)
+                    result = result.ToUniversalTime();
                 return true;
             }
 
