@@ -28,8 +28,18 @@ namespace OE2EmpireTracker.Services
             foreach (var kvp in colony.Items.Items)
             {
                 Item item = kvp.Value;
-                totalVolume += item.Quantity * GetVolumePerUnit(item);
+                decimal volumePerUnit = GetVolumePerUnit(item);
+                decimal itemVolume = item.Quantity * volumePerUnit;
+                totalVolume += itemVolume;
+                if (itemVolume > 0)
+                {
+                    Log.Debug("  ComputeWarehouseVolume: item={0}, type={1}, qty={2}, volPerUnit={3}, itemVol={4}",
+                        item.Name, item.ItemType, item.Quantity, volumePerUnit, itemVolume);
+                }
             }
+
+            Log.Debug("ComputeWarehouseVolume: colony={0}, totalItems={1}, totalVolume={2}",
+                colony.ColonyName, colony.Items.Items.Count, totalVolume);
 
             return totalVolume;
         }
@@ -278,6 +288,8 @@ namespace OE2EmpireTracker.Services
                     return GameConstants.VolumeBlueprint;
                 case ItemType.ItemTypeEnum.Survey:
                     return GameConstants.VolumeSurvey;
+                case ItemType.ItemTypeEnum.Flatpack:
+                    return 0m;
                 default:
                     return item.Volume;
             }
