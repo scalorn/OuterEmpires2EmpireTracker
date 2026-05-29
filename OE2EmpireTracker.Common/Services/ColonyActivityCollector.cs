@@ -270,15 +270,16 @@ namespace OE2EmpireTracker.Services
             if (hoursUntilTrigger <= horizonHours)
             {
                 long seconds = (long)(hoursUntilTrigger * 3600m);
-                string formattedTime = ActivityRow.FormatSeconds(seconds);
+                var countdown = new CountDownTime();
+                countdown.TimeRemaining = seconds;
                 rows.Add(new ActivityRow
                 {
                     Type = ActivityType.OverflowPrediction,
                     SystemName = colony.SystemName,
                     ColonyName = colony.ColonyName,
                     SourceName = "Overflow Rule",
-                    ProcessDetails = $"Overflow in {formattedTime} -- {rule.ResourceName} ({rule.ResourcePurity})",
-                    CountDown = null,
+                    ProcessDetails = $"Overflow -- {rule.ResourceName} ({rule.ResourcePurity})",
+                    CountDown = countdown,
                     NeedBy = DateTime.MinValue
                 });
             }
@@ -321,15 +322,16 @@ namespace OE2EmpireTracker.Services
             if (hoursUntilTrigger <= horizonHours)
             {
                 long seconds = (long)(hoursUntilTrigger * 3600m);
-                string formattedTime = ActivityRow.FormatSeconds(seconds);
+                var countdown = new CountDownTime();
+                countdown.TimeRemaining = seconds;
                 rows.Add(new ActivityRow
                 {
                     Type = ActivityType.OverflowPrediction,
                     SystemName = colony.SystemName,
                     ColonyName = colony.ColonyName,
                     SourceName = "Overflow Rule",
-                    ProcessDetails = $"Overflow in {formattedTime} -- Total Warehouse",
-                    CountDown = null,
+                    ProcessDetails = "Overflow -- Total Warehouse",
+                    CountDown = countdown,
                     NeedBy = DateTime.MinValue
                 });
             }
