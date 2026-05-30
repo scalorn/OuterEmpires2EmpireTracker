@@ -1034,7 +1034,11 @@ namespace OE2EmpireTracker.Forms.DeliveryRoute
                 planViewModel.LoadFrom(readOnlyPlan);
                 using (new ProgrammaticUpdateGuard(this))
                 {
-                    txtPlanName.Text = planViewModel.Name ?? string.Empty;
+                    string newName = planViewModel.Name ?? string.Empty;
+                    if (txtPlanName.Text != newName)
+                    {
+                        txtPlanName.Text = newName;
+                    }
                 }
 
                 cmdAutoFill.Visible = true;
