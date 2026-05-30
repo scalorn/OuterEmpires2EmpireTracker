@@ -129,13 +129,10 @@ namespace OE2EmpireTracker.Services
                     colony, playerContext, resource, purity);
 
                 int stockpile = GetWarehouseStockpile(colony, resource, purity);
-                Log.Debug("CollectDepletionETAs: colony={0}, resource={1} ({2}), mining={3}, consumption={4}, stockpile={5}",
-                    colony.ColonyName, resource, purity, totalMining, totalConsumption, stockpile);
 
                 // Mining meets or exceeds consumption — sustained, no row emitted
                 if (totalMining >= totalConsumption)
                 {
-                    Log.Debug("  -> Sustained (mining >= consumption)");
                     continue;
                 }
 
@@ -365,13 +362,10 @@ namespace OE2EmpireTracker.Services
                     colony, playerContext, resource, purity);
 
                 int stockpile = GetWarehouseStockpile(colony, resource, purity);
-                Log.Debug("CollectUnderutilizedRefiners: colony={0}, resource={1} ({2}), refiners={3}, mining={4}, consumption={5}, stockpile={6}, thresholdHours={7}",
-                    colony.ColonyName, resource, purity, refinersInGroup.Count, totalMiningOutput, totalConsumption, stockpile, thresholdHours);
 
                 // If mining output meets or exceeds consumption, no underutilization (Req 2.4)
                 if (totalConsumption <= totalMiningOutput)
                 {
-                    Log.Debug("  -> Not underutilized (mining >= consumption)");
                     continue;
                 }
 
@@ -379,12 +373,8 @@ namespace OE2EmpireTracker.Services
                 decimal excessConsumption = totalConsumption - totalMiningOutput;
                 decimal requiredStockpile = excessConsumption * thresholdHours;
 
-                Log.Debug("  excessConsumption={0}, requiredStockpile={1}, stockpile={2}, exempt={3}",
-                    excessConsumption, requiredStockpile, stockpile, stockpile >= requiredStockpile);
-
                 if (stockpile >= requiredStockpile)
                 {
-                    Log.Debug("  -> Group exempt (stockpile sustains excess)");
                     continue; // Group exempt — stockpile sustains excess consumption
                 }
 

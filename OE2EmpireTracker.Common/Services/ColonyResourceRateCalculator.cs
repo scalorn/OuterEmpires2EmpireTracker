@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using NLog;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 
@@ -12,7 +11,6 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class ColonyResourceRateCalculator
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Computes total warehouse volume using standard volume constants.
         /// Formula: totalVolume = Σ(item.Quantity × VolumeForType(item.ItemType))
@@ -88,21 +86,16 @@ namespace OE2EmpireTracker.Services
             decimal extractionMultiplier = SkillBonusCalculator.GetExtractionMultiplier(extractionFocusLevel);
 
             decimal totalRate = 0m;
-            int structureCount = 0;
-            int skippedNotBuiltOnline = 0;
-            int skippedNoActiveProcess = 0;
 
             foreach (var structure in colony.Structures)
             {
                 if (!structure.IsBuiltAndOnline)
                 {
-                    skippedNotBuiltOnline++;
                     continue;
                 }
 
                 if (!HasActiveProcess(structure))
                 {
-                    skippedNoActiveProcess++;
                     continue;
                 }
 
@@ -138,11 +131,7 @@ namespace OE2EmpireTracker.Services
 
                 decimal rate = amount * extractionMultiplier;
                 totalRate += rate;
-                structureCount++;
             }
-
-            Log.Debug("GetTotalMiningRate: colony={0}, resource={1} ({2}), miners={3}, rate={4}, skipped: notBuiltOnline={5}, noActiveProcess={6}",
-                colony.ColonyName, resource, purity, structureCount, totalRate, skippedNotBuiltOnline, skippedNoActiveProcess);
 
             return totalRate;
         }
@@ -161,7 +150,6 @@ namespace OE2EmpireTracker.Services
             }
 
             decimal totalConsumption = 0m;
-            int refinerCount = 0;
 
             foreach (var structure in colony.Structures)
             {
@@ -189,11 +177,7 @@ namespace OE2EmpireTracker.Services
 
                 int consumeRate = GetRefinerConsumptionRate(structure);
                 totalConsumption += consumeRate;
-                refinerCount++;
             }
-
-            Log.Debug("GetTotalRefiningConsumption: colony={0}, resource={1} ({2}), refiners={3}, consumption={4}",
-                colony.ColonyName, resource, purity, refinerCount, totalConsumption);
 
             return totalConsumption;
         }
