@@ -101,7 +101,13 @@ namespace OE2EmpireTracker.Services
 
             bool hasChanges = false;
 
-            foreach (var apiBuilding in apiBuildings)
+            // Sort API buildings by constructingBuildingFinish to match local DisplaySequence order.
+            // Buildings constructed first have earlier dates; the one currently being built has the latest.
+            var sortedApiBuildings = apiBuildings
+                .OrderBy(b => b.ConstructingBuildingFinish ?? DateTime.MaxValue)
+                .ToList();
+
+            foreach (var apiBuilding in sortedApiBuildings)
             {
                 var match = FindLocalStructure(apiBuilding, colony);
 
@@ -496,7 +502,9 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Finds a local structure matching the API building.
         /// First tries matching by BuildingID (for previously synced structures),
-        /// then falls back to BlueprintDesignName (case-insensitive).
+        /// then falls back to matching unassigned structures of the same type by DisplaySequence order.
+        /// When API buildings are sorted by constructingBuildingFinish, this aligns them with
+        /// local structures in build order.
         /// </summary>
         private static ColonyStructure FindLocalStructure(
             GameApiColonyBuilding apiBuilding,
@@ -506,10 +514,33 @@ namespace OE2EmpireTracker.Services
             var match = colony.Structures.FirstOrDefault(s =>
                 s.BuildingID > 0 && s.BuildingID == apiBuilding.BuildingId);
 
-            // Without blueprint context we cannot resolve FlatpackBlueprintUUID to a name
-            // for BlueprintDesignName matching. New structures will be created on first sync
-            // and matched by BuildingID on subsequent syncs.
-            return match;
+            if (match != null)
+            {
+                return match;
+            }
+
+            // Fallback: match unassigned structures of the same ColonyBuildingTypeId by DisplaySequence.
+            // "Unassigned" means BuildingID == 0 (never synced with API before).
+            if (apiBuilding.ColonyBuildingTypeId > 0)
+            {
+                var unassigned = colony.Structures
+                    .Where(s => s.BuildingID == 0 && s.ColonyBuildingTypeId == apiBuilding.ColonyBuildingTypeId)
+                    .OrderBy(s => s.DisplaySequence)
+                    .FirstOrDefault();
+
+                if (unassigned != null)
+                {
+                    Log.Debug(
+                        "FindLocalStructure: fallback match by ColonyBuildingTypeId={0} — API buildingId={1} -> local UUID={2} (seq={3})",
+                        apiBuilding.ColonyBuildingTypeId,
+                        apiBuilding.BuildingId,
+                        unassigned.UUID,
+                        unassigned.DisplaySequence);
+                    return unassigned;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
