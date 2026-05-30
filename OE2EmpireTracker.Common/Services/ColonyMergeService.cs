@@ -119,14 +119,22 @@ namespace OE2EmpireTracker.Services
                 else
                 {
                     var newStructure = CreateStructureFromApi(apiBuilding);
+
+                    // Assign next available DisplaySequence
+                    int maxSeq = colony.Structures.Count > 0
+                        ? colony.Structures.Max(s => s.DisplaySequence)
+                        : 0;
+                    newStructure.DisplaySequence = maxSeq + 1;
+
                     colony.Structures.Add(newStructure);
                     hasChanges = true;
 
                     Log.Info(
-                        "MergeBuildings: created new structure UUID={0} BuildingID={1} Name='{2}' for colony {3}",
+                        "MergeBuildings: created new structure UUID={0} BuildingID={1} Name='{2}' seq={3} for colony {4}",
                         newStructure.UUID,
                         newStructure.BuildingID,
                         apiBuilding.BlueprintDesignName,
+                        newStructure.DisplaySequence,
                         colony.UUID);
                 }
             }
