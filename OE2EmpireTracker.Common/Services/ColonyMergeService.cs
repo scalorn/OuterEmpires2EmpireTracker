@@ -529,7 +529,12 @@ namespace OE2EmpireTracker.Services
             }
 
             // Update Built/Online status from API (Req 8.2)
-            bool apiBuildingBuilt = apiBuilding.StatusId > 0;
+            // If constructingBuildingFinish is in the future, the building is still under construction
+            bool isCurrentlyBuilding = apiBuilding.ConstructingBuildingFinish != null &&
+                apiBuilding.ConstructingBuildingFinish.Value > SystemClock.UtcNow;
+            bool apiBuildingBuilt = apiBuilding.StatusId > 0 && !isCurrentlyBuilding;
+            bool apiOnline = apiBuildingBuilt && apiBuilding.BuildingOnline;
+
             bool currentBuilt;
             local.Properties.GetBoolean(GameConstants.PropBuilt, false, out currentBuilt);
             if (currentBuilt != apiBuildingBuilt)
@@ -537,23 +542,24 @@ namespace OE2EmpireTracker.Services
                 local.Properties.SetProperty(GameConstants.PropBuilt, apiBuildingBuilt);
                 changed = true;
                 Log.Debug(
-                    "MergeBuildings: structure {0} Built: {1} -> {2} (API wins)",
+                    "MergeBuildings: structure {0} Built: {1} -> {2} (API wins, isCurrentlyBuilding={3})",
                     local.UUID,
                     currentBuilt,
-                    apiBuildingBuilt);
+                    apiBuildingBuilt,
+                    isCurrentlyBuilding);
             }
 
             bool currentOnline;
             local.Properties.GetBoolean(GameConstants.PropOnline, false, out currentOnline);
-            if (currentOnline != apiBuilding.BuildingOnline)
+            if (currentOnline != apiOnline)
             {
-                local.Properties.SetProperty(GameConstants.PropOnline, apiBuilding.BuildingOnline);
+                local.Properties.SetProperty(GameConstants.PropOnline, apiOnline);
                 changed = true;
                 Log.Debug(
                     "MergeBuildings: structure {0} Online: {1} -> {2} (API wins)",
                     local.UUID,
                     currentOnline,
-                    apiBuilding.BuildingOnline);
+                    apiOnline);
             }
 
             // Update ColonyBuildingTypeId (Req 8.8)
@@ -692,9 +698,12 @@ namespace OE2EmpireTracker.Services
             };
 
             // Set Built/Online status (Req 8.3)
-            bool isBuilt = apiBuilding.StatusId > 0;
+            // If constructingBuildingFinish is in the future, the building is still under construction
+            bool isCurrentlyBuilding = apiBuilding.ConstructingBuildingFinish != null &&
+                apiBuilding.ConstructingBuildingFinish.Value > SystemClock.UtcNow;
+            bool isBuilt = apiBuilding.StatusId > 0 && !isCurrentlyBuilding;
             structure.Properties.SetProperty(GameConstants.PropBuilt, isBuilt);
-            structure.Properties.SetProperty(GameConstants.PropOnline, apiBuilding.BuildingOnline);
+            structure.Properties.SetProperty(GameConstants.PropOnline, isBuilt && apiBuilding.BuildingOnline);
 
             // Map collections from API DTOs to local model types
             structure.OpsStatusEffects = MapOpsStatusEffects(apiBuilding.OpsStatusEffects);
