@@ -972,14 +972,35 @@ namespace OE2EmpireTracker.Forms.ColonyV2
 
             if (recipe != null)
             {
-                rtbProgressStatus.Text = $"{recipe.ConsumeRate}:{recipe.ProduceRate} {recipe.OutputResource}";
+                int refiningFocusLevel = GetOwnerRefiningFocusLevel();
+                decimal adjustedOutput = SkillBonusCalculator.GetAdjustedSyntheticRefiningOutputRate(recipe.ProduceRate, refiningFocusLevel);
+                rtbProgressStatus.Text = $"{recipe.ConsumeRate}:{adjustedOutput:F2} {recipe.OutputResource}";
             }
             else
             {
-                int baseRate = GameConstants.RefiningBaseRate;
-                int outputRate = GameConstants.GetRefiningOutputRate(structureData.RefiningResourcePurity, baseRate);
-                rtbProgressStatus.Text = $"{baseRate}:{outputRate} {structureData.RefiningResource} ({structureData.RefiningResourcePurity})";
+                int refiningFocusLevel = GetOwnerRefiningFocusLevel();
+                decimal adjustedOutput = SkillBonusCalculator.GetAdjustedRefiningOutputRate(
+                    structureData.RefiningResourcePurity ?? GameConstants.PurityLow,
+                    GameConstants.RefiningBaseRate,
+                    refiningFocusLevel);
+                rtbProgressStatus.Text = $"{GameConstants.RefiningBaseRate}:{adjustedOutput:F2} {structureData.RefiningResource} ({structureData.RefiningResourcePurity})";
             }
+        }
+
+        private int GetOwnerRefiningFocusLevel()
+        {
+            if (Colony == null || string.IsNullOrEmpty(Colony.OwnerUUID))
+            {
+                return 0;
+            }
+
+            var owner = _playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == Colony.OwnerUUID);
+            if (owner == null)
+            {
+                return 0;
+            }
+
+            return owner.GetSkill(SkillName.RefiningFocus).Level;
         }
 
         // -----------------------------------------------------------------------

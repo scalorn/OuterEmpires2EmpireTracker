@@ -85,7 +85,7 @@ namespace OE2EmpireTracker.Services
             }
 
             int extractionFocusLevel = GetOwnerExtractionFocusLevel(colony, playerContext);
-            decimal extractionMultiplier = 1.0m + (extractionFocusLevel * GameConstants.ExtractionFocusRatePerLevel);
+            decimal extractionMultiplier = SkillBonusCalculator.GetExtractionMultiplier(extractionFocusLevel);
 
             decimal totalRate = 0m;
             int structureCount = 0;
@@ -374,7 +374,6 @@ namespace OE2EmpireTracker.Services
             }
 
             int refiningFocusLevel = GetOwnerRefiningFocusLevel(colony, playerContext);
-            decimal refiningMultiplier = 1.0m + (refiningFocusLevel * GameConstants.RefiningFocusRatePerLevel);
 
             decimal totalOutputVolume = 0m;
             foreach (var structure in colony.Structures)
@@ -401,7 +400,7 @@ namespace OE2EmpireTracker.Services
                     continue;
                 }
 
-                decimal outputRate = GetRefinerOutputRate(structure, refiningMultiplier);
+                decimal outputRate = GetRefinerOutputRate(structure, refiningFocusLevel);
                 // Refined resources have VolumeResource volume per unit
                 totalOutputVolume += outputRate * GameConstants.VolumeResource;
             }
@@ -433,33 +432,9 @@ namespace OE2EmpireTracker.Services
         /// Normal refining: consumeRate × purityMultiplier × refiningMultiplier.
         /// Synthetic refining: ProduceRate × refiningMultiplier.
         /// </summary>
-        private static decimal GetRefinerOutputRate(ColonyStructure refiner, decimal refiningMultiplier)
+        private static decimal GetRefinerOutputRate(ColonyStructure refiner, int refiningFocusLevel)
         {
-            var recipe = RefiningRecipes.FindByInput(refiner.RefiningResource, refiner.RefiningResourcePurity);
-            if (recipe != null)
-            {
-                return recipe.ProduceRate * refiningMultiplier;
-            }
-
-            int baseRate = GameConstants.RefiningBaseRate;
-            int outputMultiplier;
-            switch (refiner.RefiningResourcePurity)
-            {
-                case GameConstants.PurityLow:
-                    outputMultiplier = GameConstants.PurityMultiplierLow;
-                    break;
-                case GameConstants.PurityMedium:
-                    outputMultiplier = GameConstants.PurityMultiplierMedium;
-                    break;
-                case GameConstants.PurityHigh:
-                    outputMultiplier = GameConstants.PurityMultiplierHigh;
-                    break;
-                default:
-                    outputMultiplier = GameConstants.PurityMultiplierLow;
-                    break;
-            }
-
-            return baseRate * outputMultiplier * refiningMultiplier;
+            return SkillBonusCalculator.GetAdjustedRefiningOutputRate(refiner, refiningFocusLevel);
         }
 
         /// <summary>

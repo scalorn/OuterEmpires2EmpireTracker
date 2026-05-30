@@ -496,7 +496,7 @@ namespace OE2EmpireTracker.Services
                 decimal amount;
                 if (!decimal.TryParse(resource.Amount, out amount)) continue;
 
-                decimal rate = amount * (1.0m + (extractionFocusLevel * 0.01m));
+                decimal rate = amount * SkillBonusCalculator.GetExtractionMultiplier(extractionFocusLevel);
                 string key = resource.Resource + "|" + resource.Purity;
 
                 if (miningGroups.ContainsKey(key))
@@ -534,6 +534,16 @@ namespace OE2EmpireTracker.Services
             return owner.GetSkill(SkillName.ExtractionFocus).Level;
         }
 
+        private static int GetRefiningFocusLevel(Colony colony, PlayerContext playerContext)
+        {
+            if (string.IsNullOrEmpty(colony.OwnerUUID)) return 0;
+
+            var owner = playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == colony.OwnerUUID);
+            if (owner == null) return 0;
+
+            return owner.GetSkill(SkillName.RefiningFocus).Level;
+        }
+
         // ----- Refining Aggregation -----
 
         private static bool RenderRefiningAggregation(
@@ -544,7 +554,8 @@ namespace OE2EmpireTracker.Services
         {
             if (colony.Structures == null) return false;
 
-            var refiningGroups = new Dictionary<string, (string resource, string purity, int count, int totalConsume, int totalProduce, string outputResource)>();
+            int refiningFocusLevel = GetRefiningFocusLevel(colony, playerContext);
+            var refiningGroups = new Dictionary<string, (string resource, string purity, int count, int totalConsume, decimal totalProduce, string outputResource)>();
 
             foreach (var structure in colony.Structures)
             {
@@ -556,20 +567,18 @@ namespace OE2EmpireTracker.Services
                 string key = structure.RefiningResource + "|" + structure.RefiningResourcePurity;
 
                 int consumeRate;
-                int produceRate;
+                decimal produceRate = SkillBonusCalculator.GetAdjustedRefiningOutputRate(structure, refiningFocusLevel);
                 string outputResource;
 
                 var recipe = RefiningRecipes.FindByInput(structure.RefiningResource, structure.RefiningResourcePurity);
                 if (recipe != null)
                 {
                     consumeRate = recipe.ConsumeRate;
-                    produceRate = recipe.ProduceRate;
                     outputResource = recipe.OutputResource;
                 }
                 else
                 {
                     consumeRate = GameConstants.RefiningBaseRate;
-                    produceRate = GameConstants.GetRefiningOutputRate(structure.RefiningResourcePurity, consumeRate);
                     outputResource = structure.RefiningResource;
                 }
 

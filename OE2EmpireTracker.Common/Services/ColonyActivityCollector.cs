@@ -109,7 +109,7 @@ namespace OE2EmpireTracker.Services
                     else if (blueprint.BluePrintType == BlueprintTypes.Refinery)
                     {
                         type = ActivityType.Refining;
-                        details = GetRefiningDetails(structure);
+                        details = GetRefiningDetails(structure, colony, playerContext);
                     }
                     else if (blueprint.BluePrintType == BlueprintTypes.ResearchLaboratory)
                     {
@@ -159,23 +159,41 @@ namespace OE2EmpireTracker.Services
             return $"{resource.Amount}/h {resource.Resource} ({resource.Purity})";
         }
 
-        private static string GetRefiningDetails(ColonyStructure structure)
+        private static string GetRefiningDetails(ColonyStructure structure, Colony colony, PlayerContext playerContext)
         {
             if (string.IsNullOrEmpty(structure.RefiningResource) ||
                 string.IsNullOrEmpty(structure.RefiningResourcePurity))
                 return string.Empty;
+
+            int refiningFocusLevel = GetOwnerRefiningFocusLevel(colony, playerContext);
+            decimal outputRate = SkillBonusCalculator.GetAdjustedRefiningOutputRate(structure, refiningFocusLevel);
 
             var recipe = RefiningRecipes.FindByInput(
                 structure.RefiningResource, structure.RefiningResourcePurity);
 
             if (recipe != null)
             {
-                return $"{recipe.ConsumeRate}:{recipe.ProduceRate} {recipe.OutputResource}";
+                return $"{recipe.ConsumeRate}:{outputRate:0.##} {recipe.OutputResource}";
             }
 
             int baseRate = GameConstants.RefiningBaseRate;
-            int outputRate = GameConstants.GetRefiningOutputRate(structure.RefiningResourcePurity, baseRate);
-            return $"{baseRate}:{outputRate} {structure.RefiningResource} ({structure.RefiningResourcePurity})";
+            return $"{baseRate}:{outputRate:0.##} {structure.RefiningResource} ({structure.RefiningResourcePurity})";
+        }
+
+        private static int GetOwnerRefiningFocusLevel(Colony colony, PlayerContext playerContext)
+        {
+            if (string.IsNullOrEmpty(colony.OwnerUUID))
+            {
+                return 0;
+            }
+
+            var owner = playerContext.PlayerProfileList.FirstOrDefault(p => p.UUID == colony.OwnerUUID);
+            if (owner == null)
+            {
+                return 0;
+            }
+
+            return owner.GetSkill(SkillName.RefiningFocus).Level;
         }
 
         private static string GetResearchDetails(ColonyStructure structure, PlayerContext playerContext)

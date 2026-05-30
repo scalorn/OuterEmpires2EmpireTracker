@@ -112,7 +112,7 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Returns the purity multiplier for standard refining output.
         /// </summary>
-        private static int GetPurityMultiplier(string purity)
+        internal static int GetPurityMultiplier(string purity)
         {
             switch (purity)
             {

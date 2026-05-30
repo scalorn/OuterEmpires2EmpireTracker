@@ -132,8 +132,8 @@ namespace OE2EmpireTracker.Services
                     decimal amount;
                     if (!decimal.TryParse(resource.Amount, out amount)) continue;
 
-                    decimal adjustedRate = amount * (1.0m + (_extractionFocusLevel * 0.01m));
-                    int refiningMultiplier = GetRefiningMultiplier(resource.Purity);
+                    decimal adjustedRate = SkillBonusCalculator.GetAdjustedMiningRate(amount, _extractionFocusLevel);
+                    int refiningMultiplier = SkillBonusCalculator.GetPurityMultiplier(resource.Purity);
                     decimal refinedOutput = adjustedRate * refiningMultiplier;
 
                     BestResourceEntry existing;
@@ -153,17 +153,6 @@ namespace OE2EmpireTracker.Services
             }
 
             return candidates.Values.ToList();
-        }
-
-        private int GetRefiningMultiplier(string purity)
-        {
-            switch (purity)
-            {
-                case GameConstants.PurityLow: return 1;
-                case GameConstants.PurityMedium: return 3;
-                case GameConstants.PurityHigh: return 5;
-                default: return 1;
-            }
         }
 
         private Blueprint FindPlayerBlueprint(string blueprintTypeId)
