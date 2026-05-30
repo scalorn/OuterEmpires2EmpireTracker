@@ -10,6 +10,7 @@ using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Common.Models;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
 
 namespace OE2EmpireTracker.Services
 {
@@ -656,6 +657,13 @@ namespace OE2EmpireTracker.Services
             }
 
             // Conditional: BuildCompletionTime if local null (Req 8.7)
+            Log.Debug(
+                "MergeBuildings: structure {0} BuildCompletionTime check: apiFinish={1}, localTimer={2}, isCurrentlyBuilding={3}",
+                local.UUID,
+                apiBuilding.ConstructingBuildingFinish?.ToString("O") ?? "(null)",
+                local.BuildCompletionTime != null ? $"exists(TR={local.BuildCompletionTime.TimeRemaining})" : "null",
+                isCurrentlyBuilding);
+
             if (apiBuilding.ConstructingBuildingFinish != null && local.BuildCompletionTime == null)
             {
                 var finishTime = apiBuilding.ConstructingBuildingFinish.Value;
@@ -675,6 +683,34 @@ namespace OE2EmpireTracker.Services
                     finishTime,
                     remainingSeconds);
                 changed = true;
+            }
+
+            // Conditional: FlatpackBlueprintUUID if local empty and API has BlueprintDesignName
+            if (string.IsNullOrEmpty(local.FlatpackBlueprintUUID) &&
+                !string.IsNullOrEmpty(apiBuilding.BlueprintDesignName))
+            {
+                var empireContext = EmpireContext.GetInstanceIfLoaded();
+                if (empireContext != null)
+                {
+                    var flatpackLookup = ColonyParser.BuildFlatpackLookup(empireContext);
+                    if (flatpackLookup.TryGetValue(apiBuilding.BlueprintDesignName, out string flatpackUuid))
+                    {
+                        local.FlatpackBlueprintUUID = flatpackUuid;
+                        changed = true;
+                        Log.Debug(
+                            "MergeBuildings: structure {0} FlatpackBlueprintUUID mapped from BlueprintDesignName '{1}' -> {2}",
+                            local.UUID,
+                            apiBuilding.BlueprintDesignName,
+                            flatpackUuid);
+                    }
+                    else
+                    {
+                        Log.Warn(
+                            "MergeBuildings: structure {0} no flatpack blueprint found for BlueprintDesignName '{1}'",
+                            local.UUID,
+                            apiBuilding.BlueprintDesignName);
+                    }
+                }
             }
 
             return changed;
@@ -732,6 +768,36 @@ namespace OE2EmpireTracker.Services
 
                 structure.BuildCompletionTime = new CountDownTime();
                 structure.BuildCompletionTime.TimeRemaining = remainingSeconds;
+            }
+
+            // Map FlatpackBlueprintUUID from BlueprintDesignName via flatpack lookup
+            if (!string.IsNullOrEmpty(apiBuilding.BlueprintDesignName))
+            {
+                var empireContext = EmpireContext.GetInstanceIfLoaded();
+                if (empireContext != null)
+                {
+                    var flatpackLookup = ColonyParser.BuildFlatpackLookup(empireContext);
+                    if (flatpackLookup.TryGetValue(apiBuilding.BlueprintDesignName, out string flatpackUuid))
+                    {
+                        structure.FlatpackBlueprintUUID = flatpackUuid;
+                        Log.Debug(
+                            "MergeBuildings: mapped BlueprintDesignName '{0}' to FlatpackBlueprintUUID={1} for new structure",
+                            apiBuilding.BlueprintDesignName,
+                            flatpackUuid);
+                    }
+                    else
+                    {
+                        Log.Warn(
+                            "MergeBuildings: no flatpack blueprint found for BlueprintDesignName '{0}' on new structure",
+                            apiBuilding.BlueprintDesignName);
+                    }
+                }
+                else
+                {
+                    Log.Debug(
+                        "MergeBuildings: EmpireContext not loaded, cannot resolve FlatpackBlueprintUUID for '{0}'",
+                        apiBuilding.BlueprintDesignName);
+                }
             }
 
             return structure;
