@@ -107,24 +107,28 @@ namespace OE2EmpireTracker.Services
                 .OrderBy(b => b.ConstructingBuildingFinish ?? DateTime.MaxValue)
                 .ToList();
 
+            int sequenceCounter = 0;
             foreach (var apiBuilding in sortedApiBuildings)
             {
+                sequenceCounter++;
                 var match = FindLocalStructure(apiBuilding, colony);
 
                 if (match != null)
                 {
+                    // Update DisplaySequence to match build order if not already set
+                    if (match.DisplaySequence == 0)
+                    {
+                        match.DisplaySequence = sequenceCounter;
+                        hasChanges = true;
+                    }
+
                     bool updated = MergeExistingStructure(match, apiBuilding);
                     hasChanges |= updated;
                 }
                 else
                 {
                     var newStructure = CreateStructureFromApi(apiBuilding);
-
-                    // Assign next available DisplaySequence
-                    int maxSeq = colony.Structures.Count > 0
-                        ? colony.Structures.Max(s => s.DisplaySequence)
-                        : 0;
-                    newStructure.DisplaySequence = maxSeq + 1;
+                    newStructure.DisplaySequence = sequenceCounter;
 
                     colony.Structures.Add(newStructure);
                     hasChanges = true;
