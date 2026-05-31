@@ -207,6 +207,12 @@
     <Compile Include="Forms\Banking\FormBanking.Designer.cs">
       <DependentUpon>FormBanking.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Banking\FormBankingEntry.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Banking\FormBankingEntry.Designer.cs">
+      <DependentUpon>FormBankingEntry.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SupplyChain\FormSupplyChain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -447,6 +453,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Banking\FormBanking.resx">
       <DependentUpon>FormBanking.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Banking\FormBankingEntry.resx">
+      <DependentUpon>FormBankingEntry.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GameApiStatus\FormGameApiStatus.resx">
       <DependentUpon>FormGameApiStatus.cs</DependentUpon>

@@ -162,7 +162,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Add banking transaction array sorting in SortPlayerRoot method (by UUID for deterministic JSON)
     - _Requirements: 2.1_
 
-- [ ] 9. Create FormBanking MDI child form
+- [x] 9. Create FormBanking MDI child form
   - [x] 9.1 Create FormBanking form shell with balance display and grid
     - Create `OE2EmpireTracker/Forms/Banking/FormBanking.cs`
     - Create `OE2EmpireTracker/Forms/Banking/FormBanking.Designer.cs`
@@ -174,7 +174,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Handle null TransactionDateTime displaying "(no date)"
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.8, 9.1, 9.4_
 
-  - [-] 9.2 Add filter controls to FormBanking
+  - [x] 9.2 Add filter controls to FormBanking
     - Modify `OE2EmpireTracker/Forms/Banking/FormBanking.cs` and Designer
     - Add period filter buttons: btn24h, btn7d, btn30d, btnAllTime (default selected)
     - Add cboType dropdown (All + known types alphabetically)
@@ -182,7 +182,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Wire filter change events to refresh grid with AND logic
     - _Requirements: 5.5, 5.6, 5.7, 5.9, 6.2, 6.3, 7.4, 7.5_
 
-  - [-] 9.3 Add summary panel to FormBanking
+  - [x] 9.3 Add summary panel to FormBanking
     - Modify `OE2EmpireTracker/Forms/Banking/FormBanking.cs` and Designer
     - Add lblIncome, lblExpenses, lblNet labels in summary panel
     - Compute and display summary using BankingService.ComputeSummary on filtered set
@@ -192,14 +192,14 @@ Implements local persistence, API import, and UI display of a player's in-game b
 
 
 - [ ] 10. Add import and manual entry buttons to FormBanking
-  - [~] 10.1 Add Import Transactions and Import Balance buttons
+  - [x] 10.1 Add Import Transactions and Import Balance buttons
     - Modify `OE2EmpireTracker/Forms/Banking/FormBanking.cs` and Designer
     - Add btnImportTransactions: calls BankingService.ImportTransactionsAsync, refreshes grid
     - Add btnImportBalance: calls BankingService.ImportBalanceAsync, updates lblBalance, persists via PlayerContext
     - Handle import errors: log and display result (pages completed, transactions imported)
     - _Requirements: 3.1, 3.4, 3.7, 4.1, 4.2, 4.3, 9.2_
 
-  - [~] 10.2 Add manual transaction entry button and dialog
+  - [-] 10.2 Add manual transaction entry button and dialog
     - Create `OE2EmpireTracker/Forms/Banking/FormBankingEntry.cs`
     - Create `OE2EmpireTracker/Forms/Banking/FormBankingEntry.Designer.cs`
     - Create `OE2EmpireTracker/Forms/Banking/FormBankingEntry.resx`

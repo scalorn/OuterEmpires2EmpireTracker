@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Security;
 using System.Windows.Forms;
 using NLog;
+using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
@@ -43,6 +45,10 @@ namespace OE2EmpireTracker.Forms.Banking
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.BankingDataChanged += OnBankingDataChanged;
+
+            btnImportTransactions.Click += BtnImportTransactions_Click;
+            btnImportBalance.Click += BtnImportBalance_Click;
+            btnAddTransaction.Click += BtnAddTransaction_Click;
 
             RefreshBalanceDisplay();
             PopulateTransactionsGrid();
@@ -264,6 +270,206 @@ namespace OE2EmpireTracker.Forms.Banking
             }
 
             PopulateTransactionsGrid();
+        }
+
+        // -----------------------------------------------------------------------
+        // Import Actions
+        // -----------------------------------------------------------------------
+        private async void BtnImportTransactions_Click(object sender, EventArgs e)
+        {
+            var gameApi = GameApiContext.Instance;
+            if (gameApi == null)
+            {
+                MessageBox.Show(
+                    "Game API is not configured. Please configure it in Preferences.",
+                    "Import Transactions",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            var settings = PreferencesStore.GetInstance().Preferences.GameApiConnection;
+            string appId = settings.AppId;
+            string clientId = settings.ClientId;
+            string ownerUUID = playerContext.CurrentPlayerUUID;
+
+            SecureString secureSecret = gameApi.CredentialManager.GetKey(ownerUUID);
+            if (secureSecret == null)
+            {
+                MessageBox.Show(
+                    "No API secret configured for the current character.",
+                    "Import Transactions",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            string secret = CredentialStore.SecureStringToString(secureSecret);
+            secureSecret.Dispose();
+
+            btnImportTransactions.Enabled = false;
+            btnImportTransactions.Text = "Importing...";
+
+            try
+            {
+                var tokenResult = await gameApi.Client.ExchangeTokenAsync(appId, clientId, secret).ConfigureAwait(true);
+                if (!tokenResult.Success)
+                {
+                    Log.Error("Import transactions: token exchange failed: {0}", tokenResult.ErrorMessage);
+                    MessageBox.Show(
+                        "Failed to authenticate: " + tokenResult.ErrorMessage,
+                        "Import Transactions",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+
+                string accessToken = tokenResult.Token.AccessToken;
+                var result = await BankingService.ImportTransactionsAsync(
+                    gameApi.Client,
+                    appId,
+                    accessToken,
+                    playerContext).ConfigureAwait(true);
+
+                if (result.Success)
+                {
+                    MessageBox.Show(
+                        string.Format(
+                            "Imported {0} transactions, {1} duplicates skipped.",
+                            result.TransactionsImported,
+                            result.DuplicatesSkipped),
+                        "Import Transactions",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        string.Format(
+                            "Import failed at page {0}: {1}\n\n{2} transactions imported before failure.",
+                            result.FailedAtPage,
+                            result.ErrorMessage,
+                            result.TransactionsImported),
+                        "Import Transactions",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Import transactions failed");
+                MessageBox.Show(
+                    "Import failed: " + ex.Message,
+                    "Import Transactions",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnImportTransactions.Enabled = true;
+                btnImportTransactions.Text = "Import Transactions";
+            }
+        }
+
+        private async void BtnImportBalance_Click(object sender, EventArgs e)
+        {
+            var gameApi = GameApiContext.Instance;
+            if (gameApi == null)
+            {
+                MessageBox.Show(
+                    "Game API is not configured. Please configure it in Preferences.",
+                    "Import Balance",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            var settings = PreferencesStore.GetInstance().Preferences.GameApiConnection;
+            string appId = settings.AppId;
+            string clientId = settings.ClientId;
+            string ownerUUID = playerContext.CurrentPlayerUUID;
+
+            SecureString secureSecret = gameApi.CredentialManager.GetKey(ownerUUID);
+            if (secureSecret == null)
+            {
+                MessageBox.Show(
+                    "No API secret configured for the current character.",
+                    "Import Balance",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            string secret = CredentialStore.SecureStringToString(secureSecret);
+            secureSecret.Dispose();
+
+            btnImportBalance.Enabled = false;
+            btnImportBalance.Text = "Importing...";
+
+            try
+            {
+                var tokenResult = await gameApi.Client.ExchangeTokenAsync(appId, clientId, secret).ConfigureAwait(true);
+                if (!tokenResult.Success)
+                {
+                    Log.Error("Import balance: token exchange failed: {0}", tokenResult.ErrorMessage);
+                    MessageBox.Show(
+                        "Failed to authenticate: " + tokenResult.ErrorMessage,
+                        "Import Balance",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+
+                string accessToken = tokenResult.Token.AccessToken;
+                decimal? balance = await BankingService.ImportBalanceAsync(
+                    gameApi.Client,
+                    appId,
+                    accessToken).ConfigureAwait(true);
+
+                if (balance.HasValue)
+                {
+                    playerContext.BankingBalance = balance.Value;
+                    playerContext.WriteContext();
+                    RefreshBalanceDisplay();
+                    Log.Info("Banking balance imported: {0:N2}", balance.Value);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Failed to import balance. Check the log for details.",
+                        "Import Balance",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Import balance failed");
+                MessageBox.Show(
+                    "Import failed: " + ex.Message,
+                    "Import Balance",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnImportBalance.Enabled = true;
+                btnImportBalance.Text = "Import Balance";
+            }
+        }
+
+        private void BtnAddTransaction_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FormBankingEntry())
+            {
+                if (dialog.ShowDialog(this) == DialogResult.OK && dialog.CreatedTransaction != null)
+                {
+                    playerContext.AddBankingTransaction(dialog.CreatedTransaction);
+                    playerContext.WriteContext();
+                    playerContext.OnBankingDataChanged();
+                    Log.Info("Manual transaction added: {0}", dialog.CreatedTransaction.UUID);
+                }
+            }
         }
 
         // -----------------------------------------------------------------------

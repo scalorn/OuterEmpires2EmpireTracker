@@ -36,10 +36,13 @@ namespace OE2EmpireTracker.Forms.Banking
             this.colCreditChange = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colOldBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colNewBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnAddTransaction = new System.Windows.Forms.Button();
             this.pnlSummary = new System.Windows.Forms.Panel();
             this.lblIncome = new System.Windows.Forms.Label();
             this.lblExpenses = new System.Windows.Forms.Label();
             this.lblNet = new System.Windows.Forms.Label();
+            this.btnImportTransactions = new System.Windows.Forms.Button();
+            this.btnImportBalance = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransactions)).BeginInit();
             this.pnlSummary.SuspendLayout();
             this.SuspendLayout();
@@ -213,6 +216,29 @@ namespace OE2EmpireTracker.Forms.Banking
             this.lblNet.Size = new System.Drawing.Size(80, 16);
             this.lblNet.Text = "Net: 0.00";
 
+            // btnImportTransactions
+            this.btnImportTransactions.Location = new System.Drawing.Point(12, 555);
+            this.btnImportTransactions.Name = "btnImportTransactions";
+            this.btnImportTransactions.Size = new System.Drawing.Size(130, 28);
+            this.btnImportTransactions.Text = "Import Transactions";
+            this.btnImportTransactions.UseVisualStyleBackColor = true;
+            this.btnImportTransactions.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+
+            // btnImportBalance
+            this.btnImportBalance.Location = new System.Drawing.Point(148, 555);
+            this.btnImportBalance.Name = "btnImportBalance";
+            this.btnImportBalance.Size = new System.Drawing.Size(110, 28);
+            this.btnImportBalance.Text = "Import Balance";
+            this.btnImportBalance.UseVisualStyleBackColor = true;
+            this.btnImportBalance.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+
+            // btnAddTransaction
+            this.btnAddTransaction.Location = new System.Drawing.Point(450, 44);
+            this.btnAddTransaction.Name = "btnAddTransaction";
+            this.btnAddTransaction.Size = new System.Drawing.Size(110, 25);
+            this.btnAddTransaction.Text = "Add Transaction";
+            this.btnAddTransaction.UseVisualStyleBackColor = true;
+
             // pnlSummary
             this.pnlSummary.Controls.Add(this.lblIncome);
             this.pnlSummary.Controls.Add(this.lblExpenses);
@@ -225,7 +251,10 @@ namespace OE2EmpireTracker.Forms.Banking
             // FormBanking
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 561);
+            this.ClientSize = new System.Drawing.Size(784, 591);
+            this.Controls.Add(this.btnImportTransactions);
+            this.Controls.Add(this.btnImportBalance);
+            this.Controls.Add(this.btnAddTransaction);
             this.Controls.Add(this.dgvTransactions);
             this.Controls.Add(this.pnlSummary);
             this.Controls.Add(this.dtpTo);
@@ -272,5 +301,8 @@ namespace OE2EmpireTracker.Forms.Banking
         private System.Windows.Forms.Label lblIncome;
         private System.Windows.Forms.Label lblExpenses;
         private System.Windows.Forms.Label lblNet;
+        private System.Windows.Forms.Button btnImportTransactions;
+        private System.Windows.Forms.Button btnImportBalance;
+        private System.Windows.Forms.Button btnAddTransaction;
     }
 }
