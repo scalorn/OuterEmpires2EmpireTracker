@@ -65,6 +65,8 @@ namespace OE2EmpireTracker.Services
         private List<Faction> _factionList = new List<Faction>();
         private List<ExternalCharacter> _externalCharacterList = new List<ExternalCharacter>();
         private List<Asteroid> _asteroidList = new List<Asteroid>();
+        private List<BankingTransaction> _bankingTransactionList = new List<BankingTransaction>();
+        private Dictionary<string, BankingTransaction> _bankingTransactionCache;
 
         /// <summary>
         /// Internal constructor for test infrastructure. Accepts a pre-parsed
@@ -94,6 +96,7 @@ namespace OE2EmpireTracker.Services
             InitFactions(playerRoot);
             InitExternalCharacters(playerRoot);
             InitAsteroids(playerRoot);
+            InitBankingTransactions(playerRoot);
             DataVersion = playerRoot.DataVersion;
 
             // Migrate and restore current player
@@ -145,6 +148,7 @@ namespace OE2EmpireTracker.Services
             InitFactions(playerRoot);
             InitExternalCharacters(playerRoot);
             InitAsteroids(playerRoot);
+            InitBankingTransactions(playerRoot);
             DataVersion = playerRoot.DataVersion;
 
             // Migrate and restore current player
@@ -239,6 +243,11 @@ namespace OE2EmpireTracker.Services
         /// Fired when external character (contacts) data is modified.
         /// </summary>
         public event EventHandler<ContactDataChangedEventArgs> ContactDataChanged;
+
+        /// <summary>
+        /// Fired when banking transaction data is modified (import, manual entry).
+        /// </summary>
+        public event EventHandler BankingDataChanged;
 
         /// <summary>
         /// When true, WriteContext is blocked (set by migration system on failure).
@@ -357,6 +366,10 @@ namespace OE2EmpireTracker.Services
         public IReadOnlyList<ExternalCharacter> ExternalCharacterList => _externalCharacterList;
 
         public IReadOnlyList<Asteroid> AsteroidList => _asteroidList;
+
+        public IReadOnlyList<BankingTransaction> BankingTransactionList => _bankingTransactionList;
+
+        public decimal BankingBalance { get; set; } = 0m;
 
         public IEnumerable<CountDownTimeReference> ActiveCountdowns => CollectionSortHelper.OrderCountdownsByTimeRemaining(
             AllCountdownSources()
@@ -511,6 +524,14 @@ namespace OE2EmpireTracker.Services
             ContactDataChanged?.Invoke(this, new ContactDataChangedEventArgs(characterUUID));
         }
 
+        /// <summary>
+        /// Notifies subscribers that banking transaction data has changed.
+        /// </summary>
+        public void OnBankingDataChanged()
+        {
+            BankingDataChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public void WriteContext()
         {
             if (WritesBlocked)
@@ -551,6 +572,8 @@ namespace OE2EmpireTracker.Services
                 playerRoot.Faction = _factionList.ToArray();
                 playerRoot.ExternalCharacter = _externalCharacterList.ToArray();
                 playerRoot.Asteroid = _asteroidList.ToArray();
+                playerRoot.BankingTransaction = _bankingTransactionList.ToArray();
+                playerRoot.BankingBalance = BankingBalance;
             }
 
             playerRoot = SerializationSorter.SortPlayerRoot(playerRoot);
@@ -1342,6 +1365,34 @@ namespace OE2EmpireTracker.Services
             _asteroidList = deduped;
         }
 
+        public void InitBankingTransactions(PlayerRoot playerRoot)
+        {
+            var source = playerRoot.BankingTransaction ?? new BankingTransaction[0];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            var deduped = new List<BankingTransaction>();
+            foreach (var item in source)
+            {
+                if (string.IsNullOrEmpty(item.UUID))
+                {
+                    Log.Warn("Skipping entity with null/empty UUID during load");
+                    continue;
+                }
+
+                if (seen.Add(item.UUID))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE UUID on load: BankingTransaction UUID={0} Detail='{1}' — skipping duplicate", item.UUID, item.Detail);
+                }
+            }
+
+            _bankingTransactionList = deduped;
+            _bankingTransactionCache = null;
+            BankingBalance = playerRoot.BankingBalance;
+        }
+
         public Colony FindColony(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
@@ -1992,6 +2043,40 @@ namespace OE2EmpireTracker.Services
                 _externalCharacterList.Remove(item);
                 if (_externalCharacterCache != null && item.UUID != null)
                     _externalCharacterCache.Remove(item.UUID);
+            }
+        }
+
+        public void AddBankingTransaction(BankingTransaction item)
+        {
+            lock (_listLock)
+            {
+                if (!string.IsNullOrEmpty(item.UUID))
+                {
+                    if (_bankingTransactionCache != null && _bankingTransactionCache.ContainsKey(item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in BankingTransaction collection: {0} (Detail: {1})", item.UUID, item.Detail));
+                    }
+                    else if (_bankingTransactionCache == null && _bankingTransactionList.Any(x => x.UUID == item.UUID))
+                    {
+                        throw new InvalidOperationException(
+                            string.Format("Duplicate UUID in BankingTransaction collection: {0} (Detail: {1})", item.UUID, item.Detail));
+                    }
+                }
+
+                _bankingTransactionList.Add(item);
+                if (_bankingTransactionCache != null && item.UUID != null)
+                    _bankingTransactionCache[item.UUID] = item;
+            }
+        }
+
+        public void RemoveBankingTransaction(BankingTransaction item)
+        {
+            lock (_listLock)
+            {
+                _bankingTransactionList.Remove(item);
+                if (_bankingTransactionCache != null && item.UUID != null)
+                    _bankingTransactionCache.Remove(item.UUID);
             }
         }
 

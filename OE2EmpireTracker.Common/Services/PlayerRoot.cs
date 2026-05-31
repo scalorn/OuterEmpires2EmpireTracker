@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -28,6 +29,8 @@ namespace OE2EmpireTracker.Services
             Faction = new Faction[0];
             ExternalCharacter = new ExternalCharacter[0];
             Asteroid = new Asteroid[0];
+            BankingTransaction = new BankingTransaction[0];
+            BankingBalance = 0m;
         }
 
         public int DataVersion { get; set; }
@@ -73,5 +76,11 @@ namespace OE2EmpireTracker.Services
         public ExternalCharacter[] ExternalCharacter { get; set; }
 
         public Asteroid[] Asteroid { get; set; }
+
+        [JsonProperty("bankingTransaction")]
+        public BankingTransaction[] BankingTransaction { get; set; }
+
+        [JsonProperty("bankingBalance")]
+        public decimal BankingBalance { get; set; }
     }
 }

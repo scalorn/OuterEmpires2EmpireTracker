@@ -250,6 +250,8 @@
 
 
 
+    <Compile Include="Services\BankingImportResult.cs" />
+    <Compile Include="Services\BankingSummary.cs" />
     <Compile Include="Services\ColonyAdminReportBuilder.cs" />
 
 
@@ -273,6 +275,7 @@
     <Compile Include="Persistence\WindowStateHelper.cs" />
 
 
+    <Compile Include="Constants\BankingTransactionTypes.cs" />
     <Compile Include="Constants\ChartColors.cs" />
     <Compile Include="Controls\DataGridViewValidatedTextBoxColumn.cs" />
     <Compile Include="Controls\ListViewItemComparer.cs" />

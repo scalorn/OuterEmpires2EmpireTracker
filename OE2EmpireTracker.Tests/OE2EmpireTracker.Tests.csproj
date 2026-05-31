@@ -318,11 +318,13 @@
     <Compile Include="Constants\BlueprintPropertyValidationTests.cs" />
     <Compile Include="Constants\BlueprintTypeExtensionTests.cs" />
     <Compile Include="Constants\BlueprintTypeExtensionPropertyTests.cs" />
+    <Compile Include="Constants\BankingTransactionTypesTests.cs" />
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />
     <Compile Include="Blueprint\FragmentExtractionTests.cs" />
     <Compile Include="Blueprint\IndividualBlueprintImportTests.cs" />
     <Compile Include="Blueprint\AssetTabBlueprintImportTests.cs" />
     <Compile Include="Models\SurveyTests.cs" />
+    <Compile Include="Models\BankingTransactionTests.cs" />
     <Compile Include="Models\BlueprintTests.cs" />
     <Compile Include="Models\CommodityTests.cs" />
     <Compile Include="Models\CountDownTimeTests.cs" />
