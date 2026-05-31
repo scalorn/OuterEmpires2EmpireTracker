@@ -101,7 +101,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - _Requirements: 5.7, 5.9, 6.4, 6.5, 6.6, 6.7_
 
 
-- [ ] 6. Implement BankingService import methods
+- [x] 6. Implement BankingService import methods
   - [x] 6.1 Implement ImportTransactionsAsync
     - Add to `OE2EmpireTracker.Common/Services/BankingService.cs`
     - Build HashSet of existing composite keys (TransactionDateTime|CreditChange|Detail)
@@ -132,14 +132,14 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Test API error sets Success=false with FailedAtPage
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.7_
 
-  - [-] 6.5 Write property test for UUID uniqueness
+  - [x] 6.5 Write property test for UUID uniqueness
     - Append to `OE2EmpireTracker.Tests/Services/BankingServicePropertyTests.cs`
     - **Property 6: UUID Uniqueness**
     - No two BankingTransaction records share the same UUID
     - Adding duplicate UUID throws InvalidOperationException
     - **Validates: Requirements 2.3, 2.4**
 
-  - [-] 6.6 Write property test for manual entry distinguishability
+  - [x] 6.6 Write property test for manual entry distinguishability
     - Append to `OE2EmpireTracker.Tests/Services/BankingServicePropertyTests.cs`
     - **Property 5: Manual Entry Distinguishability**
     - Every manually entered transaction has IsManualEntry=true
@@ -163,7 +163,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - _Requirements: 2.1_
 
 - [ ] 9. Create FormBanking MDI child form
-  - [-] 9.1 Create FormBanking form shell with balance display and grid
+  - [x] 9.1 Create FormBanking form shell with balance display and grid
     - Create `OE2EmpireTracker/Forms/Banking/FormBanking.cs`
     - Create `OE2EmpireTracker/Forms/Banking/FormBanking.Designer.cs`
     - Create `OE2EmpireTracker/Forms/Banking/FormBanking.resx`
@@ -174,7 +174,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Handle null TransactionDateTime displaying "(no date)"
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.8, 9.1, 9.4_
 
-  - [~] 9.2 Add filter controls to FormBanking
+  - [-] 9.2 Add filter controls to FormBanking
     - Modify `OE2EmpireTracker/Forms/Banking/FormBanking.cs` and Designer
     - Add period filter buttons: btn24h, btn7d, btn30d, btnAllTime (default selected)
     - Add cboType dropdown (All + known types alphabetically)
@@ -182,7 +182,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Wire filter change events to refresh grid with AND logic
     - _Requirements: 5.5, 5.6, 5.7, 5.9, 6.2, 6.3, 7.4, 7.5_
 
-  - [~] 9.3 Add summary panel to FormBanking
+  - [-] 9.3 Add summary panel to FormBanking
     - Modify `OE2EmpireTracker/Forms/Banking/FormBanking.cs` and Designer
     - Add lblIncome, lblExpenses, lblNet labels in summary panel
     - Compute and display summary using BankingService.ComputeSummary on filtered set
