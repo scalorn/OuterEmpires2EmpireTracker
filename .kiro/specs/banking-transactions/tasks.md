@@ -102,7 +102,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
 
 
 - [ ] 6. Implement BankingService import methods
-  - [-] 6.1 Implement ImportTransactionsAsync
+  - [x] 6.1 Implement ImportTransactionsAsync
     - Add to `OE2EmpireTracker.Common/Services/BankingService.cs`
     - Build HashSet of existing composite keys (TransactionDateTime|CreditChange|Detail)
     - Paginate through API (page size 100) until fewer records returned

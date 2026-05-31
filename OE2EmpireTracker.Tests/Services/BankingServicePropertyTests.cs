@@ -17,6 +17,80 @@ namespace OE2EmpireTracker.Tests.Services
     public class BankingServicePropertyTests
     {
         // -----------------------------------------------------------------------
+        // Shared generator: builds a random BankingTransaction with a random
+        // CreditChange value (positive or negative decimal).
+        // -----------------------------------------------------------------------
+
+        private static Gen<decimal> CreditChangeGen()
+        {
+            return from sign in Gen.Elements(1, -1)
+                   from whole in Gen.Choose(1, 999999)
+                   from frac in Gen.Choose(0, 99)
+                   select sign * (whole + (frac / 100m));
+        }
+
+        private static Gen<BankingTransaction> SummaryTransactionGen()
+        {
+            return from creditChange in CreditChangeGen()
+                   select new BankingTransaction
+                   {
+                       UUID = Guid.NewGuid().ToString(),
+                       CreditChange = creditChange,
+                       Detail = "test",
+                   };
+        }
+
+        private static Gen<List<BankingTransaction>> SummaryTransactionListGen()
+        {
+            return from count in Gen.Choose(0, 50)
+                   from txns in Gen.ListOf(count, SummaryTransactionGen())
+                   select txns.ToList();
+        }
+
+        // -----------------------------------------------------------------------
+        // Property 2: Summary Arithmetic Consistency
+        // For any list of transactions:
+        //   TotalIncome == Sum(positive CreditChange)
+        //   TotalExpenses == Sum(|negative CreditChange|)
+        //   NetChange == TotalIncome - TotalExpenses
+        // **Validates: Requirements 6.4, 6.5, 6.6**
+        // -----------------------------------------------------------------------
+
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property SummaryArithmeticConsistency()
+        {
+            return Prop.ForAll(
+                Arb.From(SummaryTransactionListGen()),
+                transactions =>
+                {
+                    var summary = BankingService.ComputeSummary(transactions);
+
+                    decimal expectedIncome = transactions
+                        .Where(tx => tx.CreditChange > 0m)
+                        .Sum(tx => tx.CreditChange);
+
+                    decimal expectedExpenses = transactions
+                        .Where(tx => tx.CreditChange < 0m)
+                        .Sum(tx => Math.Abs(tx.CreditChange));
+
+                    decimal expectedNet = expectedIncome - expectedExpenses;
+
+                    bool incomeMatch = summary.TotalIncome == expectedIncome;
+                    bool expenseMatch = summary.TotalExpenses == expectedExpenses;
+                    bool netMatch = summary.NetChange == expectedNet;
+
+                    return (incomeMatch && expenseMatch && netMatch)
+                        .Label(
+                            "income=" + incomeMatch
+                            + " (expected=" + expectedIncome + ", actual=" + summary.TotalIncome + ")"
+                            + ", expenses=" + expenseMatch
+                            + " (expected=" + expectedExpenses + ", actual=" + summary.TotalExpenses + ")"
+                            + ", net=" + netMatch
+                            + " (expected=" + expectedNet + ", actual=" + summary.NetChange + ")");
+                });
+        }
+
+        // -----------------------------------------------------------------------
         // Property 3: Filter Completeness
         // Every transaction in filtered result satisfies ALL active filter conditions.
         // No transaction outside filter criteria appears in result.

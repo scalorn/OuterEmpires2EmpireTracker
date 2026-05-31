@@ -491,6 +491,9 @@
     <Compile Include="Services\ContactsServicePropertyTests.cs" />
     <Compile Include="Services\ContactsServiceTests.cs" />
     <Compile Include="Services\PlayerContextBankingTests.cs" />
+    <Compile Include="Services\BankingServicePropertyTests.cs" />
+    <Compile Include="Services\BankingServiceSummaryTests.cs" />
+    <Compile Include="Services\BankingServiceFilterTests.cs" />
     <Compile Include="Services\ContactsMutationGuardTests.cs" />
     <Compile Include="ViewModels\AsteroidViewModelPropertyTests.cs" />
     <Compile Include="ViewModels\AsteroidViewModelTests.cs" />
