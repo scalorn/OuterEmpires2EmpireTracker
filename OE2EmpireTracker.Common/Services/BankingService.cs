@@ -2,7 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
+using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -13,6 +17,160 @@ namespace OE2EmpireTracker.Services
     public static class BankingService
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        private const int PageSize = 100;
+
+        /// <summary>
+        /// Imports banking transactions from the game API, deduplicating against existing records.
+        /// Paginates through all available pages and persists new transactions to the player context.
+        /// </summary>
+        /// <param name="apiClient">The game API client instance.</param>
+        /// <param name="appId">The registered application GUID.</param>
+        /// <param name="accessToken">The Bearer access token.</param>
+        /// <param name="playerContext">The player context for persistence.</param>
+        /// <returns>A <see cref="BankingImportResult"/> describing the outcome.</returns>
+        public static async Task<BankingImportResult> ImportTransactionsAsync(
+            GameApiClient apiClient,
+            string appId,
+            string accessToken,
+            PlayerContext playerContext)
+        {
+            var result = new BankingImportResult();
+
+            var existingKeys = new HashSet<string>();
+            foreach (var tx in playerContext.BankingTransactionList)
+            {
+                string key = string.Format(
+                    "{0}|{1}|{2}",
+                    tx.TransactionDateTime,
+                    tx.CreditChange,
+                    tx.Detail);
+                existingKeys.Add(key);
+            }
+
+            int offset = 0;
+            int currentPage = 0;
+
+            while (true)
+            {
+                currentPage++;
+
+                (bool success, string json) apiResult;
+                try
+                {
+                    apiResult = await apiClient.GetBankingTransactionsAsync(
+                        appId,
+                        accessToken,
+                        offset,
+                        PageSize).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "API error during banking transaction import at page {0}", currentPage);
+                    result.Success = false;
+                    result.ErrorMessage = ex.Message;
+                    result.FailedAtPage = currentPage;
+                    break;
+                }
+
+                if (!apiResult.success || string.IsNullOrEmpty(apiResult.json))
+                {
+                    Log.Error("Banking transaction import failed at page {0}: API returned failure", currentPage);
+                    result.Success = false;
+                    result.ErrorMessage = "API returned failure at page " + currentPage;
+                    result.FailedAtPage = currentPage;
+                    break;
+                }
+
+                JArray transactions;
+                try
+                {
+                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<JToken>>(apiResult.json);
+                    if (envelope == null || !envelope.Success || envelope.Data == null)
+                    {
+                        Log.Error("Banking transaction import: envelope unsuccessful at page {0}", currentPage);
+                        result.Success = false;
+                        result.ErrorMessage = envelope?.ReturnString ?? "Envelope unsuccessful";
+                        result.FailedAtPage = currentPage;
+                        break;
+                    }
+
+                    transactions = envelope.Data.Type == JTokenType.Array
+                        ? (JArray)envelope.Data
+                        : envelope.Data["transactions"] as JArray;
+
+                    if (transactions == null)
+                    {
+                        Log.Warn("Banking transaction import: no transactions array at page {0}, treating as empty", currentPage);
+                        transactions = new JArray();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Failed to parse banking transaction response at page {0}", currentPage);
+                    result.Success = false;
+                    result.ErrorMessage = "JSON parse error: " + ex.Message;
+                    result.FailedAtPage = currentPage;
+                    break;
+                }
+
+                foreach (var item in transactions)
+                {
+                    string transactionDT = item.Value<string>("transactionDT") ?? string.Empty;
+                    decimal creditChange = item.Value<decimal>("creditChange");
+                    string detail = item.Value<string>("detail") ?? string.Empty;
+
+                    string compositeKey = string.Format("{0}|{1}|{2}", transactionDT, creditChange, detail);
+
+                    if (existingKeys.Contains(compositeKey))
+                    {
+                        result.DuplicatesSkipped++;
+                        continue;
+                    }
+
+                    var bankingTx = new BankingTransaction
+                    {
+                        UUID = Guid.NewGuid().ToString(),
+                        OwnerUUID = playerContext.CurrentPlayerUUID,
+                        TransactionDateTime = transactionDT,
+                        CreditChange = creditChange,
+                        OldBalance = item.Value<decimal>("oldBalance"),
+                        NewBalance = item.Value<decimal>("newBalance"),
+                        TransactionType = item.Value<int>("transactionType"),
+                        Detail = detail,
+                        CharacterId = item.Value<int?>("characterId"),
+                        SystemObjectId = item.Value<int?>("systemObjectId"),
+                        SystemId = item.Value<int?>("systemId"),
+                        IsManualEntry = false,
+                    };
+
+                    playerContext.AddBankingTransaction(bankingTx);
+                    existingKeys.Add(compositeKey);
+                    result.TransactionsImported++;
+                }
+
+                result.PagesCompleted = currentPage;
+
+                if (transactions.Count < PageSize)
+                {
+                    break;
+                }
+
+                offset += PageSize;
+            }
+
+            playerContext.WriteContext();
+            playerContext.OnBankingDataChanged();
+
+            Log.Info(
+                "Banking import complete: {0} imported, {1} duplicates skipped, {2} pages, success={3}",
+                result.TransactionsImported,
+                result.DuplicatesSkipped,
+                result.PagesCompleted,
+                result.Success);
+
+            return result;
+        }
 
         /// <summary>
         /// Computes income, expense, and net totals for a set of transactions.

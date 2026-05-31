@@ -43,7 +43,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - _Requirements: 7.1, 7.2, 7.3_
 
 
-- [ ] 3. Integrate banking transactions into PlayerContext
+- [x] 3. Integrate banking transactions into PlayerContext
   - [x] 3.1 Add BankingTransaction persistence to PlayerRoot
     - Modify `OE2EmpireTracker.Common/Services/PlayerRoot.cs`
     - Add `BankingTransaction[]` array property with JsonProperty("bankingTransaction")
@@ -60,7 +60,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Add RemoveBankingTransaction
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 4.4_
 
-  - [-] 3.3 Write unit tests for PlayerContext banking methods
+  - [x] 3.3 Write unit tests for PlayerContext banking methods
     - Create `OE2EmpireTracker.Tests/Services/PlayerContextBankingTests.cs`
     - Test InitBankingTransactions deduplicates by UUID
     - Test AddBankingTransaction with unique UUID succeeds
@@ -72,27 +72,27 @@ Implements local persistence, API import, and UI display of a player's in-game b
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Implement BankingService core methods
-  - [-] 5.1 Create BankingService with ComputeSummary and FilterTransactions
+  - [x] 5.1 Create BankingService with ComputeSummary and FilterTransactions
     - Create `OE2EmpireTracker.Common/Services/BankingService.cs`
     - ComputeSummary: sum positive CreditChange → TotalIncome, sum |negative| → TotalExpenses, Net = Income - Expenses
     - FilterTransactions: filter by transactionType, fromDate, toDate with AND logic, sort descending by TransactionDateTime
     - _Requirements: 5.7, 5.9, 6.4, 6.5, 6.6, 6.7_
 
-  - [~] 5.2 Write property test for summary arithmetic consistency
+  - [-] 5.2 Write property test for summary arithmetic consistency
     - Create `OE2EmpireTracker.Tests/Services/BankingServicePropertyTests.cs`
     - **Property 2: Summary Arithmetic Consistency**
     - For any list of transactions: Sum(positive CreditChange) - Sum(|negative CreditChange|) = NetChange
     - Use FsCheck 2.16.6 Gen.Choose + Arb.From for decimal generators
     - **Validates: Requirements 6.4, 6.5, 6.6**
 
-  - [~] 5.3 Write property test for filter completeness
+  - [-] 5.3 Write property test for filter completeness
     - Append to `OE2EmpireTracker.Tests/Services/BankingServicePropertyTests.cs`
     - **Property 3: Filter Completeness**
     - Every transaction in filtered result satisfies ALL active filter conditions
     - No transaction outside filter criteria appears in result
     - **Validates: Requirements 5.7, 5.9**
 
-  - [~] 5.4 Write unit tests for ComputeSummary and FilterTransactions
+  - [-] 5.4 Write unit tests for ComputeSummary and FilterTransactions
     - Create `OE2EmpireTracker.Tests/Services/BankingServiceSummaryTests.cs`
     - Create `OE2EmpireTracker.Tests/Services/BankingServiceFilterTests.cs`
     - Test empty set returns all zeros
@@ -102,7 +102,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
 
 
 - [ ] 6. Implement BankingService import methods
-  - [~] 6.1 Implement ImportTransactionsAsync
+  - [-] 6.1 Implement ImportTransactionsAsync
     - Add to `OE2EmpireTracker.Common/Services/BankingService.cs`
     - Build HashSet of existing composite keys (TransactionDateTime|CreditChange|Detail)
     - Paginate through API (page size 100) until fewer records returned
@@ -150,14 +150,14 @@ Implements local persistence, API import, and UI display of a player's in-game b
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 8. Add sorting support for banking transactions
-  - [-] 8.1 Add OrderBankingTransactions to CollectionSortHelper
+- [x] 8. Add sorting support for banking transactions
+  - [x] 8.1 Add OrderBankingTransactions to CollectionSortHelper
     - Modify `OE2EmpireTracker.Common/Services/CollectionSortHelper.cs`
     - Sort by TransactionDateTime descending (newest first)
     - Handle null/missing TransactionDateTime as epoch (1970-01-01) for sort ordering
     - _Requirements: 5.4, 9.3_
 
-  - [-] 8.2 Add banking transaction sorting to SerializationSorter
+  - [x] 8.2 Add banking transaction sorting to SerializationSorter
     - Modify `OE2EmpireTracker.Common/Services/SerializationSorter.cs`
     - Add banking transaction array sorting in SortPlayerRoot method (by UUID for deterministic JSON)
     - _Requirements: 2.1_
