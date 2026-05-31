@@ -765,6 +765,24 @@ namespace OE2EmpireTracker.Services
         }
 
         // ----------------------------------------------------------------
+        //  Banking Transactions
+        // ----------------------------------------------------------------
+
+        /// <summary>
+        /// Sorts banking transactions by TransactionDateTime descending (newest first).
+        /// Null or empty TransactionDateTime is treated as epoch (1970-01-01) for sort ordering.
+        /// </summary>
+        public static IReadOnlyList<BankingTransaction> OrderBankingTransactions(
+            IEnumerable<BankingTransaction> transactions)
+        {
+            if (transactions == null) return Array.Empty<BankingTransaction>();
+            return transactions
+                .OrderByDescending(t => ParseTransactionDateTime(t.TransactionDateTime))
+                .ToList()
+                .AsReadOnly();
+        }
+
+        // ----------------------------------------------------------------
         //  Yield Distribution
         // ----------------------------------------------------------------
 
@@ -781,6 +799,25 @@ namespace OE2EmpireTracker.Services
                 .ThenBy(c => c.Purity, StringComparer.OrdinalIgnoreCase)
                 .ToList()
                 .AsReadOnly();
+        }
+
+        // ----------------------------------------------------------------
+        //  Private Helpers
+        // ----------------------------------------------------------------
+
+        private static DateTime ParseTransactionDateTime(string dateTimeString)
+        {
+            if (string.IsNullOrEmpty(dateTimeString))
+            {
+                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            }
+
+            if (DateTime.TryParse(dateTimeString, null, System.Globalization.DateTimeStyles.RoundtripKind, out DateTime result))
+            {
+                return result;
+            }
+
+            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         }
     }
 }

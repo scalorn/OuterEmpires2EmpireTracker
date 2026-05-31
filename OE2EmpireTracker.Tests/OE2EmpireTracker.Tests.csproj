@@ -490,6 +490,7 @@
     <Compile Include="ViewModels\ContactsViewModelTests.cs" />
     <Compile Include="Services\ContactsServicePropertyTests.cs" />
     <Compile Include="Services\ContactsServiceTests.cs" />
+    <Compile Include="Services\PlayerContextBankingTests.cs" />
     <Compile Include="Services\ContactsMutationGuardTests.cs" />
     <Compile Include="ViewModels\AsteroidViewModelPropertyTests.cs" />
     <Compile Include="ViewModels\AsteroidViewModelTests.cs" />

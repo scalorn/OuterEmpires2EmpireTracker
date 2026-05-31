@@ -50,7 +50,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Add `decimal BankingBalance` property with JsonProperty("bankingBalance")
     - _Requirements: 2.1, 4.4_
 
-  - [-] 3.2 Add banking fields, properties, and methods to PlayerContext
+  - [x] 3.2 Add banking fields, properties, and methods to PlayerContext
     - Modify `OE2EmpireTracker.Common/Services/PlayerContext.cs`
     - Add _bankingTransactionList, _bankingTransactionCache fields
     - Add BankingTransactionList (IReadOnlyList) and BankingBalance properties
@@ -60,7 +60,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Add RemoveBankingTransaction
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 4.4_
 
-  - [~] 3.3 Write unit tests for PlayerContext banking methods
+  - [-] 3.3 Write unit tests for PlayerContext banking methods
     - Create `OE2EmpireTracker.Tests/Services/PlayerContextBankingTests.cs`
     - Test InitBankingTransactions deduplicates by UUID
     - Test AddBankingTransaction with unique UUID succeeds
@@ -72,7 +72,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Implement BankingService core methods
-  - [~] 5.1 Create BankingService with ComputeSummary and FilterTransactions
+  - [-] 5.1 Create BankingService with ComputeSummary and FilterTransactions
     - Create `OE2EmpireTracker.Common/Services/BankingService.cs`
     - ComputeSummary: sum positive CreditChange → TotalIncome, sum |negative| → TotalExpenses, Net = Income - Expenses
     - FilterTransactions: filter by transactionType, fromDate, toDate with AND logic, sort descending by TransactionDateTime
@@ -151,13 +151,13 @@ Implements local persistence, API import, and UI display of a player's in-game b
 
 
 - [ ] 8. Add sorting support for banking transactions
-  - [~] 8.1 Add OrderBankingTransactions to CollectionSortHelper
+  - [-] 8.1 Add OrderBankingTransactions to CollectionSortHelper
     - Modify `OE2EmpireTracker.Common/Services/CollectionSortHelper.cs`
     - Sort by TransactionDateTime descending (newest first)
     - Handle null/missing TransactionDateTime as epoch (1970-01-01) for sort ordering
     - _Requirements: 5.4, 9.3_
 
-  - [~] 8.2 Add banking transaction sorting to SerializationSorter
+  - [-] 8.2 Add banking transaction sorting to SerializationSorter
     - Modify `OE2EmpireTracker.Common/Services/SerializationSorter.cs`
     - Add banking transaction array sorting in SortPlayerRoot method (by UUID for deterministic JSON)
     - _Requirements: 2.1_

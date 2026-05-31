@@ -251,7 +251,6 @@
 
 
     <Compile Include="Services\BankingImportResult.cs" />
-    <Compile Include="Services\BankingSummary.cs" />
     <Compile Include="Services\ColonyAdminReportBuilder.cs" />
 
 

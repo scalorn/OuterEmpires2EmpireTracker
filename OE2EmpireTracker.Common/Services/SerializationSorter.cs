@@ -37,7 +37,9 @@ namespace OE2EmpireTracker.Services
                 WarehouseOverflowRule = SortByString(source.WarehouseOverflowRule, x => x.UUID),
                 Faction = SortByString(source.Faction, x => x.UUID),
                 ExternalCharacter = SortByString(source.ExternalCharacter, x => x.UUID),
-                Asteroid = SortByString(source.Asteroid, x => x.UUID)
+                Asteroid = SortByString(source.Asteroid, x => x.UUID),
+                BankingTransaction = SortByString(source.BankingTransaction, x => x.UUID),
+                BankingBalance = source.BankingBalance
             };
 
             // Sort nested arrays for deterministic JSON output.
