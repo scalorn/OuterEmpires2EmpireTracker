@@ -114,6 +114,7 @@ namespace OE2EmpireTracker.Services
                     break;
                 }
 
+                int pageDuplicates = 0;
                 foreach (var item in transactions)
                 {
                     string transactionDT = item.Value<string>("transactionDT") ?? string.Empty;
@@ -125,6 +126,7 @@ namespace OE2EmpireTracker.Services
                     if (existingKeys.Contains(compositeKey))
                     {
                         result.DuplicatesSkipped++;
+                        pageDuplicates++;
                         continue;
                     }
 
@@ -150,6 +152,18 @@ namespace OE2EmpireTracker.Services
                 }
 
                 result.PagesCompleted = currentPage;
+
+                // Stop early if the entire page was duplicates — the API returns
+                // transactions newest-first, so once we hit a full page of known
+                // records everything beyond is also already imported.
+                int newOnThisPage = transactions.Count - pageDuplicates;
+                if (transactions.Count > 0 && newOnThisPage == 0)
+                {
+                    Log.Info(
+                        "Banking import: page {0} was entirely duplicates, stopping incremental import",
+                        currentPage);
+                    break;
+                }
 
                 if (transactions.Count < PageSize)
                 {

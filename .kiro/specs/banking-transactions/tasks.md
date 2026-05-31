@@ -68,7 +68,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Test BankingDataChanged event fires on add
     - _Requirements: 2.2, 2.3, 2.4, 2.5_
 
-- [~] 4. Checkpoint - Model and persistence layer
+- [x] 4. Checkpoint - Model and persistence layer
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 5. Implement BankingService core methods
@@ -146,7 +146,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Every API-imported transaction has IsManualEntry=false
     - **Validates: Requirements 8.3**
 
-- [~] 7. Checkpoint - Service layer complete
+- [x] 7. Checkpoint - Service layer complete
   - Ensure all tests pass, ask the user if questions arise.
 
 
@@ -217,23 +217,23 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Open FormBanking as MDI child on click
     - _Requirements: 5.1_
 
-- [~] 12. Checkpoint - UI complete
+- [x] 12. Checkpoint - UI complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 13. Final integration and balance persistence
-  - [~] 13.1 Implement balance persistence round-trip
+- [x] 13. Final integration and balance persistence
+  - [x] 13.1 Implement balance persistence round-trip
     - Verify PlayerContext persists BankingBalance in PlayerRoot via WriteContext
     - Verify balance loads from JSON on application start (InitBankingTransactions)
     - Verify lblBalance displays persisted balance without API call on form open
     - _Requirements: 4.2, 4.4_
 
-  - [~] 13.2 Write property test for balance persistence
+  - [x] 13.2 Write property test for balance persistence
     - Append to `OE2EmpireTracker.Tests/Services/BankingServicePropertyTests.cs`
     - **Property 4: Balance Persistence**
     - After storing a balance value, reading it back returns the same value
     - **Validates: Requirements 4.2**
 
-- [~] 14. Final checkpoint - All tests pass
+- [x] 14. Final checkpoint - All tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 

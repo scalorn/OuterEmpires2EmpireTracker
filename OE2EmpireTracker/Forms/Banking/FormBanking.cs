@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Security;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using NLog;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Constants;
@@ -42,6 +43,9 @@ namespace OE2EmpireTracker.Forms.Banking
             cboType.SelectedIndexChanged += OnFilterChanged;
             dtpFrom.ValueChanged += OnDateFilterChanged;
             dtpTo.ValueChanged += OnDateFilterChanged;
+
+            btnGroupHourly.CheckedChanged += OnGroupingChanged;
+            btnGroupDaily.CheckedChanged += OnGroupingChanged;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.BankingDataChanged += OnBankingDataChanged;
@@ -83,6 +87,46 @@ namespace OE2EmpireTracker.Forms.Banking
             return "(no date)";
         }
 
+        private static Dictionary<DateTime, List<BankingTransaction>> GroupTransactionsByTimeBucket(
+            IReadOnlyList<BankingTransaction> transactions,
+            bool groupByHour)
+        {
+            var buckets = new Dictionary<DateTime, List<BankingTransaction>>();
+
+            foreach (var tx in transactions)
+            {
+                DateTime dt;
+                if (string.IsNullOrEmpty(tx.TransactionDateTime) ||
+                    !DateTime.TryParse(tx.TransactionDateTime, out dt))
+                {
+                    dt = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                }
+
+                DateTime bucketKey = groupByHour
+                    ? new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, 0, 0, dt.Kind)
+                    : dt.Date;
+
+                if (!buckets.ContainsKey(bucketKey))
+                {
+                    buckets[bucketKey] = new List<BankingTransaction>();
+                }
+
+                buckets[bucketKey].Add(tx);
+            }
+
+            return buckets;
+        }
+
+        private static string FormatBucketLabel(DateTime bucket, bool groupByHour)
+        {
+            if (groupByHour)
+            {
+                return bucket.ToLocalTime().ToString("MM-dd HH:mm");
+            }
+
+            return bucket.ToLocalTime().ToString("yyyy-MM-dd");
+        }
+
         private void RefreshBalanceDisplay()
         {
             lblBalance.Text = string.Format("Balance: {0:N2}", playerContext.BankingBalance);
@@ -111,6 +155,7 @@ namespace OE2EmpireTracker.Forms.Banking
             }
 
             RefreshSummaryDisplay(filtered);
+            RefreshCharts(filtered);
 
             sw.Stop();
             Log.Info("PERF PopulateTransactionsGrid: {0}ms rows={1}", sw.ElapsedMilliseconds, filtered.Count);
@@ -122,6 +167,172 @@ namespace OE2EmpireTracker.Forms.Banking
             lblIncome.Text = string.Format("Income: {0:N2}", summary.TotalIncome);
             lblExpenses.Text = string.Format("Expenses: {0:N2}", summary.TotalExpenses);
             lblNet.Text = string.Format("Net: {0:N2}", summary.NetChange);
+        }
+
+        // -----------------------------------------------------------------------
+        // Charts
+        // -----------------------------------------------------------------------
+        private void RefreshCharts(IReadOnlyList<BankingTransaction> filteredTransactions)
+        {
+            var sw = Stopwatch.StartNew();
+
+            bool groupByHour = btnGroupHourly.Checked;
+            RefreshCashFlowChart(filteredTransactions, groupByHour);
+            RefreshIncomeExpensesChart(filteredTransactions, groupByHour);
+            RefreshTypeBreakdownChart(filteredTransactions);
+
+            sw.Stop();
+            Log.Info("PERF RefreshCharts: {0}ms rows={1}", sw.ElapsedMilliseconds, filteredTransactions.Count);
+        }
+
+        private void RefreshCashFlowChart(IReadOnlyList<BankingTransaction> transactions, bool groupByHour)
+        {
+            chartCashFlow.Series.Clear();
+
+            if (transactions.Count == 0)
+            {
+                return;
+            }
+
+            var buckets = GroupTransactionsByTimeBucket(transactions, groupByHour);
+
+            var netSeries = new Series("Net Change")
+            {
+                ChartType = SeriesChartType.Line,
+                Color = ChartColors.WongPalette[0],
+                BorderWidth = 2,
+                MarkerStyle = MarkerStyle.Circle,
+                MarkerSize = 4,
+            };
+
+            var cumulativeSeries = new Series("Cumulative")
+            {
+                ChartType = SeriesChartType.Line,
+                Color = ChartColors.WongPalette[4],
+                BorderWidth = 2,
+                BorderDashStyle = ChartDashStyle.Dash,
+            };
+
+            decimal runningTotal = 0m;
+            foreach (var bucket in buckets.OrderBy(b => b.Key))
+            {
+                decimal netChange = bucket.Value.Sum(t => t.CreditChange);
+                runningTotal += netChange;
+
+                string label = FormatBucketLabel(bucket.Key, groupByHour);
+                netSeries.Points.AddXY(label, (double)netChange);
+                cumulativeSeries.Points.AddXY(label, (double)runningTotal);
+            }
+
+            chartCashFlow.Series.Add(netSeries);
+            chartCashFlow.Series.Add(cumulativeSeries);
+        }
+
+        private void RefreshIncomeExpensesChart(IReadOnlyList<BankingTransaction> transactions, bool groupByHour)
+        {
+            chartIncomeExpenses.Series.Clear();
+
+            if (transactions.Count == 0)
+            {
+                return;
+            }
+
+            var buckets = GroupTransactionsByTimeBucket(transactions, groupByHour);
+
+            var incomeSeries = new Series("Income")
+            {
+                ChartType = SeriesChartType.Column,
+                Color = Color.FromArgb(0, 158, 115),
+            };
+
+            var expenseSeries = new Series("Expenses")
+            {
+                ChartType = SeriesChartType.Column,
+                Color = Color.FromArgb(213, 94, 0),
+            };
+
+            foreach (var bucket in buckets.OrderBy(b => b.Key))
+            {
+                decimal income = bucket.Value
+                    .Where(t => t.CreditChange > 0)
+                    .Sum(t => t.CreditChange);
+                decimal expenses = bucket.Value
+                    .Where(t => t.CreditChange < 0)
+                    .Sum(t => Math.Abs(t.CreditChange));
+
+                string label = FormatBucketLabel(bucket.Key, groupByHour);
+                incomeSeries.Points.AddXY(label, (double)income);
+                expenseSeries.Points.AddXY(label, (double)expenses);
+            }
+
+            chartIncomeExpenses.Series.Add(incomeSeries);
+            chartIncomeExpenses.Series.Add(expenseSeries);
+        }
+
+        private void RefreshTypeBreakdownChart(IReadOnlyList<BankingTransaction> transactions)
+        {
+            chartTypeBreakdown.Series.Clear();
+
+            if (transactions.Count == 0)
+            {
+                return;
+            }
+
+            var typeGroups = transactions
+                .GroupBy(t => t.TransactionType)
+                .Select(g => new
+                {
+                    TypeCode = g.Key,
+                    Label = BankingTransactionTypes.GetLabel(g.Key, string.Empty),
+                    Total = g.Sum(t => Math.Abs(t.CreditChange)),
+                })
+                .Where(g => g.Total > 0)
+                .OrderByDescending(g => g.Total)
+                .ToList();
+
+            var pieSeries = new Series("TypeBreakdown")
+            {
+                ChartType = SeriesChartType.Pie,
+            };
+
+            pieSeries["PieLabelStyle"] = "Outside";
+
+            int colorIndex = 0;
+            foreach (var group in typeGroups)
+            {
+                int pointIndex = pieSeries.Points.AddXY(group.Label, (double)group.Total);
+                var point = pieSeries.Points[pointIndex];
+                point.Color = ChartColors.WongPalette[colorIndex % ChartColors.WongPalette.Length];
+                point.Label = string.Format("{0}\n{1:P1}", group.Label, 0.0);
+                colorIndex++;
+            }
+
+            // Calculate percentages
+            decimal grandTotal = typeGroups.Sum(g => g.Total);
+            if (grandTotal > 0)
+            {
+                for (int i = 0; i < typeGroups.Count; i++)
+                {
+                    decimal pct = typeGroups[i].Total / grandTotal;
+                    pieSeries.Points[i].Label = string.Format(
+                        "{0}\n{1:P1}",
+                        typeGroups[i].Label,
+                        pct);
+                }
+            }
+
+            chartTypeBreakdown.Series.Add(pieSeries);
+        }
+
+        private void OnGroupingChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0)
+            {
+                return;
+            }
+
+            var filtered = GetFilteredTransactions();
+            RefreshCharts(filtered);
         }
 
         // -----------------------------------------------------------------------

@@ -512,5 +512,67 @@ namespace OE2EmpireTracker.Tests.Services
                             + transactions[0].UUID + "' but none was thrown");
                 });
         }
+
+        // -----------------------------------------------------------------------
+        // Property 4: Balance Persistence
+        // After storing a balance value, reading it back returns the same value.
+        // The balance is persisted in PlayerRoot and restored via
+        // InitBankingTransactions.
+        // **Validates: Requirements 4.2**
+        // -----------------------------------------------------------------------
+
+        private static Gen<decimal> BalanceGen()
+        {
+            return from sign in Gen.Elements(1, -1, 0)
+                   from whole in Gen.Choose(0, 9999999)
+                   from frac in Gen.Choose(0, 99)
+                   select sign == 0 ? 0m : sign * (whole + (frac / 100m));
+        }
+
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property BalancePersistence_DirectPropertySetReadBack()
+        {
+            return Prop.ForAll(
+                Arb.From(BalanceGen()),
+                balance =>
+                {
+                    // Store a balance value directly on PlayerContext and read it back.
+                    PlayerContext.FilePath = string.Empty;
+                    var ctx = new PlayerContext(new PlayerRoot());
+
+                    ctx.BankingBalance = balance;
+
+                    return (ctx.BankingBalance == balance)
+                        .Label(
+                            "Expected balance=" + balance
+                            + ", actual=" + ctx.BankingBalance);
+                });
+        }
+
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property BalancePersistence_InitBankingTransactionsRestoresBalance()
+        {
+            return Prop.ForAll(
+                Arb.From(BalanceGen()),
+                balance =>
+                {
+                    // Create a PlayerRoot with a random BankingBalance, init a fresh
+                    // PlayerContext from it, and verify the balance is restored.
+                    var playerRoot = new PlayerRoot
+                    {
+                        BankingBalance = balance,
+                    };
+
+                    PlayerContext.FilePath = string.Empty;
+                    var ctx = new PlayerContext(new PlayerRoot());
+                    ctx.InitBankingTransactions(playerRoot);
+
+                    return (ctx.BankingBalance == balance)
+                        .Label(
+                            "Expected balance=" + balance
+                            + " after InitBankingTransactions, actual="
+                            + ctx.BankingBalance);
+                });
+        }
     }
 }

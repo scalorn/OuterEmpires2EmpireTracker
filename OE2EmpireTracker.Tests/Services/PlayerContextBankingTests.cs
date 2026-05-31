@@ -89,5 +89,47 @@ namespace OE2EmpireTracker.Tests.Services
 
             Assert.That(fired, Is.True);
         }
+
+        [Test]
+        public void BalancePersistence_RoundTrip_LoadsFromPlayerRoot()
+        {
+            var root = new PlayerRoot
+            {
+                BankingBalance = 12345.67m,
+                BankingTransaction = new BankingTransaction[0],
+            };
+
+            _ctx.InitBankingTransactions(root);
+
+            Assert.That(_ctx.BankingBalance, Is.EqualTo(12345.67m));
+        }
+
+        [Test]
+        public void BalancePersistence_RoundTrip_SetAndReadBack()
+        {
+            var root = new PlayerRoot
+            {
+                BankingBalance = 500.00m,
+                BankingTransaction = new BankingTransaction[0],
+            };
+
+            _ctx.InitBankingTransactions(root);
+            _ctx.BankingBalance = 99999.99m;
+
+            Assert.That(_ctx.BankingBalance, Is.EqualTo(99999.99m));
+        }
+
+        [Test]
+        public void BalancePersistence_DefaultsToZero_WhenPlayerRootHasNoBalance()
+        {
+            var root = new PlayerRoot
+            {
+                BankingTransaction = new BankingTransaction[0],
+            };
+
+            _ctx.InitBankingTransactions(root);
+
+            Assert.That(_ctx.BankingBalance, Is.EqualTo(0m));
+        }
     }
 }
