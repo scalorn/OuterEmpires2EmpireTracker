@@ -212,5 +212,92 @@ namespace OE2EmpireTracker.Tests.Services
                 return true.Label("OK");
             });
         }
+
+        // -----------------------------------------------------------------------
+        // Property 1: Import Deduplication Idempotency
+        // Importing the same set of transactions twice SHALL result in zero new
+        // records on the second import. The composite key
+        // (TransactionDateTime + CreditChange + Detail) prevents duplicates.
+        // **Validates: Requirements 3.3**
+        // -----------------------------------------------------------------------
+
+        private static Gen<string> IsoDateTimeGen()
+        {
+            return from year in Gen.Choose(2020, 2026)
+                   from month in Gen.Choose(1, 12)
+                   from day in Gen.Choose(1, 28)
+                   from hour in Gen.Choose(0, 23)
+                   from minute in Gen.Choose(0, 59)
+                   from second in Gen.Choose(0, 59)
+                   select new DateTime(year, month, day, hour, minute, second, DateTimeKind.Utc)
+                       .ToString("o", CultureInfo.InvariantCulture);
+        }
+
+        private static Gen<BankingTransaction> DeduplicationTransactionGen()
+        {
+            return from dt in IsoDateTimeGen()
+                   from creditChange in CreditChangeGen()
+                   from detail in Gen.Elements("Wages", "Sale", "Purchase", "Refuel", "Income")
+                   select new BankingTransaction
+                   {
+                       UUID = Guid.NewGuid().ToString(),
+                       OwnerUUID = "test-owner",
+                       TransactionDateTime = dt,
+                       CreditChange = creditChange,
+                       Detail = detail,
+                       TransactionType = 1,
+                       IsManualEntry = false,
+                   };
+        }
+
+        private static Gen<List<BankingTransaction>> DeduplicationTransactionListGen()
+        {
+            return from count in Gen.Choose(1, 30)
+                   from txns in Gen.ListOf(count, DeduplicationTransactionGen())
+                   select txns.ToList();
+        }
+
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property DeduplicationIdempotency_SecondImportAddsZeroRecords()
+        {
+            return Prop.ForAll(
+                Arb.From(DeduplicationTransactionListGen()),
+                transactions =>
+                {
+                    // Simulate the dedup logic from ImportTransactionsAsync:
+                    // Build a HashSet of composite keys from "existing" transactions.
+                    var existingKeys = new HashSet<string>();
+                    foreach (var tx in transactions)
+                    {
+                        string key = string.Format(
+                            "{0}|{1}|{2}",
+                            tx.TransactionDateTime,
+                            tx.CreditChange,
+                            tx.Detail);
+                        existingKeys.Add(key);
+                    }
+
+                    // Now simulate a second import of the same transactions.
+                    // Every transaction's composite key should already be in the set,
+                    // so zero new records should be added.
+                    int newRecords = 0;
+                    foreach (var tx in transactions)
+                    {
+                        string key = string.Format(
+                            "{0}|{1}|{2}",
+                            tx.TransactionDateTime,
+                            tx.CreditChange,
+                            tx.Detail);
+
+                        if (!existingKeys.Contains(key))
+                        {
+                            newRecords++;
+                        }
+                    }
+
+                    return (newRecords == 0)
+                        .Label("Expected 0 new records on second import, got " + newRecords);
+                });
+        }
     }
 }

@@ -16,9 +16,9 @@ namespace OE2EmpireTracker.Services
     /// </summary>
     public static class BankingService
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-
         private const int PageSize = 100;
+
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Imports banking transactions from the game API, deduplicating against existing records.
@@ -170,6 +170,93 @@ namespace OE2EmpireTracker.Services
                 result.Success);
 
             return result;
+        }
+
+        /// <summary>
+        /// Imports the current banking balance from the game API.
+        /// </summary>
+        /// <param name="apiClient">The game API client instance.</param>
+        /// <param name="appId">The registered application GUID.</param>
+        /// <param name="accessToken">The Bearer access token.</param>
+        /// <returns>The balance as a decimal, or null if the import failed.</returns>
+        public static async Task<decimal?> ImportBalanceAsync(
+            GameApiClient apiClient,
+            string appId,
+            string accessToken)
+        {
+            (bool success, string json) apiResult;
+            try
+            {
+                apiResult = await apiClient.GetBankingBalanceAsync(appId, accessToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to import banking balance");
+                return null;
+            }
+
+            if (!apiResult.success || string.IsNullOrEmpty(apiResult.json))
+            {
+                Log.Error("Banking balance import failed: API returned failure");
+                return null;
+            }
+
+            try
+            {
+                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<JToken>>(apiResult.json);
+                if (envelope == null || !envelope.Success || envelope.Data == null)
+                {
+                    Log.Error("Banking balance import: envelope unsuccessful");
+                    return null;
+                }
+
+                decimal balance = envelope.Data.Type == JTokenType.Object
+                    ? envelope.Data.Value<decimal>("balance")
+                    : envelope.Data.Value<decimal>();
+
+                return balance;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to parse banking balance response");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Creates a manually entered banking transaction.
+        /// </summary>
+        /// <param name="ownerUUID">The UUID of the player who owns this transaction.</param>
+        /// <param name="transactionDateTime">The date and time of the transaction.</param>
+        /// <param name="creditChange">The credit change amount (must be non-zero).</param>
+        /// <param name="transactionType">The transaction type code.</param>
+        /// <param name="detail">The transaction detail text.</param>
+        /// <returns>A new <see cref="BankingTransaction"/> with IsManualEntry set to true.</returns>
+        /// <exception cref="ArgumentException">Thrown when creditChange is zero.</exception>
+        public static BankingTransaction CreateManualTransaction(
+            string ownerUUID,
+            DateTime transactionDateTime,
+            decimal creditChange,
+            int transactionType,
+            string detail)
+        {
+            if (creditChange == 0m)
+            {
+                throw new ArgumentException("Credit change must be non-zero.", nameof(creditChange));
+            }
+
+            return new BankingTransaction
+            {
+                UUID = Guid.NewGuid().ToString(),
+                OwnerUUID = ownerUUID,
+                TransactionDateTime = transactionDateTime.ToString("o", CultureInfo.InvariantCulture),
+                CreditChange = creditChange,
+                OldBalance = 0m,
+                NewBalance = 0m,
+                TransactionType = transactionType,
+                Detail = detail,
+                IsManualEntry = true,
+            };
         }
 
         /// <summary>

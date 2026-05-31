@@ -71,28 +71,28 @@ Implements local persistence, API import, and UI display of a player's in-game b
 - [~] 4. Checkpoint - Model and persistence layer
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement BankingService core methods
+- [x] 5. Implement BankingService core methods
   - [x] 5.1 Create BankingService with ComputeSummary and FilterTransactions
     - Create `OE2EmpireTracker.Common/Services/BankingService.cs`
     - ComputeSummary: sum positive CreditChange → TotalIncome, sum |negative| → TotalExpenses, Net = Income - Expenses
     - FilterTransactions: filter by transactionType, fromDate, toDate with AND logic, sort descending by TransactionDateTime
     - _Requirements: 5.7, 5.9, 6.4, 6.5, 6.6, 6.7_
 
-  - [-] 5.2 Write property test for summary arithmetic consistency
+  - [x] 5.2 Write property test for summary arithmetic consistency
     - Create `OE2EmpireTracker.Tests/Services/BankingServicePropertyTests.cs`
     - **Property 2: Summary Arithmetic Consistency**
     - For any list of transactions: Sum(positive CreditChange) - Sum(|negative CreditChange|) = NetChange
     - Use FsCheck 2.16.6 Gen.Choose + Arb.From for decimal generators
     - **Validates: Requirements 6.4, 6.5, 6.6**
 
-  - [-] 5.3 Write property test for filter completeness
+  - [x] 5.3 Write property test for filter completeness
     - Append to `OE2EmpireTracker.Tests/Services/BankingServicePropertyTests.cs`
     - **Property 3: Filter Completeness**
     - Every transaction in filtered result satisfies ALL active filter conditions
     - No transaction outside filter criteria appears in result
     - **Validates: Requirements 5.7, 5.9**
 
-  - [-] 5.4 Write unit tests for ComputeSummary and FilterTransactions
+  - [x] 5.4 Write unit tests for ComputeSummary and FilterTransactions
     - Create `OE2EmpireTracker.Tests/Services/BankingServiceSummaryTests.cs`
     - Create `OE2EmpireTracker.Tests/Services/BankingServiceFilterTests.cs`
     - Test empty set returns all zeros
@@ -111,20 +111,20 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Call WriteContext and fire BankingDataChanged after all pages
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
 
-  - [~] 6.2 Implement ImportBalanceAsync and CreateManualTransaction
+  - [-] 6.2 Implement ImportBalanceAsync and CreateManualTransaction
     - Add to `OE2EmpireTracker.Common/Services/BankingService.cs`
     - ImportBalanceAsync: call GetBankingBalanceAsync, parse balance, return decimal or null on failure
     - CreateManualTransaction: validate creditChange != 0, create BankingTransaction with IsManualEntry=true, generated UUID
     - _Requirements: 4.1, 4.2, 4.3, 8.3_
 
-  - [~] 6.3 Write property test for import deduplication idempotency
+  - [-] 6.3 Write property test for import deduplication idempotency
     - Append to `OE2EmpireTracker.Tests/Services/BankingServicePropertyTests.cs`
     - **Property 1: Import Deduplication Idempotency**
     - Importing same transactions twice results in zero new records on second import
     - Composite key (TransactionDateTime + CreditChange + Detail) prevents duplicates
     - **Validates: Requirements 3.3**
 
-  - [~] 6.4 Write unit tests for ImportTransactionsAsync
+  - [-] 6.4 Write unit tests for ImportTransactionsAsync
     - Create `OE2EmpireTracker.Tests/Services/BankingServiceImportTests.cs`
     - Test successful multi-page import
     - Test deduplication skips existing transactions
