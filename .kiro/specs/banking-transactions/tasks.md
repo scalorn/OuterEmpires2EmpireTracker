@@ -191,7 +191,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - _Requirements: 6.1, 6.2, 6.3, 6.7_
 
 
-- [ ] 10. Add import and manual entry buttons to FormBanking
+- [x] 10. Add import and manual entry buttons to FormBanking
   - [x] 10.1 Add Import Transactions and Import Balance buttons
     - Modify `OE2EmpireTracker/Forms/Banking/FormBanking.cs` and Designer
     - Add btnImportTransactions: calls BankingService.ImportTransactionsAsync, refreshes grid
@@ -199,7 +199,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Handle import errors: log and display result (pages completed, transactions imported)
     - _Requirements: 3.1, 3.4, 3.7, 4.1, 4.2, 4.3, 9.2_
 
-  - [-] 10.2 Add manual transaction entry button and dialog
+  - [x] 10.2 Add manual transaction entry button and dialog
     - Create `OE2EmpireTracker/Forms/Banking/FormBankingEntry.cs`
     - Create `OE2EmpireTracker/Forms/Banking/FormBankingEntry.Designer.cs`
     - Create `OE2EmpireTracker/Forms/Banking/FormBankingEntry.resx`
@@ -210,8 +210,8 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - On Cancel: no changes
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
 
-- [ ] 11. Wire FormBanking into MainWindow menu
-  - [~] 11.1 Add Banking menu item to MainWindow
+- [x] 11. Wire FormBanking into MainWindow menu
+  - [x] 11.1 Add Banking menu item to MainWindow
     - Modify `OE2EmpireTracker/Forms/MainWindow.cs` and Designer
     - Add "Banking" menu item under appropriate menu section
     - Open FormBanking as MDI child on click

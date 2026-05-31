@@ -53,6 +53,7 @@
             this.colonyDailyBuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colonyActivityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addColonyV2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bankingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addBlueprintV2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buildPlannerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contactsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -185,6 +186,7 @@
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.asteroidsToolStripMenuItem,
+            this.bankingToolStripMenuItem,
             this.addBlueprintV2ToolStripMenuItem,
             this.buildPlannerToolStripMenuItem,
             this.addColonyV2ToolStripMenuItem,
@@ -329,6 +331,13 @@
             this.asteroidsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.asteroidsToolStripMenuItem.Text = "Asteroids";
             this.asteroidsToolStripMenuItem.Click += new System.EventHandler(this.AsteroidsToolStripMenuItem_Click);
+            // 
+            // bankingToolStripMenuItem
+            // 
+            this.bankingToolStripMenuItem.Name = "bankingToolStripMenuItem";
+            this.bankingToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.bankingToolStripMenuItem.Text = "Banking";
+            this.bankingToolStripMenuItem.Click += new System.EventHandler(this.BankingToolStripMenuItem_Click);
             // 
             // supplyChainsToolStripMenuItem
             // 
@@ -542,6 +551,7 @@
         private System.Windows.Forms.ToolStripMenuItem stationsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem marketToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem asteroidsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bankingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem supplyChainsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stockTargetsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sharingToolStripMenuItem;

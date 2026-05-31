@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Forms;
 using OE2EmpireTracker.Forms.Asteroid;
+using OE2EmpireTracker.Forms.Banking;
 using OE2EmpireTracker.Forms.BuildPlanner;
 using OE2EmpireTracker.Forms.ColonyActivity;
 using OE2EmpireTracker.Forms.ColonyDailyBuild;
@@ -53,6 +54,7 @@ namespace OE2EmpireTracker
             { "FormStation", (w, n) => w.OpenMdiChildWithNumber<Forms.Station.FormStation>(n) },
             { "FormMarket", (w, n) => w.OpenMdiChildWithNumber<Forms.Market.FormMarket>(n) },
             { "FormAsteroid", (w, n) => w.OpenMdiChildWithNumber<Forms.Asteroid.FormAsteroid>(n) },
+            { "FormBanking", (w, n) => w.OpenMdiChildWithNumber<FormBanking>(n) },
             { "FormSupplyChain", (w, n) => w.OpenMdiChildWithNumber<Forms.SupplyChain.FormSupplyChain>(n) },
             { "FormStockTargets", (w, n) => w.OpenMdiChildWithNumber<Forms.StockTargets.FormStockTargets>(n) },
             { "FormSharing", (w, n) => w.OpenMdiChildWithNumber<FormSharing>(n) },
@@ -303,6 +305,11 @@ namespace OE2EmpireTracker
         private void AsteroidsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenMdiChild<Forms.Asteroid.FormAsteroid>();
+        }
+
+        private void BankingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMdiChild<FormBanking>();
         }
 
         private void SupplyChainsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -748,6 +755,7 @@ namespace OE2EmpireTracker
             stationsToolStripMenuItem.Enabled = hasPlayer;
             marketToolStripMenuItem.Enabled = hasPlayer;
             asteroidsToolStripMenuItem.Enabled = hasPlayer;
+            bankingToolStripMenuItem.Enabled = hasPlayer;
 
             // Sharing requires a connected player
             sharingToolStripMenuItem.Enabled = hasPlayer;
