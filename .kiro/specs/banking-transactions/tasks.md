@@ -111,20 +111,20 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Call WriteContext and fire BankingDataChanged after all pages
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
 
-  - [-] 6.2 Implement ImportBalanceAsync and CreateManualTransaction
+  - [x] 6.2 Implement ImportBalanceAsync and CreateManualTransaction
     - Add to `OE2EmpireTracker.Common/Services/BankingService.cs`
     - ImportBalanceAsync: call GetBankingBalanceAsync, parse balance, return decimal or null on failure
     - CreateManualTransaction: validate creditChange != 0, create BankingTransaction with IsManualEntry=true, generated UUID
     - _Requirements: 4.1, 4.2, 4.3, 8.3_
 
-  - [-] 6.3 Write property test for import deduplication idempotency
+  - [x] 6.3 Write property test for import deduplication idempotency
     - Append to `OE2EmpireTracker.Tests/Services/BankingServicePropertyTests.cs`
     - **Property 1: Import Deduplication Idempotency**
     - Importing same transactions twice results in zero new records on second import
     - Composite key (TransactionDateTime + CreditChange + Detail) prevents duplicates
     - **Validates: Requirements 3.3**
 
-  - [-] 6.4 Write unit tests for ImportTransactionsAsync
+  - [x] 6.4 Write unit tests for ImportTransactionsAsync
     - Create `OE2EmpireTracker.Tests/Services/BankingServiceImportTests.cs`
     - Test successful multi-page import
     - Test deduplication skips existing transactions
@@ -132,14 +132,14 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - Test API error sets Success=false with FailedAtPage
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.7_
 
-  - [~] 6.5 Write property test for UUID uniqueness
+  - [-] 6.5 Write property test for UUID uniqueness
     - Append to `OE2EmpireTracker.Tests/Services/BankingServicePropertyTests.cs`
     - **Property 6: UUID Uniqueness**
     - No two BankingTransaction records share the same UUID
     - Adding duplicate UUID throws InvalidOperationException
     - **Validates: Requirements 2.3, 2.4**
 
-  - [~] 6.6 Write property test for manual entry distinguishability
+  - [-] 6.6 Write property test for manual entry distinguishability
     - Append to `OE2EmpireTracker.Tests/Services/BankingServicePropertyTests.cs`
     - **Property 5: Manual Entry Distinguishability**
     - Every manually entered transaction has IsManualEntry=true
@@ -163,7 +163,7 @@ Implements local persistence, API import, and UI display of a player's in-game b
     - _Requirements: 2.1_
 
 - [ ] 9. Create FormBanking MDI child form
-  - [~] 9.1 Create FormBanking form shell with balance display and grid
+  - [-] 9.1 Create FormBanking form shell with balance display and grid
     - Create `OE2EmpireTracker/Forms/Banking/FormBanking.cs`
     - Create `OE2EmpireTracker/Forms/Banking/FormBanking.Designer.cs`
     - Create `OE2EmpireTracker/Forms/Banking/FormBanking.resx`
