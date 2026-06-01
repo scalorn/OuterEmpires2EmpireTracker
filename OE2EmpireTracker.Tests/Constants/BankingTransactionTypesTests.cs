@@ -10,16 +10,19 @@ namespace OE2EmpireTracker.Tests.Constants
         // GetLabel -- Known codes
         // -----------------------------------------------------------------------
 
-        [TestCase(1, "Worker Wages")]
-        [TestCase(2, "Market Sale")]
-        [TestCase(3, "Market Purchase")]
-        [TestCase(4, "Refueling")]
-        [TestCase(5, "Colony Income")]
-        [TestCase(6, "Transfer Received")]
-        [TestCase(7, "Transfer Sent")]
-        [TestCase(8, "Job Payment")]
-        [TestCase(9, "Bounty")]
-        [TestCase(10, "Insurance Payout")]
+        [TestCase(1, "Refuelling")]
+        [TestCase(2, "Transport Job")]
+        [TestCase(3, "Market Sale")]
+        [TestCase(4, "Broker Fee")]
+        [TestCase(5, "Market Purchase")]
+        [TestCase(6, "Buy Order Escrow")]
+        [TestCase(7, "Ship Repair")]
+        [TestCase(9, "Worker Wages")]
+        [TestCase(10, "Colony Payout")]
+        [TestCase(12, "Transfer")]
+        [TestCase(13, "Insurance")]
+        [TestCase(14, "Clone")]
+        [TestCase(15, "Sales Tax")]
         public void GetLabel_KnownCode_ReturnsCorrectLabel(int code, string expectedLabel)
         {
             string result = BankingTransactionTypes.GetLabel(code, "some detail");

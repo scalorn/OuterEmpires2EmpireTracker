@@ -12,16 +12,19 @@ namespace OE2EmpireTracker.Constants
         /// </summary>
         public static readonly Dictionary<int, string> TypeLabels = new Dictionary<int, string>
         {
-            { 1, "Worker Wages" },
-            { 2, "Market Sale" },
-            { 3, "Market Purchase" },
-            { 4, "Refueling" },
-            { 5, "Colony Income" },
-            { 6, "Transfer Received" },
-            { 7, "Transfer Sent" },
-            { 8, "Job Payment" },
-            { 9, "Bounty" },
-            { 10, "Insurance Payout" },
+            { 1, "Refuelling" },
+            { 2, "Transport Job" },
+            { 3, "Market Sale" },
+            { 4, "Broker Fee" },
+            { 5, "Market Purchase" },
+            { 6, "Buy Order Escrow" },
+            { 7, "Ship Repair" },
+            { 9, "Worker Wages" },
+            { 10, "Colony Payout" },
+            { 12, "Transfer" },
+            { 13, "Insurance" },
+            { 14, "Clone" },
+            { 15, "Sales Tax" },
         };
 
         /// <summary>
