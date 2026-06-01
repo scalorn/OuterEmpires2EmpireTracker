@@ -30,6 +30,8 @@ namespace OE2EmpireTracker.Forms.Banking
             this.btn30d = new System.Windows.Forms.Button();
             this.btnAllTime = new System.Windows.Forms.Button();
             this.cboType = new System.Windows.Forms.ComboBox();
+            this.lblDetail = new System.Windows.Forms.Label();
+            this.txtDetailFilter = new System.Windows.Forms.TextBox();
             this.lblType = new System.Windows.Forms.Label();
             this.dtpFrom = new System.Windows.Forms.DateTimePicker();
             this.dtpTo = new System.Windows.Forms.DateTimePicker();
@@ -48,6 +50,8 @@ namespace OE2EmpireTracker.Forms.Banking
             this.pnlChartGrouping = new System.Windows.Forms.Panel();
             this.btnGroupDaily = new System.Windows.Forms.RadioButton();
             this.btnGroupHourly = new System.Windows.Forms.RadioButton();
+            this.chkNetChange = new System.Windows.Forms.CheckBox();
+            this.chkCumulative = new System.Windows.Forms.CheckBox();
             this.splitCharts = new System.Windows.Forms.SplitContainer();
             this.chartCashFlow = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.splitChartsLower = new System.Windows.Forms.SplitContainer();
@@ -130,6 +134,19 @@ namespace OE2EmpireTracker.Forms.Banking
             this.cboType.Name = "cboType";
             this.cboType.Size = new System.Drawing.Size(150, 21);
 
+            // lblDetail
+            this.lblDetail.AutoSize = true;
+            this.lblDetail.Location = new System.Drawing.Point(570, 47);
+            this.lblDetail.Name = "lblDetail";
+            this.lblDetail.Size = new System.Drawing.Size(40, 13);
+            this.lblDetail.Text = "Detail:";
+
+            // txtDetailFilter
+            this.txtDetailFilter.Location = new System.Drawing.Point(614, 44);
+            this.txtDetailFilter.Name = "txtDetailFilter";
+            this.txtDetailFilter.Size = new System.Drawing.Size(200, 20);
+            this.txtDetailFilter.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+
             // lblFrom
             this.lblFrom.AutoSize = true;
             this.lblFrom.Location = new System.Drawing.Point(12, 74);
@@ -194,6 +211,8 @@ namespace OE2EmpireTracker.Forms.Banking
             this.tabCharts.UseVisualStyleBackColor = true;
 
             // pnlChartGrouping
+            this.pnlChartGrouping.Controls.Add(this.chkCumulative);
+            this.pnlChartGrouping.Controls.Add(this.chkNetChange);
             this.pnlChartGrouping.Controls.Add(this.btnGroupDaily);
             this.pnlChartGrouping.Controls.Add(this.btnGroupHourly);
             this.pnlChartGrouping.Dock = System.Windows.Forms.DockStyle.Top;
@@ -218,6 +237,26 @@ namespace OE2EmpireTracker.Forms.Banking
             this.btnGroupDaily.TabStop = true;
             this.btnGroupDaily.Text = "Daily";
             this.btnGroupDaily.UseVisualStyleBackColor = true;
+
+            // chkNetChange
+            this.chkNetChange.AutoSize = true;
+            this.chkNetChange.Checked = true;
+            this.chkNetChange.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkNetChange.Location = new System.Drawing.Point(160, 6);
+            this.chkNetChange.Name = "chkNetChange";
+            this.chkNetChange.Size = new System.Drawing.Size(80, 17);
+            this.chkNetChange.Text = "Net Change";
+            this.chkNetChange.UseVisualStyleBackColor = true;
+
+            // chkCumulative
+            this.chkCumulative.AutoSize = true;
+            this.chkCumulative.Checked = true;
+            this.chkCumulative.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkCumulative.Location = new System.Drawing.Point(260, 6);
+            this.chkCumulative.Name = "chkCumulative";
+            this.chkCumulative.Size = new System.Drawing.Size(80, 17);
+            this.chkCumulative.Text = "Cumulative";
+            this.chkCumulative.UseVisualStyleBackColor = true;
 
             // splitCharts
             this.splitCharts.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -411,6 +450,8 @@ namespace OE2EmpireTracker.Forms.Banking
             this.Controls.Add(this.dtpFrom);
             this.Controls.Add(this.lblFrom);
             this.Controls.Add(this.cboType);
+            this.Controls.Add(this.txtDetailFilter);
+            this.Controls.Add(this.lblDetail);
             this.Controls.Add(this.lblType);
             this.Controls.Add(this.btnAllTime);
             this.Controls.Add(this.btn30d);
@@ -447,6 +488,8 @@ namespace OE2EmpireTracker.Forms.Banking
         private System.Windows.Forms.Button btnAllTime;
         private System.Windows.Forms.Label lblType;
         private System.Windows.Forms.ComboBox cboType;
+        private System.Windows.Forms.Label lblDetail;
+        private System.Windows.Forms.TextBox txtDetailFilter;
         private System.Windows.Forms.Label lblFrom;
         private System.Windows.Forms.DateTimePicker dtpFrom;
         private System.Windows.Forms.Label lblTo;
@@ -464,6 +507,8 @@ namespace OE2EmpireTracker.Forms.Banking
         private System.Windows.Forms.Panel pnlChartGrouping;
         private System.Windows.Forms.RadioButton btnGroupHourly;
         private System.Windows.Forms.RadioButton btnGroupDaily;
+        private System.Windows.Forms.CheckBox chkNetChange;
+        private System.Windows.Forms.CheckBox chkCumulative;
         private System.Windows.Forms.SplitContainer splitCharts;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartCashFlow;
         private System.Windows.Forms.SplitContainer splitChartsLower;

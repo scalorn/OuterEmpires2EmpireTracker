@@ -46,6 +46,9 @@ namespace OE2EmpireTracker.Forms.Banking
 
             btnGroupHourly.CheckedChanged += OnGroupingChanged;
             btnGroupDaily.CheckedChanged += OnGroupingChanged;
+            chkNetChange.CheckedChanged += OnCashFlowSeriesToggled;
+            chkCumulative.CheckedChanged += OnCashFlowSeriesToggled;
+            txtDetailFilter.TextChanged += OnDetailFilterChanged;
 
             playerContext.CurrentPlayerChanged += OnCurrentPlayerChanged;
             playerContext.BankingDataChanged += OnBankingDataChanged;
@@ -226,6 +229,10 @@ namespace OE2EmpireTracker.Forms.Banking
 
             chartCashFlow.Series.Add(netSeries);
             chartCashFlow.Series.Add(cumulativeSeries);
+
+            // Apply visibility from checkboxes
+            netSeries.Enabled = chkNetChange.Checked;
+            cumulativeSeries.Enabled = chkCumulative.Checked;
         }
 
         private void RefreshIncomeExpensesChart(IReadOnlyList<BankingTransaction> transactions, bool groupByHour)
@@ -335,6 +342,36 @@ namespace OE2EmpireTracker.Forms.Banking
             RefreshCharts(filtered);
         }
 
+        private void OnCashFlowSeriesToggled(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0)
+            {
+                return;
+            }
+
+            foreach (var series in chartCashFlow.Series)
+            {
+                if (series.Name == "Net Change")
+                {
+                    series.Enabled = chkNetChange.Checked;
+                }
+                else if (series.Name == "Cumulative")
+                {
+                    series.Enabled = chkCumulative.Checked;
+                }
+            }
+        }
+
+        private void OnDetailFilterChanged(object sender, EventArgs e)
+        {
+            if (_isProgrammaticUpdate > 0)
+            {
+                return;
+            }
+
+            PopulateTransactionsGrid();
+        }
+
         // -----------------------------------------------------------------------
         // Filters
         // -----------------------------------------------------------------------
@@ -362,11 +399,22 @@ namespace OE2EmpireTracker.Forms.Banking
             DateTime? fromDate = GetFromDate();
             DateTime? toDate = GetToDate();
 
-            return BankingService.FilterTransactions(
+            var filtered = BankingService.FilterTransactions(
                 playerContext.BankingTransactionList,
                 typeFilter,
                 fromDate,
                 toDate);
+
+            string detailSearch = txtDetailFilter.Text.Trim();
+            if (!string.IsNullOrEmpty(detailSearch))
+            {
+                filtered = filtered
+                    .Where(tx => tx.Detail != null && tx.Detail.IndexOf(detailSearch, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList()
+                    .AsReadOnly();
+            }
+
+            return filtered;
         }
 
         private int? GetSelectedTypeFilter()
