@@ -31,6 +31,7 @@ namespace OE2EmpireTracker.Services
             Asteroid = new Asteroid[0];
             BankingTransaction = new BankingTransaction[0];
             BankingBalance = 0m;
+            MailMessage = new MailMessage[0];
         }
 
         public int DataVersion { get; set; }
@@ -82,5 +83,8 @@ namespace OE2EmpireTracker.Services
 
         [JsonProperty("bankingBalance")]
         public decimal BankingBalance { get; set; }
+
+        [JsonProperty("mailMessage")]
+        public MailMessage[] MailMessage { get; set; }
     }
 }

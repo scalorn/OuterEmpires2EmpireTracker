@@ -325,6 +325,7 @@
     <Compile Include="Blueprint\AssetTabBlueprintImportTests.cs" />
     <Compile Include="Models\SurveyTests.cs" />
     <Compile Include="Models\BankingTransactionTests.cs" />
+    <Compile Include="Models\MailMessageTests.cs" />
     <Compile Include="Models\BlueprintTests.cs" />
     <Compile Include="Models\CommodityTests.cs" />
     <Compile Include="Models\CountDownTimeTests.cs" />
