@@ -28,7 +28,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Tests/Models/MailMessageTests.cs_
     - _Verification: vstest.console passes MailMessageTests_
 
-- [ ] 2. Add MailMessage persistence to PlayerContext
+- [x] 2. Add MailMessage persistence to PlayerContext
   - [x] 2.1 Add MailMessage array to PlayerRoot
     - Add `MailMessage[]` property with JsonProperty("mailMessage") to PlayerRoot
     - Initialize to empty array in constructor
@@ -58,7 +58,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Common/Services/PlayerContext.cs_
     - _Verification: getDiagnostics on PlayerContext.cs_
 
-  - [-] 2.4 Write property test for deduplication invariant
+  - [x] 2.4 Write property test for deduplication invariant
     - **Property 1: Deduplication Invariant**
     - Generate random sequences of AddMailMessage calls with repeated MailIds
     - Assert that MailMessageList never contains duplicate MailIds
@@ -67,8 +67,8 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Tests/Services/MailServiceTests.cs_
     - _Verification: vstest.console passes Property 1 test_
 
-- [ ] 3. Implement MailService core methods
-  - [-] 3.1 Create MailService static class with filter logic
+- [x] 3. Implement MailService core methods
+  - [x] 3.1 Create MailService static class with filter logic
     - Create `OE2EmpireTracker.Common/Services/MailService.cs`
     - Implement GetFilteredMessages with AND logic: readFilter (All/Unread/Read), typeFilter (All/Player-System/Colony/Research/Skill), searchText (case-insensitive substring on FromName OR Subject OR MailContent)
     - Implement GetUnreadCount
@@ -80,7 +80,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Verification: getDiagnostics on MailService.cs_
 
 
-  - [~] 3.2 Implement MailService.MarkAsRead method
+  - [x] 3.2 Implement MailService.MarkAsRead method
     - Implement MarkAsRead: find message by MailId, set LocalRead = true, persist via WriteContext
     - LocalRead is independent of MailRead (never modify MailRead)
     - _Satisfies: Req 6, Criteria 6.1, 6.3_
@@ -88,7 +88,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Common/Services/MailService.cs_
     - _Verification: getDiagnostics on MailService.cs_
 
-  - [~] 3.3 Write property test for filter completeness
+  - [x] 3.3 Write property test for filter completeness
     - **Property 3: Filter Completeness**
     - Generate random mail sets and random filter combinations
     - Assert GetFilteredMessages result equals manual predicate evaluation
@@ -97,7 +97,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Tests/Services/MailServiceTests.cs_
     - _Verification: vstest.console passes Property 3 test_
 
-  - [~] 3.4 Write property test for LocalRead independence
+  - [x] 3.4 Write property test for LocalRead independence
     - **Property 4: LocalRead Independence**
     - Generate mail messages, call MarkAsRead
     - Assert MailRead field is never modified when LocalRead changes
@@ -106,8 +106,8 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Tests/Services/MailServiceTests.cs_
     - _Verification: vstest.console passes Property 4 test_
 
-- [ ] 4. Implement incremental sync algorithm
-  - [~] 4.1 Implement SyncMailAsync method
+- [x] 4. Implement incremental sync algorithm
+  - [x] 4.1 Implement SyncMailAsync method
     - Implement the incremental sync algorithm in MailService.SyncMailAsync
     - Call GetMailListAsync with offset/limit pagination (page size 50)
     - Early-stop when all mailIds on a page already exist locally
@@ -121,7 +121,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Verification: getDiagnostics on MailService.cs_
 
 
-  - [~] 4.2 Implement sync error handling
+  - [x] 4.2 Implement sync error handling
     - Handle HTTP 401/403: log "Authentication failed for mail sync" at Error level, stop sync cycle
     - Handle HTTP 429: log "Rate limited during mail sync" at Warning level, stop sync cycle
     - Handle detail endpoint failure: log error, store message with empty MailContent, continue sync
@@ -132,7 +132,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Common/Services/MailService.cs_
     - _Verification: getDiagnostics on MailService.cs_
 
-  - [~] 4.3 Write property test for high-water mark monotonicity
+  - [x] 4.3 Write property test for high-water mark monotonicity
     - **Property 2: High-Water Mark Monotonicity**
     - Generate sequences of AddMailMessage calls
     - Assert GetHighWaterMark never decreases after additions
@@ -141,7 +141,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Tests/Services/MailServiceTests.cs_
     - _Verification: vstest.console passes Property 2 test_
 
-  - [~] 4.4 Write property test for sync idempotency
+  - [x] 4.4 Write property test for sync idempotency
     - **Property 5: Sync Idempotency**
     - Add a set of messages, record state, add same messages again
     - Assert list state is identical after second pass (no duplicates, no losses)
@@ -150,12 +150,12 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Tests/Services/MailServiceTests.cs_
     - _Verification: vstest.console passes Property 5 test_
 
-- [~] 5. Checkpoint - Ensure model and service compile and pass tests
+- [x] 5. Checkpoint - Ensure model and service compile and pass tests
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 6. Add sync interval preference
-  - [-] 6.1 Add MailSyncIntervalMinutes to PreferencesStore
+- [x] 6. Add sync interval preference
+  - [x] 6.1 Add MailSyncIntervalMinutes to PreferencesStore
     - Add MailSyncIntervalMinutes property (default 5, min 1, max 60) to the preferences model
     - Add GetMailSyncIntervalMs() static helper method that clamps and converts to milliseconds
     - _Satisfies: Req 7, Criterion 7.1_
@@ -163,8 +163,8 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Common/Services/PreferencesStore.cs_
     - _Verification: getDiagnostics on PreferencesStore.cs_
 
-- [ ] 7. Create FormMail Designer layout
-  - [~] 7.1 Create FormMail form files with split layout
+- [x] 7. Create FormMail Designer layout
+  - [x] 7.1 Create FormMail form files with split layout
     - Create `OE2EmpireTracker/Forms/Mail/FormMail.cs`, `FormMail.Designer.cs`, `FormMail.resx`
     - Layout: filter panel (top), SplitContainer with ListView (left) and detail panel (right), status bar (bottom)
     - Filter panel controls: cboReadFilter, cboTypeFilter, txtSearch, lblMessageCount
@@ -177,7 +177,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Verification: getDiagnostics on FormMail.cs and FormMail.Designer.cs_
 
 
-  - [~] 7.2 Implement FormMail filter initialization and event wiring
+  - [x] 7.2 Implement FormMail filter initialization and event wiring
     - Populate cboReadFilter (All, Unread, Read) and cboTypeFilter (All, Player/System, Colony, Research, Skill) in constructor
     - Implement IProgrammaticUpdateSource interface
     - Subscribe to PlayerContext.MailDataChanged and CurrentPlayerChanged events
@@ -189,7 +189,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker/Forms/Mail/FormMail.cs_
     - _Verification: getDiagnostics on FormMail.cs_
 
-  - [~] 7.3 Implement mail list display and refresh logic
+  - [x] 7.3 Implement mail list display and refresh logic
     - Implement RefreshMailList: call MailService.GetFilteredMessages, populate ListView
     - Sort by SentTime descending (newest first); use epoch for null/empty SentTime, display "(no date)"
     - Bold text for unread messages (LocalRead = false)
@@ -201,7 +201,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Verification: getDiagnostics on FormMail.cs_
 
 
-  - [~] 7.4 Implement message selection and detail display
+  - [x] 7.4 Implement message selection and detail display
     - OnMailSelected: display full MailContent in txtDetailContent, FromName in lblDetailFrom, formatted date in lblDetailDate, Subject in lblDetailSubject
     - Call MailService.MarkAsRead on selection to set LocalRead = true
     - Update row styling from bold to normal after marking read
@@ -211,7 +211,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker/Forms/Mail/FormMail.cs_
     - _Verification: getDiagnostics on FormMail.cs_
 
-  - [~] 7.5 Implement filter application logic in FormMail
+  - [x] 7.5 Implement filter application logic in FormMail
     - OnFilterChanged: call MailService.GetFilteredMessages with current filter values
     - Combine read-status filter, type filter, and search text with AND logic
     - Map dropdown values to MailType: "Player/System" → null, "Colony" → "C", "Research" → "R", "Skill" → "S"
@@ -221,8 +221,8 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker/Forms/Mail/FormMail.cs_
     - _Verification: getDiagnostics on FormMail.cs_
 
-- [ ] 8. Implement background sync timer in FormMail
-  - [~] 8.1 Add background sync timer and sync execution
+- [x] 8. Implement background sync timer in FormMail
+  - [x] 8.1 Add background sync timer and sync execution
     - Create System.Threading.Timer with one-shot mode in FormMail
     - Trigger immediate sync on form open (Task.Run + ExecuteSyncAsync)
     - Reschedule timer after each sync completes using GetMailSyncIntervalMs
@@ -234,7 +234,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Verification: getDiagnostics on FormMail.cs_
 
 
-  - [~] 8.2 Implement sync status display and timer lifecycle
+  - [x] 8.2 Implement sync status display and timer lifecycle
     - Display "Syncing..." status label while sync is in progress
     - Display sync result on completion ("Synced: N new messages" or "Sync complete: up to date")
     - Display last successful sync timestamp ("Last sync: yyyy-MM-dd HH:mm" or "Never")
@@ -246,8 +246,8 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker/Forms/Mail/FormMail.cs_
     - _Verification: getDiagnostics on FormMail.cs_
 
-- [ ] 9. Wire FormMail into main menu
-  - [~] 9.1 Add Mail menu item to MainWindow
+- [x] 9. Wire FormMail into main menu
+  - [x] 9.1 Add Mail menu item to MainWindow
     - Add "Mail" menu item to the existing main menu in MainWindow
     - Open FormMail as MDI child when clicked (single instance pattern matching existing forms)
     - _Satisfies: Req 4, Criterion 4.1_
@@ -255,12 +255,12 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker/Forms/MainWindow.cs (or MainWindow.Designer.cs)_
     - _Verification: getDiagnostics on MainWindow files_
 
-- [~] 10. Checkpoint - Ensure full solution compiles and all tests pass
+- [x] 10. Checkpoint - Ensure full solution compiles and all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 11. Write remaining property and unit tests
-  - [~] 11.1 Write property test for sort stability
+- [x] 11. Write remaining property and unit tests
+  - [x] 11.1 Write property test for sort stability
     - **Property 6: Sort Stability**
     - Generate messages with null/empty SentTime mixed with valid SentTime
     - Assert null/empty SentTime sorts to the end (oldest position)
@@ -270,7 +270,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Tests/Services/MailServiceTests.cs_
     - _Verification: vstest.console passes Property 6 test_
 
-  - [~] 11.2 Write unit tests for MailService filter logic
+  - [x] 11.2 Write unit tests for MailService filter logic
     - Test read-status filter: All shows everything, Unread shows LocalRead=false, Read shows LocalRead=true
     - Test type filter mapping: "Player/System" → null, "Colony" → "C", "Research" → "R", "Skill" → "S"
     - Test search: case-insensitive substring match on FromName, Subject, MailContent (OR logic)
@@ -280,7 +280,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Tests/Services/MailServiceTests.cs_
     - _Verification: vstest.console passes filter unit tests_
 
-  - [~] 11.3 Write unit tests for MailService sync and error handling
+  - [x] 11.3 Write unit tests for MailService sync and error handling
     - Test mark-as-read sets LocalRead=true without touching MailRead
     - Test GetHighWaterMark returns max MailId (or 0 when empty)
     - Test GetUnreadCount returns count of LocalRead=false messages
@@ -289,7 +289,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Tests/Services/MailServiceTests.cs_
     - _Verification: vstest.console passes sync unit tests_
 
-- [~] 12. Final checkpoint - Ensure all tests pass and solution builds clean
+- [x] 12. Final checkpoint - Ensure all tests pass and solution builds clean
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

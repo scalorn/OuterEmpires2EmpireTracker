@@ -1340,6 +1340,12 @@ namespace OE2EmpireTracker.Client
                     return (false, "403");
                 }
 
+                if (response.StatusCode == (HttpStatusCode)429)
+                {
+                    Log.Warn("Game API GetMailList received HTTP 429 — rate limited");
+                    return (false, "429");
+                }
+
                 Log.Warn("Game API GetMailList failed: HTTP {0}", (int)response.StatusCode);
                 return (false, null);
             }

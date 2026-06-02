@@ -60,6 +60,7 @@
             this.shipTemplatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shipsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.marketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.asteroidsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.supplyChainsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -195,6 +196,7 @@
             this.contactsToolStripMenuItem,
             this.deliveryExecutionToolStripMenuItem,
             this.deliveryRoutesToolStripMenuItem,
+            this.mailToolStripMenuItem,
             this.marketToolStripMenuItem,
             this.managePlayerProfiles,
             this.pricingPlansToolStripMenuItem,
@@ -317,6 +319,13 @@
             this.stationsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.stationsToolStripMenuItem.Text = "Stations";
             this.stationsToolStripMenuItem.Click += new System.EventHandler(this.StationsToolStripMenuItem_Click);
+            // 
+            // mailToolStripMenuItem
+            // 
+            this.mailToolStripMenuItem.Name = "mailToolStripMenuItem";
+            this.mailToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.mailToolStripMenuItem.Text = "Mail";
+            this.mailToolStripMenuItem.Click += new System.EventHandler(this.MailToolStripMenuItem_Click);
             // 
             // marketToolStripMenuItem
             // 
@@ -550,6 +559,7 @@
         private System.Windows.Forms.ToolStripMenuItem shipsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stationsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem marketToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mailToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem asteroidsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bankingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem supplyChainsToolStripMenuItem;

@@ -382,6 +382,17 @@ namespace OE2EmpireTracker.Services
                         Log.Error(assetEx, "Asset sync failed for character {0}, profile/colony sync results preserved", playerUUID);
                     }
 
+                    // Banking sync runs after asset sync (Req 4.2)
+                    // Wrapped in try/catch so banking failures don't affect profile/colony/asset sync (Req 2.1, 2.2)
+                    try
+                    {
+                        await SyncBankingAsync(playerUUID, tokenResult.Token.AccessToken).ConfigureAwait(false);
+                    }
+                    catch (Exception bankingEx)
+                    {
+                        Log.Error(bankingEx, "Banking sync failed for character {0}, profile/colony/asset sync results preserved", playerUUID);
+                    }
+
                     return true;
                 }
 
@@ -529,6 +540,36 @@ namespace OE2EmpireTracker.Services
         internal virtual SurveyLinkageService CreateSurveyLinkageService()
         {
             return null;
+        }
+
+        /// <summary>
+        /// Raises the BankingDataChanged event to notify UI subscribers.
+        /// Override point for testing. In production, calls PlayerContext.OnBankingDataChanged.
+        /// </summary>
+        internal virtual void RaiseBankingDataChanged()
+        {
+            // Default implementation is a no-op — wired to PlayerContext in production via GameApiContext
+        }
+
+        /// <summary>
+        /// Retrieves the PlayerContext for banking operations.
+        /// Override point for testing.
+        /// </summary>
+        /// <returns>The player context, or null if not available.</returns>
+        internal virtual PlayerContext GetPlayerContext()
+        {
+            // Default implementation returns null — wired in production via GameApiContext
+            return null;
+        }
+
+        /// <summary>
+        /// Sets the banking balance on the player context.
+        /// Override point for testing.
+        /// </summary>
+        /// <param name="balance">The new banking balance value.</param>
+        internal virtual void SetBankingBalance(decimal balance)
+        {
+            // Default implementation is a no-op — wired in production via GameApiContext
         }
 
         /// <summary>
@@ -1208,6 +1249,53 @@ namespace OE2EmpireTracker.Services
             }
 
             return changed;
+        }
+
+        /// <summary>
+        /// Syncs banking transactions and balance for a character.
+        /// Called after asset sync within SyncCharacterAsync.
+        /// </summary>
+        /// <param name="playerUUID">The player UUID whose banking data to sync.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task SyncBankingAsync(string playerUUID, string accessToken)
+        {
+            Log.Info("Banking sync starting for character {0}", playerUUID);
+
+            // 1. Import transactions
+            BankingImportResult txResult = await BankingService.ImportTransactionsAsync(
+                _client, _appId, accessToken, GetPlayerContext()).ConfigureAwait(false);
+
+            if (!txResult.Success)
+            {
+                Log.Warn(
+                    "Banking transaction import reported failure for character {0}: {1}",
+                    playerUUID,
+                    txResult.ErrorMessage);
+            }
+            else
+            {
+                Log.Info(
+                    "Banking transactions imported: {0} new, {1} duplicates skipped",
+                    txResult.TransactionsImported,
+                    txResult.DuplicatesSkipped);
+            }
+
+            // 2. Import balance (always attempt regardless of transaction result)
+            decimal? balance = await BankingService.ImportBalanceAsync(
+                _client, _appId, accessToken).ConfigureAwait(false);
+
+            if (balance.HasValue)
+            {
+                SetBankingBalance(balance.Value);
+                WriteContext();
+                RaiseBankingDataChanged();
+                Log.Info("Banking balance updated to {0:N2} for character {1}", balance.Value, playerUUID);
+            }
+            else
+            {
+                Log.Warn("Banking balance import returned null for character {0}", playerUUID);
+            }
         }
 
         /// <summary>

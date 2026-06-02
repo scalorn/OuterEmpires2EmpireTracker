@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
+using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -44,6 +48,126 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Performs incremental sync from the game API.
+        /// Fetches pages of mail IDs starting at offset 0, stopping when all IDs
+        /// on a page already exist locally. For each new mailId, fetches the
+        /// detail endpoint for full content.
+        /// </summary>
+        /// <param name="client">The game API client instance.</param>
+        /// <param name="appId">The registered application GUID.</param>
+        /// <param name="accessToken">The Bearer access token.</param>
+        /// <param name="playerContext">The player context for persistence.</param>
+        /// <returns>The number of new messages synced, or -1 on error.</returns>
+        public static async Task<int> SyncMailAsync(
+            GameApiClient client,
+            string appId,
+            string accessToken,
+            PlayerContext playerContext)
+        {
+            int offset = 0;
+            int pageSize = 50;
+            int newCount = 0;
+
+            while (true)
+            {
+                var apiResult = await client.GetMailListAsync(appId, accessToken, offset, pageSize).ConfigureAwait(false);
+                if (!apiResult.Success)
+                {
+                    if (apiResult.Json == "401" || apiResult.Json == "403")
+                    {
+                        Log.Error("Authentication failed for mail sync");
+                        return -1;
+                    }
+
+                    if (apiResult.Json == "429")
+                    {
+                        Log.Warn("Rate limited during mail sync");
+                        return -1;
+                    }
+
+                    Log.Error("Mail sync failed: network error");
+                    return -1;
+                }
+
+                if (string.IsNullOrEmpty(apiResult.Json))
+                {
+                    Log.Error("Mail sync failed: empty response at offset {0}", offset);
+                    return -1;
+                }
+
+                JArray mails;
+                try
+                {
+                    var envelope = JObject.Parse(apiResult.Json);
+                    mails = envelope["data"]?["mail"] as JArray;
+                }
+                catch (JsonException ex)
+                {
+                    Log.Error(ex, "Mail sync failed: JSON parse error at offset {0}", offset);
+                    return -1;
+                }
+
+                if (mails == null || mails.Count == 0)
+                {
+                    break;
+                }
+
+                bool allExist = true;
+
+                foreach (var item in mails)
+                {
+                    int mailId = item.Value<int>("mailId");
+                    if (mailId <= 0)
+                    {
+                        continue;
+                    }
+
+                    if (playerContext.FindMailMessage(mailId) != null)
+                    {
+                        continue;
+                    }
+
+                    allExist = false;
+
+                    var detailResult = await client.GetMailDetailAsync(appId, accessToken, mailId).ConfigureAwait(false);
+                    MailMessage message;
+
+                    if (detailResult.Success && !string.IsNullOrEmpty(detailResult.Json))
+                    {
+                        message = ParseMailFromDetail(detailResult.Json);
+                    }
+                    else
+                    {
+                        Log.Error("Mail detail fetch failed for mailId={0}, storing with empty content", mailId);
+                        message = ParseMailFromListItem(item);
+                    }
+
+                    if (message != null)
+                    {
+                        message.LocalRead = false;
+                        playerContext.AddMailMessage(message);
+                        newCount++;
+                    }
+                }
+
+                if (allExist)
+                {
+                    break;
+                }
+
+                offset += pageSize;
+            }
+
+            if (newCount > 0)
+            {
+                playerContext.WriteContext();
+                OnMailDataChanged();
+            }
+
+            return newCount;
+        }
+
+        /// <summary>
         /// Returns the count of messages where LocalRead is false.
         /// </summary>
         /// <param name="playerContext">The player context containing mail messages.</param>
@@ -61,6 +185,30 @@ namespace OE2EmpireTracker.Services
             }
 
             return count;
+        }
+
+        /// <summary>
+        /// Marks a message as locally read and persists the change.
+        /// Only sets LocalRead; never modifies MailRead.
+        /// </summary>
+        /// <param name="mailId">The unique mail identifier to mark as read.</param>
+        /// <param name="playerContext">The player context containing mail messages.</param>
+        public static void MarkAsRead(int mailId, PlayerContext playerContext)
+        {
+            var msg = playerContext.FindMailMessage(mailId);
+            if (msg == null)
+            {
+                return;
+            }
+
+            if (msg.LocalRead)
+            {
+                return;
+            }
+
+            msg.LocalRead = true;
+            playerContext.WriteContext();
+            OnMailDataChanged();
         }
 
         /// <summary>
@@ -205,6 +353,67 @@ namespace OE2EmpireTracker.Services
             }
 
             return DateTime.MinValue;
+        }
+
+        private static MailMessage ParseMailFromDetail(string json)
+        {
+            try
+            {
+                var envelope = JObject.Parse(json);
+                var data = envelope["data"];
+                if (data == null)
+                {
+                    return null;
+                }
+
+                var message = new MailMessage
+                {
+                    MailId = data.Value<int>("mailId"),
+                    CharacterIdFrom = data.Value<int>("characterIdFrom"),
+                    FromName = (data.Value<string>("fromName") ?? string.Empty).Trim(),
+                    CharacterIdTo = data.Value<int>("characterIdTo"),
+                    ToName = (data.Value<string>("toName") ?? string.Empty).Trim(),
+                    SentTime = data.Value<string>("sentTime") ?? string.Empty,
+                    Subject = data.Value<string>("subject") ?? string.Empty,
+                    MailRead = data.Value<bool>("mailRead"),
+                    MailType = data.Value<string>("mailType"),
+                    MailContent = data.Value<string>("mailContent") ?? string.Empty,
+                };
+
+                return message;
+            }
+            catch (JsonException ex)
+            {
+                Log.Error(ex, "Failed to parse mail detail JSON");
+                return null;
+            }
+        }
+
+        private static MailMessage ParseMailFromListItem(JToken item)
+        {
+            try
+            {
+                var message = new MailMessage
+                {
+                    MailId = item.Value<int>("mailId"),
+                    CharacterIdFrom = item.Value<int>("characterIdFrom"),
+                    FromName = (item.Value<string>("fromName") ?? string.Empty).Trim(),
+                    CharacterIdTo = item.Value<int>("characterIdTo"),
+                    ToName = (item.Value<string>("toName") ?? string.Empty).Trim(),
+                    SentTime = item.Value<string>("sentTime") ?? string.Empty,
+                    Subject = item.Value<string>("subject") ?? string.Empty,
+                    MailRead = item.Value<bool>("mailRead"),
+                    MailType = item.Value<string>("mailType"),
+                    MailContent = string.Empty,
+                };
+
+                return message;
+            }
+            catch (JsonException ex)
+            {
+                Log.Error(ex, "Failed to parse mail list item JSON");
+                return null;
+            }
         }
     }
 }

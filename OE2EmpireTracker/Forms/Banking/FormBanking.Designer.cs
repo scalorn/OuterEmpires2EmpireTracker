@@ -62,8 +62,7 @@ namespace OE2EmpireTracker.Forms.Banking
             this.lblIncome = new System.Windows.Forms.Label();
             this.lblExpenses = new System.Windows.Forms.Label();
             this.lblNet = new System.Windows.Forms.Label();
-            this.btnImportTransactions = new System.Windows.Forms.Button();
-            this.btnImportBalance = new System.Windows.Forms.Button();
+
             this.tabMain.SuspendLayout();
             this.tabTransactions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransactions)).BeginInit();
@@ -404,21 +403,7 @@ namespace OE2EmpireTracker.Forms.Banking
             this.lblNet.Size = new System.Drawing.Size(80, 16);
             this.lblNet.Text = "Net: 0.00";
 
-            // btnImportTransactions
-            this.btnImportTransactions.Location = new System.Drawing.Point(12, 598);
-            this.btnImportTransactions.Name = "btnImportTransactions";
-            this.btnImportTransactions.Size = new System.Drawing.Size(130, 28);
-            this.btnImportTransactions.Text = "Import Transactions";
-            this.btnImportTransactions.UseVisualStyleBackColor = true;
-            this.btnImportTransactions.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
 
-            // btnImportBalance
-            this.btnImportBalance.Location = new System.Drawing.Point(148, 598);
-            this.btnImportBalance.Name = "btnImportBalance";
-            this.btnImportBalance.Size = new System.Drawing.Size(110, 28);
-            this.btnImportBalance.Text = "Import Balance";
-            this.btnImportBalance.UseVisualStyleBackColor = true;
-            this.btnImportBalance.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
 
             // btnAddTransaction
             this.btnAddTransaction.Location = new System.Drawing.Point(450, 44);
@@ -440,8 +425,7 @@ namespace OE2EmpireTracker.Forms.Banking
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(900, 660);
-            this.Controls.Add(this.btnImportTransactions);
-            this.Controls.Add(this.btnImportBalance);
+
             this.Controls.Add(this.btnAddTransaction);
             this.Controls.Add(this.tabMain);
             this.Controls.Add(this.pnlSummary);
@@ -518,8 +502,7 @@ namespace OE2EmpireTracker.Forms.Banking
         private System.Windows.Forms.Label lblIncome;
         private System.Windows.Forms.Label lblExpenses;
         private System.Windows.Forms.Label lblNet;
-        private System.Windows.Forms.Button btnImportTransactions;
-        private System.Windows.Forms.Button btnImportBalance;
+
         private System.Windows.Forms.Button btnAddTransaction;
     }
 }

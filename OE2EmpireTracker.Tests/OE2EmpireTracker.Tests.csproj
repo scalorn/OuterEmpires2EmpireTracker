@@ -357,6 +357,7 @@
     <Compile Include="Forms\FormGameApiStatusTests.cs" />
     <Compile Include="Forms\FormPlayerProfilePropertyTests.cs" />
     <Compile Include="Forms\PlayerSkillBlockPropertyTests.cs" />
+    <Compile Include="Forms\FormBankingTests.cs" />
     <Compile Include="ViewModels\BaseBlueprintCandidatesTests.cs" />
     <Compile Include="ViewModels\BlueprintFilterPropertyTests.cs" />
     <Compile Include="ViewModels\PlayerProfileViewModelPropertyTests.cs" />
@@ -557,6 +558,7 @@
     <Compile Include="Services\GameApiSyncSchedulerTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerColonyTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerAssetTests.cs" />
+    <Compile Include="Services\GameApiSyncSchedulerBankingTests.cs" />
     <Compile Include="Services\ProductionSyncSchedulerTests.cs" />
     <Compile Include="Services\GameApiSettingsTests.cs" />
     <Compile Include="Services\GameApiConnectionMonitorTests.cs" />
