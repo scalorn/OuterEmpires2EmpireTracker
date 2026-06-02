@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.ComponentModel;
+using Newtonsoft.Json;
 using OE2EmpireTracker.Client;
 
 namespace OE2EmpireTracker.Models
@@ -23,6 +25,13 @@ namespace OE2EmpireTracker.Models
         /// Gets or sets the game API connection settings (URL, polling interval, enabled flag).
         /// </summary>
         public GameApiConnectionSettings GameApiConnection { get; set; } = new GameApiConnectionSettings();
+
+        /// <summary>
+        /// Gets or sets the mail sync interval in minutes. Valid range: 1-60. Default 5.
+        /// </summary>
+        [JsonProperty("mailSyncIntervalMinutes")]
+        [DefaultValue(5)]
+        public int MailSyncIntervalMinutes { get; set; } = 5;
 
         /// <summary>
         /// Time horizon in hours for flatpack auto-fill. 0 = include all unbuilt structures.

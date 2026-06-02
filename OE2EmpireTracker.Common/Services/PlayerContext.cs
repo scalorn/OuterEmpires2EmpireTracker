@@ -67,6 +67,8 @@ namespace OE2EmpireTracker.Services
         private List<Asteroid> _asteroidList = new List<Asteroid>();
         private List<BankingTransaction> _bankingTransactionList = new List<BankingTransaction>();
         private Dictionary<string, BankingTransaction> _bankingTransactionCache;
+        private List<MailMessage> _mailMessageList = new List<MailMessage>();
+        private Dictionary<int, MailMessage> _mailMessageCache;
 
         /// <summary>
         /// Internal constructor for test infrastructure. Accepts a pre-parsed
@@ -97,6 +99,7 @@ namespace OE2EmpireTracker.Services
             InitExternalCharacters(playerRoot);
             InitAsteroids(playerRoot);
             InitBankingTransactions(playerRoot);
+            InitMailMessages(playerRoot);
             DataVersion = playerRoot.DataVersion;
 
             // Migrate and restore current player
@@ -149,6 +152,7 @@ namespace OE2EmpireTracker.Services
             InitExternalCharacters(playerRoot);
             InitAsteroids(playerRoot);
             InitBankingTransactions(playerRoot);
+            InitMailMessages(playerRoot);
             DataVersion = playerRoot.DataVersion;
 
             // Migrate and restore current player
@@ -248,6 +252,11 @@ namespace OE2EmpireTracker.Services
         /// Fired when banking transaction data is modified (import, manual entry).
         /// </summary>
         public event EventHandler BankingDataChanged;
+
+        /// <summary>
+        /// Fired when mail message data is modified (sync, mark-as-read).
+        /// </summary>
+        public event EventHandler MailDataChanged;
 
         /// <summary>
         /// When true, WriteContext is blocked (set by migration system on failure).
@@ -368,6 +377,8 @@ namespace OE2EmpireTracker.Services
         public IReadOnlyList<Asteroid> AsteroidList => _asteroidList;
 
         public IReadOnlyList<BankingTransaction> BankingTransactionList => _bankingTransactionList;
+
+        public IReadOnlyList<MailMessage> MailMessageList => _mailMessageList;
 
         public decimal BankingBalance { get; set; } = 0m;
 
@@ -532,6 +543,14 @@ namespace OE2EmpireTracker.Services
             BankingDataChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Notifies subscribers that mail message data has changed.
+        /// </summary>
+        public void OnMailDataChanged()
+        {
+            MailDataChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public void WriteContext()
         {
             if (WritesBlocked)
@@ -574,6 +593,7 @@ namespace OE2EmpireTracker.Services
                 playerRoot.Asteroid = _asteroidList.ToArray();
                 playerRoot.BankingTransaction = _bankingTransactionList.ToArray();
                 playerRoot.BankingBalance = BankingBalance;
+                playerRoot.MailMessage = _mailMessageList.ToArray();
             }
 
             playerRoot = SerializationSorter.SortPlayerRoot(playerRoot);
@@ -1393,6 +1413,30 @@ namespace OE2EmpireTracker.Services
             BankingBalance = playerRoot.BankingBalance;
         }
 
+        /// <summary>
+        /// Initializes the mail message list from persisted data, deduplicating by MailId.
+        /// </summary>
+        public void InitMailMessages(PlayerRoot playerRoot)
+        {
+            var source = playerRoot.MailMessage ?? new MailMessage[0];
+            var seen = new HashSet<int>();
+            var deduped = new List<MailMessage>();
+            foreach (var item in source)
+            {
+                if (seen.Add(item.MailId))
+                {
+                    deduped.Add(item);
+                }
+                else
+                {
+                    Log.Error("DUPLICATE MailId on load: {0} Subject='{1}' — skipping duplicate", item.MailId, item.Subject);
+                }
+            }
+
+            _mailMessageList = deduped;
+            _mailMessageCache = null;
+        }
+
         public Colony FindColony(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
@@ -2081,6 +2125,35 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Adds a mail message to the collection, skipping duplicates by MailId.
+        /// Returns true if added, false if duplicate was skipped.
+        /// </summary>
+        public bool AddMailMessage(MailMessage item)
+        {
+            lock (_listLock)
+            {
+                if (_mailMessageCache != null && _mailMessageCache.ContainsKey(item.MailId))
+                {
+                    Log.Warn("Skipping duplicate MailMessage MailId={0}", item.MailId);
+                    return false;
+                }
+                else if (_mailMessageCache == null && _mailMessageList.Any(x => x.MailId == item.MailId))
+                {
+                    Log.Warn("Skipping duplicate MailMessage MailId={0}", item.MailId);
+                    return false;
+                }
+
+                _mailMessageList.Add(item);
+                if (_mailMessageCache != null)
+                {
+                    _mailMessageCache[item.MailId] = item;
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Finds a Station by UUID using a dictionary cache for O(1) lookup.
         /// </summary>
         public Station FindStation(string id)
@@ -2610,6 +2683,31 @@ namespace OE2EmpireTracker.Services
             lock (_listLock)
             {
                 _externalCharacterCache = null;
+            }
+        }
+
+        /// <summary>
+        /// Finds a MailMessage by MailId using a dictionary cache for O(1) lookup.
+        /// </summary>
+        public MailMessage FindMailMessage(int mailId)
+        {
+            if (mailId <= 0) return null;
+            lock (_listLock)
+            {
+                if (_mailMessageCache == null)
+                {
+                    _mailMessageCache = new Dictionary<int, MailMessage>();
+                    foreach (var m in _mailMessageList)
+                    {
+                        if (!_mailMessageCache.ContainsKey(m.MailId))
+                        {
+                            _mailMessageCache[m.MailId] = m;
+                        }
+                    }
+                }
+
+                _mailMessageCache.TryGetValue(mailId, out var match);
+                return match;
             }
         }
 

@@ -44,6 +44,16 @@ namespace OE2EmpireTracker.Services
             _instance = null;
         }
 
+        /// <summary>
+        /// Returns the mail sync interval in milliseconds, clamped to [1, 60] minutes.
+        /// </summary>
+        public static int GetMailSyncIntervalMs()
+        {
+            var prefs = PreferencesStore.GetInstance().Preferences;
+            int minutes = Math.Max(1, Math.Min(60, prefs.MailSyncIntervalMinutes));
+            return minutes * 60 * 1000;
+        }
+
         public void Save()
         {
             try

@@ -6,7 +6,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
 
 ## Tasks
 
-- [ ] 1. Create MailMessage data model
+- [x] 1. Create MailMessage data model
   - [x] 1.1 Create MailMessage POCO class
     - Create `OE2EmpireTracker.Common/Models/MailMessage.cs` with all required fields: MailId (int), CharacterIdFrom (int), FromName (string), CharacterIdTo (int), ToName (string), SentTime (string), Subject (string), MailRead (bool), MailType (string nullable), MailContent (string), LocalRead (bool)
     - Use JsonProperty attributes for JSON serialization
@@ -18,7 +18,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Verification: getDiagnostics on the new file_
 
 
-  - [-] 1.2 Write unit tests for MailMessage model
+  - [x] 1.2 Write unit tests for MailMessage model
     - Create `OE2EmpireTracker.Tests/Models/MailMessageTests.cs`
     - Test JSON serialization round-trip (all fields preserved)
     - Test default values (FromName, ToName, MailContent default to string.Empty; LocalRead defaults to false)
@@ -29,7 +29,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Verification: vstest.console passes MailMessageTests_
 
 - [ ] 2. Add MailMessage persistence to PlayerContext
-  - [-] 2.1 Add MailMessage array to PlayerRoot
+  - [x] 2.1 Add MailMessage array to PlayerRoot
     - Add `MailMessage[]` property with JsonProperty("mailMessage") to PlayerRoot
     - Initialize to empty array in constructor
     - _Satisfies: Req 2, Criterion 2.1_
@@ -37,7 +37,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Common/Services/PlayerRoot.cs_
     - _Verification: getDiagnostics on PlayerRoot.cs_
 
-  - [~] 2.2 Add MailMessage list management to PlayerContext
+  - [x] 2.2 Add MailMessage list management to PlayerContext
     - Add _mailMessageList field (List<MailMessage>), _mailMessageCache field (Dictionary<int, MailMessage>)
     - Add MailMessageList property (IReadOnlyList<MailMessage>)
     - Add MailDataChanged event
@@ -49,7 +49,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Verification: getDiagnostics on PlayerContext.cs_
 
 
-  - [~] 2.3 Add AddMailMessage and FindMailMessage methods to PlayerContext
+  - [x] 2.3 Add AddMailMessage and FindMailMessage methods to PlayerContext
     - Implement AddMailMessage with duplicate skip (log warning, no throw)
     - Implement FindMailMessage with dictionary cache lookup
     - Add MailMessage serialization to WriteContext (playerRoot.MailMessage = _mailMessageList.ToArray())
@@ -58,7 +58,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Output: OE2EmpireTracker.Common/Services/PlayerContext.cs_
     - _Verification: getDiagnostics on PlayerContext.cs_
 
-  - [~] 2.4 Write property test for deduplication invariant
+  - [-] 2.4 Write property test for deduplication invariant
     - **Property 1: Deduplication Invariant**
     - Generate random sequences of AddMailMessage calls with repeated MailIds
     - Assert that MailMessageList never contains duplicate MailIds
@@ -68,7 +68,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
     - _Verification: vstest.console passes Property 1 test_
 
 - [ ] 3. Implement MailService core methods
-  - [~] 3.1 Create MailService static class with filter logic
+  - [-] 3.1 Create MailService static class with filter logic
     - Create `OE2EmpireTracker.Common/Services/MailService.cs`
     - Implement GetFilteredMessages with AND logic: readFilter (All/Unread/Read), typeFilter (All/Player-System/Colony/Research/Skill), searchText (case-insensitive substring on FromName OR Subject OR MailContent)
     - Implement GetUnreadCount
@@ -155,7 +155,7 @@ Implement a local mail archive for Outer Empires 2 players following the establi
 
 
 - [ ] 6. Add sync interval preference
-  - [~] 6.1 Add MailSyncIntervalMinutes to PreferencesStore
+  - [-] 6.1 Add MailSyncIntervalMinutes to PreferencesStore
     - Add MailSyncIntervalMinutes property (default 5, min 1, max 60) to the preferences model
     - Add GetMailSyncIntervalMs() static helper method that clamps and converts to milliseconds
     - _Satisfies: Req 7, Criterion 7.1_
