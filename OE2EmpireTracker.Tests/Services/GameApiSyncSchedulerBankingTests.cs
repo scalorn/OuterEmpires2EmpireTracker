@@ -464,6 +464,256 @@ namespace OE2EmpireTracker.Tests.Services
             }
         }
 
+        // -------------------------------------------------------------------
+        // 6.3 Call ordering: profile -> colony -> asset -> banking
+        // Validates: Requirement 4.2
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that SyncCharacterAsync calls sync phases in order:
+        /// profile (token + character), then colony, then asset, then banking.
+        /// Uses HTTP endpoint tracking to detect the order of API calls.
+        /// </summary>
+        [Test]
+        public async Task SyncCharacterAsync_CallOrder_IsProfileColonyAssetBanking()
+        {
+            var callOrder = new List<string>();
+            HttpListener listener = null;
+            GameApiClient client = null;
+            GameApiConnectionMonitor monitor = null;
+
+            try
+            {
+                string baseUrl = "http://localhost:" + GetAvailablePort() + "/";
+                listener = new HttpListener();
+                listener.Prefixes.Add(baseUrl);
+                listener.Start();
+
+                client = new GameApiClient(baseUrl.TrimEnd('/'));
+
+                string tempFile = Path.Combine(
+                    Path.GetTempPath(),
+                    "oe2-test-banking-order-" + Guid.NewGuid().ToString("N") + ".dat");
+                _tempFiles.Add(tempFile);
+                var credManager = new GameApiCredentialManager(tempFile);
+                credManager.StoreKey(PlayerUUID, "test-secret");
+
+                monitor = new GameApiConnectionMonitor(
+                    client, credManager, PlayerUUID, AppId, ClientId);
+
+                var scheduler = new OrderingScheduler(
+                    client, credManager, monitor, AppId, ClientId);
+
+                SetupOrderingResponses(listener, callOrder);
+
+                bool result = await scheduler.CallSyncCharacterAsync(PlayerUUID);
+
+                Assert.That(result, Is.True, "SyncCharacterAsync should succeed");
+                Assert.That(callOrder.Count, Is.GreaterThanOrEqualTo(4));
+
+                int profileIndex = callOrder.IndexOf("profile");
+                int colonyIndex = callOrder.IndexOf("colony");
+                int assetIndex = callOrder.IndexOf("asset");
+                int bankingIndex = callOrder.IndexOf("banking");
+
+                Assert.That(profileIndex, Is.GreaterThanOrEqualTo(0), "Profile called");
+                Assert.That(colonyIndex, Is.GreaterThan(profileIndex), "Colony after profile");
+                Assert.That(assetIndex, Is.GreaterThan(colonyIndex), "Asset after colony");
+                Assert.That(bankingIndex, Is.GreaterThan(assetIndex), "Banking after asset");
+            }
+            finally
+            {
+                monitor?.Dispose();
+                client?.Dispose();
+
+                if (listener != null && listener.IsListening)
+                {
+                    listener.Stop();
+                    listener.Close();
+                }
+            }
+        }
+
+        private static void SetupOrderingResponses(HttpListener listener, List<string> callOrder)
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    while (listener.IsListening)
+                    {
+                        var context = await listener.GetContextAsync().ConfigureAwait(false);
+                        string path = context.Request.Url.AbsolutePath;
+                        string body = string.Empty;
+                        int statusCode = 200;
+
+                        if (path.Contains("/v1/auth/token"))
+                        {
+                            body = JsonConvert.SerializeObject(new GameApiServiceResponse<GameApiTokenResponse>
+                            {
+                                Success = true,
+                                ReturnCode = 0,
+                                Data = new GameApiTokenResponse
+                                {
+                                    AccessToken = "ordering-token-" + Guid.NewGuid().ToString("N"),
+                                    TokenType = "Bearer",
+                                    ExpiresIn = 3600,
+                                    CharacterId = 1,
+                                },
+                            });
+                        }
+                        else if (path.Contains("/v1/character"))
+                        {
+                            callOrder.Add("profile");
+                            body = JsonConvert.SerializeObject(new GameApiServiceResponse<GameApiProfileResponse>
+                            {
+                                Success = true,
+                                ReturnCode = 0,
+                                Data = new GameApiProfileResponse(),
+                            });
+                        }
+                        else if (path.Contains("/v1/colonies"))
+                        {
+                            callOrder.Add("colony");
+                            statusCode = 403;
+                        }
+                        else if (path.Contains("/v1/assets/locations"))
+                        {
+                            callOrder.Add("asset");
+                            statusCode = 403;
+                        }
+                        else if (path.Contains("/v1/banking"))
+                        {
+                            callOrder.Add("banking");
+                            statusCode = 403;
+                        }
+                        else
+                        {
+                            statusCode = 404;
+                        }
+
+                        context.Response.StatusCode = statusCode;
+                        if (!string.IsNullOrEmpty(body))
+                        {
+                            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(body);
+                            context.Response.ContentLength64 = buffer.Length;
+                            context.Response.ContentType = "application/json";
+                            await context.Response.OutputStream.WriteAsync(
+                                buffer, 0, buffer.Length).ConfigureAwait(false);
+                        }
+
+                        context.Response.Close();
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+                catch (HttpListenerException)
+                {
+                }
+            });
+        }
+
+        // -------------------------------------------------------------------
+        // Testable subclass for call ordering (6.3)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Testable subclass that provides minimal data so all sync phases
+        /// can proceed to their HTTP calls. Used for ordering verification.
+        /// </summary>
+        private sealed class OrderingScheduler : GameApiSyncScheduler
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="OrderingScheduler"/> class.
+            /// </summary>
+            /// <param name="client">The game API client.</param>
+            /// <param name="credentialManager">The credential manager.</param>
+            /// <param name="connectionMonitor">The connection monitor.</param>
+            /// <param name="appId">The application identifier.</param>
+            /// <param name="clientId">The client identifier.</param>
+            public OrderingScheduler(
+                GameApiClient client,
+                GameApiCredentialManager credentialManager,
+                GameApiConnectionMonitor connectionMonitor,
+                string appId,
+                string clientId)
+                : base(client, credentialManager, connectionMonitor, appId, clientId)
+            {
+            }
+
+            /// <summary>
+            /// Exposes SyncCharacterAsync for direct testing.
+            /// </summary>
+            /// <param name="playerUUID">The player UUID.</param>
+            /// <returns>A task representing the async operation result.</returns>
+            public Task<bool> CallSyncCharacterAsync(string playerUUID)
+            {
+                return SyncCharacterAsync(playerUUID);
+            }
+
+            /// <inheritdoc/>
+            internal override PlayerProfile GetPlayerProfile(string playerUUID)
+            {
+                return new PlayerProfile { UUID = playerUUID };
+            }
+
+            /// <inheritdoc/>
+            internal override List<Colony> GetPlayerColonies(string playerUUID)
+            {
+                return new List<Colony>();
+            }
+
+            /// <inheritdoc/>
+            internal override List<Station> GetPlayerStations(string playerUUID)
+            {
+                return new List<Station>();
+            }
+
+            /// <inheritdoc/>
+            internal override List<Ship> GetPlayerShips(string playerUUID)
+            {
+                return new List<Ship>();
+            }
+
+            /// <inheritdoc/>
+            internal override void WriteContext()
+            {
+            }
+
+            /// <inheritdoc/>
+            internal override void RaiseColonyDataChanged()
+            {
+            }
+
+            /// <inheritdoc/>
+            internal override void RaiseColonyDataChanged(string colonyUUID)
+            {
+            }
+
+            /// <inheritdoc/>
+            internal override void RaiseAssetDataChanged()
+            {
+            }
+
+            /// <inheritdoc/>
+            internal override void RaiseBankingDataChanged()
+            {
+            }
+
+            /// <inheritdoc/>
+            internal override PlayerContext GetPlayerContext()
+            {
+                PlayerContext.Reset();
+                return PlayerContext.GetInstance();
+            }
+
+            /// <inheritdoc/>
+            internal override void SetBankingBalance(decimal balance)
+            {
+            }
+        }
+
         /// <summary>
         /// Testable subclass that throws from GetPlayerContext to simulate
         /// banking failure. Validates the try/catch in SyncCharacterAsync.
