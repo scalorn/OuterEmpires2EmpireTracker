@@ -111,5 +111,23 @@ namespace OE2EmpireTracker.Services
             _playerContext.OnStationDataChanged();
             _playerContext.OnShipDataChanged(string.Empty);
         }
+
+        /// <inheritdoc/>
+        internal override PlayerContext GetPlayerContext()
+        {
+            return _playerContext;
+        }
+
+        /// <inheritdoc/>
+        internal override void SetBankingBalance(decimal balance)
+        {
+            _playerContext.BankingBalance = balance;
+        }
+
+        /// <inheritdoc/>
+        internal override void RaiseBankingDataChanged()
+        {
+            _playerContext.OnBankingDataChanged();
+        }
     }
 }
