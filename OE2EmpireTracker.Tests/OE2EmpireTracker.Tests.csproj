@@ -287,6 +287,7 @@
     <Compile Include="Services\ColonyStatusCalculatorTests.cs" />
     <Compile Include="Services\ColonyMergeBuildingsBugConditionTests.cs" />
     <Compile Include="Services\ColonyMergeBuildingsPreservationTests.cs" />
+    <Compile Include="Services\ColonyMergeBuildingsFixCheckTests.cs" />
     <Compile Include="Services\BuildOrderOptimizerTests.cs" />
     <Compile Include="Services\BuildOrderOptimizerPropertyTests.cs" />
     <Compile Include="Services\ContextFilePathTests.cs" />

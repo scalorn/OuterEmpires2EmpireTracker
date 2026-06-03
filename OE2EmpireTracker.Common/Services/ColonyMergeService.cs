@@ -82,7 +82,10 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Merges a list of API buildings into a colony's structure list.
-        /// Matches by BuildingID (for previously synced structures) or BlueprintDesignName (case-insensitive).
+        /// Implements a three-phase algorithm:
+        ///   Phase 1: Ordered matching with pool consumption tracking.
+        ///   Phase 2: Warehouse-based staged assignment (task 3.2).
+        ///   Phase 3: BuildQueueSequence reassignment (task 3.3).
         /// Never removes local structures absent from the API response.
         /// Preserves local-only fields on existing structures.
         /// </summary>
@@ -101,20 +104,27 @@ namespace OE2EmpireTracker.Services
 
             bool hasChanges = false;
 
-            // Sort API buildings by constructingBuildingFinish to match local DisplaySequence order.
+            // Sort API buildings by constructingBuildingFinish ascending.
             // Buildings constructed first have earlier dates; the one currently being built has the latest.
             var sortedApiBuildings = apiBuildings
                 .OrderBy(b => b.ConstructingBuildingFinish ?? DateTime.MaxValue)
                 .ToList();
 
+            // Phase 1: Ordered matching with pool consumption tracking.
+            // Walk API buildings in completion-date order, consuming pool entries one-by-one.
+            var consumed = new HashSet<string>(StringComparer.Ordinal);
+
             int sequenceCounter = 0;
             foreach (var apiBuilding in sortedApiBuildings)
             {
                 sequenceCounter++;
-                var match = FindLocalStructure(apiBuilding, colony);
+                var match = FindLocalStructure(apiBuilding, colony, consumed);
 
                 if (match != null)
                 {
+                    // Mark this pool entry as consumed so it cannot be matched again
+                    consumed.Add(match.UUID);
+
                     // Update DisplaySequence to match build order if not already set
                     if (match.DisplaySequence == 0)
                     {
@@ -148,6 +158,181 @@ namespace OE2EmpireTracker.Services
                         newStructure.BuildQueueSequence,
                         colony.UUID);
                 }
+            }
+
+            // Phase 2: Warehouse-based staged assignment (task 3.2)
+            // Only consider genuine pool entries (BuildingID == 0, never synced) as remaining.
+            // Structures with BuildingID > 0 that weren't consumed are previously-synced structures
+            // not present in this API response — they retain their existing state.
+            var remaining = colony.Structures
+                .Where(s => !consumed.Contains(s.UUID) && s.BuildingID == 0)
+                .ToList();
+
+            if (remaining.Count > 0)
+            {
+                // Query warehouse for flatpack items with positive quantity
+                var warehouseFlatpacks = colony.Items != null
+                    ? colony.Items.Items.Values
+                        .Where(i => i.ItemType == ItemType.ItemTypeEnum.Flatpack && i.Quantity > 0)
+                        .ToList()
+                    : new List<Item>();
+
+                // Group remaining entries by FlatpackBlueprintUUID
+                var groupedByBlueprint = remaining
+                    .Where(s => !string.IsNullOrEmpty(s.FlatpackBlueprintUUID))
+                    .GroupBy(s => s.FlatpackBlueprintUUID, StringComparer.Ordinal);
+
+                var stagedUUIDs = new HashSet<string>(StringComparer.Ordinal);
+
+                foreach (var group in groupedByBlueprint)
+                {
+                    // Find matching warehouse flatpack where BaseItemTypeID == FlatpackBlueprintUUID
+                    var matchingFlatpack = warehouseFlatpacks
+                        .FirstOrDefault(i => string.Equals(
+                            i.BaseItemTypeID,
+                            group.Key,
+                            StringComparison.Ordinal));
+
+                    if (matchingFlatpack == null)
+                    {
+                        continue;
+                    }
+
+                    // Order entries by BuildQueueSequence ascending, mark first N as staged
+                    int stagedLimit = matchingFlatpack.Quantity;
+                    int stagedCount = 0;
+
+                    foreach (var entry in group.OrderBy(s => s.BuildQueueSequence))
+                    {
+                        if (stagedCount >= stagedLimit)
+                        {
+                            break;
+                        }
+
+                        entry.Properties.SetProperty(GameConstants.PropStaged, true);
+                        entry.Properties.SetProperty(GameConstants.PropBuilt, false);
+                        entry.BuildCompletionTime = null;
+                        stagedUUIDs.Add(entry.UUID);
+                        stagedCount++;
+                        hasChanges = true;
+
+                        Log.Debug(
+                            "MergeBuildings Phase 2: staged UUID={0} (blueprint={1}, warehouseQty={2})",
+                            entry.UUID,
+                            group.Key,
+                            matchingFlatpack.Quantity);
+                    }
+                }
+
+                // Planned normalization: remaining entries with no warehouse match
+                foreach (var entry in remaining)
+                {
+                    if (stagedUUIDs.Contains(entry.UUID))
+                    {
+                        continue;
+                    }
+
+                    entry.Properties.SetProperty(GameConstants.PropBuilt, false);
+                    entry.Properties.SetProperty(GameConstants.PropStaged, false);
+                    entry.BuildCompletionTime = null;
+                    hasChanges = true;
+
+                    Log.Debug(
+                        "MergeBuildings Phase 2: planned UUID={0} (no warehouse match)",
+                        entry.UUID);
+                }
+            }
+
+            // Phase 3: BuildQueueSequence reassignment (task 3.3)
+            // Only reassign BQS for structures actively involved in this merge cycle:
+            // - Consumed structures (matched in Phase 1): ordered by API completion date
+            // - Remaining pool entries (staged/planned from Phase 2): preserve relative order
+            // Previously-synced structures not in this API (BuildingID > 0, not consumed)
+            // and newly-created structures (already given maxBQS+1) keep their BQS.
+
+            // Build a lookup from BuildingID to the API sort position for ordering.
+            var apiOrderLookup = new Dictionary<int, int>();
+            for (int i = 0; i < sortedApiBuildings.Count; i++)
+            {
+                apiOrderLookup[sortedApiBuildings[i].BuildingId] = i;
+            }
+
+            // Consumed structures ordered by API completion date
+            var consumedOrdered = colony.Structures
+                .Where(s => consumed.Contains(s.UUID))
+                .OrderBy(s => apiOrderLookup.ContainsKey(s.BuildingID)
+                    ? apiOrderLookup[s.BuildingID]
+                    : int.MaxValue)
+                .ToList();
+
+            // Remaining pool entries from Phase 2 (BuildingID == 0, not consumed)
+            // These are staged or planned structures.
+            bool staged;
+            var stagedStructures = remaining
+                .Where(s =>
+                {
+                    s.Properties.GetBoolean(GameConstants.PropStaged, false, out staged);
+                    return staged;
+                })
+                .OrderBy(s => s.BuildQueueSequence)
+                .ToList();
+
+            var stagedStructureUUIDs = new HashSet<string>(
+                stagedStructures.Select(s => s.UUID),
+                StringComparer.Ordinal);
+
+            var plannedStructures = remaining
+                .Where(s => !stagedStructureUUIDs.Contains(s.UUID))
+                .OrderBy(s => s.BuildQueueSequence)
+                .ToList();
+
+            // Assign contiguous BuildQueueSequence starting at 1:
+            // consumed (API order), then staged (user order), then planned (user order).
+            int bqSeq = 0;
+            foreach (var s in consumedOrdered)
+            {
+                bqSeq++;
+                if (s.BuildQueueSequence != bqSeq)
+                {
+                    s.BuildQueueSequence = bqSeq;
+                    hasChanges = true;
+                }
+            }
+
+            foreach (var s in stagedStructures)
+            {
+                bqSeq++;
+                if (s.BuildQueueSequence != bqSeq)
+                {
+                    s.BuildQueueSequence = bqSeq;
+                    hasChanges = true;
+                }
+            }
+
+            foreach (var s in plannedStructures)
+            {
+                bqSeq++;
+                if (s.BuildQueueSequence != bqSeq)
+                {
+                    s.BuildQueueSequence = bqSeq;
+                    hasChanges = true;
+                }
+            }
+
+            // Defensive invariant: at most 1 structure with Built=false AND BuildCompletionTime != null
+            bool builtValue;
+            int buildingCount = colony.Structures.Count(s =>
+            {
+                s.Properties.GetBoolean(GameConstants.PropBuilt, false, out builtValue);
+                return !builtValue && s.BuildCompletionTime != null;
+            });
+
+            if (buildingCount > 1)
+            {
+                Log.Error(
+                    "MergeBuildings Phase 3 INVARIANT VIOLATION: colony {0} has {1} structures with Built=false AND BuildCompletionTime != null (expected at most 1)",
+                    colony.UUID,
+                    buildingCount);
             }
 
             Log.Info(
@@ -519,19 +704,26 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Finds a local structure matching the API building.
+        /// Finds a local structure matching the API building, excluding already-consumed entries.
         /// First tries matching by BuildingID (for previously synced structures),
         /// then falls back to matching unassigned structures of the same type by DisplaySequence order.
-        /// When API buildings are sorted by constructingBuildingFinish, this aligns them with
-        /// local structures in build order.
+        /// Consumed UUIDs are excluded from both primary and fallback matching to prevent
+        /// the same pool entry from being matched by multiple API buildings.
         /// </summary>
+        /// <param name="apiBuilding">The API building to find a local match for.</param>
+        /// <param name="colony">The colony whose structures are searched.</param>
+        /// <param name="consumed">Set of pool entry UUIDs already matched; excluded from candidates.</param>
+        /// <returns>The matched local structure, or null if no match found.</returns>
         private static ColonyStructure FindLocalStructure(
             GameApiColonyBuilding apiBuilding,
-            Colony colony)
+            Colony colony,
+            HashSet<string> consumed)
         {
             // Primary match: by BuildingID (structures that were previously synced)
             var match = colony.Structures.FirstOrDefault(s =>
-                s.BuildingID > 0 && s.BuildingID == apiBuilding.BuildingId);
+                s.BuildingID > 0 &&
+                s.BuildingID == apiBuilding.BuildingId &&
+                !consumed.Contains(s.UUID));
 
             if (match != null)
             {
@@ -543,7 +735,9 @@ namespace OE2EmpireTracker.Services
             if (apiBuilding.ColonyBuildingTypeId > 0)
             {
                 var unassigned = colony.Structures
-                    .Where(s => s.BuildingID == 0 && s.ColonyBuildingTypeId == apiBuilding.ColonyBuildingTypeId)
+                    .Where(s => s.BuildingID == 0 &&
+                                s.ColonyBuildingTypeId == apiBuilding.ColonyBuildingTypeId &&
+                                !consumed.Contains(s.UUID))
                     .OrderBy(s => s.DisplaySequence)
                     .FirstOrDefault();
 

@@ -20,7 +20,7 @@ This task list implements the colony-import-fix bugfix using the exploratory bug
 
 ## Tasks
 
-- [-] 1. Write bug condition exploration test
+- [x] 1. Write bug condition exploration test
   - **Property 1: Bug Condition** - Pool Consumption and State Assignment
   - **CRITICAL**: This test MUST FAIL on unfixed code — failure confirms the bug exists
   - **DO NOT attempt to fix the test or the code when it fails**
@@ -42,7 +42,7 @@ This task list implements the colony-import-fix bugfix using the exploratory bug
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 2.1, 2.2, 2.3, 2.4, 2.5_
 
 
-- [-] 2. Write preservation property tests (BEFORE implementing fix)
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
   - **Property 2: Preservation** - Field-Level Merge and Structure Creation Unchanged
   - **IMPORTANT**: Follow observation-first methodology
   - **Observation Phase**: Run UNFIXED code with non-buggy inputs (single-match scenarios where isBugCondition returns false):
@@ -63,9 +63,9 @@ This task list implements the colony-import-fix bugfix using the exploratory bug
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
 
 
-- [ ] 3. Implement the three-phase fix for MergeBuildings
+- [x] 3. Implement the three-phase fix for MergeBuildings
 
-  - [~] 3.1 Add consumed-set parameter to FindLocalStructure and implement Phase 1 loop
+  - [x] 3.1 Add consumed-set parameter to FindLocalStructure and implement Phase 1 loop
     - Modify `FindLocalStructure` signature to accept `HashSet<string> consumed` parameter
     - Exclude consumed UUIDs from both primary (BuildingID) and fallback (ColonyBuildingTypeId) matching
     - Replace the existing `foreach` loop in `MergeBuildings` with Phase 1 logic:
@@ -81,7 +81,7 @@ This task list implements the colony-import-fix bugfix using the exploratory bug
     - _Requirements: 2.2, 3.5, 3.6, 3.7_
     - Verification: `getDiagnostics` on ColonyMergeService.cs compiles clean
 
-  - [~] 3.2 Implement Phase 2 — Warehouse-based staged assignment
+  - [x] 3.2 Implement Phase 2 — Warehouse-based staged assignment
     - After Phase 1 loop, collect remaining unmatched pool entries (UUID not in consumed set)
     - Query `colony.Items.Items.Values` for flatpack items (ItemType == Flatpack, Quantity > 0)
     - Group remaining entries by FlatpackBlueprintUUID
@@ -98,7 +98,7 @@ This task list implements the colony-import-fix bugfix using the exploratory bug
     - Verification: `getDiagnostics` on ColonyMergeService.cs compiles clean
 
 
-  - [~] 3.3 Implement Phase 3 — BuildQueueSequence reassignment
+  - [x] 3.3 Implement Phase 3 — BuildQueueSequence reassignment
     - After Phase 2, assign BuildQueueSequence to all structures in colony.Structures:
       - Partition structures into three groups: built/building (matched by API, in consumed set or newly created), staged (Properties["Staged"]=true), planned (remaining)
       - Built/building: assign sequences 1, 2, 3... in API completion-date order (ConstructingBuildingFinish ascending)
@@ -112,7 +112,7 @@ This task list implements the colony-import-fix bugfix using the exploratory bug
     - _Requirements: 2.1, 2.7_
     - Verification: `getDiagnostics` on ColonyMergeService.cs compiles clean; build full solution with zero warnings
 
-  - [~] 3.4 Verify bug condition exploration test now passes
+  - [x] 3.4 Verify bug condition exploration test now passes
     - **Property 1: Expected Behavior** - Pool Consumption and State Assignment
     - **IMPORTANT**: Re-run the SAME test from task 1 — do NOT write a new test
     - The test from task 1 encodes the expected behavior
@@ -122,7 +122,7 @@ This task list implements the colony-import-fix bugfix using the exploratory bug
     - If test still fails, investigate and fix the implementation (tasks 3.1-3.3)
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-  - [~] 3.5 Verify preservation tests still pass
+  - [x] 3.5 Verify preservation tests still pass
     - **Property 2: Preservation** - Field-Level Merge and Structure Creation Unchanged
     - **IMPORTANT**: Re-run the SAME tests from task 2 — do NOT write new tests
     - Run `ColonyMergeBuildingsPreservationTests` via vstest.console
@@ -132,7 +132,7 @@ This task list implements the colony-import-fix bugfix using the exploratory bug
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
 
 
-- [~] 4. Write fix-checking property tests for full algorithm validation
+- [-] 4. Write fix-checking property tests for full algorithm validation
   - Test file: `OE2EmpireTracker.Tests/Services/ColonyMergeBuildingsFixCheckTests.cs`
   - Generate random colony configurations (1-10 structures, varying types, 0-5 API buildings, 0-3 warehouse flatpacks)
   - Use FsCheck 2.16.6 LINQ query syntax for all generators
