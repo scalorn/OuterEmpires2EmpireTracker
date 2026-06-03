@@ -162,10 +162,13 @@ namespace OE2EmpireTracker.Forms.Banking
 
         private void RefreshSummaryDisplay(IReadOnlyList<BankingTransaction> filteredTransactions)
         {
+            var sw = Stopwatch.StartNew();
             var summary = BankingService.ComputeSummary(filteredTransactions);
             lblIncome.Text = string.Format("Income: {0:N2}", summary.TotalIncome);
             lblExpenses.Text = string.Format("Expenses: {0:N2}", summary.TotalExpenses);
             lblNet.Text = string.Format("Net: {0:N2}", summary.NetChange);
+            sw.Stop();
+            Log.Info("PERF RefreshSummaryDisplay: {0}ms", sw.ElapsedMilliseconds);
         }
 
         // -----------------------------------------------------------------------
@@ -186,10 +189,13 @@ namespace OE2EmpireTracker.Forms.Banking
 
         private void RefreshCashFlowChart(IReadOnlyList<BankingTransaction> transactions, bool groupByHour)
         {
+            var sw = Stopwatch.StartNew();
             chartCashFlow.Series.Clear();
 
             if (transactions.Count == 0)
             {
+                sw.Stop();
+                Log.Info("PERF RefreshCashFlowChart: {0}ms (empty)", sw.ElapsedMilliseconds);
                 return;
             }
 
@@ -229,14 +235,19 @@ namespace OE2EmpireTracker.Forms.Banking
             // Apply visibility from checkboxes
             netSeries.Enabled = chkNetChange.Checked;
             cumulativeSeries.Enabled = chkCumulative.Checked;
+            sw.Stop();
+            Log.Info("PERF RefreshCashFlowChart: {0}ms points={1}", sw.ElapsedMilliseconds, netSeries.Points.Count);
         }
 
         private void RefreshIncomeExpensesChart(IReadOnlyList<BankingTransaction> transactions, bool groupByHour)
         {
+            var sw = Stopwatch.StartNew();
             chartIncomeExpenses.Series.Clear();
 
             if (transactions.Count == 0)
             {
+                sw.Stop();
+                Log.Info("PERF RefreshIncomeExpensesChart: {0}ms (empty)", sw.ElapsedMilliseconds);
                 return;
             }
 
@@ -270,14 +281,19 @@ namespace OE2EmpireTracker.Forms.Banking
 
             chartIncomeExpenses.Series.Add(incomeSeries);
             chartIncomeExpenses.Series.Add(expenseSeries);
+            sw.Stop();
+            Log.Info("PERF RefreshIncomeExpensesChart: {0}ms points={1}", sw.ElapsedMilliseconds, incomeSeries.Points.Count);
         }
 
         private void RefreshTypeBreakdownChart(IReadOnlyList<BankingTransaction> transactions)
         {
+            var sw = Stopwatch.StartNew();
             chartTypeBreakdown.Series.Clear();
 
             if (transactions.Count == 0)
             {
+                sw.Stop();
+                Log.Info("PERF RefreshTypeBreakdownChart: {0}ms (empty)", sw.ElapsedMilliseconds);
                 return;
             }
 
@@ -325,6 +341,8 @@ namespace OE2EmpireTracker.Forms.Banking
             }
 
             chartTypeBreakdown.Series.Add(pieSeries);
+            sw.Stop();
+            Log.Info("PERF RefreshTypeBreakdownChart: {0}ms groups={1}", sw.ElapsedMilliseconds, typeGroups.Count);
         }
 
         private void OnGroupingChanged(object sender, EventArgs e)
@@ -373,6 +391,7 @@ namespace OE2EmpireTracker.Forms.Banking
         // -----------------------------------------------------------------------
         private void PopulateTypeFilter()
         {
+            var sw = Stopwatch.StartNew();
             using var guard = new ProgrammaticUpdateGuard(this);
             cboType.Items.Clear();
             cboType.Items.Add("All");
@@ -387,6 +406,8 @@ namespace OE2EmpireTracker.Forms.Banking
             }
 
             cboType.SelectedIndex = 0;
+            sw.Stop();
+            Log.Info("PERF PopulateTypeFilter: {0}ms items={1}", sw.ElapsedMilliseconds, cboType.Items.Count);
         }
 
         private IReadOnlyList<BankingTransaction> GetFilteredTransactions()
@@ -536,9 +557,7 @@ namespace OE2EmpireTracker.Forms.Banking
             {
                 if (dialog.ShowDialog(this) == DialogResult.OK && dialog.CreatedTransaction != null)
                 {
-                    playerContext.AddBankingTransaction(dialog.CreatedTransaction);
-                    playerContext.WriteContext();
-                    playerContext.OnBankingDataChanged();
+                    BankingService.AddManualTransaction(playerContext, dialog.CreatedTransaction);
                     Log.Info("Manual transaction added: {0}", dialog.CreatedTransaction.UUID);
                 }
             }

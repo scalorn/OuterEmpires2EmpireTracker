@@ -2,7 +2,7 @@
 
 ## After Every Piece of Work
 1. **Build and test** before committing — the solution must compile with **zero errors AND zero warnings** (including StyleCop SA* warnings) and all tests must pass. StyleCop warnings are not "just style" — they are enforced rules. Fix every SA* warning before committing.
-2. **Run audit** — `node .kiro/tools/audit.js` must report no new findings (PERF timing on small combo methods is an accepted baseline)
+2. **Run audit** — `node .kiro/tools/audit.js` must report **zero findings**. There is no such thing as "pre-existing" or "accepted baseline" — every finding is a real issue that must be fixed before committing. If audit exits with code 1, stop and fix every finding.
 3. **Always commit** — never ask whether to commit; just do it after verifying the build/tests pass
 3. **Commit** all changes with a detailed commit message describing what was done and why
 3. **Update the spec** — if the work relates to a feature or fix with a spec under `.kiro/specs/`:

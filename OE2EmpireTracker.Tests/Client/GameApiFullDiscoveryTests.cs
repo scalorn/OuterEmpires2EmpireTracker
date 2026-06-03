@@ -122,7 +122,7 @@ namespace OE2EmpireTracker.Tests.Client
 
                 var metadata = new
                 {
-                    runTimestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    runTimestamp = SystemClock.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
                     characterId = this.playerUUID,
                     endpointResults = new
                     {

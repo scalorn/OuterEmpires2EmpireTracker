@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -55,6 +56,7 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             this.cboTestLocationType.SelectedIndex = 0;
 
             GameApiMetricsCollector.Instance.MetricsUpdated += this.OnMetricsUpdated;
+            EmpireContext.PlayerContext.CurrentPlayerChanged += this.OnCurrentPlayerChanged;
 
             this.UpdateDisplay(GameApiMetricsCollector.Instance.GetCurrentSnapshot());
 
@@ -156,6 +158,7 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             GameApiMetricsCollector.Instance.MetricsUpdated -= this.OnMetricsUpdated;
+            EmpireContext.PlayerContext.CurrentPlayerChanged -= this.OnCurrentPlayerChanged;
 
             this._refreshTimer.Stop();
             this._countdownTimer.Stop();
@@ -163,6 +166,30 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
 
             base.OnFormClosed(e);
+        }
+
+        private void OnCurrentPlayerChanged(object sender, EventArgs e)
+        {
+            if (this.IsDisposed)
+            {
+                return;
+            }
+
+            if (this.InvokeRequired)
+            {
+                try
+                {
+                    this.BeginInvoke(new Action(() => this.OnCurrentPlayerChanged(sender, e)));
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+
+                return;
+            }
+
+            // Player changed — metrics collector resets; refresh display
+            this.UpdateDisplay(GameApiMetricsCollector.Instance.GetCurrentSnapshot());
         }
 
         private void OnMetricsUpdated(object sender, MetricsSnapshot snapshot)
@@ -177,6 +204,7 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
                 return;
             }
 
+            var sw = Stopwatch.StartNew();
             this._refreshPending = false;
             var snapshot = GameApiMetricsCollector.Instance.GetCurrentSnapshot();
             this.UpdateDisplay(snapshot);
@@ -185,6 +213,8 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             this.pnlTpsGraph.Invalidate();
 
             this.PopulateHistoryGrid(GameApiMetricsCollector.Instance.GetHistory());
+            sw.Stop();
+            Log.Info("PERF RefreshTimer_Tick: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void UpdateDisplay(MetricsSnapshot snapshot)
@@ -256,6 +286,7 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
 
         private void PopulateHistoryGrid(IReadOnlyList<RequestRecord> history)
         {
+            var sw = Stopwatch.StartNew();
             this.dgvHistory.Rows.Clear();
 
             for (int i = history.Count - 1; i >= 0; i--)
@@ -269,6 +300,9 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
                     record.DurationMs.ToString(),
                     record.BytesReceived.ToString());
             }
+
+            sw.Stop();
+            Log.Info("PERF PopulateHistoryGrid: {0}ms rows={1}", sw.ElapsedMilliseconds, history.Count);
         }
 
         private void BtnReset_Click(object sender, EventArgs e)
@@ -414,14 +448,6 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             {
                 this.lblCircuitBreaker.Text = "Circuit Breaker: " + state;
             }
-        }
-
-        private void UpdateRateLimiterDisplay()
-        {
-            // Placeholder: actual integration depends on GameApiClient exposing RateLimitState.
-            // For now, show default placeholder values.
-            this.lblRateLimit.Text = "Rate Limit: --/min";
-            this.lblRateLimitState.Text = "Rate Limiter: Active";
         }
 
         private void CountdownTimer_Tick(object sender, EventArgs e)

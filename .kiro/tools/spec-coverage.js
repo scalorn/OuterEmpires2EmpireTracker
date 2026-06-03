@@ -15,7 +15,7 @@ const fs = require('fs');
 const path = require('path');
 
 const SOURCE_DIR = 'OE2EmpireTracker';
-const SPEC_DIR = 'spec';
+const SPEC_DIRS = ['spec', '.kiro/specs', 'docs'];
 const SKIP_FILES = ['Program.cs', 'AssemblyInfo.cs'];
 const EXCLUDE_DIRS = ['obj', 'bin', 'Properties'];
 
@@ -65,7 +65,10 @@ function loadSpecContent(specFiles) {
 
 // Main
 const sourceFiles = getSourceFiles(SOURCE_DIR);
-const specFiles = getSpecFiles(SPEC_DIR);
+const specFiles = [];
+for (const dir of SPEC_DIRS) {
+    getSpecFiles(dir, specFiles);
+}
 const specContent = loadSpecContent(specFiles);
 
 const findings = [];

@@ -174,6 +174,18 @@ const EXEMPT_PATTERNS = [
     /\.Distinct\(\)\s*\n?\s*\.OrderBy\s*\(\s*p\s*=>\s*p\s*\)/,
 
     // FormColonyActivity — refactored to CollectionSortHelper.OrderActivityRowsByTimeRemaining
+
+    // FormBanking chart/filter sorts — sorting local computed buckets/groups, not model collections
+    /buckets\.OrderBy\s*\(\s*b\s*=>\s*b\.Key\s*\)/,
+    /\.OrderByDescending\s*\(\s*g\s*=>\s*g\.Total\s*\)/,
+
+    // FormBanking/FormBankingEntry type label sorts — sorting static lookup labels for combo population
+    /sortedLabels|BankingTransactionTypes\.TypeLabels\.Values/,
+    /\.OrderBy\s*\(\s*label\s*=>\s*label\s*,\s*StringComparer/,
+    /\.OrderBy\s*\(\s*kvp\s*=>\s*kvp\.Value\s*,\s*StringComparer/,
+
+    // ColonyAdminReportBuilder refining group sorts — sorting local anonymous-type computation results
+    /refiningGroups\.OrderBy\s*\(\s*g\s*=>\s*g\.Resource\s*\)/,
 ];
 
 function findCsFiles(dir, results) {

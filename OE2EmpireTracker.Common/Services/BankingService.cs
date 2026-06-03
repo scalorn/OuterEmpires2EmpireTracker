@@ -274,6 +274,29 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Adds a manually-created transaction to the player context, persists, and raises BankingDataChanged.
+        /// This is the single mutation path for manual transaction entry.
+        /// </summary>
+        /// <param name="playerContext">The player context to mutate.</param>
+        /// <param name="transaction">The transaction to add.</param>
+        public static void AddManualTransaction(PlayerContext playerContext, BankingTransaction transaction)
+        {
+            if (playerContext == null)
+            {
+                throw new ArgumentNullException(nameof(playerContext));
+            }
+
+            if (transaction == null)
+            {
+                throw new ArgumentNullException(nameof(transaction));
+            }
+
+            playerContext.AddBankingTransaction(transaction);
+            playerContext.WriteContext();
+            playerContext.OnBankingDataChanged();
+        }
+
+        /// <summary>
         /// Computes income, expense, and net totals for a set of transactions.
         /// </summary>
         /// <param name="transactions">The transactions to summarize.</param>

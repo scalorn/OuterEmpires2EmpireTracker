@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -255,6 +256,7 @@ namespace OE2EmpireTracker.Forms.Mail
 
         private void RefreshMailList()
         {
+            var sw = Stopwatch.StartNew();
             using (var guard = new ProgrammaticUpdateGuard(this))
             {
                 string readFilter = this.cboReadFilter.SelectedItem?.ToString() ?? "All";
@@ -330,6 +332,9 @@ namespace OE2EmpireTracker.Forms.Mail
                     this.txtDetailContent.Text = string.Empty;
                 }
             }
+
+            sw.Stop();
+            Log.Info("PERF RefreshMailList: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void OnMailSelected(object sender, EventArgs e)

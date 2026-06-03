@@ -31,7 +31,7 @@ Controls:
 - `rtbStatus` (RichTextBox, read-only) - structure status summary
 - `flpWorkers`: `chkWorker1`, `chkWorker2`, `chkWorker3`, `chkWorker4`, `chkWorker5`, `chkWorker6` (CheckBoxes, visible per structure type)
 - `flpSurveySelection`: `lblSurveyFilter` (Label), `cmbSurvey` (FilteredTextComboSet - inline filter + combo for survey selection)
-- `flpSelection`: `lblSelectionFilter` (Label), `cmbSelection` (FilteredTextComboSet - inline filter + combo for resource/blueprint selection), `txtQuantity` (ValidatedTextBox), `chkStageResources` (CheckBox), `cmdStart` (Button), `cmdDone` (Button)
+- `flpSelection`: `lblSelectionFilter` (Label), `cmbSelection` (FilteredTextComboSet - inline filter + combo for resource/blueprint selection), `txtQuantity` (ValidatedTextBox), `chkStageResources` (CheckBox), `cmdStart` (Button), `cmdStop` (Button), `cmdDone` (Button)
 - `flpManufacturing`: `rtbProgressStatus` (RichTextBox, read-only), `txtCompletionTime` (ValidatedTextBox)
 - `flpStructureCommands`: `cmdUp`, `cmdDown`, `cmdDelete` (Buttons)
 - `timerCountdown` (Timer) - countdown tick for manufacturing/mining progress

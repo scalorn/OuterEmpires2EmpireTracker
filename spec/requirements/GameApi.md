@@ -62,3 +62,35 @@ The client uses a SemaphoreSlim-based sliding window to stay within limits proac
 - **Context:** `OE2EmpireTracker.Common/Client/GameApiContext.cs`
 - **Credentials:** `OE2EmpireTracker.Common/Client/GameApiCredentialManager.cs`
 - **Connection monitor:** `OE2EmpireTracker.Common/Client/GameApiConnectionMonitor.cs`
+
+## User Flow: Scheduled Sync Cycle
+
+```mermaid
+sequenceDiagram
+    participant Timer as Scheduler Timer
+    participant Scheduler as GameApiSyncScheduler
+    participant API as Game API
+    participant Context as PlayerContext
+    participant UI as Active Forms
+
+    Timer->>Scheduler: SyncNowAsync()
+    loop For each configured character
+        Scheduler->>API: POST /v1/auth/token (exchange secret)
+        API-->>Scheduler: access_token
+        Scheduler->>API: GET /v1/characters (profile)
+        API-->>Scheduler: profile data
+        Scheduler->>Context: Merge profile
+        Scheduler->>API: GET /v1/colonies (colony list + buildings + warehouse)
+        API-->>Scheduler: colony data
+        Scheduler->>Context: Merge colonies
+        Context-->>UI: ColonyDataChanged
+        Scheduler->>API: GET /v1/assets/locations (ships, stations)
+        API-->>Scheduler: asset data
+        Scheduler->>Context: Merge assets
+        Context-->>UI: AssetDataChanged
+        Scheduler->>API: GET /v1/banking/transactions + balance
+        API-->>Scheduler: banking data
+        Scheduler->>Context: Merge banking
+        Context-->>UI: BankingDataChanged
+    end
+```

@@ -37,6 +37,7 @@ Controls:
   - `chkRefining` (CheckBox, unchecked by default)
   - `chkColonyImportStaleness` (CheckBox, checked by default) — shows stale colony imports
   - `chkShowInactive` (CheckBox, unchecked) — toggles idle/inactive structures
+  - `chkOverflow` (CheckBox, unchecked) — shows overflow warnings
   - `txtFilter` (ValidatedTextBox) — text filter across all columns
 - `dgvActivities` (DataGridView, read-only, full-row select, no row headers)
   - Columns: CountDown, SystemName, ColonyName, ActivityType, Source, ProcessDetails
