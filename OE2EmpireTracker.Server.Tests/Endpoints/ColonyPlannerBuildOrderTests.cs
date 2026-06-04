@@ -28,7 +28,6 @@ public class ColonyPlannerBuildOrderTests
 {
     private const string BuildOrderUrl = "/api/v1/colony-planner/build-order";
 
-    
     /// <summary>
     /// Sets up the test server factory.
     /// </summary>

@@ -24,7 +24,7 @@ namespace OE2EmpireTracker.Server.Tests.Endpoints;
 [TestFixture]
 public class PublicAsteroidEndpointTests
 {
-        private string _charUUID = null!;
+    private string _charUUID = null!;
 
     /// <summary>
     /// Sets up the test server and seeds an asteroid with reserves.

@@ -1252,6 +1252,70 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Parses the station name from the API locationName by stripping the system suffix.
+        /// API format: "StationName (SystemName)" → returns "StationName".
+        /// </summary>
+        /// <param name="locationName">The raw location name from the API.</param>
+        /// <param name="systemName">The system name to strip from the suffix.</param>
+        /// <returns>The cleaned station name.</returns>
+        private static string ParseStationName(string locationName, string systemName)
+        {
+            if (string.IsNullOrEmpty(locationName))
+            {
+                return string.Empty;
+            }
+
+            // Strip " (SystemName)" suffix if present
+            string suffix = " (" + systemName + ")";
+            if (!string.IsNullOrEmpty(systemName) &&
+                locationName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+            {
+                return locationName.Substring(0, locationName.Length - suffix.Length).Trim();
+            }
+
+            return locationName;
+        }
+
+        /// <summary>
+        /// Parses the ship name from the API locationName by stripping prefix and location suffix.
+        /// API formats: "Ship {Name} at {Station} ({System})" or "Ship {Name} in space in {System}".
+        /// Returns just the ship name.
+        /// </summary>
+        /// <param name="locationName">The raw location name from the API.</param>
+        /// <returns>The cleaned ship name.</returns>
+        private static string ParseShipName(string locationName)
+        {
+            if (string.IsNullOrEmpty(locationName))
+            {
+                return string.Empty;
+            }
+
+            string name = locationName;
+
+            // Strip "Ship " prefix
+            if (name.StartsWith("Ship ", StringComparison.OrdinalIgnoreCase))
+            {
+                name = name.Substring(5);
+            }
+
+            // Strip " at ..." suffix (ship docked at a station)
+            int atIdx = name.IndexOf(" at ", StringComparison.OrdinalIgnoreCase);
+            if (atIdx > 0)
+            {
+                return name.Substring(0, atIdx).Trim();
+            }
+
+            // Strip " in space in ..." suffix (ship in transit)
+            int inSpaceIdx = name.IndexOf(" in space in ", StringComparison.OrdinalIgnoreCase);
+            if (inSpaceIdx > 0)
+            {
+                return name.Substring(0, inSpaceIdx).Trim();
+            }
+
+            return name.Trim();
+        }
+
+        /// <summary>
         /// Syncs banking transactions and balance for a character.
         /// Called after asset sync within SyncCharacterAsync.
         /// </summary>
@@ -1500,70 +1564,6 @@ namespace OE2EmpireTracker.Services
             }
 
             return AssetMergeService.MergeShipAssets(cargoItems, ship);
-        }
-
-        /// <summary>
-        /// Parses the station name from the API locationName by stripping the system suffix.
-        /// API format: "StationName (SystemName)" → returns "StationName".
-        /// </summary>
-        /// <param name="locationName">The raw location name from the API.</param>
-        /// <param name="systemName">The system name to strip from the suffix.</param>
-        /// <returns>The cleaned station name.</returns>
-        private static string ParseStationName(string locationName, string systemName)
-        {
-            if (string.IsNullOrEmpty(locationName))
-            {
-                return string.Empty;
-            }
-
-            // Strip " (SystemName)" suffix if present
-            string suffix = " (" + systemName + ")";
-            if (!string.IsNullOrEmpty(systemName) &&
-                locationName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
-            {
-                return locationName.Substring(0, locationName.Length - suffix.Length).Trim();
-            }
-
-            return locationName;
-        }
-
-        /// <summary>
-        /// Parses the ship name from the API locationName by stripping prefix and location suffix.
-        /// API formats: "Ship {Name} at {Station} ({System})" or "Ship {Name} in space in {System}".
-        /// Returns just the ship name.
-        /// </summary>
-        /// <param name="locationName">The raw location name from the API.</param>
-        /// <returns>The cleaned ship name.</returns>
-        private static string ParseShipName(string locationName)
-        {
-            if (string.IsNullOrEmpty(locationName))
-            {
-                return string.Empty;
-            }
-
-            string name = locationName;
-
-            // Strip "Ship " prefix
-            if (name.StartsWith("Ship ", StringComparison.OrdinalIgnoreCase))
-            {
-                name = name.Substring(5);
-            }
-
-            // Strip " at ..." suffix (ship docked at a station)
-            int atIdx = name.IndexOf(" at ", StringComparison.OrdinalIgnoreCase);
-            if (atIdx > 0)
-            {
-                return name.Substring(0, atIdx).Trim();
-            }
-
-            // Strip " in space in ..." suffix (ship in transit)
-            int inSpaceIdx = name.IndexOf(" in space in ", StringComparison.OrdinalIgnoreCase);
-            if (inSpaceIdx > 0)
-            {
-                return name.Substring(0, inSpaceIdx).Trim();
-            }
-
-            return name.Trim();
         }
 
         /// <summary>

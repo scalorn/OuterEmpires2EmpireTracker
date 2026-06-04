@@ -91,7 +91,7 @@ namespace OE2EmpireTracker.Models
 
         public string BluePrintType { get; set; }
 
-        public int Evolution { get; set; }
+        public new int Evolution { get; set; }
 
         public string TechLevel { get; set; }
 

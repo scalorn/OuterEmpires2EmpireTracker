@@ -419,11 +419,6 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Gets the number of subscribers to the ColonyDataChanged event (diagnostic only).
-        /// </summary>
-        internal int ColonyDataChangedSubscriberCount => ColonyDataChanged?.GetInvocationList()?.Length ?? 0;
-
-        /// <summary>
         /// Notifies subscribers that blueprint data has changed externally.
         /// </summary>
         public void OnBlueprintDataChanged(string blueprintUUID)
@@ -437,6 +432,15 @@ namespace OE2EmpireTracker.Services
         public void OnSurveyDataChanged(string surveyUUID)
         {
             SurveyDataChanged?.Invoke(this, new SurveyDataChangedEventArgs(surveyUUID));
+        }
+
+        /// <summary>
+        /// Gets the number of subscribers to the ColonyDataChanged event (diagnostic only).
+        /// </summary>
+        /// <returns>The subscriber count, or 0 if no subscribers.</returns>
+        public int GetColonyDataChangedSubscriberCount()
+        {
+            return ColonyDataChanged?.GetInvocationList()?.Length ?? 0;
         }
 
         /// <summary>

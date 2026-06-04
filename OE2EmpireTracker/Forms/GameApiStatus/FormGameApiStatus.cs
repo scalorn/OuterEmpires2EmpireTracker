@@ -3,8 +3,8 @@
 // </copyright>
 
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
@@ -128,6 +128,21 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
         }
 
         /// <summary>
+        /// <inheritdoc/>
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            GameApiMetricsCollector.Instance.MetricsUpdated -= this.OnMetricsUpdated;
+            EmpireContext.PlayerContext.CurrentPlayerChanged -= this.OnCurrentPlayerChanged;
+
+            this._refreshTimer.Stop();
+            this._countdownTimer.Stop();
+
+            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
+
+            base.OnFormClosed(e);
+        }
+
+        /// <summary>
         /// Converts a <see cref="SecureString"/> to a plain-text string for API calls.
         /// </summary>
         /// <param name="secureString">The secure string to convert.</param>
@@ -152,20 +167,6 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
                     Marshal.ZeroFreeGlobalAllocUnicode(ptr);
                 }
             }
-        }
-
-        /// <inheritdoc/>
-        protected override void OnFormClosed(FormClosedEventArgs e)
-        {
-            GameApiMetricsCollector.Instance.MetricsUpdated -= this.OnMetricsUpdated;
-            EmpireContext.PlayerContext.CurrentPlayerChanged -= this.OnCurrentPlayerChanged;
-
-            this._refreshTimer.Stop();
-            this._countdownTimer.Stop();
-
-            WindowStateHelper.SaveState(this, this.GetType().Name, (int)this.Tag);
-
-            base.OnFormClosed(e);
         }
 
         private void OnCurrentPlayerChanged(object sender, EventArgs e)
