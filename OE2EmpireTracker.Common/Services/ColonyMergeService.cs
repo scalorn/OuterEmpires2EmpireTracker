@@ -170,57 +170,53 @@ namespace OE2EmpireTracker.Services
 
             if (remaining.Count > 0)
             {
-                // Query warehouse for flatpack items with positive quantity
-                var warehouseFlatpacks = colony.Items != null
-                    ? colony.Items.Items.Values
-                        .Where(i => i.ItemType == ItemType.ItemTypeEnum.Flatpack && i.Quantity > 0)
-                        .ToList()
-                    : new List<Item>();
-
-                // Group remaining entries by FlatpackBlueprintUUID
-                var groupedByBlueprint = remaining
-                    .Where(s => !string.IsNullOrEmpty(s.FlatpackBlueprintUUID))
-                    .GroupBy(s => s.FlatpackBlueprintUUID, StringComparer.Ordinal);
-
                 var stagedUUIDs = new HashSet<string>(StringComparer.Ordinal);
 
-                foreach (var group in groupedByBlueprint)
+                // Only attempt warehouse matching if Items is available
+                if (colony.Items != null)
                 {
-                    // Find matching warehouse flatpack where BaseItemTypeID == FlatpackBlueprintUUID
-                    var matchingFlatpack = warehouseFlatpacks
-                        .FirstOrDefault(i => string.Equals(
-                            i.BaseItemTypeID,
-                            group.Key,
-                            StringComparison.Ordinal));
+                    // Group remaining entries by FlatpackBlueprintUUID
+                    var groupedByBlueprint = remaining
+                        .Where(s => !string.IsNullOrEmpty(s.FlatpackBlueprintUUID))
+                        .GroupBy(s => s.FlatpackBlueprintUUID, StringComparer.Ordinal);
 
-                    if (matchingFlatpack == null)
+                    foreach (var group in groupedByBlueprint)
                     {
-                        continue;
-                    }
+                        // Sum quantities across all matching warehouse flatpack entries.
+                        // Flatpacks are stored as individual Item entries (Quantity=1 each),
+                        // not as a single stack. Use CountByType which sums across all stacks.
+                        int stagedLimit = colony.Items.CountByType(
+                            ItemType.ItemTypeEnum.Flatpack,
+                            group.Key);
 
-                    // Order entries by BuildQueueSequence ascending, mark first N as staged
-                    int stagedLimit = matchingFlatpack.Quantity;
-                    int stagedCount = 0;
-
-                    foreach (var entry in group.OrderBy(s => s.BuildQueueSequence))
-                    {
-                        if (stagedCount >= stagedLimit)
+                        if (stagedLimit == 0)
                         {
-                            break;
+                            continue;
                         }
 
-                        entry.Properties.SetProperty(GameConstants.PropStaged, true);
-                        entry.Properties.SetProperty(GameConstants.PropBuilt, false);
-                        entry.BuildCompletionTime = null;
-                        stagedUUIDs.Add(entry.UUID);
-                        stagedCount++;
-                        hasChanges = true;
+                        // Order entries by BuildQueueSequence ascending, mark first N as staged
+                        int stagedCount = 0;
 
-                        Log.Debug(
-                            "MergeBuildings Phase 2: staged UUID={0} (blueprint={1}, warehouseQty={2})",
-                            entry.UUID,
-                            group.Key,
-                            matchingFlatpack.Quantity);
+                        foreach (var entry in group.OrderBy(s => s.BuildQueueSequence))
+                        {
+                            if (stagedCount >= stagedLimit)
+                            {
+                                break;
+                            }
+
+                            entry.Properties.SetProperty(GameConstants.PropStaged, true);
+                            entry.Properties.SetProperty(GameConstants.PropBuilt, false);
+                            entry.BuildCompletionTime = null;
+                            stagedUUIDs.Add(entry.UUID);
+                            stagedCount++;
+                            hasChanges = true;
+
+                            Log.Debug(
+                                "MergeBuildings Phase 2: staged UUID={0} (blueprint={1}, warehouseQty={2})",
+                                entry.UUID,
+                                group.Key,
+                                stagedLimit);
+                        }
                     }
                 }
 

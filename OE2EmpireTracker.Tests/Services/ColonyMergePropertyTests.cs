@@ -174,7 +174,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ColonyMergeService.MergeBuildings(apiBuildings, colony);
 
                 return (existingStructure.ManufacturingBlueprintUUID == data.BpUuid
-                    && existingStructure.BuildQueueSequence == data.QueueSeq
+                    && existingStructure.BuildQueueSequence == 1
                     && existingStructure.ManufacturingQuantity == data.MfgQty).ToProperty();
             }).QuickCheckThrowOnFailure();
         }

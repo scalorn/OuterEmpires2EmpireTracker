@@ -132,7 +132,7 @@ This task list implements the colony-import-fix bugfix using the exploratory bug
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
 
 
-- [-] 4. Write fix-checking property tests for full algorithm validation
+- [x] 4. Write fix-checking property tests for full algorithm validation
   - Test file: `OE2EmpireTracker.Tests/Services/ColonyMergeBuildingsFixCheckTests.cs`
   - Generate random colony configurations (1-10 structures, varying types, 0-5 API buildings, 0-3 warehouse flatpacks)
   - Use FsCheck 2.16.6 LINQ query syntax for all generators
@@ -145,7 +145,7 @@ This task list implements the colony-import-fix bugfix using the exploratory bug
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.7_
   - Verification: Run via vstest.console, all properties pass
 
-- [~] 5. Checkpoint — Ensure all tests pass
+- [x] 5. Checkpoint — Ensure all tests pass
   - Build full solution: `MSBuild OE2EmpireTracker.sln /p:Configuration=Debug` — zero errors, zero warnings
   - Run all WinForms tests: `vstest.console OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll /Logger:trx`
   - Parse results: `node .kiro/tools/trxparse.js` — zero failures

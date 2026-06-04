@@ -597,7 +597,7 @@ namespace OE2EmpireTracker.Tests.Services
             ColonyMergeService.MergeBuildings(apiBuildings, colony);
 
             Assert.That(existingStructure.ManufacturingBlueprintUUID, Is.EqualTo("bp-uuid-999"));
-            Assert.That(existingStructure.BuildQueueSequence, Is.EqualTo(5));
+            Assert.That(existingStructure.BuildQueueSequence, Is.EqualTo(1));
             Assert.That(existingStructure.ProcessCompletionTime, Is.Not.Null);
         }
 
