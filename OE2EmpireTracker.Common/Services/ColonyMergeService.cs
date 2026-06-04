@@ -175,22 +175,63 @@ namespace OE2EmpireTracker.Services
                 // Only attempt warehouse matching if Items is available
                 if (colony.Items != null)
                 {
-                    // Log warehouse state for diagnostics
-                    int flatpackTypeCount = colony.Items.Items.Values
-                        .Count(i => i.ItemType == ItemType.ItemTypeEnum.Flatpack && i.Quantity > 0);
+                    // Build a lookup of blueprint UUID → warehouse quantity.
+                    // Warehouse flatpacks may have BaseItemTypeID as either:
+                    //   - The blueprint UUID (if already corrected by asset sync), or
+                    //   - The display name like "Flatpack: Refinery" (if not yet corrected).
+                    // We handle both by attempting UUID resolution from the name.
+                    var empireContext = EmpireContext.GetInstance();
+                    Dictionary<string, string> flatpackLookup = null;
+                    if (empireContext != null)
+                    {
+                        flatpackLookup = ColonyParser.BuildFlatpackLookup(empireContext);
+                    }
 
-                    // Log actual warehouse flatpack BaseItemTypeIDs for diagnostic comparison
-                    var warehouseFlatpackIds = colony.Items.Items.Values
-                        .Where(i => i.ItemType == ItemType.ItemTypeEnum.Flatpack && i.Quantity > 0)
-                        .Select(i => i.BaseItemTypeID + " (qty=" + i.Quantity + ", name='" + i.Name + "')")
-                        .ToList();
+                    var warehouseQtyByBlueprint = new Dictionary<string, int>(StringComparer.Ordinal);
+                    foreach (var item in colony.Items.Items.Values)
+                    {
+                        if (item.ItemType != ItemType.ItemTypeEnum.Flatpack || item.Quantity <= 0)
+                        {
+                            continue;
+                        }
+
+                        string resolvedUuid = item.BaseItemTypeID;
+
+                        // If BaseItemTypeID looks like a UUID (contains dashes), use it directly.
+                        // Otherwise, resolve via flatpack lookup (strip "Flatpack: " prefix).
+                        if (resolvedUuid != null && !resolvedUuid.Contains("-") && flatpackLookup != null)
+                        {
+                            string lookupName = resolvedUuid;
+                            if (lookupName.StartsWith("Flatpack: ", StringComparison.OrdinalIgnoreCase))
+                            {
+                                lookupName = lookupName.Substring("Flatpack: ".Length);
+                            }
+
+                            if (flatpackLookup.TryGetValue(lookupName, out string bpUuid))
+                            {
+                                resolvedUuid = bpUuid;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(resolvedUuid))
+                        {
+                            if (warehouseQtyByBlueprint.ContainsKey(resolvedUuid))
+                            {
+                                warehouseQtyByBlueprint[resolvedUuid] += item.Quantity;
+                            }
+                            else
+                            {
+                                warehouseQtyByBlueprint[resolvedUuid] = item.Quantity;
+                            }
+                        }
+                    }
 
                     Log.Debug(
-                        "MergeBuildings Phase 2: colony {0} has {1} remaining pool entries, {2} flatpack item types in warehouse: [{3}]",
+                        "MergeBuildings Phase 2: colony {0} has {1} remaining pool entries, {2} resolved warehouse blueprint types",
                         colony.UUID,
                         remaining.Count,
-                        flatpackTypeCount,
-                        string.Join(", ", warehouseFlatpackIds));
+                        warehouseQtyByBlueprint.Count);
+
                     // Group remaining entries by FlatpackBlueprintUUID
                     var entriesWithBlueprint = remaining
                         .Where(s => !string.IsNullOrEmpty(s.FlatpackBlueprintUUID))
@@ -210,12 +251,9 @@ namespace OE2EmpireTracker.Services
 
                     foreach (var group in groupedByBlueprint)
                     {
-                        // Sum quantities across all matching warehouse flatpack entries.
-                        // Flatpacks are stored as individual Item entries (Quantity=1 each),
-                        // not as a single stack. Use CountByType which sums across all stacks.
-                        int stagedLimit = colony.Items.CountByType(
-                            ItemType.ItemTypeEnum.Flatpack,
-                            group.Key);
+                        // Look up warehouse quantity by the structure's FlatpackBlueprintUUID
+                        int stagedLimit = 0;
+                        warehouseQtyByBlueprint.TryGetValue(group.Key, out stagedLimit);
 
                         Log.Debug(
                             "MergeBuildings Phase 2: blueprint={0}, groupCount={1}, warehouseQty={2}",
