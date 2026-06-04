@@ -175,9 +175,29 @@ namespace OE2EmpireTracker.Services
                 // Only attempt warehouse matching if Items is available
                 if (colony.Items != null)
                 {
+                    // Log warehouse state for diagnostics
+                    int flatpackTypeCount = colony.Items.Items.Values
+                        .Count(i => i.ItemType == ItemType.ItemTypeEnum.Flatpack && i.Quantity > 0);
+                    Log.Debug(
+                        "MergeBuildings Phase 2: colony {0} has {1} remaining pool entries, {2} flatpack item types in warehouse",
+                        colony.UUID,
+                        remaining.Count,
+                        flatpackTypeCount);
                     // Group remaining entries by FlatpackBlueprintUUID
-                    var groupedByBlueprint = remaining
+                    var entriesWithBlueprint = remaining
                         .Where(s => !string.IsNullOrEmpty(s.FlatpackBlueprintUUID))
+                        .ToList();
+                    var entriesWithoutBlueprint = remaining.Count - entriesWithBlueprint.Count;
+
+                    if (entriesWithoutBlueprint > 0)
+                    {
+                        Log.Debug(
+                            "MergeBuildings Phase 2: colony {0}: {1} remaining entries have no FlatpackBlueprintUUID (cannot match warehouse)",
+                            colony.UUID,
+                            entriesWithoutBlueprint);
+                    }
+
+                    var groupedByBlueprint = entriesWithBlueprint
                         .GroupBy(s => s.FlatpackBlueprintUUID, StringComparer.Ordinal);
 
                     foreach (var group in groupedByBlueprint)
@@ -188,6 +208,12 @@ namespace OE2EmpireTracker.Services
                         int stagedLimit = colony.Items.CountByType(
                             ItemType.ItemTypeEnum.Flatpack,
                             group.Key);
+
+                        Log.Debug(
+                            "MergeBuildings Phase 2: blueprint={0}, groupCount={1}, warehouseQty={2}",
+                            group.Key,
+                            group.Count(),
+                            stagedLimit);
 
                         if (stagedLimit == 0)
                         {
