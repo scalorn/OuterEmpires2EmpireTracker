@@ -178,11 +178,19 @@ namespace OE2EmpireTracker.Services
                     // Log warehouse state for diagnostics
                     int flatpackTypeCount = colony.Items.Items.Values
                         .Count(i => i.ItemType == ItemType.ItemTypeEnum.Flatpack && i.Quantity > 0);
+
+                    // Log actual warehouse flatpack BaseItemTypeIDs for diagnostic comparison
+                    var warehouseFlatpackIds = colony.Items.Items.Values
+                        .Where(i => i.ItemType == ItemType.ItemTypeEnum.Flatpack && i.Quantity > 0)
+                        .Select(i => i.BaseItemTypeID + " (qty=" + i.Quantity + ", name='" + i.Name + "')")
+                        .ToList();
+
                     Log.Debug(
-                        "MergeBuildings Phase 2: colony {0} has {1} remaining pool entries, {2} flatpack item types in warehouse",
+                        "MergeBuildings Phase 2: colony {0} has {1} remaining pool entries, {2} flatpack item types in warehouse: [{3}]",
                         colony.UUID,
                         remaining.Count,
-                        flatpackTypeCount);
+                        flatpackTypeCount,
+                        string.Join(", ", warehouseFlatpackIds));
                     // Group remaining entries by FlatpackBlueprintUUID
                     var entriesWithBlueprint = remaining
                         .Where(s => !string.IsNullOrEmpty(s.FlatpackBlueprintUUID))
