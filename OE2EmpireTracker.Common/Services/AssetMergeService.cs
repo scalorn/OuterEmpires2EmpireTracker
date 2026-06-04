@@ -386,7 +386,29 @@ namespace OE2EmpireTracker.Services
             changed |= SetNullableIntIfDifferent(ref local, l => l.JobDeliveryLoc, apiItem.JobDeliveryLoc, (l, v) => l.JobDeliveryLoc = v);
             changed |= SetStringIfDifferent(ref local, l => l.JobName, apiItem.JobName, (l, v) => l.JobName = v);
             changed |= SetStringIfDifferent(ref local, l => l.JobTrack, apiItem.JobTrack, (l, v) => l.JobTrack = v);
-            changed |= SetStringIfDifferent(ref local, l => l.BaseItemTypeID, newName, (l, v) => l.BaseItemTypeID = v);
+            // For flatpacks, resolve BaseItemTypeID to the blueprint UUID (not the display name).
+            // This allows Phase 2 staged matching to correlate warehouse items with structure FlatpackBlueprintUUID.
+            string resolvedBaseItemTypeId = newName;
+            if (mappedType == ItemType.ItemTypeEnum.Flatpack)
+            {
+                string flatpackName = newName;
+                if (flatpackName.StartsWith("Flatpack: ", StringComparison.OrdinalIgnoreCase))
+                {
+                    flatpackName = flatpackName.Substring("Flatpack: ".Length);
+                }
+
+                var empireContext = EmpireContext.GetInstance();
+                if (empireContext != null)
+                {
+                    var flatpackLookup = ColonyParser.BuildFlatpackLookup(empireContext);
+                    if (flatpackLookup.TryGetValue(flatpackName, out string blueprintUuid))
+                    {
+                        resolvedBaseItemTypeId = blueprintUuid;
+                    }
+                }
+            }
+
+            changed |= SetStringIfDifferent(ref local, l => l.BaseItemTypeID, resolvedBaseItemTypeId, (l, v) => l.BaseItemTypeID = v);
             changed |= SetStringIfDifferent(ref local, l => l.ResourcePurity, newPurity, (l, v) => l.ResourcePurity = v);
             changed |= UpdateItemProperties(local, apiItem.Properties);
 
@@ -435,7 +457,47 @@ namespace OE2EmpireTracker.Services
             // BaseItemTypeID is used as the lookup key in ItemBag.CountByType/FindByType.
             // For most item types, it should be the item name (matching what the tool uses internally).
             // The numeric TypeId is stored but not used for lookups.
+            // For flatpacks: resolve the blueprint UUID so Phase 2 staged matching works.
+            // API names are "Flatpack: Refinery" — strip prefix and look up via BuildFlatpackLookup.
             string baseItemTypeId = name;
+
+            if (mappedType == ItemType.ItemTypeEnum.Flatpack)
+            {
+                string flatpackName = name;
+
+                // Strip "Flatpack: " prefix if present (API format)
+                if (flatpackName.StartsWith("Flatpack: ", StringComparison.OrdinalIgnoreCase))
+                {
+                    flatpackName = flatpackName.Substring("Flatpack: ".Length);
+                }
+
+                var empireContext = EmpireContext.GetInstance();
+                if (empireContext != null)
+                {
+                    var flatpackLookup = ColonyParser.BuildFlatpackLookup(empireContext);
+                    if (flatpackLookup.TryGetValue(flatpackName, out string blueprintUuid))
+                    {
+                        baseItemTypeId = blueprintUuid;
+                        Log.Debug(
+                            "AssetMerge: Flatpack '{0}' resolved to blueprint UUID={1}",
+                            name,
+                            blueprintUuid);
+                    }
+                    else
+                    {
+                        Log.Warn(
+                            "AssetMerge: Flatpack '{0}' (stripped='{1}') not found in flatpack lookup — BaseItemTypeID left as name",
+                            name,
+                            flatpackName);
+                    }
+                }
+                else
+                {
+                    Log.Warn(
+                        "AssetMerge: EmpireContext not loaded, cannot resolve flatpack '{0}' to blueprint UUID",
+                        name);
+                }
+            }
 
             Log.Debug(
                 "AssetMerge: CreateAssetItem type={0} name='{1}' baseItemTypeId='{2}' typeId={3} amount={4}",
