@@ -437,6 +437,14 @@ namespace OE2EmpireTracker.Services
             // The numeric TypeId is stored but not used for lookups.
             string baseItemTypeId = name;
 
+            Log.Debug(
+                "AssetMerge: CreateAssetItem type={0} name='{1}' baseItemTypeId='{2}' typeId={3} amount={4}",
+                mappedType,
+                apiItem.ResourceName,
+                baseItemTypeId,
+                apiItem.TypeId,
+                apiItem.Amount);
+
             var item = new Item
             {
                 UUID = Guid.NewGuid().ToString(),
