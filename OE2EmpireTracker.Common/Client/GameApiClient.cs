@@ -1436,6 +1436,806 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
+        /// Retrieves the contents of a specific crate from the game API.
+        /// Requires a valid access token and app ID with assets.locations.read scope.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <param name="crateId">The crate identifier to fetch contents for.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetAssetCrateAsync(string appId, string accessToken, int crateId)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    _serverUrl + "/v1/assets/crates/" + crateId,
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetAssetCrate received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetAssetCrate received HTTP 403 — assets.locations.read scope not granted");
+                    return (false, "403");
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Log.Warn("Game API GetAssetCrate received HTTP 404 — resource not found or not owned");
+                    return (false, "404");
+                }
+
+                Log.Warn("Game API GetAssetCrate failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetAssetCrate blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetAssetCrate request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetAssetCrate request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the detail of a specific survey from the game API.
+        /// Requires a valid access token and app ID with assets.surveys.read scope.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <param name="surveyId">The survey identifier to fetch details for.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetAssetSurveyAsync(string appId, string accessToken, int surveyId)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    _serverUrl + "/v1/assets/surveys/" + surveyId,
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetAssetSurvey received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetAssetSurvey received HTTP 403 — assets.surveys.read scope not granted");
+                    return (false, "403");
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Log.Warn("Game API GetAssetSurvey received HTTP 404 — resource not found or not owned");
+                    return (false, "404");
+                }
+
+                Log.Warn("Game API GetAssetSurvey failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetAssetSurvey blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetAssetSurvey request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetAssetSurvey request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the detail of a specific blueprint from the game API.
+        /// Requires a valid access token and app ID with assets.blueprints.read scope.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <param name="blueprintId">The blueprint identifier to fetch details for.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetAssetBlueprintAsync(string appId, string accessToken, int blueprintId)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    _serverUrl + "/v1/assets/blueprints/" + blueprintId,
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetAssetBlueprint received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetAssetBlueprint received HTTP 403 — assets.blueprints.read scope not granted");
+                    return (false, "403");
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Log.Warn("Game API GetAssetBlueprint received HTTP 404 — resource not found or not owned");
+                    return (false, "404");
+                }
+
+                Log.Warn("Game API GetAssetBlueprint failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetAssetBlueprint blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetAssetBlueprint request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetAssetBlueprint request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves market listings from the game API.
+        /// Requires a valid access token and app ID with market.listings.read scope.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <param name="view">The view filter (required).</param>
+        /// <param name="range">Optional range filter.</param>
+        /// <param name="search">Optional search term.</param>
+        /// <param name="type">Optional type filter.</param>
+        /// <param name="subType">Optional sub-type filter.</param>
+        /// <param name="evolution">Optional evolution filter.</param>
+        /// <param name="orderBy">Optional order-by field.</param>
+        /// <param name="orderByDirection">Optional order-by direction (asc/desc).</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetMarketListingsAsync(
+            string appId,
+            string accessToken,
+            string view,
+            int? range = null,
+            string search = null,
+            string type = null,
+            string subType = null,
+            int? evolution = null,
+            string orderBy = null,
+            string orderByDirection = null)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                string url = _serverUrl + "/v1/market/listings?view=" + Uri.EscapeDataString(view);
+                if (range.HasValue)
+                {
+                    url += "&range=" + range.Value;
+                }
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    url += "&search=" + Uri.EscapeDataString(search);
+                }
+
+                if (!string.IsNullOrEmpty(type))
+                {
+                    url += "&type=" + Uri.EscapeDataString(type);
+                }
+
+                if (!string.IsNullOrEmpty(subType))
+                {
+                    url += "&subType=" + Uri.EscapeDataString(subType);
+                }
+
+                if (evolution.HasValue)
+                {
+                    url += "&evolution=" + evolution.Value;
+                }
+
+                if (!string.IsNullOrEmpty(orderBy))
+                {
+                    url += "&orderBy=" + Uri.EscapeDataString(orderBy);
+                }
+
+                if (!string.IsNullOrEmpty(orderByDirection))
+                {
+                    url += "&orderByDirection=" + Uri.EscapeDataString(orderByDirection);
+                }
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    url,
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetMarketListings received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetMarketListings received HTTP 403 — market.listings.read scope not granted");
+                    return (false, "403");
+                }
+
+                Log.Warn("Game API GetMarketListings failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetMarketListings blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetMarketListings request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetMarketListings request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves market price statistics from the game API.
+        /// Requires a valid access token and app ID with market.prices.read scope.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <param name="type">The item type (required).</param>
+        /// <param name="typeId">The item type identifier (required).</param>
+        /// <param name="daysBack">Optional number of days to look back.</param>
+        /// <param name="buyOrders">Optional flag to include buy orders in price data.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetMarketPricesAsync(
+            string appId,
+            string accessToken,
+            string type,
+            long typeId,
+            int? daysBack = null,
+            bool? buyOrders = null)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                string url = _serverUrl + "/v1/market/prices?type=" + Uri.EscapeDataString(type) + "&typeId=" + typeId;
+                if (daysBack.HasValue)
+                {
+                    url += "&daysBack=" + daysBack.Value;
+                }
+
+                if (buyOrders.HasValue)
+                {
+                    url += "&buyOrders=" + buyOrders.Value.ToString().ToLowerInvariant();
+                }
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    url,
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetMarketPrices received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetMarketPrices received HTTP 403 — market.prices.read scope not granted");
+                    return (false, "403");
+                }
+
+                Log.Warn("Game API GetMarketPrices failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetMarketPrices blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetMarketPrices request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetMarketPrices request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves market items matching a search from the game API.
+        /// Requires a valid access token and app ID with market.items.read scope.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <param name="type">The item type to search within (required).</param>
+        /// <param name="search">The search term (required).</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetMarketItemsAsync(
+            string appId,
+            string accessToken,
+            string type,
+            string search)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                string url = _serverUrl + "/v1/market/items?type=" + Uri.EscapeDataString(type)
+                    + "&search=" + Uri.EscapeDataString(search);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    url,
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetMarketItems received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetMarketItems received HTTP 403 — market.items.read scope not granted");
+                    return (false, "403");
+                }
+
+                Log.Warn("Game API GetMarketItems failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetMarketItems blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetMarketItems request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetMarketItems request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the components of a ship listed on the market from the game API.
+        /// Requires a valid access token and app ID with market.listings.read scope.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <param name="marketId">The market listing identifier for the ship.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetMarketShipComponentsAsync(string appId, string accessToken, long marketId)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    _serverUrl + "/v1/market/ships/" + marketId + "/components",
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetMarketShipComponents received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetMarketShipComponents received HTTP 403 — market.listings.read scope not granted");
+                    return (false, "403");
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Log.Warn("Game API GetMarketShipComponents received HTTP 404 — resource not found or not owned");
+                    return (false, "404");
+                }
+
+                Log.Warn("Game API GetMarketShipComponents failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetMarketShipComponents blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetMarketShipComponents request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetMarketShipComponents request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the player's buy orders from the game API.
+        /// Requires a valid access token and app ID with market.orders.read scope.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetMarketBuyOrdersAsync(string appId, string accessToken)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    _serverUrl + "/v1/market/orders/buy",
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetMarketBuyOrders received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetMarketBuyOrders received HTTP 403 — market.orders.read scope not granted");
+                    return (false, "403");
+                }
+
+                Log.Warn("Game API GetMarketBuyOrders failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetMarketBuyOrders blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetMarketBuyOrders request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetMarketBuyOrders request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the player's sell orders from the game API.
+        /// Requires a valid access token and app ID with market.orders.read scope.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetMarketSellOrdersAsync(string appId, string accessToken)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    _serverUrl + "/v1/market/orders/sell",
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetMarketSellOrders received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetMarketSellOrders received HTTP 403 — market.orders.read scope not granted");
+                    return (false, "403");
+                }
+
+                Log.Warn("Game API GetMarketSellOrders failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetMarketSellOrders blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetMarketSellOrders request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetMarketSellOrders request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves buy order competitors for the given market listing IDs from the game API.
+        /// Requires a valid access token and app ID with market.competitors.read scope.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <param name="marketIds">Comma-separated market listing IDs to check competitors for.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetMarketBuyCompetitorsAsync(string appId, string accessToken, string marketIds)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                string url = _serverUrl + "/v1/market/orders/buy/competitors?marketIds=" + Uri.EscapeDataString(marketIds);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    url,
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetMarketBuyCompetitors received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetMarketBuyCompetitors received HTTP 403 — market.competitors.read scope not granted");
+                    return (false, "403");
+                }
+
+                Log.Warn("Game API GetMarketBuyCompetitors failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetMarketBuyCompetitors blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetMarketBuyCompetitors request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetMarketBuyCompetitors request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves sell order competitors for the given market listing IDs from the game API.
+        /// Requires a valid access token and app ID with market.competitors.read scope.
+        /// </summary>
+        /// <param name="appId">The registered application GUID for the X-App-Id header.</param>
+        /// <param name="accessToken">The Bearer access token from token exchange.</param>
+        /// <param name="marketIds">Comma-separated market listing IDs to check competitors for.</param>
+        /// <returns>A tuple indicating success and the raw JSON response body.</returns>
+        public async Task<(bool Success, string Json)> GetMarketSellCompetitorsAsync(string appId, string accessToken, string marketIds)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                return (false, null);
+            }
+
+            try
+            {
+                await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+
+                string url = _serverUrl + "/v1/market/orders/sell/competitors?marketIds=" + Uri.EscapeDataString(marketIds);
+
+                var response = await ExecuteWithPoliciesAsync(
+                    HttpMethod.Get,
+                    url,
+                    appId,
+                    accessToken).ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return (true, json);
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    Log.Warn("Game API GetMarketSellCompetitors received HTTP 401 — token is invalid or expired");
+                    return (false, "401");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    Log.Warn("Game API GetMarketSellCompetitors received HTTP 403 — market.competitors.read scope not granted");
+                    return (false, "403");
+                }
+
+                Log.Warn("Game API GetMarketSellCompetitors failed: HTTP {0}", (int)response.StatusCode);
+                return (false, null);
+            }
+            catch (BrokenCircuitException)
+            {
+                Log.Warn("Game API GetMarketSellCompetitors blocked by open circuit breaker");
+                return (false, null);
+            }
+            catch (HttpRequestException ex)
+            {
+                Log.Warn(ex, "Game API GetMarketSellCompetitors request failed");
+                return (false, null);
+            }
+            catch (TaskCanceledException)
+            {
+                Log.Warn("Game API GetMarketSellCompetitors request timed out");
+                return (false, null);
+            }
+        }
+
+        /// <summary>
         /// Invalidates any cached token for the given credentials.
         /// Call this when a 401 is received to force re-authentication on next request.
         /// </summary>

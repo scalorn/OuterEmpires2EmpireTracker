@@ -36,6 +36,9 @@ namespace OE2EmpireTracker.Tests.Client
         private string killMailListJson;
         private string assetLocationsJson;
         private string mailListJson;
+        private string marketListingsJson;
+        private string buyOrdersJson;
+        private string sellOrdersJson;
 
         /// <summary>
         /// Loads credentials from the app's existing credential store and preferences.
@@ -103,6 +106,7 @@ namespace OE2EmpireTracker.Tests.Client
             EnsureDirectory(Path.Combine(this.outputDir, "killmails"));
             EnsureDirectory(Path.Combine(this.outputDir, "mail"));
             EnsureDirectory(Path.Combine(this.outputDir, "ship"));
+            EnsureDirectory(Path.Combine(this.outputDir, "market"));
 
             TestContext.WriteLine("Authenticated as player {0}, token obtained", this.playerUUID);
             TestContext.WriteLine("Output directory: {0}", this.outputDir);
@@ -806,6 +810,526 @@ namespace OE2EmpireTracker.Tests.Client
         }
 
         /// <summary>
+        /// Finds the first crate in asset location details and fetches its contents.
+        /// Saves to assets/crate-{crateId}.json.
+        /// </summary>
+        [Test]
+        [Order(7)]
+        public async Task GetAssetCrateDetail()
+        {
+            if (string.IsNullOrEmpty(this.assetLocationsJson))
+            {
+                RecordSkipped("assets", "/v1/assets/crates/{crateId}", "Asset locations not available");
+                return;
+            }
+
+            try
+            {
+                int crateId = FindFirstAssetIdByTypeC("Cr");
+                if (crateId == 0)
+                {
+                    RecordSkipped("assets", "/v1/assets/crates/{crateId}", "No crate found in asset locations");
+                    return;
+                }
+
+                var result = await this.client.GetAssetCrateAsync(this.appId, this.accessToken, crateId).ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    if (result.Json == "403")
+                    {
+                        RecordSkipped("assets", "/v1/assets/crates/" + crateId, "403 — scope not granted");
+                        return;
+                    }
+
+                    RecordSkipped("assets", "/v1/assets/crates/" + crateId, result.Json ?? "Unknown error");
+                    return;
+                }
+
+                string path = Path.Combine(this.outputDir, "assets", "crate-" + crateId + ".json");
+                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
+                RecordSuccess("assets", "/v1/assets/crates/" + crateId);
+            }
+            catch (Exception)
+            {
+                RecordSkipped("assets", "/v1/assets/crates/{crateId}", "Exception during call");
+            }
+        }
+
+        /// <summary>
+        /// Finds the first survey in asset location details and fetches its detail.
+        /// Saves to assets/survey-{surveyId}.json.
+        /// </summary>
+        [Test]
+        [Order(8)]
+        public async Task GetAssetSurveyDetail()
+        {
+            if (string.IsNullOrEmpty(this.assetLocationsJson))
+            {
+                RecordSkipped("assets", "/v1/assets/surveys/{surveyId}", "Asset locations not available");
+                return;
+            }
+
+            try
+            {
+                int surveyId = FindFirstAssetIdByTypeC("Sc");
+                if (surveyId == 0)
+                {
+                    RecordSkipped("assets", "/v1/assets/surveys/{surveyId}", "No survey found in asset locations");
+                    return;
+                }
+
+                var result = await this.client.GetAssetSurveyAsync(this.appId, this.accessToken, surveyId).ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    if (result.Json == "403")
+                    {
+                        RecordSkipped("assets", "/v1/assets/surveys/" + surveyId, "403 — scope not granted");
+                        return;
+                    }
+
+                    RecordSkipped("assets", "/v1/assets/surveys/" + surveyId, result.Json ?? "Unknown error");
+                    return;
+                }
+
+                string path = Path.Combine(this.outputDir, "assets", "survey-" + surveyId + ".json");
+                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
+                RecordSuccess("assets", "/v1/assets/surveys/" + surveyId);
+            }
+            catch (Exception)
+            {
+                RecordSkipped("assets", "/v1/assets/surveys/{surveyId}", "Exception during call");
+            }
+        }
+
+        /// <summary>
+        /// Finds the first blueprint in asset location details and fetches its detail.
+        /// Saves to assets/blueprint-{bpId}.json.
+        /// </summary>
+        [Test]
+        [Order(9)]
+        public async Task GetAssetBlueprintDetail()
+        {
+            if (string.IsNullOrEmpty(this.assetLocationsJson))
+            {
+                RecordSkipped("assets", "/v1/assets/blueprints/{bpId}", "Asset locations not available");
+                return;
+            }
+
+            try
+            {
+                int bpId = FindFirstAssetIdByTypeC("Bp");
+                if (bpId == 0)
+                {
+                    RecordSkipped("assets", "/v1/assets/blueprints/{bpId}", "No blueprint found in asset locations");
+                    return;
+                }
+
+                var result = await this.client.GetAssetBlueprintAsync(this.appId, this.accessToken, bpId).ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    if (result.Json == "403")
+                    {
+                        RecordSkipped("assets", "/v1/assets/blueprints/" + bpId, "403 — scope not granted");
+                        return;
+                    }
+
+                    RecordSkipped("assets", "/v1/assets/blueprints/" + bpId, result.Json ?? "Unknown error");
+                    return;
+                }
+
+                string path = Path.Combine(this.outputDir, "assets", "blueprint-" + bpId + ".json");
+                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
+                RecordSuccess("assets", "/v1/assets/blueprints/" + bpId);
+            }
+            catch (Exception)
+            {
+                RecordSkipped("assets", "/v1/assets/blueprints/{bpId}", "Exception during call");
+            }
+        }
+
+        /// <summary>
+        /// Fetches market listings with view "All" and saves to market/listings.json.
+        /// Stores the raw JSON for dependent market tests.
+        /// </summary>
+        [Test]
+        [Order(16)]
+        public async Task GetMarketListings()
+        {
+            try
+            {
+                var result = await this.client.GetMarketListingsAsync(this.appId, this.accessToken, "All").ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    if (result.Json == "403")
+                    {
+                        RecordSkipped("market", "/v1/market/listings", "403 — scope not granted");
+                        return;
+                    }
+
+                    RecordSkipped("market", "/v1/market/listings", result.Json ?? "Unknown error");
+                    return;
+                }
+
+                this.marketListingsJson = result.Json;
+
+                string path = Path.Combine(this.outputDir, "market", "listings.json");
+                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
+                RecordSuccess("market", "/v1/market/listings");
+            }
+            catch (Exception)
+            {
+                RecordSkipped("market", "/v1/market/listings", "Exception during call");
+            }
+        }
+
+        /// <summary>
+        /// Extracts type/typeId from the first market listing and fetches price stats.
+        /// Saves to market/prices.json.
+        /// </summary>
+        [Test]
+        [Order(17)]
+        public async Task GetMarketPrices()
+        {
+            if (string.IsNullOrEmpty(this.marketListingsJson))
+            {
+                RecordSkipped("market", "/v1/market/prices", "Market listings not available");
+                return;
+            }
+
+            try
+            {
+                var envelope = JObject.Parse(this.marketListingsJson);
+                var listings = envelope["data"]?["listings"] as JArray;
+                if (listings == null || listings.Count == 0)
+                {
+                    RecordSkipped("market", "/v1/market/prices", "No listings found in market response");
+                    return;
+                }
+
+                var firstListing = listings[0];
+                string type = firstListing["type"]?.Value<string>();
+                long typeId = firstListing["typeId"]?.Value<long>() ?? 0;
+
+                if (string.IsNullOrEmpty(type) || typeId == 0)
+                {
+                    RecordSkipped("market", "/v1/market/prices", "First listing has no type/typeId");
+                    return;
+                }
+
+                var result = await this.client.GetMarketPricesAsync(this.appId, this.accessToken, type, typeId).ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    if (result.Json == "403")
+                    {
+                        RecordSkipped("market", "/v1/market/prices", "403 — scope not granted");
+                        return;
+                    }
+
+                    RecordSkipped("market", "/v1/market/prices", result.Json ?? "Unknown error");
+                    return;
+                }
+
+                string path = Path.Combine(this.outputDir, "market", "prices.json");
+                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
+                RecordSuccess("market", "/v1/market/prices");
+            }
+            catch (Exception)
+            {
+                RecordSkipped("market", "/v1/market/prices", "Exception during call");
+            }
+        }
+
+        /// <summary>
+        /// Searches market items for type "Resource" with search "Iron".
+        /// Saves to market/items.json.
+        /// </summary>
+        [Test]
+        [Order(18)]
+        public async Task GetMarketItems()
+        {
+            try
+            {
+                var result = await this.client.GetMarketItemsAsync(this.appId, this.accessToken, "Resource", "Iron").ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    if (result.Json == "403")
+                    {
+                        RecordSkipped("market", "/v1/market/items", "403 — scope not granted");
+                        return;
+                    }
+
+                    RecordSkipped("market", "/v1/market/items", result.Json ?? "Unknown error");
+                    return;
+                }
+
+                string path = Path.Combine(this.outputDir, "market", "items.json");
+                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
+                RecordSuccess("market", "/v1/market/items");
+            }
+            catch (Exception)
+            {
+                RecordSkipped("market", "/v1/market/items", "Exception during call");
+            }
+        }
+
+        /// <summary>
+        /// Finds a ship listing in market listings and fetches its components.
+        /// Saves to market/ship-components.json.
+        /// </summary>
+        [Test]
+        [Order(19)]
+        public async Task GetMarketShipComponents()
+        {
+            if (string.IsNullOrEmpty(this.marketListingsJson))
+            {
+                RecordSkipped("market", "/v1/market/ships/{marketId}/components", "Market listings not available");
+                return;
+            }
+
+            try
+            {
+                var envelope = JObject.Parse(this.marketListingsJson);
+                var listings = envelope["data"]?["listings"] as JArray;
+                if (listings == null || listings.Count == 0)
+                {
+                    RecordSkipped("market", "/v1/market/ships/{marketId}/components", "No listings found");
+                    return;
+                }
+
+                var shipListing = listings.FirstOrDefault(l =>
+                    string.Equals(l["type"]?.Value<string>(), "Ship", StringComparison.OrdinalIgnoreCase));
+
+                if (shipListing == null)
+                {
+                    RecordSkipped("market", "/v1/market/ships/{marketId}/components", "No ship listing found in market");
+                    return;
+                }
+
+                long marketId = shipListing["marketId"]?.Value<long>() ?? 0;
+                if (marketId == 0)
+                {
+                    RecordSkipped("market", "/v1/market/ships/{marketId}/components", "Ship listing has no marketId");
+                    return;
+                }
+
+                var result = await this.client.GetMarketShipComponentsAsync(this.appId, this.accessToken, marketId).ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    if (result.Json == "403" || result.Json == "404")
+                    {
+                        RecordSkipped("market", "/v1/market/ships/" + marketId + "/components", result.Json + " — skipped");
+                        return;
+                    }
+
+                    RecordSkipped("market", "/v1/market/ships/" + marketId + "/components", result.Json ?? "Unknown error");
+                    return;
+                }
+
+                string path = Path.Combine(this.outputDir, "market", "ship-components.json");
+                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
+                RecordSuccess("market", "/v1/market/ships/" + marketId + "/components");
+            }
+            catch (Exception)
+            {
+                RecordSkipped("market", "/v1/market/ships/{marketId}/components", "Exception during call");
+            }
+        }
+
+        /// <summary>
+        /// Fetches market buy orders and saves to market/buy-orders.json.
+        /// Stores the raw JSON for competitor tests.
+        /// </summary>
+        [Test]
+        [Order(20)]
+        public async Task GetMarketBuyOrders()
+        {
+            try
+            {
+                var result = await this.client.GetMarketBuyOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    if (result.Json == "403")
+                    {
+                        RecordSkipped("market", "/v1/market/orders/buy", "403 — scope not granted");
+                        return;
+                    }
+
+                    RecordSkipped("market", "/v1/market/orders/buy", result.Json ?? "Unknown error");
+                    return;
+                }
+
+                this.buyOrdersJson = result.Json;
+
+                string path = Path.Combine(this.outputDir, "market", "buy-orders.json");
+                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
+                RecordSuccess("market", "/v1/market/orders/buy");
+            }
+            catch (Exception)
+            {
+                RecordSkipped("market", "/v1/market/orders/buy", "Exception during call");
+            }
+        }
+
+        /// <summary>
+        /// Fetches market sell orders and saves to market/sell-orders.json.
+        /// Stores the raw JSON for competitor tests.
+        /// </summary>
+        [Test]
+        [Order(21)]
+        public async Task GetMarketSellOrders()
+        {
+            try
+            {
+                var result = await this.client.GetMarketSellOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    if (result.Json == "403")
+                    {
+                        RecordSkipped("market", "/v1/market/orders/sell", "403 — scope not granted");
+                        return;
+                    }
+
+                    RecordSkipped("market", "/v1/market/orders/sell", result.Json ?? "Unknown error");
+                    return;
+                }
+
+                this.sellOrdersJson = result.Json;
+
+                string path = Path.Combine(this.outputDir, "market", "sell-orders.json");
+                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
+                RecordSuccess("market", "/v1/market/orders/sell");
+            }
+            catch (Exception)
+            {
+                RecordSkipped("market", "/v1/market/orders/sell", "Exception during call");
+            }
+        }
+
+        /// <summary>
+        /// Extracts the first 5 marketIds from buy orders and fetches competitors.
+        /// Saves to market/buy-competitors.json.
+        /// </summary>
+        [Test]
+        [Order(22)]
+        public async Task GetMarketBuyCompetitors()
+        {
+            if (string.IsNullOrEmpty(this.buyOrdersJson))
+            {
+                RecordSkipped("market", "/v1/market/orders/buy/competitors", "Buy orders not available");
+                return;
+            }
+
+            try
+            {
+                var envelope = JObject.Parse(this.buyOrdersJson);
+                var orders = envelope["data"]?["orders"] as JArray;
+                if (orders == null || orders.Count == 0)
+                {
+                    RecordSkipped("market", "/v1/market/orders/buy/competitors", "No buy orders found");
+                    return;
+                }
+
+                var marketIds = orders
+                    .Take(5)
+                    .Select(o => o["marketId"]?.Value<long>() ?? 0)
+                    .Where(id => id > 0)
+                    .Select(id => id.ToString())
+                    .ToList();
+
+                if (marketIds.Count == 0)
+                {
+                    RecordSkipped("market", "/v1/market/orders/buy/competitors", "No valid marketIds in buy orders");
+                    return;
+                }
+
+                string ids = string.Join(",", marketIds);
+
+                var result = await this.client.GetMarketBuyCompetitorsAsync(this.appId, this.accessToken, ids).ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    if (result.Json == "403")
+                    {
+                        RecordSkipped("market", "/v1/market/orders/buy/competitors", "403 — scope not granted");
+                        return;
+                    }
+
+                    RecordSkipped("market", "/v1/market/orders/buy/competitors", result.Json ?? "Unknown error");
+                    return;
+                }
+
+                string path = Path.Combine(this.outputDir, "market", "buy-competitors.json");
+                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
+                RecordSuccess("market", "/v1/market/orders/buy/competitors");
+            }
+            catch (Exception)
+            {
+                RecordSkipped("market", "/v1/market/orders/buy/competitors", "Exception during call");
+            }
+        }
+
+        /// <summary>
+        /// Extracts the first 5 marketIds from sell orders and fetches competitors.
+        /// Saves to market/sell-competitors.json.
+        /// </summary>
+        [Test]
+        [Order(23)]
+        public async Task GetMarketSellCompetitors()
+        {
+            if (string.IsNullOrEmpty(this.sellOrdersJson))
+            {
+                RecordSkipped("market", "/v1/market/orders/sell/competitors", "Sell orders not available");
+                return;
+            }
+
+            try
+            {
+                var envelope = JObject.Parse(this.sellOrdersJson);
+                var orders = envelope["data"]?["orders"] as JArray;
+                if (orders == null || orders.Count == 0)
+                {
+                    RecordSkipped("market", "/v1/market/orders/sell/competitors", "No sell orders found");
+                    return;
+                }
+
+                var marketIds = orders
+                    .Take(5)
+                    .Select(o => o["marketId"]?.Value<long>() ?? 0)
+                    .Where(id => id > 0)
+                    .Select(id => id.ToString())
+                    .ToList();
+
+                if (marketIds.Count == 0)
+                {
+                    RecordSkipped("market", "/v1/market/orders/sell/competitors", "No valid marketIds in sell orders");
+                    return;
+                }
+
+                string ids = string.Join(",", marketIds);
+
+                var result = await this.client.GetMarketSellCompetitorsAsync(this.appId, this.accessToken, ids).ConfigureAwait(false);
+                if (!result.Success)
+                {
+                    if (result.Json == "403")
+                    {
+                        RecordSkipped("market", "/v1/market/orders/sell/competitors", "403 — scope not granted");
+                        return;
+                    }
+
+                    RecordSkipped("market", "/v1/market/orders/sell/competitors", result.Json ?? "Unknown error");
+                    return;
+                }
+
+                string path = Path.Combine(this.outputDir, "market", "sell-competitors.json");
+                File.WriteAllText(path, FormatJson(result.Json), Encoding.UTF8);
+                RecordSuccess("market", "/v1/market/orders/sell/competitors");
+            }
+            catch (Exception)
+            {
+                RecordSkipped("market", "/v1/market/orders/sell/competitors", "Exception during call");
+            }
+        }
+
+        /// <summary>
         /// Records a successful endpoint call.
         /// </summary>
         /// <param name="category">The endpoint category.</param>
@@ -872,6 +1396,71 @@ namespace OE2EmpireTracker.Tests.Client
             {
                 Directory.CreateDirectory(path);
             }
+        }
+
+        /// <summary>
+        /// Searches asset location details for the first cargo item with the specified typeC code.
+        /// Iterates all locations from the asset locations list, fetching detail for each until
+        /// an item with matching typeC is found.
+        /// </summary>
+        /// <param name="typeC">The type code to search for (e.g. "Cr", "Sc", "Bp").</param>
+        /// <returns>The cargoItemId of the first matching item, or 0 if not found.</returns>
+        private int FindFirstAssetIdByTypeC(string typeC)
+        {
+            var envelope = JObject.Parse(this.assetLocationsJson);
+            var locations = envelope["data"]?["locations"] as JArray;
+            if (locations == null || locations.Count == 0)
+            {
+                return 0;
+            }
+
+            foreach (var location in locations)
+            {
+                int locationId = location["locationId"]?.Value<int>() ?? 0;
+                string locationType = location["locationType"]?.Value<string>();
+
+                if (locationId == 0 || string.IsNullOrEmpty(locationType))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    var detailResult = this.client.GetAssetLocationDetailAsync(
+                        this.appId, this.accessToken, locationId, locationType).GetAwaiter().GetResult();
+
+                    if (!detailResult.Success)
+                    {
+                        continue;
+                    }
+
+                    var detail = JObject.Parse(detailResult.Json);
+                    var cargo = detail["data"]?["cargo"] as JArray;
+                    if (cargo == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (var item in cargo)
+                    {
+                        string itemTypeC = item["typeC"]?.Value<string>();
+                        if (string.Equals(itemTypeC, typeC, StringComparison.OrdinalIgnoreCase))
+                        {
+                            int id = item["cargoItemId"]?.Value<int>() ?? 0;
+                            if (id > 0)
+                            {
+                                return id;
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            return 0;
         }
 
         /// <summary>
