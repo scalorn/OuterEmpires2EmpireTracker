@@ -872,6 +872,11 @@ namespace OE2EmpireTracker.Services
                 _blueprintList.Add(item);
                 if (_blueprintCache != null && item.UUID != null)
                     _blueprintCache[item.UUID] = item;
+                if (item.GameApiBlueprintId.HasValue)
+                {
+                    _blueprintByApiIdIndex[item.GameApiBlueprintId.Value] = item;
+                }
+
                 _allBlueprintsCache = null;
                 _blueprintTypeCountCache = null;
             }
@@ -884,6 +889,11 @@ namespace OE2EmpireTracker.Services
                 _blueprintList.Remove(item);
                 if (_blueprintCache != null && item.UUID != null)
                     _blueprintCache.Remove(item.UUID);
+                if (item.GameApiBlueprintId.HasValue)
+                {
+                    _blueprintByApiIdIndex.Remove(item.GameApiBlueprintId.Value);
+                }
+
                 _allBlueprintsCache = null;
                 _blueprintTypeCountCache = null;
             }
@@ -1008,6 +1018,11 @@ namespace OE2EmpireTracker.Services
                 _surveyList.Add(item);
                 if (_surveyCache != null && item.UUID != null)
                     _surveyCache[item.UUID] = item;
+
+                if (item.GameApiSurveyId.HasValue)
+                {
+                    _surveyByApiIdIndex[item.GameApiSurveyId.Value] = item;
+                }
             }
         }
 
@@ -1018,6 +1033,11 @@ namespace OE2EmpireTracker.Services
                 _surveyList.Remove(item);
                 if (_surveyCache != null && item.UUID != null)
                     _surveyCache.Remove(item.UUID);
+
+                if (item.GameApiSurveyId.HasValue)
+                {
+                    _surveyByApiIdIndex.Remove(item.GameApiSurveyId.Value);
+                }
             }
         }
 

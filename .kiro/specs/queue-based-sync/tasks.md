@@ -44,7 +44,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 
 
 - [ ] 2. In-memory API ID indexes in PlayerContext
-  - [-] 2.1 Add Blueprint API ID index to PlayerContext
+  - [x] 2.1 Add Blueprint API ID index to PlayerContext
     - Add `Dictionary<int, Blueprint> _blueprintByApiIdIndex` field
     - Add `FindBlueprintByApiId(int apiId)` public method returning Blueprint or null
     - Add `IndexBlueprintByApiId(Blueprint bp)` public method
@@ -54,7 +54,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: PlayerContext.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 2.2 Wire Blueprint index into add/remove operations
+  - [-] 2.2 Wire Blueprint index into add/remove operations
     - Update `AddBlueprint` to insert into `_blueprintByApiIdIndex` when API ID is non-null
     - Update `RemoveBlueprint` to remove from `_blueprintByApiIdIndex` when API ID is non-null
     - _Requirements: 15.6_
@@ -62,7 +62,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: PlayerContext.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 2.3 Add Survey API ID index to PlayerContext
+  - [x] 2.3 Add Survey API ID index to PlayerContext
     - Add `Dictionary<int, Survey> _surveyByApiIdIndex` field
     - Add `FindSurveyByApiId(int apiId)` public method returning Survey or null
     - Add `IndexSurveyByApiId(Survey survey)` public method
@@ -72,7 +72,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: PlayerContext.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 2.4 Wire Survey index into add/remove operations
+  - [-] 2.4 Wire Survey index into add/remove operations
     - Update `AddSurvey` to insert into `_surveyByApiIdIndex` when API ID is non-null
     - Update `RemoveSurvey` to remove from `_surveyByApiIdIndex` when API ID is non-null
     - _Requirements: 15.6_
