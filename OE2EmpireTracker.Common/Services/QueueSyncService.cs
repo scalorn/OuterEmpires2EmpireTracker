@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -123,15 +124,41 @@ namespace OE2EmpireTracker.Services
                 await queue.EnqueueAsync(CreateKillMailListItem()).ConfigureAwait(false);
                 await queue.EnqueueAsync(CreateMailListItem()).ConfigureAwait(false);
 
+                var sw = Stopwatch.StartNew();
                 queue.Start(ct);
                 await queue.DrainAsync();
+                sw.Stop();
 
                 var status = queue.CompletionStatus;
                 int succeeded = status.Succeeded;
                 int failed = status.Failed;
+                var elapsed = sw.Elapsed;
 
-                Log.Info("Queue sync cycle completed.");
-                return new QueueSyncResult();
+                Log.Info(
+                    "Sync complete: {0} succeeded, {1} failed, elapsed {2:F1}s",
+                    succeeded,
+                    failed,
+                    elapsed.TotalSeconds);
+
+                var failedLabels = new List<string>();
+                foreach (var error in queue.Errors)
+                {
+                    Log.Warn(
+                        "Failed work item '{0}': {1}",
+                        error.WorkItemLabel,
+                        error.Exception.Message);
+                    failedLabels.Add(error.WorkItemLabel);
+                }
+
+                _playerContext.WriteContext();
+
+                return new QueueSyncResult
+                {
+                    Succeeded = succeeded,
+                    Failed = failed,
+                    Elapsed = elapsed,
+                    FailedLabels = failedLabels,
+                };
             }
             finally
             {

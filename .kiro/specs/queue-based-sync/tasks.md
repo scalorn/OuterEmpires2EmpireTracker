@@ -303,8 +303,8 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-- [ ] 16. 429 handling in work item delegates
-  - [-] 16.1 Wire 429 rate limit handling in work item delegates
+- [x] 16. 429 handling in work item delegates
+  - [x] 16.1 Wire 429 rate limit handling in work item delegates
     - Add 429 detection in work item delegates: extract Retry-After header, call queue.NotifyRateLimited
     - _Requirements: 10.1, 10.2, 10.3, 10.4_
     - _Inputs: QueueSyncService.cs, GameApiRequestQueue.cs_
@@ -313,7 +313,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 
 
 - [ ] 17. Metrics and end-of-cycle reporting
-  - [-] 17.1 Wire metrics CSV file path into GameApiRequestQueue construction
+  - [x] 17.1 Wire metrics CSV file path into GameApiRequestQueue construction
     - Pass metrics file path to GameApiRequestQueue at construction in RunSyncAsync
     - After DrainAsync: collect GetCompletionStatus counts
     - _Requirements: 8.1, 8.2_
@@ -321,7 +321,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 17.2 Add completion logging, persistence, and QueueSyncResult return
+  - [-] 17.2 Add completion logging, persistence, and QueueSyncResult return
     - Log summary (succeeded/failed/elapsed) using NLog
     - Log each failed item with label and exception message
     - Persist via PlayerContext.WriteContext on completion
@@ -331,7 +331,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 17.3 Write property test for error isolation
+  - [-] 17.3 Write property test for error isolation
     - **Property 4: Error Isolation**
     - Inject random failures into work item delegates; verify succeeded + failed = total enqueued
     - **Validates: Requirements 12.1, 12.3**
