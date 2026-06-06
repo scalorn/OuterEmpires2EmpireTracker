@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading.Tasks;
@@ -147,6 +148,8 @@ namespace OE2EmpireTracker.Forms
             {
                 cmbGameApiCharacter.SelectedIndex = 0;
             }
+
+            txtTpsLimit.Text = settings.Tps.ToString("F1", CultureInfo.InvariantCulture);
 
             // Show placeholder dots if a secret is stored for the selected character
             string playerUUID = GetSelectedCharacterUUID();
@@ -469,6 +472,7 @@ namespace OE2EmpireTracker.Forms
 
             int newPollingInterval = (int)nudPollingInterval.Value;
             gameApiSettings.PollingIntervalMinutes = newPollingInterval;
+            gameApiSettings.Tps = double.Parse(txtTpsLimit.Text, CultureInfo.InvariantCulture);
 
             // Encrypt and store secret if the user changed it from the placeholder
             string secretText = txtGameApiSecret.Text;

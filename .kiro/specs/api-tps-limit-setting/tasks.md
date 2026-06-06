@@ -15,14 +15,14 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Verification: Build succeeds, getDiagnostics clean_
 
 - [ ] 2. Add TPS input to Preferences Form
-  - [-] 2.1 Add txtTpsLimit ValidatedTextBox and label to Game API tab
+  - [x] 2.1 Add txtTpsLimit ValidatedTextBox and label to Game API tab
     - Add `lblTpsLimit` (Label, Text="TPS Limit:") and `txtTpsLimit` (ValidatedTextBox) to Designer.cs
     - Set ValidationPattern to `^\d{1,3}(\.\d)?$`
     - Position below polling interval controls
     - _Requirements: 2.1, 2.4, 3.4, 3.5_
     - _Verification: Build succeeds, getDiagnostics clean on Designer.cs_
 
-  - [~] 2.2 Populate txtTpsLimit from settings and save on OK
+  - [x] 2.2 Populate txtTpsLimit from settings and save on OK
     - In PopulateGameApiFields: `txtTpsLimit.Text = settings.Tps.ToString("F1")`
     - In SaveGameApiSettings: `settings.Tps = double.Parse(txtTpsLimit.Text)`
     - Wire OK button to persist current value
@@ -47,7 +47,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 4.5, 6.2, 6.4_
     - _Verification: Build succeeds_
 
-- [ ] 5. Implement GameApiRequestQueue — core structure and dispatch loop
+- [x] 5. Implement GameApiRequestQueue — core structure and dispatch loop
   - [x] 5.1 Create GameApiRequestQueue.cs with constructor, public API, and dispatch loop
     - Create `OE2EmpireTracker.Common/Services/GameApiRequestQueue.cs`
     - Public: constructor(configuredTps, perItemTimeout), EnqueueAsync, Start, DrainAsync, NotifyRateLimited
@@ -57,29 +57,29 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 4.1, 4.2, 4.3, 4.5_
     - _Verification: Build succeeds_
 
-  - [-] 5.2 Implement CompletionTracker (private nested class)
+  - [x] 5.2 Implement CompletionTracker (private nested class)
     - Track pending, inflight, succeeded, failed counts with Interlocked operations
     - DrainAsync via TaskCompletionSource — completes when pending==0 && inflight==0
     - OnEnqueued, OnDispatched, OnCompleted, OnCascadedEnqueued methods
     - _Requirements: 5.3, 6.4_
     - _Verification: Build succeeds_
 
-  - [-] 5.3 Implement TokenBucketGovernor (private nested class)
+  - [x] 5.3 Implement TokenBucketGovernor (private nested class)
     - Token bucket: capacity = configuredTps, refill rate = effectiveTps tokens/sec
     - AcquireTokenAsync blocks via SemaphoreSlim until token available
     - Burst capacity = 1 second of accumulated tokens
     - _Requirements: 7.1, 7.2, 7.3_
     - _Verification: Build succeeds_
 
-  - [~] 5.4 Implement thread-safe enqueue (multiple threads may enqueue concurrently)
+  - [x] 5.4 Implement thread-safe enqueue (multiple threads may enqueue concurrently)
     - EnqueueAsync must be safe for concurrent callers
     - Updates CompletionTracker atomically
     - Returns Task that completes when the work item finishes
     - _Requirements: 4.4_
     - _Verification: Build succeeds_
 
-- [ ] 6. Implement GameApiRequestQueue — cascading work
-  - [~] 6.1 Implement cascading work item support
+- [x] 6. Implement GameApiRequestQueue — cascading work
+  - [x] 6.1 Implement cascading work item support
     - Work items return IReadOnlyList<WorkItem> from ExecuteAsync
     - On completion, returned items are enqueued at back of queue
     - Cascaded items subject to same rate governor as direct enqueues
