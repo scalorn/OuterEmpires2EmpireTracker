@@ -177,7 +177,7 @@ namespace OE2EmpireTracker.Client
         /// <param name="clientId">The player's account identifier.</param>
         /// <param name="secret">The per-character secret.</param>
         /// <returns>A result containing the token response or an error message.</returns>
-        public async Task<(bool Success, GameApiTokenResponse Token, string ErrorMessage)> ExchangeTokenAsync(
+        public virtual async Task<(bool Success, GameApiTokenResponse Token, string ErrorMessage)> ExchangeTokenAsync(
             string appId,
             string clientId,
             string secret)

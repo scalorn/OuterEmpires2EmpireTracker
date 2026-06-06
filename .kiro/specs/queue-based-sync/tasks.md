@@ -43,7 +43,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: getDiagnostics_
 
 
-- [ ] 2. In-memory API ID indexes in PlayerContext
+- [x] 2. In-memory API ID indexes in PlayerContext
   - [x] 2.1 Add Blueprint API ID index to PlayerContext
     - Add `Dictionary<int, Blueprint> _blueprintByApiIdIndex` field
     - Add `FindBlueprintByApiId(int apiId)` public method returning Blueprint or null
@@ -80,7 +80,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: PlayerContext.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 2.5 Write property test for index consistency
+  - [x] 2.5 Write property test for index consistency
     - **Property 5: Index Consistency**
     - Random Add/Remove/Index sequences; verify FindBlueprintByApiId and FindSurveyByApiId return correct results
     - **Validates: Requirements 15.1, 15.2, 15.3, 15.4, 15.5**
@@ -93,7 +93,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
   - Build solution and run all tests. Ask the user if questions arise.
 
 - [ ] 4. TokenRefreshHandler
-  - [-] 4.1 Create TokenRefreshHandler service
+  - [x] 4.1 Create TokenRefreshHandler service
     - Create `OE2EmpireTracker.Common/Services/TokenRefreshHandler.cs`
     - Implement SemaphoreSlim(1,1) serialization for refresh attempts
     - Track `_currentAccessToken` and `_tokenVersion` for stale-check optimization
@@ -104,7 +104,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: TokenRefreshHandler.cs created_
     - _Verification: getDiagnostics_
 
-  - [~] 4.2 Write unit tests for TokenRefreshHandler
+  - [-] 4.2 Write unit tests for TokenRefreshHandler
     - Test serialization: multiple concurrent 401s produce exactly 1 ExchangeTokenAsync call
     - Test version check: second caller sees refreshed token and skips exchange
     - Test failure path: exchange failure returns failure result
@@ -112,7 +112,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: TokenRefreshHandlerTests.cs created_
     - _Verification: vstest.console passes_
 
-  - [~] 4.3 Write property test for token refresh serialization
+  - [-] 4.3 Write property test for token refresh serialization
     - **Property 2: Token Refresh Serialization**
     - N concurrent 401 events; verify exactly 1 exchange call occurs
     - **Validates: Requirements 7.4**
@@ -130,7 +130,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: getDiagnostics_
 
 - [ ] 6. QueueSyncService core orchestration
-  - [~] 6.1 Create QueueSyncService shell with concurrency guard
+  - [-] 6.1 Create QueueSyncService shell with concurrency guard
     - Create `OE2EmpireTracker.Common/Services/QueueSyncService.cs`
     - Constructor accepting PlayerContext, EmpireContext, GameApiClient, GameApiConnectionSettings
     - `RunSyncAsync(CancellationToken)` with `_isSyncRunning` + lock guard (returns early if already running)
