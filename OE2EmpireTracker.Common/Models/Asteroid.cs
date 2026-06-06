@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace OE2EmpireTracker.Models
 {
@@ -8,6 +10,10 @@ namespace OE2EmpireTracker.Models
         public string Name { get; set; } = string.Empty;
         public string SystemName { get; set; } = string.Empty;
         public List<AsteroidReserve> Reserves { get; set; } = new List<AsteroidReserve>();
+
+        [JsonProperty("SystemObjectId")]
+        [DefaultValue(0)]
+        public int SystemObjectId { get; set; }
     }
 
     public class AsteroidReserve

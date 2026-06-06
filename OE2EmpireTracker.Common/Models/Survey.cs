@@ -73,6 +73,16 @@ namespace OE2EmpireTracker.Models
 
         public string AsteroidUUID { get; set; } = string.Empty;
 
+        [JsonProperty("SystemObjectId")]
+        [DefaultValue(0)]
+        public int SystemObjectId { get; set; }
+
+        [JsonProperty("GameApiSurveyId")]
+        public int? GameApiSurveyId { get; set; }
+
+        [JsonProperty("LastDetailImportUtc")]
+        public DateTime? LastDetailImportUtc { get; set; }
+
         [JsonIgnore]
         public Dictionary<string, int> ParsedMaxReserves { get; set; }
     }

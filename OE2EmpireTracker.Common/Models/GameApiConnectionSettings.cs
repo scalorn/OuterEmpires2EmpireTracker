@@ -2,6 +2,8 @@
 // Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
 
+using System.ComponentModel;
+
 namespace OE2EmpireTracker.Client
 {
     /// <summary>
@@ -43,5 +45,13 @@ namespace OE2EmpireTracker.Client
         /// Valid range: 0.1 to 100.0. Default 0.5 TPS.
         /// </summary>
         public double Tps { get; set; } = 0.5;
+
+        /// <summary>
+        /// Gets or sets the detail refresh interval in hours.
+        /// Controls how often surveys and blueprints are re-imported.
+        /// Valid range: 1-168 (1 hour to 7 days). Default 24 hours.
+        /// </summary>
+        [DefaultValue(24)]
+        public int DetailRefreshHours { get; set; } = 24;
     }
 }

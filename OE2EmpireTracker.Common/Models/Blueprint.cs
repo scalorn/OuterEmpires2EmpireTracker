@@ -103,6 +103,12 @@ namespace OE2EmpireTracker.Models
 
         public Dictionary<string, string> Resources { get; set; }
 
+        [JsonProperty("GameApiBlueprintId")]
+        public int? GameApiBlueprintId { get; set; }
+
+        [JsonProperty("LastDetailImportUtc")]
+        public DateTime? LastDetailImportUtc { get; set; }
+
         /// <summary>
         /// Validates that this blueprint has not been corrupted.
         /// Returns null if valid, or an error message if corrupted.
