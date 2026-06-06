@@ -245,7 +245,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-- [ ] 13. Survey import integration
+- [x] 13. Survey import integration
   - [x] 13.1 Implement SurveyDetail work item — parse and find/merge/create
     - Add `CreateSurveyDetailItem(int surveyId, string planetName, string systemName)` factory to QueueSyncService
     - Parse GameApiSurveyResponse, construct temp Survey from response fields
@@ -266,7 +266,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 13.3 Write property test for SystemObjectId propagation
+  - [x] 13.3 Write property test for SystemObjectId propagation
     - **Property 8: SystemObjectId Propagation**
     - Import surveys with various SystemObjectId values; verify propagation to linked asteroids
     - **Validates: Requirements 6.4**
@@ -294,8 +294,8 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-- [ ] 15. 401 handling in work item delegates
-  - [-] 15.1 Wire TokenRefreshHandler into QueueSyncService
+- [x] 15. 401 handling in work item delegates
+  - [x] 15.1 Wire TokenRefreshHandler into QueueSyncService
     - Construct TokenRefreshHandler in QueueSyncService constructor
     - Add 401 detection wrapper in work item delegates: call HandleUnauthorizedAsync, re-enqueue on success, mark failed on failure
     - _Requirements: 7.1, 7.2, 7.3_
@@ -304,7 +304,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: getDiagnostics_
 
 - [ ] 16. 429 handling in work item delegates
-  - [~] 16.1 Wire 429 rate limit handling in work item delegates
+  - [-] 16.1 Wire 429 rate limit handling in work item delegates
     - Add 429 detection in work item delegates: extract Retry-After header, call queue.NotifyRateLimited
     - _Requirements: 10.1, 10.2, 10.3, 10.4_
     - _Inputs: QueueSyncService.cs, GameApiRequestQueue.cs_
@@ -313,7 +313,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 
 
 - [ ] 17. Metrics and end-of-cycle reporting
-  - [~] 17.1 Wire metrics CSV file path into GameApiRequestQueue construction
+  - [-] 17.1 Wire metrics CSV file path into GameApiRequestQueue construction
     - Pass metrics file path to GameApiRequestQueue at construction in RunSyncAsync
     - After DrainAsync: collect GetCompletionStatus counts
     - _Requirements: 8.1, 8.2_

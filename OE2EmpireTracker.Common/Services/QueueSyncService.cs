@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,6 +34,7 @@ namespace OE2EmpireTracker.Services
 
         private string _currentAccessToken = string.Empty;
         private TokenRefreshHandler _tokenRefreshHandler;
+        private GameApiRequestQueue _currentQueue;
 
         private volatile bool _isSyncRunning;
 
@@ -92,11 +94,18 @@ namespace OE2EmpireTracker.Services
                     _playerContext.CurrentPlayerUUID,
                     _currentAccessToken);
 
+                var metricsFilePath = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    "sync-metrics.csv");
+
                 var queue = new GameApiRequestQueue(
                     _settings.Tps,
                     perItemTimeout: null,
                     maxInflightMultiplier: 3,
-                    maxRetries: 3);
+                    maxRetries: 3,
+                    metricsFilePath: metricsFilePath);
+
+                _currentQueue = queue;
 
                 await queue.EnqueueAsync(CreateCharacterProfileItem()).ConfigureAwait(false);
                 await queue.EnqueueAsync(CreateCharacterSkillsItem()).ConfigureAwait(false);
@@ -116,6 +125,10 @@ namespace OE2EmpireTracker.Services
 
                 queue.Start(ct);
                 await queue.DrainAsync();
+
+                var status = queue.CompletionStatus;
+                int succeeded = status.Succeeded;
+                int failed = status.Failed;
 
                 Log.Info("Queue sync cycle completed.");
                 return new QueueSyncResult();
@@ -245,6 +258,33 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Checks an API result for HTTP 429 (rate limited) and notifies the queue to pause dispatch.
+        /// If a 429 is detected, calls <see cref="GameApiRequestQueue.NotifyRateLimited"/> with the
+        /// Retry-After value (defaulting to 60 seconds if not specified) and throws an
+        /// <see cref="InvalidOperationException"/> so that the queue retries the work item
+        /// after the pause period expires.
+        /// </summary>
+        /// <param name="result">The API call result tuple.</param>
+        /// <param name="label">The work item label for logging.</param>
+        private void ThrowIfRateLimited(
+            (bool Success, string Json) result,
+            string label)
+        {
+            if (result.Success || !string.Equals(result.Json, "429", StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            const int defaultRetryAfterSeconds = 60;
+            Log.Warn("{0}: received HTTP 429 (rate limited), pausing queue for {1}s.", label, defaultRetryAfterSeconds);
+
+            _currentQueue.NotifyRateLimited(defaultRetryAfterSeconds);
+
+            throw new InvalidOperationException(
+                "Rate limited (429) for '" + label + "'; retrying after pause.");
+        }
+
+        /// <summary>
         /// Creates a work item that fetches the character profile from the game API.
         /// </summary>
         /// <returns>A work item for character profile retrieval.</returns>
@@ -260,6 +300,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "CharacterProfile", ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "CharacterProfile");
 
                     if (result.Success)
                     {
@@ -292,6 +334,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "CharacterSkills", ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "CharacterSkills");
+
                     if (result.Success)
                     {
                         Log.Debug("CharacterSkills fetched successfully.");
@@ -322,6 +366,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "BankingBalance", ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "BankingBalance");
 
                     if (result.Success)
                     {
@@ -354,6 +400,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "BankingTransactions", ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "BankingTransactions");
+
                     if (result.Success)
                     {
                         Log.Debug("BankingTransactions fetched successfully.");
@@ -384,6 +432,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "AcceptedJobs", ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "AcceptedJobs");
 
                     if (result.Success)
                     {
@@ -416,6 +466,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "ShipConfiguration", ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "ShipConfiguration");
+
                     if (result.Success)
                     {
                         Log.Debug("ShipConfiguration fetched successfully.");
@@ -446,6 +498,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "ShipCargo", ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "ShipCargo");
 
                     if (result.Success)
                     {
@@ -478,6 +532,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "MarketListings", ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "MarketListings");
+
                     if (result.Success)
                     {
                         Log.Debug("MarketListings fetched successfully.");
@@ -508,6 +564,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "MarketItems", ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "MarketItems");
 
                     if (result.Success)
                     {
@@ -540,6 +598,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "MarketBuyOrders", ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "MarketBuyOrders");
+
                     if (result.Success)
                     {
                         Log.Debug("MarketBuyOrders fetched successfully.");
@@ -571,6 +631,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "MarketSellOrders", ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "MarketSellOrders");
+
                     if (result.Success)
                     {
                         Log.Debug("MarketSellOrders fetched successfully.");
@@ -601,6 +663,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "ColonyList", ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "ColonyList");
 
                     if (!result.Success)
                     {
@@ -649,6 +713,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "ColonySummary:" + colonyId, ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "ColonySummary:" + colonyId);
+
                     if (result.Success)
                     {
                         Log.Debug("ColonySummary:{0} fetched successfully.", colonyId);
@@ -680,6 +746,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "ColonyBuildings:" + colonyId, ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "ColonyBuildings:" + colonyId);
 
                     if (result.Success)
                     {
@@ -713,6 +781,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "ColonyWarehouse:" + colonyId, ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "ColonyWarehouse:" + colonyId);
+
                     if (result.Success)
                     {
                         Log.Debug("ColonyWarehouse:{0} fetched successfully.", colonyId);
@@ -745,6 +815,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "ColonyWorkers:" + colonyId, ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "ColonyWorkers:" + colonyId);
+
                     if (result.Success)
                     {
                         Log.Debug("ColonyWorkers:{0} fetched successfully.", colonyId);
@@ -775,6 +847,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "AssetLocations", ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "AssetLocations");
 
                     if (!result.Success)
                     {
@@ -826,6 +900,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "AssetDetail:" + id, ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "AssetDetail:" + id);
 
                     if (!result.Success)
                     {
@@ -903,6 +979,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "CrateDetail:" + crateId, ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "CrateDetail:" + crateId);
+
                     if (!result.Success)
                     {
                         Log.Warn("CrateDetail:{0} fetch failed: {1}", crateId, result.Json);
@@ -934,6 +1012,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "BlueprintDetail:" + blueprintId, ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "BlueprintDetail:" + blueprintId);
 
                     if (!result.Success)
                     {
@@ -1044,6 +1124,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "SurveyDetail:" + surveyId, ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "SurveyDetail:" + surveyId);
+
                     if (!result.Success)
                     {
                         Log.Warn("SurveyDetail:{0} fetch failed: {1}", surveyId, result.Json);
@@ -1117,6 +1199,8 @@ namespace OE2EmpireTracker.Services
                     await ThrowIfUnauthorizedAsync(result, "KillMailList", ct)
                         .ConfigureAwait(false);
 
+                    ThrowIfRateLimited(result, "KillMailList");
+
                     if (!result.Success)
                     {
                         Log.Warn("KillMailList fetch failed: {0}", result.Json);
@@ -1160,6 +1244,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "KillMailDetail:" + killMailId, ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "KillMailDetail:" + killMailId);
 
                     if (result.Success)
                     {
@@ -1206,6 +1292,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, label, ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, label);
 
                     if (!result.Success)
                     {
@@ -1257,6 +1345,8 @@ namespace OE2EmpireTracker.Services
 
                     await ThrowIfUnauthorizedAsync(result, "MailDetail:" + mailId, ct)
                         .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "MailDetail:" + mailId);
 
                     if (result.Success)
                     {
