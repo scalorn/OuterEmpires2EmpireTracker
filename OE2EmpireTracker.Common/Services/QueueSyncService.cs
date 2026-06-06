@@ -115,6 +115,67 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Constructs a temporary Survey from the game API survey detail response fields.
+        /// </summary>
+        /// <param name="detail">The parsed survey detail from the API.</param>
+        /// <param name="planetName">The planet name from the parent asset location context.</param>
+        /// <param name="systemName">The star system name from the parent asset location context.</param>
+        /// <returns>A temporary Survey populated with the API response data.</returns>
+        private static Survey BuildTempSurveyFromDetail(GameApiSurveyDetail detail, string planetName, string systemName)
+        {
+            var temp = new Survey
+            {
+                PlanetName = planetName,
+                SystemName = systemName,
+                SurveyID = detail.EncryptedId,
+                ScannedBy = detail.ScanCharacter,
+                DateTime = detail.ScanDate.ToString("o"),
+                SurveyType = MapObjectTypeToSurveyType(detail.ObjectType),
+            };
+
+            var resources = new Dictionary<string, SurveyResource>();
+            var maxReserves = new Dictionary<string, int>();
+
+            foreach (var res in detail.Resources)
+            {
+                if (string.IsNullOrEmpty(res.ResourceName))
+                {
+                    continue;
+                }
+
+                resources[res.ResourceName] = new SurveyResource(
+                    res.ResourceName,
+                    res.RarityClassification,
+                    res.Abundance.ToString());
+
+                if (res.MaxReserve.HasValue)
+                {
+                    maxReserves[res.ResourceName] = res.MaxReserve.Value;
+                }
+            }
+
+            temp.Resources = resources;
+            temp.ParsedMaxReserves = maxReserves.Count > 0 ? maxReserves : null;
+
+            return temp;
+        }
+
+        /// <summary>
+        /// Maps the game API objectType string to the local SurveyType enum.
+        /// </summary>
+        /// <param name="objectType">The object type string from the API (e.g. "planet", "asteroid").</param>
+        /// <returns>The corresponding SurveyType enum value.</returns>
+        private static SurveyType MapObjectTypeToSurveyType(string objectType)
+        {
+            if (string.Equals(objectType, "asteroid", StringComparison.OrdinalIgnoreCase))
+            {
+                return SurveyType.Asteroid;
+            }
+
+            return SurveyType.Planet;
+        }
+
+        /// <summary>
         /// Determines whether a detail import is still fresh based on the configured refresh interval.
         /// </summary>
         /// <param name="lastImportUtc">The UTC timestamp of the last detail import, or null if never imported.</param>
@@ -883,67 +944,6 @@ namespace OE2EmpireTracker.Services
                     return Array.Empty<WorkItem>();
                 },
             };
-        }
-
-        /// <summary>
-        /// Constructs a temporary Survey from the game API survey detail response fields.
-        /// </summary>
-        /// <param name="detail">The parsed survey detail from the API.</param>
-        /// <param name="planetName">The planet name from the parent asset location context.</param>
-        /// <param name="systemName">The star system name from the parent asset location context.</param>
-        /// <returns>A temporary Survey populated with the API response data.</returns>
-        private static Survey BuildTempSurveyFromDetail(GameApiSurveyDetail detail, string planetName, string systemName)
-        {
-            var temp = new Survey
-            {
-                PlanetName = planetName,
-                SystemName = systemName,
-                SurveyID = detail.EncryptedId,
-                ScannedBy = detail.ScanCharacter,
-                DateTime = detail.ScanDate.ToString("o"),
-                SurveyType = MapObjectTypeToSurveyType(detail.ObjectType),
-            };
-
-            var resources = new Dictionary<string, SurveyResource>();
-            var maxReserves = new Dictionary<string, int>();
-
-            foreach (var res in detail.Resources)
-            {
-                if (string.IsNullOrEmpty(res.ResourceName))
-                {
-                    continue;
-                }
-
-                resources[res.ResourceName] = new SurveyResource(
-                    res.ResourceName,
-                    res.RarityClassification,
-                    res.Abundance.ToString());
-
-                if (res.MaxReserve.HasValue)
-                {
-                    maxReserves[res.ResourceName] = res.MaxReserve.Value;
-                }
-            }
-
-            temp.Resources = resources;
-            temp.ParsedMaxReserves = maxReserves.Count > 0 ? maxReserves : null;
-
-            return temp;
-        }
-
-        /// <summary>
-        /// Maps the game API objectType string to the local SurveyType enum.
-        /// </summary>
-        /// <param name="objectType">The object type string from the API (e.g. "planet", "asteroid").</param>
-        /// <returns>The corresponding SurveyType enum value.</returns>
-        private static SurveyType MapObjectTypeToSurveyType(string objectType)
-        {
-            if (string.Equals(objectType, "asteroid", StringComparison.OrdinalIgnoreCase))
-            {
-                return SurveyType.Asteroid;
-            }
-
-            return SurveyType.Planet;
         }
 
         /// <summary>
