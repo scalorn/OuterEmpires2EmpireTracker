@@ -140,7 +140,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs created_
     - _Verification: getDiagnostics_
 
-  - [-] 6.2 Add queue construction and IsDetailFresh helper to QueueSyncService
+  - [x] 6.2 Add queue construction and IsDetailFresh helper to QueueSyncService
     - Inside `RunSyncAsync`: construct GameApiRequestQueue with TPS from settings, inflight = TPS × 3, maxRetries = 3
     - Add `IsDetailFresh(DateTime? lastImportUtc)` private helper using DetailRefreshHours and SystemClock.UtcNow
     - _Requirements: 1.1, 1.2, 1.3, 1.5, 14.3, 14.4, 14.6_

@@ -555,8 +555,10 @@
     <Compile Include="Services\ColonyMergePropertyTests.cs" />
     <Compile Include="Services\AssetMergeServicePropertyTests.cs" />
     <Compile Include="Services\PlayerContextApiIdIndexTests.cs" />
+    <Compile Include="Services\FreshnessSkipPropertyTests.cs" />
     <Compile Include="Services\TokenRefreshHandlerTests.cs" />
     <Compile Include="Services\TokenRefreshHandlerPropertyTests.cs" />
+    <Compile Include="Services\QueueSyncServicePropertyTests.cs" />
     <Compile Include="Services\AssetMergeServiceStationTests.cs" />
     <Compile Include="Services\AssetMergeServiceTests.cs" />
     <Compile Include="Services\AssetMergeServiceShipTests.cs" />
