@@ -100,6 +100,8 @@ Controls:
   - `txtGameApiSecret` (ValidatedTextBox, PasswordChar='●') — per-character secret
   - `nudPollingInterval` (NumericUpDown) — polling interval in minutes (1-60)
   - `chkGameApiEnabled` (CheckBox) — enable/disable game API integration
+  - `lblTpsLimit` (Label) — "TPS Limit:" label
+  - `txtTpsLimit` (ValidatedTextBox) — TPS rate limit value (0.1-100.0)
   - `btnTestGameApiConnection` (Button) — tests connection via token exchange
   - `lblTestResult` (Label) — shows test connection result
 - `btnOK` (Button), `btnCancel` (Button, DialogResult=Cancel), `btnResetDefaults` (Button)
