@@ -880,7 +880,31 @@ namespace OE2EmpireTracker.Services
                     entry["resources"] = resObj;
 
                     var jsonArray = new JArray { entry };
-                    CrateImporter.ImportFromJson(jsonArray.ToString(), _playerContext, _empireContext);
+                    var importResult = CrateImporter.ImportFromJson(jsonArray.ToString(), _playerContext, _empireContext);
+
+                    // Track API ID and freshness on the imported blueprint.
+                    if (importResult.Entries.Count > 0 &&
+                        importResult.Entries[0].Action != ImportAction.Skipped)
+                    {
+                        string importedName = importResult.Entries[0].Name;
+                        int importedEvo = importResult.Entries[0].Evolution;
+
+                        var blueprint = _playerContext.BlueprintList
+                            .FirstOrDefault(b =>
+                                string.Equals(b.Name, importedName, StringComparison.Ordinal) &&
+                                b.Evolution == importedEvo);
+
+                        if (blueprint != null)
+                        {
+                            blueprint.GameApiBlueprintId = blueprintId;
+                            blueprint.LastDetailImportUtc = SystemClock.UtcNow;
+                            _playerContext.IndexBlueprintByApiId(blueprint);
+                            Log.Debug(
+                                "BlueprintDetail:{0} tracked API ID on UUID={1}.",
+                                blueprintId,
+                                blueprint.UUID);
+                        }
+                    }
 
                     return Array.Empty<WorkItem>();
                 },
@@ -940,6 +964,20 @@ namespace OE2EmpireTracker.Services
                     }
 
                     SurveyImportHelper.LinkOrCreateAsteroid(survey, _playerContext);
+
+                    survey.SystemObjectId = detail.SystemObjectId;
+                    if (detail.SystemObjectId > 0 && !string.IsNullOrEmpty(survey.AsteroidUUID))
+                    {
+                        var asteroid = _playerContext.FindAsteroid(survey.AsteroidUUID);
+                        if (asteroid != null)
+                        {
+                            asteroid.SystemObjectId = detail.SystemObjectId;
+                        }
+                    }
+
+                    survey.GameApiSurveyId = detail.Id;
+                    survey.LastDetailImportUtc = SystemClock.UtcNow;
+                    _playerContext.IndexSurveyByApiId(survey);
 
                     return Array.Empty<WorkItem>();
                 },

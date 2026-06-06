@@ -246,7 +246,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: getDiagnostics_
 
 - [ ] 13. Survey import integration
-  - [-] 13.1 Implement SurveyDetail work item — parse and find/merge/create
+  - [x] 13.1 Implement SurveyDetail work item — parse and find/merge/create
     - Add `CreateSurveyDetailItem(int surveyId, string planetName, string systemName)` factory to QueueSyncService
     - Parse GameApiSurveyResponse, construct temp Survey from response fields
     - Use SurveyImportHelper.FindByKey → MergeData (if match) or CreateFromTemp (if new)
@@ -256,7 +256,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 13.2 Wire SystemObjectId propagation and index update in SurveyDetail
+  - [-] 13.2 Wire SystemObjectId propagation and index update in SurveyDetail
     - After survey import: set survey.SystemObjectId from response (if > 0, propagate to linked asteroid)
     - Set survey.GameApiSurveyId = response.Survey.Id
     - Set survey.LastDetailImportUtc = SystemClock.UtcNow
@@ -275,7 +275,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 
 
 - [ ] 14. Blueprint import integration
-  - [-] 14.1 Implement BlueprintDetail work item — parse response and construct crate JSON
+  - [x] 14.1 Implement BlueprintDetail work item — parse response and construct crate JSON
     - Add `CreateBlueprintDetailItem(int blueprintId)` factory to QueueSyncService
     - Parse GameApiBlueprintDetailResponse, construct CrateImporter-compatible JSON object
     - Map `partTypeIcon` → `_IconClass` with "ui_icon_" prefix (skip if empty/null)
@@ -285,7 +285,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 14.2 Wire API ID tracking and freshness timestamp for BlueprintDetail
+  - [-] 14.2 Wire API ID tracking and freshness timestamp for BlueprintDetail
     - After CrateImporter import: set GameApiBlueprintId on imported blueprint
     - Set LastDetailImportUtc = SystemClock.UtcNow
     - Call PlayerContext.IndexBlueprintByApiId(blueprint)
