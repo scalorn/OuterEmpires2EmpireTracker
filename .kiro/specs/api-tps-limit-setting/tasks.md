@@ -29,7 +29,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 2.2, 2.3, 2.4_
     - _Verification: Build succeeds, getDiagnostics clean_
 
-  - [~] 2.3 Add Leave handler — clamp to [0.1, 100.0] or revert
+  - [-] 2.3 Add Leave handler — clamp to [0.1, 100.0] or revert
     - On txtTpsLimit Leave: if numeric but out of range, clamp to nearest boundary
     - If non-numeric or empty, revert to last valid value
     - _Requirements: 2.5, 3.1, 3.2, 3.3_
@@ -88,14 +88,14 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Verification: Build succeeds_
 
 
-- [ ] 7. Implement GameApiRequestQueue — error handling and cancellation
-  - [~] 7.1 Implement error isolation (catch per-item exceptions, continue processing)
+- [x] 7. Implement GameApiRequestQueue — error handling and cancellation
+  - [x] 7.1 Implement error isolation (catch per-item exceptions, continue processing)
     - Catch exceptions in ExecuteWorkItemAsync, record in ConcurrentBag<QueueError>
     - Mark item as failed, continue dispatch loop
     - _Requirements: 6.1, 6.2_
     - _Verification: Build succeeds_
 
-  - [~] 7.2 Implement cancellation and per-item timeout
+  - [x] 7.2 Implement cancellation and per-item timeout
     - Accept CancellationToken in Start — when cancelled, stop dequeuing new items
     - Per-item timeout via CancellationTokenSource.CreateLinkedTokenSource + CancelAfter
     - In-flight items allowed to complete up to timeout

@@ -43,6 +43,11 @@ namespace OE2EmpireTracker.Forms
         /// </summary>
         private List<string> _gameApiCharacterUUIDs = new List<string>();
 
+        /// <summary>
+        /// Tracks the last valid TPS value for reverting on invalid input.
+        /// </summary>
+        private string _lastValidTps = "0.5";
+
         public FormPreferences()
         {
             InitializeComponent();
@@ -53,6 +58,7 @@ namespace OE2EmpireTracker.Forms
             btnPushLocalToServer.Click += BtnPushLocalToServer_Click;
             btnTestGameApiConnection.Click += BtnTestGameApiConnection_Click;
             cmbGameApiCharacter.SelectedIndexChanged += CmbGameApiCharacter_SelectedIndexChanged;
+            txtTpsLimit.Leave += TxtTpsLimit_Leave;
 
             // Populate operating mode dropdown
             cmbOperatingMode.Items.Add("Local Only");
@@ -150,6 +156,7 @@ namespace OE2EmpireTracker.Forms
             }
 
             txtTpsLimit.Text = settings.Tps.ToString("F1", CultureInfo.InvariantCulture);
+            _lastValidTps = txtTpsLimit.Text;
 
             // Show placeholder dots if a secret is stored for the selected character
             string playerUUID = GetSelectedCharacterUUID();
@@ -667,6 +674,27 @@ namespace OE2EmpireTracker.Forms
             else
             {
                 txtGameApiSecret.Text = string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Clamps TPS value to [0.1, 100.0] on valid numeric input, or reverts to
+        /// the last valid value when the input is non-numeric or empty.
+        /// </summary>
+        private void TxtTpsLimit_Leave(object sender, EventArgs e)
+        {
+            string text = txtTpsLimit.Text.Trim();
+
+            if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
+            {
+                double clamped = Math.Max(0.1, Math.Min(100.0, value));
+                string formatted = clamped.ToString("F1", CultureInfo.InvariantCulture);
+                txtTpsLimit.Text = formatted;
+                _lastValidTps = formatted;
+            }
+            else
+            {
+                txtTpsLimit.Text = _lastValidTps;
             }
         }
 
