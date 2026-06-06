@@ -878,8 +878,6 @@ namespace OE2EmpireTracker.Tests.Client
 
             // Combine all banking transaction pages into a single file
             CombineBankingTransactionPages();
-
-            // TODO: Write metadata (task 21.x)
         }
 
         /// <summary>

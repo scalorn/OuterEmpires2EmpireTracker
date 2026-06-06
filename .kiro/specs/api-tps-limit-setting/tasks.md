@@ -307,7 +307,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 21. Discovery tests — drain, metadata, and error reporting
-  - [~] 21.1 Implement drain and metadata writing
+  - [x] 21.1 Implement drain and metadata writing
     - Await queue.DrainAsync()
     - Write `_metadata.json` with: run timestamp, character ID, total succeeded/skipped/failed counts
     - Include per-endpoint detail (category, endpoint, success, httpStatus, reason)
