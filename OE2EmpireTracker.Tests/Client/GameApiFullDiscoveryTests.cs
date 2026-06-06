@@ -878,6 +878,12 @@ namespace OE2EmpireTracker.Tests.Client
 
             // Combine all banking transaction pages into a single file
             CombineBankingTransactionPages();
+
+            // Collect queue errors as skipped entries so they appear in metadata
+            foreach (var error in queue.Errors)
+            {
+                RecordSkipped("queue-error", error.WorkItemLabel, error.Exception.Message);
+            }
         }
 
         /// <summary>

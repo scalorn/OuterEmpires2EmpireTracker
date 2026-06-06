@@ -315,7 +315,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 15.1, 15.2, 15.5_
     - _Verification: Build succeeds_
 
-  - [~] 21.2 Implement error collection and failure isolation
+  - [-] 21.2 Implement error collection and failure isolation
     - Collect errors from queue.Errors list, report as RecordSkipped entries with exception message
     - Failed seed items do not abort other seeds — each seed independent
     - Discovery run writes metadata and completes even if all seeds fail
@@ -324,7 +324,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Verification: Build succeeds_
 
 - [ ] 22. Verify GameApiClient preservation
-  - [~] 22.1 Verify internal rate limiter and 429 handling remain unchanged
+  - [-] 22.1 Verify internal rate limiter and 429 handling remain unchanged
     - Confirm SemaphoreSlim rate limiter (AcquireRateLimitTokenAsync) is untouched
     - Confirm X-RateLimit-Limit header handling unchanged
     - Confirm 429 pause mechanism unchanged
