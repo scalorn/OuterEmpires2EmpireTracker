@@ -54,14 +54,19 @@ namespace OE2EmpireTracker.Tests.Client
                 CredentialStore.Unprotect);
 
             var settings = PreferencesStore.GetInstance().Preferences.GameApiConnection;
-            if (settings == null || !settings.Enabled)
+            if (settings == null)
             {
-                Assert.Ignore("Game API integration is not configured or disabled in preferences.");
+                Assert.Ignore("Game API connection settings not found in preferences.");
             }
 
             if (string.IsNullOrEmpty(settings.AppId) || string.IsNullOrEmpty(settings.ClientId))
             {
                 Assert.Ignore("Game API AppId or ClientId not configured in preferences.");
+            }
+
+            if (string.IsNullOrEmpty(settings.ServerUrl))
+            {
+                Assert.Ignore("Game API ServerUrl not configured in preferences.");
             }
 
             this.appId = settings.AppId;
