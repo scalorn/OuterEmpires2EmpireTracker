@@ -565,18 +565,107 @@ namespace OE2EmpireTracker.Tests.Client
                             ExecuteAsync = async ct2 =>
                             {
                                 var r = await this.client.GetAssetLocationDetailAsync(this.appId, this.accessToken, capturedId, capturedType).ConfigureAwait(false);
-                                if (r.Success)
-                                {
-                                    string detailPath = Path.Combine(this.outputDir, "assets", $"location-{capturedId}.json");
-                                    File.WriteAllText(detailPath, FormatJson(r.Json), Encoding.UTF8);
-                                    RecordSuccess("assets", $"location-{capturedId}");
-                                }
-                                else
+                                if (!r.Success)
                                 {
                                     RecordSkipped("assets", $"location-{capturedId}", r.Json ?? "Request failed");
+                                    return Array.Empty<WorkItem>();
                                 }
 
-                                return Array.Empty<WorkItem>();
+                                string detailPath = Path.Combine(this.outputDir, "assets", $"location-{capturedId}.json");
+                                File.WriteAllText(detailPath, FormatJson(r.Json), Encoding.UTF8);
+                                RecordSuccess("assets", $"location-{capturedId}");
+
+                                var detail = JObject.Parse(r.Json);
+                                var cargo = detail["data"]?["cargo"] as JArray;
+                                if (cargo == null || cargo.Count == 0)
+                                {
+                                    return Array.Empty<WorkItem>();
+                                }
+
+                                var cargoItems = new List<WorkItem>();
+                                foreach (var item in cargo)
+                                {
+                                    string itemTypeC = item["typeC"]?.Value<string>();
+                                    int cargoItemId = item["cargoItemId"]?.Value<int>() ?? 0;
+                                    if (cargoItemId == 0 || string.IsNullOrEmpty(itemTypeC))
+                                    {
+                                        continue;
+                                    }
+
+                                    int capturedItemId = cargoItemId;
+
+                                    if (itemTypeC == "Cr")
+                                    {
+                                        cargoItems.Add(new WorkItem
+                                        {
+                                            Label = $"assets/crate-{capturedItemId}",
+                                            ExecuteAsync = async ct3 =>
+                                            {
+                                                var cr = await this.client.GetAssetCrateAsync(this.appId, this.accessToken, capturedItemId).ConfigureAwait(false);
+                                                if (cr.Success)
+                                                {
+                                                    string cratePath = Path.Combine(this.outputDir, "assets", $"crate-{capturedItemId}.json");
+                                                    File.WriteAllText(cratePath, FormatJson(cr.Json), Encoding.UTF8);
+                                                    RecordSuccess("assets", $"crate-{capturedItemId}");
+                                                }
+                                                else
+                                                {
+                                                    RecordSkipped("assets", $"crate-{capturedItemId}", cr.Json ?? "Request failed");
+                                                }
+
+                                                return Array.Empty<WorkItem>();
+                                            },
+                                        });
+                                    }
+                                    else if (itemTypeC == "Sc")
+                                    {
+                                        cargoItems.Add(new WorkItem
+                                        {
+                                            Label = $"assets/survey-{capturedItemId}",
+                                            ExecuteAsync = async ct3 =>
+                                            {
+                                                var sr = await this.client.GetAssetSurveyAsync(this.appId, this.accessToken, capturedItemId).ConfigureAwait(false);
+                                                if (sr.Success)
+                                                {
+                                                    string surveyPath = Path.Combine(this.outputDir, "assets", $"survey-{capturedItemId}.json");
+                                                    File.WriteAllText(surveyPath, FormatJson(sr.Json), Encoding.UTF8);
+                                                    RecordSuccess("assets", $"survey-{capturedItemId}");
+                                                }
+                                                else
+                                                {
+                                                    RecordSkipped("assets", $"survey-{capturedItemId}", sr.Json ?? "Request failed");
+                                                }
+
+                                                return Array.Empty<WorkItem>();
+                                            },
+                                        });
+                                    }
+                                    else if (itemTypeC == "Bp")
+                                    {
+                                        cargoItems.Add(new WorkItem
+                                        {
+                                            Label = $"assets/blueprint-{capturedItemId}",
+                                            ExecuteAsync = async ct3 =>
+                                            {
+                                                var bp = await this.client.GetAssetBlueprintAsync(this.appId, this.accessToken, capturedItemId).ConfigureAwait(false);
+                                                if (bp.Success)
+                                                {
+                                                    string bpPath = Path.Combine(this.outputDir, "assets", $"blueprint-{capturedItemId}.json");
+                                                    File.WriteAllText(bpPath, FormatJson(bp.Json), Encoding.UTF8);
+                                                    RecordSuccess("assets", $"blueprint-{capturedItemId}");
+                                                }
+                                                else
+                                                {
+                                                    RecordSkipped("assets", $"blueprint-{capturedItemId}", bp.Json ?? "Request failed");
+                                                }
+
+                                                return Array.Empty<WorkItem>();
+                                            },
+                                        });
+                                    }
+                                }
+
+                                return cargoItems;
                             },
                         });
                     }
@@ -591,46 +680,137 @@ namespace OE2EmpireTracker.Tests.Client
                 ExecuteAsync = async ct =>
                 {
                     var result = await this.client.GetKillMailListAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (result.Success)
-                    {
-                        string filePath = Path.Combine(this.outputDir, "killmails", "list.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
-                        RecordSuccess("killmails", "list");
-                    }
-                    else
+                    if (!result.Success)
                     {
                         RecordSkipped("killmails", "list", result.Json ?? "Request failed");
+                        return Array.Empty<WorkItem>();
                     }
 
-                    return Array.Empty<WorkItem>();
+                    string filePath = Path.Combine(this.outputDir, "killmails", "list.json");
+                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    RecordSuccess("killmails", "list");
+
+                    var envelope = JObject.Parse(result.Json);
+                    var killMails = envelope["data"]?["killMails"] as JArray;
+                    if (killMails == null || killMails.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var cascaded = new List<WorkItem>();
+                    foreach (var km in killMails)
+                    {
+                        int killMailId = km["killMailId"]?.Value<int>() ?? 0;
+                        if (killMailId == 0)
+                        {
+                            continue;
+                        }
+
+                        int capturedKmId = killMailId;
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = $"killmails/{capturedKmId}",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                var r = await this.client.GetKillMailDetailAsync(this.appId, this.accessToken, capturedKmId).ConfigureAwait(false);
+                                if (r.Success)
+                                {
+                                    string kmPath = Path.Combine(this.outputDir, "killmails", $"{capturedKmId}.json");
+                                    File.WriteAllText(kmPath, FormatJson(r.Json), Encoding.UTF8);
+                                    RecordSuccess("killmails", capturedKmId.ToString());
+                                }
+                                else
+                                {
+                                    RecordSkipped("killmails", capturedKmId.ToString(), r.Json ?? "Request failed");
+                                }
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+                    }
+
+                    return cascaded;
                 },
             }).ConfigureAwait(false);
 
-            await queue.EnqueueAsync(new WorkItem
-            {
-                Label = "mail/list-p0",
-                ExecuteAsync = async ct =>
-                {
-                    var result = await this.client.GetMailListAsync(this.appId, this.accessToken, 0, 50).ConfigureAwait(false);
-                    if (result.Success)
-                    {
-                        string filePath = Path.Combine(this.outputDir, "mail", "list-p0.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
-                        RecordSuccess("mail", "list-p0");
-                    }
-                    else
-                    {
-                        RecordSkipped("mail", "list-p0", result.Json ?? "Request failed");
-                    }
-
-                    return Array.Empty<WorkItem>();
-                },
-            }).ConfigureAwait(false);
+            await queue.EnqueueAsync(this.CreateMailPageWorkItem(0)).ConfigureAwait(false);
 
             queue.Start();
             await queue.DrainAsync().ConfigureAwait(false);
 
             // TODO: Write metadata (task 21.x)
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches a page of mail and cascades to detail items and the next page.
+        /// </summary>
+        /// <param name="page">The zero-based page number to fetch.</param>
+        /// <returns>A work item for the specified mail page.</returns>
+        private WorkItem CreateMailPageWorkItem(int page)
+        {
+            return new WorkItem
+            {
+                Label = $"mail/list-p{page}",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetMailListAsync(this.appId, this.accessToken, page * 50, 50).ConfigureAwait(false);
+                    if (!result.Success)
+                    {
+                        RecordSkipped("mail", $"list-p{page}", result.Json ?? "Request failed");
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    string filePath = Path.Combine(this.outputDir, "mail", $"list-p{page}.json");
+                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    RecordSuccess("mail", $"list-p{page}");
+
+                    var envelope = JObject.Parse(result.Json);
+                    var mails = envelope["data"]?["mails"] as JArray;
+                    if (mails == null || mails.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var cascaded = new List<WorkItem>();
+
+                    foreach (var mail in mails)
+                    {
+                        int mailId = mail["mailId"]?.Value<int>() ?? 0;
+                        if (mailId == 0)
+                        {
+                            continue;
+                        }
+
+                        int capturedMailId = mailId;
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = $"mail/{capturedMailId}",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                var r = await this.client.GetMailDetailAsync(this.appId, this.accessToken, capturedMailId).ConfigureAwait(false);
+                                if (r.Success)
+                                {
+                                    string mailPath = Path.Combine(this.outputDir, "mail", $"{capturedMailId}.json");
+                                    File.WriteAllText(mailPath, FormatJson(r.Json), Encoding.UTF8);
+                                    RecordSuccess("mail", capturedMailId.ToString());
+                                }
+                                else
+                                {
+                                    RecordSkipped("mail", capturedMailId.ToString(), r.Json ?? "Request failed");
+                                }
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+                    }
+
+                    cascaded.Add(this.CreateMailPageWorkItem(page + 1));
+
+                    return cascaded;
+                },
+            };
         }
 
         /// <summary>

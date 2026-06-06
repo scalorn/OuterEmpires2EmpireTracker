@@ -251,7 +251,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Verification: Build succeeds_
 
 - [ ] 16. Implement colony cascading
-  - [-] 16.1 Colony list cascades to per-colony detail items
+  - [x] 16.1 Colony list cascades to per-colony detail items
     - On colony list completion: enqueue 4 items per colony (summary, buildings, warehouse, workers)
     - Each writes to `colonies/{colonyId}/{endpoint}.json`
     - Calls RecordSuccess/RecordSkipped independently
@@ -260,13 +260,13 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Verification: Build succeeds_
 
 - [ ] 17. Implement asset cascading
-  - [-] 17.1 Asset locations cascades to per-location detail
+  - [x] 17.1 Asset locations cascades to per-location detail
     - On locations completion: enqueue one item per location for detail
     - If enqueue throws, fail entire discovery run
     - _Requirements: 10.1_
     - _Verification: Build succeeds_
 
-  - [~] 17.2 Location detail cascades to crate/survey/blueprint items
+  - [x] 17.2 Location detail cascades to crate/survey/blueprint items
     - Inspect cargo array for typeC "Cr", "Sc", "Bp"
     - Enqueue detail fetch for ALL matching items from ALL locations
     - Each writes to `assets/{type}-{id}.json`, calls RecordSuccess/RecordSkipped
@@ -275,13 +275,13 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
 
 
 - [ ] 18. Implement kill mail and mail cascading
-  - [~] 18.1 Kill mail list cascades to per-mail detail
+  - [x] 18.1 Kill mail list cascades to per-mail detail
     - On kill mail list completion: enqueue one item per kill mail for detail
     - Each writes to `killmails/{killMailId}.json`, calls RecordSuccess/RecordSkipped
     - _Requirements: 11.1, 11.2_
     - _Verification: Build succeeds_
 
-  - [~] 18.2 Mail pagination and per-mail detail cascading
+  - [x] 18.2 Mail pagination and per-mail detail cascading
     - Page 0 seed: if non-empty, enqueue next page (sequential chain)
     - Each page enqueues one detail item per mail ID on that page
     - Detail items execute concurrently with pagination and other work
