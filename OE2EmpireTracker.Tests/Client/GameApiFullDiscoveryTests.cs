@@ -167,7 +167,323 @@ namespace OE2EmpireTracker.Tests.Client
         {
             var queue = new GameApiRequestQueue(10.0);
 
-            // TODO: Enqueue seed work items here (tasks 15.x)
+            // === Task 15.1: Character, banking, jobs, ship seed items ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "character/profile",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetCharacterAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "character", "profile.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("character", "profile");
+                    }
+                    else
+                    {
+                        RecordSkipped("character", "profile", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "character/skills",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetCharacterSkillsAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "character", "skills.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("character", "skills");
+                    }
+                    else
+                    {
+                        RecordSkipped("character", "skills", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "banking/balance",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetBankingBalanceAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "banking", "balance.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("banking", "balance");
+                    }
+                    else
+                    {
+                        RecordSkipped("banking", "balance", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "banking/transactions-p0",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetBankingTransactionsAsync(this.appId, this.accessToken, 0, 50).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "banking", "transactions-p0.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("banking", "transactions-p0");
+                    }
+                    else
+                    {
+                        RecordSkipped("banking", "transactions-p0", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "jobs/accepted",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetAcceptedJobsAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "jobs", "accepted.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("jobs", "accepted");
+                    }
+                    else
+                    {
+                        RecordSkipped("jobs", "accepted", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "ship/configuration",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetShipConfigurationAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "ship", "configuration.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("ship", "configuration");
+                    }
+                    else
+                    {
+                        RecordSkipped("ship", "configuration", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "ship/cargo",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetShipCargoAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "ship", "cargo.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("ship", "cargo");
+                    }
+                    else
+                    {
+                        RecordSkipped("ship", "cargo", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            // === Task 15.2: Market seed items ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "market/listings",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetMarketListingsAsync(this.appId, this.accessToken, "all").ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "market", "listings.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("market", "listings");
+                    }
+                    else
+                    {
+                        RecordSkipped("market", "listings", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "market/items",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetMarketItemsAsync(this.appId, this.accessToken, "all", string.Empty).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "market", "items.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("market", "items");
+                    }
+                    else
+                    {
+                        RecordSkipped("market", "items", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "market/buyorders",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetMarketBuyOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "market", "buyorders.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("market", "buyorders");
+                    }
+                    else
+                    {
+                        RecordSkipped("market", "buyorders", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "market/sellorders",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetMarketSellOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "market", "sellorders.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("market", "sellorders");
+                    }
+                    else
+                    {
+                        RecordSkipped("market", "sellorders", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            // === Task 15.3: Cascading seed items (colonies, assets, killmails, mail) ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "colonies/list",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetColonyListAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "colonies", "list.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("colonies", "list");
+                    }
+                    else
+                    {
+                        RecordSkipped("colonies", "list", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "assets/locations",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetAssetLocationsAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "assets", "locations.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("assets", "locations");
+                    }
+                    else
+                    {
+                        RecordSkipped("assets", "locations", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "killmails/list",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetKillMailListAsync(this.appId, this.accessToken).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "killmails", "list.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("killmails", "list");
+                    }
+                    else
+                    {
+                        RecordSkipped("killmails", "list", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "mail/list-p0",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetMailListAsync(this.appId, this.accessToken, 0, 50).ConfigureAwait(false);
+                    if (result.Success)
+                    {
+                        string filePath = Path.Combine(this.outputDir, "mail", "list-p0.json");
+                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                        RecordSuccess("mail", "list-p0");
+                    }
+                    else
+                    {
+                        RecordSkipped("mail", "list-p0", result.Json ?? "Request failed");
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
 
             queue.Start();
             await queue.DrainAsync().ConfigureAwait(false);

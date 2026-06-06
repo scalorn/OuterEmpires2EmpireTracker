@@ -224,27 +224,27 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 8.1, 8.3_
     - _Verification: Build succeeds, single test method compiles_
 
-  - [-] 14.2 Add thread-safe result collection helpers
+  - [x] 14.2 Add thread-safe result collection helpers
     - Replace `List<EndpointResult>` with `ConcurrentBag<EndpointResult>`
     - Add RecordSuccess and RecordSkipped helper methods (thread-safe)
     - _Requirements: 15.4_
     - _Verification: Build succeeds_
 
 - [ ] 15. Enqueue seed work items (independent endpoints)
-  - [~] 15.1 Enqueue character, banking, jobs, ship seed items
+  - [x] 15.1 Enqueue character, banking, jobs, ship seed items
     - character/profile, character/skills, banking/balance, banking/transactions-p0
     - jobs/accepted, ship/configuration, ship/cargo
     - Each writes response to appropriate subdirectory
     - _Requirements: 8.2_
     - _Verification: Build succeeds_
 
-  - [~] 15.2 Enqueue market seed items
+  - [x] 15.2 Enqueue market seed items
     - market/listings, market/items, market/buyorders, market/sellorders
     - Each writes response to market/ subdirectory
     - _Requirements: 8.2_
     - _Verification: Build succeeds_
 
-  - [~] 15.3 Enqueue colonies/list, assets/locations, killmails/list, mail/list-p0
+  - [x] 15.3 Enqueue colonies/list, assets/locations, killmails/list, mail/list-p0
     - These are seeds that will cascade to follow-up items
     - Each writes its direct response and prepares for cascading
     - _Requirements: 8.2_
