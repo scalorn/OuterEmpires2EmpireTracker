@@ -170,42 +170,42 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 17.1, 17.2, 17.3_
     - _Verification: Tests pass_
 
-- [ ] 12. Property-based tests for GameApiRequestQueue
-  - [-] 12.1 Property P1: Rate Governor Throughput
+- [x] 12. Property-based tests for GameApiRequestQueue
+  - [x] 12.1 Property P1: Rate Governor Throughput
     - Random TPS [0.5, 20.0], random item count [5, 50], frozen SystemClock
     - Verify dispatch count per 5s window does not exceed configuredTps * 5 + configuredTps
     - **Property 1: Rate Governor Throughput**
     - **Validates: Requirements 7.1, 7.2, 7.3**
     - _Verification: Property test passes with MaxTest=100_
 
-  - [-] 12.2 Property P2: FIFO Ordering
+  - [x] 12.2 Property P2: FIFO Ordering
     - Random item count [2, 100], verify dispatch sequence numbers monotonically increasing
     - **Property 2: FIFO Ordering**
     - **Validates: Requirements 4.3**
     - _Verification: Property test passes with MaxTest=100_
 
-  - [-] 12.3 Property P3: Cascading Completeness
+  - [x] 12.3 Property P3: Cascading Completeness
     - Random tree depth [1, 3], random branching [0, 3], atomic counter
     - Verify total processed == counter after drain
     - **Property 3: Cascading Completeness**
     - **Validates: Requirements 5.1, 5.2, 5.3**
     - _Verification: Property test passes with MaxTest=100_
 
-  - [-] 12.4 Property P4: Error Isolation
+  - [x] 12.4 Property P4: Error Isolation
     - Random failure positions in item list
     - Verify succeeded + failed == total
     - **Property 4: Error Isolation**
     - **Validates: Requirements 6.1, 6.2**
     - _Verification: Property test passes with MaxTest=100_
 
-  - [-] 12.5 Property P5: 429 Backoff Correctness
+  - [x] 12.5 Property P5: 429 Backoff Correctness
     - Random retryAfter [1, 120], frozen clock, advance incrementally
     - Verify no dispatch during pause window, effective TPS ≤ 50% of prior
     - **Property 5: 429 Backoff Correctness**
     - **Validates: Requirements 17.1, 17.2, 17.3**
     - _Verification: Property test passes with MaxTest=100_
 
-  - [-] 12.6 Property P6: Drain Completeness
+  - [x] 12.6 Property P6: Drain Completeness
     - Random delays [0, 50ms], random cascading
     - Verify inflight == 0 after drain
     - **Property 6: Drain Completeness**
@@ -217,7 +217,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
 
 
 - [ ] 14. Restructure discovery tests — scaffold
-  - [~] 14.1 Delete old 23 ordered tests and create single [Test] method skeleton
+  - [x] 14.1 Delete old 23 ordered tests and create single [Test] method skeleton
     - Remove all existing `[Test] [Order(N)]` methods from GameApiFullDiscoveryTests
     - Create single `[Test]` method that creates GameApiRequestQueue at TPS=10.0
     - Add queue.Start() and await queue.DrainAsync() structure
