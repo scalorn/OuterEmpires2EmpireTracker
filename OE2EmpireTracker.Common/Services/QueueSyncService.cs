@@ -4,8 +4,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Client;
 
@@ -93,6 +95,8 @@ namespace OE2EmpireTracker.Services
                 await queue.EnqueueAsync(CreateMarketItemsItem()).ConfigureAwait(false);
                 await queue.EnqueueAsync(CreateMarketBuyOrdersItem()).ConfigureAwait(false);
                 await queue.EnqueueAsync(CreateMarketSellOrdersItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateColonyListItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateAssetLocationsItem()).ConfigureAwait(false);
 
                 queue.Start(ct);
                 await queue.DrainAsync();
@@ -425,6 +429,236 @@ namespace OE2EmpireTracker.Services
                         Log.Warn("MarketSellOrders fetch failed: {0}", result.Json);
                     }
 
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the colony list and cascades per-colony detail items.
+        /// </summary>
+        /// <returns>A work item for colony list retrieval with cascading.</returns>
+        private WorkItem CreateColonyListItem()
+        {
+            return new WorkItem
+            {
+                Label = "ColonyList",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetColonyListAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (!result.Success)
+                    {
+                        Log.Warn("ColonyList fetch failed: {0}", result.Json);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    Log.Debug("ColonyList fetched successfully.");
+
+                    var response = JsonConvert.DeserializeObject<GameApiColonyListResponse>(result.Json);
+                    if (response?.Colonies == null || response.Colonies.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var cascaded = response.Colonies
+                        .SelectMany(c => new[]
+                        {
+                            CreateColonySummaryItem(c.ColonyId),
+                            CreateColonyBuildingsItem(c.ColonyId),
+                            CreateColonyWarehouseItem(c.ColonyId),
+                            CreateColonyWorkersItem(c.ColonyId),
+                        })
+                        .ToArray();
+
+                    return cascaded;
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the summary for a specific colony.
+        /// </summary>
+        /// <param name="colonyId">The colony identifier.</param>
+        /// <returns>A work item for colony summary retrieval.</returns>
+        private WorkItem CreateColonySummaryItem(int colonyId)
+        {
+            return new WorkItem
+            {
+                Label = "ColonySummary:" + colonyId,
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetColonySummaryAsync(
+                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("ColonySummary:{0} fetched successfully.", colonyId);
+                    }
+                    else
+                    {
+                        Log.Warn("ColonySummary:{0} fetch failed: {1}", colonyId, result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the buildings for a specific colony.
+        /// </summary>
+        /// <param name="colonyId">The colony identifier.</param>
+        /// <returns>A work item for colony buildings retrieval.</returns>
+        private WorkItem CreateColonyBuildingsItem(int colonyId)
+        {
+            return new WorkItem
+            {
+                Label = "ColonyBuildings:" + colonyId,
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetColonyBuildingsAsync(
+                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("ColonyBuildings:{0} fetched successfully.", colonyId);
+                    }
+                    else
+                    {
+                        Log.Warn("ColonyBuildings:{0} fetch failed: {1}", colonyId, result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the warehouse for a specific colony.
+        /// </summary>
+        /// <param name="colonyId">The colony identifier.</param>
+        /// <returns>A work item for colony warehouse retrieval.</returns>
+        private WorkItem CreateColonyWarehouseItem(int colonyId)
+        {
+            return new WorkItem
+            {
+                Label = "ColonyWarehouse:" + colonyId,
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetColonyWarehouseAsync(
+                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("ColonyWarehouse:{0} fetched successfully.", colonyId);
+                    }
+                    else
+                    {
+                        Log.Warn("ColonyWarehouse:{0} fetch failed: {1}", colonyId, result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the workers for a specific colony.
+        /// </summary>
+        /// <param name="colonyId">The colony identifier.</param>
+        /// <returns>A work item for colony workers retrieval.</returns>
+        private WorkItem CreateColonyWorkersItem(int colonyId)
+        {
+            return new WorkItem
+            {
+                Label = "ColonyWorkers:" + colonyId,
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetColonyWorkersAsync(
+                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("ColonyWorkers:{0} fetched successfully.", colonyId);
+                    }
+                    else
+                    {
+                        Log.Warn("ColonyWorkers:{0} fetch failed: {1}", colonyId, result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the asset locations list and cascades one detail item per location.
+        /// </summary>
+        /// <returns>A work item for asset locations retrieval with cascading.</returns>
+        private WorkItem CreateAssetLocationsItem()
+        {
+            return new WorkItem
+            {
+                Label = "AssetLocations",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetAssetLocationsAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (!result.Success)
+                    {
+                        Log.Warn("AssetLocations fetch failed: {0}", result.Json);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    Log.Debug("AssetLocations fetched successfully.");
+
+                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetLocationsResponse>>(result.Json);
+                    var response = envelope?.Data;
+                    if (response?.Locations == null || response.Locations.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var cascaded = response.Locations
+                        .Where(loc => loc.LocationId > 0 && !string.IsNullOrEmpty(loc.LocationType))
+                        .Select(loc => CreateAssetLocationDetailItem(
+                            loc.LocationId,
+                            loc.LocationType,
+                            loc.LocationName,
+                            loc.SystemName))
+                        .ToArray();
+
+                    return cascaded;
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the detail for a specific asset location.
+        /// Dispatches crate, survey, and blueprint detail items based on the cargo contents.
+        /// </summary>
+        /// <param name="id">The asset location identifier.</param>
+        /// <param name="typeC">The location type code (e.g. "Co", "St", "Sh").</param>
+        /// <param name="planetName">The planet or location name.</param>
+        /// <param name="systemName">The star system name.</param>
+        /// <returns>A work item for asset location detail retrieval.</returns>
+        private WorkItem CreateAssetLocationDetailItem(int id, string typeC, string planetName, string systemName)
+        {
+            return new WorkItem
+            {
+                Label = "AssetDetail:" + id,
+                ExecuteAsync = async ct =>
+                {
+                    Log.Debug(
+                        "AssetDetail:{0} ({1}) at {2}/{3} — detail dispatch pending future implementation.",
+                        id,
+                        typeC,
+                        systemName,
+                        planetName);
+                    await Task.CompletedTask.ConfigureAwait(false);
                     return Array.Empty<WorkItem>();
                 },
             };

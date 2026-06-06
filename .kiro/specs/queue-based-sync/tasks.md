@@ -163,8 +163,8 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: vstest.console passes_
 
 
-- [ ] 7. Seed work item factories — non-cascading (character, banking, jobs)
-  - [-] 7.1 Implement character and banking seed work item factories
+- [x] 7. Seed work item factories — non-cascading (character, banking, jobs)
+  - [x] 7.1 Implement character and banking seed work item factories
     - Add private factory methods to QueueSyncService for: CharacterProfile, CharacterSkills, BankingBalance, BankingTransactions, AcceptedJobs
     - Each creates a WorkItem with label + async delegate that calls GameApiClient and updates PlayerContext
     - _Requirements: 1.4, 2.1_
@@ -172,7 +172,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 7.2 Implement ship and market seed work item factories
+  - [x] 7.2 Implement ship and market seed work item factories
     - Add private factory methods to QueueSyncService for: ShipConfiguration, ShipCargo, MarketListings, MarketItems, MarketBuyOrders, MarketSellOrders
     - Each creates a WorkItem with label + async delegate that calls GameApiClient and updates PlayerContext
     - _Requirements: 1.4, 2.1_
@@ -181,7 +181,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: getDiagnostics_
 
 - [ ] 8. Seed work item factories — cascading (colonies)
-  - [~] 8.1 Implement ColonyList seed work item with cascading
+  - [-] 8.1 Implement ColonyList seed work item with cascading
     - Add `CreateColonyListItem` factory that cascades 4 items per colony (summary, buildings, warehouse, workers)
     - Add `CreateColonySummaryItem`, `CreateColonyBuildingsItem`, `CreateColonyWarehouseItem`, `CreateColonyWorkersItem` factories
     - _Requirements: 2.1, 2.2_
@@ -189,7 +189,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 8.2 Write property test for colony cascading completeness
+  - [-] 8.2 Write property test for colony cascading completeness
     - **Property 7: Cascading Completeness (colonies)**
     - Generate random colony lists; verify cascade count = 4 × colony count
     - **Validates: Requirements 2.2**
@@ -198,7 +198,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 
 
 - [ ] 9. Seed work item factories — cascading (asset locations)
-  - [~] 9.1 Implement AssetLocations list seed work item
+  - [-] 9.1 Implement AssetLocations list seed work item
     - Add `CreateAssetLocationsItem` factory that calls GetAssetLocationsAsync
     - On success, enqueue one `CreateAssetLocationDetailItem` per returned location
     - _Requirements: 2.3_
