@@ -127,19 +127,19 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 10. Queue unit tests — basic dispatch
-  - [-] 10.1 Test single item dispatch and FIFO ordering
+  - [x] 10.1 Test single item dispatch and FIFO ordering
     - Enqueue_SingleItem_Dispatches: basic enqueue → execute → drain cycle
     - Enqueue_MultipleItems_FIFO: dispatch order matches enqueue order
     - _Requirements: 4.1, 4.3_
     - _Verification: Tests pass_
 
-  - [-] 10.2 Test cascading items and drain completeness
+  - [x] 10.2 Test cascading items and drain completeness
     - CascadingItems_AreProcessed: cascaded items enqueued and executed
     - DrainAsync_WaitsForAllCascades: drain blocks until nested cascades finish
     - _Requirements: 5.1, 5.3_
     - _Verification: Tests pass_
 
-  - [-] 10.3 Test error isolation and cancellation
+  - [x] 10.3 Test error isolation and cancellation
     - FailedItem_DoesNotBlockOthers: exception in one item, others complete
     - Cancellation_StopsNewDispatch: after cancel, no new items dispatched
     - Cancellation_InflightItemsTimeout: in-flight items cancelled after timeout
@@ -148,21 +148,21 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
 
 
 - [ ] 11. Queue unit tests — rate limiting and adaptive behavior
-  - [~] 11.1 Test 429 pause and recovery
+  - [x] 11.1 Test 429 pause and recovery
     - NotifyRateLimited_PausesDispatch: no dispatch during pause window
     - ConsecutiveBackoffs_DoubleDuration: multiple 429s increase pause duration
     - Recovery_RampsBack: after backoff, TPS increases 10%/min
     - _Requirements: 17.1, 17.3, 17.4_
     - _Verification: Tests pass_
 
-  - [~] 11.2 Write TokenBucketGovernor unit tests
+  - [x] 11.2 Write TokenBucketGovernor unit tests
     - AcquireToken_RespectsTpsRate: tokens dispensed at configured rate
     - BurstCapacity_EqualsOneSecondOfTps: accumulated tokens cap at TPS value
     - EffectiveTpsChange_AffectsRefillRate: reducing TPS slows token generation
     - _Requirements: 7.1, 7.3_
     - _Verification: Tests pass_
 
-  - [~] 11.3 Write AdaptiveRateController unit tests
+  - [x] 11.3 Write AdaptiveRateController unit tests
     - OnRateLimited_SetsPause: IsPaused true for duration
     - OnRateLimited_ReducesTps: EffectiveTps = 50% of prior
     - ConsecutiveBackoffs_CapsAt5Min: pause doubles but caps at 300s
