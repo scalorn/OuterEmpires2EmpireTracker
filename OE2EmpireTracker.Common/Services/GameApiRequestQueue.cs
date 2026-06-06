@@ -26,6 +26,8 @@ namespace OE2EmpireTracker.Services
         private readonly CompletionTracker _tracker = new CompletionTracker();
         private readonly AdaptiveRateController _rateController;
         private readonly TokenBucketGovernor _governor;
+        private readonly SemaphoreSlim _inflightLimiter;
+        private readonly int _maxInflight;
 
         private Task _dispatchLoopTask;
 
@@ -34,12 +36,15 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="configuredTps">The target transactions per second rate.</param>
         /// <param name="perItemTimeout">Optional per-item timeout. Defaults to 30 seconds.</param>
-        public GameApiRequestQueue(double configuredTps, TimeSpan? perItemTimeout = null)
+        /// <param name="maxInflightMultiplier">Max in-flight requests as a multiple of TPS. Defaults to 3.</param>
+        public GameApiRequestQueue(double configuredTps, TimeSpan? perItemTimeout = null, int maxInflightMultiplier = 3)
         {
             ConfiguredTps = configuredTps;
             _perItemTimeout = perItemTimeout ?? TimeSpan.FromSeconds(30);
             _rateController = new AdaptiveRateController(configuredTps);
             _governor = new TokenBucketGovernor(configuredTps, () => _rateController.EffectiveTps);
+            _maxInflight = Math.Max(1, (int)(configuredTps * maxInflightMultiplier));
+            _inflightLimiter = new SemaphoreSlim(_maxInflight, _maxInflight);
         }
 
         /// <summary>
@@ -91,7 +96,7 @@ namespace OE2EmpireTracker.Services
         /// <param name="cancellationToken">Token to cancel the dispatch loop.</param>
         public void Start(CancellationToken cancellationToken = default)
         {
-            Log.Info("Starting dispatch loop at configured TPS={0:F1}", ConfiguredTps);
+            Log.Info("Starting dispatch loop at configured TPS={0:F1}, maxInflight={1}", ConfiguredTps, _maxInflight);
             _dispatchLoopTask = DispatchLoopAsync(cancellationToken);
         }
 
@@ -155,6 +160,8 @@ namespace OE2EmpireTracker.Services
                     }
 
                     _tracker.OnDispatched();
+                    await _inflightLimiter.WaitAsync(ct).ConfigureAwait(false);
+                    Log.Debug("Dispatching '{0}' (inflight={1})", item.Label, _maxInflight - _inflightLimiter.CurrentCount);
                     _ = ExecuteWorkItemAsync(item, ct);
                 }
             }
@@ -166,6 +173,7 @@ namespace OE2EmpireTracker.Services
 
         private async Task ExecuteWorkItemAsync(WorkItem item, CancellationToken ct)
         {
+            var startTime = SystemClock.UtcNow;
             try
             {
                 using (var itemCts = CancellationTokenSource.CreateLinkedTokenSource(ct))
@@ -192,6 +200,8 @@ namespace OE2EmpireTracker.Services
                     }
 
                     _tracker.OnCompleted(success: true);
+                    var durationMs = (long)(SystemClock.UtcNow - startTime).TotalMilliseconds;
+                    Log.Info("METRIC|OK|{0}|{1}ms|inflight={2}", item.Label, durationMs, _maxInflight - _inflightLimiter.CurrentCount);
                 }
             }
             catch (Exception ex)
@@ -202,7 +212,12 @@ namespace OE2EmpireTracker.Services
                     Exception = ex,
                 });
                 _tracker.OnCompleted(success: false);
-                Log.Error(ex, "Work item '{0}' failed", item.Label);
+                var durationMs = (long)(SystemClock.UtcNow - startTime).TotalMilliseconds;
+                Log.Error("METRIC|FAIL|{0}|{1}ms|inflight={2}|{3}", item.Label, durationMs, _maxInflight - _inflightLimiter.CurrentCount, ex.Message);
+            }
+            finally
+            {
+                _inflightLimiter.Release();
             }
         }
 

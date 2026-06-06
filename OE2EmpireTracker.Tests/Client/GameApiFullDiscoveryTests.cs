@@ -951,6 +951,9 @@ namespace OE2EmpireTracker.Tests.Client
             {
                 RecordSkipped("queue-error", error.WorkItemLabel, error.Exception.Message);
             }
+
+            // Write latency percentiles to test output
+            WriteLatencyPercentiles();
         }
 
         /// <summary>
