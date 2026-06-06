@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace OE2EmpireTracker.Tests.Client
         private string accessToken;
         private string playerUUID;
         private string outputDir;
-        private List<EndpointResult> results;
+        private ConcurrentBag<EndpointResult> results;
 #pragma warning disable CS0649 // Field will be assigned by future work item tasks (15.x/17.x)
         private string assetLocationsJson;
 #pragma warning restore CS0649
@@ -45,7 +46,7 @@ namespace OE2EmpireTracker.Tests.Client
         [OneTimeSetUp]
         public async Task OneTimeSetUp()
         {
-            this.results = new List<EndpointResult>();
+            this.results = new ConcurrentBag<EndpointResult>();
 
             GameApiCredentialManager.RegisterProtectionFunctions(
                 CredentialStore.Protect,

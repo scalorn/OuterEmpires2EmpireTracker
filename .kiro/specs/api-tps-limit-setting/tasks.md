@@ -224,7 +224,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 8.1, 8.3_
     - _Verification: Build succeeds, single test method compiles_
 
-  - [~] 14.2 Add thread-safe result collection helpers
+  - [-] 14.2 Add thread-safe result collection helpers
     - Replace `List<EndpointResult>` with `ConcurrentBag<EndpointResult>`
     - Add RecordSuccess and RecordSkipped helper methods (thread-safe)
     - _Requirements: 15.4_
