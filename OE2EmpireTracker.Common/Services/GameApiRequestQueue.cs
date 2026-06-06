@@ -28,6 +28,7 @@ namespace OE2EmpireTracker.Services
         private readonly TokenBucketGovernor _governor;
         private readonly SemaphoreSlim _inflightLimiter;
         private readonly int _maxInflight;
+        private readonly int _maxRetries;
 
         private Task _dispatchLoopTask;
 
@@ -37,7 +38,8 @@ namespace OE2EmpireTracker.Services
         /// <param name="configuredTps">The target transactions per second rate.</param>
         /// <param name="perItemTimeout">Optional per-item timeout. Defaults to 30 seconds.</param>
         /// <param name="maxInflightMultiplier">Max in-flight requests as a multiple of TPS. Defaults to 3.</param>
-        public GameApiRequestQueue(double configuredTps, TimeSpan? perItemTimeout = null, int maxInflightMultiplier = 3)
+        /// <param name="maxRetries">Maximum number of retry attempts on failure. Defaults to 3.</param>
+        public GameApiRequestQueue(double configuredTps, TimeSpan? perItemTimeout = null, int maxInflightMultiplier = 3, int maxRetries = 3)
         {
             ConfiguredTps = configuredTps;
             _perItemTimeout = perItemTimeout ?? TimeSpan.FromSeconds(30);
@@ -45,6 +47,7 @@ namespace OE2EmpireTracker.Services
             _governor = new TokenBucketGovernor(configuredTps, () => _rateController.EffectiveTps);
             _maxInflight = Math.Max(1, (int)(configuredTps * maxInflightMultiplier));
             _inflightLimiter = new SemaphoreSlim(_maxInflight, _maxInflight);
+            _maxRetries = maxRetries;
         }
 
         /// <summary>
@@ -174,46 +177,63 @@ namespace OE2EmpireTracker.Services
         private async Task ExecuteWorkItemAsync(WorkItem item, CancellationToken ct)
         {
             var startTime = SystemClock.UtcNow;
+            Exception lastException = null;
+
             try
             {
-                using (var itemCts = CancellationTokenSource.CreateLinkedTokenSource(ct))
+                for (int attempt = 1; attempt <= _maxRetries; attempt++)
                 {
-                    itemCts.CancelAfter(_perItemTimeout);
-
-                    IReadOnlyList<WorkItem> cascaded = await item.ExecuteAsync(itemCts.Token)
-                        .ConfigureAwait(false);
-
-                    _rateController.OnSuccessfulDispatch();
-
-                    if (cascaded != null && cascaded.Count > 0)
+                    try
                     {
-                        _tracker.OnCascadedEnqueued(cascaded.Count);
-                        foreach (var followUp in cascaded)
+                        using (var itemCts = CancellationTokenSource.CreateLinkedTokenSource(ct))
                         {
-                            _queue.Enqueue(followUp);
+                            itemCts.CancelAfter(_perItemTimeout);
+
+                            IReadOnlyList<WorkItem> cascaded = await item.ExecuteAsync(itemCts.Token)
+                                .ConfigureAwait(false);
+
+                            _rateController.OnSuccessfulDispatch();
+
+                            if (cascaded != null && cascaded.Count > 0)
+                            {
+                                _tracker.OnCascadedEnqueued(cascaded.Count);
+                                foreach (var followUp in cascaded)
+                                {
+                                    _queue.Enqueue(followUp);
+                                }
+
+                                Log.Debug(
+                                    "Work item '{0}' cascaded {1} follow-up items",
+                                    item.Label,
+                                    cascaded.Count);
+                            }
+
+                            _tracker.OnCompleted(success: true);
+                            var durationMs = (long)(SystemClock.UtcNow - startTime).TotalMilliseconds;
+                            Log.Info("METRIC|OK|{0}|{1}ms|inflight={2}", item.Label, durationMs, _maxInflight - _inflightLimiter.CurrentCount);
+                            return;
                         }
-
-                        Log.Debug(
-                            "Work item '{0}' cascaded {1} follow-up items",
-                            item.Label,
-                            cascaded.Count);
                     }
+                    catch (Exception ex)
+                    {
+                        lastException = ex;
 
-                    _tracker.OnCompleted(success: true);
-                    var durationMs = (long)(SystemClock.UtcNow - startTime).TotalMilliseconds;
-                    Log.Info("METRIC|OK|{0}|{1}ms|inflight={2}", item.Label, durationMs, _maxInflight - _inflightLimiter.CurrentCount);
+                        if (attempt < _maxRetries)
+                        {
+                            Log.Warn("Retrying '{0}' (attempt {1}/{2})", item.Label, attempt, _maxRetries);
+                            await Task.Delay(1000, ct).ConfigureAwait(false);
+                        }
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
+
                 _errors.Add(new QueueError
                 {
                     WorkItemLabel = item.Label,
-                    Exception = ex,
+                    Exception = lastException,
                 });
                 _tracker.OnCompleted(success: false);
-                var durationMs = (long)(SystemClock.UtcNow - startTime).TotalMilliseconds;
-                Log.Error("METRIC|FAIL|{0}|{1}ms|inflight={2}|{3}", item.Label, durationMs, _maxInflight - _inflightLimiter.CurrentCount, ex.Message);
+                var failDurationMs = (long)(SystemClock.UtcNow - startTime).TotalMilliseconds;
+                Log.Error("METRIC|FAIL|{0}|{1}ms|inflight={2}|{3}", item.Label, failDurationMs, _maxInflight - _inflightLimiter.CurrentCount, lastException.Message);
             }
             finally
             {
