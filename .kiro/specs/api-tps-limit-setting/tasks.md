@@ -290,14 +290,14 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Verification: Build succeeds_
 
 - [ ] 19. Implement market and banking cascading
-  - [~] 19.1 Market cascading (listings → prices/components, orders → competitors)
+  - [x] 19.1 Market cascading (listings → prices/components, orders → competitors)
     - market/listings completion: enqueue prices (first listing type/typeId) + ship components (first ship marketId)
     - market/buyorders completion: enqueue buy competitors (first 5 marketIds)
     - market/sellorders completion: enqueue sell competitors (first 5 marketIds)
     - _Requirements: 13.1, 13.2, 13.3, 13.4_
     - _Verification: Build succeeds_
 
-  - [~] 19.2 Banking transaction pagination
+  - [x] 19.2 Banking transaction pagination
     - banking/transactions-p0 seed: if non-empty, enqueue next page (sequential chain)
     - After drain: combine all transaction pages into `banking/transactions-all.json`
     - _Requirements: 14.1, 14.2, 14.3_

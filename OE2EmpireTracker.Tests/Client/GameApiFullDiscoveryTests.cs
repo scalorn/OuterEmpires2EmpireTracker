@@ -34,6 +34,7 @@ namespace OE2EmpireTracker.Tests.Client
         private string playerUUID;
         private string outputDir;
         private ConcurrentBag<EndpointResult> results;
+        private ConcurrentBag<string> bankingTransactionPages;
         private string assetLocationsJson;
 
         /// <summary>
@@ -45,6 +46,7 @@ namespace OE2EmpireTracker.Tests.Client
         public async Task OneTimeSetUp()
         {
             this.results = new ConcurrentBag<EndpointResult>();
+            this.bankingTransactionPages = new ConcurrentBag<string>();
 
             GameApiCredentialManager.RegisterProtectionFunctions(
                 CredentialStore.Protect,
@@ -229,26 +231,7 @@ namespace OE2EmpireTracker.Tests.Client
                 },
             }).ConfigureAwait(false);
 
-            await queue.EnqueueAsync(new WorkItem
-            {
-                Label = "banking/transactions-p0",
-                ExecuteAsync = async ct =>
-                {
-                    var result = await this.client.GetBankingTransactionsAsync(this.appId, this.accessToken, 0, 50).ConfigureAwait(false);
-                    if (result.Success)
-                    {
-                        string filePath = Path.Combine(this.outputDir, "banking", "transactions-p0.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
-                        RecordSuccess("banking", "transactions-p0");
-                    }
-                    else
-                    {
-                        RecordSkipped("banking", "transactions-p0", result.Json ?? "Request failed");
-                    }
-
-                    return Array.Empty<WorkItem>();
-                },
-            }).ConfigureAwait(false);
+            await queue.EnqueueAsync(this.CreateBankingTransactionsPageWorkItem(0)).ConfigureAwait(false);
 
             await queue.EnqueueAsync(new WorkItem
             {
@@ -320,18 +303,90 @@ namespace OE2EmpireTracker.Tests.Client
                 ExecuteAsync = async ct =>
                 {
                     var result = await this.client.GetMarketListingsAsync(this.appId, this.accessToken, "all").ConfigureAwait(false);
-                    if (result.Success)
-                    {
-                        string filePath = Path.Combine(this.outputDir, "market", "listings.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
-                        RecordSuccess("market", "listings");
-                    }
-                    else
+                    if (!result.Success)
                     {
                         RecordSkipped("market", "listings", result.Json ?? "Request failed");
+                        return Array.Empty<WorkItem>();
                     }
 
-                    return Array.Empty<WorkItem>();
+                    string filePath = Path.Combine(this.outputDir, "market", "listings.json");
+                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    RecordSuccess("market", "listings");
+
+                    var envelope = JObject.Parse(result.Json);
+                    var listings = envelope["data"]?["listings"] as JArray;
+                    if (listings == null || listings.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var cascaded = new List<WorkItem>();
+
+                    // Cascade to prices using first listing's type/typeId
+                    var firstListing = listings[0];
+                    string listingType = firstListing["type"]?.Value<string>();
+                    long listingTypeId = firstListing["typeId"]?.Value<long>() ?? 0;
+
+                    if (!string.IsNullOrEmpty(listingType) && listingTypeId > 0)
+                    {
+                        string capturedType = listingType;
+                        long capturedTypeId = listingTypeId;
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = "market/prices",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                var r = await this.client.GetMarketPricesAsync(this.appId, this.accessToken, capturedType, capturedTypeId).ConfigureAwait(false);
+                                if (r.Success)
+                                {
+                                    string pricePath = Path.Combine(this.outputDir, "market", "prices.json");
+                                    File.WriteAllText(pricePath, FormatJson(r.Json), Encoding.UTF8);
+                                    RecordSuccess("market", "prices");
+                                }
+                                else
+                                {
+                                    RecordSkipped("market", "prices", r.Json ?? "Request failed");
+                                }
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+                    }
+
+                    // Cascade to ship components using first ship listing's marketId
+                    var firstShip = listings.FirstOrDefault(l => string.Equals(l["category"]?.Value<string>(), "ship", StringComparison.OrdinalIgnoreCase));
+                    if (firstShip != null)
+                    {
+                        long shipMarketId = firstShip["marketId"]?.Value<long>() ?? 0;
+                        if (shipMarketId > 0)
+                        {
+                            long capturedShipMarketId = shipMarketId;
+
+                            cascaded.Add(new WorkItem
+                            {
+                                Label = "market/ship-components",
+                                ExecuteAsync = async ct2 =>
+                                {
+                                    var r = await this.client.GetMarketShipComponentsAsync(this.appId, this.accessToken, capturedShipMarketId).ConfigureAwait(false);
+                                    if (r.Success)
+                                    {
+                                        string compPath = Path.Combine(this.outputDir, "market", "ship-components.json");
+                                        File.WriteAllText(compPath, FormatJson(r.Json), Encoding.UTF8);
+                                        RecordSuccess("market", "ship-components");
+                                    }
+                                    else
+                                    {
+                                        RecordSkipped("market", "ship-components", r.Json ?? "Request failed");
+                                    }
+
+                                    return Array.Empty<WorkItem>();
+                                },
+                            });
+                        }
+                    }
+
+                    return cascaded;
                 },
             }).ConfigureAwait(false);
 
@@ -362,18 +417,59 @@ namespace OE2EmpireTracker.Tests.Client
                 ExecuteAsync = async ct =>
                 {
                     var result = await this.client.GetMarketBuyOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (result.Success)
-                    {
-                        string filePath = Path.Combine(this.outputDir, "market", "buyorders.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
-                        RecordSuccess("market", "buyorders");
-                    }
-                    else
+                    if (!result.Success)
                     {
                         RecordSkipped("market", "buyorders", result.Json ?? "Request failed");
+                        return Array.Empty<WorkItem>();
                     }
 
-                    return Array.Empty<WorkItem>();
+                    string filePath = Path.Combine(this.outputDir, "market", "buyorders.json");
+                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    RecordSuccess("market", "buyorders");
+
+                    var envelope = JObject.Parse(result.Json);
+                    var orders = envelope["data"]?["orders"] as JArray;
+                    if (orders == null || orders.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var marketIds = orders
+                        .Select(o => o["marketId"]?.Value<long>() ?? 0)
+                        .Where(id => id > 0)
+                        .Take(5)
+                        .ToList();
+
+                    if (marketIds.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    string joinedIds = string.Join(",", marketIds);
+
+                    return new List<WorkItem>
+                    {
+                        new WorkItem
+                        {
+                            Label = "market/buy-competitors",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                var r = await this.client.GetMarketBuyCompetitorsAsync(this.appId, this.accessToken, joinedIds).ConfigureAwait(false);
+                                if (r.Success)
+                                {
+                                    string compPath = Path.Combine(this.outputDir, "market", "buy-competitors.json");
+                                    File.WriteAllText(compPath, FormatJson(r.Json), Encoding.UTF8);
+                                    RecordSuccess("market", "buy-competitors");
+                                }
+                                else
+                                {
+                                    RecordSkipped("market", "buy-competitors", r.Json ?? "Request failed");
+                                }
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        },
+                    };
                 },
             }).ConfigureAwait(false);
 
@@ -383,18 +479,59 @@ namespace OE2EmpireTracker.Tests.Client
                 ExecuteAsync = async ct =>
                 {
                     var result = await this.client.GetMarketSellOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (result.Success)
-                    {
-                        string filePath = Path.Combine(this.outputDir, "market", "sellorders.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
-                        RecordSuccess("market", "sellorders");
-                    }
-                    else
+                    if (!result.Success)
                     {
                         RecordSkipped("market", "sellorders", result.Json ?? "Request failed");
+                        return Array.Empty<WorkItem>();
                     }
 
-                    return Array.Empty<WorkItem>();
+                    string filePath = Path.Combine(this.outputDir, "market", "sellorders.json");
+                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    RecordSuccess("market", "sellorders");
+
+                    var envelope = JObject.Parse(result.Json);
+                    var orders = envelope["data"]?["orders"] as JArray;
+                    if (orders == null || orders.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var marketIds = orders
+                        .Select(o => o["marketId"]?.Value<long>() ?? 0)
+                        .Where(id => id > 0)
+                        .Take(5)
+                        .ToList();
+
+                    if (marketIds.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    string joinedIds = string.Join(",", marketIds);
+
+                    return new List<WorkItem>
+                    {
+                        new WorkItem
+                        {
+                            Label = "market/sell-competitors",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                var r = await this.client.GetMarketSellCompetitorsAsync(this.appId, this.accessToken, joinedIds).ConfigureAwait(false);
+                                if (r.Success)
+                                {
+                                    string compPath = Path.Combine(this.outputDir, "market", "sell-competitors.json");
+                                    File.WriteAllText(compPath, FormatJson(r.Json), Encoding.UTF8);
+                                    RecordSuccess("market", "sell-competitors");
+                                }
+                                else
+                                {
+                                    RecordSkipped("market", "sell-competitors", r.Json ?? "Request failed");
+                                }
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        },
+                    };
                 },
             }).ConfigureAwait(false);
 
@@ -739,7 +876,85 @@ namespace OE2EmpireTracker.Tests.Client
             queue.Start();
             await queue.DrainAsync().ConfigureAwait(false);
 
+            // Combine all banking transaction pages into a single file
+            CombineBankingTransactionPages();
+
             // TODO: Write metadata (task 21.x)
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches a page of banking transactions and cascades to the next page if non-empty.
+        /// </summary>
+        /// <param name="page">The zero-based page number to fetch.</param>
+        /// <returns>A work item for the specified banking transactions page.</returns>
+        private WorkItem CreateBankingTransactionsPageWorkItem(int page)
+        {
+            return new WorkItem
+            {
+                Label = $"banking/transactions-p{page}",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await this.client.GetBankingTransactionsAsync(this.appId, this.accessToken, page * 50, 50).ConfigureAwait(false);
+                    if (!result.Success)
+                    {
+                        RecordSkipped("banking", $"transactions-p{page}", result.Json ?? "Request failed");
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    string filePath = Path.Combine(this.outputDir, "banking", $"transactions-p{page}.json");
+                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    RecordSuccess("banking", $"transactions-p{page}");
+                    this.bankingTransactionPages.Add(filePath);
+
+                    var envelope = JObject.Parse(result.Json);
+                    var transactions = envelope["data"]?["transactions"] as JArray;
+                    if (transactions == null || transactions.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    return new List<WorkItem> { this.CreateBankingTransactionsPageWorkItem(page + 1) };
+                },
+            };
+        }
+
+        /// <summary>
+        /// Combines all fetched banking transaction pages into a single transactions-all.json file.
+        /// </summary>
+        private void CombineBankingTransactionPages()
+        {
+            var allTransactions = new JArray();
+
+            foreach (string pagePath in this.bankingTransactionPages.OrderBy(p => p))
+            {
+                if (!File.Exists(pagePath))
+                {
+                    continue;
+                }
+
+                string json = File.ReadAllText(pagePath, Encoding.UTF8);
+                var envelope = JObject.Parse(json);
+                var transactions = envelope["data"]?["transactions"] as JArray;
+                if (transactions != null)
+                {
+                    foreach (var tx in transactions)
+                    {
+                        allTransactions.Add(tx);
+                    }
+                }
+            }
+
+            var combined = new JObject
+            {
+                ["data"] = new JObject
+                {
+                    ["transactions"] = allTransactions,
+                },
+            };
+
+            string allPath = Path.Combine(this.outputDir, "banking", "transactions-all.json");
+            File.WriteAllText(allPath, combined.ToString(Formatting.Indented), Encoding.UTF8);
+            TestContext.WriteLine("[COMBINED] banking/transactions-all.json ({0} transactions)", allTransactions.Count);
         }
 
         /// <summary>
