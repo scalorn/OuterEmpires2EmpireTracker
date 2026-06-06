@@ -569,6 +569,7 @@
     <Compile Include="Services\GameApiMetricsCollectorOutstandingTests.cs" />
     <Compile Include="Services\GameApiMetricsCollectorTpsResetTests.cs" />
     <Compile Include="Services\GameApiRequestQueueTests.cs" />
+    <Compile Include="Services\GameApiRequestQueuePropertyTests.cs" />
     <Compile Include="Services\GameApiRequestQueueRateLimitTests.cs" />
     <Compile Include="Services\OverflowRuleExpansionPropertyTests.cs" />
     <Compile Include="Services\OverflowRuleExpansionTests.cs" />

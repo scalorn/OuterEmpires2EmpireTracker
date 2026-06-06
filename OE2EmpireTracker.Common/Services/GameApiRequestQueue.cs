@@ -176,7 +176,6 @@ namespace OE2EmpireTracker.Services
                         .ConfigureAwait(false);
 
                     _rateController.OnSuccessfulDispatch();
-                    _tracker.OnCompleted(success: true);
 
                     if (cascaded != null && cascaded.Count > 0)
                     {
@@ -191,6 +190,8 @@ namespace OE2EmpireTracker.Services
                             item.Label,
                             cascaded.Count);
                     }
+
+                    _tracker.OnCompleted(success: true);
                 }
             }
             catch (Exception ex)
