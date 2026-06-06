@@ -355,7 +355,7 @@ namespace OE2EmpireTracker.Tests.Client
                     }
 
                     // Cascade to ship components using first ship listing's marketId
-                    var firstShip = listings.FirstOrDefault(l => string.Equals(l["category"]?.Value<string>(), "ship", StringComparison.OrdinalIgnoreCase));
+                    var firstShip = listings.FirstOrDefault(l => string.Equals(l["type"]?.Value<string>(), "Ship", StringComparison.OrdinalIgnoreCase));
                     if (firstShip != null)
                     {
                         long shipMarketId = firstShip["marketId"]?.Value<long>() ?? 0;
@@ -395,7 +395,7 @@ namespace OE2EmpireTracker.Tests.Client
                 Label = "market/items",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetMarketItemsAsync(this.appId, this.accessToken, "all", string.Empty).ConfigureAwait(false);
+                    var result = await this.client.GetMarketItemsAsync(this.appId, this.accessToken, "Resource", "Iron").ConfigureAwait(false);
                     if (result.Success)
                     {
                         string filePath = Path.Combine(this.outputDir, "market", "items.json");
@@ -413,19 +413,19 @@ namespace OE2EmpireTracker.Tests.Client
 
             await queue.EnqueueAsync(new WorkItem
             {
-                Label = "market/buyorders",
+                Label = "market/buy-orders",
                 ExecuteAsync = async ct =>
                 {
                     var result = await this.client.GetMarketBuyOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
                     if (!result.Success)
                     {
-                        RecordSkipped("market", "buyorders", result.Json ?? "Request failed");
+                        RecordSkipped("market", "buy-orders", result.Json ?? "Request failed");
                         return Array.Empty<WorkItem>();
                     }
 
-                    string filePath = Path.Combine(this.outputDir, "market", "buyorders.json");
+                    string filePath = Path.Combine(this.outputDir, "market", "buy-orders.json");
                     File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
-                    RecordSuccess("market", "buyorders");
+                    RecordSuccess("market", "buy-orders");
 
                     var envelope = JObject.Parse(result.Json);
                     var orders = envelope["data"]?["orders"] as JArray;
@@ -475,19 +475,19 @@ namespace OE2EmpireTracker.Tests.Client
 
             await queue.EnqueueAsync(new WorkItem
             {
-                Label = "market/sellorders",
+                Label = "market/sell-orders",
                 ExecuteAsync = async ct =>
                 {
                     var result = await this.client.GetMarketSellOrdersAsync(this.appId, this.accessToken).ConfigureAwait(false);
                     if (!result.Success)
                     {
-                        RecordSkipped("market", "sellorders", result.Json ?? "Request failed");
+                        RecordSkipped("market", "sell-orders", result.Json ?? "Request failed");
                         return Array.Empty<WorkItem>();
                     }
 
-                    string filePath = Path.Combine(this.outputDir, "market", "sellorders.json");
+                    string filePath = Path.Combine(this.outputDir, "market", "sell-orders.json");
                     File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
-                    RecordSuccess("market", "sellorders");
+                    RecordSuccess("market", "sell-orders");
 
                     var envelope = JObject.Parse(result.Json);
                     var orders = envelope["data"]?["orders"] as JArray;
@@ -698,19 +698,19 @@ namespace OE2EmpireTracker.Tests.Client
 
                         cascaded.Add(new WorkItem
                         {
-                            Label = $"assets/location-{capturedId}",
+                            Label = $"assets/{capturedType}-{capturedId}",
                             ExecuteAsync = async ct2 =>
                             {
                                 var r = await this.client.GetAssetLocationDetailAsync(this.appId, this.accessToken, capturedId, capturedType).ConfigureAwait(false);
                                 if (!r.Success)
                                 {
-                                    RecordSkipped("assets", $"location-{capturedId}", r.Json ?? "Request failed");
+                                    RecordSkipped("assets", $"{capturedType}-{capturedId}", r.Json ?? "Request failed");
                                     return Array.Empty<WorkItem>();
                                 }
 
-                                string detailPath = Path.Combine(this.outputDir, "assets", $"location-{capturedId}.json");
+                                string detailPath = Path.Combine(this.outputDir, "assets", $"{capturedType}-{capturedId}.json");
                                 File.WriteAllText(detailPath, FormatJson(r.Json), Encoding.UTF8);
-                                RecordSuccess("assets", $"location-{capturedId}");
+                                RecordSuccess("assets", $"{capturedType}-{capturedId}");
 
                                 var detail = JObject.Parse(r.Json);
                                 var cargo = detail["data"]?["cargo"] as JArray;
@@ -895,19 +895,19 @@ namespace OE2EmpireTracker.Tests.Client
         {
             return new WorkItem
             {
-                Label = $"banking/transactions-p{page}",
+                Label = $"banking/transactions-page-{page}",
                 ExecuteAsync = async ct =>
                 {
                     var result = await this.client.GetBankingTransactionsAsync(this.appId, this.accessToken, page * 50, 50).ConfigureAwait(false);
                     if (!result.Success)
                     {
-                        RecordSkipped("banking", $"transactions-p{page}", result.Json ?? "Request failed");
+                        RecordSkipped("banking", $"transactions-page-{page}", result.Json ?? "Request failed");
                         return Array.Empty<WorkItem>();
                     }
 
-                    string filePath = Path.Combine(this.outputDir, "banking", $"transactions-p{page}.json");
+                    string filePath = Path.Combine(this.outputDir, "banking", $"transactions-page-{page}.json");
                     File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
-                    RecordSuccess("banking", $"transactions-p{page}");
+                    RecordSuccess("banking", $"transactions-page-{page}");
                     this.bankingTransactionPages.Add(filePath);
 
                     var envelope = JObject.Parse(result.Json);
@@ -985,7 +985,7 @@ namespace OE2EmpireTracker.Tests.Client
                     RecordSuccess("mail", $"list-p{page}");
 
                     var envelope = JObject.Parse(result.Json);
-                    var mails = envelope["data"]?["mails"] as JArray;
+                    var mails = envelope["data"]?["mail"] as JArray;
                     if (mails == null || mails.Count == 0)
                     {
                         return Array.Empty<WorkItem>();
