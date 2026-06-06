@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -29,6 +30,8 @@ namespace OE2EmpireTracker.Services
         private readonly SemaphoreSlim _inflightLimiter;
         private readonly int _maxInflight;
         private readonly int _maxRetries;
+        private readonly StreamWriter _metricsWriter;
+        private readonly object _metricsLock = new object();
 
         private Task _dispatchLoopTask;
 
@@ -39,7 +42,8 @@ namespace OE2EmpireTracker.Services
         /// <param name="perItemTimeout">Optional per-item timeout. Defaults to 30 seconds.</param>
         /// <param name="maxInflightMultiplier">Max in-flight requests as a multiple of TPS. Defaults to 3.</param>
         /// <param name="maxRetries">Maximum number of retry attempts on failure. Defaults to 3.</param>
-        public GameApiRequestQueue(double configuredTps, TimeSpan? perItemTimeout = null, int maxInflightMultiplier = 3, int maxRetries = 3)
+        /// <param name="metricsFilePath">Optional file path for CSV metrics output. Null disables file output.</param>
+        public GameApiRequestQueue(double configuredTps, TimeSpan? perItemTimeout = null, int maxInflightMultiplier = 3, int maxRetries = 3, string metricsFilePath = null)
         {
             ConfiguredTps = configuredTps;
             _perItemTimeout = perItemTimeout ?? TimeSpan.FromSeconds(30);
@@ -48,6 +52,13 @@ namespace OE2EmpireTracker.Services
             _maxInflight = Math.Max(1, (int)(configuredTps * maxInflightMultiplier));
             _inflightLimiter = new SemaphoreSlim(_maxInflight, _maxInflight);
             _maxRetries = maxRetries;
+
+            if (metricsFilePath != null)
+            {
+                _metricsWriter = new StreamWriter(metricsFilePath, append: false, encoding: new System.Text.UTF8Encoding(false));
+                _metricsWriter.WriteLine("Timestamp,Label,Status,DurationMs,Attempt,Inflight,EffectiveTps");
+                _metricsWriter.Flush();
+            }
         }
 
         /// <summary>
@@ -116,6 +127,8 @@ namespace OE2EmpireTracker.Services
                 await _dispatchLoopTask.ConfigureAwait(false);
             }
 
+            CloseMetricsWriter();
+
             Log.Info(
                 "Queue drained. Succeeded={0}, Failed={1}",
                 _tracker.Succeeded,
@@ -183,6 +196,8 @@ namespace OE2EmpireTracker.Services
             {
                 for (int attempt = 1; attempt <= _maxRetries; attempt++)
                 {
+                    var attemptStart = SystemClock.UtcNow;
+
                     try
                     {
                         using (var itemCts = CancellationTokenSource.CreateLinkedTokenSource(ct))
@@ -209,8 +224,10 @@ namespace OE2EmpireTracker.Services
                             }
 
                             _tracker.OnCompleted(success: true);
-                            var durationMs = (long)(SystemClock.UtcNow - startTime).TotalMilliseconds;
-                            Log.Info("METRIC|OK|{0}|{1}ms|inflight={2}", item.Label, durationMs, _maxInflight - _inflightLimiter.CurrentCount);
+                            var durationMs = (long)(SystemClock.UtcNow - attemptStart).TotalMilliseconds;
+                            int inflight = _maxInflight - _inflightLimiter.CurrentCount;
+                            Log.Info("METRIC|OK|{0}|{1}ms|inflight={2}", item.Label, durationMs, inflight);
+                            WriteMetricRow(item.Label, "OK", durationMs, attempt, inflight);
                             return;
                         }
                     }
@@ -218,9 +235,13 @@ namespace OE2EmpireTracker.Services
                     {
                         lastException = ex;
 
+                        var retryDurationMs = (long)(SystemClock.UtcNow - attemptStart).TotalMilliseconds;
+                        int retryInflight = _maxInflight - _inflightLimiter.CurrentCount;
+
                         if (attempt < _maxRetries)
                         {
                             Log.Warn("Retrying '{0}' (attempt {1}/{2})", item.Label, attempt, _maxRetries);
+                            WriteMetricRow(item.Label, "RETRY", retryDurationMs, attempt, retryInflight);
                             await Task.Delay(1000, ct).ConfigureAwait(false);
                         }
                     }
@@ -233,11 +254,64 @@ namespace OE2EmpireTracker.Services
                 });
                 _tracker.OnCompleted(success: false);
                 var failDurationMs = (long)(SystemClock.UtcNow - startTime).TotalMilliseconds;
-                Log.Error("METRIC|FAIL|{0}|{1}ms|inflight={2}|{3}", item.Label, failDurationMs, _maxInflight - _inflightLimiter.CurrentCount, lastException.Message);
+                int failInflight = _maxInflight - _inflightLimiter.CurrentCount;
+                Log.Error("METRIC|FAIL|{0}|{1}ms|inflight={2}|{3}", item.Label, failDurationMs, failInflight, lastException.Message);
+                WriteMetricRow(item.Label, "FAIL", failDurationMs, _maxRetries, failInflight);
             }
             finally
             {
                 _inflightLimiter.Release();
+            }
+        }
+
+        /// <summary>
+        /// Writes a single metrics CSV row. Thread-safe via lock.
+        /// </summary>
+        /// <param name="label">The work item label.</param>
+        /// <param name="status">OK, RETRY, or FAIL.</param>
+        /// <param name="durationMs">Duration in milliseconds for this attempt.</param>
+        /// <param name="attempt">Which attempt number (1-based).</param>
+        /// <param name="inflight">Current number of in-flight requests.</param>
+        private void WriteMetricRow(string label, string status, long durationMs, int attempt, int inflight)
+        {
+            if (_metricsWriter == null)
+            {
+                return;
+            }
+
+            string timestamp = SystemClock.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+            double effectiveTps = _rateController.EffectiveTps;
+            string row = string.Format(
+                "{0},{1},{2},{3},{4},{5},{6:F2}",
+                timestamp,
+                label,
+                status,
+                durationMs,
+                attempt,
+                inflight,
+                effectiveTps);
+
+            lock (_metricsLock)
+            {
+                _metricsWriter.WriteLine(row);
+                _metricsWriter.Flush();
+            }
+        }
+
+        /// <summary>
+        /// Flushes and closes the metrics CSV writer.
+        /// </summary>
+        private void CloseMetricsWriter()
+        {
+            if (_metricsWriter == null)
+            {
+                return;
+            }
+
+            lock (_metricsLock)
+            {
+                _metricsWriter.Flush();
+                _metricsWriter.Close();
             }
         }
 

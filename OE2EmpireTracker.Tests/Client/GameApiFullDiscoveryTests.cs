@@ -239,7 +239,8 @@ namespace OE2EmpireTracker.Tests.Client
         [Test]
         public async Task RunQueuedDiscovery()
         {
-            var queue = new GameApiRequestQueue(10.0, perItemTimeout: TimeSpan.FromMinutes(5));
+            string metricsPath = Path.Combine(this.outputDir, "_metrics.csv");
+            var queue = new GameApiRequestQueue(10.0, perItemTimeout: TimeSpan.FromMinutes(5), metricsFilePath: metricsPath);
 
             // Set the client's internal rate limiter to match the queue's TPS
             // so it doesn't independently throttle below the queue's dispatch rate.
