@@ -728,8 +728,18 @@ namespace OE2EmpireTracker.Services
                 Label = "CrateDetail:" + crateId,
                 ExecuteAsync = async ct =>
                 {
-                    Log.Debug("CrateDetail:{0} — import pending future implementation.", crateId);
-                    await Task.CompletedTask.ConfigureAwait(false);
+                    var result = await _apiClient.GetAssetCrateAsync(
+                        _settings.AppId, _currentAccessToken, crateId).ConfigureAwait(false);
+
+                    if (!result.Success)
+                    {
+                        Log.Warn("CrateDetail:{0} fetch failed: {1}", crateId, result.Json);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    Log.Debug("CrateDetail:{0} fetched successfully, importing.", crateId);
+                    CrateImporter.ImportFromJson(result.Json, _playerContext, _empireContext);
+
                     return Array.Empty<WorkItem>();
                 },
             };

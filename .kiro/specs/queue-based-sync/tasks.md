@@ -197,7 +197,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: vstest.console passes_
 
 
-- [ ] 9. Seed work item factories — cascading (asset locations)
+- [x] 9. Seed work item factories — cascading (asset locations)
   - [x] 9.1 Implement AssetLocations list seed work item
     - Add `CreateAssetLocationsItem` factory that calls GetAssetLocationsAsync
     - On success, enqueue one `CreateAssetLocationDetailItem` per returned location
@@ -206,7 +206,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 9.2 Implement AssetLocationDetail dispatch with freshness check
+  - [x] 9.2 Implement AssetLocationDetail dispatch with freshness check
     - Add `CreateAssetLocationDetailItem(id, typeC, planetName, systemName)` factory
     - Inspect TypeC: "Crate" → enqueue CrateDetail; "Bp" → check freshness via FindBlueprintByApiId + IsDetailFresh, enqueue BlueprintDetail if stale; "S" → check freshness via FindSurveyByApiId + IsDetailFresh, enqueue SurveyDetail if stale
     - _Requirements: 2.4, 2.5, 2.6, 14.3, 14.4, 15.7_
@@ -214,15 +214,15 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 9.3 Write property test for asset cascading completeness
+  - [x] 9.3 Write property test for asset cascading completeness
     - **Property 7b: Cascading Completeness (assets)**
     - Generate random asset location lists; verify cascade count = 1 per asset
     - **Validates: Requirements 2.3**
     - _Output: AssetCascadePropertyTests.cs created_
     - _Verification: vstest.console passes_
 
-- [ ] 10. Seed work item factories — cascading (mail)
-  - [-] 10.1 Implement KillMailList and MailList seed work items with cascading
+- [x] 10. Seed work item factories — cascading (mail)
+  - [x] 10.1 Implement KillMailList and MailList seed work items with cascading
     - Add `CreateKillMailListItem` that cascades per-kill-mail detail items
     - Add `CreateMailListItem` that cascades per-mail detail items + next page item
     - Add `CreateKillMailDetailItem`, `CreateMailDetailItem`, `CreateMailListPageItem` factories
@@ -236,7 +236,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
   - Build solution and run all tests. Ask the user if questions arise.
 
 - [ ] 12. Crate import integration
-  - [~] 12.1 Implement CrateDetail work item factory
+  - [-] 12.1 Implement CrateDetail work item factory
     - Add `CreateCrateDetailItem(int crateId)` factory to QueueSyncService
     - Calls `GameApiClient.GetAssetCrateAsync`, passes JSON to `CrateImporter.ImportFromJson`
     - Provides PlayerContext and EmpireContext to CrateImporter
