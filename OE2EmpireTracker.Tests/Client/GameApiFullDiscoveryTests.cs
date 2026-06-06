@@ -132,13 +132,14 @@ namespace OE2EmpireTracker.Tests.Client
                         skipped,
                         failed,
                     },
-                    details = this.results.Select(r => new
+                    details = this.results.OrderBy(r => r.Timestamp).Select(r => new
                     {
                         category = r.Category,
                         endpoint = r.Endpoint,
                         success = r.Success,
                         httpStatus = r.HttpStatus,
                         reason = r.SkipReason,
+                        timestamp = r.Timestamp.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                     }).ToArray(),
                 };
 
@@ -165,11 +166,11 @@ namespace OE2EmpireTracker.Tests.Client
         [Test]
         public async Task RunQueuedDiscovery()
         {
-            var queue = new GameApiRequestQueue(10.0, perItemTimeout: TimeSpan.FromMinutes(5));
+            var queue = new GameApiRequestQueue(3.0, perItemTimeout: TimeSpan.FromMinutes(5));
 
             // Set the client's internal rate limiter to match the queue's TPS
             // so it doesn't independently throttle below the queue's dispatch rate.
-            this.client.SetRateLimit(600);
+            this.client.SetRateLimit(180);
 
             // === Task 15.1: Character, banking, jobs, ship seed items ===
             await queue.EnqueueAsync(new WorkItem
@@ -1049,6 +1050,7 @@ namespace OE2EmpireTracker.Tests.Client
                 Endpoint = endpoint,
                 Success = true,
                 HttpStatus = 200,
+                Timestamp = SystemClock.UtcNow,
             });
 
             TestContext.WriteLine("[OK] {0} - {1}", category, endpoint);
@@ -1068,6 +1070,7 @@ namespace OE2EmpireTracker.Tests.Client
                 Endpoint = endpoint,
                 Success = false,
                 SkipReason = reason,
+                Timestamp = SystemClock.UtcNow,
             });
 
             TestContext.WriteLine("[SKIP] {0} - {1}: {2}", category, endpoint, reason);
@@ -1204,6 +1207,11 @@ namespace OE2EmpireTracker.Tests.Client
             /// Gets or sets the reason the endpoint was skipped or failed.
             /// </summary>
             public string SkipReason { get; set; }
+
+            /// <summary>
+            /// Gets or sets the UTC timestamp when this result was recorded.
+            /// </summary>
+            public DateTime Timestamp { get; set; }
         }
     }
 }

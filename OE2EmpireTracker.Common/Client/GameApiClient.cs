@@ -275,7 +275,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -299,22 +299,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetCharacter failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetCharacter blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetCharacter request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetCharacter request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -329,7 +329,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -353,22 +353,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetCharacterSkills failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetCharacterSkills blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetCharacterSkills request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetCharacterSkills request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -383,7 +383,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -415,22 +415,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetColonyList failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetColonyList blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetColonyList request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetColonyList request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -445,7 +445,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -483,22 +483,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetColonyBuildings failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetColonyBuildings blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetColonyBuildings request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetColonyBuildings request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -513,7 +513,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -551,22 +551,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetColonyWarehouse failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetColonyWarehouse blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetColonyWarehouse request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetColonyWarehouse request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -581,7 +581,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -619,22 +619,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetColonyWorkers failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetColonyWorkers blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetColonyWorkers request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetColonyWorkers request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -648,7 +648,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -680,22 +680,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetBankingBalance failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetBankingBalance blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetBankingBalance request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetBankingBalance request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -722,7 +722,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -754,22 +754,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetBankingTransactions failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetBankingTransactions blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetBankingTransactions request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetBankingTransactions request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -784,7 +784,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -816,22 +816,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetAcceptedJobs failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetAcceptedJobs blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetAcceptedJobs request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetAcceptedJobs request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -845,7 +845,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -877,22 +877,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetAssetLocations failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetAssetLocations blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetAssetLocations request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetAssetLocations request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -908,7 +908,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -946,22 +946,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetAssetLocationDetail failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetAssetLocationDetail blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetAssetLocationDetail request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetAssetLocationDetail request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -976,7 +976,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1008,22 +1008,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetKillMailList failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetKillMailList blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetKillMailList request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetKillMailList request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1038,7 +1038,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1076,22 +1076,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetKillMailDetail failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetKillMailDetail blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetKillMailDetail request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetKillMailDetail request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1106,7 +1106,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1144,22 +1144,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetColonySummary failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetColonySummary blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetColonySummary request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetColonySummary request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1173,7 +1173,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1205,22 +1205,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetShipConfiguration failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetShipConfiguration blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetShipConfiguration request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetShipConfiguration request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1234,7 +1234,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1266,22 +1266,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetShipCargo failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetShipCargo blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetShipCargo request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetShipCargo request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1309,7 +1309,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1347,22 +1347,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetMailList failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetMailList blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetMailList request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetMailList request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1378,7 +1378,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1416,22 +1416,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetMailDetail failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetMailDetail blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetMailDetail request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetMailDetail request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1447,7 +1447,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1485,22 +1485,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetAssetCrate failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetAssetCrate blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetAssetCrate request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetAssetCrate request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1516,7 +1516,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1554,22 +1554,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetAssetSurvey failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetAssetSurvey blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetAssetSurvey request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetAssetSurvey request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1585,7 +1585,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1623,22 +1623,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetAssetBlueprint failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetAssetBlueprint blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetAssetBlueprint request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetAssetBlueprint request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1671,7 +1671,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1739,22 +1739,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetMarketListings failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetMarketListings blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetMarketListings request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetMarketListings request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1779,7 +1779,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1822,22 +1822,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetMarketPrices failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetMarketPrices blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetMarketPrices request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetMarketPrices request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1858,7 +1858,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1893,22 +1893,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetMarketItems failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetMarketItems blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetMarketItems request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetMarketItems request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1924,7 +1924,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -1962,22 +1962,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetMarketShipComponents failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetMarketShipComponents blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetMarketShipComponents request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetMarketShipComponents request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -1992,7 +1992,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -2024,22 +2024,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetMarketBuyOrders failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetMarketBuyOrders blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetMarketBuyOrders request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetMarketBuyOrders request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -2054,7 +2054,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -2086,22 +2086,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetMarketSellOrders failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetMarketSellOrders blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetMarketSellOrders request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetMarketSellOrders request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -2117,7 +2117,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -2151,22 +2151,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetMarketBuyCompetitors failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetMarketBuyCompetitors blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetMarketBuyCompetitors request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetMarketBuyCompetitors request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
@@ -2182,7 +2182,7 @@ namespace OE2EmpireTracker.Client
         {
             if (string.IsNullOrEmpty(accessToken))
             {
-                return (false, null);
+                return (false, "no-token");
             }
 
             try
@@ -2216,22 +2216,22 @@ namespace OE2EmpireTracker.Client
                 }
 
                 Log.Warn("Game API GetMarketSellCompetitors failed: HTTP {0}", (int)response.StatusCode);
-                return (false, null);
+                return (false, ((int)response.StatusCode).ToString());
             }
             catch (BrokenCircuitException)
             {
                 Log.Warn("Game API GetMarketSellCompetitors blocked by open circuit breaker");
-                return (false, null);
+                return (false, "circuit-breaker");
             }
             catch (HttpRequestException ex)
             {
                 Log.Warn(ex, "Game API GetMarketSellCompetitors request failed");
-                return (false, null);
+                return (false, "request-failed");
             }
             catch (TaskCanceledException)
             {
                 Log.Warn("Game API GetMarketSellCompetitors request timed out");
-                return (false, null);
+                return (false, "timeout");
             }
         }
 
