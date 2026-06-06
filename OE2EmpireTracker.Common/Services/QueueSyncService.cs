@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
 using OE2EmpireTracker.Client;
 
@@ -97,6 +98,8 @@ namespace OE2EmpireTracker.Services
                 await queue.EnqueueAsync(CreateMarketSellOrdersItem()).ConfigureAwait(false);
                 await queue.EnqueueAsync(CreateColonyListItem()).ConfigureAwait(false);
                 await queue.EnqueueAsync(CreateAssetLocationsItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateKillMailListItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateMailListItem()).ConfigureAwait(false);
 
                 queue.Start(ct);
                 await queue.DrainAsync();
@@ -652,13 +655,285 @@ namespace OE2EmpireTracker.Services
                 Label = "AssetDetail:" + id,
                 ExecuteAsync = async ct =>
                 {
+                    var result = await _apiClient.GetAssetLocationDetailAsync(
+                        _settings.AppId, _currentAccessToken, id, typeC).ConfigureAwait(false);
+
+                    if (!result.Success)
+                    {
+                        Log.Warn("AssetDetail:{0} fetch failed: {1}", id, result.Json);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    Log.Debug("AssetDetail:{0} ({1}) at {2}/{3} fetched successfully.", id, typeC, systemName, planetName);
+
+                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(result.Json);
+                    var response = envelope?.Data;
+                    if (response?.Cargo == null || response.Cargo.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var cascaded = new List<WorkItem>();
+
+                    foreach (var item in response.Cargo)
+                    {
+                        switch (item.TypeC)
+                        {
+                            case "Crate":
+                                cascaded.Add(CreateCrateDetailItem(item.CargoItemId));
+                                break;
+
+                            case "Bp":
+                                var existingBp = _playerContext.FindBlueprintByApiId(item.CargoItemId);
+                                if (existingBp == null || !IsDetailFresh(existingBp.LastDetailImportUtc))
+                                {
+                                    cascaded.Add(CreateBlueprintDetailItem(item.CargoItemId));
+                                }
+                                else
+                                {
+                                    Log.Debug("BlueprintDetail:{0} skipped (fresh).", item.CargoItemId);
+                                }
+
+                                break;
+
+                            case "S":
+                                var existingSurvey = _playerContext.FindSurveyByApiId(item.CargoItemId);
+                                if (existingSurvey == null || !IsDetailFresh(existingSurvey.LastDetailImportUtc))
+                                {
+                                    cascaded.Add(CreateSurveyDetailItem(item.CargoItemId, planetName, systemName));
+                                }
+                                else
+                                {
+                                    Log.Debug("SurveyDetail:{0} skipped (fresh).", item.CargoItemId);
+                                }
+
+                                break;
+                        }
+                    }
+
+                    return cascaded.ToArray();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches crate detail for blueprint extraction.
+        /// </summary>
+        /// <param name="crateId">The crate cargo item identifier.</param>
+        /// <returns>A work item for crate detail retrieval.</returns>
+        private WorkItem CreateCrateDetailItem(int crateId)
+        {
+            return new WorkItem
+            {
+                Label = "CrateDetail:" + crateId,
+                ExecuteAsync = async ct =>
+                {
+                    Log.Debug("CrateDetail:{0} — import pending future implementation.", crateId);
+                    await Task.CompletedTask.ConfigureAwait(false);
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches blueprint detail for import.
+        /// </summary>
+        /// <param name="blueprintId">The blueprint cargo item identifier.</param>
+        /// <returns>A work item for blueprint detail retrieval.</returns>
+        private WorkItem CreateBlueprintDetailItem(int blueprintId)
+        {
+            return new WorkItem
+            {
+                Label = "BlueprintDetail:" + blueprintId,
+                ExecuteAsync = async ct =>
+                {
+                    Log.Debug("BlueprintDetail:{0} — import pending future implementation.", blueprintId);
+                    await Task.CompletedTask.ConfigureAwait(false);
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches survey detail for import.
+        /// </summary>
+        /// <param name="surveyId">The survey cargo item identifier.</param>
+        /// <param name="planetName">The planet name for survey context.</param>
+        /// <param name="systemName">The star system name for survey context.</param>
+        /// <returns>A work item for survey detail retrieval.</returns>
+        private WorkItem CreateSurveyDetailItem(int surveyId, string planetName, string systemName)
+        {
+            return new WorkItem
+            {
+                Label = "SurveyDetail:" + surveyId,
+                ExecuteAsync = async ct =>
+                {
                     Log.Debug(
-                        "AssetDetail:{0} ({1}) at {2}/{3} — detail dispatch pending future implementation.",
-                        id,
-                        typeC,
+                        "SurveyDetail:{0} at {1}/{2} — import pending future implementation.",
+                        surveyId,
                         systemName,
                         planetName);
                     await Task.CompletedTask.ConfigureAwait(false);
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the kill mail list and cascades one detail item per kill mail.
+        /// </summary>
+        /// <returns>A work item for kill mail list retrieval with cascading.</returns>
+        private WorkItem CreateKillMailListItem()
+        {
+            return new WorkItem
+            {
+                Label = "KillMailList",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetKillMailListAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (!result.Success)
+                    {
+                        Log.Warn("KillMailList fetch failed: {0}", result.Json);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    Log.Debug("KillMailList fetched successfully.");
+
+                    var envelope = JObject.Parse(result.Json);
+                    var killMails = envelope["data"]?["killMails"] as JArray;
+                    if (killMails == null || killMails.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var cascaded = killMails
+                        .Select(km => km["killMailId"]?.Value<int>() ?? 0)
+                        .Where(id => id > 0)
+                        .Select(id => CreateKillMailDetailItem(id))
+                        .ToArray();
+
+                    return cascaded;
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the detail for a specific kill mail.
+        /// </summary>
+        /// <param name="killMailId">The kill mail identifier.</param>
+        /// <returns>A work item for kill mail detail retrieval.</returns>
+        private WorkItem CreateKillMailDetailItem(int killMailId)
+        {
+            return new WorkItem
+            {
+                Label = "KillMailDetail:" + killMailId,
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetKillMailDetailAsync(
+                        _settings.AppId, _currentAccessToken, killMailId).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("KillMailDetail:{0} fetched successfully.", killMailId);
+                    }
+                    else
+                    {
+                        Log.Warn("KillMailDetail:{0} fetch failed: {1}", killMailId, result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the first page of the mail list and cascades
+        /// one detail item per mail plus a next page item if the current page is non-empty.
+        /// </summary>
+        /// <returns>A work item for mail list retrieval with cascading.</returns>
+        private WorkItem CreateMailListItem()
+        {
+            return CreateMailListPageItem(0);
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches a page of the mail list at the given offset
+        /// and cascades one detail item per mail plus a next page item if the page is non-empty.
+        /// </summary>
+        /// <param name="offset">The offset into the mail list for pagination.</param>
+        /// <returns>A work item for mail list page retrieval with cascading.</returns>
+        private WorkItem CreateMailListPageItem(int offset)
+        {
+            int pageSize = 50;
+            string label = offset == 0 ? "MailList" : "MailList:page" + (offset / pageSize);
+
+            return new WorkItem
+            {
+                Label = label,
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetMailListAsync(
+                        _settings.AppId, _currentAccessToken, offset, pageSize).ConfigureAwait(false);
+
+                    if (!result.Success)
+                    {
+                        Log.Warn("{0} fetch failed: {1}", label, result.Json);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    Log.Debug("{0} fetched successfully.", label);
+
+                    var envelope = JObject.Parse(result.Json);
+                    var mails = envelope["data"]?["mail"] as JArray;
+                    if (mails == null || mails.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var cascaded = new List<WorkItem>();
+
+                    foreach (var mail in mails)
+                    {
+                        int mailId = mail["mailId"]?.Value<int>() ?? 0;
+                        if (mailId > 0)
+                        {
+                            cascaded.Add(CreateMailDetailItem(mailId));
+                        }
+                    }
+
+                    cascaded.Add(CreateMailListPageItem(offset + pageSize));
+
+                    return cascaded.ToArray();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the detail for a specific mail message.
+        /// </summary>
+        /// <param name="mailId">The mail identifier.</param>
+        /// <returns>A work item for mail detail retrieval.</returns>
+        private WorkItem CreateMailDetailItem(int mailId)
+        {
+            return new WorkItem
+            {
+                Label = "MailDetail:" + mailId,
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetMailDetailAsync(
+                        _settings.AppId, _currentAccessToken, mailId).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("MailDetail:{0} fetched successfully.", mailId);
+                    }
+                    else
+                    {
+                        Log.Warn("MailDetail:{0} fetch failed: {1}", mailId, result.Json);
+                    }
+
                     return Array.Empty<WorkItem>();
                 },
             };

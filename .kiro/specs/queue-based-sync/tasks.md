@@ -180,8 +180,8 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-- [ ] 8. Seed work item factories — cascading (colonies)
-  - [-] 8.1 Implement ColonyList seed work item with cascading
+- [x] 8. Seed work item factories — cascading (colonies)
+  - [x] 8.1 Implement ColonyList seed work item with cascading
     - Add `CreateColonyListItem` factory that cascades 4 items per colony (summary, buildings, warehouse, workers)
     - Add `CreateColonySummaryItem`, `CreateColonyBuildingsItem`, `CreateColonyWarehouseItem`, `CreateColonyWorkersItem` factories
     - _Requirements: 2.1, 2.2_
@@ -189,7 +189,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 8.2 Write property test for colony cascading completeness
+  - [x] 8.2 Write property test for colony cascading completeness
     - **Property 7: Cascading Completeness (colonies)**
     - Generate random colony lists; verify cascade count = 4 × colony count
     - **Validates: Requirements 2.2**
@@ -198,7 +198,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 
 
 - [ ] 9. Seed work item factories — cascading (asset locations)
-  - [-] 9.1 Implement AssetLocations list seed work item
+  - [x] 9.1 Implement AssetLocations list seed work item
     - Add `CreateAssetLocationsItem` factory that calls GetAssetLocationsAsync
     - On success, enqueue one `CreateAssetLocationDetailItem` per returned location
     - _Requirements: 2.3_
@@ -206,7 +206,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 9.2 Implement AssetLocationDetail dispatch with freshness check
+  - [-] 9.2 Implement AssetLocationDetail dispatch with freshness check
     - Add `CreateAssetLocationDetailItem(id, typeC, planetName, systemName)` factory
     - Inspect TypeC: "Crate" → enqueue CrateDetail; "Bp" → check freshness via FindBlueprintByApiId + IsDetailFresh, enqueue BlueprintDetail if stale; "S" → check freshness via FindSurveyByApiId + IsDetailFresh, enqueue SurveyDetail if stale
     - _Requirements: 2.4, 2.5, 2.6, 14.3, 14.4, 15.7_
@@ -214,7 +214,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 9.3 Write property test for asset cascading completeness
+  - [-] 9.3 Write property test for asset cascading completeness
     - **Property 7b: Cascading Completeness (assets)**
     - Generate random asset location lists; verify cascade count = 1 per asset
     - **Validates: Requirements 2.3**
@@ -222,7 +222,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: vstest.console passes_
 
 - [ ] 10. Seed work item factories — cascading (mail)
-  - [~] 10.1 Implement KillMailList and MailList seed work items with cascading
+  - [-] 10.1 Implement KillMailList and MailList seed work items with cascading
     - Add `CreateKillMailListItem` that cascades per-kill-mail detail items
     - Add `CreateMailListItem` that cascades per-mail detail items + next page item
     - Add `CreateKillMailDetailItem`, `CreateMailDetailItem`, `CreateMailListPageItem` factories
