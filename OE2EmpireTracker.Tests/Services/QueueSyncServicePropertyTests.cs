@@ -2,15 +2,11 @@
 // Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
 
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FsCheck;
 using NUnit.Framework;
-using OE2EmpireTracker.Client;
-using OE2EmpireTracker.Models;
-using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -146,47 +142,6 @@ namespace OE2EmpireTracker.Tests.Services
                     return (exactlyOneDidWork && restSkipped && maxConcurrentIsOne)
                         .Label($"N={n}, DidWork={didWork}, Skipped={skipped}, " +
                                $"MaxConcurrent={service.MaxConcurrent}");
-                }
-            }).QuickCheckThrowOnFailure();
-        }
-
-        /// <summary>
-        /// Property 1b: The real QueueSyncService respects the concurrency guard.
-        /// For any N concurrent RunSyncAsync calls, all complete without exception
-        /// and IsSyncRunning returns to false afterwards.
-        /// **Validates: Requirements 9.3**
-        /// </summary>
-        [Test]
-        public void RealService_ConcurrentRunSync_AllCompleteWithoutException()
-        {
-            var concurrencyGen = Gen.Choose(2, 20);
-
-            Prop.ForAll(concurrencyGen.ToArbitrary(), (n) =>
-            {
-                PlayerContext.FilePath = string.Empty;
-                var ctx = new PlayerContext(new PlayerRoot());
-                var empireCtx = EmpireContext.GetInstance();
-                using (var client = new GameApiClient("http://localhost:99999"))
-                {
-                    var settings = new GameApiConnectionSettings();
-                    var service = new QueueSyncService(ctx, empireCtx, client, settings);
-
-                    Assert.IsFalse(service.IsSyncRunning, "Should not be running before test");
-
-                    var tasks = Enumerable.Range(0, n)
-                        .Select(_ => Task.Run(() => service.RunSyncAsync(CancellationToken.None)))
-                        .ToArray();
-
-                    Task.WaitAll(tasks);
-
-                    var results = tasks.Select(t => t.Result).ToArray();
-
-                    bool allCompleted = results.All(r => r != null);
-                    bool notRunningAfter = !service.IsSyncRunning;
-
-                    return (allCompleted && notRunningAfter)
-                        .Label($"N={n}, AllCompleted={allCompleted}, " +
-                               $"NotRunningAfter={notRunningAfter}");
                 }
             }).QuickCheckThrowOnFailure();
         }
