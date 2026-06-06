@@ -51,7 +51,7 @@ namespace OE2EmpireTracker.Client
         {
             _serverUrl = (serverUrl ?? string.Empty).TrimEnd('/');
             _httpClient = new HttpClient();
-            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+            _httpClient.Timeout = TimeSpan.FromSeconds(300);
             _rateLimiter = new SemaphoreSlim(30, 30);
             _tokenCache = new Dictionary<string, CachedToken>();
 

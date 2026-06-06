@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Client
@@ -108,6 +109,9 @@ namespace OE2EmpireTracker.Tests.Client
 
             TestContext.WriteLine("Authenticated as player {0}, token obtained", this.playerUUID);
             TestContext.WriteLine("Output directory: {0}", this.outputDir);
+
+            // Initialize metrics collector to track per-request timing
+            GameApiMetricsCollector.Initialize();
         }
 
         /// <summary>
@@ -154,9 +158,67 @@ namespace OE2EmpireTracker.Tests.Client
                 TestContext.WriteLine("Skipped:   {0}", skipped);
                 TestContext.WriteLine("Failed:    {0}", failed);
                 TestContext.WriteLine("Metadata written to: {0}", metadataPath);
+
+                // Write per-endpoint latency percentiles from metrics collector
+                WriteLatencyPercentiles();
             }
 
             this.client?.Dispose();
+        }
+
+        /// <summary>
+        /// Computes and writes P50/P90/P99/P100 latency percentiles per endpoint from the metrics collector history.
+        /// </summary>
+        private static void WriteLatencyPercentiles()
+        {
+            if (GameApiMetricsCollector.Instance == null)
+            {
+                return;
+            }
+
+            var history = GameApiMetricsCollector.Instance.GetHistory();
+            if (history == null || history.Count == 0)
+            {
+                TestContext.WriteLine("No metrics history available for percentile analysis.");
+                return;
+            }
+
+            var successfulByEndpoint = history
+                .Where(r => r.IsSuccess)
+                .GroupBy(r => r.Endpoint)
+                .OrderBy(g => g.Key);
+
+            TestContext.WriteLine("\n=== Latency Percentiles (successful requests only) ===");
+            TestContext.WriteLine("{0,-45} {1,6} {2,8} {3,8} {4,8} {5,8}", "Endpoint", "Count", "P90ms", "P99ms", "P99.9ms", "P100ms");
+            TestContext.WriteLine(new string('-', 95));
+
+            foreach (var group in successfulByEndpoint)
+            {
+                var durations = group.Select(r => r.DurationMs).OrderBy(d => d).ToArray();
+                int count = durations.Length;
+                long p90 = durations[(int)(count * 0.90)];
+                long p99 = durations[Math.Min((int)(count * 0.99), count - 1)];
+                long p999 = durations[Math.Min((int)(count * 0.999), count - 1)];
+                long p100 = durations[count - 1];
+
+                TestContext.WriteLine("{0,-45} {1,6} {2,8} {3,8} {4,8} {5,8}", group.Key, count, p90, p99, p999, p100);
+            }
+
+            // Also write overall stats
+            var allSuccessful = history.Where(r => r.IsSuccess).Select(r => r.DurationMs).OrderBy(d => d).ToArray();
+            if (allSuccessful.Length > 0)
+            {
+                int total = allSuccessful.Length;
+                TestContext.WriteLine(new string('-', 95));
+                TestContext.WriteLine(
+                    "{0,-45} {1,6} {2,8} {3,8} {4,8} {5,8}",
+                    "ALL ENDPOINTS",
+                    total,
+                    allSuccessful[(int)(total * 0.90)],
+                    allSuccessful[Math.Min((int)(total * 0.99), total - 1)],
+                    allSuccessful[Math.Min((int)(total * 0.999), total - 1)],
+                    allSuccessful[total - 1]);
+            }
         }
 
         /// <summary>
