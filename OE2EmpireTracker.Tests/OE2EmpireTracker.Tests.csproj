@@ -559,6 +559,7 @@
     <Compile Include="Services\TokenRefreshHandlerTests.cs" />
     <Compile Include="Services\TokenRefreshHandlerPropertyTests.cs" />
     <Compile Include="Services\QueueSyncServicePropertyTests.cs" />
+    <Compile Include="Services\CascadeCompletenessPropertyTests.cs" />
     <Compile Include="Services\AssetMergeServiceStationTests.cs" />
     <Compile Include="Services\AssetMergeServiceTests.cs" />
     <Compile Include="Services\AssetMergeServiceShipTests.cs" />
