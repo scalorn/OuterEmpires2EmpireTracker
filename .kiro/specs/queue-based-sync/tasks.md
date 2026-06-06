@@ -92,7 +92,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 - [~] 3. Checkpoint - Model and index verification
   - Build solution and run all tests. Ask the user if questions arise.
 
-- [ ] 4. TokenRefreshHandler
+- [x] 4. TokenRefreshHandler
   - [x] 4.1 Create TokenRefreshHandler service
     - Create `OE2EmpireTracker.Common/Services/TokenRefreshHandler.cs`
     - Implement SemaphoreSlim(1,1) serialization for refresh attempts
@@ -104,7 +104,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: TokenRefreshHandler.cs created_
     - _Verification: getDiagnostics_
 
-  - [-] 4.2 Write unit tests for TokenRefreshHandler
+  - [x] 4.2 Write unit tests for TokenRefreshHandler
     - Test serialization: multiple concurrent 401s produce exactly 1 ExchangeTokenAsync call
     - Test version check: second caller sees refreshed token and skips exchange
     - Test failure path: exchange failure returns failure result
@@ -112,7 +112,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: TokenRefreshHandlerTests.cs created_
     - _Verification: vstest.console passes_
 
-  - [-] 4.3 Write property test for token refresh serialization
+  - [x] 4.3 Write property test for token refresh serialization
     - **Property 2: Token Refresh Serialization**
     - N concurrent 401 events; verify exactly 1 exchange call occurs
     - **Validates: Requirements 7.4**
@@ -130,7 +130,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: getDiagnostics_
 
 - [ ] 6. QueueSyncService core orchestration
-  - [-] 6.1 Create QueueSyncService shell with concurrency guard
+  - [x] 6.1 Create QueueSyncService shell with concurrency guard
     - Create `OE2EmpireTracker.Common/Services/QueueSyncService.cs`
     - Constructor accepting PlayerContext, EmpireContext, GameApiClient, GameApiConnectionSettings
     - `RunSyncAsync(CancellationToken)` with `_isSyncRunning` + lock guard (returns early if already running)
@@ -140,7 +140,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs created_
     - _Verification: getDiagnostics_
 
-  - [~] 6.2 Add queue construction and IsDetailFresh helper to QueueSyncService
+  - [-] 6.2 Add queue construction and IsDetailFresh helper to QueueSyncService
     - Inside `RunSyncAsync`: construct GameApiRequestQueue with TPS from settings, inflight = TPS × 3, maxRetries = 3
     - Add `IsDetailFresh(DateTime? lastImportUtc)` private helper using DetailRefreshHours and SystemClock.UtcNow
     - _Requirements: 1.1, 1.2, 1.3, 1.5, 14.3, 14.4, 14.6_
@@ -148,14 +148,14 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 6.3 Write property test for concurrency guard
+  - [-] 6.3 Write property test for concurrency guard
     - **Property 1: No Concurrent Sync Cycles**
     - Invoke RunSyncAsync concurrently from multiple threads; verify only one completes with actual work
     - **Validates: Requirements 9.3**
     - _Output: QueueSyncServicePropertyTests.cs created_
     - _Verification: vstest.console passes_
 
-  - [~] 6.4 Write property test for freshness skip correctness
+  - [-] 6.4 Write property test for freshness skip correctness
     - **Property 3: Freshness Skip Correctness**
     - Generate random DateTime?/hours combos; verify skip/enqueue decision matches spec
     - **Validates: Requirements 14.3, 14.4**

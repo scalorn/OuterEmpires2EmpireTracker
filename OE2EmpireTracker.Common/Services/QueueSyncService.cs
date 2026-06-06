@@ -2,6 +2,7 @@
 // Copyright (c) OE2EmpireTracker. All rights reserved.
 // </copyright>
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -72,8 +73,15 @@ namespace OE2EmpireTracker.Services
             {
                 Log.Info("Queue sync cycle started.");
 
-                // TODO: Future tasks will add queue construction, seed work items, and DrainAsync.
-                await Task.CompletedTask;
+                var queue = new GameApiRequestQueue(
+                    _settings.Tps,
+                    perItemTimeout: null,
+                    maxInflightMultiplier: 3,
+                    maxRetries: 3);
+
+                // TODO: Future tasks will enqueue seed work items here.
+                queue.Start(ct);
+                await queue.DrainAsync();
 
                 Log.Info("Queue sync cycle completed.");
                 return new QueueSyncResult();
@@ -82,6 +90,22 @@ namespace OE2EmpireTracker.Services
             {
                 _isSyncRunning = false;
             }
+        }
+
+        /// <summary>
+        /// Determines whether a detail import is still fresh based on the configured refresh interval.
+        /// </summary>
+        /// <param name="lastImportUtc">The UTC timestamp of the last detail import, or null if never imported.</param>
+        /// <returns>True if the import is within the refresh threshold; false if stale or never imported.</returns>
+        private bool IsDetailFresh(DateTime? lastImportUtc)
+        {
+            if (lastImportUtc == null)
+            {
+                return false;
+            }
+
+            var threshold = TimeSpan.FromHours(_settings.DetailRefreshHours);
+            return (SystemClock.UtcNow - lastImportUtc.Value) < threshold;
         }
     }
 }
