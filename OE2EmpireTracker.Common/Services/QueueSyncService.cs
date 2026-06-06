@@ -27,10 +27,12 @@ namespace OE2EmpireTracker.Services
         private readonly EmpireContext _empireContext;
         private readonly GameApiClient _apiClient;
         private readonly GameApiConnectionSettings _settings;
+        private readonly GameApiCredentialManager _credentialManager;
 
         private readonly object _syncLock = new object();
 
         private string _currentAccessToken = string.Empty;
+        private TokenRefreshHandler _tokenRefreshHandler;
 
         private volatile bool _isSyncRunning;
 
@@ -41,16 +43,19 @@ namespace OE2EmpireTracker.Services
         /// <param name="empireContext">The empire context for shared game data.</param>
         /// <param name="apiClient">The game API client for HTTP communication.</param>
         /// <param name="settings">The connection settings (TPS, AppId, etc.).</param>
+        /// <param name="credentialManager">The credential manager for token refresh operations.</param>
         public QueueSyncService(
             PlayerContext playerContext,
             EmpireContext empireContext,
             GameApiClient apiClient,
-            GameApiConnectionSettings settings)
+            GameApiConnectionSettings settings,
+            GameApiCredentialManager credentialManager)
         {
             _playerContext = playerContext;
             _empireContext = empireContext;
             _apiClient = apiClient;
             _settings = settings;
+            _credentialManager = credentialManager;
         }
 
         /// <summary>
@@ -79,6 +84,13 @@ namespace OE2EmpireTracker.Services
             try
             {
                 Log.Info("Queue sync cycle started.");
+
+                _tokenRefreshHandler = new TokenRefreshHandler(
+                    _apiClient,
+                    _settings,
+                    _credentialManager,
+                    _playerContext.CurrentPlayerUUID,
+                    _currentAccessToken);
 
                 var queue = new GameApiRequestQueue(
                     _settings.Tps,
@@ -192,6 +204,47 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Checks an API result for HTTP 401 (unauthorized) and attempts a token refresh.
+        /// If the refresh succeeds, updates the stored access token and throws an
+        /// <see cref="InvalidOperationException"/> so that the queue retries the work item
+        /// with the new token. If the refresh fails, throws an
+        /// <see cref="UnauthorizedAccessException"/> which will exhaust retries and mark
+        /// the work item as failed.
+        /// </summary>
+        /// <param name="result">The API call result tuple.</param>
+        /// <param name="label">The work item label for logging.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>A task that completes if no 401 was detected, or throws on 401.</returns>
+        private async Task ThrowIfUnauthorizedAsync(
+            (bool Success, string Json) result,
+            string label,
+            CancellationToken ct)
+        {
+            if (result.Success || !string.Equals(result.Json, "401", StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            string failedToken = _currentAccessToken;
+            Log.Warn("{0}: received HTTP 401, attempting token refresh.", label);
+
+            var refreshResult = await _tokenRefreshHandler.HandleUnauthorizedAsync(failedToken, ct)
+                .ConfigureAwait(false);
+
+            if (refreshResult.Success)
+            {
+                _currentAccessToken = refreshResult.NewToken;
+                Log.Info("{0}: token refresh succeeded, retrying with new token.", label);
+                throw new InvalidOperationException(
+                    "Token refreshed successfully for '" + label + "'; retrying.");
+            }
+
+            Log.Error("{0}: token refresh failed, marking work item as failed.", label);
+            throw new UnauthorizedAccessException(
+                "Token refresh failed for '" + label + "'; no further retry.");
+        }
+
+        /// <summary>
         /// Creates a work item that fetches the character profile from the game API.
         /// </summary>
         /// <returns>A work item for character profile retrieval.</returns>
@@ -204,6 +257,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetCharacterAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "CharacterProfile", ct)
+                        .ConfigureAwait(false);
 
                     if (result.Success)
                     {
@@ -233,6 +289,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetCharacterSkillsAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "CharacterSkills", ct)
+                        .ConfigureAwait(false);
+
                     if (result.Success)
                     {
                         Log.Debug("CharacterSkills fetched successfully.");
@@ -260,6 +319,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetBankingBalanceAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "BankingBalance", ct)
+                        .ConfigureAwait(false);
 
                     if (result.Success)
                     {
@@ -289,6 +351,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetBankingTransactionsAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "BankingTransactions", ct)
+                        .ConfigureAwait(false);
+
                     if (result.Success)
                     {
                         Log.Debug("BankingTransactions fetched successfully.");
@@ -316,6 +381,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetAcceptedJobsAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "AcceptedJobs", ct)
+                        .ConfigureAwait(false);
 
                     if (result.Success)
                     {
@@ -345,6 +413,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetShipConfigurationAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "ShipConfiguration", ct)
+                        .ConfigureAwait(false);
+
                     if (result.Success)
                     {
                         Log.Debug("ShipConfiguration fetched successfully.");
@@ -372,6 +443,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetShipCargoAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "ShipCargo", ct)
+                        .ConfigureAwait(false);
 
                     if (result.Success)
                     {
@@ -401,6 +475,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetMarketListingsAsync(
                         _settings.AppId, _currentAccessToken, "all").ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "MarketListings", ct)
+                        .ConfigureAwait(false);
+
                     if (result.Success)
                     {
                         Log.Debug("MarketListings fetched successfully.");
@@ -428,6 +505,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetMarketItemsAsync(
                         _settings.AppId, _currentAccessToken, "all", "all").ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "MarketItems", ct)
+                        .ConfigureAwait(false);
 
                     if (result.Success)
                     {
@@ -457,6 +537,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetMarketBuyOrdersAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "MarketBuyOrders", ct)
+                        .ConfigureAwait(false);
+
                     if (result.Success)
                     {
                         Log.Debug("MarketBuyOrders fetched successfully.");
@@ -485,6 +568,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetMarketSellOrdersAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "MarketSellOrders", ct)
+                        .ConfigureAwait(false);
+
                     if (result.Success)
                     {
                         Log.Debug("MarketSellOrders fetched successfully.");
@@ -512,6 +598,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetColonyListAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "ColonyList", ct)
+                        .ConfigureAwait(false);
 
                     if (!result.Success)
                     {
@@ -557,6 +646,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetColonySummaryAsync(
                         _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "ColonySummary:" + colonyId, ct)
+                        .ConfigureAwait(false);
+
                     if (result.Success)
                     {
                         Log.Debug("ColonySummary:{0} fetched successfully.", colonyId);
@@ -585,6 +677,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetColonyBuildingsAsync(
                         _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "ColonyBuildings:" + colonyId, ct)
+                        .ConfigureAwait(false);
 
                     if (result.Success)
                     {
@@ -615,6 +710,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetColonyWarehouseAsync(
                         _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "ColonyWarehouse:" + colonyId, ct)
+                        .ConfigureAwait(false);
+
                     if (result.Success)
                     {
                         Log.Debug("ColonyWarehouse:{0} fetched successfully.", colonyId);
@@ -644,6 +742,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetColonyWorkersAsync(
                         _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "ColonyWorkers:" + colonyId, ct)
+                        .ConfigureAwait(false);
+
                     if (result.Success)
                     {
                         Log.Debug("ColonyWorkers:{0} fetched successfully.", colonyId);
@@ -671,6 +772,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetAssetLocationsAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "AssetLocations", ct)
+                        .ConfigureAwait(false);
 
                     if (!result.Success)
                     {
@@ -719,6 +823,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetAssetLocationDetailAsync(
                         _settings.AppId, _currentAccessToken, id, typeC).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "AssetDetail:" + id, ct)
+                        .ConfigureAwait(false);
 
                     if (!result.Success)
                     {
@@ -793,6 +900,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetAssetCrateAsync(
                         _settings.AppId, _currentAccessToken, crateId).ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "CrateDetail:" + crateId, ct)
+                        .ConfigureAwait(false);
+
                     if (!result.Success)
                     {
                         Log.Warn("CrateDetail:{0} fetch failed: {1}", crateId, result.Json);
@@ -821,6 +931,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetAssetBlueprintAsync(
                         _settings.AppId, _currentAccessToken, blueprintId).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "BlueprintDetail:" + blueprintId, ct)
+                        .ConfigureAwait(false);
 
                     if (!result.Success)
                     {
@@ -928,6 +1041,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetAssetSurveyAsync(
                         _settings.AppId, _currentAccessToken, surveyId).ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "SurveyDetail:" + surveyId, ct)
+                        .ConfigureAwait(false);
+
                     if (!result.Success)
                     {
                         Log.Warn("SurveyDetail:{0} fetch failed: {1}", surveyId, result.Json);
@@ -998,6 +1114,9 @@ namespace OE2EmpireTracker.Services
                     var result = await _apiClient.GetKillMailListAsync(
                         _settings.AppId, _currentAccessToken).ConfigureAwait(false);
 
+                    await ThrowIfUnauthorizedAsync(result, "KillMailList", ct)
+                        .ConfigureAwait(false);
+
                     if (!result.Success)
                     {
                         Log.Warn("KillMailList fetch failed: {0}", result.Json);
@@ -1038,6 +1157,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetKillMailDetailAsync(
                         _settings.AppId, _currentAccessToken, killMailId).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "KillMailDetail:" + killMailId, ct)
+                        .ConfigureAwait(false);
 
                     if (result.Success)
                     {
@@ -1081,6 +1203,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetMailListAsync(
                         _settings.AppId, _currentAccessToken, offset, pageSize).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, label, ct)
+                        .ConfigureAwait(false);
 
                     if (!result.Success)
                     {
@@ -1129,6 +1254,9 @@ namespace OE2EmpireTracker.Services
                 {
                     var result = await _apiClient.GetMailDetailAsync(
                         _settings.AppId, _currentAccessToken, mailId).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "MailDetail:" + mailId, ct)
+                        .ConfigureAwait(false);
 
                     if (result.Success)
                     {

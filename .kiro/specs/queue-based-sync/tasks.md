@@ -256,7 +256,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 13.2 Wire SystemObjectId propagation and index update in SurveyDetail
+  - [x] 13.2 Wire SystemObjectId propagation and index update in SurveyDetail
     - After survey import: set survey.SystemObjectId from response (if > 0, propagate to linked asteroid)
     - Set survey.GameApiSurveyId = response.Survey.Id
     - Set survey.LastDetailImportUtc = SystemClock.UtcNow
@@ -266,7 +266,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 13.3 Write property test for SystemObjectId propagation
+  - [-] 13.3 Write property test for SystemObjectId propagation
     - **Property 8: SystemObjectId Propagation**
     - Import surveys with various SystemObjectId values; verify propagation to linked asteroids
     - **Validates: Requirements 6.4**
@@ -274,7 +274,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: vstest.console passes_
 
 
-- [ ] 14. Blueprint import integration
+- [x] 14. Blueprint import integration
   - [x] 14.1 Implement BlueprintDetail work item — parse response and construct crate JSON
     - Add `CreateBlueprintDetailItem(int blueprintId)` factory to QueueSyncService
     - Parse GameApiBlueprintDetailResponse, construct CrateImporter-compatible JSON object
@@ -285,7 +285,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 14.2 Wire API ID tracking and freshness timestamp for BlueprintDetail
+  - [x] 14.2 Wire API ID tracking and freshness timestamp for BlueprintDetail
     - After CrateImporter import: set GameApiBlueprintId on imported blueprint
     - Set LastDetailImportUtc = SystemClock.UtcNow
     - Call PlayerContext.IndexBlueprintByApiId(blueprint)
@@ -295,7 +295,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: getDiagnostics_
 
 - [ ] 15. 401 handling in work item delegates
-  - [~] 15.1 Wire TokenRefreshHandler into QueueSyncService
+  - [-] 15.1 Wire TokenRefreshHandler into QueueSyncService
     - Construct TokenRefreshHandler in QueueSyncService constructor
     - Add 401 detection wrapper in work item delegates: call HandleUnauthorizedAsync, re-enqueue on success, mark failed on failure
     - _Requirements: 7.1, 7.2, 7.3_
