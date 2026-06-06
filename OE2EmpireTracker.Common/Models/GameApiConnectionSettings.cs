@@ -37,5 +37,11 @@ namespace OE2EmpireTracker.Client
         /// Gets or sets a value indicating whether the game API integration is enabled.
         /// </summary>
         public bool Enabled { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets the target transactions per second (TPS) for the API rate governor.
+        /// Valid range: 0.1 to 100.0. Default 0.5 TPS.
+        /// </summary>
+        public double Tps { get; set; } = 0.5;
     }
 }

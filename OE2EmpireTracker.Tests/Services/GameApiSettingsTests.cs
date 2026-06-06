@@ -20,6 +20,7 @@ namespace OE2EmpireTracker.Tests.Services
                 ServerUrl = "https://api.outerempires2.com",
                 PollingIntervalMinutes = 10,
                 Enabled = true,
+                Tps = 5.0,
             };
 
             var json = JsonConvert.SerializeObject(original, Formatting.Indented);
@@ -28,6 +29,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(deserialized.ServerUrl, Is.EqualTo("https://api.outerempires2.com"));
             Assert.That(deserialized.PollingIntervalMinutes, Is.EqualTo(10));
             Assert.That(deserialized.Enabled, Is.True);
+            Assert.That(deserialized.Tps, Is.EqualTo(5.0));
         }
 
         [Test]
@@ -45,6 +47,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(prefs.GameApiConnection.ServerUrl, Is.EqualTo(string.Empty));
             Assert.That(prefs.GameApiConnection.PollingIntervalMinutes, Is.EqualTo(5));
             Assert.That(prefs.GameApiConnection.Enabled, Is.False);
+            Assert.That(prefs.GameApiConnection.Tps, Is.EqualTo(0.5));
         }
 
         [Test]
