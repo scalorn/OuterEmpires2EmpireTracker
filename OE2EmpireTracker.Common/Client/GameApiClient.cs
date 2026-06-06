@@ -2269,6 +2269,36 @@ namespace OE2EmpireTracker.Client
         }
 
         /// <summary>
+        /// Sets the internal rate limit to the specified requests per minute.
+        /// This overrides the default (30/min) and any value received from X-RateLimit-Limit headers.
+        /// Use when an external rate governor (GameApiRequestQueue) controls dispatch timing.
+        /// </summary>
+        /// <param name="requestsPerMinute">The maximum requests per minute to allow.</param>
+        public void SetRateLimit(int requestsPerMinute)
+        {
+            if (requestsPerMinute <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(requestsPerMinute), "Must be positive.");
+            }
+
+            if (requestsPerMinute == _rateLimitRequestsPerMinute)
+            {
+                return;
+            }
+
+            Log.Info(
+                "Game API rate limit manually set: {0} -> {1} requests/minute",
+                _rateLimitRequestsPerMinute,
+                requestsPerMinute);
+
+            _rateLimitRequestsPerMinute = requestsPerMinute;
+
+            var oldLimiter = _rateLimiter;
+            _rateLimiter = new SemaphoreSlim(requestsPerMinute, requestsPerMinute);
+            oldLimiter?.Dispose();
+        }
+
+        /// <summary>
         /// Acquires a rate limit token before making an outgoing request.
         /// If the rate limiter is paused (due to HTTP 429), waits until the pause expires.
         /// Blocks if the rate limit has been reached until a token becomes available.

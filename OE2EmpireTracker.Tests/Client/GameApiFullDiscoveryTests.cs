@@ -165,7 +165,11 @@ namespace OE2EmpireTracker.Tests.Client
         [Test]
         public async Task RunQueuedDiscovery()
         {
-            var queue = new GameApiRequestQueue(10.0);
+            var queue = new GameApiRequestQueue(10.0, perItemTimeout: TimeSpan.FromMinutes(5));
+
+            // Set the client's internal rate limiter to match the queue's TPS
+            // so it doesn't independently throttle below the queue's dispatch rate.
+            this.client.SetRateLimit(600);
 
             // === Task 15.1: Character, banking, jobs, ship seed items ===
             await queue.EnqueueAsync(new WorkItem
