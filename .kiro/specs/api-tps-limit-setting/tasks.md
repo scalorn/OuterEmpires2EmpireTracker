@@ -14,7 +14,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
     - _Verification: Build succeeds, getDiagnostics clean_
 
-- [ ] 2. Add TPS input to Preferences Form
+- [x] 2. Add TPS input to Preferences Form
   - [x] 2.1 Add txtTpsLimit ValidatedTextBox and label to Game API tab
     - Add `lblTpsLimit` (Label, Text="TPS Limit:") and `txtTpsLimit` (ValidatedTextBox) to Designer.cs
     - Set ValidationPattern to `^\d{1,3}(\.\d)?$`
@@ -29,7 +29,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 2.2, 2.3, 2.4_
     - _Verification: Build succeeds, getDiagnostics clean_
 
-  - [-] 2.3 Add Leave handler — clamp to [0.1, 100.0] or revert
+  - [x] 2.3 Add Leave handler — clamp to [0.1, 100.0] or revert
     - On txtTpsLimit Leave: if numeric but out of range, clamp to nearest boundary
     - If non-numeric or empty, revert to last valid value
     - _Requirements: 2.5, 3.1, 3.2, 3.3_
@@ -102,21 +102,21 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 6.3_
     - _Verification: Build succeeds_
 
-- [ ] 8. Implement AdaptiveRateController
-  - [~] 8.1 Implement 429 pause and TPS reduction
+- [x] 8. Implement AdaptiveRateController
+  - [x] 8.1 Implement 429 pause and TPS reduction
     - NotifyRateLimited: pause dispatch for retryAfter seconds (default 60s if no header)
     - After pause: reduce effective TPS to 50% of active rate
     - Re-enqueue the 429 work item at back of queue for retry
     - _Requirements: 17.1, 17.2, 17.7_
     - _Verification: Build succeeds_
 
-  - [~] 8.2 Implement exponential backoff on consecutive 429s
+  - [x] 8.2 Implement exponential backoff on consecutive 429s
     - Double pause duration on consecutive 429s (2x, 4x, 8x), cap at 5 minutes
     - Track consecutive backoff count, reset on successful processing
     - _Requirements: 17.3_
     - _Verification: Build succeeds_
 
-  - [~] 8.3 Implement recovery ramp after successful processing
+  - [x] 8.3 Implement recovery ramp after successful processing
     - After 60s without 429: increase effective TPS by 10% per minute
     - Stop increasing when effective TPS reaches configured TPS
     - Expose EffectiveTps property, log each rate adjustment
@@ -127,19 +127,19 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 10. Queue unit tests — basic dispatch
-  - [~] 10.1 Test single item dispatch and FIFO ordering
+  - [-] 10.1 Test single item dispatch and FIFO ordering
     - Enqueue_SingleItem_Dispatches: basic enqueue → execute → drain cycle
     - Enqueue_MultipleItems_FIFO: dispatch order matches enqueue order
     - _Requirements: 4.1, 4.3_
     - _Verification: Tests pass_
 
-  - [~] 10.2 Test cascading items and drain completeness
+  - [-] 10.2 Test cascading items and drain completeness
     - CascadingItems_AreProcessed: cascaded items enqueued and executed
     - DrainAsync_WaitsForAllCascades: drain blocks until nested cascades finish
     - _Requirements: 5.1, 5.3_
     - _Verification: Tests pass_
 
-  - [~] 10.3 Test error isolation and cancellation
+  - [-] 10.3 Test error isolation and cancellation
     - FailedItem_DoesNotBlockOthers: exception in one item, others complete
     - Cancellation_StopsNewDispatch: after cancel, no new items dispatched
     - Cancellation_InflightItemsTimeout: in-flight items cancelled after timeout
