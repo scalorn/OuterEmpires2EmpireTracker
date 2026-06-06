@@ -957,7 +957,7 @@ namespace OE2EmpireTracker.Tests.Client
             };
 
             string allPath = Path.Combine(this.outputDir, "banking", "transactions-all.json");
-            File.WriteAllText(allPath, combined.ToString(Formatting.Indented), Encoding.UTF8);
+            File.WriteAllText(allPath, JsonConvert.SerializeObject(combined, Formatting.Indented), Encoding.UTF8);
             TestContext.WriteLine("[COMBINED] banking/transactions-all.json ({0} transactions)", allTransactions.Count);
         }
 

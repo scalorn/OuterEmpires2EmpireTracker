@@ -6,7 +6,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
 
 ## Tasks
 
-- [ ] 1. Add Tps property to GameApiConnectionSettings
+- [x] 1. Add Tps property to GameApiConnectionSettings
   - [x] 1.1 Add Tps property with default value 0.5
     - Add `public double Tps { get; set; } = 0.5;` to GameApiConnectionSettings
     - Verify PascalCase serialization matches existing properties (ServerUrl, PollingIntervalMinutes)
@@ -35,11 +35,11 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 2.5, 3.1, 3.2, 3.3_
     - _Verification: Build succeeds, getDiagnostics clean_
 
-- [~] 3. Checkpoint — Settings and UI
+- [x] 3. Checkpoint — Settings and UI
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 4. Create WorkItem and supporting types
+- [x] 4. Create WorkItem and supporting types
   - [x] 4.1 Create WorkItem.cs with WorkItem, QueueError, QueueCompletionStatus
     - Create `OE2EmpireTracker.Common/Services/WorkItem.cs`
     - Define WorkItem (Label, ExecuteAsync delegate), QueueError, QueueCompletionStatus
@@ -123,10 +123,10 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 17.4, 17.5, 17.6_
     - _Verification: Build succeeds_
 
-- [~] 9. Checkpoint — Queue service complete
+- [x] 9. Checkpoint — Queue service complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Queue unit tests — basic dispatch
+- [x] 10. Queue unit tests — basic dispatch
   - [x] 10.1 Test single item dispatch and FIFO ordering
     - Enqueue_SingleItem_Dispatches: basic enqueue → execute → drain cycle
     - Enqueue_MultipleItems_FIFO: dispatch order matches enqueue order
@@ -147,7 +147,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Verification: Tests pass_
 
 
-- [ ] 11. Queue unit tests — rate limiting and adaptive behavior
+- [x] 11. Queue unit tests — rate limiting and adaptive behavior
   - [x] 11.1 Test 429 pause and recovery
     - NotifyRateLimited_PausesDispatch: no dispatch during pause window
     - ConsecutiveBackoffs_DoubleDuration: multiple 429s increase pause duration
@@ -212,11 +212,11 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - **Validates: Requirements 5.3, 6.4**
     - _Verification: Property test passes with MaxTest=100_
 
-- [~] 13. Checkpoint — Queue tests complete
+- [x] 13. Checkpoint — Queue tests complete
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 14. Restructure discovery tests — scaffold
+- [x] 14. Restructure discovery tests — scaffold
   - [x] 14.1 Delete old 23 ordered tests and create single [Test] method skeleton
     - Remove all existing `[Test] [Order(N)]` methods from GameApiFullDiscoveryTests
     - Create single `[Test]` method that creates GameApiRequestQueue at TPS=10.0
@@ -230,7 +230,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 15.4_
     - _Verification: Build succeeds_
 
-- [ ] 15. Enqueue seed work items (independent endpoints)
+- [x] 15. Enqueue seed work items (independent endpoints)
   - [x] 15.1 Enqueue character, banking, jobs, ship seed items
     - character/profile, character/skills, banking/balance, banking/transactions-p0
     - jobs/accepted, ship/configuration, ship/cargo
@@ -250,7 +250,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 8.2_
     - _Verification: Build succeeds_
 
-- [ ] 16. Implement colony cascading
+- [x] 16. Implement colony cascading
   - [x] 16.1 Colony list cascades to per-colony detail items
     - On colony list completion: enqueue 4 items per colony (summary, buildings, warehouse, workers)
     - Each writes to `colonies/{colonyId}/{endpoint}.json`
@@ -259,7 +259,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 9.1, 9.2, 9.3_
     - _Verification: Build succeeds_
 
-- [ ] 17. Implement asset cascading
+- [x] 17. Implement asset cascading
   - [x] 17.1 Asset locations cascades to per-location detail
     - On locations completion: enqueue one item per location for detail
     - If enqueue throws, fail entire discovery run
@@ -274,7 +274,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Verification: Build succeeds_
 
 
-- [ ] 18. Implement kill mail and mail cascading
+- [x] 18. Implement kill mail and mail cascading
   - [x] 18.1 Kill mail list cascades to per-mail detail
     - On kill mail list completion: enqueue one item per kill mail for detail
     - Each writes to `killmails/{killMailId}.json`, calls RecordSuccess/RecordSkipped
@@ -289,7 +289,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 12.1, 12.2, 12.3, 12.4_
     - _Verification: Build succeeds_
 
-- [ ] 19. Implement market and banking cascading
+- [x] 19. Implement market and banking cascading
   - [x] 19.1 Market cascading (listings → prices/components, orders → competitors)
     - market/listings completion: enqueue prices (first listing type/typeId) + ship components (first ship marketId)
     - market/buyorders completion: enqueue buy competitors (first 5 marketIds)
@@ -303,10 +303,10 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 14.1, 14.2, 14.3_
     - _Verification: Build succeeds_
 
-- [~] 20. Checkpoint — Cascading work items complete
+- [x] 20. Checkpoint — Cascading work items complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 21. Discovery tests — drain, metadata, and error reporting
+- [x] 21. Discovery tests — drain, metadata, and error reporting
   - [x] 21.1 Implement drain and metadata writing
     - Await queue.DrainAsync()
     - Write `_metadata.json` with: run timestamp, character ID, total succeeded/skipped/failed counts
@@ -315,7 +315,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 15.1, 15.2, 15.5_
     - _Verification: Build succeeds_
 
-  - [-] 21.2 Implement error collection and failure isolation
+  - [x] 21.2 Implement error collection and failure isolation
     - Collect errors from queue.Errors list, report as RecordSkipped entries with exception message
     - Failed seed items do not abort other seeds — each seed independent
     - Discovery run writes metadata and completes even if all seeds fail
@@ -323,8 +323,8 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 15.3, 15.6_
     - _Verification: Build succeeds_
 
-- [ ] 22. Verify GameApiClient preservation
-  - [-] 22.1 Verify internal rate limiter and 429 handling remain unchanged
+- [x] 22. Verify GameApiClient preservation
+  - [x] 22.1 Verify internal rate limiter and 429 handling remain unchanged
     - Confirm SemaphoreSlim rate limiter (AcquireRateLimitTokenAsync) is untouched
     - Confirm X-RateLimit-Limit header handling unchanged
     - Confirm 429 pause mechanism unchanged
@@ -332,7 +332,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5_
     - _Verification: getDiagnostics clean, no modifications to GameApiClient_
 
-- [~] 23. Final checkpoint — all integration complete
+- [x] 23. Final checkpoint — all integration complete
   - Ensure all tests pass, ask the user if questions arise.
 
 
