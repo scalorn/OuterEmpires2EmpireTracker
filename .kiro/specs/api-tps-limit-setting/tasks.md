@@ -251,7 +251,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Verification: Build succeeds_
 
 - [ ] 16. Implement colony cascading
-  - [~] 16.1 Colony list cascades to per-colony detail items
+  - [-] 16.1 Colony list cascades to per-colony detail items
     - On colony list completion: enqueue 4 items per colony (summary, buildings, warehouse, workers)
     - Each writes to `colonies/{colonyId}/{endpoint}.json`
     - Calls RecordSuccess/RecordSkipped independently
@@ -260,7 +260,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
     - _Verification: Build succeeds_
 
 - [ ] 17. Implement asset cascading
-  - [~] 17.1 Asset locations cascades to per-location detail
+  - [-] 17.1 Asset locations cascades to per-location detail
     - On locations completion: enqueue one item per location for detail
     - If enqueue throws, fail entire discovery run
     - _Requirements: 10.1_

@@ -34,9 +34,7 @@ namespace OE2EmpireTracker.Tests.Client
         private string playerUUID;
         private string outputDir;
         private ConcurrentBag<EndpointResult> results;
-#pragma warning disable CS0649 // Field will be assigned by future work item tasks (15.x/17.x)
         private string assetLocationsJson;
-#pragma warning restore CS0649
 
         /// <summary>
         /// Loads credentials from the app's existing credential store and preferences.
@@ -407,18 +405,119 @@ namespace OE2EmpireTracker.Tests.Client
                 ExecuteAsync = async ct =>
                 {
                     var result = await this.client.GetColonyListAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (result.Success)
-                    {
-                        string filePath = Path.Combine(this.outputDir, "colonies", "list.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
-                        RecordSuccess("colonies", "list");
-                    }
-                    else
+                    if (!result.Success)
                     {
                         RecordSkipped("colonies", "list", result.Json ?? "Request failed");
+                        return Array.Empty<WorkItem>();
                     }
 
-                    return Array.Empty<WorkItem>();
+                    string filePath = Path.Combine(this.outputDir, "colonies", "list.json");
+                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    RecordSuccess("colonies", "list");
+
+                    var envelope = JObject.Parse(result.Json);
+                    var colonies = envelope["data"]?["colonies"] as JArray;
+                    if (colonies == null || colonies.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var cascaded = new List<WorkItem>();
+                    foreach (var colony in colonies)
+                    {
+                        int colonyId = colony["colonyId"]?.Value<int>() ?? 0;
+                        if (colonyId == 0)
+                        {
+                            continue;
+                        }
+
+                        string colonyDir = Path.Combine(this.outputDir, "colonies", colonyId.ToString());
+                        EnsureDirectory(colonyDir);
+
+                        int capturedId = colonyId;
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = $"colonies/{capturedId}/summary",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                var r = await this.client.GetColonySummaryAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
+                                if (r.Success)
+                                {
+                                    File.WriteAllText(Path.Combine(colonyDir, "summary.json"), FormatJson(r.Json), Encoding.UTF8);
+                                    RecordSuccess("colonies", $"{capturedId}/summary");
+                                }
+                                else
+                                {
+                                    RecordSkipped("colonies", $"{capturedId}/summary", r.Json ?? "Request failed");
+                                }
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = $"colonies/{capturedId}/buildings",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                var r = await this.client.GetColonyBuildingsAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
+                                if (r.Success)
+                                {
+                                    File.WriteAllText(Path.Combine(colonyDir, "buildings.json"), FormatJson(r.Json), Encoding.UTF8);
+                                    RecordSuccess("colonies", $"{capturedId}/buildings");
+                                }
+                                else
+                                {
+                                    RecordSkipped("colonies", $"{capturedId}/buildings", r.Json ?? "Request failed");
+                                }
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = $"colonies/{capturedId}/warehouse",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                var r = await this.client.GetColonyWarehouseAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
+                                if (r.Success)
+                                {
+                                    File.WriteAllText(Path.Combine(colonyDir, "warehouse.json"), FormatJson(r.Json), Encoding.UTF8);
+                                    RecordSuccess("colonies", $"{capturedId}/warehouse");
+                                }
+                                else
+                                {
+                                    RecordSkipped("colonies", $"{capturedId}/warehouse", r.Json ?? "Request failed");
+                                }
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = $"colonies/{capturedId}/workers",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                var r = await this.client.GetColonyWorkersAsync(this.appId, this.accessToken, capturedId).ConfigureAwait(false);
+                                if (r.Success)
+                                {
+                                    File.WriteAllText(Path.Combine(colonyDir, "workers.json"), FormatJson(r.Json), Encoding.UTF8);
+                                    RecordSuccess("colonies", $"{capturedId}/workers");
+                                }
+                                else
+                                {
+                                    RecordSkipped("colonies", $"{capturedId}/workers", r.Json ?? "Request failed");
+                                }
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+                    }
+
+                    return cascaded;
                 },
             }).ConfigureAwait(false);
 
@@ -428,18 +527,61 @@ namespace OE2EmpireTracker.Tests.Client
                 ExecuteAsync = async ct =>
                 {
                     var result = await this.client.GetAssetLocationsAsync(this.appId, this.accessToken).ConfigureAwait(false);
-                    if (result.Success)
-                    {
-                        string filePath = Path.Combine(this.outputDir, "assets", "locations.json");
-                        File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
-                        RecordSuccess("assets", "locations");
-                    }
-                    else
+                    if (!result.Success)
                     {
                         RecordSkipped("assets", "locations", result.Json ?? "Request failed");
+                        return Array.Empty<WorkItem>();
                     }
 
-                    return Array.Empty<WorkItem>();
+                    string filePath = Path.Combine(this.outputDir, "assets", "locations.json");
+                    File.WriteAllText(filePath, FormatJson(result.Json), Encoding.UTF8);
+                    RecordSuccess("assets", "locations");
+                    this.assetLocationsJson = result.Json;
+
+                    var envelope = JObject.Parse(result.Json);
+                    var locations = envelope["data"]?["locations"] as JArray;
+                    if (locations == null || locations.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var cascaded = new List<WorkItem>();
+                    foreach (var location in locations)
+                    {
+                        int locationId = location["locationId"]?.Value<int>() ?? 0;
+                        string locationType = location["locationType"]?.Value<string>();
+
+                        if (locationId == 0 || string.IsNullOrEmpty(locationType))
+                        {
+                            continue;
+                        }
+
+                        int capturedId = locationId;
+                        string capturedType = locationType;
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = $"assets/location-{capturedId}",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                var r = await this.client.GetAssetLocationDetailAsync(this.appId, this.accessToken, capturedId, capturedType).ConfigureAwait(false);
+                                if (r.Success)
+                                {
+                                    string detailPath = Path.Combine(this.outputDir, "assets", $"location-{capturedId}.json");
+                                    File.WriteAllText(detailPath, FormatJson(r.Json), Encoding.UTF8);
+                                    RecordSuccess("assets", $"location-{capturedId}");
+                                }
+                                else
+                                {
+                                    RecordSkipped("assets", $"location-{capturedId}", r.Json ?? "Request failed");
+                                }
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+                    }
+
+                    return cascaded;
                 },
             }).ConfigureAwait(false);
 
