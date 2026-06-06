@@ -54,7 +54,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: PlayerContext.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 2.2 Wire Blueprint index into add/remove operations
+  - [x] 2.2 Wire Blueprint index into add/remove operations
     - Update `AddBlueprint` to insert into `_blueprintByApiIdIndex` when API ID is non-null
     - Update `RemoveBlueprint` to remove from `_blueprintByApiIdIndex` when API ID is non-null
     - _Requirements: 15.6_
@@ -72,7 +72,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: PlayerContext.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 2.4 Wire Survey index into add/remove operations
+  - [x] 2.4 Wire Survey index into add/remove operations
     - Update `AddSurvey` to insert into `_surveyByApiIdIndex` when API ID is non-null
     - Update `RemoveSurvey` to remove from `_surveyByApiIdIndex` when API ID is non-null
     - _Requirements: 15.6_
@@ -80,7 +80,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: PlayerContext.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 2.5 Write property test for index consistency
+  - [-] 2.5 Write property test for index consistency
     - **Property 5: Index Consistency**
     - Random Add/Remove/Index sequences; verify FindBlueprintByApiId and FindSurveyByApiId return correct results
     - **Validates: Requirements 15.1, 15.2, 15.3, 15.4, 15.5**
@@ -93,7 +93,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
   - Build solution and run all tests. Ask the user if questions arise.
 
 - [ ] 4. TokenRefreshHandler
-  - [~] 4.1 Create TokenRefreshHandler service
+  - [-] 4.1 Create TokenRefreshHandler service
     - Create `OE2EmpireTracker.Common/Services/TokenRefreshHandler.cs`
     - Implement SemaphoreSlim(1,1) serialization for refresh attempts
     - Track `_currentAccessToken` and `_tokenVersion` for stale-check optimization
