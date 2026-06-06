@@ -341,8 +341,8 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 - [~] 18. Checkpoint - Full service verification
   - Build solution and run all tests. Ask the user if questions arise.
 
-- [ ] 19. BackgroundProcessor integration
-  - [-] 19.1 Invoke QueueSyncService from BackgroundProcessor
+- [x] 19. BackgroundProcessor integration
+  - [x] 19.1 Invoke QueueSyncService from BackgroundProcessor
     - Modify `BackgroundProcessor.cs` to construct QueueSyncService
     - When timer fires and Game API sync is enabled and `!_queueSyncService.IsSyncRunning`: invoke RunSyncAsync on background thread
     - _Requirements: 9.1, 9.2, 9.3_
@@ -351,7 +351,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: getDiagnostics_
 
 - [ ] 20. Preferences form integration
-  - [~] 20.1 Add DetailRefreshHours control to Preferences form
+  - [-] 20.1 Add DetailRefreshHours control to Preferences form
     - Add NumericUpDown control labeled "Detail Refresh (hours)" on Game API tab
     - Min=1, Max=168, Default=24
     - Bind to GameApiConnectionSettings.DetailRefreshHours on load and save

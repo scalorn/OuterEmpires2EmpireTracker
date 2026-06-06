@@ -40,6 +40,8 @@ namespace OE2EmpireTracker.Forms
             this.lblPollingMinutes = new System.Windows.Forms.Label();
             this.lblTpsLimit = new System.Windows.Forms.Label();
             this.txtTpsLimit = new OE2EmpireTracker.Controls.ValidatedTextBox();
+            this.lblDetailRefreshHours = new System.Windows.Forms.Label();
+            this.nudDetailRefreshHours = new System.Windows.Forms.NumericUpDown();
             this.chkGameApiEnabled = new System.Windows.Forms.CheckBox();
             this.btnTestGameApiConnection = new System.Windows.Forms.Button();
             this.lblTestResult = new System.Windows.Forms.Label();
@@ -89,6 +91,7 @@ namespace OE2EmpireTracker.Forms
             this.grpGameApi.SuspendLayout();
             this.grpWarehouseThresholds.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPollingInterval)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDetailRefreshHours)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudOverflowHorizon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudUnderutilizedStockpile)).BeginInit();
             this.grpStructureCount.SuspendLayout();
@@ -168,12 +171,14 @@ namespace OE2EmpireTracker.Forms
             this.grpGameApi.Controls.Add(this.lblPollingMinutes);
             this.grpGameApi.Controls.Add(this.lblTpsLimit);
             this.grpGameApi.Controls.Add(this.txtTpsLimit);
+            this.grpGameApi.Controls.Add(this.lblDetailRefreshHours);
+            this.grpGameApi.Controls.Add(this.nudDetailRefreshHours);
             this.grpGameApi.Controls.Add(this.chkGameApiEnabled);
             this.grpGameApi.Controls.Add(this.btnTestGameApiConnection);
             this.grpGameApi.Controls.Add(this.lblTestResult);
             this.grpGameApi.Location = new System.Drawing.Point(12, 12);
             this.grpGameApi.Name = "grpGameApi";
-            this.grpGameApi.Size = new System.Drawing.Size(460, 345);
+            this.grpGameApi.Size = new System.Drawing.Size(460, 380);
             this.grpGameApi.TabIndex = 0;
             this.grpGameApi.TabStop = false;
             this.grpGameApi.Text = "Game API Connection (OAuth2)";
@@ -299,32 +304,50 @@ namespace OE2EmpireTracker.Forms
             this.txtTpsLimit.ValidationPattern = "^\\d{1,3}(\\.\\d)?$";
             this.txtTpsLimit.ValidColor = System.Drawing.Color.White;
             // 
+            // lblDetailRefreshHours
+            // 
+            this.lblDetailRefreshHours.AutoSize = true;
+            this.lblDetailRefreshHours.Location = new System.Drawing.Point(15, 270);
+            this.lblDetailRefreshHours.Name = "lblDetailRefreshHours";
+            this.lblDetailRefreshHours.Size = new System.Drawing.Size(113, 13);
+            this.lblDetailRefreshHours.Text = "Detail Refresh (hours):";
+            // 
+            // nudDetailRefreshHours
+            // 
+            this.nudDetailRefreshHours.Location = new System.Drawing.Point(130, 267);
+            this.nudDetailRefreshHours.Maximum = new decimal(new int[] { 168, 0, 0, 0 });
+            this.nudDetailRefreshHours.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudDetailRefreshHours.Name = "nudDetailRefreshHours";
+            this.nudDetailRefreshHours.Size = new System.Drawing.Size(60, 20);
+            this.nudDetailRefreshHours.TabIndex = 8;
+            this.nudDetailRefreshHours.Value = new decimal(new int[] { 24, 0, 0, 0 });
+            // 
             // chkGameApiEnabled
             // 
             this.chkGameApiEnabled.AutoSize = true;
-            this.chkGameApiEnabled.Location = new System.Drawing.Point(18, 273);
+            this.chkGameApiEnabled.Location = new System.Drawing.Point(18, 308);
             this.chkGameApiEnabled.Name = "chkGameApiEnabled";
             this.chkGameApiEnabled.Size = new System.Drawing.Size(65, 17);
-            this.chkGameApiEnabled.TabIndex = 8;
+            this.chkGameApiEnabled.TabIndex = 9;
             this.chkGameApiEnabled.Text = "Enabled";
             this.chkGameApiEnabled.UseVisualStyleBackColor = true;
             // 
             // btnTestGameApiConnection
             // 
-            this.btnTestGameApiConnection.Location = new System.Drawing.Point(18, 305);
+            this.btnTestGameApiConnection.Location = new System.Drawing.Point(18, 340);
             this.btnTestGameApiConnection.Name = "btnTestGameApiConnection";
             this.btnTestGameApiConnection.Size = new System.Drawing.Size(110, 23);
-            this.btnTestGameApiConnection.TabIndex = 9;
+            this.btnTestGameApiConnection.TabIndex = 10;
             this.btnTestGameApiConnection.Text = "Test Connection";
             this.btnTestGameApiConnection.UseVisualStyleBackColor = true;
             // 
             // lblTestResult
             // 
             this.lblTestResult.AutoSize = true;
-            this.lblTestResult.Location = new System.Drawing.Point(134, 310);
+            this.lblTestResult.Location = new System.Drawing.Point(134, 345);
             this.lblTestResult.Name = "lblTestResult";
             this.lblTestResult.Size = new System.Drawing.Size(0, 13);
-            this.lblTestResult.TabIndex = 10;
+            this.lblTestResult.TabIndex = 11;
             // 
             // grpStructureCount
             // 
@@ -743,6 +766,7 @@ namespace OE2EmpireTracker.Forms
             this.grpGameApi.ResumeLayout(false);
             this.grpGameApi.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPollingInterval)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDetailRefreshHours)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudOverflowHorizon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudUnderutilizedStockpile)).EndInit();
             this.grpStructureCount.ResumeLayout(false);
@@ -825,6 +849,8 @@ namespace OE2EmpireTracker.Forms
         private System.Windows.Forms.Label lblPollingMinutes;
         private System.Windows.Forms.Label lblTpsLimit;
         internal OE2EmpireTracker.Controls.ValidatedTextBox txtTpsLimit;
+        private System.Windows.Forms.Label lblDetailRefreshHours;
+        internal System.Windows.Forms.NumericUpDown nudDetailRefreshHours;
         internal System.Windows.Forms.CheckBox chkGameApiEnabled;
         internal System.Windows.Forms.Button btnTestGameApiConnection;
         internal System.Windows.Forms.Label lblTestResult;

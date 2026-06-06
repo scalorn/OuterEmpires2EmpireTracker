@@ -157,6 +157,7 @@ namespace OE2EmpireTracker.Forms
 
             txtTpsLimit.Text = settings.Tps.ToString("F1", CultureInfo.InvariantCulture);
             _lastValidTps = txtTpsLimit.Text;
+            nudDetailRefreshHours.Value = Math.Max(1, Math.Min(168, settings.DetailRefreshHours));
 
             // Show placeholder dots if a secret is stored for the selected character
             string playerUUID = GetSelectedCharacterUUID();
@@ -480,6 +481,7 @@ namespace OE2EmpireTracker.Forms
             int newPollingInterval = (int)nudPollingInterval.Value;
             gameApiSettings.PollingIntervalMinutes = newPollingInterval;
             gameApiSettings.Tps = double.Parse(txtTpsLimit.Text, CultureInfo.InvariantCulture);
+            gameApiSettings.DetailRefreshHours = (int)nudDetailRefreshHours.Value;
 
             // Encrypt and store secret if the user changed it from the placeholder
             string secretText = txtGameApiSecret.Text;
