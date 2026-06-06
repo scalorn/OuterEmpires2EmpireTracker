@@ -4,11 +4,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using FsCheck;
 using NUnit.Framework;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
+using Bp = OE2EmpireTracker.Models.Blueprint;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -87,9 +87,9 @@ namespace OE2EmpireTracker.Tests.Services
                 PlayerContext.FilePath = string.Empty;
                 var ctx = new PlayerContext(new PlayerRoot());
 
-                // Track expected state: apiId -> Blueprint
-                var expected = new Dictionary<int, Blueprint>();
-                var addedBlueprints = new List<Blueprint>();
+                // Mirror the index: apiId -> Blueprint (tracks what PlayerContext stores)
+                var index = new Dictionary<int, Bp>();
+                var addedBlueprints = new List<Bp>();
 
                 foreach (var pair in ops)
                 {
@@ -99,14 +99,14 @@ namespace OE2EmpireTracker.Tests.Services
                     switch (op)
                     {
                         case BpOp.Add:
-                            var bp = new Blueprint("Test_" + Guid.NewGuid().ToString("N"))
+                            var bp = new Bp("Test_" + Guid.NewGuid().ToString("N"))
                             {
                                 UUID = Guid.NewGuid().ToString(),
                                 GameApiBlueprintId = apiId,
                             };
                             ctx.AddBlueprint(bp);
                             addedBlueprints.Add(bp);
-                            expected[apiId] = bp;
+                            index[apiId] = bp;
                             break;
 
                         case BpOp.Remove:
@@ -116,11 +116,13 @@ namespace OE2EmpireTracker.Tests.Services
                                 var toRemove = addedBlueprints[idx];
                                 ctx.RemoveBlueprint(toRemove);
                                 addedBlueprints.RemoveAt(idx);
+
+                                // Only remove from index if the entry points to this item
                                 if (toRemove.GameApiBlueprintId.HasValue
-                                    && expected.TryGetValue(toRemove.GameApiBlueprintId.Value, out var current)
+                                    && index.TryGetValue(toRemove.GameApiBlueprintId.Value, out var current)
                                     && ReferenceEquals(current, toRemove))
                                 {
-                                    expected.Remove(toRemove.GameApiBlueprintId.Value);
+                                    index.Remove(toRemove.GameApiBlueprintId.Value);
                                 }
                             }
 
@@ -131,28 +133,20 @@ namespace OE2EmpireTracker.Tests.Services
                             {
                                 var idx2 = Math.Abs(apiId) % addedBlueprints.Count;
                                 var toIndex = addedBlueprints[idx2];
-                                // Remove old mapping if it was pointing to this blueprint
-                                if (toIndex.GameApiBlueprintId.HasValue
-                                    && expected.TryGetValue(toIndex.GameApiBlueprintId.Value, out var old)
-                                    && ReferenceEquals(old, toIndex))
-                                {
-                                    expected.Remove(toIndex.GameApiBlueprintId.Value);
-                                }
-
                                 toIndex.GameApiBlueprintId = apiId;
                                 ctx.IndexBlueprintByApiId(toIndex);
-                                expected[apiId] = toIndex;
+                                index[apiId] = toIndex;
                             }
 
                             break;
                     }
                 }
 
-                // Verify: for each query ID, FindBlueprintByApiId matches expected
+                // Verify: for each query ID, FindBlueprintByApiId matches index
                 foreach (var qid in queryIds)
                 {
                     var actual = ctx.FindBlueprintByApiId(qid);
-                    expected.TryGetValue(qid, out var exp);
+                    index.TryGetValue(qid, out var exp);
                     if (!ReferenceEquals(actual, exp))
                     {
                         return false.ToProperty();
@@ -185,8 +179,8 @@ namespace OE2EmpireTracker.Tests.Services
                 PlayerContext.FilePath = string.Empty;
                 var ctx = new PlayerContext(new PlayerRoot());
 
-                // Track expected state: apiId -> Survey
-                var expected = new Dictionary<int, Survey>();
+                // Mirror the index: apiId -> Survey (tracks what PlayerContext stores)
+                var index = new Dictionary<int, Survey>();
                 var addedSurveys = new List<Survey>();
 
                 foreach (var pair in ops)
@@ -204,7 +198,7 @@ namespace OE2EmpireTracker.Tests.Services
                             };
                             ctx.AddSurvey(survey);
                             addedSurveys.Add(survey);
-                            expected[apiId] = survey;
+                            index[apiId] = survey;
                             break;
 
                         case SurveyOp.Remove:
@@ -214,11 +208,13 @@ namespace OE2EmpireTracker.Tests.Services
                                 var toRemove = addedSurveys[idx];
                                 ctx.RemoveSurvey(toRemove);
                                 addedSurveys.RemoveAt(idx);
+
+                                // Only remove from index if the entry points to this item
                                 if (toRemove.GameApiSurveyId.HasValue
-                                    && expected.TryGetValue(toRemove.GameApiSurveyId.Value, out var current)
+                                    && index.TryGetValue(toRemove.GameApiSurveyId.Value, out var current)
                                     && ReferenceEquals(current, toRemove))
                                 {
-                                    expected.Remove(toRemove.GameApiSurveyId.Value);
+                                    index.Remove(toRemove.GameApiSurveyId.Value);
                                 }
                             }
 
@@ -229,28 +225,20 @@ namespace OE2EmpireTracker.Tests.Services
                             {
                                 var idx2 = Math.Abs(apiId) % addedSurveys.Count;
                                 var toIndex = addedSurveys[idx2];
-                                // Remove old mapping if it was pointing to this survey
-                                if (toIndex.GameApiSurveyId.HasValue
-                                    && expected.TryGetValue(toIndex.GameApiSurveyId.Value, out var old)
-                                    && ReferenceEquals(old, toIndex))
-                                {
-                                    expected.Remove(toIndex.GameApiSurveyId.Value);
-                                }
-
                                 toIndex.GameApiSurveyId = apiId;
                                 ctx.IndexSurveyByApiId(toIndex);
-                                expected[apiId] = toIndex;
+                                index[apiId] = toIndex;
                             }
 
                             break;
                     }
                 }
 
-                // Verify: for each query ID, FindSurveyByApiId matches expected
+                // Verify: for each query ID, FindSurveyByApiId matches index
                 foreach (var qid in queryIds)
                 {
                     var actual = ctx.FindSurveyByApiId(qid);
-                    expected.TryGetValue(qid, out var exp);
+                    index.TryGetValue(qid, out var exp);
                     if (!ReferenceEquals(actual, exp))
                     {
                         return false.ToProperty();

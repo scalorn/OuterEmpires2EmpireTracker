@@ -554,6 +554,7 @@
     <Compile Include="Services\ColonyMergeServiceColonyIdTests.cs" />
     <Compile Include="Services\ColonyMergePropertyTests.cs" />
     <Compile Include="Services\AssetMergeServicePropertyTests.cs" />
+    <Compile Include="Services\PlayerContextApiIdIndexTests.cs" />
     <Compile Include="Services\AssetMergeServiceStationTests.cs" />
     <Compile Include="Services\AssetMergeServiceTests.cs" />
     <Compile Include="Services\AssetMergeServiceShipTests.cs" />

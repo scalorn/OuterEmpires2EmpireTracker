@@ -889,7 +889,9 @@ namespace OE2EmpireTracker.Services
                 _blueprintList.Remove(item);
                 if (_blueprintCache != null && item.UUID != null)
                     _blueprintCache.Remove(item.UUID);
-                if (item.GameApiBlueprintId.HasValue)
+                if (item.GameApiBlueprintId.HasValue
+                    && _blueprintByApiIdIndex.TryGetValue(item.GameApiBlueprintId.Value, out var indexed)
+                    && ReferenceEquals(indexed, item))
                 {
                     _blueprintByApiIdIndex.Remove(item.GameApiBlueprintId.Value);
                 }
@@ -1034,7 +1036,9 @@ namespace OE2EmpireTracker.Services
                 if (_surveyCache != null && item.UUID != null)
                     _surveyCache.Remove(item.UUID);
 
-                if (item.GameApiSurveyId.HasValue)
+                if (item.GameApiSurveyId.HasValue
+                    && _surveyByApiIdIndex.TryGetValue(item.GameApiSurveyId.Value, out var indexed)
+                    && ReferenceEquals(indexed, item))
                 {
                     _surveyByApiIdIndex.Remove(item.GameApiSurveyId.Value);
                 }
