@@ -6,8 +6,8 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 
 ## Tasks
 
-- [ ] 1. Data model extensions
-  - [-] 1.1 Add SystemObjectId to Survey and Asteroid models
+- [x] 1. Data model extensions
+  - [x] 1.1 Add SystemObjectId to Survey and Asteroid models
     - Add `SystemObjectId` property (int, default 0) to `Survey.cs`
     - Add `SystemObjectId` property (int, default 0) to `Asteroid.cs`
     - Both with `[JsonProperty("SystemObjectId")]` and `[DefaultValue(0)]`
@@ -16,7 +16,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: Survey.cs, Asteroid.cs modified_
     - _Verification: getDiagnostics on both files_
 
-  - [-] 1.2 Add GameApiBlueprintId and LastDetailImportUtc to Blueprint model
+  - [x] 1.2 Add GameApiBlueprintId and LastDetailImportUtc to Blueprint model
     - Add `GameApiBlueprintId` property (int?, nullable) to Blueprint
     - Add `LastDetailImportUtc` property (DateTime?, nullable) to Blueprint
     - Both with appropriate `[JsonProperty]` attributes
@@ -25,7 +25,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: Blueprint.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 1.3 Add GameApiSurveyId and LastDetailImportUtc to Survey model
+  - [x] 1.3 Add GameApiSurveyId and LastDetailImportUtc to Survey model
     - Add `GameApiSurveyId` property (int?, nullable) to Survey
     - Add `LastDetailImportUtc` property (DateTime?, nullable) to Survey
     - Both with appropriate `[JsonProperty]` attributes
@@ -34,7 +34,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: Survey.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 1.4 Add DetailRefreshHours to GameApiConnectionSettings
+  - [x] 1.4 Add DetailRefreshHours to GameApiConnectionSettings
     - Add `DetailRefreshHours` property (int, default 24) with `[DefaultValue(24)]`
     - Valid range 1–168 (documented in XML comment)
     - _Requirements: 16.1_
@@ -44,7 +44,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 
 
 - [ ] 2. In-memory API ID indexes in PlayerContext
-  - [~] 2.1 Add Blueprint API ID index to PlayerContext
+  - [-] 2.1 Add Blueprint API ID index to PlayerContext
     - Add `Dictionary<int, Blueprint> _blueprintByApiIdIndex` field
     - Add `FindBlueprintByApiId(int apiId)` public method returning Blueprint or null
     - Add `IndexBlueprintByApiId(Blueprint bp)` public method
@@ -62,7 +62,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: PlayerContext.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 2.3 Add Survey API ID index to PlayerContext
+  - [-] 2.3 Add Survey API ID index to PlayerContext
     - Add `Dictionary<int, Survey> _surveyByApiIdIndex` field
     - Add `FindSurveyByApiId(int apiId)` public method returning Survey or null
     - Add `IndexSurveyByApiId(Survey survey)` public method
@@ -120,8 +120,8 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: vstest.console passes_
 
 
-- [ ] 5. QueueSyncResult DTO
-  - [-] 5.1 Create QueueSyncResult class
+- [x] 5. QueueSyncResult DTO
+  - [x] 5.1 Create QueueSyncResult class
     - Create `OE2EmpireTracker.Common/Services/QueueSyncResult.cs`
     - Properties: `Succeeded` (int), `Failed` (int), `Elapsed` (TimeSpan), `FailedLabels` (List<string>)
     - _Requirements: 8.3, 12.3_

@@ -69,6 +69,8 @@ namespace OE2EmpireTracker.Services
         private Dictionary<string, BankingTransaction> _bankingTransactionCache;
         private List<MailMessage> _mailMessageList = new List<MailMessage>();
         private Dictionary<int, MailMessage> _mailMessageCache;
+        private Dictionary<int, Blueprint> _blueprintByApiIdIndex = new Dictionary<int, Blueprint>();
+        private Dictionary<int, Survey> _surveyByApiIdIndex = new Dictionary<int, Survey>();
 
         /// <summary>
         /// Internal constructor for test infrastructure. Accepts a pre-parsed
@@ -770,6 +772,15 @@ namespace OE2EmpireTracker.Services
             }
 
             _blueprintList = deduped;
+            _blueprintByApiIdIndex = new Dictionary<int, Blueprint>();
+            foreach (var bp in _blueprintList)
+            {
+                if (bp.GameApiBlueprintId.HasValue)
+                {
+                    _blueprintByApiIdIndex[bp.GameApiBlueprintId.Value] = bp;
+                }
+            }
+
             InvalidateBlueprintCache();
         }
 
@@ -805,6 +816,39 @@ namespace OE2EmpireTracker.Services
             }
 
             InvalidateAllBlueprintsCache();
+        }
+
+        /// <summary>
+        /// Returns the Blueprint with the given game API blueprint ID, or null if not found.
+        /// </summary>
+        public Blueprint FindBlueprintByApiId(int apiId)
+        {
+            lock (_listLock)
+            {
+                if (_blueprintByApiIdIndex.TryGetValue(apiId, out var match))
+                {
+                    return match;
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Upserts the given blueprint into the API ID index.
+        /// Call after setting <see cref="Blueprint.GameApiBlueprintId"/>.
+        /// </summary>
+        public void IndexBlueprintByApiId(Blueprint bp)
+        {
+            if (!bp.GameApiBlueprintId.HasValue)
+            {
+                return;
+            }
+
+            lock (_listLock)
+            {
+                _blueprintByApiIdIndex[bp.GameApiBlueprintId.Value] = bp;
+            }
         }
 
         public void AddBlueprint(Blueprint item)
@@ -869,6 +913,15 @@ namespace OE2EmpireTracker.Services
             }
 
             _surveyList = deduped;
+            _surveyByApiIdIndex = new Dictionary<int, Survey>();
+            foreach (var survey in _surveyList)
+            {
+                if (survey.GameApiSurveyId.HasValue)
+                {
+                    _surveyByApiIdIndex[survey.GameApiSurveyId.Value] = survey;
+                }
+            }
+
             InvalidateSurveyCache();
         }
 
@@ -898,6 +951,39 @@ namespace OE2EmpireTracker.Services
             lock (_listLock)
             {
                 _surveyCache = null;
+            }
+        }
+
+        /// <summary>
+        /// Returns the Survey with the given game API survey ID, or null if not found.
+        /// </summary>
+        public Survey FindSurveyByApiId(int apiId)
+        {
+            lock (_listLock)
+            {
+                if (_surveyByApiIdIndex.TryGetValue(apiId, out var match))
+                {
+                    return match;
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Upserts the given survey into the API ID index.
+        /// Call after setting <see cref="Survey.GameApiSurveyId"/>.
+        /// </summary>
+        public void IndexSurveyByApiId(Survey survey)
+        {
+            if (!survey.GameApiSurveyId.HasValue)
+            {
+                return;
+            }
+
+            lock (_listLock)
+            {
+                _surveyByApiIdIndex[survey.GameApiSurveyId.Value] = survey;
             }
         }
 
