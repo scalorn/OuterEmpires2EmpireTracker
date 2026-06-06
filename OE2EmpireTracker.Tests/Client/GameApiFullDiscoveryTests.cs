@@ -722,8 +722,8 @@ namespace OE2EmpireTracker.Tests.Client
                                 var cargoItems = new List<WorkItem>();
                                 foreach (var item in cargo)
                                 {
-                                    string itemTypeC = item["typeC"]?.Value<string>();
-                                    int cargoItemId = item["cargoItemId"]?.Value<int>() ?? 0;
+                                    string itemTypeC = item["typeC"]?.Value<string>()?.Trim();
+                                    int cargoItemId = item["id"]?.Value<int>() ?? 0;
                                     if (cargoItemId == 0 || string.IsNullOrEmpty(itemTypeC))
                                     {
                                         continue;
@@ -1151,10 +1151,10 @@ namespace OE2EmpireTracker.Tests.Client
 
                     foreach (var item in cargo)
                     {
-                        string itemTypeC = item["typeC"]?.Value<string>();
+                        string itemTypeC = item["typeC"]?.Value<string>()?.Trim();
                         if (string.Equals(itemTypeC, typeC, StringComparison.OrdinalIgnoreCase))
                         {
-                            int id = item["cargoItemId"]?.Value<int>() ?? 0;
+                            int id = item["id"]?.Value<int>() ?? 0;
                             if (id > 0)
                             {
                                 return id;
