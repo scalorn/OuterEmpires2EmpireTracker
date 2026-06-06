@@ -129,7 +129,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncResult.cs created_
     - _Verification: getDiagnostics_
 
-- [ ] 6. QueueSyncService core orchestration
+- [x] 6. QueueSyncService core orchestration
   - [x] 6.1 Create QueueSyncService shell with concurrency guard
     - Create `OE2EmpireTracker.Common/Services/QueueSyncService.cs`
     - Constructor accepting PlayerContext, EmpireContext, GameApiClient, GameApiConnectionSettings
@@ -148,14 +148,14 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 6.3 Write property test for concurrency guard
+  - [x] 6.3 Write property test for concurrency guard
     - **Property 1: No Concurrent Sync Cycles**
     - Invoke RunSyncAsync concurrently from multiple threads; verify only one completes with actual work
     - **Validates: Requirements 9.3**
     - _Output: QueueSyncServicePropertyTests.cs created_
     - _Verification: vstest.console passes_
 
-  - [-] 6.4 Write property test for freshness skip correctness
+  - [x] 6.4 Write property test for freshness skip correctness
     - **Property 3: Freshness Skip Correctness**
     - Generate random DateTime?/hours combos; verify skip/enqueue decision matches spec
     - **Validates: Requirements 14.3, 14.4**
@@ -164,7 +164,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 
 
 - [ ] 7. Seed work item factories — non-cascading (character, banking, jobs)
-  - [~] 7.1 Implement character and banking seed work item factories
+  - [-] 7.1 Implement character and banking seed work item factories
     - Add private factory methods to QueueSyncService for: CharacterProfile, CharacterSkills, BankingBalance, BankingTransactions, AcceptedJobs
     - Each creates a WorkItem with label + async delegate that calls GameApiClient and updates PlayerContext
     - _Requirements: 1.4, 2.1_
@@ -172,7 +172,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [~] 7.2 Implement ship and market seed work item factories
+  - [-] 7.2 Implement ship and market seed work item factories
     - Add private factory methods to QueueSyncService for: ShipConfiguration, ShipCargo, MarketListings, MarketItems, MarketBuyOrders, MarketSellOrders
     - Each creates a WorkItem with label + async delegate that calls GameApiClient and updates PlayerContext
     - _Requirements: 1.4, 2.1_

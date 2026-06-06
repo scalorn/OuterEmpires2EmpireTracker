@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -24,6 +25,8 @@ namespace OE2EmpireTracker.Services
         private readonly GameApiConnectionSettings _settings;
 
         private readonly object _syncLock = new object();
+
+        private string _currentAccessToken = string.Empty;
 
         private volatile bool _isSyncRunning;
 
@@ -79,7 +82,18 @@ namespace OE2EmpireTracker.Services
                     maxInflightMultiplier: 3,
                     maxRetries: 3);
 
-                // TODO: Future tasks will enqueue seed work items here.
+                await queue.EnqueueAsync(CreateCharacterProfileItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateCharacterSkillsItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateBankingBalanceItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateBankingTransactionsItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateAcceptedJobsItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateShipConfigItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateShipCargoItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateMarketListingsItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateMarketItemsItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateMarketBuyOrdersItem()).ConfigureAwait(false);
+                await queue.EnqueueAsync(CreateMarketSellOrdersItem()).ConfigureAwait(false);
+
                 queue.Start(ct);
                 await queue.DrainAsync();
 
@@ -106,6 +120,314 @@ namespace OE2EmpireTracker.Services
 
             var threshold = TimeSpan.FromHours(_settings.DetailRefreshHours);
             return (SystemClock.UtcNow - lastImportUtc.Value) < threshold;
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the character profile from the game API.
+        /// </summary>
+        /// <returns>A work item for character profile retrieval.</returns>
+        private WorkItem CreateCharacterProfileItem()
+        {
+            return new WorkItem
+            {
+                Label = "CharacterProfile",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetCharacterAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("CharacterProfile fetched successfully.");
+                    }
+                    else
+                    {
+                        Log.Warn("CharacterProfile fetch failed: {0}", result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the character skills from the game API.
+        /// </summary>
+        /// <returns>A work item for character skills retrieval.</returns>
+        private WorkItem CreateCharacterSkillsItem()
+        {
+            return new WorkItem
+            {
+                Label = "CharacterSkills",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetCharacterSkillsAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("CharacterSkills fetched successfully.");
+                    }
+                    else
+                    {
+                        Log.Warn("CharacterSkills fetch failed: {0}", result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the banking balance from the game API.
+        /// </summary>
+        /// <returns>A work item for banking balance retrieval.</returns>
+        private WorkItem CreateBankingBalanceItem()
+        {
+            return new WorkItem
+            {
+                Label = "BankingBalance",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetBankingBalanceAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("BankingBalance fetched successfully.");
+                    }
+                    else
+                    {
+                        Log.Warn("BankingBalance fetch failed: {0}", result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the banking transactions from the game API.
+        /// </summary>
+        /// <returns>A work item for banking transactions retrieval.</returns>
+        private WorkItem CreateBankingTransactionsItem()
+        {
+            return new WorkItem
+            {
+                Label = "BankingTransactions",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetBankingTransactionsAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("BankingTransactions fetched successfully.");
+                    }
+                    else
+                    {
+                        Log.Warn("BankingTransactions fetch failed: {0}", result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the accepted jobs from the game API.
+        /// </summary>
+        /// <returns>A work item for accepted jobs retrieval.</returns>
+        private WorkItem CreateAcceptedJobsItem()
+        {
+            return new WorkItem
+            {
+                Label = "AcceptedJobs",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetAcceptedJobsAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("AcceptedJobs fetched successfully.");
+                    }
+                    else
+                    {
+                        Log.Warn("AcceptedJobs fetch failed: {0}", result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the ship configuration from the game API.
+        /// </summary>
+        /// <returns>A work item for ship configuration retrieval.</returns>
+        private WorkItem CreateShipConfigItem()
+        {
+            return new WorkItem
+            {
+                Label = "ShipConfiguration",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetShipConfigurationAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("ShipConfiguration fetched successfully.");
+                    }
+                    else
+                    {
+                        Log.Warn("ShipConfiguration fetch failed: {0}", result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the ship cargo from the game API.
+        /// </summary>
+        /// <returns>A work item for ship cargo retrieval.</returns>
+        private WorkItem CreateShipCargoItem()
+        {
+            return new WorkItem
+            {
+                Label = "ShipCargo",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetShipCargoAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("ShipCargo fetched successfully.");
+                    }
+                    else
+                    {
+                        Log.Warn("ShipCargo fetch failed: {0}", result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the market listings from the game API.
+        /// </summary>
+        /// <returns>A work item for market listings retrieval.</returns>
+        private WorkItem CreateMarketListingsItem()
+        {
+            return new WorkItem
+            {
+                Label = "MarketListings",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetMarketListingsAsync(
+                        _settings.AppId, _currentAccessToken, "all").ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("MarketListings fetched successfully.");
+                    }
+                    else
+                    {
+                        Log.Warn("MarketListings fetch failed: {0}", result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches market items from the game API.
+        /// </summary>
+        /// <returns>A work item for market items retrieval.</returns>
+        private WorkItem CreateMarketItemsItem()
+        {
+            return new WorkItem
+            {
+                Label = "MarketItems",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetMarketItemsAsync(
+                        _settings.AppId, _currentAccessToken, "all", "all").ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("MarketItems fetched successfully.");
+                    }
+                    else
+                    {
+                        Log.Warn("MarketItems fetch failed: {0}", result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the market buy orders from the game API.
+        /// </summary>
+        /// <returns>A work item for market buy orders retrieval.</returns>
+        private WorkItem CreateMarketBuyOrdersItem()
+        {
+            return new WorkItem
+            {
+                Label = "MarketBuyOrders",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetMarketBuyOrdersAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("MarketBuyOrders fetched successfully.");
+                    }
+                    else
+                    {
+                        Log.Warn("MarketBuyOrders fetch failed: {0}", result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the market sell orders from the game API.
+        /// </summary>
+        /// <returns>A work item for market sell orders retrieval.</returns>
+        private WorkItem CreateMarketSellOrdersItem()
+        {
+            return new WorkItem
+            {
+                Label = "MarketSellOrders",
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetMarketSellOrdersAsync(
+                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("MarketSellOrders fetched successfully.");
+                    }
+                    else
+                    {
+                        Log.Warn("MarketSellOrders fetch failed: {0}", result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
         }
     }
 }
