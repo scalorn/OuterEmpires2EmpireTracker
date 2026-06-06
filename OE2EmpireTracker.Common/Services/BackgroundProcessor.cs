@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using NLog;
+using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Interfaces;
 using OE2EmpireTracker.Models;
@@ -25,6 +27,8 @@ namespace OE2EmpireTracker.Services
         private readonly ManualResetEventSlim _stopping = new ManualResetEventSlim(false);
 
         private readonly object _cycleLock = new object();
+
+        private QueueSyncService _queueSyncService;
 
         private Timer _timer;
 
@@ -194,6 +198,9 @@ namespace OE2EmpireTracker.Services
                 bool hadError = false;
                 int processedCount = 0;
 
+                // Dispatch queue-based Game API sync on a background thread (Req 9.1, 9.2, 9.3)
+                TryDispatchQueueSync();
+
                 // Snapshot the colony list to avoid modification during iteration
                 var colonies = _playerContext.SnapshotColonyList();
 
@@ -331,6 +338,42 @@ namespace OE2EmpireTracker.Services
                         Log.Error(ex, "Error firing BuildPlanDataChanged for plan {0}", planUUID);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Dispatches a queue-based Game API sync cycle on a background thread if the
+        /// Game API is enabled and no sync is already running. Constructs the
+        /// QueueSyncService lazily on first successful dispatch.
+        /// </summary>
+        private void TryDispatchQueueSync()
+        {
+            var settings = PreferencesStore.GetInstance().Preferences.GameApiConnection;
+            if (settings == null || !settings.Enabled)
+            {
+                return;
+            }
+
+            var gameApiContext = GameApiContext.Instance;
+            if (gameApiContext == null)
+            {
+                return;
+            }
+
+            if (_queueSyncService == null)
+            {
+                _queueSyncService = new QueueSyncService(
+                    _playerContext,
+                    EmpireContext.GetInstance(),
+                    gameApiContext.Client,
+                    settings,
+                    gameApiContext.CredentialManager);
+                Log.Info("BackgroundProcessor: QueueSyncService constructed");
+            }
+
+            if (!_queueSyncService.IsSyncRunning)
+            {
+                _ = Task.Run(() => _queueSyncService.RunSyncAsync(CancellationToken.None));
             }
         }
 

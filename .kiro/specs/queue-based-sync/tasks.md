@@ -312,7 +312,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: getDiagnostics_
 
 
-- [ ] 17. Metrics and end-of-cycle reporting
+- [x] 17. Metrics and end-of-cycle reporting
   - [x] 17.1 Wire metrics CSV file path into GameApiRequestQueue construction
     - Pass metrics file path to GameApiRequestQueue at construction in RunSyncAsync
     - After DrainAsync: collect GetCompletionStatus counts
@@ -321,7 +321,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 17.2 Add completion logging, persistence, and QueueSyncResult return
+  - [x] 17.2 Add completion logging, persistence, and QueueSyncResult return
     - Log summary (succeeded/failed/elapsed) using NLog
     - Log each failed item with label and exception message
     - Persist via PlayerContext.WriteContext on completion
@@ -331,7 +331,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: QueueSyncService.cs modified_
     - _Verification: getDiagnostics_
 
-  - [-] 17.3 Write property test for error isolation
+  - [x] 17.3 Write property test for error isolation
     - **Property 4: Error Isolation**
     - Inject random failures into work item delegates; verify succeeded + failed = total enqueued
     - **Validates: Requirements 12.1, 12.3**
@@ -342,7 +342,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
   - Build solution and run all tests. Ask the user if questions arise.
 
 - [ ] 19. BackgroundProcessor integration
-  - [~] 19.1 Invoke QueueSyncService from BackgroundProcessor
+  - [-] 19.1 Invoke QueueSyncService from BackgroundProcessor
     - Modify `BackgroundProcessor.cs` to construct QueueSyncService
     - When timer fires and Game API sync is enabled and `!_queueSyncService.IsSyncRunning`: invoke RunSyncAsync on background thread
     - _Requirements: 9.1, 9.2, 9.3_
