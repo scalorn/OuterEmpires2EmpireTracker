@@ -395,7 +395,7 @@ namespace OE2EmpireTracker.Tests.Client
                 Label = "market/items",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await this.client.GetMarketItemsAsync(this.appId, this.accessToken, "Resource", "Iron").ConfigureAwait(false);
+                    var result = await this.client.GetMarketItemsAsync(this.appId, this.accessToken, "R", "Iron").ConfigureAwait(false);
                     if (result.Success)
                     {
                         string filePath = Path.Combine(this.outputDir, "market", "items.json");
