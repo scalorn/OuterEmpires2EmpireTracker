@@ -65,9 +65,11 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(json, Does.Contain("\"ServerUrl\""));
             Assert.That(json, Does.Contain("\"PollingIntervalMinutes\""));
             Assert.That(json, Does.Contain("\"Enabled\""));
+            Assert.That(json, Does.Contain("\"Tps\""));
             Assert.That(json, Does.Not.Contain("\"serverUrl\""));
             Assert.That(json, Does.Not.Contain("\"pollingIntervalMinutes\""));
             Assert.That(json, Does.Not.Contain("\"enabled\""));
+            Assert.That(json, Does.Not.Contain("\"tps\""));
         }
 
         [Test]
@@ -80,6 +82,7 @@ namespace OE2EmpireTracker.Tests.Services
                     ServerUrl = "https://game.example.org/api",
                     PollingIntervalMinutes = 15,
                     Enabled = true,
+                    Tps = 2.5,
                 },
             };
 
@@ -90,6 +93,21 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(deserialized.GameApiConnection.ServerUrl, Is.EqualTo("https://game.example.org/api"));
             Assert.That(deserialized.GameApiConnection.PollingIntervalMinutes, Is.EqualTo(15));
             Assert.That(deserialized.GameApiConnection.Enabled, Is.True);
+            Assert.That(deserialized.GameApiConnection.Tps, Is.EqualTo(2.5));
+        }
+
+        [Test]
+        public void Deserialize_WithoutTpsKey_DefaultsTo05()
+        {
+            var json = @"{
+                ""ServerUrl"": ""https://example.com"",
+                ""PollingIntervalMinutes"": 5,
+                ""Enabled"": true
+            }";
+
+            var settings = JsonConvert.DeserializeObject<GameApiConnectionSettings>(json);
+
+            Assert.That(settings.Tps, Is.EqualTo(0.5));
         }
     }
 }

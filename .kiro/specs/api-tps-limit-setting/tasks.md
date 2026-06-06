@@ -7,7 +7,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
 ## Tasks
 
 - [ ] 1. Add Tps property to GameApiConnectionSettings
-  - [-] 1.1 Add Tps property with default value 0.5
+  - [x] 1.1 Add Tps property with default value 0.5
     - Add `public double Tps { get; set; } = 0.5;` to GameApiConnectionSettings
     - Verify PascalCase serialization matches existing properties (ServerUrl, PollingIntervalMinutes)
     - Verify deserialization from JSON without Tps key initializes to 0.5
@@ -40,7 +40,7 @@ Implements a configurable TPS rate limit persisted in GameApiConnectionSettings,
 
 
 - [ ] 4. Create WorkItem and supporting types
-  - [-] 4.1 Create WorkItem.cs with WorkItem, QueueError, QueueCompletionStatus
+  - [x] 4.1 Create WorkItem.cs with WorkItem, QueueError, QueueCompletionStatus
     - Create `OE2EmpireTracker.Common/Services/WorkItem.cs`
     - Define WorkItem (Label, ExecuteAsync delegate), QueueError, QueueCompletionStatus
     - Namespace: OE2EmpireTracker.Services
