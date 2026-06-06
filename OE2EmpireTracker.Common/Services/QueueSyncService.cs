@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
 {
@@ -757,8 +758,69 @@ namespace OE2EmpireTracker.Services
                 Label = "BlueprintDetail:" + blueprintId,
                 ExecuteAsync = async ct =>
                 {
-                    Log.Debug("BlueprintDetail:{0} — import pending future implementation.", blueprintId);
-                    await Task.CompletedTask.ConfigureAwait(false);
+                    var result = await _apiClient.GetAssetBlueprintAsync(
+                        _settings.AppId, _currentAccessToken, blueprintId).ConfigureAwait(false);
+
+                    if (!result.Success)
+                    {
+                        Log.Warn("BlueprintDetail:{0} fetch failed: {1}", blueprintId, result.Json);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    Log.Debug("BlueprintDetail:{0} fetched successfully, importing.", blueprintId);
+
+                    var response = JsonConvert.DeserializeObject<GameApiBlueprintDetailResponse>(result.Json);
+                    if (response?.Blueprint == null)
+                    {
+                        Log.Warn("BlueprintDetail:{0} response has no blueprint info.", blueprintId);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var bpInfo = response.Blueprint;
+
+                    var entry = new JObject
+                    {
+                        ["name"] = bpInfo.Name,
+                        ["evolution"] = bpInfo.Evolution,
+                        ["description"] = bpInfo.Type,
+                    };
+
+                    if (!string.IsNullOrEmpty(bpInfo.PartTypeIcon))
+                    {
+                        entry["iconClass"] = "ui_icon_" + bpInfo.PartTypeIcon;
+                    }
+
+                    var propsObj = new JObject();
+                    if (response.BlueprintProperties != null)
+                    {
+                        foreach (var prop in response.BlueprintProperties)
+                        {
+                            string key = !string.IsNullOrEmpty(prop.FriendlyPropertyName)
+                                ? prop.FriendlyPropertyName
+                                : prop.PropertyName;
+                            string value = string.IsNullOrEmpty(prop.Unit)
+                                ? prop.PropertyValue.ToString()
+                                : prop.PropertyValue + prop.Unit;
+                            propsObj[key] = value;
+                        }
+                    }
+
+                    entry["properties"] = propsObj;
+
+                    var resObj = new JObject();
+                    if (response.ResourcesRequired != null)
+                    {
+                        foreach (var res in response.ResourcesRequired)
+                        {
+                            resObj[res.ResourceName] = res.ResourceAmount.ToString();
+                        }
+                    }
+
+                    entry["resources"] = resObj;
+
+                    var jsonArray = new JArray { entry };
+                    CrateImporter.ImportFromJson(jsonArray.ToString(), _playerContext, _empireContext);
+
                     return Array.Empty<WorkItem>();
                 },
             };
@@ -778,15 +840,110 @@ namespace OE2EmpireTracker.Services
                 Label = "SurveyDetail:" + surveyId,
                 ExecuteAsync = async ct =>
                 {
-                    Log.Debug(
-                        "SurveyDetail:{0} at {1}/{2} — import pending future implementation.",
-                        surveyId,
-                        systemName,
-                        planetName);
-                    await Task.CompletedTask.ConfigureAwait(false);
+                    var result = await _apiClient.GetAssetSurveyAsync(
+                        _settings.AppId, _currentAccessToken, surveyId).ConfigureAwait(false);
+
+                    if (!result.Success)
+                    {
+                        Log.Warn("SurveyDetail:{0} fetch failed: {1}", surveyId, result.Json);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    Log.Debug("SurveyDetail:{0} fetched successfully, importing.", surveyId);
+
+                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiSurveyResponse>>(result.Json);
+                    var detail = envelope?.Data?.Survey;
+                    if (detail == null)
+                    {
+                        Log.Warn("SurveyDetail:{0} response contained no survey data.", surveyId);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var tempSurvey = BuildTempSurveyFromDetail(detail, planetName, systemName);
+
+                    var surveys = _playerContext.SurveyList;
+                    var existing = SurveyImportHelper.FindByKey(surveys, planetName, detail.EncryptedId);
+
+                    Survey survey;
+                    if (existing != null)
+                    {
+                        SurveyImportHelper.MergeData(existing, tempSurvey);
+                        survey = existing;
+                        Log.Debug("SurveyDetail:{0} merged into existing survey UUID={1}.", surveyId, survey.UUID);
+                    }
+                    else
+                    {
+                        survey = SurveyImportHelper.CreateFromTemp(tempSurvey, _playerContext.CurrentPlayerUUID);
+                        _playerContext.AddSurvey(survey);
+                        Log.Debug("SurveyDetail:{0} created new survey UUID={1}.", surveyId, survey.UUID);
+                    }
+
+                    SurveyImportHelper.LinkOrCreateAsteroid(survey, _playerContext);
+
                     return Array.Empty<WorkItem>();
                 },
             };
+        }
+
+        /// <summary>
+        /// Constructs a temporary Survey from the game API survey detail response fields.
+        /// </summary>
+        /// <param name="detail">The parsed survey detail from the API.</param>
+        /// <param name="planetName">The planet name from the parent asset location context.</param>
+        /// <param name="systemName">The star system name from the parent asset location context.</param>
+        /// <returns>A temporary Survey populated with the API response data.</returns>
+        private static Survey BuildTempSurveyFromDetail(GameApiSurveyDetail detail, string planetName, string systemName)
+        {
+            var temp = new Survey
+            {
+                PlanetName = planetName,
+                SystemName = systemName,
+                SurveyID = detail.EncryptedId,
+                ScannedBy = detail.ScanCharacter,
+                DateTime = detail.ScanDate.ToString("o"),
+                SurveyType = MapObjectTypeToSurveyType(detail.ObjectType),
+            };
+
+            var resources = new Dictionary<string, SurveyResource>();
+            var maxReserves = new Dictionary<string, int>();
+
+            foreach (var res in detail.Resources)
+            {
+                if (string.IsNullOrEmpty(res.ResourceName))
+                {
+                    continue;
+                }
+
+                resources[res.ResourceName] = new SurveyResource(
+                    res.ResourceName,
+                    res.RarityClassification,
+                    res.Abundance.ToString());
+
+                if (res.MaxReserve.HasValue)
+                {
+                    maxReserves[res.ResourceName] = res.MaxReserve.Value;
+                }
+            }
+
+            temp.Resources = resources;
+            temp.ParsedMaxReserves = maxReserves.Count > 0 ? maxReserves : null;
+
+            return temp;
+        }
+
+        /// <summary>
+        /// Maps the game API objectType string to the local SurveyType enum.
+        /// </summary>
+        /// <param name="objectType">The object type string from the API (e.g. "planet", "asteroid").</param>
+        /// <returns>The corresponding SurveyType enum value.</returns>
+        private static SurveyType MapObjectTypeToSurveyType(string objectType)
+        {
+            if (string.Equals(objectType, "asteroid", StringComparison.OrdinalIgnoreCase))
+            {
+                return SurveyType.Asteroid;
+            }
+
+            return SurveyType.Planet;
         }
 
         /// <summary>

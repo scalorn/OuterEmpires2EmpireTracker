@@ -235,8 +235,8 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 - [~] 11. Checkpoint - Core orchestration verification
   - Build solution and run all tests. Ask the user if questions arise.
 
-- [ ] 12. Crate import integration
-  - [-] 12.1 Implement CrateDetail work item factory
+- [x] 12. Crate import integration
+  - [x] 12.1 Implement CrateDetail work item factory
     - Add `CreateCrateDetailItem(int crateId)` factory to QueueSyncService
     - Calls `GameApiClient.GetAssetCrateAsync`, passes JSON to `CrateImporter.ImportFromJson`
     - Provides PlayerContext and EmpireContext to CrateImporter
@@ -246,7 +246,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: getDiagnostics_
 
 - [ ] 13. Survey import integration
-  - [~] 13.1 Implement SurveyDetail work item — parse and find/merge/create
+  - [-] 13.1 Implement SurveyDetail work item — parse and find/merge/create
     - Add `CreateSurveyDetailItem(int surveyId, string planetName, string systemName)` factory to QueueSyncService
     - Parse GameApiSurveyResponse, construct temp Survey from response fields
     - Use SurveyImportHelper.FindByKey → MergeData (if match) or CreateFromTemp (if new)
@@ -275,7 +275,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
 
 
 - [ ] 14. Blueprint import integration
-  - [~] 14.1 Implement BlueprintDetail work item — parse response and construct crate JSON
+  - [-] 14.1 Implement BlueprintDetail work item — parse response and construct crate JSON
     - Add `CreateBlueprintDetailItem(int blueprintId)` factory to QueueSyncService
     - Parse GameApiBlueprintDetailResponse, construct CrateImporter-compatible JSON object
     - Map `partTypeIcon` → `_IconClass` with "ui_icon_" prefix (skip if empty/null)
