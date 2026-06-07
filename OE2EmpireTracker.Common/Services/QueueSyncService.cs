@@ -1384,107 +1384,22 @@ namespace OE2EmpireTracker.Services
         /// <returns>A work item for mail list retrieval with cascading.</returns>
         private WorkItem CreateMailListItem()
         {
-            return CreateMailListPageItem(0);
-        }
-
-        /// <summary>
-        /// Creates a work item that fetches a page of the mail list at the given offset
-        /// and cascades one detail item per mail plus a next page item if the page is non-empty.
-        /// </summary>
-        /// <param name="offset">The offset into the mail list for pagination.</param>
-        /// <returns>A work item for mail list page retrieval with cascading.</returns>
-        private WorkItem CreateMailListPageItem(int offset)
-        {
-            int pageSize = 50;
-            string label = offset == 0 ? "MailList" : "MailList:page" + (offset / pageSize);
-
             return new WorkItem
             {
-                Label = label,
+                Label = "MailList",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetMailListAsync(
-                        _settings.AppId, _currentAccessToken, offset, pageSize).ConfigureAwait(false);
+                    Log.Debug("MailList: delegating to MailService.SyncMailAsync.");
+                    int result = await MailService.SyncMailAsync(
+                        _apiClient, _settings.AppId, _currentAccessToken, _playerContext).ConfigureAwait(false);
 
-                    await ThrowIfUnauthorizedAsync(result, label, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, label);
-
-                    if (!result.Success)
+                    if (result >= 0)
                     {
-                        Log.Warn("{0} fetch failed: {1}", label, result.Json);
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    Log.Debug("{0} fetched successfully.", label);
-
-                    var envelope = JObject.Parse(result.Json);
-                    var mails = envelope["data"]?["mail"] as JArray;
-                    if (mails == null || mails.Count == 0)
-                    {
-                        return Array.Empty<WorkItem>();
-                    }
-
-                    var cascaded = new List<WorkItem>();
-                    bool allExist = true;
-
-                    foreach (var mail in mails)
-                    {
-                        int mailId = mail["mailId"]?.Value<int>() ?? 0;
-                        if (mailId > 0)
-                        {
-                            if (_playerContext.FindMailMessage(mailId) != null)
-                            {
-                                continue;
-                            }
-
-                            allExist = false;
-                            cascaded.Add(CreateMailDetailItem(mailId));
-                        }
-                    }
-
-                    // Stop paginating if all items on this page already exist (incremental sync)
-                    if (allExist)
-                    {
-                        Log.Debug("{0}: all items already exist, stopping pagination.", label);
-                        return cascaded.ToArray();
-                    }
-
-                    cascaded.Add(CreateMailListPageItem(offset + pageSize));
-
-                    return cascaded.ToArray();
-                },
-            };
-        }
-
-        /// <summary>
-        /// Creates a work item that fetches the detail for a specific mail message.
-        /// </summary>
-        /// <param name="mailId">The mail identifier.</param>
-        /// <returns>A work item for mail detail retrieval.</returns>
-        private WorkItem CreateMailDetailItem(int mailId)
-        {
-            return new WorkItem
-            {
-                Label = "MailDetail:" + mailId,
-                ExecuteAsync = async ct =>
-                {
-                    var result = await _apiClient.GetMailDetailAsync(
-                        _settings.AppId, _currentAccessToken, mailId).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "MailDetail:" + mailId, ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "MailDetail:" + mailId);
-
-                    if (result.Success)
-                    {
-                        Log.Debug("MailDetail:{0} fetched successfully.", mailId);
+                        Log.Debug("MailList: synced {0} new messages.", result);
                     }
                     else
                     {
-                        Log.Warn("MailDetail:{0} fetch failed: {1}", mailId, result.Json);
+                        Log.Warn("MailList: sync returned error ({0}).", result);
                     }
 
                     return Array.Empty<WorkItem>();
