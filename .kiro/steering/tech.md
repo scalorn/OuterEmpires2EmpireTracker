@@ -200,10 +200,20 @@ Runs in ~2-3 seconds. Use before refactoring, renaming, or deleting classes to u
 
 **ALWAYS set a `timeout` on `executePwsh` calls** to prevent commands from appearing to hang:
 - Build commands (MSBuild): `timeout: 120000` (2 minutes)
-- Test commands (vstest.console): `timeout: 180000` (3 minutes)
+- Test commands (vstest.console — full suite): `timeout: 960000` (16 minutes) — the full suite has slow property tests (ErrorIsolation ~3.5min, RateGovernorThroughput ~1.5min) that use real rate limiters
+- Test commands (vstest.console — filtered subset): `timeout: 120000` (2 minutes)
 - Backup script (oebackup.ps1): `timeout: 60000` (1 minute)
 - commit.js: `timeout: 30000` (30 seconds)
 - trxparse.js: `timeout: 10000` (10 seconds)
 - Other quick commands: `timeout: 30000` (30 seconds)
 
 Without a timeout, if a command hangs (SSH connection stalls, remote is slow), the tool waits indefinitely and the user has to manually exit the shell. Always set a timeout.
+
+### Known Slow Tests
+
+The full WinForms test suite takes ~14 minutes due to property tests that use real rate limiters:
+- `ErrorIsolationPropertyTests.FailedItems_DoNotPrevent_OtherItems_FromCompleting` (~3.5 min) — runs 100 iterations of GameApiRequestQueue with real token-bucket rate limiting at 200 TPS, 5-50 items per iteration
+- `ErrorIsolationPropertyTests.PartialFailure_StillCompletes_WithPositiveSucceeded` (part of the above)
+- `GameApiRequestQueuePropertyTests.RateGovernorThroughput` (~1.5 min) — runs 100 iterations testing actual rate governor timing at 5-20 TPS
+
+These tests use `SystemClock.Reset()` but the rate limiter's `SemaphoreSlim` waits are real wall-clock delays, not frozen-time delays. Consider refactoring to use a testable clock in the rate limiter to eliminate the 5-minute overhead.

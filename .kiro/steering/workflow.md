@@ -36,9 +36,11 @@
 - When the running app locks the exe, use `getDiagnostics` instead of building
 - **ALL tests must pass before committing. Zero exceptions.** If any test fails, you MUST investigate and fix it before proceeding. You may NOT dismiss failures as `pre-existing`, `environment issue`, or `not caused by my changes`. Tests do not randomly break — if they fail, something changed, and it is your responsibility to find out what. If the failure is genuinely unrelated to your work, fix it anyway or explain to the user exactly what broke and why, and get explicit approval before committing with failures.
 - **Full test verification before commit requires ALL THREE suites:**
-  1. `dotnet test OE2EmpireTracker.Server.Tests --no-build` (server integration + property tests)
-  2. `npx vitest run` from OE2EmpireTracker.Web/ (TypeScript unit + property tests)
-  3. `vstest.console` against OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll (WinForms NUnit tests)
+  1. `dotnet test OE2EmpireTracker.Server.Tests --no-build` (server integration + property tests) — timeout: 180000
+  2. `npx vitest run` from OE2EmpireTracker.Web/ (TypeScript unit + property tests) — timeout: 60000
+  3. `vstest.console` against OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll (WinForms NUnit tests) — **timeout: 960000 (16 minutes)** — the full suite has slow property tests that use real rate limiters
+- **Do NOT rely on postTaskExecution hooks for WinForms test verification.** The hook timeout is too short for the 14-minute full suite. You MUST run vstest.console manually with a 960000ms timeout before committing. The post-task hooks only catch server test and build failures.
+- **After running vstest.console, ALWAYS run `node .kiro/tools/trxparse.js`** to check results. Do not read raw console output — it gets truncated on long runs.
 - **Frontend build verification: Use `npm run build` from OE2EmpireTracker.Web/, NOT `tsc --noEmit` alone.** The build script runs `generate-types` first (regenerates generated.ts from server schema), then `tsc --noEmit`, then `vite build`. Running `tsc --noEmit` alone skips type generation and may miss type conflicts with the generated file.
 - **If a postTaskExecution hook fails (exit code 1), you MUST investigate before proceeding.** Run the command manually to see full output. Never dismiss hook failures.
 

@@ -783,6 +783,7 @@ namespace OE2EmpireTracker.Tests.Services
             // With threshold=24h: requiredStockpile = 40 * 24 = 960
             // Add 960 units -- exactly enough to exempt the group
             PreferencesStore.Reset();
+            PreferencesStore.GetInstance().Preferences.Thresholds.UnderutilizedRefiningStockpileHours = 24;
             var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);
@@ -852,6 +853,7 @@ namespace OE2EmpireTracker.Tests.Services
             // Mining at 100/h, excess = 1250 - 100 = 1150/h
             // With threshold=24h: required = 1150 * 24 = 27600
             PreferencesStore.Reset();
+            PreferencesStore.GetInstance().Preferences.Thresholds.UnderutilizedRefiningStockpileHours = 24;
             var pc = PlayerContext.GetInstance();
             string ownerUUID = Guid.NewGuid().ToString();
             CreateOwnerProfile(ownerUUID);

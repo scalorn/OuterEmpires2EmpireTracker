@@ -133,7 +133,7 @@ Centralise all known game API `typeC` string codes into a single `AssetTypeCodes
     - Output: `.kiro/tools/magic-strings.js` (modified)
     - Verification: `node .kiro/tools/magic-strings.js` exits with code 0
 
-- [-] 9. Final checkpoint - Full verification
+- [x] 9. Final checkpoint - Full verification
   - Build full solution with zero errors and zero warnings
   - Run `node .kiro/tools/magic-strings.js` — zero findings (confirms Req 5.3)
   - Run `node .kiro/tools/audit.js` — zero findings

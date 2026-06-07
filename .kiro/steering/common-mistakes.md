@@ -124,3 +124,16 @@ If any test fails, investigate and fix it. Do NOT dismiss failures as "pre-exist
 **Root cause:** `tsc --noEmit` checks source files as they exist on disk. The production build regenerates `generated.ts` first, which may introduce new type conflicts. Skipping the generation step means you're checking against stale types.
 
 **Rule:** Always use `npm run build` (from OE2EmpireTracker.Web/) for frontend verification. Never use `tsc --noEmit` alone — it skips the type generation step and gives false confidence.
+
+
+## Test Timeouts
+
+### WinForms test suite takes 14+ minutes — use 960000ms timeout
+
+**What went wrong:** The agent ran vstest.console with a 180000ms (3-minute) timeout. The test suite timed out, and the agent dismissed the timeout as "infrastructure issue" and committed without seeing the 3 test failures.
+
+**Root cause:** The test suite includes property tests (`ErrorIsolationPropertyTests`, `GameApiRequestQueuePropertyTests.RateGovernorThroughput`) that use real rate limiters with token-bucket delays. These tests run 100 iterations × real wait times = 5+ minutes just for those two test classes.
+
+**Rule:** Always use `timeout: 960000` (16 minutes) when running the full WinForms test suite via vstest.console. If the timeout is hit, investigate — don't dismiss it. After tests complete, ALWAYS run `node .kiro/tools/trxparse.js` to check the TRX results file rather than reading console output.
+
+**Hook limitation:** The postTaskExecution hooks cannot have custom timeouts and will time out on this suite. Do NOT rely on them for WinForms test verification. Always run vstest.console manually before committing.

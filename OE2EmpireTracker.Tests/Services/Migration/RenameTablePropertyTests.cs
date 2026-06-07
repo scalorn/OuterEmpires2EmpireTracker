@@ -53,10 +53,10 @@ namespace OE2EmpireTracker.Tests.Services.Migration
                 var entries = new List<RenameEntry>();
                 var bpNames = new List<string>();
 
-                // Create blueprints with deterministic UUIDs
+                // Create blueprints with deterministic UUIDs (use index prefix to guarantee uniqueness)
                 for (int i = 0; i < data.BpCount; i++)
                 {
-                    string name = "BP_" + rng.Next(1000);
+                    string name = "BP_" + i + "_" + rng.Next(1000);
                     bpNames.Add(name);
                     var bp = new OE2EmpireTracker.Models.Blueprint(name);
                     bp.Evolution = 0;
