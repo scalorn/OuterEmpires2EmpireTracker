@@ -112,7 +112,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: Solution compiles; integration flow produces nested cascade work items_
 
 
-  - [~] 6.2 Coordinate CrateImporter blueprint extraction alongside content import
+  - [x] 6.2 Coordinate CrateImporter blueprint extraction alongside content import
     - Continue calling existing `CrateImporter.ImportFromJson()` for blueprint extraction only if response contains blueprint entries
     - If crate detail response contains no blueprint entries, skip blueprint extraction and invoke only the CrateContentImporter
     - If content population succeeds but blueprint extraction fails, retain content and log error

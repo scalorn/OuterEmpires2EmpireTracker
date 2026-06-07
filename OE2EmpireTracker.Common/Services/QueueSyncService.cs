@@ -192,6 +192,106 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Checks whether a crate detail JSON response contains any blueprint entries.
+        /// </summary>
+        /// <param name="json">The raw JSON from GetAssetCrateAsync.</param>
+        /// <returns>True if the response contains at least one item with TypeC equal to Blueprint.</returns>
+        internal static bool ResponseContainsBlueprints(string json)
+        {
+            try
+            {
+                var response = JsonConvert.DeserializeObject<GameApiAssetDetailResponse>(json);
+                if (response?.Cargo == null)
+                {
+                    return false;
+                }
+
+                return response.Cargo.Any(c =>
+                    string.Equals(c.TypeC, AssetTypeCodes.Blueprint, StringComparison.OrdinalIgnoreCase));
+            }
+            catch (JsonException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Builds a CrateImporter-compatible JSON array from blueprint entries
+        /// in a crate detail response. Transforms GameApiAssetCargoItem format
+        /// into the scraper-format JSON that CrateImporter.ImportFromJson expects.
+        /// </summary>
+        /// <param name="json">The raw JSON from GetAssetCrateAsync.</param>
+        /// <returns>A JSON array string for CrateImporter, or null if no blueprints found.</returns>
+        internal static string BuildCrateImporterJson(string json)
+        {
+            GameApiAssetDetailResponse response;
+            try
+            {
+                response = JsonConvert.DeserializeObject<GameApiAssetDetailResponse>(json);
+            }
+            catch (JsonException)
+            {
+                return null;
+            }
+
+            if (response?.Cargo == null)
+            {
+                return null;
+            }
+
+            var blueprintItems = response.Cargo.Where(c =>
+                string.Equals(c.TypeC, AssetTypeCodes.Blueprint, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            if (blueprintItems.Count == 0)
+            {
+                return null;
+            }
+
+            var jsonArray = new JArray();
+            foreach (var item in blueprintItems)
+            {
+                var entry = new JObject
+                {
+                    ["name"] = item.ResourceName ?? string.Empty,
+                    ["evolution"] = item.Evolution ?? 0,
+                };
+
+                // Build properties object from GameApiAssetItemProperty list
+                var propsObj = new JObject();
+                if (item.Properties != null)
+                {
+                    foreach (var prop in item.Properties)
+                    {
+                        string key = !string.IsNullOrEmpty(prop.FriendlyPropertyName)
+                            ? prop.FriendlyPropertyName
+                            : prop.PropertyName;
+                        string value = string.IsNullOrEmpty(prop.Unit)
+                            ? prop.PropertyValue.ToString()
+                            : prop.PropertyValue + prop.Unit;
+                        propsObj[key] = value;
+                    }
+                }
+
+                entry["properties"] = propsObj;
+                entry["resources"] = new JObject();
+
+                // Convert icon code to sprite position if available
+                if (!string.IsNullOrEmpty(item.Icon))
+                {
+                    string iconPosition = ConvertPartTypeIconToPosition(item.Icon);
+                    if (!string.IsNullOrEmpty(iconPosition))
+                    {
+                        entry["iconPosition"] = iconPosition;
+                    }
+                }
+
+                jsonArray.Add(entry);
+            }
+
+            return jsonArray.ToString();
+        }
+
+        /// <summary>
         /// Constructs a temporary Survey from the game API survey detail response fields.
         /// </summary>
         /// <param name="detail">The parsed survey detail from the API.</param>
@@ -1820,11 +1920,52 @@ namespace OE2EmpireTracker.Services
                     string ownerUUID = _playerContext.CurrentPlayerUUID;
                     var blueprintLinkageService = new BlueprintLinkageService(_playerContext, _empireContext);
                     var importer = new CrateContentImporter(_playerContext, _empireContext, blueprintLinkageService);
-                    var importResult = importer.Import(result.Json, crateId, parentBag, ownerUUID, visitedCrateIds);
 
-                    if (!importResult.Success)
+                    bool contentSuccess = false;
+                    CrateContentImportResult importResult = null;
+                    try
                     {
-                        Log.Warn("CrateDetail:{0} content import failed with {1} error(s).", crateId, importResult.Errors.Count);
+                        importResult = importer.Import(result.Json, crateId, parentBag, ownerUUID, visitedCrateIds);
+                        contentSuccess = importResult.Success;
+
+                        if (!importResult.Success)
+                        {
+                            Log.Warn("CrateDetail:{0} content import failed with {1} error(s).", crateId, importResult.Errors.Count);
+                        }
+                    }
+                    catch (Exception contentEx)
+                    {
+                        Log.Error("CrateDetail:{0} content import threw exception: {1}", crateId, contentEx.Message);
+                        importResult = new CrateContentImportResult { Success = false };
+                    }
+
+                    // Invoke CrateImporter for blueprint extraction if response contains blueprints (Req 7 AC2-AC5)
+                    bool hasBlueprintEntries = ResponseContainsBlueprints(result.Json);
+                    if (hasBlueprintEntries)
+                    {
+                        try
+                        {
+                            var blueprintJson = BuildCrateImporterJson(result.Json);
+                            if (!string.IsNullOrEmpty(blueprintJson))
+                            {
+                                var crateImportResult = CrateImporter.ImportFromJson(blueprintJson, _playerContext, _empireContext);
+                                Log.Info(
+                                    "CrateDetail:{0} blueprint extraction: created={1}, updated={2}, skipped={3}, failed={4}.",
+                                    crateId,
+                                    crateImportResult.Created,
+                                    crateImportResult.Updated,
+                                    crateImportResult.Skipped,
+                                    crateImportResult.Failed);
+                            }
+                        }
+                        catch (Exception bpEx)
+                        {
+                            Log.Error("CrateDetail:{0} blueprint extraction failed: {1}", crateId, bpEx.Message);
+                        }
+                    }
+                    else
+                    {
+                        Log.Debug("CrateDetail:{0} contains no blueprints, skipping blueprint extraction.", crateId);
                     }
 
                     // Return cascade work items for nested crates

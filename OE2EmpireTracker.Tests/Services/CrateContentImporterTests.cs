@@ -539,5 +539,103 @@ namespace OE2EmpireTracker.Tests.Services
             // The cyclic reference (parentCrateId) should NOT be in NestedCrateIds
             Assert.That(result2.NestedCrateIds, Has.Count.EqualTo(0), "Cycle should be detected — parent already visited");
         }
+
+        // -------------------------------------------------------------------
+        // Test: Blueprint extraction skipped when no blueprints in response
+        // Validates: Req 7 AC4 (skip CrateImporter if no blueprints)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that ResponseContainsBlueprints returns false when the
+        /// crate detail response contains no items with TypeC == "Bp", and
+        /// that BuildCrateImporterJson returns null in this case.
+        /// </summary>
+        [Test]
+        public void QueueSyncService_CrateDetail_SkipsBlueprintExtractionWhenNone()
+        {
+            // Build a response with only non-blueprint items
+            var cargoItems = new List<GameApiAssetCargoItem>
+            {
+                MakeCargoItem(1, "R", "Iron (High Purity)"),
+                MakeCargoItem(2, "C", "Electronics"),
+                MakeCargoItem(3, "A", "Rail Slugs"),
+                MakeCargoItem(4, "S", "Shield Generator"),
+            };
+
+            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
+            string json = JsonConvert.SerializeObject(response);
+
+            // Act: check blueprint detection
+            bool hasBlueprints = QueueSyncService.ResponseContainsBlueprints(json);
+            string crateImporterJson = QueueSyncService.BuildCrateImporterJson(json);
+
+            // Assert: no blueprints detected, no JSON produced
+            Assert.That(hasBlueprints, Is.False, "Should not detect blueprints when none present");
+            Assert.That(crateImporterJson, Is.Null, "Should return null when no blueprints to extract");
+        }
+
+        // -------------------------------------------------------------------
+        // Test: Blueprint extraction triggered when blueprints exist
+        // Validates: Req 7 AC2 (continue invoking CrateImporter),
+        //            Req 7 AC3 (both execute without conflict)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that ResponseContainsBlueprints returns true when the
+        /// crate detail response contains items with TypeC == "Bp", and that
+        /// BuildCrateImporterJson produces valid CrateImporter-compatible JSON.
+        /// </summary>
+        [Test]
+        public void QueueSyncService_CrateDetail_ExtractsBlueprintsWhenPresent()
+        {
+            // Build a response with mixed items including blueprints
+            var cargoItems = new List<GameApiAssetCargoItem>
+            {
+                MakeCargoItem(1, "R", "Iron (High Purity)"),
+                new GameApiAssetCargoItem
+                {
+                    CargoItemId = 2,
+                    TypeC = "Bp",
+                    ResourceName = "Laser Mk3",
+                    Amount = 1,
+                    Evolution = 3,
+                    Properties = new List<GameApiAssetItemProperty>
+                    {
+                        new GameApiAssetItemProperty
+                        {
+                            FriendlyPropertyName = "Damage",
+                            PropertyValue = 20.0m,
+                            Unit = "HP",
+                        },
+                    },
+                },
+                MakeCargoItem(3, "A", "Rail Slugs"),
+            };
+
+            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
+            string json = JsonConvert.SerializeObject(response);
+
+            // Act: check blueprint detection
+            bool hasBlueprints = QueueSyncService.ResponseContainsBlueprints(json);
+            string crateImporterJson = QueueSyncService.BuildCrateImporterJson(json);
+
+            // Assert: blueprints detected and valid JSON produced
+            Assert.That(hasBlueprints, Is.True, "Should detect blueprints when present");
+            Assert.That(crateImporterJson, Is.Not.Null, "Should produce JSON for CrateImporter");
+
+            // Verify the produced JSON is a valid array with 1 entry
+            var array = Newtonsoft.Json.Linq.JArray.Parse(crateImporterJson);
+            Assert.That(array.Count, Is.EqualTo(1), "Only blueprint items should be in the array");
+
+            var entry = array[0] as Newtonsoft.Json.Linq.JObject;
+            Assert.That(entry, Is.Not.Null);
+            Assert.That(entry["name"]?.ToString(), Is.EqualTo("Laser Mk3"));
+            Assert.That((int)(entry["evolution"] ?? 0), Is.EqualTo(3));
+
+            // Verify properties were transformed
+            var props = entry["properties"] as Newtonsoft.Json.Linq.JObject;
+            Assert.That(props, Is.Not.Null);
+            Assert.That(props["Damage"]?.ToString(), Is.EqualTo("20.0HP"));
+        }
     }
 }
