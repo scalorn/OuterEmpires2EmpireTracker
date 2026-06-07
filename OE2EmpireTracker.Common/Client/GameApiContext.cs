@@ -143,7 +143,10 @@ namespace OE2EmpireTracker.Client
             GameApiMetricsCollector.Initialize();
 
             connectionMonitor.Start(settings.PollingIntervalMinutes);
-            syncScheduler.Start(settings.PollingIntervalMinutes);
+
+            // NOTE: syncScheduler.Start is intentionally NOT called.
+            // The sequential GameApiSyncScheduler has been replaced by QueueSyncService
+            // which is dispatched from BackgroundProcessor.TryDispatchQueueSync.
 
             Log.Info(
                 "GameApiContext initialized: server={0}, appId={1}, clientId={2}, polling={3}min, characters={4}",
