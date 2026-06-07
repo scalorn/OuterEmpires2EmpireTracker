@@ -763,6 +763,9 @@ namespace OE2EmpireTracker.Services
 
         /// <summary>
         /// Creates a work item that fetches the ship cargo from the game API.
+        /// Deserializes the response as a direct JSON array of cargo items (no envelope),
+        /// merges into the active ship's cargo, and cascades detail work items for
+        /// crates, blueprints, and surveys.
         /// </summary>
         /// <returns>A work item for ship cargo retrieval.</returns>
         private WorkItem CreateShipCargoItem()
@@ -780,13 +783,50 @@ namespace OE2EmpireTracker.Services
 
                     ThrowIfRateLimited(result, "ShipCargo");
 
-                    if (result.Success)
-                    {
-                        Log.Debug("ShipCargo fetched successfully.");
-                    }
-                    else
+                    if (!result.Success)
                     {
                         Log.Warn("ShipCargo fetch failed: {0}", result.Json);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    Log.Debug("ShipCargo fetched successfully.");
+
+                    try
+                    {
+                        var cargoItems = JsonConvert.DeserializeObject<List<GameApiAssetCargoItem>>(result.Json);
+                        if (cargoItems == null || cargoItems.Count == 0)
+                        {
+                            Log.Debug("ShipCargo: no cargo items in response.");
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        var ships = _playerContext.GetMutableShipsForOwner(
+                            _playerContext.CurrentPlayerUUID);
+                        var activeShip = ships.FirstOrDefault();
+                        if (activeShip == null)
+                        {
+                            Log.Warn("ShipCargo: no active ship identified, skipping merge.");
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        AssetMergeService.MergeShipAssets(cargoItems, activeShip);
+
+                        _playerContext.WriteContext();
+                        _playerContext.OnShipDataChanged(activeShip.UUID);
+                        Log.Info("ShipCargo: merge applied for ship '{0}'.", activeShip.Name);
+
+                        return CascadeCargoDetailItems(cargoItems, activeShip.Name, string.Empty);
+                    }
+                    catch (JsonException ex)
+                    {
+                        Log.Error(
+                            "ShipCargo: failed to deserialize response: {0}\nBody (truncated): {1}",
+                            ex.Message,
+                            TruncateForLog(result.Json));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("ShipCargo: merge failed: {0}", ex.Message);
                     }
 
                     return Array.Empty<WorkItem>();

@@ -168,7 +168,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 
 
 - [ ] 12. Complete ShipCargo work item
-  - [~] 12.1 Add deserialization, merge, and CascadeCargoDetailItems call to CreateShipCargoItem
+  - [x] 12.1 Add deserialization, merge, and CascadeCargoDetailItems call to CreateShipCargoItem
     - Deserialize `result.Json` as array of `GameApiAssetCargoItem` objects
     - Identify the player's active ship (match current GameLocationId or first in ship list)
     - Call `AssetMergeService.MergeShipAssets` with cargo items and ship
