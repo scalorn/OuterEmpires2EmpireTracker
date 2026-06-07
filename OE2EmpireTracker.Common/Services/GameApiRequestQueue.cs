@@ -156,7 +156,7 @@ namespace OE2EmpireTracker.Services
                         var remaining = _rateController.GetPauseRemaining();
                         if (remaining > TimeSpan.Zero)
                         {
-                            await Task.Delay(remaining, ct).ConfigureAwait(false);
+                            await SystemClock.DelayAsync((int)remaining.TotalMilliseconds, ct).ConfigureAwait(false);
                         }
 
                         continue;
@@ -171,7 +171,7 @@ namespace OE2EmpireTracker.Services
                             break;
                         }
 
-                        await Task.Delay(50, ct).ConfigureAwait(false);
+                        await SystemClock.DelayAsync(50, ct).ConfigureAwait(false);
                         continue;
                     }
 
@@ -242,7 +242,7 @@ namespace OE2EmpireTracker.Services
                         {
                             Log.Warn("Retrying '{0}' (attempt {1}/{2})", item.Label, attempt, _maxRetries);
                             WriteMetricRow(item.Label, "RETRY", retryDurationMs, attempt, retryInflight);
-                            await Task.Delay(1000, ct).ConfigureAwait(false);
+                            await SystemClock.DelayAsync(1000, ct).ConfigureAwait(false);
                         }
                     }
                 }
@@ -418,7 +418,7 @@ namespace OE2EmpireTracker.Services
                     int delayMs = effectiveTps > 0
                         ? (int)(1000.0 / effectiveTps)
                         : 1000;
-                    await Task.Delay(Math.Max(delayMs, 10), ct).ConfigureAwait(false);
+                    await SystemClock.DelayAsync(Math.Max(delayMs, 10), ct).ConfigureAwait(false);
                 }
 
                 ct.ThrowIfCancellationRequested();

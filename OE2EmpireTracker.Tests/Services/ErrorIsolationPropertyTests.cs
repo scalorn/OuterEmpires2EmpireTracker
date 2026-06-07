@@ -59,7 +59,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(Arb.From(gen), input =>
             {
-                SystemClock.Reset();
+                SystemClock.FreezeAt(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+                SystemClock.EnableInstantDelay();
                 var completedIndices = new ConcurrentBag<int>();
                 var queue = new GameApiRequestQueue(200.0, maxRetries: 1);
 
@@ -126,7 +127,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(Arb.From(gen), input =>
             {
-                SystemClock.Reset();
+                SystemClock.FreezeAt(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+                SystemClock.EnableInstantDelay();
                 var queue = new GameApiRequestQueue(200.0, maxRetries: 1);
 
                 // Fail the first failCount items, succeed the rest

@@ -45,7 +45,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(Arb.From(gen), input =>
             {
-                SystemClock.Reset();
+                SystemClock.FreezeAt(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+                SystemClock.EnableInstantDelay();
                 double tps = input.Tps;
                 int count = input.Count;
 
@@ -103,7 +104,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(Arb.From(gen), count =>
             {
-                SystemClock.Reset();
+                SystemClock.FreezeAt(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+                SystemClock.EnableInstantDelay();
                 var dispatchOrder = new ConcurrentQueue<int>();
                 var queue = new GameApiRequestQueue(200.0);
 
@@ -161,7 +163,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(Arb.From(gen), input =>
             {
-                SystemClock.Reset();
+                SystemClock.FreezeAt(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+                SystemClock.EnableInstantDelay();
                 int processedCount = 0;
                 var queue = new GameApiRequestQueue(200.0);
 
@@ -231,7 +234,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(Arb.From(gen), input =>
             {
-                SystemClock.Reset();
+                SystemClock.FreezeAt(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+                SystemClock.EnableInstantDelay();
                 var queue = new GameApiRequestQueue(200.0);
 
                 for (int i = 0; i < input.Total; i++)
@@ -328,7 +332,8 @@ namespace OE2EmpireTracker.Tests.Services
 
             return Prop.ForAll(Arb.From(gen), input =>
             {
-                SystemClock.Reset();
+                SystemClock.FreezeAt(new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+                SystemClock.EnableInstantDelay();
                 int processedCount = 0;
                 var queue = new GameApiRequestQueue(200.0);
 
