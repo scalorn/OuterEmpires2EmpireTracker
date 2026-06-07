@@ -436,13 +436,50 @@ namespace OE2EmpireTracker.Services
 
                     ThrowIfRateLimited(result, "CharacterProfile");
 
-                    if (result.Success)
-                    {
-                        Log.Debug("CharacterProfile fetched successfully.");
-                    }
-                    else
+                    if (!result.Success)
                     {
                         Log.Warn("CharacterProfile fetch failed: {0}", result.Json);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    Log.Debug("CharacterProfile fetched successfully.");
+
+                    try
+                    {
+                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiProfileResponse>>(result.Json);
+                        var remoteProfile = envelope?.Data;
+                        if (remoteProfile == null)
+                        {
+                            Log.Warn("CharacterProfile: deserialized response was null.");
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        var localProfile = _playerContext.FindMutablePlayerProfile(
+                            _playerContext.CurrentPlayerUUID);
+                        if (localProfile == null)
+                        {
+                            Log.Warn("CharacterProfile: no local profile found for current player.");
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        bool changed = ProfileMergeService.MergeProfileData(localProfile, remoteProfile);
+                        if (changed)
+                        {
+                            _playerContext.WriteContext();
+                            _playerContext.OnPlayerProfileDataChanged(_playerContext.CurrentPlayerUUID);
+                            Log.Info("CharacterProfile: merge applied, profile updated.");
+                        }
+                        else
+                        {
+                            Log.Debug("CharacterProfile: merge found no changes.");
+                        }
+                    }
+                    catch (JsonException ex)
+                    {
+                        Log.Error(
+                            "CharacterProfile: failed to deserialize response: {0}\nBody (truncated): {1}",
+                            ex.Message,
+                            TruncateForLog(result.Json));
                     }
 
                     return Array.Empty<WorkItem>();
@@ -484,9 +521,9 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Creates a work item that fetches the banking balance from the game API.
+        /// Creates a work item that imports the banking balance via BankingService.
         /// </summary>
-        /// <returns>A work item for banking balance retrieval.</returns>
+        /// <returns>A work item for banking balance import.</returns>
         private WorkItem CreateBankingBalanceItem()
         {
             return new WorkItem
@@ -494,21 +531,26 @@ namespace OE2EmpireTracker.Services
                 Label = "BankingBalance",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetBankingBalanceAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
-
-                    await ThrowIfUnauthorizedAsync(result, "BankingBalance", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "BankingBalance");
-
-                    if (result.Success)
+                    try
                     {
-                        Log.Debug("BankingBalance fetched successfully.");
+                        decimal? balance = await BankingService.ImportBalanceAsync(
+                            _apiClient, _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+
+                        if (balance.HasValue)
+                        {
+                            _playerContext.BankingBalance = balance.Value;
+                            _playerContext.WriteContext();
+                            _playerContext.OnBankingDataChanged();
+                            Log.Debug("BankingBalance imported: {0}", balance.Value);
+                        }
+                        else
+                        {
+                            Log.Warn("BankingBalance: ImportBalanceAsync returned null, skipping update.");
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        Log.Warn("BankingBalance fetch failed: {0}", result.Json);
+                        Log.Error("BankingBalance: unexpected error during import: {0}", ex.Message);
                     }
 
                     return Array.Empty<WorkItem>();

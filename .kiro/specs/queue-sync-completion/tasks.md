@@ -25,7 +25,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: GameApiSyncScheduler.cs (modified)_
     - _Verification: getDiagnostics clean, existing GameApiSyncScheduler tests still pass_
 
-  - [~] 1.3 Write property tests for ProfileMergeService
+  - [-] 1.3 Write property tests for ProfileMergeService
     - **Property 1: Idempotent Merge** — applying same response twice yields identical state
     - **Validates: Req 1 Criteria 1.2, 1.3, 1.4, 1.5**
     - Test that "API wins" fields overwrite local, local-only fields (TrainingStarted, CompletionTime) are preserved
@@ -37,7 +37,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 
 
 - [ ] 3. Complete CharacterProfile work item
-  - [~] 3.1 Add deserialization and merge call to CreateCharacterProfileItem
+  - [x] 3.1 Add deserialization and merge call to CreateCharacterProfileItem
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiProfileResponse>` (try/catch JsonException)
     - Call `ProfileMergeService.MergeProfileData` with `_playerContext.Data.Profile` and deserialized response
     - If merge returns true, call `_playerContext.WriteContext()` and raise `PlayerProfileDataChanged`
@@ -48,7 +48,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Verification: getDiagnostics clean, solution builds_
 
 - [ ] 4. Complete BankingBalance work item
-  - [~] 4.1 Add balance import logic to CreateBankingBalanceItem
+  - [x] 4.1 Add balance import logic to CreateBankingBalanceItem
     - Call `BankingService.ImportBalanceAsync` with `_apiClient`, `_settings.AppId`, and `_currentAccessToken`
     - If result is non-null, call `_playerContext.SetBankingBalance(result)` and raise `BankingDataChanged`
     - If result is null, log warning and skip
