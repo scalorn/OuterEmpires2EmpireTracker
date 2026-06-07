@@ -505,21 +505,21 @@ namespace OE2EmpireTracker.Services
                 Label = "BankingTransactions",
                 ExecuteAsync = async ct =>
                 {
-                    var result = await _apiClient.GetBankingTransactionsAsync(
-                        _settings.AppId, _currentAccessToken).ConfigureAwait(false);
+                    Log.Debug("BankingTransactions: delegating to BankingService.ImportTransactionsAsync.");
+                    var importResult = await BankingService.ImportTransactionsAsync(
+                        _apiClient, _settings.AppId, _currentAccessToken, _playerContext).ConfigureAwait(false);
 
-                    await ThrowIfUnauthorizedAsync(result, "BankingTransactions", ct)
-                        .ConfigureAwait(false);
-
-                    ThrowIfRateLimited(result, "BankingTransactions");
-
-                    if (result.Success)
+                    if (importResult.Success)
                     {
-                        Log.Debug("BankingTransactions fetched successfully.");
+                        Log.Debug(
+                            "BankingTransactions: imported {0} new, {1} duplicates skipped, {2} pages.",
+                            importResult.TransactionsImported,
+                            importResult.DuplicatesSkipped,
+                            importResult.PagesCompleted);
                     }
                     else
                     {
-                        Log.Warn("BankingTransactions fetch failed: {0}", result.Json);
+                        Log.Warn("BankingTransactions import failed: {0}", importResult.ErrorMessage);
                     }
 
                     return Array.Empty<WorkItem>();
@@ -1427,14 +1427,28 @@ namespace OE2EmpireTracker.Services
                     }
 
                     var cascaded = new List<WorkItem>();
+                    bool allExist = true;
 
                     foreach (var mail in mails)
                     {
                         int mailId = mail["mailId"]?.Value<int>() ?? 0;
                         if (mailId > 0)
                         {
+                            if (_playerContext.FindMailMessage(mailId) != null)
+                            {
+                                continue;
+                            }
+
+                            allExist = false;
                             cascaded.Add(CreateMailDetailItem(mailId));
                         }
+                    }
+
+                    // Stop paginating if all items on this page already exist (incremental sync)
+                    if (allExist)
+                    {
+                        Log.Debug("{0}: all items already exist, stopping pagination.", label);
+                        return cascaded.ToArray();
                     }
 
                     cascaded.Add(CreateMailListPageItem(offset + pageSize));
