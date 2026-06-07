@@ -643,13 +643,76 @@ namespace OE2EmpireTracker.Services
 
                     ThrowIfRateLimited(result, "ShipConfiguration");
 
-                    if (result.Success)
-                    {
-                        Log.Debug("ShipConfiguration fetched successfully.");
-                    }
-                    else
+                    if (!result.Success)
                     {
                         Log.Warn("ShipConfiguration fetch failed: {0}", result.Json);
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    Log.Debug("ShipConfiguration fetched successfully.");
+
+                    try
+                    {
+                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiShipConfigurationResponse>>(result.Json);
+                        var config = envelope?.Data;
+                        if (config == null)
+                        {
+                            Log.Warn("ShipConfiguration: deserialized response was null.");
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        var ships = _playerContext.GetMutableShipsForOwner(_playerContext.CurrentPlayerUUID);
+                        var ship = ships.FirstOrDefault(s => s.GameLocationId == config.ShipId);
+                        if (ship == null)
+                        {
+                            ship = new Ship
+                            {
+                                UUID = Guid.NewGuid().ToString(),
+                                Name = config.Summary?.ShipName ?? string.Empty,
+                                OwnerUUID = _playerContext.CurrentPlayerUUID,
+                                GameLocationId = config.ShipId,
+                            };
+                            _playerContext.AddShip(ship);
+                            Log.Info("ShipConfiguration: created new ship for GameLocationId {0}.", config.ShipId);
+                        }
+
+                        var mappedComponents = new List<ShipComponentSlot>();
+                        foreach (var comp in config.Components)
+                        {
+                            mappedComponents.Add(new ShipComponentSlot
+                            {
+                                SlotType = comp.BlueprintType ?? string.Empty,
+                                SlotIndex = comp.Evolution,
+                                BlueprintUUID = string.Empty,
+                                CurrentHP = (int)((comp.HealthPercentage ?? 100d) * 100),
+                                MaxHP = 10000,
+                                MaxRepairPercent = (decimal)comp.LastRepairHealthPercentage,
+                            });
+                        }
+
+                        ship.Components = mappedComponents;
+
+                        if (config.Summary != null)
+                        {
+                            ship.Name = config.Summary.ShipName ?? ship.Name;
+                        }
+
+                        _playerContext.WriteContext();
+                        _playerContext.OnShipDataChanged(ship.UUID);
+                        Log.Info("ShipConfiguration: merge applied for ship '{0}' (GameLocationId {1}).", ship.Name, config.ShipId);
+                    }
+                    catch (JsonException ex)
+                    {
+                        Log.Error(
+                            "ShipConfiguration: failed to deserialize response: {0}\nBody (truncated): {1}",
+                            ex.Message,
+                            TruncateForLog(result.Json));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(
+                            "ShipConfiguration: merge failed: {0}",
+                            ex.Message);
                     }
 
                     return Array.Empty<WorkItem>();

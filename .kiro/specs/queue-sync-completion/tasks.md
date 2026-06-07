@@ -82,7 +82,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 
 
 - [ ] 6. Complete ColonyBuildings work item
-  - [-] 6.1 Add deserialization and merge to CreateColonyBuildingsItem (map overload)
+  - [x] 6.1 Add deserialization and merge to CreateColonyBuildingsItem (map overload)
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiColonyBuildingsResponse>`
     - Resolve target Colony from ColonyIdToUUIDMap (with fallback)
     - Call `ColonyMergeService.MergeBuildings` with buildings list and local Colony
