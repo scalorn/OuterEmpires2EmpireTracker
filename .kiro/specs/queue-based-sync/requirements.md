@@ -39,9 +39,9 @@ Replace the current sequential background sync with queue-based parallel dispatc
 
 #### Acceptance Criteria
 
-1. WHEN a sync cycle begins, THE Queue_Sync_Service SHALL enqueue seed work items for: character profile, character skills, colony list, banking balance, banking transactions, asset locations, accepted jobs, kill mail list, mail list, ship configuration, ship cargo, market listings, market items, market buy orders, and market sell orders.
-2. WHEN the colony list response is received and contains one or more colonies, THE Queue_Sync_Service SHALL cascade one work item per colony for each of: colony summary, colony buildings, colony warehouse, and colony workers.
-3. WHEN the asset locations response is received, THE Queue_Sync_Service SHALL cascade one detail work item per asset location.
+1. THE seed work items enqueued per Requirement 1 Criterion 4 SHALL include: character profile, character skills, colony list, banking balance, banking transactions, asset locations, accepted jobs, kill mail list, mail list, ship configuration, ship cargo, market listings, market items, market buy orders, and market sell orders.
+2. WHEN the colony list response is received and contains one or more colonies, THE Queue_Sync_Service SHALL cascade one work item per colony for each of: colony summary, colony buildings, colony warehouse, and colony workers. IF cascading fails for any colony, THE Queue_Sync_Service SHALL log the failure and continue processing remaining colonies.
+3. WHEN the asset locations response is received and contains one or more asset locations, THE Queue_Sync_Service SHALL cascade one detail work item per asset location.
 4. WHEN an asset location detail response contains one or more crate items, THE Queue_Sync_Service SHALL cascade one work item per crate for crate detail retrieval.
 5. WHEN an asset location detail response contains one or more survey items, THE Queue_Sync_Service SHALL cascade one work item per survey for survey detail retrieval.
 6. WHEN an asset location detail response contains one or more blueprint items, THE Queue_Sync_Service SHALL cascade one work item per blueprint for blueprint detail retrieval.
@@ -57,7 +57,7 @@ Replace the current sequential background sync with queue-based parallel dispatc
 
 1. WHEN a crate detail response is received, THE Queue_Sync_Service SHALL parse the crate JSON and pass it to CrateImporter.ImportFromJson for blueprint extraction.
 2. THE Queue_Sync_Service SHALL provide the current PlayerContext and EmpireContext to CrateImporter during import.
-3. IF a crate detail request fails after 3 retries, THEN THE Queue_Sync_Service SHALL log each individual failure attempt during the retry process and continue processing other work items.
+3. IF a crate detail request fails, THEN THE Queue_Sync_Service SHALL log each failure attempt (including the initial attempt and all retries) and continue processing other work items regardless of whether logging itself succeeds.
 
 ### Requirement 4: Survey Import Integration
 
@@ -67,7 +67,7 @@ Replace the current sequential background sync with queue-based parallel dispatc
 
 1. WHEN a survey detail response is received, THE Queue_Sync_Service SHALL parse the GameApiSurveyResponse and construct a temporary Survey object from the response data.
 2. THE Queue_Sync_Service SHALL use SurveyImportHelper.FindByKey to check for an existing survey match.
-3. WHEN a matching survey exists, THE Queue_Sync_Service SHALL use SurveyImportHelper.MergeData to update it.
+3. WHEN a matching survey exists, THE Queue_Sync_Service SHALL use SurveyImportHelper.MergeData to update it. IF the merge operation fails, THE Queue_Sync_Service SHALL skip the survey, log the failure, and continue processing other work items.
 4. WHEN no matching survey exists, THE Queue_Sync_Service SHALL use SurveyImportHelper.CreateFromTemp to create a new survey record.
 5. THE Queue_Sync_Service SHALL call SurveyImportHelper.LinkOrCreateAsteroid for asteroid-type surveys.
 6. WHEN the survey response contains a SystemObjectId, THE Queue_Sync_Service SHALL store the SystemObjectId on the Survey entity.
@@ -82,7 +82,7 @@ Replace the current sequential background sync with queue-based parallel dispatc
 1. WHEN a blueprint detail response is received, THE Queue_Sync_Service SHALL parse the GameApiBlueprintDetailResponse and construct a JSON object compatible with CrateImporter format.
 2. THE Queue_Sync_Service SHALL map the API field `partTypeIcon` to the `_IconClass` property using the "ui_icon_" prefix (e.g., API value "A22" maps to stored value "ui_icon_A22").
 3. THE Queue_Sync_Service SHALL pass the constructed JSON to CrateImporter.ImportFromJson for deduplication and storage.
-4. IF a blueprint detail request fails after 3 retries, THEN THE Queue_Sync_Service SHALL log immediately when the retry limit is reached and continue processing other work items.
+4. IF a blueprint detail request fails after 3 retries, THEN THE Queue_Sync_Service SHALL log immediately when the retry limit is reached and continue processing other work items regardless of whether logging itself succeeds.
 
 ### Requirement 6: SystemObjectId Model Extension
 
@@ -136,7 +136,7 @@ Replace the current sequential background sync with queue-based parallel dispatc
 #### Acceptance Criteria
 
 1. WHEN a work item receives an HTTP 429 response, THE Queue_Sync_Service SHALL call GameApiRequestQueue.NotifyRateLimited with the Retry-After header value.
-2. WHILE the queue is in a rate-limited pause state, THE GameApiRequestQueue SHALL not dispatch new work items.
+2. WHILE the queue is in a rate-limited pause state, THE GameApiRequestQueue SHALL not dispatch new work items. THE inflight cap (not TPS) SHALL be the mechanism that blocks dispatch when maximum concurrent requests are reached.
 3. WHEN the pause period expires, THE GameApiRequestQueue SHALL resume dispatch at 50 percent of the prior effective TPS.
 4. THE GameApiRequestQueue SHALL gradually recover TPS at a rate of 10 percent per minute after actual dispatches resume successfully.
 
@@ -159,7 +159,7 @@ Replace the current sequential background sync with queue-based parallel dispatc
 
 1. IF a work item throws an exception, THEN THE GameApiRequestQueue SHALL record the error, mark the item as failed, and continue dispatching remaining items.
 2. THE Queue_Sync_Service SHALL log all failed work items with their labels and exception messages at the end of a sync cycle.
-3. WHEN the sync cycle completes with failures, THE Queue_Sync_Service SHALL report the count of succeeded and failed items but not treat partial failure as a sync cycle failure.
+3. WHEN the sync cycle completes with work item failures, THE Queue_Sync_Service SHALL report the count of succeeded and failed items but not treat partial failure as a sync cycle failure. System-level failures (such as network timeouts not attributable to a specific work item) SHALL not cause the sync cycle to be reported as failed.
 4. THE Queue_Sync_Service SHALL not persist data from failed individual imports (failed crate/survey/blueprint items are skipped, not half-written).
 
 
@@ -172,7 +172,7 @@ Replace the current sequential background sync with queue-based parallel dispatc
 
 1. THE Blueprint model SHALL include a GameApiBlueprintId property of type int? (nullable) to store the blueprint detail ID from the API (GameApiBlueprintInfo.Id field).
 2. THE Survey model SHALL include a GameApiSurveyId property of type int? (nullable) to store the survey detail ID from the API (GameApiSurveyDetail.Id field).
-3. WHEN a blueprint is imported from the API, THE Queue_Sync_Service SHALL store the API blueprint Id in GameApiBlueprintId.
+3. WHEN a blueprint is imported from the API, THE Queue_Sync_Service SHALL store the API blueprint Id in GameApiBlueprintId. IF storing the ID fails, the blueprint import SHALL still be persisted without the GameApiBlueprintId.
 4. WHEN a survey is imported from the API, THE Queue_Sync_Service SHALL store the API survey Id in GameApiSurveyId.
 5. THE GameApiBlueprintId and GameApiSurveyId SHALL be distinct from the existing GameItemId property (which represents the cargo item ID in an asset location, not the detail entity ID).
 
@@ -212,6 +212,6 @@ Replace the current sequential background sync with queue-based parallel dispatc
 
 1. THE GameApiConnectionSettings model SHALL include a DetailRefreshHours property of type int with a default value of 24.
 2. THE Preferences Form SHALL display a numeric input labeled "Detail Refresh (hours)" on the Game API connection settings tab, accepting integer values between 1 and 168 (1 hour to 7 days).
-3. WHEN the user changes the Detail Refresh value and clicks OK, THE Preferences Form SHALL persist the value to GameApiConnectionSettings.
+3. WHEN the user changes the Detail Refresh value and clicks OK, THE Preferences Form SHALL validate the value is between 1 and 168 (inclusive), reject invalid values with an error message, and persist only valid values to GameApiConnectionSettings.
 4. THE Queue_Sync_Service SHALL read DetailRefreshHours from GameApiConnectionSettings when evaluating import freshness (Requirement 14).
 5. THE DetailRefreshHours setting SHALL apply equally to both survey and blueprint detail imports.

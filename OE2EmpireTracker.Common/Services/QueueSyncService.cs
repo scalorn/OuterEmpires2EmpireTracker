@@ -312,6 +312,28 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Truncates a JSON string for safe inclusion in log messages.
+        /// Prevents log flooding from large API response bodies.
+        /// </summary>
+        /// <param name="json">The JSON string to truncate, or null.</param>
+        /// <param name="maxLength">The maximum number of characters to retain (default 500).</param>
+        /// <returns>The truncated string, or "(null)" if the input is null.</returns>
+        private static string TruncateForLog(string json, int maxLength = 500)
+        {
+            if (json == null)
+            {
+                return "(null)";
+            }
+
+            if (json.Length <= maxLength)
+            {
+                return json;
+            }
+
+            return json.Substring(0, maxLength) + "...(truncated)";
+        }
+
+        /// <summary>
         /// Determines whether a detail import is still fresh based on the configured refresh interval.
         /// </summary>
         /// <param name="lastImportUtc">The UTC timestamp of the last detail import, or null if never imported.</param>
