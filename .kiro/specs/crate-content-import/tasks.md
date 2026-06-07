@@ -86,7 +86,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: Unit test CrateContentImporter_WriteContextFailure_RetainsInMemory passes_
 
 
-  - [~] 4.2 Add completion summary logging with empty response and error resilience
+  - [x] 4.2 Add completion summary logging with empty response and error resilience
     - Log completion summary with counts by ItemType and any errors encountered
     - Populate CountsByType dictionary in result for per-type breakdown
     - Handle empty responses: do not produce item-level error log entries

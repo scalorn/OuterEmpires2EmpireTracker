@@ -67,6 +67,50 @@ namespace OE2EmpireTracker.Tests.Services
         // -------------------------------------------------------------------
 
         /// <summary>
+        /// Verifies that an empty cargo array produces a clean result with no
+        /// errors, no item-level log entries, and an empty Contents bag.
+        /// </summary>
+        [Test]
+        public void CrateContentImporter_EmptyResponse_ReturnsEmptyBag()
+        {
+            var response = new GameApiAssetDetailResponse { Cargo = new List<GameApiAssetCargoItem>() };
+            string json = JsonConvert.SerializeObject(response);
+
+            var parentBag = new ItemBag();
+            var visited = new HashSet<int>();
+
+            var result = importer.Import(json, 888, parentBag, "owner-uuid", visited);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.TotalItems, Is.EqualTo(0));
+            Assert.That(result.Imported, Is.EqualTo(0));
+            Assert.That(result.Failed, Is.EqualTo(0));
+            Assert.That(result.Errors, Is.Empty, "Empty response should produce no error entries");
+            Assert.That(result.CountsByType, Is.Empty, "No types to count");
+
+            // Verify a crate item was still created (with empty contents)
+            Item crateItem = null;
+            foreach (var kvp in parentBag.Items)
+            {
+                if (kvp.Value.GameItemId == 888)
+                {
+                    crateItem = kvp.Value;
+                    break;
+                }
+            }
+
+            Assert.That(crateItem, Is.Not.Null, "Crate item should be created even for empty cargo");
+            Assert.That(crateItem.Contents, Is.Not.Null, "Contents bag should exist");
+            Assert.That(crateItem.Contents.Count(), Is.EqualTo(0), "Contents should be empty");
+        }
+
+        // -------------------------------------------------------------------
+        // Test: All supported TypeC codes map to the correct ItemType
+        // Validates: Req 2 AC2 (MapAssetTypeC mapping), Req 8 AC1-AC5
+        // -------------------------------------------------------------------
+
+        /// <summary>
         /// Verifies that each supported TypeC code produces an item with the
         /// correct ItemType when processed through the full Import pipeline.
         /// </summary>

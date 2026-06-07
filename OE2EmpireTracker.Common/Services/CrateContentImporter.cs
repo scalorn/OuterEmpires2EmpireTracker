@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Client;
@@ -203,9 +204,16 @@ namespace OE2EmpireTracker.Services
                 catch (Exception ex)
                 {
                     result.Failed++;
-                    string itemName = (i < response.Cargo.Count) ? response.Cargo[i]?.ResourceName ?? "(unknown)" : "(unknown)";
-                    Log.Error("CrateContentImporter: failed to process item[{0}] '{1}' in crate GameItemId={2}: {3}", i, itemName, crateGameItemId, ex.Message);
-                    result.Errors.Add($"Item[{i}] '{itemName}': {ex.Message}");
+                    try
+                    {
+                        string itemName = (i < response.Cargo.Count) ? response.Cargo[i]?.ResourceName ?? "(unknown)" : "(unknown)";
+                        Log.Error("CrateContentImporter: failed to process item[{0}] '{1}' in crate GameItemId={2}: {3}", i, itemName, crateGameItemId, ex.Message);
+                        result.Errors.Add($"Item[{i}] '{itemName}': {ex.Message}");
+                    }
+                    catch
+                    {
+                        // Req 9 AC6: if error logging itself fails, continue processing without interruption
+                    }
                 }
             }
 
@@ -261,6 +269,29 @@ namespace OE2EmpireTracker.Services
             if (result.BlueprintsLinked > 0)
             {
                 _playerContext.OnBlueprintDataChanged(null);
+            }
+
+            // Completion summary logging (Req 9 AC2)
+            try
+            {
+                var typeBreakdown = string.Join(", ", result.CountsByType.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+                Log.Info(
+                    "CrateContentImporter: completed import for crate GameItemId={0} — imported={1}, failed={2}, blueprints={3}, nested={4}, types=[{5}]",
+                    crateGameItemId,
+                    result.Imported,
+                    result.Failed,
+                    result.BlueprintsLinked,
+                    result.NestedCrateIds.Count,
+                    typeBreakdown);
+
+                if (result.Errors.Count > 0)
+                {
+                    Log.Warn("CrateContentImporter: {0} error(s) during import of crate GameItemId={1}", result.Errors.Count, crateGameItemId);
+                }
+            }
+            catch
+            {
+                // Req 9 AC6: if summary logging fails, do not halt processing
             }
 
             return result;
