@@ -32,11 +32,11 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - Test return value is true iff at least one field changed
     - _Output: OE2EmpireTracker.Tests/Services/ProfileMergeServiceTests.cs_
 
-- [~] 2. Checkpoint — ProfileMergeService extraction verified
+- [x] 2. Checkpoint — ProfileMergeService extraction verified
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 3. Complete CharacterProfile work item
+- [x] 3. Complete CharacterProfile work item
   - [x] 3.1 Add deserialization and merge call to CreateCharacterProfileItem
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiProfileResponse>` (try/catch JsonException)
     - Call `ProfileMergeService.MergeProfileData` with `_playerContext.Data.Profile` and deserialized response
@@ -47,7 +47,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — CreateCharacterProfileItem method)_
     - _Verification: getDiagnostics clean, solution builds_
 
-- [ ] 4. Complete BankingBalance work item
+- [x] 4. Complete BankingBalance work item
   - [x] 4.1 Add balance import logic to CreateBankingBalanceItem
     - Call `BankingService.ImportBalanceAsync` with `_apiClient`, `_settings.AppId`, and `_currentAccessToken`
     - If result is non-null, call `_playerContext.SetBankingBalance(result)` and raise `BankingDataChanged`
@@ -58,7 +58,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — CreateBankingBalanceItem method)_
     - _Verification: getDiagnostics clean, solution builds_
 
-- [ ] 5. Complete ColonyList work item with context passing
+- [x] 5. Complete ColonyList work item with context passing
   - [x] 5.1 Add MergeColonyList call and ColonyIdToUUIDMap capture to CreateColonyListItem
     - After deserializing the colony list response, call `ColonyMergeService.MergeColonyList`
     - Capture `ColonyMergeResult.ColonyIdToUUIDMap` in a local variable
@@ -81,7 +81,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Verification: getDiagnostics clean, solution builds_
 
 
-- [ ] 6. Complete ColonyBuildings work item
+- [x] 6. Complete ColonyBuildings work item
   - [x] 6.1 Add deserialization and merge to CreateColonyBuildingsItem (map overload)
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiColonyBuildingsResponse>`
     - Resolve target Colony from ColonyIdToUUIDMap (with fallback)
@@ -93,7 +93,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — CreateColonyBuildingsItem overload body)_
     - _Verification: getDiagnostics clean, solution builds_
 
-- [ ] 7. Complete ColonyWarehouse work item
+- [x] 7. Complete ColonyWarehouse work item
   - [x] 7.1 Add deserialization and merge to CreateColonyWarehouseItem (map overload)
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiColonyWarehouseResponse>`
     - Resolve target Colony from ColonyIdToUUIDMap (with fallback)
@@ -105,7 +105,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — CreateColonyWarehouseItem overload body)_
     - _Verification: getDiagnostics clean, solution builds_
 
-- [ ] 8. Complete ColonyWorkers work item
+- [x] 8. Complete ColonyWorkers work item
   - [x] 8.1 Add deserialization and merge to CreateColonyWorkersItem (map overload)
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiColonyWorkersResponse>`
     - Resolve target Colony from ColonyIdToUUIDMap (with fallback)
@@ -117,7 +117,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — CreateColonyWorkersItem overload body)_
     - _Verification: getDiagnostics clean, solution builds_
 
-- [~] 9. Checkpoint — Colony work items verified
+- [x] 9. Checkpoint — Colony work items verified
   - Ensure all tests pass, ask the user if questions arise.
 
 
@@ -133,7 +133,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Verification: getDiagnostics clean, solution builds_
 
 
-- [ ] 11. Complete AssetLocationDetail work item — generic cargo merge and detail cascading
+- [x] 11. Complete AssetLocationDetail work item — generic cargo merge and detail cascading
   - [x] 11.1 Add cargo merge dispatch by location type and call CascadeCargoDetailItems
     - After successful deserialization (existing code), add generic cargo merge BEFORE the cascade logic
     - Switch on `typeC`: "Co" → `AssetMergeService.MergeColonyAssets`, "St" → `MergeStationAssets`, "Sh" → `MergeShipAssets`
@@ -167,7 +167,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Verification: getDiagnostics clean, solution builds_
 
 
-- [ ] 12. Complete ShipCargo work item
+- [x] 12. Complete ShipCargo work item
   - [x] 12.1 Add deserialization, merge, and CascadeCargoDetailItems call to CreateShipCargoItem
     - Deserialize `result.Json` as array of `GameApiAssetCargoItem` objects
     - Identify the player's active ship (match current GameLocationId or first in ship list)
@@ -181,7 +181,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — CreateShipCargoItem body)_
     - _Verification: getDiagnostics clean, solution builds_
 
-- [ ] 13. Complete ShipConfiguration work item
+- [x] 13. Complete ShipConfiguration work item
   - [x] 13.1 Add deserialization and component mapping to CreateShipConfigItem
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiShipConfigurationResponse>`
     - Match or create Ship by `ShipId` / GameLocationId from response
@@ -195,11 +195,11 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — CreateShipConfigItem body)_
     - _Verification: getDiagnostics clean, solution builds_
 
-- [~] 14. Checkpoint — Ship and asset work items verified
+- [x] 14. Checkpoint — Ship and asset work items verified
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 15. Wire UI event raising for asset merges
+- [x] 15. Wire UI event raising for asset merges
   - [x] 15.1 Add event raising after asset cargo merges in CreateAssetLocationDetailItem
     - Raise `ColonyDataChanged` when location type "Co" merge succeeds
     - Raise `StationDataChanged` when location type "St" merge succeeds
@@ -219,7 +219,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — event raising in colony detail item overloads)_
     - _Verification: getDiagnostics clean, solution builds_
 
-- [ ] 16. Error handling standardization
+- [x] 16. Error handling standardization
   - [x] 16.1 Add log-truncation helper and standardize error patterns across all work items
     - Add private helper `TruncateForLog(string json, int maxLength = 500)` to QueueSyncService
     - Ensure all work items use this helper when logging JSON on deserialization errors
@@ -230,55 +230,55 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — helper + error path audit)_
     - _Verification: getDiagnostics clean, solution builds_
 
-- [~] 17. Checkpoint — All work item completions verified
+- [x] 17. Checkpoint — All work item completions verified
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 18. Property-based tests for work item completion
-  - [-] 18.1 Write property test: Error Isolation
+- [x] 18. Property-based tests for work item completion
+  - [x] 18.1 Write property test: Error Isolation
     - **Property 2: Error Isolation**
     - **Validates: Req 12, Criteria 12.1, 12.2**
     - Verify that injecting a JsonException in one work item does not prevent other work items from completing
     - Verify no WriteContext occurs after failed deserialization
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [-] 18.2 Write property test: No Data Loss on Error
+  - [x] 18.2 Write property test: No Data Loss on Error
     - **Property 3: No Data Loss on Error**
     - **Validates: Req 12, Criteria 12.3**
     - Verify local data remains in pre-call state when deserialization or merge throws
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [-] 18.3 Write property test: Context Closure Integrity
+  - [x] 18.3 Write property test: Context Closure Integrity
     - **Property 4: Context Closure Integrity**
     - **Validates: Req 14, Criteria 14.1, 14.4**
     - Verify all cascaded colony detail items receive the exact ColonyIdToUUIDMap from their parent ColonyList sync cycle
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [-] 18.4 Write property test: Event-After-Mutation
+  - [x] 18.4 Write property test: Event-After-Mutation
     - **Property 5: Event-After-Mutation**
     - **Validates: Req 11, Criteria 11.1, 11.2, 11.3, 11.4**
     - Verify data-changed events only fire after merge completes and WriteContext persists
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [-] 18.5 Write property test: Log Truncation
+  - [x] 18.5 Write property test: Log Truncation
     - **Property 6: Log Truncation**
     - **Validates: Req 12, Criteria 12.4**
     - Verify logged JSON bodies are always ≤500 characters
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [-] 18.6 Write property test: Fallback Resolution
+  - [x] 18.6 Write property test: Fallback Resolution
     - **Property 7: Fallback Resolution**
     - **Validates: Req 14, Criteria 14.2, 14.3**
     - Verify fallback to direct ColonyId lookup succeeds when map entry missing; returns empty (not throw) when unresolvable
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [-] 18.7 Write property test: Station/Ship Find-or-Create
+  - [x] 18.7 Write property test: Station/Ship Find-or-Create
     - **Property 8: Station/Ship Find-or-Create**
     - **Validates: Req 8, Criteria 8.5, 8.6**
     - Verify find-or-create sets GameLocationId on new entities, ensuring future lookups succeed without creation
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [-] 18.8 Write property test: Consistent Cascading
+  - [x] 18.8 Write property test: Consistent Cascading
     - **Property 9: Consistent Cascading**
     - **Validates: Req 15, Criteria 15.1, 15.2, 15.3, 15.4, 15.5; Req 8, Criteria 8.7; Req 9, Criteria 9.4**
     - Verify `CascadeCargoDetailItems` produces the same work items regardless of calling context (AssetLocationDetail vs ShipCargo)
@@ -287,7 +287,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - Verify Crate entries always produce a detail item regardless of freshness state
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-- [~] 19. Final checkpoint — All tests pass
+- [x] 19. Final checkpoint — All tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 

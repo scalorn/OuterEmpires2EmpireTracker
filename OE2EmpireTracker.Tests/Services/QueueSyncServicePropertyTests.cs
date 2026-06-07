@@ -103,7 +103,6 @@ namespace OE2EmpireTracker.Tests.Services
             }
         }
 
-
         /// <summary>
         /// Invokes TruncateForLog via reflection.
         /// </summary>
@@ -165,7 +164,6 @@ namespace OE2EmpireTracker.Tests.Services
                    select new string(chars.ToArray());
         }
 
-
         // ---------------------------------------------------------------
         // Property 1: No Concurrent Sync Cycles
         // At most one sync cycle runs at any time. If IsSyncRunning is true,
@@ -218,7 +216,6 @@ namespace OE2EmpireTracker.Tests.Services
                 }
             }).QuickCheckThrowOnFailure();
         }
-
 
         // ---------------------------------------------------------------
         // Property 2: Error Isolation
@@ -280,7 +277,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-
         // ---------------------------------------------------------------
         // Property 3: No Data Loss on Error
         // If deserialization or merge throws, the local data model SHALL
@@ -337,9 +333,10 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     throw new InvalidOperationException("Simulated merge failure");
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     // Error handler: do NOT call WriteContext, do NOT modify data
+                    _ = ex;
                 }
 
                 // Verify data unchanged
@@ -351,7 +348,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"namePreserved={namePreserved}, idPreserved={idPreserved}");
             });
         }
-
 
         // ---------------------------------------------------------------
         // Property 4: Context Closure Integrity
@@ -406,7 +402,6 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
-
         // ---------------------------------------------------------------
         // Property 5: Event-After-Mutation
         // Data-changed events only fire AFTER merge completes and
@@ -460,7 +455,6 @@ namespace OE2EmpireTracker.Tests.Services
                            $"expected={newBalance}, observed={balanceAtEventTime}");
             });
         }
-
 
         // ---------------------------------------------------------------
         // Property 6: Log Truncation
@@ -541,7 +535,6 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.EqualTo("(null)"));
         }
-
 
         // ---------------------------------------------------------------
         // Property 7: Fallback Resolution
@@ -681,7 +674,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"noThrow={noThrow}, resultIsNull={resultIsNull}");
             });
         }
-
 
         // ---------------------------------------------------------------
         // Property 8: Station/Ship Find-or-Create
@@ -824,7 +816,6 @@ namespace OE2EmpireTracker.Tests.Services
                     .Label($"hasGameLocId={hasGameLocId}, futureLookupSucceeds={futureLookupSucceeds}");
             });
         }
-
 
         // ---------------------------------------------------------------
         // Property 9: Consistent Cascading
@@ -990,7 +981,6 @@ namespace OE2EmpireTracker.Tests.Services
                 }
             });
         }
-
 
         /// <summary>
         /// Property 9d: For a mixed cargo list, the cascading logic produces
