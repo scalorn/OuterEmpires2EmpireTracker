@@ -122,8 +122,8 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Common/Services/QueueSyncService.cs_
     - _Verification: Solution compiles; unit test QueueSyncService_CrateDetail_SkipsBlueprintExtractionWhenNone passes_
 
-- [ ] 7. Write unit tests for CrateContentImporter
-  - [-] 7.1 Write unit tests for JSON parsing and type mapping
+- [x] 7. Write unit tests for CrateContentImporter
+  - [x] 7.1 Write unit tests for JSON parsing and type mapping
     - Create `OE2EmpireTracker.Tests/Services/CrateContentImporterTests.cs`
     - Test: `CrateContentImporter_MalformedJson_NoException` — malformed JSON returns empty result, Success=false
     - Test: `CrateContentImporter_EmptyResponse_ReturnsEmptyBag` — empty cargo array produces empty Contents
@@ -136,7 +136,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: All 5 tests pass via vstest.console_
 
 
-  - [-] 7.2 Write unit tests for Contents Bag population and blueprint dual-tracking
+  - [x] 7.2 Write unit tests for Contents Bag population and blueprint dual-tracking
     - Test: `CrateContentImporter_ContentsBagReplaced` — Contents bag fully replaced (no merge with old contents)
     - Test: `CrateContentImporter_Blueprint_DualTracked` — blueprint items appear in Contents AND master list, BaseItemTypeID set
     - Test: `CrateContentImporter_NestedCrate_CycleDetected` — repeated crate GameItemId is skipped with warning
@@ -147,7 +147,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
 
 
 - [ ] 8. Write property-based tests for correctness properties
-  - [~] 8.1 Write property test for round-trip equivalence (Property 1)
+  - [-] 8.1 Write property test for round-trip equivalence (Property 1)
     - **Property 1: Round-Trip Equivalence**
     - **Validates: Requirements 10.1, 10.2**
     - Create FsCheck generator `ArbitraryCrateResponse` producing valid GameApiAssetDetailResponse JSON
@@ -157,7 +157,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Tests/Services/CrateContentImporterPropertyTests.cs_
     - _Verification: Property test passes (100 iterations)_
 
-  - [~] 8.2 Write property test for contents bag completeness (Property 2)
+  - [-] 8.2 Write property test for contents bag completeness (Property 2)
     - **Property 2: Contents Bag Completeness**
     - **Validates: Requirements 3.1, 3.4**
     - Generate random valid crate responses with 0-50 items
@@ -167,7 +167,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Tests/Services/CrateContentImporterPropertyTests.cs_
     - _Verification: Property test passes (100 iterations)_
 
-  - [~] 8.3 Write property test for type mapping determinism (Property 3)
+  - [-] 8.3 Write property test for type mapping determinism (Property 3)
     - **Property 3: Type Mapping Determinism**
     - **Validates: Requirements 2.2, 2.6**
     - For any TypeC code, MapAssetTypeC returns the same result on repeated calls
@@ -177,7 +177,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: Property test passes (100 iterations)_
 
 
-  - [~] 8.4 Write property test for cycle detection termination (Property 4)
+  - [-] 8.4 Write property test for cycle detection termination (Property 4)
     - **Property 4: Cycle Detection Termination**
     - **Validates: Requirements 5.2, 5.4**
     - Generate arbitrary nested crate graphs (DAGs with optional cycles, depth 1-5)
@@ -186,7 +186,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Tests/Services/CrateContentImporterPropertyTests.cs_
     - _Verification: Property test passes (100 iterations)_
 
-  - [~] 8.5 Write property test for blueprint dual-presence (Property 5)
+  - [-] 8.5 Write property test for blueprint dual-presence (Property 5)
     - **Property 5: Blueprint Dual-Presence**
     - **Validates: Requirements 4.1, 4.3**
     - For every blueprint-typed item in Contents after import, a corresponding entry exists in the master blueprint list

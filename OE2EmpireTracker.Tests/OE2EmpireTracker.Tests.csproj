@@ -570,6 +570,7 @@
     <Compile Include="Services\AssetMergeServiceStationTests.cs" />
     <Compile Include="Services\AssetMergeServiceTests.cs" />
     <Compile Include="Services\CrateContentImporterTests.cs" />
+    <Compile Include="Services\CrateContentImporterPropertyTests.cs" />
     <Compile Include="Services\AssetMergeServiceShipTests.cs" />
     <Compile Include="Services\GameApiProfileMergeTests.cs" />
     <Compile Include="Services\ProfileMergeServiceTests.cs" />
