@@ -334,6 +334,46 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Builds a temporary Blueprint populated with API response properties for use
+        /// as the scoring template in <see cref="BlueprintService.FindBestMatch"/>.
+        /// </summary>
+        /// <param name="response">The API blueprint detail response.</param>
+        /// <returns>A temporary Blueprint with Name, Evolution, and Properties set.</returns>
+        private static Blueprint BuildScoringTemplate(GameApiBlueprintDetailResponse response)
+        {
+            var bpInfo = response.Blueprint;
+            var temp = new Blueprint(bpInfo.Name)
+            {
+                Evolution = bpInfo.Evolution,
+                BluePrintType = bpInfo.Type ?? string.Empty,
+            };
+
+            if (response.BlueprintProperties != null)
+            {
+                foreach (var prop in response.BlueprintProperties)
+                {
+                    string key = !string.IsNullOrEmpty(prop.FriendlyPropertyName)
+                        ? prop.FriendlyPropertyName
+                        : prop.PropertyName;
+                    string value = string.IsNullOrEmpty(prop.Unit)
+                        ? prop.PropertyValue.ToString()
+                        : prop.PropertyValue + prop.Unit;
+                    temp.Properties.Properties[key] = value;
+                }
+            }
+
+            if (response.ResourcesRequired != null)
+            {
+                foreach (var res in response.ResourcesRequired)
+                {
+                    temp.Resources[res.ResourceName] = res.ResourceAmount.ToString();
+                }
+            }
+
+            return temp;
+        }
+
+        /// <summary>
         /// Determines whether a detail import is still fresh based on the configured refresh interval.
         /// </summary>
         /// <param name="lastImportUtc">The UTC timestamp of the last detail import, or null if never imported.</param>
@@ -1860,10 +1900,8 @@ namespace OE2EmpireTracker.Services
                         string importedName = importResult.Entries[0].Name;
                         int importedEvo = importResult.Entries[0].Evolution;
 
-                        var blueprint = _playerContext.BlueprintList
-                            .FirstOrDefault(b =>
-                                string.Equals(b.Name, importedName, StringComparison.Ordinal) &&
-                                b.Evolution == importedEvo);
+                        var blueprint = ResolveBlueprintForApiId(
+                            blueprintId, importedName, importedEvo, response);
 
                         if (blueprint != null)
                         {
@@ -1880,6 +1918,95 @@ namespace OE2EmpireTracker.Services
                     return Array.Empty<WorkItem>();
                 },
             };
+        }
+
+        /// <summary>
+        /// Resolves the local blueprint that should be assigned the given API blueprint ID.
+        /// Uses a three-tier strategy: (1) existing assignment lookup, (2) filtered Name+Evo
+        /// candidates excluding blueprints claimed by other API IDs, (3) property-based
+        /// scoring via FindBestMatch when multiple unassigned candidates remain.
+        /// Returns null if no suitable candidate is found.
+        /// </summary>
+        /// <param name="blueprintId">The game API blueprint ID to assign.</param>
+        /// <param name="importedName">The blueprint name from the import result.</param>
+        /// <param name="importedEvo">The blueprint evolution from the import result.</param>
+        /// <param name="response">The full API response for building a scoring template.</param>
+        /// <returns>The resolved blueprint, or null if no match.</returns>
+        private Blueprint ResolveBlueprintForApiId(
+            int blueprintId,
+            string importedName,
+            int importedEvo,
+            GameApiBlueprintDetailResponse response)
+        {
+            // Tier 1: Check if this API ID is already assigned to a local blueprint.
+            var existing = _playerContext.FindBlueprintByApiId(blueprintId);
+            if (existing != null)
+            {
+                Log.Debug(
+                    "ResolveBlueprintForApiId({0}): Tier 1 hit — already assigned to UUID={1}.",
+                    blueprintId,
+                    existing.UUID);
+                return existing;
+            }
+
+            // Tier 2: Filter by Name+Evo, excluding blueprints claimed by OTHER API IDs.
+            var candidates = _playerContext.BlueprintList
+                .Where(b =>
+                    string.Equals(b.Name, importedName, StringComparison.Ordinal) &&
+                    b.Evolution == importedEvo &&
+                    !(b.GameApiBlueprintId.HasValue && b.GameApiBlueprintId.Value != blueprintId))
+                .ToList();
+
+            Log.Debug(
+                "ResolveBlueprintForApiId({0}): Tier 2 filter for '{1}' Evo{2} found {3} candidate(s).",
+                blueprintId,
+                importedName,
+                importedEvo,
+                candidates.Count);
+
+            if (candidates.Count == 0)
+            {
+                Log.Warn(
+                    "ResolveBlueprintForApiId({0}): no candidates remain after filtering for '{1}' Evo{2}. Skipping assignment.",
+                    blueprintId,
+                    importedName,
+                    importedEvo);
+                return null;
+            }
+
+            if (candidates.Count == 1)
+            {
+                Log.Debug(
+                    "ResolveBlueprintForApiId({0}): single candidate UUID={1}, assigning directly.",
+                    blueprintId,
+                    candidates[0].UUID);
+                return candidates[0];
+            }
+
+            // Tier 3: Multiple unassigned candidates — score by property similarity.
+            Log.Debug(
+                "ResolveBlueprintForApiId({0}): {1} candidates, using FindBestMatch for scoring.",
+                blueprintId,
+                candidates.Count);
+
+            var tempBlueprint = BuildScoringTemplate(response);
+            var bestMatch = BlueprintService.FindBestMatch(candidates, tempBlueprint);
+
+            if (bestMatch != null)
+            {
+                Log.Debug(
+                    "ResolveBlueprintForApiId({0}): Tier 3 selected UUID={1} via scoring.",
+                    blueprintId,
+                    bestMatch.UUID);
+                return bestMatch;
+            }
+
+            // FindBestMatch returned null (no candidate scored > 0) — fall back to first candidate.
+            Log.Debug(
+                "ResolveBlueprintForApiId({0}): Tier 3 scoring inconclusive, using first candidate UUID={1}.",
+                blueprintId,
+                candidates[0].UUID);
+            return candidates[0];
         }
 
         /// <summary>

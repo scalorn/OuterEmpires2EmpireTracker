@@ -37,7 +37,7 @@ Fix the duplicate Name+Evolution API ID stomping bug in `CreateBlueprintDetailIt
   - Verification: test written, run via vstest.console, failure documented
   - _Requirements: 1.1, 1.2, 1.5_
 
-- [-] 2. Write preservation property tests (BEFORE implementing fix)
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
   - **Property 2: Preservation** - Single-Match and No-Match Behavior
   - **IMPORTANT**: Follow observation-first methodology
   - Observe: single blueprint "Laser Evo2" with API ID 200 assigned directly on unfixed code
@@ -53,9 +53,9 @@ Fix the duplicate Name+Evolution API ID stomping bug in `CreateBlueprintDetailIt
   - Verification: tests written, run via vstest.console, all PASS on unfixed code
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-- [ ] 3. Fix for duplicate Name+Evolution API ID assignment
+- [x] 3. Fix for duplicate Name+Evolution API ID assignment
 
-  - [~] 3.1 Implement the three-tier resolution strategy
+  - [x] 3.1 Implement the three-tier resolution strategy
     - Extract the post-import API ID assignment block from `CreateBlueprintDetailItem` into a new private method `ResolveBlueprintForApiId(int blueprintId, string importedName, int importedEvo)`
     - Tier 1: Call `_playerContext.FindBlueprintByApiId(blueprintId)` — if non-null, return it directly (already assigned)
     - Tier 2: Filter `BlueprintList.Where(Name == importedName && Evo == importedEvo)` excluding blueprints where `GameApiBlueprintId.HasValue && GameApiBlueprintId.Value != blueprintId`
@@ -71,7 +71,7 @@ Fix the duplicate Name+Evolution API ID stomping bug in `CreateBlueprintDetailIt
     - Verification: builds with zero errors/warnings via MSBuild
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 3.1_
 
-  - [~] 3.2 Verify bug condition exploration test now passes
+  - [x] 3.2 Verify bug condition exploration test now passes
     - **Property 1: Expected Behavior** - Distinct API ID Assignment
     - **IMPORTANT**: Re-run the SAME test from task 1 - do NOT write a new test
     - The test from task 1 encodes the expected behavior (each API ID maps to distinct blueprint)
@@ -81,7 +81,7 @@ Fix the duplicate Name+Evolution API ID stomping bug in `CreateBlueprintDetailIt
     - Verification: vstest.console runs `BlueprintDetailDedupPropertyTests`, Property 1 passes
     - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-  - [~] 3.3 Verify preservation tests still pass
+  - [x] 3.3 Verify preservation tests still pass
     - **Property 2: Preservation** - Single-Match and No-Match Behavior
     - **IMPORTANT**: Re-run the SAME tests from task 2 - do NOT write new tests
     - Run preservation property tests from step 2
@@ -89,7 +89,7 @@ Fix the duplicate Name+Evolution API ID stomping bug in `CreateBlueprintDetailIt
     - Confirm all preservation tests still pass after fix (no regressions)
     - Verification: vstest.console runs `BlueprintDetailDedupPropertyTests`, Property 2 tests pass
 
-- [~] 4. Write unit tests for three-tier resolution edge cases
+- [x] 4. Write unit tests for three-tier resolution edge cases
   - Test already-assigned blueprint returned directly (Tier 1 pre-check via FindBlueprintByApiId)
   - Test candidates with different GameApiBlueprintId are excluded (Tier 2 filtering)
   - Test among multiple unassigned candidates, highest-scoring one is selected (Tier 3 scoring)

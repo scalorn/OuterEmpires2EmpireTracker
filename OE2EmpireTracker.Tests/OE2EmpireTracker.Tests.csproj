@@ -527,6 +527,7 @@
     <Compile Include="Services\ColonyMutationGuardTests.cs" />
     <Compile Include="Services\BlueprintServicePropertyTests.cs" />
     <Compile Include="Services\BlueprintDetailDedupPropertyTests.cs" />
+    <Compile Include="Services\BlueprintDetailDedupUnitTests.cs" />
     <Compile Include="Services\BlueprintLinkageServiceTests.cs" />
     <Compile Include="Services\BlueprintMutationGuardTests.cs" />
     <Compile Include="Services\PricingPlanServicePropertyTests.cs" />

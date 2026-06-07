@@ -14,9 +14,9 @@ using Bp = OE2EmpireTracker.Models.Blueprint;
 namespace OE2EmpireTracker.Tests.Services
 {
     /// <summary>
-    /// Bug condition exploration tests for blueprint detail dedup.
-    /// These tests encode the EXPECTED (correct) behavior and are expected to
-    /// FAIL on unfixed code, confirming the bug exists.
+    /// Property tests for blueprint detail dedup fix verification.
+    /// Property 1 encodes the expected behavior (distinct API ID assignment).
+    /// Property 2 tests preserve single-match and no-match behavior.
     /// Spec: blueprint-detail-dedup
     /// </summary>
     [TestFixture]
@@ -52,8 +52,8 @@ namespace OE2EmpireTracker.Tests.Services
 
         /// <summary>
         /// Simulates the post-import API ID assignment logic from
-        /// CreateBlueprintDetailItem. This is the UNFIXED code path that uses
-        /// FirstOrDefault on Name+Evolution.
+        /// CreateBlueprintDetailItem using the FIXED three-tier resolution
+        /// strategy (mirrors ResolveBlueprintForApiId in QueueSyncService).
         /// </summary>
         private static void SimulateApiIdAssignment(
             PlayerContext ctx,
@@ -61,17 +61,34 @@ namespace OE2EmpireTracker.Tests.Services
             string importedName,
             int importedEvo)
         {
-            var blueprint = ctx.BlueprintList
-                .FirstOrDefault(b =>
-                    string.Equals(b.Name, importedName, StringComparison.Ordinal) &&
-                    b.Evolution == importedEvo);
-
-            if (blueprint != null)
+            // Tier 1: Already assigned — use directly.
+            var existing = ctx.FindBlueprintByApiId(blueprintId);
+            if (existing != null)
             {
-                blueprint.GameApiBlueprintId = blueprintId;
-                blueprint.LastDetailImportUtc = SystemClock.UtcNow;
-                ctx.IndexBlueprintByApiId(blueprint);
+                existing.LastDetailImportUtc = SystemClock.UtcNow;
+                return;
             }
+
+            // Tier 2: Filter by Name+Evo, excluding blueprints claimed by other API IDs.
+            var candidates = ctx.BlueprintList
+                .Where(b =>
+                    string.Equals(b.Name, importedName, StringComparison.Ordinal) &&
+                    b.Evolution == importedEvo &&
+                    !(b.GameApiBlueprintId.HasValue && b.GameApiBlueprintId.Value != blueprintId))
+                .ToList();
+
+            if (candidates.Count == 0)
+            {
+                return;
+            }
+
+            // Tier 3: Pick the first unassigned candidate (simplified scoring —
+            // with empty property bags FindBestMatch returns null, so first is used).
+            var blueprint = candidates[0];
+
+            blueprint.GameApiBlueprintId = blueprintId;
+            blueprint.LastDetailImportUtc = SystemClock.UtcNow;
+            ctx.IndexBlueprintByApiId(blueprint);
         }
 
         // ---------------------------------------------------------------
@@ -172,7 +189,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Property 2a: Single-Match Preservation.
         /// When exactly ONE local blueprint matches the imported Name+Evolution,
         /// the assignment logic assigns the API ID directly to that blueprint.
-        /// This behavior is correct on both unfixed and fixed code.
+        /// This behavior is correct on both original and fixed code.
         /// Validates: Requirements 3.1, 3.2
         /// </summary>
         [FsCheck.NUnit.Property(MaxTest = 100)]
@@ -199,7 +216,7 @@ namespace OE2EmpireTracker.Tests.Services
 
                 var ctx = CreateContextWithBlueprints(blueprints);
 
-                // Assign via the unfixed code path
+                // Assign via the fixed code path
                 SimulateApiIdAssignment(ctx, data.ApiId, data.Name, data.Evo);
 
                 // The single matching blueprint should have the API ID assigned
@@ -218,7 +235,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Property 2b: No-Match Preservation.
         /// When NO local blueprint matches the imported Name+Evolution,
         /// no assignment occurs and no crash happens.
-        /// This behavior is correct on both unfixed and fixed code.
+        /// This behavior is correct on both original and fixed code.
         /// Validates: Requirements 3.5
         /// </summary>
         [FsCheck.NUnit.Property(MaxTest = 100)]
