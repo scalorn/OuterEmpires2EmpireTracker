@@ -80,8 +80,9 @@ namespace OE2EmpireTracker.Client
     {
         /// <summary>
         /// Gets or sets the cargo item identifier.
+        /// Maps to the API's "id" field in asset detail cargo responses.
         /// </summary>
-        [JsonProperty("cargoItemId")]
+        [JsonProperty("id")]
         public int CargoItemId { get; set; }
 
         /// <summary>
