@@ -235,50 +235,50 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 
 
 - [ ] 18. Property-based tests for work item completion
-  - [~] 18.1 Write property test: Error Isolation
+  - [-] 18.1 Write property test: Error Isolation
     - **Property 2: Error Isolation**
     - **Validates: Req 12, Criteria 12.1, 12.2**
     - Verify that injecting a JsonException in one work item does not prevent other work items from completing
     - Verify no WriteContext occurs after failed deserialization
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [~] 18.2 Write property test: No Data Loss on Error
+  - [-] 18.2 Write property test: No Data Loss on Error
     - **Property 3: No Data Loss on Error**
     - **Validates: Req 12, Criteria 12.3**
     - Verify local data remains in pre-call state when deserialization or merge throws
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [~] 18.3 Write property test: Context Closure Integrity
+  - [-] 18.3 Write property test: Context Closure Integrity
     - **Property 4: Context Closure Integrity**
     - **Validates: Req 14, Criteria 14.1, 14.4**
     - Verify all cascaded colony detail items receive the exact ColonyIdToUUIDMap from their parent ColonyList sync cycle
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [~] 18.4 Write property test: Event-After-Mutation
+  - [-] 18.4 Write property test: Event-After-Mutation
     - **Property 5: Event-After-Mutation**
     - **Validates: Req 11, Criteria 11.1, 11.2, 11.3, 11.4**
     - Verify data-changed events only fire after merge completes and WriteContext persists
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [~] 18.5 Write property test: Log Truncation
+  - [-] 18.5 Write property test: Log Truncation
     - **Property 6: Log Truncation**
     - **Validates: Req 12, Criteria 12.4**
     - Verify logged JSON bodies are always ≤500 characters
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [~] 18.6 Write property test: Fallback Resolution
+  - [-] 18.6 Write property test: Fallback Resolution
     - **Property 7: Fallback Resolution**
     - **Validates: Req 14, Criteria 14.2, 14.3**
     - Verify fallback to direct ColonyId lookup succeeds when map entry missing; returns empty (not throw) when unresolvable
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [~] 18.7 Write property test: Station/Ship Find-or-Create
+  - [-] 18.7 Write property test: Station/Ship Find-or-Create
     - **Property 8: Station/Ship Find-or-Create**
     - **Validates: Req 8, Criteria 8.5, 8.6**
     - Verify find-or-create sets GameLocationId on new entities, ensuring future lookups succeed without creation
     - _Output: OE2EmpireTracker.Tests/Services/QueueSyncServicePropertyTests.cs (modified)_
 
-  - [~] 18.8 Write property test: Consistent Cascading
+  - [-] 18.8 Write property test: Consistent Cascading
     - **Property 9: Consistent Cascading**
     - **Validates: Req 15, Criteria 15.1, 15.2, 15.3, 15.4, 15.5; Req 8, Criteria 8.7; Req 9, Criteria 9.4**
     - Verify `CascadeCargoDetailItems` produces the same work items regardless of calling context (AssetLocationDetail vs ShipCargo)
