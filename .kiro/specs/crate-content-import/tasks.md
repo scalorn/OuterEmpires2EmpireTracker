@@ -123,7 +123,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: Solution compiles; unit test QueueSyncService_CrateDetail_SkipsBlueprintExtractionWhenNone passes_
 
 - [ ] 7. Write unit tests for CrateContentImporter
-  - [~] 7.1 Write unit tests for JSON parsing and type mapping
+  - [-] 7.1 Write unit tests for JSON parsing and type mapping
     - Create `OE2EmpireTracker.Tests/Services/CrateContentImporterTests.cs`
     - Test: `CrateContentImporter_MalformedJson_NoException` — malformed JSON returns empty result, Success=false
     - Test: `CrateContentImporter_EmptyResponse_ReturnsEmptyBag` — empty cargo array produces empty Contents
@@ -136,7 +136,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: All 5 tests pass via vstest.console_
 
 
-  - [~] 7.2 Write unit tests for Contents Bag population and blueprint dual-tracking
+  - [-] 7.2 Write unit tests for Contents Bag population and blueprint dual-tracking
     - Test: `CrateContentImporter_ContentsBagReplaced` — Contents bag fully replaced (no merge with old contents)
     - Test: `CrateContentImporter_Blueprint_DualTracked` — blueprint items appear in Contents AND master list, BaseItemTypeID set
     - Test: `CrateContentImporter_NestedCrate_CycleDetected` — repeated crate GameItemId is skipped with warning

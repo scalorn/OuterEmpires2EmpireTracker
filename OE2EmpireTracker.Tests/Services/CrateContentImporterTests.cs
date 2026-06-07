@@ -343,6 +343,121 @@ namespace OE2EmpireTracker.Tests.Services
             PlayerContext.FilePath = originalPath;
         }
 
+        // -------------------------------------------------------------------
+        // Test: Unknown TypeC code assigns ItemType.None
+        // Validates: Req 2 AC5 (unknown TypeC → None)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that a cargo item with an unrecognized TypeC code is
+        /// assigned ItemType.None and the import does not fail.
+        /// </summary>
+        [Test]
+        public void CrateContentImporter_UnknownTypeC_AssignsNone()
+        {
+            var cargoItems = new List<GameApiAssetCargoItem>
+            {
+                MakeCargoItem(7001, "ZZ", "Unknown Widget"),
+            };
+
+            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
+            string json = JsonConvert.SerializeObject(response);
+
+            var parentBag = new ItemBag();
+            var visited = new HashSet<int>();
+
+            var result = importer.Import(json, 900, parentBag, "owner-uuid", visited);
+
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Imported, Is.EqualTo(1));
+            Assert.That(result.Failed, Is.EqualTo(0));
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.None], Is.EqualTo(1));
+
+            // Verify the item exists in the crate's Contents with ItemType.None
+            Item crateItem = null;
+            foreach (var kvp in parentBag.Items)
+            {
+                if (kvp.Value.GameItemId == 900)
+                {
+                    crateItem = kvp.Value;
+                    break;
+                }
+            }
+
+            Assert.That(crateItem, Is.Not.Null);
+            Assert.That(crateItem.Contents, Is.Not.Null);
+            Assert.That(crateItem.Contents.Count(), Is.EqualTo(1));
+
+            var contentItem = crateItem.Contents.Items.Values.First();
+            Assert.That(contentItem.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.None));
+            Assert.That(contentItem.Name, Is.EqualTo("Unknown Widget"));
+        }
+
+        // -------------------------------------------------------------------
+        // Test: ShipPart with missing damage fields is accepted
+        // Validates: Req 2 AC3 (preserve all fields), Req 8 AC3 (ShipParts)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that a ShipPart cargo item without HealthPercentage or
+        /// LastRepairHealthPercentage fields imports successfully with null
+        /// default values for those fields.
+        /// </summary>
+        [Test]
+        public void CrateContentImporter_MissingDamageFields_Accepted()
+        {
+            var cargoItems = new List<GameApiAssetCargoItem>
+            {
+                new GameApiAssetCargoItem
+                {
+                    CargoItemId = 8001,
+                    TypeC = "S",
+                    ResourceName = "Shield Generator Mk2",
+                    Amount = 1,
+                    ShipPartType = "Cg",
+                    Mass = 2.5,
+                    Volume = 1.0,
+                    // HealthPercentage intentionally not set (null)
+                    // LastRepairHealthPercentage intentionally not set (null)
+                },
+            };
+
+            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
+            string json = JsonConvert.SerializeObject(response);
+
+            var parentBag = new ItemBag();
+            var visited = new HashSet<int>();
+
+            var result = importer.Import(json, 901, parentBag, "owner-uuid", visited);
+
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Imported, Is.EqualTo(1));
+            Assert.That(result.Failed, Is.EqualTo(0));
+            Assert.That(result.CountsByType[ItemType.ItemTypeEnum.ShipPart], Is.EqualTo(1));
+
+            // Verify the ShipPart item exists with null damage fields
+            Item crateItem = null;
+            foreach (var kvp in parentBag.Items)
+            {
+                if (kvp.Value.GameItemId == 901)
+                {
+                    crateItem = kvp.Value;
+                    break;
+                }
+            }
+
+            Assert.That(crateItem, Is.Not.Null);
+            Assert.That(crateItem.Contents, Is.Not.Null);
+            Assert.That(crateItem.Contents.Count(), Is.EqualTo(1));
+
+            var shipPart = crateItem.Contents.Items.Values.First();
+            Assert.That(shipPart.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.ShipPart));
+            Assert.That(shipPart.Name, Is.EqualTo("Shield Generator Mk2"));
+            Assert.That(shipPart.HealthPercentage, Is.Null, "Missing damage field should default to null");
+            Assert.That(shipPart.LastRepairHealthPercentage, Is.Null, "Missing damage field should default to null");
+            Assert.That(shipPart.ShipPartType, Is.EqualTo("Cg"));
+        }
+
         private static GameApiAssetCargoItem MakeCargoItem(int id, string typeC, string name)
         {
             return new GameApiAssetCargoItem
