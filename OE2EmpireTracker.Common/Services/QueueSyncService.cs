@@ -849,23 +849,56 @@ namespace OE2EmpireTracker.Services
 
                     Log.Debug("ColonyList fetched successfully.");
 
-                    var response = JsonConvert.DeserializeObject<GameApiColonyListResponse>(result.Json);
-                    if (response?.Colonies == null || response.Colonies.Count == 0)
+                    try
                     {
+                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyListResponse>>(result.Json);
+                        var response = envelope?.Data;
+                        if (response?.Colonies == null || response.Colonies.Count == 0)
+                        {
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        var localColonies = _playerContext.GetMutableColoniesForOwner(
+                            _playerContext.CurrentPlayerUUID);
+
+                        var mergeResult = ColonyMergeService.MergeColonyList(
+                            response.Colonies,
+                            localColonies,
+                            _playerContext.CurrentPlayerUUID);
+
+                        var colonyIdMap = mergeResult.ColonyIdToUUIDMap;
+
+                        if (mergeResult.HasChanges)
+                        {
+                            _playerContext.WriteContext();
+                            _playerContext.OnColonyDataChanged(string.Empty);
+                            Log.Info("ColonyList: merge applied, colonies updated.");
+                        }
+                        else
+                        {
+                            Log.Debug("ColonyList: merge found no changes.");
+                        }
+
+                        var cascaded = response.Colonies
+                            .SelectMany(c => new[]
+                            {
+                                CreateColonySummaryItem(c.ColonyId),
+                                CreateColonyBuildingsItem(c.ColonyId, colonyIdMap),
+                                CreateColonyWarehouseItem(c.ColonyId, colonyIdMap),
+                                CreateColonyWorkersItem(c.ColonyId, colonyIdMap),
+                            })
+                            .ToArray();
+
+                        return cascaded;
+                    }
+                    catch (JsonException ex)
+                    {
+                        Log.Error(
+                            "ColonyList: failed to deserialize response: {0}\nBody (truncated): {1}",
+                            ex.Message,
+                            TruncateForLog(result.Json));
                         return Array.Empty<WorkItem>();
                     }
-
-                    var cascaded = response.Colonies
-                        .SelectMany(c => new[]
-                        {
-                            CreateColonySummaryItem(c.ColonyId),
-                            CreateColonyBuildingsItem(c.ColonyId),
-                            CreateColonyWarehouseItem(c.ColonyId),
-                            CreateColonyWorkersItem(c.ColonyId),
-                        })
-                        .ToArray();
-
-                    return cascaded;
                 },
             };
         }
@@ -978,6 +1011,114 @@ namespace OE2EmpireTracker.Services
         /// <param name="colonyId">The colony identifier.</param>
         /// <returns>A work item for colony workers retrieval.</returns>
         private WorkItem CreateColonyWorkersItem(int colonyId)
+        {
+            return new WorkItem
+            {
+                Label = "ColonyWorkers:" + colonyId,
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetColonyWorkersAsync(
+                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "ColonyWorkers:" + colonyId, ct)
+                        .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "ColonyWorkers:" + colonyId);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("ColonyWorkers:{0} fetched successfully.", colonyId);
+                    }
+                    else
+                    {
+                        Log.Warn("ColonyWorkers:{0} fetch failed: {1}", colonyId, result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the buildings for a specific colony,
+        /// using the ColonyId-to-UUID map from the parent ColonyList merge.
+        /// </summary>
+        /// <param name="colonyId">The colony identifier.</param>
+        /// <param name="colonyIdMap">The mapping of API ColonyId to local Colony UUID.</param>
+        /// <returns>A work item for colony buildings retrieval.</returns>
+        private WorkItem CreateColonyBuildingsItem(int colonyId, Dictionary<int, string> colonyIdMap)
+        {
+            return new WorkItem
+            {
+                Label = "ColonyBuildings:" + colonyId,
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetColonyBuildingsAsync(
+                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "ColonyBuildings:" + colonyId, ct)
+                        .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "ColonyBuildings:" + colonyId);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("ColonyBuildings:{0} fetched successfully.", colonyId);
+                    }
+                    else
+                    {
+                        Log.Warn("ColonyBuildings:{0} fetch failed: {1}", colonyId, result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the warehouse for a specific colony,
+        /// using the ColonyId-to-UUID map from the parent ColonyList merge.
+        /// </summary>
+        /// <param name="colonyId">The colony identifier.</param>
+        /// <param name="colonyIdMap">The mapping of API ColonyId to local Colony UUID.</param>
+        /// <returns>A work item for colony warehouse retrieval.</returns>
+        private WorkItem CreateColonyWarehouseItem(int colonyId, Dictionary<int, string> colonyIdMap)
+        {
+            return new WorkItem
+            {
+                Label = "ColonyWarehouse:" + colonyId,
+                ExecuteAsync = async ct =>
+                {
+                    var result = await _apiClient.GetColonyWarehouseAsync(
+                        _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
+
+                    await ThrowIfUnauthorizedAsync(result, "ColonyWarehouse:" + colonyId, ct)
+                        .ConfigureAwait(false);
+
+                    ThrowIfRateLimited(result, "ColonyWarehouse:" + colonyId);
+
+                    if (result.Success)
+                    {
+                        Log.Debug("ColonyWarehouse:{0} fetched successfully.", colonyId);
+                    }
+                    else
+                    {
+                        Log.Warn("ColonyWarehouse:{0} fetch failed: {1}", colonyId, result.Json);
+                    }
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches the workers for a specific colony,
+        /// using the ColonyId-to-UUID map from the parent ColonyList merge.
+        /// </summary>
+        /// <param name="colonyId">The colony identifier.</param>
+        /// <param name="colonyIdMap">The mapping of API ColonyId to local Colony UUID.</param>
+        /// <returns>A work item for colony workers retrieval.</returns>
+        private WorkItem CreateColonyWorkersItem(int colonyId, Dictionary<int, string> colonyIdMap)
         {
             return new WorkItem
             {

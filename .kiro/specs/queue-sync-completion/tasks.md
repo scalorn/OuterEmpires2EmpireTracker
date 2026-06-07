@@ -6,7 +6,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 
 ## Tasks
 
-- [ ] 1. Extract ProfileMergeService from GameApiSyncScheduler
+- [x] 1. Extract ProfileMergeService from GameApiSyncScheduler
   - [x] 1.1 Create ProfileMergeService static class
     - Extract `MergeProfileData`, `MergeRank`, and `MergeSkills` from `GameApiSyncScheduler.cs` into new `OE2EmpireTracker.Common/Services/ProfileMergeService.cs`
     - Pure extraction — no logic changes, just move the methods
@@ -25,7 +25,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: GameApiSyncScheduler.cs (modified)_
     - _Verification: getDiagnostics clean, existing GameApiSyncScheduler tests still pass_
 
-  - [-] 1.3 Write property tests for ProfileMergeService
+  - [x] 1.3 Write property tests for ProfileMergeService
     - **Property 1: Idempotent Merge** — applying same response twice yields identical state
     - **Validates: Req 1 Criteria 1.2, 1.3, 1.4, 1.5**
     - Test that "API wins" fields overwrite local, local-only fields (TrainingStarted, CompletionTime) are preserved
@@ -59,7 +59,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Verification: getDiagnostics clean, solution builds_
 
 - [ ] 5. Complete ColonyList work item with context passing
-  - [~] 5.1 Add MergeColonyList call and ColonyIdToUUIDMap capture to CreateColonyListItem
+  - [x] 5.1 Add MergeColonyList call and ColonyIdToUUIDMap capture to CreateColonyListItem
     - After deserializing the colony list response, call `ColonyMergeService.MergeColonyList`
     - Capture `ColonyMergeResult.ColonyIdToUUIDMap` in a local variable
     - If merge `HasChanges`, raise `ColonyDataChanged` and call `WriteContext()`
