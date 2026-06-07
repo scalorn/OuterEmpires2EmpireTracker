@@ -1176,7 +1176,7 @@ namespace OE2EmpireTracker.Services
                 return false;
             }
 
-            var station = localStations.FirstOrDefault(s => s.GameLocationId == location.LocationId);
+            var station = GetPlayerContext()?.FindStationByGameLocationId(location.LocationId);
             if (station == null)
             {
                 // Fallback: match by parsed name for pre-existing manually-created stations
@@ -1191,6 +1191,7 @@ namespace OE2EmpireTracker.Services
                     station.GameLocationId = location.LocationId;
                     station.SystemName = location.SystemName;
                     station.SystemId = location.SystemId;
+                    GetPlayerContext()?.IndexStationByGameLocationId(station);
                     Log.Info(
                         "Asset sync: adopted existing station '{0}' UUID={1} (set locationId={2})",
                         station.Name,
@@ -1248,7 +1249,7 @@ namespace OE2EmpireTracker.Services
                 return false;
             }
 
-            var ship = localShips.FirstOrDefault(s => s.GameLocationId == location.LocationId);
+            var ship = GetPlayerContext()?.FindShipByGameLocationId(location.LocationId);
             if (ship == null)
             {
                 // Fallback: match by parsed name for pre-existing manually-created ships
@@ -1260,6 +1261,7 @@ namespace OE2EmpireTracker.Services
                 if (ship != null)
                 {
                     ship.GameLocationId = location.LocationId;
+                    GetPlayerContext()?.IndexShipByGameLocationId(ship);
                     Log.Info(
                         "Asset sync: adopted existing ship '{0}' UUID={1} (set locationId={2})",
                         ship.Name,

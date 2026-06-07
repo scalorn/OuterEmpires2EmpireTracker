@@ -100,7 +100,7 @@ Fix the duplicate Name+Evolution API ID stomping bug in `CreateBlueprintDetailIt
   - Verification: all unit tests pass via vstest.console
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [~] 5. Checkpoint - Ensure all tests pass
+- [x] 5. Checkpoint - Ensure all tests pass
   - Run full test suite: vstest.console against OE2EmpireTracker.Tests.dll
   - Run `node .kiro/tools/audit.js` — zero findings
   - Build solution with zero errors and zero warnings

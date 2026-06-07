@@ -400,18 +400,19 @@ namespace OE2EmpireTracker.Services
         /// <returns>The matched or newly created ship.</returns>
         private Ship FindOrCreateShip(int gameLocationId, string planetName)
         {
-            var ships = _playerContext.GetMutableShipsForOwner(_playerContext.CurrentPlayerUUID);
-
-            var ship = ships.FirstOrDefault(s => s.GameLocationId == gameLocationId);
+            var ship = _playerContext.FindShipByGameLocationId(gameLocationId);
             if (ship != null)
             {
                 return ship;
             }
 
+            var ships = _playerContext.GetMutableShipsForOwner(_playerContext.CurrentPlayerUUID);
+
             ship = ships.FirstOrDefault(s => string.Equals(s.Name, planetName, StringComparison.OrdinalIgnoreCase));
             if (ship != null)
             {
                 ship.GameLocationId = gameLocationId;
+                _playerContext.IndexShipByGameLocationId(ship);
                 Log.Info("FindOrCreateShip: matched ship '{0}' by name, set GameLocationId={1}.", planetName, gameLocationId);
                 return ship;
             }
@@ -742,8 +743,7 @@ namespace OE2EmpireTracker.Services
                             return Array.Empty<WorkItem>();
                         }
 
-                        var ships = _playerContext.GetMutableShipsForOwner(_playerContext.CurrentPlayerUUID);
-                        var ship = ships.FirstOrDefault(s => s.GameLocationId == config.ShipId);
+                        var ship = _playerContext.FindShipByGameLocationId(config.ShipId);
                         if (ship == null)
                         {
                             ship = new Ship
@@ -1725,15 +1725,15 @@ namespace OE2EmpireTracker.Services
         /// <returns>The matched or newly created station.</returns>
         private Station FindOrCreateStation(int gameLocationId, string planetName, string systemName)
         {
-            string playerUUID = _playerContext.CurrentPlayerUUID;
-            var localStations = _playerContext.GetMutableStationsForOwner(playerUUID);
-
-            // Step 1: Match by GameLocationId
-            var station = localStations.FirstOrDefault(s => s.GameLocationId == gameLocationId);
+            // Step 1: Match by GameLocationId via index (O(1))
+            var station = _playerContext.FindStationByGameLocationId(gameLocationId);
             if (station != null)
             {
                 return station;
             }
+
+            string playerUUID = _playerContext.CurrentPlayerUUID;
+            var localStations = _playerContext.GetMutableStationsForOwner(playerUUID);
 
             // Step 2: Name-based fallback for pre-existing manually-created stations
             station = localStations.FirstOrDefault(s =>
@@ -1744,6 +1744,7 @@ namespace OE2EmpireTracker.Services
             {
                 station.GameLocationId = gameLocationId;
                 station.SystemName = systemName;
+                _playerContext.IndexStationByGameLocationId(station);
                 Log.Info(
                     "FindOrCreateStation: adopted existing station '{0}' UUID={1} (set GameLocationId={2})",
                     station.Name,

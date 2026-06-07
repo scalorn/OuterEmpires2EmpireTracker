@@ -71,6 +71,8 @@ namespace OE2EmpireTracker.Services
         private Dictionary<int, MailMessage> _mailMessageCache;
         private Dictionary<int, Blueprint> _blueprintByApiIdIndex = new Dictionary<int, Blueprint>();
         private Dictionary<int, Survey> _surveyByApiIdIndex = new Dictionary<int, Survey>();
+        private Dictionary<int, Ship> _shipByGameLocationIdIndex = new Dictionary<int, Ship>();
+        private Dictionary<int, Station> _stationByGameLocationIdIndex = new Dictionary<int, Station>();
 
         /// <summary>
         /// Internal constructor for test infrastructure. Accepts a pre-parsed
@@ -999,6 +1001,72 @@ namespace OE2EmpireTracker.Services
             }
         }
 
+        /// <summary>
+        /// Returns the Ship with the given GameLocationId, or null if not found.
+        /// </summary>
+        public Ship FindShipByGameLocationId(int gameLocationId)
+        {
+            lock (_listLock)
+            {
+                if (_shipByGameLocationIdIndex.TryGetValue(gameLocationId, out var match))
+                {
+                    return match;
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Upserts the given ship into the GameLocationId index.
+        /// Call after setting <see cref="Ship.GameLocationId"/>.
+        /// </summary>
+        public void IndexShipByGameLocationId(Ship ship)
+        {
+            if (!ship.GameLocationId.HasValue || ship.GameLocationId.Value == 0)
+            {
+                return;
+            }
+
+            lock (_listLock)
+            {
+                _shipByGameLocationIdIndex[ship.GameLocationId.Value] = ship;
+            }
+        }
+
+        /// <summary>
+        /// Returns the Station with the given GameLocationId, or null if not found.
+        /// </summary>
+        public Station FindStationByGameLocationId(int gameLocationId)
+        {
+            lock (_listLock)
+            {
+                if (_stationByGameLocationIdIndex.TryGetValue(gameLocationId, out var match))
+                {
+                    return match;
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Upserts the given station into the GameLocationId index.
+        /// Call after setting <see cref="Station.GameLocationId"/>.
+        /// </summary>
+        public void IndexStationByGameLocationId(Station station)
+        {
+            if (!station.GameLocationId.HasValue || station.GameLocationId.Value == 0)
+            {
+                return;
+            }
+
+            lock (_listLock)
+            {
+                _stationByGameLocationIdIndex[station.GameLocationId.Value] = station;
+            }
+        }
+
         public void AddSurvey(Survey item)
         {
             lock (_listLock)
@@ -1237,6 +1305,14 @@ namespace OE2EmpireTracker.Services
             }
 
             _shipList = deduped;
+            _shipByGameLocationIdIndex = new Dictionary<int, Ship>();
+            foreach (var ship in _shipList)
+            {
+                if (ship.GameLocationId.HasValue && ship.GameLocationId.Value != 0)
+                {
+                    _shipByGameLocationIdIndex[ship.GameLocationId.Value] = ship;
+                }
+            }
         }
 
         public void InitStations(PlayerRoot playerRoot)
@@ -1263,6 +1339,14 @@ namespace OE2EmpireTracker.Services
             }
 
             _stationList = deduped;
+            _stationByGameLocationIdIndex = new Dictionary<int, Station>();
+            foreach (var station in _stationList)
+            {
+                if (station.GameLocationId.HasValue && station.GameLocationId.Value != 0)
+                {
+                    _stationByGameLocationIdIndex[station.GameLocationId.Value] = station;
+                }
+            }
         }
 
         public void InitMarketListings(PlayerRoot playerRoot)
@@ -1713,6 +1797,8 @@ namespace OE2EmpireTracker.Services
                 _stationList.Add(item);
                 if (_stationCache != null && item.UUID != null)
                     _stationCache[item.UUID] = item;
+                if (item.GameLocationId.HasValue && item.GameLocationId.Value != 0)
+                    _stationByGameLocationIdIndex[item.GameLocationId.Value] = item;
             }
         }
 
@@ -1723,6 +1809,12 @@ namespace OE2EmpireTracker.Services
                 _stationList.Remove(item);
                 if (_stationCache != null && item.UUID != null)
                     _stationCache.Remove(item.UUID);
+                if (item.GameLocationId.HasValue && item.GameLocationId.Value != 0
+                    && _stationByGameLocationIdIndex.TryGetValue(item.GameLocationId.Value, out var indexed)
+                    && ReferenceEquals(indexed, item))
+                {
+                    _stationByGameLocationIdIndex.Remove(item.GameLocationId.Value);
+                }
             }
         }
 
@@ -1781,6 +1873,8 @@ namespace OE2EmpireTracker.Services
                 _shipList.Add(item);
                 if (_shipCache != null && item.UUID != null)
                     _shipCache[item.UUID] = item;
+                if (item.GameLocationId.HasValue && item.GameLocationId.Value != 0)
+                    _shipByGameLocationIdIndex[item.GameLocationId.Value] = item;
             }
         }
 
@@ -1791,6 +1885,12 @@ namespace OE2EmpireTracker.Services
                 _shipList.Remove(item);
                 if (_shipCache != null && item.UUID != null)
                     _shipCache.Remove(item.UUID);
+                if (item.GameLocationId.HasValue && item.GameLocationId.Value != 0
+                    && _shipByGameLocationIdIndex.TryGetValue(item.GameLocationId.Value, out var indexed)
+                    && ReferenceEquals(indexed, item))
+                {
+                    _shipByGameLocationIdIndex.Remove(item.GameLocationId.Value);
+                }
             }
         }
 
