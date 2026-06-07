@@ -31,7 +31,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Common/Services/CrateContentImporter.cs_
     - _Verification: Solution compiles; unit test CrateContentImporter_MalformedJson_NoException passes_
 
-  - [~] 2.2 Implement item creation with full field preservation using AssetMergeService
+  - [x] 2.2 Implement item creation with full field preservation using AssetMergeService
     - Call `AssetMergeService.MapAssetTypeC(typeC)` for type resolution
     - Call `AssetMergeService.CreateAssetItem(apiItem, mappedType)` for Item creation
     - Handle null mapping result: assign ItemType.None, log warning with unrecognized code

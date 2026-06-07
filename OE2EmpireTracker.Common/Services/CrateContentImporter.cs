@@ -129,6 +129,8 @@ namespace OE2EmpireTracker.Services
             result.TotalItems = response.Cargo.Count;
             Log.Info("CrateContentImporter: starting import for crate GameItemId={0}, cargo count={1}", crateGameItemId, response.Cargo.Count);
 
+            var createdItems = new List<Item>();
+
             for (int i = 0; i < response.Cargo.Count; i++)
             {
                 try
@@ -136,6 +138,24 @@ namespace OE2EmpireTracker.Services
                     var cargoItem = response.Cargo[i];
                     var mappedType = AssetMergeService.MapAssetTypeC(cargoItem.TypeC);
                     Log.Debug("CrateContentImporter: item[{0}] TypeC='{1}' mapped to ItemType={2}", i, cargoItem.TypeC, mappedType);
+
+                    if (mappedType == ItemType.ItemTypeEnum.None)
+                    {
+                        Log.Warn("CrateContentImporter: unrecognized TypeC='{0}' for item[{1}] '{2}' in crate GameItemId={3}, assigning ItemType.None", cargoItem.TypeC, i, cargoItem.ResourceName, crateGameItemId);
+                    }
+
+                    var item = AssetMergeService.CreateAssetItem(cargoItem, mappedType);
+                    createdItems.Add(item);
+                    result.Imported++;
+
+                    if (result.CountsByType.ContainsKey(mappedType))
+                    {
+                        result.CountsByType[mappedType]++;
+                    }
+                    else
+                    {
+                        result.CountsByType[mappedType] = 1;
+                    }
                 }
                 catch (Exception ex)
                 {
