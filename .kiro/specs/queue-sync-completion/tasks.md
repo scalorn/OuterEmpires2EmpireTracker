@@ -182,7 +182,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Verification: getDiagnostics clean, solution builds_
 
 - [ ] 13. Complete ShipConfiguration work item
-  - [-] 13.1 Add deserialization and component mapping to CreateShipConfigItem
+  - [x] 13.1 Add deserialization and component mapping to CreateShipConfigItem
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiShipConfigurationResponse>`
     - Match or create Ship by `ShipId` / GameLocationId from response
     - Map each `GameApiShipComponent` to local ship component representation (BlueprintType, Name, Evolution, HealthPercentage, LastRepairHealthPercentage)
