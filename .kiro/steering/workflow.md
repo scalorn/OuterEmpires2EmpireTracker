@@ -38,8 +38,8 @@
 - **Full test verification before commit requires ALL THREE suites:**
   1. `dotnet test OE2EmpireTracker.Server.Tests --no-build` (server integration + property tests) — timeout: 180000
   2. `npx vitest run` from OE2EmpireTracker.Web/ (TypeScript unit + property tests) — timeout: 60000
-  3. `vstest.console` against OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll (WinForms NUnit tests) — **timeout: 960000 (16 minutes)** — the full suite has slow property tests that use real rate limiters
-- **Do NOT rely on postTaskExecution hooks for WinForms test verification.** The hook timeout is too short for the 14-minute full suite. You MUST run vstest.console manually with a 960000ms timeout before committing. The post-task hooks only catch server test and build failures.
+  3. `vstest.console` against OE2EmpireTracker.Tests/bin/Debug/OE2EmpireTracker.Tests.dll (WinForms NUnit tests) — **timeout: 600000 (10 minutes)**
+- **Do NOT rely on postTaskExecution hooks for WinForms test verification.** The hook timeout is too short for the full suite. You MUST run vstest.console manually with a 600000ms timeout before committing. The post-task hooks only catch server test and build failures.
 - **After running vstest.console, ALWAYS run `node .kiro/tools/trxparse.js`** to check results. Do not read raw console output — it gets truncated on long runs.
 - **Frontend build verification: Use `npm run build` from OE2EmpireTracker.Web/, NOT `tsc --noEmit` alone.** The build script runs `generate-types` first (regenerates generated.ts from server schema), then `tsc --noEmit`, then `vite build`. Running `tsc --noEmit` alone skips type generation and may miss type conflicts with the generated file.
 - **If a postTaskExecution hook fails (exit code 1), you MUST investigate before proceeding.** Run the command manually to see full output. Never dismiss hook failures.

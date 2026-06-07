@@ -128,12 +128,12 @@ If any test fails, investigate and fix it. Do NOT dismiss failures as "pre-exist
 
 ## Test Timeouts
 
-### WinForms test suite takes 14+ minutes — use 960000ms timeout
+### WinForms test suite needs 600000ms timeout (10 minutes)
 
 **What went wrong:** The agent ran vstest.console with a 180000ms (3-minute) timeout. The test suite timed out, and the agent dismissed the timeout as "infrastructure issue" and committed without seeing the 3 test failures.
 
-**Root cause:** The test suite includes property tests (`ErrorIsolationPropertyTests`, `GameApiRequestQueuePropertyTests.RateGovernorThroughput`) that use real rate limiters with token-bucket delays. These tests run 100 iterations × real wait times = 5+ minutes just for those two test classes.
+**Root cause:** Property tests in `GameApiRequestQueue` were using real `Task.Delay` waits in the token bucket rate limiter. This was fixed by adding `SystemClock.DelayAsync` (instant-advance in tests), reducing those tests from 5 minutes to under 1 second.
 
-**Rule:** Always use `timeout: 960000` (16 minutes) when running the full WinForms test suite via vstest.console. If the timeout is hit, investigate — don't dismiss it. After tests complete, ALWAYS run `node .kiro/tools/trxparse.js` to check the TRX results file rather than reading console output.
+**Rule:** Always use `timeout: 600000` (10 minutes) when running the full WinForms test suite via vstest.console. If the timeout is hit, investigate — don't dismiss it. After tests complete, ALWAYS run `node .kiro/tools/trxparse.js` to check the TRX results file rather than reading console output.
 
-**Hook limitation:** The postTaskExecution hooks cannot have custom timeouts and will time out on this suite. Do NOT rely on them for WinForms test verification. Always run vstest.console manually before committing.
+**For new tests using GameApiRequestQueue:** Always use `SystemClock.FreezeAt(...)` + `SystemClock.EnableInstantDelay()` to avoid wall-clock waits in the token bucket governor.
