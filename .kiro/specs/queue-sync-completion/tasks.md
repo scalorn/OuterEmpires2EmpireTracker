@@ -200,7 +200,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 
 
 - [ ] 15. Wire UI event raising for asset merges
-  - [-] 15.1 Add event raising after asset cargo merges in CreateAssetLocationDetailItem
+  - [x] 15.1 Add event raising after asset cargo merges in CreateAssetLocationDetailItem
     - Raise `ColonyDataChanged` when location type "Co" merge succeeds
     - Raise `StationDataChanged` when location type "St" merge succeeds
     - Raise `ShipDataChanged` when location type "Sh" merge succeeds
