@@ -65,47 +65,47 @@ namespace OE2EmpireTracker.Services
 
             // Handle the ambiguous "Sc" vs "S" — "Sc" must be checked before "S"
             // since case-insensitive "S" would not conflict with "Sc" (different lengths).
-            if (string.Equals(trimmed, "Sc", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(trimmed, AssetTypeCodes.Survey, StringComparison.OrdinalIgnoreCase))
             {
                 return ItemType.ItemTypeEnum.Survey;
             }
 
-            if (string.Equals(trimmed, "R", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(trimmed, AssetTypeCodes.Resource, StringComparison.OrdinalIgnoreCase))
             {
                 return ItemType.ItemTypeEnum.Resource;
             }
 
-            if (string.Equals(trimmed, "C", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(trimmed, AssetTypeCodes.Commodity, StringComparison.OrdinalIgnoreCase))
             {
                 return ItemType.ItemTypeEnum.Commodity;
             }
 
-            if (string.Equals(trimmed, "F", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(trimmed, AssetTypeCodes.Flatpack, StringComparison.OrdinalIgnoreCase))
             {
                 return ItemType.ItemTypeEnum.Flatpack;
             }
 
-            if (string.Equals(trimmed, "Bp", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(trimmed, AssetTypeCodes.Blueprint, StringComparison.OrdinalIgnoreCase))
             {
                 return ItemType.ItemTypeEnum.Blueprint;
             }
 
-            if (string.Equals(trimmed, "S", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(trimmed, AssetTypeCodes.ShipPart, StringComparison.OrdinalIgnoreCase))
             {
                 return ItemType.ItemTypeEnum.ShipPart;
             }
 
-            if (string.Equals(trimmed, "W", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(trimmed, AssetTypeCodes.Workforce, StringComparison.OrdinalIgnoreCase))
             {
                 return ItemType.ItemTypeEnum.WorkDetail;
             }
 
-            if (string.Equals(trimmed, "A", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(trimmed, AssetTypeCodes.Ammunition, StringComparison.OrdinalIgnoreCase))
             {
                 return ItemType.ItemTypeEnum.Munition;
             }
 
-            if (string.Equals(trimmed, "Cr", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(trimmed, AssetTypeCodes.Crate, StringComparison.OrdinalIgnoreCase))
             {
                 return ItemType.ItemTypeEnum.Crate;
             }
@@ -151,7 +151,7 @@ namespace OE2EmpireTracker.Services
             string purityValue = match.Groups[2].Value;
 
             string purity;
-            if (string.Equals(refinementState, "Refined", System.StringComparison.OrdinalIgnoreCase) &&
+            if (string.Equals(refinementState, GameConstants.PurityRefined, System.StringComparison.OrdinalIgnoreCase) &&
                 string.IsNullOrEmpty(purityValue))
             {
                 // "Alkali Inorganics (Refined)" -> purity = "Refined"

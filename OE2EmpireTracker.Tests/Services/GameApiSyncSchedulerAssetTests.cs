@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -134,8 +135,8 @@ namespace OE2EmpireTracker.Tests.Services
         public async Task SyncAssets_Detail401_InvalidatesCredentialsAndAbortsCycle()
         {
             var locationsResponse = BuildLocationsResponse(
-                new LocationDef(1, "Co", "Colony A", 5),
-                new LocationDef(2, "Co", "Colony B", 3));
+                new LocationDef(1, AssetTypeCodes.Colony, "Colony A", 5),
+                new LocationDef(2, AssetTypeCodes.Colony, "Colony B", 3));
 
             string locationsJson = JsonConvert.SerializeObject(locationsResponse);
             int requestCount = 0;
@@ -199,8 +200,8 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var locationsResponse = BuildLocationsResponse(
-                new LocationDef(1, "Co", "Colony A", 5),
-                new LocationDef(2, "Co", "Colony B", 3));
+                new LocationDef(1, AssetTypeCodes.Colony, "Colony A", 5),
+                new LocationDef(2, AssetTypeCodes.Colony, "Colony B", 3));
 
             string locationsJson = JsonConvert.SerializeObject(locationsResponse);
 
@@ -216,7 +217,7 @@ namespace OE2EmpireTracker.Tests.Services
                         {
                             CargoItemId = 100,
                             ResourceName = "Iron",
-                            TypeC = "R",
+                            TypeC = AssetTypeCodes.Resource,
                             Amount = 50,
                         },
                     },
@@ -267,9 +268,9 @@ namespace OE2EmpireTracker.Tests.Services
         public async Task SyncAssets_CircuitBreakerOpen_AbortsCycleGracefully()
         {
             var locationsResponse = BuildLocationsResponse(
-                new LocationDef(1, "Co", "Colony A", 5),
-                new LocationDef(2, "Co", "Colony B", 3),
-                new LocationDef(3, "Co", "Colony C", 2));
+                new LocationDef(1, AssetTypeCodes.Colony, "Colony A", 5),
+                new LocationDef(2, AssetTypeCodes.Colony, "Colony B", 3),
+                new LocationDef(3, AssetTypeCodes.Colony, "Colony C", 2));
 
             string locationsJson = JsonConvert.SerializeObject(locationsResponse);
 
@@ -313,8 +314,8 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var locationsResponse = BuildLocationsResponse(
-                new LocationDef(1, "Co", "Colony A", 5),
-                new LocationDef(2, "Co", "Colony B", 3));
+                new LocationDef(1, AssetTypeCodes.Colony, "Colony A", 5),
+                new LocationDef(2, AssetTypeCodes.Colony, "Colony B", 3));
 
             string locationsJson = JsonConvert.SerializeObject(locationsResponse);
 
@@ -330,7 +331,7 @@ namespace OE2EmpireTracker.Tests.Services
                         {
                             CargoItemId = 200,
                             ResourceName = "Copper",
-                            TypeC = "R",
+                            TypeC = AssetTypeCodes.Resource,
                             Amount = 25,
                         },
                     },
@@ -400,9 +401,9 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var locationsResponse = BuildLocationsResponse(
-                new LocationDef(1, "Co", "Empty Colony", 0),
-                new LocationDef(2, "Co", "Colony B", 3),
-                new LocationDef(3, "St", "Empty Station", 0));
+                new LocationDef(1, AssetTypeCodes.Colony, "Empty Colony", 0),
+                new LocationDef(2, AssetTypeCodes.Colony, "Colony B", 3),
+                new LocationDef(3, AssetTypeCodes.Station, "Empty Station", 0));
 
             string locationsJson = JsonConvert.SerializeObject(locationsResponse);
 
@@ -418,7 +419,7 @@ namespace OE2EmpireTracker.Tests.Services
                         {
                             CargoItemId = 300,
                             ResourceName = "Gold",
-                            TypeC = "R",
+                            TypeC = AssetTypeCodes.Resource,
                             Amount = 10,
                         },
                     },

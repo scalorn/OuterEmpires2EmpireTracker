@@ -665,8 +665,8 @@ namespace OE2EmpireTracker.Services
                 return false;
             }
 
-            bool isBlueprintType = string.Equals(typeC, "Bp", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(typeC, "S", StringComparison.OrdinalIgnoreCase);
+            bool isBlueprintType = string.Equals(typeC, AssetTypeCodes.Blueprint, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(typeC, AssetTypeCodes.ShipPart, StringComparison.OrdinalIgnoreCase);
 
             return isBlueprintType && apiItem.Properties != null && apiItem.Properties.Count > 0;
         }
@@ -676,7 +676,7 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         private static bool IsSurveyItem(GameApiAssetCargoItem apiItem)
         {
-            return string.Equals(apiItem.TypeC?.Trim(), "Sc", StringComparison.OrdinalIgnoreCase);
+            return string.Equals(apiItem.TypeC?.Trim(), AssetTypeCodes.Survey, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

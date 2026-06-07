@@ -800,7 +800,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new GameApiAssetCargoItem
                 {
                     ResourceName = "Iron",
-                    TypeC = "R",
+                    TypeC = AssetTypeCodes.Resource,
                     Amount = 500,
                     CargoItemId = 42,
                 },
@@ -847,7 +847,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new GameApiAssetCargoItem
                 {
                     ResourceName = "Iron",
-                    TypeC = "R",
+                    TypeC = AssetTypeCodes.Resource,
                     Amount = 750,
                     CargoItemId = 101,
                 },
@@ -889,7 +889,7 @@ namespace OE2EmpireTracker.Tests.Services
                 new GameApiAssetCargoItem
                 {
                     ResourceName = "Copper",
-                    TypeC = "R",
+                    TypeC = AssetTypeCodes.Resource,
                     Amount = 0,
                     CargoItemId = 102,
                 },
@@ -932,7 +932,7 @@ namespace OE2EmpireTracker.Tests.Services
                 {
                     CargoItemId = 9999,
                     ResourceName = "Silver",
-                    TypeC = "R",
+                    TypeC = AssetTypeCodes.Resource,
                     Amount = 300,
                 },
             };
@@ -982,12 +982,12 @@ namespace OE2EmpireTracker.Tests.Services
         // Validates: Requirements 9.3 (TypeC mapping)
         // -------------------------------------------------------------------
 
-        [TestCase("R", ItemType.ItemTypeEnum.Resource)]
-        [TestCase("Sc", ItemType.ItemTypeEnum.Survey)]
-        [TestCase("W", ItemType.ItemTypeEnum.WorkDetail)]
-        [TestCase("S", ItemType.ItemTypeEnum.ShipPart)]
-        [TestCase("Bp", ItemType.ItemTypeEnum.Blueprint)]
-        [TestCase("F", ItemType.ItemTypeEnum.Flatpack)]
+        [TestCase(AssetTypeCodes.Resource, ItemType.ItemTypeEnum.Resource)]
+        [TestCase(AssetTypeCodes.Survey, ItemType.ItemTypeEnum.Survey)]
+        [TestCase(AssetTypeCodes.Workforce, ItemType.ItemTypeEnum.WorkDetail)]
+        [TestCase(AssetTypeCodes.ShipPart, ItemType.ItemTypeEnum.ShipPart)]
+        [TestCase(AssetTypeCodes.Blueprint, ItemType.ItemTypeEnum.Blueprint)]
+        [TestCase(AssetTypeCodes.Flatpack, ItemType.ItemTypeEnum.Flatpack)]
         public void MergeWarehouse_TypeCMapping_AllKnownCodes(
             string typeC,
             ItemType.ItemTypeEnum expectedType)

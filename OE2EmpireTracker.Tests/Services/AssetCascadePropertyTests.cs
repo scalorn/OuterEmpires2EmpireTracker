@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FsCheck;
 using NUnit.Framework;
+using OE2EmpireTracker.Constants;
 
 namespace OE2EmpireTracker.Tests.Services
 {
@@ -31,7 +32,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// <returns>A generator producing lists of 0 to 100 asset location tuples.</returns>
         private static Gen<List<AssetLocationInput>> ValidAssetLocationListGen()
         {
-            var locationTypes = new[] { "Co", "St", "Sh", "As" };
+            var locationTypes = new[] { AssetTypeCodes.Colony, AssetTypeCodes.Station, AssetTypeCodes.Ship, "As" };
 
             return from count in Gen.Choose(0, 100)
                    from ids in Gen.ListOf(count, Gen.Choose(1, 999999))

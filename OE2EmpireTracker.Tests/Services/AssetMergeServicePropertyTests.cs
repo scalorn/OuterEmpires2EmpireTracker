@@ -8,6 +8,7 @@ using System.Linq;
 using FsCheck;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
@@ -24,7 +25,7 @@ namespace OE2EmpireTracker.Tests.Services
         // Known TypeC codes and their expected mappings
         private static readonly string[] KnownTypeCCodes = new[]
         {
-            "R", "C", "F", "Bp", "S", "Sc", "W", "SH", "A", "Sh", "Cr",
+            AssetTypeCodes.Resource, AssetTypeCodes.Commodity, AssetTypeCodes.Flatpack, AssetTypeCodes.Blueprint, AssetTypeCodes.ShipPart, AssetTypeCodes.Survey, AssetTypeCodes.Workforce, AssetTypeCodes.ShipHull, AssetTypeCodes.Ammunition, AssetTypeCodes.Share, AssetTypeCodes.Crate,
         };
 
         private static readonly string[] PurityDescriptors = new[]

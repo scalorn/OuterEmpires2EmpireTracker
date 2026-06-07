@@ -13,6 +13,7 @@ using System.Threading;
 using System.Windows.Forms;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Persistence;
@@ -357,7 +358,7 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
                 return;
             }
 
-            string locationType = this.cboTestLocationType.SelectedItem?.ToString() ?? "Co";
+            string locationType = this.cboTestLocationType.SelectedItem?.ToString() ?? AssetTypeCodes.Colony;
             this.btnTestFetch.Enabled = false;
             this.txtTestResult.Text = "Fetching...";
 

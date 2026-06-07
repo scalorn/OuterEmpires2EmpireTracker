@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using Polly.CircuitBreaker;
 
@@ -1102,17 +1103,17 @@ namespace OE2EmpireTracker.Services
             List<Ship> localShips,
             string playerUUID)
         {
-            if (string.Equals(location.LocationType, "Co", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(location.LocationType, AssetTypeCodes.Colony, StringComparison.OrdinalIgnoreCase))
             {
                 return MergeColonyLocation(location, cargoItems, localColonies);
             }
 
-            if (string.Equals(location.LocationType, "St", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(location.LocationType, AssetTypeCodes.Station, StringComparison.OrdinalIgnoreCase))
             {
                 return MergeStationLocation(location, cargoItems, localStations, playerUUID);
             }
 
-            if (string.Equals(location.LocationType, "Sh", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(location.LocationType, AssetTypeCodes.Ship, StringComparison.OrdinalIgnoreCase))
             {
                 return MergeShipLocation(location, cargoItems, localShips);
             }

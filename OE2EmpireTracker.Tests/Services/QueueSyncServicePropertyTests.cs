@@ -12,6 +12,7 @@ using FsCheck;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -846,14 +847,14 @@ namespace OE2EmpireTracker.Tests.Services
                 var cargo = crateIds.Select(id => new GameApiAssetCargoItem
                 {
                     CargoItemId = id,
-                    TypeC = "Crate",
+                    TypeC = AssetTypeCodes.Crate,
                 }).ToList();
 
                 // Simulate the cascading logic (same as CascadeCargoDetailItems)
                 var items = new List<string>();
                 foreach (var entry in cargo)
                 {
-                    if (entry.TypeC == "Crate")
+                    if (entry.TypeC == AssetTypeCodes.Crate)
                     {
                         items.Add("CrateDetail:" + entry.CargoItemId);
                     }
@@ -992,7 +993,7 @@ namespace OE2EmpireTracker.Tests.Services
         [FsCheck.NUnit.Property(MaxTest = 50)]
         public Property ConsistentCascading_SameCargoSameResults()
         {
-            var cargoTypeGen = Gen.Elements("Crate", "Bp", "S", "R", "C");
+            var cargoTypeGen = Gen.Elements(AssetTypeCodes.Crate, AssetTypeCodes.Blueprint, AssetTypeCodes.ShipPart, AssetTypeCodes.Resource, AssetTypeCodes.Commodity);
             var cargoEntryGen =
                 from typeC in cargoTypeGen
                 from id in PositiveIntGen()
@@ -1034,14 +1035,14 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 switch (entry.TypeC)
                 {
-                    case "Crate":
+                    case AssetTypeCodes.Crate:
                         items.Add("CrateDetail:" + entry.CargoItemId);
                         break;
-                    case "Bp":
+                    case AssetTypeCodes.Blueprint:
                         // No local blueprint exists = not fresh = cascade
                         items.Add("BlueprintDetail:" + entry.CargoItemId);
                         break;
-                    case "S":
+                    case AssetTypeCodes.ShipPart:
                         // No local survey exists = not fresh = cascade
                         items.Add("SurveyDetail:" + entry.CargoItemId);
                         break;

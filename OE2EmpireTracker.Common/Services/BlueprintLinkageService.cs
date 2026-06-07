@@ -125,11 +125,11 @@ namespace OE2EmpireTracker.Services
 
             var typeC = (apiItem.TypeC ?? string.Empty).Trim();
 
-            if (string.Equals(typeC, "Bp", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(typeC, AssetTypeCodes.Blueprint, StringComparison.OrdinalIgnoreCase))
             {
                 candidate.BluePrintType = ClassifyBlueprintType(apiItem);
             }
-            else if (string.Equals(typeC, "S", StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(typeC, AssetTypeCodes.ShipPart, StringComparison.OrdinalIgnoreCase))
             {
                 candidate.BluePrintType = ClassifyBlueprintType(apiItem);
             }
@@ -204,7 +204,7 @@ namespace OE2EmpireTracker.Services
             // Full implementation in task 5.2
             switch (shipPartType)
             {
-                case "Sh": return BlueprintTypes.Shield;
+                case AssetTypeCodes.Share: return BlueprintTypes.Shield;
                 case "Re": return BlueprintTypes.Reactor;
                 case "Nc": return BlueprintTypes.NavComp;
                 case "Jd": return BlueprintTypes.JumpDrive;

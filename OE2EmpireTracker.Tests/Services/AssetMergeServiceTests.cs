@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
 
@@ -28,7 +29,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var apiItems = new List<GameApiAssetCargoItem>
             {
-                new GameApiAssetCargoItem { CargoItemId = 1, Amount = 10, ResourceName = "Iron", TypeC = "R" },
+                new GameApiAssetCargoItem { CargoItemId = 1, Amount = 10, ResourceName = "Iron", TypeC = AssetTypeCodes.Resource },
             };
 
             bool result = AssetMergeService.MergeColonyAssets(apiItems, null);
@@ -78,7 +79,7 @@ namespace OE2EmpireTracker.Tests.Services
                     TypeId = 5,
                     Amount = 50,
                     ResourceName = "Iron",
-                    TypeC = "R",
+                    TypeC = AssetTypeCodes.Resource,
                     Mass = 2.5,
                     Volume = 10,
                 },
@@ -124,7 +125,7 @@ namespace OE2EmpireTracker.Tests.Services
                     TypeId = 5,
                     Amount = 75,
                     ResourceName = "Iron",
-                    TypeC = "R",
+                    TypeC = AssetTypeCodes.Resource,
                     Mass = 3.0,
                     Volume = 15,
                 },
@@ -168,7 +169,7 @@ namespace OE2EmpireTracker.Tests.Services
                     TypeId = 6,
                     Amount = 100,
                     ResourceName = "Copper",
-                    TypeC = "R",
+                    TypeC = AssetTypeCodes.Resource,
                 },
             };
 
@@ -212,7 +213,7 @@ namespace OE2EmpireTracker.Tests.Services
                     TypeId = 8,
                     Amount = 30,
                     ResourceName = "Titanium",
-                    TypeC = "R",
+                    TypeC = AssetTypeCodes.Resource,
                     Volume = 5,
                 },
             };
@@ -245,7 +246,7 @@ namespace OE2EmpireTracker.Tests.Services
                     TypeId = 9,
                     Amount = 50,
                     ResourceName = "Gold",
-                    TypeC = "R",
+                    TypeC = AssetTypeCodes.Resource,
                 },
             };
 

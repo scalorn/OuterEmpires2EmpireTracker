@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -294,11 +295,11 @@ namespace OE2EmpireTracker.Services
                 case "Player/System":
                     return msg.MailType == null;
                 case "Colony":
-                    return msg.MailType == "C";
+                    return msg.MailType == AssetTypeCodes.Commodity;
                 case "Research":
-                    return msg.MailType == "R";
+                    return msg.MailType == AssetTypeCodes.Resource;
                 case "Skill":
-                    return msg.MailType == "S";
+                    return msg.MailType == AssetTypeCodes.ShipPart;
                 default:
                     return true;
             }

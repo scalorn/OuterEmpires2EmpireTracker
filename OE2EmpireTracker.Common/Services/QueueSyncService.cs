@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -1608,7 +1609,7 @@ namespace OE2EmpireTracker.Services
                     // Generic cargo merge dispatched by location type
                     switch (typeC)
                     {
-                        case "Co":
+                        case AssetTypeCodes.Colony:
                             var colonies = _playerContext.GetMutableColoniesForOwner(
                                 _playerContext.CurrentPlayerUUID);
                             var colony = colonies.FirstOrDefault(c => c.ColonyId == id);
@@ -1625,7 +1626,7 @@ namespace OE2EmpireTracker.Services
 
                             break;
 
-                        case "St":
+                        case AssetTypeCodes.Station:
                             var station = FindOrCreateStation(id, planetName, systemName);
                             ItemBag targetHold;
                             string playerUUID = _playerContext.CurrentPlayerUUID;
@@ -1640,7 +1641,7 @@ namespace OE2EmpireTracker.Services
                             _playerContext.OnStationDataChanged();
                             break;
 
-                        case "Sh":
+                        case AssetTypeCodes.Ship:
                             var ship = FindOrCreateShip(id, planetName);
                             AssetMergeService.MergeShipAssets(response.Cargo, ship);
                             _playerContext.WriteContext();
@@ -1679,12 +1680,11 @@ namespace OE2EmpireTracker.Services
             {
                 switch (entry.TypeC?.Trim())
                 {
-                    case "Crate":
-                    case "Cr":
+                    case AssetTypeCodes.Crate:
                         items.Add(CreateCrateDetailItem(entry.CargoItemId));
                         break;
 
-                    case "Bp":
+                    case AssetTypeCodes.Blueprint:
                         var existingBp = _playerContext.FindBlueprintByApiId(entry.CargoItemId);
                         if (existingBp == null || !IsDetailFresh(existingBp.LastDetailImportUtc))
                         {
@@ -1697,8 +1697,8 @@ namespace OE2EmpireTracker.Services
 
                         break;
 
-                    case "S":
-                    case "Sc":
+                    case AssetTypeCodes.ShipPart:
+                    case AssetTypeCodes.Survey:
                         var existingSurvey = _playerContext.FindSurveyByApiId(entry.CargoItemId);
                         if (existingSurvey == null || !IsDetailFresh(existingSurvey.LastDetailImportUtc))
                         {

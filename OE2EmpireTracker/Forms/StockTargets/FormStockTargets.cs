@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using NLog;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Controls;
 using OE2EmpireTracker.Models;
 using OE2EmpireTracker.Services;
@@ -1102,7 +1103,7 @@ namespace OE2EmpireTracker.Forms.StockTargets
             if (fullIdx < 0 || fullIdx >= _entryPlanUUIDs.Count) return;
             string planUUID = _entryPlanUUIDs[fullIdx];
             string groupID = txtGroupID.Text.Trim();
-            if (string.IsNullOrWhiteSpace(groupID)) groupID = "A";
+            if (string.IsNullOrWhiteSpace(groupID)) groupID = AssetTypeCodes.Ammunition;
 
             var entry = new StockProfileEntry
             {

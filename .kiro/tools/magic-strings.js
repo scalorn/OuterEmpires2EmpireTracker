@@ -21,56 +21,63 @@
 const fs = require('fs');
 const path = require('path');
 
-const CONSTANTS_DIR = path.join('OE2EmpireTracker', 'Constants');
-const SOURCE_DIR = 'OE2EmpireTracker';
+const CONSTANTS_DIRS = [
+    path.join('OE2EmpireTracker', 'Constants'),
+    path.join('OE2EmpireTracker.Common', 'Constants')
+];
+const SOURCE_DIRS = ['OE2EmpireTracker', 'OE2EmpireTracker.Common'];
 const EXCLUDE_DIRS = ['Constants', 'obj', 'bin'];
 
 // 1. Read all constant files and extract declarations
 function extractConstants() {
     const constants = [];
-    const files = fs.readdirSync(CONSTANTS_DIR).filter(f => f.endsWith('.cs'));
 
-    for (const file of files) {
-        const content = fs.readFileSync(path.join(CONSTANTS_DIR, file), 'utf8');
-        const lines = content.split('\n');
-        let currentClass = '';
+    for (const constDir of CONSTANTS_DIRS) {
+        if (!fs.existsSync(constDir)) continue;
+        const files = fs.readdirSync(constDir).filter(f => f.endsWith('.cs'));
 
-        for (const line of lines) {
-            const classMatch = line.match(/public\s+static\s+class\s+(\w+)/);
-            if (classMatch) {
-                currentClass = classMatch[1];
-                continue;
-            }
+        for (const file of files) {
+            const content = fs.readFileSync(path.join(constDir, file), 'utf8');
+            const lines = content.split('\n');
+            let currentClass = '';
 
-            // Match: public const string X = "value";
-            const strMatch = line.match(/public\s+const\s+string\s+(\w+)\s*=\s*"([^"]*)"\s*;/);
-            if (strMatch) {
-                const [, name, value] = strMatch;
-                if (value === '') continue;
-                constants.push({ type: 'string', name, value, className: currentClass, fullName: currentClass + '.' + name });
-                continue;
-            }
+            for (const line of lines) {
+                const classMatch = line.match(/public\s+static\s+class\s+(\w+)/);
+                if (classMatch) {
+                    currentClass = classMatch[1];
+                    continue;
+                }
 
-            // Match: public const (decimal|int|long) X = value;
-            const numMatch = line.match(/public\s+const\s+(decimal|int|long)\s+(\w+)\s*=\s*([^;]+);/);
-            if (numMatch) {
-                const [, numType, name, rawValue] = numMatch;
-                const cleanValue = rawValue.trim().replace(/[mMlLdDfF]$/, '');
-                if (cleanValue === '0' || cleanValue === '0.0') continue;
-                constants.push({ type: numType, name, value: rawValue.trim(), cleanValue, className: currentClass, fullName: currentClass + '.' + name });
+                // Match: public const string X = "value";
+                const strMatch = line.match(/public\s+const\s+string\s+(\w+)\s*=\s*"([^"]*)"\s*;/);
+                if (strMatch) {
+                    const [, name, value] = strMatch;
+                    if (value === '') continue;
+                    constants.push({ type: 'string', name, value, className: currentClass, fullName: currentClass + '.' + name });
+                    continue;
+                }
+
+                // Match: public const (decimal|int|long) X = value;
+                const numMatch = line.match(/public\s+const\s+(decimal|int|long)\s+(\w+)\s*=\s*([^;]+);/);
+                if (numMatch) {
+                    const [, numType, name, rawValue] = numMatch;
+                    const cleanValue = rawValue.trim().replace(/[mMlLdDfF]$/, '');
+                    if (cleanValue === '0' || cleanValue === '0.0') continue;
+                    constants.push({ type: numType, name, value: rawValue.trim(), cleanValue, className: currentClass, fullName: currentClass + '.' + name });
+                }
             }
         }
     }
     return constants;
 }
 
-// 2. Recursively get all .cs files in source dir (excluding Constants, Designer, tests)
+// 2. Recursively get all .cs files in source dirs (excluding Constants, Designer, tests)
 function getSourceFiles(dir, results) {
     results = results || [];
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
         const fullPath = path.join(dir, entry.name);
-        const relPath = path.relative('.', fullPath);
+        const relPath = path.relative('.', fullPath).replace(/\\/g, '/');
 
         if (entry.isDirectory()) {
             if (EXCLUDE_DIRS.includes(entry.name)) continue;
@@ -78,7 +85,9 @@ function getSourceFiles(dir, results) {
             getSourceFiles(fullPath, results);
         } else if (entry.isFile() && entry.name.endsWith('.cs')) {
             if (/\.Designer\.cs$/.test(entry.name)) continue;
-            if (relPath.replace(/\\/g, '/').startsWith('OE2EmpireTracker/Constants/')) continue;
+            // Exclude Constants directories from both projects
+            if (relPath.startsWith('OE2EmpireTracker/Constants/')) continue;
+            if (relPath.startsWith('OE2EmpireTracker.Common/Constants/')) continue;
             results.push(fullPath);
         }
     }
@@ -106,6 +115,21 @@ function findMagicLiterals(constants, sourceFiles) {
                 if (c.type === 'string') {
                     const searchStr = '"' + c.value + '"';
                     if (line.includes(searchStr)) {
+                        // Single-character false-positive exclusion: for 1-char values,
+                        // only flag if the literal is exactly "X" (not a substring of a longer literal)
+                        if (c.value.length === 1) {
+                            // Check that the match is a standalone string literal "X", not inside a longer string
+                            const singleCharRegex = new RegExp('"' + c.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '"');
+                            let isFalsePositive = true;
+                            const matches = line.matchAll(new RegExp('"([^"]*)"', 'g'));
+                            for (const m of matches) {
+                                if (m[1] === c.value) {
+                                    isFalsePositive = false;
+                                    break;
+                                }
+                            }
+                            if (isFalsePositive) continue;
+                        }
                         if (!line.includes(c.fullName) && !line.includes(c.name + ' =')) {
                             const relFile = path.relative('.', file).replace(/\\/g, '/');
                             findings.push('MAGIC: "' + c.value + '" in ' + relFile + ':' + (i + 1) + ' (should use ' + c.fullName + ')');
@@ -134,7 +158,12 @@ const includeNumeric = args.includes('--numeric') || args.includes('--all');
 
 const allConstants = extractConstants();
 const constants = includeNumeric ? allConstants : allConstants.filter(c => c.type === 'string');
-const sourceFiles = getSourceFiles(SOURCE_DIR);
+const sourceFiles = [];
+for (const srcDir of SOURCE_DIRS) {
+    if (fs.existsSync(srcDir)) {
+        getSourceFiles(srcDir, sourceFiles);
+    }
+}
 const findings = findMagicLiterals(constants, sourceFiles);
 
 const mode = includeNumeric ? 'strings + numeric' : 'strings only';

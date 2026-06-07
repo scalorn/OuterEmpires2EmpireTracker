@@ -322,6 +322,8 @@
     <Compile Include="Constants\BlueprintTypeExtensionTests.cs" />
     <Compile Include="Constants\BlueprintTypeExtensionPropertyTests.cs" />
     <Compile Include="Constants\BankingTransactionTypesTests.cs" />
+    <Compile Include="Constants\AssetTypeCodesTests.cs" />
+    <Compile Include="Constants\AssetTypeCodesPropertyTests.cs" />
     <Compile Include="Blueprint\BlueprintScannerTests.cs" />
     <Compile Include="Blueprint\FragmentExtractionTests.cs" />
     <Compile Include="Blueprint\IndividualBlueprintImportTests.cs" />

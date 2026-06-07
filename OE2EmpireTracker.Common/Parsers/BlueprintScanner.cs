@@ -32,9 +32,9 @@ namespace OE2EmpireTracker.Parsers
             { "Health (Hitpoints)", BlueprintPropertyKeys.Health },
             { "Maximum Damage Repair %", "Maximum Damage Repair" },
             { "The number of crew supported", "Crew Supported" },
-            { "Eng. Capacity Required", "Eng Capacity Required" },
-            { "Eng. Capacity Available", "Eng Capacity Available" },
-            { "Power regeneration rate", "Power Regeneration Rate" },
+            { "Eng. Capacity Required", BlueprintPropertyKeys.EngCapacityRequired },
+            { "Eng. Capacity Available", BlueprintPropertyKeys.EngCapacityAvailable },
+            { "Power regeneration rate", BlueprintPropertyKeys.PowerRegenRate },
             // Worker detail remaps -- game HTML uses (s) suffix, normalize to without
             { "Blue Collar Detail(s)", GameConstants.PropBlueCollarDetail },
             { "Unassigned White Collar Detail(s)", GameConstants.PropUnassignedWhiteCollarDetail },
