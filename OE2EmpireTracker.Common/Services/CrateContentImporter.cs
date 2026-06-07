@@ -4,7 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using NLog;
+using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -103,8 +105,48 @@ namespace OE2EmpireTracker.Services
             string ownerUUID,
             HashSet<int> visitedCrateIds)
         {
-            Log.Info("CrateContentImporter: starting import for crate GameItemId={0}", crateGameItemId);
-            return new CrateContentImportResult();
+            var result = new CrateContentImportResult();
+
+            GameApiAssetDetailResponse response;
+            try
+            {
+                response = JsonConvert.DeserializeObject<GameApiAssetDetailResponse>(json);
+            }
+            catch (JsonException ex)
+            {
+                Log.Error("CrateContentImporter: malformed JSON for crate GameItemId={0}: {1}", crateGameItemId, ex.Message);
+                result.Success = false;
+                result.Errors.Add($"Malformed JSON: {ex.Message}");
+                return result;
+            }
+
+            if (response?.Cargo == null)
+            {
+                Log.Info("CrateContentImporter: crate GameItemId={0} has no cargo (null response or cargo).", crateGameItemId);
+                return result;
+            }
+
+            result.TotalItems = response.Cargo.Count;
+            Log.Info("CrateContentImporter: starting import for crate GameItemId={0}, cargo count={1}", crateGameItemId, response.Cargo.Count);
+
+            for (int i = 0; i < response.Cargo.Count; i++)
+            {
+                try
+                {
+                    var cargoItem = response.Cargo[i];
+                    var mappedType = AssetMergeService.MapAssetTypeC(cargoItem.TypeC);
+                    Log.Debug("CrateContentImporter: item[{0}] TypeC='{1}' mapped to ItemType={2}", i, cargoItem.TypeC, mappedType);
+                }
+                catch (Exception ex)
+                {
+                    result.Failed++;
+                    string itemName = (i < response.Cargo.Count) ? response.Cargo[i]?.ResourceName ?? "(unknown)" : "(unknown)";
+                    Log.Error("CrateContentImporter: failed to process item[{0}] '{1}' in crate GameItemId={2}: {3}", i, itemName, crateGameItemId, ex.Message);
+                    result.Errors.Add($"Item[{i}] '{itemName}': {ex.Message}");
+                }
+            }
+
+            return result;
         }
     }
 }

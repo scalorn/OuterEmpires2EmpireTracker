@@ -20,7 +20,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
 
 
 - [ ] 2. Implement core Import parsing logic
-  - [~] 2.1 Implement JSON deserialization and cargo item iteration loop
+  - [x] 2.1 Implement JSON deserialization and cargo item iteration loop
     - Parse raw JSON into `GameApiAssetDetailResponse` using Newtonsoft.Json
     - Implement try-catch around deserialization for malformed JSON (return empty result with Success=false)
     - Iterate over `response.Cargo` items with per-item try-catch
