@@ -228,6 +228,42 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Converts a game API partTypeIcon code (e.g. "A22") to the CSS sprite position
+        /// string (e.g. "-24px -822px") used by BaselineData BlueprintType IconPosition.
+        /// The sprite sheet uses a 38px grid with a 24px offset for column 0.
+        /// Column is determined by the leading letter (A=0, B=1, C=2, ...).
+        /// Row is determined by the trailing digits.
+        /// Returns null if the code cannot be parsed.
+        /// </summary>
+        /// <param name="partTypeIcon">The icon code from the API (e.g. "A22", "B20", "C20").</param>
+        /// <returns>The CSS sprite position string, or null if the code is invalid.</returns>
+        private static string ConvertPartTypeIconToPosition(string partTypeIcon)
+        {
+            if (string.IsNullOrEmpty(partTypeIcon) || partTypeIcon.Length < 2)
+            {
+                return null;
+            }
+
+            char letter = char.ToUpperInvariant(partTypeIcon[0]);
+            if (letter < 'A' || letter > 'Z')
+            {
+                return null;
+            }
+
+            string rowStr = partTypeIcon.Substring(1);
+            if (!int.TryParse(rowStr, out int row))
+            {
+                return null;
+            }
+
+            int column = letter - 'A';
+            int x = -((column * 38) + 24);
+            int y = -((row * 38) - 14);
+
+            return x + "px " + y + "px";
+        }
+
+        /// <summary>
         /// Determines whether a detail import is still fresh based on the configured refresh interval.
         /// </summary>
         /// <param name="lastImportUtc">The UTC timestamp of the last detail import, or null if never imported.</param>
@@ -1063,12 +1099,17 @@ namespace OE2EmpireTracker.Services
                     {
                         ["name"] = bpInfo.Name,
                         ["evolution"] = bpInfo.Evolution,
-                        ["description"] = bpInfo.Type,
                     };
 
                     if (!string.IsNullOrEmpty(bpInfo.PartTypeIcon))
                     {
                         entry["iconClass"] = "ui_icon_" + bpInfo.PartTypeIcon;
+
+                        string iconPos = ConvertPartTypeIconToPosition(bpInfo.PartTypeIcon);
+                        if (!string.IsNullOrEmpty(iconPos))
+                        {
+                            entry["iconPosition"] = iconPos;
+                        }
                     }
 
                     var propsObj = new JObject();

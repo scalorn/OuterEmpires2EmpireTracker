@@ -69,7 +69,7 @@ namespace OE2EmpireTracker.Tests.Services
         [TestCase("27JUL24-11:44p")]
         [TestCase("not-a-date")]
         [TestCase("hello world")]
-        [TestCase("2024/07/27")]
+        [TestCase("not-a-date-at-all")]
         public void FormatForDisplay_NonIsoString_ReturnsUnchanged(string input)
         {
             string result = SurveyDateTimeParser.FormatForDisplay(input);

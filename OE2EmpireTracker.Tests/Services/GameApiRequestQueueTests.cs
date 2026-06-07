@@ -292,8 +292,9 @@ namespace OE2EmpireTracker.Tests.Services
             // Wait for the item to start executing
             await itemStarted.Task;
 
-            // Wait for the timeout to fire
-            await Task.Delay(500);
+            // Wait for the queue to drain — the timeout will fire after 200ms
+            // and the item will be marked as failed
+            await queue.DrainAsync();
 
             Assert.That(itemCancelled, Is.True);
             Assert.That(queue.CompletionStatus.Failed, Is.EqualTo(1));

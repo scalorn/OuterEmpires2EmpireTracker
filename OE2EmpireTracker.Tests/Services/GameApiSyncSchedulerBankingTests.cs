@@ -234,48 +234,62 @@ namespace OE2EmpireTracker.Tests.Services
             {
                 try
                 {
-                    var tokenCtx = await listener.GetContextAsync().ConfigureAwait(false);
-                    var tokenResponse = new GameApiServiceResponse<GameApiTokenResponse>
+                    while (listener.IsListening)
                     {
-                        Success = true,
-                        ReturnCode = 0,
-                        Data = new GameApiTokenResponse
-                        {
-                            AccessToken = "test-access-token",
-                            TokenType = "Bearer",
-                            ExpiresIn = 3600,
-                            CharacterId = 1,
-                        },
-                    };
-                    string tokenJson = JsonConvert.SerializeObject(tokenResponse);
-                    byte[] tokenBuf = System.Text.Encoding.UTF8.GetBytes(tokenJson);
-                    tokenCtx.Response.StatusCode = 200;
-                    tokenCtx.Response.ContentLength64 = tokenBuf.Length;
-                    tokenCtx.Response.ContentType = "application/json";
-                    await tokenCtx.Response.OutputStream.WriteAsync(
-                        tokenBuf, 0, tokenBuf.Length).ConfigureAwait(false);
-                    tokenCtx.Response.Close();
+                        var context = await listener.GetContextAsync().ConfigureAwait(false);
+                        string path = context.Request.Url.AbsolutePath;
+                        string body = string.Empty;
+                        int statusCode = 200;
 
-                    var charCtx = await listener.GetContextAsync().ConfigureAwait(false);
-                    var charResponse = new GameApiServiceResponse<GameApiProfileResponse>
-                    {
-                        Success = true,
-                        ReturnCode = 0,
-                        Data = new GameApiProfileResponse
+                        if (path.Contains("/v1/auth/token"))
                         {
-                            UUID = PlayerUUID,
-                            Name = "TestPlayer",
-                            Faction = "TestFaction",
-                        },
-                    };
-                    string charJson = JsonConvert.SerializeObject(charResponse);
-                    byte[] charBuf = System.Text.Encoding.UTF8.GetBytes(charJson);
-                    charCtx.Response.StatusCode = 200;
-                    charCtx.Response.ContentLength64 = charBuf.Length;
-                    charCtx.Response.ContentType = "application/json";
-                    await charCtx.Response.OutputStream.WriteAsync(
-                        charBuf, 0, charBuf.Length).ConfigureAwait(false);
-                    charCtx.Response.Close();
+                            var tokenResponse = new GameApiServiceResponse<GameApiTokenResponse>
+                            {
+                                Success = true,
+                                ReturnCode = 0,
+                                Data = new GameApiTokenResponse
+                                {
+                                    AccessToken = "test-access-token",
+                                    TokenType = "Bearer",
+                                    ExpiresIn = 3600,
+                                    CharacterId = 1,
+                                },
+                            };
+                            body = JsonConvert.SerializeObject(tokenResponse);
+                        }
+                        else if (path.Contains("/v1/character"))
+                        {
+                            var charResponse = new GameApiServiceResponse<GameApiProfileResponse>
+                            {
+                                Success = true,
+                                ReturnCode = 0,
+                                Data = new GameApiProfileResponse
+                                {
+                                    UUID = PlayerUUID,
+                                    Name = "TestPlayer",
+                                    Faction = "TestFaction",
+                                },
+                            };
+                            body = JsonConvert.SerializeObject(charResponse);
+                        }
+                        else
+                        {
+                            // Colony, asset, and other endpoints return 403 to prevent blocking
+                            statusCode = 403;
+                        }
+
+                        context.Response.StatusCode = statusCode;
+                        if (!string.IsNullOrEmpty(body))
+                        {
+                            byte[] buf = System.Text.Encoding.UTF8.GetBytes(body);
+                            context.Response.ContentLength64 = buf.Length;
+                            context.Response.ContentType = "application/json";
+                            await context.Response.OutputStream.WriteAsync(
+                                buf, 0, buf.Length).ConfigureAwait(false);
+                        }
+
+                        context.Response.Close();
+                    }
                 }
                 catch (ObjectDisposedException)
                 {

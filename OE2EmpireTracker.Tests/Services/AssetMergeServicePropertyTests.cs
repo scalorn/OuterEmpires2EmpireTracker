@@ -9,6 +9,7 @@ using FsCheck;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
 using OE2EmpireTracker.Models;
+using OE2EmpireTracker.Parsers;
 using OE2EmpireTracker.Services;
 
 namespace OE2EmpireTracker.Tests.Services
@@ -30,6 +31,21 @@ namespace OE2EmpireTracker.Tests.Services
         {
             "High Purity", "Med Purity", "Low Purity",
         };
+
+        /// <summary>
+        /// Maps an API purity descriptor (e.g. "Low Purity") to the normalized
+        /// stored form (e.g. "Low") using the same logic as ExtractResourcePurity.
+        /// </summary>
+        private static string ExpectedNormalizedPurity(string apiPurity)
+        {
+            // Strip " Purity" suffix (same as ExtractResourcePurity does)
+            string stripped = apiPurity.EndsWith(" Purity", StringComparison.OrdinalIgnoreCase)
+                ? apiPurity.Substring(0, apiPurity.Length - " Purity".Length).Trim()
+                : apiPurity;
+
+            // Apply the same normalization (Med → Medium, etc.)
+            return SurveyParser.NormalizePurity(stripped);
+        }
 
         // ---------------------------------------------------------------
         // Generators
@@ -161,11 +177,14 @@ namespace OE2EmpireTracker.Tests.Services
 
                 var (extractedName, extractedPurity) = AssetMergeService.ExtractResourcePurity(constructed);
 
+                // The expected purity is the normalized form (e.g. "Med Purity" → "Medium")
+                string expectedPurity = ExpectedNormalizedPurity(input.Purity);
+
                 var nameMatches = string.Equals(extractedName, input.BaseName, StringComparison.Ordinal);
-                var purityMatches = string.Equals(extractedPurity, input.Purity, StringComparison.Ordinal);
+                var purityMatches = string.Equals(extractedPurity, expectedPurity, StringComparison.Ordinal);
 
                 return (nameMatches && purityMatches)
-                    .Label($"Input: '{constructed}' => name='{extractedName}' (expected '{input.BaseName}'), purity='{extractedPurity}' (expected '{input.Purity}')");
+                    .Label($"Input: '{constructed}' => name='{extractedName}' (expected '{input.BaseName}'), purity='{extractedPurity}' (expected '{expectedPurity}')");
             }).QuickCheckThrowOnFailure();
         }
 

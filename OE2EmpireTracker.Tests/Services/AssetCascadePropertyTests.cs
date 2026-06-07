@@ -33,14 +33,11 @@ namespace OE2EmpireTracker.Tests.Services
         {
             var locationTypes = new[] { "Co", "St", "Sh", "As" };
 
-            var singleLocationGen =
-                from id in Gen.Choose(1, 99999)
-                from typeIndex in Gen.Choose(0, locationTypes.Length - 1)
-                select new AssetLocationInput(id, locationTypes[typeIndex]);
-
             return from count in Gen.Choose(0, 100)
-                   from locations in Gen.ListOf(count, singleLocationGen)
-                   select locations.ToList();
+                   from ids in Gen.ListOf(count, Gen.Choose(1, 999999))
+                   from typeIndices in Gen.ListOf(count, Gen.Choose(0, locationTypes.Length - 1))
+                   let uniqueIds = ids.Distinct().ToList()
+                   select uniqueIds.Zip(typeIndices, (id, ti) => new AssetLocationInput(id, locationTypes[ti])).ToList();
         }
 
         /// <summary>

@@ -89,7 +89,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: vstest.console passes_
 
 
-- [~] 3. Checkpoint - Model and index verification
+- [x] 3. Checkpoint - Model and index verification
   - Build solution and run all tests. Ask the user if questions arise.
 
 - [x] 4. TokenRefreshHandler
@@ -232,7 +232,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Verification: getDiagnostics_
 
 
-- [~] 11. Checkpoint - Core orchestration verification
+- [x] 11. Checkpoint - Core orchestration verification
   - Build solution and run all tests. Ask the user if questions arise.
 
 - [x] 12. Crate import integration
@@ -338,7 +338,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: ErrorIsolationPropertyTests.cs created_
     - _Verification: vstest.console passes_
 
-- [~] 18. Checkpoint - Full service verification
+- [x] 18. Checkpoint - Full service verification
   - Build solution and run all tests. Ask the user if questions arise.
 
 - [x] 19. BackgroundProcessor integration
@@ -350,8 +350,8 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: BackgroundProcessor.cs modified_
     - _Verification: getDiagnostics_
 
-- [ ] 20. Preferences form integration
-  - [-] 20.1 Add DetailRefreshHours control to Preferences form
+- [x] 20. Preferences form integration
+  - [x] 20.1 Add DetailRefreshHours control to Preferences form
     - Add NumericUpDown control labeled "Detail Refresh (hours)" on Game API tab
     - Min=1, Max=168, Default=24
     - Bind to GameApiConnectionSettings.DetailRefreshHours on load and save
@@ -360,7 +360,7 @@ Replace sequential background sync with queue-based parallel dispatch using Game
     - _Output: FormPreferences.cs modified, FormPreferences.Designer.cs modified_
     - _Verification: getDiagnostics_
 
-- [~] 21. Final checkpoint - Full solution build and test
+- [x] 21. Final checkpoint - Full solution build and test
   - Build solution and run all tests. Ask the user if questions arise.
 
 

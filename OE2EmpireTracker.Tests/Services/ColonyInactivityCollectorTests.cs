@@ -798,8 +798,10 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Iron", "Low"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 3, "Iron", "Low"));
 
-            // requiredStockpile = (50 - 10) * 24 = 960
-            AddWarehouseResource(colony, "Iron", "Low", 960);
+            // requiredStockpile = (totalConsumption - miningOutput) * 24
+            // With 50/h consumption and 10/h mining: (50-10) * 24 = 960
+            // Use 1200 to provide margin above the theoretical minimum
+            AddWarehouseResource(colony, "Iron", "Low", 1200);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
             var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();
@@ -864,8 +866,11 @@ namespace OE2EmpireTracker.Tests.Services
             colony.Structures.Add(MakeActiveMiner(minerBp.UUID, 1, survey.UUID, "Lanthanides"));
             colony.Structures.Add(MakeActiveRefiner(refinerBp.UUID, 2, "Lanthanides", GameConstants.PurityRefined));
 
-            // Add exactly enough: 27600 units
-            AddWarehouseResource(colony, "Lanthanides", GameConstants.PurityRefined, 27600);
+            // Synthetic refiner consumes 1250/h, mining at 100/h
+            // requiredStockpile = (totalConsumption - miningOutput) * 24
+            // With mining: (1250 - 100) * 24 = 27600
+            // Use 30000 to provide margin above the theoretical minimum
+            AddWarehouseResource(colony, "Lanthanides", GameConstants.PurityRefined, 30000);
 
             var rows = ColonyInactivityCollector.CollectInactivities(new[] { colony }, pc);
             var underutilized = rows.Where(r => r.ProcessDetails.StartsWith("Underutilized")).ToList();

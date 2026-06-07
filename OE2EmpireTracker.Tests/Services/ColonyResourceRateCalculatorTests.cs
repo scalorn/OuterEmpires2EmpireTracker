@@ -138,12 +138,12 @@ namespace OE2EmpireTracker.Tests.Services
             var item = new Item(ItemType.ItemTypeEnum.ShipHull, "TestHull");
             item.UUID = Guid.NewGuid().ToString();
             item.Quantity = 2;
-            item.Volume = 75m;
+            item.Volume = 150m; // Pre-calculated total: 2 × 75 per unit
             colony.Items.AddItem(item);
 
             decimal volume = ColonyResourceRateCalculator.ComputeWarehouseVolume(colony);
 
-            Assert.That(volume, Is.EqualTo(2m * 75m));
+            Assert.That(volume, Is.EqualTo(150m));
         }
 
         // -------------------------------------------------------------------
@@ -462,16 +462,18 @@ namespace OE2EmpireTracker.Tests.Services
                 for (int i = 0; i < data.Count; i++)
                 {
                     var itemType = itemTypes[data.TypeIdx];
-                    decimal vol = (decimal)data.Volume;
+
+                    // Volume is the pre-calculated total (as the API provides)
+                    decimal perUnit = GetExpectedVolumePerUnit(itemType, (decimal)data.Volume);
+                    decimal totalVol = data.Quantity * perUnit;
 
                     var item = new Item(itemType, "Item_" + i);
                     item.UUID = Guid.NewGuid().ToString();
                     item.Quantity = data.Quantity;
-                    item.Volume = vol;
+                    item.Volume = totalVol;
                     colony.Items.AddItem(item);
 
-                    decimal volumePerUnit = GetExpectedVolumePerUnit(itemType, vol);
-                    expectedVolume += data.Quantity * volumePerUnit;
+                    expectedVolume += totalVol;
                 }
 
                 decimal actualVolume = ColonyResourceRateCalculator.ComputeWarehouseVolume(colony);
@@ -525,6 +527,20 @@ namespace OE2EmpireTracker.Tests.Services
             var item = new Item(itemType, "TestItem_" + Guid.NewGuid().ToString().Substring(0, 6));
             item.UUID = Guid.NewGuid().ToString();
             item.Quantity = quantity;
+
+            // Volume is pre-calculated total (quantity × per-unit volume), matching API behavior
+            decimal perUnit;
+            switch (itemType)
+            {
+                case ItemType.ItemTypeEnum.Resource: perUnit = GameConstants.VolumeResource; break;
+                case ItemType.ItemTypeEnum.Commodity: perUnit = GameConstants.VolumeCommodity; break;
+                case ItemType.ItemTypeEnum.WorkDetail: perUnit = GameConstants.VolumeWorkDetail; break;
+                case ItemType.ItemTypeEnum.Blueprint: perUnit = GameConstants.VolumeBlueprint; break;
+                case ItemType.ItemTypeEnum.Survey: perUnit = GameConstants.VolumeSurvey; break;
+                default: perUnit = 1.0m; break;
+            }
+
+            item.Volume = quantity * perUnit;
             colony.Items.AddItem(item);
         }
 
