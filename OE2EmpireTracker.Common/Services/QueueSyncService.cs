@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -88,11 +90,33 @@ namespace OE2EmpireTracker.Services
             {
                 Log.Info("Queue sync cycle started.");
 
+                // Exchange token at the start of each sync cycle (same pattern as GameApiSyncScheduler).
+                string playerUUID = _playerContext.CurrentPlayerUUID;
+                var secret = _credentialManager.GetKey(playerUUID);
+                if (secret == null)
+                {
+                    Log.Warn("QueueSyncService: no credential for player {0}, aborting sync.", playerUUID);
+                    return new QueueSyncResult();
+                }
+
+                string plainSecret = SecureStringToPlain(secret);
+                var tokenResult = await _apiClient.ExchangeTokenAsync(
+                    _settings.AppId, _settings.ClientId, plainSecret).ConfigureAwait(false);
+
+                if (!tokenResult.Success)
+                {
+                    Log.Error("QueueSyncService: token exchange failed: {0}", tokenResult.ErrorMessage);
+                    return new QueueSyncResult();
+                }
+
+                _currentAccessToken = tokenResult.Token.AccessToken;
+                Log.Info("QueueSyncService: token exchange succeeded, starting dispatch.");
+
                 _tokenRefreshHandler = new TokenRefreshHandler(
                     _apiClient,
                     _settings,
                     _credentialManager,
-                    _playerContext.CurrentPlayerUUID,
+                    playerUUID,
                     _currentAccessToken);
 
                 var metricsFilePath = Path.Combine(
@@ -261,6 +285,30 @@ namespace OE2EmpireTracker.Services
             int y = -((row * 38) - 14);
 
             return x + "px " + y + "px";
+        }
+
+        /// <summary>
+        /// Converts a SecureString to a plain string. Zeroes the unmanaged memory after use.
+        /// </summary>
+        /// <param name="secureString">The secure string to convert.</param>
+        /// <returns>The plain text value.</returns>
+        private static string SecureStringToPlain(SecureString secureString)
+        {
+            IntPtr ptr = IntPtr.Zero;
+            try
+            {
+                ptr = Marshal.SecureStringToGlobalAllocUnicode(secureString);
+                return Marshal.PtrToStringUni(ptr);
+            }
+            finally
+            {
+                if (ptr != IntPtr.Zero)
+                {
+                    Marshal.ZeroFreeGlobalAllocUnicode(ptr);
+                }
+
+                secureString.Dispose();
+            }
         }
 
         /// <summary>
