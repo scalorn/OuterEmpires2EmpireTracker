@@ -1053,6 +1053,25 @@ namespace OE2EmpireTracker.Services
                 Label = "ColonyBuildings:" + colonyId,
                 ExecuteAsync = async ct =>
                 {
+                    string colonyUUID;
+                    if (!colonyIdMap.TryGetValue(colonyId, out colonyUUID))
+                    {
+                        var localColonies = _playerContext.GetMutableColoniesForOwner(
+                            _playerContext.CurrentPlayerUUID);
+                        var fallback = localColonies.FirstOrDefault(c => c.ColonyId == colonyId);
+                        if (fallback == null)
+                        {
+                            Log.Warn(
+                                "ColonyBuildings:{0} — colony unresolvable from map or local data, skipping.",
+                                colonyId);
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        colonyUUID = fallback.UUID;
+                    }
+
+                    Log.Debug("ColonyBuildings:{0} resolved target colony UUID: {1}", colonyId, colonyUUID);
+
                     var result = await _apiClient.GetColonyBuildingsAsync(
                         _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
 
@@ -1061,14 +1080,13 @@ namespace OE2EmpireTracker.Services
 
                     ThrowIfRateLimited(result, "ColonyBuildings:" + colonyId);
 
-                    if (result.Success)
-                    {
-                        Log.Debug("ColonyBuildings:{0} fetched successfully.", colonyId);
-                    }
-                    else
+                    if (!result.Success)
                     {
                         Log.Warn("ColonyBuildings:{0} fetch failed: {1}", colonyId, result.Json);
+                        return Array.Empty<WorkItem>();
                     }
+
+                    Log.Debug("ColonyBuildings:{0} fetched successfully.", colonyId);
 
                     return Array.Empty<WorkItem>();
                 },
@@ -1089,6 +1107,25 @@ namespace OE2EmpireTracker.Services
                 Label = "ColonyWarehouse:" + colonyId,
                 ExecuteAsync = async ct =>
                 {
+                    string colonyUUID;
+                    if (!colonyIdMap.TryGetValue(colonyId, out colonyUUID))
+                    {
+                        var localColonies = _playerContext.GetMutableColoniesForOwner(
+                            _playerContext.CurrentPlayerUUID);
+                        var fallback = localColonies.FirstOrDefault(c => c.ColonyId == colonyId);
+                        if (fallback == null)
+                        {
+                            Log.Warn(
+                                "ColonyWarehouse:{0} — colony unresolvable from map or local data, skipping.",
+                                colonyId);
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        colonyUUID = fallback.UUID;
+                    }
+
+                    Log.Debug("ColonyWarehouse:{0} resolved target colony UUID: {1}", colonyId, colonyUUID);
+
                     var result = await _apiClient.GetColonyWarehouseAsync(
                         _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
 
@@ -1097,14 +1134,13 @@ namespace OE2EmpireTracker.Services
 
                     ThrowIfRateLimited(result, "ColonyWarehouse:" + colonyId);
 
-                    if (result.Success)
-                    {
-                        Log.Debug("ColonyWarehouse:{0} fetched successfully.", colonyId);
-                    }
-                    else
+                    if (!result.Success)
                     {
                         Log.Warn("ColonyWarehouse:{0} fetch failed: {1}", colonyId, result.Json);
+                        return Array.Empty<WorkItem>();
                     }
+
+                    Log.Debug("ColonyWarehouse:{0} fetched successfully.", colonyId);
 
                     return Array.Empty<WorkItem>();
                 },
@@ -1125,6 +1161,25 @@ namespace OE2EmpireTracker.Services
                 Label = "ColonyWorkers:" + colonyId,
                 ExecuteAsync = async ct =>
                 {
+                    string colonyUUID;
+                    if (!colonyIdMap.TryGetValue(colonyId, out colonyUUID))
+                    {
+                        var localColonies = _playerContext.GetMutableColoniesForOwner(
+                            _playerContext.CurrentPlayerUUID);
+                        var fallback = localColonies.FirstOrDefault(c => c.ColonyId == colonyId);
+                        if (fallback == null)
+                        {
+                            Log.Warn(
+                                "ColonyWorkers:{0} — colony unresolvable from map or local data, skipping.",
+                                colonyId);
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        colonyUUID = fallback.UUID;
+                    }
+
+                    Log.Debug("ColonyWorkers:{0} resolved target colony UUID: {1}", colonyId, colonyUUID);
+
                     var result = await _apiClient.GetColonyWorkersAsync(
                         _settings.AppId, _currentAccessToken, colonyId).ConfigureAwait(false);
 
@@ -1133,14 +1188,13 @@ namespace OE2EmpireTracker.Services
 
                     ThrowIfRateLimited(result, "ColonyWorkers:" + colonyId);
 
-                    if (result.Success)
-                    {
-                        Log.Debug("ColonyWorkers:{0} fetched successfully.", colonyId);
-                    }
-                    else
+                    if (!result.Success)
                     {
                         Log.Warn("ColonyWorkers:{0} fetch failed: {1}", colonyId, result.Json);
+                        return Array.Empty<WorkItem>();
                     }
+
+                    Log.Debug("ColonyWorkers:{0} fetched successfully.", colonyId);
 
                     return Array.Empty<WorkItem>();
                 },

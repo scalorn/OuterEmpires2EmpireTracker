@@ -69,7 +69,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — CreateColonyListItem method)_
     - _Verification: getDiagnostics clean, solution builds_
 
-  - [~] 5.2 Add overloads for colony detail items accepting ColonyIdToUUIDMap
+  - [x] 5.2 Add overloads for colony detail items accepting ColonyIdToUUIDMap
     - Create `CreateColonyBuildingsItem(int colonyId, Dictionary<int, string> colonyIdMap)` overload
     - Create `CreateColonyWarehouseItem(int colonyId, Dictionary<int, string> colonyIdMap)` overload
     - Create `CreateColonyWorkersItem(int colonyId, Dictionary<int, string> colonyIdMap)` overload
