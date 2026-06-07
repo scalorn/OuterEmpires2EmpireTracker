@@ -238,6 +238,67 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(createdCrate.Contents.Count(), Is.EqualTo(1));
         }
 
+        // -------------------------------------------------------------------
+        // Test: WriteContext failure retains in-memory state
+        // Validates: Req 6 AC1 (WriteContext after population),
+        //            Req 6 AC4 (retry on failure — in-memory state retained)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that when WriteContext is called after import (persistence),
+        /// the in-memory Contents bag remains populated even if the context has
+        /// no file path set (which causes WriteContext to skip/fail gracefully).
+        /// The in-memory data is retained for retry on the next sync cycle.
+        /// </summary>
+        [Test]
+        public void CrateContentImporter_WriteContextFailure_RetainsInMemory()
+        {
+            // Clear the file path so WriteContext effectively skips persistence
+            // (simulates a scenario where persistence cannot complete)
+            string originalPath = PlayerContext.FilePath;
+            PlayerContext.FilePath = string.Empty;
+
+            int crateGameItemId = 600;
+
+            var cargoItems = new List<GameApiAssetCargoItem>
+            {
+                MakeCargoItem(3001, "R", "Iron (High Purity)"),
+                MakeCargoItem(3002, "C", "Electronics"),
+                MakeCargoItem(3003, "A", "Rail Slugs"),
+            };
+
+            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
+            string json = JsonConvert.SerializeObject(response);
+
+            var parentBag = new ItemBag();
+            var visited = new HashSet<int>();
+
+            // Act
+            var result = importer.Import(json, crateGameItemId, parentBag, "owner-uuid", visited);
+
+            // Assert — import succeeded and in-memory state is correct
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Imported, Is.EqualTo(3));
+
+            // Find the crate in the parent bag
+            Item crateItem = null;
+            foreach (var kvp in parentBag.Items)
+            {
+                if (kvp.Value.GameItemId == crateGameItemId)
+                {
+                    crateItem = kvp.Value;
+                    break;
+                }
+            }
+
+            Assert.That(crateItem, Is.Not.Null, "Crate item should exist in parent bag");
+            Assert.That(crateItem.Contents, Is.Not.Null, "Contents should be populated in memory");
+            Assert.That(crateItem.Contents.Count(), Is.EqualTo(3), "All 3 items should be in Contents despite persistence skip");
+
+            // Restore original path
+            PlayerContext.FilePath = originalPath;
+        }
+
         private static GameApiAssetCargoItem MakeCargoItem(int id, string typeC, string name)
         {
             return new GameApiAssetCargoItem

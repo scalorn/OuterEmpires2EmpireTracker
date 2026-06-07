@@ -77,7 +77,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: Unit test CrateContentImporter_NestedCrate_CycleDetected passes_
 
 - [ ] 4. Implement persistence and completion logging
-  - [~] 4.1 Add WriteContext persistence with retry on failure
+  - [x] 4.1 Add WriteContext persistence with retry on failure
     - After successful Contents Bag population, call `PlayerContext.WriteContext()` to persist
     - If WriteContext fails, log error and retain in-memory state (retry on next sync)
     - _Satisfies: Req 6 AC1 (WriteContext after population), Req 6 AC4 (retry on failure)_

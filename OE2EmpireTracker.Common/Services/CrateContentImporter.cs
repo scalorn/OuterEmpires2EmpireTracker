@@ -247,6 +247,16 @@ namespace OE2EmpireTracker.Services
                 Log.Error("CrateContentImporter: failed to replace Contents bag for crate GameItemId={0}: {1}", crateGameItemId, ex.Message);
             }
 
+            // Persist updated context after successful Contents population
+            try
+            {
+                _playerContext.WriteContext();
+            }
+            catch (Exception writeEx)
+            {
+                Log.Error("CrateContentImporter: WriteContext failed for crate GameItemId={0}: {1} — in-memory state retained, will retry on next sync", crateGameItemId, writeEx.Message);
+            }
+
             // Fire BlueprintDataChanged if any blueprints were linked
             if (result.BlueprintsLinked > 0)
             {
