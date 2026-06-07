@@ -237,3 +237,118 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
+        // ---------------------------------------------------------------
+        // Property 3: Local-Only Field Preservation
+        // TrainingStarted and CompletionTime SHALL never be overwritten
+        // by the merge.
+        // Validates: Req 1 Criteria 1.5
+        // ---------------------------------------------------------------
+
+        /// <summary>
+        /// Property 3: TrainingStarted and CompletionTime are never modified
+        /// by the merge — they are local-only fields.
+        /// **Validates: Requirements 1.5**
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property LocalOnlyFields_PreservedAfterMerge()
+        {
+            var inputGen =
+                from remote in ProfileResponseGen()
+                from trainingStarted in Arb.Generate<bool>()
+                from completionHours in Gen.Choose(0, 48)
+                select new { Remote = remote, TrainingStarted = trainingStarted, CompletionHours = completionHours };
+
+            return Prop.ForAll(inputGen.ToArbitrary(), (input) =>
+            {
+                var local = CreateFreshProfile();
+
+                // Set local-only fields on a skill that the API will also send
+                string skillName = input.Remote.Skills.Keys.First();
+                var localSkill = local.GetSkill(skillName);
+                localSkill.TrainingStarted = input.TrainingStarted;
+                localSkill.CompletionTime = new CountDownTime();
+
+                // Capture the original values
+                bool origTrainingStarted = localSkill.TrainingStarted;
+                var origCompletionTime = localSkill.CompletionTime;
+
+                ProfileMergeService.MergeProfileData(local, input.Remote);
+
+                // Re-fetch the skill after merge
+                var mergedSkill = local.GetSkill(skillName);
+                var trainingPreserved = mergedSkill.TrainingStarted == origTrainingStarted;
+                var completionPreserved = ReferenceEquals(mergedSkill.CompletionTime, origCompletionTime);
+
+                return (trainingPreserved && completionPreserved)
+                    .Label($"Local-only field modified: TrainingStarted preserved={trainingPreserved}, " +
+                           $"CompletionTime preserved={completionPreserved}");
+            });
+        }
+
+        // ---------------------------------------------------------------
+        // Property 4: Return Value Correctness
+        // MergeProfileData SHALL return true iff at least one field changed.
+        // Validates: Req 1 Criteria 1.2, 1.4
+        // ---------------------------------------------------------------
+
+        /// <summary>
+        /// Property 4a: When remote matches local exactly, merge returns false.
+        /// **Validates: Requirements 1.2**
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property ReturnValue_FalseWhenNoChanges()
+        {
+            return Prop.ForAll(ProfileResponseGen().ToArbitrary(), (remote) =>
+            {
+                var local = CreateFreshProfile();
+
+                // First merge to set local to remote values
+                ProfileMergeService.MergeProfileData(local, remote);
+
+                // Second merge — no changes expected
+                bool result = ProfileMergeService.MergeProfileData(local, remote);
+
+                return (!result)
+                    .Label("Expected false when no changes, got true");
+            });
+        }
+
+        /// <summary>
+        /// Property 4b: When remote differs from local in at least one
+        /// API-wins field, merge returns true.
+        /// **Validates: Requirements 1.2, 1.4**
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property ReturnValue_TrueWhenFieldsDiffer()
+        {
+            var inputGen =
+                from remote in ProfileResponseGen()
+                from diffField in Gen.Choose(0, 6)
+                select new { Remote = remote, DiffField = diffField };
+
+            return Prop.ForAll(inputGen.ToArbitrary(), (input) =>
+            {
+                var local = CreateFreshProfile();
+
+                // First set local to remote values
+                ProfileMergeService.MergeProfileData(local, input.Remote);
+
+                // Now change one field on local so remote differs
+                switch (input.DiffField)
+                {
+                    case 0: local.Faction = "DifferentFaction"; break;
+                    case 1: local.CitizenId = "DifferentCitizen"; break;
+                    case 2: local.SkillPoints = input.Remote.SkillPoints + 1; break;
+                    case 3: local.CharacterId = input.Remote.CharacterId + 1; break;
+                    case 4: local.FirstName = "DifferentFirst"; break;
+                    case 5: local.LastName = "DifferentLast"; break;
+                    case 6: local.ActiveTimeMinutes = input.Remote.ActiveTimeMinutes + 1; break;
+                }
+
+                bool result = ProfileMergeService.MergeProfileData(local, input.Remote);
+
+                return result
+                    .Label($"Expected true when field {input.DiffField} differs, got false");
+            });
+        }
+
