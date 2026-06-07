@@ -7,7 +7,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 ## Tasks
 
 - [ ] 1. Extract ProfileMergeService from GameApiSyncScheduler
-  - [-] 1.1 Create ProfileMergeService static class
+  - [x] 1.1 Create ProfileMergeService static class
     - Extract `MergeProfileData`, `MergeRank`, and `MergeSkills` from `GameApiSyncScheduler.cs` into new `OE2EmpireTracker.Common/Services/ProfileMergeService.cs`
     - Pure extraction — no logic changes, just move the methods
     - Update visibility: `MergeProfileData` public, `MergeRank` and `MergeSkills` private
@@ -17,7 +17,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: OE2EmpireTracker.Common/Services/ProfileMergeService.cs_
     - _Verification: getDiagnostics clean, solution builds_
 
-  - [~] 1.2 Wire GameApiSyncScheduler to delegate to ProfileMergeService
+  - [x] 1.2 Wire GameApiSyncScheduler to delegate to ProfileMergeService
     - Replace the inline `MergeProfileData`/`MergeRank`/`MergeSkills` bodies in GameApiSyncScheduler with calls to `ProfileMergeService.MergeProfileData`
     - Remove the now-redundant private methods from GameApiSyncScheduler
     - _Satisfies: Req 1, Criteria 1.1_
