@@ -1256,6 +1256,8 @@ namespace OE2EmpireTracker.Services
                         }
 
                         ColonyMergeService.MergeBuildings(envelope.Data.Buildings, targetColony);
+                        _playerContext.WriteContext();
+                        _playerContext.OnColonyDataChanged(colonyUUID);
                         Log.Debug("ColonyBuildings:{0} merge completed.", colonyId);
                     }
                     catch (JsonException ex)
@@ -1355,6 +1357,8 @@ namespace OE2EmpireTracker.Services
                         var surveyLinkage = new SurveyLinkageService(_playerContext);
                         ColonyMergeService.MergeWarehouse(
                             envelope.Data.Contents, targetColony, blueprintLinkage, surveyLinkage);
+                        _playerContext.WriteContext();
+                        _playerContext.OnColonyDataChanged(colonyUUID);
                         Log.Debug("ColonyWarehouse:{0} merge completed.", colonyId);
                     }
                     catch (JsonException ex)
@@ -1449,6 +1453,8 @@ namespace OE2EmpireTracker.Services
                         }
 
                         ColonyMergeService.MergeWorkers(envelope.Data, targetColony);
+                        _playerContext.WriteContext();
+                        _playerContext.OnColonyDataChanged(colonyUUID);
                         Log.Debug("ColonyWorkers:{0} merge completed.", colonyId);
                     }
                     catch (JsonException ex)
@@ -1569,6 +1575,8 @@ namespace OE2EmpireTracker.Services
                             if (colony != null)
                             {
                                 AssetMergeService.MergeColonyAssets(response.Cargo, colony);
+                                _playerContext.WriteContext();
+                                _playerContext.OnColonyDataChanged(colony.UUID);
                             }
                             else
                             {
@@ -1588,11 +1596,15 @@ namespace OE2EmpireTracker.Services
                             }
 
                             AssetMergeService.MergeStationAssets(response.Cargo, station, targetHold);
+                            _playerContext.WriteContext();
+                            _playerContext.OnStationDataChanged();
                             break;
 
                         case "Sh":
                             var ship = FindOrCreateShip(id, planetName);
                             AssetMergeService.MergeShipAssets(response.Cargo, ship);
+                            _playerContext.WriteContext();
+                            _playerContext.OnShipDataChanged(ship.UUID);
                             break;
 
                         default:

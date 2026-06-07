@@ -200,7 +200,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 
 
 - [ ] 15. Wire UI event raising for asset merges
-  - [~] 15.1 Add event raising after asset cargo merges in CreateAssetLocationDetailItem
+  - [-] 15.1 Add event raising after asset cargo merges in CreateAssetLocationDetailItem
     - Raise `ColonyDataChanged` when location type "Co" merge succeeds
     - Raise `StationDataChanged` when location type "St" merge succeeds
     - Raise `ShipDataChanged` when location type "Sh" merge succeeds
@@ -211,7 +211,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — event raising in CreateAssetLocationDetailItem)_
     - _Verification: getDiagnostics clean, solution builds_
 
-  - [~] 15.2 Add event raising after colony detail merges
+  - [x] 15.2 Add event raising after colony detail merges
     - Raise `ColonyDataChanged` after successful MergeBuildings, MergeWarehouse, MergeWorkers
     - Call `WriteContext()` only after successful merge
     - _Satisfies: Req 11, Criteria 11.1, 11.4; Req 12, Criteria 12.3_
