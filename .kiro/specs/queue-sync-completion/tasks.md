@@ -94,7 +94,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Verification: getDiagnostics clean, solution builds_
 
 - [ ] 7. Complete ColonyWarehouse work item
-  - [-] 7.1 Add deserialization and merge to CreateColonyWarehouseItem (map overload)
+  - [x] 7.1 Add deserialization and merge to CreateColonyWarehouseItem (map overload)
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiColonyWarehouseResponse>`
     - Resolve target Colony from ColonyIdToUUIDMap (with fallback)
     - Call `ColonyMergeService.MergeWarehouse` with contents, Colony, BlueprintLinkageService, SurveyLinkageService
