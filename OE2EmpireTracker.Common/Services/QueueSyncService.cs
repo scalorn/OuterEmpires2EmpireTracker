@@ -350,6 +350,47 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Finds an existing ship by GameLocationId or name, or creates a new one.
+        /// Lookup order: (1) match by GameLocationId, (2) name-based fallback matching
+        /// Ship.Name to the planet name, (3) create a new ship with the GameLocationId set
+        /// so future lookups succeed without creation.
+        /// </summary>
+        /// <param name="gameLocationId">The game location identifier for the ship.</param>
+        /// <param name="planetName">The planet name used for name-based fallback and as the default ship name.</param>
+        /// <returns>The matched or newly created ship.</returns>
+        private Ship FindOrCreateShip(int gameLocationId, string planetName)
+        {
+            var ships = _playerContext.GetMutableShipsForOwner(_playerContext.CurrentPlayerUUID);
+
+            var ship = ships.FirstOrDefault(s => s.GameLocationId == gameLocationId);
+            if (ship != null)
+            {
+                return ship;
+            }
+
+            ship = ships.FirstOrDefault(s => string.Equals(s.Name, planetName, StringComparison.OrdinalIgnoreCase));
+            if (ship != null)
+            {
+                ship.GameLocationId = gameLocationId;
+                Log.Info("FindOrCreateShip: matched ship '{0}' by name, set GameLocationId={1}.", planetName, gameLocationId);
+                return ship;
+            }
+
+            ship = new Ship
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Name = planetName ?? string.Empty,
+                OwnerUUID = _playerContext.CurrentPlayerUUID,
+                GameLocationId = gameLocationId,
+            };
+
+            _playerContext.AddShip(ship);
+            Log.Info("FindOrCreateShip: created new ship '{0}' with GameLocationId={1}.", planetName, gameLocationId);
+
+            return ship;
+        }
+
+        /// <summary>
         /// Checks an API result for HTTP 401 (unauthorized) and attempts a token refresh.
         /// If the refresh succeeds, updates the stored access token and throws an
         /// <see cref="InvalidOperationException"/> so that the queue retries the work item
@@ -1478,45 +1519,49 @@ namespace OE2EmpireTracker.Services
                         return Array.Empty<WorkItem>();
                     }
 
-                    var cascaded = new List<WorkItem>();
-
-                    foreach (var item in response.Cargo)
+                    // Generic cargo merge dispatched by location type
+                    switch (typeC)
                     {
-                        switch (item.TypeC)
-                        {
-                            case "Crate":
-                                cascaded.Add(CreateCrateDetailItem(item.CargoItemId));
-                                break;
+                        case "Co":
+                            var colonies = _playerContext.GetMutableColoniesForOwner(
+                                _playerContext.CurrentPlayerUUID);
+                            var colony = colonies.FirstOrDefault(c => c.ColonyId == id);
+                            if (colony != null)
+                            {
+                                AssetMergeService.MergeColonyAssets(response.Cargo, colony);
+                            }
+                            else
+                            {
+                                Log.Warn("AssetDetail:{0}: no colony found with ColonyId={0}, skipping merge.", id);
+                            }
 
-                            case "Bp":
-                                var existingBp = _playerContext.FindBlueprintByApiId(item.CargoItemId);
-                                if (existingBp == null || !IsDetailFresh(existingBp.LastDetailImportUtc))
-                                {
-                                    cascaded.Add(CreateBlueprintDetailItem(item.CargoItemId));
-                                }
-                                else
-                                {
-                                    Log.Debug("BlueprintDetail:{0} skipped (fresh).", item.CargoItemId);
-                                }
+                            break;
 
-                                break;
+                        case "St":
+                            var station = FindOrCreateStation(id, planetName, systemName);
+                            ItemBag targetHold;
+                            string playerUUID = _playerContext.CurrentPlayerUUID;
+                            if (!station.Holds.TryGetValue(playerUUID, out targetHold))
+                            {
+                                targetHold = new ItemBag();
+                                station.Holds[playerUUID] = targetHold;
+                            }
 
-                            case "S":
-                                var existingSurvey = _playerContext.FindSurveyByApiId(item.CargoItemId);
-                                if (existingSurvey == null || !IsDetailFresh(existingSurvey.LastDetailImportUtc))
-                                {
-                                    cascaded.Add(CreateSurveyDetailItem(item.CargoItemId, planetName, systemName));
-                                }
-                                else
-                                {
-                                    Log.Debug("SurveyDetail:{0} skipped (fresh).", item.CargoItemId);
-                                }
+                            AssetMergeService.MergeStationAssets(response.Cargo, station, targetHold);
+                            break;
 
-                                break;
-                        }
+                        case "Sh":
+                            var ship = FindOrCreateShip(id, planetName);
+                            AssetMergeService.MergeShipAssets(response.Cargo, ship);
+                            break;
+
+                        default:
+                            Log.Warn("AssetDetail:{0}: unknown location type '{1}', skipping merge.", id, typeC);
+                            return Array.Empty<WorkItem>();
                     }
 
-                    return cascaded.ToArray();
+                    // Cascade detail work items using shared helper
+                    return CascadeCargoDetailItems(response.Cargo, planetName, systemName);
                 },
             };
         }
@@ -1575,6 +1620,66 @@ namespace OE2EmpireTracker.Services
             }
 
             return items.ToArray();
+        }
+
+        /// <summary>
+        /// Finds an existing station by GameLocationId, falls back to name-based match,
+        /// or creates a new station. Sets GameLocationId on adopted/created stations so
+        /// future lookups succeed without creation.
+        /// </summary>
+        /// <param name="gameLocationId">The game API location identifier for the station.</param>
+        /// <param name="planetName">The planet/station display name from the API.</param>
+        /// <param name="systemName">The star system name.</param>
+        /// <returns>The matched or newly created station.</returns>
+        private Station FindOrCreateStation(int gameLocationId, string planetName, string systemName)
+        {
+            string playerUUID = _playerContext.CurrentPlayerUUID;
+            var localStations = _playerContext.GetMutableStationsForOwner(playerUUID);
+
+            // Step 1: Match by GameLocationId
+            var station = localStations.FirstOrDefault(s => s.GameLocationId == gameLocationId);
+            if (station != null)
+            {
+                return station;
+            }
+
+            // Step 2: Name-based fallback for pre-existing manually-created stations
+            station = localStations.FirstOrDefault(s =>
+                (s.GameLocationId == null || s.GameLocationId == 0) &&
+                string.Equals(s.Name, planetName, StringComparison.OrdinalIgnoreCase));
+
+            if (station != null)
+            {
+                station.GameLocationId = gameLocationId;
+                station.SystemName = systemName;
+                Log.Info(
+                    "FindOrCreateStation: adopted existing station '{0}' UUID={1} (set GameLocationId={2})",
+                    station.Name,
+                    station.UUID,
+                    gameLocationId);
+                return station;
+            }
+
+            // Step 3: Create new station
+            station = new Station
+            {
+                UUID = Guid.NewGuid().ToString(),
+                Name = planetName,
+                GameLocationId = gameLocationId,
+                SystemName = systemName,
+                OwnerUUID = playerUUID,
+            };
+
+            station.Holds[playerUUID] = new ItemBag();
+            _playerContext.AddStation(station);
+            Log.Info(
+                "FindOrCreateStation: created new station '{0}' UUID={1} (GameLocationId={2}) in system '{3}'",
+                station.Name,
+                station.UUID,
+                gameLocationId,
+                systemName);
+
+            return station;
         }
 
         /// <summary>

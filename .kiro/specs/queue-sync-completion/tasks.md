@@ -121,8 +121,8 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 10. Extract CascadeCargoDetailItems shared helper method
-  - [-] 10.1 Create private CascadeCargoDetailItems method in QueueSyncService
+- [x] 10. Extract CascadeCargoDetailItems shared helper method
+  - [x] 10.1 Create private CascadeCargoDetailItems method in QueueSyncService
     - Add `private WorkItem[] CascadeCargoDetailItems(List<GameApiAssetCargoItem> cargo, string planetName, string systemName)` method
     - Iterate cargo entries: create `CreateCrateDetailItem` for each Crate entry, `CreateBlueprintDetailItem` for each Blueprint entry if `!IsBlueprintFresh(entry.Id)`, `CreateSurveyDetailItem` for each Survey entry if `!IsSurveyFresh(entry.Id)`
     - Return the collected work items as an array
@@ -134,7 +134,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 
 
 - [ ] 11. Complete AssetLocationDetail work item — generic cargo merge and detail cascading
-  - [~] 11.1 Add cargo merge dispatch by location type and call CascadeCargoDetailItems
+  - [-] 11.1 Add cargo merge dispatch by location type and call CascadeCargoDetailItems
     - After successful deserialization (existing code), add generic cargo merge BEFORE the cascade logic
     - Switch on `typeC`: "Co" → `AssetMergeService.MergeColonyAssets`, "St" → `MergeStationAssets`, "Sh" → `MergeShipAssets`
     - For "Co": resolve Colony by matching `id` to `Colony.ColonyId`
@@ -148,7 +148,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — CreateAssetLocationDetailItem body)_
     - _Verification: getDiagnostics clean, solution builds_
 
-  - [~] 11.2 Implement station find-or-create helper method
+  - [-] 11.2 Implement station find-or-create helper method
     - Add private `FindOrCreateStation(int gameLocationId, string planetName, string systemName)` method
     - First try match by `Station.GameLocationId`, then name-based fallback, then create new
     - Set `GameLocationId` on newly created stations so future lookups succeed
@@ -157,7 +157,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — new helper method)_
     - _Verification: getDiagnostics clean, solution builds_
 
-  - [~] 11.3 Implement ship find-or-create helper method
+  - [x] 11.3 Implement ship find-or-create helper method
     - Add private `FindOrCreateShip(int gameLocationId, string planetName)` method
     - First try match by `Ship.GameLocationId`, then name-based fallback, then create new
     - Set `GameLocationId` on newly created ships so future lookups succeed
