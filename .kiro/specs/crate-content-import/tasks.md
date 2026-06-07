@@ -54,7 +54,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: Unit test CrateContentImporter_ContentsBagReplaced passes_
 
 - [ ] 3. Implement blueprint dual-tracking and nested crate support
-  - [-] 3.1 Implement blueprint dual-tracking via BlueprintLinkageService
+  - [x] 3.1 Implement blueprint dual-tracking via BlueprintLinkageService
     - For cargo items with TypeC indicating Blueprint, call `BlueprintLinkageService.ProcessItem(apiItem, localItem, ownerUUID)`
     - Set BaseItemTypeID on the content Item to the matched/created blueprint's UUID
     - Track BlueprintsLinked count in the result

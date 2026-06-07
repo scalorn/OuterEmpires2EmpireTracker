@@ -3,6 +3,7 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OE2EmpireTracker.Client;
@@ -248,6 +249,106 @@ namespace OE2EmpireTracker.Tests.Services
                 Mass = 1.0,
                 Volume = 1.0,
             };
+        }
+
+        // -------------------------------------------------------------------
+        // Test: Blueprint items dual-tracked in Contents AND master list
+        // Validates: Req 4 AC1 (add to Contents AND upsert master list),
+        //            Req 4 AC2 (use existing dedup logic),
+        //            Req 4 AC3 (set BaseItemTypeID),
+        //            Req 4 AC4 (fire BlueprintDataChanged)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that blueprint items appear in the crate's Contents bag
+        /// AND are upserted into the master blueprint list, with BaseItemTypeID
+        /// set to the created blueprint's UUID, and BlueprintDataChanged fired.
+        /// </summary>
+        [Test]
+        public void CrateContentImporter_Blueprint_DualTracked()
+        {
+            var cargoItems = new List<GameApiAssetCargoItem>
+            {
+                new GameApiAssetCargoItem
+                {
+                    CargoItemId = 501,
+                    TypeC = "Bp",
+                    ResourceName = "Laser Mk2",
+                    Amount = 1,
+                    Evolution = 2,
+                    ShipPartType = "Cg",
+                    Mass = 0.5,
+                    Volume = 0.2,
+                    Properties = new List<GameApiAssetItemProperty>
+                    {
+                        new GameApiAssetItemProperty
+                        {
+                            ModTypeId = 1,
+                            PropertyName = "damage",
+                            FriendlyPropertyName = "Damage",
+                            PropertyValue = 15.0m,
+                            OriginalPropertyValue = 10.0m,
+                            Unit = "HP",
+                            Evolution = 2,
+                            ResearchPositive = true,
+                            CanResearch = true,
+                        },
+                    },
+                },
+                new GameApiAssetCargoItem
+                {
+                    CargoItemId = 502,
+                    TypeC = "R",
+                    ResourceName = "Iron (High)",
+                    Amount = 500,
+                    Mass = 2.5,
+                    Volume = 1.0,
+                },
+            };
+
+            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
+            string json = JsonConvert.SerializeObject(response);
+
+            // Create a parent bag with an existing crate item
+            var crateItem = new Item(ItemType.ItemTypeEnum.Crate, "Test Crate")
+            {
+                UUID = "crate-uuid-001",
+                GameItemId = 200,
+            };
+            var parentBag = new ItemBag();
+            parentBag.AddItem(crateItem);
+
+            // Track BlueprintDataChanged event
+            bool eventFired = false;
+            playerContext.BlueprintDataChanged += (s, e) => eventFired = true;
+
+            var visited = new HashSet<int>();
+            var result = importer.Import(json, 200, parentBag, "test-player-uuid", visited);
+
+            // Verify import success
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.TotalItems, Is.EqualTo(2));
+            Assert.That(result.Imported, Is.EqualTo(2));
+            Assert.That(result.BlueprintsLinked, Is.EqualTo(1));
+
+            // Verify blueprint appears in crate Contents bag
+            Assert.That(crateItem.Contents, Is.Not.Null);
+            Assert.That(crateItem.Contents.Items.Count, Is.EqualTo(2));
+            var blueprintInContents = crateItem.Contents.Items.Values
+                .FirstOrDefault(i => i.Name == "Laser Mk2");
+            Assert.That(blueprintInContents, Is.Not.Null);
+
+            // Verify blueprint upserted into master list
+            var blueprints = playerContext.GetCurrentPlayerBlueprints();
+            var masterBlueprint = blueprints.FirstOrDefault(b => b.Name == "Laser Mk2");
+            Assert.That(masterBlueprint, Is.Not.Null, "Blueprint should be in master list");
+            Assert.That(masterBlueprint.Evolution, Is.EqualTo(2));
+
+            // Verify BaseItemTypeID set to master blueprint's UUID
+            Assert.That(blueprintInContents.BaseItemTypeID, Is.EqualTo(masterBlueprint.UUID));
+
+            // Verify BlueprintDataChanged event was fired
+            Assert.That(eventFired, Is.True, "BlueprintDataChanged event should fire");
         }
     }
 }
