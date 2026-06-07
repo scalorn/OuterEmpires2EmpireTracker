@@ -19,7 +19,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: Solution compiles with zero warnings_
 
 
-- [ ] 2. Implement core Import parsing logic
+- [x] 2. Implement core Import parsing logic
   - [x] 2.1 Implement JSON deserialization and cargo item iteration loop
     - Parse raw JSON into `GameApiAssetDetailResponse` using Newtonsoft.Json
     - Implement try-catch around deserialization for malformed JSON (return empty result with Success=false)
@@ -43,7 +43,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: Unit test CrateContentImporter_AllItemTypes_Mapped passes_
 
 
-  - [-] 2.3 Implement Contents Bag population and crate Item lookup
+  - [x] 2.3 Implement Contents Bag population and crate Item lookup
     - Locate target crate Item in parentBag by matching GameItemId
     - If no matching crate Item exists, create a new Item with type Crate and the GameItemId
     - Replace crate Item's Contents property with a new ItemBag containing all parsed items (clear previous contents)
@@ -65,7 +65,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: Unit test CrateContentImporter_Blueprint_DualTracked passes_
 
 
-  - [~] 3.2 Implement nested crate detection and cycle prevention
+  - [x] 3.2 Implement nested crate detection and cycle prevention
     - When a cargo item has TypeC equal to Crate, create an Item of type Crate in Contents
     - Add the nested crate's GameItemId to NestedCrateIds in the result (for cascade work items)
     - Maintain visitedCrateIds HashSet parameter — skip any crate whose GameItemId is already visited

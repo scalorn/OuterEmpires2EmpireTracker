@@ -108,6 +108,9 @@ namespace OE2EmpireTracker.Services
         {
             var result = new CrateContentImportResult();
 
+            // Mark self as visited before processing contents (cycle detection)
+            visitedCrateIds.Add(crateGameItemId);
+
             GameApiAssetDetailResponse response;
             try
             {
@@ -161,6 +164,27 @@ namespace OE2EmpireTracker.Services
                         catch (Exception bpEx)
                         {
                             Log.Warn("CrateContentImporter: blueprint linkage failed for item[{0}] '{1}': {2}", i, cargoItem.ResourceName, bpEx.Message);
+                        }
+                    }
+
+                    // Nested crate detection: record for cascade, check for cycles
+                    if (string.Equals(cargoItem.TypeC, AssetTypeCodes.Crate, StringComparison.OrdinalIgnoreCase))
+                    {
+                        try
+                        {
+                            int nestedCrateId = cargoItem.CargoItemId;
+                            if (visitedCrateIds.Contains(nestedCrateId))
+                            {
+                                Log.Warn("CrateContentImporter: cycle detected — nested crate GameItemId={0} already visited, skipping cascade", nestedCrateId);
+                            }
+                            else
+                            {
+                                result.NestedCrateIds.Add(nestedCrateId);
+                            }
+                        }
+                        catch (Exception nestedEx)
+                        {
+                            Log.Warn("CrateContentImporter: nested crate processing failed for item[{0}] '{1}': {2}", i, cargoItem.ResourceName, nestedEx.Message);
                         }
                     }
 

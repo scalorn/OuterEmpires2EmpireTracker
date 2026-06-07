@@ -350,5 +350,89 @@ namespace OE2EmpireTracker.Tests.Services
             // Verify BlueprintDataChanged event was fired
             Assert.That(eventFired, Is.True, "BlueprintDataChanged event should fire");
         }
+
+        // -------------------------------------------------------------------
+        // Test: Nested crate detected and cycle prevention
+        // Validates: Req 5 AC1 (create crate Item in Contents),
+        //            Req 5 AC2 (return nested IDs for cascading),
+        //            Req 5 AC4 (cycle detection via visited set)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that nested crate items are detected, their GameItemId is
+        /// added to NestedCrateIds for cascade processing, and that a crate
+        /// whose GameItemId is already in the visited set is skipped (cycle).
+        /// </summary>
+        [Test]
+        public void CrateContentImporter_NestedCrate_CycleDetected()
+        {
+            int parentCrateId = 1000;
+            int nestedCrateId = 2000;
+
+            // Build a response containing a nested crate and a normal resource
+            var cargoItems = new List<GameApiAssetCargoItem>
+            {
+                MakeCargoItem(nestedCrateId, "Cr", "Nested Crate"),
+                MakeCargoItem(3001, "R", "Iron (High Purity)"),
+            };
+
+            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
+            string json = JsonConvert.SerializeObject(response);
+
+            var parentBag = new ItemBag();
+            var visited = new HashSet<int>();
+
+            // First import: nested crate should be detected and added to NestedCrateIds
+            var result = importer.Import(json, parentCrateId, parentBag, "owner-uuid", visited);
+
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Imported, Is.EqualTo(2));
+            Assert.That(result.NestedCrateIds, Has.Count.EqualTo(1));
+            Assert.That(result.NestedCrateIds[0], Is.EqualTo(nestedCrateId));
+
+            // The nested crate item should exist in Contents as a Crate-type item
+            Item crateInParent = null;
+            foreach (var kvp in parentBag.Items)
+            {
+                if (kvp.Value.GameItemId == parentCrateId)
+                {
+                    crateInParent = kvp.Value;
+                    break;
+                }
+            }
+
+            Assert.That(crateInParent, Is.Not.Null);
+            Assert.That(crateInParent.Contents, Is.Not.Null);
+
+            var nestedCrateItem = crateInParent.Contents.Items.Values
+                .FirstOrDefault(i => i.GameItemId == nestedCrateId);
+            Assert.That(nestedCrateItem, Is.Not.Null, "Nested crate should be in Contents");
+            Assert.That(nestedCrateItem.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Crate));
+
+            // The parent crate's own GameItemId should now be in visited
+            Assert.That(visited.Contains(parentCrateId), Is.True);
+
+            // Second import: simulate importing the nested crate whose cargo
+            // references the parent crate (creating a cycle)
+            var cyclicCargo = new List<GameApiAssetCargoItem>
+            {
+                MakeCargoItem(parentCrateId, "Cr", "Parent Crate (cyclic)"),
+                MakeCargoItem(4001, "C", "Electronics"),
+            };
+
+            var cyclicResponse = new GameApiAssetDetailResponse { Cargo = cyclicCargo };
+            string cyclicJson = JsonConvert.SerializeObject(cyclicResponse);
+
+            var nestedParentBag = new ItemBag();
+
+            // Import the nested crate — parentCrateId is already in visited, should be skipped
+            var result2 = importer.Import(cyclicJson, nestedCrateId, nestedParentBag, "owner-uuid", visited);
+
+            Assert.That(result2.Success, Is.True);
+            Assert.That(result2.Imported, Is.EqualTo(2));
+
+            // The cyclic reference (parentCrateId) should NOT be in NestedCrateIds
+            Assert.That(result2.NestedCrateIds, Has.Count.EqualTo(0), "Cycle should be detected — parent already visited");
+        }
     }
 }
