@@ -134,7 +134,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 
 
 - [ ] 11. Complete AssetLocationDetail work item — generic cargo merge and detail cascading
-  - [-] 11.1 Add cargo merge dispatch by location type and call CascadeCargoDetailItems
+  - [x] 11.1 Add cargo merge dispatch by location type and call CascadeCargoDetailItems
     - After successful deserialization (existing code), add generic cargo merge BEFORE the cascade logic
     - Switch on `typeC`: "Co" → `AssetMergeService.MergeColonyAssets`, "St" → `MergeStationAssets`, "Sh" → `MergeShipAssets`
     - For "Co": resolve Colony by matching `id` to `Colony.ColonyId`
@@ -148,7 +148,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Output: QueueSyncService.cs (modified — CreateAssetLocationDetailItem body)_
     - _Verification: getDiagnostics clean, solution builds_
 
-  - [-] 11.2 Implement station find-or-create helper method
+  - [x] 11.2 Implement station find-or-create helper method
     - Add private `FindOrCreateStation(int gameLocationId, string planetName, string systemName)` method
     - First try match by `Station.GameLocationId`, then name-based fallback, then create new
     - Set `GameLocationId` on newly created stations so future lookups succeed
