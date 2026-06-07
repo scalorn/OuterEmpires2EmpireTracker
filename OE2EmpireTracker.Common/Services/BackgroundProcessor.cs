@@ -99,7 +99,10 @@ namespace OE2EmpireTracker.Services
             _stopping.Reset();
             int interval = GetTickIntervalMs();
             NextProcessTime = SystemClock.UtcNow.AddMilliseconds(interval);
-            _timer = new Timer(OnTimerTick, null, interval, Timeout.Infinite);
+
+            // Fire the first tick immediately (dueTime=0) so Game API sync starts on launch,
+            // then subsequent ticks use the configured interval.
+            _timer = new Timer(OnTimerTick, null, 0, Timeout.Infinite);
             _running = true;
 
             Log.Info("BackgroundProcessor started. Tick interval: {0}ms", interval);
