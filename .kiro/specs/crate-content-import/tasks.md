@@ -100,7 +100,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Integrate CrateContentImporter into QueueSyncService
-  - [~] 6.1 Invoke CrateContentImporter after API fetch, pass GameItemId, return cascade work items
+  - [x] 6.1 Invoke CrateContentImporter after API fetch, pass GameItemId, return cascade work items
     - Instantiate CrateContentImporter (or use injected instance) in QueueSyncService
     - After successful API fetch, call `CrateContentImporter.Import(json, crateGameItemId, parentBag, ownerUUID, visitedCrateIds)`
     - Pass crate GameItemId to the importer for target Item location

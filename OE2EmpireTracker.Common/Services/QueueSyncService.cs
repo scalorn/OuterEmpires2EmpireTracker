@@ -856,7 +856,7 @@ namespace OE2EmpireTracker.Services
                         _playerContext.OnShipDataChanged(activeShip.UUID);
                         Log.Info("ShipCargo: merge applied for ship '{0}'.", activeShip.Name);
 
-                        return CascadeCargoDetailItems(cargoItems, activeShip.Name, string.Empty);
+                        return CascadeCargoDetailItems(cargoItems, activeShip.Name, string.Empty, activeShip.Cargo);
                     }
                     catch (JsonException ex)
                     {
@@ -1607,6 +1607,7 @@ namespace OE2EmpireTracker.Services
                     }
 
                     // Generic cargo merge dispatched by location type
+                    ItemBag cargoBag = null;
                     switch (typeC)
                     {
                         case AssetTypeCodes.Colony:
@@ -1618,6 +1619,7 @@ namespace OE2EmpireTracker.Services
                                 AssetMergeService.MergeColonyAssets(response.Cargo, colony);
                                 _playerContext.WriteContext();
                                 _playerContext.OnColonyDataChanged(colony.UUID);
+                                cargoBag = colony.Items;
                             }
                             else
                             {
@@ -1639,6 +1641,7 @@ namespace OE2EmpireTracker.Services
                             AssetMergeService.MergeStationAssets(response.Cargo, station, targetHold);
                             _playerContext.WriteContext();
                             _playerContext.OnStationDataChanged();
+                            cargoBag = targetHold;
                             break;
 
                         case AssetTypeCodes.Ship:
@@ -1646,6 +1649,7 @@ namespace OE2EmpireTracker.Services
                             AssetMergeService.MergeShipAssets(response.Cargo, ship);
                             _playerContext.WriteContext();
                             _playerContext.OnShipDataChanged(ship.UUID);
+                            cargoBag = ship.Cargo;
                             break;
 
                         default:
@@ -1654,7 +1658,7 @@ namespace OE2EmpireTracker.Services
                     }
 
                     // Cascade detail work items using shared helper
-                    return CascadeCargoDetailItems(response.Cargo, planetName, systemName);
+                    return CascadeCargoDetailItems(response.Cargo, planetName, systemName, cargoBag);
                 },
             };
         }
@@ -1668,20 +1672,23 @@ namespace OE2EmpireTracker.Services
         /// <param name="cargo">The list of cargo items to cascade.</param>
         /// <param name="planetName">The planet name for survey context.</param>
         /// <param name="systemName">The star system name for survey context.</param>
+        /// <param name="parentBag">The parent ItemBag containing the cargo items (for crate content import).</param>
         /// <returns>An array of cascaded detail work items.</returns>
         private WorkItem[] CascadeCargoDetailItems(
             List<GameApiAssetCargoItem> cargo,
             string planetName,
-            string systemName)
+            string systemName,
+            ItemBag parentBag)
         {
             var items = new List<WorkItem>();
+            var visitedCrateIds = new HashSet<int>();
 
             foreach (var entry in cargo)
             {
                 switch (entry.TypeC?.Trim())
                 {
                     case AssetTypeCodes.Crate:
-                        items.Add(CreateCrateDetailItem(entry.CargoItemId));
+                        items.Add(CreateCrateDetailItem(entry.CargoItemId, parentBag, visitedCrateIds));
                         break;
 
                     case AssetTypeCodes.Blueprint:
@@ -1778,11 +1785,15 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
-        /// Creates a work item that fetches crate detail for blueprint extraction.
+        /// Creates a work item that fetches crate detail and invokes the CrateContentImporter
+        /// to populate the crate's Contents bag with all item types found inside.
+        /// Returns cascade work items for any nested crates discovered.
         /// </summary>
         /// <param name="crateId">The crate cargo item identifier.</param>
-        /// <returns>A work item for crate detail retrieval.</returns>
-        private WorkItem CreateCrateDetailItem(int crateId)
+        /// <param name="parentBag">The ItemBag containing the crate item.</param>
+        /// <param name="visitedCrateIds">Set of already-visited crate IDs for cycle detection.</param>
+        /// <returns>A work item for crate detail retrieval and content import.</returns>
+        private WorkItem CreateCrateDetailItem(int crateId, ItemBag parentBag, HashSet<int> visitedCrateIds)
         {
             return new WorkItem
             {
@@ -1804,9 +1815,26 @@ namespace OE2EmpireTracker.Services
                     }
 
                     Log.Debug("CrateDetail:{0} fetched successfully, importing.", crateId);
-                    CrateImporter.ImportFromJson(result.Json, _playerContext, _empireContext);
 
-                    return Array.Empty<WorkItem>();
+                    // Invoke CrateContentImporter for full content population
+                    string ownerUUID = _playerContext.CurrentPlayerUUID;
+                    var blueprintLinkageService = new BlueprintLinkageService(_playerContext, _empireContext);
+                    var importer = new CrateContentImporter(_playerContext, _empireContext, blueprintLinkageService);
+                    var importResult = importer.Import(result.Json, crateId, parentBag, ownerUUID, visitedCrateIds);
+
+                    if (!importResult.Success)
+                    {
+                        Log.Warn("CrateDetail:{0} content import failed with {1} error(s).", crateId, importResult.Errors.Count);
+                    }
+
+                    // Return cascade work items for nested crates
+                    var cascadeItems = new List<WorkItem>();
+                    foreach (int nestedCrateId in importResult.NestedCrateIds)
+                    {
+                        cascadeItems.Add(CreateCrateDetailItem(nestedCrateId, parentBag, visitedCrateIds));
+                    }
+
+                    return cascadeItems;
                 },
             };
         }
