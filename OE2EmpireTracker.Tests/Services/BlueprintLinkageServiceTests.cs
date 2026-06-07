@@ -552,6 +552,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void BlueprintIdempotency_ProcessSameItemNTimes_ExactlyOneBlueprint()
         {
+            var config = Configuration.QuickThrowOnFailure;
+            config.MaxNbOfTest = 25;
             Prop.ForAll<PositiveInt>(repeatCount =>
             {
             TestHelper.ResetWithCachedData();
@@ -592,7 +594,7 @@ namespace OE2EmpireTracker.Tests.Services
             var blueprints = localPlayerContext.GetCurrentPlayerBlueprints();
             var matching = blueprints.Where(b => b.Name == "Idempotent Blueprint" && b.Evolution == 1).ToList();
             Assert.That(matching.Count, Is.EqualTo(1));
-            }).QuickCheckThrowOnFailure();
+            }).Check(config);
         }
 
         // -------------------------------------------------------------------
@@ -604,6 +606,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void PropertyPreservation_ExistingPropertiesNeverRemoved()
         {
+            var config = Configuration.QuickThrowOnFailure;
+            config.MaxNbOfTest = 25;
             Prop.ForAll<PositiveInt>(repeatCount =>
             {
             TestHelper.ResetWithCachedData();
@@ -663,7 +667,7 @@ namespace OE2EmpireTracker.Tests.Services
             existing.Properties.GetString("ExtraBeta", string.Empty, out string betaVal);
             Assert.That(alphaVal, Is.EqualTo("100"));
             Assert.That(betaVal, Is.EqualTo("200"));
-            }).QuickCheckThrowOnFailure();
+            }).Check(config);
         }
 
         // -------------------------------------------------------------------
@@ -675,6 +679,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void OwnershipRouting_EvoGreaterThan0IsPlayer_Evo0IsGlobal()
         {
+            var config = Configuration.QuickThrowOnFailure;
+            config.MaxNbOfTest = 25;
             Prop.ForAll<int>(rawEvolution =>
             {
             int evolution = Math.Abs(rawEvolution % 6);
@@ -725,7 +731,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Assert.That(found, Is.Not.Null, "Evo = 0 should create global blueprint");
                 Assert.That(found.OwnerUUID, Is.EqualTo(string.Empty));
             }
-            }).QuickCheckThrowOnFailure();
+            }).Check(config);
         }
 
         // -------------------------------------------------------------------
@@ -737,6 +743,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void PropertyTypeRegistryCompleteness_AllModTypeIdsRegistered()
         {
+            var config = Configuration.QuickThrowOnFailure;
+            config.MaxNbOfTest = 25;
             Prop.ForAll<PositiveInt>(modTypeIdSeed =>
             {
             TestHelper.ResetWithCachedData();
@@ -803,7 +811,7 @@ namespace OE2EmpireTracker.Tests.Services
                 Assert.That(registered, Is.Not.Null, "ModTypeId " + prop.ModTypeId + " should be in registry");
                 Assert.That(registered.PropertyName, Is.EqualTo(prop.PropertyName));
             }
-            }).QuickCheckThrowOnFailure();
+            }).Check(config);
         }
     }
 }

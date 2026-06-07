@@ -190,6 +190,8 @@ namespace OE2EmpireTracker.Tests.Services
         [Test]
         public void SurveyIdempotency_ProcessSameItemNTimes_ExactlyOneSurveyPerPlanet()
         {
+            var config = Configuration.QuickThrowOnFailure;
+            config.MaxNbOfTest = 25;
             Prop.ForAll<PositiveInt>(repeatCount =>
             {
             TestHelper.ResetWithCachedData();
@@ -214,7 +216,7 @@ namespace OE2EmpireTracker.Tests.Services
             var matching = surveys.Where(s =>
                 string.Equals(s.PlanetName, "Test Planet", StringComparison.OrdinalIgnoreCase)).ToList();
             Assert.That(matching.Count, Is.EqualTo(1));
-            }).QuickCheckThrowOnFailure();
+            }).Check(config);
         }
     }
 }

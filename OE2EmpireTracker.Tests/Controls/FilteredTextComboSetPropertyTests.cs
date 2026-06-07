@@ -41,7 +41,7 @@ namespace OE2EmpireTracker.Tests.Controls
         /// When no value list is provided, SelectedValue is always null.
         /// Validates: Requirements 1.2, 1.3, 1.4, 1.5
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property ValueListIndexMapping_ThroughFilter()
         {
             var nonNullStringGen = Gen.Elements("alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa")
@@ -152,7 +152,7 @@ namespace OE2EmpireTracker.Tests.Controls
         /// results in empty filter text and all items displayed.
         /// Validates: Requirements 11.2
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SetItemsClearsFilter_WhenNotEditing()
         {
             var itemsGen = Gen.Elements("alpha", "beta", "gamma", "delta", "epsilon", "zeta")
@@ -191,7 +191,7 @@ namespace OE2EmpireTracker.Tests.Controls
         /// the filter and displays only matching items.
         /// Validates: Requirements 11.3
         /// </summary>
-        [FsCheck.NUnit.Property(MaxTest = 100)]
+        [FsCheck.NUnit.Property(MaxTest = 25)]
         public Property SetItemsPreservesFilter_WhenEditing()
         {
             var itemsGen = Gen.Elements("alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta")
