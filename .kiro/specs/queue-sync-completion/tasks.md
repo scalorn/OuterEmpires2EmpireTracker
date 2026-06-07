@@ -82,7 +82,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 
 
 - [ ] 6. Complete ColonyBuildings work item
-  - [~] 6.1 Add deserialization and merge to CreateColonyBuildingsItem (map overload)
+  - [-] 6.1 Add deserialization and merge to CreateColonyBuildingsItem (map overload)
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiColonyBuildingsResponse>`
     - Resolve target Colony from ColonyIdToUUIDMap (with fallback)
     - Call `ColonyMergeService.MergeBuildings` with buildings list and local Colony
@@ -94,7 +94,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Verification: getDiagnostics clean, solution builds_
 
 - [ ] 7. Complete ColonyWarehouse work item
-  - [~] 7.1 Add deserialization and merge to CreateColonyWarehouseItem (map overload)
+  - [-] 7.1 Add deserialization and merge to CreateColonyWarehouseItem (map overload)
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiColonyWarehouseResponse>`
     - Resolve target Colony from ColonyIdToUUIDMap (with fallback)
     - Call `ColonyMergeService.MergeWarehouse` with contents, Colony, BlueprintLinkageService, SurveyLinkageService
@@ -106,7 +106,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Verification: getDiagnostics clean, solution builds_
 
 - [ ] 8. Complete ColonyWorkers work item
-  - [~] 8.1 Add deserialization and merge to CreateColonyWorkersItem (map overload)
+  - [x] 8.1 Add deserialization and merge to CreateColonyWorkersItem (map overload)
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiColonyWorkersResponse>`
     - Resolve target Colony from ColonyIdToUUIDMap (with fallback)
     - Call `ColonyMergeService.MergeWorkers` with response data and local Colony
@@ -182,7 +182,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
     - _Verification: getDiagnostics clean, solution builds_
 
 - [ ] 13. Complete ShipConfiguration work item
-  - [~] 13.1 Add deserialization and component mapping to CreateShipConfigItem
+  - [-] 13.1 Add deserialization and component mapping to CreateShipConfigItem
     - Deserialize `result.Json` as `GameApiServiceResponse<GameApiShipConfigurationResponse>`
     - Match or create Ship by `ShipId` / GameLocationId from response
     - Map each `GameApiShipComponent` to local ship component representation (BlueprintType, Name, Evolution, HealthPercentage, LastRepairHealthPercentage)

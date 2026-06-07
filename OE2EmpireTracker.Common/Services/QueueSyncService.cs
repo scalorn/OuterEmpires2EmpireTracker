@@ -1088,6 +1088,48 @@ namespace OE2EmpireTracker.Services
 
                     Log.Debug("ColonyBuildings:{0} fetched successfully.", colonyId);
 
+                    try
+                    {
+                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyBuildingsResponse>>(result.Json);
+                        if (envelope?.Data?.Buildings == null)
+                        {
+                            Log.Warn(
+                                "ColonyBuildings:{0} — deserialized Data.Buildings is null, skipping merge.",
+                                colonyId);
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        var localColonies = _playerContext.GetMutableColoniesForOwner(
+                            _playerContext.CurrentPlayerUUID);
+                        var targetColony = localColonies.FirstOrDefault(c => c.UUID == colonyUUID);
+                        if (targetColony == null)
+                        {
+                            Log.Warn(
+                                "ColonyBuildings:{0} — target colony UUID '{1}' not found in local data, skipping merge.",
+                                colonyId,
+                                colonyUUID);
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        ColonyMergeService.MergeBuildings(envelope.Data.Buildings, targetColony);
+                        Log.Debug("ColonyBuildings:{0} merge completed.", colonyId);
+                    }
+                    catch (JsonException ex)
+                    {
+                        Log.Error(
+                            "ColonyBuildings:{0} — failed to deserialize response: {1}\nBody (truncated): {2}",
+                            colonyId,
+                            ex.Message,
+                            TruncateForLog(result.Json));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(
+                            "ColonyBuildings:{0} — merge error: {1}",
+                            colonyId,
+                            ex.Message);
+                    }
+
                     return Array.Empty<WorkItem>();
                 },
             };
@@ -1142,6 +1184,51 @@ namespace OE2EmpireTracker.Services
 
                     Log.Debug("ColonyWarehouse:{0} fetched successfully.", colonyId);
 
+                    try
+                    {
+                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWarehouseResponse>>(result.Json);
+                        if (envelope?.Data?.Contents == null)
+                        {
+                            Log.Warn(
+                                "ColonyWarehouse:{0} — deserialized Data.Contents is null, skipping merge.",
+                                colonyId);
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        var localColonies = _playerContext.GetMutableColoniesForOwner(
+                            _playerContext.CurrentPlayerUUID);
+                        var targetColony = localColonies.FirstOrDefault(c => c.UUID == colonyUUID);
+                        if (targetColony == null)
+                        {
+                            Log.Warn(
+                                "ColonyWarehouse:{0} — target colony UUID '{1}' not found in local data, skipping merge.",
+                                colonyId,
+                                colonyUUID);
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        var blueprintLinkage = new BlueprintLinkageService(_playerContext, _empireContext);
+                        var surveyLinkage = new SurveyLinkageService(_playerContext);
+                        ColonyMergeService.MergeWarehouse(
+                            envelope.Data.Contents, targetColony, blueprintLinkage, surveyLinkage);
+                        Log.Debug("ColonyWarehouse:{0} merge completed.", colonyId);
+                    }
+                    catch (JsonException ex)
+                    {
+                        Log.Error(
+                            "ColonyWarehouse:{0} — failed to deserialize response: {1}\nBody (truncated): {2}",
+                            colonyId,
+                            ex.Message,
+                            TruncateForLog(result.Json));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(
+                            "ColonyWarehouse:{0} — merge error: {1}",
+                            colonyId,
+                            ex.Message);
+                    }
+
                     return Array.Empty<WorkItem>();
                 },
             };
@@ -1195,6 +1282,46 @@ namespace OE2EmpireTracker.Services
                     }
 
                     Log.Debug("ColonyWorkers:{0} fetched successfully.", colonyId);
+
+                    try
+                    {
+                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiColonyWorkersResponse>>(result.Json);
+                        if (envelope?.Data == null)
+                        {
+                            Log.Warn("ColonyWorkers:{0} — deserialized Data was null, skipping merge.", colonyId);
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        var localColonies = _playerContext.GetMutableColoniesForOwner(
+                            _playerContext.CurrentPlayerUUID);
+                        var targetColony = localColonies.FirstOrDefault(c => c.UUID == colonyUUID);
+                        if (targetColony == null)
+                        {
+                            Log.Warn(
+                                "ColonyWorkers:{0} — target colony UUID {1} not found in local data, skipping merge.",
+                                colonyId,
+                                colonyUUID);
+                            return Array.Empty<WorkItem>();
+                        }
+
+                        ColonyMergeService.MergeWorkers(envelope.Data, targetColony);
+                        Log.Debug("ColonyWorkers:{0} merge completed.", colonyId);
+                    }
+                    catch (JsonException ex)
+                    {
+                        Log.Error(
+                            "ColonyWorkers:{0} — failed to deserialize response: {1}\nBody (truncated): {2}",
+                            colonyId,
+                            ex.Message,
+                            TruncateForLog(result.Json));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(
+                            "ColonyWorkers:{0} — merge failed: {1}",
+                            colonyId,
+                            ex.Message);
+                    }
 
                     return Array.Empty<WorkItem>();
                 },
