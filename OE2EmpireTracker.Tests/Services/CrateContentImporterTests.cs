@@ -117,6 +117,126 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(result.CountsByType[ItemType.ItemTypeEnum.None], Is.EqualTo(2), "L and D → None (unmapped)");
         }
 
+        // -------------------------------------------------------------------
+        // Test: Contents bag fully replaced (no merge with old contents)
+        // Validates: Req 3 AC1 (replace Contents with ItemBag),
+        //            Req 3 AC2 (identify by GameItemId),
+        //            Req 3 AC4 (clear previous contents)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that importing crate contents fully replaces the existing
+        /// Contents bag rather than merging with pre-existing items.
+        /// </summary>
+        [Test]
+        public void CrateContentImporter_ContentsBagReplaced()
+        {
+            int crateGameItemId = 500;
+
+            // Set up a parent bag with a pre-existing crate Item that has old contents
+            var oldContentItem = new Item(ItemType.ItemTypeEnum.Resource, "Old Iron")
+            {
+                UUID = "old-item-uuid-1",
+                GameItemId = 9000,
+                Quantity = 100,
+            };
+
+            var oldContents = new ItemBag();
+            oldContents.AddItem(oldContentItem);
+
+            var crateItem = new Item(ItemType.ItemTypeEnum.Crate, "Crate")
+            {
+                UUID = "crate-uuid-1",
+                GameItemId = crateGameItemId,
+                Contents = oldContents,
+            };
+
+            var parentBag = new ItemBag();
+            parentBag.AddItem(crateItem);
+
+            // Build a response with new items
+            var cargoItems = new List<GameApiAssetCargoItem>
+            {
+                MakeCargoItem(1001, "R", "Titanium (High Purity)"),
+                MakeCargoItem(1002, "C", "Electronics"),
+                MakeCargoItem(1003, "A", "Plasma Rounds"),
+            };
+
+            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
+            string json = JsonConvert.SerializeObject(response);
+
+            var visited = new HashSet<int>();
+
+            // Act
+            var result = importer.Import(json, crateGameItemId, parentBag, "owner-uuid", visited);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Imported, Is.EqualTo(3));
+
+            // The crate should still be the same item in the parent bag
+            var foundCrate = parentBag.Items["crate-uuid-1"];
+            Assert.That(foundCrate, Is.Not.Null);
+            Assert.That(foundCrate.GameItemId, Is.EqualTo(crateGameItemId));
+
+            // Contents should be fully replaced — old item gone, new items present
+            Assert.That(foundCrate.Contents, Is.Not.Null);
+            Assert.That(foundCrate.Contents.Count(), Is.EqualTo(3));
+            Assert.That(foundCrate.Contents.Items.ContainsKey("old-item-uuid-1"), Is.False, "Old contents should be gone");
+        }
+
+        // -------------------------------------------------------------------
+        // Test: Crate Item created when not found in parent bag
+        // Validates: Req 3 AC3 (create new if missing)
+        // -------------------------------------------------------------------
+
+        /// <summary>
+        /// Verifies that when no matching crate Item exists in the parent bag,
+        /// a new crate Item is created with the correct GameItemId and populated.
+        /// </summary>
+        [Test]
+        public void CrateContentImporter_CrateCreatedWhenMissing()
+        {
+            int crateGameItemId = 777;
+
+            // Parent bag has no item with GameItemId=777
+            var parentBag = new ItemBag();
+
+            var cargoItems = new List<GameApiAssetCargoItem>
+            {
+                MakeCargoItem(2001, "R", "Iron (High Purity)"),
+            };
+
+            var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
+            string json = JsonConvert.SerializeObject(response);
+            var visited = new HashSet<int>();
+
+            // Act
+            var result = importer.Import(json, crateGameItemId, parentBag, "owner-uuid", visited);
+
+            // Assert
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Imported, Is.EqualTo(1));
+
+            // A new crate Item should have been created in parentBag
+            Assert.That(parentBag.Count(), Is.EqualTo(1));
+
+            Item createdCrate = null;
+            foreach (var kvp in parentBag.Items)
+            {
+                if (kvp.Value.GameItemId == crateGameItemId)
+                {
+                    createdCrate = kvp.Value;
+                    break;
+                }
+            }
+
+            Assert.That(createdCrate, Is.Not.Null);
+            Assert.That(createdCrate.ItemType, Is.EqualTo(ItemType.ItemTypeEnum.Crate));
+            Assert.That(createdCrate.Contents, Is.Not.Null);
+            Assert.That(createdCrate.Contents.Count(), Is.EqualTo(1));
+        }
+
         private static GameApiAssetCargoItem MakeCargoItem(int id, string typeC, string name)
         {
             return new GameApiAssetCargoItem

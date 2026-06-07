@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using NLog;
 using OE2EmpireTracker.Client;
+using OE2EmpireTracker.Constants;
 using OE2EmpireTracker.Models;
 
 namespace OE2EmpireTracker.Services
@@ -145,6 +146,24 @@ namespace OE2EmpireTracker.Services
                     }
 
                     var item = AssetMergeService.CreateAssetItem(cargoItem, mappedType);
+
+                    // Blueprint dual-tracking: link to master blueprint list
+                    if (string.Equals(cargoItem.TypeC, AssetTypeCodes.Blueprint, StringComparison.OrdinalIgnoreCase))
+                    {
+                        try
+                        {
+                            bool linked = _blueprintLinkageService.ProcessItem(cargoItem, item, ownerUUID);
+                            if (linked)
+                            {
+                                result.BlueprintsLinked++;
+                            }
+                        }
+                        catch (Exception bpEx)
+                        {
+                            Log.Warn("CrateContentImporter: blueprint linkage failed for item[{0}] '{1}': {2}", i, cargoItem.ResourceName, bpEx.Message);
+                        }
+                    }
+
                     createdItems.Add(item);
                     result.Imported++;
 
@@ -164,6 +183,50 @@ namespace OE2EmpireTracker.Services
                     Log.Error("CrateContentImporter: failed to process item[{0}] '{1}' in crate GameItemId={2}: {3}", i, itemName, crateGameItemId, ex.Message);
                     result.Errors.Add($"Item[{i}] '{itemName}': {ex.Message}");
                 }
+            }
+
+            // Locate or create the crate Item in the parent bag
+            Item crateItem = null;
+            foreach (var kvp in parentBag.Items)
+            {
+                if (kvp.Value.GameItemId == crateGameItemId)
+                {
+                    crateItem = kvp.Value;
+                    break;
+                }
+            }
+
+            if (crateItem == null)
+            {
+                crateItem = new Item(ItemType.ItemTypeEnum.Crate, "Crate")
+                {
+                    UUID = Guid.NewGuid().ToString(),
+                    GameItemId = crateGameItemId,
+                };
+                parentBag.AddItem(crateItem);
+                Log.Info("CrateContentImporter: created new crate Item UUID={0} for GameItemId={1}", crateItem.UUID, crateGameItemId);
+            }
+
+            // Replace Contents bag with new ItemBag containing all parsed items
+            try
+            {
+                var contentsBag = new ItemBag();
+                foreach (var item in createdItems)
+                {
+                    contentsBag.AddItem(item);
+                }
+
+                crateItem.Contents = contentsBag;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("CrateContentImporter: failed to replace Contents bag for crate GameItemId={0}: {1}", crateGameItemId, ex.Message);
+            }
+
+            // Fire BlueprintDataChanged if any blueprints were linked
+            if (result.BlueprintsLinked > 0)
+            {
+                _playerContext.OnBlueprintDataChanged(null);
             }
 
             return result;
