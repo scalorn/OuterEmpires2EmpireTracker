@@ -1677,9 +1677,10 @@ namespace OE2EmpireTracker.Services
 
             foreach (var entry in cargo)
             {
-                switch (entry.TypeC)
+                switch (entry.TypeC?.Trim())
                 {
                     case "Crate":
+                    case "Cr":
                         items.Add(CreateCrateDetailItem(entry.CargoItemId));
                         break;
 
@@ -1697,6 +1698,7 @@ namespace OE2EmpireTracker.Services
                         break;
 
                     case "S":
+                    case "Sc":
                         var existingSurvey = _playerContext.FindSurveyByApiId(entry.CargoItemId);
                         if (existingSurvey == null || !IsDetailFresh(existingSurvey.LastDetailImportUtc))
                         {
