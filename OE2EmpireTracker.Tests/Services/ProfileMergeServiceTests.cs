@@ -352,3 +352,41 @@ namespace OE2EmpireTracker.Tests.Services
             });
         }
 
+        // ---------------------------------------------------------------
+        // Property 5: Rank Merge Idempotency
+        // Validates: Req 1 Criteria 1.4
+        // ---------------------------------------------------------------
+
+        /// <summary>
+        /// Property 5: After applying a response with ranks twice, rank
+        /// fields are identical and second call returns false.
+        /// **Validates: Requirements 1.4**
+        /// </summary>
+        [FsCheck.NUnit.Property(MaxTest = 100)]
+        public Property RankMerge_Idempotent()
+        {
+            return Prop.ForAll(ProfileResponseGen().ToArbitrary(), (remote) =>
+            {
+                var local = CreateFreshProfile();
+
+                ProfileMergeService.MergeProfileData(local, remote);
+
+                var pubRank = local.Public.Rank;
+                var pubName = local.Public.RankName;
+                var pubXp = local.Public.CurrentXp;
+                var pubXpNext = local.Public.XpToNextLevel;
+
+                bool secondResult = ProfileMergeService.MergeProfileData(local, remote);
+
+                var rankStable = local.Public.Rank == pubRank
+                    && local.Public.RankName == pubName
+                    && local.Public.CurrentXp == pubXp
+                    && local.Public.XpToNextLevel == pubXpNext;
+
+                return (!secondResult && rankStable)
+                    .Label($"Rank changed on second merge or returned true. " +
+                           $"secondResult={secondResult}, rankStable={rankStable}");
+            });
+        }
+    }
+}

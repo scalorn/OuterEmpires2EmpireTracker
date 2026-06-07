@@ -567,6 +567,7 @@
     <Compile Include="Services\AssetMergeServiceTests.cs" />
     <Compile Include="Services\AssetMergeServiceShipTests.cs" />
     <Compile Include="Services\GameApiProfileMergeTests.cs" />
+    <Compile Include="Services\ProfileMergeServiceTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerColonyTests.cs" />
     <Compile Include="Services\GameApiSyncSchedulerAssetTests.cs" />
