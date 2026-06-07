@@ -169,3 +169,140 @@ namespace OE2EmpireTracker.Services
                 changed = true;
             }
 
+            if (remoteRank.XpToNextLevel != localRank.XpToNextLevel)
+            {
+                Log.Info(
+                    "Profile merge conflict: {0}.XpToNextLevel '{1}' -> '{2}' (strategy: API wins)",
+                    rankName,
+                    localRank.XpToNextLevel,
+                    remoteRank.XpToNextLevel);
+                localRank.XpToNextLevel = remoteRank.XpToNextLevel;
+                changed = true;
+            }
+
+            if (remoteRank.CurrentXp != localRank.CurrentXp)
+            {
+                Log.Info(
+                    "Profile merge conflict: {0}.CurrentXp '{1}' -> '{2}' (strategy: API wins)",
+                    rankName,
+                    localRank.CurrentXp,
+                    remoteRank.CurrentXp);
+                localRank.CurrentXp = remoteRank.CurrentXp;
+                changed = true;
+            }
+
+            return changed;
+        }
+
+        /// <summary>
+        /// Merges skill levels from the API response into the local profile.
+        /// Preserves local TrainingStarted and CompletionTime fields.
+        /// </summary>
+        /// <param name="local">The local player profile containing skills.</param>
+        /// <param name="remoteSkills">The remote skills dictionary from the API.</param>
+        /// <param name="skillInTraining">The skill currently in training, or null.</param>
+        /// <returns>True if any skill fields were changed; otherwise false.</returns>
+        private static bool MergeSkills(
+            PlayerProfile local,
+            Dictionary<string, GameApiSkillResponse> remoteSkills,
+            GameApiSkillInTrainingResponse skillInTraining)
+        {
+            bool changed = false;
+
+            foreach (var kvp in remoteSkills)
+            {
+                string skillName = kvp.Key;
+                GameApiSkillResponse remoteSkill = kvp.Value;
+                PlayerSkill localSkill = local.GetSkill(skillName);
+
+                if (remoteSkill.Level != localSkill.Level)
+                {
+                    Log.Info(
+                        "Profile merge conflict: Skills[{0}].Level '{1}' -> '{2}' (strategy: API wins)",
+                        skillName,
+                        localSkill.Level,
+                        remoteSkill.Level);
+                    localSkill.Level = remoteSkill.Level;
+                    changed = true;
+                }
+
+                // Merge metadata (Req 6, 9.6)
+                if (remoteSkill.SkillId != localSkill.SkillId)
+                {
+                    localSkill.SkillId = remoteSkill.SkillId;
+                    changed = true;
+                }
+
+                string effectDesc = remoteSkill.EffectDescription ?? string.Empty;
+                if (effectDesc != localSkill.EffectDescription)
+                {
+                    localSkill.EffectDescription = effectDesc;
+                    changed = true;
+                }
+
+                if (remoteSkill.AmountPerLevel != localSkill.AmountPerLevel)
+                {
+                    localSkill.AmountPerLevel = remoteSkill.AmountPerLevel;
+                    changed = true;
+                }
+
+                string groupName = remoteSkill.SkillGroupName ?? string.Empty;
+                if (groupName != localSkill.SkillGroupName)
+                {
+                    localSkill.SkillGroupName = groupName;
+                    changed = true;
+                }
+
+                if (remoteSkill.IsUnlocked != localSkill.IsUnlocked)
+                {
+                    localSkill.IsUnlocked = remoteSkill.IsUnlocked;
+                    changed = true;
+                }
+
+                // Merge training progress (Req 7, 9.7, 9.8)
+                bool isTraining = skillInTraining != null &&
+                    string.Equals(skillInTraining.SkillName, skillName, StringComparison.OrdinalIgnoreCase);
+
+                int targetLevel = isTraining ? skillInTraining.TargetLevel : 0;
+                int pctComplete = isTraining ? skillInTraining.TrainingPercentageComplete : 0;
+                int remainingMin = isTraining ? skillInTraining.RemainingMinutes : 0;
+
+                if (targetLevel != localSkill.TargetLevel)
+                {
+                    localSkill.TargetLevel = targetLevel;
+                    changed = true;
+                }
+
+                if (pctComplete != localSkill.TrainingPercentageComplete)
+                {
+                    localSkill.TrainingPercentageComplete = pctComplete;
+                    changed = true;
+                }
+
+                if (remainingMin != localSkill.RemainingMinutes)
+                {
+                    localSkill.RemainingMinutes = remainingMin;
+                    changed = true;
+                }
+            }
+
+            // Reset training fields for skills NOT in remoteSkills (Req 7.3, 7.4)
+            foreach (var kvp in local.Skills)
+            {
+                if (!remoteSkills.ContainsKey(kvp.Key))
+                {
+                    PlayerSkill skill = kvp.Value;
+                    if (skill.TargetLevel != 0 || skill.TrainingPercentageComplete != 0 || skill.RemainingMinutes != 0)
+                    {
+                        skill.TargetLevel = 0;
+                        skill.TrainingPercentageComplete = 0;
+                        skill.RemainingMinutes = 0;
+                        changed = true;
+                    }
+                }
+            }
+
+            return changed;
+        }
+    }
+}
