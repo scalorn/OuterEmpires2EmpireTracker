@@ -1522,6 +1522,62 @@ namespace OE2EmpireTracker.Services
         }
 
         /// <summary>
+        /// Cascades cargo entries into detail work items for crates, blueprints, and surveys.
+        /// This shared helper encapsulates the cascading logic used by both AssetLocationDetail
+        /// and ShipCargo, ensuring consistent freshness thresholds, factory methods, and skip
+        /// conditions regardless of cargo source.
+        /// </summary>
+        /// <param name="cargo">The list of cargo items to cascade.</param>
+        /// <param name="planetName">The planet name for survey context.</param>
+        /// <param name="systemName">The star system name for survey context.</param>
+        /// <returns>An array of cascaded detail work items.</returns>
+        private WorkItem[] CascadeCargoDetailItems(
+            List<GameApiAssetCargoItem> cargo,
+            string planetName,
+            string systemName)
+        {
+            var items = new List<WorkItem>();
+
+            foreach (var entry in cargo)
+            {
+                switch (entry.TypeC)
+                {
+                    case "Crate":
+                        items.Add(CreateCrateDetailItem(entry.CargoItemId));
+                        break;
+
+                    case "Bp":
+                        var existingBp = _playerContext.FindBlueprintByApiId(entry.CargoItemId);
+                        if (existingBp == null || !IsDetailFresh(existingBp.LastDetailImportUtc))
+                        {
+                            items.Add(CreateBlueprintDetailItem(entry.CargoItemId));
+                        }
+                        else
+                        {
+                            Log.Debug("BlueprintDetail:{0} skipped (fresh).", entry.CargoItemId);
+                        }
+
+                        break;
+
+                    case "S":
+                        var existingSurvey = _playerContext.FindSurveyByApiId(entry.CargoItemId);
+                        if (existingSurvey == null || !IsDetailFresh(existingSurvey.LastDetailImportUtc))
+                        {
+                            items.Add(CreateSurveyDetailItem(entry.CargoItemId, planetName, systemName));
+                        }
+                        else
+                        {
+                            Log.Debug("SurveyDetail:{0} skipped (fresh).", entry.CargoItemId);
+                        }
+
+                        break;
+                }
+            }
+
+            return items.ToArray();
+        }
+
+        /// <summary>
         /// Creates a work item that fetches crate detail for blueprint extraction.
         /// </summary>
         /// <param name="crateId">The crate cargo item identifier.</param>

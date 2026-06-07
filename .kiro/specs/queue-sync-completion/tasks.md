@@ -122,7 +122,7 @@ Complete the QueueSyncService work item stubs to deserialize API responses and d
 
 
 - [ ] 10. Extract CascadeCargoDetailItems shared helper method
-  - [~] 10.1 Create private CascadeCargoDetailItems method in QueueSyncService
+  - [-] 10.1 Create private CascadeCargoDetailItems method in QueueSyncService
     - Add `private WorkItem[] CascadeCargoDetailItems(List<GameApiAssetCargoItem> cargo, string planetName, string systemName)` method
     - Iterate cargo entries: create `CreateCrateDetailItem` for each Crate entry, `CreateBlueprintDetailItem` for each Blueprint entry if `!IsBlueprintFresh(entry.Id)`, `CreateSurveyDetailItem` for each Survey entry if `!IsSurveyFresh(entry.Id)`
     - Return the collected work items as an array
