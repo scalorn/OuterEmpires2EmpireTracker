@@ -17,7 +17,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// </summary>
         private static readonly Dictionary<string, string> ExpectedMappings = new Dictionary<string, string>
         {
-            { "FormColony", "colonies.md" },
+            { "FormColonyV2", "colonies.md" },
             { "FormBlueprintV2", "blueprints.md" },
             { "FormSurvey", "surveys.md" },
             { "FormDeliveryRoute", "delivery-routes.md" },
@@ -36,7 +36,13 @@ namespace OE2EmpireTracker.Tests.Services
             { "FormStation", "stations.md" },
             { "FormMarket", "market.md" },
             { "FormStockTargets", "stock-targets.md" },
-            { "FormContacts", "contacts.md" }
+            { "FormContacts", "contacts.md" },
+            { "FormSystem", "systems.md" },
+            { "FormSharing", "sharing.md" },
+            { "FormBanking", "banking.md" },
+            { "FormBankingEntry", "banking.md" },
+            { "FormMail", "mail.md" },
+            { "FormGameApiStatus", "game-api-status.md" }
         };
 
         /// <summary>

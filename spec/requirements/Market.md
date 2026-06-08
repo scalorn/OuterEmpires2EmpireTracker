@@ -6,11 +6,12 @@ The user wants to track market listings (items for sale) and transaction history
 
 ## Out of Scope
 
-- Real-time price feeds or API integration with the game
 - Automated trading or buy/sell bots
 - Price history charts or trend analysis
 - Multi-currency support (all prices are in-game credits)
 - Tax or fee calculations on transactions
+
+> **Note:** Real-time price feeds and API integration with the game are covered by the `.kiro/specs/market-integration/` spec.
 
 ## Market Listings
 

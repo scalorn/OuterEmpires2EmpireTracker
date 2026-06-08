@@ -29,6 +29,10 @@ public sealed class HelpTopicRegistry
         ["Preferences"] = ("Preferences", "preferences.md"),
         ["ColonyActivity"] = ("Colony Activity", "colony-activity.md"),
         ["AsteroidList"] = ("Asteroids", "asteroids.md"),
+        ["BankingList"] = ("Banking", "banking.md"),
+        ["MailList"] = ("Mail", "mail.md"),
+        ["GameApiStatus"] = ("Game API Status", "game-api-status.md"),
+        ["SharingConfig"] = ("Sharing", "sharing.md"),
     };
 
     /// <summary>

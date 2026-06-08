@@ -13,7 +13,7 @@ namespace OE2EmpireTracker.Services
 
         private static readonly Dictionary<string, string> FormTopicMap = new Dictionary<string, string>
         {
-            { "FormColony", "colonies.md" },
+            { "FormColonyV2", "colonies.md" },
             { "FormBlueprintV2", "blueprints.md" },
             { "FormSurvey", "surveys.md" },
             { "FormDeliveryRoute", "delivery-routes.md" },
@@ -32,7 +32,13 @@ namespace OE2EmpireTracker.Services
             { "FormStation", "stations.md" },
             { "FormMarket", "market.md" },
             { "FormStockTargets", "stock-targets.md" },
-            { "FormContacts", "contacts.md" }
+            { "FormContacts", "contacts.md" },
+            { "FormSystem", "systems.md" },
+            { "FormSharing", "sharing.md" },
+            { "FormBanking", "banking.md" },
+            { "FormBankingEntry", "banking.md" },
+            { "FormMail", "mail.md" },
+            { "FormGameApiStatus", "game-api-status.md" }
         };
 
         private static readonly IReadOnlyList<(string DisplayName, string FileName)> Topics =
@@ -57,6 +63,11 @@ namespace OE2EmpireTracker.Services
                 ("Stock Targets", "stock-targets.md"),
                 ("Contacts", "contacts.md"),
                 ("Player Profiles", "player-profiles.md"),
+                ("Systems", "systems.md"),
+                ("Sharing", "sharing.md"),
+                ("Banking", "banking.md"),
+                ("Mail", "mail.md"),
+                ("Game API Status", "game-api-status.md"),
                 ("Background Processing", "background-processing.md"),
                 ("Window State", "window-state.md"),
                 ("Preferences", "preferences.md")

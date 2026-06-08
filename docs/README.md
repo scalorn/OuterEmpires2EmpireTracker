@@ -27,6 +27,9 @@ Welcome to the OE2 Empire Tracker documentation. This application helps you mana
 - [Background Processing](background-processing.md) — Automatic timer processing and status bar indicators
 - [Window State](window-state.md) — Window position persistence and MDI layout options
 - [Sharing](sharing.md) — Sharing rules, public data, and cross-app visibility
+- [Banking](banking.md) — Transaction history, balance tracking, charts, and background sync
+- [Mail](mail.md) — In-game mail archive with background sync and local read tracking
+- [Game API Status](game-api-status.md) — API request metrics, TPS graph, and rate limiter visibility
 - [Preferences](preferences.md) — Configurable thresholds, intervals, and refresh rates
 
 ## About

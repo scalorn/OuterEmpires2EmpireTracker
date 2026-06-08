@@ -6,7 +6,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
 
 ## Tasks
 
-- [ ] 1. Create CrateContentImportResult model and CrateContentImporter skeleton
+- [x] 1. Create CrateContentImportResult model and CrateContentImporter skeleton
   - [x] 1.1 Create CrateContentImportResult class and CrateContentImporter skeleton
     - Create `OE2EmpireTracker.Common/Services/CrateContentImporter.cs`
     - Define `CrateContentImportResult` class with TotalItems, Imported, Failed, BlueprintsLinked, NestedCrateIds, CountsByType, Errors, Success properties
@@ -53,7 +53,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Common/Services/CrateContentImporter.cs_
     - _Verification: Unit test CrateContentImporter_ContentsBagReplaced passes_
 
-- [ ] 3. Implement blueprint dual-tracking and nested crate support
+- [x] 3. Implement blueprint dual-tracking and nested crate support
   - [x] 3.1 Implement blueprint dual-tracking via BlueprintLinkageService
     - For cargo items with TypeC indicating Blueprint, call `BlueprintLinkageService.ProcessItem(apiItem, localItem, ownerUUID)`
     - Set BaseItemTypeID on the content Item to the matched/created blueprint's UUID
@@ -76,7 +76,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Common/Services/CrateContentImporter.cs_
     - _Verification: Unit test CrateContentImporter_NestedCrate_CycleDetected passes_
 
-- [ ] 4. Implement persistence and completion logging
+- [x] 4. Implement persistence and completion logging
   - [x] 4.1 Add WriteContext persistence with retry on failure
     - After successful Contents Bag population, call `PlayerContext.WriteContext()` to persist
     - If WriteContext fails, log error and retain in-memory state (retry on next sync)
@@ -96,10 +96,10 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Common/Services/CrateContentImporter.cs_
     - _Verification: Unit test CrateContentImporter_EmptyResponse_ReturnsEmptyBag passes_
 
-- [~] 5. Checkpoint - Verify CrateContentImporter compiles and core logic is testable
+- [x] 5. Checkpoint - Verify CrateContentImporter compiles and core logic is testable
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Integrate CrateContentImporter into QueueSyncService
+- [x] 6. Integrate CrateContentImporter into QueueSyncService
   - [x] 6.1 Invoke CrateContentImporter after API fetch, pass GameItemId, return cascade work items
     - Instantiate CrateContentImporter (or use injected instance) in QueueSyncService
     - After successful API fetch, call `CrateContentImporter.Import(json, crateGameItemId, parentBag, ownerUUID, visitedCrateIds)`
@@ -146,8 +146,8 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: All 3 tests pass via vstest.console_
 
 
-- [ ] 8. Write property-based tests for correctness properties
-  - [-] 8.1 Write property test for round-trip equivalence (Property 1)
+- [x] 8. Write property-based tests for correctness properties
+  - [x] 8.1 Write property test for round-trip equivalence (Property 1)
     - **Property 1: Round-Trip Equivalence**
     - **Validates: Requirements 10.1, 10.2**
     - Create FsCheck generator `ArbitraryCrateResponse` producing valid GameApiAssetDetailResponse JSON
@@ -157,7 +157,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Tests/Services/CrateContentImporterPropertyTests.cs_
     - _Verification: Property test passes (100 iterations)_
 
-  - [-] 8.2 Write property test for contents bag completeness (Property 2)
+  - [x] 8.2 Write property test for contents bag completeness (Property 2)
     - **Property 2: Contents Bag Completeness**
     - **Validates: Requirements 3.1, 3.4**
     - Generate random valid crate responses with 0-50 items
@@ -167,7 +167,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Tests/Services/CrateContentImporterPropertyTests.cs_
     - _Verification: Property test passes (100 iterations)_
 
-  - [-] 8.3 Write property test for type mapping determinism (Property 3)
+  - [x] 8.3 Write property test for type mapping determinism (Property 3)
     - **Property 3: Type Mapping Determinism**
     - **Validates: Requirements 2.2, 2.6**
     - For any TypeC code, MapAssetTypeC returns the same result on repeated calls
@@ -177,7 +177,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Verification: Property test passes (100 iterations)_
 
 
-  - [-] 8.4 Write property test for cycle detection termination (Property 4)
+  - [x] 8.4 Write property test for cycle detection termination (Property 4)
     - **Property 4: Cycle Detection Termination**
     - **Validates: Requirements 5.2, 5.4**
     - Generate arbitrary nested crate graphs (DAGs with optional cycles, depth 1-5)
@@ -186,7 +186,7 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Tests/Services/CrateContentImporterPropertyTests.cs_
     - _Verification: Property test passes (100 iterations)_
 
-  - [-] 8.5 Write property test for blueprint dual-presence (Property 5)
+  - [x] 8.5 Write property test for blueprint dual-presence (Property 5)
     - **Property 5: Blueprint Dual-Presence**
     - **Validates: Requirements 4.1, 4.3**
     - For every blueprint-typed item in Contents after import, a corresponding entry exists in the master blueprint list
@@ -194,12 +194,12 @@ Implement a new `CrateContentImporter` service that parses game API crate detail
     - _Output: OE2EmpireTracker.Tests/Services/CrateContentImporterPropertyTests.cs_
     - _Verification: Property test passes (100 iterations)_
 
-- [~] 9. Checkpoint - Verify serialization round-trip (Requirement 10)
+- [x] 9. Checkpoint - Verify serialization round-trip (Requirement 10)
   - Ensure all tests pass, ask the user if questions arise.
   - Verify ItemBagJSONConverter handles nested Contents correctly on serialize/deserialize
   - _Satisfies: Req 6 AC2 (serialize Contents as nested JSON), Req 6 AC3 (deserialize on load)_
 
-- [~] 10. Final checkpoint - Ensure all tests pass
+- [x] 10. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

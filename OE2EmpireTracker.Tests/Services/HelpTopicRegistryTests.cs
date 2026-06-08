@@ -13,11 +13,11 @@ namespace OE2EmpireTracker.Tests.Services
         /// GetAllTopics returns exactly 9 topics with the expected filenames in order.
         /// </summary>
         [Test]
-        public void GetAllTopics_Returns22Topics_WithCorrectFilenames()
+        public void GetAllTopics_Returns27Topics_WithCorrectFilenames()
         {
             var topics = HelpTopicRegistry.GetAllTopics();
 
-            Assert.That(topics.Count, Is.EqualTo(22));
+            Assert.That(topics.Count, Is.EqualTo(27));
 
             var expectedFilenames = new[]
             {
@@ -40,6 +40,11 @@ namespace OE2EmpireTracker.Tests.Services
                 "stock-targets.md",
                 "contacts.md",
                 "player-profiles.md",
+                "systems.md",
+                "sharing.md",
+                "banking.md",
+                "mail.md",
+                "game-api-status.md",
                 "background-processing.md",
                 "window-state.md",
                 "preferences.md"
@@ -53,7 +58,7 @@ namespace OE2EmpireTracker.Tests.Services
         /// Validates: Requirements 6.3
         /// Each of the 9 form-type mappings returns the correct documentation file.
         /// </summary>
-        [TestCase("FormColony", "colonies.md")]
+        [TestCase("FormColonyV2", "colonies.md")]
         [TestCase("FormBlueprintV2", "blueprints.md")]
         [TestCase("FormSurvey", "surveys.md")]
         [TestCase("FormDeliveryRoute", "delivery-routes.md")]
@@ -73,6 +78,12 @@ namespace OE2EmpireTracker.Tests.Services
         [TestCase("FormMarket", "market.md")]
         [TestCase("FormStockTargets", "stock-targets.md")]
         [TestCase("FormContacts", "contacts.md")]
+        [TestCase("FormSystem", "systems.md")]
+        [TestCase("FormSharing", "sharing.md")]
+        [TestCase("FormBanking", "banking.md")]
+        [TestCase("FormBankingEntry", "banking.md")]
+        [TestCase("FormMail", "mail.md")]
+        [TestCase("FormGameApiStatus", "game-api-status.md")]
         public void GetTopicForForm_MappedType_ReturnsCorrectFile(string formType, string expectedFile)
         {
             var result = HelpTopicRegistry.GetTopicForForm(formType);
