@@ -394,9 +394,9 @@ namespace OE2EmpireTracker.Services
 
             public TokenBucketGovernor(double configuredTps, Func<double> getEffectiveTps)
             {
-                _capacity = configuredTps;
+                _capacity = Math.Max(configuredTps, 1.0);
                 _getEffectiveTps = getEffectiveTps;
-                _tokens = configuredTps;
+                _tokens = 1.0;
                 _lastRefill = SystemClock.UtcNow;
             }
 
