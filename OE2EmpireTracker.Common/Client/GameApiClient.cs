@@ -2293,8 +2293,10 @@ namespace OE2EmpireTracker.Client
 
             _rateLimitRequestsPerMinute = requestsPerMinute;
 
+            // Use a semaphore of 1 to prevent burst — requests are serialized
+            // through the semaphore and each token is released after the interval.
             var oldLimiter = _rateLimiter;
-            _rateLimiter = new SemaphoreSlim(requestsPerMinute, requestsPerMinute);
+            _rateLimiter = new SemaphoreSlim(1, 1);
             oldLimiter?.Dispose();
         }
 
