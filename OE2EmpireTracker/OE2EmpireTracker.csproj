@@ -566,6 +566,21 @@
     <EmbeddedResource Include="..\docs\delivery-execution.md">
       <Link>docs\delivery-execution.md</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\systems.md">
+      <Link>docs\systems.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\banking.md">
+      <Link>docs\banking.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\mail.md">
+      <Link>docs\mail.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\game-api-status.md">
+      <Link>docs\game-api-status.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\docs\sharing.md">
+      <Link>docs\sharing.md</Link>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>

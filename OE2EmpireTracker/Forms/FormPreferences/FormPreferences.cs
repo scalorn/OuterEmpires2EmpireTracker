@@ -46,7 +46,7 @@ namespace OE2EmpireTracker.Forms
         /// <summary>
         /// Tracks the last valid TPS value for reverting on invalid input.
         /// </summary>
-        private string _lastValidTps = "0.5";
+        private string _lastValidTps = "1.000";
 
         public FormPreferences()
         {
@@ -155,7 +155,7 @@ namespace OE2EmpireTracker.Forms
                 cmbGameApiCharacter.SelectedIndex = 0;
             }
 
-            txtTpsLimit.Text = settings.Tps.ToString("F1", CultureInfo.InvariantCulture);
+            txtTpsLimit.Text = settings.Tps.ToString("F3", CultureInfo.InvariantCulture);
             _lastValidTps = txtTpsLimit.Text;
             nudDetailRefreshHours.Value = Math.Max(1, Math.Min(168, settings.DetailRefreshHours));
 
@@ -689,8 +689,8 @@ namespace OE2EmpireTracker.Forms
 
             if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
             {
-                double clamped = Math.Max(0.1, Math.Min(100.0, value));
-                string formatted = clamped.ToString("F1", CultureInfo.InvariantCulture);
+                double clamped = Math.Max(0.001, Math.Min(100.0, value));
+                string formatted = clamped.ToString("F3", CultureInfo.InvariantCulture);
                 txtTpsLimit.Text = formatted;
                 _lastValidTps = formatted;
             }

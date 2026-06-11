@@ -42,9 +42,9 @@ namespace OE2EmpireTracker.Client
 
         /// <summary>
         /// Gets or sets the target transactions per second (TPS) for the API rate governor.
-        /// Valid range: 0.1 to 100.0. Default 0.5 TPS.
+        /// Valid range: 0.001 to 100.0. Default 1.0 TPS. Supports 3 decimal places.
         /// </summary>
-        public double Tps { get; set; } = 0.5;
+        public double Tps { get; set; } = 1.0;
 
         /// <summary>
         /// Gets or sets the detail refresh interval in hours.

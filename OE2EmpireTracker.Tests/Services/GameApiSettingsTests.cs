@@ -47,7 +47,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(prefs.GameApiConnection.ServerUrl, Is.EqualTo(string.Empty));
             Assert.That(prefs.GameApiConnection.PollingIntervalMinutes, Is.EqualTo(5));
             Assert.That(prefs.GameApiConnection.Enabled, Is.False);
-            Assert.That(prefs.GameApiConnection.Tps, Is.EqualTo(0.5));
+            Assert.That(prefs.GameApiConnection.Tps, Is.EqualTo(1.0));
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         [Test]
-        public void Deserialize_WithoutTpsKey_DefaultsTo05()
+        public void Deserialize_WithoutTpsKey_DefaultsTo1()
         {
             var json = @"{
                 ""ServerUrl"": ""https://example.com"",
@@ -107,7 +107,7 @@ namespace OE2EmpireTracker.Tests.Services
 
             var settings = JsonConvert.DeserializeObject<GameApiConnectionSettings>(json);
 
-            Assert.That(settings.Tps, Is.EqualTo(0.5));
+            Assert.That(settings.Tps, Is.EqualTo(1.0));
         }
     }
 }

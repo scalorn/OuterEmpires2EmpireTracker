@@ -299,9 +299,9 @@ namespace OE2EmpireTracker.Forms
             // 
             this.txtTpsLimit.Location = new System.Drawing.Point(130, 235);
             this.txtTpsLimit.Name = "txtTpsLimit";
-            this.txtTpsLimit.Size = new System.Drawing.Size(60, 20);
+            this.txtTpsLimit.Size = new System.Drawing.Size(75, 20);
             this.txtTpsLimit.TabIndex = 7;
-            this.txtTpsLimit.ValidationPattern = "^\\d{1,3}(\\.\\d)?$";
+            this.txtTpsLimit.ValidationPattern = "^\\d{1,3}(\\.\\d{1,3})?$";
             this.txtTpsLimit.ValidColor = System.Drawing.Color.White;
             // 
             // lblDetailRefreshHours
