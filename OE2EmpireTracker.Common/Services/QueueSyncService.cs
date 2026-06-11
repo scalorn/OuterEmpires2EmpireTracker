@@ -127,7 +127,7 @@ namespace OE2EmpireTracker.Services
                 var queue = new GameApiRequestQueue(
                     _settings.Tps,
                     perItemTimeout: null,
-                    maxInflightMultiplier: 3,
+                    maxInflight: _settings.MaxInflightRequests,
                     maxRetries: 3,
                     metricsFilePath: metricsFilePath);
 

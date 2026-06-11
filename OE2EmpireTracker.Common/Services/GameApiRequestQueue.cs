@@ -40,16 +40,16 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="configuredTps">The target transactions per second rate.</param>
         /// <param name="perItemTimeout">Optional per-item timeout. Defaults to 30 seconds.</param>
-        /// <param name="maxInflightMultiplier">Max in-flight requests as a multiple of TPS. Defaults to 3.</param>
+        /// <param name="maxInflight">Max concurrent in-flight requests. Defaults to 3.</param>
         /// <param name="maxRetries">Maximum number of retry attempts on failure. Defaults to 3.</param>
         /// <param name="metricsFilePath">Optional file path for CSV metrics output. Null disables file output.</param>
-        public GameApiRequestQueue(double configuredTps, TimeSpan? perItemTimeout = null, int maxInflightMultiplier = 3, int maxRetries = 3, string metricsFilePath = null)
+        public GameApiRequestQueue(double configuredTps, TimeSpan? perItemTimeout = null, int maxInflight = 3, int maxRetries = 3, string metricsFilePath = null)
         {
             ConfiguredTps = configuredTps;
             _perItemTimeout = perItemTimeout ?? TimeSpan.FromSeconds(30);
             _rateController = new AdaptiveRateController(configuredTps);
             _governor = new TokenBucketGovernor(configuredTps, () => _rateController.EffectiveTps);
-            _maxInflight = Math.Max(1, (int)(configuredTps * maxInflightMultiplier));
+            _maxInflight = Math.Max(1, maxInflight);
             _inflightLimiter = new SemaphoreSlim(_maxInflight, _maxInflight);
             _maxRetries = maxRetries;
 

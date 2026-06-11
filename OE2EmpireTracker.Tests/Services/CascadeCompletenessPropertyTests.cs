@@ -33,7 +33,7 @@ namespace OE2EmpireTracker.Tests.Services
         {
             return from count in Gen.Choose(0, 50)
                    from ids in Gen.ListOf(count, Gen.Choose(1, 99999))
-                   select ids.ToList();
+                   select ids.Distinct().ToList();
         }
 
         /// <summary>

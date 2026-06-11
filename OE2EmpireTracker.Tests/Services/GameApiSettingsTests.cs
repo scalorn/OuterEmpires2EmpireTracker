@@ -21,6 +21,7 @@ namespace OE2EmpireTracker.Tests.Services
                 PollingIntervalMinutes = 10,
                 Enabled = true,
                 Tps = 5.0,
+                MaxInflightRequests = 10,
             };
 
             var json = JsonConvert.SerializeObject(original, Formatting.Indented);
@@ -30,6 +31,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(deserialized.PollingIntervalMinutes, Is.EqualTo(10));
             Assert.That(deserialized.Enabled, Is.True);
             Assert.That(deserialized.Tps, Is.EqualTo(5.0));
+            Assert.That(deserialized.MaxInflightRequests, Is.EqualTo(10));
         }
 
         [Test]
@@ -48,6 +50,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(prefs.GameApiConnection.PollingIntervalMinutes, Is.EqualTo(5));
             Assert.That(prefs.GameApiConnection.Enabled, Is.False);
             Assert.That(prefs.GameApiConnection.Tps, Is.EqualTo(1.0));
+            Assert.That(prefs.GameApiConnection.MaxInflightRequests, Is.EqualTo(3));
         }
 
         [Test]
@@ -66,6 +69,7 @@ namespace OE2EmpireTracker.Tests.Services
             Assert.That(json, Does.Contain("\"PollingIntervalMinutes\""));
             Assert.That(json, Does.Contain("\"Enabled\""));
             Assert.That(json, Does.Contain("\"Tps\""));
+            Assert.That(json, Does.Contain("\"MaxInflightRequests\""));
             Assert.That(json, Does.Not.Contain("\"serverUrl\""));
             Assert.That(json, Does.Not.Contain("\"pollingIntervalMinutes\""));
             Assert.That(json, Does.Not.Contain("\"enabled\""));
@@ -108,6 +112,7 @@ namespace OE2EmpireTracker.Tests.Services
             var settings = JsonConvert.DeserializeObject<GameApiConnectionSettings>(json);
 
             Assert.That(settings.Tps, Is.EqualTo(1.0));
+            Assert.That(settings.MaxInflightRequests, Is.EqualTo(3));
         }
     }
 }

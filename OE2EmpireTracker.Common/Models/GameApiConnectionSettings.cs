@@ -47,6 +47,13 @@ namespace OE2EmpireTracker.Client
         public double Tps { get; set; } = 1.0;
 
         /// <summary>
+        /// Gets or sets the maximum number of concurrent in-flight API requests.
+        /// Valid range: 1-100. Default 3.
+        /// </summary>
+        [DefaultValue(3)]
+        public int MaxInflightRequests { get; set; } = 3;
+
+        /// <summary>
         /// Gets or sets the detail refresh interval in hours.
         /// Controls how often surveys and blueprints are re-imported.
         /// Valid range: 1-168 (1 hour to 7 days). Default 24 hours.
