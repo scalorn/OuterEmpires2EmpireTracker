@@ -125,11 +125,9 @@ namespace OE2EmpireTracker.Client
             string firstPlayerUUID = configuredPlayers[0];
             var client = new GameApiClient(settings.ServerUrl);
 
-            // Set the client's internal rate limiter to match the configured TPS.
-            // This is the authoritative throttle — it governs actual HTTP request spacing.
-            // With TPS=0.8, this sets 1 req/min equivalent per token with 1250ms release delay.
-            // The formula: requestsPerMinute = ceil(TPS * 60) but we cap at the actual TPS
-            // via the internal sliding window (release delay = 60000 / requestsPerMinute).
+            // Set the client's internal rate limiter as the authoritative TPS enforcer.
+            // The queue's TokenBucketGovernor is set to a very high rate (effectively disabled)
+            // so that dispatch is limited only by maxInflight and the client's semaphore.
             int clientRatePerMinute = Math.Max(1, (int)Math.Ceiling(settings.Tps * 60));
             client.SetRateLimit(clientRatePerMinute);
 

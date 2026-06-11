@@ -124,8 +124,11 @@ namespace OE2EmpireTracker.Services
                     AppDomain.CurrentDomain.BaseDirectory,
                     "sync-metrics.csv");
 
+                // Rate limiting is enforced by GameApiClient's internal semaphore (set from settings.Tps).
+                // Pass a high TPS to the queue so its TokenBucketGovernor acts as a pass-through;
+                // it only controls dispatch pacing, not actual HTTP rate.
                 var queue = new GameApiRequestQueue(
-                    _settings.Tps,
+                    1000.0,
                     perItemTimeout: null,
                     maxInflight: _settings.MaxInflightRequests,
                     maxRetries: 3,
