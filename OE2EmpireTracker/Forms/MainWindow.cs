@@ -60,6 +60,7 @@ namespace OE2EmpireTracker
             { "FormSupplyChain", (w, n) => w.OpenMdiChildWithNumber<Forms.SupplyChain.FormSupplyChain>(n) },
             { "FormStockTargets", (w, n) => w.OpenMdiChildWithNumber<Forms.StockTargets.FormStockTargets>(n) },
             { "FormSharing", (w, n) => w.OpenMdiChildWithNumber<FormSharing>(n) },
+            { "FormGameApiStatus", (w, n) => w.OpenMdiChildWithNumber<Forms.GameApiStatus.FormGameApiStatus>(n) },
         };
 
         private int _isProgrammaticUpdate = 0;
