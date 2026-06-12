@@ -1795,7 +1795,7 @@ namespace OE2EmpireTracker.Services
                 switch (entry.TypeC?.Trim())
                 {
                     case AssetTypeCodes.Crate:
-                        items.Add(CreateCrateDetailItem(entry.CargoItemId, parentBag, visitedCrateIds));
+                        items.Add(CreateCrateDetailItem(entry.CargoItemId, parentBag, visitedCrateIds, planetName, systemName));
                         break;
 
                     case AssetTypeCodes.Blueprint:
@@ -1913,13 +1913,20 @@ namespace OE2EmpireTracker.Services
         /// <summary>
         /// Creates a work item that fetches crate detail and invokes the CrateContentImporter
         /// to populate the crate's Contents bag with all item types found inside.
-        /// Returns cascade work items for any nested crates discovered.
+        /// Returns cascade work items for any nested crates, surveys, and blueprints discovered.
         /// </summary>
         /// <param name="crateId">The crate cargo item identifier.</param>
         /// <param name="parentBag">The ItemBag containing the crate item.</param>
         /// <param name="visitedCrateIds">Set of already-visited crate IDs for cycle detection.</param>
+        /// <param name="planetName">The planet/location name for survey context.</param>
+        /// <param name="systemName">The star system name for survey context.</param>
         /// <returns>A work item for crate detail retrieval and content import.</returns>
-        private WorkItem CreateCrateDetailItem(int crateId, ItemBag parentBag, HashSet<int> visitedCrateIds)
+        private WorkItem CreateCrateDetailItem(
+            int crateId,
+            ItemBag parentBag,
+            HashSet<int> visitedCrateIds,
+            string planetName,
+            string systemName)
         {
             return new WorkItem
             {
@@ -1994,11 +2001,72 @@ namespace OE2EmpireTracker.Services
                         Log.Debug("CrateDetail:{0} contains no blueprints, skipping blueprint extraction.", crateId);
                     }
 
-                    // Return cascade work items for nested crates
+                    // Return cascade work items for nested crates, surveys, and blueprints
                     var cascadeItems = new List<WorkItem>();
                     foreach (int nestedCrateId in importResult.NestedCrateIds)
                     {
-                        cascadeItems.Add(CreateCrateDetailItem(nestedCrateId, parentBag, visitedCrateIds));
+                        cascadeItems.Add(CreateCrateDetailItem(nestedCrateId, parentBag, visitedCrateIds, planetName, systemName));
+                    }
+
+                    // Cascade survey and blueprint detail items from crate contents
+                    int blueprintsFetched = 0;
+                    int blueprintsSkipped = 0;
+                    int surveysFetched = 0;
+                    int surveysSkipped = 0;
+
+                    try
+                    {
+                        var crateResponse = JsonConvert.DeserializeObject<GameApiAssetDetailResponse>(result.Json);
+                        if (crateResponse?.Cargo != null)
+                        {
+                            foreach (var entry in crateResponse.Cargo)
+                            {
+                                string typeC = entry.TypeC?.Trim();
+                                if (string.Equals(typeC, AssetTypeCodes.Survey, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    var existingSurvey = _playerContext.FindSurveyByApiId(entry.CargoItemId);
+                                    if (existingSurvey == null || !IsDetailFresh(existingSurvey.LastDetailImportUtc))
+                                    {
+                                        cascadeItems.Add(CreateSurveyDetailItem(entry.CargoItemId, planetName, systemName));
+                                        surveysFetched++;
+                                    }
+                                    else
+                                    {
+                                        Log.Debug("CrateDetail:{0} SurveyDetail:{1} skipped (fresh).", crateId, entry.CargoItemId);
+                                        surveysSkipped++;
+                                    }
+                                }
+                                else if (string.Equals(typeC, AssetTypeCodes.Blueprint, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    var existingBp = _playerContext.FindBlueprintByApiId(entry.CargoItemId);
+                                    if (existingBp == null || !IsDetailFresh(existingBp.LastDetailImportUtc))
+                                    {
+                                        cascadeItems.Add(CreateBlueprintDetailItem(entry.CargoItemId));
+                                        blueprintsFetched++;
+                                    }
+                                    else
+                                    {
+                                        Log.Debug("CrateDetail:{0} BlueprintDetail:{1} skipped (fresh).", crateId, entry.CargoItemId);
+                                        blueprintsSkipped++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (JsonException parseEx)
+                    {
+                        Log.Warn("CrateDetail:{0} failed to parse cargo for cascade: {1}", crateId, parseEx.Message);
+                    }
+
+                    if (blueprintsFetched > 0 || blueprintsSkipped > 0 || surveysFetched > 0 || surveysSkipped > 0)
+                    {
+                        Log.Info(
+                            "CrateDetail:{0} cascade: blueprints fetched={1} skipped={2}, surveys fetched={3} skipped={4}",
+                            crateId,
+                            blueprintsFetched,
+                            blueprintsSkipped,
+                            surveysFetched,
+                            surveysSkipped);
                     }
 
                     return cascadeItems;
