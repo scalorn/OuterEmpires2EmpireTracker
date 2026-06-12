@@ -56,7 +56,7 @@ namespace OE2EmpireTracker.Client
         /// <summary>
         /// Gets or sets the detail refresh interval in hours.
         /// Controls how often surveys and blueprints are re-imported.
-        /// Valid range: 1-168 (1 hour to 7 days). Default 24 hours.
+        /// Valid range: 1 or greater (no upper limit). Default 24 hours.
         /// </summary>
         [DefaultValue(24)]
         public int DetailRefreshHours { get; set; } = 24;

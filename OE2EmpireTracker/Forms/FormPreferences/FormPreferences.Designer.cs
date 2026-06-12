@@ -320,7 +320,7 @@ namespace OE2EmpireTracker.Forms
             // nudDetailRefreshHours
             // 
             this.nudDetailRefreshHours.Location = new System.Drawing.Point(130, 267);
-            this.nudDetailRefreshHours.Maximum = new decimal(new int[] { 168, 0, 0, 0 });
+            this.nudDetailRefreshHours.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
             this.nudDetailRefreshHours.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             this.nudDetailRefreshHours.Name = "nudDetailRefreshHours";
             this.nudDetailRefreshHours.Size = new System.Drawing.Size(60, 20);

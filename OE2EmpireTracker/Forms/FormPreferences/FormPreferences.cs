@@ -157,7 +157,7 @@ namespace OE2EmpireTracker.Forms
 
             txtTpsLimit.Text = settings.Tps.ToString("F3", CultureInfo.InvariantCulture);
             _lastValidTps = txtTpsLimit.Text;
-            nudDetailRefreshHours.Value = Math.Max(1, Math.Min(168, settings.DetailRefreshHours));
+            nudDetailRefreshHours.Value = Math.Max(1, settings.DetailRefreshHours);
             nudMaxInflightRequests.Value = Math.Max(1, Math.Min(100, settings.MaxInflightRequests));
 
             // Show placeholder dots if a secret is stored for the selected character
