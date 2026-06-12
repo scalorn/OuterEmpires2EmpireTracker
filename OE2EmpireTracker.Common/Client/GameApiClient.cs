@@ -212,7 +212,9 @@ namespace OE2EmpireTracker.Client
 
             string jsonBody = JsonConvert.SerializeObject(requestBody);
 
-            await AcquireRateLimitTokenAsync().ConfigureAwait(false);
+            // Token exchange bypasses the rate limiter — it's an auth call, not a data call.
+            // Blocking behind the rate limiter during token refresh causes starvation when
+            // multiple work items hit 401 simultaneously.
 
             var response = await _retryPolicy.ExecuteAsync(
                 () => _circuitBreakerPolicy.ExecuteAsync(() =>
