@@ -1807,7 +1807,6 @@ namespace OE2EmpireTracker.Services
 
                         break;
 
-                    case AssetTypeCodes.ShipPart:
                     case AssetTypeCodes.Survey:
                         var existingSurvey = _playerContext.FindSurveyByApiId(entry.CargoItemId);
                         if (existingSurvey == null || !IsDetailFresh(existingSurvey.LastDetailImportUtc))
