@@ -396,7 +396,7 @@ namespace OE2EmpireTracker.Services
             {
                 _capacity = Math.Max(configuredTps, 1.0);
                 _getEffectiveTps = getEffectiveTps;
-                _tokens = 1.0;
+                _tokens = _capacity;
                 _lastRefill = SystemClock.UtcNow;
             }
 

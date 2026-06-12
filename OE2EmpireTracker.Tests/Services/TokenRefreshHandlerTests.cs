@@ -274,6 +274,58 @@ namespace OE2EmpireTracker.Tests.Services
         }
 
         /// <summary>
+        /// When a token was previously cached by ExchangeTokenAsync and the server rejects it (401),
+        /// the refresh handler should invalidate the cache and obtain a genuinely new token
+        /// rather than returning the same cached (expired) token.
+        /// Regression test for: token refresh returns stale cached token.
+        /// </summary>
+        [Test]
+        public async Task HandleUnauthorizedAsync_CachedTokenStale_InvalidatesCacheAndGetsNewToken()
+        {
+            const string staleToken = "stale-cached-token";
+            const string freshToken = "fresh-new-token";
+            int exchangeCallCount = 0;
+
+            var handler = new CountingHttpHandler(
+                () =>
+                {
+                    int callNum = Interlocked.Increment(ref exchangeCallCount);
+
+                    // First call returns the stale token (simulating cached response).
+                    // Second call (after invalidation) returns a fresh token.
+                    string tokenToReturn = callNum == 1 ? staleToken : freshToken;
+                    return CreateSuccessTokenResponse(tokenToReturn);
+                });
+
+            using (var apiClient = CreateClientWithHandler(handler))
+            {
+                // Pre-warm the token cache by calling ExchangeTokenAsync directly.
+                // This simulates the initial token exchange at sync start.
+                var warmup = await apiClient.ExchangeTokenAsync(
+                    TestAppId, TestClientId, TestSecret).ConfigureAwait(false);
+                Assert.That(warmup.Success, Is.True);
+                Assert.That(warmup.Token.AccessToken, Is.EqualTo(staleToken));
+                Assert.That(exchangeCallCount, Is.EqualTo(1));
+
+                // Create the refresh handler with the cached token as initial
+                var refreshHandler = new TokenRefreshHandler(
+                    apiClient,
+                    _settings,
+                    _credentialManager,
+                    TestPlayerUUID,
+                    staleToken);
+
+                // Call HandleUnauthorizedAsync — should invalidate cache and get fresh token
+                var result = await refreshHandler.HandleUnauthorizedAsync(staleToken, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                Assert.That(result.Success, Is.True, "Refresh should succeed");
+                Assert.That(result.NewToken, Is.EqualTo(freshToken), "Should get fresh token, not cached stale one");
+                Assert.That(exchangeCallCount, Is.EqualTo(2), "Should have made a second exchange call after invalidation");
+            }
+        }
+
+        /// <summary>
         /// Creates a GameApiClient with a fake HTTP handler injected via reflection.
         /// </summary>
         private static GameApiClient CreateClientWithHandler(HttpMessageHandler handler)

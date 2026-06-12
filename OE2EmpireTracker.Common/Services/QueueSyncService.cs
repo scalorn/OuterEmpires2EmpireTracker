@@ -36,7 +36,7 @@ namespace OE2EmpireTracker.Services
 
         private readonly object _syncLock = new object();
 
-        private string _currentAccessToken = string.Empty;
+        private volatile string _currentAccessToken = string.Empty;
         private TokenRefreshHandler _tokenRefreshHandler;
         private GameApiRequestQueue _currentQueue;
 

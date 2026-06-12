@@ -111,6 +111,11 @@ namespace OE2EmpireTracker.Services
                     return new TokenRefreshResult { Success = false, NewToken = null };
                 }
 
+                // Invalidate the GameApiClient token cache before refreshing.
+                // Without this, ExchangeTokenAsync may return the same expired token
+                // from its internal cache if the client-side expiry buffer hasn't elapsed yet.
+                _apiClient.InvalidateToken(_settings.ClientId, secret);
+
                 var tokenResult = await _apiClient.ExchangeTokenAsync(
                     _settings.AppId,
                     _settings.ClientId,
