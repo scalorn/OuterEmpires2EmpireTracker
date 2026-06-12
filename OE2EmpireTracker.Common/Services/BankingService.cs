@@ -26,13 +26,13 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="apiClient">The game API client instance.</param>
         /// <param name="appId">The registered application GUID.</param>
-        /// <param name="accessToken">The Bearer access token.</param>
+        /// <param name="tokenAccessor">A function that returns the current access token (supports mid-sync refresh).</param>
         /// <param name="playerContext">The player context for persistence.</param>
         /// <returns>A <see cref="BankingImportResult"/> describing the outcome.</returns>
         public static async Task<BankingImportResult> ImportTransactionsAsync(
             GameApiClient apiClient,
             string appId,
-            string accessToken,
+            Func<string> tokenAccessor,
             PlayerContext playerContext)
         {
             var result = new BankingImportResult();
@@ -58,11 +58,27 @@ namespace OE2EmpireTracker.Services
                 (bool success, string json) apiResult;
                 try
                 {
+                    string token = tokenAccessor();
                     apiResult = await apiClient.GetBankingTransactionsAsync(
                         appId,
-                        accessToken,
+                        token,
                         offset,
                         PageSize).ConfigureAwait(false);
+
+                    // Retry once on 401 with a refreshed token
+                    if (!apiResult.success && apiResult.json == "401")
+                    {
+                        Log.Warn("Banking import 401 at page {0}, re-reading token and retrying once.", currentPage);
+                        string refreshedToken = tokenAccessor();
+                        if (refreshedToken != token)
+                        {
+                            apiResult = await apiClient.GetBankingTransactionsAsync(
+                                appId,
+                                refreshedToken,
+                                offset,
+                                PageSize).ConfigureAwait(false);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {

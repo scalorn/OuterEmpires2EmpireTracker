@@ -91,7 +91,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
 
             var result = await BankingService.ImportTransactionsAsync(
-                _client, "test-app", "test-token", _playerContext);
+                _client, "test-app", () => "test-token", _playerContext);
 
             Assert.That(result.Success, Is.True);
             Assert.That(result.TransactionsImported, Is.EqualTo(130));
@@ -141,7 +141,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
 
             var result = await BankingService.ImportTransactionsAsync(
-                _client, "test-app", "test-token", _playerContext);
+                _client, "test-app", () => "test-token", _playerContext);
 
             Assert.That(result.Success, Is.True);
             Assert.That(result.DuplicatesSkipped, Is.EqualTo(2));
@@ -179,7 +179,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
 
             var result = await BankingService.ImportTransactionsAsync(
-                _client, "test-app", "test-token", _playerContext);
+                _client, "test-app", () => "test-token", _playerContext);
 
             Assert.That(result.Success, Is.False);
             Assert.That(result.FailedAtPage, Is.EqualTo(2));
@@ -207,7 +207,7 @@ namespace OE2EmpireTracker.Tests.Services
             });
 
             var result = await BankingService.ImportTransactionsAsync(
-                _client, "test-app", "test-token", _playerContext);
+                _client, "test-app", () => "test-token", _playerContext);
 
             Assert.That(result.Success, Is.False);
             Assert.That(result.FailedAtPage, Is.EqualTo(1));

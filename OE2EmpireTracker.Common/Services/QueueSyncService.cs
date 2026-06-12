@@ -757,7 +757,7 @@ namespace OE2EmpireTracker.Services
                 {
                     Log.Debug("BankingTransactions: delegating to BankingService.ImportTransactionsAsync.");
                     var importResult = await BankingService.ImportTransactionsAsync(
-                        _apiClient, _settings.AppId, _currentAccessToken, _playerContext).ConfigureAwait(false);
+                        _apiClient, _settings.AppId, () => _currentAccessToken, _playerContext).ConfigureAwait(false);
 
                     if (importResult.Success)
                     {
@@ -2378,7 +2378,7 @@ namespace OE2EmpireTracker.Services
                 {
                     Log.Debug("MailList: delegating to MailService.SyncMailAsync.");
                     int result = await MailService.SyncMailAsync(
-                        _apiClient, _settings.AppId, _currentAccessToken, _playerContext).ConfigureAwait(false);
+                        _apiClient, _settings.AppId, () => _currentAccessToken, _playerContext).ConfigureAwait(false);
 
                     if (result >= 0)
                     {

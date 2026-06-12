@@ -1050,7 +1050,7 @@ namespace OE2EmpireTracker.Services
 
             // 1. Import transactions
             BankingImportResult txResult = await BankingService.ImportTransactionsAsync(
-                _client, _appId, accessToken, GetPlayerContext()).ConfigureAwait(false);
+                _client, _appId, () => accessToken, GetPlayerContext()).ConfigureAwait(false);
 
             if (!txResult.Success)
             {

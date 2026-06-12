@@ -185,7 +185,7 @@ namespace OE2EmpireTracker.Forms.Mail
                 int result = await MailService.SyncMailAsync(
                     gameApi.Client,
                     appId,
-                    accessToken,
+                    () => accessToken,
                     this.playerContext).ConfigureAwait(false);
 
                 if (result < 0)

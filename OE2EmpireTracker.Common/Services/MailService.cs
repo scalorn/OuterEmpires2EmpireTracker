@@ -56,13 +56,13 @@ namespace OE2EmpireTracker.Services
         /// </summary>
         /// <param name="client">The game API client instance.</param>
         /// <param name="appId">The registered application GUID.</param>
-        /// <param name="accessToken">The Bearer access token.</param>
+        /// <param name="tokenAccessor">A function that returns the current access token (supports mid-sync refresh).</param>
         /// <param name="playerContext">The player context for persistence.</param>
         /// <returns>The number of new messages synced, or -1 on error.</returns>
         public static async Task<int> SyncMailAsync(
             GameApiClient client,
             string appId,
-            string accessToken,
+            Func<string> tokenAccessor,
             PlayerContext playerContext)
         {
             int offset = 0;
@@ -71,7 +71,8 @@ namespace OE2EmpireTracker.Services
 
             while (true)
             {
-                var apiResult = await client.GetMailListAsync(appId, accessToken, offset, pageSize).ConfigureAwait(false);
+                string token = tokenAccessor();
+                var apiResult = await client.GetMailListAsync(appId, token, offset, pageSize).ConfigureAwait(false);
                 if (!apiResult.Success)
                 {
                     if (apiResult.Json == "401" || apiResult.Json == "403")
@@ -130,7 +131,7 @@ namespace OE2EmpireTracker.Services
 
                     allExist = false;
 
-                    var detailResult = await client.GetMailDetailAsync(appId, accessToken, mailId).ConfigureAwait(false);
+                    var detailResult = await FetchMailDetailWithRetryAsync(client, appId, tokenAccessor, mailId).ConfigureAwait(false);
                     MailMessage message;
 
                     if (detailResult.Success && !string.IsNullOrEmpty(detailResult.Json))
@@ -261,6 +262,37 @@ namespace OE2EmpireTracker.Services
         public static void OnMailDataChanged()
         {
             MailDataChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Fetches a mail detail with a single retry on 401 (token expired).
+        /// Re-reads the token accessor to pick up a potentially-refreshed token.
+        /// </summary>
+        /// <param name="client">The game API client instance.</param>
+        /// <param name="appId">The registered application GUID.</param>
+        /// <param name="tokenAccessor">A function that returns the current access token.</param>
+        /// <param name="mailId">The mail identifier to fetch.</param>
+        /// <returns>The API result tuple.</returns>
+        private static async Task<(bool Success, string Json)> FetchMailDetailWithRetryAsync(
+            GameApiClient client,
+            string appId,
+            Func<string> tokenAccessor,
+            int mailId)
+        {
+            string token = tokenAccessor();
+            var result = await client.GetMailDetailAsync(appId, token, mailId).ConfigureAwait(false);
+
+            if (!result.Success && result.Json == "401")
+            {
+                Log.Warn("Mail detail 401 for mailId={0}, re-reading token and retrying once.", mailId);
+                string refreshedToken = tokenAccessor();
+                if (refreshedToken != token)
+                {
+                    result = await client.GetMailDetailAsync(appId, refreshedToken, mailId).ConfigureAwait(false);
+                }
+            }
+
+            return result;
         }
 
         private static bool PassesReadFilter(MailMessage msg, string readFilter)
