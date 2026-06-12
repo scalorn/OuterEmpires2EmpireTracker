@@ -1785,6 +1785,10 @@ namespace OE2EmpireTracker.Services
         {
             var items = new List<WorkItem>();
             var visitedCrateIds = new HashSet<int>();
+            int blueprintsFetched = 0;
+            int blueprintsSkipped = 0;
+            int surveysFetched = 0;
+            int surveysSkipped = 0;
 
             foreach (var entry in cargo)
             {
@@ -1799,10 +1803,12 @@ namespace OE2EmpireTracker.Services
                         if (existingBp == null || !IsDetailFresh(existingBp.LastDetailImportUtc))
                         {
                             items.Add(CreateBlueprintDetailItem(entry.CargoItemId));
+                            blueprintsFetched++;
                         }
                         else
                         {
                             Log.Debug("BlueprintDetail:{0} skipped (fresh).", entry.CargoItemId);
+                            blueprintsSkipped++;
                         }
 
                         break;
@@ -1812,14 +1818,32 @@ namespace OE2EmpireTracker.Services
                         if (existingSurvey == null || !IsDetailFresh(existingSurvey.LastDetailImportUtc))
                         {
                             items.Add(CreateSurveyDetailItem(entry.CargoItemId, planetName, systemName));
+                            surveysFetched++;
                         }
                         else
                         {
                             Log.Debug("SurveyDetail:{0} skipped (fresh).", entry.CargoItemId);
+                            surveysSkipped++;
                         }
 
                         break;
                 }
+            }
+
+            if (blueprintsFetched > 0 || blueprintsSkipped > 0)
+            {
+                Log.Info(
+                    "CascadeCargoDetail: blueprints fetched={0} skipped={1}",
+                    blueprintsFetched,
+                    blueprintsSkipped);
+            }
+
+            if (surveysFetched > 0 || surveysSkipped > 0)
+            {
+                Log.Info(
+                    "CascadeCargoDetail: surveys fetched={0} skipped={1}",
+                    surveysFetched,
+                    surveysSkipped);
             }
 
             return items.ToArray();
