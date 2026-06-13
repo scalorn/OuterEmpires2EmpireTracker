@@ -231,6 +231,16 @@ namespace OE2EmpireTracker.Services
             resolvedType = ReclassifyByName(resolvedType, name);
             tempBP.BluePrintType = resolvedType;
 
+            // Reject entries where no type could be resolved — prevents typeless
+            // blueprints from polluting the data store.
+            if (string.IsNullOrEmpty(tempBP.BluePrintType))
+            {
+                importEntry.Action = ImportAction.Skipped;
+                importEntry.SkipReason = "No blueprint type resolved";
+                Log.Warn("Skipping blueprint '{0}' evo {1}: no type resolved (icon: '{2}')", name, evolution, iconPosition);
+                return importEntry;
+            }
+
             if (!string.IsNullOrEmpty(iconClass))
             {
                 tempBP.Properties.SetProperty("_IconClass", iconClass);
@@ -328,6 +338,7 @@ namespace OE2EmpireTracker.Services
                 BlueprintService.UpdateExisting(existing, tempBP);
                 importEntry.Action = ImportAction.Updated;
                 importEntry.Storage = isGlobal ? "Global" : "Player";
+                importEntry.MatchedUUID = existing.UUID;
                 Log.Info("    -> Updated existing: UUID={0}", existing.UUID);
             }
             else
@@ -349,6 +360,7 @@ namespace OE2EmpireTracker.Services
                         BlueprintService.UpdateExisting(alreadyExists, tempBP);
                         importEntry.Action = ImportAction.Updated;
                         importEntry.Storage = "Global";
+                        importEntry.MatchedUUID = alreadyExists.UUID;
                         Log.Info("    -> UUID collision — updated existing: UUID={0}", alreadyExists.UUID);
                     }
                     else
@@ -356,6 +368,7 @@ namespace OE2EmpireTracker.Services
                         empireContext.AddGlobalBlueprint(tempBP);
                         importEntry.Action = ImportAction.Created;
                         importEntry.Storage = "Global";
+                        importEntry.MatchedUUID = tempBP.UUID;
                         Log.Info("    -> Created new: UUID={0} (Global)", tempBP.UUID);
                     }
                 }
@@ -364,6 +377,7 @@ namespace OE2EmpireTracker.Services
                     playerContext.AddBlueprint(tempBP);
                     importEntry.Action = ImportAction.Created;
                     importEntry.Storage = "Player";
+                    importEntry.MatchedUUID = tempBP.UUID;
                     Log.Info("    -> Created new: UUID={0} (Player)", tempBP.UUID);
                 }
             }
@@ -541,6 +555,7 @@ namespace OE2EmpireTracker.Services
             public ImportAction Action { get; set; }
             public string Storage { get; set; }
             public string SkipReason { get; set; }
+            public string MatchedUUID { get; set; }
         }
     }
 }

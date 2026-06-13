@@ -64,12 +64,32 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             this.btnCopyToClipboard = new System.Windows.Forms.Button();
             this.pnlTestApi = new System.Windows.Forms.Panel();
             this.pnlTestApiInput = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblTestLocationId = new System.Windows.Forms.Label();
-            this.txtTestLocationId = new System.Windows.Forms.TextBox();
-            this.lblTestLocationType = new System.Windows.Forms.Label();
-            this.cboTestLocationType = new System.Windows.Forms.ComboBox();
-            this.btnTestFetch = new System.Windows.Forms.Button();
-            this.txtTestResult = new System.Windows.Forms.TextBox();
+            this.lblEndpoint = new System.Windows.Forms.Label();
+            this.cboEndpoint = new System.Windows.Forms.ComboBox();
+            this.lblId = new System.Windows.Forms.Label();
+            this.txtId = new System.Windows.Forms.TextBox();
+            this.lblLocationType = new System.Windows.Forms.Label();
+            this.cboLocationType = new System.Windows.Forms.ComboBox();
+            this.btnRequest = new System.Windows.Forms.Button();
+            this.btnCopyResponse = new System.Windows.Forms.Button();
+            this.pnlMarketFields = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblView = new System.Windows.Forms.Label();
+            this.txtView = new System.Windows.Forms.TextBox();
+            this.lblSearch = new System.Windows.Forms.Label();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.lblType = new System.Windows.Forms.Label();
+            this.txtType = new System.Windows.Forms.TextBox();
+            this.lblSubType = new System.Windows.Forms.Label();
+            this.txtSubType = new System.Windows.Forms.TextBox();
+            this.lblOrderBy = new System.Windows.Forms.Label();
+            this.txtOrderBy = new System.Windows.Forms.TextBox();
+            this.lblRange = new System.Windows.Forms.Label();
+            this.txtRange = new System.Windows.Forms.TextBox();
+            this.lblEvolution = new System.Windows.Forms.Label();
+            this.txtEvolution = new System.Windows.Forms.TextBox();
+            this.lblMarketIds = new System.Windows.Forms.Label();
+            this.txtMarketIds = new System.Windows.Forms.TextBox();
+            this.txtResponse = new System.Windows.Forms.TextBox();
 
             this.pnlSummary.SuspendLayout();
             this.pnlMiddle.SuspendLayout();
@@ -79,6 +99,7 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             this.pnlControls.SuspendLayout();
             this.pnlTestApi.SuspendLayout();
             this.pnlTestApiInput.SuspendLayout();
+            this.pnlMarketFields.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHistory)).BeginInit();
             this.SuspendLayout();
             //
@@ -378,7 +399,8 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             //
             // pnlTestApi
             //
-            this.pnlTestApi.Controls.Add(this.txtTestResult);
+            this.pnlTestApi.Controls.Add(this.txtResponse);
+            this.pnlTestApi.Controls.Add(this.pnlMarketFields);
             this.pnlTestApi.Controls.Add(this.pnlTestApiInput);
             this.pnlTestApi.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlTestApi.Location = new System.Drawing.Point(0, 361);
@@ -387,67 +409,239 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             //
             // pnlTestApiInput
             //
-            this.pnlTestApiInput.Controls.Add(this.lblTestLocationId);
-            this.pnlTestApiInput.Controls.Add(this.txtTestLocationId);
-            this.pnlTestApiInput.Controls.Add(this.lblTestLocationType);
-            this.pnlTestApiInput.Controls.Add(this.cboTestLocationType);
-            this.pnlTestApiInput.Controls.Add(this.btnTestFetch);
+            this.pnlTestApiInput.Controls.Add(this.lblEndpoint);
+            this.pnlTestApiInput.Controls.Add(this.cboEndpoint);
+            this.pnlTestApiInput.Controls.Add(this.lblId);
+            this.pnlTestApiInput.Controls.Add(this.txtId);
+            this.pnlTestApiInput.Controls.Add(this.lblLocationType);
+            this.pnlTestApiInput.Controls.Add(this.cboLocationType);
+            this.pnlTestApiInput.Controls.Add(this.btnRequest);
+            this.pnlTestApiInput.Controls.Add(this.btnCopyResponse);
             this.pnlTestApiInput.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTestApiInput.Location = new System.Drawing.Point(0, 0);
             this.pnlTestApiInput.Name = "pnlTestApiInput";
             this.pnlTestApiInput.Padding = new System.Windows.Forms.Padding(4);
             this.pnlTestApiInput.Size = new System.Drawing.Size(784, 32);
             //
-            // lblTestLocationId
+            // lblEndpoint
             //
-            this.lblTestLocationId.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblTestLocationId.AutoSize = true;
-            this.lblTestLocationId.Location = new System.Drawing.Point(7, 9);
-            this.lblTestLocationId.Name = "lblTestLocationId";
-            this.lblTestLocationId.Size = new System.Drawing.Size(70, 13);
-            this.lblTestLocationId.Text = "Location ID:";
+            this.lblEndpoint.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblEndpoint.AutoSize = true;
+            this.lblEndpoint.Location = new System.Drawing.Point(7, 9);
+            this.lblEndpoint.Name = "lblEndpoint";
+            this.lblEndpoint.Size = new System.Drawing.Size(55, 13);
+            this.lblEndpoint.Text = "Endpoint:";
             //
-            // txtTestLocationId
+            // cboEndpoint
             //
-            this.txtTestLocationId.Location = new System.Drawing.Point(83, 7);
-            this.txtTestLocationId.Name = "txtTestLocationId";
-            this.txtTestLocationId.Size = new System.Drawing.Size(80, 20);
+            this.cboEndpoint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboEndpoint.Location = new System.Drawing.Point(68, 6);
+            this.cboEndpoint.Name = "cboEndpoint";
+            this.cboEndpoint.Size = new System.Drawing.Size(160, 21);
             //
-            // lblTestLocationType
+            // lblId
             //
-            this.lblTestLocationType.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblTestLocationType.AutoSize = true;
-            this.lblTestLocationType.Location = new System.Drawing.Point(169, 9);
-            this.lblTestLocationType.Name = "lblTestLocationType";
-            this.lblTestLocationType.Size = new System.Drawing.Size(35, 13);
-            this.lblTestLocationType.Text = "Type:";
+            this.lblId.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblId.AutoSize = true;
+            this.lblId.Location = new System.Drawing.Point(234, 9);
+            this.lblId.Name = "lblId";
+            this.lblId.Size = new System.Drawing.Size(70, 13);
+            this.lblId.Text = "Location ID:";
             //
-            // cboTestLocationType
+            // txtId
             //
-            this.cboTestLocationType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboTestLocationType.Items.AddRange(new object[] { "Co", "St", "Sh", "Cr" });
-            this.cboTestLocationType.Location = new System.Drawing.Point(210, 6);
-            this.cboTestLocationType.Name = "cboTestLocationType";
-            this.cboTestLocationType.Size = new System.Drawing.Size(55, 21);
+            this.txtId.Location = new System.Drawing.Point(310, 7);
+            this.txtId.Name = "txtId";
+            this.txtId.Size = new System.Drawing.Size(80, 20);
             //
-            // btnTestFetch
+            // lblLocationType
             //
-            this.btnTestFetch.Location = new System.Drawing.Point(271, 5);
-            this.btnTestFetch.Name = "btnTestFetch";
-            this.btnTestFetch.Size = new System.Drawing.Size(60, 23);
-            this.btnTestFetch.Text = "Fetch";
-            this.btnTestFetch.UseVisualStyleBackColor = true;
+            this.lblLocationType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblLocationType.AutoSize = true;
+            this.lblLocationType.Location = new System.Drawing.Point(396, 9);
+            this.lblLocationType.Name = "lblLocationType";
+            this.lblLocationType.Size = new System.Drawing.Size(35, 13);
+            this.lblLocationType.Text = "Type:";
             //
-            // txtTestResult
+            // cboLocationType
             //
-            this.txtTestResult.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtTestResult.Location = new System.Drawing.Point(0, 32);
-            this.txtTestResult.Multiline = true;
-            this.txtTestResult.Name = "txtTestResult";
-            this.txtTestResult.ReadOnly = true;
-            this.txtTestResult.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtTestResult.Size = new System.Drawing.Size(784, 168);
-            this.txtTestResult.WordWrap = false;
+            this.cboLocationType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLocationType.Items.AddRange(new object[] { "Co", "St", "Sh", "Cr" });
+            this.cboLocationType.Location = new System.Drawing.Point(437, 6);
+            this.cboLocationType.Name = "cboLocationType";
+            this.cboLocationType.Size = new System.Drawing.Size(55, 21);
+            //
+            // btnRequest
+            //
+            this.btnRequest.Location = new System.Drawing.Point(498, 5);
+            this.btnRequest.Name = "btnRequest";
+            this.btnRequest.Size = new System.Drawing.Size(65, 23);
+            this.btnRequest.Text = "Request";
+            this.btnRequest.UseVisualStyleBackColor = true;
+            //
+            // btnCopyResponse
+            //
+            this.btnCopyResponse.Location = new System.Drawing.Point(569, 5);
+            this.btnCopyResponse.Name = "btnCopyResponse";
+            this.btnCopyResponse.Size = new System.Drawing.Size(100, 23);
+            this.btnCopyResponse.Text = "Copy Response";
+            this.btnCopyResponse.UseVisualStyleBackColor = true;
+            //
+            // pnlMarketFields
+            //
+            this.pnlMarketFields.Controls.Add(this.lblView);
+            this.pnlMarketFields.Controls.Add(this.txtView);
+            this.pnlMarketFields.Controls.Add(this.lblSearch);
+            this.pnlMarketFields.Controls.Add(this.txtSearch);
+            this.pnlMarketFields.Controls.Add(this.lblType);
+            this.pnlMarketFields.Controls.Add(this.txtType);
+            this.pnlMarketFields.Controls.Add(this.lblSubType);
+            this.pnlMarketFields.Controls.Add(this.txtSubType);
+            this.pnlMarketFields.Controls.Add(this.lblOrderBy);
+            this.pnlMarketFields.Controls.Add(this.txtOrderBy);
+            this.pnlMarketFields.Controls.Add(this.lblRange);
+            this.pnlMarketFields.Controls.Add(this.txtRange);
+            this.pnlMarketFields.Controls.Add(this.lblEvolution);
+            this.pnlMarketFields.Controls.Add(this.txtEvolution);
+            this.pnlMarketFields.Controls.Add(this.lblMarketIds);
+            this.pnlMarketFields.Controls.Add(this.txtMarketIds);
+            this.pnlMarketFields.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlMarketFields.Location = new System.Drawing.Point(0, 32);
+            this.pnlMarketFields.Name = "pnlMarketFields";
+            this.pnlMarketFields.Padding = new System.Windows.Forms.Padding(4);
+            this.pnlMarketFields.Size = new System.Drawing.Size(784, 32);
+            this.pnlMarketFields.Visible = false;
+            //
+            // lblView
+            //
+            this.lblView.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblView.AutoSize = true;
+            this.lblView.Location = new System.Drawing.Point(7, 9);
+            this.lblView.Name = "lblView";
+            this.lblView.Size = new System.Drawing.Size(35, 13);
+            this.lblView.Text = "View:";
+            //
+            // txtView
+            //
+            this.txtView.Location = new System.Drawing.Point(48, 7);
+            this.txtView.Name = "txtView";
+            this.txtView.Size = new System.Drawing.Size(80, 20);
+            //
+            // lblSearch
+            //
+            this.lblSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSearch.AutoSize = true;
+            this.lblSearch.Location = new System.Drawing.Point(134, 9);
+            this.lblSearch.Name = "lblSearch";
+            this.lblSearch.Size = new System.Drawing.Size(44, 13);
+            this.lblSearch.Text = "Search:";
+            //
+            // txtSearch
+            //
+            this.txtSearch.Location = new System.Drawing.Point(184, 7);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(80, 20);
+            //
+            // lblType
+            //
+            this.lblType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblType.AutoSize = true;
+            this.lblType.Location = new System.Drawing.Point(270, 9);
+            this.lblType.Name = "lblType";
+            this.lblType.Size = new System.Drawing.Size(34, 13);
+            this.lblType.Text = "Type:";
+            //
+            // txtType
+            //
+            this.txtType.Location = new System.Drawing.Point(310, 7);
+            this.txtType.Name = "txtType";
+            this.txtType.Size = new System.Drawing.Size(80, 20);
+            //
+            // lblSubType
+            //
+            this.lblSubType.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSubType.AutoSize = true;
+            this.lblSubType.Location = new System.Drawing.Point(396, 9);
+            this.lblSubType.Name = "lblSubType";
+            this.lblSubType.Size = new System.Drawing.Size(54, 13);
+            this.lblSubType.Text = "Sub Type:";
+            //
+            // txtSubType
+            //
+            this.txtSubType.Location = new System.Drawing.Point(456, 7);
+            this.txtSubType.Name = "txtSubType";
+            this.txtSubType.Size = new System.Drawing.Size(80, 20);
+            //
+            // lblOrderBy
+            //
+            this.lblOrderBy.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblOrderBy.AutoSize = true;
+            this.lblOrderBy.Location = new System.Drawing.Point(542, 9);
+            this.lblOrderBy.Name = "lblOrderBy";
+            this.lblOrderBy.Size = new System.Drawing.Size(53, 13);
+            this.lblOrderBy.Text = "Order By:";
+            //
+            // txtOrderBy
+            //
+            this.txtOrderBy.Location = new System.Drawing.Point(601, 7);
+            this.txtOrderBy.Name = "txtOrderBy";
+            this.txtOrderBy.Size = new System.Drawing.Size(80, 20);
+            //
+            // lblRange
+            //
+            this.lblRange.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblRange.AutoSize = true;
+            this.lblRange.Location = new System.Drawing.Point(687, 9);
+            this.lblRange.Name = "lblRange";
+            this.lblRange.Size = new System.Drawing.Size(39, 13);
+            this.lblRange.Text = "Range:";
+            //
+            // txtRange
+            //
+            this.txtRange.Location = new System.Drawing.Point(732, 7);
+            this.txtRange.Name = "txtRange";
+            this.txtRange.Size = new System.Drawing.Size(80, 20);
+            //
+            // lblEvolution
+            //
+            this.lblEvolution.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblEvolution.AutoSize = true;
+            this.lblEvolution.Location = new System.Drawing.Point(818, 9);
+            this.lblEvolution.Name = "lblEvolution";
+            this.lblEvolution.Size = new System.Drawing.Size(55, 13);
+            this.lblEvolution.Text = "Evolution:";
+            //
+            // txtEvolution
+            //
+            this.txtEvolution.Location = new System.Drawing.Point(879, 7);
+            this.txtEvolution.Name = "txtEvolution";
+            this.txtEvolution.Size = new System.Drawing.Size(80, 20);
+            //
+            // lblMarketIds
+            //
+            this.lblMarketIds.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMarketIds.AutoSize = true;
+            this.lblMarketIds.Location = new System.Drawing.Point(965, 9);
+            this.lblMarketIds.Name = "lblMarketIds";
+            this.lblMarketIds.Size = new System.Drawing.Size(63, 13);
+            this.lblMarketIds.Text = "Market IDs:";
+            //
+            // txtMarketIds
+            //
+            this.txtMarketIds.Location = new System.Drawing.Point(1034, 7);
+            this.txtMarketIds.Name = "txtMarketIds";
+            this.txtMarketIds.Size = new System.Drawing.Size(150, 20);
+            //
+            // txtResponse
+            //
+            this.txtResponse.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtResponse.Location = new System.Drawing.Point(0, 64);
+            this.txtResponse.Multiline = true;
+            this.txtResponse.Name = "txtResponse";
+            this.txtResponse.ReadOnly = true;
+            this.txtResponse.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtResponse.Size = new System.Drawing.Size(784, 136);
+            this.txtResponse.WordWrap = false;
             //
             // FormGameApiStatus
             //
@@ -478,6 +672,8 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             this.pnlTestApi.PerformLayout();
             this.pnlTestApiInput.ResumeLayout(false);
             this.pnlTestApiInput.PerformLayout();
+            this.pnlMarketFields.ResumeLayout(false);
+            this.pnlMarketFields.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHistory)).EndInit();
             this.ResumeLayout(false);
         }
@@ -519,11 +715,31 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
         private System.Windows.Forms.Button btnCopyToClipboard;
         private System.Windows.Forms.Panel pnlTestApi;
         private System.Windows.Forms.FlowLayoutPanel pnlTestApiInput;
-        private System.Windows.Forms.Label lblTestLocationId;
-        private System.Windows.Forms.TextBox txtTestLocationId;
-        private System.Windows.Forms.Label lblTestLocationType;
-        private System.Windows.Forms.ComboBox cboTestLocationType;
-        private System.Windows.Forms.Button btnTestFetch;
-        private System.Windows.Forms.TextBox txtTestResult;
+        private System.Windows.Forms.Label lblEndpoint;
+        private System.Windows.Forms.ComboBox cboEndpoint;
+        private System.Windows.Forms.Label lblId;
+        private System.Windows.Forms.TextBox txtId;
+        private System.Windows.Forms.Label lblLocationType;
+        private System.Windows.Forms.ComboBox cboLocationType;
+        private System.Windows.Forms.Button btnRequest;
+        private System.Windows.Forms.Button btnCopyResponse;
+        private System.Windows.Forms.FlowLayoutPanel pnlMarketFields;
+        private System.Windows.Forms.Label lblView;
+        private System.Windows.Forms.TextBox txtView;
+        private System.Windows.Forms.Label lblSearch;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Label lblType;
+        private System.Windows.Forms.TextBox txtType;
+        private System.Windows.Forms.Label lblSubType;
+        private System.Windows.Forms.TextBox txtSubType;
+        private System.Windows.Forms.Label lblOrderBy;
+        private System.Windows.Forms.TextBox txtOrderBy;
+        private System.Windows.Forms.Label lblRange;
+        private System.Windows.Forms.TextBox txtRange;
+        private System.Windows.Forms.Label lblEvolution;
+        private System.Windows.Forms.TextBox txtEvolution;
+        private System.Windows.Forms.Label lblMarketIds;
+        private System.Windows.Forms.TextBox txtMarketIds;
+        private System.Windows.Forms.TextBox txtResponse;
     }
 }

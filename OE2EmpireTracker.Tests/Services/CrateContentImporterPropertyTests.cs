@@ -23,6 +23,21 @@ namespace OE2EmpireTracker.Tests.Services
     public class CrateContentImporterPropertyTests
     {
         /// <summary>
+        /// Wraps a response object in the standard GameApiServiceResponse envelope.
+        /// </summary>
+        private static string WrapInEnvelope<T>(T data)
+        {
+            var envelope = new GameApiServiceResponse<T>
+            {
+                Success = true,
+                ReturnCode = 200,
+                ReturnString = "OK",
+                Data = data,
+            };
+            return JsonConvert.SerializeObject(envelope);
+        }
+
+        /// <summary>
         /// Known TypeC codes that MapAssetTypeC handles (excluding ambiguous casing pairs).
         /// </summary>
         private static readonly string[] KnownTypeCCodes = new[]
@@ -165,7 +180,7 @@ namespace OE2EmpireTracker.Tests.Services
                     var bls = new BlueprintLinkageService(playerContext, empireContext);
                     var importer = new CrateContentImporter(playerContext, empireContext, bls);
 
-                    string json = JsonConvert.SerializeObject(response);
+                    string json = WrapInEnvelope(response);
                     var parentBag = new ItemBag();
                     var visited = new HashSet<int>();
                     int crateId = 99999;
@@ -282,7 +297,7 @@ namespace OE2EmpireTracker.Tests.Services
                     var bls = new BlueprintLinkageService(playerContext, empireContext);
                     var importer = new CrateContentImporter(playerContext, empireContext, bls);
 
-                    string json = JsonConvert.SerializeObject(response);
+                    string json = WrapInEnvelope(response);
                     var parentBag = new ItemBag();
                     var visited = new HashSet<int>();
                     int crateId = 88888;
@@ -494,7 +509,7 @@ namespace OE2EmpireTracker.Tests.Services
                         });
 
                         var response = new GameApiAssetDetailResponse { Cargo = cargo };
-                        string json = JsonConvert.SerializeObject(response);
+                        string json = WrapInEnvelope(response);
                         var parentBag = new ItemBag();
 
                         var result = importer.Import(
@@ -632,7 +647,7 @@ namespace OE2EmpireTracker.Tests.Services
                     var bls = new BlueprintLinkageService(playerContext, empireContext);
                     var importer = new CrateContentImporter(playerContext, empireContext, bls);
 
-                    string json = JsonConvert.SerializeObject(response);
+                    string json = WrapInEnvelope(response);
                     var parentBag = new ItemBag();
                     var visited = new HashSet<int>();
                     int crateId = 77777;

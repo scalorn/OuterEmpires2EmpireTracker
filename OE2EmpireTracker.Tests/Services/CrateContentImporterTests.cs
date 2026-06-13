@@ -37,6 +37,22 @@ namespace OE2EmpireTracker.Tests.Services
             importer = new CrateContentImporter(playerContext, empireContext, blueprintLinkageService);
         }
 
+        /// <summary>
+        /// Wraps a response object in the standard GameApiServiceResponse envelope
+        /// that all game API endpoints return.
+        /// </summary>
+        private static string WrapInEnvelope<T>(T data)
+        {
+            var envelope = new GameApiServiceResponse<T>
+            {
+                Success = true,
+                ReturnCode = 200,
+                ReturnString = "OK",
+                Data = data,
+            };
+            return JsonConvert.SerializeObject(envelope);
+        }
+
         // -------------------------------------------------------------------
         // Test: Malformed JSON returns empty result with Success=false
         // Validates: Req 9 AC4 (malformed JSON no exception)
@@ -74,7 +90,7 @@ namespace OE2EmpireTracker.Tests.Services
         public void CrateContentImporter_EmptyResponse_ReturnsEmptyBag()
         {
             var response = new GameApiAssetDetailResponse { Cargo = new List<GameApiAssetCargoItem>() };
-            string json = JsonConvert.SerializeObject(response);
+            string json = WrapInEnvelope(response);
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
@@ -134,7 +150,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = JsonConvert.SerializeObject(response);
+            string json = WrapInEnvelope(response);
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
@@ -208,7 +224,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = JsonConvert.SerializeObject(response);
+            string json = WrapInEnvelope(response);
 
             var visited = new HashSet<int>();
 
@@ -253,7 +269,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = JsonConvert.SerializeObject(response);
+            string json = WrapInEnvelope(response);
             var visited = new HashSet<int>();
 
             // Act
@@ -312,7 +328,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = JsonConvert.SerializeObject(response);
+            string json = WrapInEnvelope(response);
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
@@ -361,7 +377,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = JsonConvert.SerializeObject(response);
+            string json = WrapInEnvelope(response);
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
@@ -423,7 +439,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = JsonConvert.SerializeObject(response);
+            string json = WrapInEnvelope(response);
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
@@ -527,7 +543,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = JsonConvert.SerializeObject(response);
+            string json = WrapInEnvelope(response);
 
             // Create a parent bag with an existing crate item
             var crateItem = new Item(ItemType.ItemTypeEnum.Crate, "Test Crate")
@@ -597,7 +613,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = JsonConvert.SerializeObject(response);
+            string json = WrapInEnvelope(response);
 
             var parentBag = new ItemBag();
             var visited = new HashSet<int>();
@@ -641,7 +657,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var cyclicResponse = new GameApiAssetDetailResponse { Cargo = cyclicCargo };
-            string cyclicJson = JsonConvert.SerializeObject(cyclicResponse);
+            string cyclicJson = WrapInEnvelope(cyclicResponse);
 
             var nestedParentBag = new ItemBag();
 
@@ -678,7 +694,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = JsonConvert.SerializeObject(response);
+            string json = WrapInEnvelope(response);
 
             // Act: check blueprint detection
             bool hasBlueprints = QueueSyncService.ResponseContainsBlueprints(json);
@@ -728,7 +744,7 @@ namespace OE2EmpireTracker.Tests.Services
             };
 
             var response = new GameApiAssetDetailResponse { Cargo = cargoItems };
-            string json = JsonConvert.SerializeObject(response);
+            string json = WrapInEnvelope(response);
 
             // Act: check blueprint detection
             bool hasBlueprints = QueueSyncService.ResponseContainsBlueprints(json);

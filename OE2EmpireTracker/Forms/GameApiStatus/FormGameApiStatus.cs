@@ -53,8 +53,11 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
 
             this.btnReset.Click += this.BtnReset_Click;
             this.btnCopyToClipboard.Click += this.BtnCopyToClipboard_Click;
-            this.btnTestFetch.Click += this.BtnTestFetch_Click;
-            this.cboTestLocationType.SelectedIndex = 0;
+            this.btnRequest.Click += this.BtnRequest_Click;
+            this.btnCopyResponse.Click += this.BtnCopyResponse_Click;
+            this.cboEndpoint.SelectedIndexChanged += this.CboEndpoint_SelectedIndexChanged;
+
+            this.PopulateEndpointDropdown();
 
             GameApiMetricsCollector.Instance.MetricsUpdated += this.OnMetricsUpdated;
             EmpireContext.PlayerContext.CurrentPlayerChanged += this.OnCurrentPlayerChanged;
@@ -350,42 +353,55 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
             }
         }
 
-        private async void BtnTestFetch_Click(object sender, EventArgs e)
+        private async void BtnRequest_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(this.txtTestLocationId.Text.Trim(), out int locationId))
-            {
-                this.txtTestResult.Text = "Error: Location ID must be a number";
-                return;
-            }
-
-            string locationType = this.cboTestLocationType.SelectedItem?.ToString() ?? AssetTypeCodes.Colony;
-            this.btnTestFetch.Enabled = false;
-            this.txtTestResult.Text = "Fetching...";
+            this.btnRequest.Enabled = false;
+            this.txtResponse.Text = "Fetching...";
 
             try
             {
                 var context = GameApiContext.Instance;
                 if (context == null)
                 {
-                    this.txtTestResult.Text = "Error: Game API is not initialized. Check Preferences.";
+                    this.txtResponse.Text = "Error: Game API is not initialized. Check Preferences.";
                     return;
                 }
 
-                var settings = PreferencesStore.GetInstance().Preferences.GameApiConnection;
                 string playerUUID = EmpireContext.PlayerContext.CurrentPlayerUUID;
                 if (string.IsNullOrEmpty(playerUUID))
                 {
-                    this.txtTestResult.Text = "Error: No player selected.";
+                    this.txtResponse.Text = "Error: No player selected.";
                     return;
                 }
 
                 SecureString secureSecret = context.CredentialManager.GetKey(playerUUID);
                 if (secureSecret == null)
                 {
-                    this.txtTestResult.Text = "Error: No API key configured for current player.";
+                    this.txtResponse.Text = "Error: No API key configured for current player.";
                     return;
                 }
 
+                int selectedIndex = this.cboEndpoint.SelectedIndex;
+                if (selectedIndex < 0 || selectedIndex >= ManualRequestEndpoint.All.Count)
+                {
+                    this.txtResponse.Text = "Error: No endpoint selected.";
+                    return;
+                }
+
+                var endpoint = ManualRequestEndpoint.All[selectedIndex];
+                var validation = ManualRequestValidation.ValidateInputs(
+                    endpoint,
+                    this.txtId.Text.Trim(),
+                    this.txtView.Text.Trim(),
+                    this.txtMarketIds.Text.Trim());
+
+                if (!validation.IsValid)
+                {
+                    this.txtResponse.Text = validation.ErrorMessage;
+                    return;
+                }
+
+                var settings = PreferencesStore.GetInstance().Preferences.GameApiConnection;
                 string secret = SecureStringToPlainText(secureSecret);
                 secureSecret.Dispose();
 
@@ -396,40 +412,308 @@ namespace OE2EmpireTracker.Forms.GameApiStatus
 
                 if (!tokenResult.Success)
                 {
-                    this.txtTestResult.Text = "Token exchange failed: " + (tokenResult.ErrorMessage ?? "unknown");
+                    this.txtResponse.Text = "Token exchange failed: " + (tokenResult.ErrorMessage ?? "unknown");
                     return;
                 }
 
-                var result = await context.Client.GetAssetLocationDetailAsync(
-                    settings.AppId,
-                    tokenResult.Token.AccessToken,
-                    locationId,
-                    locationType).ConfigureAwait(true);
+                string appId = settings.AppId;
+                string token = tokenResult.Token.AccessToken;
+
+                var result = await this.RouteRequestAsync(endpoint, appId, token).ConfigureAwait(true);
 
                 if (result.Success)
                 {
-                    try
-                    {
-                        var obj = Newtonsoft.Json.JsonConvert.DeserializeObject(result.Json);
-                        this.txtTestResult.Text = Newtonsoft.Json.JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.Indented);
-                    }
-                    catch
-                    {
-                        this.txtTestResult.Text = result.Json;
-                    }
+                    this.txtResponse.Text = ManualRequestFormatter.FormatResponse(true, 200, result.Json);
                 }
                 else
                 {
-                    this.txtTestResult.Text = "Failed: " + (result.Json ?? "null");
+                    int statusCode = 0;
+                    int.TryParse(result.Json, out statusCode);
+                    if (statusCode > 0)
+                    {
+                        this.txtResponse.Text = ManualRequestFormatter.FormatResponse(false, statusCode, result.Json);
+                    }
+                    else
+                    {
+                        this.txtResponse.Text = ManualRequestFormatter.FormatResponse(false, 0, result.Json);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                this.txtTestResult.Text = "Exception: " + ex.Message;
+                this.txtResponse.Text = "Exception: " + ex.Message;
             }
             finally
             {
-                this.btnTestFetch.Enabled = true;
+                this.btnRequest.Enabled = true;
+            }
+        }
+
+        private async System.Threading.Tasks.Task<(bool Success, string Json)> RouteRequestAsync(
+            ManualRequestEndpoint endpoint,
+            string appId,
+            string token)
+        {
+            var client = GameApiContext.Instance.Client;
+
+            switch (endpoint.DisplayName)
+            {
+                case "Character":
+                    return await client.GetCharacterAsync(appId, token).ConfigureAwait(true);
+                case "Character Skills":
+                    return await client.GetCharacterSkillsAsync(appId, token).ConfigureAwait(true);
+                case "Colony List":
+                    return await client.GetColonyListAsync(appId, token).ConfigureAwait(true);
+                case "Colony Buildings":
+                    return await client.GetColonyBuildingsAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                case "Colony Warehouse":
+                    return await client.GetColonyWarehouseAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                case "Colony Workers":
+                    return await client.GetColonyWorkersAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                case "Colony Summary":
+                    return await client.GetColonySummaryAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                case "Banking Balance":
+                    return await client.GetBankingBalanceAsync(appId, token).ConfigureAwait(true);
+                case "Banking Transactions":
+                    return await client.GetBankingTransactionsAsync(appId, token).ConfigureAwait(true);
+                case "Accepted Jobs":
+                    return await client.GetAcceptedJobsAsync(appId, token).ConfigureAwait(true);
+                case "Asset Locations":
+                    return await client.GetAssetLocationsAsync(appId, token).ConfigureAwait(true);
+                case "Location Detail":
+                    return await client.GetAssetLocationDetailAsync(
+                        appId,
+                        token,
+                        int.Parse(this.txtId.Text.Trim()),
+                        this.cboLocationType.SelectedItem?.ToString() ?? AssetTypeCodes.Colony).ConfigureAwait(true);
+                case "Blueprint":
+                    return await client.GetAssetBlueprintAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                case "Survey":
+                    return await client.GetAssetSurveyAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                case "Crate":
+                    return await client.GetAssetCrateAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                case "Kill Mail List":
+                    return await client.GetKillMailListAsync(appId, token).ConfigureAwait(true);
+                case "Kill Mail Detail":
+                    return await client.GetKillMailDetailAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                case "Ship Configuration":
+                    return await client.GetShipConfigurationAsync(appId, token).ConfigureAwait(true);
+                case "Ship Cargo":
+                    return await client.GetShipCargoAsync(appId, token).ConfigureAwait(true);
+                case "Mail List":
+                    return await client.GetMailListAsync(appId, token).ConfigureAwait(true);
+                case "Mail Detail":
+                    return await client.GetMailDetailAsync(appId, token, int.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                case "Market Listings":
+                    return await client.GetMarketListingsAsync(
+                        appId,
+                        token,
+                        this.txtView.Text.Trim(),
+                        this.ParseNullableInt(this.txtRange.Text),
+                        this.NullIfEmpty(this.txtSearch.Text),
+                        this.NullIfEmpty(this.txtType.Text),
+                        this.NullIfEmpty(this.txtSubType.Text),
+                        this.ParseNullableInt(this.txtEvolution.Text),
+                        this.NullIfEmpty(this.txtOrderBy.Text)).ConfigureAwait(true);
+                case "Market Prices":
+                    return await client.GetMarketPricesAsync(
+                        appId,
+                        token,
+                        this.txtType.Text.Trim(),
+                        long.TryParse(this.txtId.Text.Trim(), out long priceTypeId) ? priceTypeId : 0).ConfigureAwait(true);
+                case "Market Items":
+                    return await client.GetMarketItemsAsync(
+                        appId,
+                        token,
+                        this.txtType.Text.Trim(),
+                        this.txtSearch.Text.Trim()).ConfigureAwait(true);
+                case "Market Ship Components":
+                    return await client.GetMarketShipComponentsAsync(
+                        appId,
+                        token,
+                        long.Parse(this.txtId.Text.Trim())).ConfigureAwait(true);
+                case "Market Buy Orders":
+                    return await client.GetMarketBuyOrdersAsync(appId, token).ConfigureAwait(true);
+                case "Market Sell Orders":
+                    return await client.GetMarketSellOrdersAsync(appId, token).ConfigureAwait(true);
+                case "Market Buy Competitors":
+                    return await client.GetMarketBuyCompetitorsAsync(appId, token, this.txtMarketIds.Text.Trim()).ConfigureAwait(true);
+                case "Market Sell Competitors":
+                    return await client.GetMarketSellCompetitorsAsync(appId, token, this.txtMarketIds.Text.Trim()).ConfigureAwait(true);
+                default:
+                    return (false, "Unknown endpoint: " + endpoint.DisplayName);
+            }
+        }
+
+        private int? ParseNullableInt(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return null;
+            }
+
+            return int.TryParse(text.Trim(), out int value) ? (int?)value : null;
+        }
+
+        private string NullIfEmpty(string text)
+        {
+            return string.IsNullOrWhiteSpace(text) ? null : text.Trim();
+        }
+
+        private void CboEndpoint_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this._isProgrammaticUpdate > 0)
+            {
+                return;
+            }
+
+            this.ApplyEndpointVisibility();
+        }
+
+        private void PopulateEndpointDropdown()
+        {
+            var sw = Stopwatch.StartNew();
+
+            using (var guard = new ProgrammaticUpdateGuard(this))
+            {
+                this.cboEndpoint.Items.Clear();
+                foreach (var endpoint in ManualRequestEndpoint.All)
+                {
+                    this.cboEndpoint.Items.Add(endpoint.DisplayName);
+                }
+
+                int defaultIndex = 0;
+                for (int i = 0; i < ManualRequestEndpoint.All.Count; i++)
+                {
+                    if (ManualRequestEndpoint.All[i].DisplayName == "Location Detail")
+                    {
+                        defaultIndex = i;
+                        break;
+                    }
+                }
+
+                this.cboEndpoint.SelectedIndex = defaultIndex;
+                this.cboLocationType.SelectedIndex = 0;
+            }
+
+            this.ApplyEndpointVisibility();
+            sw.Stop();
+            Log.Info("PERF PopulateEndpointDropdown: {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        private void ApplyEndpointVisibility()
+        {
+            int selectedIndex = this.cboEndpoint.SelectedIndex;
+            if (selectedIndex < 0 || selectedIndex >= ManualRequestEndpoint.All.Count)
+            {
+                return;
+            }
+
+            var endpoint = ManualRequestEndpoint.All[selectedIndex];
+
+            switch (endpoint.Category)
+            {
+                case EndpointCategory.Parameterless:
+                    this.lblId.Visible = false;
+                    this.txtId.Visible = false;
+                    this.lblLocationType.Visible = false;
+                    this.cboLocationType.Visible = false;
+                    this.pnlMarketFields.Visible = false;
+                    break;
+
+                case EndpointCategory.SingleId:
+                    this.lblId.Text = endpoint.IdLabel + ":";
+                    this.lblId.Visible = true;
+                    this.txtId.Visible = true;
+                    this.lblLocationType.Visible = false;
+                    this.cboLocationType.Visible = false;
+                    this.pnlMarketFields.Visible = false;
+                    break;
+
+                case EndpointCategory.LocationDetail:
+                    this.lblId.Text = "Location ID:";
+                    this.lblId.Visible = true;
+                    this.txtId.Visible = true;
+                    this.lblLocationType.Visible = true;
+                    this.cboLocationType.Visible = true;
+                    this.pnlMarketFields.Visible = false;
+                    break;
+
+                case EndpointCategory.MarketView:
+                    this.lblId.Visible = false;
+                    this.txtId.Visible = false;
+                    this.lblLocationType.Visible = false;
+                    this.cboLocationType.Visible = false;
+                    this.pnlMarketFields.Visible = true;
+                    this.lblView.Visible = true;
+                    this.txtView.Visible = true;
+                    this.lblSearch.Visible = true;
+                    this.txtSearch.Visible = true;
+                    this.lblType.Visible = true;
+                    this.txtType.Visible = true;
+                    this.lblSubType.Visible = true;
+                    this.txtSubType.Visible = true;
+                    this.lblOrderBy.Visible = true;
+                    this.txtOrderBy.Visible = true;
+                    this.lblRange.Visible = true;
+                    this.txtRange.Visible = true;
+                    this.lblEvolution.Visible = true;
+                    this.txtEvolution.Visible = true;
+                    this.lblMarketIds.Visible = false;
+                    this.txtMarketIds.Visible = false;
+                    break;
+
+                case EndpointCategory.MarketCompetitors:
+                    this.lblId.Visible = false;
+                    this.txtId.Visible = false;
+                    this.lblLocationType.Visible = false;
+                    this.cboLocationType.Visible = false;
+                    this.pnlMarketFields.Visible = true;
+                    this.lblView.Visible = false;
+                    this.txtView.Visible = false;
+                    this.lblSearch.Visible = false;
+                    this.txtSearch.Visible = false;
+                    this.lblType.Visible = false;
+                    this.txtType.Visible = false;
+                    this.lblSubType.Visible = false;
+                    this.txtSubType.Visible = false;
+                    this.lblOrderBy.Visible = false;
+                    this.txtOrderBy.Visible = false;
+                    this.lblRange.Visible = false;
+                    this.txtRange.Visible = false;
+                    this.lblEvolution.Visible = false;
+                    this.txtEvolution.Visible = false;
+                    this.lblMarketIds.Visible = true;
+                    this.txtMarketIds.Visible = true;
+                    break;
+            }
+        }
+
+        private void BtnCopyResponse_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(this.txtResponse.Text))
+            {
+                return;
+            }
+
+            try
+            {
+                Clipboard.SetText(this.txtResponse.Text);
+                this.btnCopyResponse.Text = "Copied!";
+
+                var revertTimer = new System.Windows.Forms.Timer();
+                revertTimer.Interval = 2000;
+                revertTimer.Tick += (s, args) =>
+                {
+                    revertTimer.Stop();
+                    revertTimer.Dispose();
+                    this.btnCopyResponse.Text = "Copy Response";
+                };
+                revertTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to copy response to clipboard.");
             }
         }
 

@@ -260,7 +260,7 @@
   <ItemGroup>
     <Compile Include="Client\DesktopSyncMigrationTests.cs" />
     <Compile Include="Client\GameApiColonyDiscoveryTests.cs" />
-    <Compile Include="Client\GameApiFullDiscoveryTests.cs" />
+    <Compile Include="Services\GameApiFullDiscoveryTests.cs" />
     <Compile Include="Client\GameApiClient429Tests.cs" />
     <Compile Include="Client\GameApiRateLimiterTests.cs" />
     <Compile Include="Services\BackgroundProcessorTests.cs" />
@@ -363,6 +363,11 @@
     <Compile Include="Forms\FormPlayerProfilePropertyTests.cs" />
     <Compile Include="Forms\PlayerSkillBlockPropertyTests.cs" />
     <Compile Include="Forms\FormBankingTests.cs" />
+    <Compile Include="Forms\ManualRequestEndpointPropertyTests.cs" />
+    <Compile Include="Forms\ManualRequestEndpointTests.cs" />
+    <Compile Include="Forms\ManualRequestValidationPropertyTests.cs" />
+    <Compile Include="Forms\ManualRequestFormatterTests.cs" />
+    <Compile Include="Forms\ManualRequestValidationTests.cs" />
     <Compile Include="ViewModels\BaseBlueprintCandidatesTests.cs" />
     <Compile Include="ViewModels\BlueprintFilterPropertyTests.cs" />
     <Compile Include="ViewModels\PlayerProfileViewModelPropertyTests.cs" />
@@ -530,6 +535,7 @@
     <Compile Include="Services\BlueprintServicePropertyTests.cs" />
     <Compile Include="Services\BlueprintDetailDedupPropertyTests.cs" />
     <Compile Include="Services\BlueprintDetailDedupUnitTests.cs" />
+    <Compile Include="Services\BlueprintDetailImportTests.cs" />
     <Compile Include="Services\BlueprintLinkageServiceTests.cs" />
     <Compile Include="Services\BlueprintMutationGuardTests.cs" />
     <Compile Include="Services\PricingPlanServicePropertyTests.cs" />
@@ -561,6 +567,9 @@
     <Compile Include="Services\PlayerContextApiIdIndexTests.cs" />
     <Compile Include="Services\ErrorIsolationPropertyTests.cs" />
     <Compile Include="Services\FreshnessSkipPropertyTests.cs" />
+    <Compile Include="Services\GameApiTypedClientTokenTests.cs" />
+    <Compile Include="Services\GameApiTypedClientEnvelopeTests.cs" />
+    <Compile Include="Services\GameApiTypedClientResilienceTests.cs" />
     <Compile Include="Services\TokenRefreshHandlerTests.cs" />
     <Compile Include="Services\TokenRefreshHandlerPropertyTests.cs" />
     <Compile Include="Services\QueueSyncServicePropertyTests.cs" />
@@ -587,6 +596,7 @@
     <Compile Include="Services\GameApiRequestQueueTests.cs" />
     <Compile Include="Services\GameApiRequestQueuePropertyTests.cs" />
     <Compile Include="Services\GameApiRequestQueueRateLimitTests.cs" />
+    <Compile Include="Services\TokenBucketRateLimiterTests.cs" />
     <Compile Include="Services\OverflowRuleExpansionPropertyTests.cs" />
     <Compile Include="Services\OverflowRuleExpansionTests.cs" />
     <Compile Include="TestHelper.cs" />

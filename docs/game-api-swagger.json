@@ -2,7 +2,8 @@
   "openapi": "3.0.1",
   "info": {
     "title": "OuterEmpires 2 Public API",
-    "description": "Public API for third-party tools and companion apps to access OuterEmpires 2 character data.\n\n## Overview\n\nThis is an OAuth2-style API. The third-party application exchanges a per-character `client_id` and `secret` for a short-lived JSON Web Token (JWT). This token allows calls to the data endpoints. **Tokens are scoped to a single character** — each secret a player issues authorises exactly one of their characters, so an app that wants to read data for two characters needs two secrets.\n\n## Identifiers\n\nThree identifiers are involved in the auth flow:\n\n- **`app_id`** — a GUID identifying your registered third-party application. App developers register an application with Outer Empires and receive an `app_id`. The `app_id` is used by the app to identify itself when exchanging a secret for a token and when calling data endpoints.\n\n- **`client_id`** — the player's account identifier within OE2, this is public information and safe to share. Can be found in the API settings tab in-game.\n\n- **`secret`** — an opaque per-character credential. The player generates the secret in-game for one of their characters and selects the scopes they wish to grant. Each secret is bound to a single character on a single account. Secrets are confidential and should be stored and transmitted with the same care as a password.\n\n## Scopes\n\nScopes let the player decide exactly what data a given secret — and any token minted from it — is allowed to read. The player selects scopes when they create the secret in-game; the token issued at exchange time carries only the scopes the player approved. Each endpoint declares a required scope and rejects tokens that do not carry it, so an app can only see the slice of data the player actually consented to share.\n\n| Scope | Grants access to |\n|-------|------------------|\n| `assets.blueprints.read` | Full detail of an owned blueprint (resources required, properties) |\n| `assets.locations.read` | List of locations where the character holds assets, per-location asset breakdowns, and the contents of individual crates |\n| `assets.surveys.read` | Detail of an owned survey report (surveyed resources with abundance and accessibility) |\n| `banking.balance.read` | Current banking balance |\n| `banking.transactions.read` | Banking transaction history |\n| `character.info.read` | Public character profile (name, corporation, etc.) |\n| `character.skills.read` | Character skills and skill-in-training |\n| `colony.list.read` | List of the character's colonies |\n| `colony.summary.read` | Per-colony summary information |\n| `colony.buildings.read` | Per-colony building list and attributes |\n| `colony.warehouse.read` | Per-colony warehouse contents |\n| `colony.workers.read` | Per-colony workforce information |\n| `jobs.accepted.read` | Jobs the character has accepted |\n| `killmail.list.read` | Kill mail summary list (kills and deaths) |\n| `killmail.detail.read` | Full kill mail detail (fit, attackers, victim) |\n| `mail.list.read` | In-game mail headers (inbox and sent) |\n| `mail.body.read` | Body of a specific in-game mail |\n| `market.listings.read` | Live market orders within range, and component breakdowns of ships listed for sale |\n| `market.prices.read` | Item price statistics (low, average, high) over a recent window |\n| `market.items.read` | Item catalog search to resolve type ids for the listings and prices endpoints |\n| `market.orders.read` | The character's own open buy and sell orders |\n| `market.competitors.read` | Orders outbidding or undercutting the character's own market orders |\n| `ship.configuration.read` | Active ship fit and modules |\n| `ship.cargo.read` | Active ship cargo hold contents |\n\n## Token exchange\n\nExchange the secret for a JWT with a single call:\n\n```http\nPOST /v1/auth/token\nContent-Type: application/json\n\n{\n  \"app_id\": \"<your registered app_id GUID>\",\n  \"client_id\": \"<player's client/account id>\",\n  \"secret\": \"<the per-character secret the player issued>\",\n  \"grant_type\": \"client_credentials\"\n}\n```\n\nA successful response returns the JWT, its lifetime, the `character_id` it is bound to, and the granted scopes:\n\n```json\n{\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJSUzI1NiIs...\",\n    \"tokenType\": \"Bearer\",\n    \"expiresIn\": 3600,\n    \"characterId\": 12345,\n    \"scopes\": [\"character.info.read\", \"character.skills.read\"],\n    \"subscription\": \"standard\"\n  }\n}\n```\n\nTokens are short-lived (~1 hour). When a token expires, repeat the exchange with the same secret to mint a new one.\n\n## Calling data endpoints\n\nEvery authenticated endpoint requires **two** headers:\n\n- `Authorization: Bearer <accessToken>` — the JWT returned by `/v1/auth/token`.\n- `X-App-Id: <app_id>` — the same `app_id` used at token exchange. The API verifies the header matches the `app_id` claim baked into the JWT; a mismatch returns `401 Unauthorized`.\n\nThe endpoint then enforces that the JWT carries the scope it requires. A missing scope returns `403 Forbidden`. All read operations act on the single character the secret was issued for — the API does not accept a character id in the request path or query.\n\n## Errors\n\nEvery response body is wrapped in a `ServiceResponse<T>` envelope with `success`, `returnCode`, `returnString`, and `data` fields. The HTTP status code mirrors `returnCode` on error responses, and `returnString` contains a human-readable message suitable for debugging (not for end users)."
+    "description": "Public API for third-party tools and companion apps to access OuterEmpires 2 character data.\n\n## Overview\n\nThis is an OAuth2-style API. The third-party application exchanges a per-character `client_id` and `secret` for a short-lived JSON Web Token (JWT). This token allows calls to the data endpoints. **Tokens are scoped to a single character** — each secret a player issues authorises exactly one of their characters, so an app that wants to read data for two characters needs two secrets.\n\n## Identifiers\n\nThree identifiers are involved in the auth flow:\n\n- **`app_id`** — a GUID identifying your registered third-party application. App developers register an application with Outer Empires and receive an `app_id`. The `app_id` is used by the app to identify itself when exchanging a secret for a token and when calling data endpoints.\n\n- **`client_id`** — the player's account identifier within OE2, this is public information and safe to share. Can be found in the API settings tab in-game.\n\n- **`secret`** — an opaque per-character credential. The player generates the secret in-game for one of their characters and selects the scopes they wish to grant. Each secret is bound to a single character on a single account. Secrets are confidential and should be stored and transmitted with the same care as a password.\n\n## Scopes\n\nScopes let the player decide exactly what data a given secret — and any token minted from it — is allowed to read. The player selects scopes when they create the secret in-game; the token issued at exchange time carries only the scopes the player approved. Each endpoint declares a required scope and rejects tokens that do not carry it, so an app can only see the slice of data the player actually consented to share.\n\n| Scope | Grants access to |\n|-------|------------------|\n| `assets.blueprints.read` | Full detail of an owned blueprint (resources required, properties) |\n| `assets.locations.read` | List of locations where the character holds assets, per-location asset breakdowns, and the contents of individual crates |\n| `assets.surveys.read` | Detail of an owned survey report (surveyed resources with abundance and accessibility) |\n| `banking.balance.read` | Current banking balance |\n| `banking.transactions.read` | Banking transaction history |\n| `character.info.read` | Public character profile (name, corporation, etc.) |\n| `character.skills.read` | Character skills and skill-in-training |\n| `colony.list.read` | List of the character's colonies |\n| `colony.summary.read` | Per-colony summary information |\n| `colony.buildings.read` | Per-colony building list and attributes |\n| `colony.warehouse.read` | Per-colony warehouse contents |\n| `colony.workers.read` | Per-colony workforce information |\n| `jobs.accepted.read` | Jobs the character has accepted |\n| `killmail.list.read` | Kill mail summary list (kills and deaths) |\n| `killmail.detail.read` | Full kill mail detail (fit, attackers, victim) |\n| `mail.list.read` | In-game mail headers (inbox and sent) |\n| `mail.body.read` | Body of a specific in-game mail |\n| `market.listings.read` | Live market orders within range, and component breakdowns of ships listed for sale |\n| `market.prices.read` | Item price statistics (low, average, high) over a recent window |\n| `market.items.read` | Item catalog search to resolve type ids for the listings and prices endpoints |\n| `market.orders.read` | The character's own open buy and sell orders |\n| `market.competitors.read` | Orders outbidding or undercutting the character's own market orders |\n| `ship.configuration.read` | Active ship fit and modules |\n| `ship.cargo.read` | Active ship cargo hold contents |\n\n## Token exchange\n\nExchange the secret for a JWT with a single call:\n\n```http\nPOST /v1/auth/token\nContent-Type: application/json\n\n{\n  \"appId\": \"<your registered app_id GUID>\",\n  \"clientId\": \"<player's client/account id>\",\n  \"secret\": \"<the per-character secret the player issued>\",\n  \"grantType\": \"client_credentials\"\n}\n```\n\nA successful response returns the JWT, its lifetime, the `character_id` it is bound to, and the granted scopes:\n\n```json\n{\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJSUzI1NiIs...\",\n    \"tokenType\": \"Bearer\",\n    \"expiresIn\": 3600,\n    \"characterId\": 12345,\n    \"scopes\": [\"character.info.read\", \"character.skills.read\"],\n    \"subscription\": \"standard\"\n  }\n}\n```\n\nTokens are short-lived (~1 hour). When a token expires, repeat the exchange with the same secret to mint a new one.\n\n## Calling data endpoints\n\nEvery authenticated endpoint requires **two** headers:\n\n- `Authorization: Bearer <accessToken>` — the JWT returned by `/v1/auth/token`.\n- `X-App-Id: <app_id>` — the same `app_id` used at token exchange. The API verifies the header matches the `app_id` claim baked into the JWT; a mismatch returns `401 Unauthorized`.\n\nThe endpoint then enforces that the JWT carries the scope it requires. A missing scope returns `403 Forbidden`. All read operations act on the single character the secret was issued for — the API does not accept a character id in the request path or query.\n\n## Rate limiting\n\nRate limits exist to ensure fair access across all registered applications — they mark the ceiling, not the target. A well-behaved application will use a fraction of its allowance; if your app is regularly approaching the limit, that could be a signal to cache results or reduce polling frequency rather than a prompt to optimise for throughput.\n\n| Limit | Ceiling | Window | Keyed on |\n|-------|---------|--------|----------|\n| Per-app | 300 requests (default) | 60 seconds | `X-App-Id` — set per app in the registry |\n| Per-account | 60 requests | 60 seconds | OE2 account — shared across all characters and secrets on the account |\n\nRequests that exceed a limit receive `429 Too Many Requests` with a `Retry-After` header indicating how many seconds to wait before retrying.\n\nThe limits use a fixed window: up to the ceiling can be consumed in a burst at the start of the window, then no further calls are accepted until the window resets.\n\n## Errors\n\nEvery response body is wrapped in a `ServiceResponse<T>` envelope with `success`, `returnCode`, `returnString`, and `data` fields. The HTTP status code mirrors `returnCode` on error responses, and `returnString` contains a human-readable message suitable for debugging (not for end users).",
+    "version": "1.0.0"
   },
   "servers": [
     {
@@ -55,11 +56,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -128,11 +132,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -176,11 +183,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -224,11 +234,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -272,11 +285,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -309,6 +325,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         }
       }
@@ -342,11 +361,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -416,11 +438,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -454,11 +479,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -492,11 +520,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -530,11 +561,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -578,11 +612,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -626,11 +663,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -674,11 +714,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -722,11 +765,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -760,11 +806,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -840,11 +889,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -888,11 +940,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -960,11 +1015,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -1008,11 +1066,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -1113,11 +1174,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -1187,11 +1251,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -1243,11 +1310,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -1291,11 +1361,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -1329,11 +1402,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -1367,11 +1443,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -1414,11 +1493,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -1461,11 +1543,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -1499,11 +1584,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }
@@ -1537,11 +1625,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Rate limit exceeded. A Retry-After header indicates when to retry."
           }
         },
         "security": [
           {
-            "bearer_auth": [ ]
+            "bearer_auth": []
           }
         ]
       }

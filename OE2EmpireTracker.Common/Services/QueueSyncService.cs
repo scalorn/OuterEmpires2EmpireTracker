@@ -203,7 +203,8 @@ namespace OE2EmpireTracker.Services
         {
             try
             {
-                var response = JsonConvert.DeserializeObject<GameApiAssetDetailResponse>(json);
+                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(json);
+                var response = envelope?.Data;
                 if (response?.Cargo == null)
                 {
                     return false;
@@ -230,7 +231,8 @@ namespace OE2EmpireTracker.Services
             GameApiAssetDetailResponse response;
             try
             {
-                response = JsonConvert.DeserializeObject<GameApiAssetDetailResponse>(json);
+                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(json);
+                response = envelope?.Data;
             }
             catch (JsonException)
             {
@@ -937,7 +939,9 @@ namespace OE2EmpireTracker.Services
 
                     try
                     {
-                        var cargoItems = JsonConvert.DeserializeObject<List<GameApiAssetCargoItem>>(result.Json);
+                        var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(result.Json);
+                        var cargoResponse = envelope?.Data;
+                        var cargoItems = cargoResponse?.Cargo;
                         if (cargoItems == null || cargoItems.Count == 0)
                         {
                             Log.Debug("ShipCargo: no cargo items in response.");
@@ -1972,34 +1976,12 @@ namespace OE2EmpireTracker.Services
                         importResult = new CrateContentImportResult { Success = false };
                     }
 
-                    // Invoke CrateImporter for blueprint extraction if response contains blueprints (Req 7 AC2-AC5)
-                    bool hasBlueprintEntries = ResponseContainsBlueprints(result.Json);
-                    if (hasBlueprintEntries)
-                    {
-                        try
-                        {
-                            var blueprintJson = BuildCrateImporterJson(result.Json);
-                            if (!string.IsNullOrEmpty(blueprintJson))
-                            {
-                                var crateImportResult = CrateImporter.ImportFromJson(blueprintJson, _playerContext, _empireContext);
-                                Log.Info(
-                                    "CrateDetail:{0} blueprint extraction: created={1}, updated={2}, skipped={3}, failed={4}.",
-                                    crateId,
-                                    crateImportResult.Created,
-                                    crateImportResult.Updated,
-                                    crateImportResult.Skipped,
-                                    crateImportResult.Failed);
-                            }
-                        }
-                        catch (Exception bpEx)
-                        {
-                            Log.Error("CrateDetail:{0} blueprint extraction failed: {1}", crateId, bpEx.Message);
-                        }
-                    }
-                    else
-                    {
-                        Log.Debug("CrateDetail:{0} contains no blueprints, skipping blueprint extraction.", crateId);
-                    }
+                    // NOTE: Blueprint extraction via BuildCrateImporterJson was removed.
+                    // Blueprints inside crates are handled by the cascade logic below which
+                    // creates CreateBlueprintDetailItem work items for a full detail fetch.
+                    // The previous approach created incomplete shell entries (no type, no
+                    // resources, no manufacture time) that could orphan when the detail
+                    // fetch imported via a different slot.
 
                     // Return cascade work items for nested crates, surveys, and blueprints
                     var cascadeItems = new List<WorkItem>();
@@ -2016,7 +1998,8 @@ namespace OE2EmpireTracker.Services
 
                     try
                     {
-                        var crateResponse = JsonConvert.DeserializeObject<GameApiAssetDetailResponse>(result.Json);
+                        var crateEnvelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(result.Json);
+                        var crateResponse = crateEnvelope?.Data;
                         if (crateResponse?.Cargo != null)
                         {
                             foreach (var entry in crateResponse.Cargo)
@@ -2102,7 +2085,8 @@ namespace OE2EmpireTracker.Services
 
                     Log.Debug("BlueprintDetail:{0} fetched successfully, importing.", blueprintId);
 
-                    var response = JsonConvert.DeserializeObject<GameApiBlueprintDetailResponse>(result.Json);
+                    var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiBlueprintDetailResponse>>(result.Json);
+                    var response = envelope?.Data;
                     if (response?.Blueprint == null)
                     {
                         Log.Warn("BlueprintDetail:{0} response has no blueprint info.", blueprintId);
@@ -2128,6 +2112,8 @@ namespace OE2EmpireTracker.Services
                         }
                     }
 
+                    entry["description"] = bpInfo.Description;
+
                     var propsObj = new JObject();
                     if (response.BlueprintProperties != null)
                     {
@@ -2141,6 +2127,19 @@ namespace OE2EmpireTracker.Services
                                 : prop.PropertyValue + prop.Unit;
                             propsObj[key] = value;
                         }
+                    }
+
+                    // Map manufacture time — API value is in hours (e.g. 35 = 35h)
+                    int mfgHours = bpInfo.ManufactureTime;
+                    if (mfgHours > 0)
+                    {
+                        propsObj[BlueprintPropertyKeys.ManufactureRunTime] = mfgHours + "h";
+                    }
+
+                    // Map manufacture amount (only if > 1, since 1 is the default)
+                    if (bpInfo.ManufactureAmount > 1)
+                    {
+                        propsObj[BlueprintPropertyKeys.AmountManufactured] = bpInfo.ManufactureAmount.ToString();
                     }
 
                     entry["properties"] = propsObj;
@@ -2163,11 +2162,24 @@ namespace OE2EmpireTracker.Services
                     if (importResult.Entries.Count > 0 &&
                         importResult.Entries[0].Action != ImportAction.Skipped)
                     {
-                        string importedName = importResult.Entries[0].Name;
-                        int importedEvo = importResult.Entries[0].Evolution;
+                        string matchedUUID = importResult.Entries[0].MatchedUUID;
+                        Blueprint blueprint = null;
 
-                        var blueprint = ResolveBlueprintForApiId(
-                            blueprintId, importedName, importedEvo, response);
+                        if (!string.IsNullOrEmpty(matchedUUID))
+                        {
+                            // Use the UUID directly from the import result — most reliable
+                            blueprint = _playerContext.FindMutableBlueprint(matchedUUID)
+                                ?? _empireContext.FindMutableGlobalBlueprint(matchedUUID);
+                        }
+
+                        if (blueprint == null)
+                        {
+                            // Fallback to the multi-tier resolution strategy
+                            string importedName = importResult.Entries[0].Name;
+                            int importedEvo = importResult.Entries[0].Evolution;
+                            blueprint = ResolveBlueprintForApiId(
+                                blueprintId, importedName, importedEvo, response);
+                        }
 
                         if (blueprint != null)
                         {
@@ -2216,7 +2228,10 @@ namespace OE2EmpireTracker.Services
             }
 
             // Tier 2: Filter by Name+Evo, excluding blueprints claimed by OTHER API IDs.
+            // Search both player blueprints and global (evo 0) blueprints since CrateImporter
+            // stores evo 0 blueprints in the global list (EmpireContext).
             var candidates = _playerContext.BlueprintList
+                .Concat(_empireContext.GlobalBlueprintList)
                 .Where(b =>
                     string.Equals(b.Name, importedName, StringComparison.Ordinal) &&
                     b.Evolution == importedEvo &&
@@ -2344,7 +2359,7 @@ namespace OE2EmpireTracker.Services
                         }
                     }
 
-                    survey.GameApiSurveyId = detail.Id;
+                    survey.GameApiSurveyId = surveyId;
                     survey.LastDetailImportUtc = SystemClock.UtcNow;
                     _playerContext.IndexSurveyByApiId(survey);
 

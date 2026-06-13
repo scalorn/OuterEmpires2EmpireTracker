@@ -115,7 +115,8 @@ namespace OE2EmpireTracker.Services
             GameApiAssetDetailResponse response;
             try
             {
-                response = JsonConvert.DeserializeObject<GameApiAssetDetailResponse>(json);
+                var envelope = JsonConvert.DeserializeObject<GameApiServiceResponse<GameApiAssetDetailResponse>>(json);
+                response = envelope?.Data;
             }
             catch (JsonException ex)
             {
