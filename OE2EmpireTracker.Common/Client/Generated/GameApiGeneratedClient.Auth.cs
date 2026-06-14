@@ -3,7 +3,7 @@
 // </copyright>
 
 using System.Net.Http;
-using System.Text;
+using NLog;
 
 namespace OE2EmpireTracker.Common.Client.Generated
 {
@@ -15,6 +15,8 @@ namespace OE2EmpireTracker.Common.Client.Generated
     /// </summary>
     public partial class GameApiGeneratedClient
     {
+        private static readonly Logger AuthLog = LogManager.GetCurrentClassLogger();
+
         private string _bearerToken;
 
         /// <summary>
@@ -23,6 +25,7 @@ namespace OE2EmpireTracker.Common.Client.Generated
         /// <param name="token">The bearer access token.</param>
         public void SetBearerToken(string token)
         {
+            AuthLog.Debug("SetBearerToken called, token length={0}", token?.Length ?? 0);
             _bearerToken = token;
         }
 
@@ -35,6 +38,11 @@ namespace OE2EmpireTracker.Common.Client.Generated
             {
                 request.Headers.Authorization =
                     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _bearerToken);
+                AuthLog.Debug("PrepareRequest: injected Bearer token (len={0}) for {1}", _bearerToken.Length, url);
+            }
+            else
+            {
+                AuthLog.Warn("PrepareRequest: NO bearer token set for {0}", url);
             }
         }
     }

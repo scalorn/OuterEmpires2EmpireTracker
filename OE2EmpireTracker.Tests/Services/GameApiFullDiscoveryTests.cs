@@ -1459,6 +1459,347 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             }).ConfigureAwait(false);
 
+            // === Character endpoints ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "character/profile",
+                ExecuteAsync = async ct =>
+                {
+                    PublicCharacter result;
+                    try
+                    {
+                        result = await this.typedClient.GetCharacterAsync(ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetCharacterAsync(ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "character", "profile.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("character", "profile");
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "character/skills",
+                ExecuteAsync = async ct =>
+                {
+                    CharacterSkills result;
+                    try
+                    {
+                        result = await this.typedClient.GetCharacterSkillsAsync(ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetCharacterSkillsAsync(ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "character", "skills.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("character", "skills");
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            // === Banking endpoints ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "banking/balance",
+                ExecuteAsync = async ct =>
+                {
+                    BankingBalance result;
+                    try
+                    {
+                        result = await this.typedClient.GetBankingBalanceAsync(ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetBankingBalanceAsync(ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "banking", "balance.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("banking", "balance");
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(this.CreateTypedBankingTransactionsPageWorkItem(0)).ConfigureAwait(false);
+
+            // === Ship endpoints ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "ship/configuration",
+                ExecuteAsync = async ct =>
+                {
+                    ShipConfiguration result;
+                    try
+                    {
+                        result = await this.typedClient.GetShipConfigurationAsync(ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetShipConfigurationAsync(ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "ship", "configuration.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("ship", "configuration");
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "ship/cargo",
+                ExecuteAsync = async ct =>
+                {
+                    ShipCargo result;
+                    try
+                    {
+                        result = await this.typedClient.GetShipCargoAsync(ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetShipCargoAsync(ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "ship", "cargo.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("ship", "cargo");
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            // === Colony endpoints (cascading) ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "colonies/list",
+                ExecuteAsync = async ct =>
+                {
+                    ColonyList colonyList;
+                    try
+                    {
+                        colonyList = await this.typedClient.GetColonyListAsync(ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        colonyList = await this.typedClient.GetColonyListAsync(ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(colonyList, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "colonies", "list.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("colonies", "list");
+
+                    if (colonyList?.Colonies == null || colonyList.Colonies.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var cascaded = new List<WorkItem>();
+                    foreach (var colony in colonyList.Colonies)
+                    {
+                        int colonyId = colony.ColonyId;
+                        if (colonyId == 0)
+                        {
+                            continue;
+                        }
+
+                        string colonyDir = Path.Combine(this.outputDir, "colonies", colonyId.ToString());
+                        EnsureDirectory(colonyDir);
+
+                        int capturedId = colonyId;
+                        string capturedDir = colonyDir;
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = $"colonies/{capturedId}/summary",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                ColonySummary summary;
+                                try
+                                {
+                                    summary = await this.typedClient.GetColonySummaryAsync(capturedId, ct2).ConfigureAwait(false);
+                                }
+                                catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                                {
+                                    await this.RefreshTokenAsync().ConfigureAwait(false);
+                                    summary = await this.typedClient.GetColonySummaryAsync(capturedId, ct2).ConfigureAwait(false);
+                                }
+
+                                string summaryJson = JsonConvert.SerializeObject(summary, Formatting.Indented);
+                                File.WriteAllText(Path.Combine(capturedDir, "summary.json"), summaryJson, Encoding.UTF8);
+                                this.RecordSuccess("colonies", $"{capturedId}/summary");
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = $"colonies/{capturedId}/buildings",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                ColonyBuildings buildings;
+                                try
+                                {
+                                    buildings = await this.typedClient.GetColonyBuildingsAsync(capturedId, ct2).ConfigureAwait(false);
+                                }
+                                catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                                {
+                                    await this.RefreshTokenAsync().ConfigureAwait(false);
+                                    buildings = await this.typedClient.GetColonyBuildingsAsync(capturedId, ct2).ConfigureAwait(false);
+                                }
+
+                                string buildingsJson = JsonConvert.SerializeObject(buildings, Formatting.Indented);
+                                File.WriteAllText(Path.Combine(capturedDir, "buildings.json"), buildingsJson, Encoding.UTF8);
+                                this.RecordSuccess("colonies", $"{capturedId}/buildings");
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = $"colonies/{capturedId}/warehouse",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                ColonyWarehouse warehouse;
+                                try
+                                {
+                                    warehouse = await this.typedClient.GetColonyWarehouseAsync(capturedId, ct2).ConfigureAwait(false);
+                                }
+                                catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                                {
+                                    await this.RefreshTokenAsync().ConfigureAwait(false);
+                                    warehouse = await this.typedClient.GetColonyWarehouseAsync(capturedId, ct2).ConfigureAwait(false);
+                                }
+
+                                string warehouseJson = JsonConvert.SerializeObject(warehouse, Formatting.Indented);
+                                File.WriteAllText(Path.Combine(capturedDir, "warehouse.json"), warehouseJson, Encoding.UTF8);
+                                this.RecordSuccess("colonies", $"{capturedId}/warehouse");
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = $"colonies/{capturedId}/workers",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                ColonyWorkers workers;
+                                try
+                                {
+                                    workers = await this.typedClient.GetColonyWorkersAsync(capturedId, ct2).ConfigureAwait(false);
+                                }
+                                catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                                {
+                                    await this.RefreshTokenAsync().ConfigureAwait(false);
+                                    workers = await this.typedClient.GetColonyWorkersAsync(capturedId, ct2).ConfigureAwait(false);
+                                }
+
+                                string workersJson = JsonConvert.SerializeObject(workers, Formatting.Indented);
+                                File.WriteAllText(Path.Combine(capturedDir, "workers.json"), workersJson, Encoding.UTF8);
+                                this.RecordSuccess("colonies", $"{capturedId}/workers");
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+                    }
+
+                    return cascaded;
+                },
+            }).ConfigureAwait(false);
+
+            // === Mail endpoints ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "mail/list-p0",
+                ExecuteAsync = async ct =>
+                {
+                    MailList mailList;
+                    try
+                    {
+                        mailList = await this.typedClient.GetMailListAsync(ct: ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        mailList = await this.typedClient.GetMailListAsync(ct: ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(mailList, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "mail", "list-p0.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("mail", "list-p0");
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            // === Market endpoints ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "market/listings",
+                ExecuteAsync = async ct =>
+                {
+                    MarketListings result;
+                    try
+                    {
+                        result = await this.typedClient.GetMarketListingsAsync("all", ct: ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetMarketListingsAsync("all", ct: ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "market", "listings.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("market", "listings");
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "market/items",
+                ExecuteAsync = async ct =>
+                {
+                    MarketItems result;
+                    try
+                    {
+                        result = await this.typedClient.GetMarketItemsAsync("R", "Halogens", ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetMarketItemsAsync("R", "Halogens", ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "market", "items.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("market", "items");
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
             queue.Start();
             await queue.DrainAsync().ConfigureAwait(false);
 
@@ -1467,9 +1808,8 @@ namespace OE2EmpireTracker.Tests.Services
                 this.RecordSkipped("queue-error", error.WorkItemLabel, error.Exception.Message);
             }
 
-            // Sub-task 15.1: Output per-category summary for the typed asset discovery run
+            // Output per-category summary for the typed discovery run
             var typedResults = this.results
-                .Where(r => r.Category.StartsWith("assets", StringComparison.Ordinal))
                 .GroupBy(r => r.Category)
                 .OrderBy(g => g.Key)
                 .Select(g => new
@@ -1479,13 +1819,13 @@ namespace OE2EmpireTracker.Tests.Services
                     Failed = g.Count(r => !r.Success),
                 });
 
-            TestContext.WriteLine("\n=== Typed Asset Discovery Summary ===");
+            TestContext.WriteLine("\n=== Typed Full Discovery Summary ===");
             foreach (var cat in typedResults)
             {
                 TestContext.WriteLine("{0}: {1} succeeded, {2} failed", cat.Category, cat.Succeeded, cat.Failed);
             }
 
-            TestContext.WriteLine("=== Typed Asset Discovery Complete ===");
+            TestContext.WriteLine("=== Typed Full Discovery Complete ===");
         }
 
         /// <summary>
@@ -1646,6 +1986,45 @@ namespace OE2EmpireTracker.Tests.Services
                     string filePath = Path.Combine(this.outputDir, "assets", "surveys", $"{surveyId}.json");
                     File.WriteAllText(filePath, json, Encoding.UTF8);
                     this.RecordSuccess("assets", $"survey-{surveyId}");
+
+                    return Array.Empty<WorkItem>();
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates a work item that fetches a page of banking transactions via the typed client
+        /// and cascades to the next page if the current page is full (50 items).
+        /// </summary>
+        /// <param name="page">The zero-based page number to fetch.</param>
+        /// <returns>A work item for the specified banking transactions page.</returns>
+        private WorkItem CreateTypedBankingTransactionsPageWorkItem(int page)
+        {
+            return new WorkItem
+            {
+                Label = $"banking/transactions-page-{page}",
+                ExecuteAsync = async ct =>
+                {
+                    BankingTransactions result;
+                    try
+                    {
+                        result = await this.typedClient.GetBankingTransactionsAsync(page * 50, 50, ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetBankingTransactionsAsync(page * 50, 50, ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    string filePath = Path.Combine(this.outputDir, "banking", $"transactions-page-{page}.json");
+                    File.WriteAllText(filePath, json, Encoding.UTF8);
+                    this.RecordSuccess("banking", $"transactions-page-{page}");
+
+                    if (result?.Transactions != null && result.Transactions.Count >= 50)
+                    {
+                        return new List<WorkItem> { this.CreateTypedBankingTransactionsPageWorkItem(page + 1) };
+                    }
 
                     return Array.Empty<WorkItem>();
                 },
