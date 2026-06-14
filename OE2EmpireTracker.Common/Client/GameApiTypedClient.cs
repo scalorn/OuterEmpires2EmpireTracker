@@ -80,8 +80,7 @@ namespace OE2EmpireTracker.Common.Client
             string key = ComputeCacheKey(clientId, secret);
             if (_tokenCache.TryGetValue(key, out var cached) && !cached.IsExpired)
             {
-                _httpClient.DefaultRequestHeaders.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cached.AccessToken);
+                _generatedClient.SetBearerToken(cached.AccessToken);
                 return new TokenResponseDto { AccessToken = cached.AccessToken, ExpiresIn = cached.ExpiresIn };
             }
 
@@ -106,8 +105,7 @@ namespace OE2EmpireTracker.Common.Client
 
             var token = response.Data;
             _tokenCache[key] = new CachedToken(token.AccessToken, token.ExpiresIn);
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.AccessToken);
+            _generatedClient.SetBearerToken(token.AccessToken);
             return token;
         }
 
