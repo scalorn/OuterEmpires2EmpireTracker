@@ -1800,6 +1800,225 @@ namespace OE2EmpireTracker.Tests.Services
                 },
             }).ConfigureAwait(false);
 
+            // === Jobs endpoints ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "jobs/accepted",
+                ExecuteAsync = async ct =>
+                {
+                    AcceptedJobs result;
+                    try
+                    {
+                        result = await this.typedClient.GetAcceptedJobsAsync(ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetAcceptedJobsAsync(ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "jobs", "accepted.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("jobs", "accepted");
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            // === Killmails endpoints ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "killmails/list",
+                ExecuteAsync = async ct =>
+                {
+                    KillMailList result;
+                    try
+                    {
+                        result = await this.typedClient.GetKillMailListAsync(ct: ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetKillMailListAsync(ct: ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "killmails", "list.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("killmails", "list");
+
+                    return Array.Empty<WorkItem>();
+                },
+            }).ConfigureAwait(false);
+
+            // === Market buy orders (cascading to competitors) ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "market/buy-orders",
+                ExecuteAsync = async ct =>
+                {
+                    MarketBuyOrders result;
+                    try
+                    {
+                        result = await this.typedClient.GetMarketBuyOrdersAsync(ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetMarketBuyOrdersAsync(ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "market", "buy-orders.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("market", "buy-orders");
+
+                    if (result?.Orders == null || result.Orders.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var marketIds = result.Orders
+                        .Select(o => o.MarketId)
+                        .Where(id => id > 0)
+                        .Take(5)
+                        .ToList();
+
+                    if (marketIds.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    string joinedIds = string.Join(",", marketIds);
+
+                    return new List<WorkItem>
+                    {
+                        new WorkItem
+                        {
+                            Label = "market/buy-competitors",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                MarketCompetitorOrders competitors;
+                                try
+                                {
+                                    competitors = await this.typedClient.GetMarketBuyOrderCompetitorsAsync(joinedIds, ct2).ConfigureAwait(false);
+                                }
+                                catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                                {
+                                    await this.RefreshTokenAsync().ConfigureAwait(false);
+                                    competitors = await this.typedClient.GetMarketBuyOrderCompetitorsAsync(joinedIds, ct2).ConfigureAwait(false);
+                                }
+
+                                string compJson = JsonConvert.SerializeObject(competitors, Formatting.Indented);
+                                File.WriteAllText(Path.Combine(this.outputDir, "market", "buy-competitors.json"), compJson, Encoding.UTF8);
+                                this.RecordSuccess("market", "buy-competitors");
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        },
+                    };
+                },
+            }).ConfigureAwait(false);
+
+            // === Market sell orders (cascading to competitors) ===
+            await queue.EnqueueAsync(new WorkItem
+            {
+                Label = "market/sell-orders",
+                ExecuteAsync = async ct =>
+                {
+                    MarketSellOrders result;
+                    try
+                    {
+                        result = await this.typedClient.GetMarketSellOrdersAsync(ct).ConfigureAwait(false);
+                    }
+                    catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                    {
+                        await this.RefreshTokenAsync().ConfigureAwait(false);
+                        result = await this.typedClient.GetMarketSellOrdersAsync(ct).ConfigureAwait(false);
+                    }
+
+                    string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+                    File.WriteAllText(Path.Combine(this.outputDir, "market", "sell-orders.json"), json, Encoding.UTF8);
+                    this.RecordSuccess("market", "sell-orders");
+
+                    if (result?.Orders == null || result.Orders.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    var marketIds = result.Orders
+                        .Select(o => o.MarketId)
+                        .Where(id => id > 0)
+                        .Take(5)
+                        .ToList();
+
+                    if (marketIds.Count == 0)
+                    {
+                        return Array.Empty<WorkItem>();
+                    }
+
+                    string joinedIds = string.Join(",", marketIds);
+
+                    var cascaded = new List<WorkItem>
+                    {
+                        new WorkItem
+                        {
+                            Label = "market/sell-competitors",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                MarketCompetitorOrders competitors;
+                                try
+                                {
+                                    competitors = await this.typedClient.GetMarketSellOrderCompetitorsAsync(joinedIds, ct2).ConfigureAwait(false);
+                                }
+                                catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                                {
+                                    await this.RefreshTokenAsync().ConfigureAwait(false);
+                                    competitors = await this.typedClient.GetMarketSellOrderCompetitorsAsync(joinedIds, ct2).ConfigureAwait(false);
+                                }
+
+                                string compJson = JsonConvert.SerializeObject(competitors, Formatting.Indented);
+                                File.WriteAllText(Path.Combine(this.outputDir, "market", "sell-competitors.json"), compJson, Encoding.UTF8);
+                                this.RecordSuccess("market", "sell-competitors");
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        },
+                    };
+
+                    // Cascade to ship components if any sell order is a ship (TypeC == "Sh")
+                    var shipOrder = result.Orders.FirstOrDefault(o =>
+                        string.Equals(o.TypeC, "Sh", System.StringComparison.OrdinalIgnoreCase) && o.MarketId > 0);
+                    if (shipOrder != null)
+                    {
+                        long capturedShipMarketId = shipOrder.MarketId;
+                        cascaded.Add(new WorkItem
+                        {
+                            Label = "market/ship-components",
+                            ExecuteAsync = async ct2 =>
+                            {
+                                MarketShipComponents components;
+                                try
+                                {
+                                    components = await this.typedClient.GetMarketShipComponentsAsync(capturedShipMarketId, ct2).ConfigureAwait(false);
+                                }
+                                catch (ApiHttpException ex) when (ex.StatusCode == 401)
+                                {
+                                    await this.RefreshTokenAsync().ConfigureAwait(false);
+                                    components = await this.typedClient.GetMarketShipComponentsAsync(capturedShipMarketId, ct2).ConfigureAwait(false);
+                                }
+
+                                string compJson = JsonConvert.SerializeObject(components, Formatting.Indented);
+                                File.WriteAllText(Path.Combine(this.outputDir, "market", "ship-components.json"), compJson, Encoding.UTF8);
+                                this.RecordSuccess("market", "ship-components");
+
+                                return Array.Empty<WorkItem>();
+                            },
+                        });
+                    }
+
+                    return cascaded;
+                },
+            }).ConfigureAwait(false);
+
             queue.Start();
             await queue.DrainAsync().ConfigureAwait(false);
 

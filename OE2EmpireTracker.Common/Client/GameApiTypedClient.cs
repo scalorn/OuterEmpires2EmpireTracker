@@ -125,6 +125,16 @@ namespace OE2EmpireTracker.Common.Client
         }
 
         /// <inheritdoc/>
+        public async Task<AcceptedJobs> GetAcceptedJobsAsync(CancellationToken ct = default)
+        {
+            return await ExecuteAsync(async token =>
+            {
+                var response = await _generatedClient.GetAcceptedJobsAsync(_appId, token).ConfigureAwait(false);
+                return UnwrapEnvelope(response.Success, response.ReturnCode, response.ReturnString, response.Data, response.Errors);
+            }, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
         public async Task<AssetLocations> GetAssetLocationsAsync(CancellationToken ct = default)
         {
             return await ExecuteAsync(async token =>
@@ -150,6 +160,26 @@ namespace OE2EmpireTracker.Common.Client
             return await ExecuteAsync(async token =>
             {
                 var response = await _generatedClient.GetAssetsCrateAsync(_appId, crateId, token).ConfigureAwait(false);
+                return UnwrapEnvelope(response.Success, response.ReturnCode, response.ReturnString, response.Data, response.Errors);
+            }, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<KillMailList> GetKillMailListAsync(bool? kills = null, bool? deaths = null, bool? pvp = null, int? offset = null, int? limit = null, CancellationToken ct = default)
+        {
+            return await ExecuteAsync(async token =>
+            {
+                var response = await _generatedClient.GetKillMailListAsync(_appId, kills, deaths, pvp, offset, limit, token).ConfigureAwait(false);
+                return UnwrapEnvelope(response.Success, response.ReturnCode, response.ReturnString, response.Data, response.Errors);
+            }, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<KillMail> GetKillMailDetailAsync(int killMailId, CancellationToken ct = default)
+        {
+            return await ExecuteAsync(async token =>
+            {
+                var response = await _generatedClient.GetKillMailDetailAsync(_appId, killMailId, token).ConfigureAwait(false);
                 return UnwrapEnvelope(response.Success, response.ReturnCode, response.ReturnString, response.Data, response.Errors);
             }, ct).ConfigureAwait(false);
         }
@@ -330,6 +360,56 @@ namespace OE2EmpireTracker.Common.Client
             return await ExecuteAsync(async token =>
             {
                 var response = await _generatedClient.GetMarketItemsAsync(_appId, type, search, token).ConfigureAwait(false);
+                return UnwrapEnvelope(response.Success, response.ReturnCode, response.ReturnString, response.Data, response.Errors);
+            }, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<MarketBuyOrders> GetMarketBuyOrdersAsync(CancellationToken ct = default)
+        {
+            return await ExecuteAsync(async token =>
+            {
+                var response = await _generatedClient.GetMarketBuyOrdersAsync(_appId, token).ConfigureAwait(false);
+                return UnwrapEnvelope(response.Success, response.ReturnCode, response.ReturnString, response.Data, response.Errors);
+            }, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<MarketSellOrders> GetMarketSellOrdersAsync(CancellationToken ct = default)
+        {
+            return await ExecuteAsync(async token =>
+            {
+                var response = await _generatedClient.GetMarketSellOrdersAsync(_appId, token).ConfigureAwait(false);
+                return UnwrapEnvelope(response.Success, response.ReturnCode, response.ReturnString, response.Data, response.Errors);
+            }, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<MarketCompetitorOrders> GetMarketBuyOrderCompetitorsAsync(string marketIds, CancellationToken ct = default)
+        {
+            return await ExecuteAsync(async token =>
+            {
+                var response = await _generatedClient.GetMarketBuyOrderCompetitorsAsync(_appId, marketIds, token).ConfigureAwait(false);
+                return UnwrapEnvelope(response.Success, response.ReturnCode, response.ReturnString, response.Data, response.Errors);
+            }, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<MarketCompetitorOrders> GetMarketSellOrderCompetitorsAsync(string marketIds, CancellationToken ct = default)
+        {
+            return await ExecuteAsync(async token =>
+            {
+                var response = await _generatedClient.GetMarketSellOrderCompetitorsAsync(_appId, marketIds, token).ConfigureAwait(false);
+                return UnwrapEnvelope(response.Success, response.ReturnCode, response.ReturnString, response.Data, response.Errors);
+            }, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public async Task<MarketShipComponents> GetMarketShipComponentsAsync(long marketId, CancellationToken ct = default)
+        {
+            return await ExecuteAsync(async token =>
+            {
+                var response = await _generatedClient.GetMarketShipComponentsAsync(_appId, marketId, token).ConfigureAwait(false);
                 return UnwrapEnvelope(response.Success, response.ReturnCode, response.ReturnString, response.Data, response.Errors);
             }, ct).ConfigureAwait(false);
         }

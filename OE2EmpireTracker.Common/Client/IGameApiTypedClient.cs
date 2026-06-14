@@ -32,9 +32,9 @@ namespace OE2EmpireTracker.Common.Client
         Task<bool> TestConnectionAsync(string appId, string clientId, string secret, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets the list of asset locations for the authenticated character.
+        /// Gets the accepted jobs for the authenticated character.
         /// </summary>
-        Task<AssetLocations> GetAssetLocationsAsync(CancellationToken ct = default);
+        Task<AcceptedJobs> GetAcceptedJobsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Gets detail for a specific asset location.
@@ -42,19 +42,9 @@ namespace OE2EmpireTracker.Common.Client
         Task<AssetLocationDetail> GetAssetLocationDetailAsync(int locationId, string locationType, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets the contents of a specific crate.
+        /// Gets the list of asset locations for the authenticated character.
         /// </summary>
-        Task<AssetCrateContents> GetCrateContentsAsync(int crateId, CancellationToken ct = default);
-
-        /// <summary>
-        /// Gets detail for a specific blueprint.
-        /// </summary>
-        Task<AssetBlueprint> GetBlueprintDetailAsync(int blueprintId, CancellationToken ct = default);
-
-        /// <summary>
-        /// Gets detail for a specific survey.
-        /// </summary>
-        Task<AssetSurvey> GetSurveyDetailAsync(int surveyId, CancellationToken ct = default);
+        Task<AssetLocations> GetAssetLocationsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Gets the banking balance for the authenticated character.
@@ -67,6 +57,11 @@ namespace OE2EmpireTracker.Common.Client
         Task<BankingTransactions> GetBankingTransactionsAsync(int? offset = null, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
+        /// Gets detail for a specific blueprint.
+        /// </summary>
+        Task<AssetBlueprint> GetBlueprintDetailAsync(int blueprintId, CancellationToken ct = default);
+
+        /// <summary>
         /// Gets the public character profile for the authenticated character.
         /// </summary>
         Task<PublicCharacter> GetCharacterAsync(CancellationToken ct = default);
@@ -75,6 +70,11 @@ namespace OE2EmpireTracker.Common.Client
         /// Gets the skills for the authenticated character.
         /// </summary>
         Task<CharacterSkills> GetCharacterSkillsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Gets the buildings for a specific colony.
+        /// </summary>
+        Task<ColonyBuildings> GetColonyBuildingsAsync(int colonyId, CancellationToken ct = default);
 
         /// <summary>
         /// Gets the list of colonies for the authenticated character.
@@ -87,11 +87,6 @@ namespace OE2EmpireTracker.Common.Client
         Task<ColonySummary> GetColonySummaryAsync(int colonyId, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets the buildings for a specific colony.
-        /// </summary>
-        Task<ColonyBuildings> GetColonyBuildingsAsync(int colonyId, CancellationToken ct = default);
-
-        /// <summary>
         /// Gets the warehouse contents for a specific colony.
         /// </summary>
         Task<ColonyWarehouse> GetColonyWarehouseAsync(int colonyId, CancellationToken ct = default);
@@ -102,14 +97,24 @@ namespace OE2EmpireTracker.Common.Client
         Task<ColonyWorkers> GetColonyWorkersAsync(int colonyId, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets the ship configuration for the authenticated character.
+        /// Gets the contents of a specific crate.
         /// </summary>
-        Task<ShipConfiguration> GetShipConfigurationAsync(CancellationToken ct = default);
+        Task<AssetCrateContents> GetCrateContentsAsync(int crateId, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets the ship cargo for the authenticated character.
+        /// Gets the kill mail list with optional filters and pagination.
         /// </summary>
-        Task<ShipCargo> GetShipCargoAsync(CancellationToken ct = default);
+        Task<KillMailList> GetKillMailListAsync(bool? kills = null, bool? deaths = null, bool? pvp = null, int? offset = null, int? limit = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Gets detail for a specific kill mail.
+        /// </summary>
+        Task<KillMail> GetKillMailDetailAsync(int killMailId, CancellationToken ct = default);
+
+        /// <summary>
+        /// Gets the body of a specific mail message.
+        /// </summary>
+        Task<MailBody> GetMailBodyAsync(int mailId, CancellationToken ct = default);
 
         /// <summary>
         /// Gets the mail list with optional pagination and type filtering.
@@ -117,9 +122,19 @@ namespace OE2EmpireTracker.Common.Client
         Task<MailList> GetMailListAsync(int? offset = null, int? limit = null, string mailType = null, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets the body of a specific mail message.
+        /// Gets the buy order competitors for the specified market IDs.
         /// </summary>
-        Task<MailBody> GetMailBodyAsync(int mailId, CancellationToken ct = default);
+        Task<MarketCompetitorOrders> GetMarketBuyOrderCompetitorsAsync(string marketIds, CancellationToken ct = default);
+
+        /// <summary>
+        /// Gets the character's open market buy orders.
+        /// </summary>
+        Task<MarketBuyOrders> GetMarketBuyOrdersAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Gets market items matching the specified type and search criteria.
+        /// </summary>
+        Task<MarketItems> GetMarketItemsAsync(string type, string search, CancellationToken ct = default);
 
         /// <summary>
         /// Gets market listings with the specified view and optional filters.
@@ -132,8 +147,33 @@ namespace OE2EmpireTracker.Common.Client
         Task<MarketPriceStats> GetMarketPricesAsync(string type, long typeId, CancellationToken ct = default);
 
         /// <summary>
-        /// Gets market items matching the specified type and search criteria.
+        /// Gets the sell order competitors for the specified market IDs.
         /// </summary>
-        Task<MarketItems> GetMarketItemsAsync(string type, string search, CancellationToken ct = default);
+        Task<MarketCompetitorOrders> GetMarketSellOrderCompetitorsAsync(string marketIds, CancellationToken ct = default);
+
+        /// <summary>
+        /// Gets the character's open market sell orders.
+        /// </summary>
+        Task<MarketSellOrders> GetMarketSellOrdersAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Gets the ship components for a market listing.
+        /// </summary>
+        Task<MarketShipComponents> GetMarketShipComponentsAsync(long marketId, CancellationToken ct = default);
+
+        /// <summary>
+        /// Gets the ship cargo for the authenticated character.
+        /// </summary>
+        Task<ShipCargo> GetShipCargoAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Gets the ship configuration for the authenticated character.
+        /// </summary>
+        Task<ShipConfiguration> GetShipConfigurationAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Gets detail for a specific survey.
+        /// </summary>
+        Task<AssetSurvey> GetSurveyDetailAsync(int surveyId, CancellationToken ct = default);
     }
 }
