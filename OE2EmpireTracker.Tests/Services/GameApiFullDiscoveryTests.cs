@@ -2140,7 +2140,32 @@ namespace OE2EmpireTracker.Tests.Services
                     File.WriteAllText(filePath, json, Encoding.UTF8);
                     this.RecordSuccess("assets", $"crate-{crateId}");
 
-                    return Array.Empty<WorkItem>();
+                    // Cascade into blueprints and surveys found inside the crate
+                    var cascaded = new List<WorkItem>();
+                    if (contents?.Cargo != null)
+                    {
+                        foreach (var item in contents.Cargo)
+                        {
+                            if (item.Id <= 0 || string.IsNullOrEmpty(item.TypeC))
+                            {
+                                continue;
+                            }
+
+                            int capturedItemId = item.Id;
+                            string typeCode = item.TypeC.Trim();
+
+                            if (string.Equals(typeCode, "Bp", StringComparison.OrdinalIgnoreCase))
+                            {
+                                cascaded.Add(this.CreateTypedBlueprintWorkItem(capturedItemId));
+                            }
+                            else if (string.Equals(typeCode, "Sc", StringComparison.OrdinalIgnoreCase))
+                            {
+                                cascaded.Add(this.CreateTypedSurveyWorkItem(capturedItemId));
+                            }
+                        }
+                    }
+
+                    return cascaded;
                 },
             };
         }
