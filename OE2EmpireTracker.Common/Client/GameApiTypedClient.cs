@@ -28,6 +28,7 @@ namespace OE2EmpireTracker.Common.Client
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly GameApiGeneratedClient _generatedClient;
+        private readonly HttpClient _httpClient;
         private readonly TokenBucketRateLimiter _rateLimiter;
         private readonly IAsyncPolicy _retryPolicy;
         private readonly IAsyncPolicy _circuitBreaker;
@@ -43,6 +44,7 @@ namespace OE2EmpireTracker.Common.Client
         /// <param name="appId">The application ID for header injection.</param>
         public GameApiTypedClient(HttpClient httpClient, string appId)
         {
+            _httpClient = httpClient;
             _generatedClient = new GameApiGeneratedClient(httpClient);
             _appId = appId;
             _rateLimiter = new TokenBucketRateLimiter();
@@ -78,6 +80,8 @@ namespace OE2EmpireTracker.Common.Client
             string key = ComputeCacheKey(clientId, secret);
             if (_tokenCache.TryGetValue(key, out var cached) && !cached.IsExpired)
             {
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", cached.AccessToken);
                 return new TokenResponseDto { AccessToken = cached.AccessToken, ExpiresIn = cached.ExpiresIn };
             }
 
@@ -102,6 +106,8 @@ namespace OE2EmpireTracker.Common.Client
 
             var token = response.Data;
             _tokenCache[key] = new CachedToken(token.AccessToken, token.ExpiresIn);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.AccessToken);
             return token;
         }
 
